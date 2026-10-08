@@ -18,53 +18,60 @@ what comes next. The design these phases implement is in
 | 7. League | 32 teams, rosters and depth charts, contracts and cap, draft and scouting, development and aging, injuries, season and playoffs | Not started |
 | 8. Manager UI | Team management, scouting, game planning, in-game coaching | Not started |
 
-## Calibration against NFL baselines
+## Data sources
 
-20 games, seed 7 (`npm run calibrate -- 20 7`). Targets are approximate
-recent league averages.
+Calibration targets come from real tracking and play data; only aggregates
+are committed (`data/*.json`), never the raw files.
 
-| Metric | Sim | Target | |
+| Source | What it gives | Extractor |
+|---|---|---|
+| Big Data Bowl 2026 (2023 season, all pass plays) | Coverage mix by situation, outcomes by coverage / route / depth, time to throw, separation at throw and arrival, closing in flight, ball flight times, skill-player speed and acceleration | `scripts/data/bdb2026.ts` |
+| Big Data Bowl 2025 (2022 season wk 1–9, every play, all 22) | Run outcomes by concept, handoff and time to LOS, yards before contact, pressure rate and timing, rush counts, pressure allowed per blocker, pocket depth, line and run-play kinematics, situational tendencies | `scripts/data/bdb2025.ts` |
+| Big Data Bowl 2019 public release (2017 season) | One game of full tracking, 91 games of play-level data | `scripts/data/bdb2017.ts` |
+| nflverse Next Gen Stats and combine | League separation/cushion/time-to-throw averages; measurable distributions by position | (ad hoc) |
+
+`scripts/kinematics-compare.ts` measures simulated games exactly the way the
+tracking was measured and prints them side by side.
+
+## Calibration status
+
+16 games (`npm run calibrate -- 16 7`). Movement now tracks the real data
+closely: per-play top speeds and accelerations by position, QB drop depth,
+ball flight times by distance and handoff timing are all within a few percent
+of the tracking. Outcomes still aren't there:
+
+| Metric | Sim | NFL | |
 |---|---|---|---|
-| Points / team-game | 49.7 | 21–23.5 | high |
-| Scrimmage plays / team-game | 76.9 | 61–65 | high |
-| Completion % | 65.9% | 63–66% | ok |
-| Yards / attempt | 10.9 | 6.8–7.2 | high |
-| Sack rate | 9.7% | 6–7.5% | high |
-| INT rate | 3.4% | 2–2.5% | high |
-| 20+ yd completions / att | 17.7% | 7–9% | high |
-| aDOT | 10.0 | 7.5–8.5 | high |
-| YAC / reception | 8.6 | 4.8–5.6 | high |
-| Time to throw | 1.97 s | 2.7–2.9 s | low |
-| Pressure rate | 32% | 28–36% | ok |
-| Scramble rate | 0.2% | 3–5% | low |
-| Rush yards / carry | 3.05 | 4.1–4.5 | low |
-| Run stuff rate | 31.7% | 16–20% | high |
-| Pass rate | 78% | 56–62% | high |
-| 3rd-down conversion | 35.7% | 37–41% | low |
-| FG % | 90% | 83–87% | high |
-| Missed tackles / play | 0.21 | 0.1–0.2 | high |
-
-Honest reading: the pieces behave plausibly in isolation (trench win rates,
-open-field tackle success, separation by route and coverage), but the
-passing game is too efficient as a whole and the run game too weak, and the
-coordinators then lean into passing, which compounds it.
+| Points / team-game | 35.4 | 21–23.5 | high |
+| Yards / attempt | 9.0 | 6.8–7.2 | high |
+| Completion % | 66.9% | 63–66% | ~ok |
+| Sack rate | 8.3% | 6–7.5% | high |
+| INT rate | 3.8% | 2–2.5% | high |
+| Time to throw | 2.48 s | 2.6–2.75 s | low |
+| Pressure rate | 23% | 33% | low |
+| Scramble rate | 5.0% | 4% | ok |
+| Rush yards / carry | 2.95–4.2 (varies by build) | 4.48 | low |
+| Run stuff rate | 39% | 18% | high |
+| Separation at arrival (all targets) | 3.85 | 3.04 | high |
+| Tight-window throws | 4.8% | 13–17% | low |
+| QB reads coverage family right | 73% | — | |
+| Missed + broken tackles / play | 0.17 | 0.11–0.16 | ~ok |
+| Pass rate | 76% | 56–62% | high |
 
 ## Known gaps, in priority order
 
-1. **Passing efficiency.** Two-high coverages leave the 10–19 yd windows too
-   open (separation 6.5–8 yd vs. Cover 2/4/6); deep completion rate is ~67%
-   against an NFL ~38%; YAC after catches in space is still long-tailed.
-2. **Time to throw.** Too fast (1.97 s). Stems run at full effort and the QB's
-   first read is too often open on rhythm.
-3. **Run game.** Too many stuffs, too few yards before contact; zone
-   track/cut decisions and second-level blocking need work.
-4. **Play calling.** Pass rate is inflated by the in-game learning bandit
-   rewarding the overpowered passing game; this should settle once passing is
-   fixed, but needs a prior toward balance.
-5. **Scrambles.** QBs almost never scramble; the scramble trigger needs lanes
-   that open as rushers widen.
-6. **Missing concepts.** Screens (no behind-the-line throws today), RPOs,
-   stunts and twists, OPI/DPI, roughing.
-7. **Awareness layer.** Field-of-view limits and attention (which threats a
-   player is actually looking at) exist only partially, via perception lag
-   and pursuit; a full attention model is designed but not built.
+1. **Run game.** Averages are close on good builds, but outcomes are bimodal:
+   too many stuffs from unblocked or quickly shed linemen (reach blocks on
+   3-techniques, backside pursuit on counter), not enough 2–5 yard runs.
+   Backs don't cut back off a lost reach yet.
+2. **Passing efficiency.** Zone defenders still give too much room at the
+   catch (3.9 vs 3.0 yd), and QBs almost never throw into tight windows, so
+   the throws that are made are too open; INTs come from misreads instead.
+3. **Pressure timing.** Pressure is rarer than real but arrives earlier when
+   it comes (2.1 s vs 2.7 s): some rushers still get free too fast.
+4. **Play calling.** Pass rate is inflated; situational tendencies by down,
+   distance and field zone are now measured from 2022–23 data but not yet
+   used by the coordinators.
+5. **Route nuance.** Releases vs press, stemming to leverage, coverage
+   adjustments (seam bend vs single-high) are still simple.
+6. **Missing concepts.** Screens, RPOs, stunts and twists, OPI/DPI.

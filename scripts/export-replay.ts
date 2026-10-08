@@ -36,6 +36,7 @@ const plays = g.log.map((p) => {
   const base = {
     q: p.quarter, clk: p.clock, off: p.offense, down: p.down, dist: p.distance, yl: p.yardline,
     call: p.call, def: p.defense, text: p.text, yds: Math.round(p.yards), score: p.score, kindLabel: KIND_LABEL[p.kind],
+    read: p.stats?.qbRead,
   };
   const rp = p.replay;
   if (!rp || rp.frames.length < 2) return base;

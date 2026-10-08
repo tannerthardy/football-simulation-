@@ -283,6 +283,14 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     if (s.sep !== undefined) kv.push(`separation at catch <b>${s.sep.toFixed(1)} yd</b>`);
     if (s.ybc !== undefined) kv.push(`yards before contact <b>${s.ybc.toFixed(1)}</b>`);
     if (s.pressured) kv.push('<b>pressured</b>');
+    const COV = { cover0: 'Cover 0', cover1: 'Cover 1', cover2: 'Cover 2', tampa2: 'Tampa 2', cover2man: '2-Man', cover3: 'Cover 3', cover4: 'Cover 4', cover6: 'Cover 6' };
+    const r = p.read;
+    if (r && p.kindLabel === 'Pass') {
+      const read = COV[r.post ?? r.pre] ?? r.post ?? r.pre;
+      const right = (r.post ?? r.pre) === r.actual;
+      kv.push(`QB read <b>${read}</b> ${right ? '✓' : `(actually ${COV[r.actual] ?? r.actual})`}${r.shown ? ` · defense showed ${COV[r.shown] ?? r.shown}` : ''}`);
+    }
+    if (r && r.audible) kv.push(`check at the line: <b>${r.audible}</b>`);
     kv.push(`duration <b>${dur.toFixed(1)}s</b>`);
     $('kv').innerHTML = kv.join('');
     // Event marks on the timeline.
