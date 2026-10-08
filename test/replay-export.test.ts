@@ -49,11 +49,28 @@ describe('replay export', () => {
     expect('frames' in p).toBe(true);
     if (!('frames' in p)) throw new Error('Missing filmed replay');
     expect(p.game).toBe(3);
+    expect(p.id).toBe('G4-P005');
+    expect(packReplayPlay(play(), 2).id).toBe('G3-P005');
     expect(p.roster[0]).toEqual(['O', 'RB', 'Example Runner', 28]);
     expect(p.frames.t).toEqual([-0.5, 0]);
     expect(p.frames.p).toEqual([312, 267, 7, 313, 267, 9]);
     expect(p.frames.s).toEqual([0, 0, 8, 9]);
     expect(p.ev).toEqual([[0, 'carrier_contact'], [0, 'block_exchange']]);
+  });
+
+  it('counts attached geometry as pressure only before release and apart from QB perception', () => {
+    const packed = (nearAt: number, throwAt: number) => packReplayPlay(play({ kind: 'pass', replay: {
+      los: 40, firstDownX: 50, flip: false,
+      players: [{ team: 'O', slot: 'QB', name: 'Quarterback', jersey: 1, pos: 'QB' }, { team: 'D', slot: 'DE_W', name: 'Rusher', jersey: 97, pos: 'DE' }],
+      frames: [{ t: 0.5, agents: [33, 26, 0, 38, 26, 0], ball: [33, 26, 2], carrier: 0 },
+        { t: nearAt, agents: [33, 26, 0, 34.5, 26, 0], ball: [33, 26, 2], carrier: 0 }],
+      events: [{ t: throwAt, type: 'throw' }, { t: 0.5, type: 'block_contact', a: 0, b: 1 }],
+    } }), 0);
+    const pressure = packed(2, 2.5), late = packed(3, 2.5);
+    expect(pressure.flags.pressure).toBe(true);
+    expect(pressure).toMatchObject({ stats: { pressure2yd: true, ttp: 2 } });
+    expect('stats' in pressure && pressure.stats.pressured).toBeUndefined();
+    expect(late.flags.pressure).toBe(false);
   });
 
   it('does not offer an unfilmed log entry or one-frame recording as a clip', () => {

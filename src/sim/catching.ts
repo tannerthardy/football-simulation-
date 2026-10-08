@@ -132,7 +132,10 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     const pbu = bestQ * (0.2 + 0.45 * D.r('ballSkills')) * (1.15 - 0.55 * R.r('contestedCatch')) * heightEdge;
     const pInt = pbu * (0.06 + 0.22 * D.r('ballSkills')) * (facingBall(D, bv) ? 1 : 0.2);
     const roll = rng.next();
-    if (roll < pInt) {
+    // Playing through a receiver's hands is not the same as reaching the
+    // ball. Possession requires this defender's own height/reach envelope.
+    const canIntercept = opps.some(p => p.a === D);
+    if (roll < pInt && canIntercept) {
       if (inBounds(D)) {
         sim.possess(D, 'interception');
         return;

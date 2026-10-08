@@ -1,0 +1,71 @@
+import { describe, expect, it } from 'vitest';
+import { Rng } from '../src/core/rng.js';
+import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
+import { PASS_BY_ID } from '../src/playbook/concepts.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+import { createEngagement, updateEngagements } from '../src/sim/engagement.js';
+import { PlaySim } from '../src/sim/playsim.js';
+
+function rep() {
+  const off = generateTeam(new Rng(7), 'O', 'OFF', { strength: 0.6 });
+  const def = generateTeam(new Rng(19), 'D', 'DEF', { strength: 0.6 });
+  const sim = new PlaySim({ offense: pickOffense(off, '11'), defense: pickDefense(def, 'nickel'),
+    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: '' },
+    los: 40, ballY: 26, firstDownX: 50, seed: 3 });
+  const b = sim.slot('RT')!, d = sim.slot('DE_S')!;
+  sim.qb.body.pos = { x: 30, y: 26 };
+  b.body.pos = { x: 34, y: 26 };
+  d.body.pos = { x: 34 + b.profile.radius + d.profile.radius, y: 26 };
+  b.body.vel = d.body.vel = { x: 0, y: 0 };
+  return { sim, b, d };
+}
+
+describe('pass contact momentum and anchor', () => {
+  it('carries incoming rush momentum after hands land, including lateral motion', () => {
+    const { sim, b, d } = rep();
+    b.body.vel = { x: -1, y: 0 }; d.body.vel = { x: -4, y: 3 };
+    const e = createEngagement(sim, b, d, 'pass', null)!;
+    e.nextMoveAt = Infinity;
+    const centerY = (b.pos.y * b.profile.massKg + d.pos.y * d.profile.massKg) / (b.profile.massKg + d.profile.massKg);
+    updateEngagements(sim);
+    const afterY = (b.pos.y * b.profile.massKg + d.pos.y * d.profile.massKg) / (b.profile.massKg + d.profile.massKg);
+    expect(afterY - centerY).toBeGreaterThan(0.03);
+    expect(d.speed).toBeGreaterThan(1);
+    // Velocities used by pursuit/contact agree with the actual body motion.
+    expect(d.vel.y).toBeCloseTo((d.pos.y - 26) / sim.dt, 8);
+  });
+
+  it('a planted strong anchor holds while a clear drive advantage displaces it', () => {
+    const run = (drive: number) => {
+      const { sim, b, d } = rep();
+      d.profile.power *= drive;
+      const e = createEngagement(sim, b, d, 'pass', null)!;
+      e.nextMoveAt = Infinity; e.move = 'bull'; e.phi = 0; e.control = 0;
+      const start = b.pos.x;
+      for (let i = 0; i < 20 && b.engagement; i++) { sim.t = i * sim.dt; updateEngagements(sim); }
+      return start - b.pos.x;
+    };
+    expect(run(0.3)).toBeLessThan(0.15);
+    expect(run(2)).toBeGreaterThan(0.5);
+  });
+
+  it('keeps pass protection during the short follow-through after release', () => {
+    const { sim, b, d } = rep();
+    const e = createEngagement(sim, b, d, 'pass', null)!;
+    sim.throwBall(sim.qb, sim.slot('X')!, { x: 15, y: 0, z: 3 }, { x: 50, y: 26, z: 2 }, 1);
+    sim.t = 0.15;
+    updateEngagements(sim);
+    expect(e.type).toBe('pass'); expect(b.engagement).toBe(e);
+    sim.t = 0.4; updateEngagements(sim);
+    expect(b.engagement).toBeNull(); expect(d.engagement).toBeNull();
+  });
+
+  it('executes the speed approach at initial contact instead of rerolling a bull rush', () => {
+    const { sim, b, d } = rep();
+    d.behavior = { kind: 'rush', plan: 'speed', update: () => ({ vel: { x: 0, y: 0 } }) } as typeof d.behavior;
+    const e = createEngagement(sim, b, d, 'pass', null)!;
+    expect(['speed', 'dip']).toContain(e.move);
+  });
+});

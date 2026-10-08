@@ -14,6 +14,10 @@ not merged into PR #1 or the default branch. Start from that branch:
 `git fetch origin claude/engine-priorities && git checkout claude/engine-priorities`.
 
 - Read "How to choose" below, then the latest [What's next](#whats-next).
+- Latest implementation/evidence: [pressure, protection contact and compressed
+  coverage](red-zone-pocket-and-film-ids.md). It separates the pressure
+  definitions, fixes contact momentum/anchoring and goal-line spacing, and
+  records the remaining attached-pressure and early-sack problems.
 - The [coverage and contact-choice follow-up](coverage-anticipation-and-contact-choices.md)
   is the next round on this branch: measured coverage fixes, NFL separation
   by event/coverage, paired labs, and the remaining passing/pocket priorities.

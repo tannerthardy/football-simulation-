@@ -9,16 +9,64 @@ import { ManCoverage, ZoneCoverage, playBall } from '../src/sim/behaviors/defens
 import { RouteObservation } from '../src/sim/coverage-read.js';
 import { PerceptionBuffer, type Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { containCoverage } from '../src/sim/coverage-space.js';
+import { END_LINE_X } from '../src/core/field.js';
+import { zoneLandmark } from '../src/playbook/alignment.js';
 
 const home = generateTeam(new Rng(7).fork('offense'), 'Home', 'HOM', { strength: 0.6 });
 const away = generateTeam(new Rng(7).fork('defense'), 'Away', 'AWY', { strength: 0.6 });
-function setup(coverage = 'cover1') {
+function setup(coverage = 'cover1', los = 40, zoneStyle: 'spot' | 'match' = 'match') {
   return new PlaySim({ offense: pickOffense(home, '11'), defense: pickDefense(away, 'nickel'), seed: 1,
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
-    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, zoneStyle: 'match', label: '' },
-    los: 40, ballY: 26, firstDownX: 50 });
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, zoneStyle, label: '' },
+    los, ballY: 26, firstDownX: Math.min(110, los + 10) });
 }
 const cue = (vx = 6, vy = 0, facing = 0): Perceived => ({ pos: { x: 50, y: 30 }, vel: { x: vx, y: vy }, facing, stance: null });
+
+describe('compressed coverage space', () => {
+  it('compresses goal-line alignment and landmarks while preserving midfield depth', () => {
+    const middle = setup('cover2'), goal = setup('cover2', 109);
+    expect(zoneLandmark('deep_half_w', middle.offAlign).x).toBe(55);
+    expect(zoneLandmark('deep_half_w', goal.offAlign).x).toBeLessThan(116);
+    for (const slot of ['FS', 'SS', 'CB_W', 'CB_S']) expect(goal.slot(slot)!.pos.x).toBeLessThan(116);
+  });
+
+  it('brakes an intentional drop before the end line using the movement integrator', () => {
+    const d = setup('cover2', 104).slot('FS')!;
+    d.body.pos = { x: 114, y: 26 }; d.body.vel = { x: 0, y: 0 };
+    let furthest = d.pos.x;
+    for (let i = 0; i < 100; i++) {
+      stepBody(d.body, containCoverage(d, { vel: { x: 8, y: 0 }, facing: Math.PI }), 0.05);
+      furthest = Math.max(furthest, d.pos.x);
+    }
+    expect(furthest).toBeLessThan(END_LINE_X);
+  });
+
+  it('allows outside momentum and recovers instead of imposing a field wall', () => {
+    const d = setup('cover2', 104).slot('FS')!;
+    d.body.pos = { x: 119.9, y: 26 }; d.body.vel = { x: 6, y: 0 };
+    stepBody(d.body, containCoverage(d, { vel: { x: 6, y: 0 } }), 0.05);
+    expect(d.pos.x).toBeGreaterThan(END_LINE_X);
+    for (let i = 0; i < 100; i++) stepBody(d.body, containCoverage(d, { vel: { x: 6, y: 0 } }), 0.05);
+    expect(d.pos.x).toBeLessThan(END_LINE_X);
+  });
+
+  it.each(['spot', 'match'] as const)('Cover 2 %s corner carries #1 in the low red zone and responds to a true flat threat', style => {
+    const s = setup('cover2', 104, style), d = s.slot('CB_W')!, b = d.behavior as ZoneCoverage;
+    for (const r of s.offense) { r.body.pos.x = s.los - 3; r.body.vel = { x: 0, y: 0 }; }
+    const one = s.slot(s.offAlign.numbering.W1!)!, two = s.slot(s.offAlign.numbering.W2!)!;
+    one.body.pos.x = s.los + 4; one.body.vel = { x: 5, y: 0 };
+    for (let i = 0; i < 20; i++) s.perception.record(s.agents);
+    s.t = 1.5; d.recog!.read = 'pass'; b.update(d, s);
+    expect(b.target).toBe(one);
+    const sign = -s.offAlign.strongSign;
+    two.body.pos = { x: s.los + 2, y: one.pos.y - sign * 3 };
+    two.body.vel = { x: 0, y: sign * 5 };
+    for (let i = 0; i < 20; i++) s.perception.record(s.agents);
+    s.t = 2; b.update(d, s);
+    expect(b.target).toBe(two);
+  });
+});
 
 describe('visible route reads', () => {
   it('uses a delayed hip cue, never the current hidden change of direction', () => {

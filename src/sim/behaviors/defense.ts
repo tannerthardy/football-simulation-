@@ -6,11 +6,11 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
-import { FIELD_WIDTH } from '../../core/field.js';
+import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
-import { gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
+import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
@@ -284,7 +284,7 @@ export class ZoneCoverage implements Behavior {
     if (style === 'spot' && !this.deep) {
       // Spot drops are deeper: curl and hook defenders sink to 11-12 yards.
       const sink = zone.startsWith('curl_flat') ? 2.5 : zone.startsWith('hook') ? 1.5 : zone.startsWith('flat') ? 1.5 : 0;
-      this.landmark = { x: this.landmark.x + sink, y: this.landmark.y };
+      this.landmark = { x: sim.los + coverageDepth(sim.los, this.landmark.x - sim.los + sink), y: this.landmark.y };
     }
     this.style = style;
   }
@@ -365,7 +365,8 @@ export class ZoneCoverage implements Behavior {
       // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
       const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
-      if (!spot && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1 && deepest.pos.x - sim.los > 6) {
+      if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
+        && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
         this.target = deepest.r;
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         if (a.mind.focus * (0.4 + 0.6 * a.r('playRecognition')) > 0.35) {
@@ -402,6 +403,26 @@ export class ZoneCoverage implements Behavior {
         speed: turnRun ? 1 : zs * 1.05,
         gain: 1.8,
       });
+    }
+
+    // Low red-zone Cover 2: the corner sinks under #1 with outside leverage
+    // rather than abandoning him for an open-field flat landmark. An actual
+    // second threat entering the flat still pulls him off; the safety caps #1.
+    if (OPP_GOAL_X - sim.los <= 10 && (this.zone === 'flat_s' || this.zone === 'flat_w')) {
+      const side = this.zone === 'flat_s' ? 'S' : 'W';
+      const sign = side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+      const one = threats.find(th => th.r.slot === sim.offAlign.numbering[`${side}1`]);
+      if (one) {
+        const flat = threats.filter(th => th !== one && th.pos.x - sim.los < 5 && th.pos.x > sim.los - 1
+          && sign * th.vel.y > 1 && (Math.abs(th.fut.y - one.pos.y) < 6 || sign * (th.fut.y - sim.ballY) > 12))
+          .sort((p, q) => Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y) - Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y))[0];
+        const key = flat ?? one;
+        this.target = key.r;
+        const tgt = { x: Math.max(sim.los + Math.min(2.5, this.initialDepth), key.pos.x - 0.8),
+          y: clamp(key.pos.y + sign * 0.45, 0.5, FIELD_WIDTH - 0.5) };
+        return track(a, tgt, { x: key.vel.x * 0.85, y: key.vel.y * 0.9 }, {
+          facing: key.vel.x > 3 && a.pos.x - key.pos.x < 1.5 ? undefined : facingQB, speed: zs * 1.1, gain: 2 });
+      }
     }
 
     if (spot) return this.spotUnderneath(a, sim, threats);

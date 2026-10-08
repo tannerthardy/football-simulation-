@@ -40,6 +40,12 @@ function edgesEngaged(form: string, front: string, personnel: DefPersonnelId, pl
     while (sim.phase === 'live' && sim.t < 3) {
       step.tick();
       for (const d of edges) if (d.engagement) touched.add(d);
+      // A contact followed by a same-tick shed is still a real interception
+      // of the rush arc. Snapshot-only counting misses that short rep.
+      for (const event of sim.events) if (event.type === 'block_contact') {
+        const d = edges.find(d => d.idx === event.b);
+        if (d) touched.add(d);
+      }
     }
     engaged += touched.size;
     total += edges.length;

@@ -153,13 +153,13 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
       <label>Offensive concept<select id="concept-filter"></select></label>
       <label>Defensive front<select id="front-filter"></select></label>
       <label>Coverage<select id="coverage-filter"></select></label>
-      <label>Result<select id="outcome-filter"><option value="all">All results</option><option value="complete">Completions</option><option value="td">Touchdowns</option><option value="big">20+ yards</option><option value="to">Turnovers</option><option value="sack">Sacks</option><option value="stuff">Runs: no gain / loss</option><option value="broken">Broken tackles</option><option value="oob">Out of bounds</option><option value="nullified">Nullified by penalty</option></select></label>
+      <label>Result<select id="outcome-filter"><option value="all">All results</option><option value="complete">Completions</option><option value="td">Touchdowns</option><option value="big">20+ yards</option><option value="to">Turnovers</option><option value="sack">Sacks</option><option value="pressure">Pressure: defender within 2 yd</option><option value="stuff">Runs: no gain / loss</option><option value="broken">Broken tackles</option><option value="oob">Out of bounds</option><option value="nullified">Nullified by penalty</option></select></label>
     </div>
     <details class="more-filters"><summary>Formation, game, team &amp; search</summary><div class="filter-grid">
       <label>Formation<select id="formation-filter"></select></label>
       <label>Game<select id="game-filter"></select></label>
       <label>Offense<select id="team-filter"></select></label>
-      <label>Search plays or players<input type="search" id="search" placeholder="Mesh, blitz, player name…"></label>
+      <label>Search plays, IDs or players<input type="search" id="search" placeholder="G2-P088, Mesh, player name…"></label>
     </div></details>
     </div>
     <div class="selection-bar"><p id="selection-summary" aria-live="polite"></p><button id="reset-filters">Clear filters</button><button id="watch" class="primary">▶ Watch selection</button></div>
@@ -204,6 +204,8 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
       </div>
       <div class="result">
         <p id="result">Pick a play from the sheet.</p>
+        <div class="row"><input id="play-reference" type="text" readonly aria-label="Play reference with film version and timestamp" style="flex:1;min-width:0;font-family:var(--mono)"><button id="copy-reference">Copy play reference</button></div>
+        <small id="copy-status" role="status"></small>
         <div class="kv" id="kv"></div>
         <div class="foot"><kbd>Space</kbd> play · <kbd>←</kbd><kbd>→</kbd> step · <kbd>↑</kbd><kbd>↓</kbd> matching plays · <kbd>R</kbd> replay · offense attacks right · blue = line of scrimmage, yellow = line to gain</div>
       </div>
@@ -241,6 +243,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
   // Positions, facings and ball coordinates arrive in tenths.
   for (const p of plays) {
     p.game ??= 0;
+    p.id ??= `G${p.game + 1}-P${String(p.index + 1).padStart(3, '0')}`;
     p.concept ??= { id: p.kindLabel, name: p.kindLabel, family: 'other' };
     if (!p.frames) continue;
     p.frames.p = Float32Array.from(p.frames.p, (v) => v / 10);
@@ -284,7 +287,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
   $('labels').setAttribute('aria-pressed', 'true');
   const selection = { family: 'all', concept: 'all', coverage: 'all', front: 'all', formation: 'all', game: 'all', team: 'all', outcome: 'all', search: '' };
   const valueOf = (p, key) => String(key === 'concept' ? p.concept.id : key === 'game' ? p.game : key === 'team' ? p.off : p.plan?.[key] ?? 'unknown');
-  const searchText = plays.map((p) => [p.call, p.def, p.text, p.concept.name, ...(p.roster || []).map((r) => r[2])].join(' ').toLowerCase());
+  const searchText = plays.map((p) => [p.id, p.call, p.def, p.text, p.concept.name, ...(p.roster || []).map((r) => r[2])].join(' ').toLowerCase());
   function hasFlag(p, key) {
     if (key === 'nullified') return !!p.nullified;
     return !!p.flags?.[key];
@@ -346,14 +349,14 @@ const REPLAY = /*__REPLAY_DATA__*/null;
         const tags = ['td', 'to', 'sack', 'big'].filter((k) => hasFlag(p, k));
         const badges = p.nullified ? '<span class="badge">NULLIFIED</span>' : tags.filter((k) => k !== 'big').map((k) => `<span class="badge">${{td: 'TD', to: 'TURNOVER', sack: 'SACK'}[k]}</span>`).join('');
         const sit = `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}`;
-        return `<div class="play ${tags.join(' ')}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(p.concept.name)}, game ${p.game + 1}, ${esc(p.text)}" ${i === cur ? 'aria-current="true"' : ''}><span class="stripe"></span><div><div class="name"><span>${esc(p.concept.name)}</span><span class="gain">${p.nullified ? 'Penalty' : gain(p.yds)}</span></div><div class="meta"><span>G${p.game + 1} · ${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)}</span><span>${esc(p.off)}</span><span>${sit}</span>${badges}</div><div class="txt">${esc(label('front', valueOf(p, 'front')))} · ${esc(label('coverage', valueOf(p, 'coverage')))}</div><div class="txt foot">${esc(p.text)}</div></div></div>`;
+        return `<div class="play ${tags.join(' ')}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(p.id)}, ${esc(p.concept.name)}, game ${p.game + 1}, ${esc(p.text)}" ${i === cur ? 'aria-current="true"' : ''}><span class="stripe"></span><div><div class="name"><span>${esc(p.concept.name)}</span><span class="gain">${p.nullified ? 'Penalty' : gain(p.yds)}</span></div><div class="meta"><span>${esc(p.id)} · ${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)}</span><span>${esc(p.off)}</span><span>${sit}</span>${badges}</div><div class="txt">${esc(label('front', valueOf(p, 'front')))} · ${esc(label('coverage', valueOf(p, 'coverage')))}</div><div class="txt foot">${esc(p.text)}</div></div></div>`;
       }).join('')}</section>`;
     }).join('') : '<div class="empty">No filmed plays match these filters.<br>Clear filters or choose a different concept.</div>';
   }
   function syncControls() {
     const pos = playlist.indexOf(cur);
     const active = pos >= 0;
-    for (const id of ['playbtn', 'back', 'fwd', 'restart', 'speedbtn']) $(id).disabled = !active;
+    for (const id of ['playbtn', 'back', 'fwd', 'restart', 'speedbtn', 'copy-reference']) $(id).disabled = !active;
     scrub.disabled = !active;
     $('prev').disabled = !active || pos === 0;
     $('next').disabled = !active || pos === playlist.length - 1;
@@ -455,7 +458,8 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     holdUntil = 0;
     const dur = p.frames.t[p.frames.t.length - 1];
     renderHeader(p.game);
-    $('clip-title').textContent = `${p.concept.name} · ${familyNames[p.concept.family] || 'Other plays'}`;
+    $('clip-title').textContent = `${p.id} · ${p.concept.name}`;
+    $('copy-status').textContent = '';
     $('dd').textContent = `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}`;
     $('clock').textContent = `Game ${p.game + 1} · ${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)} · ${p.off} ball · ${meta.away.abbr} ${p.score.away} – ${meta.home.abbr} ${p.score.home}`;
     $('offcall').textContent = p.call || '—';
@@ -469,7 +473,8 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     if (s.yac !== undefined) kv.push(`YAC <b>${s.yac.toFixed(1)}</b>`);
     if (s.sep !== undefined) kv.push(`separation at catch <b>${s.sep.toFixed(1)} yd</b>`);
     if (s.ybc !== undefined) kv.push(`yards before contact <b>${s.ybc.toFixed(1)}</b>`);
-    if (s.pressured) kv.push('<b>pressured</b>');
+    if (s.pressure2yd) kv.push(`defender within 2 yd <b>${s.ttp.toFixed(2)}s</b>`);
+    if (s.pressured) kv.push('<b>QB sensed pressure</b>');
     const COV = catalog.coverage || {};
     const r = p.read;
     if (r && p.kindLabel === 'Pass') {
@@ -491,6 +496,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
       return `<span style="left:${x}%;transform:translateX(${shift}%)">${esc(e[1].replaceAll('_', ' '))}</span>`;
     }).join('');
     const jumps = [['Snap', Math.max(0, p.frames.t[0])]];
+    if (s.ttp !== undefined) jumps.push(['Pressure (2 yd)', s.ttp]);
     for (const [name, events] of [['First block', ['block_contact']], ['Handoff', ['handoff']], ['Throw', ['throw']], ['Catch', ['catch', 'interception']], ['First contact', ['carrier_contact', 'tackle_wrap', 'tackle']]]) {
       const event = p.ev.find((e) => events.includes(e[1]));
       if (event) jumps.push([name, event[0]]);
@@ -526,6 +532,25 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     holdUntil = 0;
     syncControls();
   }
+  function reference() {
+    if (cur < 0) return '';
+    const p = plays[cur];
+    return `Film ${meta.sourceSha256?.slice(0, 12) || 'legacy'} / ${p.id} / seed ${games[p.game].seed} / ${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)} / t=${t.toFixed(2)}s / ${p.call} vs ${p.def}`;
+  }
+  $('copy-reference').onclick = async () => {
+    playing = false; holdUntil = 0; syncControls();
+    const value = reference(), field = $('play-reference');
+    field.value = value;
+    try {
+      await navigator.clipboard.writeText(value);
+      $('copy-status').textContent = 'Copied play and timestamp.';
+    } catch {
+      field.focus(); field.select();
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch {}
+      $('copy-status').textContent = copied ? 'Copied play and timestamp.' : 'Reference selected. Press Ctrl+C or ⌘C to copy.';
+    }
+  };
   $('playbtn').onclick = () => {
     if (cur < 0) return;
     const p = plays[cur];
@@ -733,7 +758,9 @@ const REPLAY = /*__REPLAY_DATA__*/null;
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.ellipse(X(bx), Y(by) - lift, sc * 0.32 * size, sc * 0.2 * size, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     }
-    $('caption').textContent = `${t.toFixed(2)}s${bz > 1.5 && carrier < 0 ? ` · ball ${(bz * 3).toFixed(0)} ft up` : ''}`;
+    $('caption').textContent = `${p.id} · ${t.toFixed(2)}s${bz > 1.5 && carrier < 0 ? ` · ball ${(bz * 3).toFixed(0)} ft up` : ''}`;
+    const ref = reference();
+    if ($('play-reference').value !== ref) $('play-reference').value = ref;
   }
 
   let last = performance.now();

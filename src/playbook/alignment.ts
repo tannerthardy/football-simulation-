@@ -9,7 +9,7 @@
  *    are resolved after alignment. Spreading the offense therefore physically
  *    pulls defenders out of the box.
  */
-import { CENTER_Y, FIELD_WIDTH } from '../core/field.js';
+import { CENTER_Y, END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../core/field.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type {
   Coverage,
@@ -272,44 +272,52 @@ export function zoneLandmark(zone: ZoneId, off: OffenseAlignment): Vec2 {
   const los = off.los;
   const sideY = (sign: number, fromSideline: number) => (sign > 0 ? FIELD_WIDTH - fromSideline : fromSideline);
   const third = FIELD_WIDTH / 3;
+  const depth = (yards: number) => los + coverageDepth(los, yards);
   switch (zone) {
     case 'deep_third_s':
-      return { x: los + 16, y: sideY(s, third / 2 + 1.5) };
+      return { x: depth(16), y: sideY(s, third / 2 + 1.5) };
     case 'deep_third_w':
-      return { x: los + 16, y: sideY(-s, third / 2 + 1.5) };
+      return { x: depth(16), y: sideY(-s, third / 2 + 1.5) };
     case 'deep_mid':
-      return { x: los + 15, y: clamp(off.ballY, third + 2, 2 * third - 2) };
+      return { x: depth(15), y: clamp(off.ballY, third + 2, 2 * third - 2) };
     case 'tampa_mid':
-      return { x: los + 13, y: off.ballY };
+      return { x: depth(13), y: off.ballY };
     case 'deep_half_s':
-      return { x: los + 15, y: sideY(s, 13.5) };
+      return { x: depth(15), y: sideY(s, 13.5) };
     case 'deep_half_w':
-      return { x: los + 15, y: sideY(-s, 13.5) };
+      return { x: depth(15), y: sideY(-s, 13.5) };
     case 'quarter_s_out':
-      return { x: los + 13, y: sideY(s, 8) };
+      return { x: depth(13), y: sideY(s, 8) };
     case 'quarter_w_out':
-      return { x: los + 13, y: sideY(-s, 8) };
+      return { x: depth(13), y: sideY(-s, 8) };
     case 'quarter_s_in':
-      return { x: los + 12, y: off.ballY + s * 7 };
+      return { x: depth(12), y: off.ballY + s * 7 };
     case 'quarter_w_in':
-      return { x: los + 12, y: off.ballY - s * 7 };
+      return { x: depth(12), y: off.ballY - s * 7 };
     case 'flat_s':
-      return { x: los + 4, y: sideY(s, 9) };
+      return { x: depth(4), y: sideY(s, 9) };
     case 'flat_w':
-      return { x: los + 4, y: sideY(-s, 9) };
+      return { x: depth(4), y: sideY(-s, 9) };
     case 'curl_flat_s':
-      return { x: los + 8.5, y: off.ballY + s * Math.min(12, Math.abs(sideY(s, 12) - off.ballY)) };
+      return { x: depth(8.5), y: off.ballY + s * Math.min(12, Math.abs(sideY(s, 12) - off.ballY)) };
     case 'curl_flat_w':
-      return { x: los + 8.5, y: off.ballY - s * Math.min(12, Math.abs(sideY(-s, 12) - off.ballY)) };
+      return { x: depth(8.5), y: off.ballY - s * Math.min(12, Math.abs(sideY(-s, 12) - off.ballY)) };
     case 'hook_s':
-      return { x: los + 10, y: off.ballY + s * 5 };
+      return { x: depth(10), y: off.ballY + s * 5 };
     case 'hook_w':
-      return { x: los + 10, y: off.ballY - s * 5 };
+      return { x: depth(10), y: off.ballY - s * 5 };
     case 'hook_mid':
-      return { x: los + 10.5, y: off.ballY };
+      return { x: depth(10.5), y: off.ballY };
     case 'robber':
-      return { x: los + 11, y: off.ballY };
+      return { x: depth(11), y: off.ballY };
   }
+}
+
+/** Compress planned spacing with the remaining scoring field. This changes
+ * assignments/alignment only; it never clamps a moving player's position. */
+export function coverageDepth(los: number, normalDepth: number): number {
+  return Math.min(normalDepth, END_LINE_X - los - 1.2,
+    Math.max(1.2, 0.6 * Math.max(0, OPP_GOAL_X - los) + 0.25 * normalDepth));
 }
 
 const DEEP_ZONES = new Set<ZoneId>(['deep_third_s', 'deep_third_w', 'deep_mid', 'deep_half_s', 'deep_half_w', 'quarter_s_out', 'quarter_s_in', 'quarter_w_in', 'quarter_w_out', 'tampa_mid']);
@@ -520,6 +528,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   for (const slot of present) {
     const r = roles[slot]!;
     spots[slot]!.role = r;
+    if (r.kind === 'zone' || r.kind === 'man') {
+      const spot = spots[slot]!;
+      spot.pos.x = los + coverageDepth(los, spot.pos.x - los);
+    }
     if (r.kind === 'zone') spots[slot]!.zone = r.zone;
     if (r.kind === 'blitz') {
       spots[slot]!.gap = r.gap;

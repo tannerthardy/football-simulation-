@@ -244,6 +244,25 @@ node --import tsx scripts/tackle-lab.ts 40
 
 ## Coverage and contact-choice evidence
 
+The latest [protection/goal-line follow-up](../docs/reviews/red-zone-pocket-and-film-ids.md)
+and `reviews/red-zone-pocket/` include paired source hashes, the original
+flagged clips, a 32-game guard, 16-game pressure anatomy, and controlled
+contact/field-spacing matrices. The calibration's QB-sensed-pressure flag
+has no NFL target; use `sack-anatomy.ts` for the 10 Hz two-yard tracking proxy.
+The live contact observer uses 20 Hz and excludes downed defenders, so its
+rates are a separate series. Forced holds and blocker movement have no
+independently measured NFL target yet.
+
+```sh
+node --import tsx scripts/pocket-motion-lab.ts 24 out/pocket-motion.json
+node --import tsx scripts/red-zone-coverage-lab.ts 8 out/red-zone-coverage.json
+node --import tsx scripts/dropback-motion-anatomy.ts 16 7 2 out/dropback-motion.json
+```
+
+For paired runs, copy those measurement scripts and `scripts/source-version.ts`
+unchanged into an archive of the comparison revision and run from its root
+with the same dependencies. The manifest records script and source hashes.
+
 Read [the follow-up](../docs/reviews/coverage-anticipation-and-contact-choices.md)
 and `reviews/coverage-anticipation/`. The NFL reference is 2022 weeks 1–2:
 target-to-nearest-defender center distance at release, arrival and completed

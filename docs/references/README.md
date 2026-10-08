@@ -20,6 +20,15 @@ implemented protection.
 
 SHA-256: `85b670e0ac0342987bef31bb54b9e853cb6d21487b8867c827e423f55bdc90ff`.
 
+[football_coverage_mechanics_textbook.pdf](football_coverage_mechanics_textbook.pdf)
+is the user's generated defensive backs / linebackers reference. Chapters
+4 and 6 discuss footwork and Cover 2 distribution; chapter 21 discusses
+compressed red-zone spacing, goal-line adaptations, and field/boundary
+leverage. It is retained for collaborators as reference material, not
+repository instructions or independently verified coaching authority.
+
+SHA-256: `58d0e9e50f1cec0f3fcc9c0e3454d4bf7cb61d36d7bb007e042bf3c976b5ca58`.
+
 The run-game follow-up report distinguishes the PDF's useful proposals from
 verified public coaching references, implemented mechanics, and measured NFL
 observations. Raw Big Data Bowl files remain outside Git; see `data/README.md`.

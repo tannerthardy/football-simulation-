@@ -11,6 +11,7 @@ import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_SPIRAL, DRAG_TUMBLE, stepFlight, type BallFlight } from '../physics/ball.js';
 import { stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import { bodyRadius } from '../physics/bodyshape.js';
+import { containCoverage } from './coverage-space.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
@@ -468,7 +469,8 @@ export class PlaySim {
     // Decide.
     for (let i = 0; i < this.agents.length; i++) {
       const a = this.agents[i];
-      this.cmds[i] = a.behavior.update(a, this);
+      const command = a.behavior.update(a, this);
+      this.cmds[i] = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
     }
 
     // Integrate free bodies.

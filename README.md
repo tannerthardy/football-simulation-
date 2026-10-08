@@ -50,7 +50,7 @@ chooses where to save the HTML. The default remains one game.
 
 For a ready-to-watch library, [download the film room ZIP](https://github.com/tannerthardy/football-simulation-/raw/refs/heads/claude/engine-priorities/viewer/film-room.zip),
 unzip it, and open **film-room.html** in Chrome, Safari, Firefox, or Edge.
-The included snapshot has 767 clips from six games (seeds 7–12), grouped into
+The included snapshot has 821 clips from six games (seeds 7–12), grouped into
 27 concepts. It is also saved as [viewer/film-room.html](viewer/film-room.html)
 for HTML previews. Sign in to GitHub with access to this private repository
 to download it. The generated viewer contains the play data; the template is
@@ -64,7 +64,13 @@ the matching clips, pauses briefly at each finish, and stops at the end;
 **Loop selection** repeats the batch. Next/previous follow the displayed group
 order. You can also group by defensive front, coverage, formation, or game
 and combine filters for those fields, results and offensive team. Search
-finds play calls, descriptions and player names.
+finds play IDs, calls, descriptions and player names. Each clip has an ID
+such as **G2-P088**. **Copy play reference** pauses playback and includes the
+film version, game seed, calls and timestamp so a report identifies the
+exact recording. IDs should be shared with their film version, since a new
+simulation can change later game situations. The pressure result filter
+uses a defender within two yards before release/sack/scramble; the separate
+**QB sensed pressure** annotation describes the QB's internal perception.
 Use **Hide filters** to give the field more room while watching.
 
 Each replay has event jumps (snap, first block, handoff, throw, catch, first

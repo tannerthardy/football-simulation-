@@ -127,11 +127,23 @@ def main():
             assert sorted(indices()) == [i for i in filmed if data['plays'][i]['plan']['front'] == front and data['plays'][i]['plan']['coverage'] == coverage]
             checks.append('Front and coverage filters compose correctly')
             page.click('#reset-filters')
-            for outcome in ['td', 'complete', 'big', 'to', 'sack', 'stuff', 'broken', 'oob', 'nullified']:
+            for outcome in ['td', 'complete', 'big', 'to', 'sack', 'pressure', 'stuff', 'broken', 'oob', 'nullified']:
                 page.select_option('#outcome-filter', outcome)
                 expected_result = [i for i in filmed if (data['plays'][i]['nullified'] if outcome == 'nullified' else data['plays'][i]['flags'].get(outcome, False))]
                 assert sorted(indices()) == expected_result
             checks.append('Result filters agree with recorded outcomes and nullified plays')
+            page.click('#reset-filters')
+            reference_play = data['plays'][filmed[0]]
+            reference_id = reference_play['id']
+            page.fill('#search', reference_id)
+            assert indices() == [filmed[0]]
+            assert reference_id in page.locator('#clip-title').inner_text()
+            page.click('#copy-reference')
+            reference = page.locator('#play-reference').input_value()
+            assert reference_id in reference and 't=' in reference
+            assert data['meta']['sourceSha256'][:12] in reference
+            assert 'Copied' in page.locator('#copy-status').inner_text() or 'selected' in page.locator('#copy-status').inner_text()
+            checks.append('Play IDs search precisely; copied references include film version and timestamp')
             page.click('#reset-filters')
             page.locator('[data-f="gap"]').click()
             assert all(data['plays'][i]['concept']['family'] == 'gap' for i in indices())

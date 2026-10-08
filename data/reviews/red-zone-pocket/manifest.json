@@ -1,0 +1,53 @@
+{
+  "baselineCommit": "f0ee834",
+  "beforeSourceSha256": "8e0c57a7092bb5145266aa85416b7348b12acb2fd1a33a4c8e662c084b1f2f44",
+  "afterSourceSha256": "f77b289aa2406e999cdb41ab399139ef68561de68267c10776c584be104a311e",
+  "measurements": {
+    "calibrate": {
+      "command": "node --import tsx scripts/calibrate.ts 32 7 4",
+      "beforeScriptSha256": "933585d26c92e3dd65f9b4c927feef8f73f3aa89d2bee993f113436a22924285",
+      "afterScriptSha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749"
+    },
+    "pocket": {
+      "command": "node --import tsx scripts/sack-anatomy.ts 16 7 2",
+      "beforeScriptSha256": "745cb0e4212a7620750f834c98bd7c0dc3814eb06cf29345be2f58f4f502e410",
+      "afterScriptSha256": "745cb0e4212a7620750f834c98bd7c0dc3814eb06cf29345be2f58f4f502e410"
+    },
+    "motion": {
+      "command": "node --import tsx scripts/pocket-motion-lab.ts 24 OUTPUT",
+      "beforeScriptSha256": "40506383526e4cd520f7512decade9385b78439deacc251ab14f55985f136cab",
+      "afterScriptSha256": "40506383526e4cd520f7512decade9385b78439deacc251ab14f55985f136cab"
+    },
+    "coverage": {
+      "command": "node --import tsx scripts/red-zone-coverage-lab.ts 8 OUTPUT",
+      "beforeScriptSha256": "10e55d2ccd838a4a5d8989cd03acaa21385d6a89f3fcd7297d464dda484ac188",
+      "afterScriptSha256": "10e55d2ccd838a4a5d8989cd03acaa21385d6a89f3fcd7297d464dda484ac188"
+    },
+    "dropbacks": {
+      "command": "node --import tsx scripts/dropback-motion-anatomy.ts 16 7 2 OUTPUT",
+      "beforeScriptSha256": "b52d5ec728690e91d3d9379a4f0c3aa4dd06272b55cf3c2702140c58adcbb605",
+      "afterScriptSha256": "b52d5ec728690e91d3d9379a4f0c3aa4dd06272b55cf3c2702140c58adcbb605"
+    }
+  },
+  "film": {
+    "clips": 821,
+    "concepts": 27,
+    "games": 6,
+    "seeds": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "sourceSha256": "f77b289aa2406e999cdb41ab399139ef68561de68267c10776c584be104a311e"
+  },
+  "validation": {
+    "tests": 167,
+    "build": "passed",
+    "typecheck": "passed",
+    "browserChecks": 18
+  },
+  "logFormatting": "Trailing whitespace normalized; metric values unchanged."
+}

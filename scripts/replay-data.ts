@@ -31,7 +31,7 @@ const KIND_LABEL: Record<PlayLog['kind'], string> = {
   run: 'Run', pass: 'Pass', punt: 'Punt', fg: 'Field goal', xp: 'Extra point', kickoff: 'Kickoff',
   kneel: 'Kneel', penalty: 'Penalty', two: 'Two-point try',
 };
-const SHOWN_EVENTS = new Set(['handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_log', 'block_climb', 'squeeze']);
+const SHOWN_EVENTS = new Set(['pressure', 'handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_log', 'block_climb', 'squeeze']);
 const tenth = (v: number) => Math.round(v * 10);
 const r2 = (v: number) => Math.round(v * 100) / 100;
 
@@ -49,7 +49,7 @@ export function replayConcept(p: PlayLog) {
 
 export function packReplayPlay(p: PlayLog, game: number) {
   const base = {
-    game, index: p.index, kind: p.kind,
+    id: `G${game + 1}-P${String(p.index + 1).padStart(3, '0')}`, game, index: p.index, kind: p.kind,
     q: p.quarter, clk: p.clock, off: p.offense, down: p.down, dist: p.distance, yl: p.yardline,
     call: p.call, def: p.defense, text: p.text, yds: r2(p.yards), score: p.score, kindLabel: KIND_LABEL[p.kind],
     read: p.stats?.qbRead, plan: p.plan, concept: replayConcept(p), outcome: p.outcome,
@@ -64,6 +64,7 @@ export function packReplayPlay(p: PlayLog, game: number) {
       contact: !!p.replay?.events.some((e) => ['carrier_contact', 'tackle_wrap', 'tackle'].includes(e.type)),
       broken: (p.stats?.brokenTackles ?? 0) > 0,
       oob: p.outcome === 'oob',
+      pressure: false,
     },
   };
   const rp = p.replay;
@@ -76,8 +77,19 @@ export function packReplayPlay(p: PlayLog, game: number) {
   if (s?.separation !== undefined && s.completed) stats.sep = r2(s.separation);
   if (s?.yardsBeforeContact !== undefined && s.rusher) stats.ybc = r2(s.yardsBeforeContact);
   if (s?.pressured) stats.pressured = true;
+  if (p.kind === 'pass') {
+    const qb = rp.players.findIndex(a => a.team === 'O' && a.slot === 'QB');
+    const end = rp.events.find(e => ['throw', 'throwaway', 'sack', 'scramble'].includes(e.type))?.t ?? Infinity;
+    const defenders = rp.players.flatMap((a, i) => a.team === 'D' ? [i] : []);
+    if (qb >= 0) for (const f of rp.frames) {
+      if (f.t < 0.5 || f.t > end + 1e-6) continue;
+      if (defenders.some(i => Math.hypot(f.agents[i * 3] - f.agents[qb * 3], f.agents[i * 3 + 1] - f.agents[qb * 3 + 1]) < 2)) {
+        stats.pressure2yd = true; stats.ttp = r2(f.t); break;
+      }
+    }
+  }
   return {
-    ...base, los: rp.los, fd: rp.firstDownX,
+    ...base, flags: { ...base.flags, pressure: !p.nullified && stats.pressure2yd === true }, los: rp.los, fd: rp.firstDownX,
     roster: rp.players.map((a) => [a.team, a.slot, a.name, a.jersey]),
     stats,
     ev: rp.events.filter((e) => SHOWN_EVENTS.has(e.type)).map((e) => [r2(e.t), e.type]),

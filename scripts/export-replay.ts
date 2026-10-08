@@ -13,6 +13,7 @@ import { generateTeam } from '../src/league/team.js';
 import { COVERAGES, FRONTS } from '../src/playbook/defense.js';
 import { FORMATIONS } from '../src/playbook/formations.js';
 import { packReplayPlay, replayOptions } from './replay-data.js';
+import { sourceVersion } from './source-version.js';
 
 const options = replayOptions(process.argv.slice(2));
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -36,6 +37,7 @@ for (let i = 0; i < options.games; i++) {
 const data = {
   meta: {
     ...games[0],
+    sourceSha256: sourceVersion(),
     home: { name: home.name, abbr: home.abbr, color: '#a3302a', alt: '#f4efe6', text: '#ffffff' },
     away: { name: away.name, abbr: away.abbr, color: '#1d4f91', alt: '#f2c14e', text: '#ffffff' },
   },

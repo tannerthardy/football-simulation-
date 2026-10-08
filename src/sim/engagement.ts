@@ -207,7 +207,17 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   defender.engagement = e;
   sim.engagements.push(e);
   sim.event('block_contact', blocker, defender, type);
-  if (type === 'run') {
+  if (type === 'pass') {
+    // Hands landing do not erase the incoming rush arc. Store momentum in
+    // world coordinates: the line to the QB rotates during an edge rep.
+    passPairVel.set(e, {
+      x: (mb * blocker.vel.x + md * defender.vel.x) / (mb + md),
+      y: (mb * blocker.vel.y + md * defender.vel.y) / (mb + md),
+    });
+    const ph = e.phi * Math.PI / 2;
+    const tangent = { x: axis.x * Math.sin(ph) + lat.x * Math.cos(ph), y: axis.y * Math.sin(ph) + lat.y * Math.cos(ph) };
+    passLateralVel.set(e, (defender.vel.x - blocker.vel.x) * tangent.x + (defender.vel.y - blocker.vel.y) * tangent.y);
+  } else {
     // Preserve the pair's incoming drive momentum; a strike is not a reset
     // to a stationary strength contest. Foot force takes over over ~0.3 s.
     const dir = drive ?? norm(sub(defender.pos, blocker.pos));
@@ -250,9 +260,16 @@ function planMove(sim: PlaySim, e: Engagement, d: Agent, b: Agent): RushMove {
     ['club', 0.1 + fin * 0.4 + power * 0.3],
   ];
   if (Math.abs(e.phi) > 0.35) w.push(['dip', 0.8 + td.bend]);
+  // Contact executes the approach plan. Previously a speed arc could turn
+  // into an unrelated bull rep the instant the tackle landed his hands.
+  const approach = d.behavior.kind === 'rush' && 'plan' in d.behavior ? d.behavior.plan : undefined;
+  const fits = (move: RushMove) => approach === 'speed' ? move === 'speed' || move === 'dip'
+    : approach === 'power' ? move === 'bull' || move === 'longarm'
+    : approach === 'finesse' ? move === 'swim' || move === 'rip' || move === 'club' : true;
+  const planned = w.filter(([move]) => fits(move));
   return sim.rng.weighted(
-    w.map((x) => x[0]),
-    w.map((x) => Math.max(0, x[1])),
+    planned.map((x) => x[0]),
+    planned.map((x) => Math.max(0, x[1])),
   );
 }
 
@@ -296,7 +313,7 @@ export function updateEngagements(sim: PlaySim): void {
       continue;
     }
     // Pass pro converts to run blocking once the QB hands off / scrambles.
-    if (e.type === 'pass' && (!sim.isPass || sim.carrier !== sim.qb || sim.scrambled)) e.type = 'run';
+    if (e.type === 'pass' && (!sim.isPass || (sim.carrier !== null && sim.carrier !== sim.qb) || sim.scrambled)) e.type = 'run';
     const c = sim.carrier;
     if (e.type === 'run' && c && c.team !== d.team) {
       const past = (c.pos.x - d.pos.x) * sim.attackDir(c.team);
@@ -350,28 +367,6 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
     resolveMove(sim, e);
   }
 
-  // ---- push battle along the axis toward the QB
-  const moveFactor = moveFactorOf(e.move, inMove);
-  const { fd, fb, lev } = forces(sim, e, moveFactor * (1 + 0.35 * e.pushBoost));
-  const mass = d.profile.massKg + b.profile.massKg + e.helpers.reduce((s, h) => s + h.profile.massKg*helperSupport(sim,e,h), 0);
-  // Pass blockers sit down into their anchor: a set blocker gives ground only
-  // to a real power advantage.
-  let vAxis = (6 * (fd - fb * 1.08)) / mass + e.impulse;
-  // Pass blockers give ground; they don't drive rushers back upfield.
-  // Pass sets give ground to set depth before anchoring, so the pocket forms
-  // a few yards deep; after that the rush keeps compressing it as the blocker tires.
-  const isT = b.slot === 'LT' || b.slot === 'RT';
-  const belowSet = sim.los - b.pos.x < (isT ? 3.8 : 2.9);
-  vAxis = clamp(vAxis, belowSet ? 1.2 : 0.12 + 0.55 * wear, 2.8);
-  e.impulse *= Math.exp(-dt / 0.22);
-  e.pushBoost = Math.max(0, e.pushBoost - dt * 1.2);
-
-  // Being driven costs the blocker his base; a stalemate lets him re-anchor.
-  if (vAxis > 0.9) e.baseB -= dt * 0.45 * (vAxis - 0.9) * (1.2 - tb.balance);
-  e.baseB += dt * (0.25 + 0.55 * tb.feet) * (1 - e.baseB) * (vAxis < 0.6 ? 1 : 0.3) * (1 - 0.6 * wear);
-  e.baseB -= dt * 0.12 * wear;
-  e.baseD += dt * (0.4 + 0.5 * td.balance) * (1 - e.baseD);
-
   // ---- lateral battle: rusher works his side, blocker mirrors back to square
   const wantsSide = e.move === 'bull' || e.move === 'longarm' ? 0.2 : 1;
   const stalled = t < e.moveUntil && !e.moveOk;
@@ -384,23 +379,90 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   const quarter = (Math.PI / 2) * sep;
   // The blocker slides to square up (saturating at his mirror speed).
   const restore = -Math.sign(e.phi) * Math.min(1, Math.abs(e.phi) * 4);
-  e.phi += (dt * (rLat * e.side + mirror * restore)) / quarter;
+  // The tackle must arrest the incoming relative hip motion with his feet
+  // and hands; contact cannot instantly replace it with a mirror-speed rule.
+  const previousRelative = passLateralVel.get(e) ?? 0;
+  const desiredRelative = rLat * e.side + mirror * restore;
+  const relativeAccel = b.profile.lateral * e.baseB + d.profile.lateral * e.baseD;
+  const relative = previousRelative + clamp(desiredRelative - previousRelative, -relativeAccel * dt, relativeAccel * dt);
+  passLateralVel.set(e, relative);
+  e.phi += dt * (previousRelative + relative) * 0.5 / quarter;
   // Hand fight drifts toward the better hands; arm length keeps you off the body.
   e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
 
-  e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
+  // ---- drive against an anchor, in force / mass units (yd/s²).
+  // Resistance is a capacity, not a prescribed retreat speed. A planted OL
+  // can balance the load and stop; if the load exceeds his available base,
+  // the pair accelerates backward until he re-anchors or loses leverage.
+  const velocity = passPairVel.get(e) ?? { x: 0, y: 0 };
+  const incomingAxis = velocity.x * axis.x + velocity.y * axis.y;
+  const incomingLat = velocity.x * lat.x + velocity.y * lat.y;
+  let foot = passFootwork.get(e);
+  if (!foot) {
+    foot = { plant: { ...b.pos }, steppingUntil: t };
+    passFootwork.set(e, foot);
+  }
+  const stride = b.profile.heightYd * (0.16 + 0.06 * tb.feet);
+  if (t >= foot.steppingUntil && Math.hypot(b.pos.x - foot.plant.x, b.pos.y - foot.plant.y) > stride) {
+    foot.plant = { ...b.pos };
+    foot.steppingUntil = t + 0.1 + 0.12 * (1 - tb.feet);
+  }
+  const stepping = t < foot.steppingUntil;
+  // Lateral mirroring and axial resistance share the same feet. A tackle
+  // chasing an outside hip cannot simultaneously use a full square anchor.
+  const lateralLoad = clamp(Math.abs(incomingLat) / Math.max(0.5, tb.lateral), 0, 1);
+  const square = Math.max(0, Math.cos(e.phi * Math.PI / 2));
+  const anchor = (0.8 + 0.2 * tb.feet) * (stepping ? 0.68 + 0.12 * tb.feet : 1)
+    * (0.3 + 0.7 * square) * Math.sqrt(Math.max(0.1, 1 - lateralLoad * lateralLoad)) * (1 - 0.45 * wear);
+  // A rush label is not a permanent loss of leg drive. Allocate force to
+  // the actual lateral work; a controlled speed rusher can plant and push
+  // while waiting for a counter instead of staying at 45% power forever.
+  const lateralDrive = clamp(rLat / Math.max(0.5, td.lateral), 0, 1);
+  const legShare = Math.sqrt(Math.max(0.1, 1 - lateralDrive * lateralDrive));
+  const powerMove = inMove && (e.move === 'bull' || e.move === 'longarm') ? moveFactorOf(e.move, true) : 1;
+  const { fd, fb } = forces(sim, e, legShare * powerMove * (1 + 0.35 * e.pushBoost));
+  const mass = d.profile.massKg + b.profile.massKg;
+  const gravityYd = 9.81 / 0.9144;
+  // Finite leg-extension speed: a driving pair cannot accelerate forever.
+  const drive = fd * gravityYd * clamp(1 - Math.max(0, incomingAxis) / (1.2 + 0.3 * td.lateral), 0.1, 1);
+  const capacity = fb * gravityYd * anchor;
+  const isT = b.slot === 'LT' || b.slot === 'RT';
+  const belowSet = sim.los - b.pos.x < (isT ? 3.8 : 2.9);
+  const setSpeed = belowSet ? 0.7 + 0.4 * tb.feet : 0;
+  // Before set depth the blocker yields deliberately. After it, he tries to
+  // brake the incoming momentum, limited by his actual resisting force.
+  const resistance = Math.min(capacity, Math.max(0, drive + mass * (incomingAxis - setSpeed) / 0.25));
+  const axialAccel = (drive - resistance) / mass;
+  const vAxis = incomingAxis + axialAccel * dt;
+  e.impulse *= Math.exp(-dt / 0.22); // impact is already in passPairVel
+  e.pushBoost = Math.max(0, e.pushBoost - dt * 1.2);
+  const forcedBack = Math.max(0, vAxis - setSpeed);
+  e.baseB -= dt * forcedBack * (0.35 + 0.25 * Math.max(0, axialAccel)) * (1.2 - tb.balance);
+  e.baseB += dt * (0.25 + 0.55 * tb.feet) * (1 - e.baseB) * (stepping ? 0.25 : 1) * (1 - 0.6 * wear);
+  e.baseB = clamp(e.baseB - dt * 0.12 * wear, 0, 1);
+  e.baseD = clamp(e.baseD + dt * (0.4 + 0.5 * td.balance) * (1 - e.baseD), 0, 1);
 
-  // ---- outcomes
-  if (Math.abs(e.phi) >= 1 || e.baseB <= 0.05) {
+  // Rusher and blocker both move their feet. The relative lateral battle
+  // changes leverage; its mass-weighted common motion carries the pair along
+  // the rush arc even when the tackle successfully stays square.
+  const md = d.profile.massKg, mb = b.profile.massKg;
+  const vLat = (md * rLat * e.side - mb * mirror * restore) / (md + mb);
+  movePassPair(sim, e, axis, lat, vAxis, vLat, sep, axialAccel);
+  // Leverage must be established on the field before a block is beaten.
+  // A requested hip turn alone cannot release the rusher through the tackle.
+  const physicalAxis = axisOf(sim, e);
+  const physicalPhi = measurePhi(physicalAxis, d, b);
+  e.win = Math.max(Math.abs(physicalPhi), 1 - e.baseB);
+  if (Math.abs(physicalPhi) >= 1 || e.baseB <= 0.05) {
+    e.phi = physicalPhi;
     if (tryHold(sim, e)) return;
-    beat(sim, e, axis, lat);
+    beat(sim, e, physicalAxis, latOf(physicalAxis));
     return;
   }
-  movePair(sim, e, axis, lat, smoothV(sim, e, vAxis), sep);
+  e.phi = clamp(e.phi, -1.2, 1.2);
   const exert = 0.03 * dt;
   d.body.energy = Math.max(0, d.body.energy - exert);
   b.body.energy = Math.max(0, b.body.energy - exert);
-  void lev;
 }
 
 /** 0 early in the rep → 1 once the blocker has been holding up for ~4.5 s. */
@@ -597,6 +659,54 @@ function stepRunRep(sim: PlaySim, e: Engagement): void {
 
 /** Move both bodies: pair translates along the axis; blocker sits at angle phi. */
 const pairVel = new WeakMap<Engagement, number>();
+const passPairVel = new WeakMap<Engagement, Vec2>();
+const passLateralVel = new WeakMap<Engagement, number>();
+const passFootwork = new WeakMap<Engagement, { plant: Vec2; steppingUntil: number }>();
+
+/** Pass contact translates about the pair's center of mass, not a pinned DL. */
+function movePassPair(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, vAxis: number, vLat: number, sep: number, axialAccel: number): void {
+  const b = e.blocker, d = e.defender, dt = sim.dt;
+  const mb = b.profile.massKg, md = d.profile.massKg, mass = mb + md;
+  const beforeB = { ...b.pos }, beforeD = { ...d.pos };
+  const prev = passPairVel.get(e) ?? { x: 0, y: 0 };
+  const previousLat = prev.x * lat.x + prev.y * lat.y;
+  const acceleration = Math.min(b.profile.lateral, d.profile.lateral);
+  const axialLimit = Math.max(b.profile.brake, d.profile.brake);
+  const lateralAccel = acceleration * Math.sqrt(Math.max(0, 1 - Math.min(1, (axialAccel / axialLimit) ** 2)));
+  const nextLat = previousLat + clamp(vLat - previousLat, -lateralAccel * dt, lateralAccel * dt);
+  const vel = { x: axis.x * vAxis + lat.x * nextLat, y: axis.y * vAxis + lat.y * nextLat };
+  passPairVel.set(e, vel);
+  const center = {
+    x: (mb * beforeB.x + md * beforeD.x) / mass + (prev.x + vel.x) * 0.5 * dt,
+    y: (mb * beforeB.y + md * beforeD.y) / mass + (prev.y + vel.y) * 0.5 * dt,
+  };
+  const ph = clamp(e.phi, -1.2, 1.2) * (Math.PI / 2);
+  const off = { x: axis.x * Math.cos(ph) - lat.x * Math.sin(ph), y: axis.y * Math.cos(ph) - lat.y * Math.sin(ph) };
+  const relative = sub(beforeB, beforeD);
+  const correction = { x: off.x * sep - relative.x, y: off.y * sep - relative.y };
+  // Foot repositioning is finite and internal: it cannot invent translation
+  // of the pair or snap a tackle from arm's reach to chest contact.
+  const length = Math.hypot(correction.x, correction.y);
+  const maxStep = (traits(b).lateral + traits(d).lateral) * dt;
+  const reach = length > maxStep ? maxStep / length : 1;
+  relative.x += correction.x * reach;
+  relative.y += correction.y * reach;
+  b.body.pos = { x: center.x + md / mass * relative.x, y: center.y + md / mass * relative.y };
+  d.body.pos = { x: center.x - mb / mass * relative.x, y: center.y - mb / mass * relative.y };
+  b.body.vel = { x: (b.pos.x - beforeB.x) / dt, y: (b.pos.y - beforeB.y) / dt };
+  d.body.vel = { x: (d.pos.x - beforeD.x) / dt, y: (d.pos.y - beforeD.y) / dt };
+  b.body.facing = Math.atan2(-off.y, -off.x);
+  d.body.facing = Math.atan2(axis.y, axis.x);
+  for (const h of e.helpers) {
+    const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
+    const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
+    const delta = sub(spot, h.pos), distance = Math.hypot(delta.x, delta.y);
+    const step = (Math.hypot(vel.x, vel.y) + traits(h).lateral) * dt;
+    const fraction = distance > step ? step / distance : 1;
+    h.body.pos = { x: h.pos.x + delta.x * fraction, y: h.pos.y + delta.y * fraction };
+    h.body.vel = { x: delta.x * fraction / dt, y: delta.y * fraction / dt };
+  }
+}
 
 /** Two big bodies locked together don't change speed instantly. */
 function smoothV(sim: PlaySim, e: Engagement, v: number): number {
@@ -676,7 +786,9 @@ function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false): 
   }
   const s = Math.sign(e.phi) || e.side;
   const dir = norm({ x: axis.x + lat.x * s * 0.6, y: axis.y + lat.y * s * 0.6 });
-  d.body.vel = { x: dir.x * 3, y: dir.y * 3 };
+  // A pass-rush win frees the body; it is not a new three-yard/s launch.
+  // The next free movement tick bends the existing momentum toward the QB.
+  if (run) d.body.vel = { x: dir.x * 3, y: dir.y * 3 };
   d.tags.add('shed');
   sim.event('shed', d, b, run ? 'off the block' : e.move);
 }
