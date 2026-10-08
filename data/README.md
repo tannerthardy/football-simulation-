@@ -210,3 +210,35 @@ npm run test:data
 The separate all-week tendency summary reproduces the `3c00ca0` extractor;
 its sneak/personnel restrictions differ from the tracking cohort. Mix adjustment
 is an approximate sensitivity check. Raw data and secrets remain outside Git.
+
+## Error budget, clock and contact evidence
+
+See [the review](../docs/reviews/error-budget-and-protection.md) and
+`data/reviews/error-budget/`. The `nfl-*.json` files are aggregates from the
+2022 Big Data Bowl 2025 plays (weeks 1–9) and tracking (weeks 1–2): outcome
+tables by down, distance and field zone; drive structure; pressure and the
+pocket; QB drop depth; game clock between snaps; live time and what happens
+after first contact. They contain no game, play or player identifiers and let
+the error budget and anatomy scripts run without raw data. The `before-*` and
+`after-*` logs are the 32-game calibration, drive structure and budget runs
+the review quotes; `sim-outcomes-48-seed7.json` is the simulation's outcome
+table for the final budget.
+
+```sh
+# NFL references (raw data required)
+python3 -I scripts/data/bdb2025_outcomes.py /path/to/bdb2025 out/nfl-outcomes.json
+python3 -I scripts/data/bdb2025_drives.py /path/to/bdb2025 out/nfl-drives.json
+python3 -I scripts/data/bdb2025_pocket.py /path/to/bdb2025 out/nfl-pocket.json
+python3 -I scripts/data/bdb2025_qbdrop.py /path/to/bdb2025 out/nfl-qbdrop.json
+python3 -I scripts/data/bdb2025_clock.py /path/to/bdb2025 out/nfl-clock.json
+python3 -I scripts/data/bdb2025_contact.py /path/to/bdb2025 out/nfl-contact.json
+# Simulation side (no raw data needed)
+node --import tsx scripts/error-budget.ts drives 32 7 4
+node --import tsx scripts/error-budget.ts collect 48 7 6 out/sim-outcomes.json
+node --import tsx scripts/error-budget.ts budget data/reviews/error-budget/nfl-outcomes.json out/sim-outcomes.json 20000
+node --import tsx scripts/clock-anatomy.ts 32 7 4
+node --import tsx scripts/contact-anatomy.ts 16 7 2
+node --import tsx scripts/sack-anatomy.ts 16 7 2
+node --import tsx scripts/tackle-lab.ts 40
+```
+

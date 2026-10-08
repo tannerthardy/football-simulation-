@@ -6,6 +6,23 @@ one error by adding a compensating one. This review sets out how to choose
 what to work on, applies it to the current engine (building on PR #1,
 `9e64fc6`), and records what it found and fixed.
 
+## Status and where to start
+
+This work is on the branch `claude/engine-priorities`, built on the head of
+the draft PR #1 (`codex/run-blocking-decision-dynamics`, `9e64fc6`); it is
+not merged into PR #1 or the default branch. Start from that branch:
+`git fetch origin claude/engine-priorities && git checkout claude/engine-priorities`.
+
+- Read "How to choose" below, then the latest [What's next](#whats-next).
+- The NFL references and the quoted runs are committed in
+  `data/reviews/error-budget/`, so the error budget and anatomy scripts work
+  without raw data (commands in the [data guide](../../data/README.md#error-budget-clock-and-contact-evidence)).
+- The tackle rewrite here is the "graded grasps and balance" item of
+  [pursuit-contact-follow-up.md](pursuit-contact-follow-up.md). If PR #1 also
+  changes `src/sim/tackle.ts`, reconcile the two before merging either.
+- Next priority by measured impact: yards per completion (coverage too
+  loose), then pocket push (pressure with blockers attached).
+
 ## How to choose (and avoid loops)
 
 1. **Decompose the headline before touching anything.** Points per game are

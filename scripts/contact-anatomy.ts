@@ -13,7 +13,7 @@ import { Rng } from '../src/core/rng.js';
 import { simulateGame } from '../src/game/game.js';
 import { generateTeam, type Team } from '../src/league/team.js';
 
-const [gamesStr = '8', seedStr = '7', leaguesStr = '2', nflPath = 'out/budget/nfl-contact.json'] = process.argv.slice(2);
+const [gamesStr = '8', seedStr = '7', leaguesStr = '2', nflPath = 'data/reviews/error-budget/nfl-contact.json'] = process.argv.slice(2);
 const games = Number(gamesStr);
 const leagues = Number(leaguesStr);
 const rng = new Rng(Number(seedStr));

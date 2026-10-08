@@ -2,13 +2,16 @@
 
 Start with these shared project references:
 
-- [Choosing what to fix](docs/reviews/error-budget-and-protection.md): the error
-  budget (drive structure and Shapley shares of the points gap), how to avoid
-  tuning loops, the protection and pocket fixes, and the next priorities.
+- [Choosing what to fix](docs/reviews/error-budget-and-protection.md): start
+  here. The error budget (drive structure and Shapley shares of the points
+  gap), how to avoid tuning loops, the protection, pocket, clock and tackle
+  fixes, the current status (branch `claude/engine-priorities`) and the next
+  priorities. NFL references for it are in `data/reviews/error-budget/`.
 
 - [Pursuit and contact follow-up](docs/reviews/pursuit-contact-follow-up.md):
   latest diagnosis, isolated comparisons, pursuit/support fixes, tackle momentum
-  and constraint ownership, rejected strikes, and the next blocking/grasp work.
+  and constraint ownership, rejected strikes, and the next blocking/grasp work
+  (graded grasps are now implemented on `claude/engine-priorities`).
   Keep the development PR draft; NFL realism remains unvalidated.
 - [Run-game coordination follow-up](docs/reviews/run-game-coordination.md):
   PDF/coaching research, zone/gap/fits/contact/pre-snap implementation, integration

@@ -5,13 +5,14 @@
  * the 4th, and the live time of the earlier play. Also scrimmage snaps per
  * team-game.
  *   npx tsx scripts/clock-anatomy.ts [games] [seed] [leagues] [nfl-clock.json]
+ * The NFL reference defaults to data/reviews/error-budget/nfl-clock.json.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { Rng } from '../src/core/rng.js';
 import { simulateGame, type PlayLog } from '../src/game/game.js';
 import { generateTeam, type Team } from '../src/league/team.js';
 
-const [gamesStr = '24', seedStr = '7', leaguesStr = '3', nflPath = 'out/budget/nfl-clock.json'] = process.argv.slice(2);
+const [gamesStr = '24', seedStr = '7', leaguesStr = '3', nflPath = 'data/reviews/error-budget/nfl-clock.json'] = process.argv.slice(2);
 const games = Number(gamesStr);
 const leagues = Number(leaguesStr);
 const rng = new Rng(Number(seedStr));
