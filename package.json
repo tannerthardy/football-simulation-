@@ -1,0 +1,22 @@
+{
+  "name": "gridiron-engine",
+  "version": "0.1.0",
+  "description": "Physics-driven American football simulation engine with Football-Manager-style depth",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "sim:play": "tsx scripts/sim-play.ts",
+    "sim:game": "tsx scripts/sim-game.ts",
+    "calibrate": "tsx scripts/calibrate.ts",
+    "replay": "tsx scripts/export-replay.ts"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.3",
+    "tsx": "4.20.3",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  }
+}
