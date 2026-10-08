@@ -99,6 +99,65 @@ concentration) while our **execution varies too much between teams** (sacks,
 stuffs). The first hides the selection that makes NFL averages look the way they
 do; the second makes any one league a noisy, roster-dependent sample.
 
+### Published league context, 2023–2025
+
+Figures reported by analytics sites for recent seasons. They were gathered from
+search excerpts rather than full articles, so treat them as leads to verify
+against charting data before they become targets.
+
+- **The league moves.** 11 personnel fell to about 56% in 2025 from 62% in 2023;
+  12 rose to about 23% and 13 to about 6%
+  ([Sumer](https://sumersports.com/teams/offensive/personnel-tendency/)). Base
+  defense rose from about 21% of snaps (2023) to about 30% (2025)
+  ([PFF](https://www.pff.com/news/fantasy-football-tracking-base-nickel-and-dime-trends-to-exploit-2026-fantasy-matchups)).
+  Under-center snaps rose from 29% to 35%. Our 2022 measurements are one era;
+  every target needs a season tag.
+- **Rosters drive personnel.** The Rams ran no 13 personnel while Puka Nacua was
+  healthy in 2025 and about 45% after his injury
+  ([ESPN](https://www.espn.com/nfl/story/_/id/48750958/2026-nfl-tight-ends-13-personnel-rams-mcvay-trends-draft-jumbo-barnwell));
+  the Ravens' 12 personnel went from about 11% (2023, tight ends hurt) to 44%
+  (2025). Coordinators matter too: Houston's 12 rate jumped under a new
+  coordinator.
+- **Defenses differ by identity and players.** Seattle played base on about 6%
+  of 2025 snaps and kept five or more defensive backs on 81% of snaps against two
+  or fewer receivers; Detroit led the league in base (about 60–66% of all
+  snaps) because Alex Anzalone could cover, and played base on about 26% of
+  snaps against 11 personnel through week 12 — second-most in the league,
+  against a league norm near 5% in 2022
+  ([Detroit Lions](https://www.detroitlions.com/news/lions-looking-to-make-defense-more-versatile-adaptable),
+  [Pride of Detroit](https://www.prideofdetroit.com/detroit-lions-game-preview/150671/green-bay-packers-vs-detroit-lions-thanksgiving-preview-4-key-stats)).
+  With Anzalone gone, their 2026 plan is more nickel.
+- **Run identity is concentrated.** In 2024 Atlanta ran outside zone on about
+  62% of running-back carries and San Francisco on about 53%, while the Rams ran
+  man/gap on about 43%
+  ([CBS/TruMedia](https://www.cbssports.com/fantasy/football/news/the-key-to-unlocking-fantasy-football-running-back-breakouts-rookie-rb-fits-with-nfl-rush-schemes/)).
+  Frequency and efficiency are only loosely linked: zone-heavy teams were the
+  best rushing teams overall, yet Atlanta was inefficient on its zone runs
+  ([FTN](https://ftnfantasy.com/nfl/a-deep-dive-into-the-nfls-best-rushing-attacks)).
+  Our +0.27 within-team correlation is consistent with a real but partial link.
+- **Play action and coverage.** Play action is about 23–26% of dropbacks, from
+  about 15% (Kansas City) to 35% (Rams) in 2025; its tie to run scheme is
+  suggestive, not strict (the 2024 Chargers led in play action from a gap
+  scheme). Split-safety shells were 42% of 2025 dropbacks and man coverage about
+  23%. Some coordinators game-plan coverage heavily week to week (Chargers'
+  Cover 1 went from 70% to 15% in consecutive games) while box-count tendencies
+  are stable under the same coordinator
+  ([NFL Football Operations](https://operations.nfl.com/gameday/analytics/stats-articles/which-nfl-teams-mix-up-defensive-coverages-the-most-week-to-week),
+  [FiveThirtyEight](https://fivethirtyeight.com/features/are-defensive-play-callers-consistent-enough-to-be-exploitable)).
+- **Game plans are small.** A weekly plan trims the playbook to roughly 100
+  plays, 30–35 of them core
+  ([NFL.com](https://www.nfl.com/news/producing-a-game-plan-takes-into-account-months-of-work-09000d5d8192b29f));
+  call sheets are built by situation (early downs, third down, red zone,
+  backed up, two- and four-minute), with about 20–24 scripted openers.
+- **Selection is acknowledged in the field.** Counter's explosive rate is
+  "inflated by selection bias" (called on a pre-snap tell, per FTN); defenses
+  set box counts in response to pass probability, so run efficiency by box
+  count is confounded; fourth-down conversion estimates need selection models
+  ([Sloan](https://sloansportsconference.com/research-papers/correcting-for-preferential-bias-in-nfl-fourth-down-decision-making));
+  expected-points models trained on observed plays lean toward good teams
+  ([Sabin](https://sabinanalytics.com/blog/2024/01:05:slow-down-using-epa-for-everything/)).
+  No causal estimate of individual run concepts or play action was found.
+
 ## 2. Principles
 
 1. **Judge execution conditionally on the call and the look.** Compare a sim
@@ -188,10 +247,13 @@ What the coach model needs to produce those (to build later, not now):
   and scheme can hold up against the run (Buffalo plays nickel against 12
   personnel on every snap; Houston and Jacksonville were in base 97% of the time
   in 2022); base vs 11 when the linebackers can cover.
-- **Game plans.** From the full playbook, a weekly plan: a small set of run
-  families with their complements (wide zone → boot, keep and play action off
-  the same look; power → counter and play-action power), pass answers by
-  coverage and pressure, and a call sheet by situation.
+- **Game plans.** From the full playbook, a weekly plan of roughly 30–35 core
+  calls: a small set of run families with their complements (wide zone → boot,
+  keep and play action off the same look; power → counter and play-action
+  power), pass answers by coverage and pressure, and a call sheet by situation
+  (early downs, third down, red zone, backed up, two- and four-minute, openers).
+- **Coordinator style.** Some coordinators change coverage mix heavily by
+  opponent, others stay in a narrow band; the spread between them is a target.
 - **Bounded in-game learning.** Adjust within the game plan, with shrinkage,
   so early adaptation can't mask a broken concept.
 - **Installation (later).** Familiarity from reps: a call the defense rarely
@@ -227,7 +289,10 @@ be attributed to policy rather than execution:
 - Team-level spread: compare noise-corrected SDs, at comparable samples per team.
 - Bootstrap by game; partial pooling for sparse cells; keep one NFL holdout
   (e.g. weeks 7–9) and frozen simulation seeds and leagues for release checks.
-- Version every target: dataset, cohort, exclusions, mapping version, extractor.
+- Version every target: dataset, season, cohort, exclusions, mapping version,
+  extractor. The league drifts (11 personnel 65% in 2022, about 56% in 2025;
+  base defense about 21% → 30% from 2023 to 2025), so E2 contexts, E3 targets
+  and E4 checks must come from the same season.
 
 ## 5. Order of work
 
