@@ -12,6 +12,8 @@ const HISTORY = 24;
 export interface Perceived {
   pos: Vec2;
   vel: Vec2;
+  stance: 'high' | 'low' | null;
+  facing: number;
 }
 
 export class PerceptionBuffer {
@@ -25,33 +27,37 @@ export class PerceptionBuffer {
     private readonly dt: number,
   ) {
     this.n = agents;
-    this.data = new Float64Array(HISTORY * agents * 4);
+    this.data = new Float64Array(HISTORY * agents * 6);
   }
 
-  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2 }>): void {
+  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number }>): void {
     this.head = (this.head + 1) % HISTORY;
     this.count = Math.min(HISTORY, this.count + 1);
-    const base = this.head * this.n * 4;
+    const base = this.head * this.n * 6;
     for (let i = 0; i < this.n; i++) {
       const s = states[i];
-      const o = base + i * 4;
+      const o = base + i * 6;
       this.data[o] = s.pos.x;
       this.data[o + 1] = s.pos.y;
       this.data[o + 2] = s.vel.x;
       this.data[o + 3] = s.vel.y;
+      this.data[o + 4] = s.stance === 'high' ? 1 : s.stance === 'low' ? -1 : 0;
+      this.data[o + 5] = s.facing ?? 0;
     }
   }
 
   /** State of agent `i` as perceived with `delay` seconds of latency. */
   perceive(i: number, delay: number): Perceived {
+    if (!this.count) throw new Error('Perception requires an initial snapshot');
     const back = Math.min(this.count - 1, Math.max(0, Math.round(delay / this.dt)));
     const idx = (this.head - back + HISTORY) % HISTORY;
-    const o = idx * this.n * 4 + i * 4;
+    const o = idx * this.n * 6 + i * 6;
     const x = this.data[o];
     const y = this.data[o + 1];
     const vx = this.data[o + 2];
     const vy = this.data[o + 3];
     const lag = back * this.dt;
-    return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy } };
+    const stance = this.data[o + 4];
+    return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy }, stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5] };
   }
 }

@@ -9,6 +9,8 @@ import type { Player, RatingKey } from '../players/types.js';
 import { r01 } from '../players/types.js';
 import type { PlaySim } from './playsim.js';
 import type { Recognition } from './recognition.js';
+import { SnapMind } from './mind.js';
+import { Rng } from '../core/rng.js';
 
 export type TeamSide = 'O' | 'D';
 
@@ -95,6 +97,7 @@ export class Agent {
     readonly profile: PhysicalProfile,
     public body: Body,
     public behavior: Behavior,
+    readonly mind = new SnapMind(player, new Rng(`mind:${player.id}`), body.energy),
   ) {}
 
   get pos(): Vec2 {
@@ -102,6 +105,9 @@ export class Agent {
   }
   get vel(): Vec2 {
     return this.body.vel;
+  }
+  get facing(): number {
+    return this.body.facing;
   }
   get name(): string {
     return `${this.player.firstName[0]}.${this.player.lastName}`;
@@ -118,6 +124,6 @@ export class Agent {
   }
   /** Top-speed multiplier from fatigue and recent sprinting, for reach estimates. */
   get speedScale(): number {
-    return fatigueFactor(this.body.energy) * enduranceFactor(this.body);
+    return fatigueFactor(this.body.energy) * enduranceFactor(this.body) * (1 - 0.08 * (this.body.squeeze ?? 0));
   }
 }

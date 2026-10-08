@@ -228,7 +228,10 @@ export class RunnerToMesh implements Behavior {
 export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
   const aim = to.behavior instanceof RunnerToMesh ? to.behavior.aim : { x: sim.los + 1, y: to.pos.y };
   const patience = to.r('patience');
-  to.behavior = new BallCarrier({ aim, aimUntil: sim.t + 0.3 + 0.5 * patience }, to);
+  const pullers = sim.offense.filter((a) => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'pull');
+  const leads = pullers.filter((a) => (a.behavior as RunBlocker).plan.pullRole === 'lead');
+  const follow = leads.length ? leads : pullers;
+  to.behavior = new BallCarrier({ aim, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow }, to);
 }
 
 export function onThrow(sim: PlaySim): void {

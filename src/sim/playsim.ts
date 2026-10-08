@@ -10,6 +10,7 @@ import { DT } from '../core/units.js';
 import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_SPIRAL, DRAG_TUMBLE, stepFlight, type BallFlight } from '../physics/ball.js';
 import { stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
+import { bodyRadius } from '../physics/bodyshape.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
@@ -21,6 +22,7 @@ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, 
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
+import { SnapMind } from './mind.js';
 import { tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats } from './types.js';
 
@@ -154,7 +156,10 @@ export class PlaySim {
     const mk = (team: TeamSide, slot: string, player: Player, pos: Vec2, facing: number) => {
       const profile = derivePhysical(player);
       const body: Body = { pos: { ...pos }, vel: { x: 0, y: 0 }, facing, energy: setup.energy?.get(player.id) ?? 1, profile };
-      const a = new Agent(this.agents.length, team, slot, player, profile, body, idle);
+      const mind = new SnapMind(player, this.rng.fork(`mind:${team}:${slot}`), body.energy);
+      // Small legal defensive alignment scatter; offensive formation stays legal.
+      if (team === 'D') body.pos.y = clamp(body.pos.y + mind.alignmentError, 0.5, FIELD_WIDTH - 0.5);
+      const a = new Agent(this.agents.length, team, slot, player, profile, body, idle, mind);
       this.agents.push(a);
       (team === 'O' ? this.offense : this.defense).push(a);
       this.bySlot.set(slot, a);
@@ -176,6 +181,7 @@ export class PlaySim {
     this.ball = { kind: 'held', carrier: qb };
     this.beginSegment(qb, 'snap');
     this.perception = new PerceptionBuffer(this.agents.length, this.dt);
+    this.perception.record(this.agents);
     this.qbMind = new QBMind(this, qb);
     if (setup.audibles) {
       this.offCall = this.qbMind.preSnapCheck(this.offCall, { hurry: this.hurry, down: setup.down ?? 1, distance: this.firstDownX - this.los });
@@ -224,9 +230,10 @@ export class PlaySim {
   /** What `observer` perceives of `target` (delayed for opponents). */
   see(observer: Agent, target: Agent, delayScale = 1): Perceived {
     if (observer.team === target.team) return this.perception.perceive(target.idx, 0.05);
-    let delay = observer.profile.reactionTime * delayScale;
-    // Eyes in the backfield on a pass: slow to pick up receivers.
-    if (observer.recog?.read === 'run' && this.isPass) delay += 0.15;
+    let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
+    // Attention follows the observer's belief, regardless of the hidden call.
+    const line = ['LT', 'LG', 'C', 'RG', 'RT'];
+    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)) delay += 0.15;
     return this.perception.perceive(target.idx, delay);
   }
 
@@ -396,7 +403,15 @@ export class PlaySim {
 
   tick(): void {
     const t = this.t;
-    this.perception.record(this.agents.map((a) => a.body));
+    this.perception.record(this.agents);
+    for (const a of this.agents) {
+      let nearby = 0;
+      for (const other of this.opponents(a)) {
+        const seen = this.perception.perceive(other.idx, a.profile.reactionTime);
+        if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < 3) nearby++;
+      }
+      a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
+    }
     for (const d of this.defense) d.recog?.update(d, this);
 
     // Decide.
@@ -440,13 +455,15 @@ export class PlaySim {
         if (skip && skip.has(a) && skip.has(b)) continue;
         const dx = b.pos.x - a.pos.x;
         const dy = b.pos.y - a.pos.y;
-        const minD = (a.profile.radius + b.profile.radius) * 0.9;
         const d2 = dx * dx + dy * dy;
-        if (d2 >= minD * minD || d2 < 1e-9) continue;
+        const broad = (a.profile.radius + b.profile.radius) * 1.12;
+        if (d2 >= broad * broad || d2 < 1e-9) continue;
         const d = Math.sqrt(d2);
-        const overlap = minD - d;
         const nx = dx / d;
         const ny = dy / d;
+        const minD = (bodyRadius(a.body, nx, ny) + bodyRadius(b.body, nx, ny)) * 0.9;
+        if (d >= minD) continue;
+        const overlap = minD - d;
         const ma = a.profile.massKg;
         const mb = b.profile.massKg;
         const wa = mb / (ma + mb);
@@ -586,7 +603,9 @@ export class PlaySim {
     const agents: number[] = [];
     for (const a of this.agents) agents.push(round1(a.pos.x), round1(a.pos.y), round1(a.body.facing));
     const b = this.ballPos();
-    this.frames.push({ t: round2(this.t), agents, ball: [round1(b.x), round1(b.y), round1(b.z)], carrier: this.carrier?.idx ?? -1 });
+    const c = this.carrier;
+    this.frames.push({ t: round2(this.t), agents, ball: [round1(b.x), round1(b.y), round1(b.z)], carrier: c?.idx ?? -1,
+      carrierPosture: [round2(c?.body.squeeze ?? 0), round2(c?.body.squeezeHeading ?? c?.body.facing ?? 0)] });
   }
 
   // ------------------------------------------------------------ result

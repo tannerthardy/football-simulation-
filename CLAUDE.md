@@ -2,6 +2,9 @@
 
 Start with these shared project references:
 
+- [Run blocking and decision update](docs/reviews/run-blocking-and-decision-update.md):
+  review of `2c825eb`, implemented mechanisms, scenario checks, paired evidence,
+  and remaining calibration regressions. Read before tuning or merging this work.
 - [Engine review](docs/reviews/2026-10-08-engine-review.md): reproduced defects,
   diagnostic runs, measurement limitations, and improvement priorities.
 - [Realism implementation plan](docs/REALISM_PLAN.md): proposed architecture,

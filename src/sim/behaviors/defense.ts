@@ -7,7 +7,7 @@
  * believing run for longer.
  */
 import { FIELD_WIDTH } from '../../core/field.js';
-import { clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
+import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
@@ -159,8 +159,14 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number): MoveC
     // along the line toward it with inside-out leverage rather than waiting.
     let flow = clamp(seen.vel.y * 0.5, -2.5, 2.5) * a.r('playRecognition');
     if (!premesh) flow += clamp(seen.pos.y - gy, -3.5, 3.5) * (0.4 + 0.4 * a.r('pursuit'));
-    const tgt = { x: Math.max(sim.los + 0.3, seen.pos.x + 1.0), y: gy + flow };
-    return runThrough(a, tgt, { speed: 0.95 });
+    // Urgency changes the read step: an aggressive player overflows sooner;
+    // an overloaded player holds a stale fit until his next reassessment.
+    flow *= 0.8 + 0.4 * a.mind.urgency;
+    const tgt = a.mind.aim('run-fit', {
+      x: Math.max(sim.los + 0.15, seen.pos.x + 1.0) - 0.25 * (a.mind.urgency - 0.5),
+      y: gy + flow + a.mind.placementError,
+    }, sim.t);
+    return runThrough(a, tgt, { speed: 0.84 + 0.14 * a.mind.urgency });
   }
   return chase(sim, a, c, 2.5);
 }
@@ -184,7 +190,8 @@ export class ManCoverage implements Behavior {
   private readonly press: boolean;
   private hipsOpen = false;
   private routeRead = false;
-  private readChecked = false;
+  private stemHeading: number | null = null;
+  private stableSince = 0;
 
   constructor(
     a: Agent,
@@ -207,15 +214,20 @@ export class ManCoverage implements Behavior {
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
     if (sim.ball.kind === 'air') return playBall(a, sim, R);
-    if (believesRun(sim, a) && R.behavior.kind !== 'route') return runFit(a, sim, this.gap, this.gapSign);
+    const receiverCue = sim.see(a, R);
+    const blockingLook = sim.t > 0.5 && receiverCue.vel.x < 3 && Math.hypot(receiverCue.pos.x - a.pos.x, receiverCue.pos.y - a.pos.y) < 4.5;
+    if (believesRun(sim, a) && blockingLook) return runFit(a, sim, this.gap, this.gapSign);
 
-    // Route recognition: a good defender may read the route and close the delay.
-    if (!this.readChecked && sim.t > 0.8) {
-      this.readChecked = true;
-      const p = clamp(0.1 + 0.45 * (0.5 * a.r('playRecognition') + 0.5 * a.r('anticipation')) - 0.35 * R.r('routeRunning') + 0.15, 0.03, 0.6);
-      this.routeRead = sim.rng.chance(p);
-    }
-    const delayScale = this.routeRead ? 0.45 : 1;
+    // Anticipate a stable observed stem, then lose that confidence on a break.
+    // No route identity or once-per-play "knows the route" coin flip.
+    const cue = sim.see(a, R);
+    const heading = Math.atan2(cue.vel.y, cue.vel.x);
+    if (Math.hypot(cue.vel.x, cue.vel.y) < 1 || this.stemHeading === null || Math.abs(angleDiff(this.stemHeading, heading)) > 0.35) {
+      this.stableSince = sim.t;
+      this.stemHeading = heading;
+      this.routeRead = false;
+    } else if (sim.t - this.stableSince > 0.35 + 0.35 * (1 - a.r('playRecognition') * a.mind.focus)) this.routeRead = true;
+    const delayScale = this.routeRead ? 0.65 : 1;
     const seen = sim.see(a, R, delayScale);
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const lev = 0.7 * inside;
@@ -248,8 +260,8 @@ export class ManCoverage implements Behavior {
  * - spot (spot drop, "country" zone): sprint to the landmark, settle and play
  *   the quarterback — lean where he looks, sit in the lane of a receiver in
  *   the zone without following him out, break on his arm action.
- * A defender who can't execute match rules plays spot (a bust: verticals
- * aren't carried).
+ * Overloaded match defenders can hesitate at an exchange, then recover on a
+ * subsequent read. Their called technique stays intact.
  */
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
@@ -260,6 +272,8 @@ export class ZoneCoverage implements Behavior {
   private readonly band: [number, number];
   readonly style: ZoneStyle;
   target: Agent | null = null;
+  private nextPatternRead = 0;
+  private patternHesitationUntil = -1;
 
   constructor(
     a: Agent,
@@ -273,15 +287,8 @@ export class ZoneCoverage implements Behavior {
     // Flat/curl-flat defenders expand all the way to the sideline with a threat.
     this.radius = this.deep ? 11 : zone === 'robber' || zone === 'hook_mid' ? 6.5 : zone.includes('flat') ? 11 : 7.5;
     this.band = zoneBand(zone, sim);
-    let style: ZoneStyle = zone === 'robber' ? 'match' : (sim.defCall.zoneStyle ?? 'match');
-    if (style === 'match') {
-      // Match rules take recognition; a defender who misses the rule zones grass.
-      const iq = 0.5 * a.r('playRecognition') + 0.5 * a.r('zoneCoverage');
-      if (zone !== 'robber' && !sim.rng.chance(clamp(0.72 + 0.35 * iq, 0, 1))) {
-        style = 'spot';
-        a.tags.add('matchBust');
-      }
-    } else if (!this.deep) {
+    const style: ZoneStyle = zone === 'robber' ? 'match' : (sim.defCall.zoneStyle ?? 'match');
+    if (style === 'spot' && !this.deep) {
       // Spot drops are deeper: curl and hook defenders sink to 11-12 yards.
       const sink = zone.startsWith('curl_flat') ? 2.5 : zone.startsWith('hook') ? 1.5 : zone.startsWith('flat') ? 1.5 : 0;
       this.landmark = { x: this.landmark.x + sink, y: this.landmark.y };
@@ -315,7 +322,7 @@ export class ZoneCoverage implements Behavior {
     // Perceived routes in (or about to enter) this zone's lateral band.
     const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }> = [];
     for (const r of sim.offense) {
-      if (r.behavior.kind !== 'route' && r.behavior.kind !== 'track') continue;
+      if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
       const seen = sim.see(a, r);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
       if (fut.y < ylo || fut.y > yhi) continue;
@@ -349,8 +356,10 @@ export class ZoneCoverage implements Behavior {
       if (!spot && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1 && deepest.pos.x - sim.los > 6) {
         this.target = deepest.r;
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
-        const react = sim.rng.next() < 0.3 + 0.6 * a.r('playRecognition');
-        if (react) return track(a, { x: drive.x, y: clamp(drive.y, 0.5, FIELD_WIDTH - 0.5) }, { x: deepest.vel.x, y: deepest.vel.y }, { facing: facingQB, speed: zs * 1.05, gain: 2.2 });
+        if (a.mind.focus * (0.4 + 0.6 * a.r('playRecognition')) > 0.35) {
+          const aim = a.mind.aim('zone-drive', drive, sim.t);
+          return track(a, { x: aim.x, y: clamp(aim.y, 0.5, FIELD_WIDTH - 0.5) }, { x: deepest.vel.x, y: deepest.vel.y }, { facing: facingQB, speed: zs * 1.05, gain: 2.2 });
+        }
       }
       // Stay 2–3 yards over the top: deep enough not to be beaten vertically,
       // close enough to drive on a break.
@@ -373,6 +382,19 @@ export class ZoneCoverage implements Behavior {
     }
 
     if (spot) return this.spotUnderneath(a, sim, threats);
+
+    // An overloaded pattern reader can spend a beat zoning grass when two
+    // routes demand an exchange. He can recover on the next read; the called
+    // technique never turns into a permanent randomly selected bust.
+    if (sim.t >= this.nextPatternRead) {
+      this.nextPatternRead = sim.t + a.mind.decisionInterval;
+      const crossing = threats.filter((th) => th.pos.x - sim.los > 2 && th.pos.x - sim.los < 13);
+      if (crossing.length >= 2 && a.mind.focus * (0.5 + 0.5 * a.r('zoneCoverage')) < 0.52) {
+        this.patternHesitationUntil = this.nextPatternRead;
+        a.tags.add('match-hesitation');
+      }
+    }
+    if (sim.t < this.patternHesitationUntil) return this.spotUnderneath(a, sim, threats);
 
     // Underneath: carry a vertical #2/#3 through the zone (seam carry / wall),
     // otherwise sit in the throwing lane of the nearest threat.
@@ -525,7 +547,7 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   const facingQB = Math.cos(a.body.facing - Math.atan2(ball.flight.pos.y - a.pos.y, ball.flight.pos.x - a.pos.x)) > 0.1;
   // Eyes on the QB see the release; a trailing man defender reads it off
   // the receiver's eyes and hands a beat later.
-  const react = a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25) + (man ? 0.05 : 0);
+  const react = a.mind.observationDelay(a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25)) + (man ? 0.05 : 0);
   // Spot droppers key the quarterback: his arm and body action give the
   // throw away before the ball is out, so their reaction starts there.
   const keysQB = facingQB && sim.windupAt >= 0 && a.behavior instanceof ZoneCoverage && a.behavior.style === 'spot';

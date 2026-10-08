@@ -2,7 +2,10 @@
 
 Prepared 2026-10-08 from the engine review, source inspection, seeded simulations,
 and supplied Big Data Bowl datasets. This is a proposed implementation program;
-the mechanisms and acceptance gates below have not yet been implemented.
+the mechanisms and acceptance gates below are the proposed program. The
+[run blocking and decision update](reviews/run-blocking-and-decision-update.md)
+implements an initial subset with explicit calibration limits; the larger
+program and its acceptance gates remain outstanding.
 
 **The goal is a coherent simulation of football responsibilities, physical
 execution, imperfect information, and game decisions.** Realistic averages

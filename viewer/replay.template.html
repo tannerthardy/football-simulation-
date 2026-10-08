@@ -173,6 +173,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     if (!p.frames) continue;
     p.frames.p = Float32Array.from(p.frames.p, (v) => v / 10);
     p.frames.b = Float32Array.from(p.frames.b, (v) => v / 10);
+    if (p.frames.s) p.frames.s = Float32Array.from(p.frames.s, (v) => v / 10);
   }
   const teams = { [meta.home.abbr]: meta.home, [meta.away.abbr]: meta.away };
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -294,7 +295,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     kv.push(`duration <b>${dur.toFixed(1)}s</b>`);
     $('kv').innerHTML = kv.join('');
     // Event marks on the timeline.
-    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), touchdown: css('--good'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent') };
+    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), touchdown: css('--good'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent'), block_climb: css('--los'), squeeze: css('--accent') };
     const shown = p.ev.filter((e) => colors[e[1]]);
     $('marks').innerHTML = shown.map((e) => `<span class="mark" style="left:${(e[0] / dur) * 100}%;background:${colors[e[1]]}" title="${e[1]} ${e[0]}s"></span>`).join('');
     const labelled = shown.filter((e, k) => k === 0 || e[0] - shown[k - 1][0] > dur * 0.08).slice(0, 7);
@@ -472,7 +473,10 @@ const REPLAY = /*__REPLAY_DATA__*/null;
       const px = X(x);
       const py = Y(y);
       ctx.beginPath();
-      ctx.arc(px, py, rad, 0, Math.PI * 2);
+      const poseFrame = f < 0.5 ? a : b;
+      const skinny = i === carrier && F.s ? F.s[poseFrame * 2] : 0;
+      const shoulderAxis = F.s ? F.s[poseFrame * 2 + 1] : fc;
+      ctx.ellipse(px, py, rad * (1 + 0.12 * skinny), rad * (1 - 0.32 * skinny), -shoulderAxis, 0, Math.PI * 2);
       ctx.fillStyle = tm.color;
       ctx.fill();
       ctx.lineWidth = i === carrier ? 3 : 1.5;

@@ -195,7 +195,7 @@ export class Recognition {
     this.gain = 1.4 + 2.2 * rec;
     this.tau = 0.1 + 0.3 * (1 - rec);
     // A per-play lean (eyes in the wrong place), coherent through the play.
-    this.bias = sim.rng.normal(0, 0.55 * (1 - rec));
+    this.bias = sim.rng.fork(`recognition:${a.slot}`).normal(0, 0.55 * (1 - rec));
   }
 
   pPass(): number {
@@ -204,17 +204,18 @@ export class Recognition {
 
   update(a: Agent, sim: PlaySim): void {
     const t = sim.t;
-    const delay = a.profile.reactionTime;
+    const delay = a.mind.observationDelay(a.profile.reactionTime);
     // Definitive cues: the throw, and the handoff once he can see it.
     let ball = 0;
     if (sim.throwAt >= 0 && t - sim.throwAt >= delay) ball = 4;
     else if (sim.handoffAt >= 0 && t - sim.handoffAt >= delay * (this.group === 'DL' ? 0.6 : 1)) ball = -3;
-    else if (sim.carrier === sim.qb && sim.qb.pos.x > sim.los + 0.5) ball = -3;
+    else if (sim.carrier === sim.qb && sim.see(a, sim.qb).pos.x > sim.los + 0.5) ball = -3;
 
     let visual = 0;
     if (t >= delay * 0.6) visual = this.cues(a, sim);
-    this.evidence += (visual - this.evidence) * Math.min(1, sim.dt / this.tau);
-    this.logOdds = this.prior + this.gain * this.evidence + this.bias + ball;
+    const tau = this.tau + 0.12 * (1 - a.mind.focus);
+    this.evidence += (visual - this.evidence) * (1 - Math.exp(-sim.dt / tau));
+    this.logOdds = this.prior + this.gain * (0.8 + 0.2 * a.mind.focus) * this.evidence + this.bias + ball;
 
     const p = this.pPass();
     if (t < delay) return;
@@ -222,14 +223,19 @@ export class Recognition {
     // Expectation alone doesn't commit him: he needs a cue that agrees,
     // unless the situation is overwhelming.
     const cue = this.evidence + ball;
+    const urgency = a.mind.urgency - 0.5;
+    const commit = (r: Read) => {
+      this.commit(r, t);
+      sim.event('read', a, null, `${r}; pPass=${p.toFixed(2)} focus=${a.mind.focus.toFixed(2)} urgency=${a.mind.urgency.toFixed(2)}`);
+    };
     if (this.read === 'unsure') {
-      if (p < 0.3 && (cue < -0.1 || p < 0.1)) this.commit('run', t);
-      else if (p > 0.72 && (cue > 0.1 || p > 0.92)) this.commit('pass', t);
-    } else if (this.read === 'run' && p > 0.8) {
-      this.commit('pass', t);
+      if (p < 0.3 + 0.10 * urgency && (cue < -0.1 || p < 0.1)) commit('run');
+      else if (p > 0.72 - 0.08 * urgency && (cue > 0.1 || p > 0.92)) commit('pass');
+    } else if (this.read === 'run' && p > 0.8 + 0.06 * urgency) {
+      commit('pass');
       this.changedMind = true;
     } else if (this.read === 'pass' && p < 0.16) {
-      this.commit('run', t);
+      commit('run');
       this.changedMind = true;
     }
   }
@@ -263,12 +269,12 @@ export class Recognition {
       if (!o) continue;
       const s = sim.see(a, o);
       back += (sim.snapX[o.idx] - s.pos.x) * 1.1 - s.vel.x * 0.3;
-      if (seenAfter && o.stance) hat += o.stance === 'high' ? 1 : -1;
+      if (seenAfter && s.stance) hat += s.stance === 'high' ? 1 : -1;
       if (Math.abs(s.vel.y) > 3 && s.pos.x < sim.los - 0.2 && s.vel.x < 1.5) pull++;
       n++;
     }
-    if (n) add(clamp((0.8 * hat) / n + 0.6 * clamp(back / n, -1.5, 1.5), -1.5, 1.5), w.ol);
-    if (pull) add(-1.2, w.pull);
+    if (n) add(clamp((0.8 * hat) / n + 0.6 * clamp(back / n, -1.5, 1.5), -1.5, 1.5), w.ol * a.mind.keyAttention(sim.t));
+    if (pull) add(-1.2, w.pull * a.mind.keyAttention(sim.t));
 
     // A lineman feels the block in front of him: a blocker firing out low
     // (run, or play action's run look) or one sitting back in a pass set.
@@ -305,7 +311,8 @@ export class Recognition {
       let bd = Infinity;
       for (const o of sim.offense) {
         if (o === sim.qb || o === rbAgent || OL_SLOTS.includes(o.slot as (typeof OL_SLOTS)[number])) continue;
-        const d = Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y);
+        const seen = sim.see(a, o);
+        const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
         if (d < bd) {
           bd = d;
           best = o;

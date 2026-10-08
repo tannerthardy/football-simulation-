@@ -113,6 +113,7 @@ export interface QBReadReport {
 interface Memory {
   pos: Vec2;
   vel: Vec2;
+  facing: number;
   t: number;
 }
 
@@ -170,7 +171,7 @@ export class QBMind {
       this.canon.set(c.id, alignDefense({ ...sim.defCall, coverage: c, pressure: ok ? pressure : null, shown: undefined }, sim.offAlign, slots));
     }
     // Everyone is visible before the snap.
-    for (const d of sim.defense) this.memory.set(d, { pos: { ...d.pos }, vel: { x: 0, y: 0 }, t: 0 });
+    for (const d of sim.defense) this.memory.set(d, { pos: { ...d.pos }, vel: { x: 0, y: 0 }, facing: d.body.facing, t: 0 });
     this.preSnapRead();
     this.report = {
       pre: this.top(),
@@ -315,8 +316,8 @@ export class QBMind {
       // Eyes and hips: man defenders turn and run with their receiver; zone
       // defenders keep their eyes on the quarterback.
       const sp = Math.hypot(s.vel.x, s.vel.y);
-      const toQB = Math.atan2(qb.pos.y - d.pos.y, qb.pos.x - d.pos.x);
-      if (sp > 2 && Math.cos(d.body.facing - toQB) < -0.2) turned++;
+      const toQB = Math.atan2(qb.pos.y - s.pos.y, qb.pos.x - s.pos.x);
+      if (sp > 2 && Math.cos(s.facing - toQB) < -0.2) turned++;
     }
     return [deep, mof, cov ? turned / cov : 0];
   }
@@ -372,23 +373,23 @@ export class QBMind {
       const dist = Math.hypot(dx, dy);
       const ang = Math.abs(angleDiff(Math.atan2(dy, dx), dir));
       // Bodies right around him are felt, not seen; pocket presence handles them.
-      if (ang < this.clearHalf || dist < 3) {
+      if (ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) || dist < 3) {
         const s = sim.see(qb, d);
-        this.memory.set(d, { pos: s.pos, vel: s.vel, t: sim.t });
-      } else if (ang < this.periphHalf) {
+        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t });
+      } else if (ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus)) {
         const s = sim.see(qb, d, 1.7);
-        this.memory.set(d, { pos: s.pos, vel: s.vel, t: sim.t - 0.1 });
+        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1 });
       }
     }
   }
 
   /** Where the QB thinks a defender is (and how he's moving). */
-  estimate(d: Agent): { pos: Vec2; vel: Vec2 } {
+  estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number } {
     const sim = this.sim;
     const m = this.memory.get(d);
     if (!m) return sim.see(this.qb, d);
     const age = sim.t - m.t;
-    if (age < 0.12) return { pos: m.pos, vel: m.vel };
+    if (age < 0.12) return { pos: m.pos, vel: m.vel, facing: m.facing };
     const k = Math.min(age, 0.5);
     const dr = { x: m.pos.x + m.vel.x * k, y: m.pos.y + m.vel.y * k };
     const exp = this.expectedPos(d);
@@ -396,6 +397,7 @@ export class QBMind {
     return {
       pos: { x: dr.x + (exp.x - dr.x) * w, y: dr.y + (exp.y - dr.y) * w },
       vel: { x: m.vel.x * (1 - w), y: m.vel.y * (1 - w) },
+      facing: m.facing,
     };
   }
 

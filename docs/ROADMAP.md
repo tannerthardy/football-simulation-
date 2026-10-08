@@ -10,6 +10,13 @@ implementation backlog. The [engine review](reviews/2026-10-08-engine-review.md)
 records reproduced defects and measurement limitations. “Done” below means a
 component exists; it does not establish full empirical validation.
 
+The [run blocking and decision update](reviews/run-blocking-and-decision-update.md)
+records the changes after `2c825eb`: dynamic attention and commitment, observed
+stance/facing, secured combination exchanges, complete zone ownership, lead
+pacing and carrier shoulder turning. Its two-roster paired matrix shows mixed
+results. Outside zone and power regressions and excessive inside-zone gains
+remain review/calibration blockers.
+
 ## Phases
 
 | Phase | Scope | Status |
@@ -45,7 +52,8 @@ be aligned before these become validated tuning targets. See
 
 ## Calibration status
 
-Snapshot: 64 games over eight independently generated leagues
+Historical snapshot at `2c825eb`, before the run blocking/decision update:
+64 games over eight independently generated leagues
 (`npm run calibrate -- 64 7`), official plays only — plays wiped out by an
 accepted foul are excluded, and a catch or run that ends in a lost fumble is
 credited to the fumble spot. Rules and accounting defects from the review are
@@ -91,8 +99,10 @@ gaps; one league is not a reliable calibration sample.
    instead of chasing the carrier from a fixed read time, which brought the
    average in range, but outcomes are bimodal: 41% stuffs (unblocked or
    quickly shed linemen — reach blocks on 3-techniques) and too many 10+
-   yard runs, not enough 2–5 yard runs. Backs don't cut back off a lost
-   reach yet. Play-action protection gives up too many sacks.
+   yard runs, not enough 2–5 yard runs. The new carrier reads teammate
+   obstruction and can abandon a closed design, but reach/cutback geometry
+   and pull-to-fit timing still need validation. See the paired update for
+   current scheme-level regressions. Play-action protection gives up too many sacks.
 3. **Passing efficiency.** High YPA, aDOT, TD and INT rates require coordinated
    protection, coverage and QB-policy work. Validate separation/tight-window
    cohorts before changing defender speed or catch probabilities.

@@ -1,0 +1,33 @@
+
+8 games, 1105 scrimmage plays in 24.2 s (3022 ms/game), ties 0
+metric                                          sim   target
+Points / team-game                            39.19   21–23.5  HIGH
+Scrimmage plays / team-game                   69.06   61–65  HIGH
+Total yards / team-game                      430.21   320–345  HIGH
+Completion %                                  66.24%  63–66  HIGH
+Yards / attempt                                8.49   6.8–7.2  HIGH
+Sack rate (per dropback)                      13.19%  6–7.5  HIGH
+INT rate                                       3.36%  2–2.5  HIGH
+Pass TD rate                                   7.52%  4–4.8  HIGH
+20+ yd completions / att                       8.48%  7–9  OK
+aDOT                                           8.25   7.5–8.5  OK
+YAC / reception                                6.03   4.8–5.6  HIGH
+Time to throw                                  2.44s  2.7–2.9  LOW
+Pressure rate                                 29.90%  28–36  OK
+Scramble rate                                  4.70%  3–5  OK
+Rush yards / carry                             6.20   4.1–4.5  HIGH
+Run stuff rate (<=0)                          34.81%  16–20  HIGH
+10+ yd runs                                   14.75%  10–12  HIGH
+Yards before contact (runs)                    1.57   1.5–2.3  OK
+Pass rate (dropbacks / plays)                 69.32%  56–62  HIGH
+3rd-down conversion                           31.89%  37–41  LOW
+FG %                                          90.63%  83–87  HIGH
+XP %                                          93.75%  94–97  LOW
+Fumbles lost / team-game                       0.19   0.4–0.7  LOW
+Punts / team-game                              6.13   3.5–4.5  HIGH
+Penalties / team-game (pre-snap+holding)       2.44   2.5–4  LOW
+NGS separation at catch/incompletion           4.15   2.8–3.2  HIGH
+NGS tight-window throws (<1 yd)                3.79%  13–17  LOW
+QB coverage family read right                 71.54%  70–90  OK
+Checks at the line / play                      1.81%  2–8  LOW
+Missed + broken tackles / play                 0.19   0.11–0.16  HIGH

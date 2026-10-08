@@ -22,6 +22,9 @@ export type BallState =
   | { kind: 'dead' };
 
 export type PlayEventType =
+  | 'read'
+  | 'block_climb'
+  | 'squeeze'
   | 'snap'
   | 'handoff'
   | 'throw'
@@ -75,6 +78,8 @@ export interface Frame {
   agents: number[]; // flattened [x, y, facing] * 22
   ball: [number, number, number];
   carrier: number;
+  /** Optional for old replays: current carrier's shoulder turn and its axis. */
+  carrierPosture?: [number, number];
 }
 
 export interface PlayResult {

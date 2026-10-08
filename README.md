@@ -25,6 +25,9 @@ The [2026-10-08 engine review](docs/reviews/2026-10-08-engine-review.md)
 records the current findings and improvement priorities.
 The [realism implementation plan](docs/REALISM_PLAN.md) develops those findings
 into modeling work packages, dependencies, and release criteria.
+The [run blocking and decision update](docs/reviews/run-blocking-and-decision-update.md)
+describes dynamic attention/commitment, combination exchanges and carrier
+shoulder turning, with paired diagnostics and remaining calibration gaps.
 
 ## Quick start
 
@@ -55,6 +58,7 @@ scoring plays, explosives, turnovers and sacks.
 | `scripts/open-field-lab.ts` | One carrier vs. one or two tacklers in scripted open-field scenarios (square, angle, chase, sideline). |
 | `scripts/zone-style-lab.ts` | Pass concepts against one zone coverage played spot drop vs. pattern-match, on paired seeds. |
 | `scripts/recognition-lab.ts` | How fast and how accurately each position group reads run vs. pass, by play and situation, with and without a scouting report. |
+| `scripts/run-blocking-lab.ts` | Run concept × formation × front × flip on paired seeds; physical gains, stuffs, ownership, climbs and posture requests. |
 | `scripts/calibrate.ts` | Many full games; league-level metrics vs. NFL targets. |
 
 ## Layout

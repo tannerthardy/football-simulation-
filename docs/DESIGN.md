@@ -252,11 +252,20 @@ with a short delay. Effects:
 * **Route breaks:** when a receiver plants, the defender keeps "seeing" the old
   stem for `rt` seconds and keeps drifting — separation emerges from
   route-running sharpness vs. reaction time vs. agility.
-* **Play recognition** also lets defenders *anticipate*: after a receiver's stem
-  is established, a defender may correctly read the route (probability from
-  playRecognition vs. routeRunning disguise) and react with near-zero delay.
+* **Anticipation:** man defenders observe a stable receiver stem before reducing
+  reaction delay. An observed break resets that benefit; anticipation never
+  reveals the called route or removes latency entirely.
 * **Ball in the air:** defenders not facing the QB need extra time to locate the
   ball; zone defenders reading the QB's eyes (anticipation) break early.
+
+Snapshots include visible stance and facing, so those cues have latency too.
+Each agent's `SnapMind` adds coherent snap readiness/precision and dynamic focus,
+stress and urgency. Fatigue, visible congestion/contact and an optional brief
+attention lapse change latency and execution; finite decision intervals hold
+fits between reads. Pattern readers can hesitate and recover without changing
+their called technique. These parameters remain uncalibrated hypotheses. See
+the [implementation review](reviews/run-blocking-and-decision-update.md) for
+scope, remaining information shortcuts and paired results.
 
 ### 6.2a Game sense: reading run and pass (`src/sim/recognition.ts`)
 
@@ -297,12 +306,12 @@ play events (handoff, throw, catch, turnover, ball crossing the LOS).
 | **Quarterback** | Snap → drop (3/5/7-step or gun) or play-action fake → progression reads in concept order with timing → evaluate each target's throw window → throw / check down / hitch / climb pocket / scramble / throw away / take sack. Pocket presence governs sensing pressure. |
 | **Route runner** | Release (beat press via release vs. press contest) → stem → break with speed governed by route-running and the traction ellipse → option-route conversions vs. man/zone → settle in zone windows → track ball to its predicted landing point → after catch becomes ball carrier. |
 | **Pass blocker** | Kick/vertical set to a protection point between rusher and QB; mirror rusher; engage; anchor; pass off twists. Slide/man/BOB protection assignments. |
-| **Run blocker** | Zone (step playside, reach/scoop/combo, climb to LB), gap (down block, double team, kick-out, pull and lead), lead blocker (FB/TE iso). |
+| **Run blocker** | Zone ownership accounts for down threats before combinations; gap down blocks reserve one trap/kick target and cover pulling-guard responsibility. Combinations read control, leverage and backer flow before one member climbs. Pull/lead paths clear the line. |
 | **Pass rusher** | Choose a plan from ratings & blocker set: speed rush (arc), bull rush, swim/rip/spin; counter moves; contain duties; stunts. |
 | **Run defender** | Gap assignment from front (A/B/C/D, 1-gap vs 2-gap), read keys (blocker's helmet), squeeze, spill vs box, shed and tackle. |
 | **Man coverage** | Press/off/bail technique; inside/outside leverage; trail/in-phase; mirror receiver via perceived (delayed) state; play through hands. |
 | **Zone coverage** | Two techniques, chosen per call. Spot drop ("country" zone): sprint to the landmark, settle facing the QB, lean where he looks, squeeze the lane of a receiver in the zone without following him out, and start the break on his arm action. Pattern-match: drop with eyes on the QB, wall and carry verticals through the zone (curl-flat to ~10 yards, hook to ~13), pick up whoever enters it. A defender who misses a match rule plays spot. Named match rules (Cover-3 Rip/Liz, Quarters MOD/MEG and reading #2, Cover-2 corner sink, trips Poach) are planned. |
-| **Ball carrier** | Vision: sample candidate headings, simulate a short look-ahead against each defender's time-to-reach and blockers' screens, pick the best lane; press the hole (patience), cut, bounce, juke/stiff-arm in open field, protect the ball, get out of bounds when clock demands. |
+| **Ball carrier** | Sample headings against observed defender reach and teammate obstruction; press or abandon a closed aiming point, pace a lead entering ahead while safe, then burst. Turn shoulders for narrow passable openings with finite posture transition and movement cost. |
 | **Pursuer** | Compute intercept point using time-to-reach against the carrier's anticipated path, with a per-play angle bias from the pursuit rating and inside-out leverage; break down and mirror in the open field (§6.5). |
 
 ### 6.4 Trench model (blocking engagements)

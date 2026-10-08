@@ -24,6 +24,9 @@ export interface Body {
   profile: PhysicalProfile;
   /** Seconds of recent near-max sprinting (speed endurance). */
   sprintLoad?: number;
+  /** Shoulder-turn posture, entered/exited over time; separate from gaze/facing. */
+  squeeze?: number;
+  squeezeHeading?: number;
 }
 
 export interface MoveCommand {
@@ -35,6 +38,8 @@ export interface MoveCommand {
   effort?: number;
   /** Multiplier on cutting ability from technique (route running, elusiveness). */
   cutSkill?: number;
+  /** 0–1 demand to turn shoulders through a narrow opening. */
+  squeeze?: number;
 }
 
 /** Fatigue multiplier on speed/acceleration. */
@@ -61,7 +66,7 @@ export function directionalSpeedFactor(profile: PhysicalProfile, relAngle: numbe
 /** Effective top speed of a body moving in direction `heading`. */
 export function effectiveVmax(body: Body, heading: number, effort = 1): number {
   const rel = angleDiff(body.facing, heading);
-  return body.profile.vmax * fatigueFactor(body.energy) * enduranceFactor(body) * directionalSpeedFactor(body.profile, rel) * effort;
+  return body.profile.vmax * fatigueFactor(body.energy) * enduranceFactor(body) * (1 - 0.08 * (body.squeeze ?? 0)) * directionalSpeedFactor(body.profile, rel) * effort;
 }
 
 /** Long sprints fade: after ~3.5 s near top speed, up to 10% slower. */
@@ -76,8 +81,16 @@ export function driveAccel(profile: PhysicalProfile, speed: number, cap: number)
 
 export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
   const p = body.profile;
-  const effort = clamp(cmd.effort ?? 1, 0, 1);
-  const cutSkill = cmd.cutSkill ?? 1;
+  const desiredSqueeze = clamp(cmd.squeeze ?? 0, 0, 1);
+  body.squeeze = clamp((body.squeeze ?? 0) + clamp(desiredSqueeze - (body.squeeze ?? 0), -3 * dt, 4 * dt), 0, 1);
+  if (Math.hypot(cmd.vel.x, cmd.vel.y) > 0.4) {
+    const h = angleOf(cmd.vel);
+    const previous = body.squeezeHeading ?? h;
+    body.squeezeHeading = previous + clamp(angleDiff(previous, h), -p.turnRate * dt, p.turnRate * dt);
+  }
+  // A narrower profile costs burst/cutting control; it is not free agility.
+  const effort = clamp(cmd.effort ?? 1, 0, 1) * (1 - 0.08 * body.squeeze);
+  const cutSkill = (cmd.cutSkill ?? 1) * (1 - 0.12 * body.squeeze);
 
   // --- facing ---
   const speed = len(body.vel);

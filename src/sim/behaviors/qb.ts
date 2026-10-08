@@ -221,7 +221,7 @@ export class QBPass implements Behavior {
     // ---- set: reading the field ----
     // Quick game is rhythm: one look per read. Dropback reads take longer.
     const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
-    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm;
+    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
     const timeSet = t - this.setAt;
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
@@ -394,10 +394,11 @@ export class QBPass implements Behavior {
       // Not where the defender is: where the QB thinks he is.
       const seen = this.mind.estimate(d);
       const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
-      const facingQB = Math.cos(d.body.facing - Math.atan2(a.pos.y - d.pos.y, a.pos.x - d.pos.x)) > 0.2;
+      const facingQB = Math.cos(seen.facing - Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x)) > 0.2;
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const tt = timeToReach(mover, point, d.profile.reach + 0.3) + react;
-      const m = tt - total + sim.rng.normal(0, noise);
+      const estimateError = a.mind.judgment(`reach:${d.slot}`) * noise;
+      const m = tt - total + estimateError;
       const contest = 1 - logistic((m - 0.05) / 0.13);
       // A defender who gets there well before the ball is sitting on the route.
       const first = 1 - logistic((m + 0.3) / 0.13);
@@ -411,7 +412,7 @@ export class QBPass implements Behavior {
         const b = arcPoint(from, v0, tau);
         if (b.z > leap + 0.1) continue;
         const tb = timeToReach(mover, b, d.profile.reach) + react;
-        const mb = tb - (wind + tau) + sim.rng.normal(0, noise);
+        const mb = tb - (wind + tau) + estimateError;
         touch = Math.max(touch, logistic(-(mb - 0.05) / 0.1));
       }
       pClear *= 1 - touch * 0.75;
