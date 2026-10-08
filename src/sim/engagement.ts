@@ -530,7 +530,7 @@ function stepRunRep(sim: PlaySim, e: Engagement): void {
     const s = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
     if (s !== 0 && Math.abs(toBall.y) > 0.8) e.side = s;
   }
-  const rLat = td.lateral * (0.6 + 0.4 * d.r('blockShedding')) * (1 + 0.4 * Math.max(0, -e.control)) * (0.4 + 0.6 * e.baseD) * (d.fooledUntil > t ? 0.3 : 1);
+  const rLat = td.lateral * (0.6 + 0.4 * d.r('blockShedding')) * (1 + 0.4 * Math.max(0, -e.control)) * (0.4 + 0.6 * e.baseD) * (d.recog?.read === 'run' && sim.isPass ? 0.3 : 1);
   const bLat = tb.lateral * (0.5 + 0.6 * b.r('runBlock')) * (1 + 0.4 * Math.max(0, e.control)) * (0.4 + 0.6 * e.baseB) * (e.helpers.length ? 1.6 : 1);
   const sep = b.profile.radius + d.profile.radius;
   const quarter = (Math.PI / 2) * sep;

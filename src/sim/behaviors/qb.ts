@@ -92,7 +92,7 @@ export class QBPass implements Behavior {
     this.dropY = a.pos.y;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.rng.normal(0, 0.25);
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
-    if (concept.family === 'playaction') this.fakeUntil = 1.0;
+    if (concept.family === 'playaction') this.fakeUntil = 0.7;
     this.mind = sim.qbMind;
   }
 

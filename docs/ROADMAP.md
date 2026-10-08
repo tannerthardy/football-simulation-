@@ -56,26 +56,27 @@ before further outcome tuning.
 
 | Metric | Sim | NFL | |
 |---|---|---|---|
-| Points / team-game | 33.3 (24.5–44.3 by league) | 21–23.5 | high |
-| Yards / attempt | 9.7 | 6.8–7.2 | high |
-| Completion % | 68.7% | 63–66% | high |
-| Sack rate | 10.5% (5.9–13.2% by league) | 6–7.5% | high, roster-sensitive |
-| INT rate | 3.8% | 2–2.5% | high |
-| Time to throw | 2.45 s | 2.6–2.75 s | low |
-| Pressure rate | 26% | ~33% PFF labels | definitions differ |
-| Scramble rate | 4.6% | 4% | ok |
-| Rush yards / carry | 3.07 (1.85–4.41 by league) | 4.48 | low |
-| Run stuff rate | 35% | 18% | high |
-| 3rd-down conversion | 34.7% | 37–41% | low |
-| Separation during target catch contests | 3.96 | 3.04 selected arrival cohort | cohorts differ |
+| Points / team-game | 35.7 (30.7–43.8 by league) | 21–23.5 | high |
+| Yards / attempt | 9.3 | 6.8–7.2 | high |
+| Completion % | 66.8% | 63–66% | ~ok |
+| Sack rate | 10.9% (6.0–15.0% by league) | 6–7.5% | high, roster-sensitive |
+| INT rate | 3.9% | 2–2.5% | high |
+| Time to throw | 2.46 s | 2.6–2.75 s | low |
+| Pressure rate | 25% | ~33% PFF labels | definitions differ |
+| Scramble rate | 4.2% | 4% | ok |
+| Rush yards / carry | 4.66 (3.84–5.58 by league) | 4.48 | ~ok |
+| Run stuff rate | 41% | 18% | high |
+| 10+ yard runs | 13.9% | 10–12% | high |
+| 3rd-down conversion | 34.0% | 37–41% | low |
+| Separation during target catch contests | 3.91 | 3.04 selected arrival cohort | cohorts differ |
 | Tight-window catch-contest sample | 4.9% | 13–17% all-throw harness range | cohorts differ |
 | QB reads coverage family right | 66% | — | |
 | Missed + broken tackles / play | 0.18 | 0.11–0.16 | high |
-| Pass rate | 74% | 56–62% | high |
+| Pass rate | 73% | 56–62% | high |
 
-League-to-league spread is large: the same engine gives 1.85 yards per carry
-with one set of generated rosters and 4.41 with another, and sack rates from
-5.9% to 13.2%. Real teams vary far less, so the trench model amplifies talent
+League-to-league spread is large: the same engine gives 3.84 yards per carry
+with one set of generated rosters and 5.58 with another, and sack rates from
+6.0% to 15.0%. Real teams vary far less, so the trench model amplifies talent
 gaps; one league is not a reliable calibration sample.
 
 ## Known gaps, in priority order
@@ -86,10 +87,12 @@ gaps; one league is not a reliable calibration sample.
    tuning, record separation for all attempts, distinct pressure metrics,
    and rule paths not yet modeled (pass interference, fouls on returns,
    loose balls through the end zone).
-2. **Run game.** Outcomes are bimodal:
-   too many stuffs from unblocked or quickly shed linemen (reach blocks on
-   3-techniques, backside pursuit on counter), not enough 2–5 yard runs.
-   Backs don't cut back off a lost reach yet.
+2. **Run game.** Defenders now read run from cues and keep their gaps
+   instead of chasing the carrier from a fixed read time, which brought the
+   average in range, but outcomes are bimodal: 41% stuffs (unblocked or
+   quickly shed linemen — reach blocks on 3-techniques) and too many 10+
+   yard runs, not enough 2–5 yard runs. Backs don't cut back off a lost
+   reach yet. Play-action protection gives up too many sacks.
 3. **Passing efficiency.** High YPA, aDOT, TD and INT rates require coordinated
    protection, coverage and QB-policy work. Validate separation/tight-window
    cohorts before changing defender speed or catch probabilities.

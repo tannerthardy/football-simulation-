@@ -8,6 +8,7 @@ import type { PhysicalProfile } from '../players/physical.js';
 import type { Player, RatingKey } from '../players/types.js';
 import { r01 } from '../players/types.js';
 import type { PlaySim } from './playsim.js';
+import type { Recognition } from './recognition.js';
 
 export type TeamSide = 'O' | 'D';
 
@@ -72,10 +73,15 @@ export class Agent {
   noCatchUntil = 0;
   /** Blocker cannot re-engage this defender until a time (after being shed). */
   shedBy = new Map<Agent, number>();
-  /** Time this defender recognized run/pass. */
+  /** Earliest time this defender reacts to a ball carrier past the line. */
   readAt = 0;
-  /** Was fooled by play action until this time. */
-  fooledUntil = 0;
+  /** Defenders: run/pass belief through the play. */
+  recog: Recognition | null = null;
+  /**
+   * Blockers' visible pad level: up in a pass set ("high hat"), low firing
+   * out on a run block. Defenders read it.
+   */
+  stance: 'high' | 'low' | null = null;
   /** True once the agent has made a tackle attempt that missed this play. */
   missedTackles = 0;
   /** Free-form per-play annotations used by stats / replay. */

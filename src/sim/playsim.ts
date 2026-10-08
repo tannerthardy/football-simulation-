@@ -15,7 +15,8 @@ import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type TeamSide } from './agent.js';
-import { QBMind } from './qbmind.js';
+import { CoverageScouting, QBMind } from './qbmind.js';
+import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, updateEngagements } from './engagement.js';
@@ -25,6 +26,10 @@ import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEven
 
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
+  /** The defense's scouting of this offense (run/pass tendencies so far). */
+  scouting?: ScoutingReport;
+  /** The offense's scouting of this defense (coverage mix, disguise). */
+  coverageScouting?: CoverageScouting;
   defense: Partial<Record<DefSlot, Player>>;
   offCall: OffensivePlayCall;
   defCall: DefensivePlayCall;
@@ -119,11 +124,17 @@ export class PlaySim {
   qbEyes: Agent | null = null;
   /** When the QB started his throwing motion (−1 before). */
   windupAt = -1;
+  /** Everyone's x at the snap (cue reading: who set back, who fired out). */
+  snapX: number[] = [];
+  /** The situation and look the defense saw before the snap. */
+  snapContext!: SnapContext;
+  readonly coverageScouting: CoverageScouting | undefined;
   /** Predicted remaining flight of the ball (absolute times). */
   ballPath: Array<{ t: number; x: number; y: number; z: number }> = [];
 
   constructor(setup: PlaySetup) {
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
+    this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;
     this.ballY = setup.ballY;
     this.firstDownX = setup.firstDownX;
@@ -159,6 +170,7 @@ export class PlaySim {
       if (!spot) continue;
       mk('D', slot, player, spot.pos, Math.PI);
     }
+    this.snapX = this.agents.map((a) => a.pos.x);
     const qb = this.bySlot.get('QB');
     if (!qb) throw new Error('No QB in offensive personnel');
     this.ball = { kind: 'held', carrier: qb };
@@ -170,6 +182,19 @@ export class PlaySim {
       this.isPass = this.offCall.kind === 'pass';
     }
     this.stats.qbRead = this.qbMind.report;
+    // What the defense expects, from the formation it sees and the situation.
+    const f = this.offCall.formation;
+    this.snapContext = {
+      down: setup.down ?? 1,
+      distance: this.firstDownX - this.los,
+      yardline: this.los - 10,
+      personnel: f.personnel,
+      qb: f.qb,
+      empty: !f.slots.RB,
+      hurry: this.hurry,
+    };
+    const expected = setup.scouting ? setup.scouting.passLogOdds(this.snapContext) : leaguePassLogOdds(this.snapContext);
+    for (const d of this.defense) d.recog = new Recognition(d, this, expected);
     assignBehaviors(this);
     this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
   }
@@ -200,7 +225,8 @@ export class PlaySim {
   see(observer: Agent, target: Agent, delayScale = 1): Perceived {
     if (observer.team === target.team) return this.perception.perceive(target.idx, 0.05);
     let delay = observer.profile.reactionTime * delayScale;
-    if (this.t < observer.fooledUntil) delay += 0.15;
+    // Eyes in the backfield on a pass: slow to pick up receivers.
+    if (observer.recog?.read === 'run' && this.isPass) delay += 0.15;
     return this.perception.perceive(target.idx, delay);
   }
 
@@ -371,6 +397,7 @@ export class PlaySim {
   tick(): void {
     const t = this.t;
     this.perception.record(this.agents.map((a) => a.body));
+    for (const d of this.defense) d.recog?.update(d, this);
 
     // Decide.
     for (let i = 0; i < this.agents.length; i++) {

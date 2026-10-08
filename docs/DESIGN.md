@@ -258,6 +258,35 @@ with a short delay. Effects:
 * **Ball in the air:** defenders not facing the QB need extra time to locate the
   ball; zone defenders reading the QB's eyes (anticipation) break early.
 
+### 6.2a Game sense: reading run and pass (`src/sim/recognition.ts`)
+
+No defender is told the play. Each brings an **expectation** into the snap —
+the NFL pass rate for the situation (2022 Big Data Bowl labels), shifted by
+personnel, QB alignment, empty sets and tempo, and by the defense's in-game
+scouting of this offense — and weighs it by his **game sense** (play
+recognition, awareness and experience). Low game sense plays every snap
+closer to fifty-fifty.
+
+After the snap he reads **visible cues** through his perception delay, keyed
+by position: blockers' pad level (up in a pass set, low firing out), the line
+giving ground or moving people, a pulling guard, the QB dropping past the mesh
+or riding it, the back's path, receivers releasing or closing to block, the
+blocker in front of a lineman, and finally the handoff or the throw. Evidence
+is filtered over time (faster with recognition) with a per-play lean, so
+misreads are coherent rather than flickering. He **commits** to run or pass
+when he's convinced and an actual cue agrees; changing his mind takes
+stronger evidence. Until he commits, an underneath defender only eases into
+his drop. Play action works through the same cues — the back rides the mesh,
+the QB fakes, the line shows a low, aggressive look — and works best when the
+defense expects run; a draw shows pass sets first.
+
+**Learning:** each side keeps a scouting memory through the game. The
+defense learns the offense's run/pass mix by situation and formation; the
+offense learns the defense's coverage mix and how often its pre-snap shell is
+a disguise, which feeds the QB's coverage prior. Both are shrunk toward
+league habits so a few snaps don't give a team away, and sharper players use
+more of what was learned.
+
 ### 6.3 Behaviors
 
 Each agent's brain is a state machine chosen by its assignment and switched by

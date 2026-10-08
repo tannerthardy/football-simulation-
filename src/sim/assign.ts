@@ -28,10 +28,6 @@ export function assignBehaviors(sim: PlaySim): void {
     const key = d.slot.split('_')[0];
     const base = READ_BASE[key] ?? 0.3;
     d.readAt = d.profile.reactionTime + base * (1.35 - d.r('playRecognition')) + Math.abs(sim.rng.normal(0, 0.08));
-    if (call.kind === 'pass' && call.pass?.fake) {
-      const susceptibility = key === 'LB' || key === 'SS' ? 1 : key === 'DE' || key === 'DT' || key === 'NT' ? 0.35 : 0.6;
-      d.fooledUntil = d.readAt + (1.1 - d.r('playRecognition')) * 0.9 * susceptibility * sim.rng.range(0.6, 1.3);
-    }
     const role = spot.role;
     switch (role.kind) {
       case 'rush':
@@ -91,6 +87,12 @@ export function assignBehaviors(sim: PlaySim): void {
       const num = Number(ref[1]) as 1 | 2 | 3 | 4;
       const routeId = side[num] ?? (num === 1 ? 'go' : 'seam');
       a.behavior = new RouteRunner(a, sim, getRoute(routeId), outside, spot?.inline ? 0.15 : 0);
+    }
+    // Play action: the back sells the run through the mesh first.
+    const back = sim.slot('RB');
+    if (concept.fake && back && back.behavior.kind !== 'idle') {
+      const side = Math.sign(back.pos.y - qb.pos.y) || 1;
+      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: (qb.pos.y + back.pos.y) / 2 + side * 0.4 }, 0.7);
     }
     const qbb = new QBPass(qb, sim, concept);
     qb.behavior = qbb;
@@ -173,6 +175,29 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     rb = { x: los - 4.4, y: by + ps * 0.9 };
   }
   return { qb, rb, aim, time, pitch };
+}
+
+/**
+ * Play-action fake by the back: ride the mesh and take a step downhill — the
+ * run cue linebackers read — then his pass job from beside the QB.
+ */
+export class PlayActionFake implements Behavior {
+  readonly kind = 'pa-fake';
+  private meshed = false;
+  constructor(
+    private readonly job: Behavior,
+    private readonly mesh: Vec2,
+    private readonly until: number,
+  ) {}
+  update(a: Agent, sim: PlaySim): MoveCommand {
+    if (sim.t >= this.until || sim.carrier !== sim.qb) {
+      a.behavior = this.job;
+      return this.job.update(a, sim);
+    }
+    if (!this.meshed && Math.hypot(this.mesh.x - a.pos.x, this.mesh.y - a.pos.y) < 0.7) this.meshed = true;
+    if (!this.meshed) return goTo(a, this.mesh, { speed: 0.9, through: a.profile.vmax * 0.5 });
+    return goTo(a, { x: this.mesh.x + 1.0, y: this.mesh.y }, { speed: 0.6 });
+  }
 }
 
 /** Running back before the handoff: time the arrival at the mesh. */

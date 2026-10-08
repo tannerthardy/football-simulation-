@@ -707,7 +707,12 @@ carrier segments for fumble-after-catch credit, conversions on scoring and
 turnover plays, the two-minute warning, and overtime tries and periods;
 `test/determinism.test.ts` covers named random streams and roster-scoped ids.
 From row 9, sprint endurance now caps the integrator and feeds reach
-estimates.
+estimates. Toward rows 8 and 10: defenders' run/pass reads come from
+observable cues with situational and scouted expectations
+(`src/sim/recognition.ts`, `test/recognition.test.ts`) instead of the true
+play type, play action and draws work through those cues, and defenders keep
+their run fits behind the line instead of chasing from a fixed read time.
+Protection, coverage and QB decisions still read some true state.
 
 Each row may require several small PRs. Keep a change focused on one hypothesis
 with evidence; do not combine every model adjustment into one unreviewable

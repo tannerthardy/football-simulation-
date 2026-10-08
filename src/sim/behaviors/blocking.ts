@@ -131,6 +131,8 @@ export class PassProtector implements Behavior {
   ) {}
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    // Play action: everyone shows a low, aggressive pad level at first.
+    a.stance = isOL(a) && sim.t < 0.35 && sim.offCall.kind === 'pass' && sim.offCall.pass?.fake ? 'low' : 'high';
     if (a.engagement) return stand();
     if (sim.carrier !== sim.qb || !sim.isPass) {
       return stand();
@@ -149,7 +151,10 @@ export class PassProtector implements Behavior {
       const isT = a.slot === 'LT' || a.slot === 'RT';
       const out = Math.sign(home - sim.ballY);
       const depth = isOL(a) ? (isT ? 2.2 : 1.1) * Math.min(1, sim.t / 0.8) : 0;
-      const set = isOL(a) ? { x: sim.los - 0.6 - depth, y: home + (isT ? out * 0.8 : 0) } : { x: qb.pos.x + 1.2, y: qb.pos.y + Math.sign(home - qb.pos.y || 1) * 1.4 };
+      // A back steps up beside the QB's launch point, not toward the line:
+      // from under center the QB starts at the line and drops away.
+      let set = isOL(a) ? { x: sim.los - 0.6 - depth, y: home + (isT ? out * 0.8 : 0) } : { x: Math.min(qb.pos.x + 1.2, sim.snapX[a.idx] + 1.5), y: qb.pos.y + Math.sign(home - qb.pos.y || 1) * 1.4 };
+      if (runLook(a, sim)) set = { x: sim.los - 0.2, y: set.y };
       return goTo(a, set, { speed: 0.7, facing: 0 });
     }
     // Pass set: stay on the line between the rusher and the QB, giving ground
@@ -176,6 +181,7 @@ export class PassProtector implements Behavior {
     let along = contact * 0.85;
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
+    if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
     // A tackle late to the spot can still get a punch on a speed rusher's near
     // shoulder as he goes by; the rep then starts from a losing angle.
@@ -189,6 +195,16 @@ export class PassProtector implements Behavior {
     const quick = 0.85 + 0.3 * traits(a).feet;
     return track(a, set, { x: r.vel.x * 0.7, y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
   }
+}
+
+/**
+ * Play-action protection: the interior shows run for the first moments (fire
+ * out low instead of setting), the cue that holds linebackers; the tackles
+ * still kick to protect the edges.
+ */
+function runLook(a: Agent, sim: PlaySim): boolean {
+  const interior = a.slot === 'LG' || a.slot === 'C' || a.slot === 'RG';
+  return interior && sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake;
 }
 
 // ------------------------------------------------------------- run blocking
@@ -397,6 +413,8 @@ export class RunBlocker implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const plan = this.plan;
     const t = sim.t;
+    // Draw blockers show pass first; everyone else fires out low.
+    a.stance = plan.kind === 'draw' && t < 1.0 ? 'high' : 'low';
     if (a.engagement) {
       // Combo: come off the double team to the linebacker.
       if (plan.kind === 'combo' && !this.climbed && plan.climbTo) {

@@ -34,7 +34,7 @@ import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
 import { COVERAGES, PRESSURE_BY_ID } from '../playbook/defense.js';
-import type { Coverage, DefSlot, OffensivePlayCall, PassConcept } from '../playbook/types.js';
+import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConcept } from '../playbook/types.js';
 import { r01 } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -43,6 +43,41 @@ import type { PlaySim } from './playsim.js';
 const PRIOR: Record<string, number> = {
   cover3: 0.28, cover1: 0.18, cover4: 0.15, cover2: 0.1, cover6: 0.08, tampa2: 0.06, cover2man: 0.06, cover0: 0.04,
 };
+
+/**
+ * What an offense learns about a defense during the game from the sideline
+ * pictures and film: how often it plays each coverage and how often the
+ * shell it shows isn't the one it plays. Shrunk toward league habits, so a
+ * few snaps don't give a defense away.
+ */
+export class CoverageScouting {
+  private readonly counts: Record<string, number> = {};
+  private n = 0;
+  private disguised = 0;
+  constructor(private readonly strength = 12) {}
+
+  observe(call: DefensivePlayCall): void {
+    this.counts[call.coverage.id] = (this.counts[call.coverage.id] ?? 0) + 1;
+    this.n++;
+    if (call.shown && call.shown.id !== call.coverage.id) this.disguised++;
+  }
+
+  /** Expected coverage frequencies for this defense. */
+  frequencies(): Record<string, number> {
+    const out: Record<string, number> = {};
+    for (const c of COVERAGES) out[c.id] = ((this.counts[c.id] ?? 0) + this.strength * (PRIOR[c.id] ?? 0.05)) / (this.n + this.strength);
+    return out;
+  }
+
+  /** How often this defense disguises its shell. */
+  disguiseRate(): number {
+    return (this.disguised + this.strength * DISGUISE_RATE) / (this.n + this.strength);
+  }
+
+  snaps(): number {
+    return this.n;
+  }
+}
 
 /**
  * How each coverage looks after the snap, measured from the simulation (see
@@ -102,6 +137,9 @@ export class QBMind {
   private readonly canon = new Map<string, DefenseAlignment>();
   private readonly memory = new Map<Agent, Memory>();
   private readonly clearHalf: number;
+  /** Coverage frequencies he expects from this defense, and its disguise rate. */
+  private readonly prior: Record<string, number> = {};
+  private readonly disguiseRate: number;
   private readonly periphHalf: number;
 
   constructor(
@@ -114,6 +152,15 @@ export class QBMind {
     this.clearHalf = 0.33 + 0.22 * this.vision;
     this.periphHalf = this.clearHalf + 0.45 + 0.2 * this.vision;
     this.identifyAt = 0.45 + 0.4 * (1 - this.rec) + Math.abs(sim.rng.normal(0, 0.08));
+    // What he expects from this defense: league habits, adjusted by what
+    // he's seen of them today (the sharper QB uses more of it).
+    const scout = sim.coverageScouting;
+    const learned = scout?.frequencies();
+    for (const c of COVERAGES) {
+      const base = PRIOR[c.id] ?? 0.05;
+      this.prior[c.id] = learned ? base + (learned[c.id] - base) * (0.3 + 0.7 * this.rec) : base;
+    }
+    this.disguiseRate = scout ? DISGUISE_RATE + (scout.disguiseRate() - DISGUISE_RATE) * (0.3 + 0.7 * this.rec) : DISGUISE_RATE;
 
     // Canonical looks: how each coverage would align against this formation.
     const slots = sim.defense.map((d) => d.slot as DefSlot);
@@ -179,20 +226,20 @@ export class QBMind {
       const f = this.preFeatures(pos);
       let ll = 0;
       for (let k = 0; k < f.length; k++) ll -= ((obs[k] - f[k]) / (PRE_SIGMA[k] * ns)) ** 2 / 2;
-      logp[c.id] = Math.log(PRIOR[c.id] ?? 0.05) + ll;
+      logp[c.id] = Math.log(this.prior[c.id] ?? 0.05) + ll;
     }
     // That's a belief about what's *shown*. Smart QBs know a shown shell is
     // sometimes a disguise: spread some belief to the other shell's coverages.
     const shown = normalize(logp);
-    const aware = DISGUISE_RATE * (0.4 + 0.6 * this.rec);
+    const aware = this.disguiseRate * (0.4 + 0.6 * this.rec);
     const belief: Record<string, number> = {};
     for (const c of COVERAGES) belief[c.id] = 0;
     for (const sc of COVERAGES) {
       const ps = shown[sc.id];
       const others = COVERAGES.filter((c) => c.shell !== sc.shell || (sc.id === 'cover0') !== (c.id === 'cover0'));
-      const z = others.reduce((t, c) => t + (PRIOR[c.id] ?? 0.05), 0);
+      const z = others.reduce((t, c) => t + (this.prior[c.id] ?? 0.05), 0);
       belief[sc.id] += ps * (1 - aware);
-      for (const c of others) belief[c.id] += (ps * aware * (PRIOR[c.id] ?? 0.05)) / z;
+      for (const c of others) belief[c.id] += (ps * aware * (this.prior[c.id] ?? 0.05)) / z;
     }
     this.belief = belief;
 

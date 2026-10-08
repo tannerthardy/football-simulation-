@@ -18,23 +18,27 @@ import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track 
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 
-/** Does this defender currently believe the play is a run? */
+/** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
-  if (sim.t < a.readAt) return false;
-  if (!sim.isPass) return true;
-  return sim.t < a.fooledUntil;
+  if (a.recog) return a.recog.read === 'run';
+  return !sim.isPass && sim.t >= a.readAt;
 }
 export function knowsPass(sim: PlaySim, a: Agent): boolean {
-  return sim.isPass && sim.t >= a.readAt && sim.t >= a.fooledUntil;
+  if (a.recog) return a.recog.read === 'pass';
+  return sim.isPass && sim.t >= a.readAt;
 }
 
-/** Common transition: once the ball is past the line or caught, everyone pursues. */
+/**
+ * Common transition: once the ball carrier is past the line (or the QB is
+ * scrambling), everyone pursues. Behind the line, a defender who has read
+ * run plays his fit — he doesn't abandon his gap to chase.
+ */
 function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   const c = sim.carrier;
   if (!c || c.team === a.team) return null;
-  if (c !== sim.qb || sim.scrambled || !sim.isPass) {
-    // Ball carrier other than the dropback QB: chase him (after recognizing).
-    if (sim.t >= a.readAt || c.pos.x > sim.los) return chase(sim, a, c);
+  const past = c.pos.x > sim.los;
+  if (past || (c === sim.qb && sim.scrambled)) {
+    if (sim.t >= a.readAt || c.pos.x > sim.los + 1) return chase(sim, a, c);
   }
   return null;
 }
@@ -70,11 +74,11 @@ export class PassRusher implements Behavior {
       const spot = catchSpot(a, sim);
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
-    if (c && c.team !== a.team && (c !== sim.qb || sim.scrambled) && (believesRun(sim, a) || !sim.isPass || c.pos.x > sim.los - 1)) {
-      return runFit(a, sim, this.gap, this.gapSign);
-    }
-    if (believesRun(sim, a) && !sim.isPass) return runFit(a, sim, this.gap, this.gapSign);
-    if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign); // fooled by play action
+    // The ball is handed off or the QB takes off: play the run. Up close a
+    // lineman sees the exchange; a rusher who has read run plays it too
+    // (on play action, that's being fooled).
+    if (c && c.team !== a.team && (c !== sim.qb || sim.scrambled)) return runFit(a, sim, this.gap, this.gapSign);
+    if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
 
     // Rush lane by plan: power rushers go through the blocker's chest at the
     // QB; finesse rushers attack a shoulder through their gap; speed rushers
@@ -142,12 +146,19 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number): MoveC
   if (a.engagement) return stand();
   const gy = gapY(sim.offAlign, gap, gapSign);
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + 0.6, y: gy }, { speed: 0.9 });
-  const seen = sim.see(a, c);
+  // Before the handoff the threat is the mesh, not the quarterback: squeeze
+  // the gap and flow with the back; don't chase the QB into the backfield.
+  const back = sim.slot('RB');
+  const premesh = c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
+  const seen = sim.see(a, premesh ? back! : c);
   const behindLOS = seen.pos.x < sim.los - 0.5;
-  const committed = !behindLOS || Math.abs(seen.pos.y - gy) < 2.2;
+  const committed = !premesh && (!behindLOS || Math.abs(seen.pos.y - gy) < 2.2);
   if (!committed && (a.pos.x - sim.los) < 6) {
-    // Squeeze the gap, shading toward the ball's flow by recognition.
-    const flow = clamp(seen.vel.y * 0.5, -2.5, 2.5) * a.r('playRecognition');
+    // Squeeze the gap, shading toward the ball's flow by recognition. Once
+    // the ball has been handed off and declared away from his gap, he scrapes
+    // along the line toward it with inside-out leverage rather than waiting.
+    let flow = clamp(seen.vel.y * 0.5, -2.5, 2.5) * a.r('playRecognition');
+    if (!premesh) flow += clamp(seen.pos.y - gy, -3.5, 3.5) * (0.4 + 0.4 * a.r('pursuit'));
     const tgt = { x: Math.max(sim.los + 0.3, seen.pos.x + 1.0), y: gy + flow };
     return runThrough(a, tgt, { speed: 0.95 });
   }
@@ -287,7 +298,7 @@ export class ZoneCoverage implements Behavior {
     }
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
-    if (believesRun(sim, a) && !this.deep && sim.t > a.readAt) return runFit(a, sim, this.gap, this.gapSign);
+    if (believesRun(sim, a) && !this.deep) return runFit(a, sim, this.gap, this.gapSign);
     const spot = this.style === 'spot';
 
     const qb = sim.qb;
@@ -295,7 +306,10 @@ export class ZoneCoverage implements Behavior {
     const [ylo, yhi] = this.band;
     const facingQB = angleTo(a.pos, qb.pos);
     // Zone drops are run under control, eyes on the QB.
-    const zs = 0.65 + 0.2 * a.r('zoneCoverage');
+    // Until he's read pass, an underneath defender only eases into his drop
+    // (read step): how far he commits depends on how sure he is.
+    const hesitate = this.deep ? 1 : unsureFactor(a);
+    const zs = (0.65 + 0.2 * a.r('zoneCoverage')) * hesitate;
     const inside = (y: number) => Math.sign(sim.ballY - y) || 1;
 
     // Perceived routes in (or about to enter) this zone's lateral band.
@@ -415,7 +429,7 @@ export class ZoneCoverage implements Behavior {
     const facingQB = angleTo(a.pos, qb.pos);
     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
     if (toSpot > 2.5 && !a.tags.has('settled')) {
-      return goTo(a, lm, { speed: 0.88 + 0.1 * a.r('zoneCoverage'), facing: toSpot > 4 ? undefined : facingQB });
+      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: toSpot > 4 ? undefined : facingQB });
     }
     a.tags.add('settled');
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
@@ -444,6 +458,13 @@ export class ZoneCoverage implements Behavior {
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
     return goTo(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: 0.7 + 0.15 * a.r('zoneCoverage') });
   }
+}
+
+/** Speed factor for a defender who hasn't read run or pass yet. */
+function unsureFactor(a: Agent): number {
+  const r = a.recog;
+  if (!r || r.read !== 'unsure') return 1;
+  return 0.3 + 0.7 * r.pPass();
 }
 
 /** Lateral responsibility band for a zone (field y). */

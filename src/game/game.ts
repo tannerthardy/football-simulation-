@@ -12,6 +12,8 @@ import { clamp } from '../core/vec.js';
 import { r01, type Player } from '../players/types.js';
 import { pickDefense, pickOffense, specialist, type Team } from '../league/team.js';
 import { PlaySim } from '../sim/playsim.js';
+import { CoverageScouting } from '../sim/qbmind.js';
+import { ScoutingReport } from '../sim/recognition.js';
 import type { Frame, PlayResult } from '../sim/types.js';
 import { BoxScore } from './stats.js';
 import { DefensiveCoordinator, OffensiveCoordinator, type Situation } from './playcaller.js';
@@ -137,6 +139,13 @@ export class Game {
   private readonly box = new BoxScore();
   private readonly log: PlayLog[] = [];
   private readonly energy = new Map<string, number>();
+  /**
+   * What each side has learned about its opponent this game: the defense's
+   * read of the offense's run/pass tendencies, and the offense's read of the
+   * defense's coverage mix and disguise.
+   */
+  private readonly scouting: Record<Side, ScoutingReport> = { home: new ScoutingReport(), away: new ScoutingReport() };
+  private readonly coverageScouting: Record<Side, CoverageScouting> = { home: new CoverageScouting(), away: new CoverageScouting() };
   private readonly quarterScores: Array<{ home: number; away: number }> = [];
   private s: GameState;
   private playIndex = 0;
@@ -493,6 +502,8 @@ export class Game {
       hurry: sit.hurry,
       down: s.down,
       audibles: true,
+      scouting: this.scouting[defSide],
+      coverageScouting: this.coverageScouting[offSide],
     });
     // The QB may have checked out of the call at the line.
     const ranCall = sim.offCall;
@@ -500,6 +511,9 @@ export class Game {
     // Fatigue: write back energy of players who were on the field.
     for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
     for (const a of sim.agents) this.box.line(a.player, a.team === 'O' ? offTeam.abbr : defTeam.abbr).snaps++;
+    // Both sides learn from the snap they just saw.
+    this.scouting[defSide].observe(sim.snapContext, ranCall.kind === 'pass');
+    if (ranCall.kind === 'pass') this.coverageScouting[offSide].observe(defCall);
 
     const startDown = s.down;
     const startDist = s.distance;
