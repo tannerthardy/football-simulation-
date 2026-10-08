@@ -40,12 +40,39 @@ npm run sim:game -- 7    # simulate a game (seed 7) and print the box score
 npm run sim:game -- 7 --pbp   # ...with play-by-play
 npm run calibrate -- 20  # 20 games vs. NFL baseline metrics
 npm run replay -- 7      # bake a recorded game into out/replay.html
+npm run replay -- 7 --games 6 --doc   # film library from six games
 ```
 
 `npm run replay -- 7 --doc` writes a standalone HTML document you can open
-straight from disk. The viewer shows every scrimmage play top-down (All-22),
-with play calls, events on the timeline, route trails, and filters for
-scoring plays, explosives, turnovers and sacks.
+straight from disk. Use `--games 6` to collect many examples with the same
+rosters and consecutive game seeds (7–12 in the example above). `--out path`
+chooses where to save the HTML. The default remains one game.
+
+The film room groups recorded plays by **offensive concept**: zone and gap
+runs, quick game, dropback passes and play action. Choose a concept and click
+**Watch selection**, or use a group's **Watch** button. Auto-next stays within
+the matching clips, pauses briefly at each finish, and stops at the end;
+**Loop selection** repeats the batch. Next/previous follow the displayed group
+order. You can also group by defensive front, coverage, formation, or game
+and combine filters for those fields, results and offensive team. Search
+finds play calls, descriptions and player names.
+Use **Hide filters** to give the field more room while watching.
+
+Each replay has event jumps (snap, first block, handoff, throw, catch, first
+carrier contact and finish when recorded), frame stepping, 0.25–4× playback,
+route trails, slot labels and a wide view. Nullified snaps retain their film
+and are labelled; they do not appear as official touchdowns, completions,
+explosives, turnovers, sacks or stuffs. Unfilmed log entries are omitted.
+Concepts and defensive labels come from the actual calls after any audible,
+not from inferring a scheme from the animation.
+
+To check a generated multi-game viewer in Chromium, with Python Playwright
+installed, run `python3 scripts/check-replay-viewer.py out/replay.html`.
+`--browser /path/to/chromium` selects an installed browser and
+`--screenshots out/film-room` saves desktop, mobile and dark-mode previews.
+The check covers grouping, combined filters, playback, loop/finish behavior,
+scoreboard changes and empty selections; it blocks external fonts so the
+viewer is also checked without a network connection.
 
 ## Labs and diagnostics
 
