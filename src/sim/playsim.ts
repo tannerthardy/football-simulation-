@@ -40,6 +40,8 @@ export interface PlaySetup {
   hurry?: boolean;
   /** Wind (yd/s). */
   wind?: Vec2;
+  /** Record one frame every N ticks (default 2 → 10 Hz). */
+  recordEvery?: number;
 }
 
 const MAX_PLAY_TIME = 25;
@@ -69,6 +71,8 @@ export class PlaySim {
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
   private readonly record: boolean;
+  private readonly recordEvery: number;
+  private tickCount = 0;
   private cmds: MoveCommand[] = [];
 
   phase: 'live' | 'dead' = 'live';
@@ -116,6 +120,7 @@ export class PlaySim {
     this.hurry = setup.hurry ?? false;
     this.wind = setup.wind ?? { x: 0, y: 0 };
     this.record = setup.record ?? false;
+    this.recordEvery = setup.recordEvery ?? 2;
 
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY);
     const defSlots = Object.keys(setup.defense) as DefSlot[];
@@ -354,7 +359,7 @@ export class PlaySim {
     this.updateBall();
     if (this.phase === 'live') tryTackles(this);
     if (this.phase === 'live') this.checkWhistle();
-    if (this.record) this.recordFrame();
+    if (this.record && (this.tickCount++ % this.recordEvery === 0 || this.phase === 'dead')) this.recordFrame();
     this.t = round2(this.t + this.dt);
   }
 
@@ -512,9 +517,9 @@ export class PlaySim {
 
   private recordFrame(): void {
     const agents: number[] = [];
-    for (const a of this.agents) agents.push(round2(a.pos.x), round2(a.pos.y), round2(a.body.facing));
+    for (const a of this.agents) agents.push(round1(a.pos.x), round1(a.pos.y), round1(a.body.facing));
     const b = this.ballPos();
-    this.frames.push({ t: round2(this.t), agents, ball: [round2(b.x), round2(b.y), round2(b.z)], carrier: this.carrier?.idx ?? -1 });
+    this.frames.push({ t: round2(this.t), agents, ball: [round1(b.x), round1(b.y), round1(b.z)], carrier: this.carrier?.idx ?? -1 });
   }
 
   // ------------------------------------------------------------ result
@@ -557,6 +562,7 @@ export class PlaySim {
 }
 
 const round2 = (v: number) => Math.round(v * 100) / 100;
+const round1 = (v: number) => Math.round(v * 10) / 10;
 
 export function distance(a: Agent, b: Agent): number {
   return dist(a.pos, b.pos);

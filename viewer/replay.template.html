@@ -1,0 +1,530 @@
+<title>Gridiron Replay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: film-room console — scoreboard strip, field monitor with transport
+   controls, play sheet on the side (stacks under the monitor on phones). */
+:root {
+  --bg: #eef1ec;
+  --panel: #ffffff;
+  --panel-2: #f4f6f2;
+  --ink: #18201b;
+  --muted: #5d6a61;
+  --line: #d6ddd5;
+  --accent: #c78a12;
+  --accent-ink: #ffffff;
+  --turf-a: #3f7a45;
+  --turf-b: #3a7340;
+  --chalk: rgba(255, 255, 255, 0.82);
+  --los: #3d8bff;
+  --fd: #ffd23f;
+  --good: #1f8a4c;
+  --bad: #c2392d;
+  --warn: #b7791f;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1411; --panel: #171e19; --panel-2: #1d2620; --ink: #e7ece6; --muted: #93a197; --line: #2b362e;
+    --accent: #f0b43c; --accent-ink: #141a15; --turf-a: #2c5a32; --turf-b: #295430; --chalk: rgba(255, 255, 255, 0.75);
+    --good: #4cc27c; --bad: #ff7a6b; --warn: #f0b43c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1411; --panel: #171e19; --panel-2: #1d2620; --ink: #e7ece6; --muted: #93a197; --line: #2b362e;
+  --accent: #f0b43c; --accent-ink: #141a15; --turf-a: #2c5a32; --turf-b: #295430; --chalk: rgba(255, 255, 255, 0.75);
+  --good: #4cc27c; --bad: #ff7a6b; --warn: #f0b43c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.45; }
+.app { max-width: 1400px; margin: 0 auto; padding-block: 16px 24px; padding-inline: 16px; display: grid; gap: 14px; }
+.scoreboard { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.brand { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase; }
+.brand small { display: block; font-family: var(--body); font-weight: 500; font-size: 11px; letter-spacing: 0.08em; color: var(--muted); }
+.teams { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.team { display: flex; align-items: center; gap: 10px; }
+.swatch { width: 14px; height: 14px; border-radius: 3px; flex: none; }
+.team .nm { font-weight: 600; }
+.team .pts { font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.linescore { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--muted); border-collapse: collapse; }
+.linescore th, .linescore td { padding: 2px 8px; text-align: right; font-variant-numeric: tabular-nums; }
+.linescore th { font-weight: 500; }
+.linescore td:first-child, .linescore th:first-child { text-align: left; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: start; }
+@media (max-width: 980px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.monitor { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; }
+.sit { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; padding: 12px 14px 10px; border-bottom: 1px solid var(--line); }
+.dd { font-family: var(--display); font-weight: 800; font-size: 24px; letter-spacing: 0.02em; }
+.clock { font-family: var(--mono); color: var(--muted); font-size: 13px; }
+.calls { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 13px; width: 100%; }
+.calls dt { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; padding-top: 2px; }
+.calls dd { margin: 0; min-width: 0; }
+.field-wrap { position: relative; background: var(--turf-b); }
+canvas { display: block; width: 100%; height: auto; touch-action: none; }
+.caption { position: absolute; left: 10px; bottom: 10px; background: rgba(10, 14, 11, 0.72); color: #fff; font-family: var(--mono); font-size: 12px; padding: 4px 8px; border-radius: 4px; pointer-events: none; }
+.transport { display: grid; gap: 8px; padding: 10px 14px 12px; border-top: 1px solid var(--line); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button, .chip { font-family: var(--body); font-size: 13px; font-weight: 600; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+button:hover, .chip:hover { border-color: var(--muted); }
+button:focus-visible, .chip:focus-visible, input:focus-visible, .play:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); min-width: 76px; }
+button[aria-pressed="true"], .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.timeline { position: relative; height: 26px; }
+.timeline input { position: absolute; inset: 6px 0 auto; width: 100%; margin: 0; accent-color: var(--accent); }
+.marks { position: absolute; inset: 0; pointer-events: none; }
+.mark { position: absolute; top: 0; width: 2px; height: 8px; border-radius: 1px; transform: translateX(-1px); }
+.tlabels { position: relative; height: 14px; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.tlabels span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.speed { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: auto; }
+.result { padding: 10px 14px 14px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.result p { margin: 0; font-size: 14px; }
+.kv { display: flex; flex-wrap: wrap; gap: 6px 16px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.kv b { color: var(--ink); font-weight: 500; }
+.sheet { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; display: grid; grid-template-rows: auto minmax(0, 1fr); max-height: calc(100vh - 140px); min-width: 0; }
+@media (max-width: 980px) { .sheet { max-height: 70vh; } }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.list { overflow-y: auto; padding: 4px 0 8px; }
+.qhead { position: sticky; top: 0; background: var(--panel); font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; color: var(--muted); padding: 8px 12px 4px; border-bottom: 1px solid var(--line); }
+.play { display: grid; grid-template-columns: 4px minmax(0, 1fr); gap: 0 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
+.play[aria-current="true"] { background: var(--panel-2); }
+.play .stripe { border-radius: 2px; background: var(--line); }
+.play.td .stripe { background: var(--good); }
+.play.to .stripe { background: var(--bad); }
+.play.sack .stripe { background: var(--warn); }
+.play.big .stripe { background: var(--accent); }
+.play.st { cursor: default; opacity: 0.72; }
+.play .meta { font-family: var(--mono); font-size: 11px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
+.play .txt { font-size: 13px; margin-top: 2px; overflow-wrap: anywhere; }
+.badge { font-family: var(--mono); font-size: 10px; padding: 0 5px; border-radius: 3px; border: 1px solid currentColor; }
+.foot { font-size: 12px; color: var(--muted); }
+.foot kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="app">
+  <header class="scoreboard">
+    <div class="brand">Gridiron Replay<small>All-22 · simulated by Gridiron Engine</small></div>
+    <div class="teams" id="teams"></div>
+    <table class="linescore" id="linescore" aria-label="Score by quarter"></table>
+  </header>
+
+  <div class="main">
+    <section class="monitor" aria-label="Play replay">
+      <div class="sit">
+        <div class="dd" id="dd">—</div>
+        <div class="clock" id="clock"></div>
+        <dl class="calls">
+          <dt>Offense</dt><dd id="offcall">—</dd>
+          <dt>Defense</dt><dd id="defcall">—</dd>
+        </dl>
+      </div>
+      <div class="field-wrap">
+        <canvas id="field" width="1200" height="720" aria-label="Top-down view of the play"></canvas>
+        <div class="caption" id="caption">0.00s</div>
+      </div>
+      <div class="transport">
+        <div class="timeline">
+          <div class="marks" id="marks"></div>
+          <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Play time">
+        </div>
+        <div class="tlabels" id="tlabels"></div>
+        <div class="row">
+          <button id="prev" title="Previous play (↑)">◀◀</button>
+          <button id="back" title="Step back (←)">◀</button>
+          <button id="playbtn" class="primary">Play</button>
+          <button id="fwd" title="Step forward (→)">▶</button>
+          <button id="next" title="Next play (↓)">▶▶</button>
+          <button id="speedbtn" title="Playback speed">1×</button>
+          <button id="labels" aria-pressed="false" title="Show slots instead of jersey numbers (L)">Slots</button>
+          <button id="trails" aria-pressed="true" title="Route trails (T)">Trails</button>
+          <button id="wide" aria-pressed="false" title="Wide view (W)">Wide</button>
+          <button id="auto" aria-pressed="false" title="Auto-advance to the next play">Auto</button>
+        </div>
+      </div>
+      <div class="result">
+        <p id="result">Pick a play from the sheet.</p>
+        <div class="kv" id="kv"></div>
+        <div class="foot"><kbd>Space</kbd> play · <kbd>←</kbd><kbd>→</kbd> step · <kbd>↑</kbd><kbd>↓</kbd> plays · offense always attacks to the right · blue = line of scrimmage, yellow = line to gain</div>
+      </div>
+    </section>
+
+    <aside class="sheet" aria-label="Play-by-play">
+      <div class="filters" id="filters"></div>
+      <div class="list" id="list"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const REPLAY = /*__REPLAY_DATA__*/null;
+(function () {
+  if (!REPLAY) { document.getElementById('result').textContent = 'No replay data embedded. Run: npm run replay'; return; }
+  const $ = (id) => document.getElementById(id);
+  const canvas = $('field');
+  const ctx = canvas.getContext('2d');
+  const plays = REPLAY.plays;
+  const meta = REPLAY.meta;
+  // Positions, facings and ball coordinates arrive in tenths.
+  for (const p of plays) {
+    if (!p.frames) continue;
+    p.frames.p = Float32Array.from(p.frames.p, (v) => v / 10);
+    p.frames.b = Float32Array.from(p.frames.b, (v) => v / 10);
+  }
+  const teams = { [meta.home.abbr]: meta.home, [meta.away.abbr]: meta.away };
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+  // ---------------------------------------------------------------- header
+  $('teams').innerHTML = [meta.away, meta.home].map((t, i) => `<div class="team"><span class="swatch" style="background:${t.color}"></span><span class="nm">${t.name}${i ? ' (home)' : ''}</span><span class="pts">${t === meta.home ? meta.final.home : meta.final.away}</span></div>`).join('');
+  const qs = meta.quarters;
+  const per = (side) => qs.map((q, i) => q[side] - (i ? qs[i - 1][side] : 0));
+  const head = qs.map((_, i) => `<th>${i < 4 ? i + 1 : 'OT'}</th>`).join('');
+  $('linescore').innerHTML = `<tr><th></th>${head}<th>T</th></tr><tr><td>${meta.away.abbr}</td>${per('away').map((v) => `<td>${v}</td>`).join('')}<td>${meta.final.away}</td></tr><tr><td>${meta.home.abbr}</td>${per('home').map((v) => `<td>${v}</td>`).join('')}<td>${meta.final.home}</td></tr>`;
+
+  // ---------------------------------------------------------------- list
+  const ord = ['', '1st', '2nd', '3rd', '4th'];
+  const yl = (y) => (Math.round(y) === 50 ? '50' : y < 50 ? `OWN ${Math.round(y)}` : `OPP ${100 - Math.round(y)}`);
+  const clk = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  const tags = (p) => {
+    const t = p.text;
+    const o = [];
+    if (/TOUCHDOWN/.test(t)) o.push('td');
+    if (/INTERCEPTED|FUMBLE.*recovered by (?!offense)|MUFFED/.test(t)) o.push('to');
+    if (/SACKED/.test(t)) o.push('sack');
+    if (p.yds >= 20) o.push('big');
+    return o;
+  };
+  let filter = 'all';
+  const filterDefs = [['all', 'All plays'], ['score', 'Scoring'], ['big', 'Explosive'], ['to', 'Turnovers'], ['sack', 'Sacks']];
+  $('filters').innerHTML = filterDefs.map(([k, l]) => `<button class="chip" data-f="${k}" aria-pressed="${k === filter}">${l}</button>`).join('');
+  $('filters').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-f]');
+    if (!b) return;
+    filter = b.dataset.f;
+    for (const x of $('filters').children) x.setAttribute('aria-pressed', String(x.dataset.f === filter));
+    renderList();
+  });
+  function visible(p) {
+    const t = tags(p);
+    if (filter === 'all') return true;
+    if (filter === 'score') return t.includes('td') || /field goal.*GOOD|SAFETY/.test(p.text);
+    return t.includes(filter);
+  }
+  function renderList() {
+    let html = '';
+    let q = 0;
+    plays.forEach((p, i) => {
+      if (!visible(p)) return;
+      if (p.q !== q) { q = p.q; html += `<div class="qhead">${q <= 4 ? `Quarter ${q}` : 'Overtime'}</div>`; }
+      const t = tags(p);
+      const cls = ['play', ...t, p.frames ? '' : 'st'].join(' ');
+      const sit = p.frames ? `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}` : p.kindLabel;
+      const badges = t.filter((x) => x !== 'big').map((x) => `<span class="badge">${{ td: 'TD', to: 'TURNOVER', sack: 'SACK' }[x]}</span>`).join(' ');
+      html += `<div class="${cls}" data-i="${i}" ${p.frames ? 'tabindex="0" role="button"' : ''} ${i === cur ? 'aria-current="true"' : ''}><span class="stripe"></span><div><div class="meta"><span>${clk(p.clk)}</span><span>${p.off}</span><span>${sit}</span>${badges}</div><div class="txt">${p.text}</div></div></div>`;
+    });
+    $('list').innerHTML = html;
+  }
+  $('list').addEventListener('click', (e) => {
+    const el = e.target.closest('[data-i]');
+    if (el && plays[+el.dataset.i].frames) load(+el.dataset.i, true);
+  });
+  $('list').addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const el = e.target.closest('[data-i]');
+    if (el && plays[+el.dataset.i].frames) load(+el.dataset.i, true);
+  });
+
+  // ---------------------------------------------------------------- state
+  let cur = -1;
+  let t = 0;
+  let playing = false;
+  let speed = 1;
+  let showSlots = false;
+  let showTrails = true;
+  let wide = false;
+  let auto = false;
+  let cam = { x: 60, y: 26.67 };
+  const scrub = $('scrub');
+
+  function frameAt(p, time) {
+    const T = p.frames.t;
+    let lo = 0;
+    let hi = T.length - 1;
+    if (time <= T[0]) return [0, 0, 0];
+    if (time >= T[hi]) return [hi, hi, 0];
+    while (hi - lo > 1) {
+      const m = (lo + hi) >> 1;
+      if (T[m] <= time) lo = m;
+      else hi = m;
+    }
+    return [lo, hi, (time - T[lo]) / (T[hi] - T[lo] || 1)];
+  }
+
+  function load(i, start) {
+    cur = i;
+    const p = plays[i];
+    t = 0;
+    playing = !!start;
+    $('playbtn').textContent = playing ? 'Pause' : 'Play';
+    const dur = p.frames.t[p.frames.t.length - 1];
+    $('dd').textContent = `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}`;
+    $('clock').textContent = `${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)} · ${p.off} ball · ${meta.away.abbr} ${p.score.away} – ${meta.home.abbr} ${p.score.home}`;
+    $('offcall').textContent = p.call || '—';
+    $('defcall').textContent = p.def || '—';
+    $('result').textContent = p.text;
+    const s = p.stats || {};
+    const kv = [];
+    if (s.ttt !== undefined) kv.push(`time to throw <b>${s.ttt.toFixed(2)}s</b>`);
+    if (s.air !== undefined) kv.push(`air yards <b>${s.air.toFixed(1)}</b>`);
+    if (s.yac !== undefined) kv.push(`YAC <b>${s.yac.toFixed(1)}</b>`);
+    if (s.sep !== undefined) kv.push(`separation at catch <b>${s.sep.toFixed(1)} yd</b>`);
+    if (s.ybc !== undefined) kv.push(`yards before contact <b>${s.ybc.toFixed(1)}</b>`);
+    if (s.pressured) kv.push('<b>pressured</b>');
+    kv.push(`duration <b>${dur.toFixed(1)}s</b>`);
+    $('kv').innerHTML = kv.join('');
+    // Event marks on the timeline.
+    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), touchdown: css('--good'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent') };
+    const shown = p.ev.filter((e) => colors[e[1]]);
+    $('marks').innerHTML = shown.map((e) => `<span class="mark" style="left:${(e[0] / dur) * 100}%;background:${colors[e[1]]}" title="${e[1]} ${e[0]}s"></span>`).join('');
+    const labelled = shown.filter((e, k) => k === 0 || e[0] - shown[k - 1][0] > dur * 0.08).slice(0, 7);
+    $('tlabels').innerHTML = labelled.map((e) => {
+      const pct = (e[0] / dur) * 100;
+      const shift = pct > 85 ? -100 : pct < 15 ? 0 : -50;
+      return `<span style="left:${pct}%;transform:translateX(${shift}%)">${e[1].replace('_', ' ')}</span>`;
+    }).join('');
+    cam = { x: p.los + 8, y: 26.67 };
+    for (const el of $('list').querySelectorAll('[aria-current]')) el.removeAttribute('aria-current');
+    const li = $('list').querySelector(`[data-i="${i}"]`);
+    if (li) { li.setAttribute('aria-current', 'true'); li.scrollIntoView({ block: 'nearest' }); }
+  }
+
+  function step(dir) {
+    let i = cur;
+    do { i += dir; } while (i >= 0 && i < plays.length && (!plays[i].frames || !visible(plays[i])));
+    if (i >= 0 && i < plays.length) load(i, playing || auto);
+  }
+
+  $('playbtn').onclick = () => { if (cur < 0) return; const p = plays[cur]; if (t >= p.frames.t[p.frames.t.length - 1]) t = 0; playing = !playing; $('playbtn').textContent = playing ? 'Pause' : 'Play'; };
+  $('prev').onclick = () => step(-1);
+  $('next').onclick = () => step(1);
+  $('back').onclick = () => { playing = false; $('playbtn').textContent = 'Play'; t = Math.max(0, t - 0.1); };
+  $('fwd').onclick = () => { playing = false; $('playbtn').textContent = 'Play'; t += 0.1; };
+  const speeds = [0.25, 0.5, 1, 2];
+  $('speedbtn').onclick = () => { speed = speeds[(speeds.indexOf(speed) + 1) % speeds.length]; $('speedbtn').textContent = `${speed}×`; };
+  const toggle = (id, get, set) => { $(id).onclick = () => { set(!get()); $(id).setAttribute('aria-pressed', String(get())); }; };
+  toggle('labels', () => showSlots, (v) => (showSlots = v));
+  toggle('trails', () => showTrails, (v) => (showTrails = v));
+  toggle('wide', () => wide, (v) => { wide = v; resize(); });
+  toggle('auto', () => auto, (v) => (auto = v));
+  scrub.addEventListener('input', () => { if (cur < 0) return; const p = plays[cur]; playing = false; $('playbtn').textContent = 'Play'; t = (scrub.value / 1000) * p.frames.t[p.frames.t.length - 1]; });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
+    if (e.key === ' ') { e.preventDefault(); $('playbtn').click(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); $('back').click(); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); $('fwd').click(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
+    else if (e.key === 'l' || e.key === 'L') $('labels').click();
+    else if (e.key === 't' || e.key === 'T') $('trails').click();
+    else if (e.key === 'w' || e.key === 'W') $('wide').click();
+  });
+
+  // ---------------------------------------------------------------- render
+  let W = 1200;
+  let H = 720;
+  let dpr = 1;
+  function resize() {
+    const box = canvas.parentElement.getBoundingClientRect();
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.max(300, box.width);
+    H = Math.round(W * (wide ? 0.62 : W < 560 ? 0.95 : 0.6));
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.height = `${H}px`;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function viewYards() {
+    if (wide) return 120;
+    return W < 560 ? 30 : 52;
+  }
+
+  function draw() {
+    const p = cur >= 0 ? plays[cur] : null;
+    const vy = viewYards();
+    const sc = W / vy;
+    const visH = H / sc;
+    // Camera follows the ball.
+    if (p) {
+      const [a, b, f] = frameAt(p, t);
+      const bx = p.frames.b[a * 3] + (p.frames.b[b * 3] - p.frames.b[a * 3]) * f;
+      const by = p.frames.b[a * 3 + 1] + (p.frames.b[b * 3 + 1] - p.frames.b[a * 3 + 1]) * f;
+      const k = 0.08;
+      cam.x += (bx + 6 - cam.x) * k;
+      cam.y += (by - cam.y) * k;
+    }
+    const cx = wide ? 60 : Math.min(120 - vy / 2 + 2, Math.max(vy / 2 - 2, cam.x));
+    const cy = wide || visH >= 56 ? 26.67 : Math.min(53.33 - visH / 2 + 1.5, Math.max(visH / 2 - 1.5, cam.y));
+    const X = (x) => (x - cx) * sc + W / 2;
+    const Y = (y) => H / 2 - (y - cy) * sc; // +y up
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // Turf with 5-yard stripes.
+    ctx.fillStyle = css('--turf-b');
+    ctx.fillRect(0, 0, W, H);
+    for (let x = 10; x < 110; x += 10) { ctx.fillStyle = css('--turf-a'); ctx.fillRect(X(x), Y(53.33), 5 * sc, 53.33 * sc); }
+    // End zones.
+    if (p) {
+      const offT = teams[p.off];
+      const defT = Object.values(teams).find((x) => x !== offT);
+      for (const [x0, tm] of [[0, offT], [110, defT]]) {
+        ctx.fillStyle = tm.color;
+        ctx.globalAlpha = 0.8;
+        ctx.fillRect(X(x0), Y(53.33), 10 * sc, 53.33 * sc);
+        ctx.globalAlpha = 1;
+        ctx.save();
+        ctx.translate(X(x0 + 5), Y(26.67));
+        ctx.rotate(x0 === 0 ? -Math.PI / 2 : Math.PI / 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        ctx.font = `800 ${Math.max(14, sc * 3.2)}px ${css('--display')}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(tm.name.toUpperCase(), 0, 0);
+        ctx.restore();
+      }
+    }
+    // Lines, numbers, hashes.
+    ctx.strokeStyle = css('--chalk');
+    ctx.fillStyle = css('--chalk');
+    for (let x = 10; x <= 110; x += 5) {
+      ctx.lineWidth = x % 10 === 0 ? 2 : 1;
+      ctx.beginPath(); ctx.moveTo(X(x), Y(0)); ctx.lineTo(X(x), Y(53.33)); ctx.stroke();
+    }
+    ctx.lineWidth = 2;
+    ctx.strokeRect(X(0), Y(53.33), 120 * sc, 53.33 * sc);
+    for (let x = 11; x < 110; x++) {
+      if (x % 5 === 0) continue;
+      for (const hy of [23.58, 29.75]) { ctx.beginPath(); ctx.moveTo(X(x), Y(hy - 0.33)); ctx.lineTo(X(x), Y(hy + 0.33)); ctx.lineWidth = 1; ctx.stroke(); }
+      for (const hy of [0.4, 52.93]) { ctx.beginPath(); ctx.moveTo(X(x), Y(hy - 0.33)); ctx.lineTo(X(x), Y(hy + 0.33)); ctx.stroke(); }
+    }
+    ctx.font = `600 ${Math.max(11, sc * 1.8)}px ${css('--display')}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (let x = 20; x <= 100; x += 10) {
+      const n = x - 10 <= 50 ? x - 10 : 110 - x;
+      for (const ny of [9, 44.33]) {
+        ctx.save(); ctx.translate(X(x), Y(ny)); if (ny > 26) ctx.rotate(Math.PI); ctx.fillText(String(n), 0, 0); ctx.restore();
+      }
+    }
+    if (!p) return;
+    // LOS and line to gain.
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = css('--los');
+    ctx.beginPath(); ctx.moveTo(X(p.los), Y(0)); ctx.lineTo(X(p.los), Y(53.33)); ctx.stroke();
+    if (p.fd < 110) { ctx.strokeStyle = css('--fd'); ctx.beginPath(); ctx.moveTo(X(p.fd), Y(0)); ctx.lineTo(X(p.fd), Y(53.33)); ctx.stroke(); }
+
+    const F = p.frames;
+    const [a, b, f] = frameAt(p, t);
+    const n = p.roster.length;
+    const offT = teams[p.off];
+    const defT = Object.values(teams).find((x) => x !== offT);
+    // Trails for receivers and the ball carrier.
+    if (showTrails) {
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < n; i++) {
+        const r = p.roster[i];
+        const skill = r[0] === 'O' ? /^(X|Z|Y|H|F|RB)$/.test(r[1]) : /^(CB|NB|DB|FS|SS)/.test(r[1]);
+        if (!skill) continue;
+        ctx.strokeStyle = r[0] === 'O' ? offT.color : defT.color;
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        for (let k = 0; k <= a; k++) {
+          const px = X(F.p[(k * n + i) * 3]);
+          const py = Y(F.p[(k * n + i) * 3 + 1]);
+          if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+    // Players.
+    const rad = Math.max(5, sc * 0.55);
+    const carrier = f < 0.5 ? F.c[a] : F.c[b];
+    for (let i = 0; i < n; i++) {
+      const r = p.roster[i];
+      const ia = (a * n + i) * 3;
+      const ib = (b * n + i) * 3;
+      const x = F.p[ia] + (F.p[ib] - F.p[ia]) * f;
+      const y = F.p[ia + 1] + (F.p[ib + 1] - F.p[ia + 1]) * f;
+      const fc = F.p[ib + 2];
+      const tm = r[0] === 'O' ? offT : defT;
+      const px = X(x);
+      const py = Y(y);
+      ctx.beginPath();
+      ctx.arc(px, py, rad, 0, Math.PI * 2);
+      ctx.fillStyle = tm.color;
+      ctx.fill();
+      ctx.lineWidth = i === carrier ? 3 : 1.5;
+      ctx.strokeStyle = i === carrier ? css('--fd') : tm.alt;
+      ctx.stroke();
+      // Facing tick.
+      ctx.beginPath();
+      ctx.moveTo(px + Math.cos(fc) * rad * 0.6, py - Math.sin(fc) * rad * 0.6);
+      ctx.lineTo(px + Math.cos(fc) * rad * 1.45, py - Math.sin(fc) * rad * 1.45);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = tm.alt;
+      ctx.stroke();
+      ctx.fillStyle = tm.text;
+      ctx.font = `600 ${Math.max(8, rad * 0.95)}px ${css('--mono')}`;
+      ctx.fillText(showSlots ? r[1].replace('_', '') : String(r[3]), px, py + 0.5);
+    }
+    // Ball: shadow on the ground, ball drawn higher and larger with height.
+    const bx = F.b[a * 3] + (F.b[b * 3] - F.b[a * 3]) * f;
+    const by = F.b[a * 3 + 1] + (F.b[b * 3 + 1] - F.b[a * 3 + 1]) * f;
+    const bz = F.b[a * 3 + 2] + (F.b[b * 3 + 2] - F.b[a * 3 + 2]) * f;
+    if (carrier < 0 || bz > 1.5) {
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.beginPath(); ctx.ellipse(X(bx), Y(by), sc * 0.35, sc * 0.2, 0, 0, Math.PI * 2); ctx.fill();
+      const lift = bz * sc * 0.35;
+      const size = 1 + bz * 0.08;
+      ctx.fillStyle = '#7a4a22';
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.ellipse(X(bx), Y(by) - lift, sc * 0.32 * size, sc * 0.2 * size, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+    $('caption').textContent = `${t.toFixed(2)}s${bz > 1.5 && carrier < 0 ? ` · ball ${(bz * 3).toFixed(0)} ft up` : ''}`;
+  }
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+    if (cur >= 0) {
+      const p = plays[cur];
+      const dur = p.frames.t[p.frames.t.length - 1];
+      if (playing) {
+        t += dt * speed;
+        if (t >= dur) {
+          t = dur;
+          if (auto && !holdUntil) holdUntil = now + 1200;
+          else if (!auto) { playing = false; $('playbtn').textContent = 'Play'; }
+        }
+      }
+      if (holdUntil && now >= holdUntil) { holdUntil = 0; step(1); }
+      t = Math.min(t, dur);
+      scrub.value = String(Math.round((t / dur) * 1000));
+    }
+    draw();
+    requestAnimationFrame(loop);
+  }
+  let holdUntil = 0;
+  renderList();
+  // Open on the first explosive or scoring play so the page starts in a working state.
+  const firstGood = plays.findIndex((p) => p.frames && (tags(p).includes('td') || tags(p).includes('big')));
+  load(firstGood >= 0 ? firstGood : plays.findIndex((p) => p.frames), false);
+  requestAnimationFrame(loop);
+})();
+</script>

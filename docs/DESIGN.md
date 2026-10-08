@@ -274,34 +274,81 @@ play events (handoff, throw, catch, turnover, ball crossing the LOS).
 | **Man coverage** | Press/off/bail technique; inside/outside leverage; trail/in-phase; mirror receiver via perceived (delayed) state; play through hands. |
 | **Zone coverage** | Drop to landmark at depth; pattern-match rules (Cover-3 MOD/seam, Quarters read #2, Cover-2 sink the corner); read QB eyes; break on throw. |
 | **Ball carrier** | Vision: sample candidate headings, simulate a short look-ahead against each defender's time-to-reach and blockers' screens, pick the best lane; press the hole (patience), cut, bounce, juke/stiff-arm in open field, protect the ball, get out of bounds when clock demands. |
-| **Pursuer** | Compute intercept point using time-to-reach against the carrier's predicted path, take a proper angle (pursuit rating), avoid blockers. |
+| **Pursuer** | Compute intercept point using time-to-reach against the carrier's anticipated path, with a per-play angle bias from the pursuit rating and inside-out leverage; break down and mirror in the open field (§6.5). |
 
-### 6.4 Blocking engagements
+### 6.4 Trench model (blocking engagements)
 
-When a blocker and defender meet, they form an **engagement** with:
+A block is a physical, technical rep, not a single dice roll. Each engagement
+tracks state that line coaches would recognize (`src/sim/engagement.ts`):
 
-* **Force contest:** each side pushes along its desired direction with force
-  `F = strengthForce(strength, mass) × technique × padLevel × fatigue × noise`.
-  The pair moves with the net force over combined mass (pocket push, drive
-  blocks, anchors).
-* **Win progress `w`** accumulates each tick from the defender's chosen move vs.
-  the blocker's counter skill: bull rush uses power vs. anchor; swim/rip/spin
-  use finesse vs. hand technique; a speed rush is resolved *geometrically* — if
-  the rusher's hip clears the blocker's before the blocker squares him up,
-  he is around the corner. `w ≥ 1` → shed (defender breaks free with momentum);
-  `w ≤ −1` → stonewalled (rusher must reset).
-* **Holding:** a losing blocker may hold; chance scales with how badly he is
-  beaten and (1 − discipline); officials see a fraction of it.
+| State | Meaning |
+|---|---|
+| **control** (−1…+1) | Hand position. +1: blocker's hands inside and latched, steering the defender. −1: defender's hands inside on the blocker's chest, or the blocker's hands knocked away. |
+| **phi** (−1…+1) | Defender's angular progress around the blocker relative to the line the blocker must protect (QB for pass pro, drive axis for runs), in units of 90°. 0 = square, ±1 = hip to hip, beaten. |
+| **base** (0–1, each side) | Balance. Lunging at a missed punch, over-setting, being driven or yanked all cost base; it recovers with balance and footwork. A blocker with no base is beaten. |
+| **pad level** | Leverage from height, bend and fatigue; the low player wins the push, and losing the push stands you up. |
 
-### 6.5 Tackling
+Per-player trench traits are derived once from measurables and ratings: pad
+height, bend, hand quickness, arm length (inches), engaged lateral quickness,
+footwork, balance and recognition.
 
-Contact within `reach` lets a defender attempt a tackle. The attempt is
-resolved from closing speed, angle (head-on / side / from behind), mass and
-momentum of both players, tackling vs. elusiveness (juke = whiff) or
-breakTackle (power = shed the arm tackle), balance. A successful wrap creates a
-**tackle bond**: tacklers apply stopping force, the carrier drives with leg
-strength — yards after contact, gang tackles and piles all emerge. Fumbles roll
-from hit power, number of tacklers, strip attempts and ballSecurity.
+* **Contact.** The rusher's momentum converts to power (speed-to-power) against
+  the blocker's anchor. A punch exchange (hand technique, arm length, timing,
+  or a swipe/chop that makes the blocker miss) sets initial control and base.
+* **Every tick.** A *lateral battle* (the defender's lateral burst toward the
+  side it wants vs. the blocker's mirror, scaled by footwork × base ×
+  control, much stronger on a double team) moves phi. A *push battle* (power ×
+  leverage × base × control) moves the pair: pocket push, drive blocks,
+  anchors, re-anchors.
+* **Moves are chosen from the state.** Inside counter vs. an over-set, snatch
+  vs. a lunging blocker, rip/club vs. latched hands, dip-and-bend once even,
+  bull or long-arm vs. a high-pad or light blocker, spin when stalled. Success
+  is `logistic(skill − counter + situational bonus − control)`, where skill
+  uses the matching ratings and physical traits (arm length, bend, agility,
+  strength) and counter uses the blocker's recognition and technique.
+* **Outcomes.** Shed when |phi| ≥ 1 or the blocker's base collapses; the
+  defender comes off with its momentum intact. Holding becomes likely when a blocker
+  is beaten with hands still latched (discipline reduces it; officials see a
+  fraction).
+* **Run reps** use the same state with a drive axis and a *seal target*
+  (keep the defender on one side of the aiming point). Defenders attempt to
+  shed when the carrier comes near, with success depending on control, seal
+  and the shed skill. Double teams add helpers who contribute push and
+  mirror until one climbs.
+
+`scripts/trench-lab.ts` isolates pass-pro reps (QB holds the ball) and reports
+win rates, pressure timing and sack timing by matchup.
+
+### 6.5 Pursuit and tackling
+
+**Pursuit angles** (`pursuitPoint` in `src/sim/behaviors/common.ts`):
+
+* Tracking an identified carrier uses a short visuomotor delay (0.12–0.24 s by
+  awareness), not the full recognition reaction time.
+* The pursuer anticipates the carrier's path: acceleration toward top speed
+  and a bend upfield. Anticipation sets how much the pursuer trusts that
+  prediction vs. the current heading.
+* Each pursuer carries a per-play **angle bias** drawn from the pursuit
+  rating. Poor pursuers aim where the carrier will be a beat early (a flat
+  angle that ends up trailing); good ones lead the carrier.
+* **Leverage**: pursuers shade inside-out, more so near the sideline (which
+  becomes an extra defender) and more for disciplined pursuers.
+* **Open-field break-down**: inside 4–8 yd (by tackling) when the carrier is
+  coming at the defender, the defender stops sprinting, mirrors the carrier's
+  lateral movement square-on and makes the carrier come to the tackler.
+
+**Tackling** (`src/sim/tackle.ts`): contact within arm reach (plus a lunge
+zone once the play has developed) lets a defender attempt a tackle. Attempt
+quality `q` depends on distance, angle and whether the defender is under
+control; patient tacklers wait for a better shot while closing. A defender
+can't tackle through a blocker (occlusion corridor), and engaged defenders
+need to be winning their rep. Miss chance comes from elusiveness vs. tackling,
+open field, overrun speed and attempt quality; break chance from power vs.
+tackling, mass difference and arm vs. wrap. Diving attempts are a last resort
+(trailing, or the carrier separating). A successful wrap creates a **tackle
+bond**: tacklers apply stopping force, the carrier drives with leg strength,
+helpers join the pile; yards after contact and gang tackles emerge from that.
+Fumbles roll from hit power, number of tacklers and ball security.
 
 ### 6.6 Catch contests
 

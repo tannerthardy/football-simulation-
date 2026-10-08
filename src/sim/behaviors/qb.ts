@@ -358,7 +358,6 @@ export class QBPass implements Behavior {
   }
 
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
-    if (process.env.QBDEBUG) console.log(`[qb] t=${sim.t.toFixed(2)} throw to ${ev.target.slot} P=${ev.P.toFixed(2)} int=${ev.intRisk.toFixed(2)} T=${ev.T.toFixed(2)} depth=${ev.depth.toFixed(1)} pt=(${(ev.point.x - sim.los).toFixed(1)},${ev.point.y.toFixed(1)}) readIdx=${this.readIdx}`);
     this.phase = 'windup';
     this.pending = ev;
     this.releaseAt = sim.t + this.windup(a);

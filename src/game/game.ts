@@ -43,7 +43,14 @@ export interface PlayLog {
   fgGood?: boolean;
   fgDistance?: number;
   /** Recorded frames (only when requested) + roster for the replay viewer. */
-  replay?: { frames: Frame[]; players: Array<{ team: 'O' | 'D'; slot: string; name: string; jersey: number; pos: string }>; los: number; firstDownX: number; flip: boolean };
+  replay?: {
+    frames: Frame[];
+    players: Array<{ team: 'O' | 'D'; slot: string; name: string; jersey: number; pos: string }>;
+    los: number;
+    firstDownX: number;
+    flip: boolean;
+    events: PlayResult['events'];
+  };
 }
 
 export interface GameResult {
@@ -405,6 +412,7 @@ class Game {
         los,
         firstDownX,
         flip: offSide === 'away',
+        events: r.events,
       };
     }
 

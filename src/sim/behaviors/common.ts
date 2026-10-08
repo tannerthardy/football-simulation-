@@ -110,7 +110,6 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
     angleBias.set(a, bias);
   }
   const p = path(clamp(ip.t - bias, 0, horizon));
-  if (process.env.PDEBUG && Math.round(sim.t * 20) % 4 === 0) console.log(`[pursuit] t=${sim.t.toFixed(2)} ${a.slot} ip.t=${ip.t.toFixed(2)} ip=(${ip.point.x.toFixed(1)},${ip.point.y.toFixed(1)}) bias=${bias.toFixed(2)} aim=(${p.x.toFixed(1)},${p.y.toFixed(1)}) seen=(${seen.pos.x.toFixed(1)},${seen.pos.y.toFixed(1)}) v=(${seen.vel.x.toFixed(1)},${seen.vel.y.toFixed(1)})`);
   // Inside-out leverage: shade toward the middle of the field — more so
   // near the sideline, which becomes an extra defender.
   const lev = leverage(a, p.y);
@@ -138,7 +137,6 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
     const ux = (seen.pos.x - a.pos.x) / dist;
     const uy = (seen.pos.y - a.pos.y) / dist;
     const closing = -(seen.vel.x * ux + seen.vel.y * uy);
-    if (process.env.CDEBUG === a.slot) console.log(`[chase] t=${sim.t.toFixed(2)} ${a.slot} dist=${dist.toFixed(2)} closing=${closing.toFixed(2)} seen=(${(seen.pos.x - sim.los).toFixed(1)},${seen.pos.y.toFixed(1)}) v=(${seen.vel.x.toFixed(1)},${seen.vel.y.toFixed(1)}) me=(${(a.pos.x - sim.los).toFixed(1)},${a.pos.y.toFixed(1)}) myv=(${a.vel.x.toFixed(1)},${a.vel.y.toFixed(1)})`);
     if (closing > 1.5) {
       // Lateral component of the carrier's velocity relative to the line
       // between us, plus a correction toward the leverage point (inside him).
