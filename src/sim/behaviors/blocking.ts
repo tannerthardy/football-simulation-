@@ -279,15 +279,29 @@ export class PassProtector implements Behavior {
 }
 
 /**
- * Where a blocker meets a rusher on his current path: the earliest point
- * r.pos + r.vel·τ (shaded to the rusher's QB side) the blocker can reach by
- * τ, within the next second. Kick-slide speed limits the blocker (he moves
- * facing the rusher, not sprinting). Null when the rusher can't be cut off.
+ * Where a blocker meets a rusher on his path: the earliest point on it
+ * (shaded to the rusher's QB side) the blocker can reach first, within the
+ * next second. The path is an arc, not his current heading: a rusher who
+ * starts upfield and wide bends back toward the QB (about 1.2 rad/s), so a
+ * tackle who extrapolated the heading would set wide while the rusher turned
+ * the corner behind him. Kick-slide speed limits the blocker (he moves facing
+ * the rusher, not sprinting). Null when the rusher can't be cut off.
  */
 function cutOffPoint(b: Agent, r: Agent, qb: Vec2, contact: number): Vec2 | null {
   const vmax = b.profile.vmax * 0.75;
-  for (let tau = 0.05; tau <= 1.0; tau += 0.05) {
-    const p = { x: r.pos.x + r.vel.x * tau, y: r.pos.y + r.vel.y * tau };
+  const step = 0.05;
+  const bend = 1.2 * step;
+  let p = { ...r.pos };
+  let rSpeed = Math.max(2, Math.hypot(r.vel.x, r.vel.y));
+  let heading = Math.hypot(r.vel.x, r.vel.y) > 0.5 ? Math.atan2(r.vel.y, r.vel.x) : Math.atan2(qb.y - r.pos.y, qb.x - r.pos.x);
+  for (let tau = step; tau <= 1.0 + 1e-9; tau += step) {
+    const want = Math.atan2(qb.y - p.y, qb.x - p.x);
+    let turn = want - heading;
+    while (turn > Math.PI) turn -= 2 * Math.PI;
+    while (turn < -Math.PI) turn += 2 * Math.PI;
+    heading += clamp(turn, -bend, bend);
+    rSpeed = Math.min(r.profile.vmax * 0.95, rSpeed + 2.5 * step);
+    p = { x: p.x + Math.cos(heading) * rSpeed * step, y: p.y + Math.sin(heading) * rSpeed * step };
     const toQB = norm(sub(qb, p));
     const inside = { x: p.x + toQB.x * contact * 0.6, y: p.y + toQB.y * contact * 0.6 };
     const d = Math.max(0, Math.hypot(inside.x - b.pos.x, inside.y - b.pos.y) - 0.2);

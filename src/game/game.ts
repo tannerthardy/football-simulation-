@@ -50,6 +50,8 @@ export interface PlayLog {
   /** The calls on a scrimmage snap, for tendency analysis (same fields as the NFL extractor). */
   plan?: PlayPlan;
   outcome?: PlayResult['outcome'];
+  /** Live time from the snap to the whistle (scrimmage plays). */
+  duration?: number;
   /** Points scored by the offense on this play (6 for a TD), negative for defensive scores. */
   firstDown?: boolean;
   fgGood?: boolean;
@@ -371,13 +373,28 @@ export class Game {
     return s.quarter >= 4 && diff > 0 && s.clock <= 420;
   }
 
-  /** Time that runs between plays when the clock keeps running. */
-  private betweenPlays(clockRunning: boolean, outOfBounds: boolean): number {
+  /**
+   * Game clock from the whistle to the next snap when the clock keeps running.
+   * NFL 2022 (`scripts/data/bdb2025_clock.py`, less the live time measured in
+   * tracking): about 34 s after a play that ends in the field, 30 s after a
+   * runner goes out of bounds (the clock waits for the ready signal) and 38 s
+   * after a sack (the offense regroups further back).
+   */
+  private betweenPlays(clockRunning: boolean, outOfBounds: boolean, sack: boolean): number {
     if (!clockRunning) return 0;
-    if (outOfBounds) return this.lateHalf() ? 0 : 7;
-    if (this.hurry()) return this.tempo.normal(16, 3);
-    if (this.milking()) return this.tempo.normal(39, 1.5);
-    return this.tempo.normal(34, 3);
+    const tempo = this.hurry() ? this.tempo.normal(16, 3) : this.milking() ? this.tempo.normal(39, 1.5) : this.tempo.normal(34, 3);
+    return Math.max(0, tempo + (outOfBounds ? -4 : sack ? 3 : 0));
+  }
+
+  /**
+   * Whether the game clock was running when the current snap was due: set
+   * after a scrimmage play, valid only until the next log entry or quarter.
+   */
+  private clockAfter: { index: number; quarter: number; running: boolean } | null = null;
+
+  private clockRunningNow(): boolean {
+    const c = this.clockAfter;
+    return !!c && c.running && c.index === this.playIndex && c.quarter === this.s.quarter;
   }
 
   // ---------------------------------------------------------------- fatigue
@@ -545,6 +562,7 @@ export class Game {
     const logEntry = this.entry(r.kind, text, r.turnover ? r.offenseYards : r.yards, ranCall.label, defCall.label);
     logEntry.stats = r.stats;
     logEntry.outcome = r.outcome;
+    logEntry.duration = r.duration;
     logEntry.firstDown = converted;
     logEntry.plan = {
       personnel: ranCall.formation.personnel,
@@ -606,9 +624,11 @@ export class Game {
           s.distance = lineToGain - s.yardline;
         }
         s.distance = Math.max(1, Math.round(s.distance));
-        // After the enforcement the clock starts on the ready signal, or on the snap late in a half.
+        // After the enforcement the clock starts on the ready signal, or on the snap late in a half
+        // (NFL: about 19 s from the whistle to the next snap after an accepted foul).
         const running = !warned && !r.clockStops && !this.lateHalf();
-        this.runClock(running ? this.tempo.normal(14, 3) : 0);
+        const warnedAfter = this.runClock(running ? this.tempo.normal(19, 3) : 0);
+        this.clockAfter = { index: this.playIndex, quarter: s.quarter, running: running && !warnedAfter };
         this.recoverAll(r.duration + 30);
         return;
       }
@@ -655,9 +675,10 @@ export class Game {
     }
     this.moveChains(r.outcome === 'incomplete' ? 0 : r.yards);
     const clockRunning = !warned && (!r.clockStops || (r.outcome === 'oob' && !this.lateHalf()));
-    const between = this.betweenPlays(clockRunning, r.outcome === 'oob');
+    const between = this.betweenPlays(clockRunning, r.outcome === 'oob', r.stats.sacked);
     this.maybeTimeout(clockRunning);
-    this.runClock(this.lastTimeoutUsed ? 0 : between);
+    const warnedBetween = this.runClock(this.lastTimeoutUsed ? 0 : between);
+    this.clockAfter = { index: this.playIndex, quarter: s.quarter, running: clockRunning && !this.lastTimeoutUsed && !warnedBetween };
     this.lastTimeoutUsed = false;
     this.recoverAll(r.duration + Math.max(between, 25));
   }
@@ -676,6 +697,9 @@ export class Game {
    */
   private enforceDeadBall(kind: 'false_start' | 'offside', call: string): void {
     const s = this.s;
+    // A running clock stops for the enforcement and restarts on the ready signal (25-second play
+    // clock); one already stopped, or late in a half, starts on the snap.
+    const running = this.clockRunningNow() && !this.lateHalf();
     const lineToGain = s.yardline + s.distance;
     const fouler = kind === 'false_start' ? this.off : this.def;
     const yds = kind === 'false_start' ? Math.min(5, s.yardline / 2) : Math.min(5, (100 - s.yardline) / 2);
@@ -695,6 +719,9 @@ export class Game {
       s.distance = lineToGain - s.yardline;
     }
     s.distance = Math.max(1, Math.round(s.distance));
+    // NFL offenses snap with about 8 s left on the play clock.
+    const warned = this.runClock(running ? this.tempo.normal(17, 3) : 0);
+    this.clockAfter = { index: this.playIndex, quarter: s.quarter, running: running && !warned };
   }
 
   /**

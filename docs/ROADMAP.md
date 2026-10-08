@@ -59,13 +59,15 @@ variation and pass-protection regressions keep the development PR draft.
 
 
 Latest check (`claude/engine-priorities`, 32 games, `npm run calibrate -- 32 7`),
-after the protection and pocket fixes in
+after the protection, pocket, clock and contact work in
 [error-budget-and-protection.md](reviews/error-budget-and-protection.md):
-points 33.5 per team-game, 15.1 drives per team-game (NFL 10.5), 2.11 points
-per drive (NFL 2.00), sack rate 5.4%, scramble rate 5.5%, yards per attempt
-9.3, rush yards per carry 2.9, run stuffs 27%, 3rd-down conversion 36%. The
-points excess is now mostly possessions; the error budget's largest per-play
-components are passing (too efficient) and running (too poor).
+points 36.8 per team-game, 13.8 drives per team-game (NFL 10.5), 2.54 points
+per drive (NFL 2.00), 66 scrimmage plays per team-game, rush yards per carry
+4.8, run stuffs 17%, 10+ yard runs 10.8%, 3rd-down conversion 41%, punts 4.4,
+sack rate 4.9%, yards per attempt 9.7, YAC per reception 6.6, separation at the
+catch 4.2 yd. Run carriers and receivers now take NFL-like time and yards after
+first contact. The error budget's largest component by far is yards per
+completion (+0.72 points per drive of a +0.82 gap): coverage is too loose.
 
 Before reading this table, see [EVALUATION_ENVIRONMENT.md](EVALUATION_ENVIRONMENT.md):
 league aggregates mix engine execution with play-calling and roster selection.
@@ -115,8 +117,12 @@ gaps; one league is not a reliable calibration sample.
    tuning, record separation for all attempts, distinct pressure metrics,
    and rule paths not yet modeled (pass interference, fouls on returns,
    loose balls through the end zone).
-2. **Run game.** Defenders now read run from cues and keep their gaps
-   instead of chasing the carrier from a fixed read time, which brought the
+2. **Run game.** Yards per carry, stuffs and 10+ yard runs are now in or near
+   the NFL range: tackles take NFL-like time and yards after first contact
+   (graded grasp, balance, forward progress). Backs still reach first contact
+   too soon (1.0 s after the handoff vs. 1.6 s). Earlier notes: defenders
+   now read run from cues and keep their gaps instead of chasing the carrier
+   from a fixed read time, which brought the
    average in range, but outcomes are bimodal: 41% stuffs (unblocked or
    quickly shed linemen — reach blocks on 3-techniques) and too many 10+
    yard runs, not enough 2–5 yard runs. The new carrier reads teammate

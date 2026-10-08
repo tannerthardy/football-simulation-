@@ -1,4 +1,4 @@
-# Choosing what to fix: error budget, protection and the pocket
+# Choosing what to fix: error budget, protection, the pocket, the clock and contact
 
 There are many numbers to move and many knobs. Most of the loops we risk come
 from tuning a headline statistic that several errors feed into, and fixing
@@ -147,7 +147,7 @@ Ours arrive free and resolve at once (p90 0.6 s), so sacks per pressure stay
 high. That belongs to the trench model (rushers win too early, median shed
 1.55 s), not to the QB.
 
-## Results and what's next
+## Results after protection and the pocket
 
 Same 32 games (seed 7, four leagues) at each step; NFL drive figures from
 `scripts/data/bdb2025_drives.py`, the rest from the calibration targets.
@@ -178,7 +178,8 @@ excess points come from possessions. The two largest per-play components
 are opposite in sign (passing too good, running too poor); they offset at the
 drive level, so the headline cannot be used to judge either one.
 
-Next priorities, in order of measured impact:
+Priorities after that round, in order of measured impact (the next section
+works through the first two):
 
 1. **Possessions.** 15 drives per team-game against 10.5 is the largest single
    error in points per game (about +45% possessions). Two parts: too many
@@ -198,3 +199,156 @@ Next priorities, in order of measured impact:
    trigger.
 5. **Trench timing.** Rushers beat blocks too early and arrive free; NFL
    pressure lingers with blockers still attached (see above).
+
+## Second round: possessions, the clock and contact
+
+### Too many snaps: the clock
+
+`scripts/data/bdb2025_clock.py` measures game clock between consecutive snaps
+of a drive in the 2022 plays (weeks 1–9, outside the last 2:00 of the 2nd
+quarter and 5:00 of the 4th), by how the earlier play ended;
+`scripts/data/bdb2025_contact.py` measures live time (snap to whistle) in the
+tracking. `scripts/clock-anatomy.ts` measures ours the same way.
+
+| Previous play | NFL snap to snap | NFL live | Ours before | Ours after |
+|---|---|---|---|---|
+| In bounds | 39.4 s | 5.0 s | 37.6 s (live 3.9) | 38.2 s (live 4.4) |
+| Out of bounds | 36.0 s | 5.9 s | 12.2 s | 34.1 s |
+| Incomplete | 6.6 s | 4.5 s | 4.3 s | 4.3 s |
+| Sack | 42.1 s | 4.45 s | 36.1 s | 40.7 s |
+| Accepted foul | 24 s | — | 7.9 s | 15.8 s |
+
+The time between the whistle and the next snap after a play in the field was
+already right (≈34 s). Three rules were not:
+
+- **Out of bounds** before the late-half windows: the clock restarts on the
+  ready signal, about 30 s before the snap; ours ran 7 s.
+- **Fouls**: after an accepted foul on a play the clock restarts on the ready
+  signal (≈19 s to the snap; ours 14 s). A pre-snap foul with the clock
+  running costs the ready-signal runoff (25-second play clock, ≈17 s); ours
+  ran none.
+- **Sacks**: the offense regroups further back, ≈38 s whistle to snap.
+
+These are small (snaps per team-game 69.5 → 69.1 on their own): out-of-bounds
+plays are rare in our games (2–4% of snaps vs. 12%), and plays end too soon.
+That second part was the bigger finding.
+
+### Plays end too soon: what happens after contact
+
+Same definitions on both sides (`scripts/contact-anatomy.ts` vs.
+`scripts/data/bdb2025_contact.py`; first contact is the first touch on the
+carrier, the tackle is the whistle):
+
+| | NFL | Before | After |
+|---|---|---|---|
+| **Designed runs**: snap → handoff | 1.29 s | 1.28 s | 1.28 s |
+| handoff → first contact | 1.60 s | 1.03 s | 1.01 s |
+| first contact → tackle | **1.62 s** | **0.48 s** | **1.32 s** |
+| yards after first contact | **3.14** (p50 2.33) | **1.23** (p50 0.50) | **2.54** (p50 1.60) |
+| **Completions**: catch → first contact | 0.87 s, 2.8 yd | 0.77 s, 2.6 yd | 0.73 s, 2.3 yd |
+| first contact → tackle | **1.24 s, 2.1 yd** | **0.44 s, 1.0 yd** | **1.11 s, 2.2 yd** |
+
+Up to first contact our carriers were close to the NFL. After it they went
+down in under half a second. `scripts/tackle-lab.ts` (one back, one
+linebacker, fixed angles and speeds) isolated it: a solo tackle from any
+angle ended 0.32 s after contact with 0.44 yd gained. A wrap fully coupled
+the bodies, the tackler's stopping force outweighed the runner's leg drive,
+and once the pile slowed a random "down" hazard of about 5/s ended it.
+
+The tackle bond (`src/sim/tackle.ts`) now models the grasp:
+
+- **Grip.** Contact quality sets a grip from a fingertip grab (0.25) to a
+  body-to-body wrap (1). A sure tackler works it toward a wrap in about a
+  third of a second. Contact couples the bodies in proportion to the grip, so a
+  grab drags the tackler and still conserves momentum.
+- **Stopping force by position.** Full from in front of the carrier, where the
+  tackler drives through him; from the side or behind he is mostly weight being
+  dragged (three quarters).
+- **Going down.** The tacklers' grip and power take away the carrier's base
+  against his balance; a carrier moving fast is easier to trip. Or forward
+  progress stops: a pile that gains nothing for 0.8 s is whistled. He falls
+  forward if he is still moving forward. The fixed down hazard is gone.
+
+Solo tackles in the lab now take 0.8–1.3 s (head-on stops 0.8–0.9 s with no
+gain; from the side or behind 2–3 yd at low speed, about 4 yd at full speed).
+
+### A hidden offset: quarterbacks threw out of tackles
+
+With the old half-second bond a wrapped quarterback could still throw; about
+half the wraps on the QB ended in a pass. A longer bond made that obvious —
+the sack rate fell to 0.5%. Two rules replace it:
+
+- **In the grasp.** A quarterback held firmly behind the line before he
+  throws is down after a quarter second (the rule protects him; set to throw,
+  he has no base anyway).
+- **Throwing while held.** Wrapped up, he cannot start a throw; a throw
+  already in his motion comes out with extra error; with only a hand on him he
+  can still throw, inaccurately.
+
+That gave an honest sack rate of 10%, and the sack anatomy showed why: the
+weak-side end made 58% of all sacks, a third of them unblocked. Traced, the
+tackle aimed at a cut-off point projected along the end's *current* heading,
+which early in the rush points upfield and wide; the tackle shuffled outward
+(1.4 yd out, 0.5 yd of depth in the first second) while the end bent back
+inside behind him. The cut-off now projects the rusher's path as an arc that
+bends toward the QB (about 1.2 rad/s, near what our ends do), which puts the
+landmark deeper and inside — a vertical set. The quarterback also climbs
+the pocket when he senses an edge rusher reaching his depth outside him
+(perceived positions, so a blind-side rusher is felt late; pocket presence
+decides how early). Free weak-side-end sacks in the lab fell from 10 to 3 of
+240 dropbacks.
+
+### Results
+
+Same 32 games (seed 7, four leagues):
+
+| | NFL | Before this round | After |
+|---|---|---|---|
+| Points / team-game | 21–23.5 | 33.5 | 36.8 |
+| Drives / team-game | 10.5 | 15.1 | 13.8 |
+| Plays / drive | 5.7 | 4.7 | 5.0 |
+| Points / drive | 2.00 | 2.11 | 2.54 |
+| Scrimmage plays / team-game | 61–65 | 68.1 | 66.0 |
+| Rush yards / carry | 4.1–4.5 | 2.9 | 4.8 |
+| Run stuffs | 16–20% | 27% | 17% |
+| 10+ yard runs | 10–12% | 5.5% | 10.8% |
+| 3rd-down conversion | 37–41% | 36% | 41% |
+| Punts / team-game | 3.5–4.5 | 6.2 | 4.4 |
+| Sack rate | 6.2% | 5.4% | 4.9% |
+| Yards / attempt | 6.8–7.2 | 9.3 | 9.7 |
+| YAC / reception | 4.8–5.6 | 5.9 | 6.6 |
+| Fumbles lost / team-game | 0.4–0.7 | 0.36 | 0.81 |
+| Missed + broken tackles / play | 0.11–0.16 | 0.18 | 0.17 |
+
+Budget from the own 25: NFL 1.81, simulation 2.63 points per drive. Shapley
+shares: **yards per completion +0.72**, scrambles −0.21, completion rate
++0.19, runs +0.08, interceptions −0.07, sacks +0.07, play mix +0.03. The run
+game went from the largest negative component (−0.38) to a small positive one.
+Points per game rose because the run game now works while passing is still far
+too efficient; that is the budget doing its job, not a regression to undo.
+
+### What's next
+
+1. **Yards per completion** (+0.72 per drive, now nearly the whole gap).
+   Separation at the catch point 4.2 yd (NFL ≈3.0), tight windows 3.8% (NFL
+   13–17%), 20+ yard completions 12% of attempts (7–9%), YAC 6.6. Up to first
+   contact a receiver's YAC is close to the NFL's (above), so the excess is in
+   how open he is when the ball arrives and in plays that never meet a
+   tackler. Forced coverage contexts: separation by coverage, route and
+   leverage at the throw and at the catch.
+2. **Pressure with blockers attached.** A defender is within 2 yd of the QB
+   on 15% of our dropbacks vs. 31%; NFL pressure is usually a rusher still
+   being ridden or pushing the pocket back, ours is a rusher who has come
+   free. Rush depth over time while engaged (pocket push) against tracking.
+3. **Possessions.** 13.8 drives (10.5). Plays still end ~0.6 s soon (handoff
+   to first contact 1.0 s vs. 1.6 s: our backs hit the line faster and more
+   directly than NFL backs, who press laterally), and out-of-bounds endings
+   are rare (4% vs. 12%): carriers near the sideline don't get out.
+4. **Scrambles** (−0.21 per drive): check scramble yards by state.
+5. **Fumbles** (0.81 lost per team-game, NFL 0.4–0.7): longer piles mean more
+   assists, and every assist rolls a fumble. Fumble risk should follow hit
+   power and ball security over the whole carry, not the number of arrivals.
+6. **Overlap note.** The tackle work here is the "graded grasps and balance"
+   item in [pursuit-contact-follow-up.md](pursuit-contact-follow-up.md); it
+   keeps that review's momentum and constraint invariants (its tests pass
+   unchanged) and adds lab and scenario tests.

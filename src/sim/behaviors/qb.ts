@@ -167,6 +167,9 @@ export class QBPass implements Behavior {
     const t = sim.t;
     if (sim.carrier !== a) return stand();
     const facingDown = 0;
+    // Wrapped up by a tackler he cannot start a throw (with only a hand on him he
+    // still can); a throw already on its way comes out, wobbling.
+    if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
 
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
     this.mind.observe(this.gazePoint(sim));
@@ -457,7 +460,7 @@ export class QBPass implements Behavior {
     sigma *= 1 + 0.7 * urgency * (1.1 - a.r('composure'));
     if (a.speed > 2.2) sigma *= 1.15 + 0.45 * (1 - a.r('throwOnRun'));
     sigma *= 1 + 0.25 * (1 - a.body.energy);
-    void sim;
+    sigma *= 1 + 2.5 * heldBy(a, sim);
     return sigma;
   }
 
@@ -547,25 +550,35 @@ export class QBPass implements Behavior {
   }
 
   private pocketMove(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand {
-    // Hold the set point, sliding away from nearby rushers; step up vs. edge pressure.
+    // Hold the set point, sliding away from nearby rushers. When an edge rusher
+    // gets to his depth outside him — the tackle riding him past — he climbs
+    // into the pocket before the rusher can turn the corner. He reacts to what
+    // he sees and feels: a rusher behind his shoulder registers late, and
+    // pocket presence decides how early he senses the edge closing.
+    const pp = a.r('pocketPresence');
     let fx = 0;
     let fy = 0;
     let edge = false;
     for (const d of sim.defense) {
-      const dx = a.pos.x - d.pos.x;
-      const dy = a.pos.y - d.pos.y;
+      if (d.isDown(sim.t)) continue;
+      const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
+      const blind = ang > 1.8 && ang < 4.5;
+      const seen = sim.see(a, d, blind ? 2.2 - 1.4 * pp : 1).pos;
+      const dx = a.pos.x - seen.x;
+      const dy = a.pos.y - seen.y;
       const dd = Math.hypot(dx, dy);
-      if (dd > 3.5 || dd < 1e-3) continue;
+      if (dd < 1e-3) continue;
+      if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp) edge = true;
+      if (dd > 3.5) continue;
       const w = (3.5 - dd) / 3.5;
       fx += (dx / dd) * w;
       fy += (dy / dd) * w;
-      if (Math.abs(dy) > 1.6 && d.pos.x <= a.pos.x + 0.5) edge = true;
     }
-    const home = { x: this.drop.x + (edge ? 1.8 : 0), y: this.dropY };
-    const tx = home.x + fx * 2 * a.r('pocketPresence');
-    const ty = home.y + fy * 2 * a.r('pocketPresence');
+    const home = { x: this.drop.x + (edge ? 1.8 + 1.2 * pp : 0), y: this.dropY };
+    const tx = home.x + fx * 2 * pp;
+    const ty = home.y + fy * 2 * pp;
     const facing = read ? angleTo(a.pos, read.pos) : 0;
-    return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: 0.45, facing });
+    return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
   }
 }
 
@@ -609,3 +622,10 @@ export class QBHandoff implements Behavior {
 }
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * clamp(t, 0, 1);
+
+/** The firmest grip a tackler has on `a` (0 when nobody is holding him). */
+function heldBy(a: Agent, sim: PlaySim): number {
+  const bond = sim.bond;
+  if (!bond || bond.carrier !== a) return 0;
+  return Math.max(0, ...bond.tacklers.map((d) => bond.grip?.get(d) ?? 1));
+}

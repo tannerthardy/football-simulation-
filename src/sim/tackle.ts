@@ -4,10 +4,11 @@
  * A defender within arm's reach of the carrier attempts a tackle. The attempt
  * can whiff (elusiveness vs. tackling, angle, open field), be broken
  * (breakTackle/mass vs. tackling, arm tackles), or wrap. A wrap forms a
- * tackle bond: tacklers apply stopping force, the carrier keeps driving with
- * his legs; impact momentum is exchanged on contact. Yards after contact,
- * gang tackles and piles emerge. Fumbles roll from hit power vs. ball security.
+ * tackle bond (see updateBond): tacklers hold with a grip and apply stopping
+ * force, the carrier keeps driving with his legs; impact momentum is exchanged
+ * on contact. Yards after contact, gang tackles and piles emerge. Fumbles roll from hit power vs. ball security.
  */
+import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import type { Agent } from './agent.js';
@@ -20,6 +21,14 @@ export interface TackleBond {
   /** Forward-progress spot (max x for the offense, min x for a defensive returner). */
   progressX: number;
   down: boolean;
+  /** Each tackler's hold: 0 = fingertips, 1 = a locked wrap. A missing entry is a locked wrap. */
+  grip?: Map<Agent, number>;
+  /** How far the carrier's base has been taken away; he is down at 1. */
+  topple?: number;
+  /** This pile's technique and footing, drawn once (median 1). */
+  toppleRate?: number;
+  /** Seconds since the pile last gained ground: the whistle comes when forward progress stops. */
+  stalled?: number;
 }
 
 export function tryTackles(sim: PlaySim): void {
@@ -188,20 +197,40 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean):
   if (sim.bond) {
     sim.bond.tacklers.push(d);
   } else {
-    sim.bond = { carrier: c, tacklers: [d], start: t, progressX: c.pos.x, down: false };
+    sim.bond = { carrier: c, tacklers: [d], start: t, progressX: c.pos.x, down: false, topple: 0, stalled: 0, toppleRate: Math.exp(0.35 * rng.normal(0, 1)) };
   }
-  // Wrapping couples the bodies inelastically. Match their centre-of-mass
-  // velocity, rather than accelerating every arriving tackler for free.
+  // How well he holds on: body to body he wraps; at full extension, or with a
+  // hand off a block, it is a grab he has to work into a wrap.
+  const grip = clamp(0.25 + 0.85 * q - (engaged ? 0.3 : 0), 0.1, 1);
+  (sim.bond.grip ??= new Map()).set(d, grip);
+  // Contact couples the bodies inelastically — fully for a wrap, partly for a
+  // grab (the tackler is dragged). Blending every body toward the shared
+  // centre-of-mass velocity by the same fraction conserves momentum and
+  // cannot add kinetic energy.
   const bodies = [c,...sim.bond.tacklers];
   const mass = bodies.reduce((sum,a)=>sum+a.profile.massKg,0);
   const shared = {x:bodies.reduce((sum,a)=>sum+a.vel.x*a.profile.massKg,0)/mass,
     y:bodies.reduce((sum,a)=>sum+a.vel.y*a.profile.massKg,0)/mass};
-  for(const a of bodies) a.body.vel={...shared};
+  for(const a of bodies) a.body.vel=grip>=1?{...shared}:{x:a.vel.x+(shared.x-a.vel.x)*grip,y:a.vel.y+(shared.y-a.vel.y)*grip};
   sim.event('tackle_wrap', d, c, alreadyWrapped ? 'assist' : 'initial');
   if (closing > 4) sim.event('hit', d, c);
 }
 
-/** Advance the tackle bond one tick. */
+/** Rate at which held tacklers take a carrier's base away (per second, for equal power). */
+const TOPPLE = 0.8;
+/** Seconds a pile can go without gaining ground before forward progress is ruled stopped. */
+const STALL = 0.8;
+
+/**
+ * Advance the tackle bond one tick.
+ *
+ * Tacklers hold with a grip that a sure tackler works from a grab into a wrap.
+ * Held tacklers slow the pile — hardest from in front of the carrier, where
+ * they can drive through him; from the side or behind they are weight he
+ * drags — while he drives his legs. He goes down when they have taken his
+ * base away (their grip and power against his balance) or when the pile stops
+ * gaining ground, and falls forward if he is still moving forward.
+ */
 export function updateBond(sim: PlaySim, bond: TackleBond, cmds: MoveCommand[]): void {
   const c = bond.carrier;
   const t = sim.t;
@@ -211,19 +240,31 @@ export function updateBond(sim: PlaySim, bond: TackleBond, cmds: MoveCommand[]):
     sim.bond = null;
     return;
   }
+  const grip = (bond.grip ??= new Map());
+  const hold = (d: Agent) => grip.get(d) ?? 1;
   const dir = sim.attackDir(c.team);
   const want = cmds[c.idx]?.vel ?? { x: dir, y: 0 };
   const wl = Math.hypot(want.x, want.y) || 1;
   const ux = want.x / wl;
   const uy = want.y / wl;
 
+  const sp = c.speed;
+  const fx = sp > 0.5 ? c.vel.x / sp : ux;
+  const fy = sp > 0.5 ? c.vel.y / sp : uy;
   let stop = 0;
-  for (const d of bond.tacklers) stop += d.profile.power * (0.55 + 0.6 * d.r('tackling'));
+  let lever = 0;
+  for (const d of bond.tacklers) {
+    const ox = d.pos.x - c.pos.x;
+    const oy = d.pos.y - c.pos.y;
+    const front = (ox * fx + oy * fy) / (Math.hypot(ox, oy) || 1);
+    const g = hold(d);
+    stop += g * d.profile.power * (0.55 + 0.6 * d.r('tackling')) * (0.75 + 0.25 * Math.max(0, front));
+    lever += g * d.profile.power * (0.4 + 0.6 * d.r('tackling'));
+  }
   const drive = c.profile.power * (0.45 + 0.4 * c.r('breakTackle') + 0.15 * c.r('balance'));
   const mass = c.profile.massKg + bond.tacklers.reduce((sum,d)=>sum+d.profile.massKg,0);
 
   // Net deceleration on the carrier's current velocity, plus leg drive along his intent.
-  const sp = c.speed;
   const decel = (stop * 9) / mass;
   const legs = (drive * 3.2) / mass;
   let nsp = Math.max(0, sp - decel * dt);
@@ -260,17 +301,24 @@ export function updateBond(sim: PlaySim, bond: TackleBond, cmds: MoveCommand[]):
     c.body.pos = { x:c.pos.x+(ox/ol)*correction*shareC, y:c.pos.y+(oy/ol)*correction*shareC };
     d.body.pos = { x:d.pos.x-(ox/ol)*correction*shareD, y:d.pos.y-(oy/ol)*correction*shareD };
   }
+  // Hands work a grab into a wrap: a sure tackler in about a third of a second.
+  for (const d of bond.tacklers) {
+    const g = hold(d);
+    grip.set(d, g + (1 - g) * Math.min(1, dt * (1 + 2.5 * d.r('tackling'))));
+  }
 
   // Forward progress.
+  const before = bond.progressX;
   bond.progressX = dir > 0 ? Math.max(bond.progressX, c.pos.x) : Math.min(bond.progressX, c.pos.x);
+  bond.stalled = Math.abs(bond.progressX - before) > 0.5 * dt ? 0 : (bond.stalled ?? 0) + dt;
 
   const held = t - bond.start;
   const n = bond.tacklers.length;
-  const skill = bond.tacklers.reduce((s, d) => s + d.r('tackling'), 0) / n;
-  // Solo tackle from behind by a weak tackler: the carrier can still slip out.
+  // Solo tackle from behind by a weak tackler: the carrier can still slip out,
+  // more easily from a grab than from a wrap.
   if (n === 1 && held > 0.15 && held < 0.9) {
     const d = bond.tacklers[0];
-    const pFree = dt * 1.1 * clamp(c.r('breakTackle') * 0.6 + c.r('balance') * 0.4 - d.r('tackling') + 0.15, 0, 1);
+    const pFree = dt * 1.1 * (1.3 - hold(d)) * clamp(c.r('breakTackle') * 0.6 + c.r('balance') * 0.4 - d.r('tackling') + 0.15, 0, 1);
     if (sim.rng.chance(pFree)) {
       sim.stats.brokenTackles++;
       d.downUntil = t + 0.6;
@@ -279,12 +327,25 @@ export function updateBond(sim: PlaySim, bond: TackleBond, cmds: MoveCommand[]):
       return;
     }
   }
-  const pDown = dt * (1.2 + 1.6 * skill) * (0.6 + 0.4 * n) + (nsp < 0.9 && held > 0.25 ? dt * 5 : 0);
-  if (sim.rng.chance(pDown) || held > 3) {
+  // Taking his base away: the tacklers' hold and power against his balance.
+  // A carrier still moving fast is easier to trip or spin off his feet.
+  const resist = c.profile.power * (0.6 + 0.8 * c.r('balance'));
+  const speedUp = 1 + 0.25 * Math.max(0, nsp - 2);
+  bond.topple = (bond.topple ?? 0) + dt * TOPPLE * (bond.toppleRate ?? 1) * speedUp * (lever / resist);
+  // In the grasp: a quarterback held firmly behind the line before he throws is
+  // ruled down at once (the rule protects him; set to throw, he has no base anyway).
+  const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
+  const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => hold(d) >= 0.6);
+  if (bond.topple >= 1 || bond.stalled >= STALL || held > 4 || inGrasp) {
     bond.down = true;
     for (const d of bond.tacklers) d.downUntil = t + 0.8;
     c.downUntil = t + 1.0;
-    const spot: Vec2 = { x: bond.progressX, y: c.pos.y };
+    // Going down while still moving forward, he falls forward with the ball
+    // (short of the goal line: a score needs the carrier himself to cross it).
+    const forward = Math.max(0, vx * dir);
+    const fall = Math.min(0.75, 0.25 * forward);
+    const x = dir > 0 ? Math.max(bond.progressX, Math.min(c.pos.x + fall, OPP_GOAL_X - 0.05)) : Math.min(bond.progressX, Math.max(c.pos.x - fall, OWN_GOAL_X + 0.05));
+    const spot: Vec2 = { x, y: c.pos.y };
     sim.finishCarry('tackle', spot);
   }
 }

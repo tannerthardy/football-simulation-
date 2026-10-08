@@ -118,6 +118,46 @@ describe('two-minute warning', () => {
   });
 });
 
+describe('clock between snaps', () => {
+  /** Two snaps from 2nd-and-10 at 10:00 of the 2nd (or `quarter`/`clock`): a scripted play, then a pre-snap foul or another play. */
+  function twoSnaps(first: Script, second: 'false_start' | 'play', state: Partial<GameState> = {}): { clocks: number[] } {
+    let snap = 0;
+    const hooks: GameHooks = {
+      playResult: (sim) => scripted(sim, first),
+      preSnapFoul: () => (snap++ === 1 && second === 'false_start' ? 'false_start' : null),
+    };
+    const g = new Game(home, away, { seed: 5, hooks });
+    g.setState({ quarter: 2, clock: 600, possession: 'home', yardline: 50, down: 1, distance: 10, score: { home: 0, away: 0 }, ...state });
+    g.step();
+    const clocks = [g.state.clock];
+    g.step();
+    clocks.push(g.state.clock);
+    return { clocks };
+  }
+
+  it('out of bounds before the late-half windows restarts on the ready signal', () => {
+    const { clocks } = twoSnaps({ outcome: 'oob', yards: 6, duration: 5, clockStops: true }, 'play');
+    expect(clocks[0]).toBeLessThan(600 - 5 - 20);
+    expect(clocks[0]).toBeGreaterThan(600 - 5 - 40);
+  });
+
+  it('out of bounds late in a half stops the clock until the snap', () => {
+    const { clocks } = twoSnaps({ outcome: 'oob', yards: 6, duration: 5, clockStops: true }, 'play', { quarter: 4, clock: 240 });
+    expect(clocks[0]).toBeCloseTo(235, 6);
+  });
+
+  it('a false start with the clock running costs the ready-signal runoff', () => {
+    const { clocks } = twoSnaps({ yards: 3, duration: 5 }, 'false_start');
+    expect(clocks[0] - clocks[1]).toBeGreaterThan(8);
+    expect(clocks[0] - clocks[1]).toBeLessThan(26);
+  });
+
+  it('a false start after an incompletion runs no clock', () => {
+    const { clocks } = twoSnaps({ kind: 'pass', outcome: 'incomplete', yards: 0, duration: 4, clockStops: true, stats: { attempted: true } }, 'false_start');
+    expect(clocks[1]).toBe(clocks[0]);
+  });
+});
+
 const td = (sim: PlaySim): Script => ({ outcome: 'touchdown', yards: OPP_GOAL_X - sim.los, endX: OPP_GOAL_X + 1, score: { team: 'O', kind: 'TD' }, clockStops: true, stats: { rusher: id(sim, 'RB') } });
 const twoGood = (sim: PlaySim): Script => ({ ...td(sim) });
 const twoFailed = (): Script => ({ yards: 1 });

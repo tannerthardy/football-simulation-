@@ -140,6 +140,35 @@ describe('physical tackle contact',()=>{
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     tryTackles(sim);expect(sim.bond).toBeNull();expect(d.nextTackleAt).toBe(0);
   });
+  it('a grab at full reach couples only partly, still conserving momentum',()=>{
+    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:2};d.body.vel={x:0,y:0};
+    const momentum=()=>({x:c.vel.x*c.profile.massKg+d.vel.x*d.profile.massKg,y:c.vel.y*c.profile.massKg+d.vel.y*d.profile.massKg});
+    const energy=()=>.5*(c.profile.massKg*c.speed**2+d.profile.massKg*d.speed**2);
+    const before=momentum(),kinetic=energy();vi.spyOn(sim.rng,'chance').mockReturnValue(false);
+    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    expect(sim.bond!.grip!.get(d)!).toBeLessThan(.6);
+    expect(c.vel.x).toBeGreaterThan(d.vel.x);
+    expect(momentum().x).toBeCloseTo(before.x,8);expect(momentum().y).toBeCloseTo(before.y,8);
+    expect(energy()).toBeLessThanOrEqual(kinetic);
+  });
+  it('a carrier dragging a tackler from behind keeps gaining ground before he goes down',()=>{
+    const {sim,c,d}=stage();d.body.pos={x:49.4,y:CENTER_Y};c.body.vel=d.body.vel={x:5,y:0};
+    sim.bond={carrier:c,tacklers:[d],start:sim.t,progressX:c.pos.x,down:false,grip:new Map([[d,1]]),topple:0,toppleRate:1,stalled:0};
+    vi.spyOn(sim.rng,'chance').mockReturnValue(false);
+    let ticks=0;
+    while(sim.bond&&!sim.bond.down&&ticks<200){updateBond(sim,sim.bond,[...sim.agents.map(()=>({vel:{x:0,y:0}})).fill({vel:{x:7,y:0}},c.idx,c.idx+1)]);sim.t+=sim.dt;ticks++;}
+    expect(ticks*sim.dt).toBeGreaterThan(.5);
+    expect(sim.endSpot!.x-50).toBeGreaterThan(1.5);
+  });
+  it('rules forward progress stopped when a squared-up pile stops gaining ground',()=>{
+    const {sim,c,d}=stage();d.body.pos={x:50.6,y:CENTER_Y};c.body.vel=d.body.vel={x:0,y:0};
+    sim.bond={carrier:c,tacklers:[d],start:sim.t,progressX:c.pos.x,down:false,grip:new Map([[d,1]]),topple:0,toppleRate:.01,stalled:0};
+    vi.spyOn(sim.rng,'chance').mockReturnValue(false);
+    let ticks=0;
+    while(sim.bond&&!sim.bond.down&&ticks<200){updateBond(sim,sim.bond,sim.agents.map(()=>({vel:{x:0,y:0}})));sim.t+=sim.dt;ticks++;}
+    expect(ticks*sim.dt).toBeGreaterThan(.6);expect(ticks*sim.dt).toBeLessThan(1.2);
+    expect(Math.abs(sim.endSpot!.x-50)).toBeLessThan(.3);
+  });
   it('records an opponent body bump even when that defender cannot attempt a tackle',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50.3,y:CENTER_Y};d.nextTackleAt=99;
     observe(sim);sim.tick();
