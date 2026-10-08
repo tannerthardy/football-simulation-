@@ -88,9 +88,9 @@ const MOVEMENT_TECHNIQUE: Partial<Record<Position, { backpedal: number; shuffle:
 };
 
 /** In-game burst: multiplies the sprint time constant (larger = gentler acceleration). */
-export const GAME_BURST = 1.4;
+export const GAME_BURST = 1.75;
 /** In-game braking/cutting relative to peak plant forces. */
-export const GAME_CUT = 0.65;
+export const GAME_CUT = 0.55;
 
 export function derivePhysical(p: Player): PhysicalProfile {
   const m = p.measurables;

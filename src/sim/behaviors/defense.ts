@@ -428,7 +428,9 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   const ball = sim.ball;
   if (ball.kind !== 'air') return false;
   const facingQB = Math.cos(a.body.facing - Math.atan2(ball.flight.pos.y - a.pos.y, ball.flight.pos.x - a.pos.x)) > 0.1;
-  const react = a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.6) + (man ? 0.1 : 0);
+  // Eyes on the QB see the release; a trailing man defender reads it off
+  // the receiver's eyes and hands a beat later.
+  const react = a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25) + (man ? 0.05 : 0);
   return sim.t - sim.throwAt >= react;
 }
 

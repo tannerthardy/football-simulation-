@@ -33,8 +33,9 @@ export function tryTackles(sim: PlaySim): void {
     const dy = c.pos.y - d.pos.y;
     const dd = Math.hypot(dx, dy);
     const engaged = !!d.engagement;
-    // A blocked defender can only reach out for the carrier if he's working off the block.
-    if (engaged && d.engagement!.win < 0.4) continue;
+    // A blocked defender can only reach out for the carrier once he's clearly
+    // working off the block (tracking: linemen make a third of run tackles).
+    if (engaged && d.engagement!.win < 0.6) continue;
     const body = c.profile.radius + d.profile.radius;
     const arms = body + d.profile.reach * (engaged ? 0.4 : 1.0);
     // Beyond full extension a defender can still lunge (low-quality arm tackle)
@@ -128,7 +129,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean):
     const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
     const seesIt = pocketQB && Math.cos(c.body.facing - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
     const escape = pocketQB ? (seesIt ? 0.12 + 0.18 * c.r('elusiveness') + 0.08 * c.r('pocketPresence') : 0.03) : 0;
-    const pMiss = clamp(0.02 + 0.2 * (E - T) * (0.5 + 0.5 * openField) + 0.07 * (1 - q) + 0.06 * overrun + (engaged ? 0.15 : 0) + (cs > 7 ? 0.02 : 0) + escape, 0.01, 0.6);
+    const pMiss = clamp(0.02 + 0.2 * (E - T) * (0.5 + 0.5 * openField) + 0.07 * (1 - q) + 0.06 * overrun + (engaged ? 0.3 : 0) + (cs > 7 ? 0.02 : 0) + escape, 0.01, 0.6);
     if (rng.chance(pMiss)) {
       d.missedTackles++;
       sim.stats.missedTackles++;

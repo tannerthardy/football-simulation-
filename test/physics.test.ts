@@ -49,8 +49,9 @@ describe('integrator', () => {
 
   it('a straight sprint in pads runs the 40 a little slower than the combine time', () => {
     const extra = sprint40() - wr.measurables.forty;
-    expect(extra).toBeGreaterThan(0.05);
-    expect(extra).toBeLessThan(0.35);
+    // In-game top speed and burst are below combine levels (tracking data).
+    expect(extra).toBeGreaterThan(0.1);
+    expect(extra).toBeLessThan(0.7);
   });
 
   it('cannot cut 90 degrees at full speed without bleeding speed', () => {

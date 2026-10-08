@@ -162,11 +162,12 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     qb = { x: qbType === 'under' ? los - 5.5 : los - 6, y: by };
     rb = { x: qb.x + 0.6, y: by + ps * 0.8 };
   } else if (qbType === 'under') {
-    qb = { x: los - 2.4, y: by + ps * 0.5 };
-    rb = { x: los - 2.9, y: by + ps * 1.1 };
+    // Reverse pivot and a couple of steps back: the mesh is ~3.5–4 yd deep.
+    qb = { x: los - 3.5, y: by + ps * 0.5 };
+    rb = { x: los - 4.0, y: by + ps * 1.1 };
   } else if (qbType === 'pistol') {
-    qb = { x: los - 4.2, y: by + ps * 0.3 };
-    rb = { x: los - 4.5, y: by + ps * 0.95 };
+    qb = { x: los - 4.4, y: by + ps * 0.3 };
+    rb = { x: los - 4.9, y: by + ps * 0.95 };
   } else {
     qb = { x: los - 5.0, y: by };
     rb = { x: los - 4.4, y: by + ps * 0.9 };
@@ -189,8 +190,10 @@ export class RunnerToMesh implements Behavior {
       // Through the mesh toward the aiming point.
       return goTo(a, this.aim, { through: a.profile.vmax * 0.7, speed: 0.8 });
     }
-    const speed = clamp(d / dt / a.profile.vmax, 0.15, 0.85);
-    if (sim.t < 0.15) return stand();
+    // Leave on the snap and get to the mesh on time: budget for the
+    // acceleration it takes to get going, not just the distance.
+    const tAcc = a.profile.tau * 0.9;
+    const speed = clamp(d / Math.max(0.2, dt - tAcc) / a.profile.vmax, 0.3, 1);
     return goTo(a, this.mesh, { speed, through: a.profile.vmax * 0.5 });
   }
 }

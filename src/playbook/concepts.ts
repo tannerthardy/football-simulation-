@@ -98,15 +98,17 @@ export const PASS_CONCEPTS: PassConcept[] = [
 ];
 
 export const RUN_CONCEPTS: RunConcept[] = [
-  { id: 'iz_strong', name: 'Inside Zone', scheme: 'insideZone', direction: 'strong', aim: 'B', meshTime: 0.85, pullers: [], beats: ['even', 'light-box'] },
-  { id: 'iz_weak', name: 'Inside Zone Weak', scheme: 'insideZone', direction: 'weak', aim: 'B', meshTime: 0.85, pullers: [], beats: ['even', 'light-box'] },
-  { id: 'oz_strong', name: 'Outside Zone', scheme: 'outsideZone', direction: 'strong', aim: 'C', meshTime: 0.8, pullers: [], beats: ['penetrating', 'light-box'] },
-  { id: 'oz_weak', name: 'Outside Zone Weak', scheme: 'outsideZone', direction: 'weak', aim: 'C', meshTime: 0.8, pullers: [], beats: ['penetrating'] },
-  { id: 'power', name: 'Power', scheme: 'power', direction: 'strong', aim: 'C', meshTime: 1.0, pullers: ['BSG'], beats: ['odd', 'heavy-box'] },
-  { id: 'counter', name: 'Counter', scheme: 'counter', direction: 'weak', aim: 'B', meshTime: 1.15, pullers: ['BSG', 'BST'], beats: ['flow', 'odd'] },
-  { id: 'duo', name: 'Duo', scheme: 'duo', direction: 'strong', aim: 'A', meshTime: 0.9, pullers: [], beats: ['heavy-box', 'two-high'] },
-  { id: 'trap', name: 'Trap', scheme: 'trap', direction: 'strong', aim: 'A', meshTime: 0.75, pullers: ['BSG'], beats: ['penetrating'] },
-  { id: 'draw', name: 'Draw', scheme: 'draw', direction: 'strong', aim: 'A', meshTime: 1.35, pullers: [], beats: ['pass-rush', 'two-high'] },
+  // Mesh times follow tracking: handoffs land ~1.3 s after the snap (zone a
+  // touch earlier, counter and draw later).
+  { id: 'iz_strong', name: 'Inside Zone', scheme: 'insideZone', direction: 'strong', aim: 'B', meshTime: 1.2, pullers: [], beats: ['even', 'light-box'] },
+  { id: 'iz_weak', name: 'Inside Zone Weak', scheme: 'insideZone', direction: 'weak', aim: 'B', meshTime: 1.2, pullers: [], beats: ['even', 'light-box'] },
+  { id: 'oz_strong', name: 'Outside Zone', scheme: 'outsideZone', direction: 'strong', aim: 'C', meshTime: 1.15, pullers: [], beats: ['penetrating', 'light-box'] },
+  { id: 'oz_weak', name: 'Outside Zone Weak', scheme: 'outsideZone', direction: 'weak', aim: 'C', meshTime: 1.15, pullers: [], beats: ['penetrating'] },
+  { id: 'power', name: 'Power', scheme: 'power', direction: 'strong', aim: 'C', meshTime: 1.3, pullers: ['BSG'], beats: ['odd', 'heavy-box'] },
+  { id: 'counter', name: 'Counter', scheme: 'counter', direction: 'weak', aim: 'B', meshTime: 1.45, pullers: ['BSG', 'BST'], beats: ['flow', 'odd'] },
+  { id: 'duo', name: 'Duo', scheme: 'duo', direction: 'strong', aim: 'A', meshTime: 1.2, pullers: [], beats: ['heavy-box', 'two-high'] },
+  { id: 'trap', name: 'Trap', scheme: 'trap', direction: 'strong', aim: 'A', meshTime: 1.05, pullers: ['BSG'], beats: ['penetrating'] },
+  { id: 'draw', name: 'Draw', scheme: 'draw', direction: 'strong', aim: 'A', meshTime: 1.45, pullers: [], beats: ['pass-rush', 'two-high'] },
   { id: 'toss', name: 'Toss', scheme: 'toss', direction: 'strong', aim: 'edge', meshTime: 0.5, pullers: [], beats: ['heavy-box', 'slow-edge'] },
 ];
 

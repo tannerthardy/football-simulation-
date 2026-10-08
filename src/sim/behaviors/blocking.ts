@@ -168,7 +168,7 @@ export class PassProtector implements Behavior {
     // rusher's line to the QB at punching distance. Make the rusher come to you.
     const isT = a.slot === 'LT' || a.slot === 'RT';
     const width = clamp(Math.abs(r.pos.y - home) / 2.5, 0, 1.5);
-    const setDepth = (isT ? 0.8 + (2.0 + width) * clamp(sim.t / 0.9, 0, 1) : 0.6 + 0.7 * clamp(sim.t / 0.6, 0, 1)) * (edgeRusher ? 1 : 0.7);
+    const setDepth = (isT ? 1.0 + (2.4 + width) * clamp(sim.t / 0.9, 0, 1) : 0.8 + 1.2 * clamp(sim.t / 0.7, 0, 1)) * (edgeRusher ? 1 : 0.8);
     // Anticipate the rusher's path a beat ahead (better feet read it sooner).
     const lead = 0.15 + 0.2 * traits(a).feet;
     const rp = { x: r.pos.x + r.vel.x * lead, y: r.pos.y + r.vel.y * lead };
@@ -282,7 +282,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
           target: np.target,
           climbTo: lbNear(b.pos.y + ps * 1.5, scheme === 'insideZone'),
           drive: up(ps * 0.5),
-          releaseAt: scheme === 'duo' ? 1.05 : 0.75,
+          // Hold the double team until the back is on the way (or the backer fills).
+          releaseAt: concept.meshTime + (scheme === 'duo' ? 0.35 : 0.1),
         });
       } else {
         plans.set(b, { kind: 'climb', target: lbNear(b.pos.y + ps * 1.0), drive: up(ps * 0.4) });
@@ -412,7 +413,8 @@ export class RunBlocker implements Behavior {
       }
       return stand();
     }
-    if (plan.kind === 'draw' && t < 0.75) {
+    // Sell pass until just before the handoff.
+    if (plan.kind === 'draw' && t < 1.0) {
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
     }
 

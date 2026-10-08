@@ -334,8 +334,8 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   // Pass sets give ground to set depth before anchoring, so the pocket forms
   // a few yards deep; after that the rush keeps compressing it as the blocker tires.
   const isT = b.slot === 'LT' || b.slot === 'RT';
-  const belowSet = sim.los - b.pos.x < (isT ? 2.6 : 1.6);
-  vAxis = clamp(vAxis, belowSet ? 0.7 : 0.12 + 0.55 * wear, 2.8);
+  const belowSet = sim.los - b.pos.x < (isT ? 3.8 : 2.9);
+  vAxis = clamp(vAxis, belowSet ? 1.2 : 0.12 + 0.55 * wear, 2.8);
   e.impulse *= Math.exp(-dt / 0.22);
   e.pushBoost = Math.max(0, e.pushBoost - dt * 1.2);
 
@@ -539,17 +539,19 @@ function stepRunRep(sim: PlaySim, e: Engagement): void {
   e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
 
-  // Shed attempts once the ball carrier threatens his area.
-  if (c && c.team !== d.team && t >= e.nextMoveAt) {
+  // Shed attempts once the ball carrier threatens his area — not the QB
+  // standing at the mesh before the handoff.
+  const meshing = c?.behavior.kind === 'qb-handoff';
+  if (c && c.team !== d.team && !meshing && t >= e.nextMoveAt) {
     const dc = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
-    if (dc < 4.5) {
+    if (dc < 3.5) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(c.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
       const sealed = -e.phi * ballSide; // >0: blocker is between you and the ball laterally
       const skill = 0.6 * d.r('blockShedding') + 0.4 * d.r('strength');
       const sustain = 0.5 * b.r('runBlock') + 0.3 * tb.hands + 0.2 * b.r('strength');
-      const p = logistic(-1.4 + 3.4 * (skill - sustain) - 1.2 * e.control - 1.3 * sealed + (d.profile.massKg - b.profile.massKg) / 120 - (e.helpers.length ? 1.2 : 0) + (1 - e.baseB) * 1.5);
+      const p = logistic(-2.0 + 3.4 * (skill - sustain) - 1.2 * e.control - 1.3 * sealed + (d.profile.massKg - b.profile.massKg) / 120 - (e.helpers.length ? 1.2 : 0) + (1 - e.baseB) * 1.5);
       if (rng.chance(p)) {
         if (!tryHold(sim, e)) beat(sim, e, axis, lat, true);
         return;

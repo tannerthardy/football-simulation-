@@ -42,19 +42,20 @@ interface ThrowEval {
 
 function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
   switch (drop) {
+    // Depths at the throw match tracking (median 7.9 yd behind the line).
     case 'quick':
-      return gun ? { x: los - 5.6, time: 0.7 } : { x: los - 3.9, time: 1.0 };
+      return gun ? { x: los - 6.6, time: 0.75 } : { x: los - 5.0, time: 1.05 };
     case 'gun3':
-      return gun ? { x: los - 6.0, time: 0.95 } : { x: los - 5.0, time: 1.25 };
+      return gun ? { x: los - 7.3, time: 1.0 } : { x: los - 6.2, time: 1.3 };
     case 'gun5':
-      return gun ? { x: los - 7.0, time: 1.35 } : { x: los - 7.0, time: 1.7 };
+      return gun ? { x: los - 8.0, time: 1.4 } : { x: los - 8.0, time: 1.75 };
     case 'five':
-      return { x: los - 7.0, time: gun ? 1.35 : 1.75 };
+      return { x: los - 8.0, time: gun ? 1.4 : 1.8 };
     case 'seven':
-      return { x: los - 8.8, time: gun ? 1.75 : 2.25 };
+      return { x: los - 9.5, time: gun ? 1.8 : 2.3 };
     case 'pa':
     case 'boot':
-      return { x: los - 7.5, time: 1.9 };
+      return { x: los - 8.3, time: 1.95 };
   }
   void qbStartX;
 }
@@ -344,27 +345,40 @@ export class QBPass implements Behavior {
     const wind = this.windup(a);
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
     const predict = (dt: number): Vec2 => (rr ? rr.predict(r, dt) : { x: r.pos.x + r.vel.x * dt, y: r.pos.y + r.vel.y * dt });
-    let T = Math.max(0.3, Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y) / (this.armSpeed * 0.85));
+    // Natural throw: the flight time real QBs use at this distance (2023
+    // tracking: ~0.6 s under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35,
+    // 2.5 s at 45), never faster than his arm allows. Stronger arms get there
+    // a little sooner.
+    const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
+    const natural = (d: number) => (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
+    let range = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
+    let T = Math.max(0.3, natural(range));
+    let Tmin = T;
     let pt = predict(wind + T);
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
       const to = { x: pt.x, y: pt.y, z: CATCH_Z };
-      T = minFlightTime(from, to, this.armSpeed) * 1.05;
+      range = Math.hypot(pt.x - a.pos.x, pt.y - a.pos.y);
+      Tmin = minFlightTime(from, to, this.armSpeed) * 1.05;
+      T = Math.max(Tmin, natural(range));
       pt = predict(wind + T);
     }
     pt = { x: pt.x, y: clamp(pt.y, 2, FIELD_WIDTH - 2) };
     const depth = pt.x - sim.los;
+    // Options: the natural ball, a fastball into a tight window, and touch over the top.
     const options: number[] = [T];
-    const range = Math.hypot(pt.x - a.pos.x, pt.y - a.pos.y);
-    if (range > 12) options.push(T * 1.2);
-    if (range > 20) options.push(T * 1.4);
+    if (range > 15) options.push(T * 1.2);
+    const fastball = Tmin < T * 0.85 ? Math.max(Tmin, T * 0.75) : null;
 
     let best: ThrowEval | null = null;
-    for (const Topt of options) {
+    const consider = (Topt: number) => {
       const p2 = Topt === T ? pt : predict(wind + Topt);
       const point: Vec3 = { x: p2.x, y: clamp(p2.y, 2, FIELD_WIDTH - 2), z: depth > 20 ? 1.6 : CATCH_Z };
       const ev = this.window(a, sim, r, from, point, Topt, wind, urgency);
       if (!best || ev.value > best.value) best = ev;
-    }
+    };
+    for (const Topt of options) consider(Topt);
+    // The fastball only comes out when the natural throw isn't there.
+    if (fastball && (!best || (best as ThrowEval).P < 0.6)) consider(fastball);
     return best;
   }
 
@@ -575,9 +589,10 @@ export class QBHandoff implements Behavior {
         return stand();
       }
     }
-    if (sim.t < 0.1) return stand();
+    if (sim.t < 0.05) return stand();
+    // Quick reverse pivot / step to the mesh.
     const facing = angleTo(a.pos, this.mesh);
-    return goTo(a, this.mesh, { speed: 0.75, facing });
+    return goTo(a, this.mesh, { speed: 1, facing, through: 0 });
   }
 }
 
