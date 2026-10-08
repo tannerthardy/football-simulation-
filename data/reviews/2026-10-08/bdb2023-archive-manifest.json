@@ -1,0 +1,74 @@
+[
+  {
+    "path": "games.csv",
+    "bytes": 6737,
+    "compressedBytes": 1258,
+    "crc32": "d1f0f661"
+  },
+  {
+    "path": "pffScoutingData.csv",
+    "bytes": 13014038,
+    "compressedBytes": 1034928,
+    "crc32": "2452ea63"
+  },
+  {
+    "path": "players.csv",
+    "bytes": 103891,
+    "compressedBytes": 34885,
+    "crc32": "6839f825"
+  },
+  {
+    "path": "plays.csv",
+    "bytes": 2347966,
+    "compressedBytes": 403492,
+    "crc32": "7de12e4d"
+  },
+  {
+    "path": "week1.csv",
+    "bytes": 127778518,
+    "compressedBytes": 24071367,
+    "crc32": "9ed04d77"
+  },
+  {
+    "path": "week2.csv",
+    "bytes": 119135555,
+    "compressedBytes": 22481198,
+    "crc32": "2cff1116"
+  },
+  {
+    "path": "week3.csv",
+    "bytes": 128060109,
+    "compressedBytes": 24150196,
+    "crc32": "9533c6f8"
+  },
+  {
+    "path": "week4.csv",
+    "bytes": 122748857,
+    "compressedBytes": 23172548,
+    "crc32": "572dbaac"
+  },
+  {
+    "path": "week5.csv",
+    "bytes": 125396978,
+    "compressedBytes": 23640822,
+    "crc32": "1a2064e0"
+  },
+  {
+    "path": "week6.csv",
+    "bytes": 111226019,
+    "compressedBytes": 20977813,
+    "crc32": "8eaa5d5d"
+  },
+  {
+    "path": "week7.csv",
+    "bytes": 103419710,
+    "compressedBytes": 19469283,
+    "crc32": "09cd0a58"
+  },
+  {
+    "path": "week8.csv",
+    "bytes": 111834403,
+    "compressedBytes": 21095978,
+    "crc32": "242c5e6d"
+  }
+]

@@ -1,0 +1,233 @@
+{
+  "games": 16,
+  "rawScrimmage": 2293,
+  "acceptedHolding": 37,
+  "rawRun": 554,
+  "rawPass": 1739,
+  "rawAttempts": 1495,
+  "rawCompletions": 1000,
+  "officialAttempts": 1476,
+  "officialCompletions": 982,
+  "completionLostFumbles": 4,
+  "turnoverDowns": 0,
+  "thirdTouchdowns": 23,
+  "fourthTouchdowns": 3,
+  "heldCompletions": 18,
+  "heldSacks": 0,
+  "heldRuns": 17,
+  "offsidePenalty": 11,
+  "passPlaysAfterClockZero": 0,
+  "runConcepts": {
+    "Inside Zone Weak": {
+      "n": 36,
+      "yards": 236.67,
+      "stuffs": 4,
+      "explosives": 7,
+      "ypc": 6.57,
+      "stuffPct": 11.11,
+      "explosivePct": 19.44
+    },
+    "Duo": {
+      "n": 48,
+      "yards": 113.77999999999999,
+      "stuffs": 13,
+      "explosives": 3,
+      "ypc": 2.37,
+      "stuffPct": 27.08,
+      "explosivePct": 6.25
+    },
+    "Counter": {
+      "n": 75,
+      "yards": 223.00000000000003,
+      "stuffs": 32,
+      "explosives": 8,
+      "ypc": 2.97,
+      "stuffPct": 42.67,
+      "explosivePct": 10.67
+    },
+    "Power": {
+      "n": 85,
+      "yards": 167.7800000000001,
+      "stuffs": 33,
+      "explosives": 7,
+      "ypc": 1.97,
+      "stuffPct": 38.82,
+      "explosivePct": 8.24
+    },
+    "Toss": {
+      "n": 13,
+      "yards": 193.40999999999997,
+      "stuffs": 2,
+      "explosives": 5,
+      "ypc": 14.88,
+      "stuffPct": 15.38,
+      "explosivePct": 38.46
+    },
+    "Outside Zone Weak": {
+      "n": 36,
+      "yards": 129.44000000000003,
+      "stuffs": 7,
+      "explosives": 2,
+      "ypc": 3.6,
+      "stuffPct": 19.44,
+      "explosivePct": 5.56
+    },
+    "Draw": {
+      "n": 39,
+      "yards": 28.41,
+      "stuffs": 25,
+      "explosives": 2,
+      "ypc": 0.73,
+      "stuffPct": 64.1,
+      "explosivePct": 5.13
+    },
+    "Trap": {
+      "n": 93,
+      "yards": 325.0300000000001,
+      "stuffs": 38,
+      "explosives": 6,
+      "ypc": 3.49,
+      "stuffPct": 40.86,
+      "explosivePct": 6.45
+    },
+    "Inside Zone": {
+      "n": 57,
+      "yards": 171.62999999999997,
+      "stuffs": 20,
+      "explosives": 4,
+      "ypc": 3.01,
+      "stuffPct": 35.09,
+      "explosivePct": 7.02
+    },
+    "Outside Zone": {
+      "n": 37,
+      "yards": 188.86999999999992,
+      "stuffs": 18,
+      "explosives": 3,
+      "ypc": 5.1,
+      "stuffPct": 48.65,
+      "explosivePct": 8.11
+    },
+    "Trap (flipped)": {
+      "n": 5,
+      "yards": 3.4299999999999997,
+      "stuffs": 1,
+      "explosives": 0,
+      "ypc": 0.69,
+      "stuffPct": 20,
+      "explosivePct": 0
+    },
+    "Inside Zone (flipped)": {
+      "n": 4,
+      "yards": 17.91,
+      "stuffs": 0,
+      "explosives": 1,
+      "ypc": 4.48,
+      "stuffPct": 0,
+      "explosivePct": 25
+    },
+    "Power (flipped)": {
+      "n": 3,
+      "yards": -0.79,
+      "stuffs": 2,
+      "explosives": 0,
+      "ypc": -0.26,
+      "stuffPct": 66.67,
+      "explosivePct": 0
+    },
+    "Counter (flipped)": {
+      "n": 2,
+      "yards": -2.92,
+      "stuffs": 2,
+      "explosives": 0,
+      "ypc": -1.46,
+      "stuffPct": 100,
+      "explosivePct": 0
+    },
+    "Outside Zone (flipped)": {
+      "n": 2,
+      "yards": -2.35,
+      "stuffs": 2,
+      "explosives": 0,
+      "ypc": -1.18,
+      "stuffPct": 100,
+      "explosivePct": 0
+    },
+    "Duo (flipped)": {
+      "n": 2,
+      "yards": 4.04,
+      "stuffs": 0,
+      "explosives": 0,
+      "ypc": 2.02,
+      "stuffPct": 0,
+      "explosivePct": 0
+    }
+  },
+  "sackTimes": [],
+  "gameScores": [
+    {
+      "home": 42,
+      "away": 45
+    },
+    {
+      "home": 45,
+      "away": 6
+    },
+    {
+      "home": 41,
+      "away": 66
+    },
+    {
+      "home": 26,
+      "away": 41
+    },
+    {
+      "home": 33,
+      "away": 26
+    },
+    {
+      "home": 33,
+      "away": 66
+    },
+    {
+      "home": 25,
+      "away": 37
+    },
+    {
+      "home": 26,
+      "away": 32
+    },
+    {
+      "home": 25,
+      "away": 41
+    },
+    {
+      "home": 36,
+      "away": 58
+    },
+    {
+      "home": 38,
+      "away": 6
+    },
+    {
+      "home": 55,
+      "away": 20
+    },
+    {
+      "home": 16,
+      "away": 44
+    },
+    {
+      "home": 45,
+      "away": 25
+    },
+    {
+      "home": 30,
+      "away": 49
+    },
+    {
+      "home": 31,
+      "away": 24
+    }
+  ]
+}

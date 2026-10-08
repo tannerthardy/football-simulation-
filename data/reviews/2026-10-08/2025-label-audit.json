@@ -1,0 +1,85 @@
+{
+  "plays": 16124,
+  "runs": 6223,
+  "dropbacks": 9736,
+  "dropbackPctExcludingKneelsSpikes": 61.01,
+  "pressureDropbacks": 3265,
+  "coverageAssignmentCounts": {
+    "HCR": 4629,
+    "4OR": 1535,
+    "FL": 1947,
+    "CFR": 4741,
+    "4IR": 1957,
+    "2L": 2012,
+    "HCL": 4646,
+    "CFL": 4748,
+    "3L": 2883,
+    "HOL": 5404,
+    "3R": 2842,
+    "3M": 3210,
+    "MAN": 15388,
+    "DF": 2016,
+    "2R": 2009,
+    "FR": 1892,
+    "4OL": 1592,
+    "4IL": 1975,
+    "PRE": 348
+  },
+  "primaryMatchupPlayerReps": 43484,
+  "blockerRepsWithFirstOpponent": 49104,
+  "runPassOptionDropbacks": 494,
+  "runPassOptionRuns": 1140,
+  "pressureAssociations": {
+    "pressured": {
+      "n": 3265,
+      "ypc_or_ydsPerDropback": 3.688,
+      "epa": -0.407,
+      "completionPct": 50.44,
+      "sackPct": 18.56,
+      "tttMean": 3.297
+    },
+    "unpressured": {
+      "n": 6471,
+      "ypc_or_ydsPerDropback": 7.466,
+      "epa": 0.187,
+      "completionPct": 70.03,
+      "sackPct": 0.03,
+      "tttMean": 2.525
+    }
+  },
+  "motionAssociations": {
+    "runsMotion": {
+      "n": 2093,
+      "ypc_or_ydsPerDropback": 4.472,
+      "epa": -0.054,
+      "completionPct": null,
+      "sackPct": 0.0,
+      "tttMean": null
+    },
+    "runsNoMotion": {
+      "n": 4130,
+      "ypc_or_ydsPerDropback": 4.481,
+      "epa": -0.057,
+      "completionPct": null,
+      "sackPct": 0.0,
+      "tttMean": null
+    },
+    "passesMotion": {
+      "n": 2385,
+      "ypc_or_ydsPerDropback": 6.21,
+      "epa": 0.049,
+      "completionPct": 67.98,
+      "sackPct": 5.58,
+      "tttMean": 2.735
+    },
+    "passesNoMotion": {
+      "n": 7351,
+      "ypc_or_ydsPerDropback": 6.195,
+      "epa": -0.032,
+      "completionPct": 63.27,
+      "sackPct": 6.46,
+      "tttMean": 2.749
+    }
+  },
+  "note": "Associations are descriptive and confounded; do not treat motion or pressure comparisons as intervention effects."
+}

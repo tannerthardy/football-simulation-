@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-08",
+  "rawDirectory": "data/raw",
+  "sources": [
+    {
+      "id": "bdb2019-2017",
+      "repository": "https://github.com/ryurko/Big-Data-Bowl",
+      "commit": "0dac66ce81e5fd22ca48f35ea6a637c523dda12b",
+      "competitionYear": 2019,
+      "season": 2017,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "trackingGames": 91,
+      "fileManifest": "data/sources/ryurko-bdb2019-files.json",
+      "extractor": "scripts/data/bdb2017.ts",
+      "summary": "data/bdb2017-summary.json",
+      "inputDirectory": "data/raw/bdb2019/Data",
+      "extractorTrackingFiles": [
+        "tracking_gameId_2017090700.csv"
+      ],
+      "summaryVerification": "Regenerated from supplied archive; equals committed JSON. Metadata covers 91 games; tracking metrics use one game.",
+      "termsUrl": "https://github.com/ryurko/Big-Data-Bowl/blob/0dac66ce81e5fd22ca48f35ea6a637c523dda12b/README.md#official-rules",
+      "reusePermission": "Not established by public availability or private-repository access.",
+      "sourceUrl": "https://drive.google.com/file/d/1x5Po8NAEgFfNQGHf0Dks-CToPxkoIU-I/view",
+      "archiveName": "Big-Data-Bowl-master.zip",
+      "archiveBytes": 401360678,
+      "archiveUncompressedBytes": 2484171322,
+      "archiveSha256": "4cc73c4c22443736b750e9a0cca8cf3e8a25a44ceb6a6e853ca98563269089ca",
+      "archiveRootDirectory": "Big-Data-Bowl-master",
+      "archiveManifest": "data/reviews/2026-10-08/bdb2019-archive-manifest.json",
+      "archiveVerification": "data/reviews/2026-10-08/bdb2019-archive-verification.json",
+      "archiveIdentity": "All 94 CSV contents and byte sizes match the pinned GitHub source; this is an alternate access route to the same dataset.",
+      "review": "docs/reviews/bdb2019-archive-review.md"
+    },
+    {
+      "id": "bdb2023-2021",
+      "competitionYear": 2023,
+      "season": 2021,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1hVJ-AJh1tpc0fvCvgcEksmOK3RKyPm16/view",
+      "archiveName": "nfl-big-data-bowl-2023.zip",
+      "archiveBytes": 180535422,
+      "archiveUncompressedBytes": 965072781,
+      "archiveSha256": "129ad4fc656919ffb13fcc6f7670d15040add6c60a655e5dd9aa269e1aea72b3",
+      "archiveManifest": "data/reviews/2026-10-08/bdb2023-archive-manifest.json",
+      "extractor": "scripts/data/bdb2023.py",
+      "summary": "data/bdb2023-summary.json",
+      "inputDirectory": "data/raw/bdb2023",
+      "trackingScope": "Selected pass/dropback plays. Whole-play all-player coverage checked in week 1; tracked throws end shortly after release. Not full-play trajectories.",
+      "reviewedLabelWeeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "reviewedTrackingWeeks": [
+        1
+      ],
+      "summaryScope": "All metadata labels; zero trajectory rows processed by the summary extractor. Separate week-1 tracking audit contains 1,118,122 rows over 1,175 plays.",
+      "review": "docs/reviews/bdb2023-data-review.md",
+      "reusePermission": "Confirm competition terms and permission for team sharing; Drive access is granted separately."
+    },
+    {
+      "id": "bdb2025-2022",
+      "competitionYear": 2025,
+      "season": 2022,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view",
+      "archiveName": "archive.zip",
+      "archiveBytes": 1219840421,
+      "archiveSha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+      "extractor": "scripts/data/bdb2025.ts",
+      "summary": "data/bdb2025-summary.json",
+      "inputDirectory": "data/raw/bdb2025/big-data-bowl-data",
+      "reviewedTrackingWeeks": [
+        1,
+        2
+      ],
+      "reviewedLabelWeeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "summaryVerification": "Regenerated summary equals committed JSON at reviewed commit.",
+      "reusePermission": "Confirm competition terms and permission for team sharing; Drive access is granted separately."
+    },
+    {
+      "id": "bdb2026-2023",
+      "competitionYear": 2026,
+      "season": 2023,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/13Q5f54OG3FZOKA49Y6RO8k7jnAHweLmL/view",
+      "archiveName": "nfl-big-data-bowl-2026-analytics.zip",
+      "archiveBytes": 107953117,
+      "archiveSha256": "360a32614d528e69220cacb39f6beddc580bfd2b9818c22194f1c3c394ccc1a1",
+      "extractor": "scripts/data/bdb2026.ts",
+      "summary": "data/bdb2026-summary.json",
+      "inputDirectory": "data/raw/bdb2026/114239_nfl_competition_files_published_analytics_final",
+      "trackingScope": "Selected pass plays and selected players; not all 22 players.",
+      "reviewedTrackingWeeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "summaryVerification": "Regenerated summary equals committed JSON at reviewed commit.",
+      "reusePermission": "Confirm competition terms and permission for team sharing; Drive access is granted separately."
+    },
+    {
+      "id": "bdb2027-2023-2025",
+      "competitionYear": 2027,
+      "sourceUrl": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2027",
+      "downloadedAtUtc": "2026-10-08T05:17:49.338181+00:00",
+      "seasons": [
+        2023,
+        2024,
+        2025
+      ],
+      "draftYears": [
+        2023,
+        2024,
+        2025
+      ],
+      "players": 510,
+      "fileCount": 9,
+      "datasetBytes": 2306804135,
+      "fileManifest": "data/sources/kaggle-bdb2027-files.json",
+      "downloader": "scripts/data/download_kaggle.py",
+      "extractor": "scripts/data/bdb2027.py",
+      "summary": "data/bdb2027-summary.json",
+      "inputDirectory": "data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027",
+      "trackingScope": "Selected cohort trajectories, not all-22. All combine tracking counted; only 2023 game trajectories audited.",
+      "reviewedGameTrackingSeasons": [
+        2023
+      ],
+      "review": "docs/reviews/bdb2027-data-review.md",
+      "reusePermission": "Kaggle authentication and applicable competition access/terms are required; a private repo does not automatically grant another user access."
+    }
+  ]
+}

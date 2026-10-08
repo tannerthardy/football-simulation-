@@ -1,0 +1,302 @@
+{
+  "source": "NFL Big Data Bowl 2023",
+  "note": "2021 weeks 1\u20138, selected pass/dropback plays. All metadata rows retained, including fouls. Pressure means any PFF hit/hurry/sack flag, not geometric proximity. Block codes are untranslated and rates are descriptive, not causal or standalone tuning targets.",
+  "scope": {
+    "seasons": {
+      "2021": 122
+    },
+    "games": 122,
+    "gamesByWeek": {
+      "1": 16,
+      "2": 16,
+      "3": 16,
+      "4": 16,
+      "5": 16,
+      "8": 15,
+      "6": 14,
+      "7": 13
+    },
+    "plays": 8557,
+    "players": 1679,
+    "scoutingRows": 188254,
+    "trackingFilesPresent": [
+      "week1.csv",
+      "week2.csv",
+      "week3.csv",
+      "week4.csv",
+      "week5.csv",
+      "week6.csv",
+      "week7.csv",
+      "week8.csv"
+    ],
+    "trackingRowsAnalyzed": 0
+  },
+  "dataQuality": {
+    "duplicatePlayKeys": 0,
+    "playsWithoutGameMetadata": 0,
+    "scoutingRowsWithoutPlay": 0,
+    "scoutingRowsWithoutPlayer": 0,
+    "duplicatePlayerPlayRows": 0,
+    "scoutingPlayersPerPlay": {
+      "22": 8557
+    },
+    "blockedPlayerReferences": 46526,
+    "blockedPlayerReferencesFoundInSamePlay": 46524
+  },
+  "passingLabels": {
+    "passResults": {
+      "C": 4620,
+      "I": 2755,
+      "S": 543,
+      "R": 449,
+      "IN": 190
+    },
+    "attemptsIncludingFoulRows": 7565,
+    "completionPctIncludingFoulRows": 61.07,
+    "playActionPlays": 2038,
+    "playsWithAnyFoul": 736,
+    "foulNameCounts": {
+      "Defensive Pass Interference": 150,
+      "Offensive Holding": 149,
+      "Defensive Holding": 80,
+      "Roughing the Passer": 63,
+      "Defensive Offside": 50,
+      "Unnecessary Roughness": 46,
+      "Illegal Use of Hands": 45,
+      "Offensive Pass Interference": 38,
+      "Face Mask (15 Yards)": 25,
+      "Illegal Contact": 23,
+      "Intentional Grounding": 17,
+      "Taunting": 16,
+      "Ineligible Downfield Pass": 9,
+      "Illegal Formation": 8,
+      "Lowering the Head to Initiate Contact": 7,
+      "Unsportsmanlike Conduct": 7,
+      "Illegal Blindside Block": 5,
+      "Illegal Touch Pass": 5,
+      "Horse Collar Tackle": 4,
+      "Illegal Motion": 4,
+      "Disqualification": 3,
+      "Tripping": 3,
+      "Illegal Forward Pass": 2,
+      "Illegal Shift": 2,
+      "Low Block": 2,
+      "Chop Block": 1,
+      "Clipping": 1,
+      "Illegal Block Above the Waist": 1,
+      "Illegal Substitution": 1
+    },
+    "coverageCounts": {
+      "Cover-3": 2665,
+      "Cover-1": 2011,
+      "Cover-2": 1085,
+      "Quarters": 1033,
+      "Cover-6": 805,
+      "Red Zone": 376,
+      "Cover-0": 270,
+      "2-Man": 200,
+      "Bracket": 47,
+      "Prevent": 32,
+      "Goal Line": 25,
+      "Miscellaneous": 8
+    }
+  },
+  "scouting": {
+    "roles": {
+      "Coverage": 57765,
+      "Pass Block": 46057,
+      "Pass Route": 39513,
+      "Pass Rush": 36362,
+      "Pass": 8557
+    },
+    "blockTypes": {
+      "BH": {
+        "reps": 443,
+        "withBlockedPlayerId": 443,
+        "allowedFlagsObserved": 443,
+        "withAllowedPressureLabel": 21,
+        "beatenFlagObserved": 443,
+        "beaten": 10,
+        "allowedPressureLabelPct": 4.74,
+        "beatenPct": 2.26
+      },
+      "CH": {
+        "reps": 1565,
+        "withBlockedPlayerId": 1565,
+        "allowedFlagsObserved": 1565,
+        "withAllowedPressureLabel": 10,
+        "beatenFlagObserved": 1565,
+        "beaten": 0,
+        "allowedPressureLabelPct": 0.64,
+        "beatenPct": 0.0
+      },
+      "CL": {
+        "reps": 2595,
+        "withBlockedPlayerId": 2595,
+        "allowedFlagsObserved": 2595,
+        "withAllowedPressureLabel": 33,
+        "beatenFlagObserved": 2595,
+        "beaten": 16,
+        "allowedPressureLabelPct": 1.27,
+        "beatenPct": 0.62
+      },
+      "NB": {
+        "reps": 1352,
+        "withBlockedPlayerId": 0,
+        "allowedFlagsObserved": 1352,
+        "withAllowedPressureLabel": 15,
+        "beatenFlagObserved": 1352,
+        "beaten": 8,
+        "allowedPressureLabelPct": 1.11,
+        "beatenPct": 0.59
+      },
+      "PA": {
+        "reps": 6331,
+        "withBlockedPlayerId": 6331,
+        "allowedFlagsObserved": 6331,
+        "withAllowedPressureLabel": 264,
+        "beatenFlagObserved": 6331,
+        "beaten": 154,
+        "allowedPressureLabelPct": 4.17,
+        "beatenPct": 2.43
+      },
+      "PP": {
+        "reps": 24697,
+        "withBlockedPlayerId": 24697,
+        "allowedFlagsObserved": 24697,
+        "withAllowedPressureLabel": 2026,
+        "beatenFlagObserved": 24697,
+        "beaten": 1405,
+        "allowedPressureLabelPct": 8.2,
+        "beatenPct": 5.69
+      },
+      "PR": {
+        "reps": 295,
+        "withBlockedPlayerId": 294,
+        "allowedFlagsObserved": 295,
+        "withAllowedPressureLabel": 6,
+        "beatenFlagObserved": 295,
+        "beaten": 5,
+        "allowedPressureLabelPct": 2.03,
+        "beatenPct": 1.69
+      },
+      "PT": {
+        "reps": 5906,
+        "withBlockedPlayerId": 5906,
+        "allowedFlagsObserved": 5906,
+        "withAllowedPressureLabel": 141,
+        "beatenFlagObserved": 5906,
+        "beaten": 101,
+        "allowedPressureLabelPct": 2.39,
+        "beatenPct": 1.71
+      },
+      "PU": {
+        "reps": 886,
+        "withBlockedPlayerId": 885,
+        "allowedFlagsObserved": 886,
+        "withAllowedPressureLabel": 155,
+        "beatenFlagObserved": 886,
+        "beaten": 73,
+        "allowedPressureLabelPct": 17.49,
+        "beatenPct": 8.24
+      },
+      "SR": {
+        "reps": 501,
+        "withBlockedPlayerId": 486,
+        "allowedFlagsObserved": 501,
+        "withAllowedPressureLabel": 6,
+        "beatenFlagObserved": 501,
+        "beaten": 5,
+        "allowedPressureLabelPct": 1.2,
+        "beatenPct": 1.0
+      },
+      "SW": {
+        "reps": 3025,
+        "withBlockedPlayerId": 3025,
+        "allowedFlagsObserved": 3025,
+        "withAllowedPressureLabel": 283,
+        "beatenFlagObserved": 3025,
+        "beaten": 145,
+        "allowedPressureLabelPct": 9.36,
+        "beatenPct": 4.79
+      },
+      "UP": {
+        "reps": 308,
+        "withBlockedPlayerId": 299,
+        "allowedFlagsObserved": 308,
+        "withAllowedPressureLabel": 33,
+        "beatenFlagObserved": 308,
+        "beaten": 22,
+        "allowedPressureLabelPct": 10.71,
+        "beatenPct": 7.14
+      }
+    },
+    "blockedPlayerRoles": {
+      "Pass Rush": 46095,
+      "Coverage": 429,
+      "missing": 2
+    },
+    "blockerPositions": {
+      "T": 17920,
+      "G": 16535,
+      "C": 8406,
+      "TE": 2577,
+      "RB": 2029,
+      "FB": 218,
+      "WR": 212,
+      "QB": 4,
+      "LB": 3
+    }
+  },
+  "pressureLabels": {
+    "playsWithAnyRushHitHurrySack": 3216,
+    "pctOfAllIncludedPlays": 37.58,
+    "byInitialRusherCount": {
+      "0": {
+        "plays": 1,
+        "withRushPressureLabel": 0,
+        "pressureLabelPct": 0.0
+      },
+      "1": {
+        "plays": 2,
+        "withRushPressureLabel": 0,
+        "pressureLabelPct": 0.0
+      },
+      "2": {
+        "plays": 16,
+        "withRushPressureLabel": 1,
+        "pressureLabelPct": 6.25
+      },
+      "3": {
+        "plays": 420,
+        "withRushPressureLabel": 103,
+        "pressureLabelPct": 24.52
+      },
+      "4": {
+        "plays": 6011,
+        "withRushPressureLabel": 2107,
+        "pressureLabelPct": 35.05
+      },
+      "5": {
+        "plays": 1689,
+        "withRushPressureLabel": 789,
+        "pressureLabelPct": 46.71
+      },
+      "6": {
+        "plays": 348,
+        "withRushPressureLabel": 170,
+        "pressureLabelPct": 48.85
+      },
+      "7": {
+        "plays": 69,
+        "withRushPressureLabel": 45,
+        "pressureLabelPct": 65.22
+      },
+      "8": {
+        "plays": 1,
+        "withRushPressureLabel": 1,
+        "pressureLabelPct": 100.0
+      }
+    }
+  }
+}

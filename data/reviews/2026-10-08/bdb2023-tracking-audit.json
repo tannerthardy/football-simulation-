@@ -1,0 +1,52 @@
+{
+  "file": "week1.csv",
+  "rows": 1118122,
+  "plays": 1175,
+  "uniquePlayersPerPlay": {
+    "22": 1175
+  },
+  "playsWithFootball": 1175,
+  "nonFootballTeamsPerPlay": {
+    "2": 1175
+  },
+  "playsByEvent": {
+    "autoevent_passforward": 549,
+    "ball_snap": 1172,
+    "pass_forward": 1048,
+    "autoevent_ballsnap": 582,
+    "line_set": 21,
+    "play_action": 233,
+    "pass_arrived": 50,
+    "autoevent_passinterrupted": 30,
+    "fumble_offense_recovered": 1,
+    "fumble": 2,
+    "qb_sack": 58,
+    "run": 53,
+    "man_in_motion": 26,
+    "pass_outcome_caught": 3,
+    "pass_outcome_incomplete": 6,
+    "pass_tipped": 13,
+    "qb_strip_sack": 8,
+    "shift": 19,
+    "first_contact": 10,
+    "huddle_break_offense": 1,
+    "lateral": 1,
+    "handoff": 1
+  },
+  "note": "Week 1 checked across each whole play. Counts establish participant coverage, not that every individual frame has complete measurements.",
+  "playsWithReleaseEvent": 1063,
+  "framesAfterEarliestReleaseEvent": {
+    "median": 5,
+    "max": 5,
+    "playsWithZero": 0,
+    "playsWithAtMostOne": 0
+  },
+  "finalFrameEvents": {
+    "pass_arrived": 43,
+    "autoevent_passinterrupted": 12,
+    "pass_outcome_caught": 3,
+    "pass_outcome_incomplete": 3,
+    "pass_tipped": 1,
+    "first_contact": 1
+  }
+}

@@ -19,6 +19,13 @@ See [docs/DESIGN.md](docs/DESIGN.md) for the full design and
 [docs/ROADMAP.md](docs/ROADMAP.md) for status, calibration against NFL
 baselines, and what's next.
 
+See [data/README.md](data/README.md) for the shared NFL data catalog,
+collaborator access, pinned upstream sources, and summary regeneration.
+The [2026-10-08 engine review](docs/reviews/2026-10-08-engine-review.md)
+records the current findings and improvement priorities.
+The [realism implementation plan](docs/REALISM_PLAN.md) develops those findings
+into modeling work packages, dependencies, and release criteria.
+
 ## Quick start
 
 Requires Node 22.
@@ -63,6 +70,6 @@ viewer         replay viewer template
 docs           design and roadmap
 ```
 
-Everything is deterministic for a given seed: each subsystem draws from its
-own forked stream, so changing one model doesn't reshuffle unrelated
-randomness.
+Gameplay is reproducible for a given seed and fixed execution path. Stable
+subsystem streams and roster-scoped player identity are planned improvements;
+the review documents the current fork-order and process-global ID limitations.

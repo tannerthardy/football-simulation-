@@ -1,5 +1,8 @@
 node_modules/
 dist/
 out/
+data/raw/
+.venv-kaggle/
 *.log
+!data/reviews/**/*.log
 .DS_Store
