@@ -28,6 +28,8 @@ export class RouteRunner implements Behavior {
   private readonly start: Vec2;
   /** Time at which the route's final break is expected (for QB timing). */
   readonly breakTime: number;
+  /** Fraction of top speed the route is run at: quick game is rhythm, verticals are races. */
+  private readonly effort: number;
 
   constructor(
     a: Agent,
@@ -38,6 +40,8 @@ export class RouteRunner implements Behavior {
     private readonly startDelay = 0,
   ) {
     this.start = { ...a.pos };
+    const base: Record<string, number> = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
+    this.effort = clamp((base[route.family] ?? 0.85) + 0.04 * (a.r('routeRunning') - 0.5), 0.7, 0.98);
     this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
     this.readAt = 0.55 + 0.6 * (1 - a.r('awareness'));
     // Break time ≈ distance to the last speed-controlled point at ~85% speed.
@@ -51,7 +55,7 @@ export class RouteRunner implements Behavior {
       if (route.points[i].s !== undefined) breakDist = dist;
     }
     if (breakDist === 0) breakDist = Math.min(dist, 8);
-    this.breakTime = startDelay + 0.25 + breakDist / (0.85 * a.profile.vmax);
+    this.breakTime = startDelay + 0.25 + breakDist / (0.85 * this.effort * a.profile.vmax);
   }
 
   private buildPath(start: Vec2, pts: RoutePoint[], extend: boolean): PathPoint[] {
@@ -93,6 +97,11 @@ export class RouteRunner implements Behavior {
 
     this.handleRelease(a, sim);
     if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
+    // Ball thrown to someone else: finish the route at a jog and find someone to block.
+    if (sim.ball.kind === 'air' && sim.ball.target !== a) {
+      const cmd = this.steer(a.body, { idx: this.idx }, a.r('routeRunning'), 1);
+      if (cmd) return { ...cmd, effort: 0.55 };
+    }
 
     // Option routes read the coverage once.
     if (!this.converted && sim.t >= this.readAt && this.route.end === 'sitVsZone') {
@@ -137,7 +146,8 @@ export class RouteRunner implements Behavior {
         continue;
       }
       const isLast = st.idx === this.path.length - 1;
-      let through = isLast && this.route.end !== 'continue' ? 0 : tgt.s * body.profile.vmax * clamp(0.82 + 0.3 * rr, 0, 1);
+      const vtop = body.profile.vmax * this.effort;
+      let through = isLast && this.route.end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
       if (next) {
         // Physically sensible speed for the upcoming turn.
         const ax = tgt.p.x - body.pos.x;
@@ -147,7 +157,7 @@ export class RouteRunner implements Behavior {
         const cosT = (ax * bx + ay * by) / ((Math.hypot(ax, ay) || 1) * (Math.hypot(bx, by) || 1));
         through = Math.min(through, Math.sqrt((body.profile.lateral * cutSkill * 1.3) / Math.max(0.04, 1 - cosT)));
       }
-      return { vel: arriveVelocity(body, tgt.p, body.profile.vmax, through), cutSkill };
+      return { vel: arriveVelocity(body, tgt.p, vtop, through), cutSkill };
     }
     return null;
   }
@@ -363,7 +373,8 @@ export class DownfieldBlocker implements Behavior {
       sim.engage(a, d, 'run', drive);
       return stand();
     }
-    return runThrough(a, fit, { speed: 0.95 });
+    // Jog until the block is close; then close hard.
+    return runThrough(a, fit, { speed: dd > 5 ? 0.7 : 0.95 });
   }
 }
 

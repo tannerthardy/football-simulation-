@@ -262,14 +262,16 @@ export class ZoneCoverage implements Behavior {
       const c = sim.carrier!;
       if (!this.deep || c.pos.x > sim.los - 0.5 || sim.catchAt >= 0) return live;
     }
-    if (sim.ball.kind === 'air') return playBall(a, sim, null);
+    // Until he sees the throw, a zone defender keeps playing his zone.
+    if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
     if (believesRun(sim, a) && !this.deep && sim.t > a.readAt) return runFit(a, sim, this.gap, this.gapSign);
 
     const qb = sim.qb;
     const lm = this.landmark;
     const [ylo, yhi] = this.band;
     const facingQB = angleTo(a.pos, qb.pos);
-    const zs = 0.75 + 0.3 * a.r('zoneCoverage');
+    // Zone drops are run under control, eyes on the QB.
+    const zs = 0.65 + 0.2 * a.r('zoneCoverage');
     const inside = (y: number) => Math.sign(sim.ballY - y) || 1;
 
     // Perceived routes in (or about to enter) this zone's lateral band.
@@ -284,7 +286,14 @@ export class ZoneCoverage implements Behavior {
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
-      const vert = threats.filter((th) => th.fut.x - sim.los > 7 || th.vel.x > 4.5);
+      let vert = threats.filter((th) => th.fut.x - sim.los > 7 || th.vel.x > 4.5);
+      // A deep-third corner stays over verticals in the outside third; a seam
+      // on the hash is the middle safety's. He only takes #2 if #2 works out to him.
+      if (this.zone === 'deep_third_s' || this.zone === 'deep_third_w') {
+        const third = FIELD_WIDTH / 3;
+        const outer = vert.filter((th) => Math.min(th.fut.y, FIELD_WIDTH - th.fut.y) < third + 2);
+        if (outer.length) vert = outer;
+      }
       if (vert.length === 0) {
         let tgt = lm;
         if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.2 * a.r('anticipation'));
@@ -295,14 +304,17 @@ export class ZoneCoverage implements Behavior {
       // Pattern read: once the threat stops climbing (breaks in/out or sits)
       // under the deep defender, he drives downhill on it.
       // Never while another receiver is climbing into the zone behind it.
-      const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2);
+      // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
+      const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
       if (!climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1 && deepest.pos.x - sim.los > 6) {
         this.target = deepest.r;
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         const react = sim.rng.next() < 0.3 + 0.6 * a.r('playRecognition');
         if (react) return track(a, { x: drive.x, y: clamp(drive.y, 0.5, FIELD_WIDTH - 0.5) }, { x: deepest.vel.x, y: deepest.vel.y }, { facing: facingQB, speed: zs * 1.05, gain: 2.2 });
       }
-      const cushion = 2.5 + 0.28 * Math.max(0, deepest.vel.x) - 0.8 * a.r('anticipation');
+      // Stay 2–3 yards over the top: deep enough not to be beaten vertically,
+      // close enough to drive on a break.
+      const cushion = 1.6 + 0.16 * Math.max(0, deepest.vel.x) - 0.6 * a.r('anticipation');
       let ty: number;
       if (vert.length >= 2) {
         // Split them, leaning toward where the QB is looking.
@@ -322,7 +334,10 @@ export class ZoneCoverage implements Behavior {
 
     // Underneath: carry a vertical #2/#3 through the zone (seam carry / wall),
     // otherwise sit in the throwing lane of the nearest threat.
-    const carryable = threats.filter((th) => th.vel.x > 4.5 && th.pos.x - sim.los > 2 && th.pos.x - sim.los < 13 && Math.abs(th.pos.y - lm.y) < 6);
+    // Curl-flat players wall #2 only to ~10 yards, then hand him off and expand
+    // under #1; hook players carry seams a little deeper.
+    const carryTo = this.zone.startsWith('curl_flat') ? 10 : 13;
+    const carryable = threats.filter((th) => th.vel.x > 4.5 && th.pos.x - sim.los > 2 && th.pos.x - sim.los < carryTo && Math.abs(th.pos.y - lm.y) < 6);
     if (carryable.length > 0 && this.zone !== 'flat_s' && this.zone !== 'flat_w') {
       carryable.sort((p, q) => Math.abs(p.pos.y - lm.y) - Math.abs(q.pos.y - lm.y));
       const th = carryable[0];
@@ -408,12 +423,19 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 }
 
 /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
+/** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
+export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return false;
+  const facingQB = Math.cos(a.body.facing - Math.atan2(ball.flight.pos.y - a.pos.y, ball.flight.pos.x - a.pos.x)) > 0.1;
+  const react = a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.6) + (man ? 0.1 : 0);
+  return sim.t - sim.throwAt >= react;
+}
+
 export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand {
   const ball = sim.ball;
   if (ball.kind !== 'air') return stand();
-  const facingQB = Math.cos(a.body.facing - Math.atan2(ball.flight.pos.y - a.pos.y, ball.flight.pos.x - a.pos.x)) > 0.1;
-  const react = a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.6) + (man ? 0.1 : 0);
-  if (sim.t - sim.throwAt < react) {
+  if (!sawThrow(a, sim, man)) {
     // Haven't seen it yet: stay with the man / keep doing what we were doing.
     if (man) {
       const s = sim.see(a, man);

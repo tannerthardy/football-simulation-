@@ -56,7 +56,9 @@ export class BallCarrier implements Behavior {
         const best = this.evaluate(a, sim, dir, true);
         if (best && best.blocked && sim.rng.chance(0.25 + 0.5 * a.r('vision'))) this.opts.aimUntil = sim.t;
       }
-      return { vel: { x: Math.cos(h) * a.profile.vmax, y: Math.sin(h) * a.profile.vmax }, cutSkill };
+      // Press the hole under control (patient backs more so), then burst.
+      const press = a.profile.vmax * (0.62 + 0.18 * (1 - a.r('patience')));
+      return { vel: { x: Math.cos(h) * press, y: Math.sin(h) * press }, cutSkill };
     }
 
     // QB slide: past the sticks (or any gain) with a hit coming.

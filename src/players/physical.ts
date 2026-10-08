@@ -87,6 +87,11 @@ const MOVEMENT_TECHNIQUE: Partial<Record<Position, { backpedal: number; shuffle:
   QB: { backpedal: 0.55, shuffle: 0.5 },
 };
 
+/** In-game burst: multiplies the sprint time constant (larger = gentler acceleration). */
+export const GAME_BURST = 1.4;
+/** In-game braking/cutting relative to peak plant forces. */
+export const GAME_CUT = 0.65;
+
 export function derivePhysical(p: Player): PhysicalProfile {
   const m = p.measurables;
   const r = p.ratings;
@@ -97,7 +102,10 @@ export function derivePhysical(p: Player): PhysicalProfile {
   // Initial burst (top speed / tau) is kept.
   const gameSpeed = clamp(0.95 - 0.0008 * Math.max(0, m.weightLb - 195), 0.84, 0.95);
   const vmax = sprint.vmax * gameSpeed;
-  const tau = sprint.tau * gameSpeed;
+  // In-game bursts build more gradually than a combine start: tracking data
+  // shows per-play peak accelerations of ~3–5 yd/s², far below what a
+  // track-start model gives.
+  const tau = sprint.tau * gameSpeed * GAME_BURST;
 
   const agilitySkill = r01((r.balance + r.elusiveness * 0.5 + r.routeRunning * 0.5) / 2);
   // Short shuttle ~3.95 elite → ~4.8 slow; 3-cone ~6.55 elite → ~8.0 slow.
@@ -106,8 +114,10 @@ export function derivePhysical(p: Player): PhysicalProfile {
   const balance = r01(r.balance);
 
   // Plant-and-cut forces: elite change-of-direction athletes briefly exceed 1.3 g.
-  const brake = clamp(8.0 + 5.0 * shuttleScore + 1.2 * balance, 7, 15);
-  const lateral = clamp(7.5 + 5.5 * coneScore + 1.0 * balance + 0.8 * agilitySkill, 7, 16);
+  // Sustained braking and cutting over a step or two (instantaneous plant
+  // forces are higher, but this is what moves the body between frames).
+  const brake = clamp(8.0 + 5.0 * shuttleScore + 1.2 * balance, 7, 15) * GAME_CUT;
+  const lateral = clamp(7.5 + 5.5 * coneScore + 1.0 * balance + 0.8 * agilitySkill, 7, 16) * GAME_CUT;
   const turnRate = clamp(5.5 + 5.0 * (0.6 * coneScore + 0.4 * shuttleScore), 4.5, 12);
 
   const tech = MOVEMENT_TECHNIQUE[p.position] ?? { backpedal: 0.55, shuffle: 0.52 };

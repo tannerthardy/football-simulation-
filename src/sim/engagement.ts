@@ -369,7 +369,7 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
     beat(sim, e, axis, lat);
     return;
   }
-  movePair(sim, e, axis, lat, vAxis, sep);
+  movePair(sim, e, axis, lat, smoothV(sim, e, vAxis), sep);
   const exert = 0.03 * dt;
   d.body.energy = Math.max(0, d.body.energy - exert);
   b.body.energy = Math.max(0, b.body.energy - exert);
@@ -562,10 +562,20 @@ function stepRunRep(sim: PlaySim, e: Engagement): void {
     if (!tryHold(sim, e)) beat(sim, e, axis, lat, true);
     return;
   }
-  movePair(sim, e, axis, lat, -vDrive, sep);
+  movePair(sim, e, axis, lat, smoothV(sim, e, -vDrive), sep);
 }
 
 /** Move both bodies: pair translates along the axis; blocker sits at angle phi. */
+const pairVel = new WeakMap<Engagement, number>();
+
+/** Two big bodies locked together don't change speed instantly. */
+function smoothV(sim: PlaySim, e: Engagement, v: number): number {
+  const prev = pairVel.get(e) ?? 0;
+  const next = prev + (v - prev) * Math.min(1, sim.dt / 0.3);
+  pairVel.set(e, next);
+  return next;
+}
+
 function movePair(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, vAxis: number, sep: number): void {
   const dt = sim.dt;
   const b = e.blocker;
@@ -588,9 +598,16 @@ function movePair(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, vAxis: num
   b.body.facing = Math.atan2(-off.y, -off.x);
   d.body.facing = Math.atan2(axis.y, axis.x);
   for (const h of e.helpers) {
-    const hs = Math.sign(e.phi || e.side);
-    h.body.pos = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
-    h.body.vel = { x: vx, y: vy };
+    // A helper stays on the side he came from and works to his hip at a
+    // human rate.
+    const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || Math.sign(e.phi || e.side) || 1;
+    const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
+    const hx = spot.x - h.pos.x;
+    const hy = spot.y - h.pos.y;
+    const hl = Math.hypot(hx, hy);
+    const hk = hl > maxStep ? maxStep / hl : 1;
+    h.body.pos = { x: h.pos.x + hx * hk, y: h.pos.y + hy * hk };
+    h.body.vel = { x: vx + (hx * hk) / dt * 0.3, y: vy + (hy * hk) / dt * 0.3 };
   }
 }
 

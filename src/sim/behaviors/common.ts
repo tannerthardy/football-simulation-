@@ -158,7 +158,8 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
     }
   }
   const p = pursuitPoint(sim, a, target, horizon);
-  const effort = dist > 15 ? 0.85 + 0.15 * a.r('workRate') : 1;
+  // Away from the ball, pursuit runs below top speed (more so for low motors).
+  const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
   return { ...runThrough(a, p, { speed: effort }), effort };
 }
 
