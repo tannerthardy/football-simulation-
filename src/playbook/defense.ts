@@ -83,105 +83,7 @@ export const FRONTS: Front[] = [
   },
 ];
 
-export const COVERAGES: Coverage[] = [
-  {
-    id: 'cover0', name: 'Cover 0', shell: 'zero', man: true, press: true,
-    roles: {
-      CB_S: { kind: 'man', prefer: ['S1'] },
-      CB_W: { kind: 'man', prefer: ['W1'] },
-      NB: { kind: 'man', prefer: ['S2', 'W2'] },
-      DB: { kind: 'man', prefer: ['W2', 'S3'] },
-      SS: { kind: 'man', prefer: ['S3', 'W2', 'S2'] },
-      FS: { kind: 'man', prefer: ['W2', 'S3', 'B'] },
-      LB_S: { kind: 'man', prefer: ['S3', 'B'] },
-      LB_M: { kind: 'man', prefer: ['B', 'B2'] },
-      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
-    },
-    underneath: [],
-  },
-  {
-    id: 'cover1', name: 'Cover 1 (Man-Free)', shell: 'one-high', man: true, press: true,
-    roles: {
-      CB_S: { kind: 'man', prefer: ['S1'] },
-      CB_W: { kind: 'man', prefer: ['W1'] },
-      NB: { kind: 'man', prefer: ['S2', 'W2'] },
-      DB: { kind: 'man', prefer: ['W2', 'S3'] },
-      SS: { kind: 'man', prefer: ['S3', 'S2', 'W2'] },
-      FS: { kind: 'zone', zone: 'deep_mid' },
-      LB_S: { kind: 'man', prefer: ['S3', 'B'] },
-      LB_M: { kind: 'zone', zone: 'robber' },
-      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
-    },
-    underneath: [],
-  },
-  {
-    id: 'cover2', name: 'Cover 2', shell: 'two-high', man: false, press: false,
-    roles: {
-      CB_S: { kind: 'zone', zone: 'flat_s' },
-      CB_W: { kind: 'zone', zone: 'flat_w' },
-      SS: { kind: 'zone', zone: 'deep_half_s' },
-      FS: { kind: 'zone', zone: 'deep_half_w' },
-    },
-    // Corners squat the flats; the hooks and the Mike's middle hook come first.
-    underneath: ['hook_s', 'hook_w', 'hook_mid', 'curl_flat_s', 'curl_flat_w'],
-  },
-  {
-    id: 'tampa2', name: 'Tampa 2', shell: 'two-high', man: false, press: false,
-    roles: {
-      CB_S: { kind: 'zone', zone: 'flat_s' },
-      CB_W: { kind: 'zone', zone: 'flat_w' },
-      SS: { kind: 'zone', zone: 'deep_half_s' },
-      FS: { kind: 'zone', zone: 'deep_half_w' },
-      LB_M: { kind: 'zone', zone: 'tampa_mid' },
-    },
-    underneath: ['hook_s', 'hook_w', 'curl_flat_s', 'curl_flat_w'],
-  },
-  {
-    id: 'cover2man', name: '2-Man', shell: 'two-high', man: true, press: true,
-    roles: {
-      CB_S: { kind: 'man', prefer: ['S1'] },
-      CB_W: { kind: 'man', prefer: ['W1'] },
-      NB: { kind: 'man', prefer: ['S2', 'W2'] },
-      DB: { kind: 'man', prefer: ['W2', 'S3'] },
-      SS: { kind: 'zone', zone: 'deep_half_s' },
-      FS: { kind: 'zone', zone: 'deep_half_w' },
-      LB_S: { kind: 'man', prefer: ['S3', 'S2', 'B'] },
-      LB_M: { kind: 'man', prefer: ['S3', 'B', 'W2'] },
-      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
-    },
-    underneath: [],
-  },
-  {
-    id: 'cover3', name: 'Cover 3', shell: 'one-high', man: false, press: false,
-    roles: {
-      CB_S: { kind: 'zone', zone: 'deep_third_s' },
-      CB_W: { kind: 'zone', zone: 'deep_third_w' },
-      FS: { kind: 'zone', zone: 'deep_mid' },
-    },
-    // Three deep, four under: two curl-flat + two hooks; a fifth dropper takes the middle hook.
-    underneath: ['curl_flat_s', 'curl_flat_w', 'hook_s', 'hook_w', 'hook_mid'],
-  },
-  {
-    id: 'cover4', name: 'Cover 4 (Quarters)', shell: 'two-high', man: false, press: false,
-    roles: {
-      CB_S: { kind: 'zone', zone: 'quarter_s_out' },
-      CB_W: { kind: 'zone', zone: 'quarter_w_out' },
-      SS: { kind: 'zone', zone: 'quarter_s_in' },
-      FS: { kind: 'zone', zone: 'quarter_w_in' },
-    },
-    underneath: ['curl_flat_s', 'curl_flat_w', 'hook_mid', 'hook_s', 'hook_w'],
-  },
-  {
-    id: 'cover6', name: 'Cover 6', shell: 'two-high', man: false, press: false,
-    roles: {
-      CB_S: { kind: 'zone', zone: 'quarter_s_out' },
-      SS: { kind: 'zone', zone: 'quarter_s_in' },
-      FS: { kind: 'zone', zone: 'deep_half_w' },
-      CB_W: { kind: 'zone', zone: 'flat_w' },
-    },
-    underneath: ['curl_flat_s', 'hook_mid', 'hook_w', 'hook_s'],
-  },
-];
+export { COVERAGES, COVERAGE_BY_ID } from './coverages.js';
 
 export const PRESSURES: Pressure[] = [
   {
@@ -212,5 +114,4 @@ export const PRESSURES: Pressure[] = [
 ];
 
 export const FRONT_BY_ID: Record<string, Front> = Object.fromEntries(FRONTS.map((f) => [f.id, f]));
-export const COVERAGE_BY_ID: Record<string, Coverage> = Object.fromEntries(COVERAGES.map((c) => [c.id, c]));
 export const PRESSURE_BY_ID: Record<string, Pressure> = Object.fromEntries(PRESSURES.map((p) => [p.id, p]));

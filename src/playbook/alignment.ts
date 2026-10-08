@@ -11,20 +11,7 @@
  */
 import { CENTER_Y, END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../core/field.js';
 import { clamp, type Vec2 } from '../core/vec.js';
-import type {
-  Coverage,
-  CoverageRole,
-  DefSlot,
-  DefensivePlayCall,
-  Formation,
-  Gap,
-  OffSlot,
-  ReceiverRef,
-  Side,
-  SkillSlot,
-  Technique,
-  ZoneId,
-} from './types.js';
+import type { Coverage, CoverageRole, DefSlot, DefensivePlayCall, Formation, Gap, OffSlot, ReceiverRef, Side, SkillSlot, Technique, ZoneId, UnderSeat, FormationKey } from './types.js';
 import { sideSign } from './types.js';
 
 export const OL_OFFSET: Record<'LT' | 'LG' | 'C' | 'RG' | 'RT', number> = { LT: 2.6, LG: 1.3, C: 0, RG: -1.3, RT: -2.6 };
@@ -310,7 +297,34 @@ export function zoneLandmark(zone: ZoneId, off: OffenseAlignment): Vec2 {
       return { x: depth(10.5), y: off.ballY };
     case 'robber':
       return { x: depth(11), y: off.ballY };
+    case 'hole':
+      return { x: depth(6), y: off.ballY };
+    case 'curl_s':
+      return { x: depth(11), y: off.ballY + s * Math.min(9, Math.abs(sideY(s, 14) - off.ballY)) };
+    case 'curl_w':
+      return { x: depth(11), y: off.ballY - s * Math.min(9, Math.abs(sideY(-s, 14) - off.ballY)) };
   }
+}
+
+/** The zone of an underneath seat, and the role it gives the defender who fills it. */
+export const seatZone = (seat: UnderSeat): ZoneId => (typeof seat === 'string' ? seat : seat.zone);
+export const seatRole = (seat: UnderSeat): CoverageRole => (typeof seat === 'string' ? { kind: 'zone', zone: seat } : { kind: 'zone', ...seat });
+
+/**
+ * Receiver distribution as a coverage check sees it: 3x1, 2x2, empty and so
+ * on (backs in the backfield don't count; an attached TE does).
+ */
+export function formationKey(off: OffenseAlignment): FormationKey {
+  const strong = Math.max(off.counts.S, off.counts.W);
+  const weak = Math.min(off.counts.S, off.counts.W);
+  const backs = Object.values(off.spots).filter((p) => p.backfield && p.slot !== 'QB').length;
+  if (backs === 0) return strong >= 4 ? '4x1' : 'empty';
+  if (strong >= 4) return '4x1';
+  if (strong === 3 && weak >= 2) return '3x2';
+  if (strong === 3) return '3x1';
+  if (strong === 2 && weak === 2) return '2x2';
+  if (strong + weak <= 2) return 'heavy';
+  return '2x1';
 }
 
 /** Compress planned spacing with the remaining scoring field. This changes
@@ -358,7 +372,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const slot = off.numbering[ref];
     return slot ? off.spots[slot].pos : null;
   };
-  const shell = cov.shell;
+  const shell = cov.look ?? cov.shell;
   const cornerDepth = cov.press ? 1.2 : shell === 'one-high' ? 7 : 6;
 
   const placeCorner = (slot: DefSlot, side: 'S' | 'W') => {
@@ -440,11 +454,12 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // Remaining defenders fill underneath zones (zone) or play man (man).
   const unassigned = present.filter((p) => !roles[p]);
   if (!cov.man) {
-    const zones = cov.underneath.filter((z) => !Object.values(roles).some((r) => r?.kind === 'zone' && r.zone === z));
+    const zones = cov.underneath.filter((z) => !Object.values(roles).some((r) => r?.kind === 'zone' && r.zone === seatZone(z)));
     // Greedy by distance: each zone (in priority order) takes the closest free defender.
     const free = new Set(unassigned);
-    for (const z of zones) {
+    for (const seat of zones) {
       if (free.size === 0) break;
+      const z = seatZone(seat);
       const lm = zoneLandmark(z, off);
       let best: DefSlot | null = null;
       let bestD = Infinity;
@@ -456,12 +471,14 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
         }
       }
       if (best) {
-        roles[best] = { kind: 'zone', zone: z };
+        roles[best] = seatRole(seat);
         free.delete(best);
       }
     }
     for (const slot of free) roles[slot] = { kind: 'zone', zone: 'hook_mid' };
   } else {
+    // Man calls can still name underneath seats (a rat, a robber, a hole player)
+    // for defenders left over after the man assignments are made below.
     for (const slot of unassigned) roles[slot] = { kind: 'man', prefer: ['B', 'S3', 'W2'] };
   }
 
@@ -481,10 +498,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const order: DefSlot[] = ['CB_S', 'CB_W', 'NB', 'DB', 'SS', 'FS', 'LB_S', 'LB_W', 'LB_M'];
   for (const d of order) {
     if (!manDefs.includes(d) || spots[d]!.manTarget) continue;
-    const role = roles[d] as { kind: 'man'; prefer?: ReceiverRef[] };
+    const role = roles[d] as { kind: 'man'; prefer?: ReceiverRef[]; double?: boolean };
     for (const ref of role.prefer ?? []) {
       const tgt = off.numbering[ref];
-      if (tgt && !taken.has(tgt)) {
+      if (tgt && (!taken.has(tgt) || role.double)) {
         spots[d]!.manTarget = tgt;
         taken.add(tgt);
         break;
@@ -509,8 +526,14 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
       taken.add(slot);
     }
   }
-  // Man defenders left without a receiver become a robber/hole player.
-  for (const d of manDefs) if (!spots[d]!.manTarget) roles[d] = { kind: 'zone', zone: 'robber' };
+  // Man defenders left without a receiver take the call's underneath seats
+  // (rat, robber, lurk) in order, or play robber.
+  const spare = manDefs.filter((d) => !spots[d]!.manTarget);
+  const seats = [...cov.underneath];
+  for (const d of spare) {
+    const seat = seats.shift();
+    roles[d] = seat ? seatRole(seat) : { kind: 'zone', zone: 'robber' };
+  }
 
   // Pre-snap: man defenders align on their man.
   for (const d of manDefs) {
@@ -519,9 +542,19 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const tp = off.spots[t].pos;
     const isCorner = d === 'CB_S' || d === 'CB_W' || d === 'NB' || d === 'DB';
     const inside = Math.sign(off.ballY - tp.y) || 1;
-    const depth = off.spots[t].backfield ? 5 : isCorner ? (cov.press ? 1.2 : 6) : 4;
-    spots[d]!.pos = { x: los + depth, y: clamp(tp.y + inside * 0.7, 1, FIELD_WIDTH - 1) };
-    spots[d]!.press = cov.press && isCorner && !off.spots[t].backfield;
+    const mr = roles[d] as Extract<CoverageRole, { kind: 'man' }>;
+    const press = (mr.press ?? cov.press) && !mr.overTop;
+    const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : isCorner ? (press ? 1.2 : 6) : 4;
+    const shade = mr.lev === 'outside' ? -inside : mr.lev === 'head' ? 0 : inside;
+    spots[d]!.pos = { x: los + depth, y: clamp(tp.y + shade * 0.7, 1, FIELD_WIDTH - 1) };
+    spots[d]!.press = press && isCorner && !off.spots[t].backfield;
+  }
+
+  // Calls that set a pre-snap depth for a seat (a rotating safety cheated
+  // down, an inverted corner pressed to bail) keep his lateral alignment.
+  for (const slot of present) {
+    const r = roles[slot];
+    if (r?.kind === 'zone' && r.depth !== undefined && spots[slot]) spots[slot]!.pos = { x: los + r.depth, y: spots[slot]!.pos.y };
   }
 
   // Finalize roles and zone ids.

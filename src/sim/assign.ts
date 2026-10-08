@@ -16,6 +16,7 @@ import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
+import { CoverageDefender } from './coverage/defender.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
@@ -41,12 +42,20 @@ export function assignBehaviors(sim: PlaySim): void {
         break;
       case 'man': {
         const tgt = spot.manTarget ? sim.slot(spot.manTarget) : undefined;
-        d.behavior = tgt ? new ManCoverage(d, sim, tgt, !!spot.press, spot.gap, spot.gapSign) : new ZoneCoverage(d, sim, 'robber', spot.gap, spot.gapSign);
+        d.behavior = tgt
+          ? new ManCoverage(d, sim, tgt, !!spot.press, spot.gap, spot.gapSign, { lev: role.lev, trail: role.trail, overTop: role.overTop })
+          : new ZoneCoverage(d, sim, 'robber', spot.gap, spot.gapSign);
         break;
       }
-      case 'zone':
-        d.behavior = new ZoneCoverage(d, sim, role.zone, spot.gap, spot.gapSign);
+      case 'zone': {
+        // A rule-driven (pattern-match) seat runs its rule; spot drops and
+        // plain zones keep the landmark technique.
+        const style = role.style ?? (role.zone === 'robber' || role.zone === 'hole' ? 'match' : sim.defCall.zoneStyle ?? 'match');
+        d.behavior = role.rule && style === 'match'
+          ? new CoverageDefender(d, sim, role.rule, role.zone, style, spot.gap, spot.gapSign)
+          : new ZoneCoverage(d, sim, role.zone, spot.gap, spot.gapSign, role.style);
         break;
+      }
       case 'spy':
         d.behavior = new ZoneCoverage(d, sim, 'robber', spot.gap, spot.gapSign);
         break;

@@ -8,6 +8,9 @@ what to work on, applies it to the current engine (building on PR #1,
 
 ## Status and where to start
 
+**Newer work:** [coverage-engine-and-playbook-depth.md](coverage-engine-and-playbook-depth.md)
+has the current status and next steps; this review remains the method reference.
+
 This work is on the branch `claude/engine-priorities`, built on the head of
 the draft PR #1 (`codex/run-blocking-decision-dynamics`, `9e64fc6`); it is
 not merged into PR #1 or the default branch. Start from that branch:

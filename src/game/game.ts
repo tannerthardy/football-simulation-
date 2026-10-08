@@ -81,9 +81,18 @@ export interface PlayPlan {
   front: string;
   stemFrom?: string;
   creepSlot?: string;
+  /** Coverage played (after the secondary's formation check). */
   coverage: string;
+  /** Coverage called in the huddle (before any check). */
+  called?: string;
+  /** PFF-style family of the coverage played. */
+  family?: string;
   shell: string;
   pressure: boolean;
+  /** Defenders rushing at the snap (linemen plus blitzers). */
+  rushers?: number;
+  /** Coverage shown before the snap, if disguised. */
+  shown?: string;
 }
 
 export interface GameResult {
@@ -575,9 +584,13 @@ export class Game {
       front: defCall.front.id,
       stemFrom: defCall.frontStem?.from.id,
       creepSlot: defCall.creep?.slot,
-      coverage: defCall.coverage.id,
-      shell: defCall.coverage.shell,
+      coverage: sim.defCall.coverage.id,
+      called: defCall.coverage.id,
+      family: sim.defCall.coverage.family ?? sim.defCall.coverage.id,
+      shell: sim.defCall.coverage.shell,
       pressure: !!defCall.pressure,
+      rushers: sim.defAlign.rushers.length,
+      shown: defCall.shown?.id,
     };
     if (this.opts.record && r.frames) {
       logEntry.replay = {

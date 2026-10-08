@@ -35,7 +35,7 @@ export function knowsPass(sim: PlaySim, a: Agent): boolean {
  * scrambling), everyone pursues. Behind the line, a defender who has read
  * run plays his fit — he doesn't abandon his gap to chase.
  */
-function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
+export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   const c = sim.carrier;
   if (!c || c.team === a.team) return null;
   const seen = sim.see(a,c);
@@ -162,6 +162,18 @@ export class RunDefender implements Behavior {
 
 // ------------------------------------------------------------- coverage
 
+/**
+ * Man technique options. `lev`: which shoulder he plays (inside by default,
+ * toward his help); `trail`: low-hip, under the receiver with deep help over
+ * the top (2-Man); `overTop`: a deep player carrying a vertical stays on top of
+ * him (quarters safety on #2, a bracket's high player).
+ */
+export interface ManOptions {
+  lev?: 'inside' | 'outside' | 'head';
+  trail?: boolean;
+  overTop?: boolean;
+}
+
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
   readonly kind = 'man';
@@ -180,6 +192,7 @@ export class ManCoverage implements Behavior {
     press: boolean,
     private readonly gap: Gap,
     private readonly gapSign: number,
+    readonly opts: ManOptions = {},
   ) {
     this.press = press;
     this.initialCushion = Math.max(0.8, a.pos.x - target.pos.x);
@@ -211,7 +224,8 @@ export class ManCoverage implements Behavior {
     const seen = this.observation.read(sim.see(a, R, delayScale), sim.t, R.profile, a.profile.reactionTime,
       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
-    const lev = 0.7 * inside;
+    const o = this.opts;
+    const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
     const vx = seen.vel.x;
     const deep = seen.pos.x - sim.los;
 
@@ -231,6 +245,10 @@ export class ManCoverage implements Behavior {
     }
     else if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
     else if (!this.hipsOpen) tx = Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
+    // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
+    // low-hip under defender sits behind his hip with help over the top.
+    if (o.overTop) tx = Math.max(tx, seen.pos.x + 1.4 + 0.15 * Math.max(0, vx), Math.min(a.pos.x, seen.pos.x + 4));
+    else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
     if (!this.hipsOpen) {
@@ -273,14 +291,15 @@ export class ZoneCoverage implements Behavior {
     readonly zone: ZoneId,
     private readonly gap: Gap,
     private readonly gapSign: number,
+    styleOverride?: ZoneStyle,
   ) {
     this.landmark = zoneLandmark(zone, sim.offAlign);
     this.initialDepth = a.pos.x - sim.los;
     this.deep = isDeepZone(zone);
     // Flat/curl-flat defenders expand all the way to the sideline with a threat.
-    this.radius = this.deep ? 11 : zone === 'robber' || zone === 'hook_mid' ? 6.5 : zone.includes('flat') ? 11 : 7.5;
+    this.radius = this.deep ? 11 : zone === 'robber' || zone === 'hook_mid' || zone === 'hole' ? 6.5 : zone.includes('flat') ? 11 : 7.5;
     this.band = zoneBand(zone, sim);
-    const style: ZoneStyle = zone === 'robber' ? 'match' : (sim.defCall.zoneStyle ?? 'match');
+    const style: ZoneStyle = styleOverride ?? (zone === 'robber' || zone === 'hole' ? 'match' : (sim.defCall.zoneStyle ?? 'match'));
     if (style === 'spot' && !this.deep) {
       // Spot drops are deeper: curl and hook defenders sink to 11-12 yards.
       const sink = zone.startsWith('curl_flat') ? 2.5 : zone.startsWith('hook') ? 1.5 : zone.startsWith('flat') ? 1.5 : 0;
@@ -532,7 +551,7 @@ export class ZoneCoverage implements Behavior {
 }
 
 /** Speed factor for a defender who hasn't read run or pass yet. */
-function unsureFactor(a: Agent): number {
+export function unsureFactor(a: Agent): number {
   const r = a.recog;
   if (!r || r.read !== 'unsure') return 1;
   return 0.3 + 0.7 * r.pPass();
@@ -585,6 +604,16 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
       return [by - 6, by + 6];
     case 'robber':
       return [by - 8, by + 8];
+    case 'hole':
+      return [by - 9, by + 9];
+    case 'curl_s': {
+      const lo = by + s * 1;
+      return s > 0 ? [lo, W - 4] : [4, lo];
+    }
+    case 'curl_w': {
+      const lo = by - s * 1;
+      return s > 0 ? [4, lo] : [lo, W - 4];
+    }
   }
 }
 
@@ -597,13 +626,15 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   const qbAngle = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
   // Zone eyes can look over the shoulder while the hips carry a crossing
   // route. A defender sprinting directly away still cannot see the release.
-  const facingQB = Math.cos(a.body.facing - qbAngle) > (a.behavior instanceof ZoneCoverage ? -0.2 : 0.1);
+  const zoneEyes = a.behavior instanceof ZoneCoverage || (a.behavior as { zoneEyes?: boolean }).zoneEyes === true;
+  const facingQB = Math.cos(a.body.facing - qbAngle) > (zoneEyes ? -0.2 : 0.1);
   // Eyes on the QB see the release; a trailing man defender reads it off
   // the receiver's eyes and hands a beat later.
   const react = a.mind.observationDelay(a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25)) + (man ? 0.05 : 0);
   // Spot droppers key the quarterback: his arm and body action give the
   // throw away before the ball is out, so their reaction starts there.
-  const keysQB = facingQB && sim.windupAt >= 0 && a.behavior instanceof ZoneCoverage && a.behavior.style === 'spot';
+  const style = a.behavior instanceof ZoneCoverage ? a.behavior.style : (a.behavior as { style?: ZoneStyle }).style;
+  const keysQB = facingQB && sim.windupAt >= 0 && zoneEyes && style === 'spot';
   if (keysQB && sim.t - sim.windupAt >= react) {
     a.tags.add('readArm');
     return true;

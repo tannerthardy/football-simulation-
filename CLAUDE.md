@@ -9,6 +9,11 @@ Start with these shared project references:
   (`codex/run-blocking-decision-dynamics`) without checking with the owner;
   reconcile its tackle changes with this branch's rewrite before merging.
 
+- [Coverage engine and playbook depth](docs/reviews/coverage-engine-and-playbook-depth.md):
+  the current work package — rule-driven coverage (26 calls, checks, Zeus),
+  NFL references for call mix, route combinations and pocket push in
+  `data/reviews/playbook-depth/`, measured results, and the ordered next steps
+  (coverage leaks, offensive side-concept pool, pressure package, trench push).
 - [Choosing what to fix](docs/reviews/error-budget-and-protection.md): start
   here. The error budget (drive structure and Shapley shares of the points
   gap), how to avoid tuning loops, the protection, pocket, clock and tackle

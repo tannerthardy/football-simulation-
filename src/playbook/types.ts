@@ -185,18 +185,81 @@ export type ZoneId =
   | 'hook_w'
   | 'hook_mid'
   | 'tampa_mid'
-  | 'robber';
+  | 'robber'
+  /** Low hole ("rat"): 5–7 yards in the middle, cutting crossers. */
+  | 'hole'
+  /** Curl (no flat): 10–12 yards over the slot, inverted/Tampa curl players. */
+  | 'curl_s'
+  | 'curl_w';
 
 export type Gap = 'A' | 'B' | 'C' | 'D';
 
+/**
+ * Pattern-match rules: how a defender's job changes with the releases of the
+ * receivers he keys (see src/sim/coverage/rules.ts). The zone on the role is
+ * his nominal landmark (alignment, run fits, the QB's coverage picture).
+ */
+export type MatchRule =
+  | 'c3_corner'
+  | 'c3_curl_flat'
+  | 'c3_seam'
+  | 'c3_hook'
+  | 'mike_3'
+  | 'q_corner_mod'
+  | 'q_corner_meg'
+  | 'q_safety'
+  | 'q_apex'
+  | 'palms_corner'
+  | 'palms_safety'
+  | 'cloud_corner'
+  | 'sink_corner'
+  | 'c2_hook'
+  | 'tampa_mike'
+  | 'poach_safety'
+  | 'stubbie_safety'
+  | 'invert_safety'
+  | 'rat'
+  | 'robber';
+
+export type ManLeverage = 'inside' | 'outside' | 'head';
+
 export type CoverageRole =
-  | { kind: 'zone'; zone: ZoneId }
-  | { kind: 'man'; prefer?: ReceiverRef[] }
+  | {
+      kind: 'zone';
+      zone: ZoneId;
+      rule?: MatchRule;
+      style?: ZoneStyle;
+      /** Pre-snap depth (yards) when the call sets it: a rotating safety cheats down, an inverted corner presses to bail. */
+      depth?: number;
+    }
+  | {
+      kind: 'man';
+      prefer?: ReceiverRef[];
+      /** Shoulder he plays (default inside, toward help). */
+      lev?: ManLeverage;
+      /** Low-hip trail under the receiver (deep help over the top). */
+      trail?: boolean;
+      /** Stay on top of the receiver (a deep player in a bracket). */
+      overTop?: boolean;
+      /** May double a receiver another defender already has (bracket). */
+      double?: boolean;
+      /** Press regardless of the call's default technique. */
+      press?: boolean;
+    }
   | { kind: 'blitz'; gap: Gap; side: 'S' | 'W' }
   | { kind: 'rush' }
   | { kind: 'spy' };
 
 export type Shell = 'one-high' | 'two-high' | 'zero';
+
+/** PFF-style coverage families (what the coverage is, not every detail of how). */
+export type CoverageFamily = 'cover0' | 'cover1' | 'cover2' | 'tampa2' | 'cover2man' | 'cover3' | 'cover4' | 'cover6' | 'prevent';
+
+/** Receiver distribution a coverage can check against. */
+export type FormationKey = '2x2' | '3x1' | '2x1' | '3x2' | '4x1' | 'empty' | 'heavy';
+
+/** An underneath seat: a zone, optionally with a match rule or style. */
+export type UnderSeat = ZoneId | { zone: ZoneId; rule?: MatchRule; style?: ZoneStyle };
 
 export interface Coverage {
   id: string;
@@ -205,10 +268,18 @@ export interface Coverage {
   man: boolean;
   /** Explicit roles for named slots (deep players, corners). */
   roles: Partial<Record<DefSlot, CoverageRole>>;
-  /** Underneath zones filled by remaining non-rushers, in priority order. */
-  underneath: ZoneId[];
+  /** Underneath seats filled by remaining non-rushers, in priority order. */
+  underneath: UnderSeat[];
   /** Corner technique. */
   press: boolean;
+  /** Pre-snap shell when it differs from the post-snap structure (rotations from two-high). */
+  look?: Shell;
+  /** Family for identification, scouting and NFL frequencies. */
+  family?: CoverageFamily;
+  /** Formation checks: the call becomes one of these against that distribution. */
+  checks?: Partial<Record<FormationKey, string[]>>;
+  /** One line: what it is and what it takes away. */
+  note?: string;
 }
 
 export interface Pressure {
@@ -250,6 +321,10 @@ export interface DefensivePlayCall {
   frontStem?: { from: Front; secondsBeforeSnap: number };
   /** A pressure player walks toward his called gap, possibly still moving at snap. */
   creep?: { slot: DefSlot; secondsBeforeSnap: number };
+  /** Which of the coverage's formation checks this coordinator prefers (index). */
+  checkPick?: number;
+  /** Zeus: the offensive slot this zone call doubles; resolved to Cover 8 / Stuff / Quads by his alignment. */
+  zeus?: SkillSlot;
   label: string;
 }
 

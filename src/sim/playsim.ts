@@ -14,7 +14,8 @@ import { bodyRadius } from '../physics/bodyshape.js';
 import { containCoverage } from './coverage-space.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { applyCheck, resolveZeus } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type TeamSide } from './agent.js';
 import { CoverageScouting, QBMind } from './qbmind.js';
@@ -143,7 +144,6 @@ export class PlaySim {
     this.ballY = setup.ballY;
     this.firstDownX = setup.firstDownX;
     this.offCall = setup.offCall;
-    this.defCall = setup.defCall;
     this.isPass = setup.offCall.kind === 'pass';
     this.hurry = setup.hurry ?? false;
     this.wind = setup.wind ?? { x: 0, y: 0 };
@@ -151,8 +151,12 @@ export class PlaySim {
     this.recordEvery = setup.recordEvery ?? 2;
 
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY);
+    // The secondary checks its call to the receiver distribution it sees.
+    const zeus = setup.defCall.zeus;
+    const called = zeus ? resolveZeus(setup.defCall, this.offAlign.refOf[zeus], Math.min(this.offAlign.counts.S, this.offAlign.counts.W)) : setup.defCall;
+    this.defCall = zeus ? called : applyCheck(called, formationKey(this.offAlign));
     const defSlots = Object.keys(setup.defense) as DefSlot[];
-    this.defAlign = alignDefense(setup.defCall, this.offAlign, defSlots, setup.manPrefs);
+    this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
     const mk = (team: TeamSide, slot: string, player: Player, pos: Vec2, facing: number) => {

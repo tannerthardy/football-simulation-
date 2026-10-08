@@ -287,3 +287,21 @@ Use the error-budget commands above for game checks. For revision comparisons,
 run the same measurement scripts against each source revision; record hashes
 and do not edit source while a measurement is running.
 
+## Playbook depth: coverage calls, route combinations, pocket push
+
+See [the review](../docs/reviews/coverage-engine-and-playbook-depth.md) and
+`data/reviews/playbook-depth/`. `nfl-defense-calls.json` (coverage families,
+PFF assignments, rush counts and pressure by situation),
+`nfl-route-combos.json` (route tuples by side, pairings, back routes) and
+`nfl-pocket-push.json` (OL/QB/rusher depth curves, attached pressure) are
+aggregates from the 2022 Big Data Bowl 2025 plays and tracking weeks 1–2,
+with no game, play or player identifiers. The `after-*` logs are the 32-game
+runs the review quotes.
+
+```sh
+python3 -I scripts/data/bdb2025_defense_calls.py /path/to/bdb2025 out/nfl-defense-calls.json
+python3 -I scripts/data/bdb2025_route_combos.py /path/to/bdb2025 out/nfl-route-combos.json
+python3 -I scripts/data/bdb2025_pocket_push.py /path/to/bdb2025 out/nfl-pocket-push.json
+node --import tsx scripts/defense-calls.ts 32 7 4
+node --import tsx scripts/coverage-matrix.ts 2
+```

@@ -33,11 +33,21 @@
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
-import { COVERAGES, PRESSURE_BY_ID } from '../playbook/defense.js';
+import { PRESSURE_BY_ID } from '../playbook/defense.js';
+import { COVERAGE_BY_ID, FAMILY_REPRESENTATIVE, familyOf } from '../playbook/coverages.js';
 import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConcept } from '../playbook/types.js';
 import { r01 } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+
+/**
+ * The coverages a quarterback distinguishes: one canonical picture per family
+ * (Cover 3, quarters, ...). He doesn't identify Rip/Liz from Sky before the
+ * ball is out; he identifies the structure, and the variant shows up in how
+ * defenders move.
+ */
+const COVERAGES: Coverage[] = Object.values(FAMILY_REPRESENTATIVE).map((id) => COVERAGE_BY_ID[id]);
+const repOf = (c: Coverage): string => FAMILY_REPRESENTATIVE[familyOf(c)] ?? c.id;
 
 /** Rough league frequencies — the prior a QB brings from film study. */
 const PRIOR: Record<string, number> = {
@@ -57,9 +67,10 @@ export class CoverageScouting {
   constructor(private readonly strength = 12) {}
 
   observe(call: DefensivePlayCall): void {
-    this.counts[call.coverage.id] = (this.counts[call.coverage.id] ?? 0) + 1;
+    const rep = repOf(call.coverage);
+    this.counts[rep] = (this.counts[rep] ?? 0) + 1;
     this.n++;
-    if (call.shown && call.shown.id !== call.coverage.id) this.disguised++;
+    if (call.shown && call.shown.shell !== (call.coverage.look ?? call.coverage.shell)) this.disguised++;
   }
 
   /** Expected coverage frequencies for this defense. */
@@ -175,7 +186,7 @@ export class QBMind {
     this.preSnapRead();
     this.report = {
       pre: this.top(),
-      actual: sim.defCall.coverage.id,
+      actual: repOf(sim.defCall.coverage),
       shown: sim.defCall.shown?.id,
     };
   }
