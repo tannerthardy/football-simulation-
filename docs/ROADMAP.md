@@ -58,6 +58,15 @@ execution improves in controlled scenarios, but zone explosiveness, roster/front
 variation and pass-protection regressions keep the development PR draft.
 
 
+Latest check (`claude/engine-priorities`, 32 games, `npm run calibrate -- 32 7`),
+after the protection and pocket fixes in
+[error-budget-and-protection.md](reviews/error-budget-and-protection.md):
+points 33.5 per team-game, 15.1 drives per team-game (NFL 10.5), 2.11 points
+per drive (NFL 2.00), sack rate 5.4%, scramble rate 5.5%, yards per attempt
+9.3, rush yards per carry 2.9, run stuffs 27%, 3rd-down conversion 36%. The
+points excess is now mostly possessions; the error budget's largest per-play
+components are passing (too efficient) and running (too poor).
+
 Before reading this table, see [EVALUATION_ENVIRONMENT.md](EVALUATION_ENVIRONMENT.md):
 league aggregates mix engine execution with play-calling and roster selection.
 The plan's baseline measurements found trap and counter on 27% of simulated
@@ -124,9 +133,11 @@ gaps; one league is not a reliable calibration sample.
    yet, so Flood beats match Cover 3 more than spot drop (the curl-flat
    "sink" rule is missing). Several deep concepts gain too much against both
    techniques (Flood vs Cover 2, Dagger vs Cover 4).
-5. **Pressure timing.** In the reviewed geometric-proximity diagnostic, fewer
-   pressure events occur but their median arrival is earlier. Diagnose missed
-   assignments and release censoring before changing global rush capability.
+5. **Pressure timing.** Edge rushers are now blocked (cut-off sets, declared
+   protection) and pressure arrives on NFL timing (p10/p50 1.8/2.4 s vs.
+   1.9/2.7 s), but rushers who win arrive free instead of lingering on a
+   blocker, so sacks per pressure stay high. Slides, back scans, hot answers
+   and 4i inside priority are not built.
 6. **Play calling.** Pass rate is inflated; situational tendencies by down,
    distance and field zone are now measured from 2022–23 data but not yet
    used by the coordinators.

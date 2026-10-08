@@ -72,7 +72,8 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
   for (const [slot, off] of Object.entries(OL_OFFSET)) {
     spots[slot] = { slot: slot as OffSlot, pos: { x: los - OL_DEPTH, y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false };
   }
-  const qbDepth = formation.qb === 'under' ? 0.9 : formation.qb === 'pistol' ? 4.0 : 5.0;
+  // Under center the QB's body is ~1.7 yd behind the line (NFL tracking at the snap): the center is in between.
+  const qbDepth = formation.qb === 'under' ? 1.6 : formation.qb === 'pistol' ? 4.0 : 5.0;
   spots.QB = { slot: 'QB', pos: { x: los - qbDepth, y: ballY }, side: 'C', backfield: true, inline: false };
 
   // First pass: wide/inline/wing/fixed; second pass: slots (need #1 position).

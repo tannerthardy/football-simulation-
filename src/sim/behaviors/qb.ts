@@ -324,12 +324,19 @@ export class QBPass implements Behavior {
     const pp = a.r('pocketPresence');
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
-      if (d.engagement && d.engagement.win < 0.75) continue;
+      // Pocket feel: a rusher still in a block arrives later the more square
+      // the block is. Good pocket presence reads a rep being lost before the
+      // rusher is free; poor pocket presence only notices when he's loose.
+      let held = 0;
+      if (d.engagement) {
+        const feltWin = Math.min(1, d.engagement.win) * (0.35 + 0.65 * pp);
+        held = 0.35 + 1.4 * (1 - feltWin);
+      }
       // Blind-side rushers are sensed late by QBs with poor pocket presence.
       const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
       const blind = ang > 1.8 && ang < 4.5;
       const seen = sim.see(a, d, blind ? 2.2 - 1.4 * pp : 1);
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + (d.engagement ? 0.35 : 0);
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + held;
       if (tt < best) {
         best = tt;
         who = d;
@@ -502,10 +509,12 @@ export class QBPass implements Behavior {
   private shouldScramble(a: Agent, sim: PlaySim, panic: boolean): boolean {
     const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
     if (!panic && mobility < 0.18) return false;
-    // Is there a lane? Check points a few yards upfield.
+    // Is there a lane? Check points a few yards upfield; under pressure also
+    // escapes outside the pocket to either side.
     let open = 0;
-    for (const dy of [-4, -2, 0, 2, 4]) {
-      const q = { x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) };
+    const lanes = [-4, -2, 0, 2, 4].map((dy) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) }));
+    if (panic) for (const side of [-1, 1]) lanes.push({ x: a.pos.x + 1, y: clamp(a.pos.y + side * 5.5, 1, FIELD_WIDTH - 1) });
+    for (const q of lanes) {
       const myT = Math.hypot(q.x - a.pos.x, q.y - a.pos.y) / (a.profile.vmax * 0.8);
       let margin = Infinity;
       for (const d of sim.defense) {
