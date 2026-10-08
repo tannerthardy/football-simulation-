@@ -14,12 +14,13 @@
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, type Vec2 } from '../../core/vec.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
-import { timeToReach } from '../../physics/reach.js';
+import { sprintTime, timeToReach } from '../../physics/reach.js';
 import { squeezeForGap } from '../../physics/bodyshape.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { RunScheme } from '../../playbook/types.js';
 import { RunBlocker } from './blocking.js';
+import { contactCost } from '../contact-choice.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -85,6 +86,7 @@ export class BallCarrier implements Behavior {
   private heading: number | null = null;
   private nextEval = 0;
   private visionNoise: number;
+  private plannedExit = false;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -155,7 +157,7 @@ export class BallCarrier implements Behavior {
       const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
       const best = entry ? null : this.evaluate(a, sim, dir, false);
       if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
-      else if (best) this.heading = best.heading;
+      else if (best) { this.heading = best.heading; this.plannedExit = best.exits; }
       else if (this.heading === null) this.heading = dir > 0 ? 0 : Math.PI;
     }
     const h = this.heading!;
@@ -169,10 +171,21 @@ export class BallCarrier implements Behavior {
       a.tags.add('squeezed');
       sim.event('squeeze', a, null, 'turn shoulders through a narrow opening');
     }
-    return { vel: { x: Math.cos(h) * speed, y: Math.sin(h) * speed }, cutSkill, squeeze };
+    const vel = { x: Math.cos(h) * speed, y: Math.sin(h) * speed };
+    if (!this.plannedExit) {
+      const inward = a.pos.y < FIELD_WIDTH / 2 ? 1 : -1;
+      const distance = Math.min(a.pos.y, FIELD_WIDTH - a.pos.y);
+      const outward = Math.max(0, -a.vel.y * inward);
+      const stopping = outward * outward / (2 * a.profile.lateral * cutSkill * 0.7) + outward * sim.dt;
+      // Lane hysteresis must not drift across the boundary while intending
+      // to stay in bounds. Recover before lateral momentum consumes the room;
+      // the integrator still decides whether he can physically save it.
+      if (distance < stopping + 0.35 && vel.y * inward < 1) vel.y = inward;
+    }
+    return { vel, cutSkill, squeeze };
   }
 
-  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number } | null {
+  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
     const vision = a.r('vision');
     const range = 7 + 22 * vision;
     const p = a.pos;
@@ -205,9 +218,10 @@ export class BallCarrier implements Behavior {
     const aimHeading = this.opts.aim ? angleOfPoint(p, this.opts.aim) : base;
     if (designed) cands.push(aimHeading);
 
-    let best: { heading: number; score: number; blocked: boolean } | null = null;
+    let best: { heading: number; score: number; blocked: boolean; exits: boolean } | null = null;
     let curScore = -Infinity;
     let curBlocked = false;
+    let curExits = false;
     let aimBlocked = false;
     let aimScore = -Infinity;
     const vmax = a.profile.vmax;
@@ -220,19 +234,28 @@ export class BallCarrier implements Behavior {
       let safeGain = 0;
       let clean = true;
       let lastQ = p;
+      let exits = false;
+      let impactCost = 0;
+      let contactGain: number | null = null;
       for (const t of SAMPLES) {
         const d = vmax * t - (vmax - s0) * tau * (1 - Math.exp(-t / tau));
-        const q = { x: p.x + hx * d, y: p.y + hy * d };
-        if (q.y < 0.4 || q.y > FIELD_WIDTH - 0.4) {
-          clean = false;
-          break;
+        let q = { x: p.x + hx * d, y: p.y + hy * d };
+        let arrival = t;
+        const crosses = q.y < 0 || q.y > FIELD_WIDTH;
+        if (crosses) {
+          // An exit is a terminal option. Clip the forecast at the boundary
+          // and still check whether a defender/blocker can stop him first.
+          const edge = q.y < 0 ? 0 : FIELD_WIDTH;
+          const distance = (edge - p.y) / hy;
+          q = { x: p.x + hx * distance, y: edge };
+          arrival = sprintTime(distance, s0, vmax, tau);
         }
         // A lane through our own blocker is not open. Allow the minimum
         // shoulder-turned footprint, then request posture on approach.
         const segment = { x: q.x - lastQ.x, y: q.y - lastQ.y };
         const segment2 = segment.x * segment.x + segment.y * segment.y;
         const obstructed = blockers.some((b) => {
-          const horizon = Math.min(t, 0.6);
+          const horizon = Math.min(arrival, 0.6);
           const bx = b.pos.x + b.vel.x * horizon;
           const by = b.pos.y + b.vel.y * horizon;
           const u = clamp(((bx - lastQ.x) * segment.x + (by - lastQ.y) * segment.y) / Math.max(1e-6, segment2), 0, 1);
@@ -246,19 +269,42 @@ export class BallCarrier implements Behavior {
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
           const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
-          const m = tt - t;
-          if (m < minMargin) minMargin = m;
+          const m = tt - arrival;
+          if (m < minMargin) {
+            minMargin = m;
+            if (m < 0) {
+              const runnerSpeed = vmax - (vmax - s0) * Math.exp(-arrival / tau);
+              impactCost = contactCost(a.profile.massKg, th.d.profile.massKg,
+                Math.hypot(hx * runnerSpeed - th.vel.x, hy * runnerSpeed - th.vel.y), a.r('toughness'), a.r('ballSecurity'));
+            }
+          }
         }
         if (minMargin < 0) {
           clean = false;
+          contactGain = (q.x - p.x) * dir;
           break;
         }
         lastQ = q;
         safeGain = (q.x - p.x) * dir;
+        if (crosses) { exits = true; break; }
         if ((q.x - goalX) * dir >= 0) break;
       }
       let score = safeGain;
-      if (clean) score += 3 + 0.4 * safeGain;
+      if (clean && !exits) score += 3 + 0.4 * safeGain;
+      // Near the boundary, weigh a costly hit against the few extra yards it
+      // buys. An unobstructed field lane still wins over giving up free yards.
+      if (!designed && Math.min(p.y, FIELD_WIDTH - p.y) < 5 && !clean) score -= impactCost;
+      if (!designed && a.team === 'O') {
+        const needed = (sim.firstDownX - p.x) * dir;
+        const payoff = sim.snapContext.down >= 3 ? 5 : 2;
+        if (needed > 0 && safeGain >= needed) score += payoff;
+        // At the sticks, a runner may fight through an imminent hit rather
+        // than leave short. This is decision utility, not awarded yardage.
+        else if (needed > 0 && contactGain !== null) score += payoff * clamp(1 - Math.abs(needed - contactGain), 0, 1);
+      }
+      const toGoal = (goalX - p.x) * dir;
+      if (safeGain >= toGoal) score += 10;
+      else if (contactGain !== null) score += 10 * clamp(1 - Math.abs(toGoal - contactGain), 0, 1);
       // Cutting costs speed; prefer smooth paths.
       score -= turn * 1.2;
       // Lateral movement without gain is worth little; going backwards is bad.
@@ -275,12 +321,14 @@ export class BallCarrier implements Behavior {
       if (h === cur) {
         curScore = score;
         curBlocked = blocked;
+        curExits = exits;
       }
-      if (!best || score > best.score) best = { heading: h, score, blocked };
+      if (!best || score > best.score) best = { heading: h, score, blocked, exits };
     }
     // Hysteresis: keep the current lane unless the new one is clearly better.
-    if (best && best.heading !== cur && best.score - curScore < 0.4) best = { heading: cur, score: curScore, blocked: curBlocked };
-    return best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore } : null;
+    if (best && best.heading !== cur && best.score - curScore < 0.4) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits };
+    if (best?.exits) a.tags.add('chose-sideline');
+    return best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits } : null;
   }
 }
 

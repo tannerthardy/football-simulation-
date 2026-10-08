@@ -14,6 +14,9 @@ not merged into PR #1 or the default branch. Start from that branch:
 `git fetch origin claude/engine-priorities && git checkout claude/engine-priorities`.
 
 - Read "How to choose" below, then the latest [What's next](#whats-next).
+- The [coverage and contact-choice follow-up](coverage-anticipation-and-contact-choices.md)
+  is the next round on this branch: measured coverage fixes, NFL separation
+  by event/coverage, paired labs, and the remaining passing/pocket priorities.
 - The NFL references and the quoted runs are committed in
   `data/reviews/error-budget/`, so the error budget and anatomy scripts work
   without raw data (commands in the [data guide](../../data/README.md#error-budget-clock-and-contact-evidence)).
@@ -345,6 +348,9 @@ Points per game rose because the run game now works while passing is still far
 too efficient; that is the budget doing its job, not a regression to undo.
 
 ### What's next
+
+The list below records this round's hand-off. For the subsequent measurements
+and current priorities, read [coverage anticipation and contact choices](coverage-anticipation-and-contact-choices.md#whats-next).
 
 1. **Yards per completion** (+0.72 per drive, now nearly the whole gap).
    Separation at the catch point 4.2 yd (NFL ≈3.0), tight windows 3.8% (NFL

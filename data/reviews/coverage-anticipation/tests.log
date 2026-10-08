@@ -1,0 +1,32 @@
+
+> gridiron-engine@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/coverage.test.ts (1 test) 2051ms
+   ✓ zone technique > match hook defenders carry the seams; spot droppers sink to their landmark and watch the QB  2050ms
+ ✓ test/protection.test.ts (2 tests) 1355ms
+   ✓ pass protection > blocks the edge rushers instead of shadowing their arc  1346ms
+ ✓ test/pursuit-contact.test.ts (18 tests) 252ms
+ ✓ test/run-system.test.ts (26 tests) 240ms
+ ✓ test/contact-choice.test.ts (6 tests) 130ms
+ ✓ test/run-execution.test.ts (17 tests) 79ms
+ ✓ test/mind.test.ts (8 tests) 66ms
+ ✓ test/coverage-mechanics.test.ts (9 tests) 65ms
+ ✓ test/recognition.test.ts (6 tests) 7797ms
+   ✓ reading run and pass > anticipates from the situation: pass reads come sooner on 3rd and long, run reads later  4936ms
+   ✓ reading run and pass > play action fools linebackers when they expect run, not on 3rd and long  2856ms
+ ✓ test/physics.test.ts (10 tests) 37ms
+ ✓ test/determinism.test.ts (2 tests) 42ms
+ ✓ test/alignment.test.ts (6 tests) 17ms
+ ✓ test/game-rules.test.ts (28 tests) 13573ms
+   ✓ official record of a full game > box-score plays and third downs agree with the official log  9884ms
+   ✓ official record of a full game > is reproducible, with or without replay recording  3396ms
+
+ Test Files  13 passed (13)
+      Tests  139 passed (139)
+   Start at  21:38:00
+   Duration  14.87s (transform 1.23s, setup 0ms, collect 3.52s, tests 25.70s, environment 2ms, prepare 1.54s)
+

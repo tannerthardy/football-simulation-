@@ -18,6 +18,7 @@ import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track 
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { executeRunFit } from '../run-fits.js';
+import { RouteObservation } from '../coverage-read.js';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -165,10 +166,12 @@ export class RunDefender implements Behavior {
 export class ManCoverage implements Behavior {
   readonly kind = 'man';
   private readonly press: boolean;
+  private readonly initialCushion: number;
   private hipsOpen = false;
   private routeRead = false;
   private stemHeading: number | null = null;
   private stableSince = 0;
+  private readonly observation = new RouteObservation();
 
   constructor(
     a: Agent,
@@ -179,7 +182,7 @@ export class ManCoverage implements Behavior {
     private readonly gapSign: number,
   ) {
     this.press = press;
-    void a;
+    this.initialCushion = Math.max(0.8, a.pos.x - target.pos.x);
     void sim;
   }
 
@@ -205,7 +208,8 @@ export class ManCoverage implements Behavior {
       this.routeRead = false;
     } else if (sim.t - this.stableSince > 0.35 + 0.35 * (1 - a.r('playRecognition') * a.mind.focus)) this.routeRead = true;
     const delayScale = this.routeRead ? 0.65 : 1;
-    const seen = sim.see(a, R, delayScale);
+    const seen = this.observation.read(sim.see(a, R, delayScale), sim.t, R.profile, a.profile.reactionTime,
+      a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const lev = 0.7 * inside;
     const vx = seen.vel.x;
@@ -213,11 +217,19 @@ export class ManCoverage implements Behavior {
 
     // Cushion shrinks as the route develops; press plays in phase.
     const cushion = this.press ? 0.8 : clamp(5.5 - 1.6 * sim.t, 1.0, 5.5);
-    if (!this.hipsOpen && (seen.pos.x > a.pos.x - 2.5 || (vx > 6 && a.pos.x - seen.pos.x < 4) || sim.t > 1.6)) this.hipsOpen = true;
+    // At press depth the receiver is already within 2.5 yards at the snap.
+    // That alone is not a release cue: opening immediately made the corner
+    // step downhill and turn twice while the receiver accelerated past him.
+    if (!this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 &&
+      (seen.pos.x > a.pos.x - 2.5 || (vx > 6 && a.pos.x - seen.pos.x < 4) || sim.t > 1.6)) this.hipsOpen = true;
 
     let tx = seen.pos.x;
     let ty = seen.pos.y + lev;
-    if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
+    if (this.press && vx >= 0) {
+      const developing = clamp(deep / 4, 0, 1);
+      tx += this.initialCushion * (1 - developing) + 0.6 * developing;
+    }
+    else if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
     else if (!this.hipsOpen) tx = Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
@@ -251,6 +263,9 @@ export class ZoneCoverage implements Behavior {
   target: Agent | null = null;
   private nextPatternRead = 0;
   private patternHesitationUntil = -1;
+  private readonly initialDepth: number;
+  private turnedWith: Agent | null = null;
+  private readonly observations = new Map<Agent, RouteObservation>();
 
   constructor(
     a: Agent,
@@ -260,6 +275,7 @@ export class ZoneCoverage implements Behavior {
     private readonly gapSign: number,
   ) {
     this.landmark = zoneLandmark(zone, sim.offAlign);
+    this.initialDepth = a.pos.x - sim.los;
     this.deep = isDeepZone(zone);
     // Flat/curl-flat defenders expand all the way to the sideline with a threat.
     this.radius = this.deep ? 11 : zone === 'robber' || zone === 'hook_mid' ? 6.5 : zone.includes('flat') ? 11 : 7.5;
@@ -303,7 +319,10 @@ export class ZoneCoverage implements Behavior {
     const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }> = [];
     for (const r of sim.offense) {
       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
-      const seen = sim.see(a, r);
+      let observation = this.observations.get(r);
+      if (!observation) { observation = new RouteObservation(); this.observations.set(r, observation); }
+      const seen = observation.read(sim.see(a, r), sim.t, r.profile, a.profile.reactionTime,
+        a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
       if (fut.y < ylo || fut.y > yhi) continue;
       threats.push({ r, pos: seen.pos, vel: seen.vel, fut });
@@ -311,13 +330,26 @@ export class ZoneCoverage implements Behavior {
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
-      let vert = threats.filter((th) => th.fut.x - sim.los > 7 || th.vel.x > 4.5);
+      let vert = threats.filter((th) => th.fut.x - sim.los > 7 || (th.vel.x > 1 && th.pos.x > sim.los));
       // A deep-third corner stays over verticals in the outside third; a seam
       // on the hash is the middle safety's. He only takes #2 if #2 works out to him.
       if (this.zone === 'deep_third_s' || this.zone === 'deep_third_w') {
         const third = FIELD_WIDTH / 3;
         const outer = vert.filter((th) => Math.min(th.fut.y, FIELD_WIDTH - th.fut.y) < third + 2);
         if (outer.length) vert = outer;
+      }
+      // Quarters is a route distribution: the corner carries #1, the safety
+      // keys #2. Splitting both verticals here duplicated the corner's help
+      // and left the slot free. Deep-third corners likewise own the outside
+      // receiver before helping on a seam. Halves/middle retain split rules.
+      const quarter = this.zone.startsWith('quarter_');
+      const thirdCorner = this.zone.startsWith('deep_third_');
+      if (quarter || thirdCorner) {
+        const side = this.zone.includes('_s') ? 'S' : 'W';
+        const number = this.zone.endsWith('_in') ? '2' : '1';
+        const slot = sim.offAlign.numbering[`${side}${number}` as 'S1' | 'S2' | 'W1' | 'W2'];
+        const owned = vert.find(th => th.r.slot === slot);
+        if (owned) vert = [owned];
       }
       if (vert.length === 0) {
         let tgt = lm;
@@ -350,13 +382,24 @@ export class ZoneCoverage implements Behavior {
         const w = sim.qbEyes === vert[1].r ? 0.65 : sim.qbEyes === vert[0].r ? 0.35 : 0.5;
         ty = vert[0].fut.y * (1 - w) + vert[1].fut.y * w;
       } else ty = deepest.fut.y + inside(deepest.fut.y) * 0.8;
-      const tx = Math.max(deepest.pos.x + cushion, lm.x - 4);
-      const turnRun = deepest.vel.x > 4 && deepest.pos.x > a.pos.x - cushion - 1.5;
+      // A landmark describes responsibility, not a minimum depth to sprint
+      // to regardless of the release. Let the initial cushion compress as
+      // the stem climbs; otherwise a corner retreats from a hitch into grass.
+      const developing = clamp((deepest.pos.x - sim.los) / 8, 0, 1);
+      const workingCushion = Math.max(cushion, this.initialDepth * (1 - developing) + cushion * developing);
+      const tx = deepest.pos.x + workingCushion;
+      // Turn before the receiver consumes the cushion during the hip flip.
+      // Pedaling has a physical speed cap; racing a vertical does not.
+      const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
+      const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+      if (deepest.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - deepest.pos.x < cushion + closing * flipTime)
+        this.turnedWith = deepest.r;
+      const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
       this.target = deepest.r;
       return track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
-        facing: turnRun ? Math.atan2(ty - a.pos.y, Math.max(0.5, tx - a.pos.x)) : facingQB,
-        speed: zs * 1.05,
+        facing: turnRun ? undefined : facingQB,
+        speed: turnRun ? 1 : zs * 1.05,
         gain: 1.8,
       });
     }
@@ -416,7 +459,12 @@ export class ZoneCoverage implements Behavior {
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
-    return track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: best.vel.x * 0.5, y: best.vel.y * 0.8 }, { facing: facingQB, speed: zs * 1.05, gain: 1.6 });
+    // A match defender can run with a crosser while looking back toward the
+    // QB. Treating gaze as hip orientation forced him to shuffle at ~60% of
+    // top speed forever, even after accepting the route into his zone.
+    const carryingAcross = Math.abs(best.vel.y) > 3 && Math.abs(best.vel.y) > Math.abs(best.vel.x);
+    return track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+      facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 });
   }
 
   /**
@@ -524,7 +572,11 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   const ball = sim.ball;
   if (ball.kind !== 'air') return false;
-  const facingQB = Math.cos(a.body.facing - Math.atan2(ball.flight.pos.y - a.pos.y, ball.flight.pos.x - a.pos.x)) > 0.1;
+  const qb = sim.see(a, sim.qb).pos;
+  const qbAngle = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
+  // Zone eyes can look over the shoulder while the hips carry a crossing
+  // route. A defender sprinting directly away still cannot see the release.
+  const facingQB = Math.cos(a.body.facing - qbAngle) > (a.behavior instanceof ZoneCoverage ? -0.2 : 0.1);
   // Eyes on the QB see the release; a trailing man defender reads it off
   // the receiver's eyes and hands a beat later.
   const react = a.mind.observationDelay(a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25)) + (man ? 0.05 : 0);
@@ -545,7 +597,8 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
     // Haven't seen it yet: stay with the man / keep doing what we were doing.
     if (man) {
       const s = sim.see(a, man);
-      return goTo(a, { x: s.pos.x + s.vel.x * 0.3, y: s.pos.y + s.vel.y * 0.3 }, { through: Math.hypot(s.vel.x, s.vel.y) });
+      const inside = Math.sign(sim.ballY - s.pos.y) || 1;
+      return track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') });
     }
     return { vel: a.vel };
   }
@@ -557,19 +610,19 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
   if (nearPath && !a.tags.has('looking') && sim.rng.chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   if (spot) {
     const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, spot.p, a.profile.reach);
-    if (tt <= spot.t - sim.t + 0.05) return runThrough(a, spot.p, { speed: 1 });
+    // A reachable ball is an arrival problem. Sprinting *through* the spot
+    // every tick pulls an in-phase defender across the receiver and then
+    // out of the contest as the trajectory's earliest reachable point moves.
+    if (tt <= spot.t - sim.t + 0.05) return goTo(a, spot.p);
   }
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
   const land = arrivalPoint(sim);
   if (land) {
-    const dx0 = a.pos.x - land.x;
-    const dy0 = a.pos.y - land.y;
-    const d0 = Math.hypot(dx0, dy0) || 1;
-    const off = Math.min(0.9, d0);
-    const lev = leverage(a, land.y) * 0.3;
-    const tgt = { x: land.x + (dx0 / d0) * off, y: land.y + (dy0 / d0) * off + lev };
+    // Close to the catch itself. A fixed yard of standoff plus inside shade
+    // keeps a late defender outside the hands even when he can recover.
+    const tgt = land;
     const dx = tgt.x - a.pos.x;
     const dy = tgt.y - a.pos.y;
     const d = Math.hypot(dx, dy) || 1;

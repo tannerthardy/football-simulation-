@@ -242,3 +242,29 @@ node --import tsx scripts/sack-anatomy.ts 16 7 2
 node --import tsx scripts/tackle-lab.ts 40
 ```
 
+## Coverage and contact-choice evidence
+
+Read [the follow-up](../docs/reviews/coverage-anticipation-and-contact-choices.md)
+and `reviews/coverage-anticipation/`. The NFL reference is 2022 weeks 1–2:
+target-to-nearest-defender center distance at release, arrival and completed
+catch, requiring all eleven defenders. Coverage and route aggregates contain
+different observational samples. Arrival includes off-target passes and is
+not the engine's catch-contest sample.
+
+```sh
+python3 -I scripts/data/bdb2025_coverage.py /path/to/bdb2025 out/nfl-coverage.json --weeks 1 2
+node --import tsx scripts/coverage-lab.ts 4 out/coverage.json
+node --import tsx scripts/sideline-lab.ts 20 out/sideline.json
+```
+
+The coverage matrix holds rosters, requested calls, front and situation fixed
+with paired seeds (2,592 plays). Catch, release and catch-contest distances
+have separate denominators. The sideline matrix is an isolated carrier/pursuer
+anatomy (4,800 plays), not a target for NFL exit frequency. Successive coverage
+variants are cumulative changes; they are not independent ablations.
+The compact paired-play results, predetermined traces, game guard/anatomy
+logs, outcome tables, budgets and source/script hashes travel with a Git clone.
+Use the error-budget commands above for game checks. For revision comparisons,
+run the same measurement scripts against each source revision; record hashes
+and do not edit source while a measurement is running.
+

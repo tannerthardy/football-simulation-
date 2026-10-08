@@ -2,6 +2,13 @@
 
 Start with these shared project references:
 
+- [Coverage anticipation and contact choices](docs/reviews/coverage-anticipation-and-contact-choices.md):
+  latest follow-up on `claude/engine-priorities`, forced coverage comparisons,
+  NFL separation by event/coverage, carrier exit decisions, and remaining
+  regressions. Keep working on this branch. Do not push to or merge PR #1
+  (`codex/run-blocking-decision-dynamics`) without checking with the owner;
+  reconcile its tackle changes with this branch's rewrite before merging.
+
 - [Choosing what to fix](docs/reviews/error-budget-and-protection.md): start
   here. The error budget (drive structure and Shapley shares of the points
   gap), how to avoid tuning loops, the protection, pocket, clock and tackle

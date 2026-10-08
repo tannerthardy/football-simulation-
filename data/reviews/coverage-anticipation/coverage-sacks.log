@@ -1,0 +1,12 @@
+16 games, 1364 dropbacks
+sack 5.87%   [NFL 6.24%]   scramble 5.94%   [NFL 4.11%]
+time to throw   n 1200, mean 2.61, p10 1.75, p50 2.50, p90 3.65   [NFL mean 2.75, p10 1.70, p50 2.59, p90 3.94]
+time to sack    n 80, mean 2.97, p10 2.40, p50 2.85, p90 3.70   [NFL mean 4.52, p10 3.11, p50 4.25, p90 6.21]
+pressure (defender within 2 yd before throw) 16.6%   [NFL 32.5%]
+time to pressure n 226, mean 2.73, p10 2.00, p50 2.60, p90 3.70   [NFL mean 2.82, p10 2.0, p50 2.7, p90 4.1]
+after pressure: sack 35.0%, throw 61.5%, scramble 3.5%
+pressure → sack time n 79, mean 0.29, p10 0.15, p50 0.25, p90 0.45
+pressure → release/sack/scramble n 223, mean 0.23, p10 0.00, p50 0.20, p90 0.45
+time to throw clean     n 1064, mean 2.57, p10 1.75, p50 2.45, p90 3.55
+time to throw pressured n 136, mean 2.93, p10 2.05, p50 2.95, p90 3.95
+sacks credited by slot: {"LB_W":1,"DT_S":24,"DE_W":30,"DT_W":7,"SS":1,"NT":6,"DE_S":8,"NB":1,"LB_S":2}  unblocked-noted 0
