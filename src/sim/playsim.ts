@@ -121,6 +121,7 @@ export class PlaySim {
     missedTackles: 0,
     dropped: false,
   };
+  /** First opponent body impact or successful tackle grasp; excludes whiffs. */
   firstContactX: number | null = null;
   /** QB currently reading this receiver (zone defenders read his eyes). */
   qbEyes: Agent | null = null;
@@ -513,6 +514,11 @@ export class PlaySim {
         const ny = dy / d;
         const minD = (bodyRadius(a.body, nx, ny) + bodyRadius(b.body, nx, ny)) * 0.9;
         if (d >= minD) continue;
+        const carrier = this.carrier;
+        if (this.t >= 0 && this.firstContactX === null && a.team !== b.team && (carrier === a || carrier === b)) {
+          this.firstContactX = carrier.pos.x;
+          this.event('carrier_contact', carrier, carrier === a ? b : a, 'body collision');
+        }
         const overlap = minD - d;
         const ma = a.profile.massKg;
         const mb = b.profile.massKg;

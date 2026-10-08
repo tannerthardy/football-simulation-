@@ -282,7 +282,10 @@ export class ZoneCoverage implements Behavior {
     }
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
-    if (believesRun(sim, a) && !this.deep) return runFit(a, sim, this.gap, this.gapSign);
+    // A deep defender who reads run executes his cap/force contract. Alley
+    // fits retain depth through the mesh; certainty about the hidden call is
+    // not required, and a mistaken read can still expose play action.
+    if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
     const spot = this.style === 'spot';
 
     const qb = sim.qb;

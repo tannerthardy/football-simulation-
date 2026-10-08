@@ -28,7 +28,7 @@ const KIND_LABEL: Record<PlayLog['kind'], string> = {
   run: 'Run', pass: 'Pass', punt: 'Punt', fg: 'Field goal', xp: 'Extra point', kickoff: 'Kickoff',
   kneel: 'Kneel', penalty: 'Penalty', two: 'Two-point try',
 };
-const SHOWN_EVENTS = new Set(['handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_log', 'block_climb', 'squeeze']);
+const SHOWN_EVENTS = new Set(['handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_log', 'block_climb', 'squeeze']);
 const tenth = (v: number) => Math.round(v * 10);
 const r2 = (v: number) => Math.round(v * 100) / 100;
 

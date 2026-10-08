@@ -1,5 +1,9 @@
 # Run-game coordination: implementation, evidence and remaining work
 
+For the subsequent pursuit/support/contact implementation and current priorities,
+see [the newer review](pursuit-contact-follow-up.md). Contact accounting changed
+there, so do not directly compare its YBC with the whiff-inclusive figures here.
+
 This follow-up develops the run game beyond `6bf0c80`, incorporating the user's
 defensive PDF and the evaluation work in `3c00ca0`. Power and Counter execute
 more credibly in the controlled matrix: fewer plays die at the mesh, blockers

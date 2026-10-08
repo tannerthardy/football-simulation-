@@ -44,10 +44,15 @@ export function tryTackles(sim: PlaySim): void {
     if (dd <= range && !occluded(sim, d, c)) {
       // Contact quality: 1 = body to body (form tackle), 0 = fingertips / lunge.
       const q = clamp(1 - (dd - body - 0.25) / Math.max(0.2, arms - body - 0.25), 0, 1);
-      // Closing (carrier still coming): a good tackler waits for a better shot.
+      // Wait only if the visible relative trajectory actually offers a better
+      // shot. Closing distance alone also describes a glancing fly-by.
       const closing = -((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
       const patience = 0.35 + 0.4 * d.r('tackling');
-      if (q < patience && closing > 1.0 && !sim.bond) continue;
+      const vx = c.vel.x-d.vel.x, vy = c.vel.y-d.vel.y;
+      const closestAt = clamp(-(dx*vx+dy*vy)/Math.max(.01,vx*vx+vy*vy),0,.25);
+      const closest = Math.hypot(dx+vx*closestAt,dy+vy*closestAt);
+      const futureQuality = clamp(1-(closest-body-.25)/Math.max(.2,arms-body-.25),0,1);
+      if (q < patience && closing > 1.0 && futureQuality >= patience && !sim.bond) continue;
       attempt(sim, d, c, q, engaged);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
@@ -113,8 +118,6 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean):
   const cosA = -(hx * nx + hy * ny);
   const closing = (d.vel.x - c.vel.x) * nx + (d.vel.y - c.vel.y) * ny;
 
-  if (sim.firstContactX === null) sim.firstContactX = c.pos.x;
-
   const T = d.r('tackling') * 0.85 + d.r('pursuit') * 0.15;
   const E = c.r('elusiveness');
   const P = c.r('breakTackle') * 0.7 + c.r('strength') * 0.3;
@@ -134,11 +137,14 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean):
       d.missedTackles++;
       sim.stats.missedTackles++;
       d.downUntil = t + rng.range(0.1, 0.25) + 0.45 * (1 - q) * rng.next();
-      c.body.vel = { x: c.vel.x * 0.9, y: c.vel.y * 0.9 };
       sim.event('missed_tackle', d, c);
       return;
     }
   }
+
+  // A whiff is not contact. Body bumps are recorded by the collision solver;
+  // a successful reach/wrap or a broken grasp also starts contact here.
+  if (sim.firstContactX === null) sim.firstContactX = c.pos.x;
 
   // Impact: momentum exchange along the contact normal.
   const mc = c.profile.massKg;
@@ -146,6 +152,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean):
   if (closing > 1.5) {
     const dv = (md / (mc + md)) * closing * 0.75;
     c.body.vel = { x: c.vel.x + nx * dv, y: c.vel.y + ny * dv };
+    d.body.vel = { x: d.vel.x - nx * dv * mc / md, y: d.vel.y - ny * dv * mc / md };
   }
 
   if (!alreadyWrapped) {
@@ -175,11 +182,22 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean):
     return;
   }
 
+  // A defender committing to the carrier relinquishes his old block. Keeping
+  // both constraints would move the same body in two separate solvers.
+  if (d.engagement) sim.disengage(d.engagement);
   if (sim.bond) {
     sim.bond.tacklers.push(d);
   } else {
     sim.bond = { carrier: c, tacklers: [d], start: t, progressX: c.pos.x, down: false };
   }
+  // Wrapping couples the bodies inelastically. Match their centre-of-mass
+  // velocity, rather than accelerating every arriving tackler for free.
+  const bodies = [c,...sim.bond.tacklers];
+  const mass = bodies.reduce((sum,a)=>sum+a.profile.massKg,0);
+  const shared = {x:bodies.reduce((sum,a)=>sum+a.vel.x*a.profile.massKg,0)/mass,
+    y:bodies.reduce((sum,a)=>sum+a.vel.y*a.profile.massKg,0)/mass};
+  for(const a of bodies) a.body.vel={...shared};
+  sim.event('tackle_wrap', d, c, alreadyWrapped ? 'assist' : 'initial');
   if (closing > 4) sim.event('hit', d, c);
 }
 
@@ -202,12 +220,12 @@ export function updateBond(sim: PlaySim, bond: TackleBond, cmds: MoveCommand[]):
   let stop = 0;
   for (const d of bond.tacklers) stop += d.profile.power * (0.55 + 0.6 * d.r('tackling'));
   const drive = c.profile.power * (0.45 + 0.4 * c.r('breakTackle') + 0.15 * c.r('balance'));
-  const mc = c.profile.massKg;
+  const mass = c.profile.massKg + bond.tacklers.reduce((sum,d)=>sum+d.profile.massKg,0);
 
   // Net deceleration on the carrier's current velocity, plus leg drive along his intent.
   const sp = c.speed;
-  const decel = (stop * 9) / mc;
-  const legs = (drive * 3.2) / mc;
+  const decel = (stop * 9) / mass;
+  const legs = (drive * 3.2) / mass;
   let nsp = Math.max(0, sp - decel * dt);
   let vx = sp > 1e-6 ? (c.vel.x / sp) * nsp : 0;
   let vy = sp > 1e-6 ? (c.vel.y / sp) * nsp : 0;
@@ -223,14 +241,24 @@ export function updateBond(sim: PlaySim, bond: TackleBond, cmds: MoveCommand[]):
   c.body.vel = { x: vx, y: vy };
   c.body.pos = { x: c.pos.x + vx * dt, y: c.pos.y + vy * dt };
   for (const d of bond.tacklers) {
+    d.body.pos = { x: d.pos.x + vx * dt, y: d.pos.y + vy * dt };
+    d.body.vel = { x: vx, y: vy };
+  }
+  for (const d of bond.tacklers) {
+    // Advect the pile together before tightening its contact geometry. Using
+    // the new carrier position against the old tackler position made a
+    // trailing tackler lose ground even though both had the same velocity.
     const ox = d.pos.x - c.pos.x;
     const oy = d.pos.y - c.pos.y;
     const ol = Math.hypot(ox, oy) || 1;
     // The tackler closes onto the carrier at a physical rate (no snapping).
     const sep = (c.profile.radius + d.profile.radius) * 0.8;
-    const cur = Math.max(sep, ol - 4.5 * dt);
-    d.body.pos = { x: c.pos.x + (ox / ol) * cur, y: c.pos.y + (oy / ol) * cur };
-    d.body.vel = { x: vx, y: vy };
+    const correction = Math.min(4.5 * dt, Math.max(0,ol-sep));
+    const shareD = c.profile.massKg / (c.profile.massKg+d.profile.massKg);
+    const shareC = 1-shareD;
+    // Internal grasp corrections must not translate the centre of mass.
+    c.body.pos = { x:c.pos.x+(ox/ol)*correction*shareC, y:c.pos.y+(oy/ol)*correction*shareC };
+    d.body.pos = { x:d.pos.x-(ox/ol)*correction*shareD, y:d.pos.y-(oy/ol)*correction*shareD };
   }
 
   // Forward progress.

@@ -106,6 +106,7 @@ function measurePhi(axis: Vec2, d: Agent, b: Agent): number {
 
 export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null): Engagement | null {
   const t = sim.t;
+  if (sim.bond && [sim.bond.carrier,...sim.bond.tacklers].some((a)=>a===blocker || a===defender)) return null;
   if (blocker.engagement) return blocker.engagement;
   if ((blocker.shedBy.get(defender) ?? -1) > t) return null;
   if (defender.isDown(t) || blocker.isDown(t)) return null;

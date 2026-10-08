@@ -187,10 +187,7 @@ export class PassProtector implements Behavior {
     // shoulder as he goes by; the rep then starts from a losing angle.
     const passing = r.speed > 4.5 && r.pos.x < a.pos.x + 0.6;
     const reachOut = edgeRusher && passing ? 0.15 + 0.3 * traits(a).feet : 0;
-    if (dd < contact + 0.15 + reachOut) {
-      sim.engage(a, r, 'pass');
-      return stand();
-    }
+    if (dd < contact + 0.15 + reachOut && sim.engage(a, r, 'pass')) return stand();
     const facing = Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x);
     const quick = 0.85 + 0.3 * traits(a).feet;
     return track(a, set, { x: r.vel.x * 0.7, y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
@@ -559,10 +556,7 @@ export class RunBlocker implements Behavior {
     if (plan.kind === 'stalk') {
       // Stay square on the DB until the run comes; engage when he closes.
       const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
-      if (dd < a.profile.radius + target.profile.radius + 0.3) {
-        sim.engage(a, target, 'run', plan.drive);
-        return stand();
-      }
+      if (dd < a.profile.radius + target.profile.radius + 0.3 && sim.engage(a, target, 'run', plan.drive)) return stand();
       const fit = { x: Math.max(target.pos.x - 1.2, a.pos.x), y: target.pos.y };
       return goTo(a, fit, { speed: 0.85, through: 1 });
     }
@@ -586,10 +580,7 @@ export class RunBlocker implements Behavior {
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
     const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
-    if (dd < contact) {
-      sim.engage(a, target, 'run', plan.drive);
-      return stand();
-    }
+    if (dd < contact && sim.engage(a, target, 'run', plan.drive)) return stand();
     // Aiming point: reach blocks work to the playside shoulder.
     let aim = seen.pos;
     if (plan.kind === 'combo' && plan.combination) {

@@ -1,0 +1,12 @@
+{
+  "logged": 177,
+  "filmed": 129,
+  "preSnap": 3,
+  "newContactEvents": 157,
+  "checks": [
+    "strict frame timestamps",
+    "agent, ball, carrier, posture strides",
+    "embedded JavaScript syntax"
+  ],
+  "browserInteractionTested": false
+}

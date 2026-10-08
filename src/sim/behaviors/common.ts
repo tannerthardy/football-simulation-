@@ -80,9 +80,8 @@ export function angleTo(from: Vec2, to: Vec2): number {
  * Awareness model:
  *  - Tracking an identified carrier uses a short visuomotor delay
  *    (0.12–0.24 s by awareness), not the full recognition reaction time.
- *  - The pursuer anticipates the carrier's path: he will accelerate toward
- *    his top speed and bend his run upfield; anticipation sets how much the
- *    pursuer trusts that prediction vs. the current heading.
+ *  - Forecast from observed heading and recent acceleration. A stationary
+ *    QB or a back pressing slowly does not become an imaginary sprinter.
  *  - Angle quality: each pursuer carries a per-play angle error (pursuit
  *    rating); poor pursuers aim at where the carrier will be a beat early
  *    (flat angle, end up trailing), great ones lead him and keep inside-out
@@ -92,32 +91,31 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
   const seen = sim.see(a, target, delay);
   const sp = Math.hypot(seen.vel.x, seen.vel.y);
-  const dir = sim.attackDir(target.team);
-  const h0 = sp > 0.5 ? { x: seen.vel.x / sp, y: seen.vel.y / sp } : { x: dir, y: 0 };
-  // Expected heading: carriers bend upfield; anticipation trusts that more.
-  const bendW = 0.2 + 0.45 * a.r('anticipation');
-  const h1 = norm({ x: h0.x * (1 - bendW) + dir * bendW, y: h0.y * (1 - bendW) });
-  const V = target.profile.vmax;
-  const tau = target.profile.tau;
-  const u0 = Math.min(sp, V);
+  const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
+  const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
+  const acceleration = clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / 0.2,
+    -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau));
+  // Recent acceleration is evidence for a short burst, not a promise of full
+  // speed throughout the horizon. Reassess as new motion becomes visible.
+  const tau = 0.3 + 0.3 * a.r('anticipation');
+  const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
   const path = (t: number): Vec2 => {
-    const d = V * t - (V - u0) * tau * (1 - Math.exp(-t / tau));
-    const w = Math.min(1, t / 0.6);
-    const hx = h0.x * (1 - w) + h1.x * w;
-    const hy = h0.y * (1 - w) + h1.y * w;
-    const hl = Math.hypot(hx, hy) || 1;
-    return { x: seen.pos.x + (hx / hl) * d, y: clamp(seen.pos.y + (hy / hl) * d, 0, FIELD_WIDTH) };
+    const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+    return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
   };
-  const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, path, { horizon, step: 0.1, radius: 0.7 });
+  const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
+  const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, path, { horizon, step: 0.1, radius: reach });
   let bias = angleBias.get(a);
   if (bias === undefined) {
-    bias = (1 - a.r('pursuit')) * 0.3 + sim.rng.normal(0, 0.12 * (1.2 - a.r('pursuit')));
+    bias = (1 - a.r('pursuit')) * 0.3 + sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
   const p = path(clamp(ip.t - bias, 0, horizon));
-  // Inside-out leverage: shade toward the middle of the field — more so
-  // near the sideline, which becomes an extra defender.
-  const lev = leverage(a, p.y);
+  // Keep the support contract while approaching, then close onto the near
+  // hip. A permanent two-yard sideline shade is outside tackling reach.
+  const dist = Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y);
+  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
+  const lev = (force ? Math.abs(leverage(a,p.y))*a.runFit!.side : leverage(a,p.y)) * clamp((dist-reach)/6,0,1);
   return { x: p.x, y: p.y + lev };
 }
 
@@ -132,26 +130,30 @@ export function leverage(a: Agent, y: number): number {
 }
 
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
-  const dist = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
+  const seen = sim.see(a, target, (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime));
+  const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   // Open-field tackling: when the carrier is coming at you, break down,
   // mirror his lateral movement square-on and make him come to you.
   const tackle = a.r('tackling');
-  const breakDist = 4 + 4 * tackle;
-  if (dist < breakDist && dist > 0.5) {
-    const seen = sim.see(a, target, (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime));
+  if (dist > 0.5) {
     const ux = (seen.pos.x - a.pos.x) / dist;
     const uy = (seen.pos.y - a.pos.y) / dist;
-    const closing = -(seen.vel.x * ux + seen.vel.y * uy);
-    if (closing > 1.5) {
+    const incoming = -(seen.vel.x * ux + seen.vel.y * uy);
+    const toward = Math.max(0,a.vel.x*ux+a.vel.y*uy);
+    const contact = a.profile.radius+target.profile.radius+a.profile.reach*.65;
+    const breakDist = contact + toward*toward/(2*a.profile.brake) + Math.max(0,incoming)*.2;
+    // An oblique interceptor needs to run his angle. Squaring up early on
+    // every closing carrier flattens that angle before he reaches the hip.
+    if (incoming > 1.5 && incoming/Math.max(.1,Math.hypot(seen.vel.x,seen.vel.y)) > .7 && dist < breakDist) {
       // Lateral component of the carrier's velocity relative to the line
       // between us, plus a correction toward the leverage point (inside him).
       const px = -uy;
       const py = ux;
       const lat = seen.vel.x * px + seen.vel.y * py;
-      const levY = seen.pos.y + leverage(a, seen.pos.y) * 0.8;
+      const levY = seen.pos.y + leverage(a, seen.pos.y) * clamp((dist-contact)/4,0,.8);
       const errLat = (seen.pos.x - a.pos.x) * px + (levY - a.pos.y) * py;
       const mirror = lat * (0.7 + 0.3 * tackle) + errLat * (1.2 + 0.8 * a.r('pursuit'));
-      const approach = 1.2 + 2.0 * (1 - tackle) + Math.max(0, dist - 2.5) * 0.7;
+      const approach = Math.max(0,Math.sqrt((2.5+2*(1-tackle))**2+2*a.profile.brake*Math.max(0,dist-contact))-incoming);
       const vx = ux * approach + -uy * mirror;
       const vy = uy * approach + ux * mirror;
       return { vel: { x: vx, y: vy }, facing: Math.atan2(uy, ux), cutSkill: 0.8 + 0.4 * tackle };

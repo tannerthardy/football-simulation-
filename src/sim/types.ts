@@ -29,6 +29,8 @@ export type PlayEventType =
   | 'block_collect'
   | 'block_log'
   | 'squeeze'
+  | 'carrier_contact'
+  | 'tackle_wrap'
   | 'snap'
   | 'handoff'
   | 'throw'
