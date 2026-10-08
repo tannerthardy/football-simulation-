@@ -166,6 +166,14 @@ def main():
             page.emulate_media(color_scheme='dark')
             if args.screenshots:
                 page.screenshot(path=str(args.screenshots / 'dark.png'), full_page=True)
+            template = Path(__file__).resolve().parent.parent / 'viewer' / 'replay.template.html'
+            page.route('**/empty-template-check.html', lambda route: route.fulfill(content_type='text/html', body=template.read_text()))
+            page.goto(f'http://127.0.0.1:{server.server_port}/empty-template-check.html')
+            assert 'no recorded plays' in page.locator('#collection').inner_text()
+            assert page.locator('.main').is_hidden()
+            assert page.locator('#filter-controls').is_hidden()
+            assert page.get_by_role('link', name='Download recorded plays').is_visible()
+            checks.append('Opening the empty template shows visible download instructions instead of a blank field')
             assert not errors, errors
             checks.append('No JavaScript errors; viewer works without external fonts')
             browser.close()

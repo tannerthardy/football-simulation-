@@ -39,6 +39,7 @@
   --good: #4cc27c; --bad: #ff7a6b; --warn: #f0b43c; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { height: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.45; }
 .app { max-width: 1400px; margin: 0 auto; padding-block: 16px 24px; padding-inline: 16px; display: grid; gap: 14px; }
@@ -218,8 +219,16 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
 <script>
 const REPLAY = /*__REPLAY_DATA__*/null;
 (function () {
-  if (!REPLAY) { document.getElementById('result').textContent = 'No replay data embedded. Run: npm run replay'; return; }
   const $ = (id) => document.getElementById(id);
+  if (!REPLAY) {
+    document.querySelector('.library-title h1').textContent = 'Open the recorded film room';
+    $('collection').textContent = 'This template has no recorded plays embedded.';
+    $('filter-controls').hidden = true;
+    $('toggle-filters').hidden = true;
+    document.querySelector('.selection-bar').innerHTML = '<p>Download the film room, unzip it, and open <strong>film-room.html</strong> in your browser.</p><a class="chip" href="https://github.com/tannerthardy/football-simulation-/raw/refs/heads/claude/engine-priorities/viewer/film-room.zip">Download recorded plays</a>';
+    document.querySelector('.main').hidden = true;
+    return;
+  }
   const canvas = $('field');
   const ctx = canvas.getContext('2d');
   const plays = REPLAY.plays;
