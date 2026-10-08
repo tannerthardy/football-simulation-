@@ -60,6 +60,7 @@ scoring plays, explosives, turnovers and sacks.
 | `scripts/recognition-lab.ts` | How fast and how accurately each position group reads run vs. pass, by play and situation, with and without a scouting report. |
 | `scripts/run-blocking-lab.ts` | Run concept × formation × front × flip on paired seeds; physical gains, stuffs, ownership, climbs and posture requests. |
 | `scripts/calibrate.ts` | Many full games; league-level metrics vs. NFL targets. |
+| `scripts/tendencies.ts` | Play-calling tendencies (personnel, defensive packages, run-concept mix, play action, coverage shell, team spreads), measured like the NFL extractor. |
 
 ## Layout
 

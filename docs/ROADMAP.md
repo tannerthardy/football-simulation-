@@ -52,6 +52,11 @@ be aligned before these become validated tuning targets. See
 
 ## Calibration status
 
+Before reading this table, see [EVALUATION_ENVIRONMENT.md](EVALUATION_ENVIRONMENT.md):
+league aggregates mix engine execution with play-calling and roster selection.
+The plan's baseline measurements found trap and counter on 27% of simulated
+runs versus 8.5% in the NFL; these are historical calling measurements.
+
 Historical snapshot at `2c825eb`, before the run blocking/decision update:
 64 games over eight independently generated leagues
 (`npm run calibrate -- 64 7`), official plays only — plays wiped out by an

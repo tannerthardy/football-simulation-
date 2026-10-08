@@ -588,6 +588,11 @@ understandable consequences for management choices.
 
 ## 18. Calibration and evaluation as an engineering system
 
+The concrete environment for separating execution from play-calling and roster
+selection — NFL context replay, policy validation without outcomes, league
+structure, diagnostic callers — is planned in
+[EVALUATION_ENVIRONMENT.md](EVALUATION_ENVIRONMENT.md).
+
 Split by game before creating player/frame samples. Use held-out weeks and
 teams where appropriate; test unseen players separately for that question.
 Do not put frames from the same play in both training and validation. Keep
