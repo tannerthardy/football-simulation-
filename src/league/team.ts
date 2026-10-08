@@ -30,6 +30,8 @@ export interface Team {
     shadow: boolean;
     /** How often the secondary disguises its coverage pre-snap. */
     disguise: number;
+    /** Share of zone calls played with pattern-match rules; the rest are spot drops. */
+    matchRate: number;
   };
 }
 
@@ -100,6 +102,7 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
       manRate: rng.range(0.25, 0.55),
       shadow: rng.chance(0.35),
       disguise: rng.range(0.1, 0.45),
+      matchRate: rng.range(0.3, 0.9),
     },
   };
 }

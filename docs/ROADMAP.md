@@ -45,8 +45,8 @@ be aligned before these become validated tuning targets. See
 
 ## Calibration status
 
-Snapshot: 32 games over four independently generated leagues
-(`npm run calibrate -- 32 7`), official plays only — plays wiped out by an
+Snapshot: 64 games over eight independently generated leagues
+(`npm run calibrate -- 64 7`), official plays only — plays wiped out by an
 accepted foul are excluded, and a catch or run that ends in a lost fumble is
 credited to the fumble spot. Rules and accounting defects from the review are
 fixed (see `test/game-rules.test.ts`); cohort mismatches still limit some
@@ -56,27 +56,27 @@ before further outcome tuning.
 
 | Metric | Sim | NFL | |
 |---|---|---|---|
-| Points / team-game | 33.9 | 21–23.5 | high |
-| Yards / attempt | 9.5 | 6.8–7.2 | high |
-| Completion % | 67.1% | 63–66% | ~ok |
-| Sack rate | 11.0% (6.7–15.7% by league) | 6–7.5% | high, roster-sensitive |
+| Points / team-game | 33.3 (24.5–44.3 by league) | 21–23.5 | high |
+| Yards / attempt | 9.7 | 6.8–7.2 | high |
+| Completion % | 68.7% | 63–66% | high |
+| Sack rate | 10.5% (5.9–13.2% by league) | 6–7.5% | high, roster-sensitive |
 | INT rate | 3.8% | 2–2.5% | high |
-| Time to throw | 2.41 s | 2.6–2.75 s | low |
-| Pressure rate | 29% | ~33% PFF labels | definitions differ |
-| Scramble rate | 4.2% | 4% | ok |
-| Rush yards / carry | 3.28 (2.35–4.03 by league) | 4.48 | low |
-| Run stuff rate | 32% | 18% | high |
+| Time to throw | 2.45 s | 2.6–2.75 s | low |
+| Pressure rate | 26% | ~33% PFF labels | definitions differ |
+| Scramble rate | 4.6% | 4% | ok |
+| Rush yards / carry | 3.07 (1.85–4.41 by league) | 4.48 | low |
+| Run stuff rate | 35% | 18% | high |
 | 3rd-down conversion | 34.7% | 37–41% | low |
-| Separation during target catch contests | 3.76 | 3.04 selected arrival cohort | cohorts differ |
-| Tight-window catch-contest sample | 4.0% | 13–17% all-throw harness range | cohorts differ |
-| QB reads coverage family right | 69% | — | |
-| Missed + broken tackles / play | 0.16 | 0.11–0.16 | ~ok |
-| Pass rate | 75% | 56–62% | high |
+| Separation during target catch contests | 3.96 | 3.04 selected arrival cohort | cohorts differ |
+| Tight-window catch-contest sample | 4.9% | 13–17% all-throw harness range | cohorts differ |
+| QB reads coverage family right | 66% | — | |
+| Missed + broken tackles / play | 0.18 | 0.11–0.16 | high |
+| Pass rate | 74% | 56–62% | high |
 
-League-to-league spread is large: the same engine gives a 6.7% sack rate
-with one set of generated rosters and 15.7% with another. Real team sack
-rates vary far less, so the trench model amplifies talent gaps; one league is
-not a reliable calibration sample.
+League-to-league spread is large: the same engine gives 1.85 yards per carry
+with one set of generated rosters and 4.41 with another, and sack rates from
+5.9% to 13.2%. Real teams vary far less, so the trench model amplifies talent
+gaps; one league is not a reliable calibration sample.
 
 ## Known gaps, in priority order
 
@@ -93,12 +93,19 @@ not a reliable calibration sample.
 3. **Passing efficiency.** High YPA, aDOT, TD and INT rates require coordinated
    protection, coverage and QB-policy work. Validate separation/tight-window
    cohorts before changing defender speed or catch probabilities.
-4. **Pressure timing.** In the reviewed geometric-proximity diagnostic, fewer
+4. **Coverage rules.** Zone defenders play spot drop ("country" zone) or
+   pattern-match per call, by coach tendency (`scripts/zone-style-lab.ts`
+   compares them concept by concept). Named match rules and checks — Cover 3
+   Rip/Liz, quarters MOD/MEG and two-read, trips Poach, banjo — aren't built
+   yet, so Flood beats match Cover 3 more than spot drop (the curl-flat
+   "sink" rule is missing). Several deep concepts gain too much against both
+   techniques (Flood vs Cover 2, Dagger vs Cover 4).
+5. **Pressure timing.** In the reviewed geometric-proximity diagnostic, fewer
    pressure events occur but their median arrival is earlier. Diagnose missed
    assignments and release censoring before changing global rush capability.
-5. **Play calling.** Pass rate is inflated; situational tendencies by down,
+6. **Play calling.** Pass rate is inflated; situational tendencies by down,
    distance and field zone are now measured from 2022–23 data but not yet
    used by the coordinators.
-6. **Route nuance.** Releases vs press, stemming to leverage, coverage
+7. **Route nuance.** Releases vs press, stemming to leverage, coverage
    adjustments (seam bend vs single-high) are still simple.
-7. **Missing concepts.** Screens, RPOs, stunts and twists, OPI/DPI.
+8. **Missing concepts.** Screens, RPOs, stunts and twists, OPI/DPI.

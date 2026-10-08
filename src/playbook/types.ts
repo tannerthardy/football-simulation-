@@ -220,11 +220,21 @@ export interface Pressure {
   coverages: string[];
 }
 
+/**
+ * How zone defenders play their zones. `spot`: drop to a landmark and play
+ * the quarterback's eyes and arm, no route matching ("spot drop", "country"
+ * zone). `match`: pattern-match zone — carry verticals through the zone and
+ * pick up whoever enters it.
+ */
+export type ZoneStyle = 'spot' | 'match';
+
 export interface DefensivePlayCall {
   personnel: DefPersonnelId;
   front: Front;
   coverage: Coverage;
   pressure: Pressure | null;
+  /** Zone technique for zone defenders (default `match`). */
+  zoneStyle?: ZoneStyle;
   /**
    * Disguise: the coverage the secondary *shows* pre-snap. DBs align in this
    * look and rotate to the real coverage at the snap (absent = no disguise).

@@ -457,6 +457,8 @@ export class QBPass implements Behavior {
     this.phase = 'windup';
     this.pending = ev;
     this.releaseAt = sim.t + this.windup(a);
+    // Shoulders and arm give the throw away to defenders reading him.
+    sim.windupAt = sim.t;
     return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: angleTo(a.pos, ev.point) };
   }
 

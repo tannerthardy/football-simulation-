@@ -53,6 +53,7 @@ scoring plays, explosives, turnovers and sacks.
 | `scripts/debug-play.ts` | ASCII frame-by-frame view of a single play, or a per-player table. |
 | `scripts/trench-lab.ts` | Pass-protection reps with the QB holding the ball: win rates and pressure and sack timing by matchup. |
 | `scripts/open-field-lab.ts` | One carrier vs. one or two tacklers in scripted open-field scenarios (square, angle, chase, sideline). |
+| `scripts/zone-style-lab.ts` | Pass concepts against one zone coverage played spot drop vs. pattern-match, on paired seeds. |
 | `scripts/calibrate.ts` | Many full games; league-level metrics vs. NFL targets. |
 
 ## Layout

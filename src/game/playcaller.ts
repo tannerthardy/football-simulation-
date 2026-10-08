@@ -21,7 +21,7 @@ import type { ManPreference } from '../playbook/alignment.js';
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
-import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot } from '../playbook/types.js';
+import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { OFF_PERSONNEL } from '../playbook/types.js';
 import type { Team } from '../league/team.js';
 
@@ -348,8 +348,15 @@ export class DefensiveCoordinator {
       const pool = coverage.shell === 'one-high' || coverage.id === 'cover0' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
       shown = COVERAGE_BY_ID[rng.pick(pool.filter((id) => id !== coverage.id))];
     }
+    // Zone technique: pattern-match or spot drop. Quarters is match by nature.
+    let zoneStyle: ZoneStyle | undefined;
+    if (!coverage.man) {
+      const quarters = coverage.id === 'cover4' || coverage.id === 'cover6';
+      zoneStyle = rng.chance(Math.min(1, coach.matchRate + (quarters ? 0.3 : 0))) ? 'match' : 'spot';
+    }
+    const styleTag = zoneStyle === 'spot' ? ' (spot)' : zoneStyle === 'match' ? ' (match)' : '';
     return {
-      call: { personnel, front, coverage, pressure, shown, label: `${front.name} ${coverage.name}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
     };
   }

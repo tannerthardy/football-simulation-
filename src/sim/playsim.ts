@@ -117,6 +117,8 @@ export class PlaySim {
   firstContactX: number | null = null;
   /** QB currently reading this receiver (zone defenders read his eyes). */
   qbEyes: Agent | null = null;
+  /** When the QB started his throwing motion (−1 before). */
+  windupAt = -1;
   /** Predicted remaining flight of the ball (absolute times). */
   ballPath: Array<{ t: number; x: number; y: number; z: number }> = [];
 

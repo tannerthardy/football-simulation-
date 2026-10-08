@@ -11,7 +11,7 @@ import { clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
-import type { Gap, ZoneId } from '../../playbook/types.js';
+import type { Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track } from './common.js';
@@ -230,7 +230,16 @@ export class ManCoverage implements Behavior {
   }
 }
 
-/** Zone coverage: drop to the landmark, match threats in the zone, read the QB's eyes. */
+/**
+ * Zone coverage. Two techniques:
+ * - match (pattern-match): drop to the landmark, carry verticals through the
+ *   zone, pick up whoever enters it, read the QB's eyes as a tiebreaker.
+ * - spot (spot drop, "country" zone): sprint to the landmark, settle and play
+ *   the quarterback — lean where he looks, sit in the lane of a receiver in
+ *   the zone without following him out, break on his arm action.
+ * A defender who can't execute match rules plays spot (a bust: verticals
+ * aren't carried).
+ */
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
@@ -238,6 +247,7 @@ export class ZoneCoverage implements Behavior {
   private readonly radius: number;
   /** Lateral band of responsibility (field y range). */
   private readonly band: [number, number];
+  readonly style: ZoneStyle;
   target: Agent | null = null;
 
   constructor(
@@ -252,7 +262,20 @@ export class ZoneCoverage implements Behavior {
     // Flat/curl-flat defenders expand all the way to the sideline with a threat.
     this.radius = this.deep ? 11 : zone === 'robber' || zone === 'hook_mid' ? 6.5 : zone.includes('flat') ? 11 : 7.5;
     this.band = zoneBand(zone, sim);
-    void a;
+    let style: ZoneStyle = zone === 'robber' ? 'match' : (sim.defCall.zoneStyle ?? 'match');
+    if (style === 'match') {
+      // Match rules take recognition; a defender who misses the rule zones grass.
+      const iq = 0.5 * a.r('playRecognition') + 0.5 * a.r('zoneCoverage');
+      if (zone !== 'robber' && !sim.rng.chance(clamp(0.72 + 0.35 * iq, 0, 1))) {
+        style = 'spot';
+        a.tags.add('matchBust');
+      }
+    } else if (!this.deep) {
+      // Spot drops are deeper: curl and hook defenders sink to 11-12 yards.
+      const sink = zone.startsWith('curl_flat') ? 2.5 : zone.startsWith('hook') ? 1.5 : zone.startsWith('flat') ? 1.5 : 0;
+      this.landmark = { x: this.landmark.x + sink, y: this.landmark.y };
+    }
+    this.style = style;
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -265,6 +288,7 @@ export class ZoneCoverage implements Behavior {
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
     if (believesRun(sim, a) && !this.deep && sim.t > a.readAt) return runFit(a, sim, this.gap, this.gapSign);
+    const spot = this.style === 'spot';
 
     const qb = sim.qb;
     const lm = this.landmark;
@@ -296,7 +320,8 @@ export class ZoneCoverage implements Behavior {
       }
       if (vert.length === 0) {
         let tgt = lm;
-        if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.2 * a.r('anticipation'));
+        // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
+        if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
         return goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs });
       }
       vert.sort((p, q) => q.fut.x - p.fut.x);
@@ -306,7 +331,8 @@ export class ZoneCoverage implements Behavior {
       // Never while another receiver is climbing into the zone behind it.
       // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
       const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
-      if (!climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1 && deepest.pos.x - sim.los > 6) {
+      // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
+      if (!spot && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1 && deepest.pos.x - sim.los > 6) {
         this.target = deepest.r;
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         const react = sim.rng.next() < 0.3 + 0.6 * a.r('playRecognition');
@@ -332,6 +358,8 @@ export class ZoneCoverage implements Behavior {
       });
     }
 
+    if (spot) return this.spotUnderneath(a, sim, threats);
+
     // Underneath: carry a vertical #2/#3 through the zone (seam carry / wall),
     // otherwise sit in the throwing lane of the nearest threat.
     // Curl-flat players wall #2 only to ~10 yards, then hand him off and expand
@@ -342,8 +370,12 @@ export class ZoneCoverage implements Behavior {
       carryable.sort((p, q) => Math.abs(p.pos.y - lm.y) - Math.abs(q.pos.y - lm.y));
       const th = carryable[0];
       this.target = th.r;
-      const tgt = { x: th.pos.x + 0.3, y: th.pos.y + inside(th.pos.y) * 0.9 };
-      return track(a, tgt, { x: th.vel.x * 0.9, y: th.vel.y }, { facing: facingQB, speed: zs, gain: 1.6 });
+      // Wall and carry: keep him in front and inside, gaining depth before he
+      // gets there. Eyes stay on the QB until the seam threatens to run past;
+      // then turn and run with him.
+      const tgt = { x: Math.max(th.pos.x + 1.5, a.pos.x - 0.5), y: th.pos.y + inside(th.pos.y) * 0.9 };
+      const runPast = th.vel.x > 4.5 && a.pos.x - th.pos.x < 2.5;
+      return track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB, speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 });
     }
     let best: (typeof threats)[number] | null = null;
     let bd = Infinity;
@@ -369,6 +401,48 @@ export class ZoneCoverage implements Behavior {
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
     return track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: best.vel.x * 0.5, y: best.vel.y * 0.8 }, { facing: facingQB, speed: zs * 1.05, gain: 1.6 });
+  }
+
+  /**
+   * Spot-drop underneath defender: sprint to the spot (turned to run, so quick
+   * throws beat him before he gets there), then settle with eyes on the QB.
+   * He leans where the QB looks and squeezes the lane of a receiver in his
+   * zone, but keeps his depth and never leaves his zone with a route.
+   */
+  private spotUnderneath(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand {
+    const qb = sim.qb;
+    const lm = this.landmark;
+    const facingQB = angleTo(a.pos, qb.pos);
+    const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
+    if (toSpot > 2.5 && !a.tags.has('settled')) {
+      return goTo(a, lm, { speed: 0.88 + 0.1 * a.r('zoneCoverage'), facing: toSpot > 4 ? undefined : facingQB });
+    }
+    a.tags.add('settled');
+    const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
+    let tgt: Vec2 = lm;
+    const eyes = sim.qbEyes;
+    const inZone = threats.filter((th) => Math.hypot(th.pos.x - lm.x, th.pos.y - lm.y) < this.radius && th.pos.x - sim.los > 1);
+    const looked = eyes ? inZone.find((th) => th.r === eyes) : undefined;
+    if (looked) {
+      // The QB is looking at a receiver in my zone: get in the throwing lane.
+      const lane = lerp(qb.pos, looked.pos, 0.82);
+      tgt = lerp(lm, lane, 0.45 + 0.4 * read);
+    } else if (eyes) {
+      // Looking elsewhere: drift that way ("rally to the eyes"), and squeeze
+      // whoever is in my zone on the way.
+      const seen = sim.see(a, eyes);
+      tgt = lerp(lm, seen.pos, 0.15 + 0.25 * read);
+      if (inZone.length) {
+        const near = inZone.reduce((p, q) => (Math.hypot(p.pos.x - lm.x, p.pos.y - lm.y) < Math.hypot(q.pos.x - lm.x, q.pos.y - lm.y) ? p : q));
+        tgt = lerp(tgt, lerp(qb.pos, near.pos, 0.82), 0.3);
+      }
+    }
+    // Hold the spot's depth until the ball is thrown; stay within the zone.
+    tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
+    const off = sub(tgt, lm);
+    const l = Math.hypot(off.x, off.y);
+    if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
+    return goTo(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: 0.7 + 0.15 * a.r('zoneCoverage') });
   }
 }
 
@@ -431,6 +505,13 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // Eyes on the QB see the release; a trailing man defender reads it off
   // the receiver's eyes and hands a beat later.
   const react = a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25) + (man ? 0.05 : 0);
+  // Spot droppers key the quarterback: his arm and body action give the
+  // throw away before the ball is out, so their reaction starts there.
+  const keysQB = facingQB && sim.windupAt >= 0 && a.behavior instanceof ZoneCoverage && a.behavior.style === 'spot';
+  if (keysQB && sim.t - sim.windupAt >= react) {
+    a.tags.add('readArm');
+    return true;
+  }
   return sim.t - sim.throwAt >= react;
 }
 

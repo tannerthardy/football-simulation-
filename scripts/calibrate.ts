@@ -18,7 +18,12 @@ const rng = new Rng(Number(seedStr));
 const names = ['Ironmen', 'Comets', 'Wolves', 'Rangers', 'Pilots', 'Barons', 'Hornets', 'Mariners'];
 const makeLeague = (n: number): Team[] => {
   const lr = rng.fork(`league-${n}`);
-  return names.map((name) => generateTeam(lr, name, name.slice(0, 3).toUpperCase(), { strength: lr.range(0.35, 0.75) }));
+  // Each team has its own stream, so changing how one team is generated
+  // doesn't reshuffle the others.
+  return names.map((name) => {
+    const tr = lr.fork(name);
+    return generateTeam(tr, name, name.slice(0, 3).toUpperCase(), { strength: tr.range(0.35, 0.75) });
+  });
 };
 let teams = makeLeague(0);
 /** Per-league outcome rates, to show how much rosters move them. */
