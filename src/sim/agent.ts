@@ -11,6 +11,7 @@ import type { PlaySim } from './playsim.js';
 import type { Recognition } from './recognition.js';
 import { SnapMind } from './mind.js';
 import { Rng } from '../core/rng.js';
+import type { RunFitJob } from './run-fits.js';
 
 export type TeamSide = 'O' | 'D';
 
@@ -63,6 +64,8 @@ export interface Engagement {
 }
 
 export class Agent {
+  /** Known defensive responsibility; decisions still require observed run cues. */
+  runFit?: RunFitJob;
   engagement: Engagement | null = null;
   /** On the ground until this time (missed tackle, cut, pancake). */
   downUntil = -1;

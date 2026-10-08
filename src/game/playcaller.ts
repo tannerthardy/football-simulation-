@@ -196,17 +196,20 @@ export class OffensiveCoordinator {
     const gapFit = avg(ol.map((p) => roleSuitability(p, ROLE_BY_ID.OL_POWER)));
     const weights: Array<[RunConcept, number]> = RUN_CONCEPTS.map((c) => {
       let w = 1;
-      const zone = c.scheme === 'insideZone' || c.scheme === 'outsideZone';
-      const gap = c.scheme === 'power' || c.scheme === 'counter' || c.scheme === 'trap';
+      const zone = c.scheme === 'insideZone' || c.scheme === 'outsideZone' || c.scheme === 'wideZone' || c.scheme === 'splitZone';
+      const gap = c.scheme === 'power' || c.scheme === 'counter' || c.scheme === 'trap' || c.scheme === 'duo';
       if (zone) w *= scheme === 'wide-zone' ? 2.4 : 1.2;
-      if (c.scheme === 'outsideZone') w *= scheme === 'wide-zone' ? 1.6 : 0.8;
+      if (c.scheme === 'outsideZone' || c.scheme === 'wideZone') w *= scheme === 'wide-zone' ? 1.6 : 0.8;
+      if (c.scheme === 'splitZone' && !Object.entries(f.slots).some(([slot,p]) =>
+        (slot === 'F' || ((slot === 'H' || slot === 'Y') && (f.personnel === '12' || f.personnel === '22')))
+        && p && p.depth > .9 && (p.split === 'core' || p.split === 'wing' || (typeof p.split === 'number' && p.split < 6)))) w = 0;
       if (gap) w *= scheme === 'power' ? 2.0 : 0.9;
       w *= Math.exp(((zone ? zoneFit : gap ? gapFit : (zoneFit + gapFit) / 2) - 55) / 25);
       if (c.scheme === 'power' && hasFB) w *= 1.5;
       if (c.scheme === 'draw') w *= gun ? 1.2 : 0.5;
       if (c.scheme === 'toss') w *= gun ? 0.1 : 0.8;
       if (c.scheme === 'qbDraw') w *= gun && mobile ? 0.6 : 0;
-      if (s.distance <= 2 && (c.scheme === 'outsideZone' || c.scheme === 'toss' || c.scheme === 'draw')) w *= 0.4;
+      if (s.distance <= 2 && (c.scheme === 'outsideZone' || c.scheme === 'wideZone' || c.scheme === 'toss' || c.scheme === 'draw')) w *= 0.4;
       w *= this.learned(`run:${c.scheme}`);
       return [c, w];
     });
@@ -355,8 +358,19 @@ export class DefensiveCoordinator {
       zoneStyle = rng.chance(Math.min(1, coach.matchRate + (quarters ? 0.3 : 0))) ? 'match' : 'spot';
     }
     const styleTag = zoneStyle === 'spot' ? ' (spot)' : zoneStyle === 'match' ? ' (match)' : '';
+    const motionRng=rng.fork(`movement:${front.id}:${coverage.id}`);
+    const alternatives=fronts.filter((f)=>f.id!==front.id);
+    const frontStem=alternatives.length && motionRng.chance(coach.disguise*.35) ? {
+      from:motionRng.pick(alternatives),secondsBeforeSnap:motionRng.range(.4,1.6),
+    } : undefined;
+    const pressureSlots=pressure ? Object.keys(pressure.blitzers) as DefSlot[] : [];
+    const creep=pressureSlots.length && motionRng.chance(coach.disguise*.5) ? {
+      slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
+    } : undefined;
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep,
+        runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
+        label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
     };
   }

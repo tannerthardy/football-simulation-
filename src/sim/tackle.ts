@@ -56,7 +56,7 @@ export function tryTackles(sim: PlaySim): void {
     const dive = range + 0.3;
     const separating = ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
     const behind = (d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y < 0;
-    if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond) {
+    if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim,d,c)) {
       d.nextTackleAt = t + 1;
       d.downUntil = t + 0.7;
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');

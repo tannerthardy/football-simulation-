@@ -15,6 +15,7 @@ import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage
 import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import type { PlaySim } from './playsim.js';
+import { buildRunFits } from './run-fits.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
@@ -23,7 +24,9 @@ export function assignBehaviors(sim: PlaySim): void {
   const call = sim.offCall;
 
   // ---------------------------------------------------------- defense first
+  const fits = buildRunFits(sim);
   for (const d of sim.defense) {
+    d.runFit = fits.get(d);
     const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]!;
     const key = d.slot.split('_')[0];
     const base = READ_BASE[key] ?? 0.3;
@@ -31,7 +34,7 @@ export function assignBehaviors(sim: PlaySim): void {
     const role = spot.role;
     switch (role.kind) {
       case 'rush':
-        d.behavior = new PassRusher(d, sim, spot.gap, spot.gapSign);
+        d.behavior = new PassRusher(d, sim, d.runFit!.gap, d.runFit!.side);
         break;
       case 'blitz':
         d.behavior = new Blitzer(d, sim, role.gap, spot.gapSign);
@@ -231,7 +234,11 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
   const pullers = sim.offense.filter((a) => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'pull');
   const leads = pullers.filter((a) => (a.behavior as RunBlocker).plan.pullRole === 'lead');
   const follow = leads.length ? leads : pullers;
-  to.behavior = new BallCarrier({ aim, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow }, to);
+  const key=sim.defense.filter((d)=>d.pos.x>sim.los+2 && d.pos.x<sim.los+7 && Math.abs(d.pos.y-sim.ballY)<4)
+    .sort((p,q)=>Math.abs(p.pos.y-sim.ballY)-Math.abs(q.pos.y-sim.ballY))[0];
+  to.behavior = new BallCarrier({ aim, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow,
+    run:sim.offCall.run ? {scheme:sim.offCall.run.scheme,side:playSideSign(sim,sim.offCall.run),readKey:key,
+      kick:pullers.find((b)=>(b.behavior as RunBlocker).plan.pullRole!=='lead')} : undefined }, to);
 }
 
 export function onThrow(sim: PlaySim): void {

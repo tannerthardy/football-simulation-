@@ -24,6 +24,10 @@ export type BallState =
 export type PlayEventType =
   | 'read'
   | 'block_climb'
+  | 'block_contact'
+  | 'block_exchange'
+  | 'block_collect'
+  | 'block_log'
   | 'squeeze'
   | 'snap'
   | 'handoff'

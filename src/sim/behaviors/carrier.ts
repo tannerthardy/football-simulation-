@@ -18,6 +18,8 @@ import { timeToReach } from '../../physics/reach.js';
 import { squeezeForGap } from '../../physics/bodyshape.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
+import type { RunScheme } from '../../playbook/types.js';
+import { RunBlocker } from './blocking.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -27,6 +29,53 @@ export interface CarrierOptions {
   qb?: boolean;
   /** Known lead/pull responsibilities on a designed run. */
   follow?: Agent[];
+  run?: { scheme:RunScheme; side:number; readKey?:Agent; kick?:Agent };
+}
+
+/** Read the current surface, rather than a two-second forecast through it.
+ * Entry points are between moving blockers, or outside a kick/log. */
+export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
+  if (!opts.run || !opts.aim) return null;
+  const side=opts.run.side;
+  const surface=sim.offense.filter((b)=>['LT','LG','C','RG','RT'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)
+    .map((b)=>({...sim.see(a,b),radius:b.profile.radius})).sort((p,q)=>p.pos.y-q.pos.y);
+  if (surface.length<5) return null;
+  let preferred=opts.aim.y;
+  if (opts.run.scheme === 'duo' && opts.run.readKey) {
+    const key=sim.see(a,opts.run.readKey);
+    // Press the inside double. A declaring MIKE closes his insertion side;
+    // the back bends to the other adjacent interior crease.
+    if (key.pos.x<sim.los+2.5 && Math.abs(key.vel.y)>.7) preferred=sim.ballY-Math.sign(key.vel.y)*.8;
+  }
+  const kick=opts.run.kick;
+  if (kick) {
+    const s=sim.see(a,kick);
+    if (s.pos.x>sim.los-1.5) preferred=s.pos.y+(kick.tags.has('block-log') ? side*.85 : -side*.85);
+  }
+  const candidates:Vec2[]=[];
+  for(let i=1;i<surface.length;i++) {
+    const l=surface[i-1],r=surface[i];
+    const width=r.pos.y-r.radius-l.pos.y-l.radius;
+    if(width>a.profile.radius*1.4) candidates.push({x:Math.max(sim.los+.5,(l.pos.x+r.pos.x)/2+.6),y:(l.pos.y+r.pos.y)/2});
+  }
+  for(const end of [surface[0],surface.at(-1)!]) candidates.push({x:Math.max(sim.los+.5,end.pos.x+.5),y:end.pos.y+Math.sign(end.pos.y-sim.ballY)*(end.radius+a.profile.radius+.4)});
+  let best:Vec2|null=null,cost=Infinity;
+  for(const p of candidates) {
+    let risk=0;
+    for(const d of sim.opponents(a)) {
+      if(d.isDown(sim.t)) continue;
+      const s=sim.see(a,d);
+      if(Math.hypot(s.pos.x-p.x,s.pos.y-p.y)>6) continue;
+      // Visible block posture buys time, not knowledge of a future block win.
+      const tied=d.engagement ? .25 : 0;
+      const reach=timeToReach({...s,profile:d.profile,speedScale:d.speedScale},p,d.profile.radius+a.profile.radius)+tied;
+      const arrive=Math.hypot(p.x-a.pos.x,p.y-a.pos.y)/Math.max(2,a.speed);
+      risk+=Math.max(0,arrive-reach)*3;
+    }
+    const score=Math.abs(p.y-preferred)*.65+Math.abs(p.y-a.pos.y)*.12+risk;
+    if(score<cost) {cost=score;best=p;}
+  }
+  return best;
 }
 
 const SAMPLES = [0.25, 0.5, 0.75, 1.0, 1.3, 1.6, 2.0];
@@ -103,8 +152,10 @@ export class BallCarrier implements Behavior {
 
     if (sim.t >= this.nextEval || this.heading === null) {
       this.nextEval = sim.t + 0.1;
-      const best = this.evaluate(a, sim, dir, false);
-      if (best) this.heading = best.heading;
+      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
+      const best = entry ? null : this.evaluate(a, sim, dir, false);
+      if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
+      else if (best) this.heading = best.heading;
       else if (this.heading === null) this.heading = dir > 0 ? 0 : Math.PI;
     }
     const h = this.heading!;

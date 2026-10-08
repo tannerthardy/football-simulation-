@@ -109,11 +109,13 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   if (blocker.engagement) return blocker.engagement;
   if ((blocker.shedBy.get(defender) ?? -1) > t) return null;
   if (defender.isDown(t) || blocker.isDown(t)) return null;
+  if (!inBlockReach(blocker, defender, type)) return null;
   const existing = defender.engagement;
   if (existing) {
     // Second blocker: double team.
     if (existing.helpers.length < 1 && existing.blocker !== blocker) {
       existing.helpers.push(blocker);
+      helperSince.set(blocker, t);
       blocker.engagement = existing;
       return existing;
     }
@@ -203,7 +205,31 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   blocker.engagement = e;
   defender.engagement = e;
   sim.engagements.push(e);
+  sim.event('block_contact', blocker, defender, type);
+  if (type === 'run') {
+    // Preserve the pair's incoming drive momentum; a strike is not a reset
+    // to a stationary strength contest. Foot force takes over over ~0.3 s.
+    const dir = drive ?? norm(sub(defender.pos, blocker.pos));
+    const v = (mb * (blocker.vel.x * dir.x + blocker.vel.y * dir.y)
+      + md * (defender.vel.x * dir.x + defender.vel.y * dir.y)) / (mb + md);
+    pairVel.set(e, -v);
+  }
   return e;
+}
+
+const helperSince = new WeakMap<Agent, number>();
+export function inBlockReach(b: Agent, d: Agent, type: 'run' | 'pass'): boolean {
+  const range = b.profile.radius + d.profile.radius + .1 + b.player.measurables.armIn / 36 * (type === 'run' ? .45 : .85);
+  return Math.hypot(b.pos.x-d.pos.x,b.pos.y-d.pos.y) <= range;
+}
+
+/** Functional contact, direction of force and time to establish a base. */
+export function helperSupport(sim: PlaySim, e: Engagement, h: Agent): number {
+  if (h.isDown(sim.t) || !inBlockReach(h,e.defender,e.type)) return 0;
+  const axis = axisOf(sim,e), toward = norm(sub(h.pos,e.defender.pos));
+  const angle = clamp(toward.x*axis.x+toward.y*axis.y,0,1);
+  const established = clamp((sim.t-(helperSince.get(h) ?? e.start))/.15,0,1);
+  return angle * established * fatigueFactor(h.body.energy);
 }
 
 /** Pre-contact rush plan from the rusher's tools and alignment. */
@@ -283,7 +309,7 @@ export function updateEngagements(sim: PlaySim): void {
   }
 }
 
-function forces(e: Engagement, pushBoost: number): { fd: number; fb: number; lev: number } {
+function forces(sim: PlaySim, e: Engagement, pushBoost: number): { fd: number; fb: number; lev: number } {
   const b = e.blocker;
   const d = e.defender;
   const tb = traits(b);
@@ -297,7 +323,7 @@ function forces(e: Engagement, pushBoost: number): { fd: number; fb: number; lev
   const techB = pass ? 0.45 * b.r('passBlock') + 0.35 * b.r('strength') + 0.2 * tb.feet : 0.5 * b.r('runBlock') + 0.5 * b.r('strength');
   const fd = d.profile.power * (0.65 + 0.7 * techD) * fatigueFactor(d.body.energy) * (1 + lev) * (0.5 + 0.5 * e.baseD) * (1 + 0.3 * Math.max(0, -e.control)) * pushBoost;
   let fb = b.profile.power * (0.65 + 0.7 * techB) * fatigueFactor(b.body.energy) * (1 - lev) * (0.4 + 0.6 * e.baseB) * (1 + 0.3 * Math.max(0, e.control)) * (1 + e.repEdge);
-  for (const h of e.helpers) fb += h.profile.power * (0.45 + 0.4 * h.r(pass ? 'passBlock' : 'runBlock'));
+  for (const h of e.helpers) fb += h.profile.power * (0.45 + 0.4 * h.r(pass ? 'passBlock' : 'runBlock')) * helperSupport(sim,e,h);
   return { fd, fb, lev };
 }
 
@@ -325,8 +351,8 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
 
   // ---- push battle along the axis toward the QB
   const moveFactor = moveFactorOf(e.move, inMove);
-  const { fd, fb, lev } = forces(e, moveFactor * (1 + 0.35 * e.pushBoost));
-  const mass = d.profile.massKg + b.profile.massKg + e.helpers.reduce((s, h) => s + h.profile.massKg, 0);
+  const { fd, fb, lev } = forces(sim, e, moveFactor * (1 + 0.35 * e.pushBoost));
+  const mass = d.profile.massKg + b.profile.massKg + e.helpers.reduce((s, h) => s + h.profile.massKg*helperSupport(sim,e,h), 0);
   // Pass blockers sit down into their anchor: a set blocker gives ground only
   // to a real power advantage.
   let vAxis = (6 * (fd - fb * 1.08)) / mass + e.impulse;
@@ -512,8 +538,8 @@ function stepRunRep(sim: PlaySim, e: Engagement): void {
   const c = sim.carrier;
 
   // Push battle along the blocker's drive: positive = defender driven back.
-  const { fd, fb } = forces(e, 1);
-  const mass = d.profile.massKg + b.profile.massKg + e.helpers.reduce((s, h) => s + h.profile.massKg, 0);
+  const { fd, fb } = forces(sim, e, 1);
+  const mass = d.profile.massKg + b.profile.massKg + e.helpers.reduce((s, h) => s + h.profile.massKg*helperSupport(sim,e,h), 0);
   // Run blocks: offensive linemen fire out on the snap count (small edge);
   // displacement is gradual — most reps are a yard of movement either way.
   let vDrive = (5 * (fb * 1.05 - fd)) / mass;
@@ -531,7 +557,8 @@ function stepRunRep(sim: PlaySim, e: Engagement): void {
     if (s !== 0 && Math.abs(toBall.y) > 0.8) e.side = s;
   }
   const rLat = td.lateral * (0.6 + 0.4 * d.r('blockShedding')) * (1 + 0.4 * Math.max(0, -e.control)) * (0.4 + 0.6 * e.baseD) * (d.recog?.read === 'run' && sim.isPass ? 0.3 : 1);
-  const bLat = tb.lateral * (0.5 + 0.6 * b.r('runBlock')) * (1 + 0.4 * Math.max(0, e.control)) * (0.4 + 0.6 * e.baseB) * (e.helpers.length ? 1.6 : 1);
+  const help = e.helpers.reduce((sum,h) => sum+helperSupport(sim,e,h),0);
+  const bLat = tb.lateral * (0.5 + 0.6 * b.r('runBlock')) * (1 + 0.4 * Math.max(0, e.control)) * (0.4 + 0.6 * e.baseB) * (1+.6*help);
   const sep = b.profile.radius + d.profile.radius;
   const quarter = (Math.PI / 2) * sep;
   const err = e.sealTarget - e.phi;

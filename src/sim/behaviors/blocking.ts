@@ -18,7 +18,7 @@ import type { MoveCommand } from '../../physics/kinematics.js';
 import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
-import { traits } from '../engagement.js';
+import { helperSupport, traits } from '../engagement.js';
 import { goTo, runThrough, stand, track } from './common.js';
 
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -253,7 +253,7 @@ export function playSideSign(sim: PlaySim, concept: RunConcept): number {
  * At most seven inline blockers: a small mask search avoids a greedy tackle
  * stealing a shaded guard's man and leaving the wide end without an owner.
  */
-function zoneOwnership(line: Agent[], down: Agent[]): Map<Agent, Agent> {
+function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Agent, Agent> {
   type Choice = { missed: number; distance: number; targets: Map<Agent, Agent> };
   let choices = new Map<number, Choice>([[0, { missed: 0, distance: 0, targets: new Map() }]]);
   const better = (a: Choice, b?: Choice) => !b || a.missed < b.missed || (a.missed === b.missed && a.distance < b.distance);
@@ -266,7 +266,7 @@ function zoneOwnership(line: Agent[], down: Agent[]): Map<Agent, Agent> {
         if (mask & (1 << i)) continue;
         const b = line[i];
         const distance = Math.abs(d.pos.y - b.pos.y);
-        if (distance >= (i === 0 || i === line.length - 1 ? 4.5 : 2.2)) continue;
+        if (distance >= (reachLimit ?? (i === 0 || i === line.length - 1 ? 4.5 : 2.2))) continue;
         const targets = new Map(choice.targets);
         targets.set(b, d);
         keep(mask | (1 << i), { missed: choice.missed, distance: choice.distance + distance, targets });
@@ -285,7 +285,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const { dl, lb, db } = classify(sim);
   const by = sim.ballY;
   const rel = (a: Agent) => (a.pos.y - by) * ps; // + = playside
-  const line = sim.offense.filter((a) => isOL(a) || (sim.offAlign.spots[a.slot]?.inline ?? false));
+  const slicer = concept.scheme === 'splitZone' ? sim.offense.find((a) => (a.player.position === 'TE' || a.player.position === 'FB')
+    && !sim.offAlign.spots[a.slot]?.inline && Math.abs(a.pos.y-by) < 6 && a.pos.x < sim.los-.9) : null;
+  if (concept.scheme === 'splitZone' && !slicer) throw new Error('Split zone requires a core off-ball TE or FB');
+  const sliceEnd = slicer ? dl.filter((d) => rel(d)<0).sort((a,b) => rel(a)-rel(b))[0] : null;
+  const line = sim.offense.filter((a) => a !== slicer && (isOL(a) || (sim.offAlign.spots[a.slot]?.inline ?? false)));
   line.sort((p, q) => rel(q) - rel(p));
   const claimedDL = new Set<Agent>();
   const claimedLB = new Set<Agent>();
@@ -312,15 +316,15 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   };
 
   const scheme = concept.scheme;
-  const zoneLike = scheme === 'insideZone' || scheme === 'outsideZone' || scheme === 'duo' || scheme === 'toss' || scheme === 'draw' || scheme === 'qbDraw';
+  const zoneLike = scheme === 'insideZone' || scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'splitZone' || scheme === 'toss' || scheme === 'draw' || scheme === 'qbDraw';
 
   if (zoneLike) {
     // Covered/uncovered ownership includes either shade and accounts for the
     // whole front before an uncovered blocker is available to help or climb.
-    for (const [b, d] of zoneOwnership(line, dl)) {
+    for (const [b, d] of zoneOwnership(line, dl.filter((d) => d !== sliceEnd))) {
       claimedDL.add(d);
-      const reach = scheme === 'outsideZone' || scheme === 'toss';
-      plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (reach ? 1.1 : 0.6)) });
+      const reach = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
+      plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (scheme === 'wideZone' ? 1.8 : reach ? 1.1 : 0.6)) });
     }
     const pending = line.filter((b) => !plans.has(b));
     for (const b of pending) {
@@ -329,7 +333,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const neighbor = line[i - 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
       if (np?.target && !np.combination && (np.kind === 'drive' || np.kind === 'reach')) {
-        combo(b, neighbor, np.target, lbNear(b.pos.y + ps * 1.5, scheme === 'insideZone'), up(ps * 0.5));
+        combo(b, neighbor, np.target, lbNear(b.pos.y + ps * 1.5, scheme === 'insideZone' || scheme === 'splitZone'), np.drive);
       } else {
         plans.set(b, { kind: 'climb', target: lbNear(b.pos.y + ps * 1.0), drive: up(ps * 0.4) });
       }
@@ -339,6 +343,19 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const lp = plans.get(last);
     if (lp && (lp.kind === 'drive' || lp.kind === 'reach')) lp.kind = 'cutoff';
     if (scheme === 'draw' || scheme === 'qbDraw') for (const p of plans.values()) p.kind = p.kind === 'combo' || p.kind === 'climb' ? p.kind : 'draw';
+  } else if (scheme === 'duo') {
+    // Duo uses vertical displacement and adjacent doubles to the inside
+    // backers. It has no zone-side reach step and no pulling guard.
+    for (const [b,d] of zoneOwnership(line,dl)) {
+      claimedDL.add(d);
+      plans.set(b,{kind:'drive',target:d,drive:up(0)});
+    }
+    for (const b of line.filter((b) => !plans.has(b))) {
+      const partner = line.filter((p) => plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y-b.pos.y)<2)
+        .sort((p,q) => Math.abs(plans.get(p)!.target!.pos.y-b.pos.y)-Math.abs(plans.get(q)!.target!.pos.y-b.pos.y))[0];
+      if (partner) combo(b,partner,plans.get(partner)!.target!,lbNear(b.pos.y,true),up(0));
+      else plans.set(b,{kind:'climb',target:lbNear(b.pos.y),drive:up(0)});
+    }
   } else {
     // Gap schemes.
     const guards = line.filter((a) => a.slot === 'LG' || a.slot === 'RG');
@@ -351,7 +368,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
 
     // Reserve precisely the intentionally unblocked trap/kick defender.
     // The old trap rule left every playside lineman for one trapper.
-    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
     const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
     // Account for immediate inside threats first. Outside-in assignment can
@@ -363,8 +380,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const r = rel(b);
       if (r >= -0.2) {
         const coverPull = b.slot === 'C' && bsg && pullers.has(bsg)
-          ? dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved && Math.abs(d.pos.y - bsg.pos.y) < 1.4)
-            .sort((p, q) => Math.abs(p.pos.y - b.pos.y) - Math.abs(q.pos.y - b.pos.y))[0]
+          ? dl.filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved && rel(d)<.2 && Math.abs(d.pos.y - bsg.pos.y) < 2.3)
+            .sort((p, q) => Math.abs(p.pos.y - bsg.pos.y) - Math.abs(q.pos.y - bsg.pos.y))[0]
           : undefined;
         const cand = dl
           .filter((d) => !claimedDL.has(d) && d !== trapReserved && d !== kickReserved)
@@ -390,7 +407,13 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         else gapPending.push(b);
       }
     }
-    for (const b of gapPending) {
+    // A widened odd/reduced front can put an on-man outside the down-block
+    // window. Account for that nearby body before assigning a spare double.
+    for(const [b,d] of zoneOwnership(gapPending,dl.filter((d)=>!claimedDL.has(d)&&d!==trapReserved&&d!==kickReserved),2.6)) {
+      claimedDL.add(d);
+      plans.set(b,{kind:rel(b)<0?'cutoff':'down',target:d,drive:up(rel(b)<0 ? ps*.8 : -ps)});
+    }
+    for (const b of gapPending.filter((b)=>!plans.has(b))) {
       const partners = gapLine.filter((p) => p !== b && plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y - b.pos.y) < 2.0)
         .sort((p, q) => Math.abs(plans.get(p)!.target!.pos.y - b.pos.y) - Math.abs(plans.get(q)!.target!.pos.y - b.pos.y));
       const partner = partners[0];
@@ -406,8 +429,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const fb = sim.slot('F');
     const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
     const pullPath = (b: Agent): Vec2[] => [
-      { x: sim.los - 1.6, y: b.pos.y },
-      { x: sim.los - 1.4, y: hole - ps * 0.5 },
+      { x: sim.los - 1.25, y: b.pos.y },
+      { x: sim.los - 1.15, y: hole - ps * 0.5 },
       { x: sim.los + 0.5, y: hole },
     ];
     for (const p of pullers) {
@@ -418,16 +441,21 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
-        { x: sim.los - (role === 'trap' ? 1.05 : 1.6), y: p.pos.y },
-        { x: sim.los - (role === 'trap' ? 0.85 : 1.25), y: target.pos.y - ps * 0.65 },
+        { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y },
+        { x: sim.los - (role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
       ] : pullPath(p);
       plans.set(p, { kind: 'pull', pullRole: role, target, drive: role === 'kick' ? norm({ x: 0.3, y: ps }) : role === 'trap' ? norm({ x: 0.4, y: ps }) : up(0), pullPath: path });
     }
     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {
-      plans.set(fb, { kind: 'lead', target: emlos, drive: norm({ x: 0.3, y: ps }) });
+      plans.set(fb, { kind: 'lead', pullRole:'kick', target: emlos, drive: norm({ x: 0.3, y: ps }) });
       claimedDL.add(emlos);
     }
+  }
+
+  if (slicer && sliceEnd) {
+    plans.set(slicer,{kind:'pull',target:sliceEnd,pullRole:'kick',drive:norm({x:.3,y:-ps}),
+      pullPath:[{x:sim.los-1.4,y:slicer.pos.y},{x:sim.los-1.3,y:sliceEnd.pos.y+ps*.65}]});
   }
 
   // Fullback lead (zone/iso) and receivers stalking.
@@ -459,6 +487,8 @@ export class RunBlocker implements Behavior {
   private pullIdx = 0;
   private retarget = 0;
   private homeY: number | null = null;
+  private firstStep: Vec2 | null = null;
+  private nextRuleRead = 0;
   constructor(public plan: RunBlockPlan) {}
 
   get target(): Agent | null {
@@ -469,9 +499,14 @@ export class RunBlocker implements Behavior {
     const plan = this.plan;
     const t = sim.t;
     this.homeY ??= a.pos.y;
+    this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
     // Draw blockers show pass first; everyone else fires out low.
     a.stance = plan.kind === 'draw' && t < 1.0 ? 'high' : 'low';
     if (t < a.mind.snapDelay) return stand();
+    if (!a.engagement && t >= this.nextRuleRead) {
+      this.nextRuleRead = t + a.mind.decisionInterval;
+      this.readRules(a,sim);
+    }
     if (plan.combination) readCombination(a, sim, plan.combination);
     if (a.engagement) {
       return stand();
@@ -479,6 +514,12 @@ export class RunBlocker implements Behavior {
     // Sell pass until just before the handoff.
     if (plan.kind === 'draw' && t < 1.0) {
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
+    }
+    if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
+      // Establish the first foot and pad angle before running through a
+      // target. Zone gains lateral ground; Duo stays vertical. These are
+      // technique landmarks, still subject to acceleration and collisions.
+      return track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0});
     }
 
     let target = plan.target;
@@ -489,9 +530,17 @@ export class RunBlocker implements Behavior {
       }
     }
     if (plan.kind === 'pull' && plan.pullPath && this.pullIdx < plan.pullPath.length) {
+      if(plan.pullRole==='lead') {
+        const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
+        if(kick) {
+          const s=sim.see(a,kick),side=playSideSign(sim,sim.offCall.run!);
+          plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,s.pos.x+.6),y:s.pos.y+side*1.1};
+          a.tags.add('wrap-log');
+        }
+      }
+      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) this.pullIdx++;
       const wp = plan.pullPath[this.pullIdx];
-      if (Math.hypot(wp.x - a.pos.x, wp.y - a.pos.y) < 0.65) this.pullIdx++;
-      else {
+      if (wp) {
         // Engage early if the target crosses the path.
         if (this.pullIdx > 0 && target && Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y) < 1.2) return this.attack(a, sim, target);
         // Clear the line before turning up; approach the corner under control
@@ -522,6 +571,17 @@ export class RunBlocker implements Behavior {
 
   private attack(a: Agent, sim: PlaySim, target: Agent): MoveCommand {
     const plan = this.plan;
+    const seen = sim.see(a,target);
+    if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
+      const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
+      // If the end crosses the puller's inside shoulder, getting back inside
+      // him would expose the runner. Fit his outside shoulder and wash inward.
+      if ((seen.pos.y-a.pos.y)*ps < -.25 && seen.pos.x < sim.los+.8) {
+        plan.drive = norm({x:.45,y:-ps});
+        a.tags.add('block-log');
+        sim.event('block_log',a,target,'kick target crossed inside shoulder');
+      }
+    }
     const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
@@ -531,19 +591,55 @@ export class RunBlocker implements Behavior {
       return stand();
     }
     // Aiming point: reach blocks work to the playside shoulder.
-    const seen = sim.see(a, target);
     let aim = seen.pos;
     if (plan.kind === 'combo' && plan.combination) {
       const partner = plan.combination.members.find((b) => b !== a)!;
       const side = Math.sign(a.pos.y - partner.pos.y) || 1;
       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
-    } else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
+    } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
+    else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
     else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
     else if (plan.kind === 'climb' || plan.kind === 'lead') {
       aim = a.mind.aim('block-fit', { x: seen.pos.x + seen.vel.x * 0.25, y: seen.pos.y + seen.vel.y * 0.25 }, sim.t);
     }
     aim = { x: aim.x, y: clamp(aim.y + a.mind.placementError * (1 - 0.5 * a.r('runBlock')), 0.5, FIELD_WIDTH - 0.5) };
     return runThrough(a, aim, { speed: 1 });
+  }
+
+  private readRules(a: Agent, sim: PlaySim): void {
+    const p = this.plan;
+    if (!isOL(a) || p.kind === 'pull' || p.kind === 'stalk') return;
+    // Adjacent unengaged owners can pass crossing shades. Both must benefit;
+    // an engaged defender or a live double is never reassigned remotely.
+    for (const b of sim.offense) {
+      if (b === a || !isOL(b) || b.engagement || !(b.behavior instanceof RunBlocker) || Math.abs(b.pos.y-a.pos.y)>2) continue;
+      const q = b.behavior.plan;
+      if (!p.target || !q.target || p.target === q.target || p.combination || q.combination || q.kind === 'pull') continue;
+      if (p.target.engagement || q.target.engagement) continue;
+      const d = sim.see(a,p.target), other = sim.see(a,q.target);
+      const mine = Math.abs(d.pos.y-a.pos.y), theirs = Math.abs(other.pos.y-b.pos.y);
+      if (Math.abs(other.pos.y-a.pos.y)+.35 < mine && Math.abs(d.pos.y-b.pos.y)+.35 < theirs) {
+        [p.target,q.target] = [q.target,p.target];
+        sim.event('block_exchange',a,b,'adjacent crossing threats');
+        return;
+      }
+    }
+    // Look–lean–climb: an uncovered lineman collects a penetrating body in
+    // his gap before leaving for the backer. Reserved kick targets are only
+    // collected after they have actually penetrated the surface.
+    if (p.kind !== 'climb' && p.kind !== 'combo') return;
+    const threat = sim.defense.filter((d) => !d.engagement && !d.isDown(sim.t)).find((d) => {
+      const s = sim.see(a,d);
+      return s.pos.x < sim.los-.25 && s.pos.x > a.pos.x-1 && Math.abs(s.pos.y-(this.homeY ?? a.pos.y)) < .9;
+    });
+    if (!threat || threat === p.target) return;
+    if (p.combination && !p.combination.released) {
+      p.combination.released = true;
+      for (const member of p.combination.members) if (member.behavior instanceof RunBlocker) member.behavior.plan.combination = undefined;
+    }
+    p.target = threat; p.kind = 'drive';
+    a.tags.add('block-collect');
+    sim.event('block_collect',a,threat,'penetration before climb');
   }
 
   private findWork(a: Agent, sim: PlaySim): Agent | null {
@@ -580,6 +676,7 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
     combo.secureSince = -1;
     return;
   }
+  if (e.helpers.some((h) => helperSupport(sim,e,h)<.25)) { combo.secureSince = -1; return; }
   const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
   if (!secure) {
     combo.secureSince = -1;

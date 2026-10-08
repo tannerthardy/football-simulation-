@@ -101,7 +101,7 @@ export interface PassConcept {
   fake?: string;
 }
 
-export type RunScheme = 'insideZone' | 'outsideZone' | 'power' | 'counter' | 'duo' | 'trap' | 'draw' | 'toss' | 'qbDraw';
+export type RunScheme = 'insideZone' | 'outsideZone' | 'wideZone' | 'splitZone' | 'power' | 'counter' | 'duo' | 'trap' | 'draw' | 'toss' | 'qbDraw';
 
 export interface RunConcept {
   id: string;
@@ -163,6 +163,8 @@ export interface Front {
   name: string;
   personnel: DefPersonnelId[];
   slots: Partial<Record<DefSlot, FrontAlignment>>;
+  /** Technique location alone does not determine the run responsibility. */
+  fits?: Partial<Record<DefSlot, { gap: Gap; side: 'S' | 'W'; technique?: 'attack' | 'control' | 'lag' }>>;
 }
 
 export type ZoneId =
@@ -240,6 +242,14 @@ export interface DefensivePlayCall {
    * look and rotate to the real coverage at the snap (absent = no disguise).
    */
   shown?: Coverage;
+  /** Explicit run policy; support availability still comes from coverage. */
+  runPolicy?: { edge: 'box' | 'spill'; linebacker: 'plug' | 'stack' };
+  /** Called end spike / linebacker scrape exchanges both responsibilities. */
+  gapExchange?: { edge: 'DE_S' | 'DE_W'; backer: 'LB_S' | 'LB_M' | 'LB_W' };
+  /** Show another compatible front, then move at a finite rate before snap. */
+  frontStem?: { from: Front; secondsBeforeSnap: number };
+  /** A pressure player walks toward his called gap, possibly still moving at snap. */
+  creep?: { slot: DefSlot; secondsBeforeSnap: number };
   label: string;
 }
 

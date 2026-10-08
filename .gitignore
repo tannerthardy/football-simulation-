@@ -6,3 +6,6 @@ data/raw/
 *.log
 !data/reviews/**/*.log
 .DS_Store
+
+# Python extraction/test bytecode
+__pycache__/

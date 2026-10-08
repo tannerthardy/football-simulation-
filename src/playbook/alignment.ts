@@ -339,7 +339,9 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const sign = fa.side === 'S' ? s : -s;
     const hasTE = fa.side === 'S' ? off.hasTE.S : off.hasTE.W;
     const y = off.ballY + sign * techniqueOffset(fa.tech, hasTE);
-    spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' }, gap: techniqueGap(fa.tech), gapSign: sign };
+    const fit = call.front.fits?.[slot];
+    spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
+      gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? (fit.side === 'S' ? s : -s) : sign };
   }
 
   // --- receivers by side for DB alignment ---

@@ -267,7 +267,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
   function load(i, start) {
     cur = i;
     const p = plays[i];
-    t = 0;
+    t = p.frames.t[0];
     playing = !!start;
     $('playbtn').textContent = playing ? 'Pause' : 'Play';
     const dur = p.frames.t[p.frames.t.length - 1];
@@ -295,12 +295,12 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     kv.push(`duration <b>${dur.toFixed(1)}s</b>`);
     $('kv').innerHTML = kv.join('');
     // Event marks on the timeline.
-    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), touchdown: css('--good'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent'), block_climb: css('--los'), squeeze: css('--accent') };
+    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), touchdown: css('--good'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent'), block_contact: css('--muted'), block_exchange: css('--los'), block_collect: css('--warn'), block_log: css('--accent'), block_climb: css('--los'), squeeze: css('--accent') };
     const shown = p.ev.filter((e) => colors[e[1]]);
-    $('marks').innerHTML = shown.map((e) => `<span class="mark" style="left:${(e[0] / dur) * 100}%;background:${colors[e[1]]}" title="${e[1]} ${e[0]}s"></span>`).join('');
+    $('marks').innerHTML = shown.map((e) => `<span class="mark" style="left:${((e[0]-p.frames.t[0]) / (dur-p.frames.t[0])) * 100}%;background:${colors[e[1]]}" title="${e[1]} ${e[0]}s"></span>`).join('');
     const labelled = shown.filter((e, k) => k === 0 || e[0] - shown[k - 1][0] > dur * 0.08).slice(0, 7);
     $('tlabels').innerHTML = labelled.map((e) => {
-      const pct = (e[0] / dur) * 100;
+      const pct = ((e[0]-p.frames.t[0]) / (dur-p.frames.t[0])) * 100;
       const shift = pct > 85 ? -100 : pct < 15 ? 0 : -50;
       return `<span style="left:${pct}%;transform:translateX(${shift}%)">${e[1].replace('_', ' ')}</span>`;
     }).join('');
@@ -316,10 +316,10 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     if (i >= 0 && i < plays.length) load(i, playing || auto);
   }
 
-  $('playbtn').onclick = () => { if (cur < 0) return; const p = plays[cur]; if (t >= p.frames.t[p.frames.t.length - 1]) t = 0; playing = !playing; $('playbtn').textContent = playing ? 'Pause' : 'Play'; };
+  $('playbtn').onclick = () => { if (cur < 0) return; const p = plays[cur]; if (t >= p.frames.t[p.frames.t.length - 1]) t = p.frames.t[0]; playing = !playing; $('playbtn').textContent = playing ? 'Pause' : 'Play'; };
   $('prev').onclick = () => step(-1);
   $('next').onclick = () => step(1);
-  $('back').onclick = () => { playing = false; $('playbtn').textContent = 'Play'; t = Math.max(0, t - 0.1); };
+  $('back').onclick = () => { playing = false; $('playbtn').textContent = 'Play'; t = Math.max(plays[cur].frames.t[0], t - 0.1); };
   $('fwd').onclick = () => { playing = false; $('playbtn').textContent = 'Play'; t += 0.1; };
   const speeds = [0.25, 0.5, 1, 2];
   $('speedbtn').onclick = () => { speed = speeds[(speeds.indexOf(speed) + 1) % speeds.length]; $('speedbtn').textContent = `${speed}×`; };
@@ -328,7 +328,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
   toggle('trails', () => showTrails, (v) => (showTrails = v));
   toggle('wide', () => wide, (v) => { wide = v; resize(); });
   toggle('auto', () => auto, (v) => (auto = v));
-  scrub.addEventListener('input', () => { if (cur < 0) return; const p = plays[cur]; playing = false; $('playbtn').textContent = 'Play'; t = (scrub.value / 1000) * p.frames.t[p.frames.t.length - 1]; });
+  scrub.addEventListener('input', () => { if (cur < 0) return; const p = plays[cur]; playing = false; $('playbtn').textContent = 'Play'; t = p.frames.t[0] + (scrub.value / 1000) * (p.frames.t[p.frames.t.length - 1]-p.frames.t[0]); });
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
     if (e.key === ' ') { e.preventDefault(); $('playbtn').click(); }
@@ -527,7 +527,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
       }
       if (holdUntil && now >= holdUntil) { holdUntil = 0; step(1); }
       t = Math.min(t, dur);
-      scrub.value = String(Math.round((t / dur) * 1000));
+      scrub.value = String(Math.round(((t-p.frames.t[0]) / (dur-p.frames.t[0])) * 1000));
     }
     draw();
     requestAnimationFrame(loop);

@@ -9,6 +9,11 @@ const OFF = 1.2;
 const GUN_RB = 5.2;
 
 export const FORMATIONS: Formation[] = [
+  { id: 'gun_wing_12', name: 'Gun Wing', personnel: '12', qb: 'gun', tags: ['pro','wing'], slots: {
+    X: { side:'L',split:'wide',depth:ON }, Z: { side:'R',split:'wide',depth:OFF },
+    Y: { side:'R',split:'inline',depth:ON }, H: { side:'R',split:2.8,depth:1.5 },
+    RB: { side:'L',split:1.6,depth:GUN_RB },
+  } },
   // ---------------------------------------------------------------- 11
   {
     id: 'gun_doubles_11', name: 'Gun Doubles', personnel: '11', qb: 'gun', tags: ['spread', '2x2'],

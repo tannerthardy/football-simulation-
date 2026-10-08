@@ -11,7 +11,8 @@
     "sim:play": "tsx scripts/sim-play.ts",
     "sim:game": "tsx scripts/sim-game.ts",
     "calibrate": "tsx scripts/calibrate.ts",
-    "replay": "tsx scripts/export-replay.ts"
+    "replay": "tsx scripts/export-replay.ts",
+    "test:data": "python3 -m unittest discover -s test -p 'test_*.py'"
   },
   "devDependencies": {
     "@types/node": "22.15.3",

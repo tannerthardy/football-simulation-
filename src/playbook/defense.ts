@@ -45,6 +45,7 @@ export const FRONTS: Front[] = [
   },
   {
     id: 'tite', name: '3-4 Tite', personnel: ['base34'],
+    fits: { DT_S: { gap: 'B', side: 'S', technique: 'control' }, DT_W: { gap: 'B', side: 'W', technique: 'control' }, NT: { gap: 'A', side: 'W', technique: 'lag' } },
     slots: {
       DE_S: { tech: '9', side: 'S', depth: DL },
       DT_S: { tech: '4i', side: 'S', depth: DL },

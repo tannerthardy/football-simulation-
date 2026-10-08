@@ -17,6 +17,7 @@ import type { PlaySim } from '../playsim.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track } from './common.js';
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
+import { executeRunFit } from '../run-fits.js';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -36,9 +37,11 @@ export function knowsPass(sim: PlaySim, a: Agent): boolean {
 function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   const c = sim.carrier;
   if (!c || c.team === a.team) return null;
-  const past = c.pos.x > sim.los;
+  const seen = sim.see(a,c);
+  const preserveEdge = a.runFit?.kind === 'edge' || a.runFit?.kind === 'force' || a.runFit?.kind === 'cutback';
+  const past = seen.pos.x > sim.los + (preserveEdge ? 2 : 0);
   if (past || (c === sim.qb && sim.scrambled)) {
-    if (sim.t >= a.readAt || c.pos.x > sim.los + 1) return chase(sim, a, c);
+    if (sim.t >= a.readAt || seen.pos.x > sim.los + 2) return chase(sim, a, c);
   }
   return null;
 }
@@ -142,33 +145,7 @@ export class Blitzer implements Behavior {
  * then fit on him with pursuit leverage. DBs force/alley from outside-in.
  */
 export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number): MoveCommand {
-  const c = sim.carrier;
-  if (a.engagement) return stand();
-  const gy = gapY(sim.offAlign, gap, gapSign);
-  if (!c || c.team === a.team) return goTo(a, { x: sim.los + 0.6, y: gy }, { speed: 0.9 });
-  // Before the handoff the threat is the mesh, not the quarterback: squeeze
-  // the gap and flow with the back; don't chase the QB into the backfield.
-  const back = sim.slot('RB');
-  const premesh = c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
-  const seen = sim.see(a, premesh ? back! : c);
-  const behindLOS = seen.pos.x < sim.los - 0.5;
-  const committed = !premesh && (!behindLOS || Math.abs(seen.pos.y - gy) < 2.2);
-  if (!committed && (a.pos.x - sim.los) < 6) {
-    // Squeeze the gap, shading toward the ball's flow by recognition. Once
-    // the ball has been handed off and declared away from his gap, he scrapes
-    // along the line toward it with inside-out leverage rather than waiting.
-    let flow = clamp(seen.vel.y * 0.5, -2.5, 2.5) * a.r('playRecognition');
-    if (!premesh) flow += clamp(seen.pos.y - gy, -3.5, 3.5) * (0.4 + 0.4 * a.r('pursuit'));
-    // Urgency changes the read step: an aggressive player overflows sooner;
-    // an overloaded player holds a stale fit until his next reassessment.
-    flow *= 0.8 + 0.4 * a.mind.urgency;
-    const tgt = a.mind.aim('run-fit', {
-      x: Math.max(sim.los + 0.15, seen.pos.x + 1.0) - 0.25 * (a.mind.urgency - 0.5),
-      y: gy + flow + a.mind.placementError,
-    }, sim.t);
-    return runThrough(a, tgt, { speed: 0.84 + 0.14 * a.mind.urgency });
-  }
-  return chase(sim, a, c, 2.5);
+  return executeRunFit(a, sim, gap, gapSign);
 }
 
 export class RunDefender implements Behavior {

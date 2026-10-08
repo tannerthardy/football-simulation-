@@ -13,7 +13,7 @@ import { stepBody, type Body, type MoveCommand } from '../physics/kinematics.js'
 import { bodyRadius } from '../physics/bodyshape.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type TeamSide } from './agent.js';
 import { CoverageScouting, QBMind } from './qbmind.js';
@@ -181,7 +181,8 @@ export class PlaySim {
     this.ball = { kind: 'held', carrier: qb };
     this.beginSegment(qb, 'snap');
     this.perception = new PerceptionBuffer(this.agents.length, this.dt);
-    this.perception.record(this.agents);
+    this.stageDefense(setup.manPrefs);
+    this.snapX = this.agents.map((a) => a.pos.x);
     this.qbMind = new QBMind(this, qb);
     if (setup.audibles) {
       this.offCall = this.qbMind.preSnapCheck(this.offCall, { hurry: this.hurry, down: setup.down ?? 1, distance: this.firstDownX - this.los });
@@ -203,6 +204,55 @@ export class PlaySim {
     for (const d of this.defense) d.recog = new Recognition(d, this, expected);
     assignBehaviors(this);
     this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
+  }
+
+  /** Called movement with finite travel and an observable history. Late
+   * arrivals keep their velocity into the snap instead of teleporting home. */
+  private stageDefense(prefs?: ManPreference): void {
+    const stem = this.defCall.frontStem, creep = this.defCall.creep;
+    if (!stem && !creep) { this.perception.record(this.agents); return; }
+    for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
+      if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
+    }
+    if (stem && !stem.from.personnel.includes(this.defCall.personnel)) throw new Error('Stem front requires compatible defensive personnel');
+    const targets = new Map<Agent,Vec2>();
+    if (stem) {
+      const shown = alignDefense({...this.defCall,front:stem.from},this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs);
+      for (const d of this.defense) {
+        targets.set(d,{...d.pos});
+        d.body.pos = {...shown.spots[d.slot as DefSlot]!.pos};
+        d.body.pos.y = clamp(d.pos.y+d.mind.alignmentError,.5,FIELD_WIDTH-.5);
+      }
+    }
+    const mug = creep ? this.slot(creep.slot) : undefined;
+    if (creep) {
+      if (!mug) throw new Error('Creep slot missing from personnel');
+      const spot = this.defAlign.spots[creep.slot]!;
+      if (spot.role.kind !== 'blitz') throw new Error('Creep requires a called blitzer');
+      const side = spot.role.side === 'S' ? this.offAlign.strongSign : -this.offAlign.strongSign;
+      targets.set(mug!,{x:this.los+.65,y:gapY(this.offAlign,spot.role.gap,side)});
+      mug!.body.pos.x = Math.max(mug!.pos.x,this.los+4);
+    }
+    const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0)/this.dt);
+    // Prime with the presentation that was actually shown, never the called
+    // destination. Observers with longer latency retain the old front.
+    this.perception.record(this.agents);
+    for (let i=ticks;i>0;i--) {
+      this.t = -i*this.dt;
+      for (const [d,target] of targets) {
+        const active = d === mug ? this.t>=-creep!.secondsBeforeSnap-1e-8 : !!stem && this.t>=-stem.secondsBeforeSnap-1e-8;
+        const dx=target.x-d.pos.x,dy=target.y-d.pos.y,length=Math.hypot(dx,dy);
+        const speed=active ? Math.min(d.profile.vmax*.45,length*3) : 0;
+        stepBody(d.body,{vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI},this.dt);
+      }
+      this.resolveCollisions(null);
+      for (const d of this.defense) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
+      this.perception.record(this.agents);
+      if (this.record && i%this.recordEvery===0) this.recordFrame();
+    }
+    this.t=0;
+    this.perception.record(this.agents);
+    if (this.record) this.recordFrame();
   }
 
   // ------------------------------------------------------------ queries
