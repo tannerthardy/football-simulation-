@@ -42,15 +42,15 @@ interface ThrowEval {
 function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
   switch (drop) {
     case 'quick':
-      return gun ? { x: los - 5.6, time: 0.55 } : { x: los - 3.9, time: 0.9 };
+      return gun ? { x: los - 5.6, time: 0.7 } : { x: los - 3.9, time: 1.0 };
     case 'gun3':
-      return gun ? { x: los - 6.0, time: 0.75 } : { x: los - 5.0, time: 1.1 };
+      return gun ? { x: los - 6.0, time: 0.95 } : { x: los - 5.0, time: 1.25 };
     case 'gun5':
-      return gun ? { x: los - 7.0, time: 1.1 } : { x: los - 7.0, time: 1.55 };
+      return gun ? { x: los - 7.0, time: 1.35 } : { x: los - 7.0, time: 1.7 };
     case 'five':
-      return { x: los - 7.0, time: gun ? 1.1 : 1.6 };
+      return { x: los - 7.0, time: gun ? 1.35 : 1.75 };
     case 'seven':
-      return { x: los - 8.8, time: gun ? 1.5 : 2.1 };
+      return { x: los - 8.8, time: gun ? 1.75 : 2.25 };
     case 'pa':
     case 'boot':
       return { x: los - 7.5, time: 1.9 };
@@ -139,8 +139,8 @@ export class QBPass implements Behavior {
     }
 
     const pressure = this.pressure(a, sim);
-    if (pressure.time < 0.9 && pressure.agent) {
-      if (!sim.stats.pressured && pressure.dist < 3) {
+    if (pressure.time < 0.7 && pressure.agent) {
+      if (!sim.stats.pressured && pressure.dist < 2.5) {
         sim.stats.pressured = true;
         sim.stats.hurriedBy = pressure.agent.player.id;
         sim.event('pressure', pressure.agent, a);
@@ -169,7 +169,9 @@ export class QBPass implements Behavior {
     }
 
     // ---- set: reading the field ----
-    const dwell = 0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness');
+    // Quick game is rhythm: one look per read. Dropback reads take longer.
+    const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
+    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm;
     const timeSet = t - this.setAt;
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
@@ -180,7 +182,7 @@ export class QBPass implements Behavior {
     sim.qbEyes = read ?? null;
     const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
     const thr = 0.6 - 0.12 * aggression - 0.32 * u;
-    const maxInt = 0.05 + 0.08 * aggression + 0.12 * u;
+    const maxInt = 0.025 + 0.05 * aggression + 0.08 * u;
 
     // Current read.
     if (read && this.ready(read, sim)) {
@@ -204,7 +206,8 @@ export class QBPass implements Behavior {
       const best = this.bestOption(a, sim, 1);
       if (best && best.P > 0.3 && best.intRisk < 0.18) return this.startThrow(a, sim, best);
       if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
-      if (this.outsidePocket(a, sim) && a.r('awareness') > 0.35 && sim.rng.chance(0.25)) return this.throwAway(a, sim);
+      // Veterans throw it away (or at a back's feet) rather than eat a sack.
+      if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.rng.chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
       return this.evade(a, sim, pressure.agent);
     }
 
@@ -213,8 +216,8 @@ export class QBPass implements Behavior {
       if (this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
       if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.rng.chance(0.06)) return this.throwAway(a, sim);
     }
-    // Dual threats leave early when coverage is tight and the lane is there.
-    if (timeSet > 1.2 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.rng.chance(0.04 + 0.08 * a.r('elusiveness'))) {
+    // Mobile QBs leave the pocket when coverage holds and the lane is there.
+    if (timeSet > 1.0 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.rng.chance(0.06 + 0.14 * a.r('elusiveness'))) {
       return this.scramble(a, sim);
     }
 
@@ -271,8 +274,8 @@ export class QBPass implements Behavior {
     const depth = pt.x - sim.los;
     const options: number[] = [T];
     const range = Math.hypot(pt.x - a.pos.x, pt.y - a.pos.y);
-    if (range > 9) options.push(T * 1.2);
-    if (range > 16) options.push(T * 1.4);
+    if (range > 12) options.push(T * 1.2);
+    if (range > 20) options.push(T * 1.4);
 
     let best: ThrowEval | null = null;
     for (const Topt of options) {
@@ -328,7 +331,8 @@ export class QBPass implements Behavior {
     const gain = depth + 1.5 + 3.5 * pOpen;
     const toSticks = sim.firstDownX - sim.los;
     const sticksBonus = depth >= toSticks ? 3 : 0;
-    const value = P * (gain + sticksBonus) - intRisk * 45;
+    // An incompletion costs a down (~3 yards of value); a pick costs ~45.
+    const value = P * (gain + sticksBonus + 2) - (1 - P) * 3 - intRisk * 45;
     return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth };
   }
 
@@ -344,7 +348,8 @@ export class QBPass implements Behavior {
 
   private missSigma(a: Agent, sim: PlaySim, dist: number, urgency: number): number {
     const acc = dist < 10 ? a.r('accShort') : dist < 20 ? lerp(a.r('accShort'), a.r('accMid'), (dist - 10) / 10) : lerp(a.r('accMid'), a.r('accDeep'), clamp((dist - 20) / 15, 0, 1));
-    let sigma = 0.2 + dist * (0.011 + 0.032 * (1 - acc));
+    // Error grows with distance, and faster beyond ~15 yards (deep balls).
+    let sigma = 0.25 + dist * (0.013 + 0.034 * (1 - acc)) + 0.0007 * Math.max(0, dist - 15) ** 2;
     sigma *= 1 + 0.7 * urgency * (1.1 - a.r('composure'));
     if (a.speed > 2.2) sigma *= 1.15 + 0.45 * (1 - a.r('throwOnRun'));
     sigma *= 1 + 0.25 * (1 - a.body.energy);
@@ -398,7 +403,7 @@ export class QBPass implements Behavior {
 
   private shouldScramble(a: Agent, sim: PlaySim, panic: boolean): boolean {
     const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
-    if (!panic && mobility < 0.35) return false;
+    if (!panic && mobility < 0.18) return false;
     // Is there a lane? Check points a few yards upfield.
     let open = 0;
     for (const dy of [-4, -2, 0, 2, 4]) {

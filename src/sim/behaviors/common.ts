@@ -111,29 +111,44 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
   }
   const p = path(clamp(ip.t - bias, 0, horizon));
   if (process.env.PDEBUG && Math.round(sim.t * 20) % 4 === 0) console.log(`[pursuit] t=${sim.t.toFixed(2)} ${a.slot} ip.t=${ip.t.toFixed(2)} ip=(${ip.point.x.toFixed(1)},${ip.point.y.toFixed(1)}) bias=${bias.toFixed(2)} aim=(${p.x.toFixed(1)},${p.y.toFixed(1)}) seen=(${seen.pos.x.toFixed(1)},${seen.pos.y.toFixed(1)}) v=(${seen.vel.x.toFixed(1)},${seen.vel.y.toFixed(1)})`);
-  // Inside-out leverage: shade toward the middle of the field.
-  const lev = 0.5 * a.r('pursuit');
-  return { x: p.x, y: p.y + Math.sign(sim.ballY - p.y || 1) * lev };
+  // Inside-out leverage: shade toward the middle of the field — more so
+  // near the sideline, which becomes an extra defender.
+  const lev = leverage(a, p.y);
+  return { x: p.x, y: p.y + lev };
 }
 
 const angleBias = new WeakMap<Agent, number>();
+
+/** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
+export function leverage(a: Agent, y: number): number {
+  const toSide = Math.min(y, FIELD_WIDTH - y);
+  const inside = y < FIELD_WIDTH / 2 ? 1 : -1;
+  const near = clamp(1 - toSide / 14, 0, 1);
+  return inside * (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
+}
 
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
   const dist = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
   // Open-field tackling: when the carrier is coming at you, break down,
   // mirror his lateral movement square-on and make him come to you.
   const tackle = a.r('tackling');
-  const breakDist = 3 + 3 * tackle;
+  const breakDist = 4 + 4 * tackle;
   if (dist < breakDist && dist > 0.5) {
     const seen = sim.see(a, target, (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime));
     const ux = (seen.pos.x - a.pos.x) / dist;
     const uy = (seen.pos.y - a.pos.y) / dist;
     const closing = -(seen.vel.x * ux + seen.vel.y * uy);
+    if (process.env.CDEBUG === a.slot) console.log(`[chase] t=${sim.t.toFixed(2)} ${a.slot} dist=${dist.toFixed(2)} closing=${closing.toFixed(2)} seen=(${(seen.pos.x - sim.los).toFixed(1)},${seen.pos.y.toFixed(1)}) v=(${seen.vel.x.toFixed(1)},${seen.vel.y.toFixed(1)}) me=(${(a.pos.x - sim.los).toFixed(1)},${a.pos.y.toFixed(1)}) myv=(${a.vel.x.toFixed(1)},${a.vel.y.toFixed(1)})`);
     if (closing > 1.5) {
-      // Lateral component of the carrier's velocity relative to the line between us.
-      const lat = seen.vel.x * -uy + seen.vel.y * ux;
-      const mirror = lat * (0.7 + 0.3 * tackle);
-      const approach = 1.5 + 2.5 * (1 - tackle) + Math.max(0, dist - 2) * 0.8;
+      // Lateral component of the carrier's velocity relative to the line
+      // between us, plus a correction toward the leverage point (inside him).
+      const px = -uy;
+      const py = ux;
+      const lat = seen.vel.x * px + seen.vel.y * py;
+      const levY = seen.pos.y + leverage(a, seen.pos.y) * 0.8;
+      const errLat = (seen.pos.x - a.pos.x) * px + (levY - a.pos.y) * py;
+      const mirror = lat * (0.7 + 0.3 * tackle) + errLat * (1.2 + 0.8 * a.r('pursuit'));
+      const approach = 1.2 + 2.0 * (1 - tackle) + Math.max(0, dist - 2.5) * 0.7;
       const vx = ux * approach + -uy * mirror;
       const vy = uy * approach + ux * mirror;
       return { vel: { x: vx, y: vy }, facing: Math.atan2(uy, ux), cutSkill: 0.8 + 0.4 * tackle };

@@ -500,8 +500,10 @@ function stepRunRep(sim: PlaySim, e: Engagement): void {
   // Push battle along the blocker's drive: positive = defender driven back.
   const { fd, fb } = forces(e, 1);
   const mass = d.profile.massKg + b.profile.massKg + e.helpers.reduce((s, h) => s + h.profile.massKg, 0);
-  let vDrive = (9 * (fb - fd)) / mass;
-  vDrive = clamp(vDrive, -2.2, 3.0);
+  // Run blocks: offensive linemen fire out on the snap count (small edge);
+  // displacement is gradual — most reps are a yard of movement either way.
+  let vDrive = (5 * (fb * 1.05 - fd)) / mass;
+  vDrive = clamp(vDrive, -1.6, 2.4);
   if (vDrive > 0.8) e.baseD -= dt * 0.35 * (vDrive - 0.8) * (1.2 - td.balance);
   if (vDrive < -0.8) e.baseB -= dt * 0.35 * (-vDrive - 0.8) * (1.2 - tb.balance);
   e.baseB += dt * (0.3 + 0.5 * tb.feet) * (1 - e.baseB);

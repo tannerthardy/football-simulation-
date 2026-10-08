@@ -26,8 +26,6 @@ export function tryTackles(sim: PlaySim): void {
   const c = sim.carrier;
   if (!c || sim.ball.kind !== 'held') return;
   const t = sim.t;
-  void t;
-  // Ball just caught/handed: allow a beat to secure (prevents same-tick tackles).
   for (const d of sim.opponents(c)) {
     if (d.isDown(t) || t < d.nextTackleAt) continue;
     if (sim.bond && sim.bond.tacklers.includes(d)) continue;
@@ -37,56 +35,76 @@ export function tryTackles(sim: PlaySim): void {
     const engaged = !!d.engagement;
     // A blocked defender can only reach out for the carrier if he's working off the block.
     if (engaged && d.engagement!.win < 0.4) continue;
-    // A defender who is square and under control has his full wrap range.
-    const square = !engaged && d.speed < 5.5 && Math.cos(d.body.facing - Math.atan2(c.pos.y - d.pos.y, c.pos.x - d.pos.x)) > 0.5;
-    const reach = c.profile.radius + d.profile.radius + d.profile.reach * (engaged ? 0.35 : square ? 0.8 : 0.6);
-    if (dd > reach) {
-      // Carrier sliding past a square defender: lunge (arm tackle).
-      const lunge = reach + 0.45;
-      if (square && dd <= lunge && t >= d.nextTackleAt) {
-        attempt(sim, d, c, dd, true);
-        if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
-        continue;
-      }
-      // Escaping carrier just out of reach: lay out for a diving / shoestring tackle.
-      const dive = c.profile.radius + d.profile.radius + d.profile.reach + 0.55;
-      const separating = ((c.vel.x - d.vel.x) * (c.pos.x - d.pos.x) + (c.vel.y - d.vel.y) * (c.pos.y - d.pos.y)) / (dd || 1);
-      // Last-ditch only: the carrier is pulling away and the defender is trailing.
-      const behind = ((d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y) < 0;
-      if (!engaged && dd <= dive && separating > 1.2 && behind && !sim.bond) {
-        d.nextTackleAt = sim.t + 1;
-        d.downUntil = sim.t + 0.7;
-        const p = 0.12 + 0.3 * d.r('tackling') - 0.2 * c.r('elusiveness') - 0.15 * c.r('balance');
-        if (sim.rng.chance(Math.max(0.03, p))) {
-          if (sim.firstContactX === null) sim.firstContactX = c.pos.x;
-          // Tripped up: the carrier stumbles forward a step and goes down.
-          const fall = Math.min(1.5, c.speed * 0.2);
-          const sp = c.speed || 1;
-          const spot = { x: c.pos.x + (c.vel.x / sp) * fall, y: c.pos.y + (c.vel.y / sp) * fall };
-          sim.bond = { carrier: c, tacklers: [d], start: sim.t, progressX: sim.attackDir(c.team) > 0 ? Math.max(c.pos.x, spot.x) : Math.min(c.pos.x, spot.x), down: true };
-          sim.event('hit', d, c, 'diving tackle');
-          c.downUntil = sim.t + 1;
-          sim.finishCarry('tackle', { x: sim.bond.progressX, y: spot.y });
-          return;
-        } else {
-          d.missedTackles++;
-          sim.stats.missedTackles++;
-          sim.event('missed_tackle', d, c, 'dive');
-        }
-      }
+    const body = c.profile.radius + d.profile.radius;
+    const arms = body + d.profile.reach * (engaged ? 0.4 : 1.0);
+    // Beyond full extension a defender can still lunge (low-quality arm tackle)
+    // — once the line has cleared, not in the scrum at the snap.
+    const range = arms + (engaged || t < 0.6 ? 0 : 0.45);
+    if (dd <= range && !occluded(sim, d, c)) {
+      // Contact quality: 1 = body to body (form tackle), 0 = fingertips / lunge.
+      const q = clamp(1 - (dd - body - 0.25) / Math.max(0.2, arms - body - 0.25), 0, 1);
+      // Closing (carrier still coming): a good tackler waits for a better shot.
+      const closing = -((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
+      const patience = 0.35 + 0.4 * d.r('tackling');
+      if (q < patience && closing > 1.0 && !sim.bond) continue;
+      attempt(sim, d, c, q, engaged);
+      if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
     }
-    attempt(sim, d, c, dd, engaged);
-    if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
+    // Escaping carrier just out of reach: lay out for a diving / shoestring tackle.
+    const dive = range + 0.3;
+    const separating = ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
+    const behind = (d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y < 0;
+    if (!engaged && dd <= dive && separating > 1.2 && behind && !sim.bond) {
+      d.nextTackleAt = t + 1;
+      d.downUntil = t + 0.7;
+      const p = 0.12 + 0.3 * d.r('tackling') - 0.2 * c.r('elusiveness') - 0.15 * c.r('balance');
+      if (sim.rng.chance(Math.max(0.03, p))) {
+        if (sim.firstContactX === null) sim.firstContactX = c.pos.x;
+        // Tripped up: the carrier stumbles forward a step and goes down.
+        const fall = Math.min(1.5, c.speed * 0.2);
+        const sp = c.speed || 1;
+        const spot = { x: c.pos.x + (c.vel.x / sp) * fall, y: c.pos.y + (c.vel.y / sp) * fall };
+        sim.bond = { carrier: c, tacklers: [d], start: t, progressX: sim.attackDir(c.team) > 0 ? Math.max(c.pos.x, spot.x) : Math.min(c.pos.x, spot.x), down: true };
+        sim.event('hit', d, c, 'diving tackle');
+        c.downUntil = t + 1;
+        sim.finishCarry('tackle', { x: sim.bond.progressX, y: spot.y });
+        return;
+      }
+      d.missedTackles++;
+      sim.stats.missedTackles++;
+      sim.event('missed_tackle', d, c, 'dive');
+    }
   }
 }
 
-function attempt(sim: PlaySim, d: Agent, c: Agent, dd: number, engaged: boolean): void {
+/** Is another body between the tackler and the carrier? */
+function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
+  const sx = c.pos.x - d.pos.x;
+  const sy = c.pos.y - d.pos.y;
+  const l2 = sx * sx + sy * sy;
+  if (l2 < 0.36) return false;
+  for (const o of sim.agents) {
+    if (o === d || o === c) continue;
+    const t = ((o.pos.x - d.pos.x) * sx + (o.pos.y - d.pos.y) * sy) / l2;
+    if (t <= 0.15 || t >= 0.85) continue;
+    const px = d.pos.x + sx * t - o.pos.x;
+    const py = d.pos.y + sy * t - o.pos.y;
+    // Bodies plus shoulders/arms block a corridor.
+    if (px * px + py * py < (o.profile.radius + 0.25) ** 2) return true;
+  }
+  return false;
+}
+
+function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean): void {
   const t = sim.t;
   const rng = sim.rng;
   d.nextTackleAt = t + 0.5;
-  const nx = (c.pos.x - d.pos.x) / (dd || 1);
-  const ny = (c.pos.y - d.pos.y) / (dd || 1);
+  const dx = c.pos.x - d.pos.x;
+  const dy = c.pos.y - d.pos.y;
+  const dd = Math.hypot(dx, dy);
+  const nx = dx / (dd || 1);
+  const ny = dy / (dd || 1);
   const cs = c.speed;
   const hx = cs > 0.5 ? c.vel.x / cs : 0;
   const hy = cs > 0.5 ? c.vel.y / cs : 0;
@@ -104,13 +122,17 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, dd: number, engaged: boolean)
   const alreadyWrapped = !!sim.bond;
 
   if (!alreadyWrapped) {
-    // Whiff: a juke or the defender overrunning the angle.
-    const overrun = clamp((d.speed - 6) / 4, 0, 1) * (cosA < 0.3 ? 1 : 0.3);
-    const pMiss = clamp(0.07 + 0.32 * (E - T) * (0.5 + 0.5 * openField) + 0.08 * overrun + (engaged ? 0.3 : 0) + (cs > 6 ? 0.03 : 0), 0.02, 0.6);
+    // Whiff: a juke, a reach at full extension, or overrunning the angle.
+    const overrun = clamp((d.speed - 6.5) / 3.5, 0, 1) * (cosA < 0.3 ? 1 : 0.4);
+    // A QB in the pocket who sees the rusher coming can duck, spin or step up.
+    const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
+    const seesIt = pocketQB && Math.cos(c.body.facing - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
+    const escape = pocketQB ? (seesIt ? 0.12 + 0.18 * c.r('elusiveness') + 0.08 * c.r('pocketPresence') : 0.03) : 0;
+    const pMiss = clamp(0.04 + 0.28 * (E - T) * (0.5 + 0.5 * openField) + 0.11 * (1 - q) + 0.1 * overrun + (engaged ? 0.2 : 0) + (cs > 7 ? 0.03 : 0) + escape, 0.02, 0.6);
     if (rng.chance(pMiss)) {
       d.missedTackles++;
       sim.stats.missedTackles++;
-      d.downUntil = t + rng.range(0.25, 0.7);
+      d.downUntil = t + rng.range(0.1, 0.25) + 0.45 * (1 - q) * rng.next();
       c.body.vel = { x: c.vel.x * 0.9, y: c.vel.y * 0.9 };
       sim.event('missed_tackle', d, c);
       return;
@@ -126,16 +148,16 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, dd: number, engaged: boolean)
   }
 
   if (!alreadyWrapped) {
-    const armTackle = dd > c.profile.radius + d.profile.radius + 0.35 || engaged;
+    const armTackle = q < 0.5 || engaged;
     const pBreak = clamp(
-      0.05 + 0.32 * (P - T) + 0.18 * ((mc - md) / mc) + (armTackle ? 0.16 : 0) + (cosA < -0.3 ? 0.05 : 0) + 0.08 * (B - 0.5) - (closing > 4 ? 0.06 : 0),
+      0.03 + 0.28 * (P - T) + 0.14 * ((mc - md) / mc) + (armTackle ? 0.07 : 0) + 0.05 * (1 - q) + (cosA < -0.3 ? 0.04 : 0) + 0.08 * (B - 0.5) - (closing > 4 ? 0.06 : 0),
       0.02,
-      0.55,
+      0.5,
     );
     if (rng.chance(pBreak)) {
       sim.stats.brokenTackles++;
-      d.downUntil = t + rng.range(0.4, 0.9);
-      c.body.vel = { x: c.vel.x * 0.72, y: c.vel.y * 0.72 };
+      d.downUntil = t + rng.range(0.3, 0.8);
+      c.body.vel = { x: c.vel.x * 0.75, y: c.vel.y * 0.75 };
       c.slowUntil = t + 0.3;
       c.slowFactor = 0.8;
       sim.event('broken_tackle', c, d);
@@ -203,8 +225,10 @@ export function updateBond(sim: PlaySim, bond: TackleBond, cmds: MoveCommand[]):
     const ox = d.pos.x - c.pos.x;
     const oy = d.pos.y - c.pos.y;
     const ol = Math.hypot(ox, oy) || 1;
+    // The tackler closes onto the carrier at a physical rate (no snapping).
     const sep = (c.profile.radius + d.profile.radius) * 0.8;
-    d.body.pos = { x: c.pos.x + (ox / ol) * sep, y: c.pos.y + (oy / ol) * sep };
+    const cur = Math.max(sep, ol - 4.5 * dt);
+    d.body.pos = { x: c.pos.x + (ox / ol) * cur, y: c.pos.y + (oy / ol) * cur };
     d.body.vel = { x: vx, y: vy };
   }
 

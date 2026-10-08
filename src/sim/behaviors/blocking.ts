@@ -237,10 +237,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const cand = dl
         .filter((d) => !claimedDL.has(d))
         .filter((d) => {
+          // Covered: a defender head-up or shaded to my playside.
           const off = (d.pos.y - b.pos.y) * ps;
-          return off > -0.75 && off < 1.5;
+          return off > -0.35 && off < 1.5;
         })
-        .sort((p, q) => rel(q) - rel(p));
+        .sort((p, q) => rel(p) - rel(q));
       const d = cand[0];
       if (d) {
         claimedDL.add(d);

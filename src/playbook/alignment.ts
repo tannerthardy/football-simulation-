@@ -297,17 +297,17 @@ export function zoneLandmark(zone: ZoneId, off: OffenseAlignment): Vec2 {
     case 'flat_w':
       return { x: los + 4, y: sideY(-s, 9) };
     case 'curl_flat_s':
-      return { x: los + 7, y: off.ballY + s * Math.min(12, Math.abs(sideY(s, 12) - off.ballY)) };
+      return { x: los + 8.5, y: off.ballY + s * Math.min(12, Math.abs(sideY(s, 12) - off.ballY)) };
     case 'curl_flat_w':
-      return { x: los + 7, y: off.ballY - s * Math.min(12, Math.abs(sideY(-s, 12) - off.ballY)) };
+      return { x: los + 8.5, y: off.ballY - s * Math.min(12, Math.abs(sideY(-s, 12) - off.ballY)) };
     case 'hook_s':
-      return { x: los + 8, y: off.ballY + s * 5 };
+      return { x: los + 10, y: off.ballY + s * 5 };
     case 'hook_w':
-      return { x: los + 8, y: off.ballY - s * 5 };
+      return { x: los + 10, y: off.ballY - s * 5 };
     case 'hook_mid':
-      return { x: los + 8.5, y: off.ballY };
+      return { x: los + 10.5, y: off.ballY };
     case 'robber':
-      return { x: los + 9, y: off.ballY };
+      return { x: los + 11, y: off.ballY };
   }
 }
 

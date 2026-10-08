@@ -212,7 +212,7 @@ export function onThrow(sim: PlaySim): void {
 
 export function onBallCaught(sim: PlaySim, r: Agent): void {
   r.behavior = new BallCarrier({}, r);
-  for (const a of sim.offense) if (a !== r) a.behavior = new DownfieldBlocker();
+  for (const a of sim.offense) if (a !== r) a.behavior = process.env.NOBLOCK ? { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) } : new DownfieldBlocker();
   for (const d of sim.defense) d.behavior = new Pursuit();
 }
 

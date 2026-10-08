@@ -95,7 +95,11 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
   const high = o.z > chest ? (o.z - chest) / Math.max(0.2, R.profile.maxCatchHeight - chest) : 0;
   const low = o.z < 0.5 ? (0.5 - o.z) / 0.4 : 0;
   const trackPen = airTime > 1.4 ? (1 - R.r('ballTracking')) * 0.25 : 0;
-  const diff = 0.5 * stretch + 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) + trackPen;
+  // Over-the-shoulder catches at speed (ball arriving from behind the receiver).
+  const rs = R.speed;
+  const fromBehind = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
+  const shoulder = fromBehind > 0.3 && rs > 6.5 ? 0.12 + 0.12 * (1 - R.r('ballTracking')) : 0;
+  const diff = 0.5 * stretch + 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) + trackPen + shoulder;
   const hands = R.r('hands');
   let pCatch = clamp(0.985 - diff * (1.3 - hands) - 0.06 * (1 - hands), 0.2, 0.99);
   if (ball.deflected) pCatch *= 0.3;
@@ -112,7 +116,8 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     if (d.isDown(sim.t) || d.engagement) continue;
     const dd = Math.hypot(d.pos.x - R.pos.x, d.pos.y - R.pos.y);
     const near = opps.find((p) => p.a === d);
-    const range = 1.35;
+    // Downfield, a trailing defender in phase can still play through the hands.
+    const range = airTime > 1.3 ? 2.2 : 1.35;
     if (dd > range && !near) continue;
     const prox = near ? 1 - near.dh / (d.profile.reach + 0.3) * 0.5 : 1 - dd / range;
     const q = clamp(prox, 0, 1) * (facingBall(d, bv) ? 1 : 0.45);
@@ -125,7 +130,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     const D = bestD;
     const heightEdge = clamp(1 + (D.profile.maxCatchHeight - R.profile.maxCatchHeight) * (high > 0 ? 0.9 : 0.25), 0.5, 1.6);
     const pbu = bestQ * (0.2 + 0.45 * D.r('ballSkills')) * (1.15 - 0.55 * R.r('contestedCatch')) * heightEdge;
-    const pInt = pbu * (0.1 + 0.3 * D.r('ballSkills')) * (facingBall(D, bv) ? 1 : 0.2);
+    const pInt = pbu * (0.06 + 0.22 * D.r('ballSkills')) * (facingBall(D, bv) ? 1 : 0.2);
     const roll = rng.next();
     if (roll < pInt) {
       if (inBounds(D)) {
@@ -198,7 +203,7 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
   }
   const stretch = o.dh / (D.profile.reach + 0.3);
   const high = o.z > D.profile.heightYd * 1.1 ? 0.15 : 0;
-  let pInt = sees ? clamp(0.06 + 0.42 * D.r('ballSkills') + 0.08 * D.r('hands') - 0.28 * stretch - high, 0.02, 0.55) : 0;
+  let pInt = sees ? clamp(0.03 + 0.3 * D.r('ballSkills') + 0.06 * D.r('hands') - 0.28 * stretch - high, 0.02, 0.45) : 0;
   if (ball.deflected) pInt *= 0.35;
   const pDefl = sees ? clamp(0.35 + 0.3 * D.r('ballSkills') - 0.2 * stretch, 0.15, 0.75) : 0.12;
   const roll = rng.next();

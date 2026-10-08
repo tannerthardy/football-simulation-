@@ -131,7 +131,8 @@ export class BallCarrier implements Behavior {
         }
         let minMargin = Infinity;
         for (const th of threats) {
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile }, q, a.profile.radius + th.d.profile.radius + 0.4) + th.extra;
+          // Respect the tackler's arms: his reach plus a lunge.
+          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
           const m = tt - t;
           if (m < minMargin) minMargin = m;
         }
