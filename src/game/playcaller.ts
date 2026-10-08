@@ -363,7 +363,9 @@ export class DefensiveCoordinator {
     const frontStem=alternatives.length && motionRng.chance(coach.disguise*.35) ? {
       from:motionRng.pick(alternatives),secondsBeforeSnap:motionRng.range(.4,1.6),
     } : undefined;
-    const pressureSlots=pressure ? Object.keys(pressure.blitzers) as DefSlot[] : [];
+    // Only a blitzer who is on the field can creep (a forced zero pressure can
+    // name slots this personnel group doesn't have).
+    const pressureSlots=pressure ? (Object.keys(pressure.blitzers) as DefSlot[]).filter((slot)=>personnelHas(personnel,slot)) : [];
     const creep=pressureSlots.length && motionRng.chance(coach.disguise*.5) ? {
       slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
     } : undefined;

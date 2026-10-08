@@ -48,10 +48,76 @@ export class ProtectionCoordinator {
     return d.pos.x < sim.los + 1.5 && d.vel.x < -0.5;
   }
 
+  /**
+   * Declared protection at the snap: linemen take rushers in left-to-right
+   * order (no crossing paths), minimizing total lateral distance — tackles on
+   * the edges, guards on the 5-techniques, the center on the nose against an
+   * odd front. A rusher the line can't take is left for a back in protection
+   * if one is close enough; otherwise for whoever is nearest later. Without
+   * an order, linemen each grabbed the nearest man and doubled the nose while
+   * an edge ran free.
+   */
+  private declare(sim: PlaySim, rushers: Agent[]): void {
+    const ol = this.protectors.filter((b) => isOL(b)).sort((p, q) => this.homeY.get(p)! - this.homeY.get(q)!);
+    const rs = [...rushers].sort((p, q) => p.pos.y - q.pos.y);
+    const backs = this.protectors.filter((b) => !isOL(b));
+    const skipCost = (r: Agent) => {
+      const near = backs.length ? Math.min(...backs.map((b) => Math.abs(b.pos.y - r.pos.y))) : Infinity;
+      return Number.isFinite(near) ? 2 + 0.6 * near : 14;
+    };
+    const n = ol.length;
+    const m = rs.length;
+    const INF = 1e9;
+    const dp = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(INF));
+    const how = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+    dp[0][0] = 0;
+    for (let i = 0; i <= n; i++) {
+      for (let j = 0; j <= m; j++) {
+        if (i === 0 && j === 0) continue;
+        if (i > 0 && dp[i - 1][j] < dp[i][j]) {
+          dp[i][j] = dp[i - 1][j];
+          how[i][j] = 1; // lineman unassigned (helps)
+        }
+        if (j > 0 && dp[i][j - 1] + skipCost(rs[j - 1]) < dp[i][j]) {
+          dp[i][j] = dp[i][j - 1] + skipCost(rs[j - 1]);
+          how[i][j] = 2; // rusher left to a back
+        }
+        if (i > 0 && j > 0) {
+          const b = ol[i - 1];
+          const r = rs[j - 1];
+          const dy = Math.abs(r.pos.y - this.homeY.get(b)!);
+          const zone = b.slot === 'LT' || b.slot === 'RT' ? 5.5 : 2.8;
+          const c = dp[i - 1][j - 1] + dy + (dy > zone ? 6 : 0);
+          if (c < dp[i][j]) {
+            dp[i][j] = c;
+            how[i][j] = 3;
+          }
+        }
+      }
+    }
+    let i = n;
+    let j = m;
+    while (i > 0 || j > 0) {
+      const h = how[i][j];
+      if (h === 3) {
+        this.sticky.set(ol[i - 1], rs[j - 1]);
+        i--;
+        j--;
+      } else if (h === 2) j--;
+      else i--;
+    }
+  }
+
+  private declared = false;
+
   update(sim: PlaySim): void {
     if (this.lastT === sim.t) return;
     this.lastT = sim.t;
     const rushers = sim.defense.filter((d) => !d.isDown(sim.t) && this.isRusher(sim, d));
+    if (!this.declared && rushers.length) {
+      this.declared = true;
+      this.declare(sim, rushers);
+    }
     const free = this.protectors.filter((b) => !b.engagement && !b.isDown(sim.t) && b.behavior instanceof PassProtector && !(b.behavior as PassProtector).released);
     this.assigned.clear();
     const taken = new Set<Agent>();
@@ -181,6 +247,23 @@ export class PassProtector implements Behavior {
     let along = contact * 0.85;
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
+    // An edge rusher runs an arc, not the straight line to the QB: a tackle
+    // who sets on that line sits on the chord, a couple of yards inside him,
+    // all the way back. Kick to cut the arc off instead — meet him at the
+    // earliest point on his projected path you can reach first, on his inside
+    // shoulder — and let the hands decide the rep.
+    let ride = false;
+    if (edgeRusher && isOL(a)) {
+      const meet = cutOffPoint(a, r, qb.pos, contact);
+      if (meet) set = { x: meet.x, y: meet.y + out * overset };
+      else if (r.pos.x < a.pos.x + 1.0 && Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y) < 4) {
+        // Beaten to the corner: run him past the QB — chase his inside hip
+        // and get hands on him from a losing angle.
+        const toQBr = norm(sub(qb.pos, r.pos));
+        set = { x: r.pos.x + r.vel.x * 0.2 + toQBr.x * contact * 0.5, y: r.pos.y + r.vel.y * 0.2 + toQBr.y * contact * 0.5 };
+        ride = true;
+      }
+    }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
     // A tackle late to the spot can still get a punch on a speed rusher's near
@@ -190,8 +273,30 @@ export class PassProtector implements Behavior {
     if (dd < contact + 0.15 + reachOut && sim.engage(a, r, 'pass')) return stand();
     const facing = Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x);
     const quick = 0.85 + 0.3 * traits(a).feet;
+    if (ride) return track(a, set, r.vel, { cutSkill: quick, gain: 3 });
     return track(a, set, { x: r.vel.x * 0.7, y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
   }
+}
+
+/**
+ * Where a blocker meets a rusher on his current path: the earliest point
+ * r.pos + r.vel·τ (shaded to the rusher's QB side) the blocker can reach by
+ * τ, within the next second. Kick-slide speed limits the blocker (he moves
+ * facing the rusher, not sprinting). Null when the rusher can't be cut off.
+ */
+function cutOffPoint(b: Agent, r: Agent, qb: Vec2, contact: number): Vec2 | null {
+  const vmax = b.profile.vmax * 0.75;
+  for (let tau = 0.05; tau <= 1.0; tau += 0.05) {
+    const p = { x: r.pos.x + r.vel.x * tau, y: r.pos.y + r.vel.y * tau };
+    const toQB = norm(sub(qb, p));
+    const inside = { x: p.x + toQB.x * contact * 0.6, y: p.y + toQB.y * contact * 0.6 };
+    const d = Math.max(0, Math.hypot(inside.x - b.pos.x, inside.y - b.pos.y) - 0.2);
+    const speed = Math.hypot(b.vel.x, b.vel.y);
+    // Time to cover d from the current speed under the sprint model (rough).
+    const tReach = d / Math.max(0.5, Math.min(vmax, speed + (vmax - speed) * 0.5)) + 0.05;
+    if (tReach <= tau) return inside;
+  }
+  return null;
 }
 
 /**
