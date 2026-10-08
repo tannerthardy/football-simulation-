@@ -701,6 +701,14 @@ gates above define completion more reliably than an arbitrary date.
 | 17 | Motion, screens and RPOs on validated responsibility contracts | playbook/agents/rules | Tactical legal/assignment cases, then conditional outcomes |
 | 18 | Situation/sequence-aware coaches, special teams and season entry gate | game/league | Held-out full-game evaluation before adding long-term systems |
 
+Progress: rows 1–4 are implemented. Scenario tests in `test/game-rules.test.ts`
+cover dead-ball fouls, holding acceptance and enforcement (including scores),
+carrier segments for fumble-after-catch credit, conversions on scoring and
+turnover plays, the two-minute warning, and overtime tries and periods;
+`test/determinism.test.ts` covers named random streams and roster-scoped ids.
+From row 9, sprint endurance now caps the integrator and feeds reach
+estimates.
+
 Each row may require several small PRs. Keep a change focused on one hypothesis
 with evidence; do not combine every model adjustment into one unreviewable
 rewrite. Build the dashboard and descriptive replay overlays alongside this

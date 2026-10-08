@@ -93,7 +93,7 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
   let desired = dv0;
   if (dmag > 1e-6) {
     const heading = angleOf(dv0);
-    const cap = p.vmax * fat * directionalSpeedFactor(p, angleDiff(body.facing, heading)) * effort;
+    const cap = p.vmax * fat * enduranceFactor(body) * directionalSpeedFactor(p, angleDiff(body.facing, heading)) * effort;
     if (dmag > cap) desired = { x: (dv0.x / dmag) * cap, y: (dv0.y / dmag) * cap };
   }
 

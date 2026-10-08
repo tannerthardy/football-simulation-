@@ -1,18 +1,30 @@
 /**
  * Calibration harness: simulate many games and compare league output with
  * NFL baselines.
- *   npx tsx scripts/calibrate.ts [games] [seed]
+ *   npx tsx scripts/calibrate.ts [games] [seed] [leagues]
+ *
+ * Games are spread over `leagues` independently generated 8-team leagues
+ * (default one per 8 games): outcomes such as sack rate depend strongly on
+ * the rosters, so a single league is not a reliable sample.
  */
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, type Team } from '../src/league/team.js';
 import { simulateGame } from '../src/game/game.js';
 
-const [gamesStr = '20', seedStr = '7'] = process.argv.slice(2);
+const [gamesStr = '20', seedStr = '7', leaguesStr] = process.argv.slice(2);
 const games = Number(gamesStr);
+const leagues = Math.max(1, Math.min(games, Number(leaguesStr ?? Math.ceil(games / 8))));
 const rng = new Rng(Number(seedStr));
-const teams: Team[] = [];
 const names = ['Ironmen', 'Comets', 'Wolves', 'Rangers', 'Pilots', 'Barons', 'Hornets', 'Mariners'];
-for (let i = 0; i < names.length; i++) teams.push(generateTeam(rng, names[i], names[i].slice(0, 3).toUpperCase(), { strength: rng.range(0.35, 0.75) }));
+const makeLeague = (n: number): Team[] => {
+  const lr = rng.fork(`league-${n}`);
+  return names.map((name) => generateTeam(lr, name, name.slice(0, 3).toUpperCase(), { strength: lr.range(0.35, 0.75) }));
+};
+let teams = makeLeague(0);
+/** Per-league outcome rates, to show how much rosters move them. */
+const perLeague: Array<{ points: number; teamGames: number; passYds: number; passAtt: number; sacks: number; dropbacks: number; rushYds: number; rushAtt: number }> = [];
+const fresh = () => ({ points: 0, teamGames: 0, passYds: 0, passAtt: 0, sacks: 0, dropbacks: 0, rushYds: 0, rushAtt: 0 });
+perLeague.push(fresh());
 
 const acc = {
   teamGames: 0, points: 0, plays: 0, passAtt: 0, comp: 0, passYds: 0, sacks: 0, dropbacks: 0, ints: 0, passTD: 0,
@@ -23,13 +35,22 @@ const acc = {
 };
 const COVER_FAMILY: Record<string, string> = { cover0: '0 man', cover1: '1 man', cover3: '1 zone', cover2: '2 zone', tampa2: '2 zone', cover4: '2 zone', cover6: '2 zone', cover2man: '2 man' };
 const t0 = performance.now();
+const perLeagueGames = Math.ceil(games / leagues);
 for (let g = 0; g < games; g++) {
+  if (g > 0 && g % perLeagueGames === 0) {
+    teams = makeLeague(perLeague.length);
+    perLeague.push(fresh());
+  }
+  const lg = perLeague[perLeague.length - 1];
+  const before = { passYds: acc.passYds, passAtt: acc.passAtt, sacks: acc.sacks, dropbacks: acc.dropbacks, rushYds: acc.rushYds, rushAtt: acc.rushAtt };
   const i = rng.int(0, teams.length - 1);
   let j = rng.int(0, teams.length - 2);
   if (j >= i) j++;
   const res = simulateGame(teams[i], teams[j], { seed: rng.nextU32() });
   acc.teamGames += 2;
   acc.points += res.score.home + res.score.away;
+  lg.teamGames += 2;
+  lg.points += res.score.home + res.score.away;
   if (res.score.home === res.score.away) acc.ties++;
   for (const t of [res.home, res.away]) {
     const tl = res.box.team(t.abbr);
@@ -49,6 +70,8 @@ for (let g = 0; g < games; g++) {
   }
   for (const p of res.log) {
     if (p.kind !== 'run' && p.kind !== 'pass') continue;
+    // Official metrics: plays wiped out by an accepted foul don't count.
+    if (p.nullified) continue;
     const st = p.stats!;
     acc.plays++;
     acc.missed += st.missedTackles;
@@ -105,6 +128,7 @@ for (let g = 0; g < games; g++) {
       }
     }
   }
+  for (const k of ['passYds', 'passAtt', 'sacks', 'dropbacks', 'rushYds', 'rushAtt'] as const) lg[k] += acc[k] - before[k];
 }
 const ms = performance.now() - t0;
 const tg = acc.teamGames;
@@ -147,4 +171,12 @@ console.log('metric'.padEnd(42) + 'sim'.padStart(9) + '   target');
 for (const [name, v, lo, hi, unit] of rows) {
   const ok = v >= lo && v <= hi ? 'OK ' : v < lo ? 'LOW' : 'HIGH';
   console.log(`${name.padEnd(42)}${v.toFixed(2).padStart(9)}${unit.padEnd(2)} ${lo}–${hi}  ${ok}`);
+}
+if (perLeague.length > 1) {
+  const spread = (f: (l: (typeof perLeague)[number]) => number) => {
+    const v = perLeague.map(f);
+    return `${Math.min(...v).toFixed(2)}–${Math.max(...v).toFixed(2)}`;
+  };
+  console.log(`\nRange across ${perLeague.length} leagues (${perLeagueGames} games each):`);
+  console.log(`  points/team-game ${spread((l) => l.points / l.teamGames)}, YPA ${spread((l) => l.passYds / l.passAtt)}, sack % ${spread((l) => (100 * l.sacks) / l.dropbacks)}, YPC ${spread((l) => l.rushYds / l.rushAtt)}`);
 }

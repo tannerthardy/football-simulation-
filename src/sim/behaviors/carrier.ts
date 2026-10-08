@@ -63,7 +63,7 @@ export class BallCarrier implements Behavior {
 
     // QB slide: past the sticks (or any gain) with a hit coming.
     if (this.opts.qb && sim.isPass && (a.pos.x - sim.los) * dir > 1) {
-      const threat = Math.min(...sim.opponents(a).map((d) => (d.isDown(sim.t) ? 9 : timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile }, a.pos, 1.0))));
+      const threat = Math.min(...sim.opponents(a).map((d) => (d.isDown(sim.t) ? 9 : timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 1.0))));
       if (threat < 0.35 && !sim.bond) {
         sim.event('slide', a);
         sim.finishCarry('slide', a.pos);
@@ -134,7 +134,7 @@ export class BallCarrier implements Behavior {
         let minMargin = Infinity;
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
+          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
           const m = tt - t;
           if (m < minMargin) minMargin = m;
         }

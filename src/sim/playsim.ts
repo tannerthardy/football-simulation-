@@ -21,7 +21,7 @@ import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { tryTackles, updateBond, type TackleBond } from './tackle.js';
-import type { BallState, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats } from './types.js';
+import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats } from './types.js';
 
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
@@ -94,6 +94,8 @@ export class PlaySim {
   throwAt = -1;
   catchAt = -1;
   catchX = 0;
+  /** Who held the ball, in order (stat attribution across fumbles and returns). */
+  segments: CarrierSegment[] = [];
   /** Has the ball crossed the LOS in an offensive player's hands. */
   crossedLOS = false;
   /** Did the offense intend to pass and the QB tucked and ran. */
@@ -158,6 +160,7 @@ export class PlaySim {
     const qb = this.bySlot.get('QB');
     if (!qb) throw new Error('No QB in offensive personnel');
     this.ball = { kind: 'held', carrier: qb };
+    this.beginSegment(qb, 'snap');
     this.perception = new PerceptionBuffer(this.agents.length, this.dt);
     this.qbMind = new QBMind(this, qb);
     if (setup.audibles) {
@@ -220,6 +223,8 @@ export class PlaySim {
   handoff(from: Agent, to: Agent): void {
     if (this.ball.kind !== 'held' || this.ball.carrier !== from) return;
     this.ball = { kind: 'held', carrier: to };
+    this.endSegment(from.pos.x, 'handoff');
+    this.beginSegment(to, 'handoff');
     this.handoffAt = this.t;
     this.stats.rusher = to.player.id;
     this.event('handoff', from, to);
@@ -242,6 +247,7 @@ export class PlaySim {
       throwaway,
     };
     this.throwAt = this.t;
+    this.endSegment(qb.pos.x, 'pass');
     this.computeBallPath();
     this.stats.attempted = true;
     this.stats.passer = qb.player.id;
@@ -259,6 +265,7 @@ export class PlaySim {
   possess(a: Agent, how: 'catch' | 'interception' | 'recovery'): void {
     const prevTeam = this.ball.kind === 'loose' ? this.ball.lastTeam : this.ball.kind === 'air' ? this.ball.thrower.team : a.team;
     this.ball = { kind: 'held', carrier: a };
+    this.beginSegment(a, how);
     if (how === 'catch') {
       this.catchAt = this.t;
       this.catchX = a.pos.x;
@@ -292,7 +299,10 @@ export class PlaySim {
       drag: DRAG_TUMBLE,
     };
     this.ball = { kind: 'loose', flight, since: this.t, lastTeam: carrier.team, fumbledBy: carrier };
-    this.stats.fumbledBy = carrier.player.id;
+    // Statistical spot of the fumble: forward progress if he was wrapped up.
+    this.endSegment(this.bond ? this.bond.progressX : carrier.pos.x, 'fumble');
+    // Offensive fumbles are the box-score stat; a returner's fumble is only an event.
+    if (carrier.team === 'O') this.stats.fumbledBy = carrier.player.id;
     this.bond = null;
     this.event('fumble', carrier, hitter);
     onLooseBall(this);
@@ -328,7 +338,20 @@ export class PlaySim {
     this.phase = 'dead';
     this.outcome = outcome;
     this.endSpot = { x: spot.x, y: clamp(spot.y, 0, FIELD_WIDTH) };
+    if (this.ball.kind === 'held') this.endSegment(spot.x, 'dead');
     if (this.ball.kind !== 'dead') this.ball = { kind: 'dead' };
+  }
+
+  private beginSegment(a: Agent, how: CarrierSegment['how']): void {
+    this.segments.push({ team: a.team, carrier: a.player.id, how, startX: a.pos.x, endX: a.pos.x, end: 'live' });
+  }
+
+  private endSegment(x: number, end: CarrierSegment['end']): void {
+    const g = this.segments[this.segments.length - 1];
+    if (g && g.end === 'live') {
+      g.endX = x;
+      g.end = end;
+    }
   }
 
   // ------------------------------------------------------------ loop
@@ -539,19 +562,31 @@ export class PlaySim {
 
   // ------------------------------------------------------------ result
 
-  private buildResult(): PlayResult {
+  /** Resolve the play as it stands (called by `run`; exposed for scenario tests). */
+  buildResult(): PlayResult {
     const spot = this.endSpot ?? { x: this.los, y: this.ballY };
     const turnover = this.possession === 'D';
     let yards = turnover ? 0 : spot.x - this.los;
     if (this.outcome === 'incomplete') yards = 0;
     if (this.scoreKind === 'TD' && !turnover) yards = OPP_GOAL_X - this.los;
     const s = this.stats;
-    if (s.completed && this.catchAt >= 0 && !turnover) {
-      s.yac = spot.x - this.catchX;
-      if (this.scoreKind === 'TD') s.yac = OPP_GOAL_X - this.catchX;
+    const segs = this.segments;
+    const offTD = this.scoreKind === 'TD' && !turnover;
+    // The offense's last possession: on a lost fumble, its rush or reception
+    // is credited to the fumble spot.
+    let lastO: CarrierSegment | undefined;
+    for (const g of segs) if (g.team === 'O') lastO = g;
+    let offenseYards = yards;
+    if (turnover) offenseYards = lastO?.end === 'fumble' ? lastO.endX - this.los : 0;
+    if (s.completed && this.catchAt >= 0) {
+      const caught = segs.find((g) => g.how === 'catch');
+      const catchX = caught?.startX ?? this.catchX;
+      const endX = offTD ? OPP_GOAL_X : turnover ? (caught?.endX ?? catchX) : spot.x;
+      s.yac = endX - catchX;
     }
-    if (s.interceptedBy || (s.fumbleLost && turnover)) {
-      s.returnYards = this.scoreKind === 'TD' ? this.catchX - OWN_GOAL_X : this.catchX - spot.x;
+    const takeaway = turnover ? segs.find((g) => g.team === 'D') : undefined;
+    if (takeaway) {
+      s.returnYards = this.scoreKind === 'TD' ? takeaway.startX - OWN_GOAL_X : takeaway.startX - spot.x;
     }
     if (!this.isPass || this.scrambled) {
       if (this.firstContactX !== null) s.yardsBeforeContact = this.firstContactX - this.los;
@@ -564,6 +599,8 @@ export class PlaySim {
       endX: spot.x,
       endY: spot.y,
       yards: round2(yards),
+      offenseYards: round2(offenseYards),
+      segments: segs,
       score: this.scoreKind ? { team: this.scoreKind === 'safety' ? 'D' : this.possession, kind: this.scoreKind } : null,
       duration: this.t,
       clockStops,

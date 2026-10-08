@@ -32,7 +32,7 @@ Requires Node 22.
 
 ```sh
 npm install
-npm test                 # physics + alignment unit tests
+npm test                 # physics, alignment, game-rule scenarios
 npm run sim:game -- 7    # simulate a game (seed 7) and print the box score
 npm run sim:game -- 7 --pbp   # ...with play-by-play
 npm run calibrate -- 20  # 20 games vs. NFL baseline metrics
@@ -70,6 +70,7 @@ viewer         replay viewer template
 docs           design and roadmap
 ```
 
-Gameplay is reproducible for a given seed and fixed execution path. Stable
-subsystem streams and roster-scoped player identity are planned improvements;
-the review documents the current fork-order and process-global ID limitations.
+Gameplay is reproducible for a given seed. Each subsystem draws from its own
+named random stream, so adding or reordering one doesn't shift another, and
+player ids are roster-scoped (`IRN-QB1`), so the same team generates the same
+ids in any process.

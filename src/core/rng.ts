@@ -4,6 +4,8 @@
  * so any game or play can be replayed exactly.
  */
 export class Rng {
+  /** Seed this stream was built from; named child streams derive from it. */
+  readonly key: number;
   private s0: number;
   private s1: number;
   private s2: number;
@@ -12,6 +14,7 @@ export class Rng {
 
   constructor(seed: number | string = 0x9e3779b9) {
     let h = typeof seed === 'string' ? hashString(seed) : seed >>> 0;
+    this.key = h;
     const sm = () => {
       h = (h + 0x9e3779b9) >>> 0;
       let z = h;
@@ -106,10 +109,26 @@ export class Rng {
     return items;
   }
 
-  /** Derive an independent child stream (stable for a given label). */
+  /**
+   * Named child stream. It depends only on this stream's seed and the label,
+   * so adding, removing or reordering other subsystems (or drawing from this
+   * stream) never changes it. Use distinct labels for distinct consumers.
+   */
   fork(label: string | number): Rng {
-    return new Rng((this.nextU32() ^ hashString(String(label))) >>> 0);
+    return new Rng(mix32(this.key, hashString(String(label))));
   }
+
+  /** Child stream seeded from this stream's next draw (sequence-dependent). */
+  split(): Rng {
+    return new Rng(this.nextU32());
+  }
+}
+
+function mix32(a: number, b: number): number {
+  let z = (a ^ Math.imul(b, 0x9e3779b1)) >>> 0;
+  z = Math.imul(z ^ (z >>> 16), 0x7feb352d) >>> 0;
+  z = Math.imul(z ^ (z >>> 15), 0x846ca68b) >>> 0;
+  return (z ^ (z >>> 16)) >>> 0;
 }
 
 function rotl(x: number, k: number): number {

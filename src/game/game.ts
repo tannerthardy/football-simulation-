@@ -7,7 +7,7 @@
  * attacking +x, LOS at x = 10 + yardline).
  */
 import { Rng } from '../core/rng.js';
-import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y, describeYardline } from '../core/field.js';
+import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y, OWN_GOAL_X, describeYardline } from '../core/field.js';
 import { clamp } from '../core/vec.js';
 import { r01, type Player } from '../players/types.js';
 import { pickDefense, pickOffense, specialist, type Team } from '../league/team.js';
@@ -37,6 +37,14 @@ export interface PlayLog {
   kind: 'run' | 'pass' | 'punt' | 'fg' | 'xp' | 'kickoff' | 'kneel' | 'penalty' | 'two';
   /** Raw play stats for scrimmage plays (analysis/calibration). */
   stats?: PlayResult['stats'];
+  /**
+   * An accepted foul wiped the play out. `stats` then describe what physically
+   * happened; nothing from the play enters the box score, and official
+   * calibration excludes it.
+   */
+  nullified?: boolean;
+  /** Foul during the play and its resolution. */
+  foul?: { kind: string; team: string; yards: number; accepted: boolean };
   outcome?: PlayResult['outcome'];
   /** Points scored by the offense on this play (6 for a TD), negative for defensive scores. */
   firstDown?: boolean;
@@ -66,9 +74,30 @@ export interface GameOptions {
   seed?: number;
   /** Record replay frames for every scrimmage play. */
   record?: boolean;
+  rules?: Partial<GameRules>;
+  /** Scenario-test seams; leave unset for normal games. */
+  hooks?: GameHooks;
 }
 
-interface State {
+/**
+ * League rules that vary by game type. Overtime follows the NFL rules adopted
+ * for 2025: both teams are guaranteed a possession; then sudden death.
+ */
+export interface GameRules {
+  /** Postseason: 15-minute overtime periods until there is a winner. Otherwise one 10-minute period and ties stand. */
+  postseason: boolean;
+}
+
+export interface GameHooks {
+  /** Scripted result for a snap instead of simulating it (`undefined` simulates). */
+  playResult?: (sim: PlaySim, kind: 'scrimmage' | 'two-point') => PlayResult | undefined;
+  /** Force a pre-snap foul, or `null` for none, instead of rolling for one. */
+  preSnapFoul?: () => 'false_start' | 'offside' | null | undefined;
+  /** Force the try after a touchdown. */
+  tryChoice?: (scorer: Side) => 'kick' | 'two' | undefined;
+}
+
+export interface GameState {
   quarter: number;
   clock: number;
   possession: Side;
@@ -82,7 +111,9 @@ interface State {
   openingReceiver: Side;
   driveStartYard: number;
   inRedZone: boolean;
+  /** Overtime: possessions begun so far, and the team that received the overtime kickoff. */
   otPossessions: number;
+  otFirst: Side;
   over: boolean;
 }
 
@@ -90,8 +121,16 @@ export function simulateGame(home: Team, away: Team, opts: GameOptions = {}): Ga
   return new Game(home, away, opts).play();
 }
 
-class Game {
+export class Game {
   private readonly rng: Rng;
+  /** Independent named streams so one subsystem's draws never shift another's. */
+  private readonly coin: Rng;
+  private readonly flags: Rng;
+  private readonly snaps: Rng;
+  private readonly kicks: Rng;
+  private readonly tempo: Rng;
+  private readonly calls: Rng;
+  private readonly rules: GameRules;
   private readonly teams: Record<Side, Team>;
   private readonly oc: Record<Side, OffensiveCoordinator>;
   private readonly dc: Record<Side, DefensiveCoordinator>;
@@ -99,7 +138,7 @@ class Game {
   private readonly log: PlayLog[] = [];
   private readonly energy = new Map<string, number>();
   private readonly quarterScores: Array<{ home: number; away: number }> = [];
-  private s: State;
+  private s: GameState;
   private playIndex = 0;
 
   constructor(
@@ -108,14 +147,21 @@ class Game {
     private readonly opts: GameOptions,
   ) {
     this.rng = new Rng(opts.seed ?? 1);
+    this.rules = { postseason: false, ...opts.rules };
+    this.coin = this.rng.fork('coin');
+    this.flags = this.rng.fork('flags');
+    this.snaps = this.rng.fork('snaps');
+    this.kicks = this.rng.fork('kicks');
+    this.tempo = this.rng.fork('tempo');
+    this.calls = this.rng.fork('calls');
     this.teams = { home, away };
     this.oc = { home: new OffensiveCoordinator(home, this.rng.fork('oc-h')), away: new OffensiveCoordinator(away, this.rng.fork('oc-a')) };
     this.dc = { home: new DefensiveCoordinator(home, this.rng.fork('dc-h')), away: new DefensiveCoordinator(away, this.rng.fork('dc-a')) };
-    const receiver: Side = this.rng.chance(0.5) ? 'home' : 'away';
+    const receiver: Side = this.coin.chance(0.5) ? 'home' : 'away';
     this.s = {
       quarter: 1, clock: 900, possession: receiver, yardline: 25, down: 1, distance: 10, ballY: CENTER_Y,
       score: { home: 0, away: 0 }, timeouts: { home: 3, away: 3 }, twoMinWarned: false, openingReceiver: receiver,
-      driveStartYard: 25, inRedZone: false, otPossessions: 0, over: false,
+      driveStartYard: 25, inRedZone: false, otPossessions: 0, otFirst: receiver, over: false,
     };
     for (const t of [home, away]) for (const p of t.roster) this.energy.set(p.id, 1);
   }
@@ -128,12 +174,34 @@ class Game {
   }
 
   play(): GameResult {
+    this.kickoffToStart();
+    while (!this.s.over) this.step();
+    return this.result();
+  }
+
+  /** Opening kickoff. */
+  kickoffToStart(): void {
     this.doKickoff(other(this.s.openingReceiver));
-    while (!this.s.over) {
-      this.scrimmageOrSpecial();
-      this.checkPeriodEnd();
-    }
+  }
+
+  /** One snap (scrimmage play, kick or kneel) and any period transition after it. */
+  step(): void {
+    this.scrimmageOrSpecial();
+    this.checkPeriodEnd();
+  }
+
+  result(): GameResult {
     return { home: this.teams.home, away: this.teams.away, score: this.s.score, box: this.box, log: this.log, quarterScores: this.quarterScores };
+  }
+
+  /** Current state (scenario tests and tools). */
+  get state(): Readonly<GameState> {
+    return this.s;
+  }
+
+  /** Overwrite parts of the state to set up a scenario. */
+  setState(patch: Partial<GameState>): void {
+    Object.assign(this.s, patch);
   }
 
   // ---------------------------------------------------------------- flow
@@ -152,21 +220,31 @@ class Game {
       this.doKickoff(s.openingReceiver);
       return;
     }
-    if (s.quarter < 4 || (s.quarter === 4 && s.score.home === s.score.away)) {
-      if (s.quarter === 4) {
-        // Overtime: 10 minutes, both teams get a possession.
-        s.quarter = 5;
-        s.clock = 600;
-        s.timeouts = { home: 2, away: 2 };
-        s.twoMinWarned = false;
-        s.otPossessions = 0;
-        const recv: Side = this.rng.chance(0.5) ? 'home' : 'away';
-        this.doKickoff(other(recv));
-        return;
-      }
+    if (s.quarter < 4) {
       s.quarter++;
       s.clock = 900;
       s.twoMinWarned = false;
+      return;
+    }
+    if (s.quarter === 4 && s.score.home === s.score.away) {
+      // Overtime: both teams are guaranteed a possession.
+      s.quarter = 5;
+      s.clock = this.rules.postseason ? 900 : 600;
+      s.timeouts = this.rules.postseason ? { home: 3, away: 3 } : { home: 2, away: 2 };
+      s.twoMinWarned = false;
+      s.otPossessions = 0;
+      const recv: Side = this.coin.chance(0.5) ? 'home' : 'away';
+      s.otFirst = recv;
+      this.recoverAll(180);
+      this.doKickoff(other(recv));
+      return;
+    }
+    if (s.quarter >= 5 && this.rules.postseason) {
+      // Postseason: play on into another period; possession carries over.
+      s.quarter++;
+      s.clock = 900;
+      s.twoMinWarned = false;
+      if ((s.quarter - 5) % 2 === 0) s.timeouts = { home: 3, away: 3 };
       return;
     }
     s.over = true;
@@ -181,10 +259,10 @@ class Game {
     s.ballY = ballY;
     s.driveStartYard = s.yardline;
     s.inRedZone = false;
-    if (s.quarter === 5) this.otCheckPossession();
+    if (s.quarter >= 5) this.otCheckPossession();
   }
 
-  /** Overtime: game ends once both teams have possessed and the score isn't tied (or on a score after that). */
+  /** Overtime: once both teams have had the ball, a change of possession with the score not tied ends it. */
   private otCheckPossession(): void {
     const s = this.s;
     s.otPossessions++;
@@ -193,21 +271,54 @@ class Game {
 
   private addScore(side: Side, pts: number): void {
     this.s.score[side] += pts;
-    if (this.s.quarter === 5 && this.s.otPossessions >= 2 && this.s.score.home !== this.s.score.away) this.s.over = true;
+  }
+
+  /**
+   * Overtime: after `scorer` scores, is the game over? Called when a
+   * touchdown is scored (`beforeTry`: a winning touchdown needs no try) and
+   * again once the scoring sequence, including any try, is complete.
+   */
+  private otDecided(scorer: Side, beforeTry = false): boolean {
+    const s = this.s;
+    if (s.quarter < 5 || s.over) return s.over;
+    const lead = s.score[scorer] - s.score[other(scorer)];
+    const n = s.otPossessions;
+    // n = 1: the first team has the ball; a score by the kicking team ends it.
+    // n = 2: the second team's guaranteed possession must answer.
+    // n > 2: sudden death.
+    if (n >= 3) s.over = lead !== 0;
+    else if (n === 2) s.over = beforeTry ? lead > 0 : lead !== 0;
+    else s.over = scorer !== s.otFirst;
+    return s.over;
   }
 
   // ---------------------------------------------------------------- clock
 
-  private runClock(seconds: number): void {
+  /**
+   * Run `seconds` off the game clock. A live play keeps all of its elapsed
+   * time and the two-minute warning stops the clock after it; between-play
+   * runoff stops at the warning. Returns true when the warning was taken.
+   */
+  private runClock(seconds: number, live = false): boolean {
     const s = this.s;
     const before = s.clock;
     s.clock = Math.max(0, s.clock - seconds);
-    // Two-minute warning.
-    if ((s.quarter === 2 || s.quarter === 4) && !s.twoMinWarned && before > 120 && s.clock <= 120) {
-      s.clock = 120;
+    let warned = false;
+    if (this.warningPeriod() && !s.twoMinWarned && before > 120 && s.clock <= 120) {
+      if (!live) s.clock = 120;
       s.twoMinWarned = true;
+      warned = true;
     }
     this.box.team(this.off.abbr).timeOfPossession += before - s.clock;
+    return warned;
+  }
+
+  /** Periods that end with a two-minute warning. */
+  private warningPeriod(): boolean {
+    const q = this.s.quarter;
+    if (q === 2 || q === 4) return true;
+    if (q >= 5) return this.rules.postseason ? (q - 5) % 2 === 1 : true;
+    return false;
   }
 
   private lateHalf(): boolean {
@@ -234,9 +345,9 @@ class Game {
   private betweenPlays(clockRunning: boolean, outOfBounds: boolean): number {
     if (!clockRunning) return 0;
     if (outOfBounds) return this.lateHalf() ? 0 : 7;
-    if (this.hurry()) return this.rng.normal(16, 3);
-    if (this.milking()) return this.rng.normal(39, 1.5);
-    return this.rng.normal(34, 3);
+    if (this.hurry()) return this.tempo.normal(16, 3);
+    if (this.milking()) return this.tempo.normal(39, 1.5);
+    return this.tempo.normal(34, 3);
   }
 
   // ---------------------------------------------------------------- fatigue
@@ -269,6 +380,11 @@ class Game {
 
   private scrimmageOrSpecial(): void {
     const s = this.s;
+    // A red-zone trip is a possession with a snap inside the opponent's 20.
+    if (s.yardline >= 80 && !s.inRedZone) {
+      s.inRedZone = true;
+      this.box.team(this.off.abbr).redZoneTrips++;
+    }
     const sit = this.situation();
     // End-of-game kneel: leading, clock can expire.
     const diff = sit.scoreDiff;
@@ -281,7 +397,7 @@ class Game {
       if (decision === 'fg') return this.doFieldGoal();
     }
     // Last-second field goal at the end of a half.
-    if ((s.quarter === 2 || s.quarter === 4) && s.clock <= 6 && 100 - s.yardline + 17 <= fieldGoalRange(specialist(this.off, 'K')) + 2 && (s.quarter === 2 || (diff >= -3 && diff <= 0))) {
+    if ((s.quarter === 2 || s.quarter >= 4) && s.clock <= 6 && 100 - s.yardline + 17 <= fieldGoalRange(specialist(this.off, 'K')) + 2 && (s.quarter === 2 || (diff >= -3 && diff <= 0))) {
       return this.doFieldGoal();
     }
     this.scrimmage(sit);
@@ -317,11 +433,10 @@ class Game {
   private kneel(): void {
     const s = this.s;
     this.log.push(this.entry('kneel', 'QB kneels', -1, 'Victory', ''));
-    s.yardline = Math.max(1, s.yardline - 1);
-    s.down++;
-    s.distance += 1;
-    this.runClock(Math.min(s.clock, 40));
-    if (s.down > 4) this.changePossession(100 - s.yardline);
+    this.countDown(this.off, s.down, false);
+    const warned = this.runClock(2, true);
+    if (!warned) this.runClock(Math.min(s.clock, 38));
+    this.moveChains(-1);
   }
 
   private entry(kind: PlayLog['kind'], text: string, yards: number, call = '', defense = ''): PlayLog {
@@ -345,7 +460,6 @@ class Game {
 
   private scrimmage(sit: Situation): void {
     const s = this.s;
-    const rng = this.rng;
     const offSide = s.possession;
     const defSide = other(offSide);
     const offTeam = this.off;
@@ -355,24 +469,10 @@ class Game {
     const { call: defCall, prefs } = this.dc[defSide].call(sit, offCall.formation.personnel, offTeam, offPlayers);
     const defPlayers = pickDefense(defTeam, defCall.personnel, { energy: this.energy });
 
-    // Pre-snap penalties: false start (crowd, discipline), offside.
-    const offDisc = avgRating(Object.values(offPlayers), 'discipline');
-    const defDisc = avgRating(Object.values(defPlayers) as Player[], 'discipline');
-    if (rng.chance(0.012 * (1.4 - offDisc)) && s.yardline > 1) {
-      const yds = Math.min(5, Math.floor(s.yardline / 2));
-      this.log.push(this.entry('penalty', `False start, ${offTeam.abbr}, ${yds} yards`, -yds, offCall.label));
-      this.box.team(offTeam.abbr).penalties++;
-      this.box.team(offTeam.abbr).penaltyYds += yds;
-      s.yardline -= yds;
-      s.distance += yds;
-      return;
-    }
-    if (rng.chance(0.009 * (1.4 - defDisc))) {
-      const yds = Math.min(5, Math.floor((100 - s.yardline) / 2));
-      this.log.push(this.entry('penalty', `Offside, ${defTeam.abbr}, ${yds} yards`, yds, offCall.label));
-      this.box.team(defTeam.abbr).penalties++;
-      this.box.team(defTeam.abbr).penaltyYds += yds;
-      this.advance(yds, false);
+    // Pre-snap (dead-ball) fouls: false start (crowd, discipline), offside.
+    const foul = this.preSnapFoul(avgRating(Object.values(offPlayers), 'discipline'), avgRating(Object.values(defPlayers) as Player[], 'discipline'));
+    if (foul) {
+      this.enforceDeadBall(foul, offCall.label);
       return;
     }
 
@@ -386,7 +486,7 @@ class Game {
       los,
       ballY: s.ballY,
       firstDownX,
-      seed: rng.nextU32(),
+      seed: this.snaps.nextU32(),
       record: this.opts.record,
       energy: this.energy,
       manPrefs: prefs,
@@ -396,19 +496,21 @@ class Game {
     });
     // The QB may have checked out of the call at the line.
     const ranCall = sim.offCall;
-    const r = sim.run();
+    const r = this.opts.hooks?.playResult?.(sim, 'scrimmage') ?? sim.run();
     // Fatigue: write back energy of players who were on the field.
     for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
     for (const a of sim.agents) this.box.line(a.player, a.team === 'O' ? offTeam.abbr : defTeam.abbr).snaps++;
 
-    const startYard = s.yardline;
     const startDown = s.down;
     const startDist = s.distance;
+    const lineToGain = s.yardline + s.distance;
+    const offTD = r.score?.kind === 'TD' && r.score.team === 'O';
+    const converted = offTD || (!r.turnover && !r.score && r.outcome !== 'incomplete' && Math.round(r.yards * 10) / 10 >= startDist - 1e-6);
     const text = describe(sim, r, offTeam, defTeam);
-    const logEntry = this.entry(r.kind, text, r.yards, ranCall.label, defCall.label);
+    const logEntry = this.entry(r.kind, text, r.turnover ? r.offenseYards : r.yards, ranCall.label, defCall.label);
     logEntry.stats = r.stats;
     logEntry.outcome = r.outcome;
-    logEntry.firstDown = !r.turnover && r.outcome !== 'incomplete' && r.endX - los >= startDist - 1e-6;
+    logEntry.firstDown = converted;
     if (this.opts.record && r.frames) {
       logEntry.replay = {
         frames: r.frames,
@@ -420,82 +522,178 @@ class Game {
       };
     }
 
-    this.recordStats(sim, r, offTeam, defTeam, startDown, startDist);
-
-    // Penalty (holding) on the play: accepted unless the play was worse.
-    if (r.penalty && r.penalty.kind === 'holding' && !r.turnover && !r.score) {
-      if (r.yards > -8) {
-        const yds = Math.min(10, Math.floor(s.yardline / 2));
-        logEntry.text += ` — PENALTY: holding on ${nameOf(offTeam, r.penalty.playerId)}, ${yds} yards (accepted)`;
+    // A foul during the play is resolved before anything becomes official.
+    const hold = this.holdingDecision(r, los, startDown, startDist);
+    if (hold) {
+      const who = nameOf(offTeam, hold.playerId);
+      logEntry.foul = { kind: 'holding', team: offTeam.abbr, yards: hold.yards, accepted: hold.accepted };
+      if (!hold.accepted) {
+        logEntry.text += ` (holding on ${who} declined)`;
+      } else {
+        logEntry.nullified = true;
+        logEntry.firstDown = false;
+        logEntry.yards = -hold.yards;
+        logEntry.text += ` — PENALTY: holding on ${who}, ${fmtYds(hold.yards)} (accepted), play nullified`;
         this.box.team(offTeam.abbr).penalties++;
-        this.box.team(offTeam.abbr).penaltyYds += yds;
-        const line = this.box.players.get(r.penalty.playerId);
+        this.box.team(offTeam.abbr).penaltyYds += hold.yards;
+        const line = this.box.players.get(hold.playerId);
         if (line) line.penalties++;
-        this.undoPlayStats(sim, r, offTeam, defTeam);
-        s.yardline = Math.max(1, s.yardline - yds);
-        s.distance += yds;
-        logEntry.yards = -yds;
         this.log.push(logEntry);
-        this.runClock(r.duration);
-        this.recoverAll(r.duration + 30);
+        const warned = this.runClock(r.duration, true);
         this.observe(offSide, ranCall, defCall, 0);
+        if (hold.safety) {
+          logEntry.text += ' in the end zone — SAFETY';
+          this.addScore(defSide, 2);
+          this.recoverAll(r.duration + 60);
+          if (!this.otDecided(defSide)) this.safetyKick(offTeam, defTeam);
+          return;
+        }
+        s.yardline = hold.newYard;
+        if (s.yardline >= lineToGain - 1e-6) {
+          s.down = 1;
+          s.distance = Math.min(10, 100 - s.yardline);
+        } else {
+          s.distance = lineToGain - s.yardline;
+        }
+        s.distance = Math.max(1, Math.round(s.distance));
+        // After the enforcement the clock starts on the ready signal, or on the snap late in a half.
+        const running = !warned && !r.clockStops && !this.lateHalf();
+        this.runClock(running ? this.tempo.normal(14, 3) : 0);
+        this.recoverAll(r.duration + 30);
         return;
       }
     }
 
     this.log.push(logEntry);
-    this.runClock(r.duration);
+    this.recordStats(sim, r, offTeam, defTeam);
+    this.countDown(offTeam, startDown, converted);
+    if (converted) this.box.team(offTeam.abbr).firstDowns++;
+    const warned = this.runClock(r.duration, true);
 
     // Success measure for coordinators (standard success rate definition).
     const need = startDown === 1 ? 0.4 * startDist : startDown === 2 ? 0.6 * startDist : startDist;
-    const success = r.turnover ? 0 : r.score?.kind === 'TD' && r.score.team === 'O' ? 1 : clamp(r.yards / Math.max(1, need), 0, 1.2) >= 1 ? 1 : clamp(r.yards / Math.max(1, need), 0, 1) * 0.5;
+    const success = r.turnover ? 0 : offTD ? 1 : clamp(r.yards / Math.max(1, need), 0, 1.2) >= 1 ? 1 : clamp(r.yards / Math.max(1, need), 0, 1) * 0.5;
     this.observe(offSide, ranCall, defCall, success);
 
     // Ball position for the next snap: inside the hashes.
     s.ballY = clamp(r.endY, HASH_LEFT_Y, HASH_RIGHT_Y);
 
     if (r.score?.kind === 'TD') {
-      if (r.score.team === 'O') {
+      if (offTD) {
         this.addScore(offSide, 6);
-        this.afterTouchdown(offSide);
+        this.afterTouchdown(offSide, s.inRedZone);
       } else {
         this.addScore(defSide, 6);
-        // Return TD: defense scores; switch so the scoring team "has" the ball for the try.
-        s.possession = defSide;
-        this.afterTouchdown(defSide);
+        this.afterTouchdown(defSide, false);
       }
       this.recoverAll(r.duration + 60);
       return;
     }
     if (r.score?.kind === 'safety') {
       this.addScore(defSide, 2);
-      this.log[this.log.length - 1].text += ' — SAFETY';
-      // Free kick from the 20.
+      logEntry.text += ' — SAFETY';
       this.recoverAll(60);
-      const ko = kickoff(this.rng, offTeam, defTeam);
-      this.changePossession(Math.min(60, ko.yardline + 15));
+      if (!this.otDecided(defSide)) this.safetyKick(offTeam, defTeam);
       return;
     }
     if (r.turnover) {
       const yl = r.outcome === 'touchback' ? 20 : 110 - r.endX;
       this.box.team(offTeam.abbr).turnovers++;
       this.changePossession(yl, s.ballY);
-      this.runClock(0);
       this.recoverAll(r.duration + 40);
       return;
     }
-    if (r.outcome === 'incomplete') {
-      this.advance(0, false);
-    } else {
-      this.advance(r.endX - los, true, r.outcome === 'oob');
-    }
-    const clockRunning = !r.clockStops || (r.outcome === 'oob' && !this.lateHalf());
+    this.moveChains(r.outcome === 'incomplete' ? 0 : r.yards);
+    const clockRunning = !warned && (!r.clockStops || (r.outcome === 'oob' && !this.lateHalf()));
     const between = this.betweenPlays(clockRunning, r.outcome === 'oob');
     this.maybeTimeout(clockRunning);
     this.runClock(this.lastTimeoutUsed ? 0 : between);
     this.lastTimeoutUsed = false;
     this.recoverAll(r.duration + Math.max(between, 25));
-    void startYard;
+  }
+
+  private preSnapFoul(offDiscipline: number, defDiscipline: number): 'false_start' | 'offside' | null {
+    const forced = this.opts.hooks?.preSnapFoul?.();
+    if (forced !== undefined) return forced;
+    if (this.flags.chance(0.012 * (1.4 - offDiscipline)) && this.s.yardline > 1) return 'false_start';
+    if (this.flags.chance(0.009 * (1.4 - defDiscipline))) return 'offside';
+    return null;
+  }
+
+  /**
+   * Dead-ball fouls: no play happens, so no down is used and the line to gain
+   * stays put. Five yards, or half the distance to the goal.
+   */
+  private enforceDeadBall(kind: 'false_start' | 'offside', call: string): void {
+    const s = this.s;
+    const lineToGain = s.yardline + s.distance;
+    const fouler = kind === 'false_start' ? this.off : this.def;
+    const yds = kind === 'false_start' ? Math.min(5, s.yardline / 2) : Math.min(5, (100 - s.yardline) / 2);
+    const name = kind === 'false_start' ? 'False start' : 'Offside';
+    const entry = this.entry('penalty', `${name}, ${fouler.abbr}, ${fmtYds(yds)}`, kind === 'false_start' ? -yds : yds, call);
+    entry.foul = { kind, team: fouler.abbr, yards: yds, accepted: true };
+    this.log.push(entry);
+    this.box.team(fouler.abbr).penalties++;
+    this.box.team(fouler.abbr).penaltyYds += yds;
+    s.yardline += kind === 'false_start' ? -yds : yds;
+    if (s.yardline >= lineToGain - 1e-6) {
+      // Enough for a first down by penalty.
+      s.down = 1;
+      s.distance = Math.min(10, 100 - s.yardline);
+      this.box.team(this.off.abbr).firstDowns++;
+    } else {
+      s.distance = lineToGain - s.yardline;
+    }
+    s.distance = Math.max(1, Math.round(s.distance));
+  }
+
+  /**
+   * Offensive holding during a live play. The defense keeps a takeaway or a
+   * score of its own, declines when the play already stopped a third or
+   * fourth down short, and otherwise takes the penalty unless the play lost
+   * nearly as much. Pass plays enforce from the previous spot; running plays
+   * from the spot of the foul when it was behind the end of the run (beyond
+   * the line, the end of the run is the basic spot). A hold in the offense's
+   * own end zone is a safety.
+   */
+  private holdingDecision(r: PlayResult, los: number, down: number, dist: number): { playerId: string; yards: number; accepted: boolean; safety: boolean; newYard: number } | null {
+    const p = r.penalty;
+    if (!p || p.kind !== 'holding' || p.against !== 'O') return null;
+    const s = this.s;
+    const foulX = p.spotX ?? los;
+    const passPlay = r.stats.attempted;
+    const basicX = passPlay ? los : Math.max(los, r.endX);
+    const fromX = passPlay ? los : Math.min(basicX, foulX);
+    const safety = foulX <= OWN_GOAL_X;
+    const yards = safety ? 0 : Math.min(10, (fromX - OWN_GOAL_X) / 2);
+    const newYard = Math.max(0.5, fromX - yards - 10);
+    const decision = { playerId: p.playerId, yards, safety, newYard };
+    const defenseScored = r.score !== null && r.score.team === 'D';
+    if (r.turnover || defenseScored) return { ...decision, accepted: false };
+    if (r.score?.kind === 'TD') return { ...decision, accepted: true };
+    if (safety) return { ...decision, accepted: true };
+    const gain = r.outcome === 'incomplete' ? 0 : r.yards;
+    if (down >= 3 && gain < dist - 1e-6) return { ...decision, accepted: false };
+    return { ...decision, accepted: s.yardline + gain - newYard > 2 };
+  }
+
+  /** Free kick after a safety. */
+  private safetyKick(offTeam: Team, defTeam: Team): void {
+    const ko = kickoff(this.kicks, offTeam, defTeam);
+    this.changePossession(Math.min(60, ko.yardline + 15));
+  }
+
+  /** Third- and fourth-down attempts and conversions for an official play. */
+  private countDown(team: Team, down: number, converted: boolean): void {
+    const t = this.box.team(team.abbr);
+    if (down === 3) {
+      t.thirdAtt++;
+      if (converted) t.thirdConv++;
+    }
+    if (down === 4) {
+      t.fourthAtt++;
+      if (converted) t.fourthConv++;
+    }
   }
 
   private lastTimeoutUsed = false;
@@ -523,57 +721,45 @@ class Game {
     this.dc[other(offSide)].observe(defCall, success);
   }
 
-  /** Move the chains after a gain of `gain` yards. */
-  private advance(gain: number, fromPlay: boolean, oob = false): void {
+  /**
+   * Spot the ball `gain` yards from the line and set the next down (turnover
+   * on downs after a failed fourth). Statistics are the caller's business.
+   */
+  private moveChains(gain: number): boolean {
     const s = this.s;
-    void fromPlay;
-    void oob;
     const g = Math.round(gain * 10) / 10;
-    s.yardline = clamp(s.yardline + g, 1, 99);
+    s.yardline = clamp(s.yardline + g, 0.5, 99.5);
     const firstDown = g >= s.distance - 1e-6;
-    const team = this.box.team(this.off.abbr);
-    if (s.down === 3) {
-      team.thirdAtt++;
-      if (firstDown) team.thirdConv++;
-    }
-    if (s.down === 4) {
-      team.fourthAtt++;
-      if (firstDown) team.fourthConv++;
-    }
-    if (s.yardline >= 80 && !s.inRedZone) {
-      s.inRedZone = true;
-      team.redZoneTrips++;
-    }
     if (firstDown) {
-      if (fromPlay) team.firstDowns++;
       s.down = 1;
       s.distance = Math.min(10, 100 - s.yardline);
     } else {
       s.down++;
       s.distance = Math.max(0.5, s.distance - g);
-      if (s.down > 4) {
-        // Turnover on downs.
-        this.changePossession(100 - s.yardline, s.ballY);
-      }
+      if (s.down > 4) this.changePossession(100 - s.yardline, s.ballY);
     }
-    s.distance = Math.round(s.distance);
-    if (s.distance < 1) s.distance = 1;
+    s.distance = Math.max(1, Math.round(s.distance));
+    return firstDown;
   }
 
-  private afterTouchdown(scorer: Side): void {
+  /** Try and kickoff after a touchdown (`redZone`: an offensive TD on a drive that reached the red zone). */
+  private afterTouchdown(scorer: Side, redZone: boolean): void {
     const s = this.s;
-    if (s.inRedZone || s.yardline >= 80) this.box.team(this.teams[scorer].abbr).redZoneTDs++;
+    if (redZone) this.box.team(this.teams[scorer].abbr).redZoneTDs++;
+    s.possession = scorer;
+    // An overtime touchdown that wins the game needs no try.
+    if (this.otDecided(scorer, true)) return;
     // Two-point decision from a simple chart and coach aggression.
     const diffAfter = s.score[scorer] - s.score[other(scorer)];
     const late = s.quarter >= 4;
-    const goForTwo = (late && [-2, -5, -9, -10, -12, 1, 5].includes(diffAfter)) || this.rng.chance(0.06 + 0.1 * this.teams[scorer].coach.aggression);
-    s.possession = scorer;
+    const choice = this.opts.hooks?.tryChoice?.(scorer);
+    const goForTwo = choice ? choice === 'two' : (late && [-2, -5, -9, -10, -12, 1, 5].includes(diffAfter)) || this.calls.chance(0.06 + 0.1 * this.teams[scorer].coach.aggression);
     if (goForTwo) {
       const success = this.twoPointTry(scorer);
       if (success) this.addScore(scorer, 2);
     } else {
       const k = specialist(this.teams[scorer], 'K');
-      const res = kickFieldGoal(this.rng, k, 33);
+      const res = kickFieldGoal(this.kicks, k, 33);
       const line = this.box.line(k, this.teams[scorer].abbr);
       line.xpa++;
       if (res.good) {
@@ -582,7 +768,8 @@ class Game {
       }
       this.log.push(this.entry('xp', `extra point by ${k.firstName[0]}.${k.lastName} is ${res.good ? 'GOOD' : res.blocked ? 'BLOCKED' : 'NO GOOD'}`, 0));
     }
-    if (!s.over) this.doKickoff(scorer);
+    if (this.otDecided(scorer)) return;
+    this.doKickoff(scorer);
   }
 
   private twoPointTry(scorer: Side): boolean {
@@ -597,8 +784,8 @@ class Game {
     const offPlayers = pickOffense(this.off, offCall.formation.personnel, { energy: this.energy });
     const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers);
     const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
-    const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall, los: 108, ballY: CENTER_Y, firstDownX: 110, seed: this.rng.nextU32(), energy: this.energy, manPrefs: prefs });
-    const r = sim.run();
+    const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall, los: 108, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(), energy: this.energy, manPrefs: prefs });
+    const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
     const good = r.score?.kind === 'TD' && r.score.team === 'O';
     this.log.push(this.entry('two', `two-point try (${offCall.label}): ${good ? 'GOOD' : 'FAILED'}`, 0, offCall.label, defCall.label));
     return good;
@@ -610,14 +797,10 @@ class Game {
     const rTeam = this.teams[other(kicking)];
     const diff = s.score[kicking] - s.score[other(kicking)];
     const onside = s.quarter >= 4 && s.clock < 150 && diff < 0 && diff >= -16;
-    const ko = kickoff(this.rng, kTeam, rTeam, { onside });
+    const ko = kickoff(this.kicks, kTeam, rTeam, { onside });
     s.possession = kicking;
     this.log.push(this.entry('kickoff', `${kTeam.abbr} ${ko.text}`, 0));
-    if (ko.returner) {
-      const l = this.box.line(ko.returner, rTeam.abbr);
-      void l;
-    }
-    this.runClock(ko.touchback ? 0 : 6);
+    this.runClock(ko.touchback ? 0 : 6, true);
     if (ko.recoveredByKicking) {
       s.possession = other(kicking);
       this.changePossession(100 - ko.yardline);
@@ -626,7 +809,7 @@ class Game {
     if (ko.td) {
       this.changePossession(99);
       this.addScore(other(kicking), 6);
-      this.afterTouchdown(other(kicking));
+      this.afterTouchdown(other(kicking), false);
       return;
     }
     if (ko.fumbleLost) {
@@ -643,17 +826,17 @@ class Game {
     const kTeam = this.off;
     const rTeam = this.def;
     const p = specialist(kTeam, 'P');
-    const res = punt(this.rng, kTeam, rTeam, s.yardline);
+    const res = punt(this.kicks, kTeam, rTeam, s.yardline);
     const line = this.box.line(p, kTeam.abbr);
     line.punts++;
     line.puntYds += res.gross;
     this.log.push(this.entry('punt', `${p.firstName[0]}.${p.lastName} ${res.text}`, 0));
-    this.runClock(res.touchback || res.fairCatch ? 5 : 9);
+    this.runClock(res.touchback || res.fairCatch ? 5 : 9, true);
     this.recoverAll(50);
     if (res.td) {
       this.changePossession(99);
       this.addScore(s.possession, 6);
-      this.afterTouchdown(s.possession);
+      this.afterTouchdown(s.possession, false);
       return;
     }
     if (res.muffLost) {
@@ -671,20 +854,21 @@ class Game {
     const k = specialist(this.off, 'K');
     const dist = Math.round(100 - s.yardline + 17);
     const late = s.quarter >= 4 && s.clock < 120;
-    const res = kickFieldGoal(this.rng, k, dist, { x: 0, y: 0 }, late ? 1 : 0);
+    const res = kickFieldGoal(this.kicks, k, dist, { x: 0, y: 0 }, late ? 1 : 0);
     const line = this.box.line(k, this.off.abbr);
     line.fga++;
     const fgEntry = this.entry('fg', `${dist}-yard field goal by ${k.firstName[0]}.${k.lastName} is ${res.good ? 'GOOD' : res.blocked ? 'BLOCKED' : `NO GOOD (${res.miss})`}`, 0);
     fgEntry.fgGood = res.good;
     fgEntry.fgDistance = dist;
     this.log.push(fgEntry);
-    this.runClock(5);
+    this.runClock(5, true);
     this.recoverAll(50);
     if (res.good) {
       line.fgm++;
       line.fgLong = Math.max(line.fgLong, dist);
       this.addScore(s.possession, 3);
-      if (!s.over) this.doKickoff(s.possession);
+      if (this.otDecided(s.possession)) return;
+      this.doKickoff(s.possession);
       return;
     }
     // Missed: opponent takes over at the spot of the kick (or the 20).
@@ -694,17 +878,20 @@ class Game {
 
   // ---------------------------------------------------------------- stats
 
-  private recordStats(sim: PlaySim, r: PlayResult, offTeam: Team, defTeam: Team, down: number, dist: number): void {
+  /** Box-score credit for an official (not nullified) scrimmage play. */
+  private recordStats(sim: PlaySim, r: PlayResult, offTeam: Team, defTeam: Team): void {
     const st = r.stats;
     const box = this.box;
-    const find = (id?: string) => (id ? sim.agents.find((a) => a.player.id === id)?.player : undefined);
+    const agentOf = (id?: string) => (id ? sim.agents.find((a) => a.player.id === id) : undefined);
+    const find = (id?: string) => agentOf(id)?.player;
+    const abbrOf = (id: string) => (agentOf(id)?.team === 'O' ? offTeam.abbr : defTeam.abbr);
     const t = box.team(offTeam.abbr);
     t.plays++;
-    void down;
-    void dist;
-    const passer = find(st.passer);
+    // Rush and reception credit runs to the fumble spot when the ball was lost.
+    const yds = r.offenseYards;
+    const offTD = r.score?.kind === 'TD' && r.score.team === 'O';
     if (r.kind === 'pass' && !st.scramble) {
-      const qb = passer ?? sim.qb.player;
+      const qb = find(st.passer) ?? sim.qb.player;
       const ql = box.line(qb, offTeam.abbr);
       if (st.sacked) {
         ql.sacked++;
@@ -724,10 +911,10 @@ class Game {
         ql.att++;
         const tgt = find(st.target);
         if (tgt) box.line(tgt, offTeam.abbr).targets++;
-        if (st.completed && !r.turnover) {
+        // A completion stands even if the receiver fumbles it away afterwards.
+        if (st.completed) {
           ql.cmp++;
           const rec = find(st.receiver);
-          const yds = r.yards;
           ql.passYds += yds;
           t.passYds += yds;
           t.totalYds += yds;
@@ -737,7 +924,7 @@ class Game {
             rl.recYds += yds;
             rl.recLong = Math.max(rl.recLong, Math.round(yds));
             rl.yac += st.yac ?? 0;
-            if (r.score?.kind === 'TD' && r.score.team === 'O') {
+            if (offTD) {
               rl.recTD++;
               ql.passTD++;
             }
@@ -762,21 +949,21 @@ class Game {
       if (rusher) {
         const rl = box.line(rusher, offTeam.abbr);
         rl.rushAtt++;
-        const yds = r.turnover ? Math.max(-20, (st.fumbledBy ? 0 : r.yards)) : r.yards;
         rl.rushYds += yds;
         rl.rushLong = Math.max(rl.rushLong, Math.round(yds));
         t.rushYds += yds;
         t.totalYds += yds;
-        if (r.score?.kind === 'TD' && r.score.team === 'O') rl.rushTD++;
+        if (offTD) rl.rushTD++;
         if (yds >= 10) t.explosivePlays++;
       }
     }
+    // Tackles go to whoever made them: offensive players tackle returners.
     for (const id of st.tacklers) {
       const p = find(id);
       if (p && !st.sacked) {
-        const l = box.line(p, defTeam.abbr);
+        const l = box.line(p, abbrOf(id));
         l.tackles += 1 / st.tacklers.length;
-        if (r.yards < 0) l.tfl += 1 / st.tacklers.length;
+        if (!r.turnover && r.yards < 0) l.tfl += 1 / st.tacklers.length;
       }
     }
     if (st.passDefendedBy) {
@@ -795,41 +982,7 @@ class Game {
         if (rp && st.fumbleLost) box.line(rp, defTeam.abbr).fr++;
       }
     }
-    for (const a of sim.agents) if (a.missedTackles) box.line(a.player, defTeam.abbr).missedTackles += a.missedTackles;
-  }
-
-  /** Remove the yardage credited for a play wiped out by a penalty. */
-  private undoPlayStats(sim: PlaySim, r: PlayResult, offTeam: Team, defTeam: Team): void {
-    const st = r.stats;
-    const t = this.box.team(offTeam.abbr);
-    const find = (id?: string) => (id ? sim.agents.find((a) => a.player.id === id)?.player : undefined);
-    if (r.kind === 'pass' && !st.scramble && st.completed) {
-      const qb = find(st.passer) ?? sim.qb.player;
-      const ql = this.box.line(qb, offTeam.abbr);
-      ql.cmp--;
-      ql.att--;
-      ql.passYds -= r.yards;
-      t.passYds -= r.yards;
-      t.totalYds -= r.yards;
-      const rec = find(st.receiver);
-      if (rec) {
-        const rl = this.box.line(rec, offTeam.abbr);
-        rl.rec--;
-        rl.recYds -= r.yards;
-        rl.targets--;
-      }
-    } else if (r.kind === 'pass' && !st.scramble && st.attempted && !st.sacked) {
-      const qb = find(st.passer) ?? sim.qb.player;
-      this.box.line(qb, offTeam.abbr).att--;
-    } else if (r.kind === 'run' || st.scramble) {
-      const rusher = find(st.rusher) ?? sim.qb.player;
-      const rl = this.box.line(rusher, offTeam.abbr);
-      rl.rushAtt--;
-      rl.rushYds -= r.yards;
-      t.rushYds -= r.yards;
-      t.totalYds -= r.yards;
-    }
-    void defTeam;
+    for (const a of sim.agents) if (a.missedTackles) box.line(a.player, a.team === 'O' ? offTeam.abbr : defTeam.abbr).missedTackles += a.missedTackles;
   }
 }
 
@@ -838,6 +991,11 @@ class Game {
 function nameOf(team: Team, id: string): string {
   const p = team.roster.find((x) => x.id === id);
   return p ? `${p.firstName[0]}.${p.lastName}` : 'unknown';
+}
+
+function fmtYds(y: number): string {
+  const v = Math.round(y * 10) / 10;
+  return `${v} yard${v === 1 ? '' : 's'}`;
 }
 
 function avgRating(ps: Player[], key: 'discipline'): number {

@@ -108,7 +108,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
     const hl = Math.hypot(hx, hy) || 1;
     return { x: seen.pos.x + (hx / hl) * d, y: clamp(seen.pos.y + (hy / hl) * d, 0, FIELD_WIDTH) };
   };
-  const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile }, path, { horizon, step: 0.1, radius: 0.7 });
+  const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, path, { horizon, step: 0.1, radius: 0.7 });
   let bias = angleBias.get(a);
   if (bias === undefined) {
     bias = (1 - a.r('pursuit')) * 0.3 + sim.rng.normal(0, 0.12 * (1.2 - a.r('pursuit')));
@@ -164,7 +164,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
 }
 
 export function ttr(a: Agent, p: Vec2, radius = 0): number {
-  return timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile }, p, radius);
+  return timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, p, radius);
 }
 
 /** Nearest agent from a list to a point. */

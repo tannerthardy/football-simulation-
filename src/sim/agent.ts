@@ -3,7 +3,7 @@
  * + per-play state.
  */
 import type { Vec2 } from '../core/vec.js';
-import type { Body, MoveCommand } from '../physics/kinematics.js';
+import { enduranceFactor, fatigueFactor, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { Player, RatingKey } from '../players/types.js';
 import { r01 } from '../players/types.js';
@@ -109,5 +109,9 @@ export class Agent {
   }
   get speed(): number {
     return Math.hypot(this.body.vel.x, this.body.vel.y);
+  }
+  /** Top-speed multiplier from fatigue and recent sprinting, for reach estimates. */
+  get speedScale(): number {
+    return fatigueFactor(this.body.energy) * enduranceFactor(this.body);
   }
 }

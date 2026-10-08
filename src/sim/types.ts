@@ -87,6 +87,13 @@ export interface PlayResult {
   endY: number;
   /** Net yards for the offense from the LOS (meaningless if turnover). */
   yards: number;
+  /**
+   * Yards credited to the offense's rush or reception: to the dead-ball spot,
+   * or to the fumble spot when the offense lost the ball (0 on interceptions).
+   */
+  offenseYards: number;
+  /** Who held the ball, from where to where, in order. */
+  segments: CarrierSegment[];
   score: { team: TeamSide; kind: 'TD' | 'safety' } | null;
   duration: number;
   /** Clock stops after the play (incomplete, out of bounds, score, turnover). */
@@ -106,8 +113,21 @@ export interface PenaltyCall {
   yards: number;
   /** Automatic first down for the offense. */
   autoFirst: boolean;
-  /** Spot foul at this x (play frame) — DPI. */
+  /** Where the foul happened (play frame x): holding enforcement, DPI spot. */
   spotX?: number;
+}
+
+/** One continuous possession of the ball by one player within a play. */
+export interface CarrierSegment {
+  team: TeamSide;
+  /** Player id. */
+  carrier: string;
+  /** How this player came to have the ball. */
+  how: 'snap' | 'handoff' | 'catch' | 'interception' | 'recovery';
+  startX: number;
+  /** Where the possession ended: dead-ball spot, fumble spot, or release of a pass or handoff. */
+  endX: number;
+  end: 'live' | 'dead' | 'fumble' | 'pass' | 'handoff';
 }
 
 export interface PlayStats {

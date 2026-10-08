@@ -452,7 +452,7 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
   if (nearPath && !a.tags.has('looking') && sim.rng.chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   if (spot) {
-    const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile }, spot.p, a.profile.reach);
+    const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, spot.p, a.profile.reach);
     if (tt <= spot.t - sim.t + 0.05) return runThrough(a, spot.p, { speed: 1 });
   }
   // Can't beat the ball to its path: drive on the catch point to arrive with

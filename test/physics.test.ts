@@ -54,6 +54,19 @@ describe('integrator', () => {
     expect(extra).toBeLessThan(0.7);
   });
 
+  it('a runner who has been sprinting for a while has a lower top speed', () => {
+    const fresh = bodyFor(wr);
+    const loaded = bodyFor(wr);
+    for (const b of [fresh, loaded]) b.vel = { x: b.profile.vmax, y: 0 };
+    loaded.sprintLoad = 9;
+    for (let i = 0; i < 20; i++) {
+      fresh.sprintLoad = 0;
+      stepBody(fresh, { vel: { x: 20, y: 0 } }, DT);
+      stepBody(loaded, { vel: { x: 20, y: 0 } }, DT);
+    }
+    expect(loaded.vel.x).toBeLessThan(fresh.vel.x * 0.95);
+  });
+
   it('cannot cut 90 degrees at full speed without bleeding speed', () => {
     const b = bodyFor(wr);
     b.vel = { x: b.profile.vmax, y: 0 };

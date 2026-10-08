@@ -78,7 +78,8 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
     for (let i = 0; i < count; i++) {
       const starter = i < starters;
       const quality = starter ? rng.normalClamped(0.48 + 0.3 * strength, 0.14, 0.15, 0.97) : rng.normalClamped(0.3 + 0.15 * strength, 0.12, 0.05, 0.8);
-      const p = generatePlayer(rng, pos, { quality });
+      // Roster-scoped identity: the same team generated twice has the same ids.
+      const p = generatePlayer(rng, pos, { quality, id: `${abbr}-${pos}${i + 1}` });
       p.jersey = pickJersey(rng, pos, used);
       roster.push(p);
     }

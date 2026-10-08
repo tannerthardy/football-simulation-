@@ -628,7 +628,7 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
   // Officials see the obvious ones.
   const visible = 0.35 + 0.35 * Math.min(1, Math.abs(e.phi) + (1 - e.baseB));
   if (!sim.penalty && sim.rng.chance(visible)) {
-    sim.penalty = { kind: 'holding', against: 'O', playerId: b.player.id, yards: 10, autoFirst: false };
+    sim.penalty = { kind: 'holding', against: 'O', playerId: b.player.id, yards: 10, autoFirst: false, spotX: b.pos.x };
     sim.event('holding', b, e.defender);
   }
   return true;

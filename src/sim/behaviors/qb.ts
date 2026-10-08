@@ -329,7 +329,7 @@ export class QBPass implements Behavior {
       const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
       const blind = ang > 1.8 && ang < 4.5;
       const seen = sim.see(a, d, blind ? 2.2 - 1.4 * pp : 1);
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile }, a.pos, 0.8) + (d.engagement ? 0.35 : 0);
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + (d.engagement ? 0.35 : 0);
       if (tt < best) {
         best = tt;
         who = d;
@@ -393,7 +393,7 @@ export class QBPass implements Behavior {
       if (d.isDown(sim.t)) continue;
       // Not where the defender is: where the QB thinks he is.
       const seen = this.mind.estimate(d);
-      const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile };
+      const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
       const facingQB = Math.cos(d.body.facing - Math.atan2(a.pos.y - d.pos.y, a.pos.x - d.pos.x)) > 0.2;
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const tt = timeToReach(mover, point, d.profile.reach + 0.3) + react;
@@ -507,7 +507,7 @@ export class QBPass implements Behavior {
       let margin = Infinity;
       for (const d of sim.defense) {
         if (d.isDown(sim.t)) continue;
-        const tt = timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile }, q, 1) + (d.engagement ? 0.5 : 0);
+        const tt = timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile, speedScale: d.speedScale }, q, 1) + (d.engagement ? 0.5 : 0);
         margin = Math.min(margin, tt - myT);
       }
       if (margin > 0.35) open++;

@@ -45,35 +45,47 @@ be aligned before these become validated tuning targets. See
 
 ## Calibration status
 
-Reviewed snapshot: 16 games (`npm run calibrate -- 16 7`). Some movement/timing
-diagnostics are close, while others differ materially. Rules/statistical
-accounting defects and cohort mismatches limit the conclusions. The ranges
-below mix generic harness targets with dataset measurements; the realism plan
-replaces them with explicit versioned cohorts before further outcome tuning.
+Snapshot: 32 games over four independently generated leagues
+(`npm run calibrate -- 32 7`), official plays only — plays wiped out by an
+accepted foul are excluded, and a catch or run that ends in a lost fumble is
+credited to the fumble spot. Rules and accounting defects from the review are
+fixed (see `test/game-rules.test.ts`); cohort mismatches still limit some
+comparisons. The ranges mix generic harness targets with dataset
+measurements; the realism plan replaces them with explicit versioned cohorts
+before further outcome tuning.
 
 | Metric | Sim | NFL | |
 |---|---|---|---|
-| Points / team-game | 35.4 | 21–23.5 | high |
-| Yards / attempt | 9.0 | 6.8–7.2 | high |
-| Completion % | 66.9% | 63–66% | ~ok |
-| Sack rate | 8.3% | 6–7.5% | high |
+| Points / team-game | 33.9 | 21–23.5 | high |
+| Yards / attempt | 9.5 | 6.8–7.2 | high |
+| Completion % | 67.1% | 63–66% | ~ok |
+| Sack rate | 11.0% (6.7–15.7% by league) | 6–7.5% | high, roster-sensitive |
 | INT rate | 3.8% | 2–2.5% | high |
-| Time to throw | 2.48 s | 2.6–2.75 s | low |
-| Pressure rate | 23% | ~33% PFF labels | definitions differ |
-| Scramble rate | 5.0% | 4% | ok |
-| Rush yards / carry | 2.95 | 4.48 | low |
-| Run stuff rate | 39% | 18% | high |
-| Separation during target catch contests | 3.85 | 3.04 selected arrival cohort | cohorts differ |
-| Tight-window catch-contest sample | 4.8% | 13–17% all-throw harness range | cohorts differ |
-| QB reads coverage family right | 73% | — | |
-| Missed + broken tackles / play | 0.17 | 0.11–0.16 | ~ok |
-| Pass rate | 76% | 56–62% | high |
+| Time to throw | 2.41 s | 2.6–2.75 s | low |
+| Pressure rate | 29% | ~33% PFF labels | definitions differ |
+| Scramble rate | 4.2% | 4% | ok |
+| Rush yards / carry | 3.28 (2.35–4.03 by league) | 4.48 | low |
+| Run stuff rate | 32% | 18% | high |
+| 3rd-down conversion | 34.7% | 37–41% | low |
+| Separation during target catch contests | 3.76 | 3.04 selected arrival cohort | cohorts differ |
+| Tight-window catch-contest sample | 4.0% | 13–17% all-throw harness range | cohorts differ |
+| QB reads coverage family right | 69% | — | |
+| Missed + broken tackles / play | 0.16 | 0.11–0.16 | ~ok |
+| Pass rate | 75% | 56–62% | high |
+
+League-to-league spread is large: the same engine gives a 6.7% sack rate
+with one set of generated rosters and 15.7% with another. Real team sack
+rates vary far less, so the trench model amplifies talent gaps; one league is
+not a reliable calibration sample.
 
 ## Known gaps, in priority order
 
-1. **Rules, accounting and measurement.** Fix the reproduced down, penalty,
-   fumble, clock and overtime defects; reconcile official events/statistics;
-   align cohorts before tuning.
+1. **Measurement.** The reproduced down, penalty, fumble, clock and
+   overtime defects are fixed with scenario tests, and official statistics
+   come from the accepted play only. Still to do: align cohorts before
+   tuning, record separation for all attempts, distinct pressure metrics,
+   and rule paths not yet modeled (pass interference, fouls on returns,
+   loose balls through the end zone).
 2. **Run game.** Outcomes are bimodal:
    too many stuffs from unblocked or quickly shed linemen (reach blocks on
    3-techniques, backside pursuit on counter), not enough 2–5 yard runs.

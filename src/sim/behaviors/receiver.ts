@@ -253,7 +253,7 @@ export class RouteRunner implements Behavior {
   predict(a: Agent, tAhead: number): Vec2 {
     const sim = this.sim;
     if (!this.ghost || this.ghost.t !== sim.t) {
-      const body: Body = { pos: { ...a.pos }, vel: { ...a.vel }, facing: a.body.facing, energy: a.body.energy, profile: a.profile };
+      const body: Body = { pos: { ...a.pos }, vel: { ...a.vel }, facing: a.body.facing, energy: a.body.energy, profile: a.profile, sprintLoad: a.body.sprintLoad };
       const st = { idx: this.idx };
       const rr = a.r('routeRunning');
       const cutSkill = 0.8 + 0.4 * rr;
@@ -342,7 +342,7 @@ export function catchSpot(a: Agent, sim: PlaySim): { p: Vec2; t: number; z: numb
     }
     const p = { x: s.x, y: s.y };
     last = { p, t: s.t, z: s.z };
-    const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile }, p, a.profile.reach * 0.8);
+    const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, p, a.profile.reach * 0.8);
     if (tt <= s.t - sim.t) return { p, t: s.t, z: s.z };
   }
   return last;
@@ -389,7 +389,7 @@ export function pickBlockTarget(a: Agent, sim: PlaySim, c: Agent): Agent | null 
   }
   for (const d of sim.opponents(a)) {
     if (d.engagement || d.isDown(sim.t) || claimed.has(d)) continue;
-    const toCarrier = timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile }, c.pos, 1);
+    const toCarrier = timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile, speedScale: d.speedScale }, c.pos, 1);
     const toMe = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) / a.profile.vmax;
     if (toMe > toCarrier + 0.6) continue; // can't get there in time
     const score = toCarrier + 0.6 * toMe;

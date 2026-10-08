@@ -189,9 +189,9 @@ export interface GenerateOptions {
   quality?: number;
   archetype?: string;
   age?: number;
+  /** Stable identity (e.g. roster-scoped `IRN-QB1`); otherwise drawn from `rng`. */
+  id?: string;
 }
-
-let idCounter = 0;
 
 export function generatePlayer(rng: Rng, position: Position, opts: GenerateOptions = {}): Player {
   const quality = clamp(opts.quality ?? rng.normalClamped(0.5, 0.2, 0.02, 0.98), 0, 1);
@@ -209,7 +209,7 @@ export function generatePlayer(rng: Rng, position: Position, opts: GenerateOptio
   const ratings = generateRatings(rng, position, arch, quality, measurables, experience);
 
   return {
-    id: `P${(++idCounter).toString(36).toUpperCase()}${rng.int(100, 999)}`,
+    id: opts.id ?? `P${rng.nextU32().toString(36).toUpperCase()}`,
     firstName: rng.pick(FIRST_NAMES),
     lastName: rng.pick(LAST_NAMES),
     jersey: 0,
