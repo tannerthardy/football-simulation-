@@ -391,7 +391,11 @@ class Game {
       energy: this.energy,
       manPrefs: prefs,
       hurry: sit.hurry,
+      down: s.down,
+      audibles: true,
     });
+    // The QB may have checked out of the call at the line.
+    const ranCall = sim.offCall;
     const r = sim.run();
     // Fatigue: write back energy of players who were on the field.
     for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
@@ -401,7 +405,7 @@ class Game {
     const startDown = s.down;
     const startDist = s.distance;
     const text = describe(sim, r, offTeam, defTeam);
-    const logEntry = this.entry(r.kind, text, r.yards, offCall.label, defCall.label);
+    const logEntry = this.entry(r.kind, text, r.yards, ranCall.label, defCall.label);
     logEntry.stats = r.stats;
     logEntry.outcome = r.outcome;
     logEntry.firstDown = !r.turnover && r.outcome !== 'incomplete' && r.endX - los >= startDist - 1e-6;
@@ -434,7 +438,7 @@ class Game {
         this.log.push(logEntry);
         this.runClock(r.duration);
         this.recoverAll(r.duration + 30);
-        this.observe(offSide, offCall, defCall, 0);
+        this.observe(offSide, ranCall, defCall, 0);
         return;
       }
     }
@@ -445,7 +449,7 @@ class Game {
     // Success measure for coordinators (standard success rate definition).
     const need = startDown === 1 ? 0.4 * startDist : startDown === 2 ? 0.6 * startDist : startDist;
     const success = r.turnover ? 0 : r.score?.kind === 'TD' && r.score.team === 'O' ? 1 : clamp(r.yards / Math.max(1, need), 0, 1.2) >= 1 ? 1 : clamp(r.yards / Math.max(1, need), 0, 1) * 0.5;
-    this.observe(offSide, offCall, defCall, success);
+    this.observe(offSide, ranCall, defCall, success);
 
     // Ball position for the next snap: inside the hashes.
     s.ballY = clamp(r.endY, HASH_LEFT_Y, HASH_RIGHT_Y);

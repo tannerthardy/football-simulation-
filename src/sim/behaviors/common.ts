@@ -42,25 +42,30 @@ export function track(a: Agent, target: Vec2, targetVel: Vec2, opts: { facing?: 
   const ey = clamp(target.y, 0.3, FIELD_WIDTH - 0.3) - a.pos.y;
   const d = Math.hypot(ex, ey);
   const vmax = a.profile.vmax * (opts.speed ?? 1);
+  // Close on the target no faster than we could still brake to its speed on
+  // arrival — a defender who sprints flat out at a slowing receiver overruns.
+  const brakeClose = (dist: number) => Math.sqrt(2 * a.profile.brake * 0.5 * Math.max(0, dist - 0.3)) + 1;
   let vx: number;
   let vy: number;
   if (d > 4) {
-    // Far away: sprint at a lead point.
+    // Far away: run at a lead point.
     const lead = Math.min(1.2, d / vmax);
     const lx = ex + targetVel.x * lead;
     const ly = ey + targetVel.y * lead;
     const l = Math.hypot(lx, ly) || 1;
-    vx = (lx / l) * vmax;
-    vy = (ly / l) * vmax;
+    const close = Math.min(vmax, brakeClose(d));
+    vx = targetVel.x + (lx / l) * close;
+    vy = targetVel.y + (ly / l) * close;
   } else {
     const k = opts.gain ?? 2.2;
-    vx = targetVel.x + ex * k;
-    vy = targetVel.y + ey * k;
-    const sp = Math.hypot(vx, vy);
-    if (sp > vmax) {
-      vx *= vmax / sp;
-      vy *= vmax / sp;
-    }
+    const close = Math.min(k * d, brakeClose(d));
+    vx = targetVel.x + (ex / (d || 1)) * close;
+    vy = targetVel.y + (ey / (d || 1)) * close;
+  }
+  const sp = Math.hypot(vx, vy);
+  if (sp > vmax) {
+    vx *= vmax / sp;
+    vy *= vmax / sp;
   }
   return { vel: { x: vx, y: vy }, facing: opts.facing, cutSkill: opts.cutSkill };
 }

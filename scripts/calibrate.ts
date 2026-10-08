@@ -19,7 +19,9 @@ const acc = {
   rushAtt: 0, rushYds: 0, stuffs: 0, run10: 0, comp20: 0, air: 0, airN: 0, yac: 0, yacN: 0, ttt: 0, tttN: 0,
   pressured: 0, third: 0, thirdConv: 0, fga: 0, fgm: 0, xpa: 0, xpm: 0, fumLost: 0, penalties: 0, punts: 0, scrambles: 0, drives: 0, td: 0,
   firstDowns: 0, ybc: 0, ybcN: 0, missed: 0, broken: 0, ties: 0, totalYds: 0,
+  sep: 0, sepN: 0, tight: 0, qbReadN: 0, qbFam: 0, audibles: 0,
 };
+const COVER_FAMILY: Record<string, string> = { cover0: '0 man', cover1: '1 man', cover3: '1 zone', cover2: '2 zone', tampa2: '2 zone', cover4: '2 zone', cover6: '2 zone', cover2man: '2 man' };
 const t0 = performance.now();
 for (let g = 0; g < games; g++) {
   const i = rng.int(0, teams.length - 1);
@@ -51,6 +53,12 @@ for (let g = 0; g < games; g++) {
     acc.plays++;
     acc.missed += st.missedTackles;
     acc.broken += st.brokenTackles;
+    if (st.qbRead?.audible) acc.audibles++;
+    if (p.kind === 'pass' && st.qbRead) {
+      acc.qbReadN++;
+      const fam = (c: string) => (COVER_FAMILY[c] ?? c);
+      if (fam(st.qbRead.post ?? st.qbRead.pre) === fam(st.qbRead.actual)) acc.qbFam++;
+    }
     if (p.kind === 'pass') {
       acc.dropbacks++;
       if (st.sacked) acc.sacks++;
@@ -68,6 +76,11 @@ for (let g = 0; g < games; g++) {
           if (p.text.includes('TOUCHDOWN')) acc.passTD++;
         }
         if (st.interceptedBy) acc.ints++;
+        if (st.separation !== undefined && !st.throwaway) {
+          acc.sep += st.separation;
+          acc.sepN++;
+          if (st.separation < 1) acc.tight++;
+        }
         if (st.airYards !== undefined && !st.throwaway) {
           acc.air += st.airYards;
           acc.airN++;
@@ -121,7 +134,13 @@ const rows: Array<[string, number, number, number, string]> = [
   ['Fumbles lost / team-game', acc.fumLost / tg, 0.4, 0.7, ''],
   ['Punts / team-game', acc.punts / tg, 3.5, 4.5, ''],
   ['Penalties / team-game (pre-snap+holding)', acc.penalties / tg, 2.5, 4, ''],
-  ['Missed tackles / play', acc.missed / acc.plays, 0.1, 0.2, ''],
+  // Next Gen Stats (2022–24 league averages for qualifying players).
+  ['NGS separation at catch/incompletion', acc.sep / Math.max(1, acc.sepN), 2.8, 3.2, ''],
+  ['NGS tight-window throws (<1 yd)', (100 * acc.tight) / Math.max(1, acc.sepN), 13, 17, '%'],
+  ['QB coverage family read right', (100 * acc.qbFam) / Math.max(1, acc.qbReadN), 70, 90, '%'],
+  ['Checks at the line / play', (100 * acc.audibles) / acc.plays, 2, 8, '%'],
+  // PFF-style missed tackles: whiffs plus broken tackles.
+  ['Missed + broken tackles / play', (acc.missed + acc.broken) / acc.plays, 0.11, 0.16, ''],
 ];
 console.log(`\n${games} games, ${acc.plays} scrimmage plays in ${(ms / 1000).toFixed(1)} s (${(ms / games).toFixed(0)} ms/game), ties ${acc.ties}`);
 console.log('metric'.padEnd(42) + 'sim'.padStart(9) + '   target');

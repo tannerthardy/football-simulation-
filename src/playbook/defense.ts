@@ -121,7 +121,8 @@ export const COVERAGES: Coverage[] = [
       SS: { kind: 'zone', zone: 'deep_half_s' },
       FS: { kind: 'zone', zone: 'deep_half_w' },
     },
-    underneath: ['hook_s', 'hook_w', 'curl_flat_s', 'hook_mid', 'curl_flat_w'],
+    // Corners squat the flats; the hooks and the Mike's middle hook come first.
+    underneath: ['hook_s', 'hook_w', 'hook_mid', 'curl_flat_s', 'curl_flat_w'],
   },
   {
     id: 'tampa2', name: 'Tampa 2', shell: 'two-high', man: false, press: false,
@@ -156,7 +157,8 @@ export const COVERAGES: Coverage[] = [
       CB_W: { kind: 'zone', zone: 'deep_third_w' },
       FS: { kind: 'zone', zone: 'deep_mid' },
     },
-    underneath: ['curl_flat_s', 'curl_flat_w', 'hook_mid', 'hook_s', 'hook_w'],
+    // Three deep, four under: two curl-flat + two hooks; a fifth dropper takes the middle hook.
+    underneath: ['curl_flat_s', 'curl_flat_w', 'hook_s', 'hook_w', 'hook_mid'],
   },
   {
     id: 'cover4', name: 'Cover 4 (Quarters)', shell: 'two-high', man: false, press: false,

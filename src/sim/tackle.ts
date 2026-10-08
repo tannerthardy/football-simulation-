@@ -55,11 +55,11 @@ export function tryTackles(sim: PlaySim): void {
     const dive = range + 0.3;
     const separating = ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
     const behind = (d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y < 0;
-    if (!engaged && dd <= dive && separating > 1.2 && behind && !sim.bond) {
+    if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond) {
       d.nextTackleAt = t + 1;
       d.downUntil = t + 0.7;
-      const p = 0.12 + 0.3 * d.r('tackling') - 0.2 * c.r('elusiveness') - 0.15 * c.r('balance');
-      if (sim.rng.chance(Math.max(0.03, p))) {
+      const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');
+      if (sim.rng.chance(Math.max(0.05, p))) {
         if (sim.firstContactX === null) sim.firstContactX = c.pos.x;
         // Tripped up: the carrier stumbles forward a step and goes down.
         const fall = Math.min(1.5, c.speed * 0.2);
@@ -128,7 +128,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean):
     const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
     const seesIt = pocketQB && Math.cos(c.body.facing - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
     const escape = pocketQB ? (seesIt ? 0.12 + 0.18 * c.r('elusiveness') + 0.08 * c.r('pocketPresence') : 0.03) : 0;
-    const pMiss = clamp(0.04 + 0.28 * (E - T) * (0.5 + 0.5 * openField) + 0.11 * (1 - q) + 0.1 * overrun + (engaged ? 0.2 : 0) + (cs > 7 ? 0.03 : 0) + escape, 0.02, 0.6);
+    const pMiss = clamp(0.02 + 0.2 * (E - T) * (0.5 + 0.5 * openField) + 0.07 * (1 - q) + 0.06 * overrun + (engaged ? 0.15 : 0) + (cs > 7 ? 0.02 : 0) + escape, 0.01, 0.6);
     if (rng.chance(pMiss)) {
       d.missedTackles++;
       sim.stats.missedTackles++;
@@ -150,8 +150,8 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean):
   if (!alreadyWrapped) {
     const armTackle = q < 0.5 || engaged;
     const pBreak = clamp(
-      0.03 + 0.28 * (P - T) + 0.14 * ((mc - md) / mc) + (armTackle ? 0.07 : 0) + 0.05 * (1 - q) + (cosA < -0.3 ? 0.04 : 0) + 0.08 * (B - 0.5) - (closing > 4 ? 0.06 : 0),
-      0.02,
+      0.02 + 0.2 * (P - T) + 0.1 * ((mc - md) / mc) + (armTackle ? 0.05 : 0) + 0.03 * (1 - q) + (cosA < -0.3 ? 0.03 : 0) + 0.06 * (B - 0.5) - (closing > 4 ? 0.05 : 0),
+      0.01,
       0.5,
     );
     if (rng.chance(pBreak)) {

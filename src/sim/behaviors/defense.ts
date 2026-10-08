@@ -294,7 +294,9 @@ export class ZoneCoverage implements Behavior {
       const deepest = vert[0];
       // Pattern read: once the threat stops climbing (breaks in/out or sits)
       // under the deep defender, he drives downhill on it.
-      if (deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1 && deepest.pos.x - sim.los > 6) {
+      // Never while another receiver is climbing into the zone behind it.
+      const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2);
+      if (!climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1 && deepest.pos.x - sim.los > 6) {
         this.target = deepest.r;
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         const react = sim.rng.next() < 0.3 + 0.6 * a.r('playRecognition');
@@ -429,25 +431,24 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
     const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile }, spot.p, a.profile.reach);
     if (tt <= spot.t - sim.t + 0.05) return runThrough(a, spot.p, { speed: 1 });
   }
-  // Can't beat the ball to its path: race to where it comes down to contest
-  // the catch or make the tackle.
+  // Can't beat the ball to its path: drive on the catch point to arrive with
+  // the ball — on the receiver's near side, ready to play through the hands
+  // or make the tackle the moment it's caught.
   const land = arrivalPoint(sim);
   if (land) {
-    // Rally to the catch point from inside-out, a step downfield of it, so the
-    // receiver can't cut back after the catch.
-    const lev = leverage(a, land.y);
-    const dist = Math.hypot(land.x - a.pos.x, land.y - a.pos.y);
-    const k = clamp(dist / 6, 0.3, 1);
-    // Sprint to close, but arrive under control (breaking down) — a defender
-    // who arrives hot gets run around.
-    const control = 1.5 + 3 * (1 - a.r('tackling'));
-    // Aim where the receiver will be a beat after the catch (upfield, inside),
-    // and start breaking down early (gentle braking profile).
-    const tgt = { x: land.x + 2.5 * k, y: land.y + lev * k };
+    const dx0 = a.pos.x - land.x;
+    const dy0 = a.pos.y - land.y;
+    const d0 = Math.hypot(dx0, dy0) || 1;
+    const off = Math.min(0.9, d0);
+    const lev = leverage(a, land.y) * 0.3;
+    const tgt = { x: land.x + (dx0 / d0) * off, y: land.y + (dy0 / d0) * off + lev };
     const dx = tgt.x - a.pos.x;
     const dy = tgt.y - a.pos.y;
     const d = Math.hypot(dx, dy) || 1;
-    const allowed = Math.sqrt(control * control + 2 * a.profile.brake * 0.45 * Math.max(0, d - 0.3));
+    // Full speed, breaking down only in the last couple of yards; sure
+    // tacklers arrive under more control.
+    const control = 2.2 + 2.5 * (1 - a.r('tackling'));
+    const allowed = Math.sqrt(control * control + 2 * a.profile.brake * 0.7 * Math.max(0, d - 0.3));
     const sp = Math.min(a.profile.vmax, allowed);
     return { vel: { x: (dx / d) * sp, y: (dy / d) * sp } };
   }

@@ -3,7 +3,7 @@
  * route-running skill and the traction ellipse, option routes that convert
  * vs. man/zone), tracking the ball in flight, and blocking after the catch.
  */
-import { FIELD_WIDTH } from '../../core/field.js';
+import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -56,25 +56,31 @@ export class RouteRunner implements Behavior {
 
   private buildPath(start: Vec2, pts: RoutePoint[], extend: boolean): PathPoint[] {
     const sim = this.sim;
+    // Nothing runs out the back of the end zone.
+    const endX = OPP_GOAL_X + 8.5;
     const out: PathPoint[] = pts.map((rp) => ({
-      p: { x: sim.los + rp.d, y: clamp(start.y + rp.l * this.outside, 1.2, FIELD_WIDTH - 1.2) },
+      p: { x: Math.min(endX, sim.los + rp.d), y: clamp(start.y + rp.l * this.outside, 1.2, FIELD_WIDTH - 1.2) },
       s: rp.s ?? 1,
     }));
     if (extend && out.length >= 1) {
       const last = out[out.length - 1].p;
       const prev = out.length >= 2 ? out[out.length - 2].p : start;
       const d = norm(sub(last, prev));
-      // Receivers working toward the sideline turn upfield a few yards inside it.
-      const lo = 3.5;
-      const hi = FIELD_WIDTH - 3.5;
+      // Receivers working toward the sideline turn upfield a few yards inside
+      // it, leaving room to round the corner at speed and stay inbounds.
+      const lo = 5;
+      const hi = FIELD_WIDTH - 5;
       // Extend along the final leg; if that runs into the sideline, turn upfield there.
       let k = 40;
       if (d.y < -1e-6) k = Math.min(k, (last.y - lo) / -d.y);
       if (d.y > 1e-6) k = Math.min(k, (hi - last.y) / d.y);
-      const edge = { x: last.x + d.x * k, y: last.y + d.y * k };
+      const edge = { x: Math.min(endX, last.x + d.x * k), y: last.y + d.y * k };
       if (k < 39) {
+        // Flat routes turn up a few yards and then work back to the QB; other
+        // routes turn upfield and keep running.
+        const up = this.route.family === 'flat' ? 5 : 40;
         out.push({ p: edge, s: 0.75 });
-        out.push({ p: { x: edge.x + 40, y: edge.y }, s: 1 });
+        out.push({ p: { x: Math.min(endX, edge.x + up), y: edge.y }, s: this.route.family === 'flat' ? 0.6 : 1 });
       } else out.push({ p: edge, s: 1 });
     }
     return out;
@@ -86,6 +92,7 @@ export class RouteRunner implements Behavior {
     const cutSkill = 0.8 + 0.4 * rr;
 
     this.handleRelease(a, sim);
+    if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
 
     // Option routes read the coverage once.
     if (!this.converted && sim.t >= this.readAt && this.route.end === 'sitVsZone') {
@@ -143,6 +150,36 @@ export class RouteRunner implements Behavior {
       return { vel: arriveVelocity(body, tgt.p, body.profile.vmax, through), cutSkill };
     }
     return null;
+  }
+
+  private drill: { at: number; spot: Vec2 } | null = null;
+
+  /**
+   * Scramble drill: the play has broken down. Deep receivers come back toward
+   * the QB, short ones work across to his side, and everyone keeps moving
+   * toward grass away from the nearest defender, every half second.
+   */
+  private scrambleDrill(a: Agent, sim: PlaySim): MoveCommand {
+    const qb = sim.qb;
+    if (!this.drill || sim.t >= this.drill.at) {
+      const depth = a.pos.x - sim.los;
+      const baseX = sim.los + (depth > 14 ? Math.max(10, depth - 9) : clamp(depth + 2, 4, 12));
+      const baseY = a.pos.y + (qb.pos.y - a.pos.y) * (depth > 14 ? 0.15 : 0.35);
+      let best: Vec2 = { x: baseX, y: baseY };
+      let bestScore = -Infinity;
+      for (const [dx, dy] of [[0, 0], [0, 4], [0, -4], [3, 0], [-3, 0], [2, 3], [2, -3]]) {
+        const p = { x: Math.min(OPP_GOAL_X + 8, baseX + dx), y: clamp(baseY + dy, 2, FIELD_WIDTH - 2) };
+        let near = Infinity;
+        for (const d of sim.defense) near = Math.min(near, Math.hypot(d.pos.x - p.x, d.pos.y - p.y));
+        const score = Math.min(near, 6) - 0.15 * Math.hypot(p.x - a.pos.x, p.y - a.pos.y);
+        if (score > bestScore) {
+          bestScore = score;
+          best = p;
+        }
+      }
+      this.drill = { at: sim.t + 0.5, spot: best };
+    }
+    return goTo(a, this.drill.spot, { speed: 0.85, facing: angleTo(a.pos, qb.pos) });
   }
 
   private skipPassed(a: Agent): void {

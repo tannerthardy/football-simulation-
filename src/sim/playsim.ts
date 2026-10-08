@@ -15,6 +15,7 @@ import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type TeamSide } from './agent.js';
+import { QBMind } from './qbmind.js';
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, updateEngagements } from './engagement.js';
@@ -42,6 +43,10 @@ export interface PlaySetup {
   wind?: Vec2;
   /** Record one frame every N ticks (default 2 → 10 Hz). */
   recordEvery?: number;
+  /** Down (for the QB's pre-snap checks). */
+  down?: number;
+  /** Let the QB check out of the call at the line. */
+  audibles?: boolean;
 }
 
 const MAX_PLAY_TIME = 25;
@@ -57,11 +62,13 @@ export class PlaySim {
   readonly los: number;
   readonly ballY: number;
   readonly firstDownX: number;
-  readonly offCall: OffensivePlayCall;
+  offCall: OffensivePlayCall;
   readonly defCall: DefensivePlayCall;
   readonly offAlign: OffenseAlignment;
   readonly defAlign: DefenseAlignment;
-  readonly isPass: boolean;
+  isPass: boolean;
+  /** The quarterback's read of the defense (coverage belief, vision). */
+  qbMind!: QBMind;
   readonly hurry: boolean;
   readonly wind: Vec2;
   ball: BallState;
@@ -91,6 +98,8 @@ export class PlaySim {
   crossedLOS = false;
   /** Did the offense intend to pass and the QB tucked and ran. */
   scrambled = false;
+  /** QB is extending the play: receivers break off their routes and find grass. */
+  scrambleDrill = false;
   stats: PlayStats = {
     tacklers: [],
     completed: false,
@@ -150,6 +159,12 @@ export class PlaySim {
     if (!qb) throw new Error('No QB in offensive personnel');
     this.ball = { kind: 'held', carrier: qb };
     this.perception = new PerceptionBuffer(this.agents.length, this.dt);
+    this.qbMind = new QBMind(this, qb);
+    if (setup.audibles) {
+      this.offCall = this.qbMind.preSnapCheck(this.offCall, { hurry: this.hurry, down: setup.down ?? 1, distance: this.firstDownX - this.los });
+      this.isPass = this.offCall.kind === 'pass';
+    }
+    this.stats.qbRead = this.qbMind.report;
     assignBehaviors(this);
     this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
   }

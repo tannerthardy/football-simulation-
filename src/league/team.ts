@@ -28,6 +28,8 @@ export interface Team {
     manRate: number;
     /** Shadow the opponent's best receiver with the top corner. */
     shadow: boolean;
+    /** How often the secondary disguises its coverage pre-snap. */
+    disguise: number;
   };
 }
 
@@ -96,6 +98,7 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
       blitzRate: rng.range(0.15, 0.4),
       manRate: rng.range(0.25, 0.55),
       shadow: rng.chance(0.35),
+      disguise: rng.range(0.1, 0.45),
     },
   };
 }

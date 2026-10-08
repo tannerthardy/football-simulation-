@@ -1,6 +1,7 @@
 import type { Vec2, Vec3 } from '../core/vec.js';
 import type { BallFlight } from '../physics/ball.js';
 import type { Agent, TeamSide } from './agent.js';
+import type { QBReadReport } from './qbmind.js';
 
 export type BallState =
   | { kind: 'held'; carrier: Agent }
@@ -138,4 +139,6 @@ export interface PlayStats {
   dropped: boolean;
   /** Interception/fumble return yards for the defense. */
   returnYards?: number;
+  /** What the QB believed the coverage was, and any check at the line. */
+  qbRead?: QBReadReport;
 }

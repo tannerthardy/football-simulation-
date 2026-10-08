@@ -37,14 +37,20 @@ describe('integrator', () => {
   const rng = new Rng(42);
   const wr = generatePlayer(rng, 'WR', { quality: 0.6 });
 
-  it('a straight sprint from rest runs the 40 close to the player\'s 40 time', () => {
+  function sprint40(): number {
     const b = bodyFor(wr);
     let t = 0;
     while (b.pos.x < 40 && t < 10) {
       stepBody(b, { vel: { x: 20, y: 0 } }, DT);
       t += DT;
     }
-    expect(Math.abs(t - wr.measurables.forty)).toBeLessThan(0.15);
+    return t;
+  }
+
+  it('a straight sprint in pads runs the 40 a little slower than the combine time', () => {
+    const extra = sprint40() - wr.measurables.forty;
+    expect(extra).toBeGreaterThan(0.05);
+    expect(extra).toBeLessThan(0.35);
   });
 
   it('cannot cut 90 degrees at full speed without bleeding speed', () => {
@@ -69,7 +75,7 @@ describe('integrator', () => {
   it('timeToReach from rest approximates a straight sprint', () => {
     const b = bodyFor(wr);
     const t = timeToReach({ pos: b.pos, vel: b.vel, profile: b.profile }, { x: 40, y: 0 });
-    expect(Math.abs(t - wr.measurables.forty)).toBeLessThan(0.1);
+    expect(Math.abs(t - sprint40())).toBeLessThan(0.1);
     // Running the wrong way costs extra time.
     const tBack = timeToReach({ pos: b.pos, vel: { x: -8, y: 0 }, profile: b.profile }, { x: 40, y: 0 });
     expect(tBack).toBeGreaterThan(t + 0.5);

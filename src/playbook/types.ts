@@ -225,6 +225,11 @@ export interface DefensivePlayCall {
   front: Front;
   coverage: Coverage;
   pressure: Pressure | null;
+  /**
+   * Disguise: the coverage the secondary *shows* pre-snap. DBs align in this
+   * look and rotate to the real coverage at the snap (absent = no disguise).
+   */
+  shown?: Coverage;
   label: string;
 }
 

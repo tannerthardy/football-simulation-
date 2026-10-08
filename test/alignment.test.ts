@@ -62,8 +62,11 @@ describe('defensive alignment', () => {
     expect(d.rushers.length).toBe(4);
     const zones = Object.values(d.spots).map((s) => s!.zone).filter(Boolean);
     expect(zones).toContain('deep_mid');
+    // Three deep, four under: two curl-flat players and two hooks.
     expect(zones).toContain('curl_flat_s');
-    expect(zones).toContain('hook_mid');
+    expect(zones).toContain('curl_flat_w');
+    expect(zones).toContain('hook_s');
+    expect(zones).toContain('hook_w');
   });
 
   it('pressures add rushers', () => {

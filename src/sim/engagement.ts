@@ -313,6 +313,9 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   const lat = latOf(axis);
   const doubled = e.helpers.length > 0;
   const inMove = t < e.moveUntil && e.moveOk;
+  // Nobody holds a block forever: past ~2 s the blocker's feet and hands wear
+  // down, he can't re-anchor as well, and the rusher keeps collapsing the pocket.
+  const wear = repWear(sim, e);
 
   // ---- moves at decision points
   if (t >= e.nextMoveAt) {
@@ -328,13 +331,18 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   // to a real power advantage.
   let vAxis = (6 * (fd - fb * 1.08)) / mass + e.impulse;
   // Pass blockers give ground; they don't drive rushers back upfield.
-  vAxis = clamp(vAxis, 0, 2.8);
+  // Pass sets give ground to set depth before anchoring, so the pocket forms
+  // a few yards deep; after that the rush keeps compressing it as the blocker tires.
+  const isT = b.slot === 'LT' || b.slot === 'RT';
+  const belowSet = sim.los - b.pos.x < (isT ? 2.6 : 1.6);
+  vAxis = clamp(vAxis, belowSet ? 0.7 : 0.12 + 0.55 * wear, 2.8);
   e.impulse *= Math.exp(-dt / 0.22);
   e.pushBoost = Math.max(0, e.pushBoost - dt * 1.2);
 
   // Being driven costs the blocker his base; a stalemate lets him re-anchor.
   if (vAxis > 0.9) e.baseB -= dt * 0.45 * (vAxis - 0.9) * (1.2 - tb.balance);
-  e.baseB += dt * (0.25 + 0.55 * tb.feet) * (1 - e.baseB) * (vAxis < 0.6 ? 1 : 0.3);
+  e.baseB += dt * (0.25 + 0.55 * tb.feet) * (1 - e.baseB) * (vAxis < 0.6 ? 1 : 0.3) * (1 - 0.6 * wear);
+  e.baseB -= dt * 0.12 * wear;
   e.baseD += dt * (0.4 + 0.5 * td.balance) * (1 - e.baseD);
 
   // ---- lateral battle: rusher works his side, blocker mirrors back to square
@@ -344,7 +352,7 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   // controlled can't just run around the blocker.
   const freeHands = 0.22 + 0.4 * Math.max(0, -e.control) + (inMove ? 0.45 : 0);
   const rLat = td.lateral * wantsSide * freeHands * (0.8 + 0.4 * td.bend) * (0.5 + 0.5 * e.baseD) * (stalled ? 0.3 : 1);
-  const mirror = tb.lateral * (0.45 + 0.35 * tb.feet) * (0.35 + 0.65 * e.baseB) * (1 + 0.35 * Math.max(0, e.control)) * (doubled ? 1.8 : 1) * (1 + e.repEdge);
+  const mirror = tb.lateral * (0.45 + 0.35 * tb.feet) * (0.35 + 0.65 * e.baseB) * (1 + 0.35 * Math.max(0, e.control)) * (doubled ? 1.8 : 1) * (1 + e.repEdge) * (1 - 0.45 * wear);
   const sep = b.profile.radius + d.profile.radius;
   const quarter = (Math.PI / 2) * sep;
   // The blocker slides to square up (saturating at his mirror speed).
@@ -366,6 +374,12 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   d.body.energy = Math.max(0, d.body.energy - exert);
   b.body.energy = Math.max(0, b.body.energy - exert);
   void lev;
+}
+
+/** 0 early in the rep → 1 once the blocker has been holding up for ~4.5 s. */
+function repWear(sim: PlaySim, e: Engagement): number {
+  const stamina = 0.5 * e.blocker.r('stamina') + 0.5 * e.blocker.body.energy;
+  return clamp((sim.t - e.start - 1.6 - 0.6 * stamina) / 2.5, 0, 1);
 }
 
 function moveFactorOf(m: RushMove, active: boolean): number {
@@ -394,7 +408,7 @@ function resolveMove(sim: PlaySim, e: Engagement): void {
   const td = traits(d);
   const fin = d.r('passRushFinesse');
   const pow = d.r('passRushPower');
-  const counter = 0.45 * tb.hands + 0.25 * tb.read + 0.3 * tb.feet;
+  const counter = (0.45 * tb.hands + 0.25 * tb.read + 0.3 * tb.feet) * (1 - 0.35 * repWear(sim, e));
   const baseBonus = (0.6 - e.baseB) * 1.2;
   const doubled = e.helpers.length > 0 ? -1.4 : 0;
   let skill: number;

@@ -25,6 +25,7 @@ import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
+import type { QBMind } from '../qbmind.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -74,6 +75,10 @@ export class QBPass implements Behavior {
   private readonly clock: number;
   private readonly armSpeed: number;
   private fakeUntil = 0;
+  private readonly mind: QBMind;
+  /** Look-off: eyes on a decoy to move the safety before the first read. */
+  private lookOff: { until: number; decoy: Agent } | null = null;
+  private lookOffChecked = false;
 
   constructor(
     a: Agent,
@@ -87,6 +92,7 @@ export class QBPass implements Behavior {
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.rng.normal(0, 0.25);
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
     if (concept.family === 'playaction') this.fakeUntil = 1.0;
+    this.mind = sim.qbMind;
   }
 
   /** Called after all behaviors are assigned (receivers exist). */
@@ -107,6 +113,43 @@ export class QBPass implements Behavior {
         seen.add(o);
       }
     }
+    this.reads = this.orderReads(sim, this.reads);
+  }
+
+  /**
+   * Where to start, from what he believes pre-snap: against a pressure look
+   * the hot (quickest) route comes first; against man he starts with his best
+   * matchup; otherwise the concept's progression. A wrong belief sends him to
+   * the wrong place first.
+   */
+  private orderReads(sim: PlaySim, reads: Agent[]): Agent[] {
+    const out = [...reads];
+    if (out.length < 2) return out;
+    const m = this.mind;
+    const bt = (r: Agent) => (r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9);
+    if (m.blitzExpected) {
+      const hot = out.slice(0, 4).reduce((b, r) => (bt(r) < bt(b) ? r : b));
+      return [hot, ...out.filter((r) => r !== hot)];
+    }
+    if (m.pMan() > 0.6) {
+      const score = (r: Agent) => {
+        let d: Agent | null = null;
+        let dd = Infinity;
+        for (const o of sim.defense) {
+          const x = Math.hypot(o.pos.x - r.pos.x, o.pos.y - r.pos.y);
+          if (x < dd) {
+            dd = x;
+            d = o;
+          }
+        }
+        if (!d) return 0;
+        return 0.5 * r.r('routeRunning') + 0.25 * (r.profile.vmax - d.profile.vmax) - 0.5 * d.r('manCoverage') + 0.15 * r.r('releaseVsPress');
+      };
+      const first3 = out.slice(0, 3);
+      const best = first3.reduce((b, r) => (score(r) > score(b) ? r : b));
+      if (best !== out[0] && score(best) - score(out[0]) > 0.12) return [best, ...out.filter((r) => r !== best)];
+    }
+    return out;
   }
 
   private receiverFor(sim: PlaySim, ref: ReceiverRef): Agent | null {
@@ -123,6 +166,10 @@ export class QBPass implements Behavior {
     const t = sim.t;
     if (sim.carrier !== a) return stand();
     const facingDown = 0;
+
+    // Eyes: what he looks at is what he sees; everything else is memory and belief.
+    this.mind.observe(this.gazePoint(sim));
+    if (this.mind.justIdentified && this.readIdx === 0) this.reads = this.orderReads(sim, this.reads);
 
     if (this.phase === 'snap') {
       if (t < this.snapAt) return stand(facingDown);
@@ -161,6 +208,8 @@ export class QBPass implements Behavior {
         this.setAt = t;
         this.readStart = t;
       } else {
+        // QBs who lock onto their first read give it away during the drop.
+        if (a.r('decisionMaking') < 0.45) sim.qbEyes = this.reads[0] ?? null;
         const gun = sim.offCall.formation.qb !== 'under';
         // Drop: backpedal from gun, turn-and-drop from under center.
         const facing = gun ? 0 : Math.PI / 2.4;
@@ -177,6 +226,25 @@ export class QBPass implements Behavior {
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
     const u = Math.max(urgency, clockUrgency);
     if (u > 0.5) this.underPressure++;
+
+    // Look-off: veterans hold the safety with their eyes before the first read.
+    if (!this.lookOffChecked) {
+      this.lookOffChecked = true;
+      const vet = Math.min(1, a.player.experience / 6);
+      const p = 0.08 + 0.45 * a.r('decisionMaking') * a.r('anticipation') * (0.5 + 0.5 * vet);
+      if (this.concept.family !== 'quick' && this.reads.length > 1 && sim.rng.chance(p)) {
+        const side = Math.sign(this.reads[0].pos.y - sim.ballY);
+        const decoy = this.reads.find((r) => Math.sign(r.pos.y - sim.ballY) !== side);
+        if (decoy) {
+          this.lookOff = { until: t + 0.25 + 0.1 * sim.rng.next(), decoy };
+          this.readStart = this.lookOff.until;
+        }
+      }
+    }
+    if (this.lookOff && t < this.lookOff.until && pressure.time > 0.6) {
+      sim.qbEyes = this.lookOff.decoy;
+      return this.pocketMove(a, sim, this.lookOff.decoy);
+    }
 
     const read = this.reads[this.readIdx];
     sim.qbEyes = read ?? null;
@@ -211,10 +279,14 @@ export class QBPass implements Behavior {
       return this.evade(a, sim, pressure.agent);
     }
 
-    // Internal clock expired.
+    // Internal clock expired: receivers go to the scramble drill, and he has to
+    // get rid of it — escape, find someone uncovering, or throw it away.
     if (clockUrgency >= 1) {
+      sim.scrambleDrill = true;
       if (this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
+      const over = timeSet + this.snapAt + this.drop.time - this.clock;
       if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.rng.chance(0.06)) return this.throwAway(a, sim);
+      if ((over > 0.8 && sim.rng.chance(0.06 + 0.1 * a.r('awareness'))) || over > 2.2) return this.throwAway(a, sim);
     }
     // Mobile QBs leave the pocket when coverage holds and the lane is there.
     if (timeSet > 1.0 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.rng.chance(0.06 + 0.14 * a.r('elusiveness'))) {
@@ -222,6 +294,15 @@ export class QBPass implements Behavior {
     }
 
     return this.pocketMove(a, sim, read);
+  }
+
+  private gazePoint(sim: PlaySim): Vec2 {
+    if (this.lookOff && sim.t < this.lookOff.until) return this.lookOff.decoy.pos;
+    if (this.phase === 'windup' && this.pending) return this.pending.point;
+    const read = this.reads[this.readIdx];
+    // During the drop: the key (middle-of-field safety); quick game eyes the first read.
+    if ((this.phase === 'snap' || this.phase === 'drop') && this.concept.family !== 'quick') return { x: sim.los + 12, y: sim.ballY };
+    return read ? read.pos : { x: sim.los + 10, y: sim.ballY };
   }
 
   private ready(r: Agent, sim: PlaySim): boolean {
@@ -296,7 +377,8 @@ export class QBPass implements Behavior {
     const v0 = dragFreeLaunch(from, point, T);
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
-      const seen = sim.see(a, d, 1.0);
+      // Not where the defender is: where the QB thinks he is.
+      const seen = this.mind.estimate(d);
       const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile };
       const facingQB = Math.cos(d.body.facing - Math.atan2(a.pos.y - d.pos.y, a.pos.x - d.pos.x)) > 0.2;
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);

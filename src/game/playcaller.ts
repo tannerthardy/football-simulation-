@@ -21,7 +21,7 @@ import type { ManPreference } from '../playbook/alignment.js';
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
-import type { DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot } from '../playbook/types.js';
+import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot } from '../playbook/types.js';
 import { OFF_PERSONNEL } from '../playbook/types.js';
 import type { Team } from '../league/team.js';
 
@@ -339,8 +339,17 @@ export class DefensiveCoordinator {
       const wr1 = [...Object.entries(offSlots)].filter(([, p]) => p && p.position === 'WR').sort((a, b) => overallAt(b[1]!) - overallAt(a[1]!))[0];
       if (wr1) prefs.overrides = { CB_S: wr1[0] as SkillSlot };
     }
+    // Disguise: show the other shell and rotate at the snap. Smart safeties
+    // make it work; it costs them a late start to their real landmarks.
+    let shown: Coverage | undefined;
+    const safeties = this.team.roster.filter((p) => p.position === 'S').sort((a, b) => overallAt(b) - overallAt(a)).slice(0, 2);
+    const dbIQ = safeties.length ? avg(safeties.map((p) => r01(p.ratings.playRecognition))) : 0.5;
+    if (rng.chance(coach.disguise * (0.6 + 0.8 * dbIQ))) {
+      const pool = coverage.shell === 'one-high' || coverage.id === 'cover0' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
+      shown = COVERAGE_BY_ID[rng.pick(pool.filter((id) => id !== coverage.id))];
+    }
     return {
-      call: { personnel, front, coverage, pressure, label: `${front.name} ${coverage.name}${pressure ? ` + ${pressure.name}` : ''}` },
+      call: { personnel, front, coverage, pressure, shown, label: `${front.name} ${coverage.name}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
     };
   }

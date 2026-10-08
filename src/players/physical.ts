@@ -90,7 +90,14 @@ const MOVEMENT_TECHNIQUE: Partial<Record<Position, { backpedal: number; shuffle:
 export function derivePhysical(p: Player): PhysicalProfile {
   const m = p.measurables;
   const r = p.ratings;
-  const { vmax, tau } = solveSprint(m.tenSplit, m.forty);
+  const sprint = solveSprint(m.tenSplit, m.forty);
+  // The 40 is run in shorts on a track. In pads, doing football things,
+  // players reach less of that top speed, and big men far less: tracking data
+  // puts in-game maxima near 20 mph for receivers and ~15–16 for linemen.
+  // Initial burst (top speed / tau) is kept.
+  const gameSpeed = clamp(0.95 - 0.0008 * Math.max(0, m.weightLb - 195), 0.84, 0.95);
+  const vmax = sprint.vmax * gameSpeed;
+  const tau = sprint.tau * gameSpeed;
 
   const agilitySkill = r01((r.balance + r.elusiveness * 0.5 + r.routeRunning * 0.5) / 2);
   // Short shuttle ~3.95 elite → ~4.8 slow; 3-cone ~6.55 elite → ~8.0 slow.

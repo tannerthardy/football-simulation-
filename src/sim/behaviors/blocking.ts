@@ -28,6 +28,7 @@ export const isOL = (a: Agent): boolean => OL.has(a.slot);
 
 export class ProtectionCoordinator {
   private lastT = -1;
+  private readonly sticky = new Map<Agent, Agent>();
   readonly assigned = new Map<Agent, Agent | null>();
   readonly protectors: Agent[] = [];
   readonly homeY = new Map<Agent, number>();
@@ -56,12 +57,30 @@ export class ProtectionCoordinator {
     const taken = new Set<Agent>();
     for (const b of this.protectors) if (b.engagement) taken.add(b.engagement.defender);
     const unblocked = rushers.filter((r) => !r.engagement && !taken.has(r));
+    const usedB = new Set<Agent>();
+    const usedR = new Set<Agent>();
+    const zoneOf = (b: Agent) => (isOL(b) ? (b.slot === 'LT' || b.slot === 'RT' ? 5.5 : 2.6) : 8);
+    // Assignments hold once made: a blocker keeps his man unless someone else
+    // has picked him up, he's down, or he has left this blocker's area (a game
+    // or twist — then he's passed off).
+    for (const [b, r] of [...this.sticky]) {
+      const home = this.homeY.get(b)!;
+      if (!free.includes(b) || r.isDown(sim.t) || r.engagement || taken.has(r) || Math.abs(r.pos.y - home) > zoneOf(b) + 1.5) {
+        this.sticky.delete(b);
+        continue;
+      }
+      usedB.add(b);
+      usedR.add(r);
+      this.assigned.set(b, r);
+    }
     const pairs: Array<{ b: Agent; r: Agent; cost: number }> = [];
     for (const b of free) {
+      if (usedB.has(b)) continue;
       const home = this.homeY.get(b)!;
       const isT = b.slot === 'LT' || b.slot === 'RT';
-      const zone = isOL(b) ? (isT ? 5.5 : 2.6) : 8;
+      const zone = zoneOf(b);
       for (const r of unblocked) {
+        if (usedR.has(r)) continue;
         if (Math.abs(r.pos.y - home) > zone) continue;
         // Don't chase rushers who are already past.
         if (r.pos.x < b.pos.x - 1.5 && isOL(b)) continue;
@@ -73,13 +92,12 @@ export class ProtectionCoordinator {
       }
     }
     pairs.sort((p, q) => p.cost - q.cost);
-    const usedB = new Set<Agent>();
-    const usedR = new Set<Agent>();
     for (const { b, r } of pairs) {
       if (usedB.has(b) || usedR.has(r)) continue;
       usedB.add(b);
       usedR.add(r);
       this.assigned.set(b, r);
+      this.sticky.set(b, r);
     }
     // Spare protectors help: double the nearest engaged rusher.
     for (const b of free) {
@@ -139,7 +157,8 @@ export class PassProtector implements Behavior {
     // inside counter).
     const toQB = norm(sub(qb.pos, r.pos));
     const arm = a.player.measurables.armIn / 36;
-    const contact = a.profile.radius + r.profile.radius + 0.1 + arm * 0.3;
+    // Punching range: bodies plus most of an arm's length.
+    const contact = a.profile.radius + r.profile.radius + 0.1 + arm * 0.55;
     const out = Math.sign(r.pos.y - sim.ballY) || 1;
     const edgeRusher = Math.abs(r.pos.y - sim.ballY) > 3;
     const fear = edgeRusher ? clamp((r.speed - 4) / 5, 0, 1) : 0.2;
@@ -158,7 +177,11 @@ export class PassProtector implements Behavior {
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
-    if (dd < contact + 0.15) {
+    // A tackle late to the spot can still get a punch on a speed rusher's near
+    // shoulder as he goes by; the rep then starts from a losing angle.
+    const passing = r.speed > 4.5 && r.pos.x < a.pos.x + 0.6;
+    const reachOut = edgeRusher && passing ? 0.15 + 0.3 * traits(a).feet : 0;
+    if (dd < contact + 0.15 + reachOut) {
       sim.engage(a, r, 'pass');
       return stand();
     }

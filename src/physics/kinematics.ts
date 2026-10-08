@@ -22,6 +22,8 @@ export interface Body {
   /** 0–1 energy reservoir. */
   energy: number;
   profile: PhysicalProfile;
+  /** Seconds of recent near-max sprinting (speed endurance). */
+  sprintLoad?: number;
 }
 
 export interface MoveCommand {
@@ -59,7 +61,12 @@ export function directionalSpeedFactor(profile: PhysicalProfile, relAngle: numbe
 /** Effective top speed of a body moving in direction `heading`. */
 export function effectiveVmax(body: Body, heading: number, effort = 1): number {
   const rel = angleDiff(body.facing, heading);
-  return body.profile.vmax * fatigueFactor(body.energy) * directionalSpeedFactor(body.profile, rel) * effort;
+  return body.profile.vmax * fatigueFactor(body.energy) * enduranceFactor(body) * directionalSpeedFactor(body.profile, rel) * effort;
+}
+
+/** Long sprints fade: after ~3.5 s near top speed, up to 10% slower. */
+export function enduranceFactor(body: Body): number {
+  return 1 - 0.1 * clamp(((body.sprintLoad ?? 0) - 3.5) / 5, 0, 1);
 }
 
 /** Propulsive acceleration available at speed `speed` toward a cap `cap`. */
@@ -134,6 +141,8 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
 
   // --- energy: mechanical work + speed cost ---
   const nspeed = Math.hypot(nvx, nvy);
+  const frac = nspeed / p.vmax;
+  body.sprintLoad = Math.max(0, (body.sprintLoad ?? 0) + (frac > 0.85 ? dt : frac < 0.7 ? -0.5 * dt : 0));
   const work = Math.max(0, ax * nvx + ay * nvy) / (p.vmax * (p.vmax / p.tau));
   const speedCost = (nspeed / p.vmax) ** 2;
   body.energy = clamp(body.energy - (0.0045 + 0.03 * work + 0.012 * speedCost) * dt, 0, 1);

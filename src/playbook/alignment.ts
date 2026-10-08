@@ -324,6 +324,7 @@ export interface ManPreference {
  * field. Returns spots with roles, man targets and zone landmarks resolved.
  */
 export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, present: DefSlot[], prefs: ManPreference = {}): DefenseAlignment {
+  if (call.shown && call.shown.id !== call.coverage.id) return alignDisguised(call, off, present, prefs);
   const s = off.strongSign;
   const los = off.los;
   const cov = call.coverage;
@@ -368,8 +369,15 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const y = r2 && !off.spots[off.numbering[`${side}2` as ReceiverRef]!].inline ? r2.y - sign * 0.8 : apex;
     spots[slot] = { slot, pos: { x: los + (cov.press ? 1.5 : 5), y }, role: { kind: 'rush' }, gap: 'D', gapSign: sign, press: cov.press };
   };
-  placeSlotDB('NB', 'S');
-  placeSlotDB('DB', 'W');
+  // The nickel goes to the side with a detached slot: vs. an inline TE and a
+  // flanker on the strong side, the slot is usually to the weak side.
+  const detached = (side: 'S' | 'W') => {
+    const r = off.numbering[`${side}2` as ReceiverRef];
+    return !!r && !off.spots[r].inline;
+  };
+  const nickelSide: 'S' | 'W' = !detached('S') && detached('W') ? 'W' : 'S';
+  placeSlotDB('NB', nickelSide);
+  placeSlotDB('DB', nickelSide === 'S' ? 'W' : 'S');
 
   // Safeties by shell.
   if (has('FS') || has('SS')) {
@@ -524,4 +532,28 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   }
   const rushers = present.filter((p) => spots[p]!.role.kind === 'rush' || spots[p]!.role.kind === 'blitz');
   return { spots, rushers, coverage: cov, boxCount: box };
+}
+
+/**
+ * Disguised coverage: roles, man matchups and landmarks come from the real
+ * call; the secondary and off-ball linebackers stand where the shown coverage
+ * would put them and rotate at the snap. Linemen and blitzers align as played.
+ * Press only survives if both looks press (you can't jam from 7 yards).
+ */
+function alignDisguised(call: DefensivePlayCall, off: OffenseAlignment, present: DefSlot[], prefs: ManPreference): DefenseAlignment {
+  const played = alignDefense({ ...call, shown: undefined }, off, present, prefs);
+  const look = alignDefense({ ...call, coverage: call.shown!, pressure: null, shown: undefined }, off, present, prefs);
+  for (const slot of present) {
+    const p = played.spots[slot]!;
+    const l = look.spots[slot];
+    if (!l || p.role.kind === 'rush' || p.role.kind === 'blitz') continue;
+    p.pos = { ...l.pos };
+    p.press = !!p.press && !!l.press;
+  }
+  let box = 0;
+  for (const slot of present) {
+    const q = played.spots[slot]!.pos;
+    if (q.x - off.los < 7.5 && Math.abs(q.y - off.ballY) < 6) box++;
+  }
+  return { ...played, boxCount: box };
 }
