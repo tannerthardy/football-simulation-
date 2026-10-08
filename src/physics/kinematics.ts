@@ -116,7 +116,7 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
     const cap = len(desired);
     const At = at >= 0 ? Math.max(driveAccel(p, speed, Math.max(cap, speed)) * fat, 0.01) : p.brake * (0.85 + 0.15 * fat);
     // Cutting is harder at high speed.
-    const An = p.lateral * cutSkill * (1 - 0.3 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fat);
+    const An = p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fat);
     const k = (at / At) ** 2 + (an / An) ** 2;
     if (k > 1) {
       const s = 1 / Math.sqrt(k);

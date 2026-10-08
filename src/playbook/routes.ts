@@ -20,7 +20,7 @@ export const ROUTES: Record<string, RouteDef> = {
     points: [{ d: 6, l: 0, s: 0.25 }, { d: 5.5, l: -0.6, s: 0 }],
     vsMan: [{ d: 6, l: 0, s: 0.4 }, { d: 6, l: 9, s: 0.9 }],
   },
-  flat: { id: 'flat', family: 'flat', depth: 2, end: 'continue', points: [{ d: 1.5, l: 2, s: 0.9 }, { d: 3, l: 13 }] },
+  flat: { id: 'flat', family: 'flat', depth: 3, end: 'continue', points: [{ d: 1.5, l: 2, s: 0.9 }, { d: 3.5, l: 12 }] },
   arrow: { id: 'arrow', family: 'flat', depth: 4, end: 'continue', points: [{ d: 4, l: 5, s: 0.9 }, { d: 6, l: 14 }] },
   // Intermediate
   out: { id: 'out', family: 'intermediate', depth: 10, end: 'continue', points: [{ d: 10, l: 0, s: 0.4 }, { d: 9.5, l: 12, s: 0.9 }] },

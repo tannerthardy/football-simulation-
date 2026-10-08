@@ -31,8 +31,10 @@ export interface PhysicalProfile {
   radius: number;
   /** Horizontal reach from body center (catch / tackle radius), yd. */
   reach: number;
-  /** Highest point the player can catch the ball, yd. */
+  /** Highest point the player can catch the ball with a timed leap, yd. */
   maxCatchHeight: number;
+  /** Hands-up height without a timed jump (reacting to a ball overhead), yd. */
+  reactReach: number;
   /** Perception delay, s. */
   reactionTime: number;
   /** Functional push force in "body-weight-g" units, used by engagements. */
@@ -78,9 +80,10 @@ const MOVEMENT_TECHNIQUE: Partial<Record<Position, { backpedal: number; shuffle:
   CB: { backpedal: 0.72, shuffle: 0.62 },
   S: { backpedal: 0.68, shuffle: 0.6 },
   LB: { backpedal: 0.6, shuffle: 0.58 },
-  OT: { backpedal: 0.5, shuffle: 0.5 },
-  OG: { backpedal: 0.45, shuffle: 0.48 },
-  C: { backpedal: 0.45, shuffle: 0.48 },
+  // Kick-slide: tackles are the best backward-lateral movers on the line.
+  OT: { backpedal: 0.62, shuffle: 0.6 },
+  OG: { backpedal: 0.52, shuffle: 0.55 },
+  C: { backpedal: 0.52, shuffle: 0.55 },
   QB: { backpedal: 0.55, shuffle: 0.5 },
 };
 
@@ -95,13 +98,15 @@ export function derivePhysical(p: Player): PhysicalProfile {
   const coneScore = clamp((8.05 - m.threeCone) / 1.5, 0, 1.2);
   const balance = r01(r.balance);
 
-  const brake = clamp(6.2 + 4.2 * shuttleScore + 1.0 * balance, 5.5, 12.5);
-  const lateral = clamp(6.0 + 4.6 * coneScore + 0.9 * balance + 0.6 * agilitySkill, 5.5, 13);
+  // Plant-and-cut forces: elite change-of-direction athletes briefly exceed 1.3 g.
+  const brake = clamp(8.0 + 5.0 * shuttleScore + 1.2 * balance, 7, 15);
+  const lateral = clamp(7.5 + 5.5 * coneScore + 1.0 * balance + 0.8 * agilitySkill, 7, 16);
   const turnRate = clamp(5.5 + 5.0 * (0.6 * coneScore + 0.4 * shuttleScore), 4.5, 12);
 
   const tech = MOVEMENT_TECHNIQUE[p.position] ?? { backpedal: 0.55, shuffle: 0.52 };
-  const coverSkill = r01(Math.max(r.manCoverage, r.zoneCoverage));
-  const backpedal = clamp(tech.backpedal + 0.08 * (coverSkill - 0.5), 0.4, 0.8);
+  const isOL = p.position === 'OT' || p.position === 'OG' || p.position === 'C';
+  const moveSkill = isOL ? r01(r.passBlock) : r01(Math.max(r.manCoverage, r.zoneCoverage));
+  const backpedal = clamp(tech.backpedal + 0.1 * (moveSkill - 0.5), 0.4, 0.8);
   const shuffle = clamp(tech.shuffle + 0.06 * (coneScore - 0.5), 0.4, 0.7);
 
   const massKg = lbToKg(m.weightLb);
@@ -110,6 +115,7 @@ export function derivePhysical(p: Player): PhysicalProfile {
   const reach = 0.25 + inchesToYards(m.armIn) * 0.85;
   // Standing reach ≈ 1.33 × height; in-game leaping uses ~80% of combine vertical.
   const maxCatchHeight = inchesToYards(m.heightIn * 1.33 + m.vertical * 0.8);
+  const reactReach = inchesToYards(m.heightIn * 1.33 + m.vertical * 0.3);
 
   const recog = r01(0.65 * r.playRecognition + 0.35 * r.awareness);
   const reactionTime = clamp(0.4 - 0.24 * recog, 0.14, 0.42);
@@ -131,6 +137,7 @@ export function derivePhysical(p: Player): PhysicalProfile {
     radius,
     reach,
     maxCatchHeight,
+    reactReach,
     reactionTime,
     power,
   };
