@@ -56,6 +56,7 @@ scoring plays, explosives, turnovers and sacks.
 | `scripts/zone-style-lab.ts` | Pass concepts against one zone coverage played spot drop vs. pattern-match, on paired seeds. |
 | `scripts/recognition-lab.ts` | How fast and how accurately each position group reads run vs. pass, by play and situation, with and without a scouting report. |
 | `scripts/calibrate.ts` | Many full games; league-level metrics vs. NFL targets. |
+| `scripts/tendencies.ts` | Play-calling tendencies (personnel, defensive packages, run-concept mix, play action, coverage shell, team spreads), measured like the NFL extractor. |
 
 ## Layout
 

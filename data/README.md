@@ -119,8 +119,15 @@ repository root:
 npx tsx scripts/data/bdb2017.ts data/raw/bdb2019/Data out/bdb2017-summary.json
 python3 scripts/data/bdb2023.py data/raw/bdb2023 out/bdb2023-summary.json
 npx tsx scripts/data/bdb2025.ts data/raw/bdb2025/big-data-bowl-data out/bdb2025-summary.json
+python3 -I scripts/data/bdb2025_tendencies.py data/raw/bdb2025/big-data-bowl-data out/bdb2025-tendencies.json
 npx tsx scripts/data/bdb2026.ts data/raw/bdb2026/114239_nfl_competition_files_published_analytics_final out/bdb2026-summary.json
 ```
+
+`bdb2025_tendencies.py` uses only the play and player-play tables: team
+personnel, defensive personnel against each offensive group, run-concept
+shares, usage-versus-efficiency selection and team spreads. Compare it with the
+simulation's `npx tsx scripts/tendencies.ts` (see
+[EVALUATION_ENVIRONMENT.md](../docs/EVALUATION_ENVIRONMENT.md)).
 
 The 2025 extractor analyzes every `tracking_week_N.csv` present. To reproduce
 the reviewed two-week tracking summary, supply only weeks 1 and 2 in that input

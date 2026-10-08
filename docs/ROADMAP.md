@@ -45,6 +45,11 @@ be aligned before these become validated tuning targets. See
 
 ## Calibration status
 
+Before reading this table, see [EVALUATION_ENVIRONMENT.md](EVALUATION_ENVIRONMENT.md):
+league aggregates mix engine execution with play-calling and roster selection,
+and our coaches call differently from NFL coaches (e.g. trap and counter are
+27% of our runs and 8.5% of the NFL's).
+
 Snapshot: 64 games over eight independently generated leagues
 (`npm run calibrate -- 64 7`), official plays only — plays wiped out by an
 accepted foul are excluded, and a catch or run that ends in a lost fumble is

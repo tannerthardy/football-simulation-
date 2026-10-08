@@ -47,6 +47,8 @@ export interface PlayLog {
   nullified?: boolean;
   /** Foul during the play and its resolution. */
   foul?: { kind: string; team: string; yards: number; accepted: boolean };
+  /** The calls on a scrimmage snap, for tendency analysis (same fields as the NFL extractor). */
+  plan?: PlayPlan;
   outcome?: PlayResult['outcome'];
   /** Points scored by the offense on this play (6 for a TD), negative for defensive scores. */
   firstDown?: boolean;
@@ -61,6 +63,21 @@ export interface PlayLog {
     flip: boolean;
     events: PlayResult['events'];
   };
+}
+
+export interface PlayPlan {
+  personnel: string;
+  formation: string;
+  qb: 'under' | 'gun' | 'pistol';
+  /** Run scheme or pass concept id. */
+  concept: string;
+  playAction: boolean;
+  /** The QB changed the play at the line. */
+  audible: boolean;
+  defPersonnel: string;
+  coverage: string;
+  shell: string;
+  pressure: boolean;
 }
 
 export interface GameResult {
@@ -525,6 +542,18 @@ export class Game {
     logEntry.stats = r.stats;
     logEntry.outcome = r.outcome;
     logEntry.firstDown = converted;
+    logEntry.plan = {
+      personnel: ranCall.formation.personnel,
+      formation: ranCall.formation.id,
+      qb: ranCall.formation.qb,
+      concept: ranCall.kind === 'run' ? ranCall.run!.scheme : ranCall.pass!.id,
+      playAction: ranCall.kind === 'pass' && ranCall.pass!.family === 'playaction',
+      audible: ranCall !== offCall,
+      defPersonnel: defCall.personnel,
+      coverage: defCall.coverage.id,
+      shell: defCall.coverage.shell,
+      pressure: !!defCall.pressure,
+    };
     if (this.opts.record && r.frames) {
       logEntry.replay = {
         frames: r.frames,

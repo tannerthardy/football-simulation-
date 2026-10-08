@@ -6,6 +6,9 @@ Start with these shared project references:
   diagnostic runs, measurement limitations, and improvement priorities.
 - [Realism implementation plan](docs/REALISM_PLAN.md): proposed architecture,
   subsystem work packages, delivery gates, and ordered implementation backlog.
+- [Evaluation environment](docs/EVALUATION_ENVIRONMENT.md): how to test without
+  play-calling and roster selection bias — NFL context replay, coaching
+  validated separately, league structure, and the order to tune in.
 - [Data guide](data/README.md) and [source catalog](data/sources.json): dataset
   coverage, provenance, access instructions, and summary reproduction commands.
 - [Big Data Bowl 2027 review](docs/reviews/bdb2027-data-review.md): linked combine
