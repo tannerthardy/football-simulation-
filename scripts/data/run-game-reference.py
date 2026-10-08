@@ -51,9 +51,15 @@ def front_proxy(snap, positions, offense, los, by):
     guards = [xy(r)[1] - by for i, r in snap.items() if r["club"] == offense and positions.get(i) == "G"]
     tackles = [xy(r)[1] - by for i, r in snap.items() if r["club"] == offense and positions.get(i) == "T"]
     nose = any(abs(y) < .45 for y in core)
-    if nose and len(guards) == 2 and all(any(abs(g - y) < .4 for y in core) for g in guards):
+    bear = nose and len(guards) == 2 and all(any(g*y>0 and -.2 < abs(y)-abs(g) < .85 for y in core) for g in guards)
+    tite = nose and len(tackles) == 2 and all(any(t*y>0 and .15 < abs(t)-abs(y) < .75 for y in core) for t in tackles)
+    # A 3-tech and a 4i can overlap under different OL splits. Do not resolve
+    # that uncertainty by pretending technique or the called fit is labeled.
+    if bear and tite:
+        return "Reduced_ambiguous_proxy"
+    if bear:
         return "Bear_proxy"
-    if nose and len(tackles) == 2 and all(any(t * y > 0 and .15 < abs(t) - abs(y) < .9 for y in core) for t in tackles):
+    if tite:
         return "Tite_proxy"
     if nose and len(core) >= 3:
         return "Odd_or_reduced_proxy"
@@ -177,7 +183,7 @@ def main():
     output = {"schemaVersion":1,"source":"BDB 2025, 2022 regular season, selected tracking weeks",
               "trackingWeeks":args.weeks,"sources":sources,"cohort":"Non-nullified designed runs with one labeled rusher and 22 players plus ball at a unique snap frame; excludes kneels/spikes/dropbacks. Includes all runner positions.",
               "definitions":{"coordinates":"Offense attacks +x; left plays rotate both axes. LOS and lateral origin use ball at snap. Times use 10 Hz frame IDs.",
-                             "frontProxy":"Heuristic near-LOS geometry at snap, not a true front call. Over/Under require one attached TE and one outside-guard shade. Mixed presentations stay ambiguous.",
+                             "frontProxy":"Heuristic near-LOS geometry at snap, not a true front call. Over/Under require one attached TE and one outside-guard shade. Overlapping Bear/4i windows become Reduced_ambiguous_proxy; mixed presentations stay ambiguous.",
                              "firstSustainedOlProximity":"Same OL/opponent within 1.0 yd for two consecutive 10 Hz frames, first four seconds only. Proximity, not observed hand contact or block success.",
                              "missing":"Each metric has its own n. LOS crossings and contact events are censored/missing on some runs; do not zero-impute.",
                              "blockingLabels":"Opponent labels are sparse on runs; no run assignments or combo releases are inferred from them."},

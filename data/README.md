@@ -192,3 +192,21 @@ python3 scripts/data/bdb2027.py data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-d
 The summary counts all metadata, player-play labels and combine drill tracking.
 It does not derive metrics from game trajectories. A separate audit of
 `game_tracking_2023.csv` is included with the review evidence.
+
+## Run-game coordination evidence
+
+See [the follow-up review](../docs/reviews/run-game-coordination.md) and
+`data/reviews/run-game-coordination/`. The paired run and development matrices
+include per-cell results and source hashes. The NFL tracking reference analyzes
+1,394 designed runs from BDB 2025 weeks 1–2, with explicit metric-specific counts,
+censoring and ambiguous front-geometry proxies. It does not provide labeled
+Duo, wide-zone, split-zone, fit or run-block-assignment truth.
+
+```sh
+python3 scripts/data/run-game-reference.py /path/to/bdb2025/big-data-bowl-data out/nfl-run-reference.json --weeks 1 2
+npm run test:data
+```
+
+The separate all-week tendency summary reproduces the `3c00ca0` extractor;
+its sneak/personnel restrictions differ from the tracking cohort. Mix adjustment
+is an approximate sensitivity check. Raw data and secrets remain outside Git.

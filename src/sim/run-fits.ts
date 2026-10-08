@@ -80,7 +80,9 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
 export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind: 'pull' | 'slice'; pos: Vec2 } | null {
   for (const o of sim.offense) {
     const guard = o.slot === 'LG' || o.slot === 'RG' || o.slot === 'LT' || o.slot === 'RT';
-    const slice = (o.player.position === 'TE' || o.player.position === 'FB') && sim.offAlign.spots[o.slot]?.backfield;
+    const homeSpot=sim.offAlign.spots[o.slot];
+    const slice = (o.player.position === 'TE' || o.player.position === 'FB') && !homeSpot?.inline
+      && homeSpot.pos.x<sim.los-.9 && Math.abs(homeSpot.pos.y-sim.ballY)<6;
     if (!guard && !slice) continue;
     const s = sim.see(a, o), home = sim.offAlign.spots[o.slot].pos;
     if (s.pos.x > sim.los - (guard ? .65 : 1) || Math.abs(s.vel.y) < 1.5 || Math.abs(s.pos.y-home.y) < .6) continue;

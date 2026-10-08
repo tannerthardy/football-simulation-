@@ -7,7 +7,7 @@ r=importlib.util.module_from_spec(spec);spec.loader.exec_module(r)
 
 def fixture(left=False,contact=True):
     positions={str(i):p for i,p in enumerate(['C','G','G','T','T','QB','RB','TE','TE','WR','WR','NT','DT','DT','DE','DE','LB','LB','CB','CB','FS','SS'])}
-    ys=[0,1.3,-1.3,2.6,-2.6,0,0,3.9,-3.9,15,-15,0,1.9,-1.9,4.7,-4.7,1,-1,15,-15,2,-2]
+    ys=[0,1.3,-1.3,2.6,-2.6,0,0,3.9,-3.9,15,-15,0,2.2,-2.2,4.7,-4.7,1,-1,15,-15,2,-2]
     rows=[]
     for f in range(0,31):
         for i in list(positions)+['']:
@@ -52,6 +52,10 @@ class ReferenceTest(unittest.TestCase):
         self.assertEqual(r.front_proxy(snap,positions,'OFF',40,26.667),'Bear_proxy')
         snap.pop('7');snap.pop('8');snap['11']['y']='28'
         self.assertEqual(r.front_proxy(snap,positions,'OFF',40,26.667),'Other_or_ambiguous')
+    def test_overlapping_reduced_windows_remain_ambiguous(self):
+        rows,p,positions=fixture();snap={row['nflId']:row for row in rows if row['frameId']=='10'}
+        for i in ['12','13']:snap[i]['y']=str(26.667+(1.9 if i=='12' else -1.9))
+        self.assertEqual(r.front_proxy(snap,positions,'OFF',40,26.667),'Reduced_ambiguous_proxy')
     def test_cohort_excludes_dropback_nullified_kneel_and_invalid_yards(self):
         p={'yardsGained':'4','playNullifiedByPenalty':'N','isDropback':'FALSE','qbKneel':'FALSE','qbSpike':'FALSE','rushLocationType':'INSIDE_LEFT'}
         self.assertTrue(r.is_run(p))

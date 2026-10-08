@@ -58,6 +58,7 @@ scoring plays, explosives, turnovers and sacks.
 | `scripts/open-field-lab.ts` | One carrier vs. one or two tacklers in scripted open-field scenarios (square, angle, chase, sideline). |
 | `scripts/zone-style-lab.ts` | Pass concepts against one zone coverage played spot drop vs. pattern-match, on paired seeds. |
 | `scripts/recognition-lab.ts` | How fast and how accurately each position group reads run vs. pass, by play and situation, with and without a scouting report. |
+| `scripts/run-development-lab.ts` | Six-front run development matrix; 10 Hz proximity, OL displacement, runner/contact/puller timing, local rule events. |
 | `scripts/run-blocking-lab.ts` | Run concept × formation × front × flip on paired seeds; physical gains, stuffs, ownership, climbs and posture requests. |
 | `scripts/calibrate.ts` | Many full games; league-level metrics vs. NFL targets. |
 | `scripts/tendencies.ts` | Play-calling tendencies (personnel, defensive packages, run-concept mix, play action, coverage shell, team spreads), measured like the NFL extractor. |

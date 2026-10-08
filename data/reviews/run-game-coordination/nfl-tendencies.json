@@ -1,0 +1,563 @@
+{
+ "source": "Big Data Bowl 2025 (2022 weeks 1-9)",
+ "plays": 15300,
+ "offensePersonnel": {
+  "league": {
+   "11": 65.0,
+   "12": 17.8,
+   "21": 8.7,
+   "13": 4.1,
+   "22": 2.9,
+   "20": 0.4
+  },
+  "passRate": {
+   "11": 70.8,
+   "12": 50.1,
+   "21": 45.9,
+   "13": 40.0,
+   "22": 32.2,
+   "20": 55.4
+  },
+  "teamRange": {
+   "11": {
+    "min": [
+     12.9,
+     "BAL"
+    ],
+    "max": [
+     96.7,
+     "LA"
+    ],
+    "sd": 16.4
+   },
+   "12": {
+    "min": [
+     1.5,
+     "LA"
+    ],
+    "max": [
+     33.3,
+     "SEA"
+    ],
+    "sd": 7.4
+   },
+   "21": {
+    "min": [
+     0.0,
+     "CIN"
+    ],
+    "max": [
+     34.5,
+     "MIA"
+    ],
+    "sd": 9.3
+   },
+   "13": {
+    "min": [
+     0.0,
+     "BUF"
+    ],
+    "max": [
+     15.6,
+     "SEA"
+    ],
+    "sd": 3.9
+   },
+   "22": {
+    "min": [
+     0.0,
+     "CAR"
+    ],
+    "max": [
+     26.5,
+     "BAL"
+    ],
+    "sd": 5.2
+   },
+   "20": {
+    "min": [
+     0.0,
+     "ATL"
+    ],
+    "max": [
+     2.5,
+     "DEN"
+    ],
+    "sd": 0.6
+   }
+  }
+ },
+ "defensePersonnelVs": {
+  "11": {
+   "league": {
+    "base": 4.9,
+    "nickel": 79.5,
+    "dime+": 15.6
+   },
+   "mostBase": [
+    [
+     46.8,
+     "ARI"
+    ],
+    [
+     15.4,
+     "ATL"
+    ],
+    [
+     12.9,
+     "JAX"
+    ],
+    [
+     11.3,
+     "MIA"
+    ],
+    [
+     8.1,
+     "GB"
+    ]
+   ],
+   "leastBase": [
+    [
+     0.0,
+     "BUF"
+    ],
+    [
+     0.0,
+     "NE"
+    ],
+    [
+     0.3,
+     "CIN"
+    ],
+    [
+     0.3,
+     "HOU"
+    ],
+    [
+     0.3,
+     "KC"
+    ]
+   ],
+   "baseSd": 8.5
+  },
+  "12": {
+   "league": {
+    "base": 54.2,
+    "nickel": 43.2,
+    "dime+": 2.6
+   },
+   "mostBase": [
+    [
+     97.4,
+     "HOU"
+    ],
+    [
+     97.2,
+     "JAX"
+    ],
+    [
+     96.2,
+     "ARI"
+    ],
+    [
+     90.0,
+     "MIA"
+    ],
+    [
+     86.0,
+     "CLE"
+    ]
+   ],
+   "leastBase": [
+    [
+     0.0,
+     "BUF"
+    ],
+    [
+     6.0,
+     "WAS"
+    ],
+    [
+     9.7,
+     "DAL"
+    ],
+    [
+     17.5,
+     "TEN"
+    ],
+    [
+     18.9,
+     "NE"
+    ]
+   ],
+   "baseSd": 26.3
+  },
+  "21": {
+   "league": {
+    "base": 55.5,
+    "nickel": 43.2,
+    "dime+": 1.3
+   },
+   "mostBase": [
+    [
+     98.4,
+     "MIA"
+    ],
+    [
+     98.1,
+     "HOU"
+    ],
+    [
+     95.0,
+     "SF"
+    ],
+    [
+     89.7,
+     "JAX"
+    ],
+    [
+     85.7,
+     "PIT"
+    ]
+   ],
+   "leastBase": [
+    [
+     2.6,
+     "BUF"
+    ],
+    [
+     13.9,
+     "NE"
+    ],
+    [
+     22.2,
+     "WAS"
+    ],
+    [
+     26.2,
+     "CLE"
+    ],
+    [
+     29.7,
+     "DET"
+    ]
+   ],
+   "baseSd": 24.7
+  }
+ },
+ "runConcepts": {
+  "league": {
+   "OUTSIDE ZONE": 28.7,
+   "INSIDE ZONE": 24.0,
+   "MAN": 16.9,
+   "POWER": 9.4,
+   "PULL LEAD": 8.7,
+   "COUNTER": 6.6,
+   "DRAW": 3.3,
+   "TRAP": 1.9
+  },
+  "teamRange": {
+   "OUTSIDE ZONE": {
+    "min": [
+     9.3,
+     "ARI"
+    ],
+    "max": [
+     54.2,
+     "ATL"
+    ],
+    "teamsAbove30pct": 15
+   },
+   "INSIDE ZONE": {
+    "min": [
+     3.1,
+     "CLE"
+    ],
+    "max": [
+     45.0,
+     "PHI"
+    ],
+    "teamsAbove30pct": 9
+   },
+   "MAN": {
+    "min": [
+     2.2,
+     "NYJ"
+    ],
+    "max": [
+     36.0,
+     "CIN"
+    ],
+    "teamsAbove30pct": 3
+   },
+   "POWER": {
+    "min": [
+     1.1,
+     "ATL"
+    ],
+    "max": [
+     30.1,
+     "BAL"
+    ],
+    "teamsAbove30pct": 1
+   },
+   "PULL LEAD": {
+    "min": [
+     1.2,
+     "SEA"
+    ],
+    "max": [
+     19.3,
+     "BUF"
+    ],
+    "teamsAbove30pct": 0
+   },
+   "COUNTER": {
+    "min": [
+     0.0,
+     "ATL"
+    ],
+    "max": [
+     22.4,
+     "BAL"
+    ],
+    "teamsAbove30pct": 0
+   },
+   "DRAW": {
+    "min": [
+     0.0,
+     "ATL"
+    ],
+    "max": [
+     14.5,
+     "LV"
+    ],
+    "teamsAbove30pct": 0
+   },
+   "TRAP": {
+    "min": [
+     0.0,
+     "ATL"
+    ],
+    "max": [
+     7.7,
+     "LV"
+    ],
+    "teamsAbove30pct": 0
+   }
+  },
+  "topConceptShare": {
+   "median": 34.5,
+   "max": 54.2
+  }
+ },
+ "runConceptSelection": {
+  "byConcept": {
+   "OUTSIDE ZONE": {
+    "teams": 32,
+    "corrShareVsRelEpa": 0.31,
+    "corrShareVsRelStuff": -0.17,
+    "heavyUsers": {
+     "carries": 1103,
+     "ypc": 4.6,
+     "stuff": 17.6,
+     "epa": -0.091
+    },
+    "lightUsers": {
+     "carries": 476,
+     "ypc": 3.87,
+     "stuff": 21.4,
+     "epa": -0.202
+    }
+   },
+   "INSIDE ZONE": {
+    "teams": 30,
+    "corrShareVsRelEpa": 0.22,
+    "corrShareVsRelStuff": -0.07,
+    "heavyUsers": {
+     "carries": 835,
+     "ypc": 4.12,
+     "stuff": 15.8,
+     "epa": -0.072
+    },
+    "lightUsers": {
+     "carries": 468,
+     "ypc": 4.31,
+     "stuff": 11.8,
+     "epa": -0.064
+    }
+   },
+   "MAN": {
+    "teams": 29,
+    "corrShareVsRelEpa": 0.3,
+    "corrShareVsRelStuff": -0.27,
+    "heavyUsers": {
+     "carries": 685,
+     "ypc": 4.17,
+     "stuff": 17.1,
+     "epa": -0.072
+    },
+    "lightUsers": {
+     "carries": 227,
+     "ypc": 3.69,
+     "stuff": 19.4,
+     "epa": -0.113
+    }
+   },
+   "POWER": {
+    "teams": 21,
+    "corrShareVsRelEpa": 0.17,
+    "corrShareVsRelStuff": -0.15,
+    "heavyUsers": {
+     "carries": 389,
+     "ypc": 5.34,
+     "stuff": 18.8,
+     "epa": 0.047
+    },
+    "lightUsers": {
+     "carries": 54,
+     "ypc": 3.07,
+     "stuff": 13.0,
+     "epa": -0.328
+    }
+   },
+   "PULL LEAD": {
+    "teams": 17,
+    "corrShareVsRelEpa": 0.19,
+    "corrShareVsRelStuff": -0.13,
+    "heavyUsers": {
+     "carries": 362,
+     "ypc": 5.2,
+     "stuff": 24.3,
+     "epa": -0.022
+    },
+    "lightUsers": {
+     "carries": 25,
+     "ypc": 4.0,
+     "stuff": 28.0,
+     "epa": -0.059
+    }
+   }
+  },
+  "pooled": {
+   "teamConceptCells": 143,
+   "corrRelUsageVsRelEpa": 0.27,
+   "corrRelUsageVsRelStuff": 0.02
+  }
+ },
+ "coverage": {
+  "singleHighShare": {
+   "median": 60.2,
+   "min": [
+    36.9,
+    "MIN"
+   ],
+   "max": [
+    78.2,
+    "MIA"
+   ],
+   "sd": 9.9
+  }
+ },
+ "playAction": {
+  "teamRange": {
+   "min": [
+    10.8,
+    "NO"
+   ],
+   "max": [
+    47.2,
+    "ATL"
+   ],
+   "median": 24.3
+  },
+  "corrWithUnderCenterRate": 0.08,
+  "corrWithOutsideZoneShare": 0.32
+ },
+ "teamSpread": {
+  "ypc": {
+   "sd": 0.578,
+   "sdTrue": 0.275,
+   "min": 3.26,
+   "max": 5.399
+  },
+  "stuffPct": {
+   "sd": 2.88,
+   "sdTrue": 0.0,
+   "min": 10.674,
+   "max": 23.529
+  },
+  "sackPct": {
+   "sd": 2.034,
+   "sdTrue": 1.432,
+   "min": 2.353,
+   "max": 11.934
+  },
+  "passRatePct": {
+   "sd": 6.558,
+   "sdTrue": 6.175,
+   "min": 47,
+   "max": 71.801
+  },
+  "carriesPerTeam": 172
+ },
+ "runConceptOutcomes": {
+  "OUTSIDE ZONE": {
+   "carries": 1579,
+   "ypc": 4.38,
+   "stuff": 18.7
+  },
+  "INSIDE ZONE": {
+   "carries": 1319,
+   "ypc": 4.19,
+   "stuff": 14.3
+  },
+  "MAN": {
+   "carries": 930,
+   "ypc": 4.01,
+   "stuff": 17.7
+  },
+  "POWER": {
+   "carries": 519,
+   "ypc": 5.13,
+   "stuff": 17.7
+  },
+  "PULL LEAD": {
+   "carries": 477,
+   "ypc": 4.85,
+   "stuff": 25.2
+  },
+  "COUNTER": {
+   "carries": 362,
+   "ypc": 5.15,
+   "stuff": 20.7
+  },
+  "DRAW": {
+   "carries": 184,
+   "ypc": 5.82,
+   "stuff": 17.4
+  },
+  "TRAP": {
+   "carries": 104,
+   "ypc": 6.33,
+   "stuff": 13.5
+  }
+ },
+ "runsBySituation": {
+  "1st & 10": {
+   "carries": 2846,
+   "ypc": 4.81,
+   "stuff": 15.8
+  },
+  "2nd/3rd & 1-2": {
+   "carries": 599,
+   "ypc": 3.7,
+   "stuff": 22.2
+  },
+  "3rd & 7+": {
+   "carries": 93,
+   "ypc": 6.33,
+   "stuff": 11.8
+  }
+ }
+}

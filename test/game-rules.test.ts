@@ -341,6 +341,10 @@ describe('official record of a full game', () => {
   it('box-score plays and third downs agree with the official log', () => {
     for (const seed of [21, 22]) {
       const res = simulateGame(home, away, { seed });
+      for(const p of res.log.filter((p)=>(p.kind==='run'||p.kind==='pass')&&!p.nullified)) {
+        expect(p.plan?.front).toBeTruthy();
+        expect(p.plan?.concept).toBeTruthy();
+      }
       for (const t of [home, away]) {
         const official = res.log.filter((p) => (p.kind === 'run' || p.kind === 'pass') && !p.nullified && p.offense === t.abbr);
         const tl = res.box.team(t.abbr);

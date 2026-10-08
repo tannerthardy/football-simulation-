@@ -52,6 +52,12 @@ be aligned before these become validated tuning targets. See
 
 ## Calibration status
 
+The current run-game mechanisms and evidence are in
+[run-game-coordination.md](reviews/run-game-coordination.md). Power/Counter
+execution improves in controlled scenarios, but zone explosiveness, roster/front
+variation and pass-protection regressions keep the development PR draft.
+
+
 Before reading this table, see [EVALUATION_ENVIRONMENT.md](EVALUATION_ENVIRONMENT.md):
 league aggregates mix engine execution with play-calling and roster selection.
 The plan's baseline measurements found trap and counter on 27% of simulated

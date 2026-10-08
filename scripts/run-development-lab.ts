@@ -30,7 +30,7 @@ for(const form of ['ace_11','i_pro_21','gun_doubles_11','gun_wing_12'].filter((i
       defCall:{personnel,front:FRONT_BY_ID[front],coverage:COVERAGE_BY_ID.cover3,pressure:null,label:front},
       los:40,ballY:CENTER_Y,firstDownX:50,seed:rng.fork(`${form}:${concept}:${front}:${flip}:${i}`)});
     const ol=sim.offense.filter((a)=>['LT','LG','C','RG','RT'].includes(a.slot)),start=ol.map((a)=>({...a.pos}));
-    const sample:Record<string,number>={},contactEvents:number[]=[],pullers=sim.offense.filter((a)=>a.behavior instanceof RunBlocker&&a.behavior.plan.kind==='pull');
+    const sample:Record<string,number>={},pullers=sim.offense.filter((a)=>a.behavior instanceof RunBlocker&&a.behavior.plan.kind==='pull');
     const plans=sim.offense.filter((a)=>a.behavior instanceof RunBlocker);
     sample.unassignedDL=sim.defense.filter((d)=>d.pos.x<sim.los+2&&Math.abs(d.pos.y-sim.ballY)<9&&!plans.some((a)=>(a.behavior as RunBlocker).target===d)).length;
     let prev=new Set<string>(),previousTime=-.1;

@@ -654,6 +654,9 @@ export class PlaySim {
     for (const a of this.agents) agents.push(round1(a.pos.x), round1(a.pos.y), round1(a.body.facing));
     const b = this.ballPos();
     const c = this.carrier;
+    // The first live tick also records t=0. Replace the staged snap frame
+    // instead of exporting duplicate timestamps to the interpolating viewer.
+    if (this.frames.at(-1)?.t === round2(this.t)) this.frames.pop();
     this.frames.push({ t: round2(this.t), agents, ball: [round1(b.x), round1(b.y), round1(b.z)], carrier: c?.idx ?? -1,
       carrierPosture: [round2(c?.body.squeeze ?? 0), round2(c?.body.squeezeHeading ?? c?.body.facing ?? 0)] });
   }

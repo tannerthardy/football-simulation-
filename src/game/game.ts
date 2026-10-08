@@ -75,6 +75,10 @@ export interface PlayPlan {
   /** The QB changed the play at the line. */
   audible: boolean;
   defPersonnel: string;
+  /** Called front, distinct from an inferred tracking presentation. */
+  front: string;
+  stemFrom?: string;
+  creepSlot?: string;
   coverage: string;
   shell: string;
   pressure: boolean;
@@ -550,6 +554,9 @@ export class Game {
       playAction: ranCall.kind === 'pass' && ranCall.pass!.family === 'playaction',
       audible: ranCall !== offCall,
       defPersonnel: defCall.personnel,
+      front: defCall.front.id,
+      stemFrom: defCall.frontStem?.from.id,
+      creepSlot: defCall.creep?.slot,
       coverage: defCall.coverage.id,
       shell: defCall.coverage.shell,
       pressure: !!defCall.pressure,

@@ -4,7 +4,7 @@ import { Rng } from '../src/core/rng.js';
 import { generateTeam,pickOffense,pickDefense } from '../src/league/team.js';
 import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { FRONT_BY_ID,COVERAGE_BY_ID,PRESSURES } from '../src/playbook/defense.js';
-import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+import { FORMATIONS,FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { DefensivePlayCall } from '../src/playbook/types.js';
 import { RunBlocker,planRunBlocking } from '../src/sim/behaviors/blocking.js';
 import { runReadAim } from '../src/sim/behaviors/carrier.js';
@@ -63,9 +63,15 @@ describe('front and coverage fit contracts',()=>{
   expect(blockingIndicator(lb,sim)?.kind).toBe('pull');
   g.body.vel={x:0,y:0};observe(sim);expect(blockingIndicator(lb,sim)).toBeNull();
  });
+ it('recognizes an off-ball wing slice as a separate observed cue',()=>{
+  const sim=make('split_zone','gun_wing_12'),h=sim.slot('H')!,lb=sim.slot('LB_M')!;
+  h.body.pos={x:38.6,y:h.pos.y+1};h.body.vel={x:0,y:3};observe(sim);
+  expect(blockingIndicator(lb,sim)?.kind).toBe('slice');
+ });
 });
 
 describe('scheme execution and local rules',()=>{
+ it('keeps formation identifiers unique when adding scheme eligibility',()=>expect(new Set(FORMATIONS.map((f)=>f.id)).size).toBe(FORMATIONS.length));
  it.each(['over','under','odd','tite','bear'])('uses vertical Duo doubles against %s',(id)=>{
   const front=FRONT_BY_ID[id],sim=make('duo','i_pro_21',{front,personnel:front.personnel[0]});
   const plans=[...planRunBlocking(sim,sim.offCall.run!).values()];
@@ -153,6 +159,7 @@ describe('functional contact and pre-snap motion',()=>{
   const seen=sim.see(sim.slot('C')!,dt);expect(seen.pos.y).not.toBe(dt.pos.y);
   const plainResult=make('iz_strong','ace_11',patch).run(),recordedResult=sim.run();
   expect({...plainResult,frames:undefined}).toEqual({...recordedResult,frames:undefined});
+  expect(sim.frames.every((f,i)=>i===0 || f.t>sim.frames[i-1].t)).toBe(true);
  });
  it('walks a called blitzer down without manufacturing instantaneous arrival',()=>{
   const pressure=PRESSURES.find((p)=>p.id==='mike_a')!;
