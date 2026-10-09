@@ -199,6 +199,9 @@ export class PassProtector implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     // Play action: everyone shows a low, aggressive pad level at first.
     a.stance = isOL(a) && sim.t < 0.35 && sim.offCall.kind === 'pass' && sim.offCall.pass?.fake ? 'low' : 'high';
+    const home = this.coord.homeY.get(a) ?? a.pos.y;
+    const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
+    a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
     if (a.engagement) return stand();
     if (sim.carrier !== sim.qb || !sim.isPass) {
       return stand();
@@ -211,7 +214,6 @@ export class PassProtector implements Behavior {
       return a.behavior.update(a, sim);
     }
     const qb = sim.qb;
-    const home = this.coord.homeY.get(a) ?? a.pos.y;
     if (!r) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';

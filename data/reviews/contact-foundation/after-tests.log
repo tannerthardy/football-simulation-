@@ -1,0 +1,37 @@
+
+> gridiron-engine@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/coverage.test.ts (1 test) 2636ms
+   ✓ zone technique > match hook defenders carry the seams; spot droppers sink to their landmark and watch the QB  2634ms
+ ✓ test/coverage-rules.test.ts (11 tests) 1208ms
+ ✓ test/protection.test.ts (2 tests) 2590ms
+   ✓ pass protection > blocks the edge rushers instead of shadowing their arc  2582ms
+ ✓ test/run-system.test.ts (26 tests) 411ms
+ ✓ test/recognition.test.ts (6 tests) 9535ms
+   ✓ reading run and pass > anticipates from the situation: pass reads come sooner on 3rd and long, run reads later  5824ms
+   ✓ reading run and pass > play action fools linebackers when they expect run, not on 3rd and long  3707ms
+ ✓ test/pursuit-contact.test.ts (18 tests) 174ms
+ ✓ test/contact-choice.test.ts (6 tests) 126ms
+ ✓ test/coverage-mechanics.test.ts (16 tests) 190ms
+ ✓ test/catch-reach.test.ts (2 tests) 39ms
+ ✓ test/coverage-judgment.test.ts (5 tests) 107ms
+ ✓ test/pass-contact.test.ts (6 tests) 86ms
+ ✓ test/contact-physics.test.ts (13 tests) 189ms
+ ✓ test/run-execution.test.ts (17 tests) 167ms
+ ✓ test/mind.test.ts (8 tests) 63ms
+ ✓ test/determinism.test.ts (2 tests) 34ms
+ ✓ test/physics.test.ts (10 tests) 49ms
+ ✓ test/replay-export.test.ts (17 tests) 27ms
+ ✓ test/alignment.test.ts (6 tests) 8ms
+ ✓ test/game-rules.test.ts (28 tests) 23374ms
+   ✓ official record of a full game > box-score plays and third downs agree with the official log  15131ms
+   ✓ official record of a full game > is reproducible, with or without replay recording  7916ms
+
+ Test Files  19 passed (19)
+      Tests  200 passed (200)
+   Start at  01:45:33
+   Duration  25.22s (transform 1.79s, setup 0ms, collect 6.70s, tests 41.01s, environment 3ms, prepare 2.41s)

@@ -333,3 +333,30 @@ engagements are reported separately. Proximity is not a PFF pressure label,
 and blocker retreat since snap includes the voluntary set. Late slice counts
 exclude already ended plays. Full-game panels and the focused coverage panel
 are distinct cohorts; their play IDs are not IDs in the six-game film library.
+
+## Contact foundation and protection intent
+
+The [fundamentals review](../docs/reviews/fundamentals-and-contact-foundation.md)
+records the current implementation, broad body-model design, mechanical
+invariants, paired pocket/hold anatomy and game regressions. Evidence is in
+`data/reviews/contact-foundation/`; its manifest records source/script/artifact
+hashes, setup, and the reused baseline budget/outcome/drive provenance.
+
+```sh
+node --import tsx scripts/contact-fundamentals-lab.ts out/contact-fundamentals.json
+node --import tsx scripts/pocket-motion-lab.ts 24 out/pocket-hold.json
+node --import tsx scripts/pocket-anatomy.ts 16 7 2 out/pocket.json
+node --import tsx scripts/calibrate.ts 32 7 4
+node --import tsx scripts/error-budget.ts collect 32 7 4 out/outcomes.json
+node --import tsx scripts/error-budget.ts budget data/reviews/error-budget/nfl-outcomes.json out/outcomes.json 20000
+node --import tsx scripts/error-budget.ts drives 32 7 4
+node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc
+python3 scripts/check-replay-viewer.py viewer/film-room.html
+```
+
+Copy unchanged measurement scripts into a `git archive` baseline and run from
+each revision's root. Mechanical synthetic reps have no NFL outcome target.
+Forced holds isolate protection and have a different sack denominator from
+games. Pocket proximity/attachment remain geometric proxies with cohort and
+late-survivor limitations. Use the data definitions before interpreting a
+percentage as pressure or as physical force.

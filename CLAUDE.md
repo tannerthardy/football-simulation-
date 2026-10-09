@@ -2,6 +2,13 @@
 
 Start with these shared project references:
 
+- [Fundamentals and contact foundation](docs/reviews/fundamentals-and-contact-foundation.md):
+  latest implementation and broad architecture direction on
+  `claude/engine-priorities`; contact-normal forces, coupled outside bumps,
+  mass-preserving block motion and protection intent. Read the mechanical
+  evidence **and passing/run regressions** before extending or tuning it.
+  Full QB mechanics remain later work; PR #1 stays separate.
+
 - [Visual keys and attention](docs/reviews/visual-keys-and-attention.md):
   the owner's latest direction for defensive and offensive reads; proposed
   acquisition, gaze, memory and cue model, code gaps, staged integration and

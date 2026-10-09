@@ -10,7 +10,7 @@ import { DT } from '../core/units.js';
 import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_SPIRAL, DRAG_TUMBLE, stepFlight, type BallFlight } from '../physics/ball.js';
 import { stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
-import { bodyRadius } from '../physics/bodyshape.js';
+import { resolveBodyContacts } from './collisions.js';
 import { containCoverage } from './coverage-space.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
@@ -251,7 +251,7 @@ export class PlaySim {
         const speed=active ? Math.min(d.profile.vmax*.45,length*3) : 0;
         stepBody(d.body,{vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI},this.dt);
       }
-      this.resolveCollisions(null);
+      this.resolveCollisions();
       for (const d of this.defense) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
       this.perception.record(this.agents);
       if (this.record && i%this.recordEvery===0) this.recordFrame();
@@ -494,7 +494,7 @@ export class PlaySim {
 
     updateEngagements(this);
     if (this.bond) updateBond(this, this.bond, this.cmds);
-    this.resolveCollisions(bonded);
+    this.resolveCollisions();
     this.updateBall();
     if (this.phase === 'live') tryTackles(this);
     if (this.phase === 'live') this.checkWhistle();
@@ -502,45 +502,8 @@ export class PlaySim {
     this.t = round2(this.t + this.dt);
   }
 
-  private resolveCollisions(skip: Set<Agent> | null): void {
-    const n = this.agents.length;
-    for (let i = 0; i < n; i++) {
-      const a = this.agents[i];
-      for (let j = i + 1; j < n; j++) {
-        const b = this.agents[j];
-        if (a.engagement && a.engagement === b.engagement) continue;
-        if (skip && skip.has(a) && skip.has(b)) continue;
-        const dx = b.pos.x - a.pos.x;
-        const dy = b.pos.y - a.pos.y;
-        const d2 = dx * dx + dy * dy;
-        const broad = (a.profile.radius + b.profile.radius) * 1.12;
-        if (d2 >= broad * broad || d2 < 1e-9) continue;
-        const d = Math.sqrt(d2);
-        const nx = dx / d;
-        const ny = dy / d;
-        const minD = (bodyRadius(a.body, nx, ny) + bodyRadius(b.body, nx, ny)) * 0.9;
-        if (d >= minD) continue;
-        const carrier = this.carrier;
-        if (this.t >= 0 && this.firstContactX === null && a.team !== b.team && (carrier === a || carrier === b)) {
-          this.firstContactX = carrier.pos.x;
-          this.event('carrier_contact', carrier, carrier === a ? b : a, 'body collision');
-        }
-        const overlap = minD - d;
-        const ma = a.profile.massKg;
-        const mb = b.profile.massKg;
-        const wa = mb / (ma + mb);
-        const wb = ma / (ma + mb);
-        a.body.pos = { x: a.pos.x - nx * overlap * wa, y: a.pos.y - ny * overlap * wa };
-        b.body.pos = { x: b.pos.x + nx * overlap * wb, y: b.pos.y + ny * overlap * wb };
-        // Damp closing velocity along the normal (inelastic bump).
-        const rel = (b.vel.x - a.vel.x) * nx + (b.vel.y - a.vel.y) * ny;
-        if (rel < 0) {
-          const imp = rel * 0.5;
-          a.body.vel = { x: a.vel.x + nx * imp * wa, y: a.vel.y + ny * imp * wa };
-          b.body.vel = { x: b.vel.x - nx * imp * wb, y: b.vel.y - ny * imp * wb };
-        }
-      }
-    }
+  private resolveCollisions(): void {
+    resolveBodyContacts(this);
   }
 
   private updateBall(): void {

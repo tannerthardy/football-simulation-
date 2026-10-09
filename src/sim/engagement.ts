@@ -28,8 +28,9 @@
  * the matching skills, physical traits (arm length, bend, agility, strength)
  * and the blocker's recognition and counters.
  */
-import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
+import { angleDiff, clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { fatigueFactor } from '../physics/kinematics.js';
+import { advanceContactPair, contactGroup, groupVelocity } from '../physics/contact.js';
 import type { Agent, Engagement, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
@@ -93,6 +94,18 @@ function axisOf(sim: PlaySim, e: Engagement): Vec2 {
 }
 
 const latOf = (a: Vec2): Vec2 => ({ x: -a.y, y: a.x });
+
+/** Load travels through the bodies actually in contact. The protected point
+ * still defines leverage and technique, but cannot rotate a force remotely.
+ */
+function contactAxis(e: Engagement, fallback: Vec2): Vec2 {
+  const delta = sub(e.blocker.pos, e.defender.pos);
+  return Math.hypot(delta.x, delta.y) > 1e-8 ? norm(delta) : fallback;
+}
+
+function pairMotion(e: Engagement): Vec2 {
+  return groupVelocity(contactGroup([e.blocker.body, e.defender.body]));
+}
 
 /** Set relative to the visible launch point, leaving space to step up.
  * Tackles gain more depth to intersect an edge arc; the interior stays in
@@ -218,22 +231,11 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   sim.engagements.push(e);
   sim.event('block_contact', blocker, defender, type);
   if (type === 'pass') {
-    // Hands landing do not erase the incoming rush arc. Store momentum in
-    // world coordinates: the line to the QB rotates during an edge rep.
-    passPairVel.set(e, {
-      x: (mb * blocker.vel.x + md * defender.vel.x) / (mb + md),
-      y: (mb * blocker.vel.y + md * defender.vel.y) / (mb + md),
-    });
+    // Hands landing do not erase incoming motion. Common momentum is read
+    // from the bodies at each solve, not a cache that ignores outside bumps.
     const ph = e.phi * Math.PI / 2;
     const tangent = { x: axis.x * Math.sin(ph) + lat.x * Math.cos(ph), y: axis.y * Math.sin(ph) + lat.y * Math.cos(ph) };
     passLateralVel.set(e, (defender.vel.x - blocker.vel.x) * tangent.x + (defender.vel.y - blocker.vel.y) * tangent.y);
-  } else {
-    // Preserve the pair's incoming drive momentum; a strike is not a reset
-    // to a stationary strength contest. Foot force takes over over ~0.3 s.
-    const dir = drive ?? norm(sub(defender.pos, blocker.pos));
-    const v = (mb * (blocker.vel.x * dir.x + blocker.vel.y * dir.y)
-      + md * (defender.vel.x * dir.x + defender.vel.y * dir.y)) / (mb + md);
-    pairVel.set(e, -v);
   }
   return e;
 }
@@ -363,8 +365,12 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   const d = e.defender;
   const tb = traits(b);
   const td = traits(d);
-  const axis = axisOf(sim, e);
+  const leverageAxis = axisOf(sim, e);
+  const axis = contactAxis(e, leverageAxis);
   const lat = latOf(axis);
+  // Rebase the technique on physical leverage. QB movement can change the
+  // problem to solve, but does not carry an old angular goal around the QB.
+  e.phi = measurePhi(leverageAxis, d, b);
   const doubled = e.helpers.length > 0;
   const inMove = t < e.moveUntil && e.moveOk;
   // Nobody holds a block forever: past ~2 s the blocker's feet and hands wear
@@ -407,7 +413,7 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   // Resistance is a capacity, not a prescribed retreat speed. A planted OL
   // can balance the load and stop; if the load exceeds his available base,
   // the pair accelerates backward until he re-anchors or loses leverage.
-  const velocity = passPairVel.get(e) ?? { x: 0, y: 0 };
+  const velocity = pairMotion(e);
   const incomingAxis = velocity.x * axis.x + velocity.y * axis.y;
   const incomingLat = velocity.x * lat.x + velocity.y * lat.y;
   let foot = passFootwork.get(e);
@@ -443,8 +449,11 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   const driveSpeed = d.profile.vmax * (0.45 + 0.15 * td.feet) * fatigueFactor(d.body.energy);
   const drive = fd * gravityYd * clamp(1 - Math.max(0, incomingAxis) / driveSpeed, 0.1, 1);
   const capacity = fb * gravityYd * anchor;
-  const remainingSet = Math.max(0, passSetDepth(sim, b) - (sim.los - b.pos.x));
-  const setSpeed = Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), remainingSet / 0.55);
+  const remainingSet = Math.max(0, (b.passSet?.depth ?? passSetDepth(sim, b)) - (sim.los - b.pos.x));
+  const retreatSpeed = Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), remainingSet / 0.55);
+  // A backward kick-slide yields only its component along contact. A square
+  // side contact is not permission to retreat laterally toward the QB.
+  const setSpeed = retreatSpeed * Math.max(0, -axis.x);
   // Before set depth the blocker yields deliberately. After it, he tries to
   // brake the incoming momentum, limited by his actual resisting force.
   const resistance = Math.min(capacity, Math.max(0, drive + mass * (incomingAxis - setSpeed) / 0.25));
@@ -462,8 +471,19 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   // changes leverage; its mass-weighted common motion carries the pair along
   // the rush arc even when the tackle successfully stays square.
   const md = d.profile.massKg, mb = b.profile.massKg;
-  const vLat = (md * rLat * e.side - mb * mirror * restore) / (md + mb);
-  movePassPair(sim, e, axis, lat, vAxis, vLat, sep, axialAccel);
+  // A protection technique can work an outside rush away from the launch
+  // lane. This is a bounded foot/hand goal, not a hard wall or position clamp.
+  // Inside counters remove that steering opportunity; the tackle must mirror.
+  const intent = b.passSet;
+  const canSteer = intent && intent.outside !== 0 && (d.pos.y - b.pos.y) * intent.outside > 0.15;
+  const steer = canSteer ? clamp((intent.laneY - b.pos.y) * 1.6, -mirror, mirror)
+    * (0.25 + 0.75 * Math.max(0, e.control)) * (0.4 + 0.6 * e.baseB) : 0;
+  // Project the same backward set onto both contact coordinates. Omitting
+  // its tangent made an angled set retreat along the inward normal instead
+  // of the field's backward direction, even with a sound outside-lane goal.
+  const blockerLateral = clamp(-mirror * restore + steer * lat.y - retreatSpeed * lat.x, -mirror, mirror);
+  const vLat = (md * rLat * e.side + mb * blockerLateral) / (md + mb);
+  movePassPair(sim, e, axis, lat, vAxis, vLat, sep, axialAccel, leverageAxis);
   // Leverage must be established on the field before a block is beaten.
   // A requested hip turn alone cannot release the rusher through the tackle.
   const physicalAxis = axisOf(sim, e);
@@ -674,49 +694,29 @@ function stepRunRep(sim: PlaySim, e: Engagement): void {
     if (!tryHold(sim, e)) beat(sim, e, axis, lat, true);
     return;
   }
-  movePair(sim, e, axis, lat, smoothV(sim, e, -vDrive), sep);
+  movePair(sim, e, axis, lat, smoothV(sim, e, -vDrive, axis), sep);
 }
 
 /** Move both bodies: pair translates along the axis; blocker sits at angle phi. */
-const pairVel = new WeakMap<Engagement, number>();
-const passPairVel = new WeakMap<Engagement, Vec2>();
 const passLateralVel = new WeakMap<Engagement, number>();
 const passFootwork = new WeakMap<Engagement, { plant: Vec2; steppingUntil: number }>();
 
 /** Pass contact translates about the pair's center of mass, not a pinned DL. */
-function movePassPair(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, vAxis: number, vLat: number, sep: number, axialAccel: number): void {
+function movePassPair(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, vAxis: number, vLat: number, sep: number, axialAccel: number, leverageAxis: Vec2): void {
   const b = e.blocker, d = e.defender, dt = sim.dt;
-  const mb = b.profile.massKg, md = d.profile.massKg, mass = mb + md;
-  const beforeB = { ...b.pos }, beforeD = { ...d.pos };
-  const prev = passPairVel.get(e) ?? { x: 0, y: 0 };
+  const prev = pairMotion(e);
   const previousLat = prev.x * lat.x + prev.y * lat.y;
   const acceleration = Math.min(b.profile.lateral, d.profile.lateral);
   const axialLimit = Math.max(b.profile.brake, d.profile.brake);
   const lateralAccel = acceleration * Math.sqrt(Math.max(0, 1 - Math.min(1, (axialAccel / axialLimit) ** 2)));
   const nextLat = previousLat + clamp(vLat - previousLat, -lateralAccel * dt, lateralAccel * dt);
   const vel = { x: axis.x * vAxis + lat.x * nextLat, y: axis.y * vAxis + lat.y * nextLat };
-  passPairVel.set(e, vel);
-  const center = {
-    x: (mb * beforeB.x + md * beforeD.x) / mass + (prev.x + vel.x) * 0.5 * dt,
-    y: (mb * beforeB.y + md * beforeD.y) / mass + (prev.y + vel.y) * 0.5 * dt,
-  };
   const ph = clamp(e.phi, -1.2, 1.2) * (Math.PI / 2);
-  const off = { x: axis.x * Math.cos(ph) - lat.x * Math.sin(ph), y: axis.y * Math.cos(ph) - lat.y * Math.sin(ph) };
-  const relative = sub(beforeB, beforeD);
-  const correction = { x: off.x * sep - relative.x, y: off.y * sep - relative.y };
-  // Foot repositioning is finite and internal: it cannot invent translation
-  // of the pair or snap a tackle from arm's reach to chest contact.
-  const length = Math.hypot(correction.x, correction.y);
-  const maxStep = (traits(b).lateral + traits(d).lateral) * dt;
-  const reach = length > maxStep ? maxStep / length : 1;
-  relative.x += correction.x * reach;
-  relative.y += correction.y * reach;
-  b.body.pos = { x: center.x + md / mass * relative.x, y: center.y + md / mass * relative.y };
-  d.body.pos = { x: center.x - mb / mass * relative.x, y: center.y - mb / mass * relative.y };
-  b.body.vel = { x: (b.pos.x - beforeB.x) / dt, y: (b.pos.y - beforeB.y) / dt };
-  d.body.vel = { x: (d.pos.x - beforeD.x) / dt, y: (d.pos.y - beforeD.y) / dt };
-  b.body.facing = Math.atan2(-off.y, -off.x);
-  d.body.facing = Math.atan2(axis.y, axis.x);
+  const leverageLat = latOf(leverageAxis);
+  const off = { x: leverageAxis.x * Math.cos(ph) - leverageLat.x * Math.sin(ph), y: leverageAxis.y * Math.cos(ph) - leverageLat.y * Math.sin(ph) };
+  advanceContactPair(b.body, d.body, vel, { x: off.x * sep, y: off.y * sep }, traits(b).lateral + traits(d).lateral, dt);
+  faceContact(b, Math.atan2(-off.y, -off.x), dt);
+  faceContact(d, Math.atan2(axis.y, axis.x), dt);
   for (const h of e.helpers) {
     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
     const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
@@ -729,10 +729,10 @@ function movePassPair(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, vAxis:
 }
 
 /** Two big bodies locked together don't change speed instantly. */
-function smoothV(sim: PlaySim, e: Engagement, v: number): number {
-  const prev = pairVel.get(e) ?? 0;
+function smoothV(sim: PlaySim, e: Engagement, v: number, axis: Vec2): number {
+  const motion = pairMotion(e);
+  const prev = motion.x * axis.x + motion.y * axis.y;
   const next = prev + (v - prev) * Math.min(1, sim.dt / 0.3);
-  pairVel.set(e, next);
   return next;
 }
 
@@ -740,23 +740,16 @@ function movePair(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, vAxis: num
   const dt = sim.dt;
   const b = e.blocker;
   const d = e.defender;
-  const vx = axis.x * vAxis;
-  const vy = axis.y * vAxis;
-  d.body.pos = { x: d.pos.x + vx * dt, y: d.pos.y + vy * dt };
-  d.body.vel = { x: vx, y: vy };
+  const incoming = pairMotion(e);
+  const lateral = (incoming.x * lat.x + incoming.y * lat.y) * Math.exp(-dt / 0.3);
+  const vx = axis.x * vAxis + lat.x * lateral;
+  const vy = axis.y * vAxis + lat.y * lateral;
   const ph = clamp(e.phi, -1.2, 1.2) * (Math.PI / 2);
   const off = { x: axis.x * Math.cos(ph) - lat.x * Math.sin(ph), y: axis.y * Math.cos(ph) - lat.y * Math.sin(ph) };
-  const target = { x: d.pos.x + off.x * sep, y: d.pos.y + off.y * sep };
-  // Blocker slides to his spot at a finite rate (no teleporting).
-  const mx = target.x - b.pos.x;
-  const my = target.y - b.pos.y;
-  const ml = Math.hypot(mx, my);
-  const maxStep = (Math.abs(vAxis) + 3.5) * dt;
-  const k = ml > maxStep ? maxStep / ml : 1;
-  b.body.pos = { x: b.pos.x + mx * k, y: b.pos.y + my * k };
-  b.body.vel = { x: vx + (mx * k) / dt * 0.3, y: vy + (my * k) / dt * 0.3 };
-  b.body.facing = Math.atan2(-off.y, -off.x);
-  d.body.facing = Math.atan2(axis.y, axis.x);
+  advanceContactPair(b.body, d.body, { x: vx, y: vy }, { x: off.x * sep, y: off.y * sep }, traits(b).lateral + traits(d).lateral, dt);
+  faceContact(b, Math.atan2(-off.y, -off.x), dt);
+  faceContact(d, Math.atan2(axis.y, axis.x), dt);
+  const maxStep = (Math.hypot(vx, vy) + traits(b).lateral) * dt;
   for (const h of e.helpers) {
     // A helper stays on the side he came from and works to his hip at a
     // human rate.
@@ -769,6 +762,10 @@ function movePair(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, vAxis: num
     h.body.pos = { x: h.pos.x + hx * hk, y: h.pos.y + hy * hk };
     h.body.vel = { x: vx + (hx * hk) / dt * 0.3, y: vy + (hy * hk) / dt * 0.3 };
   }
+}
+
+function faceContact(a: Agent, angle: number, dt: number): void {
+  a.body.facing += clamp(angleDiff(a.facing, angle), -a.profile.turnRate * dt, a.profile.turnRate * dt);
 }
 
 /** A beaten blocker may grab. Returns true if he held (and keeps the block). */

@@ -1,5 +1,10 @@
 # Coverage judgment and pocket mechanics
 
+Newest implementation: [fundamentals and contact foundation](fundamentals-and-contact-foundation.md).
+It repairs contact-frame/ownership defects and measures pocket improvements
+alongside passing and run regressions. Its results supersede this baseline
+for current source; this file retains the earlier coverage evidence.
+
 Follow-up to `8ffbc24` on `claude/engine-priorities`. Read this before the
 older [coverage-engine handoff](coverage-engine-and-playbook-depth.md).
 The current user priority is coverage mechanics and trench physics; a full

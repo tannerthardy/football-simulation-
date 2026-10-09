@@ -22,6 +22,14 @@ export interface Behavior {
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';
 
+/** Protection supplies goals; contact physics supplies achievable motion. */
+export interface PassSetIntent {
+  depth: number;
+  laneY: number;
+  /** Outside direction for an edge set, zero for an interior/backup block. */
+  outside: number;
+}
+
 /**
  * A block in progress (see engagement.ts for the model). Angles/positions are
  * relative to the engagement axis: from the defender toward the thing the
@@ -64,6 +72,7 @@ export interface Engagement {
 }
 
 export class Agent {
+  passSet?: PassSetIntent;
   /** Known defensive responsibility; decisions still require observed run cues. */
   runFit?: RunFitJob;
   engagement: Engagement | null = null;
