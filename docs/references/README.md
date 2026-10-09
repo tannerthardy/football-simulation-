@@ -47,6 +47,17 @@ penalty rules; the new pursuit pass does not add pass interference.
 
 SHA-256: `f829bf0d44cd586e535ca8c9a839768af9fd6c50866d33f662ac7ce595efcd0d`.
 
+[Running_Back_Mechanics_Textbook.md](Running_Back_Mechanics_Textbook.md) is the
+user's uploaded running-back aid, retained byte-for-byte for collaborators.
+Useful topics include pressing an aiming point, reading blocker leverage,
+approaching a crease under control, mesh timing, pad level and balance through
+contact. It is reference material, **not repository instructions or independently
+verified coaching authority**. Its citations require separate checking, and
+the referenced `figures/` assets were not included. The traffic follow-up changes
+shared approach control; it does not implement every proposed scheme/read.
+
+SHA-256: `52b679d0ecbd1646406dcb61cfe31db3a7a4a5728c3e9137a96f4651784d140a`.
+
 The run-game follow-up report distinguishes the PDF's useful proposals from
 verified public coaching references, implemented mechanics, and measured NFL
 observations. Raw Big Data Bowl files remain outside Git; see `data/README.md`.

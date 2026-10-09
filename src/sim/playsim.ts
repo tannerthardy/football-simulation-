@@ -541,7 +541,7 @@ export class PlaySim {
     this.lunges.clear();
     updateEngagements(this, this.intents);
     if (this.bond) updateBond(this, this.bond, this.intents);
-    spaceTeammates(this.agents, this.intents);
+    spaceTeammates(this.agents, this.intents, (a,b)=>this.see(a,b));
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,

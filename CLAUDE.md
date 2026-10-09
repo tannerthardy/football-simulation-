@@ -2,8 +2,19 @@
 
 Start with these shared project references:
 
+- [Shared traffic control and man-assignment accounting](docs/reviews/traffic-and-man-accounting.md):
+  **read first.** Seven owner clips from `78f2002` are reproduced exactly.
+  Shared teammate approach control now budgets delayed observations against
+  the same body's braking limits; clean creases remain open. Confirmed shadow,
+  disguise and man-pressure accounting bugs are repaired; supported pure-man
+  calls retain every eligible matchup. New concept/front/coverage cross-tabs
+  expose the run disparity. Physical capacities/forces are unchanged. Physics
+  remains NOT READY: hand convergence still has 0.822 yd error/two fall
+  disagreements, and league/film passing explosives worsen. Follow the ordered
+  physics work; keep PR #1 separate. RB reference and reproducible inputs retained.
+
 - [Controlled tackle approach and owner-film observations](docs/reviews/controlled-tackle-approach.md):
-  **read first.** Four original clips are traced exactly. Crossing approaches
+  Previous implementation/evidence. Four original clips are traced exactly. Crossing approaches
   now budget closure against the same body's braking/cutting envelope instead
   of requesting a full-speed fly-by. No force, strength or solver retuning.
   Mechanical crossing falls decrease, but long continued-contact convergence

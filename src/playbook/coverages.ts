@@ -30,7 +30,7 @@ export const COVERAGES: Coverage[] = [
   // ------------------------------------------------------------ zero / one-high man
   {
     id: 'cover0', name: 'Cover 0', family: 'cover0', shell: 'zero', man: true, press: true,
-    note: 'All man, no deep help; leverage inside, the rush supplies the missing defender.',
+    note: 'All eligible matchups, no deep help; pressure must leave enough man defenders.',
     roles: {
       CB_S: { kind: 'man', prefer: ['S1'] },
       CB_W: { kind: 'man', prefer: ['W1'] },

@@ -484,6 +484,29 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
 
   // --- man matching ---
   const receivers = Object.entries(off.refOf) as Array<[SkillSlot, ReceiverRef]>;
+  if(cov.man){
+    // Pressure may use a marker who had a back/slot responsibility. Optional
+    // low help and brackets check to the vacated man before we leave an
+    // eligible receiver unaccounted for. Deep help stays the called coverage.
+    let shortage=receivers.length-present.filter(slot=>{const r=roles[slot];return r?.kind==='man'&&!r.double;}).length;
+    for(const slot of present){
+      if(shortage<=0)break;
+      const r=roles[slot];
+      if((r?.kind==='zone'&&!isDeepZone(r.zone))||(r?.kind==='man'&&r.double)){
+        roles[slot]={kind:'man',prefer:['B','B2','S3','S2','W2']};shortage--;
+      }
+    }
+    // Odd/goal-line personnel have five front players (the DE slots include
+    // stand-up edges). The same pressure cannot blindly add to a four-man
+    // rush. An uncalled edge takes a coverage assignment when the man budget
+    // requires it; keep explicit blitzers and the called deep help intact.
+    for(const slot of ['DE_S','DE_W'] as const){
+      if(shortage<=0)break;
+      if(roles[slot]?.kind==='rush'){
+        roles[slot]={kind:'man',prefer:slot==='DE_S'?['S3','S2','B','B2']:['W2','B2','B']};shortage--;
+      }
+    }
+  }
   const taken = new Set<SkillSlot>();
   const manDefs = present.filter((p) => roles[p]?.kind === 'man');
   // Coach overrides first (shadowing).
@@ -495,11 +518,16 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     }
   }
   // Then preference lists in priority order: corners, nickel, safeties, LBs.
-  const order: DefSlot[] = ['CB_S', 'CB_W', 'NB', 'DB', 'SS', 'FS', 'LB_S', 'LB_W', 'LB_M'];
+  const order: DefSlot[] = ['CB_S', 'CB_W', 'NB', 'DB', 'SS', 'FS', 'LB_S', 'LB_W', 'LB_M', 'DE_S', 'DE_W'];
   for (const d of order) {
     if (!manDefs.includes(d) || spots[d]!.manTarget) continue;
     const role = roles[d] as { kind: 'man'; prefer?: ReceiverRef[]; double?: boolean };
-    for (const ref of role.prefer ?? []) {
+    // A shadow override may take the other corner's #1. That corner must
+    // trade to the remaining outside receiver before an interior/box player
+    // is asked to cover him; the slot names are not fixed field-side bodies.
+    const preferences = role.prefer ?? [];
+    const refs = d === 'CB_S' || d === 'CB_W' ? [...preferences, 'S1', 'W1'] as ReceiverRef[] : preferences;
+    for (const ref of refs) {
       const tgt = off.numbering[ref];
       if (tgt && (!taken.has(tgt) || role.double)) {
         spots[d]!.manTarget = tgt;
@@ -595,7 +623,16 @@ function alignDisguised(call: DefensivePlayCall, off: OffenseAlignment, present:
     const p = played.spots[slot]!;
     const l = look.spots[slot];
     if (!l || p.role.kind === 'rush' || p.role.kind === 'blitz') continue;
-    p.pos = { ...l.pos };
+    if (p.role.kind === 'man' && p.manTarget) {
+      // Present a cushion without swapping the player's actual matchup to
+      // the opposite side of the field. A shadow corner changes sides with
+      // his receiver; a zero safety cannot disguise twelve yards away from
+      // a detached man and pretend the rotation costs nothing.
+      const target = off.spots[p.manTarget];
+      const corner = slot === 'CB_S' || slot === 'CB_W' || slot === 'NB' || slot === 'DB';
+      const depth = target.backfield ? 5 : p.role.overTop ? 10 : corner ? 6 : 4;
+      p.pos = { x: Math.min(l.pos.x, off.los + coverageDepth(off.los, depth)), y: p.pos.y };
+    } else p.pos = { ...l.pos };
     p.press = !!p.press && !!l.press;
   }
   let box = 0;

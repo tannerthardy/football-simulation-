@@ -1,7 +1,7 @@
 # Physics development and testing
 
 Current evidence and ordered work are in
-[Controlled tackle approach and owner-film observations](reviews/controlled-tackle-approach.md).
+[Shared traffic control and man-assignment accounting](reviews/traffic-and-man-accounting.md).
 Physics is still NOT READY. Shared active force limits and planar kinetic-work
 accounting are implemented; physical magnitudes and reduced support energy
 remain unvalidated. Next: the specific coupled QB/rusher hand/grasp fall disagreement;
@@ -10,13 +10,16 @@ executable far pursuit and achievable tackle approach. Fix the local convergence
 resolution globally. These are work priorities, not additional tests to write
 before their mechanics exist.
 
-The latest pass controls close crossing approaches using the body's existing
-braking/cutting envelope. The four owner clips are traced on their exact source;
-teammate collision and approach intent are distinguished from force errors.
-The two football fall disagreements and large block-path error remain; the new
-long continued-contact probe also exposes path drift. Sixteen-game tackle misses
-decrease, but rushing efficiency worsens and film-cohort passing explosives do
-not improve. No physical capacities or contact constants were retuned.
+The latest pass controls teammate traffic using delayed observations and the
+body's existing braking envelope, without closing clean creases. Seven owner
+clips are traced exactly. The owner-requested investigation also repairs
+confirmed shadow/disguise and man-pressure assignment-budget bugs; it does not
+expand coverage technique packages. New concept/front/coverage cells expose
+unequal run performance. The hand-fight convergence failure remains; league and
+film passing explosives regress. No physical capacities or contact constants
+were retuned. The preceding [controlled-approach handoff](reviews/controlled-tackle-approach.md)
+retains the long continued-contact drift and frontal mirror failure, which the
+new traffic panel does not repair.
 The earlier [held-foot handoff](reviews/held-foot-and-movement-readiness.md)
 records the same-motion-interval repair and matched movement panel.
 Use conditional NFL distributions and roster variation as references, not

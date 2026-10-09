@@ -251,6 +251,36 @@ drill/role metrics and matched observed speed ratios. Read the cohort and
 smoothing definitions before comparing it to an engine panel. No AddBiomechanics
 subject data or additional large archive was downloaded for this extraction.
 
+### Shared traffic and man-assignment accounting
+
+`reviews/physics-world/traffic-and-man-accounting/` retains seven exactly
+reproduced observations from the `78f2002` film, isolated saved inputs and
+paired results, identical-profile 96-trial traffic panels, catalog assignment
+audits and mixed game/film guards. The shared traffic controller uses delayed
+perception and existing braking limits. Pure-man matchup/disguise bugs are
+repaired. New film cross-tabs include actual checked versus original called
+coverage, concept, front and disguise, with counts and explicit denominators.
+These are small unmatched cells, not NFL scheme calibration. Physics remains
+NOT READY; passing explosives worsen and hand convergence is unchanged.
+Read [the current handoff](../docs/reviews/traffic-and-man-accounting.md) first.
+
+```sh
+node --import tsx scripts/diag/traffic-contact.ts out/traffic-contact-after.json
+node --import tsx scripts/diag/man-accounting.ts out/man-accounting-after.json
+node --import tsx scripts/diag/owner-film.ts out/owner-feedback-fixed-after.json --reps data/reviews/physics-world/traffic-and-man-accounting/owner-setups.json
+node --import tsx scripts/diag/hand-convergence.ts out/feedback-hand-convergence.json
+node --import tsx scripts/kinematics-compare.ts 4 5
+node --import tsx scripts/calibrate.ts 16 7 2
+node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc
+python3 scripts/film-outcomes.py viewer/film-room.html --out out/concept-feedback-after.json
+python3 scripts/check-replay-viewer.py viewer/film-room.html
+```
+
+The evidence README gives archived-baseline commands and compact-report tools.
+Original G/P references belong to `78f2002`; current film IDs have new paths.
+Saved isolated setups omit game scouting/audibles, so their before/after pairs
+are not original-clip counterfactuals. The RB reference is in `docs/references/`.
+
 ### Controlled contact approach and owner-film traces
 
 `reviews/physics-world/controlled-approach/` preserves four source-verified

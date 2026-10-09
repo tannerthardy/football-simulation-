@@ -96,7 +96,9 @@ export const PRESSURES: Pressure[] = [
   },
   {
     id: 'double_a', name: 'Double-A Mug', blitzers: { LB_M: { gap: 'A', side: 'S' }, LB_W: { gap: 'A', side: 'W' } },
-    coverages: ['cover0', 'cover1'],
+    // Six rushers leave five markers; a Cover 1 post would require a twelfth
+    // player. A simulated-pressure/drop package can restore that later.
+    coverages: ['cover0'],
   },
   {
     id: 'nickel_edge', name: 'Nickel Edge', blitzers: { NB: { gap: 'D', side: 'S' } },
@@ -108,7 +110,7 @@ export const PRESSURES: Pressure[] = [
     coverages: ['cover3'],
   },
   {
-    id: 'zero_6', name: 'Zero Blitz', blitzers: { LB_M: { gap: 'A', side: 'S' }, LB_W: { gap: 'B', side: 'W' }, SS: { gap: 'C', side: 'S' } },
+    id: 'zero_6', name: 'Zero Blitz', blitzers: { LB_M: { gap: 'A', side: 'S' }, LB_W: { gap: 'B', side: 'W' } },
     coverages: ['cover0'],
   },
 ];

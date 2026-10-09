@@ -1,0 +1,536 @@
+{
+  "sourceSha256": "e3471f2c0be6e1c4b32c9713d53d216bc835691d868e93e1628ea279fb21498d",
+  "note": "Compatible catalog fronts/personnel and advertised pressure families, all formations/flips/three hashes, Cover 2 presentation with CB_S shadowing X. Required unique targets are every eligible ref, regardless of hidden route/block assignment. Far means >1 yd lateral offset from the assigned man. Static assignment check, not a coverage success or disguise-fidelity test.",
+  "cases": 22680,
+  "missingCases": 12528,
+  "farMarkerCases": 22407,
+  "byCall": {
+    "cover0/none": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 1080
+    },
+    "cover0/mike_a": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 1080
+    },
+    "cover0/double_a": {
+      "cases": 864,
+      "missingCases": 324,
+      "farMarkerCases": 864
+    },
+    "cover0/zero_6": {
+      "cases": 864,
+      "missingCases": 864,
+      "farMarkerCases": 849
+    },
+    "cover1/none": {
+      "cases": 1080,
+      "missingCases": 216,
+      "farMarkerCases": 1080
+    },
+    "cover1/mike_a": {
+      "cases": 1080,
+      "missingCases": 216,
+      "farMarkerCases": 1080
+    },
+    "cover1/will_b": {
+      "cases": 864,
+      "missingCases": 864,
+      "farMarkerCases": 846
+    },
+    "cover1/double_a": {
+      "cases": 864,
+      "missingCases": 864,
+      "farMarkerCases": 846
+    },
+    "cover1_off/none": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 1074
+    },
+    "cover1_off/mike_a": {
+      "cases": 1080,
+      "missingCases": 216,
+      "farMarkerCases": 1080
+    },
+    "cover1_off/will_b": {
+      "cases": 864,
+      "missingCases": 216,
+      "farMarkerCases": 858
+    },
+    "cover1_off/double_a": {
+      "cases": 864,
+      "missingCases": 864,
+      "farMarkerCases": 846
+    },
+    "cover1_robber/none": {
+      "cases": 1080,
+      "missingCases": 216,
+      "farMarkerCases": 1074
+    },
+    "cover1_robber/mike_a": {
+      "cases": 1080,
+      "missingCases": 1080,
+      "farMarkerCases": 1074
+    },
+    "cover1_robber/will_b": {
+      "cases": 864,
+      "missingCases": 864,
+      "farMarkerCases": 828
+    },
+    "cover1_robber/double_a": {
+      "cases": 864,
+      "missingCases": 864,
+      "farMarkerCases": 744
+    },
+    "cover1_double/none": {
+      "cases": 1080,
+      "missingCases": 216,
+      "farMarkerCases": 1080
+    },
+    "cover1_double/mike_a": {
+      "cases": 1080,
+      "missingCases": 1080,
+      "farMarkerCases": 1080
+    },
+    "cover1_double/will_b": {
+      "cases": 864,
+      "missingCases": 864,
+      "farMarkerCases": 864
+    },
+    "cover1_double/double_a": {
+      "cases": 864,
+      "missingCases": 864,
+      "farMarkerCases": 864
+    },
+    "cover2man/none": {
+      "cases": 1080,
+      "missingCases": 216,
+      "farMarkerCases": 1074
+    },
+    "cover1/nickel_edge": {
+      "cases": 540,
+      "missingCases": 540,
+      "farMarkerCases": 534
+    },
+    "cover1_off/nickel_edge": {
+      "cases": 540,
+      "missingCases": 0,
+      "farMarkerCases": 534
+    },
+    "cover1_robber/nickel_edge": {
+      "cases": 540,
+      "missingCases": 540,
+      "farMarkerCases": 534
+    },
+    "cover1_double/nickel_edge": {
+      "cases": 540,
+      "missingCases": 540,
+      "farMarkerCases": 540
+    }
+  },
+  "samples": [
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover0",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_M",
+        "CB_S",
+        "FS",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover0",
+      "pressure": "mike_a",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_W",
+        "CB_S",
+        "FS",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover0",
+      "pressure": "double_a",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "CB_S",
+        "CB_W",
+        "FS",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover0",
+      "pressure": "zero_6",
+      "missing": [
+        "Y"
+      ],
+      "far": [
+        "LB_S",
+        "CB_S",
+        "CB_W"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_W",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1",
+      "pressure": "mike_a",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_W",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1",
+      "pressure": "will_b",
+      "missing": [
+        "H"
+      ],
+      "far": [
+        "LB_S",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1",
+      "pressure": "double_a",
+      "missing": [
+        "H"
+      ],
+      "far": [
+        "LB_S",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_off",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_M",
+        "LB_W",
+        "CB_S",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_off",
+      "pressure": "mike_a",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_W",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_off",
+      "pressure": "will_b",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_M",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_off",
+      "pressure": "double_a",
+      "missing": [
+        "H"
+      ],
+      "far": [
+        "LB_S",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_robber",
+      "missing": [],
+      "far": [
+        "LB_M",
+        "CB_S",
+        "CB_W"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_robber",
+      "pressure": "mike_a",
+      "missing": [
+        "H"
+      ],
+      "far": [
+        "CB_S",
+        "CB_W"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_robber",
+      "pressure": "will_b",
+      "missing": [
+        "H"
+      ],
+      "far": [
+        "LB_M",
+        "CB_S",
+        "CB_W"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_robber",
+      "pressure": "double_a",
+      "missing": [
+        "H",
+        "RB"
+      ],
+      "far": [
+        "CB_S",
+        "CB_W"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_double",
+      "missing": [],
+      "far": [
+        "LB_M",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_double",
+      "pressure": "mike_a",
+      "missing": [
+        "H"
+      ],
+      "far": [
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_double",
+      "pressure": "will_b",
+      "missing": [
+        "H"
+      ],
+      "far": [
+        "LB_M",
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover1_double",
+      "pressure": "double_a",
+      "missing": [
+        "H",
+        "RB"
+      ],
+      "far": [
+        "CB_S",
+        "CB_W",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "over",
+      "coverage": "cover2man",
+      "missing": [],
+      "far": [
+        "LB_M",
+        "CB_S",
+        "CB_W"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "under",
+      "coverage": "cover0",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_M",
+        "CB_S",
+        "FS",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "under",
+      "coverage": "cover0",
+      "pressure": "mike_a",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "LB_W",
+        "CB_S",
+        "FS",
+        "SS"
+      ]
+    },
+    {
+      "formation": "gun_doubles_11",
+      "flip": false,
+      "ballY": 26.666666666666668,
+      "personnel": "base43",
+      "front": "under",
+      "coverage": "cover0",
+      "pressure": "double_a",
+      "missing": [],
+      "far": [
+        "LB_S",
+        "CB_S",
+        "CB_W",
+        "FS",
+        "SS"
+      ]
+    }
+  ]
+}

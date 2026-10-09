@@ -9,6 +9,42 @@ import hashlib
 import json
 from collections import Counter
 from pathlib import Path
+from statistics import mean, median
+
+
+def successful(play):
+    return play["yds"] >= play["dist"] * (0.4 if play["down"] == 1 else 0.6 if play["down"] == 2 else 1)
+
+
+def cell(rows, threshold):
+    throws = [p for p in rows if p["kind"] == "pass" and any(e[1] == "throw" for e in p.get("ev", []))]
+    completed = [p for p in throws if p["flags"]["complete"]]
+    sep = [p["stats"]["sep"] for p in completed if "sep" in p.get("stats", {})]
+    yac = [p["stats"]["yac"] for p in completed if "yac" in p.get("stats", {})]
+    return {"plays": len(rows), "meanYards": mean(p["yds"] for p in rows),
+            "medianYards": median(p["yds"] for p in rows),
+            "success": rate(sum(successful(p) for p in rows), len(rows)),
+            "explosive": rate(sum(p["yds"] >= threshold for p in rows), len(rows)),
+            "stuffs": rate(sum(p["yds"] <= 0 for p in rows), len(rows)) if rows[0]["kind"] == "run" else None,
+            "throws": len(throws), "completion": rate(len(completed), len(throws)),
+            "twentyYardCompletionsPerThrow": rate(sum(p["yds"] >= 20 for p in completed), len(throws)),
+            "completedCatchSeparation": {"n": len(sep), "meanYd": mean(sep) if sep else None},
+            "completedYAC": {"n": len(yac), "meanYd": mean(yac) if yac else None}}
+
+
+def breakdown(rows, threshold, key):
+    groups = {}
+    for p in rows:
+        groups.setdefault(key(p), []).append(p)
+    return {name: cell(group, threshold) for name, group in sorted(groups.items())}
+
+
+def disguise(play):
+    plan = play.get("plan", {})
+    actual = plan.get("coverage")
+    if not actual:
+        return "unknown"
+    return "shown-different" if (plan.get("shown") or actual) != actual else "same-look"
 
 
 def read_film(path):
@@ -29,12 +65,22 @@ def study(data, input_sha):
         rows = [p for p in plays if p["kind"] == kind]
         # Conventional 40/60/100% success definition, including sacks in pass
         # plays. This is a yards-based heuristic, not EPA or a game-state model.
-        successful = lambda p: p["yds"] >= p["dist"] * (0.4 if p["down"] == 1 else 0.6 if p["down"] == 2 else 1)
         result[kind] = {"plays": len(rows), "explosiveYardsThreshold": threshold,
                         "explosive": rate(sum(p["yds"] >= threshold for p in rows), len(rows)),
                         "success": rate(sum(successful(p) for p in rows), len(rows)),
                         "successByDown": {str(d): rate(sum(successful(p) for p in rows if p["down"] == d),
                                                             sum(p["down"] == d for p in rows)) for d in range(1, 5)}}
+        plan = lambda p, key: p.get("plan", {}).get(key) or "unknown"
+        result[kind]["breakdowns"] = {
+            "byConcept": breakdown(rows, threshold, lambda p: p["concept"]["id"]),
+            "byCoverage": breakdown(rows, threshold, lambda p: plan(p, "coverage")),
+            "byCalledCoverage": breakdown(rows, threshold, lambda p: plan(p, "called")),
+            "byCoverageFamily": breakdown(rows, threshold, lambda p: plan(p, "family")),
+            "byFront": breakdown(rows, threshold, lambda p: plan(p, "front")),
+            "byConceptCoverage": breakdown(rows, threshold, lambda p: p["concept"]["id"] + "/" + plan(p, "coverage")),
+            "byConceptFront": breakdown(rows, threshold, lambda p: p["concept"]["id"] + "/" + plan(p, "front")),
+            "byDisguise": breakdown(rows, threshold, disguise),
+        }
     throws = [p for p in plays if p["kind"] == "pass" and any(e[1] == "throw" for e in p.get("ev", []))]
     counts = Counter()
     annotated = Counter()
@@ -58,7 +104,8 @@ def study(data, input_sha):
                        "includedPlays": len(plays), "excludedNullified": sum(p.get("nullified", False) for p in data["plays"]),
                        "note": "Fixed film teams; not the independently generated league cohort used by calibrate.ts. Explosive pass-play denominator includes sacks and scrambles; explosive completion denominator is throws."},
             "definitions": {"success": "At least 40% of yards to go on first down, 60% on second, 100% on third/fourth; nullified plays and kneels excluded.",
-                            "pressure": "Recorded defender within 2 yards before throw; association only."}, **result}
+                            "pressure": "Recorded defender within 2 yards before throw; association only.",
+                            "breakdowns": "Actual checked coverage and original called coverage retained separately. Same teams/six games, small unmatched cells with adaptive play selection; descriptive, not causal or NFL concept validation. Missing labels are unknown. Pass-play rates include sacks/scrambles; throw rates use throw events."}, **result}
 
 
 def main():
