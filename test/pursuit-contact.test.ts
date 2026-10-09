@@ -102,13 +102,14 @@ describe('physical tackle contact',()=>{
     expect(sim.bond?.tacklers).toContain(d);expect(d.engagement).toBeNull();expect(b.engagement).toBeNull();
     expect(sim.engage(b,d,'run',{x:1,y:0})).toBeNull();
   });
-  it('a moving pile carries its trailing tackler along before closing the grasp',()=>{
+  it('a moving wrap advects without unexplained position tightening',()=>{
     const {sim,c,d}=stage();d.body.pos={x:49,y:CENTER_Y};c.body.vel=d.body.vel={x:8,y:0};
+    c.profile.power=d.profile.power=0;
     sim.bond={carrier:c,tacklers:[d],start:sim.t,progressX:c.pos.x,down:false};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     const centre=()=> (c.pos.x*c.profile.massKg+d.pos.x*d.profile.massKg)/(c.profile.massKg+d.profile.massKg);
     const start=c.pos.x-d.pos.x,oldCentre=centre();updateBond(sim,sim.bond,[{vel:{x:8,y:0}}]);
-    expect(c.pos.x-d.pos.x).toBeCloseTo(start-4.5*sim.dt,8);
+    expect(c.pos.x-d.pos.x).toBeCloseTo(start,8);
     expect(centre()-oldCentre).toBeCloseTo(c.vel.x*sim.dt,8);
   });
   it('an arriving assist shares momentum with the whole existing pile',()=>{

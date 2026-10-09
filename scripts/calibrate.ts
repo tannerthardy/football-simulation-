@@ -12,6 +12,8 @@ import { generateTeam, type Team } from '../src/league/team.js';
 import { simulateGame } from '../src/game/game.js';
 
 const [gamesStr = '20', seedStr = '7', leaguesStr] = process.argv.slice(2);
+const experimentalGrasps = process.argv.includes('--experimental-grasps');
+if (experimentalGrasps) console.log('EXPERIMENTAL bounded grasp model; not the default engine.');
 const games = Number(gamesStr);
 const leagues = Math.max(1, Math.min(games, Number(leaguesStr ?? Math.ceil(games / 8))));
 const rng = new Rng(Number(seedStr));
@@ -51,7 +53,7 @@ for (let g = 0; g < games; g++) {
   const i = rng.int(0, teams.length - 1);
   let j = rng.int(0, teams.length - 2);
   if (j >= i) j++;
-  const res = simulateGame(teams[i], teams[j], { seed: rng.nextU32() });
+  const res = simulateGame(teams[i], teams[j], { seed: rng.nextU32(), experimentalGrasps });
   acc.teamGames += 2;
   acc.points += res.score.home + res.score.away;
   lg.teamGames += 2;

@@ -22,7 +22,7 @@ function fixture(seed: number) {
     defense: pickDefense(generateTeam(new Rng(seed + 12), 'D', 'DEF'), 'nickel'),
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'interaction audit' },
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'interaction audit' },
-    los: 40, ballY: 26, firstDownX: 50, seed });
+    los: 40, ballY: 26, firstDownX: 50, seed, experimentalGrasps: process.argv.includes('--experimental-grasps') });
   for (const a of sim.agents) {
     a.body.pos = { x: 5, y: a.idx * 2 }; a.body.vel = { x: 0, y: 0 };
     a.downUntil = 99;
@@ -63,14 +63,18 @@ function weakGrasp(seed: number) {
   const commands = sim.agents.map(a => ({ vel: a === c ? { x: 6, y: 0 } : { x: 0, y: 0 } }));
   updateBond(sim, sim.bond, commands);
   const afterUpdate = measure([c, d]);
-  const velocityDisplacementError = Math.max(...[c, d].map((a, i) =>
+  const finalVelocityVersusStepAverage = Math.max(...[c, d].map((a, i) =>
     Math.hypot((a.pos.x - old[i].x) / sim.dt - a.vel.x, (a.pos.y - old[i].y) / sim.dt - a.vel.y)));
+  const mass = c.profile.massKg + d.profile.massKg;
+  const centerDisplacementError = Math.hypot(afterUpdate.centerX - afterFormation.centerX
+    - afterFormation.momentumX / YARD_METRES / mass * sim.dt,
+    afterUpdate.centerY - afterFormation.centerY - afterFormation.momentumY / YARD_METRES / mass * sim.dt);
   return { seed, grip, before, afterFormation, afterUpdate, relativeSpeedAtFormation,
     relativeSpeedAfterUpdate: Math.hypot(c.vel.x - d.vel.x, c.vel.y - d.vel.y),
     momentumErrorFormation: Math.hypot(afterFormation.momentumX - before.momentumX, afterFormation.momentumY - before.momentumY),
     momentumErrorUpdate: Math.hypot(afterUpdate.momentumX - afterFormation.momentumX, afterUpdate.momentumY - afterFormation.momentumY),
     kineticAddedUpdate: afterUpdate.kineticJoules - afterFormation.kineticJoules,
-    velocityDisplacementError };
+    finalVelocityVersusStepAverage, centerDisplacementError };
 }
 
 function supportReset(seed: number) {
@@ -117,17 +121,19 @@ const seeds = [7, 19, 31, 43];
 const weak = seeds.map(weakGrasp), support = seeds.map(supportReset);
 const crossings = [0, 0.4].flatMap(offset => [0.05, 0.025, 0.01].map(dt => crossing(dt, offset)));
 const average = (xs: number[]) => xs.reduce((s, x) => s + x, 0) / xs.length;
-const result = { sourceSha256: sourceVersion(), setup: { seeds, nativeDt: 0.05, graspTicks: 1, crossingDuration: 0.05 },
+const result = { sourceSha256: sourceVersion(), setup: { seeds, nativeDt: 0.05, graspTicks: 1, crossingDuration: 0.05,
+  graspModel: process.argv.includes('--experimental-grasps') ? 'experimental-bounded' : 'default-coupled' },
   units: { momentum: 'kg m/s', kinetic: 'joules', position: 'yards', velocity: 'yards/s', time: 'seconds' },
   definitions: {
-    grasp: 'Actual tryTackles partial coupling followed by actual updateBond. Powers set to 1e-9 and chance() false; isolates the transition, not ordinary tackle outcomes.',
+    grasp: 'Actual tryTackles partial coupling followed by actual updateBond. Ground powers set to 1e-9 and chance() false. Check independent common-motion displacement; final velocity can differ from the step average during substep acceleration. Passive structural grasp capacity is distinct from ground power.',
     support: 'Immediate run disengagement/re-engagement; same pose and time, manually depleted contact-local bases. Demonstrates storage lifetime, not a measured player recovery.',
     crossing: 'Actual stepBody/resolveBodyContacts, fixed free-body geometry over 0.05 seconds. No tackle/controller update; smaller dt is a diagnostic, not a production mode.',
     limitations: 'Synthetic counterfactuals prove representational/solver gaps, not their frequency in games or attribution of the prior NFL-stat regressions. Not NFL validation.' },
   summary: { meanFormationMomentumError: average(weak.map(r => r.momentumErrorFormation)),
     meanNextUpdateMomentumError: average(weak.map(r => r.momentumErrorUpdate)),
     meanKineticAddedNextUpdate: average(weak.map(r => r.kineticAddedUpdate)),
-    meanVelocityDisplacementError: average(weak.map(r => r.velocityDisplacementError)),
+    meanCenterDisplacementError: average(weak.map(r => r.centerDisplacementError)),
+    meanFinalVelocityVersusStepAverage: average(weak.map(r => r.finalVelocityVersusStepAverage)),
     meanGraspRelativeSpeedBefore: average(weak.map(r => r.relativeSpeedAtFormation)),
     meanGraspRelativeSpeedAfter: average(weak.map(r => r.relativeSpeedAfterUpdate)),
     supportResetCases: support.filter(r => r.after.blocker > r.before.blocker && r.after.defender > r.before.defender).length,

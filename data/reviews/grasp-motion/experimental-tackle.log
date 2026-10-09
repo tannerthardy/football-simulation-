@@ -1,0 +1,13 @@
+EXPERIMENTAL bounded grasp model; not the default engine.
+angle  speed   n  wrap%  down n  contact->down s (mean/p50)   yards after contact (mean/p50)   broken/rep  missed/rep
+    0      3   24   100      24   0.79 / 0.80                  0.00 / 0.00                   0.00        0.00
+    0      6   24   100      24   0.80 / 0.80                  0.02 / 0.00                   0.00        0.00
+   45      3   24   100      24   0.79 / 0.80                  0.05 / 0.03                   0.00        0.00
+   45      6   24    96      22   0.90 / 0.80                  0.29 / 0.20                   0.04        0.04
+   90      3   24    96      22   1.40 / 1.40                  2.42 / 2.06                   0.04        0.04
+   90      6   24    79       0   N/A (no downs)                  N/A (no downs)                   0.92        0.08
+  135      3   24    79      17   1.86 / 1.80                  6.77 / 6.83                   0.21        0.08
+  135      6   24    92       0   N/A (no downs)                  N/A (no downs)                   0.92        0.08
+  180      3   24    96      22   1.04 / 1.10                  3.77 / 3.67                   0.04        0.04
+  180      6   24   100      24   0.74 / 0.70                  3.96 / 3.95                   0.00        0.00
+all: downs 179/240, contact->down 1.01 / 0.80 s, yards after contact 1.98 / 0.28, broken 0.22, missed 0.04 per rep

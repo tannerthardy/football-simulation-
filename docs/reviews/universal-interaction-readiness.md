@@ -1,5 +1,10 @@
 # How ready is the physical foundation?
 
+Latest implementation and gate status:
+[grasp motion and readiness gates](grasp-motion-and-readiness-gates.md).
+The default conservation/position defects are repaired; graded contact remains
+an opt-in prototype with failing football checks. This file retains the audit.
+
 Audit of `c044b46` on `claude/engine-priorities`, following the owner's
 universal-interaction direction. The underlying source is unchanged in this
 audit. It adds a reproducible diagnostic and delivery gates rather than more

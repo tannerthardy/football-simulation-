@@ -14,7 +14,7 @@ export function resolveBodyContacts(sim: PlaySim): void {
   };
   for (const e of sim.engagements) assign([e.blocker, e.defender, ...e.helpers]);
   // Read the live bond, not a set captured before updateBond released it.
-  if (sim.bond) assign([sim.bond.carrier, ...sim.bond.tacklers]);
+  if (sim.bond) assign([sim.bond.carrier, ...sim.bond.tacklers.filter(d => !sim.experimentalGrasps || (sim.bond!.grip?.get(d) ?? 1) >= 1)]);
   for (const a of sim.agents) if (!groups.has(a)) assign([a]);
 
   // Local projection can reintroduce a neighboring overlap in a crowded

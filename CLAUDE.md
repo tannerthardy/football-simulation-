@@ -2,6 +2,13 @@
 
 Start with these shared project references:
 
+- [Grasp motion and readiness gates](docs/reviews/grasp-motion-and-readiness-gates.md):
+  latest implementation and physical readiness ledger. Default pile momentum
+  and geometry bookkeeping are repaired; bounded grasps are explicitly
+  experimental and fail football transfer. Read the run regressions too.
+  The owner wants an explicit OK when the physics is very good; current status
+  is NOT READY. Use the gates and evidence, not the passing-test count.
+
 - [Universal interaction readiness](docs/reviews/universal-interaction-readiness.md):
   latest physical-foundation audit; reproduced partial-grasp momentum/energy
   creation, contact-local balance reset and missed fast torso encounters.

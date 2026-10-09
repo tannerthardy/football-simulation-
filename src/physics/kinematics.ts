@@ -192,3 +192,13 @@ export function seekVelocity(body: Body, target: Vec2, speed: number): Vec2 {
 
 export const speedOf = (b: Body): number => len(b.vel);
 export const velAlong = (b: Body, dir: Vec2): number => dot(b.vel, dir);
+
+/** Free-movement demand for a contact controller, without advancing the
+ * original body. Contact can combine this demand with bracing in one budget.
+ */
+export function movementDemand(body: Body, command: MoveCommand, dt: number): { impulse: Vec2; facing: number; energy: number } {
+  const candidate: Body = { ...body, pos: { ...body.pos }, vel: { ...body.vel } };
+  stepBody(candidate, command, dt);
+  return { impulse: { x: (candidate.vel.x - body.vel.x) * body.profile.massKg,
+    y: (candidate.vel.y - body.vel.y) * body.profile.massKg }, facing: candidate.facing, energy: candidate.energy };
+}

@@ -16,12 +16,15 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const reps = Number(process.argv[2] ?? 40);
+const experimentalGrasps = process.argv.includes('--experimental-grasps');
+if (experimentalGrasps) console.log('EXPERIMENTAL bounded grasp model; not the default engine.');
 const CONTACT = new Set(['hit', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle']);
 
 interface Out { n: number; wraps: number; time: number[]; yards: number[]; broken: number; missed: number }
 
 function one(rosterSeed: number, seed: number, angleDeg: number, speed: number, out: Out): void {
   const sim = new PlaySim({
+    experimentalGrasps,
     offense: pickOffense(generateTeam(new Rng(rosterSeed), 'O', 'OFF'), '11'),
     defense: pickDefense(generateTeam(new Rng(rosterSeed + 1), 'D', 'DEF'), 'base43'),
     offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'lab' },
@@ -72,7 +75,8 @@ function one(rosterSeed: number, seed: number, angleDeg: number, speed: number, 
 
 const mean = (v: number[]) => v.reduce((a, b) => a + b, 0) / Math.max(1, v.length);
 const q = (v: number[], p: number) => [...v].sort((a, b) => a - b)[Math.floor(p * v.length)] ?? NaN;
-console.log('angle  speed   n  wrap%  contact->down s (mean/p50)   yards after contact (mean/p50)   broken/rep  missed/rep');
+const summary = (v: number[]) => v.length ? `${mean(v).toFixed(2)} / ${q(v, 0.5).toFixed(2)}` : 'N/A (no downs)';
+console.log('angle  speed   n  wrap%  down n  contact->down s (mean/p50)   yards after contact (mean/p50)   broken/rep  missed/rep');
 const all: Out = { n: 0, wraps: 0, time: [], yards: [], broken: 0, missed: 0 };
 for (const angle of [0, 45, 90, 135, 180]) {
   for (const speed of [3, 6]) {
@@ -80,7 +84,7 @@ for (const angle of [0, 45, 90, 135, 180]) {
     for (let r = 0; r < reps; r++) one([7, 19, 31, 43][r % 4], 1000 + r, angle, speed, o);
     for (const k of ['time', 'yards'] as const) all[k].push(...o[k]);
     all.n += o.n; all.wraps += o.wraps; all.broken += o.broken; all.missed += o.missed;
-    console.log(`${String(angle).padStart(5)}  ${String(speed).padStart(5)}  ${String(o.n).padStart(3)}  ${((100 * o.wraps) / o.n).toFixed(0).padStart(4)}   ${mean(o.time).toFixed(2)} / ${q(o.time, 0.5).toFixed(2)}                  ${mean(o.yards).toFixed(2)} / ${q(o.yards, 0.5).toFixed(2)}                   ${(o.broken / o.n).toFixed(2)}        ${(o.missed / o.n).toFixed(2)}`);
+    console.log(`${String(angle).padStart(5)}  ${String(speed).padStart(5)}  ${String(o.n).padStart(3)}  ${((100 * o.wraps) / o.n).toFixed(0).padStart(4)}  ${String(o.time.length).padStart(6)}   ${summary(o.time)}                  ${summary(o.yards)}                   ${(o.broken / o.n).toFixed(2)}        ${(o.missed / o.n).toFixed(2)}`);
   }
 }
-console.log(`all: contact->down ${mean(all.time).toFixed(2)} s (p50 ${q(all.time, 0.5).toFixed(2)}), yards after contact ${mean(all.yards).toFixed(2)} (p50 ${q(all.yards, 0.5).toFixed(2)}), broken ${(all.broken / all.n).toFixed(2)}, missed ${(all.missed / all.n).toFixed(2)} per rep`);
+console.log(`all: downs ${all.time.length}/${all.n}, contact->down ${summary(all.time)} s, yards after contact ${summary(all.yards)}, broken ${(all.broken / all.n).toFixed(2)}, missed ${(all.missed / all.n).toFixed(2)} per rep`);

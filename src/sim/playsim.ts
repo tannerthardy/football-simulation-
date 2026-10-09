@@ -56,11 +56,14 @@ export interface PlaySetup {
   down?: number;
   /** Let the QB check out of the call at the line. */
   audibles?: boolean;
+  /** Development-only bounded grasp model; football validation is unfinished. */
+  experimentalGrasps?: boolean;
 }
 
 const MAX_PLAY_TIME = 25;
 
 export class PlaySim {
+  readonly experimentalGrasps: boolean;
   readonly dt = DT;
   readonly rng: Rng;
   t = 0;
@@ -138,6 +141,7 @@ export class PlaySim {
   ballPath: Array<{ t: number; x: number; y: number; z: number }> = [];
 
   constructor(setup: PlaySetup) {
+    this.experimentalGrasps = setup.experimentalGrasps ?? false;
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
     this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;

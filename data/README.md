@@ -378,3 +378,28 @@ passing; the crossing probe refines only local movement/contact sampling.
 These counterfactuals identify physical gaps, not their game frequency, NFL
 outcome targets or causal explanations of earlier game regressions. The audit
 is a diagnostic, not a passing test that approves its observed defects.
+
+## Grasp motion and readiness gates
+
+The [latest review](../docs/reviews/grasp-motion-and-readiness-gates.md)
+records the default conservation repairs, opt-in bounded prototype, paired
+mechanical/tackle/game evidence and explicit physical readiness gates.
+Evidence/provenance is in `data/reviews/grasp-motion/`.
+
+```sh
+node --import tsx scripts/interaction-readiness.ts out/default-interaction.json
+node --import tsx scripts/tackle-lab.ts 24
+node --import tsx scripts/calibrate.ts 32 7 4
+node --import tsx scripts/contact-anatomy.ts 16 7 2
+
+# Explicit development experiment; not enabled in ordinary games or film.
+node --import tsx scripts/interaction-readiness.ts out/experimental-interaction.json --experimental-grasps
+node --import tsx scripts/tackle-lab.ts 24 --experimental-grasps
+node --import tsx scripts/calibrate.ts 8 7 1 --experimental-grasps
+```
+
+Compare the experimental eight-game panel with `calibrate.ts 8 7 1`, not the
+32-game panel. Solo-lab conditional means require the down counts; `N/A`
+means no completed tackles. The revised interaction script reports center
+displacement against independent common motion. Final instantaneous velocity
+can differ from step-average velocity under substep acceleration.
