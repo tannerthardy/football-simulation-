@@ -276,6 +276,29 @@ export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throu
   return { x: (dx / d) * s, y: (dy / d) * s };
 }
 
+/** Approach a moving contact point with bounded relative closing speed.
+ * Match motion across the bearing, and budget the remaining closure using
+ * this body's existing acceleration envelope. This is a steering estimate;
+ * the world still supplies the actual forces and can fail to execute it.
+ * `throughSpeed` is the controller's requested relative speed at contact.
+ */
+export function movingArrivalVelocity(body: Body, target: Vec2, targetVelocity: Vec2,
+  maxSpeed: number, radius: number, throughSpeed: number, cutSkill=1, capacity=1): Vec2 {
+  const dx=target.x-body.pos.x,dy=target.y-body.pos.y,d=Math.hypot(dx,dy);
+  if(d<1e-9){
+    const speed=Math.hypot(targetVelocity.x,targetVelocity.y),scale=Math.min(1,maxSpeed/Math.max(1e-9,speed));
+    return {x:targetVelocity.x*scale,y:targetVelocity.y*scale};
+  }
+  const ux=dx/d,uy=dy/d,nx=-uy,ny=ux;
+  const brake=followAccel(body,{x:-ux*1e3,y:-uy*1e3},cutSkill,capacity);
+  const available=Math.max(0,-brake.x*ux-brake.y*uy);
+  const close=Math.sqrt(throughSpeed*throughSpeed+2*available*Math.max(0,d-radius));
+  const across=clamp(targetVelocity.x*nx+targetVelocity.y*ny,-maxSpeed,maxSpeed);
+  const cap=Math.sqrt(Math.max(0,maxSpeed*maxSpeed-across*across));
+  const toward=clamp(targetVelocity.x*ux+targetVelocity.y*uy+close,-cap,cap);
+  return {x:ux*toward+nx*across,y:uy*toward+ny*across};
+}
+
 /** Speed that can round a waypoint within the controller's capture radius.
  * The tangent arc has R = radius / tan(turn/2); centripetal demand is v²/R.
  * This plans braking; it never changes the body's velocity or force limits. */

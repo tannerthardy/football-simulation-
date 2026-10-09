@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [Controlled tackle approach and owner-film observations](docs/reviews/controlled-tackle-approach.md):
+  **read first.** Four original clips are traced exactly. Crossing approaches
+  now budget closure against the same body's braking/cutting envelope instead
+  of requesting a full-speed fly-by. No force, strength or solver retuning.
+  Mechanical crossing falls decrease, but long continued-contact convergence
+  remains unstable, rushing efficiency worsens and far pursuit remains open.
+  Physics is NOT READY. Follow the gates and ordered work; keep physics primary
+  and PR #1 separate. The uploaded WR/DB aid is retained with provenance;
+  full holding/illegal-contact/interference rules are not implemented.
+
 - [Held-foot motion and physics readiness](docs/reviews/held-foot-and-movement-readiness.md):
-  **read first.** Held-foot travel now compares the same motion interval on
+  Previous implementation/evidence. Held-foot travel now compares the same motion interval on
   both bodies, removing false trip deviation under common acceleration.
   888 NFL drill paths / 420 athletes now run through the ordinary world in
   3,552 paired trials. They expose capacity-versus-demand and reversal-control

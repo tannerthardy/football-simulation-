@@ -1,6 +1,6 @@
 # Shared NFL data
 
-Current physics/data status: [Held-foot motion and physics readiness](../docs/reviews/held-foot-and-movement-readiness.md).
+Current physics/data status: [Controlled tackle approach and owner-film observations](../docs/reviews/controlled-tackle-approach.md).
 Physics remains NOT READY. NFL references support conditional comparisons;
 they are not mandatory averages for every generated roster.
 
@@ -250,6 +250,34 @@ The retained output includes input hashes, exclusion counts, athlete-weighted
 drill/role metrics and matched observed speed ratios. Read the cohort and
 smoothing definitions before comparing it to an engine panel. No AddBiomechanics
 subject data or additional large archive was downloaded for this extraction.
+
+### Controlled contact approach and owner-film traces
+
+`reviews/physics-world/controlled-approach/` preserves four source-verified
+owner observations, the paired 96-rep mechanical approach panel, explicit
+12-versus-48 continued-contact drift, unchanged hand-fighting convergence,
+four open-field labs and mixed game/film guards. Physical profiles and force
+constants are unchanged. Physics remains NOT READY; read the handoff and
+the evidence README before interpreting contact counts or explosive rates.
+
+```sh
+node --import tsx scripts/diag/moving-contact.ts out/moving-contact-after.json
+node --import tsx scripts/diag/hand-convergence.ts out/pursuit-hand-convergence.json
+node --import tsx scripts/diag/open-field-lab.ts 40 side
+node --import tsx scripts/diag/open-field-lab.ts 40 front
+node --import tsx scripts/diag/open-field-lab.ts 40 two
+node --import tsx scripts/diag/open-field-lab.ts 40 trail
+node --import tsx scripts/kinematics-compare.ts 4 5
+node --import tsx scripts/calibrate.ts 16 7 2
+node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc
+python3 scripts/film-outcomes.py viewer/film-room.html --out out/pursuit-film-outcomes.json
+python3 scripts/check-replay-viewer.py viewer/film-room.html
+```
+
+`scripts/diag/pursuit-film.ts` refuses to run against a different engine source
+than its input film. The original G/P IDs refer to `2c2c250`; reproduce them
+from that archived source/film using the instructions in the evidence README.
+The current film has new trajectories and IDs.
 
 ### Matched movement tasks through the physics world
 

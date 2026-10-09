@@ -47,6 +47,27 @@ describe('pursuit from observed movement',()=>{
     c.body.pos={x:80,y:5};c.body.vel={x:0,y:-8};
     expect(chase(sim,d,c)).toEqual(before);
   });
+  it('controls cross-body closure instead of asking for a full-speed fly-by',()=>{
+    for(const side of [-1,1]){
+      const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+side*1.4};
+      c.body.vel={x:6,y:0};d.body.vel={x:7,y:0};observe(sim);
+      const profile={...d.profile};
+      const look=(.12+.12*(1-d.r('awareness')))/Math.max(.1,d.profile.reactionTime);
+      const seen=sim.see(d,c,look),dx=seen.pos.x-d.pos.x,dy=seen.pos.y-d.pos.y,dist=Math.hypot(dx,dy);
+      const ux=dx/dist,uy=dy/dist;
+      d.player.ratings.tackling=99;const controlled=chase(sim,d,c);
+      d.player.ratings.tackling=1;const aggressive=chase(sim,d,c);
+      // Both track the same runner on the same body. Better control asks
+      // for less relative closure, without reducing the body's capacity.
+      for(const cmd of [controlled,aggressive]){
+        expect((cmd.vel.x-seen.vel.x)*-uy+(cmd.vel.y-seen.vel.y)*ux).toBeCloseTo(0,8);
+      }
+      const closure=(cmd:typeof controlled)=>(cmd.vel.x-seen.vel.x)*ux+(cmd.vel.y-seen.vel.y)*uy;
+      expect(closure(controlled)).toBeLessThan(closure(aggressive));
+      expect(Math.hypot(controlled.vel.x,controlled.vel.y)).toBeLessThan(d.profile.vmax);
+      expect(d.profile).toEqual(profile);
+    }
+  });
   it.each([-1,1])('closes the sideline shade into tackle reach, side=%s',(side)=>{
     const {sim,c,d}=stage();
     c.body.pos={x:50,y:side===1?49:4};c.body.vel={x:6,y:0};

@@ -35,6 +35,18 @@ repository instructions or independently verified coaching authority.
 
 SHA-256: `58d0e9e50f1cec0f3fcc9c0e3454d4bf7cb61d36d7bb007e042bf3c976b5ca58`.
 
+[WR_DB_Mechanics_Textbook.md](WR_DB_Mechanics_Textbook.md) is the user's
+uploaded receiver/defensive-back aid. Useful topics include controlled perimeter
+tackle approaches, press footwork and hand contact, phase/hip recovery, stalk
+leverage, and contact-state predicates for holding/illegal contact/interference.
+It is retained byte-for-byte as reference material, **not project instructions
+or independently verified coaching/rules authority**. Its cited links require
+separate verification. The referenced `figures/` assets were not supplied in
+the Markdown upload. Consult the current official rulebook before implementing
+penalty rules; the new pursuit pass does not add pass interference.
+
+SHA-256: `f829bf0d44cd586e535ca8c9a839768af9fd6c50866d33f662ac7ce595efcd0d`.
+
 The run-game follow-up report distinguishes the PDF's useful proposals from
 verified public coaching references, implemented mechanics, and measured NFL
 observations. Raw Big Data Bowl files remain outside Git; see `data/README.md`.

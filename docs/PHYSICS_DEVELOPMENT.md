@@ -1,17 +1,24 @@
 # Physics development and testing
 
 Current evidence and ordered work are in
-[Held-foot motion and physics readiness](reviews/held-foot-and-movement-readiness.md).
+[Controlled tackle approach and owner-film observations](reviews/controlled-tackle-approach.md).
 Physics is still NOT READY. Shared active force limits and planar kinetic-work
 accounting are implemented; physical magnitudes and reduced support energy
 remain unvalidated. Next: the specific coupled QB/rusher hand/grasp fall disagreement;
 initial run contact through get-off, OL response advantage, posture and doubles;
-achievable tackle approach. Fix the local convergence failure before raising
+executable far pursuit and achievable tackle approach. Fix the local convergence failure before raising
 resolution globally. These are work priorities, not additional tests to write
 before their mechanics exist.
 
-The latest pass repairs held-foot relative motion under shared acceleration.
-The two football fall disagreements and large block-path error remain.
+The latest pass controls close crossing approaches using the body's existing
+braking/cutting envelope. The four owner clips are traced on their exact source;
+teammate collision and approach intent are distinguished from force errors.
+The two football fall disagreements and large block-path error remain; the new
+long continued-contact probe also exposes path drift. Sixteen-game tackle misses
+decrease, but rushing efficiency worsens and film-cohort passing explosives do
+not improve. No physical capacities or contact constants were retuned.
+The earlier [held-foot handoff](reviews/held-foot-and-movement-readiness.md)
+records the same-motion-interval repair and matched movement panel.
 Use conditional NFL distributions and roster variation as references, not
 mandatory outcome targets. The matched movement task panel is built: 888 NFL
 paths / 420 athletes, 3,552 paired trials. No fitting or held-out prediction

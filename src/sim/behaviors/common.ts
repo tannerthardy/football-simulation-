@@ -1,7 +1,8 @@
 /** Steering helpers shared by behaviors. */
 import { FIELD_WIDTH } from '../../core/field.js';
 import { angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
-import { arriveVelocity, type MoveCommand } from '../../physics/kinematics.js';
+import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
+import { availability, supportParams } from '../../physics/support.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
@@ -171,21 +172,27 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
         cutSkill: 0.8 + 0.4 * tackle, push: strike ? 1 : undefined, posture: 0.4 + 0.25 * tackle } as MoveCommand;
     }
   }
-  // The last yards: a collision course. Hold his bearing steady by matching
-  // his motion across the line between us, and run through him with what
-  // speed is left. The body contact takes his momentum; the arms keep it.
+  // Match the carrier across our bearing, but keep enough braking distance
+  // to close under control. A crossing runner is not a stationary point to
+  // sprint through. Poor execution still asks for a harder arrival, and the
+  // world may be unable to make the requested correction in time.
   if (dist > 0.3) {
     const contact = a.profile.radius + target.profile.radius + a.profile.reach * 0.65;
-    if (dist < contact + 2.5) {
-      const ux = (seen.pos.x - a.pos.x) / dist, uy = (seen.pos.y - a.pos.y) / dist;
-      const nx = -uy, ny = ux;
-      const cap = a.profile.vmax;
-      const vn = clamp(seen.vel.x * nx + seen.vel.y * ny, -cap, cap);
-      const approach = Math.sqrt(Math.max(0, cap * cap - vn * vn));
+    const ux=(seen.pos.x-a.pos.x)/dist,uy=(seen.pos.y-a.pos.y)/dist;
+    const cutSkill=.85+.35*tackle;
+    const capacity=a.body.support?availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy)):1;
+    const brake=followAccel(a.body,{x:-ux*1e3,y:-uy*1e3},cutSkill,capacity);
+    const decel=Math.max(.1,-brake.x*ux-brake.y*uy);
+    const closing=Math.max(0,(a.vel.x-seen.vel.x)*ux+(a.vel.y-seen.vel.y)*uy);
+    const through=2.5+2*(1-tackle);
+    const stopping=Math.max(0,(closing*closing-through*through)/(2*decel));
+    if (dist < contact + Math.max(2.5,stopping)) {
+      const vel=movingArrivalVelocity(a.body,seen.pos,seen.vel,a.profile.vmax*a.speedScale,
+        contact,through,cutSkill,capacity);
       // Square the shoulders for the strike.
       const square = dist < contact + 0.5 ? Math.atan2(uy, ux) : undefined;
-      return { vel: { x: ux * approach + nx * vn, y: uy * approach + ny * vn }, facing: square,
-        cutSkill: 0.85 + 0.35 * tackle, push: 1, posture: 0.4 + 0.25 * tackle } as MoveCommand;
+      return {vel,facing:square,cutSkill,push:dist<contact+.5?1:undefined,
+        posture:.4+.25*tackle} as MoveCommand;
     }
   }
   const p = pursuitPoint(sim, a, target, horizon);
