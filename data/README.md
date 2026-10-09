@@ -1,6 +1,6 @@
 # Shared NFL data
 
-Current physics/data status: [NFL references and shared support physics](../docs/reviews/nfl-reference-and-support-integration.md).
+Current physics/data status: [Held-foot motion and physics readiness](../docs/reviews/held-foot-and-movement-readiness.md).
 Physics remains NOT READY. NFL references support conditional comparisons;
 they are not mandatory averages for every generated roster.
 
@@ -250,6 +250,36 @@ The retained output includes input hashes, exclusion counts, athlete-weighted
 drill/role metrics and matched observed speed ratios. Read the cohort and
 smoothing definitions before comparing it to an engine panel. No AddBiomechanics
 subject data or additional large archive was downloaded for this extraction.
+
+### Matched movement tasks through the physics world
+
+`reviews/physics-world/held-foot-and-movement-tasks/` contains reviewed aggregates
+from 888 combine paths / 420 measured athletes and 3,552 paired laboratory reps.
+Forty, shuttle, three cone, OL long pull and backpedal-drill path geometry use
+identical measurement operators. 2025 athletes are reserved separately;
+no parameters are fitted and no held-out predictive accuracy is claimed.
+Facing/contact are unobserved, ratings are neutral, missing non-sprint measures
+have explicit proxies. Read [the handoff](../docs/reviews/held-foot-and-movement-readiness.md)
+before interpreting capacity, effort or controller errors. Raw paths stay ignored.
+
+```sh
+.venv-movement/bin/python scripts/data/movement_task_fixtures.py data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027 out/movement-inputs.json
+node --import tsx scripts/diag/movement-tasks.ts out/movement-inputs.json out/movement-trials.json
+.venv-movement/bin/python scripts/data/movement_task_report.py out/movement-inputs.json out/movement-trials.json out/movement-report.json
+.venv-movement/bin/python -m unittest discover -s test -p 'test_*.py'
+```
+
+Held-foot repair/transfer guards:
+
+```sh
+node --import tsx scripts/diag/hand-convergence.ts out/held-foot-convergence.json
+node --import tsx scripts/diag/shared-capabilities.ts out/held-foot-shared.json
+node --import tsx scripts/scenario-pack.ts out/held-foot-scenarios.json
+node --import tsx scripts/kinematics-compare.ts 4 5
+node --import tsx scripts/calibrate.ts 16 7 2
+node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc
+python3 scripts/check-replay-viewer.py viewer/film-room.html
+```
 
 ### Film feedback and physics plan
 

@@ -1,7 +1,7 @@
 # Physics development and testing
 
 Current evidence and ordered work are in
-[NFL references and shared support physics](reviews/nfl-reference-and-support-integration.md).
+[Held-foot motion and physics readiness](reviews/held-foot-and-movement-readiness.md).
 Physics is still NOT READY. Shared active force limits and planar kinetic-work
 accounting are implemented; physical magnitudes and reduced support energy
 remain unvalidated. Next: the specific coupled QB/rusher hand/grasp fall disagreement;
@@ -10,11 +10,13 @@ achievable tackle approach. Fix the local convergence failure before raising
 resolution globally. These are work priorities, not additional tests to write
 before their mechanics exist.
 
-The latest pass repairs grasp moment geometry and integrates the recovery-step
-ramp over its actual interval. The two football fall disagreements remain.
+The latest pass repairs held-foot relative motion under shared acceleration.
+The two football fall disagreements and large block-path error remain.
 Use conditional NFL distributions and roster variation as references, not
-mandatory outcome targets. The matched movement task panel is the next data
-utilization step; its implementation and held-out validation remain pending.
+mandatory outcome targets. The matched movement task panel is built: 888 NFL
+paths / 420 athletes, 3,552 paired trials. No fitting or held-out prediction
+claim. It exposes capacity-versus-demand and reversal-control problems. See
+the handoff for the explicit physics acceptance gates and ordered work.
 
 A short guide for agents working on the physics. It covers how to think about
 the physics, what the test suite is, how to make a change, and how much testing

@@ -1,0 +1,1 @@
+888 fixtures 420 athletes {'laterAttempt': 463, 'missingBodyOrSprintMeasurements': 84, 'shortMovingWindow': 1}

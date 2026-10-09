@@ -2,8 +2,17 @@
 
 Start with these shared project references:
 
+- [Held-foot motion and physics readiness](docs/reviews/held-foot-and-movement-readiness.md):
+  **read first.** Held-foot travel now compares the same motion interval on
+  both bodies, removing false trip deviation under common acceleration.
+  888 NFL drill paths / 420 athletes now run through the ordinary world in
+  3,552 paired trials. They expose capacity-versus-demand and reversal-control
+  issues; no parameters are fitted. Physics remains NOT READY: the 0.822 yd
+  block convergence error and two fall disagreements remain. Follow the
+  readiness gates and ordered work; keep physics primary and PR #1 separate.
+
 - [NFL references and shared support physics](docs/reviews/nfl-reference-and-support-integration.md):
-  **read first.** Same grasp landmark for active/passive pulls; exact recovery
+  Previous evidence. Same grasp landmark for active/passive pulls; exact recovery
   ramp integration. Physics remains NOT READY: two real-technique fall
   disagreements and unsupported contact magnitudes remain. Complete 2022–2023
   nflverse outcomes now have conditional cells and team-season distributions;

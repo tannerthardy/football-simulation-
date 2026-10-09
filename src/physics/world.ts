@@ -277,6 +277,11 @@ export class World {
   private readonly impY: Float64Array;
   private readonly tripX: Float64Array;
   private readonly tripY: Float64Array;
+  /** Holder of the strongest foot restraint for this substep. */
+  private readonly feetHolder: Int32Array;
+  /** Translation used by position integration, before velocity relaxation. */
+  private readonly travelVx: Float64Array;
+  private readonly travelVy: Float64Array;
   private readonly tipX: Float64Array;
   private readonly tipY: Float64Array;
   private readonly braceX: Float64Array;
@@ -311,6 +316,8 @@ export class World {
     this.inertia = Float64Array.from(this.sp, (s) => s.yawInertia);
     const f = () => new Float64Array(n);
     this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f();
+    this.feetHolder = new Int32Array(n);
+    this.travelVx = f(); this.travelVy = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
     this.comHeight = f(); this.padHeight = f();
     this.v0x = f(); this.v0y = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f();
@@ -510,6 +517,7 @@ export class World {
       this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0;
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
       bs[i].support!.feetLock = 0;
+      this.feetHolder[i] = -1;
     }
     this.allocateArms();
     // Holds on the legs restrict stepping for this substep.
@@ -522,7 +530,10 @@ export class World {
       // Hands sliding down a leg still hang the holder's weight on it.
       const firm = clamp(1 - (d - touch) / Math.max(0.05, j.reach - touch), 0, 1) * (j.slipping ? 0.8 : 1);
       const lock = clamp(j.legs * firm, 0, 1);
-      if (lock > sup.feetLock) { sup.feetLock = lock; sup.feetVel = { x: j.a.vel.x, y: j.a.vel.y }; }
+      if (lock > sup.feetLock) {
+        sup.feetLock = lock;
+        this.feetHolder[this.indexOf(j.b)] = this.indexOf(j.a);
+      }
     }
 
     // ---- 1. ground forces
@@ -605,8 +616,21 @@ export class World {
     // ---- 3. integrate positions (trapezoidal in the ground force)
     for (const i of ids) {
       const b = bs[i];
-      b.pos.x += (b.vel.x - 0.5 * this.amx[i] * h) * h;
-      b.pos.y += (b.vel.y - 0.5 * this.amy[i] * h) * h;
+      this.travelVx[i] = b.vel.x - 0.5 * this.amx[i] * h;
+      this.travelVy[i] = b.vel.y - 0.5 * this.amy[i] * h;
+      b.pos.x += this.travelVx[i] * h;
+      b.pos.y += this.travelVy[i] * h;
+    }
+    // The held foot follows the holder over the same interval as the COM.
+    // Comparing a final carrier velocity to an initial holder velocity
+    // invents relative motion under a common acceleration. These are the
+    // velocities used by the position integration above, not a prediction.
+    for (const i of ids) {
+      const holder = this.feetHolder[i];
+      if (holder < 0) continue;
+      bs[i].support!.feetVel = {
+        x: this.travelVx[holder], y: this.travelVy[holder],
+      };
     }
     // Relax: the soft contact has already moved overlapping torsos apart;
     // now take back the velocity that correction left behind. Bodies do not
@@ -879,8 +903,8 @@ export class World {
     // A hold on his legs pitches him over the held base, and a held foot
     // cannot be placed under him: it moves with whoever holds it, and his
     // body runs on past it.
-    const legX = this.tripX[i] / w0 + lock * (b.vel.x - sup.feetVel.x) * h;
-    const legY = this.tripY[i] / w0 + lock * (b.vel.y - sup.feetVel.y) * h;
+    const legX = this.tripX[i] / w0 + lock * (this.travelVx[i] - sup.feetVel.x) * h;
+    const legY = this.tripY[i] / w0 + lock * (this.travelVy[i] - sup.feetVel.y) * h;
     dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).
     const decay = Math.exp(-h / 0.3);
@@ -900,8 +924,8 @@ export class World {
     let e = Math.hypot(xx, xy);
     const rb = baseRadiusAt(sp, sup.posture);
     const rec = recoverySpeed(sp, lock, fat);
-    // The first recovery step needs a reaction latency; until it lands,
-    // gravity alone acts on a deviation beyond the base.
+    // Recovery step speed ramps over the response latency while gravity acts
+    // on a deviation beyond the base.
     const outsideBefore = sup.out;
     sup.out = e > rb ? outsideBefore + h : 0;
     // Inside the base the ankles and hips damp it; beyond it gravity makes it

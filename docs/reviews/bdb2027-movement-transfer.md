@@ -4,7 +4,7 @@ The BDB2027 movement extraction now processes **all downloaded combine drills
 and all three game seasons**, rather than relying on a selected-player 2023
 audit. It is descriptive evidence for the physics/control foundation. **No
 parameters were fitted and no held-out accuracy is claimed.** The next physics
-priorities are in [the current handoff](nfl-reference-and-support-integration.md).
+priorities are in [the current handoff](held-foot-and-movement-readiness.md).
 
 ## Cohort and provenance
 
@@ -82,12 +82,22 @@ That is a detector/window limitation. Do not conclude those drills lack
 foot plants or use those tiny samples to fit universal turning capacity.
 Different combine drills have different observed lengths and start speeds.
 
-## Integration work before the next physics pass
+## Integration progress and remaining work
 
-1. **Build matched movement probes on the existing body.** Generate the forty,
+The matched world panel is now built: **888 paths / 420 athletes, 3,552 paired
+trials**, with 2025 athletes reserved separately. It covers forty, shuttle,
+three cone, OL long pull right and backpedal/90-degree-break path geometry.
+The [current handoff](held-foot-and-movement-readiness.md) explains its known-path
+controller, unobserved facing/contact, missing-measurement proxies and findings.
+Raw trajectories stay ignored; aggregates and reproducible commands are in
+`data/reviews/physics-world/held-foot-and-movement-tasks/` and `data/README.md`.
+This is a feasibility diagnostic, with no fitting or held-out accuracy claim.
+
+1. **Extend matched movement probes on the existing body.** Generate the forty,
    short-shuttle, three-cone, long-pull and fold paths through ordinary movement
    intents. Pair fixed bodies with different control skill. Compare the same
    resampling, smoothing, speed-conditioned turn windows and trial lengths.
+   The first panel is complete; fold, observed-facing and loaded reps remain.
    Keep distinct cohorts for free locomotion and loaded contact. Tracking does
    not tell us hand force, friction capacity or exactly when a foot plants.
 2. **Separate the capacity envelope from requested effort.** Measured forty

@@ -88,6 +88,20 @@ describe('holds', () => {
     expect(Math.hypot(b.support!.tipAccel!.x, b.support!.tipAccel!.y)).toBeLessThan(1e-9);
   });
 
+  it('a common acceleration does not invent travel past a held foot', () => {
+    for (const direction of [1, -1]) {
+      const a=body(100,0,0),b=body(100,0,1.2),w=new World([a,b],{substeps:1});
+      // Isolate foot-restraint geometry from hand impulses. Both bodies
+      // move the same distance under the same ground acceleration.
+      w.joints.push(grasp(a,b,{capacity:0,legs:1,pull:0}));
+      w.step([{vel:{x:direction*4,y:0}},{vel:{x:direction*4,y:0}}],.05);
+      expect(Math.abs(a.vel.x)).toBeGreaterThan(0);
+      expect(b.pos.x-a.pos.x).toBeCloseTo(0,12);
+      expect(b.support!.feetLock).toBeGreaterThan(0);
+      expect(b.support!.causes!.legs).toBeLessThan(1e-12);
+    }
+  });
+
   it('a hold already past its reach breaks without pulling anyone in', () => {
     const a = body(90, 0, 0), b = body(100, 0, 2);
     const w = new World([a, b]);

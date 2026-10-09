@@ -43,7 +43,7 @@ export interface Support {
   felt: Vec2;
   /** 0–1 restriction of his stepping by a hold on the legs (set each substep). */
   feetLock: number;
-  /** Velocity of whatever holds his feet. */
+  /** Interval-mean translational velocity of whatever holds his feet. */
   feetVel: Vec2;
   /** Unit direction of a fall in progress. */
   fall: Vec2;
