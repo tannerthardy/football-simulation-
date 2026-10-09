@@ -1,16 +1,17 @@
 /**
  * The play simulator: 22 agents on a continuous field, ticked at 20 Hz.
  *
- *   perceive → decide → integrate free bodies → engagements → tackle bonds
- *   → collisions → ball → contact checks → whistle → record
+ *   perceive → decide → technique intents (blocks, holds) → physics world
+ *   (feet, contacts, joints, support) → down by contact → ball → tackle
+ *   attempts → whistle → record
  */
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
 import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_SPIRAL, DRAG_TUMBLE, stepFlight, type BallFlight } from '../physics/ball.js';
-import { stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
-import { resolveBodyContacts } from './collisions.js';
+import type { Body, MoveCommand } from '../physics/kinematics.js';
+import { World, type Intent, type StepReport } from '../physics/world.js';
 import { containCoverage } from './coverage-space.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
@@ -22,10 +23,10 @@ import { CoverageScouting, QBMind } from './qbmind.js';
 import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
 import { resolveCatchOpportunities } from './catching.js';
-import { createEngagement, updateEngagements } from './engagement.js';
+import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { SnapMind } from './mind.js';
-import { tryTackles, updateBond, type TackleBond } from './tackle.js';
+import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats } from './types.js';
 
 export interface PlaySetup {
@@ -56,14 +57,13 @@ export interface PlaySetup {
   down?: number;
   /** Let the QB check out of the call at the line. */
   audibles?: boolean;
-  /** Development-only bounded grasp model; football validation is unfinished. */
-  experimentalGrasps?: boolean;
+  /** Fixed physics substeps per tick (convergence studies); adaptive by default. */
+  substeps?: number;
 }
 
 const MAX_PLAY_TIME = 25;
 
 export class PlaySim {
-  readonly experimentalGrasps: boolean;
   readonly dt = DT;
   readonly rng: Rng;
   t = 0;
@@ -86,6 +86,16 @@ export class PlaySim {
   ball: BallState;
   engagements: Engagement[] = [];
   bond: TackleBond | null = null;
+  /** Every body on the field and every contact between them. */
+  readonly world: World;
+  /** This tick's movement intents: decisions refined by block and tackle technique. */
+  intents: Intent[] = [];
+  /** Last time each player was touched by an opponent (body contact or a hold). */
+  readonly touchedAt = new Map<Agent, number>();
+  /** The last physics step's report (contacts, falls, ground impulse). */
+  lastStep: StepReport | null = null;
+  private readonly dives = new Map<Agent, Vec2>();
+  private readonly lunges = new Map<Agent, Vec2>();
   readonly events: PlayEvent[] = [];
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
@@ -141,7 +151,6 @@ export class PlaySim {
   ballPath: Array<{ t: number; x: number; y: number; z: number }> = [];
 
   constructor(setup: PlaySetup) {
-    this.experimentalGrasps = setup.experimentalGrasps ?? false;
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
     this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;
@@ -186,6 +195,12 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     this.snapX = this.agents.map((a) => a.pos.x);
+    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps });
+    // Linemen and backs start in their stances; skill players upright.
+    for (const a of this.agents) {
+      const line = ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot) || a.player.position === 'DT' || a.player.position === 'EDGE';
+      a.body.support!.posture = line ? 0.7 : 0.3;
+    }
     const qb = this.bySlot.get('QB');
     if (!qb) throw new Error('No QB in offensive personnel');
     this.ball = { kind: 'held', carrier: qb };
@@ -249,13 +264,15 @@ export class PlaySim {
     this.perception.record(this.agents);
     for (let i=ticks;i>0;i--) {
       this.t = -i*this.dt;
+      const intents: Intent[] = this.agents.map((a) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
       for (const [d,target] of targets) {
         const active = d === mug ? this.t>=-creep!.secondsBeforeSnap-1e-8 : !!stem && this.t>=-stem.secondsBeforeSnap-1e-8;
         const dx=target.x-d.pos.x,dy=target.y-d.pos.y,length=Math.hypot(dx,dy);
         const speed=active ? Math.min(d.profile.vmax*.45,length*3) : 0;
-        stepBody(d.body,{vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI},this.dt);
+        intents[d.idx] = {vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI};
       }
-      this.resolveCollisions();
+      this.world.time = this.t;
+      this.world.step(intents, this.dt);
       for (const d of this.defense) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
       this.perception.record(this.agents);
       if (this.record && i%this.recordEvery===0) this.recordFrame();
@@ -398,7 +415,7 @@ export class PlaySim {
     this.endSegment(this.bond ? this.bond.progressX : carrier.pos.x, 'fumble');
     // Offensive fumbles are the box-score stat; a returner's fumble is only an event.
     if (carrier.team === 'O') this.stats.fumbledBy = carrier.player.id;
-    this.bond = null;
+    releaseBond(this);
     this.event('fumble', carrier, hitter);
     onLooseBall(this);
   }
@@ -417,11 +434,22 @@ export class PlaySim {
     }
   }
 
+  /** A deliberate dive (a layout tackle): he leaves his feet on the next step. */
+  diveAt(a: Agent, dir: Vec2): void {
+    this.dives.set(a, dir);
+  }
+
+  /** Drive a body beyond its gait next step (a strike): extra velocity, yd/s. */
+  lungeAt(a: Agent, dv: Vec2): void {
+    this.lunges.set(a, dv);
+  }
+
   engage(blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null = null): Engagement | null {
     return createEngagement(this, blocker, defender, type, drive);
   }
 
   disengage(e: Engagement): void {
+    releaseJoints(this, e);
     e.blocker.engagement = null;
     e.defender.engagement = null;
     for (const h of e.helpers) if (h.engagement === e) h.engagement = null;
@@ -481,24 +509,24 @@ export class PlaySim {
       this.cmds[i] = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
     }
 
-    // Integrate free bodies.
-    const bonded = this.bond ? new Set([this.bond.carrier, ...this.bond.tacklers]) : null;
+    // Intents: the decisions, refined by the techniques that own contact.
     for (let i = 0; i < this.agents.length; i++) {
       const a = this.agents[i];
-      if (a.engagement || bonded?.has(a)) continue;
-      if (a.isDown(t)) {
-        a.body.vel = { x: a.body.vel.x * 0.7, y: a.body.vel.y * 0.7 };
-        a.body.pos = { x: a.body.pos.x + a.body.vel.x * this.dt, y: a.body.pos.y + a.body.vel.y * this.dt };
-        continue;
-      }
-      const cmd = this.cmds[i];
-      if (t < a.slowUntil) cmd.effort = (cmd.effort ?? 1) * a.slowFactor;
-      stepBody(a.body, cmd, this.dt);
+      const dive = this.dives.get(a), lunge = this.lunges.get(a);
+      this.intents[i] = dive || lunge ? { ...this.cmds[i], dive, lunge } : { ...this.cmds[i] };
     }
+    this.dives.clear();
+    this.lunges.clear();
+    updateEngagements(this, this.intents);
+    if (this.bond) updateBond(this, this.bond, this.intents);
 
-    updateEngagements(this);
-    if (this.bond) updateBond(this, this.bond, this.cmds);
-    this.resolveCollisions();
+    // Physics: feet, contacts, holds and balance, in substeps.
+    if (this.phase === 'live') {
+      this.world.time = t;
+      const report = this.world.step(this.intents, this.dt);
+      this.lastStep = report;
+      this.afterPhysics(report);
+    }
     this.updateBall();
     if (this.phase === 'live') tryTackles(this);
     if (this.phase === 'live') this.checkWhistle();
@@ -506,8 +534,34 @@ export class PlaySim {
     this.t = round2(this.t + this.dt);
   }
 
-  private resolveCollisions(): void {
-    resolveBodyContacts(this);
+  /** Touches, first contact, falls and the pile's external impulse from the step. */
+  private afterPhysics(report: StepReport): void {
+    const t = this.t;
+    const carrier = this.carrier;
+    for (const c of report.contacts) {
+      const a = this.agents[c.i], b = this.agents[c.j];
+      if (a.team === b.team) continue;
+      this.touchedAt.set(a, t);
+      this.touchedAt.set(b, t);
+      if (carrier && t >= 0 && this.firstContactX === null && (carrier === a || carrier === b)) {
+        this.firstContactX = carrier.pos.x;
+        this.event('carrier_contact', carrier, carrier === a ? b : a, 'body collision');
+      }
+    }
+    if (this.bond) {
+      for (const d of this.bond.tacklers) { this.touchedAt.set(d, t); this.touchedAt.set(this.bond.carrier, t); }
+      const pile = [this.bond.carrier, ...this.bond.tacklers];
+      this.bond.physics = {
+        externalImpulse: pile.reduce((s, a) => ({ x: s.x + report.groundImpulse[a.idx].x, y: s.y + report.groundImpulse[a.idx].y }), { x: 0, y: 0 }),
+        groundWork: pile.reduce((s, a) => s + report.groundWork[a.idx], 0),
+      };
+    }
+    for (const i of report.falls) {
+      const a = this.agents[i];
+      a.tags.add('fell');
+      this.event('fall', a, null, a.body.support?.cause);
+    }
+    afterStep(this);
   }
 
   private updateBall(): void {

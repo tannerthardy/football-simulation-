@@ -4,6 +4,7 @@ import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+import { baseRadiusAt, criticalDeviation, supportParams } from '../src/physics/support.js';
 import { createEngagement, passSetDepth, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
@@ -19,6 +20,13 @@ function rep() {
   b.body.pos = { x: 34, y: 26 };
   d.body.pos = { x: 34 + b.profile.radius + d.profile.radius, y: 26 };
   b.body.vel = d.body.vel = { x: 0, y: 0 };
+  // Everyone else stands aside; contact physics runs in the world each tick.
+  for (const a of sim.agents) {
+    if (a === b || a === d) continue;
+    if (a !== sim.qb) { a.body.pos = { x: 5 + a.idx * 0.1, y: 1 + a.idx * 2 }; a.downUntil = 99; }
+    a.behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 }, facing: 0 }) } as never;
+  }
+  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
   return { sim, b, d };
 }
 
@@ -28,13 +36,16 @@ describe('pass contact momentum and anchor', () => {
     b.body.vel = { x: -1, y: 0 }; d.body.vel = { x: -4, y: 3 };
     const e = createEngagement(sim, b, d, 'pass', null)!;
     e.nextMoveAt = Infinity;
-    const centerY = (b.pos.y * b.profile.massKg + d.pos.y * d.profile.massKg) / (b.profile.massKg + d.profile.massKg);
-    updateEngagements(sim);
-    const afterY = (b.pos.y * b.profile.massKg + d.pos.y * d.profile.massKg) / (b.profile.massKg + d.profile.massKg);
+    const mb = b.profile.massKg, md = d.profile.massKg;
+    const centerY = (b.pos.y * mb + d.pos.y * md) / (mb + md);
+    const py = b.vel.y * mb + d.vel.y * md;
+    sim.tick();
+    const afterY = (b.pos.y * mb + d.pos.y * md) / (mb + md);
     expect(afterY - centerY).toBeGreaterThan(0.03);
     expect(d.speed).toBeGreaterThan(1);
-    // Velocities used by pursuit/contact agree with the actual body motion.
-    expect(d.vel.y).toBeCloseTo((d.pos.y - 26) / sim.dt, 8);
+    // The pair's momentum changes only through its feet on the ground.
+    const g = sim.lastStep!.groundImpulse;
+    expect(b.vel.y * mb + d.vel.y * md - py).toBeCloseTo(g[b.idx].y + g[d.idx].y, 6);
   });
 
   it('a planted strong anchor holds while a clear drive advantage displaces it', () => {
@@ -48,7 +59,7 @@ describe('pass contact momentum and anchor', () => {
       const e = createEngagement(sim, b, d, 'pass', null)!;
       e.nextMoveAt = Infinity; e.move = 'bull'; e.phi = 0; e.control = 0;
       const start = b.pos.x;
-      for (let i = 0; i < 20 && b.engagement; i++) { sim.t = i * sim.dt; updateEngagements(sim); }
+      for (let i = 0; i < 20 && b.engagement; i++) sim.tick();
       return start - b.pos.x;
     };
     expect(run(0.3)).toBeLessThan(0.15);
@@ -89,9 +100,13 @@ describe('pass contact momentum and anchor', () => {
     b.body.pos.x = sim.los - passSetDepth(sim, b);
     d.body.pos.x = b.pos.x + b.profile.radius + d.profile.radius;
     const e = createEngagement(sim, b, d, 'pass', null)!;
-    e.baseB = 0.01; e.phi = 0; e.control = 0; e.move = 'bull'; e.nextMoveAt = Infinity;
+    e.phi = 0; e.control = 0; e.move = 'bull'; e.nextMoveAt = Infinity;
+    // His base is gone: his capture point is well outside his feet, backward.
+    const sp = supportParams(b.profile), sup = b.body.support!;
+    const rb = baseRadiusAt(sp, sup.posture), crit = criticalDeviation(sp, sup.posture, 0, 1);
+    sup.xi = { x: -(rb + 0.7 * (crit - rb)), y: 0 };
     const start = b.pos.x;
-    for (let i = 0; i < 6; i++) { sim.t = i * sim.dt; updateEngagements(sim); }
+    for (let i = 0; i < 6; i++) sim.tick();
     expect(b.engagement).toBe(e);
     expect(d.engagement).toBe(e);
     expect(b.pos.x).toBeLessThan(start);

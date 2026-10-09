@@ -58,7 +58,8 @@ export type PlayEventType =
   | 'holding'
   | 'dpi'
   | 'touchback'
-  | 'slide';
+  | 'slide'
+  | 'fall';
 
 export interface PlayEvent {
   t: number;

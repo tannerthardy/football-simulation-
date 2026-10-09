@@ -31,6 +31,9 @@ function run(form: string, coverage: string, strong: Routes, weak: Routes, opts:
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, zoneStyle: 'match', label: 'lab', checkPick: opts.checkPick ?? 0, zeus: opts.zeus },
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed: opts.seed ?? 5,
   });
+  // The rules under test are the exchanges as routes declare; keep the ball
+  // in the quarterback's hands so his timing cannot end the snap early.
+  sim.throwBall = () => undefined;
   const step = sim as unknown as { tick(): void };
   while (sim.phase === 'live' && sim.t < (opts.until ?? 2.4) && sim.throwAt < 0) step.tick();
   const jobs = (slot: string): string[] => {

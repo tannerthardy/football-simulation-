@@ -8,6 +8,7 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PassProtector, ProtectionCoordinator } from '../src/sim/behaviors/blocking.js';
 import { chase, pursuitPoint } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import type { Agent } from '../src/sim/agent.js';
 import { inBlockReach, traits } from '../src/sim/engagement.js';
 import { tryTackles, updateBond } from '../src/sim/tackle.js';
 
@@ -85,14 +86,26 @@ describe('run support and rejected strikes',()=>{
 });
 
 describe('physical tackle contact',()=>{
-  it('a wrap conserves two-axis momentum and cannot create kinetic energy',()=>{
+  const FREE={vel:{x:0,y:0},free:true};
+  const stepFree=(sim:PlaySim,n=1)=>{for(let k=0;k<n;k++){sim.world.time=sim.t;sim.world.step(sim.agents.map(()=>FREE),sim.dt);sim.t+=sim.dt;}};
+  const totals=(bs:Agent[])=>({x:bs.reduce((s,a)=>s+a.profile.massKg*a.vel.x,0),y:bs.reduce((s,a)=>s+a.profile.massKg*a.vel.y,0),
+    ke:bs.reduce((s,a)=>s+.5*a.profile.massKg*a.speed**2,0)});
+  it('a wrap acts through the world: momentum is conserved and a passive hold adds no kinetic energy',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+.8};c.body.vel={x:8,y:1};d.body.vel={x:0,y:-2};
-    const momentum=()=>({x:c.vel.x*c.profile.massKg+d.vel.x*d.profile.massKg,y:c.vel.y*c.profile.massKg+d.vel.y*d.profile.massKg});
-    const energy=()=>.5*(c.profile.massKg*c.speed**2+d.profile.massKg*d.speed**2);
-    const before=momentum(),kinetic=energy();vi.spyOn(sim.rng,'chance').mockReturnValue(false);
+    vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
-    expect(momentum().x).toBeCloseTo(before.x,8);expect(momentum().y).toBeCloseTo(before.y,8);
-    expect(energy()).toBeLessThanOrEqual(kinetic);expect(c.vel).toEqual(d.vel);
+    // The grab itself changes no velocity; the hold acts in the next steps.
+    const hold=sim.bond!.holds!.get(d)!;hold.pull=0;
+    for(let k=0;k<6;k++){
+      const prev=totals([c,d]),pe=sim.world.contactEnergy();
+      sim.world.time=sim.t;const r=sim.world.step(sim.agents.map(()=>FREE),sim.dt);sim.t+=sim.dt;
+      const now=totals([c,d]),g=[c,d].map((a)=>r.groundImpulse[a.idx]),work=r.groundWork[c.idx]+r.groundWork[d.idx];
+      // Only the ground (a body that falls slides on it) changes the momentum.
+      expect(now.x-prev.x).toBeCloseTo(g[0].x+g[1].x,6);expect(now.y-prev.y).toBeCloseTo(g[0].y+g[1].y,6);
+      expect(now.ke+sim.world.contactEnergy()).toBeLessThanOrEqual(prev.ke+pe+Math.max(0,work)+1e-6);
+    }
+    // The hold has taken a share of the carrier's motion.
+    expect(d.vel.x).toBeGreaterThan(.5);
   });
   it('a wrapped defender releases his block and cannot join a second constraint',()=>{
     const {sim,c,d}=stage(),b=sim.slot('C')!;
@@ -101,27 +114,32 @@ describe('physical tackle contact',()=>{
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);tryTackles(sim);
     expect(sim.bond?.tacklers).toContain(d);expect(d.engagement).toBeNull();expect(b.engagement).toBeNull();
     expect(sim.engage(b,d,'run',{x:1,y:0})).toBeNull();
+    void c;
   });
-  it('a moving wrap advects without unexplained position tightening',()=>{
-    const {sim,c,d}=stage();d.body.pos={x:49,y:CENTER_Y};c.body.vel=d.body.vel={x:8,y:0};
-    c.profile.power=d.profile.power=0;
-    sim.bond={carrier:c,tacklers:[d],start:sim.t,progressX:c.pos.x,down:false};
+  it('a moving wrap advects with its momentum; the arms tighten it only at their own rate',()=>{
+    const {sim,c,d}=stage();d.body.pos={x:49.3,y:CENTER_Y};c.body.vel=d.body.vel={x:8,y:0};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    const centre=()=> (c.pos.x*c.profile.massKg+d.pos.x*d.profile.massKg)/(c.profile.massKg+d.profile.massKg);
-    const start=c.pos.x-d.pos.x,oldCentre=centre();updateBond(sim,sim.bond,[{vel:{x:8,y:0}}]);
-    expect(c.pos.x-d.pos.x).toBeCloseTo(start,8);
-    expect(centre()-oldCentre).toBeCloseTo(c.vel.x*sim.dt,8);
+    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    const pull=sim.bond!.holds!.get(d)!.pull??0;
+    const mass=c.profile.massKg+d.profile.massKg;
+    const centre=()=>(c.pos.x*c.profile.massKg+d.pos.x*d.profile.massKg)/mass;
+    for(let k=0;k<4;k++){
+      const gap=c.pos.x-d.pos.x,old=centre(),v=totals([c,d]).x/mass;
+      stepFree(sim);
+      expect(centre()-old).toBeCloseTo(v*sim.dt,6);
+      expect(gap-(c.pos.x-d.pos.x)).toBeLessThanOrEqual(pull*sim.dt+1e-6);
+    }
   });
-  it('an arriving assist shares momentum with the whole existing pile',()=>{
+  it('an arriving assist joins the existing pile without changing its momentum',()=>{
     const {sim,c,d}=stage(),assist=sim.slot('SS')!;
     d.body.pos={x:50,y:CENTER_Y+.8};c.body.vel={x:8,y:0};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);tryTackles(sim);
     assist.downUntil=-1;assist.body.pos={x:c.pos.x,y:c.pos.y-.8};assist.body.vel={x:0,y:2};
     const bodies=[c,d,assist];
-    const momentum=()=>({x:bodies.reduce((s,a)=>s+a.profile.massKg*a.vel.x,0),y:bodies.reduce((s,a)=>s+a.profile.massKg*a.vel.y,0)});
-    const before=momentum();tryTackles(sim);
+    const before=totals(bodies);tryTackles(sim);
     expect(sim.bond?.tacklers).toEqual([d,assist]);
-    expect(momentum().x).toBeCloseTo(before.x,8);expect(momentum().y).toBeCloseTo(before.y,8);
+    stepFree(sim,3);
+    expect(totals(bodies).x).toBeCloseTo(before.x,6);expect(totals(bodies).y).toBeCloseTo(before.y,6);
   });
   it('a whiff at full reach neither records contact nor slows the carrier',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:0};
@@ -143,31 +161,35 @@ describe('physical tackle contact',()=>{
   });
   it('a grab at full reach couples only partly, still conserving momentum',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:2};d.body.vel={x:0,y:0};
-    const momentum=()=>({x:c.vel.x*c.profile.massKg+d.vel.x*d.profile.massKg,y:c.vel.y*c.profile.massKg+d.vel.y*d.profile.massKg});
-    const energy=()=>.5*(c.profile.massKg*c.speed**2+d.profile.massKg*d.speed**2);
-    const before=momentum(),kinetic=energy();vi.spyOn(sim.rng,'chance').mockReturnValue(false);
+    vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
     expect(sim.bond!.grip!.get(d)!).toBeLessThan(.6);
-    expect(c.vel.x).toBeGreaterThan(d.vel.x);
-    expect(momentum().x).toBeCloseTo(before.x,8);expect(momentum().y).toBeCloseTo(before.y,8);
-    expect(energy()).toBeLessThanOrEqual(kinetic);
+    const before=totals([c,d]);
+    stepFree(sim,4);
+    expect(c.vel.x).toBeGreaterThan(d.vel.x+2);
+    expect(totals([c,d]).x).toBeCloseTo(before.x,6);expect(totals([c,d]).y).toBeCloseTo(before.y,6);
   });
+  const park=(sim:PlaySim,keep:Agent[])=>{for(const a of sim.agents)if(!keep.includes(a))a.behavior={kind:'idle',update:()=>({vel:{x:0,y:0}})} as never;};
   it('a carrier dragging a tackler from behind keeps gaining ground before he goes down',()=>{
     const {sim,c,d}=stage();d.body.pos={x:49.4,y:CENTER_Y};c.body.vel=d.body.vel={x:5,y:0};
-    sim.bond={carrier:c,tacklers:[d],start:sim.t,progressX:c.pos.x,down:false,grip:new Map([[d,1]]),topple:0,toppleRate:1,stalled:0};
-    vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    let ticks=0;
-    while(sim.bond&&!sim.bond.down&&ticks<200){updateBond(sim,sim.bond,[...sim.agents.map(()=>({vel:{x:0,y:0}})).fill({vel:{x:7,y:0}},c.idx,c.idx+1)]);sim.t+=sim.dt;ticks++;}
-    expect(ticks*sim.dt).toBeGreaterThan(.5);
+    park(sim,[]);c.behavior={kind:'carrier',update:()=>({vel:{x:7,y:0}})} as never;
+    vi.spyOn(sim.rng,'chance').mockReturnValue(false);observe(sim);
+    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    const t0=sim.t;
+    while(sim.phase==='live'&&sim.t<t0+6)sim.tick();
+    expect(sim.phase).toBe('dead');
+    // He is carried forward by his momentum through the fall.
+    expect(sim.t-t0).toBeGreaterThan(.4);
     expect(sim.endSpot!.x-50).toBeGreaterThan(1.5);
   });
   it('rules forward progress stopped when a squared-up pile stops gaining ground',()=>{
-    const {sim,c,d}=stage();d.body.pos={x:50.6,y:CENTER_Y};c.body.vel=d.body.vel={x:0,y:0};
-    sim.bond={carrier:c,tacklers:[d],start:sim.t,progressX:c.pos.x,down:false,grip:new Map([[d,1]]),topple:0,toppleRate:.01,stalled:0};
+    const {sim,c,d}=stage();d.body.pos={x:50.6,y:CENTER_Y};c.body.vel=d.body.vel={x:0,y:0};d.body.facing=Math.PI;
+    park(sim,[]);observe(sim);
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
-    let ticks=0;
-    while(sim.bond&&!sim.bond.down&&ticks<200){updateBond(sim,sim.bond,sim.agents.map(()=>({vel:{x:0,y:0}})));sim.t+=sim.dt;ticks++;}
-    expect(ticks*sim.dt).toBeGreaterThan(.6);expect(ticks*sim.dt).toBeLessThan(1.2);
+    tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
+    const t0=sim.t;
+    while(sim.phase==='live'&&sim.t<t0+4)sim.tick();
+    expect(sim.t-t0).toBeGreaterThan(.6);expect(sim.t-t0).toBeLessThan(1.2);
     expect(Math.abs(sim.endSpot!.x-50)).toBeLessThan(.3);
   });
   it('records an opponent body bump even when that defender cannot attempt a tackle',()=>{

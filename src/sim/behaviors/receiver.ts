@@ -231,14 +231,25 @@ export class RouteRunner implements Behavior {
       const agiD = clamp((7.3 - d.player.measurables.threeCone) / 0.8, 0, 1);
       const score =
         0.55 * a.r('releaseVsPress') + 0.25 * agiR + 0.2 * a.r('strength') - (0.55 * d.r('press') + 0.25 * d.r('strength') + 0.2 * agiD) + sim.rng.normal(0, 0.22);
+      // The jam is a strike, not a timer: a landed two-hand punch knocks the
+      // receiver off his stem and his balance; a punch at air leaves the
+      // corner leaning on nothing.
+      const ux = (a.pos.x - d.pos.x) / (dd || 1), uy = (a.pos.y - d.pos.y) / (dd || 1);
       if (score < -0.08) {
-        a.slowUntil = sim.t + 0.3 + 0.5 * Math.min(0.6, -score);
-        a.slowFactor = 0.35;
+        const j = a.profile.massKg * (0.9 + 1.6 * Math.min(0.6, -score));
+        sim.world.strike(d.body, a.body, { x: ux * j, y: uy * j });
         sim.event('jam', d, a);
       } else if (score > 0.22) {
-        d.slowUntil = sim.t + 0.35;
-        d.slowFactor = 0.35;
+        const sup = d.body.support;
+        if (sup) {
+          const lean = d.profile.massKg * 9 * (0.6 + Math.min(0.6, score));
+          sup.lean = { x: sup.lean.x + ux * lean, y: sup.lean.y + uy * lean };
+        }
         d.tags.add('whiffed-jam');
+      } else {
+        // Hands fight to a draw: both are knocked back a little.
+        const j = Math.min(a.profile.massKg, d.profile.massKg) * 0.35;
+        sim.world.strike(d.body, a.body, { x: ux * j, y: uy * j });
       }
       return;
     }

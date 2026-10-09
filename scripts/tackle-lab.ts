@@ -16,15 +16,12 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const reps = Number(process.argv[2] ?? 40);
-const experimentalGrasps = process.argv.includes('--experimental-grasps');
-if (experimentalGrasps) console.log('EXPERIMENTAL bounded grasp model; not the default engine.');
 const CONTACT = new Set(['hit', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle']);
 
 interface Out { n: number; wraps: number; time: number[]; yards: number[]; broken: number; missed: number }
 
 function one(rosterSeed: number, seed: number, angleDeg: number, speed: number, out: Out): void {
   const sim = new PlaySim({
-    experimentalGrasps,
     offense: pickOffense(generateTeam(new Rng(rosterSeed), 'O', 'OFF'), '11'),
     defense: pickDefense(generateTeam(new Rng(rosterSeed + 1), 'D', 'DEF'), 'base43'),
     offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'lab' },

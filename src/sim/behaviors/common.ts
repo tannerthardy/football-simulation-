@@ -130,33 +130,60 @@ export function leverage(a: Agent, y: number): number {
 }
 
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
-  const seen = sim.see(a, target, (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime));
+  const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
+  const seen = sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   // Open-field tackling: when the carrier is coming at you, break down,
   // mirror his lateral movement square-on and make him come to you.
   const tackle = a.r('tackling');
-  if (dist > 0.5) {
+  if (dist > 0.3) {
     const ux = (seen.pos.x - a.pos.x) / dist;
     const uy = (seen.pos.y - a.pos.y) / dist;
     const incoming = -(seen.vel.x * ux + seen.vel.y * uy);
-    const toward = Math.max(0,a.vel.x*ux+a.vel.y*uy);
     const contact = a.profile.radius+target.profile.radius+a.profile.reach*.65;
-    const breakDist = contact + toward*toward/(2*a.profile.brake) + Math.max(0,incoming)*.2;
-    // An oblique interceptor needs to run his angle. Squaring up early on
+    // He is coming at the tackler (not crossing his face or pulling away).
+    // An oblique interceptor needs to run his angle instead: squaring up on
     // every closing carrier flattens that angle before he reaches the hip.
-    if (incoming > 1.5 && incoming/Math.max(.1,Math.hypot(seen.vel.x,seen.vel.y)) > .7 && dist < breakDist) {
-      // Lateral component of the carrier's velocity relative to the line
-      // between us, plus a correction toward the leverage point (inside him).
-      const px = -uy;
-      const py = ux;
-      const lat = seen.vel.x * px + seen.vel.y * py;
-      const levY = seen.pos.y + leverage(a, seen.pos.y) * clamp((dist-contact)/4,0,.8);
-      const errLat = (seen.pos.x - a.pos.x) * px + (levY - a.pos.y) * py;
-      const mirror = lat * (0.7 + 0.3 * tackle) + errLat * (1.2 + 0.8 * a.r('pursuit'));
-      const approach = Math.max(0,Math.sqrt((2.5+2*(1-tackle))**2+2*a.profile.brake*Math.max(0,dist-contact))-incoming);
-      const vx = ux * approach + -uy * mirror;
-      const vy = uy * approach + ux * mirror;
-      return { vel: { x: vx, y: vy }, facing: Math.atan2(uy, ux), cutSkill: 0.8 + 0.4 * tackle };
+    if (incoming > 1.5 && incoming/Math.max(.1,Math.hypot(seen.vel.x,seen.vel.y)) > .7) {
+      const nx = -uy, ny = ux;
+      const across = seen.vel.x * nx + seen.vel.y * ny;
+      const body = a.profile.radius + target.profile.radius;
+      const toward = a.vel.x * ux + a.vel.y * uy;
+      const closing = incoming + toward;
+      const T = Math.max(0.15, (dist - body) / Math.max(1, closing));
+      // Meet him from the inside, on the near hip: he arrives a little to
+      // the tackler's outside, still inside the shoulders.
+      const lev = leverage(a, seen.pos.y);
+      const offset = -clamp(0.35 * lev, -0.3, 0.3) * ny;
+      const lateralMax = a.profile.lateral * 0.6 + 2;
+      const vn = clamp(across - offset / T, -lateralMax, lateralMax);
+      // He is already closing the distance. Spend the feet on staying in
+      // front of him and arrive under control (a poor tackler comes in too
+      // fast), but keep them driving through the strike: a tackler standing
+      // still is run over.
+      const attack = 0.8 + 1.6 * tackle;
+      const run = Math.sqrt(Math.max(0, a.profile.vmax ** 2 - vn * vn));
+      const approach = clamp(Math.sqrt((2.5+2*(1-tackle))**2+2*a.profile.brake*Math.max(0,dist-contact))-incoming, Math.min(attack, run), run);
+      const strike = dist < contact + 0.5;
+      return { vel: { x: ux * approach + nx * vn, y: uy * approach + ny * vn }, facing: Math.atan2(uy, ux),
+        cutSkill: 0.8 + 0.4 * tackle, push: strike ? 1 : undefined, posture: 0.4 + 0.25 * tackle } as MoveCommand;
+    }
+  }
+  // The last yards: a collision course. Hold his bearing steady by matching
+  // his motion across the line between us, and run through him with what
+  // speed is left. The body contact takes his momentum; the arms keep it.
+  if (dist > 0.3) {
+    const contact = a.profile.radius + target.profile.radius + a.profile.reach * 0.65;
+    if (dist < contact + 2.5) {
+      const ux = (seen.pos.x - a.pos.x) / dist, uy = (seen.pos.y - a.pos.y) / dist;
+      const nx = -uy, ny = ux;
+      const cap = a.profile.vmax;
+      const vn = clamp(seen.vel.x * nx + seen.vel.y * ny, -cap, cap);
+      const approach = Math.sqrt(Math.max(0, cap * cap - vn * vn));
+      // Square the shoulders for the strike.
+      const square = dist < contact + 0.5 ? Math.atan2(uy, ux) : undefined;
+      return { vel: { x: ux * approach + nx * vn, y: uy * approach + ny * vn }, facing: square,
+        cutSkill: 0.85 + 0.35 * tackle, push: 1, posture: 0.4 + 0.25 * tackle } as MoveCommand;
     }
   }
   const p = pursuitPoint(sim, a, target, horizon);

@@ -4,6 +4,8 @@
  */
 import type { Vec2 } from '../core/vec.js';
 import { enduranceFactor, fatigueFactor, type Body, type MoveCommand } from '../physics/kinematics.js';
+import { fallTime, supportParams } from '../physics/support.js';
+import type { HandJoint } from '../physics/world.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { Player, RatingKey } from '../players/types.js';
 import { r01 } from '../players/types.js';
@@ -49,11 +51,9 @@ export interface Engagement {
   phi: number;
   /** World sign (+1/−1 along the lateral axis) of the defender's preferred working side. */
   side: number;
-  /** Base / balance of each player, 0 (on the ground) – 1 (set). */
+  /** Balance each player's body can give this rep, 0 (off his feet) – 1 (set). Read from the body. */
   baseB: number;
   baseD: number;
-  /** Remaining speed-to-power impulse from the collision, yd/s. */
-  impulse: number;
   /** Current defender technique and its window. */
   move: RushMove;
   moveUntil: number;
@@ -69,6 +69,10 @@ export interface Engagement {
   /** Per-rep variance (positive favors the blocker). */
   repEdge: number;
   holding: boolean;
+  /** The hand fight's joint in the physics world (blocker ↔ defender). */
+  hands?: HandJoint;
+  /** Each helper's hands on the defender. */
+  helperHands?: Map<Agent, HandJoint>;
 }
 
 export class Agent {
@@ -76,11 +80,11 @@ export class Agent {
   /** Known defensive responsibility; decisions still require observed run cues. */
   runFit?: RunFitJob;
   engagement: Engagement | null = null;
-  /** On the ground until this time (missed tackle, cut, pancake). */
+  /**
+   * Scenario override: out of the play until this time (test fixtures park
+   * bystanders with it). Physical knockdowns live on the body's support.
+   */
   downUntil = -1;
-  /** Movement penalty window (lost a jam, stumbled). */
-  slowUntil = -1;
-  slowFactor = 1;
   /** Earliest time this agent may attempt another tackle. */
   nextTackleAt = 0;
   /** Cannot touch the ball again until (after a drop / deflection). */
@@ -128,8 +132,19 @@ export class Agent {
   r(key: RatingKey): number {
     return r01(this.player.ratings[key]);
   }
+  /** Off his feet: falling, on the ground or getting up (or parked by a scenario). */
   isDown(t: number): boolean {
-    return t < this.downUntil;
+    return t < this.downUntil || (this.body.support !== undefined && this.body.support.state !== 'up');
+  }
+  /** Rough seconds until he is back on his feet, as another player would judge it. */
+  timeUntilUp(t: number): number {
+    const sup = this.body.support;
+    const parked = Math.max(0, this.downUntil - t);
+    if (!sup || sup.state === 'up') return parked;
+    const sp = supportParams(this.profile);
+    const fall = sup.state === 'falling' ? Math.max(0, fallTime(sp, sup.posture) - (t - sup.since)) : 0;
+    const rise = sup.state === 'rising' ? Math.max(0, sp.getUp - (t - sup.since)) : sp.getUp;
+    return Math.max(parked, fall + (sup.state === 'down' ? 0.3 : 0) + rise);
   }
   get speed(): number {
     return Math.hypot(this.body.vel.x, this.body.vel.y);
