@@ -2,6 +2,12 @@
 
 Start with these shared project references:
 
+- [Visual keys and attention](docs/reviews/visual-keys-and-attention.md):
+  the owner's latest direction for defensive and offensive reads; proposed
+  acquisition, gaze, memory and cue model, code gaps, staged integration and
+  behavioral checks. This is a design, not an implemented vision layer.
+  Preserve the measured pocket/coverage priorities in the review below.
+
 - [Coverage judgment and pocket mechanics](docs/reviews/coverage-judgment-and-pocket-mechanics.md):
   latest follow-up to `8ffbc24`, visible-cue help decisions, route/ball-window
   and protection/contact corrections, paired coverage/pocket measurements and

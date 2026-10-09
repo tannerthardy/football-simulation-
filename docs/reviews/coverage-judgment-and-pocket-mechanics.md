@@ -102,6 +102,10 @@ has no real occlusion or attention budget, and `SnapMind` still has older
 preselected lapse windows. Declaration confirmation and decision intervals
 are evidence persistence/visuomotor delays, not scheduled play triggers.
 Future distraction should arise from conflicting visible keys and workload.
+The owner's follow-up is developed in
+[visual keys and attention](visual-keys-and-attention.md): it proposes explicit
+acquisition and gaze for both teams, records existing unrestricted/hidden-state
+reads, and sets out staged integration. It is a design, not a shipped layer.
 
 ## Measurements
 
