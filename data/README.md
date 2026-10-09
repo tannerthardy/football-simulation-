@@ -360,3 +360,21 @@ Forced holds isolate protection and have a different sack denominator from
 games. Pocket proximity/attachment remain geometric proxies with cohort and
 late-survivor limitations. Use the data definitions before interpreting a
 percentage as pressure or as physical force.
+
+## Universal interaction readiness
+
+The [readiness audit](../docs/reviews/universal-interaction-readiness.md)
+records the remaining movement/contact seams and the shared-model delivery
+gates. Its synthetic probes use actual engine entries, not an alternate
+solver. Evidence and provenance are in `data/reviews/interaction-readiness/`.
+
+```sh
+node --import tsx scripts/interaction-readiness.ts out/interaction-readiness.json
+```
+
+The grasp probe disables random misses/breaks/fumbles and nearly disables
+external drive; the support probe releases/reforms contact without time
+passing; the crossing probe refines only local movement/contact sampling.
+These counterfactuals identify physical gaps, not their game frequency, NFL
+outcome targets or causal explanations of earlier game regressions. The audit
+is a diagnostic, not a passing test that approves its observed defects.

@@ -2,6 +2,12 @@
 
 Start with these shared project references:
 
+- [Universal interaction readiness](docs/reviews/universal-interaction-readiness.md):
+  latest physical-foundation audit; reproduced partial-grasp momentum/energy
+  creation, contact-local balance reset and missed fast torso encounters.
+  Read the shared support/contact contracts and acceptance gates before
+  expanding techniques. The audit changes diagnostics/docs, not engine behavior.
+
 - [Fundamentals and contact foundation](docs/reviews/fundamentals-and-contact-foundation.md):
   latest implementation and broad architecture direction on
   `claude/engine-priorities`; contact-normal forces, coupled outside bumps,

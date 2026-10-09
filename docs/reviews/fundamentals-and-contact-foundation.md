@@ -1,5 +1,9 @@
 # Fundamentals: contact, intent, and a compact body model
 
+The newer [universal interaction audit](universal-interaction-readiness.md)
+reproduces remaining solver-transition/support/sampling gaps and defines the
+next physical delivery gates. This file records the preceding implementation.
+
 Follow-up to `f331202` on `claude/engine-priorities`. The owner wants a sound
 11-on-11 foundation that supports more techniques and schemes without
 continually retuning physics. This change repairs reproduced contact defects
