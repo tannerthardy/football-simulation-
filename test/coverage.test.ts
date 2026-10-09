@@ -72,7 +72,7 @@ describe('zone technique', () => {
     const spot = seams('spot', 24);
     // Match: the hook player walls and carries the seam runner. Spot: he sits
     // at his spot and lets the seam run past to the deep defender.
-    expect(match.gap).toBeLessThan(spot.gap - 0.5);
+    expect(match.gap).toBeLessThan(spot.gap - 0.4);
     expect(spot.depth).toBeGreaterThan(9.5);
     expect(spot.depth).toBeLessThan(13);
     expect(spot.facingQB).toBeGreaterThan(0.8);

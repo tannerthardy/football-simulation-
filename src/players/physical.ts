@@ -100,8 +100,12 @@ const MOVEMENT_TECHNIQUE: Partial<Record<Position, { backpedal: number; shuffle:
   QB: { backpedal: 0.55, shuffle: 0.5 },
 };
 
-/** In-game burst: multiplies the sprint time constant (larger = gentler acceleration). */
-export const GAME_BURST = 1.75;
+/** In-game burst: multiplies the sprint time constant (larger = gentler
+ * acceleration). Set so free-running players (routes, coverage drops) match
+ * the per-play peak accelerations of 2022–2023 NGS tracking measured the
+ * same way (scripts/kinematics-compare.ts: WR/TE/RB/CB/S/LB p50 within
+ * about 0.6 yd/s²). */
+export const GAME_BURST = 2.2;
 /** In-game braking/cutting relative to peak plant forces. */
 export const GAME_CUT = 0.55;
 
@@ -116,7 +120,7 @@ export function derivePhysical(p: Player): PhysicalProfile {
   const gameSpeed = clamp(0.95 - 0.0008 * Math.max(0, m.weightLb - 195), 0.84, 0.95);
   const vmax = sprint.vmax * gameSpeed;
   // In-game bursts build more gradually than a combine start: tracking data
-  // shows per-play peak accelerations of ~3–5 yd/s², far below what a
+  // shows per-play peak accelerations of ~4–5 yd/s², far below what a
   // track-start model gives.
   const tau = sprint.tau * gameSpeed * GAME_BURST;
 

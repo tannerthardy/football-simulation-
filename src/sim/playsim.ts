@@ -25,6 +25,7 @@ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, 
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
+import { spaceTeammates } from './spacing.js';
 import { SnapMind } from './mind.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats } from './types.js';
@@ -519,6 +520,7 @@ export class PlaySim {
     this.lunges.clear();
     updateEngagements(this, this.intents);
     if (this.bond) updateBond(this, this.bond, this.intents);
+    spaceTeammates(this.agents, this.intents);
 
     // Physics: feet, contacts, holds and balance, in substeps.
     if (this.phase === 'live') {

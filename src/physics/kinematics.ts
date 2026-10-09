@@ -178,9 +178,9 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
       at *= s;
       an *= s;
     }
-    // Speeding up follows the sprint curve toward the wanted speed (how hard
-    // he chooses to push); the share of the envelope that leaves free goes
-    // to the cut.
+    // Speeding up follows the sprint curve toward the wanted speed: a
+    // player who wants three-quarter speed pushes with about three-quarter
+    // effort. The share of the envelope that leaves free goes to the cut.
     const ease = driveAccel(p, speed, Math.max(cap, speed)) * fat * capacity;
     if (at > ease) {
       at = ease;

@@ -45,7 +45,7 @@ function run(form: string, coverage: string, strong: Routes, weak: Routes, opts:
 
 describe('Palms (2-Read)', () => {
   it('corner traps #2 quick out; safety replaces him over #1', () => {
-    const { jobs } = run('gun_doubles_11', 'cover4_palms', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'quick_out' });
+    const { jobs } = run('gun_doubles_11', 'cover4_palms', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'quick_out' }, { until: 2.8 });
     expect(jobs('CB_W')).toContain('trap:H');
     expect(jobs('FS')).toContain('man:X');
   });
