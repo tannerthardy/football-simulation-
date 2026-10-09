@@ -64,6 +64,8 @@ export interface PlayLog {
     firstDownX: number;
     flip: boolean;
     events: PlayResult['events'];
+    telemetry?: PlayResult['telemetry'];
+    profiles?: Array<{ position: string; heightIn: number; weightLb: number; ratings: Record<string, number> }>;
   };
 }
 
@@ -108,6 +110,8 @@ export interface GameOptions {
   seed?: number;
   /** Record replay frames for every scrimmage play. */
   record?: boolean;
+  /** Opt-in replay inspection detail; has no effect when record is false. */
+  recordLevel?: import('../sim/types.js').ReplayLevel;
   rules?: Partial<GameRules>;
   /** Scenario-test seams; leave unset for normal games. */
   hooks?: GameHooks;
@@ -544,6 +548,7 @@ export class Game {
       firstDownX,
       seed: this.snaps.nextU32(),
       record: this.opts.record,
+      recordLevel: this.opts.recordLevel,
       energy: this.energy,
       manPrefs: prefs,
       hurry: sit.hurry,
@@ -600,6 +605,9 @@ export class Game {
         firstDownX,
         flip: offSide === 'away',
         events: r.events,
+        telemetry: r.telemetry,
+        profiles: r.telemetry ? sim.agents.map(a => ({ position: a.player.position, heightIn: a.player.measurables.heightIn,
+          weightLb: a.player.measurables.weightLb, ratings: { ...a.player.ratings } })) : undefined,
       };
     }
 

@@ -27,6 +27,7 @@ import { handoffReach } from '../ball-transfer.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
+import type { ReplayTelemetryFrame } from '../types.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -81,6 +82,14 @@ export class QBPass implements Behavior {
   /** Look-off: eyes on a decoy to move the safety before the first read. */
   private lookOff: { until: number; decoy: Agent } | null = null;
   private lookOffChecked = false;
+
+  /** Existing private state only; never evaluates a fresh throw window. */
+  recordedState(): Omit<NonNullable<ReplayTelemetryFrame['qb']>, 'eyes' | 'belief' | 'best'> {
+    const p = this.pending;
+    return { phase: this.phase, read: this.reads[this.readIdx]?.idx ?? null, pressure: this.underPressure,
+      pending: p ? { target: p.target.idx, point: [p.point.x, p.point.y, p.point.z], flightTime: p.T,
+        completion: p.P, interceptionRisk: p.intRisk, value: p.value } : null };
+  }
 
   constructor(
     a: Agent,

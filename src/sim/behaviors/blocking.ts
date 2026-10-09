@@ -196,6 +196,11 @@ export class PassProtector implements Behavior {
     private readonly releaseAfter = 1.1,
   ) {}
 
+  /** Inspect existing protection state without running the coordinator. */
+  recordedTarget(a: Agent): number | null {
+    return a.engagement?.defender.idx ?? this.coord.assigned.get(a)?.idx ?? null;
+  }
+
   update(a: Agent, sim: PlaySim): MoveCommand {
     // Play action: everyone shows a low, aggressive pad level at first.
     a.stance = isOL(a) && sim.t < 0.35 && sim.offCall.kind === 'pass' && sim.offCall.pass?.fake ? 'low' : 'high';

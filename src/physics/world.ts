@@ -243,6 +243,8 @@ interface JointRow {
   steerLim: number;
   actor: number;
   steerActor: number;
+  /** Active reel already transmitted through this grip in the substep. */
+  reel: number;
 }
 
 /** The gait's plan for one 20 Hz tick: locomotion force, facing and footing. */
@@ -267,6 +269,7 @@ export class World {
   private readonly index = new Map<Body, number>();
   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
   private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number }> = [];
+  private readonly reels = new Map<GraspJoint, number>();
   // Per-body scratch, reused every substep.
   private readonly n: number;
   private readonly sp: SupportParams[];
@@ -469,6 +472,17 @@ export class World {
     for(let i=0;i<this.n;i++) this.armScale[i]=this.active[i]>0?Math.min(1,this.armCap[i]/this.active[i]):1;
   }
 
+  /** Active reeling and passive restraint use the same physical grip.
+   * All grasps from one holder share his strongest structural claim, so
+   * duplicated joints cannot supply another holding-force allowance. */
+  private gripCapacity(jt: GraspJoint): number {
+    const i=this.indexOf(jt.a);
+    const holds=this.joints.filter((j):j is GraspJoint=>j.kind==='grasp'&&!j.broken&&j.a===jt.a);
+    const total=holds.reduce((s,j)=>s+Math.max(0,j.capacity),0);
+    const structural=Math.min(3.36*this.sp[i].armForce,Math.max(0,...holds.map(j=>j.capacity)));
+    return Math.max(0,jt.capacity)*Math.min(1,structural/Math.max(1e-9,total))*(jt.a.support!.state==='up'?1:.7);
+  }
+
   /** Apply internal impulse and record its exact planar kinetic work.
    * Passive constraints have zero positive-work allowance. Muscles share
    * the owner's remaining tick budget; solver corrections cannot refill it. */
@@ -513,6 +527,7 @@ export class World {
   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
     report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean): void {
     const bs = this.bodies;
+    this.reels.clear();
     for (const i of ids) {
       this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0;
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
@@ -567,15 +582,15 @@ export class World {
       const nx=dx/d,ny=dy/d;
       const vn=(jt.b.vel.x-jt.a.vel.x)*nx+(jt.b.vel.y-jt.a.vel.y)*ny;
       const wanted=Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/(1/this.mass[i]+1/this.mass[j])/this.tickDt;
-      const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i])*h;
+      const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i],this.gripCapacity(jt))*h;
       const fraction=this.pairImpulse(i,j,-nx*impulse,-ny*impulse,i,'grasps');
+      this.reels.set(jt,impulse*fraction);
       report.armImpulse[i]+=impulse*fraction;
       // Active reel and passive tension act through the same hand position.
       // A leg grip cannot pull at shoulder height while its passive restraint
       // trips the foot below it.
       const height=jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1));
       this.addLoad(i,j,nx,ny,-impulse*fraction,0,height,jt.legs>0);
-      jt.force=(jt.force??0)+impulse*fraction;
     }
 
     // ---- 2. constraints
@@ -606,7 +621,7 @@ export class World {
           jt.normalForce = (jt.normalForce ?? 0) + r.ln;
           jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
         } else {
-          const used = Math.hypot(r.ln, r.lt);
+          const used = Math.hypot(r.ln-r.reel, r.lt);
           jt.force = (jt.force ?? 0) + used;
           jt.slipping = used >= 0.98 * r.limit && r.limit > 0;
         }
@@ -1089,7 +1104,7 @@ export class World {
       const dist = Math.hypot(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
       const row: JointRow = { joint: jt, i, j, nx, ny, mn: 1 / (1 / this.mass[i] + 1 / this.mass[j]),
-        mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0,actor: i,steerActor: i };
+        mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0,actor: i,steerActor: i,reel: 0 };
       if (jt.kind === 'hands') {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
@@ -1106,13 +1121,8 @@ export class World {
         jt.hold = hold;
         row.mode = -1;
         row.c = Math.max(0, dist - hold);
-        // All holds from a holder share his strongest claimed structural
-        // grip, bounded by the existing full-wrap upper envelope (3.36 arms).
-        // Duplicate constraints cannot multiply his passive holding strength.
-        const holds=this.joints.filter((j):j is GraspJoint=>j.kind==='grasp'&&!j.broken&&j.a===a);
-        const total=holds.reduce((s,j)=>s+Math.max(0,j.capacity),0);
-        const structural=Math.min(3.36*this.sp[i].armForce,Math.max(0,...holds.map(j=>j.capacity)));
-        row.limit = Math.max(0,jt.capacity) * Math.min(1,structural/Math.max(1e-9,total)) * (a.support!.state === 'up' ? 1 : .7) * h;
+        row.limit = this.gripCapacity(jt)*h;
+        row.reel = this.reels.get(jt)??0;
       }
       rows.push(row);
     }
@@ -1143,11 +1153,12 @@ export class World {
     let ln = Math.min(0, r.ln + imp);
     // Shared grip budget with the sliding (tangential) resistance.
     const lim = r.limit;
-    if (ln * ln + r.lt * r.lt > lim * lim) ln = Math.max(ln, -Math.sqrt(Math.max(0, lim * lim - r.lt * r.lt)));
+    const passiveNormal=Math.max(0,Math.sqrt(Math.max(0,lim*lim-r.lt*r.lt))-r.reel);
+    ln=Math.max(ln,-passiveNormal);
     const dn = ln - r.ln;
     const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false);
     r.ln+=dn*fraction;
-    this.solveTangent(r, a, b, Math.sqrt(Math.max(0, lim * lim - r.ln * r.ln)));
+    this.solveTangent(r, a, b, Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2)));
   }
 
   /** Hands and holds couple the bodies' sideways motion directly; a grip

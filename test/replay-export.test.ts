@@ -13,11 +13,12 @@ const play = (overrides: Partial<PlayLog> = {}): PlayLog => ({
 describe('replay export', () => {
   it('keeps numeric flag values separate from the seed regardless of argument order', () => {
     expect(replayOptions(['--games', '6', '--out', 'out/film.html', '19', '--doc']))
-      .toEqual({ seed: 19, games: 6, out: 'out/film.html', document: true });
-    expect(replayOptions([])).toEqual({ seed: 7, games: 1, out: 'out/replay.html', document: false });
+      .toEqual({ seed: 19, games: 6, out: 'out/film.html', document: true, telemetry: 'light' });
+    expect(replayOptions([])).toEqual({ seed: 7, games: 1, out: 'out/replay.html', document: false, telemetry: 'light' });
+    expect(replayOptions(['--telemetry', 'full']).telemetry).toBe('full');
   });
 
-  it.each([['--games'], ['--out', '--doc'], ['--games', '0'], ['--games', '1.5'], ['--games', '51'], ['--games', 'NaN'], ['NaN'], ['-1'], ['4294967295', '--games', '2'], ['7', '8'], ['--unknown']])('rejects invalid replay arguments %j', (...args) => {
+  it.each([['--games'], ['--out', '--doc'], ['--telemetry'], ['--telemetry', 'unknown'], ['--games', '0'], ['--games', '1.5'], ['--games', '51'], ['--games', 'NaN'], ['NaN'], ['-1'], ['4294967295', '--games', '2'], ['7', '8'], ['--unknown']])('rejects invalid replay arguments %j', (...args) => {
     expect(() => replayOptions(args)).toThrow();
   });
 
@@ -71,6 +72,23 @@ describe('replay export', () => {
     expect(pressure).toMatchObject({ stats: { pressure2yd: true, ttp: 2 } });
     expect('stats' in pressure && pressure.stats.pressured).toBeUndefined();
     expect(late.flags.pressure).toBe(false);
+  });
+
+  it('retains opt-in source telemetry and precise actor/event details for the standalone inspector', () => {
+    const telemetry = { version: 1 as const, level: 'standard' as const, sampleEvery: 2,
+      unavailable: ['Causal trigger unavailable'], decisions: [{ t: 0.05, a: 0, kind: 'coverage-job', chose: 'man:X', cue: null }],
+      frames: [{ t: 0, agents: [{ kind: 'man', job: 'man:X', target: 1 }], links: [{ kind: 'man' as const, a: 0, b: 1 }] }] };
+    const p = packReplayPlay(play({ replay: {
+      los: 35, firstDownX: 45, flip: false,
+      players: [{ team: 'D', slot: 'CB_W', name: 'Corner', jersey: 21, pos: 'CB' }],
+      profiles: [{ position: 'CB', heightIn: 71, weightLb: 190, ratings: { manCoverage: 85 } }],
+      frames: [{ t: 0, agents: [35, 26, 0], ball: [35, 26, 1], carrier: -1 },
+        { t: 0.1, agents: [35, 26, 0], ball: [35, 26, 1], carrier: -1 }],
+      events: [{ t: 0.05, type: 'read', a: 0, note: 'pass; pPass=0.85' }], telemetry,
+    } }), 0);
+    expect(p).toMatchObject({ telemetry, profiles: [{ position: 'CB', weightLb: 190 }],
+      eventDetails: [{ t: 0.05, type: 'read', a: 0, note: 'pass; pPass=0.85' }] });
+    expect('ev' in p && p.ev).toEqual([]); // Detailed events keep useful reads outside legacy highlights.
   });
 
   it('does not offer an unfilmed log entry or one-frame recording as a clip', () => {

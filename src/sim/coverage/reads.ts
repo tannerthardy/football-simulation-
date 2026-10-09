@@ -59,6 +59,11 @@ export class ReleaseReader {
   private readonly cache = new Map<Agent, ReceiverRead>();
   private cacheT = -1;
 
+  /** Only keys already consumed by this tick's rule; no additional reads. */
+  recordedReads(t: number): ReadonlyArray<ReceiverRead> {
+    return this.cacheT === t ? [...this.cache.values()] : [];
+  }
+
   constructor(private readonly a: Agent, sim: PlaySim) {
     // Alignments at the snap: declarations are relative to where he started.
     for (const r of sim.offense) {

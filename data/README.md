@@ -251,6 +251,39 @@ drill/role metrics and matched observed speed ratios. Read the cohort and
 smoothing definitions before comparing it to an engine panel. No AddBiomechanics
 subject data or additional large archive was downloaded for this extraction.
 
+### Shared grip budget and replay inspection
+
+`reviews/physics-world/grip-budget/` retains the delivered-force audit,
+source-pinned before/after measurements, full hand convergence, identical
+first-wrap and switched-resolution probes, shared-capability scenarios and
+game/tracking guards. Active reeling and passive restraint share one force
+budget; physical constants are unchanged. Physics remains NOT READY: native
+fall/path failures remain and the 24-step fall panel regresses. Read
+[the current physics handoff](../docs/reviews/grip-budget-and-replay-foundation.md)
+and [the recording/export handoff](../docs/reviews/replay-telemetry-and-export.md).
+
+```sh
+node --import tsx scripts/diag/grip-budget.ts out/grip-budget.json
+node --import tsx scripts/diag/grasp-support-convergence.ts out/grasp-support.json
+node --import tsx scripts/diag/hand-convergence.ts out/hand-convergence.json
+node --import tsx scripts/diag/shared-capabilities.ts out/shared-capabilities.json
+node --import tsx scripts/scenario-pack.ts out/scenario-pack.json
+node --import tsx scripts/kinematics-compare.ts 4 5
+node --import tsx scripts/calibrate.ts 16 7 2
+node --import tsx scripts/export-replay.ts 7 --games 6 --telemetry standard --doc --out viewer/film-room.html
+node --import tsx scripts/export-inspection.ts viewer/inspection-room.html
+python3 scripts/film-outcomes.py viewer/film-room.html --out out/film-outcomes.json
+python3 scripts/check-replay-viewer.py viewer/film-room.html --video-out out/film-clip.webm
+python3 scripts/check-replay-viewer.py viewer/inspection-room.html --video-out out/inspection-clip.webm
+```
+
+The film library uses standard snapshots. The six LAB-P inspection fixtures
+use full snapshots and fixed generated players; they are not game/NFL
+observations or reproductions of earlier G/P clips. Video checks require
+Playwright, Chromium and ffprobe. Missing replay channels and causal cues are
+explicit. Raw archives remain outside git. The new coverage manuscript is
+retained under `docs/references/` for later coverage work.
+
 ### Shared traffic and man-assignment accounting
 
 `reviews/physics-world/traffic-and-man-accounting/` retains seven exactly
@@ -262,7 +295,7 @@ repaired. New film cross-tabs include actual checked versus original called
 coverage, concept, front and disguise, with counts and explicit denominators.
 These are small unmatched cells, not NFL scheme calibration. Physics remains
 NOT READY; passing explosives worsen and hand convergence is unchanged.
-Read [the current handoff](../docs/reviews/traffic-and-man-accounting.md) first.
+Read [that pass's handoff](../docs/reviews/traffic-and-man-accounting.md).
 
 ```sh
 node --import tsx scripts/diag/traffic-contact.ts out/traffic-contact-after.json

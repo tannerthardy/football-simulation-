@@ -1,6 +1,7 @@
 /** Replay export metadata and packing; no changes to simulated play behavior. */
 import type { PlayLog } from '../src/game/game.js';
 import { PASS_BY_ID, RUN_CONCEPTS } from '../src/playbook/concepts.js';
+import type { ReplayLevel } from '../src/sim/types.js';
 
 export function replayOptions(args: string[]) {
   let seed = 7;
@@ -8,14 +9,19 @@ export function replayOptions(args: string[]) {
   let games = 1;
   let out = 'out/replay.html';
   let document = false;
+  let telemetry: ReplayLevel = 'light';
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === '--doc') document = true;
-    else if (arg === '--out' || arg === '--games') {
+    else if (arg === '--out' || arg === '--games' || arg === '--telemetry') {
       const value = args[++i];
       if (!value || value.startsWith('--')) throw new Error(`${arg} requires a value`);
       if (arg === '--out') out = value;
-      else games = Number(value);
+      else if (arg === '--games') games = Number(value);
+      else {
+        if (!['light', 'standard', 'full'].includes(value)) throw new Error('--telemetry must be light, standard or full');
+        telemetry = value as ReplayLevel;
+      }
     } else if (!arg.startsWith('--') && !seedSet) {
       seed = Number(arg);
       seedSet = true;
@@ -24,7 +30,7 @@ export function replayOptions(args: string[]) {
   if (!Number.isSafeInteger(seed) || seed < 0 || seed > 0xffffffff) throw new Error('Seed must be an integer from 0 to 4294967295');
   if (!Number.isInteger(games) || games < 1 || games > 50) throw new Error('--games must be an integer from 1 to 50');
   if (seed + games - 1 > 0xffffffff) throw new Error('Game seeds exceed 4294967295');
-  return { seed, games, out, document };
+  return { seed, games, out, document, telemetry };
 }
 
 const KIND_LABEL: Record<PlayLog['kind'], string> = {
@@ -92,6 +98,9 @@ export function packReplayPlay(p: PlayLog, game: number) {
     ...base, flags: { ...base.flags, pressure: !p.nullified && stats.pressure2yd === true }, los: rp.los, fd: rp.firstDownX,
     roster: rp.players.map((a) => [a.team, a.slot, a.name, a.jersey]),
     weights: rp.players.map(a => a.weightLb ?? null),
+    profiles: rp.profiles,
+    telemetry: rp.telemetry,
+    eventDetails: rp.events.map(e => ({ ...e, t: r2(e.t), pos: e.pos ? { ...e.pos } : undefined })),
     stats,
     ev: rp.events.filter((e) => SHOWN_EVENTS.has(e.type)).map((e) => [r2(e.t), e.type]),
     frames: {

@@ -1,0 +1,1 @@
+trail: reps 40 YAC mean 42.51 median 60.00 time 4.89s  TD/escape 24  wraps/rep 0.42 missed/rep 0.03 broken/rep 0.00 falls/rep 0.72

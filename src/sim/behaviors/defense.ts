@@ -186,6 +186,12 @@ export class ManCoverage implements Behavior {
   private stableSince = 0;
   private readonly observation = new RouteObservation();
 
+  /** The technique actually in use, without updating receiver observation. */
+  recordedTechnique(): NonNullable<import('../types.js').ReplayAgentState['man']> {
+    return { leverage: this.opts.lev ?? 'inside', initialCushion: this.initialCushion, press: this.press,
+      hipsOpen: this.hipsOpen, trail: !!this.opts.trail, overTop: !!this.opts.overTop, routeRead: this.routeRead };
+  }
+
   constructor(
     a: Agent,
     sim: PlaySim,
@@ -285,6 +291,8 @@ export class ManCoverage implements Behavior {
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
+  /** Inspect the exact adjusted landmark used by this technique. */
+  recordedLandmark(): Vec2 { return { ...this.landmark }; }
   private readonly deep: boolean;
   private readonly radius: number;
   /** Lateral band of responsibility (field y range). */

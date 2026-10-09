@@ -2,8 +2,26 @@
 
 Start with these shared project references:
 
+- [Shared grip budget and replay foundation](docs/reviews/grip-budget-and-replay-foundation.md):
+  **read first.** Active reeling and passive restraint now share the actual
+  grip force limit; momentum/work contracts and recording noninterference
+  pass. Physics remains NOT READY: native hand convergence still has 0.822 yd
+  error/two fall disagreements, with an additional disagreement at 24 steps.
+  New first-wrap probes separate post-wrap QB feedback from pre-wrap rusher
+  path dependence. Follow the ordered local physics work and physical gates;
+  do not raise resolution globally or touch PR #1. The new coverage operating
+  system reference is retained for later, not implemented as player logic.
+
+- [Replay telemetry and short video export](docs/reviews/replay-telemetry-and-export.md):
+  observational light/standard/full recording, actual jobs/intent/relationships,
+  click-to-inspect state, stackable layers and downloadable WebM ranges.
+  `viewer/film-room.html` is the populated standard library;
+  `viewer/inspection-room.html` contains six labeled full-state lab fixtures.
+  Missing causal cues and unbuilt visualizer views remain explicit. See the
+  review and `docs/VISUALIZER_PLAN.md` before extending recording or UI.
+
 - [Shared traffic control and man-assignment accounting](docs/reviews/traffic-and-man-accounting.md):
-  **read first.** Seven owner clips from `78f2002` are reproduced exactly.
+  Previous implementation/evidence. Seven owner clips from `78f2002` are reproduced exactly.
   Shared teammate approach control now budgets delayed observations against
   the same body's braking limits; clean creases remain open. Confirmed shadow,
   disguise and man-pressure accounting bugs are repaired; supported pure-man

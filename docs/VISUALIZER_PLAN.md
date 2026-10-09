@@ -1,8 +1,26 @@
 # Visualizer plan: views into the engine
 
-Status: **plan only** (2026-10-09). Nothing here is built yet. It maps what the
-viewer should show, what the engine must record to show it, and the order to
-build it in.
+Status: **first recording and inspection tranche implemented** (2026-10-09).
+The remaining sections still describe the broader design, not completed views.
+See [the recording/export handoff](reviews/replay-telemetry-and-export.md).
+
+Implemented: opt-in light/standard/full recording; source snapshots of jobs,
+targets, movement intents, man technique, run fits and protection/block plans;
+full body/support, engagement, grasp, actual requested perception and QB state;
+exact coverage-job changes with causal attribution explicitly unavailable.
+The standalone viewer supports player selection, an inspector, assignment,
+intent, contact and perception layers, detailed events, and ranged WebM video
+export. Legacy position-only files remain readable and label missing channels.
+Optional telemetry is stored losslessly as per-play gzip/base64 and decoded
+locally on selection, with at most three decoded plays retained. Positions and
+events remain immediately available in the standalone HTML.
+
+Still pending: complete decision instrumentation, compact columnar channels,
+a TypeScript viewer build sharing the engine's types, camera presets, full
+pre-snap art, carrier lane scoring, pitch control, swimlanes, automatic diagnoses
+and paired comparisons. Snapshots currently use versioned JSON at replay cadence,
+inside the per-play gzip channel. Six full inspection fixtures use 92–176 KB per
+play gzipped, so the proposed 150 KB budget is not yet consistently met.
 
 ## 1. Goal and principles
 
@@ -37,7 +55,7 @@ Principles:
    level, lean, arm extension) now, draw them with side strips and glyphs in
    2D, so a later 3D renderer can use the same data.
 
-## 2. What exists today
+## 2. What existed before this tranche
 
 | Piece | State |
 |---|---|
@@ -46,13 +64,17 @@ Principles:
 | Film room | searchable library of plays, filters, top-down canvas, play controls, slot labels toggle |
 | Under-the-hood state not recorded | behaviors and jobs, targets and landmarks, perception and beliefs, QB reads, engagement state (control, phi, base, push, moves), tackle bonds (grip, topple), run fits, protection assignments, carrier vision, rule decisions |
 
-Coverage defenders already keep a job history (`CoverageDefender.history`),
-and engagements, bonds and the QB mind hold rich state in memory. It is
-discarded at the end of each tick.
+Coverage defenders already kept a job history (`CoverageDefender.history`),
+and engagements, bonds and the QB mind held rich state in memory. The new
+opt-in recorder copies this state at the replay boundary; it does not request
+new observations or evaluate alternative decisions to fill a panel.
 
 ## 3. Foundation: the telemetry layer
 
-Everything below depends on this. It is the first thing to build.
+The first portion is implemented in `src/sim/telemetry.ts` and the shared
+types in `src/sim/types.ts`. The proposed API and complete channel inventory
+below remain the broader target; they are not claims that every source emits
+each listed channel or a complete causal explanation today.
 
 ### 3.1 Recording API in the engine
 
@@ -290,6 +312,14 @@ renderer (three.js) can later consume the same telemetry without engine
 changes.
 
 ## 7. Build order
+
+Current phase status: 0 is partial (truth snapshots, levels and lazy per-play
+compression complete; columnar format and complete decisions pending). Phase 1 has player selection,
+inspector/layers and assignments, man technique and ball detail; named presets,
+cameras and a typed viewer build remain pending. Early phase 2/3 data and
+inspection panels expose real block/grip/body/QB values without claiming the
+full proposed trench glyphs or QB candidate evaluations. Phases 4–6 remain
+planned, apart from basic fit/block-plan inspection and event/decision lists.
 
 | Phase | Deliverable | Done when |
 |---|---|---|

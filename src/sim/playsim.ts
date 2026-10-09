@@ -28,8 +28,9 @@ import { createEngagement, releaseJoints, updateEngagements } from './engagement
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { spaceTeammates } from './spacing.js';
 import { SnapMind } from './mind.js';
+import { ReplayTrace } from './telemetry.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
-import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats } from './types.js';
+import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
@@ -46,6 +47,8 @@ export interface PlaySetup {
   firstDownX: number;
   seed: number | Rng;
   record?: boolean;
+  /** Extra replay state; observational and opt-in, light by default. */
+  recordLevel?: ReplayLevel;
   /** Energy at the snap by player id (0–1). */
   energy?: Map<string, number>;
   manPrefs?: ManPreference;
@@ -101,6 +104,7 @@ export class PlaySim {
   readonly events: PlayEvent[] = [];
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
+  readonly trace: ReplayTrace;
   private readonly record: boolean;
   private readonly recordEvery: number;
   private tickCount = 0;
@@ -164,6 +168,7 @@ export class PlaySim {
     this.wind = setup.wind ?? { x: 0, y: 0 };
     this.record = setup.record ?? false;
     this.recordEvery = setup.recordEvery ?? 2;
+    this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY);
     // The secondary checks its call to the receiver distribution it sees.
@@ -277,7 +282,7 @@ export class PlaySim {
       this.world.step(intents, this.dt);
       for (const d of this.defense) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
       this.perception.record(this.agents);
-      if (this.record && i%this.recordEvery===0) this.recordFrame();
+      if (this.record && i%this.recordEvery===0) this.recordFrame(intents);
     }
     this.t=0;
     this.perception.record(this.agents);
@@ -308,12 +313,18 @@ export class PlaySim {
 
   /** What `observer` perceives of `target` (delayed for opponents). */
   see(observer: Agent, target: Agent, delayScale = 1): Perceived {
-    if (observer.team === target.team) return this.perception.perceive(target.idx, 0.05);
+    if (observer.team === target.team) {
+      const seen = this.perception.perceive(target.idx, 0.05);
+      this.trace.observe(observer, target, seen, this.t);
+      return seen;
+    }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
     // Attention follows the observer's belief, regardless of the hidden call.
     const line = ['LT', 'LG', 'C', 'RG', 'RT'];
     if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)) delay += 0.15;
-    return this.perception.perceive(target.idx, delay);
+    const seen = this.perception.perceive(target.idx, delay);
+    this.trace.observe(observer, target, seen, this.t);
+    return seen;
   }
 
   ballPos(): Vec3 {
@@ -759,7 +770,7 @@ export class PlaySim {
     this.whistle(kind, spot);
   }
 
-  private recordFrame(): void {
+  private recordFrame(recordedIntents?: ReadonlyArray<Intent>): void {
     const agents: number[] = [];
     for (const a of this.agents) agents.push(round1(a.pos.x), round1(a.pos.y), round1(a.body.facing));
     const b = this.ballPos();
@@ -769,6 +780,7 @@ export class PlaySim {
     if (this.frames.at(-1)?.t === round2(this.t)) this.frames.pop();
     this.frames.push({ t: round2(this.t), agents, ball: [round1(b.x), round1(b.y), round1(b.z)], carrier: c?.idx ?? -1,
       carrierPosture: [round2(c?.body.squeeze ?? 0), round2(c?.body.squeezeHeading ?? c?.body.facing ?? 0)] });
+    this.trace.state(this, recordedIntents);
   }
 
   // ------------------------------------------------------------ result
@@ -819,6 +831,7 @@ export class PlaySim {
       stats: s,
       events: this.events,
       frames: this.record ? this.frames : undefined,
+      telemetry: this.trace.data,
       penalty: this.penalty,
     };
   }

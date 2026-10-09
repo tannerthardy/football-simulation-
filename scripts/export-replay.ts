@@ -1,6 +1,6 @@
 /**
  * Record games and bake a searchable concept library into the replay viewer.
- *   npm run replay -- [seed] [--games 6] [--out path] [--doc]
+ *   npm run replay -- [seed] [--games 6] [--out path] [--doc] [--telemetry standard|full]
  * Teams are generated once; games use consecutive seeds and reset game state.
  * --doc produces a standalone HTML document for opening from disk.
  */
@@ -14,6 +14,7 @@ import { COVERAGES, FRONTS } from '../src/playbook/defense.js';
 import { FORMATIONS } from '../src/playbook/formations.js';
 import { packReplayPlay, replayOptions } from './replay-data.js';
 import { sourceVersion } from './source-version.js';
+import { compactReplayPlays } from './replay-telemetry-packing.js';
 
 const options = replayOptions(process.argv.slice(2));
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -25,7 +26,7 @@ const plays: ReturnType<typeof packReplayPlay>[] = [];
 const games = [];
 for (let i = 0; i < options.games; i++) {
   const seed = options.seed + i;
-  const g = simulateGame(home, away, { seed, record: true });
+  const g = simulateGame(home, away, { seed, record: true, recordLevel: options.telemetry });
   const quarters = [...g.quarterScores];
   const last = quarters[quarters.length - 1];
   if (!last || last.home !== g.score.home || last.away !== g.score.away) quarters.push({ ...g.score });
@@ -38,10 +39,11 @@ const data = {
   meta: {
     ...games[0],
     sourceSha256: sourceVersion(),
+    telemetryLevel: options.telemetry,
     home: { name: home.name, abbr: home.abbr, color: '#a3302a', alt: '#f4efe6', text: '#ffffff' },
     away: { name: away.name, abbr: away.abbr, color: '#1d4f91', alt: '#f2c14e', text: '#ffffff' },
   },
-  games, plays,
+  games, plays: compactReplayPlays(plays),
   catalog: {
     coverage: Object.fromEntries(COVERAGES.map((c) => [c.id, c.name])),
     front: Object.fromEntries(FRONTS.map((f) => [f.id, f.name])),

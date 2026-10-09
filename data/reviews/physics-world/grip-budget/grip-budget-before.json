@@ -1,0 +1,913 @@
+{
+  "sourceSha256": "0f6b4078a3857a2f4664d2e4d91176ccfb252dbcc836c498a3bafdfa32792df7",
+  "note": "Instrumentation sums active reel and passive grip vectors at each solver substep. The existing per-holder structural/passive capacity is the budget reference; force magnitudes are not NFL-calibrated. Independent active muscle work remains bounded separately. Instrumentation does not change draws or control.",
+  "isolated": [
+    {
+      "capacity": 50,
+      "substeps": 12,
+      "momentumError": 4.547473508864641e-13,
+      "workError": 1.7337242752546445e-12,
+      "samples": 36,
+      "overBudget": 36,
+      "maxRatio": 17.087024278215225,
+      "maxForce": 854.3512139107612
+    },
+    {
+      "capacity": 50,
+      "substeps": 48,
+      "momentumError": 1.0800249583553523e-12,
+      "workError": 3.296918293926865e-12,
+      "samples": 144,
+      "overBudget": 144,
+      "maxRatio": 17.087024278215225,
+      "maxForce": 854.3512139107612
+    },
+    {
+      "capacity": 50,
+      "substeps": 192,
+      "momentumError": 8.355982572538778e-12,
+      "workError": 3.743139131984208e-11,
+      "samples": 576,
+      "overBudget": 576,
+      "maxRatio": 17.087024278215225,
+      "maxForce": 854.3512139107612
+    },
+    {
+      "capacity": 300,
+      "substeps": 12,
+      "momentumError": 0,
+      "workError": 2.5579538487363607e-13,
+      "samples": 36,
+      "overBudget": 36,
+      "maxRatio": 3.68117071303587,
+      "maxForce": 1104.351213910761
+    },
+    {
+      "capacity": 300,
+      "substeps": 48,
+      "momentumError": 2.1600499167107046e-12,
+      "workError": 1.0174971976084635e-11,
+      "samples": 144,
+      "overBudget": 144,
+      "maxRatio": 3.68117071303587,
+      "maxForce": 1104.351213910761
+    },
+    {
+      "capacity": 300,
+      "substeps": 192,
+      "momentumError": 8.526512829121202e-12,
+      "workError": 2.5991653274104465e-11,
+      "samples": 576,
+      "overBudget": 576,
+      "maxRatio": 3.68117071303587,
+      "maxForce": 1104.351213910761
+    },
+    {
+      "capacity": 900,
+      "substeps": 12,
+      "momentumError": 6.821210263296962e-13,
+      "workError": 2.9558577807620168e-12,
+      "samples": 36,
+      "overBudget": 36,
+      "maxRatio": 1.8937235710119569,
+      "maxForce": 1704.351213910761
+    },
+    {
+      "capacity": 900,
+      "substeps": 48,
+      "momentumError": 9.663381206337363e-13,
+      "workError": 2.2168933355715126e-12,
+      "samples": 144,
+      "overBudget": 143,
+      "maxRatio": 1.8937235710119569,
+      "maxForce": 1704.351213910761
+    },
+    {
+      "capacity": 900,
+      "substeps": 192,
+      "momentumError": 1.233502189279534e-11,
+      "workError": 5.678657544194721e-11,
+      "samples": 576,
+      "overBudget": 574,
+      "maxRatio": 1.8937235710119569,
+      "maxForce": 1704.351213910761
+    }
+  ],
+  "football": [
+    {
+      "seed": 3,
+      "power": 0.7,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 22,
+      "maxRatio": 1.0123893755280933,
+      "maxForce": 2774.748424948113,
+      "closest": 0.6418672635615702,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 0.7,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 91,
+      "maxRatio": 1.011958310834095,
+      "maxForce": 2773.5669664010015,
+      "closest": 0.6440113536210389,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 0.7,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 364,
+      "maxRatio": 1.0124330102010508,
+      "maxForce": 2774.868018498765,
+      "closest": 0.6434163663697485,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 1,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 28,
+      "maxRatio": 1.014642139676109,
+      "maxForce": 2155.7354336704893,
+      "closest": 0.6541196084949759,
+      "falls": []
+    },
+    {
+      "seed": 3,
+      "power": 1,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 117,
+      "maxRatio": 1.0194341118269008,
+      "maxForce": 2177.514237317832,
+      "closest": 0.6531140903658428,
+      "falls": [
+        "QB"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 1,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 473,
+      "maxRatio": 1.0206884974975412,
+      "maxForce": 2174.6179457578305,
+      "closest": 0.6556805227388559,
+      "falls": [
+        "QB"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 1.4,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 23,
+      "maxRatio": 1.0780860353159945,
+      "maxForce": 2422.2561004164804,
+      "closest": 1.0047405177065354,
+      "falls": []
+    },
+    {
+      "seed": 3,
+      "power": 1.4,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 45,
+      "maxRatio": 1.0204856150428514,
+      "maxForce": 4947.622315987855,
+      "closest": 1.0206643755004883,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 1.4,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 195,
+      "maxRatio": 1.0246438356255192,
+      "maxForce": 4706.548821631877,
+      "closest": 1.0447280765912326,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 7,
+      "power": 0.7,
+      "substeps": 12,
+      "closest": 4.961662703291516,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 0.7,
+      "substeps": 48,
+      "closest": 5.093109797215619,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 0.7,
+      "substeps": 192,
+      "closest": 5.109288936652576,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1,
+      "substeps": 12,
+      "closest": 4.3532887301719825,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1,
+      "substeps": 48,
+      "closest": 3.6413257450150636,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1,
+      "substeps": 192,
+      "closest": 3.5311372966223673,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1.4,
+      "substeps": 12,
+      "closest": 4.3532887301719825,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1.4,
+      "substeps": 48,
+      "closest": 3.6413257450150636,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1.4,
+      "substeps": 192,
+      "closest": 3.5311372966223673,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 0.7,
+      "substeps": 12,
+      "closest": 4.8184441695387354,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 0.7,
+      "substeps": 48,
+      "closest": 4.817754007551977,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 0.7,
+      "substeps": 192,
+      "closest": 4.818045976897325,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 29,
+      "maxRatio": 1.0403286939570409,
+      "maxForce": 2330.6905258494326,
+      "closest": 0.795405139133598,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 118,
+      "maxRatio": 1.0471333834944851,
+      "maxForce": 2351.1799995945294,
+      "closest": 0.7995339331345512,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 476,
+      "maxRatio": 1.0499322534085376,
+      "maxForce": 2342.9122635248536,
+      "closest": 0.8030891581625242,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1.4,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 21,
+      "maxRatio": 1.0168754290307298,
+      "maxForce": 3055.428176409223,
+      "closest": 0.7933313502078815,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 11,
+      "power": 1.4,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 86,
+      "maxRatio": 1.0224145878697484,
+      "maxForce": 3102.222745881113,
+      "closest": 0.7970710263399272,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 11,
+      "power": 1.4,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 353,
+      "maxRatio": 1.0234521780923915,
+      "maxForce": 3047.9874342087865,
+      "closest": 0.805142382365455,
+      "falls": [
+        "DE_S"
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.020536683606281,
+      "legs": 0.013792883256083743
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.0407767174855096,
+      "legs": 0.027395522883651532
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.060720101637686,
+      "legs": 0.040810542890861695
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.0803668360628098,
+      "legs": 0.05404053109323438
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.0997169207608815,
+      "legs": 0.06708803961285238
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.1187703557319009,
+      "legs": 0.07995558537067653
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.1375271409758678,
+      "legs": 0.09264565057207069
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.1559872764927823,
+      "legs": 0.10516068318562993
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.1741507622826444,
+      "legs": 0.11750309741540427
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.1920175983454544,
+      "legs": 0.1296752741666091
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.209587784681212,
+      "legs": 0.14167956150491215
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.226861321289917,
+      "legs": 0.1535182751093855
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.24383820817157,
+      "legs": 0.16519369871921016
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.2605184453261704,
+      "legs": 0.17670808457421916
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.2769020327537186,
+      "legs": 0.18806365384936452
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.2929889704542143,
+      "legs": 0.19926259708319144
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.3087792584276579,
+      "legs": 0.21030707460040268
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.324272896674049,
+      "legs": 0.22119921692859457
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.3394698851933877,
+      "legs": 0.23194112520924506
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.354370223985674,
+      "legs": 0.242534871603033
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.3689739130509082,
+      "legs": 0.2529824996895668
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.3832809523890899,
+      "legs": 0.26328602486160013
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.3972913420002193,
+      "legs": 0.27344743471380945
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.4110050818842963,
+      "legs": 0.28346868942621
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.424422172041321,
+      "legs": 0.293351722142283
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.4375426124712933,
+      "legs": 0.3030984393418871
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.4503664031742134,
+      "legs": 0.31271072120902704
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.462893544150081,
+      "legs": 0.32219042199454895
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.4751240353988964,
+      "legs": 0.3315393703738335
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.4870578769206593,
+      "legs": 0.34075936979955546
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.49869506871537,
+      "legs": 0.34985219884957725
+    },
+    {
+      "context": "isolated/50/12",
+      "h": 0.004166666666666667,
+      "force": 854.3512139107612,
+      "capacity": 50,
+      "ratio": 17.087024278215225,
+      "passive": {
+        "normal": -50,
+        "tangent": 0
+      },
+      "activeForce": {
+        "x": -804.3512139107612,
+        "y": 0
+      },
+      "hold": 1.5100356107830282,
+      "legs": 0.35881961157004455
+    }
+  ]
+}

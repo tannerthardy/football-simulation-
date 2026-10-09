@@ -58,6 +58,15 @@ export class CoverageDefender implements Behavior {
     return (this.sub as { target?: Agent | null }).target ?? null;
   }
 
+  /** Current zone technique's adjusted landmark, if he is zoning off. */
+  recordedLandmark(): import('../../core/vec.js').Vec2 | undefined {
+    return this.sub instanceof ZoneCoverage ? this.sub.recordedLandmark() : undefined;
+  }
+  recordedZone(): string | undefined { return this.sub instanceof ZoneCoverage ? this.sub.zone : undefined; }
+  recordedMan(): import('../types.js').ReplayAgentState['man'] {
+    return this.sub instanceof ManCoverage ? this.sub.recordedTechnique() : undefined;
+  }
+
   update(a: Agent, sim: PlaySim): MoveCommand {
     const sign = this.side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
     const primary = runRule(this.rule, { a, sim, reader: this.reader, side: this.side, sign, zone: this.zone, style: this.style, state: this.state });
@@ -68,6 +77,9 @@ export class CoverageDefender implements Behavior {
       this.subKey = key;
       this.job = key.split(':').slice(0, 2).join(':');
       this.history.push({ t: sim.t, job: this.job });
+      if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-job', chose: this.job, cue: null,
+        options: [...new Set([directiveKey(primary), key])],
+        detail: `Observed rule inputs: ${this.reader.recordedReads(sim.t).map(r => `${r.r.slot}=${r.release} at ${r.depth.toFixed(1)} yd`).join(', ') || 'none'}. Causal trigger is not exposed.` });
       a.tags.add(`cov-${d.t}`);
     }
     return this.sub.update(a, sim);

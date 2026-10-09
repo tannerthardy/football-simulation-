@@ -78,10 +78,10 @@ describe('holds', () => {
     const a = body(90, 0, 0), b = body(100, 0, 1.2);
     const w = new World([a, b]);
     w.substeps = 1;
-    // No passive grip force: isolate the moment delivered by the arms.
+    // A valid grip, initially slack: isolate the moment delivered by the arms.
     // An implicit torso grasp acts at the carrier's COM, independently of
     // the holder's pad height. The feet remain free to isolate this load.
-    w.joints.push(grasp(a, b, { capacity: 0, pull: 1.5 }));
+    w.joints.push(grasp(a, b, { capacity: 900, hold: 1.2, pull: 1.5 }));
     w.step([FREE, FREE], 0.05);
     expect(a.vel.y).toBeGreaterThan(0);
     expect(b.vel.y).toBeLessThan(0);

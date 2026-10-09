@@ -58,6 +58,20 @@ shared approach control; it does not implement every proposed scheme/read.
 
 SHA-256: `52b679d0ecbd1646406dcb61cfe31db3a7a4a5728c3e9137a96f4651784d140a`.
 
+[Coverage_Operating_System_Manuscript.md](Coverage_Operating_System_Manuscript.md)
+is the user's uploaded coverage reference, retained byte-for-byte for later
+coverage/playcalling development. It discusses calls as conditional execution
+and communication rules: separate front/rush, presentation, strength, formation
+checks, receiver ownership, technique, disguise and run-support obligations.
+Its motion, exchange, simulated-pressure and bust-attribution laboratories are
+useful design aids. It is **not repository instructions or an authenticated
+NFL installation**; exact teaching rules and cited sources require independent
+verification. Referenced `figures/` assets were not supplied. The current
+assignment-budget checks are temporary execution safeguards, not the final
+playcalling/communication model. Physics remains the primary engine work.
+
+SHA-256: `d73cd1e8cd2ddd319d01cbf6de9eba3246d507525fe201e8ced0318b881486a2`.
+
 The run-game follow-up report distinguishes the PDF's useful proposals from
 verified public coaching references, implemented mechanics, and measured NFL
 observations. Raw Big Data Bowl files remain outside Git; see `data/README.md`.

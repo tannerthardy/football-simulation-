@@ -59,6 +59,21 @@ describe('one body actuator budget',()=>{
     for(const count of [1,2,8]){const {force,r}=run(count);expect(force).toBeLessThanOrEqual(300+1e-8);expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);}
   });
 
+  it('reeling and passive restraint share one grip force, including duplicate holds',()=>{
+    for(const capacity of [0,50,300])for(const count of [1,2,8])for(const substeps of [12,48]){
+      const a=body(0),b=body(1),w=new World([a,b],{substeps});b.vel.x=5;
+      for(let k=0;k<count;k++)w.joints.push({kind:'grasp',a,b,reach:2,hold:1,capacity,legs:0,pull:2});
+      const before={...a.vel},r=w.step([free,free],.05);
+      const delivered=Math.hypot(a.vel.x-before.x,a.vel.y-before.y)*a.profile.massKg;
+      const used=w.joints.reduce((s,j)=>s+(j.kind==='grasp'?(j.force??0):0),0);
+      expect(delivered).toBeLessThanOrEqual(capacity*.05+1e-8);
+      expect(used).toBeLessThanOrEqual(capacity+1e-8);
+      expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
+      expect(r.armWork[0]).toBeLessThanOrEqual(r.armWorkLimit[0]+1e-8);
+      expect(a.vel.x+b.vel.x).toBeCloseTo(5,10);
+    }
+  });
+
   it('shares ground traction with yaw and accounts for angular work',()=>{
     const a=body(0),w=new World([a]);
     const r=w.step([{vel:{x:6,y:0},facing:Math.PI}],.05);

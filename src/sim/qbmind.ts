@@ -400,16 +400,23 @@ export class QBMind {
     const m = this.memory.get(d);
     if (!m) return sim.see(this.qb, d);
     const age = sim.t - m.t;
-    if (age < 0.12) return { pos: m.pos, vel: m.vel, facing: m.facing };
+    if (age < 0.12) return this.recordEstimate(d, { pos: m.pos, vel: m.vel, facing: m.facing }, age);
     const k = Math.min(age, 0.5);
     const dr = { x: m.pos.x + m.vel.x * k, y: m.pos.y + m.vel.y * k };
     const exp = this.expectedPos(d);
     const w = clamp((age - 0.2) / 1.0, 0, 1);
-    return {
+    return this.recordEstimate(d, {
       pos: { x: dr.x + (exp.x - dr.x) * w, y: dr.y + (exp.y - dr.y) * w },
       vel: { x: m.vel.x * (1 - w), y: m.vel.y * (1 - w) },
       facing: m.facing,
-    };
+    }, age);
+  }
+
+  /** Capture the estimate actually returned, without advancing vision. Age is
+   * the age of QB memory, not total visual latency including PlaySim.see. */
+  private recordEstimate(d: Agent, p: { pos: Vec2; vel: Vec2; facing: number }, age: number): typeof p {
+    this.sim.trace.observe(this.qb, d, { ...p, stance: null, age }, this.sim.t, 'qb');
+    return p;
   }
 
   /** Belief-weighted position this defender "should" be at right now. */
