@@ -201,13 +201,14 @@ select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(
           <button id="loop-playlist" aria-pressed="false" title="Return to the first matching clip after the last">Loop selection</button>
         </div>
         <div class="event-jumps" id="event-jumps" aria-label="Jump to a play event"></div>
+        <div class="row"><label for="inspect-player">Inspect player</label><select id="inspect-player" aria-label="Inspect player"><option value="-1">Ball carrier</option></select><small id="player-motion"></small></div>
       </div>
       <div class="result">
         <p id="result">Pick a play from the sheet.</p>
         <div class="row"><input id="play-reference" type="text" readonly aria-label="Play reference with film version and timestamp" style="flex:1;min-width:0;font-family:var(--mono)"><button id="copy-reference">Copy play reference</button></div>
         <small id="copy-status" role="status"></small>
         <div class="kv" id="kv"></div>
-        <div class="foot"><kbd>Space</kbd> play · <kbd>←</kbd><kbd>→</kbd> step · <kbd>↑</kbd><kbd>↓</kbd> matching plays · <kbd>R</kbd> replay · offense attacks right · blue = line of scrimmage, yellow = line to gain</div>
+        <div class="foot"><kbd>Space</kbd> play · <kbd>←</kbd><kbd>→</kbd> step · <kbd>↑</kbd><kbd>↓</kbd> matching plays · <kbd>R</kbd> replay · offense attacks right · blue = line of scrimmage, yellow = line to gain · player ticks = body facing, trails = paths</div>
       </div>
     </section>
 
@@ -485,11 +486,11 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     if (r?.audible) kv.push(`check at the line: <b>${esc(r.audible)}</b>`);
     kv.push(`duration <b>${dur.toFixed(1)}s</b>`);
     $('kv').innerHTML = kv.join('');
-    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), carrier_contact: css('--muted'), touchdown: css('--good'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent'), block_contact: css('--muted'), block_exchange: css('--los'), block_collect: css('--warn'), block_log: css('--accent'), block_climb: css('--los'), squeeze: css('--accent') };
+    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), carrier_contact: css('--muted'), touchdown: css('--good'), pitch: css('--los'), pitch_catch: css('--los'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent'), block_contact: css('--muted'), block_exchange: css('--los'), block_collect: css('--warn'), block_log: css('--accent'), block_climb: css('--los'), squeeze: css('--accent') };
     const shown = p.ev.filter((e) => colors[e[1]]);
     const pct = (time) => Math.max(0, Math.min(100, ((time - p.frames.t[0]) / (dur - p.frames.t[0])) * 100));
     $('marks').innerHTML = shown.map((e) => `<span class="mark" style="left:${pct(e[0])}%;background:${colors[e[1]]}" title="${esc(e[1])} ${e[0]}s"></span>`).join('');
-    const labelled = shown.filter((e) => ['handoff', 'throw', 'catch', 'interception', 'fumble', 'sack', 'tackle', 'touchdown'].includes(e[1])).filter((e, k, all) => k === 0 || e[0] - all[k - 1][0] > (dur - p.frames.t[0]) * 0.08).slice(0, 7);
+    const labelled = shown.filter((e) => ['handoff', 'pitch', 'pitch_catch', 'throw', 'catch', 'interception', 'fumble', 'sack', 'tackle', 'touchdown'].includes(e[1])).filter((e, k, all) => k === 0 || e[0] - all[k - 1][0] > (dur - p.frames.t[0]) * 0.08).slice(0, 7);
     $('tlabels').innerHTML = labelled.map((e) => {
       const x = pct(e[0]);
       const shift = x > 85 ? -100 : x < 15 ? 0 : -50;
@@ -497,12 +498,13 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     }).join('');
     const jumps = [['Snap', Math.max(0, p.frames.t[0])]];
     if (s.ttp !== undefined) jumps.push(['Pressure (2 yd)', s.ttp]);
-    for (const [name, events] of [['First block', ['block_contact']], ['Handoff', ['handoff']], ['Throw', ['throw']], ['Catch', ['catch', 'interception']], ['First contact', ['carrier_contact', 'tackle_wrap', 'tackle']]]) {
+    for (const [name, events] of [['First block', ['block_contact']], ['Handoff', ['handoff']], ['Pitch', ['pitch']], ['Pitch catch', ['pitch_catch']], ['Throw', ['throw']], ['Catch', ['catch', 'interception']], ['First contact', ['carrier_contact', 'tackle_wrap', 'tackle']]]) {
       const event = p.ev.find((e) => events.includes(e[1]));
       if (event) jumps.push([name, event[0]]);
     }
     jumps.push(['Finish', dur]);
     $('event-jumps').innerHTML = jumps.map(([name, time]) => `<button data-time="${time}" title="Jump to ${esc(name.toLowerCase())}">${esc(name)} ${time.toFixed(1)}s</button>`).join('');
+    $('inspect-player').innerHTML = '<option value="-1">Ball carrier</option>' + p.roster.map((r,k) => `<option value="${k}">${esc(r[1])} #${r[3]} · ${esc(r[2])}</option>`).join('');
     cam = { x: p.los + 8, y: 26.67 };
     for (const el of $('list').querySelectorAll('[aria-current]')) el.removeAttribute('aria-current');
     const li = $('list').querySelector(`[data-i="${i}"]`);
@@ -719,7 +721,8 @@ const REPLAY = /*__REPLAY_DATA__*/null;
       const ib = (b * n + i) * 3;
       const x = F.p[ia] + (F.p[ib] - F.p[ia]) * f;
       const y = F.p[ia + 1] + (F.p[ib + 1] - F.p[ia + 1]) * f;
-      const fc = F.p[ib + 2];
+      const da = F.p[ib+2]-F.p[ia+2];
+      const fc = F.p[ia+2]+Math.atan2(Math.sin(da),Math.cos(da))*f;
       const tm = r[0] === 'O' ? offT : defT;
       const px = X(x);
       const py = Y(y);
@@ -733,7 +736,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
       ctx.lineWidth = i === carrier ? 3 : 1.5;
       ctx.strokeStyle = i === carrier ? css('--fd') : tm.alt;
       ctx.stroke();
-      // Facing tick.
+      // Body-facing tick (not a gaze or vision ray).
       ctx.beginPath();
       ctx.moveTo(px + Math.cos(fc) * rad * 0.6, py - Math.sin(fc) * rad * 0.6);
       ctx.lineTo(px + Math.cos(fc) * rad * 1.45, py - Math.sin(fc) * rad * 1.45);
@@ -759,6 +762,16 @@ const REPLAY = /*__REPLAY_DATA__*/null;
       ctx.beginPath(); ctx.ellipse(X(bx), Y(by) - lift, sc * 0.32 * size, sc * 0.2 * size, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     }
     $('caption').textContent = `${p.id} · ${t.toFixed(2)}s${bz > 1.5 && carrier < 0 ? ` · ball ${(bz * 3).toFixed(0)} ft up` : ''}`;
+    const inspected = Number($('inspect-player').value);
+    const player = inspected >= 0 ? inspected : carrier;
+    if (player >= 0) {
+      const lo = Math.max(0,a-1), hi = Math.min(F.t.length-1,b+1);
+      const dt = F.t[hi]-F.t[lo];
+      const vx = dt > 0 ? (F.p[(hi*n+player)*3]-F.p[(lo*n+player)*3])/dt : 0;
+      const vy = dt > 0 ? (F.p[(hi*n+player)*3+1]-F.p[(lo*n+player)*3+1])/dt : 0;
+      const r=p.roster[player], weight=p.weights?.[player];
+      $('player-motion').textContent = `${r[1]} #${r[3]}${weight ? ` · ${weight} lb` : ''} · ≈${(Math.hypot(vx,vy)*3600/1760).toFixed(1)} mph (recorded path)`;
+    } else $('player-motion').textContent = 'Ball in flight';
     const ref = reference();
     if ($('play-reference').value !== ref) $('play-reference').value = ref;
   }

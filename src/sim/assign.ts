@@ -166,7 +166,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   let qb: Vec2;
   let rb: Vec2;
   let time = concept.meshTime;
-  let pitch = 1.3;
+  let pitch = 0;
   if (concept.scheme === 'toss') {
     qb = { x: los - 1.8, y: by + ps * 0.6 };
     rb = { x: los - 5.5, y: by + ps * 4.0 };
@@ -221,17 +221,19 @@ export class RunnerToMesh implements Behavior {
     readonly aim: Vec2,
   ) {}
   update(a: Agent, sim: PlaySim): MoveCommand {
+    if (sim.ball.kind === 'pitch' && sim.ball.target === a) {
+      return goTo(a, sim.ball.intended, { speed: 0.8, facing: Math.atan2(sim.qb.pos.y-a.pos.y, sim.qb.pos.x-a.pos.x) });
+    }
     const dt = this.meshTime - sim.t;
     const d = Math.hypot(this.mesh.x - a.pos.x, this.mesh.y - a.pos.y);
-    if (dt <= 0.05 || d < 0.4) {
-      // Through the mesh toward the aiming point.
-      return goTo(a, this.aim, { through: a.profile.vmax * 0.7, speed: 0.8 });
-    }
     // Leave on the snap and get to the mesh on time: budget for the
     // acceleration it takes to get going, not just the distance.
     const tAcc = a.profile.tau * 0.9;
     const speed = clamp(d / Math.max(0.2, dt - tAcc) / a.profile.vmax, 0.3, 1);
-    return goTo(a, this.mesh, { speed, through: a.profile.vmax * 0.5 });
+    // The deadline is a cadence cue, not possession. Brake into the mesh
+    // until the QB actually gives him the ball; onHandoff installs the run.
+    // Running through an expired landmark used to strand him yards away.
+    return goTo(a, this.mesh, { speed, through: 0 });
   }
 }
 

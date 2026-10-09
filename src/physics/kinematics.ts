@@ -268,6 +268,22 @@ export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throu
   return { x: (dx / d) * s, y: (dy / d) * s };
 }
 
+/** Speed that can round a waypoint within the controller's capture radius.
+ * The tangent arc has R = radius / tan(turn/2); centripetal demand is v²/R.
+ * This plans braking; it never changes the body's velocity or force limits. */
+export function cornerSpeed(body: Body, corner: Vec2, next: Vec2, radius: number): number {
+  const ix = corner.x-body.pos.x, iy = corner.y-body.pos.y;
+  const ox = next.x-corner.x, oy = next.y-corner.y;
+  const inLen = Math.hypot(ix,iy), outLen = Math.hypot(ox,oy);
+  if (inLen < 1e-6 || outLen < 1e-6) return 0;
+  const cosine = clamp((ix*ox+iy*oy)/(inLen*outLen),-1,1);
+  if (cosine > 1-1e-6) return body.profile.vmax;
+  const tanHalf = Math.sqrt((1-cosine)/Math.max(1e-9,1+cosine));
+  const arcRadius = Math.min(radius, inLen, outLen) / tanHalf;
+  const lateral = body.profile.lateral * 0.8; // the existing high-speed envelope
+  return Math.min(body.profile.vmax, Math.sqrt(lateral * arcRadius));
+}
+
 export function seekVelocity(body: Body, target: Vec2, speed: number): Vec2 {
   const dx = target.x - body.pos.x;
   const dy = target.y - body.pos.y;

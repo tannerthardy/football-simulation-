@@ -38,6 +38,8 @@ export interface PassSetIntent {
  * blocker protects (QB on pass pro) or against the drive direction (runs).
  */
 export interface Engagement {
+  /** Emitted once when the physical hands/torso actually carry load. */
+  contactReported?: boolean;
   blocker: Agent;
   defender: Agent;
   helpers: Agent[];
@@ -76,6 +78,8 @@ export interface Engagement {
 }
 
 export class Agent {
+  /** Motor response to the snap cue, separate from recognizing run/pass. */
+  snapReadyAt: number;
   passSet?: PassSetIntent;
   /** Known defensive responsibility; decisions still require observed run cues. */
   runFit?: RunFitJob;
@@ -114,7 +118,12 @@ export class Agent {
     public body: Body,
     public behavior: Behavior,
     readonly mind = new SnapMind(player, new Rng(`mind:${player.id}`), body.energy),
-  ) {}
+  ) {
+    // Visual get-off is a shortened simple response, compared with identifying
+    // a route break. This mapping is an assumption, not fitted latency.
+    this.snapReadyAt = team === 'O' ? mind.snapDelay
+      : mind.snapDelay + profile.reactionTime * (1 - 0.4 * this.r('anticipation'));
+  }
 
   get pos(): Vec2 {
     return this.body.pos;

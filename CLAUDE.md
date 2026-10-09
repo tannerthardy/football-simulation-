@@ -2,8 +2,17 @@
 
 Start with these shared project references:
 
+- [Snap, mesh, puller approach and NFL movement](docs/reviews/snap-mesh-pull-and-nfl-movement.md):
+  **read first.** Reachable exchanges, airborne pitches, consistent snap motor
+  response and actual block-contact events; paired film/football evidence and
+  remaining regressions. All available BDB2027 seasons and combine drills now
+  have movement summaries. Physics remains NOT READY. After NFL integration:
+  active force/work accounting, the specific QB/rusher fall reversal, initial
+  run contact (get-off, OL advantage, posture, doubles), achievable tackle
+  approach. Do not raise global resolution unnecessarily. PR #1 stays separate.
+
 - [Contact height, press hands and physics readiness](docs/reviews/contact-height-press-and-physics-readiness.md):
-  **read first.** Height-aware support replaces pad-level power heuristics;
+  prior physics implementation. Height-aware support replaces pad-level power heuristics;
   bounded hand joints replace press win rolls; contact islands use 12–16
   substeps. Read the paired evidence and explicit limitations. Status remains
   NOT READY. Next: active technique force/work budgets, the remaining
@@ -14,7 +23,7 @@ Start with these shared project references:
   Physics remains the priority; PR #1 and full QB mechanics stay separate.
 
 - [Physics development and testing](docs/PHYSICS_DEVELOPMENT.md): **read
-  second.** The philosophy (skills are different ways of controlling the same
+  alongside the current handoff.** The philosophy (skills are different ways of controlling the same
   body; ratings map to control, never to outcome rolls), the five test layers
   and when to run each, the change loop, and how much testing is too much.
 

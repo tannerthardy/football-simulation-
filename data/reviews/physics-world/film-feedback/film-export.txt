@@ -1,0 +1,7 @@
+Game 1 · seed 7: Ironmen 54 — Comets 43 · 144 filmed plays
+Game 2 · seed 8: Ironmen 44 — Comets 28 · 144 filmed plays
+Game 3 · seed 9: Ironmen 73 — Comets 40 · 144 filmed plays
+Game 4 · seed 10: Ironmen 36 — Comets 31 · 138 filmed plays
+Game 5 · seed 11: Ironmen 34 — Comets 27 · 141 filmed plays
+Game 6 · seed 12: Ironmen 42 — Comets 44 · 151 filmed plays
+862 clips across 6 games; wrote /workspace/football-simulation-/viewer/film-room.html (12.43 MB)

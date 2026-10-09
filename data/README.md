@@ -193,6 +193,47 @@ The summary counts all metadata, player-play labels and combine drill tracking.
 It does not derive metrics from game trajectories. A separate audit of
 `game_tracking_2023.csv` is included with the review evidence.
 
+### Matched combine/game movement (all downloaded seasons)
+
+The newer [movement review](../docs/reviews/bdb2027-movement-transfer.md) and
+`reviews/physics-world/nfl-movement/` now cover all 6,310 combine player drill
+trajectories and all three downloaded game-season files (22.65 million rows).
+176,707 eligible pre-throw player-play trajectories and 407 matched athletes
+have descriptive summaries. These do not replace the metadata summary or fit
+engine constants. Roles, effort, short windows and incomplete opponent geometry
+prevent treating game/combine peak-speed ratios as physical speed multipliers.
+
+```sh
+python3 -m venv .venv-movement
+.venv-movement/bin/python -m pip install -r scripts/data/requirements-movement.txt
+.venv-movement/bin/python scripts/data/bdb2027_movement.py data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027 out/bdb2027-movement.json
+.venv-movement/bin/python -m unittest discover -s test -p test_bdb2027_movement.py
+```
+
+The retained output includes input hashes, exclusion counts, athlete-weighted
+drill/role metrics and matched observed speed ratios. Read the cohort and
+smoothing definitions before comparing it to an engine panel. No AddBiomechanics
+subject data or additional large archive was downloaded for this extraction.
+
+### Film feedback and physics plan
+
+[The latest handoff](../docs/reviews/snap-mesh-pull-and-nfl-movement.md) and
+`reviews/physics-world/film-feedback/` preserve the five original film diagnoses,
+reproducible fixed setups, paired guards and current readiness limitations.
+After NFL integration, the ordered work is active work accounting, the specific
+hand-fight fall reversal, initial run contact mechanics, and tackle feasibility.
+
+```sh
+node --import tsx scripts/diag/film-observations.ts out/fixed-film.json --reps data/reviews/physics-world/film-feedback/fixed-setups.json
+node --import tsx scripts/kinematics-compare.ts 4 5
+node --import tsx scripts/calibrate.ts 16 7 2
+node --import tsx scripts/diag/hand-convergence.ts out/convergence.json
+```
+
+Without `--reps`, the trace script recreates six full games to recover the named
+clips from the old source. Those IDs change when game behavior changes. Fixed
+setups omit scouting/audibles and should only be compared as isolated pairs.
+
 ## Run-game coordination evidence
 
 See [the follow-up review](../docs/reviews/run-game-coordination.md) and

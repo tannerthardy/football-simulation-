@@ -9,7 +9,8 @@ import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
 import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
-import { DRAG_SPIRAL, DRAG_TUMBLE, stepFlight, type BallFlight } from '../physics/ball.js';
+import { DRAG_SPIRAL, DRAG_TUMBLE, solveLaunch, stepFlight, type BallFlight } from '../physics/ball.js';
+import { handoffReach } from './ball-transfer.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { containCoverage } from './coverage-space.js';
@@ -320,6 +321,7 @@ export class PlaySim {
       case 'held':
         return { x: this.ball.carrier.pos.x, y: this.ball.carrier.pos.y, z: 1.1 };
       case 'air':
+      case 'pitch':
       case 'loose':
         return this.ball.flight.pos;
       case 'dead':
@@ -333,8 +335,10 @@ export class PlaySim {
 
   // ------------------------------------------------------------ actions
 
-  handoff(from: Agent, to: Agent): void {
-    if (this.ball.kind !== 'held' || this.ball.carrier !== from) return;
+  handoff(from: Agent, to: Agent): boolean {
+    if (this.ball.kind !== 'held' || this.ball.carrier !== from || to.team !== from.team
+      || from.isDown(this.t) || to.isDown(this.t)
+      || dist(from.pos, to.pos) > handoffReach(from, to)) return false;
     this.ball = { kind: 'held', carrier: to };
     this.endSegment(from.pos.x, 'handoff');
     this.beginSegment(to, 'handoff');
@@ -342,6 +346,22 @@ export class PlaySim {
     this.stats.rusher = to.player.id;
     this.event('handoff', from, to);
     onHandoff(this, from, to);
+    return true;
+  }
+
+  /** Backward toss: possession stays in flight until a body can reach it.
+   * Travel speed is an explicit 12 yd/s pitch assumption, not pass-arm power. */
+  pitchBall(from: Agent, to: Agent): boolean {
+    if (this.ball.kind !== 'held' || this.ball.carrier !== from || from.isDown(this.t)
+      || to.isDown(this.t) || from.team !== to.team) return false;
+    const pos = this.ballPos();
+    const T = Math.max(0.2, dist(from.pos, to.pos) / 12);
+    const intended = { x: Math.min(from.pos.x, to.pos.x + to.vel.x * T), y: to.pos.y + to.vel.y * T, z: 1.1 };
+    this.ball = { kind: 'pitch', thrower: from, target: to, releaseT: this.t, intended,
+      flight: { pos, vel: solveLaunch(pos, intended, T, DRAG_TUMBLE, this.wind), drag: DRAG_TUMBLE } };
+    this.endSegment(from.pos.x, 'handoff');
+    this.event('pitch', from, to);
+    return true;
   }
 
   throwBall(qb: Agent, target: Agent | null, v0: Vec3, intended: Vec3, arrivalT: number, throwaway = false): void {
@@ -506,7 +526,8 @@ export class PlaySim {
     // Decide.
     for (let i = 0; i < this.agents.length; i++) {
       const a = this.agents[i];
-      const command = a.behavior.update(a, this);
+      // Reaction delays control, not collisions: he can still be pushed.
+      const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
       this.cmds[i] = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
     }
 
@@ -521,6 +542,11 @@ export class PlaySim {
     updateEngagements(this, this.intents);
     if (this.bond) updateBond(this, this.bond, this.intents);
     spaceTeammates(this.agents, this.intents);
+    // Contact/spacing controllers cannot wake leg drive before the snap cue.
+    for (const a of this.agents) if (t < a.snapReadyAt) {
+      this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
+        push: 0, dive: undefined, lunge: undefined, posture: a.body.support!.posture };
+    }
 
     // Physics: feet, contacts, holds and balance, in substeps.
     if (this.phase === 'live') {
@@ -539,6 +565,19 @@ export class PlaySim {
   /** Touches, first contact, falls and the pile's external impulse from the step. */
   private afterPhysics(report: StepReport): void {
     const t = this.t;
+    for (const e of this.engagements) {
+      if (e.contactReported) continue;
+      const j = e.hands;
+      const loaded = Math.hypot(j?.normalForce ?? 0, j?.tangentForce ?? 0) > 1e-6
+        || report.contacts.some(c => (c.i === e.blocker.idx && c.j === e.defender.idx)
+          || (c.j === e.blocker.idx && c.i === e.defender.idx));
+      if (loaded) {
+        e.contactReported = true;
+        // Contact is resolved within [t,t+dt], at 20 Hz precision.
+        this.events.push({ t: round2(t+this.dt), type: 'block_contact', a: e.blocker.idx,
+          b: e.defender.idx, pos: { ...e.blocker.pos }, note: e.type });
+      }
+    }
     const carrier = this.carrier;
     for (const c of report.contacts) {
       const a = this.agents[c.i], b = this.agents[c.j];
@@ -572,6 +611,42 @@ export class PlaySim {
     const prev = { ...ball.flight.pos };
     stepFlight(ball.flight, this.dt, this.wind);
     const cur = ball.flight.pos;
+
+    if (ball.kind === 'pitch') {
+      // Swept reach, so a pitch cannot pass through a receiver between ticks.
+      const dx = cur.x - prev.x, dy = cur.y - prev.y, d2 = dx * dx + dy * dy;
+      const candidates = this.agents.filter(a => a !== ball.thrower && !a.isDown(this.t))
+        .map(a => {
+          const s = clamp(((a.pos.x - prev.x) * dx + (a.pos.y - prev.y) * dy) / Math.max(1e-9, d2), 0, 1);
+          const z = prev.z + (cur.z - prev.z) * s;
+          return { a, s, valid: z > 0.1 && z <= a.profile.reactReach
+            && Math.hypot(a.pos.x - prev.x - dx * s, a.pos.y - prev.y - dy * s) <= a.profile.reach };
+        }).filter(c => c.valid).sort((a, b) => a.s - b.s);
+      if (this.t - ball.releaseT >= 0.1 && candidates.length) {
+        const to = candidates[0].a;
+        this.ball = { kind: 'held', carrier: to };
+        this.beginSegment(to, to.team === ball.thrower.team ? 'handoff' : 'recovery');
+        this.possession = to.team;
+        this.event('pitch_catch', to, ball.thrower, 'pitch received');
+        if (to.team === ball.thrower.team) {
+          this.handoffAt = this.t; this.stats.rusher = to.player.id;
+          onHandoff(this, ball.thrower, to);
+        } else {
+          if (ball.thrower.team === 'O') this.stats.fumbledBy = ball.thrower.player.id;
+          this.stats.fumbleLost = true;
+          this.stats.fumbleRecoveredBy = to.player.id;
+          this.event('recovery', to, ball.thrower, 'opponent pitch recovered');
+          onRecovery(this, to);
+        }
+      } else if (cur.z <= 0.05 || cur.y <= 0 || cur.y >= FIELD_WIDTH) {
+        this.ball = { kind: 'loose', flight: ball.flight, since: ball.releaseT,
+          lastTeam: ball.thrower.team, fumbledBy: ball.thrower };
+        this.stats.fumbledBy = ball.thrower.player.id;
+        this.event('fumble', ball.thrower, null, 'pitch missed');
+        onLooseBall(this);
+      }
+      return;
+    }
 
     if (ball.kind === 'air') {
       resolveCatchOpportunities(this, prev, cur);

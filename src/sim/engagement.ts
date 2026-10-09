@@ -220,7 +220,6 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   defender.engagement = e;
   sim.engagements.push(e);
   syncJoints(sim, e);
-  sim.event('block_contact', blocker, defender, type);
   return e;
 }
 

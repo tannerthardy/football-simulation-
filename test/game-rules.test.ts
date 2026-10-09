@@ -358,6 +358,7 @@ describe('fumble after a catch', () => {
     const rb = sim.slot('RB')!;
     const lb = sim.defense.find((a) => a.slot.startsWith('LB'))!;
     rb.body.pos = { x: 36, y: HASH_LEFT_Y };
+    qb.body.pos = { x: 36.8, y: HASH_LEFT_Y }; // this fixture requires a reachable exchange
     sim.handoff(qb, rb);
     rb.body.pos = { x: 47, y: HASH_LEFT_Y };
     sim.fumble(rb, lb);

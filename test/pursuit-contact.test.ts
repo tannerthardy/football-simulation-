@@ -67,6 +67,7 @@ describe('run support and rejected strikes',()=>{
   });
   it('a rejected near-shoulder punch keeps the protector moving',()=>{
     const sim=make(),b=sim.slot('LT')!,r=sim.slot('DE_W')!;
+    sim.t=b.snapReadyAt;
     const coord=new ProtectionCoordinator();const behavior=new PassProtector(coord);
     const body=b.profile.radius+r.profile.radius,arm=b.player.measurables.armIn/36;
     const reach=body+.1+arm*.85,punch=body+.1+arm*.55+.3+.3*traits(b).feet;

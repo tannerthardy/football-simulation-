@@ -50,7 +50,7 @@ chooses where to save the HTML. The default remains one game.
 
 For a ready-to-watch library, [download the film room ZIP](https://github.com/tannerthardy/football-simulation-/raw/refs/heads/claude/engine-priorities/viewer/film-room.zip),
 unzip it, and open **film-room.html** in Chrome, Safari, Firefox, or Edge.
-The included snapshot has 858 clips from six games (seeds 7–12), grouped into
+The included snapshot has 862 clips from six games (seeds 7–12), grouped into
 27 concepts. It is also saved as [viewer/film-room.html](viewer/film-room.html)
 for HTML previews. Sign in to GitHub with access to this private repository
 to download it. The generated viewer contains the play data; the template is
@@ -73,7 +73,11 @@ uses a defender within two yards before release/sack/scramble; the separate
 **QB sensed pressure** annotation describes the QB's internal perception.
 Use **Hide filters** to give the field more room while watching.
 
-Each replay has event jumps (snap, first block, handoff, throw, catch, first
+Player ticks show **body facing**, not vision. The player inspector shows weight
+and approximate speed from the recorded path. Pitch release and catch are
+separate events; a direct handoff requires actual reach.
+
+Each replay has event jumps (snap, first block, handoff, pitch, throw, catch, first
 carrier contact and finish when recorded), frame stepping, 0.25–4× playback,
 route trails, slot labels and a wide view. Nullified snaps retain their film
 and are labelled; they do not appear as official touchdowns, completions,

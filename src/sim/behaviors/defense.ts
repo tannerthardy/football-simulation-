@@ -62,7 +62,7 @@ export class PassRusher implements Behavior {
     private readonly gapSign: number,
   ) {
     const burst = clamp((1.8 - a.player.measurables.tenSplit) / 0.35, 0, 1);
-    this.getOff = clamp(0.06 + 0.16 * (1 - burst) + 0.08 * (1 - a.r('awareness')) + sim.rng.normal(0, 0.03), 0.02, 0.35);
+    this.getOff = a.snapReadyAt = clamp(a.snapReadyAt + sim.rng.normal(0, 0.03), 0.02, 0.4);
     const edge = gap === 'C' || gap === 'D';
     const pw = 0.3 + a.r('passRushPower') + (a.profile.massKg - 120) / 60;
     const fi = 0.3 + a.r('passRushFinesse');
@@ -119,7 +119,7 @@ export class Blitzer implements Behavior {
     private readonly gap: Gap,
     private readonly gapSign: number,
   ) {
-    this.delay = clamp(0.05 + sim.rng.normal(0.05, 0.04), 0, 0.2);
+    this.delay = a.snapReadyAt = clamp(a.snapReadyAt + sim.rng.normal(0, 0.04), 0.02, 0.4);
     void a;
   }
 

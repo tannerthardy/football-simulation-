@@ -3,6 +3,7 @@ dist/
 out/
 data/raw/
 .venv-kaggle/
+.venv-movement/
 *.log
 !data/reviews/**/*.log
 .DS_Store

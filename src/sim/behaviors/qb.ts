@@ -23,6 +23,7 @@ import type { DropType, PassConcept, ReceiverRef } from '../../playbook/types.js
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
+import { handoffReach } from '../ball-transfer.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
@@ -608,9 +609,12 @@ export class QBHandoff implements Behavior {
     const rb = this.rb;
     if (rb && sim.t >= this.meshTime - 0.15) {
       const d = Math.hypot(rb.pos.x - a.pos.x, rb.pos.y - a.pos.y);
-      if (d <= this.pitchRange || sim.t > this.meshTime + 0.9) {
-        this.handed = true;
-        sim.handoff(a, rb);
+      if (this.pitchRange > handoffReach(a, rb) && d <= this.pitchRange) {
+        this.handed = sim.pitchBall(a, rb);
+        return stand();
+      }
+      if (d <= handoffReach(a, rb)) {
+        this.handed = sim.handoff(a, rb);
         return stand();
       }
     }

@@ -14,7 +14,7 @@
  */
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import type { MoveCommand } from '../../physics/kinematics.js';
+import { cornerSpeed, type MoveCommand } from '../../physics/kinematics.js';
 import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
@@ -202,6 +202,7 @@ export class PassProtector implements Behavior {
     const home = this.coord.homeY.get(a) ?? a.pos.y;
     const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
     a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
+    if (sim.t < a.mind.snapDelay) return stand(0);
     if (a.engagement) return stand();
     if (sim.carrier !== sim.qb || !sim.isPass) {
       return stand();
@@ -666,7 +667,9 @@ export class RunBlocker implements Behavior {
         if (this.pullIdx === 1 && sim.offense.some((o) => o !== a && isOL(o) && Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) < 1.2 && o.pos.x > a.pos.x)) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
-        return goTo(a, path, { speed: 0.95, through: a.profile.vmax * 0.65 });
+        const next = plan.pullPath[this.pullIdx+1];
+        const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
+        return goTo(a, path, { speed: 0.95, through });
       }
     }
     if (!target) {
@@ -714,6 +717,14 @@ export class RunBlocker implements Behavior {
       aim = a.mind.aim('block-fit', { x: seen.pos.x + seen.vel.x * 0.25, y: seen.pos.y + seen.vel.y * 0.25 }, sim.t);
     }
     aim = { x: aim.x, y: clamp(aim.y + a.mind.placementError * (1 - 0.5 * a.r('runBlock')), 0.5, FIELD_WIDTH - 0.5) };
+    // A kick/trap is a fit on a moving shoulder, not a sprint through the
+    // defender's old spot. Match his lateral motion and brake the offset;
+    // ordinary drive blocks retain their downhill strike.
+    if (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')) {
+      const side = Math.sign(plan.drive.y) || 1;
+      const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
+      return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
+    }
     return runThrough(a, aim, { speed: 1 });
   }
 

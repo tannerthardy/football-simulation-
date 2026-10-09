@@ -63,6 +63,8 @@ describe('pass protection', () => {
 
   it('declares protection in order against Tite: edge, 4i, nose, 4i, edge', () => {
     const sim = dropback('gun_empty_11', 'tite', 'base34', 1);
+    // Observe the declaration after the linemen's known-count motor response.
+    sim.t = Math.max(...sim.offense.map(a => a.snapReadyAt));
     (sim as unknown as { tick(): void }).tick();
     const lt = sim.slot('LT')!;
     const pro = lt.behavior as unknown as { coord: { assigned: Map<Agent, Agent | null> } };

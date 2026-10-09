@@ -31,7 +31,7 @@ const KIND_LABEL: Record<PlayLog['kind'], string> = {
   run: 'Run', pass: 'Pass', punt: 'Punt', fg: 'Field goal', xp: 'Extra point', kickoff: 'Kickoff',
   kneel: 'Kneel', penalty: 'Penalty', two: 'Two-point try',
 };
-const SHOWN_EVENTS = new Set(['pressure', 'handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_log', 'block_climb', 'squeeze']);
+const SHOWN_EVENTS = new Set(['pressure', 'pitch', 'pitch_catch', 'handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_log', 'block_climb', 'squeeze']);
 const tenth = (v: number) => Math.round(v * 10);
 const r2 = (v: number) => Math.round(v * 100) / 100;
 
@@ -91,6 +91,7 @@ export function packReplayPlay(p: PlayLog, game: number) {
   return {
     ...base, flags: { ...base.flags, pressure: !p.nullified && stats.pressure2yd === true }, los: rp.los, fd: rp.firstDownX,
     roster: rp.players.map((a) => [a.team, a.slot, a.name, a.jersey]),
+    weights: rp.players.map(a => a.weightLb ?? null),
     stats,
     ev: rp.events.filter((e) => SHOWN_EVENTS.has(e.type)).map((e) => [r2(e.t), e.type]),
     frames: {

@@ -59,7 +59,7 @@ export interface PlayLog {
   /** Recorded frames (only when requested) + roster for the replay viewer. */
   replay?: {
     frames: Frame[];
-    players: Array<{ team: 'O' | 'D'; slot: string; name: string; jersey: number; pos: string }>;
+    players: Array<{ team: 'O' | 'D'; slot: string; name: string; jersey: number; pos: string; weightLb?: number }>;
     los: number;
     firstDownX: number;
     flip: boolean;
@@ -595,7 +595,7 @@ export class Game {
     if (this.opts.record && r.frames) {
       logEntry.replay = {
         frames: r.frames,
-        players: sim.agents.map((a) => ({ team: a.team, slot: a.slot, name: a.name, jersey: a.player.jersey, pos: a.player.position })),
+        players: sim.agents.map((a) => ({ team: a.team, slot: a.slot, name: a.name, jersey: a.player.jersey, pos: a.player.position, weightLb: a.player.measurables.weightLb })),
         los,
         firstDownX,
         flip: offSide === 'away',

@@ -198,12 +198,18 @@
       "extractor": "scripts/data/bdb2027.py",
       "summary": "data/bdb2027-summary.json",
       "inputDirectory": "data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027",
-      "trackingScope": "Selected cohort trajectories, not all-22. All combine tracking counted; only 2023 game trajectories audited.",
+      "trackingScope": "Selected draft-cohort trajectories, not all-22. All combine drill trajectories and all three downloaded game seasons processed for descriptive movement; eligible game metrics use the documented pre-throw window.",
       "reviewedGameTrackingSeasons": [
-        2023
+        2023,
+        2024,
+        2025
       ],
       "review": "docs/reviews/bdb2027-data-review.md",
-      "reusePermission": "Kaggle authentication and applicable competition access/terms are required; a private repo does not automatically grant another user access."
+      "reusePermission": "Kaggle authentication and applicable competition access/terms are required; a private repo does not automatically grant another user access.",
+      "movementExtractor": "scripts/data/bdb2027_movement.py",
+      "movementSummary": "data/reviews/physics-world/nfl-movement/bdb2027-movement.json",
+      "movementReview": "docs/reviews/bdb2027-movement-transfer.md",
+      "movementStatus": "Descriptive observations only; no fitted engine constants or held-out accuracy claim."
     },
     {
       "id": "addbiomechanics-core-1.0",

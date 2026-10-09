@@ -152,6 +152,18 @@ def main():
             assert all(data['plays'][i]['concept']['family'] == 'gap' for i in indices())
             checks.append('Run-family filters retain only the selected schemes')
 
+            page.select_option('#inspect-player', '0')
+            page.wait_for_function('document.getElementById("player-motion").textContent.includes("mph")')
+            assert 'lb' in page.locator('#player-motion').inner_text()
+            assert 'player ticks = body facing' in page.locator('.result .foot').inner_text()
+            page.select_option('#inspect-player', '-1')
+            checks.append('Player inspection shows weight and recorded-path speed; facing ticks are labelled')
+
+            assert all(e[0] > 0 for i in filmed for e in data['plays'][i]['ev'] if e[1] == 'block_contact')
+            assert any(e[1] == 'pitch' for i in filmed for e in data['plays'][i]['ev'])
+            assert any(e[1] == 'pitch_catch' for i in filmed for e in data['plays'][i]['ev'])
+            checks.append('Physical block timing and separate pitch release/catch events appear in the film')
+
             page.fill('#search', 'NO_MATCH_FILM_314159')
             assert page.locator('.play').count() == 0
             assert page.locator('#watch').is_disabled() and page.locator('#playbtn').is_disabled()

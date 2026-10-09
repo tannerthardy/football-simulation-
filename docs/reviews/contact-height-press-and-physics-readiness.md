@@ -1,5 +1,9 @@
 # Contact height, bounded press hands and physics readiness
 
+Historical evidence. The [current handoff](snap-mesh-pull-and-nfl-movement.md)
+updates snap response, exchanges, puller approach, NFL utilization and the
+owner's ordered next priorities. Preserve the unresolved failures below.
+
 **Status: NOT READY.** Continue physics work on `claude/engine-priorities`.
 This follows `627964cc44f6c6829d04898ebd7a563b26dc12d7`; the measurements below
 identify the final engine source in `data/reviews/physics-world/contact-height/manifest.json`.

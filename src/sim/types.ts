@@ -5,6 +5,7 @@ import type { QBReadReport } from './qbmind.js';
 
 export type BallState =
   | { kind: 'held'; carrier: Agent }
+  | { kind: 'pitch'; flight: BallFlight; thrower: Agent; target: Agent; releaseT: number; intended: Vec3 }
   | {
       kind: 'air';
       flight: BallFlight;
@@ -33,6 +34,8 @@ export type PlayEventType =
   | 'tackle_wrap'
   | 'snap'
   | 'handoff'
+  | 'pitch'
+  | 'pitch_catch'
   | 'throw'
   | 'throwaway'
   | 'catch'
