@@ -13,6 +13,11 @@ Start with these shared project references:
   The owner's direction: physics only. Do not work on coverage, the play
   pool or pressure packages until the physics earns his explicit OK.
 
+- [Physics development and testing](docs/PHYSICS_DEVELOPMENT.md): **read
+  second.** The philosophy (skills are different ways of controlling the same
+  body; ratings map to control, never to outcome rolls), the five test layers
+  and when to run each, the change loop, and how much testing is too much.
+
 - [Grasp motion and readiness gates](docs/reviews/grasp-motion-and-readiness-gates.md):
   previous implementation and physical readiness ledger (its experimental
   grasp is superseded by the physics world). Default pile momentum
