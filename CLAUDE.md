@@ -78,6 +78,9 @@ Start with these shared project references:
   coverage, provenance, access instructions, and summary reproduction commands.
 - [Big Data Bowl 2027 review](docs/reviews/bdb2027-data-review.md): linked combine
   and game observations, missingness, selected-player tracking, and career labels.
+- [Visualizer plan](docs/VISUALIZER_PLAN.md): planned switchable views (assignments,
+  leverage, mind/QB, trench, contact, run game, pre-snap art) and the engine
+  telemetry they need. Plan only; not built.
 - [Design](docs/DESIGN.md) and [roadmap](docs/ROADMAP.md): project structure and
   existing implementation status.
 
