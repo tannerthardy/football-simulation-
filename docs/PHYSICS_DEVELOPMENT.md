@@ -142,22 +142,111 @@ fails for a correct change is a cost, not a safety net.
 
 ## 5. Tests worth adding next
 
-Keep this list short. Add each test together with the physics work it guards.
+Add each test together with the physics work it guards, not in bulk. The groups
+are ranked by value. Within a group, the first items matter most.
 
-1. **Same body, different control.** Two players with identical bodies, one
-   with good control (angle, hand timing, posture) and one with poor control,
-   in the approach tackle and in a block. The good controller should win more
-   often *only because of* the control inputs. This test checks the philosophy
-   directly. It is the most valuable missing test.
-2. **Contact height and leverage.** Once contact height exists, add
-   scenarios showing that the lower man, at equal mass and effort, gains
-   leverage, and that a high tackle on a big back can be broken.
-3. **Convergence gates.** Turn the substep convergence probe into a test with a
-   tolerance for each interaction. The redirect scenario does not yet converge
-   (closest approach 3.24 → 2.13 yd from 6 to 48 substeps).
-4. **Tracking bands.** Once DL get-off and yards before contact match NFL
-   tracking, add a loose band test so they cannot drift again. Do not add it
-   before they match: a test that locks in a wrong value is worse than none.
+Most of these share one shape: **paired runs**. Run the same setup twice with
+the same seed, and change exactly one thing, such as a control input, mass,
+speed or angle. Assert the *direction* of the difference, over a small sweep of
+a few cases rather than one point. Paired directional tests are cheap, have
+little noise, and survive correct tuning changes.
+
+### A. Skill is control (tests the philosophy directly)
+
+The same two bodies run each rep. Only the control inputs differ. The better
+controller should win more often, by a clear margin. Each should also stay
+inside the body's limits.
+
+1. **Tackle:** better approach angle, breakdown speed, hand timing and pad
+   level, against worse ones. Expect more tackles made, closer to the line of
+   contact, and fewer misses.
+2. **Block and anchor:** inside hand placement and a wide, low base, against
+   outside hands and a narrow, high base, when facing a bull rush. Expect less
+   ground given.
+3. **Pass-rush bend:** lean and hip angle on a speed rush around the same
+   tackle. Expect a tighter path to the quarterback's spot, and more falls
+   when the lean is overdone.
+4. **Carrier cut:** plant timing and lowering the hips before a cut, against
+   cutting tall. Expect more separation from the same pursuer.
+5. **Recovery:** after the same missed tackle, a better controller is back in
+   pursuit sooner.
+
+Also add the **ceiling check**. Run a maximally rated controller with
+randomized intents. It must never exceed the body's speed, acceleration,
+grip or force limits. This catches control code that bypasses the physics.
+
+### B. Physics cannot be cheated (cheap, exact, run every time)
+
+1. **Order independence:** shuffle the order of the bodies in the world and
+   get the same result, within float tolerance. Solver order bias is a classic
+   hidden asymmetry, such as offense always winning ties.
+2. **Determinism:** the same seed gives an identical play, tick for tick.
+3. **Random-intent fuzzing:** run random bodies, from very light to very heavy,
+   with random intents for a few hundred ticks. The contracts must hold:
+   momentum accounting, bounded overlap, finite state, no energy created.
+4. **Translation and swap invariance:** the same rep at a different yard line
+   gives the same result away from boundaries. Swapping which team is offense
+   in a symmetric rep swaps the result.
+5. **At-rest stability:** standing players and a settled pile stay still. No
+   creep, no jitter, and energy decays.
+
+### C. Physical scaling laws (paired, directional)
+
+1. **Mass:** a heavier carrier at the same speed carries further after first
+   contact. A heavier hitter displaces more.
+2. **Speed:** a faster hit moves more momentum. A faster carrier is harder to
+   stop with an arm.
+3. **Angle:** a head-on hit stops forward progress more than a glancing one at
+   the same speed. A hit from behind adds to the carrier's motion.
+4. **Grip location:** a wrap at the body holds a heavy back where an arm grab
+   at full reach slips (`grasp-world` covers part of this).
+5. **Leverage:** once contact height exists, the lower man wins at equal mass
+   and effort.
+
+### D. Multi-body football reps (scenario layer)
+
+Add these to the scenario pack as each mechanic becomes physical. Assert the
+contracts, mirror symmetry and one coarse direction each.
+
+1. **Double team:** two blockers move a tackle further than one, in the
+   combined direction. Splitting the double needs a real force or angle
+   advantage.
+2. **Gang tackle:** a second tackler stops forward progress sooner, and pile
+   momentum is fully accounted for.
+3. **Fall forward:** a carrier stopped upright still falls forward for a short
+   distance, from his own momentum.
+4. **Stiff arm:** a hand on the tackler's shoulder keeps distance and costs the
+   carrier some speed, through the same hand-joint physics blocks use.
+5. **Sideline:** a carrier hit near the sideline is carried out by momentum,
+   not by a rule.
+6. **Bull rush into the pocket:** depth over time against a set anchor, read
+   against NFL pocket-push tracking.
+
+### E. Real-world anchors (probes first, tests only after they match)
+
+1. **Free-runner forecast:** start from an NFL tracking frame and simulate one
+   second for players who are not in contact. Compare the predicted and actual
+   positions. This tests movement physics with no play calling involved. Keep
+   it as a probe because it needs raw data.
+2. **One-on-one open-field rates:** tackle, miss and broken-tackle rates, and
+   yards after contact, from the open-field lab, read against NFL rates.
+3. **Tracking bands:** speed and acceleration percentiles by position, DL
+   get-off, yards before contact. Add a loose band test only once the value
+   matches. A test that locks in a wrong value is worse than none.
+
+### Also: convergence gates
+
+Turn the substep convergence probe into a test with a tolerance for each
+interaction. The redirect scenario does not yet converge (closest approach
+3.24 → 2.13 yd from 6 to 48 substeps). Add its gate once it is fixed.
+
+### What not to add
+
+- Exact yards or win percentages for any rep.
+- Whole-game statistics as pass/fail tests.
+- A new test that repeats an existing contract with different numbers.
+- Tests for mechanics that do not exist yet. Write the test together with the
+  mechanic.
 
 ## 6. Quick reminders
 
