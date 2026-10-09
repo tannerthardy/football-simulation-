@@ -1,0 +1,164 @@
+/**
+ * Body-owned support: where a player's base is relative to his momentum.
+ *
+ * A compact linear-inverted-pendulum ("capture point") model. An athlete
+ * keeps his capture point — where he would have to plant to stop — inside
+ * the region his gait controls. `xi` is the deviation of the capture point
+ * from that controlled region, in yards:
+ *
+ *  - Accelerations his feet can follow (the calibrated free-movement
+ *    envelope) are planned and leave xi unchanged. The excess of an impact,
+ *    a load he was leaning on that disappears, or being carried faster than
+ *    his legs can step displaces it: Δxi = Δv_excess / ω0, ω0 = √(g / h_COM).
+ *  - Inside the base (ankle/hip strategy) a deviation decays. Beyond it,
+ *    gravity makes it diverge at ω0·(|xi| − base) while stepping pulls it
+ *    back at the recovery stepping speed. Past base + step/ω0 divergence wins
+ *    and he falls; the fall and getting up take physical time.
+ *  - A lower posture (pad level) lowers the COM. A larger ω0 turns the same
+ *    impulse into a smaller deviation. Leg wraps slow or stop the stepping.
+ *
+ * The state belongs to the body, not to a block or a tackle. It survives a
+ * blocker taking a new man, a rusher shedding into a tackle and a carrier
+ * spinning out of one grasp into another.
+ */
+import { G } from '../core/units.js';
+import { clamp, type Vec2 } from '../core/vec.js';
+import type { PhysicalProfile } from '../players/physical.js';
+
+export type SupportStateKind = 'up' | 'falling' | 'down' | 'rising';
+
+export interface Support {
+  /** Capture-point deviation from the controlled base, yd. */
+  xi: Vec2;
+  state: SupportStateKind;
+  /** World time the current state began. */
+  since: number;
+  /** Pad level, 0 upright … 1 as low as his flexibility allows. */
+  posture: number;
+  /** Committed lean: ground force beyond free movement, pushing into a load (kg·yd/s²). */
+  lean: Vec2;
+  /** Constraint force received last substep (kg·yd/s²). */
+  load: Vec2;
+  /** The load as the body senses it (filtered over ~40 ms): what a lean can push against. */
+  felt: Vec2;
+  /** 0–1 restriction of his stepping by a hold on the legs (set each substep). */
+  feetLock: number;
+  /** Velocity of whatever holds his feet. */
+  feetVel: Vec2;
+  /** Unit direction of a fall in progress. */
+  fall: Vec2;
+  /** Pad-level leverage against current contacts, + when he is the lower man. */
+  leverage: number;
+  /** Largest deviation fraction of the fall threshold reached (diagnostic). */
+  peak: number;
+  /** The feet's planned yaw rate last substep (contact spin is the difference). */
+  yaw?: number;
+  /** Seconds the deviation has been beyond the base (stepping reacts after a latency). */
+  out: number;
+  /** Why the current fall started (diagnostic). */
+  cause?: 'contact' | 'dive' | 'overspeed' | 'legs';
+  /** Body acceleration as the gait feels it (filtered), yd/s². */
+  accel?: Vec2;
+  /** Recent sources of deviation, decaying sums (diagnostic). */
+  causes?: { contact: number; legs: number; overspeed: number };
+}
+
+export interface SupportParams {
+  /** Upright centre-of-mass height, yd. */
+  comHeight: number;
+  /** Ankle/hip-strategy support radius in an athletic stance, yd. */
+  baseRadius: number;
+  /** Recovery stepping speed, yd/s. */
+  stepSpeed: number;
+  /** 0–1: how low he can get. */
+  bend: number;
+  /** Seconds to rise once stopped on the ground. */
+  getUp: number;
+  /** Yaw moment of inertia, kg·yd². */
+  yawInertia: number;
+  /** Turf traction limit on horizontal ground force, kg·yd/s². */
+  traction: number;
+  /** Leg drive at zero speed (strength, traction-capped), kg·yd/s². */
+  pushForce: number;
+  /** Arm push/hold capacity, kg·yd/s². */
+  armForce: number;
+}
+
+/** Cleat-turf traction coefficient for a sustained push (model assumption). */
+export const TURF_MU = 1.1;
+
+/** Derived on demand (cheap), so a scenario that edits a profile sees the change. */
+export function supportParams(p: PhysicalProfile): SupportParams {
+  const balance = p.balance ?? 0.5;
+  const traction = TURF_MU * p.massKg * G;
+  return {
+    comHeight: 0.55 * p.heightYd,
+    // Wider, heavier bases resist more before a step is needed.
+    baseRadius: 0.11 + 0.05 * balance + 0.04 * clamp((p.massKg - 90) / 60, 0, 1),
+    stepSpeed: p.stepSpeed ?? 3.2,
+    bend: p.bend ?? 0.5,
+    getUp: p.getUp ?? 0.9,
+    yawInertia: p.massKg * (0.5 * p.radius) ** 2,
+    traction,
+    pushForce: Math.min(p.power * G, traction),
+    armForce: 0.75 * p.power * G,
+  };
+}
+
+export function newSupport(posture = 0.2): Support {
+  return { xi: { x: 0, y: 0 }, state: 'up', since: -Infinity, posture, lean: { x: 0, y: 0 }, load: { x: 0, y: 0 }, felt: { x: 0, y: 0 },
+    feetLock: 0, feetVel: { x: 0, y: 0 }, fall: { x: 0, y: 0 }, leverage: 0, peak: 0, out: 0 };
+}
+
+/** COM height at a posture: low pad level drops it by up to a quarter for a flexible athlete. */
+export function comHeightAt(s: SupportParams, posture: number): number {
+  return s.comHeight * (1 - 0.25 * clamp(posture, 0, 1) * (0.4 + 0.6 * s.bend));
+}
+
+/** Pendulum rate ω0 = √(g/h), 1/s. */
+export function omega0(s: SupportParams, posture: number): number {
+  return Math.sqrt(G / comHeightAt(s, posture));
+}
+
+/** Support radius: a low, wide stance is a bigger base than a running stride. */
+export function baseRadiusAt(s: SupportParams, posture: number): number {
+  return s.baseRadius * (0.75 + 0.5 * clamp(posture, 0, 1));
+}
+
+/** Recovery stepping speed with legs held and fatigue. */
+export function recoverySpeed(s: SupportParams, feetLock: number, fatigue: number): number {
+  return s.stepSpeed * (1 - clamp(feetLock, 0, 1)) * fatigue;
+}
+
+/** Deviation beyond which gravity outruns stepping: the point of no return. */
+export function criticalDeviation(s: SupportParams, posture: number, feetLock: number, fatigue: number): number {
+  return baseRadiusAt(s, posture) + recoverySpeed(s, feetLock, fatigue) / omega0(s, posture);
+}
+
+/**
+ * Fraction of his ground force and footwork available for the intended
+ * movement. Recovering steps use the feet; a player near the point of no
+ * return can do little else. A player off his feet has nothing.
+ */
+export function availability(sup: Support, s: SupportParams, fatigue: number): number {
+  if (sup.state !== 'up') return 0;
+  const e = Math.hypot(sup.xi.x, sup.xi.y);
+  const rb = baseRadiusAt(s, sup.posture);
+  if (e <= rb) return 1;
+  const crit = criticalDeviation(s, sup.posture, sup.feetLock, fatigue);
+  if (crit <= rb + 1e-9) return 0.1;
+  return clamp(1 - ((e - rb) / (crit - rb)) ** 1.5, 0.1, 1);
+}
+
+/** Fraction of the fall threshold a deviation has reached (0 balanced, 1 falling). */
+export function deviationFraction(sup: Support, s: SupportParams, fatigue: number): number {
+  if (sup.state !== 'up') return 1;
+  const e = Math.hypot(sup.xi.x, sup.xi.y);
+  const crit = criticalDeviation(s, sup.posture, sup.feetLock, fatigue);
+  return clamp(e / Math.max(1e-6, crit), 0, 1);
+}
+
+/** Duration of an inverted-pendulum fall from the point of no return, s. */
+export function fallTime(s: SupportParams, posture: number): number {
+  return 0.4 * Math.sqrt(comHeightAt(s, posture) / 1.05);
+}

@@ -141,22 +141,50 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
     const incoming = -(seen.vel.x * ux + seen.vel.y * uy);
     const toward = Math.max(0,a.vel.x*ux+a.vel.y*uy);
     const contact = a.profile.radius+target.profile.radius+a.profile.reach*.65;
-    const breakDist = contact + toward*toward/(2*a.profile.brake) + Math.max(0,incoming)*.2;
+    // Break down early enough to slide onto his path: about half a second
+    // of his approach, plus the room to shed the defender's own speed.
+    const breakDist = contact + toward*toward/(2*a.profile.brake) + Math.max(0,incoming)*(.35+.25*tackle);
     // An oblique interceptor needs to run his angle. Squaring up early on
     // every closing carrier flattens that angle before he reaches the hip.
     if (incoming > 1.5 && incoming/Math.max(.1,Math.hypot(seen.vel.x,seen.vel.y)) > .7 && dist < breakDist) {
-      // Lateral component of the carrier's velocity relative to the line
-      // between us, plus a correction toward the leverage point (inside him).
-      const px = -uy;
-      const py = ux;
-      const lat = seen.vel.x * px + seen.vel.y * py;
-      const levY = seen.pos.y + leverage(a, seen.pos.y) * clamp((dist-contact)/4,0,.8);
-      const errLat = (seen.pos.x - a.pos.x) * px + (levY - a.pos.y) * py;
-      const mirror = lat * (0.7 + 0.3 * tackle) + errLat * (1.2 + 0.8 * a.r('pursuit'));
+      // Get the body onto his path, inside him, before he arrives: the
+      // tackle is a collision followed by a wrap, not a reach across a
+      // passing runner. The offset that matters is from his path, not from
+      // the line between us (he is always on that line).
+      const sp = Math.hypot(seen.vel.x, seen.vel.y) || 1;
+      const hx = seen.vel.x / sp, hy = seen.vel.y / sp;
+      const nx = -hy, ny = hx;
+      const rx = a.pos.x - seen.pos.x, ry = a.pos.y - seen.pos.y;
+      const ahead = Math.max(0.3, rx * hx + ry * hy);
+      const off = rx * nx + ry * ny;
       const approach = Math.max(0,Math.sqrt((2.5+2*(1-tackle))**2+2*a.profile.brake*Math.max(0,dist-contact))-incoming);
-      const vx = ux * approach + -uy * mirror;
-      const vy = uy * approach + ux * mirror;
+      const meet = ahead / Math.max(1, sp + approach);
+      const lev = leverage(a, seen.pos.y) * clamp((dist-contact)/4,0,.8) * ny;
+      const lateralMax = a.profile.lateral * 0.6 + 2;
+      const vn = clamp((lev - off) / Math.max(0.2, meet) * (0.8 + 0.4 * a.r('pursuit')), -lateralMax, lateralMax);
+      const vx = -hx * approach + nx * vn;
+      const vy = -hy * approach + ny * vn;
       return { vel: { x: vx, y: vy }, facing: Math.atan2(uy, ux), cutSkill: 0.8 + 0.4 * tackle };
+    }
+  }
+  // The last yards: come to balance on his near hip. Match his motion and
+  // close at a speed the arms can finish; a tackler who sprints through a
+  // passing runner reaches at him with nothing to wrap.
+  if (dist > 0.3) {
+    const rvx = seen.vel.x - a.vel.x, rvy = seen.vel.y - a.vel.y;
+    const rel = Math.hypot(rvx, rvy);
+    const contact = a.profile.radius + target.profile.radius + a.profile.reach * 0.45;
+    const control = contact + 0.6 + 0.15 * rel;
+    if (dist < control) {
+      const ux = (seen.pos.x - a.pos.x) / dist, uy = (seen.pos.y - a.pos.y) / dist;
+      const close = clamp((dist - contact * 0.5) * 3, 2.0, 2.5 + 2 * tackle);
+      // Lead the perceived runner by the look's age so the chase does not trail him.
+      let vx = seen.vel.x + ux * close, vy = seen.vel.y + uy * close;
+      const sp = Math.hypot(vx, vy), cap = a.profile.vmax;
+      if (sp > cap) { vx *= cap / sp; vy *= cap / sp; }
+      // Run facing the way he travels; square the shoulders only for the strike.
+      const square = dist < contact + 0.35 ? Math.atan2(uy, ux) : undefined;
+      return { vel: { x: vx, y: vy }, facing: square, cutSkill: 0.85 + 0.35 * tackle, push: 1, posture: 0.55 } as MoveCommand;
     }
   }
   const p = pursuitPoint(sim, a, target, horizon);

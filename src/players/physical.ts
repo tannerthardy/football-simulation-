@@ -39,6 +39,19 @@ export interface PhysicalProfile {
   reactionTime: number;
   /** Functional push force in "body-weight-g" units, used by engagements. */
   power: number;
+  /**
+   * Support and contact capacities (see physics/support.ts). Optional so a
+   * hand-built test profile still works; the support model derives
+   * conservative fallbacks from mass, height and power when they are absent.
+   */
+  /** 0–1 balance rating: base width and stepping recovery. */
+  balance?: number;
+  /** 0–1 ability to play low (ankle/hip flexibility from agility drills). */
+  bend?: number;
+  /** Recovery stepping speed, yd/s: how fast the feet can be re-placed under a displaced body. */
+  stepSpeed?: number;
+  /** Seconds to get up once on the ground and stopped. */
+  getUp?: number;
 }
 
 export interface SprintParams {
@@ -141,6 +154,15 @@ export function derivePhysical(p: Player): PhysicalProfile {
   const strength = r01(0.7 * r.strength + 0.3 * clamp(m.bench * 2.4, 1, 100));
   const power = massKg * (0.55 + 0.75 * strength);
 
+  // Support: change-of-direction drills measure how quickly the feet can be
+  // re-placed; the balance rating covers what drills do not (base width,
+  // body control). Heavier bodies step and rise more slowly. These are model
+  // mappings, not measured recovery times.
+  const agility = clamp(0.5 * coneScore + 0.5 * shuttleScore, 0, 1);
+  const bend = clamp(0.5 * coneScore + 0.3 * shuttleScore + 0.2 * balance - (m.heightIn - 74) * 0.02, 0, 1);
+  const stepSpeed = clamp(2.6 + 1.4 * agility + 0.6 * balance - 0.004 * (m.weightLb - 200), 2.3, 4.8);
+  const getUp = clamp(0.75 + 0.35 * (1 - agility) + 0.0015 * (m.weightLb - 200), 0.6, 1.4);
+
   return {
     vmax,
     tau,
@@ -157,5 +179,9 @@ export function derivePhysical(p: Player): PhysicalProfile {
     reactReach,
     reactionTime,
     power,
+    balance,
+    bend,
+    stepSpeed,
+    getUp,
   };
 }
