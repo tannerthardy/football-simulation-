@@ -1,9 +1,10 @@
 # Physics development and testing
 
 Current evidence and ordered work are in
-[snap, mesh, puller approach and NFL movement](reviews/snap-mesh-pull-and-nfl-movement.md).
-Physics is still NOT READY. Integrate the acquired NFL movement data, then:
-active force/work accounting; the specific QB/rusher hand-fight fall reversal;
+[shared actuation and physics transfer](reviews/shared-actuation-and-physics-transfer.md).
+Physics is still NOT READY. Shared active force limits and planar kinetic-work
+accounting are implemented; physical magnitudes and reduced support energy
+remain unvalidated. Next: the specific coupled QB/rusher hand/grasp fall disagreement;
 initial run contact through get-off, OL response advantage, posture and doubles;
 achievable tackle approach. Fix the local convergence failure before raising
 resolution globally. These are work priorities, not additional tests to write
@@ -11,7 +12,7 @@ before their mechanics exist.
 
 A short guide for agents working on the physics. It covers how to think about
 the physics, what the test suite is, how to make a change, and how much testing
-is enough. For current status, evidence and the ranked work list, read
+is enough. For earlier contact-height/press evidence, read
 [contact-height-press-and-physics-readiness](reviews/contact-height-press-and-physics-readiness.md).
 The earlier [physics-world review](reviews/physics-world-and-readiness.md)
 explains the single-world architecture.

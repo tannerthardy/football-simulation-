@@ -278,6 +278,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // control, the hands meet in the middle.
   const reach = (c >= 0 ? tb.arm : td.arm) / 36;
   const hands = e.hands!;
+  hands.actor = c >= 0 ? b.body : d.body;
   hands.extension = sep + reach * 0.3 * (0.5 + 0.5 * Math.abs(c));
   hands.push = (c >= 0 ? armForce(b) : armForce(d)) * (0.35 + 0.65 * Math.abs(c));
   // Latched hands can hold and steer; a defender in control steers the

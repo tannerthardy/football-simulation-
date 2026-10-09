@@ -217,7 +217,7 @@ subject data or additional large archive was downloaded for this extraction.
 
 ### Film feedback and physics plan
 
-[The latest handoff](../docs/reviews/snap-mesh-pull-and-nfl-movement.md) and
+[The prior snap/mesh handoff](../docs/reviews/snap-mesh-pull-and-nfl-movement.md) and
 `reviews/physics-world/film-feedback/` preserve the five original film diagnoses,
 reproducible fixed setups, paired guards and current readiness limitations.
 After NFL integration, the ordered work is active work accounting, the specific
@@ -233,6 +233,28 @@ node --import tsx scripts/diag/hand-convergence.ts out/convergence.json
 Without `--reps`, the trace script recreates six full games to recover the named
 clips from the old source. Those IDs change when game behavior changes. Fixed
 setups omit scouting/audibles and should only be compared as isolated pairs.
+
+### Shared actuation and transfer
+
+[The current physics handoff](../docs/reviews/shared-actuation-and-physics-transfer.md)
+and `reviews/physics-world/shared-actuation/` contain the shared force/work
+model, five-task same-capability probe, paired guards, and the explicit
+convergence and run-contact regressions. Physics is NOT READY. The next task is
+the seed-3 hand/grasp/support fall disagreement, then initial run contact and
+tackle feasibility. Keep the global solver resolution unchanged while tracing.
+
+```sh
+node --import tsx scripts/diag/shared-capabilities.ts out/shared.json
+node --import tsx scripts/diag/hand-fight-trace.ts out/trace.json 3 1
+node --import tsx scripts/diag/hand-convergence.ts out/convergence.json
+python3 scripts/film-outcomes.py viewer/film-room.html --out out/film-outcomes.json
+```
+
+`owner-film-observations.json` pins the owner's earlier film IDs to their source
+version; regenerated games change those IDs' contents. The outcome audit uses
+all non-nullified run/pass clips, distinguishes success/explosive definitions
+and denominators, and reports pressure overlap without assigning causation.
+Other incompletions have no reliable mechanics/decision cause label yet.
 
 ## Run-game coordination evidence
 

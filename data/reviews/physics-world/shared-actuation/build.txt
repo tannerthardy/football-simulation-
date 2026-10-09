@@ -1,0 +1,2 @@
+> gridiron-engine@0.1.0 build
+> tsc -p tsconfig.json

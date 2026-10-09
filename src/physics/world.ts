@@ -35,6 +35,7 @@ import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
 import { availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
+import { ARM_SPEED, turnBody, workFraction } from './actuation.js';
 
 export interface Intent extends MoveCommand {
   /** 0–1 willingness to lean into a felt load with leg drive beyond free movement. */
@@ -59,6 +60,10 @@ export interface HandJoint {
   kind: 'hands';
   a: Body;
   b: Body;
+  /** Body supplying muscular work (default a); technique may give b control. */
+  actor?: Body;
+  /** Owner of a tensile hold (default a), distinct from who controls a shove. */
+  holder?: Body;
   /** Center distance the extended arms hold. */
   extension: number;
   /** Max compressive arm force, kg·yd/s². */
@@ -122,6 +127,17 @@ export interface StepReport {
   groundImpulse: Vec2[];
   /** Work of those external forces on each body, kg·yd²/s². */
   groundWork: number[];
+  groundYawImpulse: number[];
+  groundYawWork: number[];
+  /** Gross positive work delivered by each body's arms, bounded per tick. */
+  armWork: number[];
+  armWorkLimit: number[];
+  /** Scalar sum of hand/strike impulse magnitudes (one shared arm budget). */
+  armImpulse: number[];
+  armImpulseLimit: number[];
+  /** Signed planar kinetic work, including contact yaw. No vertical/pitch
+   * energy is represented by the reduced support model. */
+  work: { before: number; after: number; hands: number; grasps: number; strikes: number; contacts: number; residual: number };
   contacts: ContactRecord[];
   /** Bodies that started to fall, reached the ground, or got up this step. */
   falls: number[];
@@ -159,7 +175,6 @@ const PUSH_GROWTH = 0.25;
 const FEEL = 0.04;
 const LEAN_RISE = 0.04;
 const LEAN_DECAY = 0.15;
-const YAW_RESPONSE = 0.05;
 const POSTURE_RATE = 2.5;
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
@@ -226,6 +241,8 @@ interface JointRow {
   pushLim: number;
   holdLim: number;
   steerLim: number;
+  actor: number;
+  steerActor: number;
 }
 
 /** The gait's plan for one 20 Hz tick: locomotion force, facing and footing. */
@@ -274,6 +291,11 @@ export class World {
   private readonly cut: Float64Array;
   private readonly leanX: Float64Array;
   private readonly leanY: Float64Array;
+  private readonly armScale: Float64Array;
+  private readonly armCap: Float64Array;
+  private readonly active: Float64Array;
+  private report!: StepReport;
+  private tickDt = .05;
 
   constructor(bodies: Body[], opts: { substeps?: number } = {}) {
     this.bodies = bodies;
@@ -293,6 +315,7 @@ export class World {
     this.comHeight = f(); this.padHeight = f();
     this.v0x = f(); this.v0y = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f();
     this.leanX = f(); this.leanY = f();
+    this.armScale = f(); this.armCap = f(); this.active = f();
   }
 
   indexOf(b: Body): number {
@@ -305,7 +328,7 @@ export class World {
    * Internal: total momentum is unchanged.
    */
   strike(a: Body, b: Body, j: Vec2, height?: number): void {
-    if (this.indexOf(a) < 0 || this.indexOf(b) < 0) return;
+    if (this.indexOf(a) < 0 || this.indexOf(b) < 0 || a === b || !Number.isFinite(j.x + j.y)) return;
     this.pending.push({ a, b, x: j.x, y: j.y, height });
   }
 
@@ -327,8 +350,13 @@ export class World {
   step(intents: ReadonlyArray<Intent | null | undefined>, dt: number): StepReport {
     const bs = this.bodies, n = this.n;
     const report: StepReport = { substeps: 1, groundImpulse: bs.map(() => ({ x: 0, y: 0 })),
-      groundWork: new Array(n).fill(0), contacts: [], falls: [], downs: [], rises: [], maxPenetration: 0 };
-    this.joints = this.joints.filter((j) => !(j.kind === 'grasp' && j.broken) && this.indexOf(j.a) >= 0 && this.indexOf(j.b) >= 0 && j.a !== j.b);
+      groundWork: new Array(n).fill(0), groundYawImpulse: new Array(n).fill(0), groundYawWork: new Array(n).fill(0),
+      armWork: new Array(n).fill(0), armWorkLimit: new Array(n).fill(0), armImpulse: new Array(n).fill(0), armImpulseLimit: new Array(n).fill(0),
+      work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
+      contacts: [], falls: [], downs: [], rises: [], maxPenetration: 0 };
+    this.report = report; this.tickDt = dt;
+    this.joints = this.joints.filter((j) => !(j.kind === 'grasp' && j.broken) && this.indexOf(j.a) >= 0 && this.indexOf(j.b) >= 0 && j.a !== j.b
+      && (j.kind!=='hands'||(this.indexOf(j.actor??j.a)>=0&&this.indexOf(j.holder??j.a)>=0)));
     for (const j of this.joints) {
       if (j.kind === 'hands') { j.normalForce = 0; j.tangentForce = 0; }
       else j.force = 0;
@@ -343,6 +371,9 @@ export class World {
       b.vel = { x: b.vel.x, y: b.vel.y };
       this.fat[i] = fatigueFactor(b.energy);
       this.leanX[i] = 0; this.leanY[i] = 0;
+      this.armCap[i] = this.sp[i].armForce * this.fat[i] * (b.support!.state === 'up' ? 1 : .7);
+      report.armImpulseLimit[i] = this.armCap[i] * dt;
+      report.armWorkLimit[i] = this.armCap[i] * ARM_SPEED * dt;
     }
     // The gait plans at the controller rate, like stepBody: a free body
     // moves exactly as the calibrated integrator, at any substep count.
@@ -392,11 +423,62 @@ export class World {
       spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), dt);
     }
     report.contacts = [...pairs.values()];
+    this.pending = [];
     for (const j of this.joints) {
       if (j.kind === 'hands') { j.normalForce = (j.normalForce ?? 0) / dt; j.tangentForce = (j.tangentForce ?? 0) / dt; }
       else j.force = (j.force ?? 0) / dt;
     }
+    report.work.after = this.kineticEnergy();
+    report.work.residual = report.work.after-report.work.before
+      - report.groundWork.reduce((s,w)=>s+w,0)-report.groundYawWork.reduce((s,w)=>s+w,0)
+      - report.work.hands-report.work.grasps-report.work.strikes-report.work.contacts;
     return report;
+  }
+
+  /** Translational plus yaw kinetic energy; reduced support is not 3D energy. */
+  kineticEnergy(): number {
+    return this.bodies.reduce((s,b)=>s+.5*b.profile.massKg*(b.vel.x*b.vel.x+b.vel.y*b.vel.y)
+      +.5*supportParams(b.profile).yawInertia*(b.spin??0)**2,0);
+  }
+
+  private canStrike(a: Body,b: Body): boolean {
+    return a.support!.state==='up' && Math.hypot(a.pos.x-b.pos.x,a.pos.y-b.pos.y)<=a.profile.reach+b.profile.radius;
+  }
+
+  /** Requested actions share one scalar arm capacity, so duplicate joints
+   * or strike requests cannot multiply a body's force. Allocation uses
+   * requested vector magnitudes, independent of body/solver iteration order. */
+  private allocateArms(): void {
+    this.active.fill(0);
+    for (const jt of this.joints) {
+      if (jt.kind==='hands') {
+        const actor=this.indexOf(jt.actor??jt.a),holder=this.indexOf(jt.holder??jt.a);
+        this.active[actor]+=Math.hypot(Math.max(0,jt.push,actor===holder?jt.hold:0),Math.max(0,jt.steer));
+        if(actor!==holder)this.active[holder]+=Math.max(0,jt.hold);
+      }
+      else if (!jt.broken && jt.pull!>0) this.active[this.indexOf(jt.a)]+=this.armCap[this.indexOf(jt.a)];
+    }
+    for (const p of this.pending) if(this.canStrike(p.a,p.b)) this.active[this.indexOf(p.a)]+=Math.hypot(p.x,p.y)/this.tickDt;
+    for(let i=0;i<this.n;i++) this.armScale[i]=this.active[i]>0?Math.min(1,this.armCap[i]/this.active[i]):1;
+  }
+
+  /** Apply internal impulse and record its exact planar kinetic work.
+   * Passive constraints have zero positive-work allowance. Muscles share
+   * the owner's remaining tick budget; solver corrections cannot refill it. */
+  private pairImpulse(i: number,j: number,x: number,y: number,actor: number,
+    kind: 'hands'|'grasps'|'strikes', active=true): number {
+    const a=this.bodies[i],b=this.bodies[j];
+    const linear=(b.vel.x-a.vel.x)*x+(b.vel.y-a.vel.y)*y;
+    const quadratic=.5*(x*x+y*y)*(1/this.mass[i]+1/this.mass[j]);
+    const budget=active?Math.max(0,this.report.armWorkLimit[actor]-this.report.armWork[actor]):0;
+    const fraction=workFraction(linear,quadratic,budget);
+    x*=fraction;y*=fraction;
+    const work=linear*fraction+quadratic*fraction*fraction;
+    a.vel.x-=x/this.mass[i];a.vel.y-=y/this.mass[i];
+    b.vel.x+=x/this.mass[j];b.vel.y+=y/this.mass[j];
+    this.report.work[kind]+=work;
+    if(active)this.report.armWork[actor]+=Math.max(0,work);
+    return fraction;
   }
 
   private plan(b: Body, i: number, intent: Intent, dt: number): Plan {
@@ -429,6 +511,7 @@ export class World {
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
       bs[i].support!.feetLock = 0;
     }
+    this.allocateArms();
     // Holds on the legs restrict stepping for this substep.
     if (contact) for (const j of this.joints) {
       if (j.kind !== 'grasp' || j.broken || j.legs <= 0) continue;
@@ -449,15 +532,35 @@ export class World {
       this.padHeight[i] = padHeightAt(this.sp[i], bs[i].support!.posture);
     }
 
-    // Technique impulses land once, after the feet and before contact.
+    // Strikes develop over the controller tick, sharing arm force with all
+    // hand actions. A distant target cannot receive a remote shove.
     if (contact && this.pending.length) {
       for (const p of this.pending) {
         const ia = this.indexOf(p.a), ib = this.indexOf(p.b);
-        p.a.vel.x -= p.x / this.mass[ia]; p.a.vel.y -= p.y / this.mass[ia];
-        p.b.vel.x += p.x / this.mass[ib]; p.b.vel.y += p.y / this.mass[ib];
-        this.addLoad(ia, ib, 1, 0, p.x, p.y, p.height);
+        if (!this.canStrike(p.a,p.b)) continue;
+        const scale = this.armScale[ia] * h / this.tickDt;
+        const x = p.x*scale, y = p.y*scale;
+        const delivered = this.pairImpulse(ia,ib,x,y,ia,'strikes');
+        report.armImpulse[ia] += Math.hypot(x,y)*delivered;
+        this.addLoad(ia, ib, 1, 0, x*delivered, y*delivered, p.height);
       }
-      this.pending = [];
+    }
+    // Active reeling is distinct from passive grip. Arms apply a finite
+    // force; the passive joint never invents work to shorten its landmark.
+    if (contact) for (const jt of this.joints) {
+      if (jt.kind !== 'grasp' || jt.broken || !(jt.pull! > 0)) continue;
+      const i=this.indexOf(jt.a), j=this.indexOf(jt.b);
+      const dx=jt.b.pos.x-jt.a.pos.x,dy=jt.b.pos.y-jt.a.pos.y,d=Math.hypot(dx,dy);
+      const touch=CONTACT_SCALE*(jt.a.profile.radius+jt.b.profile.radius);
+      if (d <= touch || d>jt.reach || jt.a.support!.state!=='up') continue;
+      const nx=dx/d,ny=dy/d;
+      const vn=(jt.b.vel.x-jt.a.vel.x)*nx+(jt.b.vel.y-jt.a.vel.y)*ny;
+      const wanted=Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/(1/this.mass[i]+1/this.mass[j])/this.tickDt;
+      const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i])*h;
+      const fraction=this.pairImpulse(i,j,-nx*impulse,-ny*impulse,i,'grasps');
+      report.armImpulse[i]+=impulse*fraction;
+      this.addLoad(i,j,nx,ny,-impulse*fraction,0,jt.height);
+      jt.force=(jt.force??0)+impulse*fraction;
     }
 
     // ---- 2. constraints
@@ -483,6 +586,8 @@ export class World {
           : undefined);
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
         if (jt.kind === 'hands') {
+          if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(r.ln,r.lt);
+          else { report.armImpulse[r.actor]+=Math.abs(r.ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
           jt.normalForce = (jt.normalForce ?? 0) + r.ln;
           jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
         } else {
@@ -558,7 +663,7 @@ export class World {
       // A secure grip reels in: the arms shorten toward a wrap at their own
       // rate; the tension that does it is bounded by the same grip budget.
       const held = j.slipping ? Math.max(j.hold ?? d, d) : Math.min(j.hold ?? d, Math.max(d, touch));
-      j.hold = j.slipping ? held : Math.max(touch, held - (j.pull ?? 0) * h);
+      j.hold = held;
       // Arms dragged along a running body slide down it, to the thighs and
       // ankles: a slipping hold becomes a hold on his legs.
       if (j.slipping) j.legs += (1 - j.legs) * (1 - Math.exp(-h / LEG_SLIDE));
@@ -590,6 +695,7 @@ export class World {
     const p = b.profile;
     const sp = this.sp[i];
     const m = this.mass[i];
+    const spinBefore=b.spin??0;
     this.v0x[i] = b.vel.x; this.v0y[i] = b.vel.y;
     let fx = 0, fy = 0;
     if (sup.state === 'up') {
@@ -597,11 +703,11 @@ export class World {
         this.alpha[i] = 1; this.cut[i] = 1;
         b.facing += (b.spin ?? 0) * h;
       } else if (plan.dive) {
-        this.startFall(sup, plan.dive, 'dive', report, i);
-        // The launch: legs drive the body out along the dive.
-        const launch = Math.min(1.5, Math.max(0, p.vmax - Math.hypot(b.vel.x, b.vel.y))) * plan.launch * m / h;
+        // Finite launch force over the controller tick, independent of the
+        // contact subdivision. He leaves his feet at the end of that plant.
+        const launch = Math.min(sp.traction, Math.min(1.5, Math.max(0, p.vmax - Math.hypot(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
         fx += plan.dive.x * launch; fy += plan.dive.y * launch;
-        plan.dive = null; plan.free = true;
+        if (remaining<=h+1e-9) { this.startFall(sup, plan.dive, 'dive', report, i); plan.dive=null;plan.free=true; }
         this.alpha[i] = 0; this.cut[i] = 1;
       } else {
         const fat = this.fat[i];
@@ -612,16 +718,6 @@ export class World {
         // rather than granting a power bonus or standing him up by a heuristic.
         const target = clamp(intent.posture ?? DEFAULT_POSTURE, 0, 1) - 0.2 * (1 - b.energy);
         sup.posture = clamp(sup.posture + clamp(target - sup.posture, -POSTURE_RATE * h, POSTURE_RATE * h), 0, 1);
-        // Yaw: the feet follow the planned facing; a contact-induced spin
-        // is a disturbance they cancel at a bounded (traction) rate.
-        const tr = turnRateOf(b);
-        const yawAcc = tr / YAW_RESPONSE * (0.3 + 0.7 * a);
-        const motor = angleDiff(b.facing, plan.facing) / Math.max(h, remaining);
-        const dev = (b.spin ?? 0) - (sup.yaw ?? 0);
-        const settled = dev - clamp(dev, -yawAcc * h, yawAcc * h);
-        sup.yaw = motor;
-        b.spin = motor + settled;
-        b.facing += b.spin * h;
         // Locomotion: the tick's planned force, while he is still on his feet.
         let lx = plan.ax * m, ly = plan.ay * m;
         // A strike: the legs drive the body on beyond the gait, as hard as
@@ -682,7 +778,7 @@ export class World {
         // backpedal's share sideways or backward. Traction caps all of it.
         const tfx = lx + leanX, tfy = ly + leanY;
         const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, angleDiff(b.facing, Math.atan2(tfy, tfx))) : 1;
-        const cap = Math.max(Math.hypot(lx, ly), Math.min(sp.pushForce * 1.2 * along, sp.traction) * a);
+        const cap = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), sp.traction * a);
         let px = leanX, py = leanY;
         if (tfx * tfx + tfy * tfy > cap * cap) {
           const qa = px * px + py * py, qb = lx * px + ly * py, qc = lx * lx + ly * ly - cap * cap;
@@ -693,6 +789,7 @@ export class World {
         fx += lx + px; fy += ly + py;
         this.braceX[i] = px; this.braceY[i] = py;
         this.leanX[i] += px; this.leanY[i] += py;
+        turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,Math.hypot(fx,fy));
       }
     } else {
       this.alpha[i] = 0; this.cut[i] = 1;
@@ -704,9 +801,14 @@ export class World {
       const sv = Math.hypot(vx, vy);
       const stop = Math.min(sv, fr * G * h);
       if (sv > 1e-9) { fx -= vx / sv * stop * m / h; fy -= vy / sv * stop * m / h; }
-      b.spin = (b.spin ?? 0) * Math.exp(-h / 0.15);
+      const spin=b.spin??0;
+      b.spin = spin * Math.exp(-h / .15);
       b.facing += (b.spin ?? 0) * h;
     }
+    // Includes the small remaining spin removed when he finishes rising.
+    const spinAfter=b.spin??0;
+    report.groundYawImpulse[i]+=this.inertia[i]*(spinAfter-spinBefore);
+    report.groundYawWork[i]+=.5*this.inertia[i]*(spinAfter*spinAfter-spinBefore*spinBefore);
     const v0x = b.vel.x, v0y = b.vel.y;
     b.vel.x = v0x + fx / m * h;
     b.vel.y = v0y + fy / m * h;
@@ -917,6 +1019,7 @@ export class World {
     bv.x += tx * dt * imb; bv.y += ty * dt * imb;
     a.spin = (a.spin ?? 0) - c.ri * dt / this.inertia[c.i];
     b.spin = (b.spin ?? 0) - c.rj * dt / this.inertia[c.j];
+    this.report.work.contacts+=vn*dn+.5*dn*dn/c.mn+vt*dt+.5*dt*dt/c.mt;
   }
 
   private jointRows(h: number): JointRow[] {
@@ -929,14 +1032,16 @@ export class World {
       const dist = Math.hypot(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
       const row: JointRow = { joint: jt, i, j, nx, ny, mn: 1 / (1 / this.mass[i] + 1 / this.mass[j]),
-        mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0 };
+        mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0,actor: i,steerActor: i };
       if (jt.kind === 'hands') {
-        row.pushLim = Math.max(0, jt.push) * h;
-        row.holdLim = Math.max(0, jt.hold) * h;
-        row.steerLim = Math.max(0, jt.steer) * h;
+        row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
+        const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
+        row.pushLim = Math.max(0, jt.push) * h * scale;
+        row.holdLim = Math.max(0, jt.hold) * h * this.armScale[holder];
+        row.steerLim = Math.max(0, jt.steer) * h * scale;
         const c = dist - jt.extension;
         if (c < 0) { row.mode = 1; row.c = c; }
-        else if (c > HANDS_SLACK) { row.mode = -1; row.c = c - HANDS_SLACK; }
+        else if (c > HANDS_SLACK) { row.mode = -1; row.c = c - HANDS_SLACK;row.actor=holder; }
       } else {
         // The arms hold where they are; a holder off his feet keeps most of
         // his grip (he hangs on).
@@ -944,7 +1049,13 @@ export class World {
         jt.hold = hold;
         row.mode = -1;
         row.c = Math.max(0, dist - hold);
-        row.limit = jt.capacity * (a.support!.state === 'up' ? 1 : 0.7) * h;
+        // All holds from a holder share his strongest claimed structural
+        // grip, bounded by the existing full-wrap upper envelope (3.36 arms).
+        // Duplicate constraints cannot multiply his passive holding strength.
+        const holds=this.joints.filter((j):j is GraspJoint=>j.kind==='grasp'&&!j.broken&&j.a===a);
+        const total=holds.reduce((s,j)=>s+Math.max(0,j.capacity),0);
+        const structural=Math.min(3.36*this.sp[i].armForce,Math.max(0,...holds.map(j=>j.capacity)));
+        row.limit = Math.max(0,jt.capacity) * Math.min(1,structural/Math.max(1e-9,total)) * (a.support!.state === 'up' ? 1 : .7) * h;
       }
       rows.push(row);
     }
@@ -960,9 +1071,8 @@ export class World {
       const imp = -r.mn * soft.massScale * (vn + bias) - soft.impulseScale * r.ln;
       const ln = r.mode > 0 ? clamp(r.ln + imp, 0, r.pushLim) : clamp(r.ln + imp, -r.holdLim, 0);
       const dn = ln - r.ln;
-      r.ln = ln;
-      a.vel.x -= r.nx * dn * ima; a.vel.y -= r.ny * dn * ima;
-      b.vel.x += r.nx * dn * imb; b.vel.y += r.ny * dn * imb;
+      const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'hands');
+      r.ln+=dn*fraction;
     }
     if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);
   }
@@ -978,9 +1088,8 @@ export class World {
     const lim = r.limit;
     if (ln * ln + r.lt * r.lt > lim * lim) ln = Math.max(ln, -Math.sqrt(Math.max(0, lim * lim - r.lt * r.lt)));
     const dn = ln - r.ln;
-    r.ln = ln;
-    a.vel.x -= r.nx * dn * ima; a.vel.y -= r.ny * dn * ima;
-    b.vel.x += r.nx * dn * imb; b.vel.y += r.ny * dn * imb;
+    const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false);
+    r.ln+=dn*fraction;
     this.solveTangent(r, a, b, Math.sqrt(Math.max(0, lim * lim - r.ln * r.ln)));
   }
 
@@ -992,8 +1101,7 @@ export class World {
     const vt = (b.vel.x - a.vel.x) * tx + (b.vel.y - a.vel.y) * ty;
     const lt = clamp(r.lt - r.mn * vt, -lim, lim);
     const dt = lt - r.lt;
-    r.lt = lt;
-    a.vel.x -= tx * dt * ima; a.vel.y -= ty * dt * ima;
-    b.vel.x += tx * dt * imb; b.vel.y += ty * dt * imb;
+    const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,r.actor,r.joint.kind==='hands'?'hands':'grasps',false);
+    r.lt+=dt*fraction;
   }
 }

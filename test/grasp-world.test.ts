@@ -169,6 +169,9 @@ describe('strikes and drops', () => {
     w.step([{ vel: { x: 4, y: 0 }, dive: { x: 0.01, y: 0 } }, { vel: { x: 4, y: 0 }, dive: { x: 1, y: 0 } }], 0.05);
     expect(a.support!.state).toBe('falling'); expect(b.support!.state).toBe('falling');
     expect(a.vel.x).toBeLessThan(4.1);
-    expect(b.vel.x).toBeGreaterThan(a.vel.x + 1);
+    // The former >1 yd/s expectation required an unbounded one-substep
+    // impulse. Both launch and contact now obey finite ground traction.
+    expect(b.vel.x).toBeGreaterThan(a.vel.x + .5);
+    expect(b.vel.x-4).toBeLessThanOrEqual(supportParams(b.profile).traction/b.profile.massKg*.05+1e-9);
   });
 });

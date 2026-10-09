@@ -1,5 +1,9 @@
 # Snap response, reachable exchanges, puller approach and NFL movement
 
+This is the `aa5fcde` snapshot. Current implementation, evidence and priorities
+are in [shared actuation and physics transfer](shared-actuation-and-physics-transfer.md).
+The film IDs and artifact hashes below describe the earlier film.
+
 **Status: NOT READY.** Physics remains first on `claude/engine-priorities`.
 This follows `3a5d86b`. Do not push to or merge PR #1 without owner approval.
 The engine remains planar bodies with reduced support/contact height, not

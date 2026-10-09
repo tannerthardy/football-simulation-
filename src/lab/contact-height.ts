@@ -1,5 +1,5 @@
 /** Controlled contact-height probes. No play calling or outcome calibration.
- * A prescribed technique impulse isolates angular support from translation;
+ * A reachable, bounded hand-force pulse isolates angular support from translation;
  * it is an active stimulus, not a claim that passive contact supplies energy. */
 import type { Vec2 } from '../core/vec.js';
 import type { PhysicalProfile } from '../players/physical.js';
@@ -17,10 +17,10 @@ function body(mass: number, pos: Vec2, facing = 0, posture = 0.2): Body {
 export function heightPulse({ offset, substeps = 12, angle = 0, side = 1 }:
   { offset: number; substeps?: number; angle?: number; side?: number }) {
   const direction = { x: Math.cos(angle), y: side * Math.sin(angle) };
-  const a = body(100, { x: -3 * direction.x, y: -3 * direction.y }), b = body(100, { x: 0, y: 0 });
+  const a = body(100, { x: -direction.x, y: -direction.y }), b = body(100, { x: 0, y: 0 });
   const world = new World([a, b], { substeps });
   const height = comHeightAt(supportParams(b.profile), b.support!.posture) + offset;
-  world.strike(a, b, { x: 80 * direction.x, y: 80 * direction.y }, height);
+  world.strike(a, b, { x: 40 * direction.x, y: 40 * direction.y }, height);
   const passive: Intent = { vel: { x: 0, y: 0 }, free: true };
   let momentumError = 0;
   for (let k = 0; k < 4; k++) {

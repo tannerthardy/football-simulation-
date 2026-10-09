@@ -2,8 +2,19 @@
 
 Start with these shared project references:
 
+- [Shared actuation and physics transfer](docs/reviews/shared-actuation-and-physics-transfer.md):
+  **read first.** One arm-force/work allowance across hand actions; finite
+  reachable strikes/reels and traction-bounded turning; planar kinetic ledger.
+  Five tasks use the same body capabilities without scenario strength boosts.
+  Physics remains NOT READY: real-technique convergence regresses (two fall
+  disagreements), run stuffs and passing explosiveness remain high. Trace the
+  seed-3 wrap/support transition locally before raising global resolution,
+  then initial run contact and feasible tackle approach. Source-pinned owner
+  film observations and success/explosive/incompletion audits are preserved.
+  No coverage/QB expansion or PR #1 changes.
+
 - [Snap, mesh, puller approach and NFL movement](docs/reviews/snap-mesh-pull-and-nfl-movement.md):
-  **read first.** Reachable exchanges, airborne pitches, consistent snap motor
+  previous implementation/evidence. Reachable exchanges, airborne pitches, consistent snap motor
   response and actual block-contact events; paired film/football evidence and
   remaining regressions. All available BDB2027 seasons and combine drills now
   have movement summaries. Physics remains NOT READY. After NFL integration:

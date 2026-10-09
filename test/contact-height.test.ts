@@ -5,7 +5,7 @@ describe('contact height and supported moments', () => {
   it('changes pitch direction with height while keeping the same pair impulse', () => {
     const low = heightPulse({ offset: -0.3 }), center = heightPulse({ offset: 0 }), high = heightPulse({ offset: 0.3 });
     for (const r of [low, center, high]) {
-      expect(r.velocity).toBeCloseTo(0.8, 10);
+      expect(r.velocity).toBeCloseTo(0.4, 10);
       expect(r.momentumError).toBeLessThan(1e-9);
       expect(r.state).toBe('up');
     }
