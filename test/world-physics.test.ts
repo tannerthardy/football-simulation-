@@ -313,14 +313,27 @@ describe('angular response', () => {
     const a = body(100, 0, 0, 0, 0, 0), b = body(100, 0.35, 0.45, -1, -7, -Math.PI / 2);
     const w = new World([a, b]);
     w.step([{ vel: { x: 0, y: 0 }, facing: 0 }, FREE], 0.05);
+    // Inelastic contact: friction acts with the impulse that stopped the
+    // approach, a modest but real twist.
     const turned = Math.abs(a.facing);
-    expect(turned).toBeGreaterThan(0.02);
+    expect(turned).toBeGreaterThan(0.005);
     for (let k = 0; k < 20; k++) w.step([{ vel: { x: 0, y: 0 }, facing: 0 }, FREE], 0.05);
     expect(Math.abs(a.facing)).toBeLessThan(turned);
   });
 });
 
 describe('temporal stability', () => {
+  it('a hit is inelastic: the same momentum changes hands at any substep count', () => {
+    const dv = (n: number) => {
+      const a = body(80, 0, 0, 6, 0), b = body(105, 0, 2.25, 6, -6, -Math.PI / 2);
+      const w = new World([a, b], { substeps: n });
+      for (let k = 0; k < 12; k++) w.step([FREE, FREE], 0.05);
+      return -a.vel.y;
+    };
+    // Perfectly inelastic sideways hit: 105/(80+105) of the 6 yd/s closing.
+    for (const n of [6, 12, 48]) expect(dv(n)).toBeCloseTo((105 / 185) * 6, 3);
+  });
+
   const scene = (substeps: number, speed: number) => {
     const a = body(110, 0, 0, speed, 0), b = body(95, 1.6, 0.25, -speed / 2, 0, Math.PI), c = body(120, 1.2, -1.4, 0, 3);
     const w = new World([a, b, c], { substeps });

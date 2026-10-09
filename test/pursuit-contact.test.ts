@@ -124,9 +124,13 @@ describe('physical tackle contact',()=>{
     const mass=c.profile.massKg+d.profile.massKg;
     const centre=()=>(c.pos.x*c.profile.massKg+d.pos.x*d.profile.massKg)/mass;
     for(let k=0;k<4;k++){
-      const gap=c.pos.x-d.pos.x,old=centre(),v=totals([c,d]).x/mass;
-      stepFree(sim);
-      expect(centre()-old).toBeCloseTo(v*sim.dt,6);
+      const gap=c.pos.x-d.pos.x,old=centre(),p0=totals([c,d]).x;
+      sim.world.time=sim.t;const r=sim.world.step(sim.agents.map(()=>FREE),sim.dt);sim.t+=sim.dt;
+      // Only the ground changes the pile's momentum (a body that falls slides
+      // on it); the centre advects with that momentum.
+      const g=r.groundImpulse[c.idx].x+r.groundImpulse[d.idx].x;
+      expect(totals([c,d]).x-p0).toBeCloseTo(g,6);
+      expect(centre()-old).toBeCloseTo((p0+0.5*g)/mass*sim.dt,2);
       expect(gap-(c.pos.x-d.pos.x)).toBeLessThanOrEqual(pull*sim.dt+1e-6);
     }
   });

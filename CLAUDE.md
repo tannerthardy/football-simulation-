@@ -2,8 +2,20 @@
 
 Start with these shared project references:
 
+- [Physics world and readiness](docs/reviews/physics-world-and-readiness.md):
+  **read first.** Every body now moves through one physics world
+  (src/physics/world.ts) with body-owned balance (src/physics/support.ts).
+  Tackles run on grasp joints and blocks on hand joints. Collisions are
+  inelastic. A readiness scenario pack covers the six owner interactions
+  (src/lab/scenarios.ts). The doc has the evidence, gate status, ranked next
+  physics work, and how to test it.
+  Status is NOT READY. Contracts pass; football transfer does not.
+  The owner's direction: physics only. Do not work on coverage, the play
+  pool or pressure packages until the physics earns his explicit OK.
+
 - [Grasp motion and readiness gates](docs/reviews/grasp-motion-and-readiness-gates.md):
-  latest implementation and physical readiness ledger. Default pile momentum
+  previous implementation and physical readiness ledger (its experimental
+  grasp is superseded by the physics world). Default pile momentum
   and geometry bookkeeping are repaired; bounded grasps are explicitly
   experimental and fail football transfer. Read the run regressions too.
   The owner wants an explicit OK when the physics is very good; current status

@@ -139,6 +139,8 @@ const SUBSTEP_TRAVEL = 0.06;
 const MIN_SUBSTEPS = 6;
 const MAX_SUBSTEPS = 16;
 const ITERATIONS = 8;
+/** Velocity-only iterations after the position update (see Relax). */
+const RELAX_ITERATIONS = 4;
 const HANDS_HZ = 5;
 const HANDS_ZETA = 0.7;
 const HANDS_SLACK = 0.06;
@@ -169,6 +171,7 @@ const GAIT_LAG = 0.04;
 const STEP_LATENCY = 0.12;
 
 const STAND: Intent = { vel: { x: 0, y: 0 } };
+const RIGID = { biasRate: 0, massScale: 1, impulseScale: 0 };
 
 interface Softness { biasRate: number; massScale: number; impulseScale: number }
 
@@ -185,6 +188,8 @@ interface Contact {
   j: number;
   nx: number;
   ny: number;
+  /** Touch distance along the normal, yd. */
+  R: number;
   ri: number;
   rj: number;
   mn: number;
@@ -194,6 +199,8 @@ interface Contact {
   ln: number;
   lt: number;
   closing: number;
+  /** The compliant solve pressed them together (before the relax). */
+  touched?: boolean;
 }
 
 interface JointRow {
@@ -436,9 +443,10 @@ export class World {
     }
 
     // ---- 2. constraints
+    let contacts: Contact[] = [];
     if (contact) {
       const soft = softness(CONTACT_HZ, CONTACT_ZETA, h);
-      const contacts = this.detect(ids, h, soft, report);
+      contacts = this.detect(ids, h, soft, report);
       const rows = this.jointRows(h);
       const handSoft = softness(HANDS_HZ, HANDS_ZETA, h);
       const graspSoft = softness(GRASP_HZ, GRASP_ZETA, h);
@@ -449,16 +457,7 @@ export class World {
           else this.solveGrasp(r, graspSoft);
         }
       }
-      // Loads felt for the next substep's lean, and joint outputs.
-      for (const c of contacts) {
-        this.addLoad(c.i, c.j, c.nx, c.ny, c.ln, c.lt);
-        if (c.ln > 0) {
-          const key = c.i * 1024 + c.j;
-          const rec = pairs.get(key);
-          if (rec) { rec.impulse += c.ln; rec.closing = Math.max(rec.closing, c.closing); }
-          else pairs.set(key, { i: c.i, j: c.j, impulse: c.ln, closing: c.closing });
-        }
-      }
+      // Joint outputs and the loads they put on each body.
       for (const i of ids) { this.tripX[i] = 0; this.tripY[i] = 0; }
       for (const r of rows) {
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt);
@@ -485,12 +484,41 @@ export class World {
     } else for (const i of ids) { this.tripX[i] = 0; this.tripY[i] = 0; }
 
     // ---- 3. integrate positions (trapezoidal in the ground force)
-    const kf = 1 - Math.exp(-h / FEEL);
     for (const i of ids) {
       const b = bs[i];
       b.pos.x += (b.vel.x - 0.5 * this.amx[i] * h) * h;
       b.pos.y += (b.vel.y - 0.5 * this.amy[i] * h) * h;
-      const sup = b.support!;
+    }
+    // Relax: the soft contact has already moved overlapping torsos apart;
+    // now take back the velocity that correction left behind. Bodies do not
+    // bounce off each other, and pushing out an overlap adds no energy, so
+    // a hit transfers the same momentum at any substep.
+    if (contacts.length) {
+      for (const c of contacts) c.touched = c.ln > 0;
+      for (let it = 0; it < RELAX_ITERATIONS; it++) {
+        for (const c of contacts) {
+          // A pair the correction left apart may still close that gap within
+          // a substep (speculative), never more.
+          const a = bs[c.i], b = bs[c.j];
+          const gap = Math.hypot(b.pos.x - a.pos.x, b.pos.y - a.pos.y) - c.R;
+          c.bias = gap > 0 ? gap / h : 0;
+          this.solveContact(c, RIGID, true);
+        }
+      }
+      for (const c of contacts) {
+        this.addLoad(c.i, c.j, c.nx, c.ny, c.ln, c.lt);
+        if (c.ln > 0 || c.touched) {
+          const key = c.i * 1024 + c.j;
+          const rec = pairs.get(key);
+          if (rec) { rec.impulse += c.ln; rec.closing = Math.max(rec.closing, c.closing); }
+          else pairs.set(key, { i: c.i, j: c.j, impulse: c.ln, closing: c.closing });
+        }
+      }
+    }
+    // Loads felt for the next substep's lean.
+    const kf = 1 - Math.exp(-h / FEEL);
+    for (const i of ids) {
+      const sup = bs[i].support!;
       const lx = this.impX[i] / h, ly = this.impY[i] / h;
       sup.load = { x: lx, y: ly };
       sup.felt = { x: sup.felt.x + (lx - sup.felt.x) * kf, y: sup.felt.y + (ly - sup.felt.y) * kf };
@@ -685,32 +713,41 @@ export class World {
     const lock = sup.feetLock;
     const causes = (sup.causes ??= { contact: 0, legs: 0, overspeed: 0 });
     // Joints and muscles smooth an impulse before the base must answer it:
-    // the gait responds to the body's acceleration over ~40 ms.
+    // the gait responds to the body's acceleration over ~40 ms. The filter
+    // is integrated exactly over the substep (the step's acceleration is
+    // constant within it), so the response does not depend on the step.
     const kg = 1 - Math.exp(-h / GAIT_LAG);
     const acc = sup.accel ?? { x: 0, y: 0 };
-    const ax = acc.x + ((b.vel.x - this.v0x[i]) / h - acc.x) * kg, ay = acc.y + ((b.vel.y - this.v0y[i]) / h - acc.y) * kg;
+    const ux = (b.vel.x - this.v0x[i]) / h, uy = (b.vel.y - this.v0y[i]) / h;
+    const ax = acc.x + (ux - acc.x) * kg, ay = acc.y + (uy - acc.y) * kg;
     sup.accel = { x: ax, y: ay };
+    const mean = GAIT_LAG / h * kg;
+    const mx = ux + (acc.x - ux) * mean, my = uy + (acc.y - uy) * mean;
     // Accelerations the feet can follow are planned; the rest displaces support.
-    const f = followAccel(b, { x: ax, y: ay }, this.cut[i], Math.max(this.alpha[i], 0.1) * (1 - lock) * FOLLOW_MARGIN);
-    let xx = sup.xi.x + (ax - f.x) * h / w0;
-    let xy = sup.xi.y + (ay - f.y) * h / w0;
+    const f = followAccel(b, { x: mx, y: my }, this.cut[i], Math.max(this.alpha[i], 0.1) * (1 - lock) * FOLLOW_MARGIN);
+    let dx = (mx - f.x) * h / w0;
+    let dy = (my - f.y) * h / w0;
     // A hold on his legs pitches him over the held base, and a held foot
     // cannot be placed under him: it moves with whoever holds it, and his
     // body runs on past it.
-    xx += this.tripX[i] / w0 + lock * (b.vel.x - sup.feetVel.x) * h;
-    xy += this.tripY[i] / w0 + lock * (b.vel.y - sup.feetVel.y) * h;
+    const legX = this.tripX[i] / w0 + lock * (b.vel.x - sup.feetVel.x) * h;
+    const legY = this.tripY[i] / w0 + lock * (b.vel.y - sup.feetVel.y) * h;
+    dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).
     const decay = Math.exp(-h / 0.3);
-    causes.contact = causes.contact * decay + Math.hypot(ax - f.x, ay - f.y) * h / w0;
-    causes.legs = causes.legs * decay + Math.hypot(this.tripX[i] / w0 + lock * (b.vel.x - sup.feetVel.x) * h, this.tripY[i] / w0 + lock * (b.vel.y - sup.feetVel.y) * h);
+    causes.contact = causes.contact * decay + Math.hypot(mx - f.x, my - f.y) * h / w0;
+    causes.legs = causes.legs * decay + Math.hypot(legX, legY);
     causes.overspeed *= decay;
     // Carried faster than his legs can run.
     const speed = Math.hypot(b.vel.x, b.vel.y);
     const vcap = b.profile.vmax * fat * 1.05;
     if (speed > vcap) {
-      xx += b.vel.x / speed * (speed - vcap) * h; xy += b.vel.y / speed * (speed - vcap) * h;
+      dx += b.vel.x / speed * (speed - vcap) * h; dy += b.vel.y / speed * (speed - vcap) * h;
       causes.overspeed += (speed - vcap) * h;
     }
+    // What displaced him arrived through the substep: on average it has half
+    // the substep to grow or be recovered.
+    let xx = sup.xi.x + 0.5 * dx, xy = sup.xi.y + 0.5 * dy;
     let e = Math.hypot(xx, xy);
     const rb = baseRadiusAt(sp, sup.posture);
     const rec = recoverySpeed(sp, lock, fat);
@@ -718,11 +755,17 @@ export class World {
     // gravity alone acts on a deviation beyond the base.
     sup.out = e > rb ? sup.out + h : 0;
     const stepping = rec * clamp(sup.out / STEP_LATENCY, 0, 1);
+    // Inside the base the ankles and hips damp it; beyond it gravity makes it
+    // diverge while stepping pulls it back (exact for the substep).
     let next: number;
     if (e <= rb) next = e * Math.exp(-w0 * h);
-    else next = Math.max(rb, e + (w0 * (e - rb) - stepping) * h);
+    else {
+      const eq = stepping / w0;
+      next = Math.max(rb, rb + eq + (e - rb - eq) * Math.exp(w0 * h));
+    }
     if (e > 1e-12) { xx *= next / e; xy *= next / e; }
-    e = next;
+    xx += 0.5 * dx; xy += 0.5 * dy;
+    e = Math.hypot(xx, xy);
     sup.xi = { x: xx, y: xy };
     const crit = rb + rec / w0;
     sup.peak = Math.max(sup.peak, e / Math.max(1e-6, crit));
@@ -789,7 +832,7 @@ export class World {
         const ri = R * ra / rsum;
         const rj = R - ri;
         const vn = rvx * nx + rvy * ny;
-        out.push({ i, j, nx, ny, ri, rj, mn: 1 / (1 / ma + 1 / mb), mt: 1 / (1 / ma + 1 / mb + ri * ri / this.inertia[i] + rj * rj / this.inertia[j]),
+        out.push({ i, j, nx, ny, R, ri, rj, mn: 1 / (1 / ma + 1 / mb), mt: 1 / (1 / ma + 1 / mb + ri * ri / this.inertia[i] + rj * rj / this.inertia[j]),
           guard, bias: guard ? (s + GUARD_DEPTH) / h : Math.max(soft.biasRate * s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0 });
         // Pad level: the lower man gets under the other's pads.
         if (!guard) { const dh = (this.height[j] - this.height[i]) * LEVERAGE_GAIN; this.lev[i] += dh; this.lev[j] -= dh; }
@@ -805,12 +848,12 @@ export class World {
     return out;
   }
 
-  private solveContact(c: Contact, soft: Softness): void {
+  private solveContact(c: Contact, soft: Softness, relax = false): void {
     const a = this.bodies[c.i], b = this.bodies[c.j];
     const ima = 1 / this.mass[c.i], imb = 1 / this.mass[c.j];
     const av = a.vel, bv = b.vel;
     const vn = (bv.x - av.x) * c.nx + (bv.y - av.y) * c.ny;
-    const imp = c.guard ? -c.mn * (vn + c.bias) : -c.mn * soft.massScale * (vn + c.bias) - soft.impulseScale * c.ln;
+    const imp = relax || c.guard ? -c.mn * (vn + c.bias) : -c.mn * soft.massScale * (vn + c.bias) - soft.impulseScale * c.ln;
     const ln = Math.max(0, c.ln + imp);
     const dn = ln - c.ln;
     c.ln = ln;
