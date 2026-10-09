@@ -5,8 +5,10 @@
  */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
+import { arriveVelocity, fatigueFactor, stepBody, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
+import { availability, supportParams } from '../../physics/support.js';
+import type { HandJoint } from '../../physics/world.js';
 import type { RouteDef, RoutePoint } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
@@ -17,12 +19,27 @@ interface PathPoint {
   s: number;
 }
 
+/** A palm contact, not an outcome of a once-per-snap skill contest. The
+ * torso is still a compact body: the small hand slide below is the part of
+ * hand placement we retain without simulating individual arm bones. */
+interface PressContact {
+  corner: Agent;
+  hands: HandJoint;
+  side: number;
+  tangent: Vec2;
+  relative: Vec2;
+  slide: number;
+  loaded: boolean;
+  at: number;
+}
+
 export class RouteRunner implements Behavior {
   readonly kind = 'route';
   path: PathPoint[];
   idx = 0;
   settled = false;
-  private jamResolved = false;
+  private pressContact: PressContact | null = null;
+  private readonly releasedCorners = new Set<Agent>();
   private converted = false;
   private readAt: number;
   private readonly start: Vec2;
@@ -95,7 +112,8 @@ export class RouteRunner implements Behavior {
     const rr = a.r('routeRunning');
     const cutSkill = 0.8 + 0.4 * rr;
 
-    this.handleRelease(a, sim);
+    const release = this.handleRelease(a, sim);
+    if (release) return release;
     if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
     // Ball thrown to someone else: finish the route at a jog and find someone to block.
     if (sim.ball.kind === 'air' && sim.ball.target !== a) {
@@ -219,40 +237,100 @@ export class RouteRunner implements Behavior {
     return goTo(a, spot, { speed: 0.6, facing: angleTo(a.pos, sim.qb.pos) });
   }
 
-  private handleRelease(a: Agent, sim: PlaySim): void {
-    if (this.jamResolved || sim.t > 0.9) return;
-    for (const d of sim.defense) {
-      const sp = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
-      if (!sp?.press || sp.manTarget !== a.slot) continue;
-      const dd = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
-      if (dd > 1.3) continue;
-      this.jamResolved = true;
-      const agiR = clamp((7.3 - a.player.measurables.threeCone) / 0.8, 0, 1);
-      const agiD = clamp((7.3 - d.player.measurables.threeCone) / 0.8, 0, 1);
-      const score =
-        0.55 * a.r('releaseVsPress') + 0.25 * agiR + 0.2 * a.r('strength') - (0.55 * d.r('press') + 0.25 * d.r('strength') + 0.2 * agiD) + sim.rng.normal(0, 0.22);
-      // The jam is a strike, not a timer: a landed two-hand punch knocks the
-      // receiver off his stem and his balance; a punch at air leaves the
-      // corner leaning on nothing.
-      const ux = (a.pos.x - d.pos.x) / (dd || 1), uy = (a.pos.y - d.pos.y) / (dd || 1);
-      if (score < -0.08) {
-        const j = a.profile.massKg * (0.9 + 1.6 * Math.min(0.6, -score));
-        sim.world.strike(d.body, a.body, { x: ux * j, y: uy * j });
-        sim.event('jam', d, a);
-      } else if (score > 0.22) {
-        const sup = d.body.support;
-        if (sup) {
-          const lean = d.profile.massKg * 9 * (0.6 + Math.min(0.6, score));
-          sup.lean = { x: sup.lean.x + ux * lean, y: sup.lean.y + uy * lean };
-        }
-        d.tags.add('whiffed-jam');
-      } else {
-        // Hands fight to a draw: both are knocked back a little.
-        const j = Math.min(a.profile.massKg, d.profile.massKg) * 0.35;
-        sim.world.strike(d.body, a.body, { x: ux * j, y: uy * j });
-      }
-      return;
+  /** Remove this technique's constraint before a ball event replaces its
+   * controller. Other blocks/grasp joints remain owned by their techniques. */
+  clearPressContact(sim: PlaySim): void {
+    const p = this.pressContact;
+    if (!p) return;
+    this.recordJam(sim, p);
+    sim.world.joints = sim.world.joints.filter((j) => j !== p.hands);
+    this.releasedCorners.add(p.corner);
+    this.pressContact = null;
+  }
+
+  private recordJam(sim: PlaySim, p: PressContact): void {
+    // Record the force that was actually applied even when the next visible
+    // state already escaped the hand. A one-frame jam is still contact.
+    if (!p.loaded && Math.abs(p.hands.normalForce ?? 0) + Math.abs(p.hands.tangentForce ?? 0) > 1e-6) {
+      p.loaded = true;
+      const receiver = sim.offense.find((a) => a.body === p.hands.b);
+      if (receiver) sim.event('jam', p.corner, receiver);
     }
+  }
+
+  private handleRelease(a: Agent, sim: PlaySim): MoveCommand | null {
+    const usable = (p: Agent): number => p.isDown(sim.t) ? 0 : p.body.support
+      ? availability(p.body.support, supportParams(p.profile), fatigueFactor(p.body.energy)) : 1;
+    const reach = (d: Agent): number => d.profile.radius + a.profile.radius + d.player.measurables.armIn / 36 * 0.7;
+    const facingReceiver = (d: Agent, relative: Vec2): boolean => {
+      const dist = Math.hypot(relative.x, relative.y) || 1;
+      return (Math.cos(d.facing) * relative.x + Math.sin(d.facing) * relative.y) / dist > 0.3;
+    };
+    const stop = () => this.clearPressContact(sim);
+
+    // Beyond five yards the defender must cover rather than initiate or
+    // sustain a release jam. A thrown ball also changes the players' task.
+    if (a.pos.x > sim.los + 5 || sim.ball.kind !== 'held' || sim.scrambleDrill || usable(a) === 0) {
+      if (this.pressContact) stop();
+      return null;
+    }
+    if (this.pressContact) {
+      const p = this.pressContact, d = p.corner;
+      this.recordJam(sim, p);
+      const relative = sub(a.pos, d.pos), dist = Math.hypot(relative.x, relative.y);
+      if (!sim.world.joints.includes(p.hands) || dist > reach(d) || usable(d) === 0 || !facingReceiver(d, relative)
+        || d.engagement || a.engagement) {
+        stop();
+        return null;
+      }
+      // A palm follows the chest at a finite rate. Motion across the hand
+      // faster than that, plus a receiver's finite swipe against the
+      // corner's re-grip, moves it toward the shoulder and off the body.
+      // Technique determines hand speed; the world determines whether the
+      // feet/body can actually travel against the contact force.
+      const travel = Math.abs((relative.x - p.relative.x) * p.tangent.x + (relative.y - p.relative.y) * p.tangent.y);
+      const follow = (0.25 + 0.65 * d.r('press')) * usable(d);
+      const swipe = (0.15 + 0.9 * a.r('releaseVsPress')) * usable(a);
+      const dt = Math.max(0, sim.t - p.at);
+      p.slide += Math.max(0, travel - follow * dt) + Math.max(0, swipe - follow) * dt;
+      p.relative = relative;
+      p.at = sim.t;
+      if (p.slide >= a.profile.radius + 0.08) {
+        stop();
+        return null;
+      }
+    } else {
+      for (const d of sim.defense) {
+        const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
+        if (!spot?.press || spot.manTarget !== a.slot || this.releasedCorners.has(d) || d.engagement || a.engagement || usable(d) === 0) continue;
+        const relative = sub(a.pos, d.pos), dist = Math.hypot(relative.x, relative.y);
+        if (dist > reach(d) || a.pos.x > d.pos.x + a.profile.radius || !facingReceiver(d, relative)) continue;
+        // Two hands cannot simultaneously jam one player and grasp/block
+        // another. Contacts owned by another technique have priority.
+        if (sim.world.joints.some((j) => j.a === d.body || j.b === d.body || j.a === a.body || j.b === a.body)) continue;
+        const desired = this.path[this.idx]?.p.y ?? a.pos.y;
+        const side = Math.sign(desired - a.pos.y) || Math.sign(a.pos.y - d.pos.y) || this.outside;
+        const hands: HandJoint = { kind: 'hands', a: d.body, b: a.body,
+          extension: d.profile.radius + a.profile.radius + d.player.measurables.armIn / 36 * 0.45, push: 0, hold: 0, steer: 0 };
+        this.pressContact = { corner: d, hands, side, tangent: { x: -relative.y / (dist || 1), y: relative.x / (dist || 1) },
+          relative, slide: 0, loaded: false, at: sim.t };
+        sim.world.joints.push(hands);
+        break;
+      }
+    }
+    const p = this.pressContact;
+    if (!p) return null;
+    const d = p.corner;
+    const arm = supportParams(d.profile).armForce * usable(d);
+    const overlap = clamp(1 - p.slide / (a.profile.radius + 0.08), 0, 1);
+    p.hands.push = arm * (0.35 + 0.65 * d.r('press')) * overlap;
+    // A legal palm jam pushes and steers. It cannot tether the receiver by
+    // the jersey when he has escaped: no tensile cloth hold is created.
+    p.hands.hold = 0;
+    p.hands.steer = arm * (0.15 + 0.45 * d.r('press')) * overlap;
+    const clearance = a.profile.radius + d.profile.radius + 0.2;
+    return runThrough(a, { x: d.pos.x + a.profile.radius, y: d.pos.y + p.side * clearance },
+      { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
   }
 
   private ghost: { t: number; pts: Vec2[] } | null = null;
@@ -321,6 +399,11 @@ export class TrackBall implements Behavior {
     this.reactAt = sim.t + 0.08 + 0.25 * (1 - tr);
     this.err = { x: sim.rng.normal(0, 0.5 * (1 - tr)), y: sim.rng.normal(0, 0.5 * (1 - tr)) };
     a.tags.add('onBall');
+  }
+
+  clearPressContact(sim: PlaySim): void {
+    const fallback = this.fallback as Behavior & { clearPressContact?: (sim: PlaySim) => void };
+    fallback.clearPressContact?.(sim);
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {

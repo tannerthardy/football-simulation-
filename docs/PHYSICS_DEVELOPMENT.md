@@ -3,7 +3,9 @@
 A short guide for agents working on the physics. It covers how to think about
 the physics, what the test suite is, how to make a change, and how much testing
 is enough. For current status, evidence and the ranked work list, read
-[physics-world-and-readiness](reviews/physics-world-and-readiness.md).
+[contact-height-press-and-physics-readiness](reviews/contact-height-press-and-physics-readiness.md).
+The earlier [physics-world review](reviews/physics-world-and-readiness.md)
+explains the single-world architecture.
 
 ## 1. The philosophy
 

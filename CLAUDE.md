@@ -2,8 +2,24 @@
 
 Start with these shared project references:
 
+- [Contact height, press hands and physics readiness](docs/reviews/contact-height-press-and-physics-readiness.md):
+  **read first.** Height-aware support replaces pad-level power heuristics;
+  bounded hand joints replace press win rolls; contact islands use 12–16
+  substeps. Read the paired evidence and explicit limitations. Status remains
+  NOT READY. Next: active technique force/work budgets, the remaining
+  hand-fight resolution disagreement, tackle approach/grasp feasibility,
+  run first push and holding from actual restraint. AddBiomechanics metadata
+  and proposed small movement/support subsets are in the linked evidence review;
+  subject files have not been downloaded or used to validate constants.
+  Physics remains the priority; PR #1 and full QB mechanics stay separate.
+
+- [Physics development and testing](docs/PHYSICS_DEVELOPMENT.md): **read
+  second.** The philosophy (skills are different ways of controlling the same
+  body; ratings map to control, never to outcome rolls), the five test layers
+  and when to run each, the change loop, and how much testing is too much.
+
 - [Physics world and readiness](docs/reviews/physics-world-and-readiness.md):
-  **read first.** Every body now moves through one physics world
+  prior architecture and evidence. Every body now moves through one physics world
   (src/physics/world.ts) with body-owned balance (src/physics/support.ts).
   Tackles run on grasp joints and blocks on hand joints. Collisions are
   inelastic. A readiness scenario pack covers the six owner interactions
@@ -12,11 +28,6 @@ Start with these shared project references:
   Status is NOT READY. Contracts pass; football transfer does not.
   The owner's direction: physics only. Do not work on coverage, the play
   pool or pressure packages until the physics earns his explicit OK.
-
-- [Physics development and testing](docs/PHYSICS_DEVELOPMENT.md): **read
-  second.** The philosophy (skills are different ways of controlling the same
-  body; ratings map to control, never to outcome rolls), the five test layers
-  and when to run each, the change loop, and how much testing is too much.
 
 - [Grasp motion and readiness gates](docs/reviews/grasp-motion-and-readiness-gates.md):
   previous implementation and physical readiness ledger (its experimental

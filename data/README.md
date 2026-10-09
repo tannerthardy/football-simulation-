@@ -379,9 +379,31 @@ These counterfactuals identify physical gaps, not their game frequency, NFL
 outcome targets or causal explanations of earlier game regressions. The audit
 is a diagnostic, not a passing test that approves its observed defects.
 
-## Grasp motion and readiness gates
+## Physics world and contact-height checks
 
-The [latest review](../docs/reviews/grasp-motion-and-readiness-gates.md)
+The current engine uses one physics world, hand/grasp joints and body-owned
+support. The earlier experimental grasp switch is superseded; those historical
+flags no longer select a second solver. Read the current handoff in `CLAUDE.md`
+before reproducing older comparisons.
+
+```sh
+node --import tsx scripts/contact-height-lab.ts out/contact-height.json
+node --import tsx scripts/scenario-pack.ts out/scenario-pack.json
+node --import tsx scripts/diag/hand-convergence.ts out/hand-convergence.json
+node --import tsx scripts/interaction-readiness.ts out/interaction-readiness.json
+node --import tsx scripts/kinematics-compare.ts 4 5
+node --import tsx scripts/calibrate.ts 8 7 2
+```
+
+Height probes prescribe an active impulse to isolate angular support response;
+they do not demonstrate passive energy conservation. The scenario pack and
+world tests cover passive contacts separately. The refined solver in the
+convergence report is a numerical reference, not an NFL target. Football
+tracking and game probes use different cohorts and contact definitions.
+
+## Historical grasp motion and readiness gates
+
+The [earlier review](../docs/reviews/grasp-motion-and-readiness-gates.md)
 records the default conservation repairs, opt-in bounded prototype, paired
 mechanical/tackle/game evidence and explicit physical readiness gates.
 Evidence/provenance is in `data/reviews/grasp-motion/`.
@@ -392,14 +414,22 @@ node --import tsx scripts/tackle-lab.ts 24
 node --import tsx scripts/calibrate.ts 32 7 4
 node --import tsx scripts/contact-anatomy.ts 16 7 2
 
-# Explicit development experiment; not enabled in ordinary games or film.
-node --import tsx scripts/interaction-readiness.ts out/experimental-interaction.json --experimental-grasps
-node --import tsx scripts/tackle-lab.ts 24 --experimental-grasps
-node --import tsx scripts/calibrate.ts 8 7 1 --experimental-grasps
 ```
 
-Compare the experimental eight-game panel with `calibrate.ts 8 7 1`, not the
+For that historical revision, compare the experimental eight-game panel with `calibrate.ts 8 7 1`, not the
 32-game panel. Solo-lab conditional means require the down counts; `N/A`
 means no completed tackles. The revised interaction script reports center
 displacement against independent common motion. Final instantaneous velocity
 can differ from step-average velocity under substep acceleration.
+
+## AddBiomechanics movement and support reference
+
+[AddBiomechanics Dataset 1.0](https://addbiomechanics.org/download_data.html)
+is catalogued in `data/sources.json` as metadata reviewed only. No subject files
+have been downloaded or used to fit constants. The
+[physical evidence review](../docs/references/physical-contact-evidence.md)
+links the dataset license, `.b3d` reader, proposed running/perturbation subsets,
+quality exclusions and useful measurements. Keep per-subject files under
+`data/raw/addbiomechanics/`, retain their attribution and pin checksums before
+using derived aggregates. This is a movement/ground-force reference; it does
+not supply football hand-contact forces or maximum cleat-turf friction.

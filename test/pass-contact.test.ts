@@ -55,6 +55,10 @@ describe('pass contact momentum and anchor', () => {
       // into his set intentionally yields even against a weaker rush.
       b.body.pos.x = sim.los - passSetDepth(sim, b);
       d.body.pos.x = b.pos.x + b.profile.radius + d.profile.radius;
+      // Give this fixture an actual leg-force advantage when drive is high.
+      // Doubling the end's power alone caps him at turf traction, still below
+      // this heavier tackle's push capacity; that is not a clear advantage.
+      b.profile.power *= 0.4;
       d.profile.power *= drive;
       const e = createEngagement(sim, b, d, 'pass', null)!;
       e.nextMoveAt = Infinity; e.move = 'bull'; e.phi = 0; e.control = 0;

@@ -237,7 +237,18 @@ export class RunnerToMesh implements Behavior {
 
 // ------------------------------------------------------------ transitions
 
+/** A replaced controller must relinquish only the contact it owns. In
+ * particular a pre-throw fumble cannot leave a press palm joining two
+ * players whose new controllers are chasing the loose ball. */
+function clearPressContacts(sim: PlaySim): void {
+  for (const a of sim.agents) {
+    const behavior = a.behavior as Behavior & { clearPressContact?: (sim: PlaySim) => void };
+    behavior.clearPressContact?.(sim);
+  }
+}
+
 export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
+  clearPressContacts(sim);
   const aim = to.behavior instanceof RunnerToMesh ? to.behavior.aim : { x: sim.los + 1, y: to.pos.y };
   const patience = to.r('patience');
   // A split-zone slice travels against the runner's flow. It is a backside
@@ -255,17 +266,20 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
 export function onThrow(sim: PlaySim): void {
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
+  clearPressContacts(sim);
   const tgt = ball.target;
   if (tgt) tgt.behavior = new TrackBall(tgt, sim, tgt.behavior);
 }
 
 export function onBallCaught(sim: PlaySim, r: Agent): void {
+  clearPressContacts(sim);
   r.behavior = new BallCarrier({}, r);
   for (const a of sim.offense) if (a !== r) a.behavior = new DownfieldBlocker();
   for (const d of sim.defense) d.behavior = new Pursuit();
 }
 
 export function onInterception(sim: PlaySim, d: Agent): void {
+  clearPressContacts(sim);
   d.behavior = new BallCarrier({}, d);
   for (const o of sim.defense) if (o !== d) o.behavior = new DownfieldBlocker();
   for (const o of sim.offense) o.behavior = new Pursuit();
@@ -273,11 +287,13 @@ export function onInterception(sim: PlaySim, d: Agent): void {
 }
 
 export function onLooseBall(sim: PlaySim): void {
+  clearPressContacts(sim);
   for (const a of sim.agents) a.behavior = new FumbleScramble(new Pursuit());
   for (const e of [...sim.engagements]) sim.disengage(e);
 }
 
 export function onRecovery(sim: PlaySim, a: Agent): void {
+  clearPressContacts(sim);
   a.behavior = new BallCarrier({}, a);
   for (const o of sim.teammates(a)) if (o !== a) o.behavior = new DownfieldBlocker();
   for (const o of sim.opponents(a)) o.behavior = new Pursuit();

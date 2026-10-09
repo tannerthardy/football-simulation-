@@ -34,7 +34,7 @@ import { G } from '../core/units.js';
 import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
-import { availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
+import { availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 
 export interface Intent extends MoveCommand {
   /** 0–1 willingness to lean into a felt load with leg drive beyond free movement. */
@@ -67,6 +67,8 @@ export interface HandJoint {
   hold: number;
   /** Max tangential (steering) force, kg·yd/s². */
   steer: number;
+  /** Height of the hand contact, yd; defaults to the lower player's pads. */
+  height?: number;
   /** Last step's mean force on b from a: normal (+ pushes apart) and tangential. */
   normalForce?: number;
   tangentForce?: number;
@@ -86,6 +88,8 @@ export interface GraspJoint {
   capacity: number;
   /** 0–1: share of the hold around his legs (locks his stepping). */
   legs: number;
+  /** Height of the hold, yd; otherwise interpolates from torso to lower legs. */
+  height?: number;
   /** Rate the holder's arms reel the two bodies together, yd/s (bounded by the grip). */
   pull?: number;
   /** Current arm distance; ratchets in as the holder closes, slides out when the grip slips. */
@@ -136,7 +140,10 @@ const MAX_PUSHOUT = 3;
 const GUARD_DEPTH = 0.2;
 /** Target relative travel per substep for adaptive stepping, yd. */
 const SUBSTEP_TRAVEL = 0.06;
-const MIN_SUBSTEPS = 6;
+// Accuracy/cost audit: docs/reviews/hand-fight-convergence.md. Sustained
+// technique feedback remains resolution-sensitive, so this is a reduction
+// of error, not a declaration of complete temporal stability.
+const MIN_SUBSTEPS = 12;
 const MAX_SUBSTEPS = 16;
 const ITERATIONS = 8;
 /** Velocity-only iterations after the position update (see Relax). */
@@ -155,8 +162,6 @@ const LEAN_DECAY = 0.15;
 const YAW_RESPONSE = 0.05;
 const POSTURE_RATE = 2.5;
 const DEFAULT_POSTURE = 0.2;
-const STAND_UP = 1.5;
-const LEVERAGE_GAIN = 1.2;
 const FALL_TIP = 3;
 const FALL_FRICTION = 0.25;
 const DOWN_FRICTION = 0.75;
@@ -244,7 +249,7 @@ export class World {
   substeps?: number;
   private readonly index = new Map<Body, number>();
   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
-  private pending: Array<{ a: Body; b: Body; x: number; y: number }> = [];
+  private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number }> = [];
   // Per-body scratch, reused every substep.
   private readonly n: number;
   private readonly sp: SupportParams[];
@@ -255,14 +260,18 @@ export class World {
   private readonly impY: Float64Array;
   private readonly tripX: Float64Array;
   private readonly tripY: Float64Array;
+  private readonly tipX: Float64Array;
+  private readonly tipY: Float64Array;
+  private readonly braceX: Float64Array;
+  private readonly braceY: Float64Array;
+  private readonly comHeight: Float64Array;
+  private readonly padHeight: Float64Array;
   private readonly v0x: Float64Array;
   private readonly v0y: Float64Array;
   private readonly amx: Float64Array;
   private readonly amy: Float64Array;
   private readonly alpha: Float64Array;
   private readonly cut: Float64Array;
-  private readonly height: Float64Array;
-  private readonly lev: Float64Array;
   private readonly leanX: Float64Array;
   private readonly leanY: Float64Array;
 
@@ -280,8 +289,10 @@ export class World {
     this.inertia = Float64Array.from(this.sp, (s) => s.yawInertia);
     const f = () => new Float64Array(n);
     this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f();
+    this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
+    this.comHeight = f(); this.padHeight = f();
     this.v0x = f(); this.v0y = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f();
-    this.height = f(); this.lev = f(); this.leanX = f(); this.leanY = f();
+    this.leanX = f(); this.leanY = f();
   }
 
   indexOf(b: Body): number {
@@ -293,9 +304,9 @@ export class World {
    * `a`, applied inside the next step so balance and loads respond to it.
    * Internal: total momentum is unchanged.
    */
-  strike(a: Body, b: Body, j: Vec2): void {
+  strike(a: Body, b: Body, j: Vec2, height?: number): void {
     if (this.indexOf(a) < 0 || this.indexOf(b) < 0) return;
-    this.pending.push({ a, b, x: j.x, y: j.y });
+    this.pending.push({ a, b, x: j.x, y: j.y, height });
   }
 
   /** Energy stored in compressed torso contacts (the compliant springs), kg·yd²/s². */
@@ -413,7 +424,11 @@ export class World {
   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
     report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean): void {
     const bs = this.bodies;
-    for (const i of ids) { this.impX[i] = 0; this.impY[i] = 0; bs[i].support!.feetLock = 0; }
+    for (const i of ids) {
+      this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0;
+      this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
+      bs[i].support!.feetLock = 0;
+    }
     // Holds on the legs restrict stepping for this substep.
     if (contact) for (const j of this.joints) {
       if (j.kind !== 'grasp' || j.broken || j.legs <= 0) continue;
@@ -429,6 +444,10 @@ export class World {
 
     // ---- 1. ground forces
     for (const i of ids) this.feet(i, intents[i] ?? STAND, plans[i], h, remaining, report);
+    for (const i of ids) {
+      this.comHeight[i] = comHeightAt(this.sp[i], bs[i].support!.posture);
+      this.padHeight[i] = padHeightAt(this.sp[i], bs[i].support!.posture);
+    }
 
     // Technique impulses land once, after the feet and before contact.
     if (contact && this.pending.length) {
@@ -436,8 +455,7 @@ export class World {
         const ia = this.indexOf(p.a), ib = this.indexOf(p.b);
         p.a.vel.x -= p.x / this.mass[ia]; p.a.vel.y -= p.y / this.mass[ia];
         p.b.vel.x += p.x / this.mass[ib]; p.b.vel.y += p.y / this.mass[ib];
-        this.impX[ia] -= p.x; this.impY[ia] -= p.y;
-        this.impX[ib] += p.x; this.impY[ib] += p.y;
+        this.addLoad(ia, ib, 1, 0, p.x, p.y, p.height);
       }
       this.pending = [];
     }
@@ -458,20 +476,12 @@ export class World {
         }
       }
       // Joint outputs and the loads they put on each body.
-      for (const i of ids) { this.tripX[i] = 0; this.tripY[i] = 0; }
       for (const r of rows) {
-        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt);
         const jt = r.joint;
-        if (jt.kind === 'grasp' && jt.legs > 0) {
-          // A hold below his COM pulls the base out from under him: the body
-          // pitches the other way (a trip), on top of the COM's own momentum.
-          const held = bs[r.j];
-          const hc = comHeightAt(this.sp[r.j], held.support!.posture);
-          const k2 = (0.3 * held.profile.heightYd) ** 2;
-          const factor = (jt.legs * 0.55 * hc) * hc / k2 / this.mass[r.j];
-          const jx = r.nx * r.ln - r.ny * r.lt, jy = r.ny * r.ln + r.nx * r.lt;
-          this.tripX[r.j] -= jx * factor; this.tripY[r.j] -= jy * factor;
-        }
+        const height = jt.height ?? (jt.kind === 'grasp'
+          ? this.comHeight[r.j] * (1 - 0.55 * clamp(jt.legs, 0, 1))
+          : undefined);
+        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
         if (jt.kind === 'hands') {
           jt.normalForce = (jt.normalForce ?? 0) + r.ln;
           jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
@@ -481,7 +491,7 @@ export class World {
           jt.slipping = used >= 0.98 * r.limit && r.limit > 0;
         }
       }
-    } else for (const i of ids) { this.tripX[i] = 0; this.tripY[i] = 0; }
+    }
 
     // ---- 3. integrate positions (trapezoidal in the ground force)
     for (const i of ids) {
@@ -520,6 +530,23 @@ export class World {
     for (const i of ids) {
       const sup = bs[i].support!;
       const lx = this.impX[i] / h, ly = this.impY[i] / h;
+      // Established lean and a bounded ankle/hip response balance settled
+      // moments. A cancelling COM force alone cannot prove he is braced.
+      const l2 = sup.felt.x ** 2 + sup.felt.y ** 2;
+      const oldTip = sup.feltTip ?? { x: 0, y: 0 };
+      const leanBrace = l2 > 1e-9 ? clamp(-(this.braceX[i] * sup.felt.x + this.braceY[i] * sup.felt.y) / l2, 0, 1) : 0;
+      // An upright player can also shift pressure within his existing base.
+      // Its moment budget is weight × base radius, not an unlimited torque
+      // cancellation just because ground force cancels the COM acceleration.
+      const hc = this.comHeight[i];
+      const feltMoment = Math.hypot(oldTip.x, oldTip.y) * this.mass[i] * this.sp[i].pitchRadiusSq / hc;
+      const ankleMoment = plans[i].free || sup.state !== 'up' ? 0
+        : this.mass[i] * G * baseRadiusAt(this.sp[i], sup.posture) * this.alpha[i];
+      const braced = Math.max(leanBrace, feltMoment > 1e-9 ? Math.min(1, ankleMoment / feltMoment) : 0);
+      const tx = this.tipX[i] / h, ty = this.tipY[i] / h;
+      this.tipX[i] -= oldTip.x * braced * h;
+      this.tipY[i] -= oldTip.y * braced * h;
+      sup.feltTip = { x: oldTip.x + (tx - oldTip.x) * kf, y: oldTip.y + (ty - oldTip.y) * kf };
       sup.load = { x: lx, y: ly };
       sup.felt = { x: sup.felt.x + (lx - sup.felt.x) * kf, y: sup.felt.y + (ly - sup.felt.y) * kf };
     }
@@ -541,7 +568,18 @@ export class World {
     }
 
     // ---- 4. support
-    for (const i of ids) if (bs[i].support!.state === 'up') this.updateSupport(i, h, report);
+    for (const i of ids) {
+      if (bs[i].support!.state === 'up') this.updateSupport(i, h, report);
+      else {
+        // Perception of motion continues while down. Freezing these filters
+        // would deliver the old hit again when he eventually gets up.
+        const sup = bs[i].support!, k = 1 - Math.exp(-h / GAIT_LAG);
+        const acc = sup.accel ?? { x: 0, y: 0 }, tip = sup.tipAccel ?? { x: 0, y: 0 };
+        sup.accel = { x: acc.x + ((bs[i].vel.x - this.v0x[i]) / h - acc.x) * k,
+          y: acc.y + ((bs[i].vel.y - this.v0y[i]) / h - acc.y) * k };
+        sup.tipAccel = { x: tip.x + (this.tipX[i] / h - tip.x) * k, y: tip.y + (this.tipY[i] / h - tip.y) * k };
+      }
+    }
     this.time += h;
   }
 
@@ -570,13 +608,10 @@ export class World {
         const a = availability(sup, sp, fat);
         this.alpha[i] = a;
         this.cut[i] = plan.cut;
-        // Pad level moves at a finite rate; a lower opponent stands him up.
+        // Pad level moves at a finite rate. Contact geometry affects support,
+        // rather than granting a power bonus or standing him up by a heuristic.
         const target = clamp(intent.posture ?? DEFAULT_POSTURE, 0, 1) - 0.2 * (1 - b.energy);
         sup.posture = clamp(sup.posture + clamp(target - sup.posture, -POSTURE_RATE * h, POSTURE_RATE * h), 0, 1);
-        if (sup.leverage < 0) {
-          const loaded = clamp(Math.hypot(sup.felt.x, sup.felt.y) / sp.pushForce, 0, 1.5);
-          sup.posture = Math.max(0, sup.posture - STAND_UP * -sup.leverage * loaded * h);
-        }
         // Yaw: the feet follow the planned facing; a contact-induced spin
         // is a disturbance they cancel at a bounded (traction) rate.
         const tr = turnRateOf(b);
@@ -614,7 +649,7 @@ export class World {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
             const dir = directionalSpeedFactor(p, angleDiff(b.facing, Math.atan2(uy, ux)));
-            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, 1.2) * fat * (1 + sup.leverage) * a * push;
+            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, 1.2) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + PUSH_GROWTH), m * ex / h);
             tx = ux * mag; ty = uy * mag;
           }
@@ -645,10 +680,9 @@ export class World {
         // One budget: locomotion and lean share traction and leg strength.
         // Leg drive is directional: full straight ahead, a shuffle's or a
         // backpedal's share sideways or backward. Traction caps all of it.
-        const lev = 1 + sup.leverage;
         const tfx = lx + leanX, tfy = ly + leanY;
         const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, angleDiff(b.facing, Math.atan2(tfy, tfx))) : 1;
-        const cap = Math.max(Math.hypot(lx, ly), Math.min(sp.pushForce * 1.2 * along, sp.traction) * lev * a);
+        const cap = Math.max(Math.hypot(lx, ly), Math.min(sp.pushForce * 1.2 * along, sp.traction) * a);
         let px = leanX, py = leanY;
         if (tfx * tfx + tfy * tfy > cap * cap) {
           const qa = px * px + py * py, qb = lx * px + ly * py, qc = lx * lx + ly * ly - cap * cap;
@@ -657,6 +691,7 @@ export class World {
           if (qc > 0) { const r = cap / Math.max(1e-9, Math.hypot(lx, ly)); lx *= r; ly *= r; }
         }
         fx += lx + px; fy += ly + py;
+        this.braceX[i] = px; this.braceY[i] = py;
         this.leanX[i] += px; this.leanY[i] += py;
       }
     } else {
@@ -727,6 +762,14 @@ export class World {
     const f = followAccel(b, { x: mx, y: my }, this.cut[i], Math.max(this.alpha[i], 0.1) * (1 - lock) * FOLLOW_MARGIN);
     let dx = (mx - f.x) * h / w0;
     let dy = (my - f.y) * h / w0;
+    // Pitch/roll angular momentum from contact height. Keep the translational
+    // impulse untouched; reduce its moment into the same capture-point state.
+    // Integrate the exact mean of the 40 ms response, reducing step error.
+    const tip = sup.tipAccel ?? { x: 0, y: 0 };
+    const tx = this.tipX[i] / h, ty = this.tipY[i] / h;
+    const tmx = tx + (tip.x - tx) * mean, tmy = ty + (tip.y - ty) * mean;
+    sup.tipAccel = { x: tip.x + (tx - tip.x) * kg, y: tip.y + (ty - tip.y) * kg };
+    dx += tmx * h / w0; dy += tmy * h / w0;
     // A hold on his legs pitches him over the held base, and a held foot
     // cannot be placed under him: it moves with whoever holds it, and his
     // body runs on past it.
@@ -735,7 +778,7 @@ export class World {
     dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).
     const decay = Math.exp(-h / 0.3);
-    causes.contact = causes.contact * decay + Math.hypot(mx - f.x, my - f.y) * h / w0;
+    causes.contact = causes.contact * decay + Math.hypot(mx - f.x + tmx, my - f.y + tmy) * h / w0;
     causes.legs = causes.legs * decay + Math.hypot(legX, legY);
     causes.overspeed *= decay;
     // Carried faster than his legs can run.
@@ -775,17 +818,30 @@ export class World {
     }
   }
 
-  private addLoad(i: number, j: number, nx: number, ny: number, ln: number, lt: number): void {
+  private addLoad(i: number, j: number, nx: number, ny: number, ln: number, lt: number, height?: number, legHold = false): void {
     const fx = nx * ln - ny * lt, fy = ny * ln + nx * lt;
     // The impulse on j is +(n·ln + t·lt); on i its opposite.
     this.impX[j] += fx; this.impY[j] += fy;
     this.impX[i] -= fx; this.impY[i] -= fy;
+    const bs = this.bodies;
+    const z = clamp(height ?? Math.min(this.padHeight[i], this.padHeight[j]),
+      0, Math.min(bs[i].profile.heightYd, bs[j].profile.heightYd));
+    const ci = this.comHeight[i], cj = this.comHeight[j];
+    const fi = -(z - ci) * ci / this.sp[i].pitchRadiusSq / this.mass[i];
+    const fj = (z - cj) * cj / this.sp[j].pitchRadiusSq / this.mass[j];
+    this.tipX[i] += fx * fi; this.tipY[i] += fy * fi;
+    if (legHold) {
+      // A held foot cannot actively brace this moment: it pitches the body
+      // over the base, in addition to restricting the recovery step.
+      this.tripX[j] += fx * fj; this.tripY[j] += fy * fj;
+    } else {
+      this.tipX[j] += fx * fj; this.tipY[j] += fy * fj;
+    }
   }
 
   private detect(ids: number[], h: number, soft: Softness, report: StepReport): Contact[] {
     const bs = this.bodies;
     const out: Contact[] = [];
-    for (const i of ids) { this.lev[i] = 0; this.height[i] = comHeightAt(this.sp[i], bs[i].support!.posture); }
     for (let ii = 0; ii < ids.length; ii++) {
       const i = ids[ii];
       const a = bs[i];
@@ -834,17 +890,8 @@ export class World {
         const vn = rvx * nx + rvy * ny;
         out.push({ i, j, nx, ny, R, ri, rj, mn: 1 / (1 / ma + 1 / mb), mt: 1 / (1 / ma + 1 / mb + ri * ri / this.inertia[i] + rj * rj / this.inertia[j]),
           guard, bias: guard ? (s + GUARD_DEPTH) / h : Math.max(soft.biasRate * s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0 });
-        // Pad level: the lower man gets under the other's pads.
-        if (!guard) { const dh = (this.height[j] - this.height[i]) * LEVERAGE_GAIN; this.lev[i] += dh; this.lev[j] -= dh; }
       }
     }
-    for (const jt of this.joints) {
-      if (jt.kind !== 'hands') continue;
-      const i = this.indexOf(jt.a), j = this.indexOf(jt.b);
-      const dh = (this.height[j] - this.height[i]) * LEVERAGE_GAIN;
-      this.lev[i] += dh; this.lev[j] -= dh;
-    }
-    for (const i of ids) bs[i].support!.leverage = clamp(this.lev[i], -0.2, 0.2);
     return out;
   }
 

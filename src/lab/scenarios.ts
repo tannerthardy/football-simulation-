@@ -16,7 +16,7 @@
  * finite states and falls. Development and certification tooling; not used
  * by the engine.
  */
-import { CENTER_Y } from '../core/field.js';
+import { CENTER_Y, FIELD_WIDTH } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../league/team.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
@@ -25,6 +25,7 @@ import { FORMATION_BY_ID } from '../playbook/formations.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import type { Agent } from '../sim/agent.js';
 import { chase } from '../sim/behaviors/common.js';
+import { RouteRunner } from '../sim/behaviors/receiver.js';
 import { createEngagement } from '../sim/engagement.js';
 import { PlaySim } from '../sim/playsim.js';
 
@@ -81,7 +82,7 @@ function lab(o: LabOptions, run: boolean) {
 }
 
 /** Tick a scenario, checking momentum, overlap and finiteness every tick. */
-function runTicks(sim: PlaySim, who: Agent[], until: (t: number) => boolean, maxT: number): Invariants {
+function runTicks(sim: PlaySim, who: Agent[], until: (t: number) => boolean, maxT: number, afterStep?: () => void): Invariants {
   const inv: Invariants = { momentumError: 0, maxPenetration: 0, finite: true, falls: [] };
   const t0 = sim.t;
   while (sim.phase === 'live' && sim.t < t0 + maxT && !until(sim.t - t0)) {
@@ -91,6 +92,7 @@ function runTicks(sim: PlaySim, who: Agent[], until: (t: number) => boolean, max
     const r = sim.lastStep;
     // A whistle before the step: nothing moved this tick.
     if (!r || r === before) continue;
+    afterStep?.();
     const gx = who.reduce((s, a) => s + r.groundImpulse[a.idx].x, 0), gy = who.reduce((s, a) => s + r.groundImpulse[a.idx].y, 0);
     const qx = who.reduce((s, a) => s + a.profile.massKg * a.vel.x, 0), qy = who.reduce((s, a) => s + a.profile.massKg * a.vel.y, 0);
     inv.momentumError = Math.max(inv.momentumError, Math.hypot(qx - px - gx, qy - py - gy));
@@ -315,33 +317,55 @@ export function squeeze(o: LabOptions & { endPower?: number; maxT?: number }): S
 // ---------------------------------------------------------------- release
 
 export interface ReleaseResult extends Invariants {
-  /** The corner's jam landed (a strike on the receiver). */
+  /** The corner's jam transmitted measured force through a hand joint. */
   jammed: boolean;
   /** Receiver's depth past the line at 1.2 s, yd. */
   depth: number;
   /** Receiver's lateral displacement from his alignment at 1.2 s (+ outside), yd. */
   rerouted: number;
+  /** Duration of physics ticks carrying a nonzero hand load, seconds. */
+  loadedTime: number;
+  /** Largest 20 Hz mean hand force magnitude, kg·yd/s² (not an instantaneous peak). */
+  peakHandForce: number;
+  /** Time integral of the mean hand force magnitude, kg·yd/s. */
+  handImpulse: number;
 }
 
 /** A pressed outside receiver runs a vertical against a corner a yard off,
  * shading his inside shoulder; the corner punches as the receiver releases. */
-export function release(o: LabOptions): ReleaseResult {
-  const { sim, park, place, observe, side } = lab(o, false);
+export function release(o: LabOptions & { press?: boolean }): ReleaseResult {
+  const { sim, park, observe, side } = lab(o, false);
   const r = sim.slot('X')!;
   const cb = (['CB_W', 'CB_S'] as const).find((s) => sim.slot(s))!;
   const d = sim.slot(cb)!;
   park([r, d]);
-  // The receiver keeps his own alignment (his route is planned from it).
-  void place; void side;
+  // Rebuild the receiver's route in the mirrored receiver frame, rather
+  // than reflecting his position while retaining an unreflected waypoint.
+  if (side < 0) {
+    const runner = r.behavior as RouteRunner;
+    r.body.pos.y = FIELD_WIDTH - r.pos.y;
+    r.body.vel.y = -r.vel.y;
+    r.body.facing = -r.facing;
+    r.behavior = new RouteRunner(r, sim, runner.route, Math.sign(r.pos.y - CENTER_Y) || -1);
+  }
   const out = Math.sign(r.pos.y - CENTER_Y) || 1;
   d.body.pos = { x: sim.los + 0.9, y: r.pos.y - out * 0.4 };
   d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI; d.downUntil = -1;
   const spot = sim.defAlign.spots[cb]!;
-  spot.press = true; spot.manTarget = 'X';
+  spot.press = o.press ?? true; spot.manTarget = 'X';
   // The corner holds his ground square to the receiver until the jam.
   d.behavior = { kind: 'press', update: (a: Agent) => ({ vel: { x: 0, y: 0 }, facing: Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x) }) as MoveCommand } as never;
   const y0 = r.pos.y;
   observe();
-  const inv = runTicks(sim, [r, d], (t) => t >= 1.2, 1.2);
-  return { ...inv, jammed: sim.events.some((x) => x.type === 'jam'), depth: r.pos.x - sim.los, rerouted: out * (r.pos.y - y0) };
+  let loadedTime = 0, peakHandForce = 0, handImpulse = 0;
+  const inv = runTicks(sim, [r, d], (t) => t >= 1.2, 1.2, () => {
+    const hands = sim.world.joints.find((j) => j.kind === 'hands' && j.a === d.body && j.b === r.body);
+    if (!hands || hands.kind !== 'hands') return;
+    const force = Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0);
+    if (force > 1e-6) loadedTime += sim.dt;
+    peakHandForce = Math.max(peakHandForce, force);
+    handImpulse += force * sim.dt;
+  });
+  return { ...inv, jammed: sim.events.some((x) => x.type === 'jam'), depth: r.pos.x - sim.los, rerouted: out * (r.pos.y - y0),
+    loadedTime, peakHandForce, handImpulse };
 }

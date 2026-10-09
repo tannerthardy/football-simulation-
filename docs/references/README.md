@@ -1,5 +1,11 @@
 # Reference material
 
+[Physical contact and support evidence](physical-contact-evidence.md) records
+verified biomechanics sources, model assumptions and the proposed use of
+AddBiomechanics Dataset 1.0. It distinguishes measured forces from derived
+motion/joint dynamics. Dataset metadata is reviewed; subject files have not
+been downloaded or used to fit the engine.
+
 [football_defense_textbook.pdf](football_defense_textbook.pdf) is the user's
 uploaded, generated 31-page reference, *The Geometry of the Fit*. It is retained
 in this private repository so collaborators can consult the same aid. It is

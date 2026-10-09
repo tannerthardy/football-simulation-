@@ -47,8 +47,11 @@ export interface Support {
   feetVel: Vec2;
   /** Unit direction of a fall in progress. */
   fall: Vec2;
-  /** Pad-level leverage against current contacts, + when he is the lower man. */
-  leverage: number;
+  /** Contact-height angular acceleration as the body feels it, yd/s².
+   * This is a reduced pitch/roll capture-point contribution, not 3D rotation. */
+  tipAccel?: Vec2;
+  /** Filtered contact moment expressed as equivalent capture-point acceleration. */
+  feltTip?: Vec2;
   /** Largest deviation fraction of the fall threshold reached (diagnostic). */
   peak: number;
   /** The feet's planned yaw rate last substep (contact spin is the difference). */
@@ -78,6 +81,8 @@ export interface SupportParams {
   getUp: number;
   /** Yaw moment of inertia, kg·yd². */
   yawInertia: number;
+  /** Pitch/roll radius of gyration squared, yd² (stature-based assumption). */
+  pitchRadiusSq: number;
   /** Turf traction limit on horizontal ground force, kg·yd/s². */
   traction: number;
   /** Leg drive at zero speed (strength, traction-capped), kg·yd/s². */
@@ -101,6 +106,7 @@ export function supportParams(p: PhysicalProfile): SupportParams {
     bend: p.bend ?? 0.5,
     getUp: p.getUp ?? 0.9,
     yawInertia: p.massKg * (0.5 * p.radius) ** 2,
+    pitchRadiusSq: (0.3 * p.heightYd) ** 2,
     traction,
     pushForce: Math.min(p.power * G, traction),
     armForce: 0.75 * p.power * G,
@@ -109,12 +115,19 @@ export function supportParams(p: PhysicalProfile): SupportParams {
 
 export function newSupport(posture = 0.2): Support {
   return { xi: { x: 0, y: 0 }, state: 'up', since: -Infinity, posture, lean: { x: 0, y: 0 }, load: { x: 0, y: 0 }, felt: { x: 0, y: 0 },
-    feetLock: 0, feetVel: { x: 0, y: 0 }, fall: { x: 0, y: 0 }, leverage: 0, peak: 0, out: 0 };
+    feetLock: 0, feetVel: { x: 0, y: 0 }, fall: { x: 0, y: 0 }, peak: 0, out: 0 };
 }
 
 /** COM height at a posture: low pad level drops it by up to a quarter for a flexible athlete. */
 export function comHeightAt(s: SupportParams, posture: number): number {
   return s.comHeight * (1 - 0.25 * clamp(posture, 0, 1) * (0.4 + 0.6 * s.bend));
+}
+
+/** Upper-torso contact height. Distinct from COM: a crouch lowers the pads
+ * more than the COM. This anthropometric proxy still needs contact data;
+ * it does not add vertical forces or claim that the lower player always wins. */
+export function padHeightAt(s: SupportParams, posture: number): number {
+  return s.comHeight * (0.67 / 0.55) * (1 - 0.4 * clamp(posture, 0, 1) * (0.4 + 0.6 * s.bend));
 }
 
 /** Pendulum rate ω0 = √(g/h), 1/s. */

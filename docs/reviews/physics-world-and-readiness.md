@@ -1,5 +1,10 @@
 # Physics world, readiness pack and next physics research
 
+Latest follow-up: [contact height, press hands and physics readiness](contact-height-press-and-physics-readiness.md).
+It updates height/support geometry, press contact, the 12–16-substep decision
+and paired football evidence. Read it first; this document records the earlier
+single-world implementation and its original next-work list.
+
 Branch `claude/engine-priorities`. Commits `6ec7a81` (physics world
 integrated into play simulation), `d6474ef` (teammate spacing, in-game burst
 matched to tracking), and the commit that adds this document (inelastic

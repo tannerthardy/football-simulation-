@@ -207,6 +207,19 @@ describe('support and balance', () => {
     expect(hit(5, 0.9).peak).toBeLessThan(hit(5, 0.1).peak);
   });
 
+  it('continues sensing motion while down rather than replaying an old hit on getting up', () => {
+    const a = body(100, 0, 0), w = new World([a]);
+    a.support!.state = 'down'; a.support!.since = 0;
+    a.support!.accel = { x: 10, y: 0 };
+    a.support!.tipAccel = { x: -10, y: 0 };
+    for (let k = 0; k < 10; k++) w.step([STANDING], 0.05);
+    expect(Math.abs(a.support!.accel!.x)).toBeLessThan(0.001);
+    expect(Math.abs(a.support!.tipAccel!.x)).toBeLessThan(0.001);
+    for (let k = 0; k < 40; k++) w.step([STANDING], 0.05);
+    expect(a.support!.state).toBe('up');
+    expect(Math.hypot(a.support!.xi.x, a.support!.xi.y)).toBeLessThan(0.001);
+  });
+
   it('a lean into a load that disappears is an overextension', () => {
     const a = body(120, 0, 0), b = body(120, 0.75, 0, 0, 0, Math.PI);
     const w = new World([a, b]);
@@ -310,7 +323,12 @@ describe('holds and hands', () => {
 
 describe('angular response', () => {
   it('an off-center contact spins the body and the feet bring it back', () => {
-    const a = body(100, 0, 0, 0, 0, 0), b = body(100, 0.35, 0.45, -1, -7, -Math.PI / 2);
+    // A moderate glancing hit: a player knocked off his feet cannot use the
+    // same yaw-recovery controller (hard hits have their own fall checks).
+    const a = body(100, 0, 0, 0, 0, 0), b = body(100, 0.35, 0.45, -1, -5, -Math.PI / 2);
+    // Slow enough foot-yaw response to observe the disturbance at 20 Hz;
+    // quicker feet can already remove this modest spin inside the first tick.
+    a.profile.turnRate = 2;
     const w = new World([a, b]);
     w.step([{ vel: { x: 0, y: 0 }, facing: 0 }, FREE], 0.05);
     // Inelastic contact: friction acts with the impulse that stopped the
@@ -325,30 +343,34 @@ describe('angular response', () => {
 describe('temporal stability', () => {
   it('a hit is inelastic: the same momentum changes hands at any substep count', () => {
     const dv = (n: number) => {
-      const a = body(80, 0, 0, 6, 0), b = body(105, 0, 2.25, 6, -6, -Math.PI / 2);
+      // Isolate passive momentum transfer before either body falls. A harder
+      // high hit now causes a fall, whose ground impulses also change velocity.
+      const a = body(80, 0, 0, 6, 0), b = body(105, 0, 1.35, 6, -3, -Math.PI / 2);
       const w = new World([a, b], { substeps: n });
       for (let k = 0; k < 12; k++) w.step([FREE, FREE], 0.05);
       return -a.vel.y;
     };
-    // Perfectly inelastic sideways hit: 105/(80+105) of the 6 yd/s closing.
-    for (const n of [6, 12, 48]) expect(dv(n)).toBeCloseTo((105 / 185) * 6, 3);
+    // Perfectly inelastic sideways hit: 105/(80+105) of the 3 yd/s closing.
+    for (const n of [6, 12, 48]) expect(dv(n)).toBeCloseTo((105 / 185) * 3, 3);
   });
 
   const scene = (substeps: number, speed: number) => {
-    const a = body(110, 0, 0, speed, 0), b = body(95, 1.6, 0.25, -speed / 2, 0, Math.PI), c = body(120, 1.2, -1.4, 0, 3);
+    const a = body(110, 0, 0, speed, 0), b = body(95, 1.6, 0.25, -speed / 2, 0, Math.PI), c = body(120, 1.2, -1.4, 0, speed);
     const w = new World([a, b, c], { substeps });
     const falls: number[] = [];
     for (let k = 0; k < 16; k++) {
-      const r = w.step([{ vel: { x: speed, y: 0 }, push: 1 }, { vel: { x: -speed / 2, y: 0 }, push: 1 }, { vel: { x: 0, y: 3 } }], 0.05);
+      const r = w.step([{ vel: { x: speed, y: 0 }, push: 1 }, { vel: { x: -speed / 2, y: 0 }, push: 1 }, { vel: { x: 0, y: speed } }], 0.05);
       falls.push(...r.falls);
     }
     return { pos: [a, b, c].map((q) => ({ ...q.pos })), falls };
   };
 
   it('contact motion converges as the physics substep is refined, controllers fixed at 20 Hz', () => {
-    const ref = scene(128, 3);
+    // Compare continuous contact motion below the knockdown discontinuity;
+    // the separate threshold test exercises the transition into a fall.
+    const ref = scene(128, 2.5);
     expect(ref.falls).toEqual([]);
-    const err = (n: number) => scene(n, 3).pos.reduce((s, p, i) => s + Math.hypot(p.x - ref.pos[i].x, p.y - ref.pos[i].y), 0);
+    const err = (n: number) => scene(n, 2.5).pos.reduce((s, p, i) => s + Math.hypot(p.x - ref.pos[i].x, p.y - ref.pos[i].y), 0);
     const e8 = err(8), e16 = err(16), e32 = err(32);
     // First-order convergence: halving the substep roughly halves the error.
     expect(e16).toBeLessThan(e8 * 0.75);
