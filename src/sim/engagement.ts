@@ -94,6 +94,16 @@ function axisOf(sim: PlaySim, e: Engagement): Vec2 {
 
 const latOf = (a: Vec2): Vec2 => ({ x: -a.y, y: a.x });
 
+/** Set relative to the visible launch point, leaving space to step up.
+ * Tackles gain more depth to intersect an edge arc; the interior stays in
+ * front. This is a protection technique choice, not an elapsed-snap gate.
+ */
+export function passSetDepth(sim: PlaySim, b: Agent): number {
+  const tackle = b.slot === 'LT' || b.slot === 'RT';
+  const clearance = tackle ? 2.8 : 3.8;
+  return Math.max(tackle ? 1.4 : 1, sim.los - sim.qb.pos.x - clearance);
+}
+
 /** Signed phi from current positions (blocker relative to the defender). */
 function measurePhi(axis: Vec2, d: Agent, b: Agent): number {
   const bd = norm(sub(b.pos, d.pos));
@@ -375,7 +385,10 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   const freeHands = 0.22 + 0.4 * Math.max(0, -e.control) + (inMove ? 0.45 : 0);
   const rLat = td.lateral * wantsSide * freeHands * (0.8 + 0.4 * td.bend) * (0.5 + 0.5 * e.baseD) * (stalled ? 0.3 : 1);
   const mirror = tb.lateral * (0.45 + 0.35 * tb.feet) * (0.35 + 0.65 * e.baseB) * (1 + 0.35 * Math.max(0, e.control)) * (doubled ? 1.8 : 1) * (1 + e.repEdge) * (1 - 0.45 * wear);
-  const sep = b.profile.radius + d.profile.radius;
+  // Inside hands commonly hold the rusher at bent-arm extension. Contact
+  // does not require every rep to collapse to chest-to-chest distance.
+  const extension = Math.min(tb.arm, td.arm) / 36 * 0.3 * (0.5 + 0.5 * Math.max(0, e.control));
+  const sep = b.profile.radius + d.profile.radius + extension;
   const quarter = (Math.PI / 2) * sep;
   // The blocker slides to square up (saturating at his mirror speed).
   const restore = -Math.sign(e.phi) * Math.min(1, Math.abs(e.phi) * 4);
@@ -424,11 +437,14 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   const mass = d.profile.massKg + b.profile.massKg;
   const gravityYd = 9.81 / 0.9144;
   // Finite leg-extension speed: a driving pair cannot accelerate forever.
-  const drive = fd * gravityYd * clamp(1 - Math.max(0, incomingAxis) / (1.2 + 0.3 * td.lateral), 0.1, 1);
+  // Axial foot drive has its own velocity curve. Using lateral shuffle
+  // speed here killed most of a bull rusher's force during an ordinary
+  // backward set, even though he was still driving forward with his legs.
+  const driveSpeed = d.profile.vmax * (0.45 + 0.15 * td.feet) * fatigueFactor(d.body.energy);
+  const drive = fd * gravityYd * clamp(1 - Math.max(0, incomingAxis) / driveSpeed, 0.1, 1);
   const capacity = fb * gravityYd * anchor;
-  const isT = b.slot === 'LT' || b.slot === 'RT';
-  const belowSet = sim.los - b.pos.x < (isT ? 3.8 : 2.9);
-  const setSpeed = belowSet ? 0.7 + 0.4 * tb.feet : 0;
+  const remainingSet = Math.max(0, passSetDepth(sim, b) - (sim.los - b.pos.x));
+  const setSpeed = Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), remainingSet / 0.55);
   // Before set depth the blocker yields deliberately. After it, he tries to
   // brake the incoming momentum, limited by his actual resisting force.
   const resistance = Math.min(capacity, Math.max(0, drive + mass * (incomingAxis - setSpeed) / 0.25));
@@ -453,7 +469,11 @@ function stepPassRep(sim: PlaySim, e: Engagement): void {
   const physicalAxis = axisOf(sim, e);
   const physicalPhi = measurePhi(physicalAxis, d, b);
   e.win = Math.max(Math.abs(physicalPhi), 1 - e.baseB);
-  if (Math.abs(physicalPhi) >= 1 || e.baseB <= 0.05) {
+  // Losing the anchor is a push win, not permission to walk through a
+  // blocker still between the rusher and QB. Feet/base already reduce his
+  // resistance. Hands remain in contact until the rusher wins a real edge.
+  if (e.baseB <= 0.05) b.tags.add('anchor-lost');
+  if (Math.abs(physicalPhi) >= 1) {
     e.phi = physicalPhi;
     if (tryHold(sim, e)) return;
     beat(sim, e, physicalAxis, latOf(physicalAxis));

@@ -142,6 +142,9 @@ def main():
             reference = page.locator('#play-reference').input_value()
             assert reference_id in reference and 't=' in reference
             assert data['meta']['sourceSha256'][:12] in reference
+            # Clipboard writes finish asynchronously; wait for the UI's
+            # actual completion/fallback state instead of racing that promise.
+            page.wait_for_function("() => /Copied|selected/.test(document.getElementById('copy-status').textContent)", timeout=5000)
             assert 'Copied' in page.locator('#copy-status').inner_text() or 'selected' in page.locator('#copy-status').inner_text()
             checks.append('Play IDs search precisely; copied references include film version and timestamp')
             page.click('#reset-filters')

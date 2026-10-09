@@ -305,3 +305,31 @@ python3 -I scripts/data/bdb2025_pocket_push.py /path/to/bdb2025 out/nfl-pocket-p
 node --import tsx scripts/defense-calls.ts 32 7 4
 node --import tsx scripts/coverage-matrix.ts 2
 ```
+
+## Coverage judgment and pocket mechanics
+
+See [the follow-up](../docs/reviews/coverage-judgment-and-pocket-mechanics.md)
+and `data/reviews/coverage-judgment/`. These files contain simulated plays,
+paired source/script hashes and guard logs; NFL references remain in
+`data/reviews/playbook-depth/` and `data/reviews/error-budget/`.
+
+```sh
+node --import tsx scripts/coverage-lab.ts 3 out/coverage.json cover3_buzz,cover3_cloud,cover9,cover3_match,cover4_palms,cover1
+node --import tsx scripts/coverage-matrix.ts 2
+node --import tsx scripts/pocket-anatomy.ts 16 7 2 out/pocket.json
+node --import tsx scripts/diag/coverage-trace.ts cover3_buzz curl_flat 2775387510 7 gun_doubles_11 false
+node --import tsx scripts/calibrate.ts 32 7 4
+node --import tsx scripts/error-budget.ts collect 32 7 4 out/outcomes.json
+node --import tsx scripts/error-budget.ts budget data/reviews/error-budget/nfl-outcomes.json out/outcomes.json 20000
+node --import tsx scripts/error-budget.ts drives 32 7 4
+node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc
+```
+
+For comparisons, archive the baseline source into an ignored directory with
+`git archive`, link installed dependencies, and copy the same measurement
+scripts into it. Run from each revision's root and retain source hashes.
+Pocket attachment is a declared/observed blocker within 1.5 yd; engine active
+engagements are reported separately. Proximity is not a PFF pressure label,
+and blocker retreat since snap includes the voluntary set. Late slice counts
+exclude already ended plays. Full-game panels and the focused coverage panel
+are distinct cohorts; their play IDs are not IDs in the six-game film library.

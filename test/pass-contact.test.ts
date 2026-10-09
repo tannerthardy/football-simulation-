@@ -4,7 +4,7 @@ import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { createEngagement, updateEngagements } from '../src/sim/engagement.js';
+import { createEngagement, passSetDepth, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 function rep() {
@@ -40,6 +40,10 @@ describe('pass contact momentum and anchor', () => {
   it('a planted strong anchor holds while a clear drive advantage displaces it', () => {
     const run = (drive: number) => {
       const { sim, b, d } = rep();
+      // Establish the launch-relative set first: a blocker still kick-sliding
+      // into his set intentionally yields even against a weaker rush.
+      b.body.pos.x = sim.los - passSetDepth(sim, b);
+      d.body.pos.x = b.pos.x + b.profile.radius + d.profile.radius;
       d.profile.power *= drive;
       const e = createEngagement(sim, b, d, 'pass', null)!;
       e.nextMoveAt = Infinity; e.move = 'bull'; e.phi = 0; e.control = 0;
@@ -67,5 +71,30 @@ describe('pass contact momentum and anchor', () => {
     d.behavior = { kind: 'rush', plan: 'speed', update: () => ({ vel: { x: 0, y: 0 } }) } as typeof d.behavior;
     const e = createEngagement(sim, b, d, 'pass', null)!;
     expect(['speed', 'dip']).toContain(e.move);
+  });
+
+  it('changes the set with the observed launch point, independent of snap time', () => {
+    const { sim, b } = rep();
+    const initial = passSetDepth(sim, b);
+    sim.t = 3;
+    expect(passSetDepth(sim, b)).toBe(initial);
+    sim.qb.body.pos.x += 2;
+    expect(passSetDepth(sim, b)).toBeCloseTo(initial - 2);
+    sim.qb.body.pos.x -= 4;
+    expect(passSetDepth(sim, b)).toBeCloseTo(initial + 2);
+  });
+
+  it('a lost anchor allows push while contact survives a blocker still in the rush path', () => {
+    const { sim, b, d } = rep();
+    b.body.pos.x = sim.los - passSetDepth(sim, b);
+    d.body.pos.x = b.pos.x + b.profile.radius + d.profile.radius;
+    const e = createEngagement(sim, b, d, 'pass', null)!;
+    e.baseB = 0.01; e.phi = 0; e.control = 0; e.move = 'bull'; e.nextMoveAt = Infinity;
+    const start = b.pos.x;
+    for (let i = 0; i < 6; i++) { sim.t = i * sim.dt; updateEngagements(sim); }
+    expect(b.engagement).toBe(e);
+    expect(d.engagement).toBe(e);
+    expect(b.pos.x).toBeLessThan(start);
+    expect(b.pos.x).toBeLessThan(d.pos.x);
   });
 });

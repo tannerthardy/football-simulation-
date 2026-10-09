@@ -1,0 +1,12 @@
+20000 drives per variant from the own 25; NFL table vs simulation table
+all NFL       { pts: '1.81', td: '19.9', to: '11.7', plays: '6.3', ypp: '5.42' }
+all sim       { pts: '1.97', td: '24.6', to: '20.5', plays: '5.2', ypp: '6.25' }
+gap +0.16 points/drive. Shapley share by component (and one-at-a-time swaps):
+component     shapley   NFL+this sim   sim, fix this
+compYards       0.494          0.508          -0.482
+scramble       -0.193         -0.197           0.192
+int            -0.184         -0.175           0.191
+completion      0.109          0.155          -0.074
+sack           -0.046         -0.034           0.062
+run            -0.015         -0.017           0.011
+policy         -0.000          0.014           0.019

@@ -13,6 +13,7 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { ManCoverage, ZoneCoverage } from '../src/sim/behaviors/defense.js';
 import { RouteRunner } from '../src/sim/behaviors/receiver.js';
+import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import type { Agent } from '../src/sim/agent.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Vec2 } from '../src/core/vec.js';
@@ -23,7 +24,7 @@ if (!Number.isInteger(reps) || reps < 1) throw new Error('reps must be a positiv
 const rosterSeeds = [7, 19, 31];
 const forms = ['gun_doubles_11', 'gun_trips_11'];
 const concepts = ['slant_flat', 'quick_outs', 'curl_flat', 'mesh', 'four_verts', 'dagger'];
-const covers = ['cover0', 'cover1', 'cover2man', 'cover2:match', 'cover2:spot', 'cover3:match', 'cover3:spot', 'cover4', 'cover6'];
+const covers = process.argv[4]?.split(',') ?? ['cover0', 'cover1', 'cover2man', 'cover2:match', 'cover2:spot', 'cover3:match', 'cover3:spot', 'cover4', 'cover6'];
 const files = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? files(join(dir, e.name)) : [join(dir, e.name)]).sort();
 const hash = createHash('sha256');
 for (const file of files('src')) hash.update(file).update('\0').update(readFileSync(file)).update('\0');
@@ -35,8 +36,8 @@ function snapshot(sim: PlaySim, r: Agent): Snapshot {
     const dx = d.pos.x - r.pos.x, dy = d.pos.y - r.pos.y;
     if (Math.hypot(dx, dy) < separation) { separation = Math.hypot(dx, dy); nearest = d.slot; }
     const b = d.behavior;
-    return { slot: d.slot, job: b.kind, zone: b instanceof ZoneCoverage ? b.zone : undefined,
-      target: b instanceof ManCoverage || b instanceof ZoneCoverage ? b.target?.slot : undefined,
+    return { slot: d.slot, job: b instanceof CoverageDefender ? b.job : b.kind, zone: b instanceof ZoneCoverage || b instanceof CoverageDefender ? b.zone : undefined,
+      target: b instanceof ManCoverage || b instanceof ZoneCoverage || b instanceof CoverageDefender ? b.target?.slot : undefined,
       dx, dy, vx: d.vel.x, vy: d.vel.y, facing: d.body.facing };
   });
   return { separation, nearest, defenders };

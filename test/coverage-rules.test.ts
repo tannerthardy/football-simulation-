@@ -91,9 +91,10 @@ describe('Cover 3 match (Rip/Liz)', () => {
     expect(jobs('CB_W')).toContain('man:X');
   });
 
-  it('corner zones off a slant into his third', () => {
+  it('corner zones off a slant, then protects the exposed next vertical', () => {
     const jobsCB = run('gun_doubles_11', 'cover3_match', { 1: 'go', 2: 'go' }, { 1: 'slant', 2: 'seam' }).jobs('CB_W');
-    expect(jobsCB[jobsCB.length - 1]).toBe('zone:deep_third_w');
+    expect(jobsCB).toContain('zone:deep_third_w');
+    expect(jobsCB[jobsCB.length - 1]).toBe('man:H');
   });
 });
 

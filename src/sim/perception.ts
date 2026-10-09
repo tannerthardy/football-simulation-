@@ -14,6 +14,8 @@ export interface Perceived {
   vel: Vec2;
   stance: 'high' | 'low' | null;
   facing: number;
+  /** Age of the sampled visual state before constant-velocity prediction. */
+  age?: number;
 }
 
 export class PerceptionBuffer {
@@ -58,6 +60,6 @@ export class PerceptionBuffer {
     const vy = this.data[o + 3];
     const lag = back * this.dt;
     const stance = this.data[o + 4];
-    return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy }, stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5] };
+    return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy }, stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5], age: lag };
   }
 }

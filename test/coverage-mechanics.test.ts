@@ -101,6 +101,21 @@ describe('visible route reads', () => {
     expect(strong.vel.y).toBeGreaterThan(weak.vel.y);
     expect(new RouteObservation().read(cue(7, 0, Math.PI), 1, profile, 0.25, 1).vel).toEqual({ x: 7, y: 0 });
   });
+
+  it('corrects a stale constant-velocity image only after a plant becomes visible', () => {
+    const profile = setup().slot('X')!.profile;
+    const read = new RouteObservation();
+    read.read({ ...cue(7), age: 0.3 }, 1, profile, 0.2, 1);
+    const planted = read.read({ ...cue(6), age: 0.3 }, 1.2, profile, 0.2, 1);
+    const fresh = new RouteObservation();
+    fresh.read(cue(7), 1, profile, 0.2, 1);
+    const samePlantFresh = fresh.read(cue(6), 1.2, profile, 0.2, 1);
+    expect(planted.vel.x).toBeLessThan(samePlantFresh.vel.x);
+    expect(planted.pos.x).toBeLessThan(samePlantFresh.pos.x);
+    expect(planted.vel.x).toBeGreaterThanOrEqual(0);
+    // An unchanged stem remains unchanged even when the visual sample is old.
+    expect(read.read({ ...cue(6), age: 0.3 }, 1.4, profile, 0.2, 1).vel.x).toBe(6);
+  });
 });
 
 describe('coverage footwork and distribution', () => {
@@ -184,5 +199,19 @@ describe('coverage footwork and distribution', () => {
     const cmd = playBall(d, s, r);
     expect(Math.hypot(cmd.vel.x, cmd.vel.y)).toBeLessThan(d.profile.vmax / 2);
     expect(cmd.vel.x).toBeGreaterThan(0);
+  });
+
+  it('closes an earlier observed receiver catch rather than a reachable later ground point', () => {
+    const s = setup(), d = s.slot('CB_W')!, r = s.slot('X')!;
+    s.t = 2; s.throwAt = 1;
+    d.body.pos = { x: 55, y: 30 }; d.body.vel = { x: 0, y: 0 };
+    for (const o of s.offense) o.body.pos = { x: 35, y: 10 };
+    r.body.pos = { x: 45, y: 30 }; r.body.vel = { x: 0, y: 0 };
+    for (let i = 0; i < 24; i++) s.perception.record(s.agents);
+    s.ball = { kind: 'air', flight: { pos: { x: 43, y: 30, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
+      thrower: s.qb, target: s.slot('H')!, releaseT: 1, releaseX: 35, intended: { x: 55, y: 30, z: 1 }, arrivalT: 2.6, deflected: false, throwaway: false };
+    // The intended target deliberately differs from the visible catcher.
+    s.ballPath = [{ t: 2.2, x: 45, y: 30, z: 1.8 }, { t: 2.6, x: 55, y: 30, z: 0.4 }];
+    expect(playBall(d, s, null).vel.x).toBeLessThan(0);
   });
 });

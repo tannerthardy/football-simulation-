@@ -13,6 +13,8 @@ import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
 import { Rob, Trap, Wall } from './techniques.js';
+import { isDeepZone } from '../../playbook/alignment.js';
+import { CoverageJudgment } from './judgment.js';
 
 export class CoverageDefender implements Behavior {
   readonly reader: ReleaseReader;
@@ -24,6 +26,7 @@ export class CoverageDefender implements Behavior {
   job = '';
   /** Every job he has taken this play, with the time he took it. */
   readonly history: Array<{ t: number; job: string }> = [];
+  readonly judgment = new CoverageJudgment();
 
   constructor(
     a: Agent,
@@ -57,7 +60,8 @@ export class CoverageDefender implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const sign = this.side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
-    const d = runRule(this.rule, { a, sim, reader: this.reader, side: this.side, sign, zone: this.zone, style: this.style, state: this.state });
+    const primary = runRule(this.rule, { a, sim, reader: this.reader, side: this.side, sign, zone: this.zone, style: this.style, state: this.state });
+    const d = this.judgment.decide(a, sim, this.reader, primary, isDeepZone(this.zone));
     const key = directiveKey(d);
     if (key !== this.subKey) {
       this.sub = this.make(a, d);

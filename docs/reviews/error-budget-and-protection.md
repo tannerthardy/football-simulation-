@@ -8,6 +8,11 @@ what to work on, applies it to the current engine (building on PR #1,
 
 ## Status and where to start
 
+- Newest follow-up: [coverage judgment and pocket mechanics](coverage-judgment-and-pocket-mechanics.md).
+  Read its coverage, geometric attachment, pocket-width and game-state budget
+  regressions before tuning this branch further. Full QB mechanics remain
+  later work; keep PR #1 separate until the owner approves reconciliation.
+
 **Newer work:** [coverage-engine-and-playbook-depth.md](coverage-engine-and-playbook-depth.md)
 has the current status and next steps; this review remains the method reference.
 

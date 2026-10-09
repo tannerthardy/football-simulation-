@@ -51,7 +51,7 @@ export class Trap extends Technique {
       x: Math.min(rd.pos.x + rd.vel.x * lead + 0.6, Math.max(a.pos.x, rd.pos.x + 0.6)),
       y: clamp(rd.pos.y + rd.vel.y * lead + rd.outSign * 0.6, 0.5, FIELD_WIDTH - 0.5),
     };
-    return track(a, aim, { x: rd.vel.x * 0.8, y: rd.vel.y }, { facing: angleTo(a.pos, sim.qb.pos), speed: 1, gain: 2.4 });
+    return track(a, aim, { x: rd.vel.x * 0.8, y: rd.vel.y }, { speed: 1, gain: 2.4 });
   }
 }
 
@@ -61,13 +61,17 @@ export class Trap extends Technique {
  * back to the quarterback (the apex on #2's seam, the hook on #3).
  */
 export class Wall extends Technique {
+  private opened = false;
   protected move(a: Agent, sim: PlaySim): MoveCommand {
     const rd = this.reader.read(sim, this.target);
     if (!rd) return { vel: { x: 0, y: 0 } };
     const inside = Math.sign(sim.ballY - rd.pos.y) || 1;
     const aim = { x: Math.max(rd.pos.x + 1.2, a.pos.x - 0.4), y: clamp(rd.pos.y + inside * 0.8, 0.5, FIELD_WIDTH - 0.5) };
-    const speed = (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
-    return track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: angleTo(a.pos, sim.qb.pos), speed, gain: 2 });
+    const closing = Math.max(0, rd.vel.x - Math.max(0, a.vel.x));
+    const turnTime = Math.PI / a.profile.turnRate;
+    if (rd.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - rd.pos.x < 1.2 + closing * turnTime) this.opened = true;
+    const speed = this.opened ? 0.92 + 0.08 * a.r('zoneCoverage') : (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
+    return track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: this.opened ? undefined : angleTo(a.pos, sim.qb.pos), speed, gain: 2 });
   }
 }
 
@@ -82,8 +86,10 @@ export class Rob extends Technique {
     if (!rd) return { vel: { x: 0, y: 0 } };
     const ahead = { x: rd.pos.x + rd.vel.x * 0.5, y: rd.pos.y + rd.vel.y * 0.5 };
     const lane = lerp(sim.qb.pos, ahead, 0.85);
-    const aim = { x: clamp(lane.x, sim.los + 7, Math.max(sim.los + 7, rd.pos.x + 2)), y: clamp(lane.y, 0.5, FIELD_WIDTH - 0.5) };
-    const speed = (0.75 + 0.2 * a.r('zoneCoverage')) * unsureFactor(a);
-    return track(a, aim, { x: rd.vel.x * 0.5, y: rd.vel.y * 0.7 }, { facing: angleTo(a.pos, sim.qb.pos), speed, gain: 1.8 });
+    const floor = sim.los + Math.min(7, Math.max(1, rd.depth - 0.5));
+    const aim = { x: clamp(lane.x, floor, Math.max(floor, rd.pos.x + 1)), y: clamp(lane.y, 0.5, FIELD_WIDTH - 0.5) };
+    const carry = Math.abs(rd.vel.y) > 3 && Math.abs(rd.vel.y) > Math.abs(rd.vel.x);
+    const speed = carry ? 1 : (0.75 + 0.2 * a.r('zoneCoverage')) * unsureFactor(a);
+    return track(a, aim, { x: rd.vel.x * 0.5, y: rd.vel.y * 0.7 }, { facing: carry ? Math.atan2(rd.vel.y, rd.vel.x) : angleTo(a.pos, sim.qb.pos), speed, gain: 1.8 });
   }
 }

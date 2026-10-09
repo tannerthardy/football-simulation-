@@ -18,7 +18,7 @@ import type { MoveCommand } from '../../physics/kinematics.js';
 import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
-import { helperSupport, traits } from '../engagement.js';
+import { helperSupport, passSetDepth, traits } from '../engagement.js';
 import { goTo, runThrough, stand, track } from './common.js';
 
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -216,7 +216,7 @@ export class PassProtector implements Behavior {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
       const out = Math.sign(home - sim.ballY);
-      const depth = isOL(a) ? (isT ? 2.2 : 1.1) * Math.min(1, sim.t / 0.8) : 0;
+      const depth = isOL(a) ? passSetDepth(sim, a) : 0;
       // A back steps up beside the QB's launch point, not toward the line:
       // from under center the QB starts at the line and drops away.
       let set = isOL(a) ? { x: sim.los - 0.6 - depth, y: home + (isT ? out * 0.8 : 0) } : { x: Math.min(qb.pos.x + 1.2, sim.snapX[a.idx] + 1.5), y: qb.pos.y + Math.sign(home - qb.pos.y || 1) * 1.4 };
@@ -238,8 +238,7 @@ export class PassProtector implements Behavior {
     // Kick-slide: gain depth (tackles more than interior), staying on the
     // rusher's line to the QB at punching distance. Make the rusher come to you.
     const isT = a.slot === 'LT' || a.slot === 'RT';
-    const width = clamp(Math.abs(r.pos.y - home) / 2.5, 0, 1.5);
-    const setDepth = (isT ? 1.0 + (2.4 + width) * clamp(sim.t / 0.9, 0, 1) : 0.8 + 1.2 * clamp(sim.t / 0.7, 0, 1)) * (edgeRusher ? 1 : 0.8);
+    const setDepth = passSetDepth(sim, a);
     // Anticipate the rusher's path a beat ahead (better feet read it sooner).
     const lead = 0.15 + 0.2 * traits(a).feet;
     const rp = { x: r.pos.x + r.vel.x * lead, y: r.pos.y + r.vel.y * lead };

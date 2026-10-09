@@ -1,5 +1,11 @@
 # Coverage engine v2 and playbook depth (work in progress)
 
+**Newer follow-up:** [coverage judgment and pocket mechanics](coverage-judgment-and-pocket-mechanics.md)
+implements cue-driven help, coverage movement/catch-window fixes and the first
+launch-relative pocket-push changes. Read its measured regressions before
+continuing this plan. The offensive pool and coordinated pressure package
+remain pending.
+
 The user asked for four things: a much deeper offensive and defensive call
 pool (real plays pair a concept on one side with a different concept on the
 other; defenses play far more than stock Cover 2), much deeper coverage
@@ -42,8 +48,8 @@ Headline numbers (2022 dropbacks):
   - So plays should be built from separate side concepts plus a back route, not whole-play templates.
   - Back routes: flat on 33% of plays, angle 16%, none 29%.
 - **Pocket:**
-  - At 2.0 s the mean OL depth is 3.9 yd (4.7 at 2.5 s). Interior blockers have retreated 2.7 yd with their rusher still attached, about 0.8 yd apart.
-  - When a rusher first gets within 2 yd of the QB, his blocker is still within 1.5 yd 76% of the time. That is attached pressure on about 21% of dropbacks; ours is 1.5–3.5%.
+  - At 2.0 s mean OL depth is 3.67 yd (4.48 at 2.5 s); rounded medians are 3.9 and 4.7. Interior blocker retreat includes voluntary setting, with the rusher still about 0.8 yd away.
+  - When a defender first gets within 2 yd of the QB, his listed blocker is still within 1.5 yd 76% of the time. Attached first proximity occurs on about 21% of dropbacks. Our older 1.5–3.5% figure counted active engagements, a different definition; use the newer geometric/engagement comparison in the follow-up.
 
 ## Coverage engine v2 (done)
 

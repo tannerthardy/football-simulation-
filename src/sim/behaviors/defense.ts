@@ -17,6 +17,7 @@ import type { PlaySim } from '../playsim.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track } from './common.js';
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
+import { showsBlock } from '../coverage-cues.js';
 import { executeRunFit } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 
@@ -208,7 +209,7 @@ export class ManCoverage implements Behavior {
     }
     if (sim.ball.kind === 'air') return playBall(a, sim, R);
     const receiverCue = sim.see(a, R);
-    const blockingLook = sim.t > 0.5 && receiverCue.vel.x < 3 && Math.hypot(receiverCue.pos.x - a.pos.x, receiverCue.pos.y - a.pos.y) < 4.5;
+    const blockingLook = showsBlock(a, sim, R, receiverCue);
     if (believesRun(sim, a) && blockingLook) return runFit(a, sim, this.gap, this.gapSign);
 
     // Anticipate a stable observed stem, then lose that confidence on a break.
@@ -230,12 +231,17 @@ export class ManCoverage implements Behavior {
     const deep = seen.pos.x - sim.los;
 
     // Cushion shrinks as the route develops; press plays in phase.
-    const cushion = this.press ? 0.8 : clamp(5.5 - 1.6 * sim.t, 1.0, 5.5);
+    const developing = clamp(Math.max(0, deep) / 8, 0, 1);
+    const cushion = this.press ? 0.8 : Math.max(1, Math.min(5.5, this.initialCushion) * (1 - developing) + developing);
     // At press depth the receiver is already within 2.5 yards at the snap.
     // That alone is not a release cue: opening immediately made the corner
     // step downhill and turn twice while the receiver accelerated past him.
-    if (!this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 &&
-      (seen.pos.x > a.pos.x - 2.5 || (vx > 6 && a.pos.x - seen.pos.x < 4) || sim.t > 1.6)) this.hipsOpen = true;
+    const closing = Math.max(0, vx - Math.max(0, a.vel.x));
+    const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+    const releaseBurst = Math.max(0, (R.profile.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / R.profile.tau);
+    const consumed = a.pos.x - seen.pos.x < 1.8 + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
+    const crossing = Math.abs(seen.vel.y) > 3 && Math.abs(seen.vel.y) > Math.abs(vx);
+    if (!this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 && (consumed || crossing)) this.hipsOpen = true;
 
     let tx = seen.pos.x;
     let ty = seen.pos.y + lev;
@@ -247,7 +253,13 @@ export class ManCoverage implements Behavior {
     else if (!this.hipsOpen) tx = Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
     // low-hip under defender sits behind his hip with help over the top.
-    if (o.overTop) tx = Math.max(tx, seen.pos.x + 1.4 + 0.15 * Math.max(0, vx), Math.min(a.pos.x, seen.pos.x + 4));
+    if (o.overTop) {
+      // Keep a roof on a climbing receiver. A visible plant compresses the
+      // cushion instead of preserving four yards of empty grass forever.
+      const climbing = Math.max(0, vx);
+      const top = 0.8 + 0.15 * climbing;
+      tx = seen.pos.x + top;
+    }
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
@@ -656,6 +668,7 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
   }
   a.tags.add('onBall');
   const spot = catchSpot(a, sim);
+  const window = observedCatchWindow(a, sim);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
@@ -665,12 +678,15 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
     // A reachable ball is an arrival problem. Sprinting *through* the spot
     // every tick pulls an in-phase defender across the receiver and then
     // out of the contest as the trajectory's earliest reachable point moves.
-    if (tt <= spot.t - sim.t + 0.05) return goTo(a, spot.p);
+    // A receiver may get to the ball before this later point on its flight.
+    // Reaching where an already-caught pass would have hit the ground is not
+    // an interception opportunity. Close the actual visible catch window.
+    if (tt <= spot.t - sim.t + 0.05 && (!window || spot.t <= window.t + 0.05)) return goTo(a, spot.p);
   }
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
-  const land = arrivalPoint(sim);
+  const land = window?.p ?? arrivalPoint(sim);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
     // keeps a late defender outside the hands even when he can recover.
@@ -686,6 +702,26 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
     return { vel: { x: (dx / d) * sp, y: (dy / d) * sp } };
   }
   return spot ? runThrough(a, spot.p, { speed: 0.9 }) : stand();
+}
+
+/** First plausible receiver catch from the defender's delayed picture and
+ * the visible flight. Does not inspect the intended target or called route.
+ * This is a possibility estimate; a receiver can still drop or miss it. */
+function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number } | null {
+  const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
+    .map(r => ({ r, seen: sim.see(a, r) }));
+  for (const s of sim.ballPath) {
+    const remaining = s.t - sim.t;
+    if (remaining < 0 || s.z < 0.25) continue;
+    for (const { r, seen } of receivers) {
+      if (s.z > r.profile.maxCatchHeight * 0.92) continue;
+      const p = { x: s.x, y: s.y };
+      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + r.profile.reach) continue;
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile }, p, r.profile.reach * 0.8);
+      if (tt <= remaining) return { p, t: s.t };
+    }
+  }
+  return null;
 }
 
 /** Where the ball comes down to catch height on its current flight. */

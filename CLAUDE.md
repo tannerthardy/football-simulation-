@@ -2,6 +2,12 @@
 
 Start with these shared project references:
 
+- [Coverage judgment and pocket mechanics](docs/reviews/coverage-judgment-and-pocket-mechanics.md):
+  latest follow-up to `8ffbc24`, visible-cue help decisions, route/ball-window
+  and protection/contact corrections, paired coverage/pocket measurements and
+  remaining regressions. Continue on `claude/engine-priorities`. Full QB
+  mechanics are later work; do not push to or merge PR #1 without owner approval.
+
 - [Coverage anticipation and contact choices](docs/reviews/coverage-anticipation-and-contact-choices.md):
   latest follow-up on `claude/engine-priorities`, forced coverage comparisons,
   NFL separation by event/coverage, carrier exit decisions, and remaining
