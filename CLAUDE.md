@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [NFL references and shared support physics](docs/reviews/nfl-reference-and-support-integration.md):
+  **read first.** Same grasp landmark for active/passive pulls; exact recovery
+  ramp integration. Physics remains NOT READY: two real-technique fall
+  disagreements and unsupported contact magnitudes remain. Complete 2022–2023
+  nflverse outcomes now have conditional cells and team-season distributions;
+  FTN incompletion labels and anonymous Chiefs/Eagles body/participation seeds
+  are extracted, not fitted into player ratings or calling policy. Continue
+  local convergence, matched movement tasks, loaded run contact and feasible
+  tackle approach. Keep physics primary and PR #1 separate.
+
 - [Shared actuation and physics transfer](docs/reviews/shared-actuation-and-physics-transfer.md):
-  **read first.** One arm-force/work allowance across hand actions; finite
+  Previous implementation/evidence. One arm-force/work allowance across hand actions; finite
   reachable strikes/reels and traction-bounded turning; planar kinetic ledger.
   Five tasks use the same body capabilities without scenario strength boosts.
   Physics remains NOT READY: real-technique convergence regresses (two fall

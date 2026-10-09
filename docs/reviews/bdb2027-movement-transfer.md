@@ -4,7 +4,7 @@ The BDB2027 movement extraction now processes **all downloaded combine drills
 and all three game seasons**, rather than relying on a selected-player 2023
 audit. It is descriptive evidence for the physics/control foundation. **No
 parameters were fitted and no held-out accuracy is claimed.** The next physics
-priorities are in [the current handoff](snap-mesh-pull-and-nfl-movement.md).
+priorities are in [the current handoff](nfl-reference-and-support-integration.md).
 
 ## Cohort and provenance
 

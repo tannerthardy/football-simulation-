@@ -286,6 +286,24 @@
       "evidence": "Segment inertia reference; current whole-body pitch inertia remains an assumption.",
       "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
       "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "nflverse-2022-2023-reference",
+      "kind": "public-football-reference",
+      "sourceUrl": "https://github.com/nflverse/nflverse-data/releases",
+      "seasons": [
+        2022,
+        2023
+      ],
+      "inputDirectory": "data/raw/nflverse",
+      "extractor": "scripts/nflverse-reference.py",
+      "summary": "data/reviews/nflverse/reference.json",
+      "inputManifest": "data/reviews/nflverse/input-manifest.json",
+      "review": "docs/reviews/nfl-reference-and-support-integration.md",
+      "coverage": "Complete REG PBP, conditional outcomes and 64 team-seasons; 2022 FTN charting, snap counts and Chiefs/Eagles anonymous profile benchmarks; roster snapshots, exact GSIS/PFR crosswalk and historical combine.",
+      "status": "Downloaded, checksummed and extracted; no engine parameters, ratings or playcalling policy fitted.",
+      "attribution": "FTN Data via nflverse; FTN charting and derived charting aggregates CC-BY-SA-4.0. Upstream data lineage differs by release.",
+      "schemaReferenceCommit": "23f915a5be30415aeaa0c5c80cd23b2c69cda122"
     }
   ]
 }

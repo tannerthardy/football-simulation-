@@ -1,5 +1,9 @@
 # Shared NFL data
 
+Current physics/data status: [NFL references and shared support physics](../docs/reviews/nfl-reference-and-support-integration.md).
+Physics remains NOT READY. NFL references support conditional comparisons;
+they are not mandatory averages for every generated roster.
+
 The engine's small calibration summaries are committed in this directory.
 Every collaborator who clones the private repository receives those summaries,
 the extractors under `scripts/data/`, the source catalog in
@@ -25,6 +29,38 @@ license.
 | Supplied Big Data Bowl 2025 archive | 2022 season weeks 1–9; all-player tracking plus play/player assignment labels | `scripts/data/bdb2025.ts` | `data/raw/bdb2025/big-data-bowl-data/` |
 | Supplied Big Data Bowl 2026 analytics archive | 2023 season, 18 weeks of selected pass-play/player trajectories | `scripts/data/bdb2026.ts` | `data/raw/bdb2026/114239_nfl_competition_files_published_analytics_final/` |
 | Kaggle Big Data Bowl 2027 | 510-player draft cohort 2023–2025; combine drills, selected game trajectories 2023–2025, player-play/career labels | `scripts/data/bdb2027.py` (labels and combine coverage) | `data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027/` |
+| Public nflverse releases | Complete 2022–2023 REG PBP; 2022 FTN charting and snap counts; roster snapshots, ID crosswalk and historical combine | `scripts/nflverse-reference.py` | `data/raw/nflverse/` |
+
+## Conditional nflverse references and roster benchmarks
+
+The reviewed [reference](reviews/nflverse/reference.json) covers 66,782 clean
+scrimmage plays, 64 team-seasons and 407 situation cells. It also contains
+FTN incompletion annotations and anonymous measured Chiefs/Eagles body pairs,
+weighted by actual 2022 participation. No player ratings, physical constants
+or calling policies were fitted from these references. Definitions, counts,
+missing joins and source hashes are included; use them before comparing rates.
+The [evidence guide](reviews/nflverse/README.md) records attribution and limits.
+
+Python 3.11+ standard library only; public upstream CSVs need no Kaggle token:
+
+```sh
+python3 scripts/nflverse-reference.py --download --out out/nflverse-reference.json
+python3 -m unittest discover -s test -p test_nflverse_reference.py
+```
+
+`--download` verifies public GitHub release sizes and published hashes where
+available and records every local SHA-256. Upstream corrections may change a
+fresh result; the committed input manifest pins this reviewed snapshot.
+Without `--download`, the extractor verifies cached inputs against their local
+manifest and works offline. Raw files are ignored. FTN charting and its derived
+charting aggregates are CC-BY-SA 4.0, attributed to **FTN Data via nflverse**.
+Do not conflate nflreadr's code license with the upstream data's attribution.
+
+Sacks are included in dropbacks and excluded from throws; scrambles are excluded
+from designed runs. Outcome rows exclude accepted penalties, while live calling
+rows retain them. The yards success heuristic and model-derived EPA success
+remain separate. Team-season percentiles describe variation, not confidence
+intervals. Situation cells describe associations, not causal psychological effects.
 
 The ryurko revision is pinned to
 [`0dac66ce81e5fd22ca48f35ea6a637c523dda12b`](https://github.com/ryurko/Big-Data-Bowl/commit/0dac66ce81e5fd22ca48f35ea6a637c523dda12b).

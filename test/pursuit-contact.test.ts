@@ -10,7 +10,7 @@ import { chase, pursuitPoint } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Agent } from '../src/sim/agent.js';
 import { inBlockReach, traits } from '../src/sim/engagement.js';
-import { tryTackles, updateBond } from '../src/sim/tackle.js';
+import { afterStep as afterTackleStep, tryTackles, updateBond } from '../src/sim/tackle.js';
 
 function make(run=false) {
   return new PlaySim({offense:pickOffense(generateTeam(new Rng(11),'O','OFF'),'11'),
@@ -143,8 +143,15 @@ describe('physical tackle contact',()=>{
     const bodies=[c,d,assist];
     const before=totals(bodies);tryTackles(sim);
     expect(sim.bond?.tacklers).toEqual([d,assist]);
-    stepFree(sim,3);
     expect(totals(bodies).x).toBeCloseTo(before.x,6);expect(totals(bodies).y).toBeCloseTo(before.y,6);
+    for(let k=0;k<3;k++){
+      const prev=totals(bodies);
+      sim.world.time=sim.t;const r=sim.world.step(sim.agents.map(()=>FREE),sim.dt);sim.t+=sim.dt;
+      // Internal grasp/contact forces cancel. A member who falls can still
+      // exchange momentum with turf even when locomotion is disabled.
+      const g=bodies.reduce((s,a)=>({x:s.x+r.groundImpulse[a.idx].x,y:s.y+r.groundImpulse[a.idx].y}),{x:0,y:0});
+      expect(totals(bodies).x-prev.x).toBeCloseTo(g.x,6);expect(totals(bodies).y-prev.y).toBeCloseTo(g.y,6);
+    }
   });
   it('a whiff at full reach neither records contact nor slows the carrier',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:0};
@@ -187,13 +194,20 @@ describe('physical tackle contact',()=>{
     expect(sim.t-t0).toBeGreaterThan(.4);
     expect(sim.endSpot!.x-50).toBeGreaterThan(1.5);
   });
-  it('rules forward progress stopped when a squared-up pile stops gaining ground',()=>{
+  it('rules forward progress stopped for a held stationary carrier still on his feet',()=>{
     const {sim,c,d}=stage();d.body.pos={x:50.6,y:CENTER_Y};c.body.vel=d.body.vel={x:0,y:0};d.body.facing=Math.PI;
     park(sim,[]);observe(sim);
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
     const t0=sim.t;
-    while(sim.phase==='live'&&sim.t<t0+4)sim.tick();
+    // Isolate officiating from the world: an active pull can physically
+    // knock this carrier down first, which exercises a different rule.
+    while(sim.phase==='live'&&sim.t<t0+2){
+      afterTackleStep(sim);
+      sim.t+=sim.dt;
+      updateBond(sim,sim.bond!,sim.agents.map(()=>({vel:{x:0,y:0}})));
+    }
+    expect(c.body.support!.state).toBe('up');expect(sim.phase).toBe('dead');
     expect(sim.t-t0).toBeGreaterThan(.6);expect(sim.t-t0).toBeLessThan(1.2);
     expect(Math.abs(sim.endSpot!.x-50)).toBeLessThan(.3);
   });

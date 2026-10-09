@@ -74,6 +74,20 @@ describe('holds', () => {
     expect((a.pos.y * 90 + b.pos.y * 100) / 190).toBeCloseTo(cy, 9);
   });
 
+  it('an active pull through the centre of mass adds no tipping moment', () => {
+    const a = body(90, 0, 0), b = body(100, 0, 1.2);
+    const w = new World([a, b]);
+    w.substeps = 1;
+    // No passive grip force: isolate the moment delivered by the arms.
+    // An implicit torso grasp acts at the carrier's COM, independently of
+    // the holder's pad height. The feet remain free to isolate this load.
+    w.joints.push(grasp(a, b, { capacity: 0, pull: 1.5 }));
+    w.step([FREE, FREE], 0.05);
+    expect(a.vel.y).toBeGreaterThan(0);
+    expect(b.vel.y).toBeLessThan(0);
+    expect(Math.hypot(b.support!.tipAccel!.x, b.support!.tipAccel!.y)).toBeLessThan(1e-9);
+  });
+
   it('a hold already past its reach breaks without pulling anyone in', () => {
     const a = body(90, 0, 0), b = body(100, 0, 2);
     const w = new World([a, b]);

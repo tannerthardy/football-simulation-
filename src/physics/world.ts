@@ -559,7 +559,11 @@ export class World {
       const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i])*h;
       const fraction=this.pairImpulse(i,j,-nx*impulse,-ny*impulse,i,'grasps');
       report.armImpulse[i]+=impulse*fraction;
-      this.addLoad(i,j,nx,ny,-impulse*fraction,0,jt.height);
+      // Active reel and passive tension act through the same hand position.
+      // A leg grip cannot pull at shoulder height while its passive restraint
+      // trips the foot below it.
+      const height=jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1));
+      this.addLoad(i,j,nx,ny,-impulse*fraction,0,height,jt.legs>0);
       jt.force=(jt.force??0)+impulse*fraction;
     }
 
@@ -898,15 +902,44 @@ export class World {
     const rec = recoverySpeed(sp, lock, fat);
     // The first recovery step needs a reaction latency; until it lands,
     // gravity alone acts on a deviation beyond the base.
-    sup.out = e > rb ? sup.out + h : 0;
-    const stepping = rec * clamp(sup.out / STEP_LATENCY, 0, 1);
+    const outsideBefore = sup.out;
+    sup.out = e > rb ? outsideBefore + h : 0;
     // Inside the base the ankles and hips damp it; beyond it gravity makes it
     // diverge while stepping pulls it back (exact for the substep).
     let next: number;
     if (e <= rb) next = e * Math.exp(-w0 * h);
     else {
-      const eq = stepping / w0;
-      next = Math.max(rb, rb + eq + (e - rb - eq) * Math.exp(w0 * h));
+      // Recovery stepping ramps during the latency, not at its tick-end
+      // value for the whole interval. Integrate x' = w0*x - stepSpeed(t)
+      // exactly for the ramp, then for the constant-speed remainder.
+      const ramp = Math.min(h, Math.max(0, STEP_LATENCY - outsideBefore));
+      const rampDeviation = (t: number) => {
+        const growth = Math.expm1(w0 * t);
+        return (e-rb)*(1+growth) - rec/STEP_LATENCY *
+          (outsideBefore*growth/w0 + (growth-w0*t)/(w0*w0));
+      };
+      const deviation = rampDeviation(ramp);
+      const rest = h-ramp, eq = rec/w0;
+      if (deviation <= 0) {
+        // The recovery step reaches the controlled base during the ramp.
+        // Continue ankle/hip damping for the remainder, rather than holding
+        // him at the boundary until the next numerical step.
+        let lo=0, hi=ramp;
+        for(let k=0;k<36;k++){
+          const mid=(lo+hi)*.5;
+          if(rampDeviation(mid)>0)lo=mid;else hi=mid;
+        }
+        next=rb*Math.exp(-w0*(h-hi));
+        sup.out=0;
+      } else {
+        const endDeviation=eq+(deviation-eq)*Math.exp(w0*rest);
+        if(endDeviation <= 0){
+          // Constant recovery speed has an analytic crossing time.
+          const crossing=Math.log1p(deviation/(eq-deviation))/w0;
+          next=rb*Math.exp(-w0*(rest-crossing));
+          sup.out=0;
+        } else next=rb+endDeviation;
+      }
     }
     if (e > 1e-12) { xx *= next / e; xy *= next / e; }
     xx += 0.5 * dx; xy += 0.5 * dy;

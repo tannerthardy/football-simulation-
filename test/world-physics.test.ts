@@ -8,7 +8,7 @@ import { Rng } from '../src/core/rng.js';
 import { generatePlayer } from '../src/players/generator.js';
 import { derivePhysical, type PhysicalProfile } from '../src/players/physical.js';
 import { stepBody, type Body } from '../src/physics/kinematics.js';
-import { availability, supportParams } from '../src/physics/support.js';
+import { availability, baseRadiusAt, supportParams } from '../src/physics/support.js';
 import { World, type GraspJoint, type HandJoint, type Intent } from '../src/physics/world.js';
 
 function profile(mass: number, extra: Partial<PhysicalProfile> = {}): PhysicalProfile {
@@ -339,6 +339,35 @@ describe('angular response', () => {
 });
 
 describe('temporal stability', () => {
+  it('integrates the recovery-step ramp consistently across time subdivisions', () => {
+    const recover = (outsideFor: number, dt: number, count: number) => {
+      const b = body(100, 0, 0), w = new World([b]);
+      b.support!.xi = {x:.5,y:0};b.support!.out = outsideFor;
+      for(let k=0;k<count;k++)w.step([{vel:{x:0,y:0},free:true}],dt);
+      expect(b.support!.state).toBe('up');
+      return b.support!.xi.x;
+    };
+    // Before, across and after the 120 ms recovery latency. Tick-end stepping
+    // used over the whole step used to recover more in coarse subdivisions.
+    for(const outsideFor of [.02,.09,.13])
+      expect(recover(outsideFor,.05,1)).toBeCloseTo(recover(outsideFor,.01,5),11);
+  });
+
+  it('continues settling inside the base after recovery crosses it mid-step', () => {
+    const recover = (outsideFor:number,dt:number,count:number) => {
+      const b=body(100,0,0),w=new World([b]);
+      const base=baseRadiusAt(supportParams(b.profile),b.support!.posture);
+      b.support!.xi={x:base+.02,y:0};b.support!.out=outsideFor;
+      for(let k=0;k<count;k++)w.step([FREE],dt);
+      expect(b.support!.state).toBe('up');expect(b.support!.xi.x).toBeLessThan(base);
+      expect(b.support!.out).toBe(0);
+      return b.support!.xi.x;
+    };
+    // Crossing during the ramp and after the stepping speed has settled.
+    for(const outsideFor of [.06,.13])
+      expect(recover(outsideFor,.05,1)).toBeCloseTo(recover(outsideFor,.01,5),10);
+  });
+
   it('a hit is inelastic: the same momentum changes hands at any substep count', () => {
     const dv = (n: number) => {
       // Isolate passive momentum transfer before either body falls. A harder

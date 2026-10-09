@@ -1,7 +1,7 @@
 # Physics development and testing
 
 Current evidence and ordered work are in
-[shared actuation and physics transfer](reviews/shared-actuation-and-physics-transfer.md).
+[NFL references and shared support physics](reviews/nfl-reference-and-support-integration.md).
 Physics is still NOT READY. Shared active force limits and planar kinetic-work
 accounting are implemented; physical magnitudes and reduced support energy
 remain unvalidated. Next: the specific coupled QB/rusher hand/grasp fall disagreement;
@@ -9,6 +9,12 @@ initial run contact through get-off, OL response advantage, posture and doubles;
 achievable tackle approach. Fix the local convergence failure before raising
 resolution globally. These are work priorities, not additional tests to write
 before their mechanics exist.
+
+The latest pass repairs grasp moment geometry and integrates the recovery-step
+ramp over its actual interval. The two football fall disagreements remain.
+Use conditional NFL distributions and roster variation as references, not
+mandatory outcome targets. The matched movement task panel is the next data
+utilization step; its implementation and held-out validation remain pending.
 
 A short guide for agents working on the physics. It covers how to think about
 the physics, what the test suite is, how to make a change, and how much testing
