@@ -1,7 +1,17 @@
 # Physics development and testing
 
+Read [Sole compliance and the next support step](reviews/sole-compliance-and-next-support-step.md)
+first. Weighted finite shoe/turf compression now contributes stored energy,
+unilateral point forces and actual torque/work to the same spatial material
+solve. Independent pivot/rocking/loaded-support mechanics pass; explicit K/C
+assumptions remain uncalibrated. This is research-only and unused by `World`.
+Physics is NOT READY. Next: actual-normal friction, contact lifecycle, bounded
+spatial control/grip-foot coupling, torso-ground, coherent World replacement,
+then native fall/universal/NFL gates. Do not infer readiness from work closure,
+or turn a local material-phase estimate into an event or prestress certificate.
+
 Read [Foot contact events and the pivot barrier](reviews/foot-contact-events-and-pivot-barrier.md)
-first. Candidate geometry enclosures now reject hidden sole penetration. The
+for the preceding increment. Candidate geometry enclosures reject hidden sole penetration. The
 next barrier is sustained rotating toe/heel contact: endpoint gap and work
 closure do not ensure compatible actual endpoint velocity. Derive and validate
 one constraint-consistent contact interval before enabling one/two-point support

@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [Sole compliance and the next support step](docs/reviews/sole-compliance-and-next-support-step.md):
+  **current review.** Explicit surface energy, unilateral weighted sole forces
+  and actual material torque/work join the same 18D torso/feet/leg solve.
+  Independent one-point pivot, small-foot heel/toe rocking and loaded support
+  panels pass 9,632 intervals; the smooth rigid limit converges. Research-only:
+  no World change, friction, complete contact lifecycle or active spatial gait.
+  K/C/sole geometry are sensitivity assumptions, not NFL fits. Physics is NOT
+  READY. Next: achieved-normal friction, actual onset/release/replant, bounded
+  spatial control/grip-foot coupling, then coherent World and transfer gates.
+
 - [Foot contact events and the pivot barrier](docs/reviews/foot-contact-events-and-pivot-barrier.md):
-  **current review.** Candidate plane-root enclosures now reject hidden sole
+  Previous geometry increment. Candidate plane-root enclosures now reject hidden sole
   penetration in the research ground solve, including supplied airborne sole
   geometry. One-point pivoting remains blocked: endpoint gap/work can close
   while actual endpoint contact velocity points into turf. An independent rigid
