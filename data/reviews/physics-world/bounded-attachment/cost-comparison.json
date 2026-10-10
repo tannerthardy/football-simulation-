@@ -1,0 +1,49 @@
+{
+  "schema": "bounded-attachment-cached-cost-v1",
+  "source": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+  "measuredOrder": [
+    "linear-a",
+    "bounded",
+    "linear-b",
+    "bounded-repeat",
+    "linear-repeat"
+  ],
+  "stableReverseRepeat": [
+    {
+      "fixture": "free",
+      "boundedCpuMs": 47.925,
+      "linearCpuMs": 51.239,
+      "cpuRatio": 0.9353227034095123,
+      "boundedWallMs": 27.46439399999997,
+      "linearWallMs": 28.908726,
+      "wallRatio": 0.9500381995387818
+    },
+    {
+      "fixture": "trench",
+      "boundedCpuMs": 177.576,
+      "linearCpuMs": 176.58,
+      "cpuRatio": 1.0056405028882092,
+      "boundedWallMs": 147.41463999999996,
+      "linearWallMs": 147.14555699999983,
+      "wallRatio": 1.0018286858637542
+    },
+    {
+      "fixture": "multi-grip",
+      "boundedCpuMs": 400.15,
+      "linearCpuMs": 341.504,
+      "cpuRatio": 1.1717285888305846,
+      "boundedWallMs": 359.3156590000008,
+      "linearWallMs": 302.1049459999995,
+      "wallRatio": 1.1893736390532361
+    }
+  ],
+  "noisyFirstBoundedProcessRetained": "cost-bounded.json",
+  "uncachedABA": "uncached-cost-comparison.json",
+  "limits": [
+    "Sequential isolated fresh one-tick fixture processes; allocations/GC precede timed blocks, observer disabled.",
+    "First cached bounded process is noisy even on unchanged trench fixture; all raw blocks are retained.",
+    "Reverse repeat has unchanged trench CPU within1%; multi-grip observedCPUratio~1.172.",
+    "These observations are not confidence intervals, portable speedups, or full-game cost attribution.",
+    "Before production promotion: compare modes on source6ba with explicit bounded opt-in."
+  ]
+}

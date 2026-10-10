@@ -70,7 +70,7 @@ if (boundedComparison) {
 const labels = boundedComparison ? ['Linear', 'Bounded experiment'] : ['Baseline', 'Candidate'];
 const modeFields = (group: number) => boundedComparison
   ? { physicsMode: group === 1, preloadSha256: group === 1 ? preloadSha256 : null,
-    modeSelection: group === 1 ? 'explicit-preload diagnostic opt-in; not production' : 'production linear default' }
+    modeSelection: group === 1 ? 'explicit-preload diagnostic opt-in at recorded source' : 'recorded source linear default' }
   : {};
 const plays = inputs.flatMap((film, game) => film.plays.map((p, index) => {
   const result = p.result;
@@ -79,7 +79,7 @@ const plays = inputs.flatMap((film, game) => film.plays.map((p, index) => {
     call: `${labels[game]}${p.selection === 'diagnostic-rejected-allocation-witness' ? ' diagnostic' : ''} · ${p.offCall}`, defense: p.defCall, kind: 'run', yards: result.offenseYards,
     score: { home: 0, away: 0 }, stats: result.stats, outcome: result.outcome,
     text: `${labels[game]} · ${p.id} · source ${film.sourceBefore.slice(0, 12)} · ${result.outcome} · ${result.offenseYards.toFixed(2)} yd · ${p.selection === 'diagnostic-rejected-allocation-witness' ? 'labelled allocation-failure diagnostic; selected after observing rejected prototype' : 'fixed controlled fixture; selected before outcomes'}`
-      + (boundedComparison ? ` · ${game === 1 ? 'bounded attachment explicitly opted in by diagnostic preload; production remains linear' : 'linear attachment production default'}` : ''),
+      + (boundedComparison ? ` · ${game === 1 ? 'bounded attachment explicitly opted in by diagnostic preload at recorded source' : 'linear attachment default at recorded source'}` : ''),
     plan: { personnel: '11', formation: 'ace_11', qb: 'under', concept: RUN_BY_ID[p.run].scheme,
       playAction: false, audible: false, defPersonnel: 'base43', front: p.front, coverage: 'cover3', called: 'cover3',
       family: 'cover3', shell: 'one-high', pressure: false, rushers: 4 },
@@ -95,7 +95,7 @@ const data = {
       productionEnabled: false, scriptSha256: reports[0].scriptSha256, profilesSha256: reports[0].cohort.rosterSha256,
       inputSha256: hash(reports[0].cohort), cohortSha256: hash({ cohort: reports[0].cohort, filmIds: reports[0].filmIds }) } : {}),
     telemetryLevel: 'full', cohort: boundedComparison
-      ? `26 matched controlled fixtures: fixed12 inputs plus one explicitly labelled Counter allocation-failure diagnostic, each replayed under one engine source in Linear and Bounded experiment modes; no league estimates. Input order declares Linear followed by the explicit diagnostic preload experiment (${preloadPath}, SHA-256 ${preloadSha256}). Production has not enabled this experiment. Runtime mode was not recorded by the original film schema; mode labels preserve the declared generation commands. Compact panel companions verify unchanged source/script/input/cohort/profile pins and seven observer checks.`
+      ? `26 matched controlled fixtures: fixed12 inputs plus one explicitly labelled Counter allocation-failure diagnostic, each replayed under one engine source in Linear and Bounded experiment modes; no league estimates. Input order declares Linear followed by the explicit diagnostic preload experiment (${preloadPath}, SHA-256 ${preloadSha256}). The recorded source had a linear default; this controlled comparison predates promotion, which is documented separately in the latest physics review. All mode/default metadata refers to the recorded source. Runtime mode was not recorded by the original film schema; mode labels preserve the declared generation commands. Compact panel companions verify unchanged source/script/input/cohort/profile pins and seven observer checks.`
       : '26 matched controlled fixtures: fixed12 inputs plus one explicitly labelled Counter allocation-failure diagnostic, each replayed under two engine sources; no league estimates.',
     seed: 3, final: { home: 0, away: 0 }, quarters: [],
     home: { name: 'Controlled Offense', abbr: 'OFF', color: '#1d4f91', text: '#ffffff' },

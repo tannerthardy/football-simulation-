@@ -1,15 +1,34 @@
 # Shared NFL data
 
-Current physics/data status: [Attainable tackle timing and the next contact repair](../docs/reviews/tackle-timing-and-lower-attachment.md).
+Current physics/data status: [Bounded lower attachments and contact transfer](../docs/reviews/bounded-attachment-and-contact-transfer.md).
+
+The latest actual-World increment gives lower grips a finite point with matching
+velocity, load, directional mobility and work. It retains existing capabilities
+and force budgets, and is now the live default. The [paired evidence and commands](reviews/physics-world/bounded-attachment/README.md)
+include reduced restarts, matched tackles/runs, stretched-hold diagnosis,
+full-game guards and isolated cost. Watch [paired tackles](../viewer/bounded-attachment-tackles.html)
+or [paired runs](../viewer/bounded-attachment-runs.html); their offline ZIPs sit
+beside them. One source runs both modes: **Linear** and **Bounded experiment**.
+These are regression/mechanical observations, not additional NFL data or league
+calibration. The [paired natural field witness](../viewer/bounded-attachment-natural.html)
+and its [offline ZIP](../viewer/bounded-attachment-natural.zip) preserve identical
+earlier game history and selected pre-state; the held point survives to an
+ordinary assisted tackle. Its captions distinguish **Linear reference** from
+the new **Bounded default**; a focused browser check and decoding checks are
+retained with the evidence. The
+explicit linear option remains for comparisons. Sustained hand-contact
+refinement is the next physics priority; full anatomical feet remain paused.
+
+Previous controller increment: [Attainable tackle timing and the next contact repair](../docs/reviews/tackle-timing-and-lower-attachment.md).
 
 Tackle opportunity forecasts now use the executed movement command through the
 existing World and delayed observation. The [evidence and commands](reviews/physics-world/tackle-timing/README.md)
 retain the primary regression panel, separate braking/crossing witnesses, 144
 paired runs, four-game guards, isolated helper cost and a reproduced lower-bound
 release. Watch [26 paired tackle inspection clips](../viewer/tackle-timing-review.html)
-or their [offline ZIP](../viewer/tackle-timing-review.zip). The release is not
-fixed; a bounded attachment experiment is next, followed by sustained hand-contact
-divergence. No new physical constants or NFL averages were fitted.
+or their [offline ZIP](../viewer/tackle-timing-review.zip). That source predates
+the bounded repair above. Sustained hand-contact divergence remains.
+No new physical constants or NFL averages were fitted.
 
 Previous controller increment: [Achievable approach control and remaining contact work](../docs/reviews/approach-control-and-remaining-contact.md).
 

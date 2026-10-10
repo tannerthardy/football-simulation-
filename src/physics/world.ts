@@ -303,7 +303,7 @@ export class World {
   /** Research-only onset handling; production keeps speculative contacts. */
   readonly impactTiming: 'speculative' | 'local-sweep';
   readonly supportIntegration: 'mean' | 'integrated';
-  /** Default-off reduced lower geometry; no anatomical foot or extra force. */
+  /** Live reduced lower geometry; false retains the historical linear law. */
   readonly boundedAttachment: boolean;
   joints: Joint[] = [];
   /** World clock, seconds (the owner may set it to keep a shared clock). */
@@ -365,7 +365,7 @@ export class World {
     this.constraintWork = opts.constraintWork ?? 'per-solve';
     this.impactTiming = opts.impactTiming ?? 'speculative';
     this.supportIntegration = opts.supportIntegration ?? 'mean';
-    this.boundedAttachment = opts.boundedAttachment ?? false;
+    this.boundedAttachment = opts.boundedAttachment ?? (this.supportModel === 'legacy');
     if (this.boundedAttachment && this.supportModel !== 'legacy')
       throw new RangeError('Bounded attachments require the live held-only support lifecycle');
     const n = (this.n = bodies.length);

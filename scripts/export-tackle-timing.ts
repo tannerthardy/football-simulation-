@@ -72,7 +72,7 @@ function relativeReplay(p: Pick<TimingTackleFilmPlay, 'id' | 'result' | 'simulat
 const labels = boundedComparison ? ['Linear', 'Bounded experiment'] : ['Baseline', 'Candidate'];
 const modeFields = (group: number) => boundedComparison
   ? { physicsMode: group === 1, preloadSha256: group === 1 ? preloadSha256 : null,
-    modeSelection: group === 1 ? 'explicit-preload diagnostic opt-in; not production' : 'production linear default' }
+    modeSelection: group === 1 ? 'explicit-preload diagnostic opt-in at recorded source' : 'recorded source linear default' }
   : {};
 const panelPlays = films.flatMap((film, group) => film.plays.map((p, index) => {
   const result = relativeReplay(p), witness = p.input.group !== 'primary';
@@ -87,7 +87,7 @@ const panelPlays = films.flatMap((film, group) => film.plays.map((p, index) => {
   const observedX = result.frames!.at(-1)!.agents[initialCarrier * 3];
   const advance = (windowCensored ? observedX : result.endX) - p.initialCarrierPosition.x;
   const text = `${labels[group]} · ${p.id} · source ${film.sourceBefore.slice(0, 12)}`
-    + (boundedComparison ? ` · ${group === 1 ? 'bounded attachment explicitly opted in by diagnostic preload; production remains linear' : 'linear attachment production default'}` : '')
+    + (boundedComparison ? ` · ${group === 1 ? 'bounded attachment explicitly opted in by diagnostic preload at recorded source' : 'linear attachment default at recorded source'}` : '')
     + (windowCensored ? ` · inspection window ended live · ${advance.toFixed(2)} observed yd after staged catch; no credited gain.`
       : ` · ${result.outcome} · ${advance.toFixed(2)} credited yd after staged catch · raw LOS gain ${result.yards.toFixed(2)} yd includes the initial 10 yd lead.`)
     + (witness ? ' Retrospective diagnostic geometry; kept separate from the primary cohort.'
@@ -157,7 +157,7 @@ const brakePlays = brakeFilms.flatMap((film, group) => film.plays.map((p, index)
   const result = relativeReplay(p), advance = result.endX - p.initialCarrierPosition.x;
   const name = 'Retrospective plant/brake witness', conceptId = 'retrospectiveBrakeWitness';
   const text = `${labels[group]} · ${p.id} · source ${film.sourceBefore.slice(0, 12)} · ${result.outcome}`
-    + (boundedComparison ? ` · ${group === 1 ? 'bounded attachment explicitly opted in by diagnostic preload; production remains linear' : 'linear attachment production default'}` : '')
+    + (boundedComparison ? ` · ${group === 1 ? 'bounded attachment explicitly opted in by diagnostic preload at recorded source' : 'linear attachment default at recorded source'}` : '')
     + ` · ${advance.toFixed(2)} credited yd after staged catch · raw LOS gain ${result.yards.toFixed(2)} yd includes the initial 10 yd lead.`
     + ' Separate retrospective command-consistency witness: momentum initially closes, but the defender has already requested a plant/brake.'
     + ' Two play seeds and both mirrors share one unedited generated roster pair. Natural execution rolls, strike/grip physics and support remain active.'
@@ -191,7 +191,7 @@ const cohort = (boundedComparison ? '18 paired, fixed isolated tackle clips unde
   + 'Live inspection windows have no credited result/gain; their text shows the observed carrier advance, and completed-result filters do not include them. '
   + 'Player assignments/QB beliefs from setup scaffolding are retained state and do not mean a four-vertical/Cover 3 play is executing.'
   + (brakePlays.length ? ` Eight additional clips retain a separate retrospective plant/brake decision witness: two play seeds, both mirrors and both ${boundedComparison ? 'compared recordings' : 'sources'}. Its results are not pooled into the primary cohort.` : '')
-  + (boundedComparison ? ` Input order declares Linear followed by the explicit diagnostic preload experiment (${preloadPath}, SHA-256 ${preloadSha256}). Production has not enabled this experiment. Runtime mode was not recorded by the original film schema; mode labels preserve the declared generation commands, with unchanged source/script/input/cohort/profile checks.` : '');
+  + (boundedComparison ? ` Input order declares Linear followed by the explicit diagnostic preload experiment (${preloadPath}, SHA-256 ${preloadSha256}). The recorded source had a linear default; this controlled comparison predates promotion, which is documented separately in the latest physics review. All mode/default metadata refers to the recorded source. Runtime mode was not recorded by the original film schema; mode labels preserve the declared generation commands, with unchanged source/script/input/cohort/profile checks.` : '');
 const data = { meta: { sourceSha256: films[1].sourceBefore,
   sourceComparison: films.map((f, i) => ({ label: labels[i], sourceSha256: f.sourceBefore, ...modeFields(i) })),
   ...(boundedComparison ? { physicsMode: [false, true], preloadPath, preloadSha256, experimentOptIn: true,

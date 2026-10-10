@@ -1,0 +1,48 @@
+{
+  "schema": "bounded-attachment-cache-equivalence-v1",
+  "before": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+  "after": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+  "panels": [
+    {
+      "mode": "linear",
+      "panel": "primary",
+      "rows": 56,
+      "differentSignatures": []
+    },
+    {
+      "mode": "linear",
+      "panel": "witnesses",
+      "rows": 8,
+      "differentSignatures": []
+    },
+    {
+      "mode": "linear",
+      "panel": "runs",
+      "rows": 144,
+      "differentSignatures": []
+    },
+    {
+      "mode": "bounded",
+      "panel": "primary",
+      "rows": 56,
+      "differentSignatures": []
+    },
+    {
+      "mode": "bounded",
+      "panel": "witnesses",
+      "rows": 8,
+      "differentSignatures": []
+    },
+    {
+      "mode": "bounded",
+      "panel": "runs",
+      "rows": 144,
+      "differentSignatures": []
+    }
+  ],
+  "limits": [
+    "Cache compares exact coordinate and reach; physics law is unchanged.",
+    "Matched signatures verify sampled final physical state/results/RNG, not all possible inputs.",
+    "48 reduced restarts per mode independently preserve their full-state signatures too."
+  ]
+}

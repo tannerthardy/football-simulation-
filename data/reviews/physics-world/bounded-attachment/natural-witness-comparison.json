@@ -1,0 +1,225 @@
+{
+  "schema": "natural-lower-attachment-comparison-v1",
+  "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+  "measurementScriptSha256": "b8c3a6085a30a26a7271f4762fe00ccb1344909dba37fb314becb844757ee5b6",
+  "rosterSha256": "098565226da110ea7c34c7a10202284dc2c03d29559ceea56475086570081413",
+  "gameSeed": 1085687574,
+  "playSeed": 1293629916,
+  "playOrdinal": 31,
+  "selection": "First naturally observed lower-body-bound release in first measured seed-9 guard game; retrospective fixed trigger, not candidate outcome selection.",
+  "initialStateSha256": "10b2e8b41158a9751d95ee6529f16c0ceb059981df94756e1a92a6a27341e988",
+  "priorPhysicalPlaysVerified": 30,
+  "unobservedAndObservedBaselinePhysicalSignaturesEqual": true,
+  "baseline": {
+    "outcome": "touchdown",
+    "creditedOffenseYards": 77.5,
+    "duration": 10.8,
+    "accounting": {
+      "ticks": 216,
+      "lowerHoldReleases": 1,
+      "maxMomentumResidual": 8.001492266604651e-12,
+      "maxWorkResidual": 4.136202491622498e-11,
+      "maxMotorWorkExcess": 0,
+      "maxPassivePositiveWork": 0
+    },
+    "naturalTackleEvents": [
+      {
+        "t": 9.1,
+        "type": "tackle_wrap",
+        "a": 19,
+        "b": 7,
+        "pos": {
+          "x": 97.11,
+          "y": 16.02
+        },
+        "note": "initial"
+      },
+      {
+        "t": 9.15,
+        "type": "fall",
+        "a": 19,
+        "pos": {
+          "x": 97.52,
+          "y": 16.26
+        },
+        "note": "dive"
+      },
+      {
+        "t": 10.65,
+        "type": "tackle_wrap",
+        "a": 20,
+        "b": 7,
+        "pos": {
+          "x": 108.36,
+          "y": 22.69
+        },
+        "note": "initial"
+      },
+      {
+        "t": 10.7,
+        "type": "fall",
+        "a": 20,
+        "pos": {
+          "x": 108.78,
+          "y": 22.88
+        },
+        "note": "dive"
+      },
+      {
+        "t": 10.75,
+        "type": "touchdown",
+        "a": 7,
+        "pos": {
+          "x": 110.03,
+          "y": 23.19
+        }
+      }
+    ],
+    "firstHolderSamples": {
+      "firstCompletedHeldTick": 9.200000000000001,
+      "lastCompletedHeldTick": 9.850000000000001,
+      "tickCount": 14,
+      "maxBodyBoundFraction": 0.9468947606100176,
+      "maximumCompletedTickMeanGripForce": 803.677289604818
+    },
+    "recording": {
+      "frames": 216,
+      "telemetryFrames": 216,
+      "firstFrameTime": 0,
+      "lastFrameTime": 10.75
+    }
+  },
+  "candidate": {
+    "outcome": "tackle",
+    "creditedOffenseYards": 75.88,
+    "duration": 10.7,
+    "accounting": {
+      "ticks": 214,
+      "lowerHoldReleases": 0,
+      "maxMomentumResidual": 8.001492266604651e-12,
+      "maxWorkResidual": 4.9183768169314135e-11,
+      "maxMotorWorkExcess": 0,
+      "maxPassivePositiveWork": 0
+    },
+    "naturalTackleEvents": [
+      {
+        "t": 9.1,
+        "type": "tackle_wrap",
+        "a": 19,
+        "b": 7,
+        "pos": {
+          "x": 97.11,
+          "y": 16.02
+        },
+        "note": "initial"
+      },
+      {
+        "t": 9.15,
+        "type": "fall",
+        "a": 19,
+        "pos": {
+          "x": 97.52,
+          "y": 16.26
+        },
+        "note": "dive"
+      },
+      {
+        "t": 10.05,
+        "type": "tackle_wrap",
+        "a": 20,
+        "b": 7,
+        "pos": {
+          "x": 103.15,
+          "y": 20.42
+        },
+        "note": "assist"
+      },
+      {
+        "t": 10.25,
+        "type": "fall",
+        "a": 7,
+        "pos": {
+          "x": 105.75,
+          "y": 21.19
+        },
+        "note": "legs"
+      },
+      {
+        "t": 10.65,
+        "type": "tackle",
+        "a": 19,
+        "b": 7,
+        "pos": {
+          "x": 106.58,
+          "y": 23.05
+        }
+      }
+    ],
+    "firstHolderSamples": {
+      "firstCompletedHeldTick": 9.200000000000001,
+      "lastCompletedHeldTick": 10.700000000000001,
+      "tickCount": 31,
+      "maxBodyBoundFraction": 0.8901160186057508,
+      "maximumCompletedTickMeanGripForce": 804.3889692487439
+    },
+    "recording": {
+      "frames": 214,
+      "telemetryFrames": 214,
+      "firstFrameTime": 0,
+      "lastFrameTime": 10.65
+    }
+  },
+  "firstInvalidBaselineAttachment": {
+    "worldTimeAtOnset": 9.870833333333332,
+    "bodyPointDistanceYd": 1.1925340544014913,
+    "bodyBoundYd": 1.1825000000000003,
+    "holderPointDistanceYd": 0.6421090724204092,
+    "effectiveCapacityAtObservation": 726.4649040601157,
+    "jointImpulseAccumulatedThisTick": 9.531343734566075,
+    "inFlightFieldIsMeanForce": false,
+    "slipping": false
+  },
+  "interpretation": "The bounded material point removes the reproduced artificial release and the same exact-history football play ends in a natural assisted tackle. Ordinary retained cohorts establish non-regression. This single field witness does not estimate NFL tackle rate or justify forcing successful holds.",
+  "remainingRisks": [
+    "Bounded mapping reduces support opposition near full extension; continue examining hang-on duration, slip and natural escape.",
+    "Four full-game guards and generated rosters are small samples, and globally enabled physics changes later game histories.",
+    "The existing pass-rush/hand-fighting trajectory refinement error is unaffected.",
+    "No contact force or player-strength constants were retuned."
+  ],
+  "provenance": {
+    "file": "natural-witness.json.gz",
+    "uncompressedSha256": "d355cbb117c43b27af812a8387dc5b25c4302752e001e0857adbdbced825083b",
+    "compressedSha256": "bb8a623a393a6338c8ff5320620828cec59871ce59ccb9ab4ed83b942008ac86",
+    "uncompressedBytes": 34909616,
+    "compressedBytes": 4648289
+  },
+  "modeSelection": "Every prefix play is explicitly linear; the selected baseline stays linear, and the selected bounded candidate uses the newly promoted legacy-support production law. No research support model or physics strength changes.",
+  "productionDefault": "bounded for legacy support; research virtual-foot remains linear",
+  "promotionReproduction": {
+    "prePromotionSourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+    "finalSourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+    "checks": {
+      "baseline": {
+        "resultExact": true,
+        "tickStatesIntentsReportsExact": true,
+        "transitionsExact": true,
+        "accountingExact": true,
+        "initialCanonicalHashExact": true,
+        "physicalCanonicalHashExact": true,
+        "lastTickBodiesExact": true
+      },
+      "candidate": {
+        "resultExact": true,
+        "tickStatesIntentsReportsExact": true,
+        "transitionsExact": true,
+        "accountingExact": true,
+        "initialCanonicalHashExact": true,
+        "physicalCanonicalHashExact": true,
+        "lastTickBodiesExact": true
+      }
+    },
+    "precedingHistoryExact": true,
+    "comparisonFile": "pre-promotion-natural-witness-comparison.json",
+    "rawFile": "pre-promotion-natural-witness.json.gz"
+  }
+}

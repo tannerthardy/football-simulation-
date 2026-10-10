@@ -1,27 +1,38 @@
 # Physics development and testing
 
+Read [Bounded lower attachments and contact transfer](reviews/bounded-attachment-and-contact-transfer.md)
+first. This actual-World increment keeps held recovery and its shared force/work
+budgets, while bounding lower-grip geometry with a consistent velocity/load
+derivative. It is now the **live default**; explicit false retains the linear
+comparison law and the research backend's default is unchanged. Read the retained
+restart, matched football transfer, stretched-hold diagnosis, mode-labelled film
+and cost supporting promotion. Surviving a grip is not a tackle; conservation alone
+does not prove football realism. Keep the reduced model and resolve the actual
+contact evidence before adding anatomical complexity. Next localize the remaining
+sustained hand-contact trajectory error. Physics has not earned the final OK.
+
 Read [Attainable tackle timing and the next contact repair](reviews/tackle-timing-and-lower-attachment.md)
-first. The latest controller compares delayed observed opportunities through
+for the preceding controller increment. It compares delayed observed opportunities through
 the actual movement command and existing World. Ordinary tackle/escape guards
 remain unchanged; a separate braking witness demonstrates the corrected timing.
-The lower attachment-bound release is reproduced but **unfixed**. Next evaluate
-the bounded attachment map with matching geometry, velocity, force and work
-before enabling it; then localize sustained hand-contact divergence. Keep full
+Its lower attachment-bound diagnosis precedes the bounded repair above. The
+controller alone did not fix that contact law. Next localize sustained
+hand-contact divergence. Keep full
 3D foot/ground expansion paused. The shared model must earn changes in football
 cases without scenario-specific strength bonuses or fitting game averages.
 
 Read [Achievable approach control and remaining contact work](reviews/approach-control-and-remaining-contact.md)
 for the previous controller repair, matched film and exposed contact limits.
 Short free-movement World forecasts apply only to imminent crossing approaches.
-Next compare attainable tackle quality, isolate the lower attachment-bound
-release, and localize sustained hand-contact divergence. Keep these repairs
+Later increments above address tackle timing and the lower attachment-bound
+release. Continue with sustained hand-contact divergence. Keep repairs
 small and grounded in retained football cases; full 3D feet remain paused.
 
 Read [Recovery allocation and run-contact transfer](reviews/recovery-allocation-and-run-contact.md)
-for the latest solver implementation, paired football film and validation. Grounded
+for the preceding solver implementation, paired football film and validation. Grounded
 held and unheld recovery share actual unused drive/yaw effort, with finite
-profile-derived passive mobility. Next improve achievable approach/braking
-and localize remaining sustained-contact divergence; use the evidence gates
+profile-derived passive mobility. Later increments add approach/timing control
+and bounded attachments; use the evidence gates
 rather than treating complete biomechanics as a prerequisite. Then read
 [Physics cost-benefit and development philosophy](reviews/physics-cost-benefit-and-development-philosophy.md).
 Four independent reviews challenge the need for universal two-foot gait.

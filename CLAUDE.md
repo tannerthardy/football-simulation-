@@ -2,30 +2,41 @@
 
 Start with these shared project references:
 
+- [Bounded lower attachments and contact transfer](docs/reviews/bounded-attachment-and-contact-transfer.md):
+  **latest shipped reduced-physics increment.** The held point,
+  velocity, transmitted force, directional mobility and work share one bounded
+  geometry/Jacobian; the live default is now bounded. Explicit false retains
+  linear comparison, and the research backend keeps its old default. Read the reduced restart,
+  natural stretched-hold diagnosis, ordinary tackle guards, paired 11v11 runs,
+  cost and mode-labelled film. A matched actual-field witness earned promotion;
+  the Counter carry and inherited refinement limits remain disclosed. Next:
+  sustained hand-contact divergence. Full anatomical foot expansion remains
+  paused; no strength fitting, global resolution increase or PR #1 changes.
+
 - [Attainable tackle timing and the next contact repair](docs/reviews/tackle-timing-and-lower-attachment.md):
-  **latest controller increment.** Tackle opportunity forecasts hold the actual
+  Previous controller increment. Tackle opportunity forecasts hold the actual
   movement command through the existing World and delayed observation. Read the
   56-case primary regression panel, separately labelled crossing/braking witnesses,
-  144 paired runs, four-game guard and paired film. Next: the reproduced lower
-  attachment-bound release, then sustained hand-contact divergence. Neither is
-  fixed by timing. No anatomical expansion or force fitting; final physics OK
+  144 paired runs, four-game guard and paired film. Its reproduced lower
+  attachment-bound release is addressed by the newer increment above; sustained
+  hand-contact divergence remains. No anatomical expansion or force fitting; final physics OK
   remains pending.
 
 - [Achievable approach control and remaining contact work](docs/reviews/approach-control-and-remaining-contact.md):
   Previous controller increment. A small shortlist uses the unchanged
   World to redirect imminent crossing approaches. Read the 120-case panel,
   actual tackle follow-up, 144 paired runs, four-game guard and source-labelled
-  film. Next: attainable tackle-attempt quality, the retained low-attachment
-  bound release and sustained hand-contact divergence. No anatomical foot
+  film. Tackle timing and the low-attachment release now have the newer
+  increments above. Sustained hand-contact divergence remains. No anatomical foot
   expansion or force fitting; physics has not earned the final OK.
 
 - [Recovery allocation and run-contact transfer](docs/reviews/recovery-allocation-and-run-contact.md):
-  **latest shipped solver increment.** Grounded held and unheld recovery now
+  Previous solver increment. Grounded held and unheld recovery now
   share unused effort after drive/yaw; passive held response has finite,
   profile-derived mobility. Read the 432 mechanical trials, 144 paired runs,
   four-game guard and 26 source-labelled film clips. The rejected weak-reach
-  fall is retained. Next: achievable tackle approach/braking and the first
-  remaining sustained-contact divergence. Allow targeted football controller
+  fall is retained. Later increments add approach/tackle control and bounded
+  attachments. Allow targeted football controller
   work within shared capabilities; full 3D feet remain paused.
 
 - [Smaller live recovery model](docs/reviews/force-coupled-held-recovery.md):

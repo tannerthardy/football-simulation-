@@ -458,8 +458,8 @@ describe('production force-coupled held recovery', () => {
     expect({ ledger: report.work, motor: report.supportMotorWork, arms: report.armWork }).toEqual(work);
   });
 
-  it('unreachable held corrective state releases rather than clamping or forcing a fall', () => {
-    const a = body(0), b = body(1), world = new World([a, b]);
+  it('the linear replay option releases an unreachable attachment without clamping or forcing a fall', () => {
+    const a = body(0), b = body(1), world = new World([a, b], { boundedAttachment: false });
     const grip = hold(a, b, 50);
     world.joints.push(grip);
     world.step([stand, stand], .05);

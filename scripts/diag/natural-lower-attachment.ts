@@ -143,7 +143,9 @@ function trial(mode: 'scan' | 'control' | 'linear' | 'bounded') {
     simulateGame(structuredClone(teams[0]), structuredClone(teams[1]), { seed: gameSeed, hooks: {
       playResult(sim, kind) {
         ordinal++;
-        if (sim.world.boundedAttachment) throw new Error('Preceding history must use production linear attachments');
+        // Preserve the diagnosed linear prefix after production promotion.
+        // The selected candidate switches before its first World step.
+        Object.defineProperty(sim.world, 'boundedAttachment', { value: false });
         const initial = canonicalGraph(sim), preStateSha256 = hash(initial);
         const isSelected = mode !== 'scan' && ordinal === selection!.ordinal;
         if (isSelected && (kind !== selection!.kind || preStateSha256 !== selection!.preStateSha256 || sim.rng.key !== selection!.playSeed))

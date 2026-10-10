@@ -1,4 +1,4 @@
-/** Default-off lower attachment experiment: integration contracts exercised
+/** Production lower attachment: integration contracts exercised
  * through the actual World, without a football-specific force multiplier. */
 import { describe, expect, it } from 'vitest';
 import type { Vec2 } from '../src/core/vec.js';
@@ -95,16 +95,16 @@ function turning(side: number, substeps: number, capacity = 348) {
 }
 
 describe('bounded lower attachment in the actual World', () => {
-  it('is explicitly opt-in and cannot select the experimental virtual-foot solver', () => {
-    expect(new World([body(0)]).boundedAttachment).toBe(false);
+  it('is the live default while preserving explicit linear and research options', () => {
+    expect(new World([body(0)]).boundedAttachment).toBe(true);
     expect(new World([body(0)], { boundedAttachment: true }).boundedAttachment).toBe(true);
+    expect(new World([body(0)], { boundedAttachment: false }).boundedAttachment).toBe(false);
+    expect(new World([body(0)], { supportModel: 'virtual-foot' }).boundedAttachment).toBe(false);
     expect(() => new World([body(0)], { boundedAttachment: true, supportModel: 'virtual-foot' })).toThrow();
-    // The legacy production path must remain exactly unchanged while this
-    // experiment is being evaluated, including its support history.
-    const absent = stationary(900, 1, 12, 1, 'omit'), off = stationary(900, 1, 12, 1, false);
-    expect(absent.trajectory).toEqual(off.trajectory);
-    expect(absent.impulse).toBe(off.impulse);
-    expect(absent.motorWork).toBe(off.motorWork);
+    const absent = stationary(900, 1, 12, 1, 'omit'), bounded = stationary(900, 1, 12, 1, true);
+    expect(absent.trajectory).toEqual(bounded.trajectory);
+    expect(absent.impulse).toBe(bounded.impulse);
+    expect(absent.motorWork).toBe(bounded.motorWork);
   });
 
   it('weak, medium and strong holds transmit progressive bounded force and oppose recovery', () => {
