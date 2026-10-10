@@ -1,0 +1,41 @@
+{
+  "schema": "ol-base-film-integrity-v1",
+  "clips": 12,
+  "sourceComparison": [
+    {
+      "label": "Baseline: missing base request",
+      "sourceSha256": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+      "diagnosticScriptSha256": "683005a74c0462ebdaed263d1de00acf7eec48a6845f7509c1789c261972041c",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "440e82f0b1296bd768f59c3395510767e639c20f54ade8f4bccd29e72387f7c3",
+        "src/physics/world.ts": "6b8abedfa540b68e4b8997c14bd461dfd16e90f9b541722cf06056d26aa75b0e"
+      },
+      "inputSha256": "e03399f4b723f7ea760ad9fb3888258d2eedc4b196e7f6bb5d7881f23a07798a",
+      "profilesSha256": "646e4407f85925518031970843f3014b8c295d6d6fb63f657b5acd85cf4f272d",
+      "rawFilmSha256": "4df80dcd7240476eaf897d7a5f4ce9f9f9da5f124f380d4092d9de381b39b0e4",
+      "rawDecodedFilmSha256": "4c2b70953311c1f9311f84755f3f63662115b0c8c30a7ca6aaa8aa15525bf68f"
+    },
+    {
+      "label": "Candidate: explicit OL base request",
+      "sourceSha256": "ac876d5633b8172b7622ba65ec0579de56054df9a80c571a69e1da14b146e29c",
+      "diagnosticScriptSha256": "683005a74c0462ebdaed263d1de00acf7eec48a6845f7509c1789c261972041c",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "9c7d009c98f928287e0d0c3f173bab7bc7dcba8515a54d8e95d069bb6a7aeb73",
+        "src/physics/world.ts": "6b8abedfa540b68e4b8997c14bd461dfd16e90f9b541722cf06056d26aa75b0e"
+      },
+      "inputSha256": "e03399f4b723f7ea760ad9fb3888258d2eedc4b196e7f6bb5d7881f23a07798a",
+      "profilesSha256": "646e4407f85925518031970843f3014b8c295d6d6fb63f657b5acd85cf4f272d",
+      "rawFilmSha256": "1af7517100c3a533cb1d0afd572ad4f0cb441f2a05392141964e5c921bedf195",
+      "rawDecodedFilmSha256": "5336bc3dd38446dbb8a528a9ca5b091a3aa5bc03efa167cbec58cb1701854401"
+    }
+  ],
+  "exactFullTelemetryIncludingPhysicalPostureAndIntent": true,
+  "exactRawEventsActorsNotesTimes": true,
+  "exactInitialContextsProfilesRatingsAndWeights": true,
+  "exactContactAcquisitionSummariesAndCensoredEndpoints": true,
+  "recordedFrameTimesAndPossession": true,
+  "maxExistingPackingPositionFacingError": 0.050000000000000044,
+  "zipHtmlByteExact": true,
+  "htmlSha256": "d8ce4aa6cd11320873ea8ecda8b80d0efcb2d65040cb39a4c8a656d852d95179",
+  "zipSha256": "b4351483640474bbdf865ae9afd0df08b4673d5b2816872cc96757d0235491b8"
+}

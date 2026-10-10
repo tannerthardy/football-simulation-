@@ -1,7 +1,15 @@
 # Physics development and testing
 
-Read [Finite strike forces and slice validation](reviews/strike-force-and-slice-validation.md)
-first. Bounded strikes now use achieved midpoint travel alongside hands;
+Read [OL base and contact approach](reviews/ol-base-and-contact-approach.md)
+first. The blocker now requests the physical low stance his visible cue already
+advertised. Existing World support, finite posture transitions and movement
+costs supply the effect; no extra strength or solver detail. Read the matched
+panel, adverse guard fall and production transfer before changing approaches.
+Next test attainable contact fits with the same drive direction; the wrong-side
+WZ cutoff aim and stale regrab remain. Keep full anatomical expansion paused.
+
+Then read [Finite strike forces and slice validation](reviews/strike-force-and-slice-validation.md).
+Bounded strikes now use achieved midpoint travel alongside hands;
 force/work limits and instantaneous torso impacts are unchanged. The corrected
 slice lab validates formation/motion-side consistency and counts delivered
 strike contact separately from hand/body load and engagement labels. Its old

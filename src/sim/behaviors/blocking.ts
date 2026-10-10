@@ -15,6 +15,7 @@
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
 import { cornerSpeed, type MoveCommand } from '../../physics/kinematics.js';
+import type { Intent } from '../../physics/world.js';
 import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
@@ -618,7 +619,7 @@ export class RunBlocker implements Behavior {
     return this.plan.target;
   }
 
-  update(a: Agent, sim: PlaySim): MoveCommand {
+  update(a: Agent, sim: PlaySim): Intent {
     const plan = this.plan;
     const t = sim.t;
     this.homeY ??= a.pos.y;
@@ -642,7 +643,7 @@ export class RunBlocker implements Behavior {
       // Establish the first foot and pad angle before running through a
       // target. Zone gains lateral ground; Duo stays vertical. These are
       // technique landmarks, still subject to acceleration and collisions.
-      return track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0});
+      return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
     }
 
     let target = plan.target;
@@ -695,7 +696,16 @@ export class RunBlocker implements Behavior {
       const fit = { x: Math.max(target.pos.x - 1.2, a.pos.x), y: target.pos.y };
       return goTo(a, fit, { speed: 0.85, through: 1 });
     }
-    return this.attack(a, sim, target);
+    return this.withBase(a, this.attack(a, sim, target));
+  }
+
+  private withBase(a: Agent, command: MoveCommand): Intent {
+    // The visible low stance does not set the physical posture. Keep the
+    // existing snap base through a first-level OL approach; World supplies
+    // finite posture changes, the movement cost and actual balance. Running
+    // pullers, climbs, unassigned movement and contact techniques own theirs.
+    return isOL(a) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
+      ? { ...command, posture: .7 } : command;
   }
 
   private attack(a: Agent, sim: PlaySim, target: Agent): MoveCommand {

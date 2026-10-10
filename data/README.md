@@ -1,6 +1,13 @@
 # Shared NFL data
 
-Current physics status: [Finite strike forces and slice validation](../docs/reviews/strike-force-and-slice-validation.md).
+Current physics status: [OL base and contact approach](../docs/reviews/ol-base-and-contact-approach.md).
+The [evidence and commands](reviews/physics-world/ol-base/README.md) retain a
+matched 24-play approach panel, actual force observations and adverse cases.
+Watch the [12 paired offline clips](../viewer/ol-base.zip). The existing low
+stance now reaches physical support during first-level OL approaches. Angles,
+regrabs and assignments remain separate work; no new solver or strength fitting.
+
+Previous physics status: [Finite strike forces and slice validation](../docs/reviews/strike-force-and-slice-validation.md).
 The [new evidence and commands](reviews/physics-world/strike-contact/README.md)
 separate the physical strike repair from the corrected slice installation.
 Watch the [updated offline slice film](../viewer/motion-contact.zip). Historical

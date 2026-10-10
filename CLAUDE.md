@@ -2,8 +2,17 @@
 
 Start with these shared project references:
 
+- [OL base and contact approach](docs/reviews/ol-base-and-contact-approach.md):
+  **latest physics/controller increment.** The visible low stance had not
+  reached World during first-level OL approaches. Preserve the existing snap
+  posture through those commands; keep finite lowering, movement costs and
+  shared support/force limits. Read the matched 24-play panel and retained
+  adverse fall, 144-run guards and 12 paired clips. Next: attainable contact
+  fits while preserving the intended drive direction. A lower base does not
+  fix wrong-side cutoff aims or stale regrab decisions. Full anatomical foot
+  expansion remains paused; physics has not earned the final OK.
 - [Finite strike forces and slice validation](docs/reviews/strike-force-and-slice-validation.md):
-  **latest physics increment.** Center achieved finite strike-force travel
+  Previous numerical increment. Center achieved finite strike-force travel
   without changing force/work/reach limits or adding solver steps. Actual
   delivered strikes are now observable. The slice lab's v2 installation checks
   formation strength against staged motion and counts strike contact separately
