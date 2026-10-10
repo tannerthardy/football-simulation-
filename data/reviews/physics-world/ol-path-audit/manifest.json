@@ -1,0 +1,45 @@
+{
+  "schema": "ol-path-audit-local-boundary-v1",
+  "artifacts": {
+    "before.json.gz": {
+      "sha256": "6c4e69ce10326b93385d406ba76d4004eb8c01bd6e2ab6e8fcc52f05469fdb41",
+      "bytes": 999591,
+      "uncompressedSha256": "e7d90f656532430e87d1b11be5807907ad850fd5b3c98127b27fc61adb8cd01e",
+      "source": "d2c2a24b486194d455568ba814207aa4a659ef09cbdf680dd859da29ac4e59f0",
+      "scriptContentJsonSha256": "2356fc95c2b4c6d3ec5584ef2e28a8b7a624fc8a7dab9b56fd5f758d346099a5",
+      "signatures": {
+        "RC-R1-iz_strong-over-R-S3": "f1808ef96e9d60278b5a12064d7001fe555572c736f865f55a5d3ef7244baa47",
+        "RC-R1-wz_strong-over-R-S3": "ee5525a9851907a6f68bc606d5bb6c6757bfd82504dd6f9c0940496f39a24e10",
+        "RC-R1-power-over-R-S3": "2b6eb91c257d0d218c00d774e52c1c35ad939a26754dd92990e1bc2627228627",
+        "RC-R1-trap-over-R-S3": "896dcfe03e21e69105cff4bcb79ae49b24545f98c9d4ddd762fbd53a959671af"
+      }
+    },
+    "ownership-after.json.gz": {
+      "sha256": "39c3965112d90f05608193f99dfd4decc77c5ebc25aea3eada944e5f9eb5f532",
+      "bytes": 981471,
+      "uncompressedSha256": "1ce4ccae712ddc88d8d651733e1f6911efa9c62a9e6cb0cd6dfcadd7ceaa6731",
+      "source": "e4a9bd9dbc326cb275936fe5cf1e9d509612eb4f27240d12273b47632b46428d",
+      "scriptContentJsonSha256": "2356fc95c2b4c6d3ec5584ef2e28a8b7a624fc8a7dab9b56fd5f758d346099a5",
+      "signatures": {
+        "RC-R1-iz_strong-over-R-S3": "0539741d453e48a070929be38ed1c923a9f1dee970ab18bb51a531944cb64d59",
+        "RC-R1-wz_strong-over-R-S3": "22d35cf8aef7afab53d9acca0989d03549986ef4fd2815a08236fcad5a4306e4",
+        "RC-R1-power-over-R-S3": "2b6eb91c257d0d218c00d774e52c1c35ad939a26754dd92990e1bc2627228627",
+        "RC-R1-trap-over-R-S3": "896dcfe03e21e69105cff4bcb79ae49b24545f98c9d4ddd762fbd53a959671af"
+      }
+    },
+    "collector-at-measurement.mts": {
+      "sha256": "7e67895b91c3a150e15eaed2451a8855a161ecdc0157da0d9c37da04b766e487",
+      "bytes": 4906
+    },
+    "blocking-before.ts": {
+      "sha256": "120a32822acd212fb56a7d8870eda1f5e3b67b9f2f9b9dcd54b33b2295725f13",
+      "bytes": 41350
+    }
+  },
+  "limitations": [
+    "Before and isolated ownership-after are diagnostic boundaries, not final combined turn source. The original collector reported hash of JSON-stringified script content; retained scriptContentJsonSha256 labels that accurately. Byte hashes are separately pinned here.",
+    "Before includes unused new lab source; four fixture physical signatures match retained c02a production exactly. These pins identify aggregated concurrent workspace boundaries; no assertion that every unrelated source byte was fixed. The consumed rule, blocking snapshots, observers and exact before production signatures support the diagnosis. Final production may add carrier and hand-integration changes.",
+    "World native subdivision and bounded default were used. No preloader or force-capacity fitting was used.",
+    "No frequency, NFL or season-effect estimate; records four fixed fixtures with unobserved observer controls."
+  ]
+}

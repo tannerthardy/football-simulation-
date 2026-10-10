@@ -1,0 +1,141 @@
+{
+  "schema": "motion-contact-export-validation-v1",
+  "rawFilmSha256": "a40d57a94aa019af3c0bf637b34e75d3537043dabffb11284262f0ca4065dc8d",
+  "rawDecodedFilmSha256": "73bf1ad7dc841714feb2063f9f3f1866d71217d7db0d8348874c318bbcadb8f5",
+  "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+  "diagnosticScriptSha256": "ee01ca641f73bc4fae46a9cef9d9c8052f04af1f061a3689d9669a83b191647a",
+  "exporterSha256": "33911b1de714a194644ff7c8caeb48ef621e50bebfc3f46c58c5e9878fde04cf",
+  "templateSha256": "47481b07b447a2c4a8530c64c2bf98ab919464d8568dfcf5ef5f5671e7915239",
+  "outputSha256": "662263e41d37019b1399cc919ed60b493cee5e5ba2fdc1a8bdc21e3209601c55",
+  "fixedFilmIds": [
+    "MC-S7-wideSurface-R-V0-P12",
+    "MC-S7-wideSurface-R-V2.5-P12",
+    "MC-S7-wideSurface-R-V4-P12",
+    "MC-S7-penetratingEdge-R-V0-P12",
+    "MC-S7-penetratingEdge-R-V2.5-P12",
+    "MC-S7-penetratingEdge-R-V4-P12",
+    "MC-S7-wideSurface-L-V0-P12",
+    "MC-S7-wideSurface-L-V2.5-P12",
+    "MC-S7-wideSurface-L-V4-P12",
+    "MC-S7-penetratingEdge-L-V0-P12",
+    "MC-S7-penetratingEdge-L-V2.5-P12",
+    "MC-S7-penetratingEdge-L-V4-P12",
+    "MC-S7-initialReachNegative-R-V8-P12",
+    "MC-S7-initialReachNegative-L-V8-P12"
+  ],
+  "recordingObserverChecks": [
+    {
+      "id": "MC-S7-wideSurface-R-V0-P12",
+      "passed": true,
+      "physicalSha256": "52340c4261f7f22de3825201d27f0a226542858974aab87672096ae59ad66168",
+      "plainSha256": "52340c4261f7f22de3825201d27f0a226542858974aab87672096ae59ad66168",
+      "initialStateSha256": "bc305c29198d7364422f75db7d01fde88869cc8529a1169ac76ae4bb10b14f86",
+      "plainInitialStateSha256": "bc305c29198d7364422f75db7d01fde88869cc8529a1169ac76ae4bb10b14f86"
+    },
+    {
+      "id": "MC-S7-wideSurface-R-V2.5-P12",
+      "passed": true,
+      "physicalSha256": "6fc7f66f2977f3ec5b7bff99a5061d32855b48e02ec9226aeaa918adec1965f6",
+      "plainSha256": "6fc7f66f2977f3ec5b7bff99a5061d32855b48e02ec9226aeaa918adec1965f6",
+      "initialStateSha256": "f94ee50f6d28c455a4c3a5aceecde547fdee7188bba57c4d95aaa39858d369c5",
+      "plainInitialStateSha256": "f94ee50f6d28c455a4c3a5aceecde547fdee7188bba57c4d95aaa39858d369c5"
+    },
+    {
+      "id": "MC-S7-wideSurface-R-V4-P12",
+      "passed": true,
+      "physicalSha256": "f975927cfb9740d7becc979fb603c4c78fe3d8dcb8b3ac21be027b2a510ca8ad",
+      "plainSha256": "f975927cfb9740d7becc979fb603c4c78fe3d8dcb8b3ac21be027b2a510ca8ad",
+      "initialStateSha256": "4110c4ae8c8c24f112c3b7214655ea4645201522c58bd9e237d6ace520a67105",
+      "plainInitialStateSha256": "4110c4ae8c8c24f112c3b7214655ea4645201522c58bd9e237d6ace520a67105"
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V0-P12",
+      "passed": true,
+      "physicalSha256": "0752f8ebbec1a3db024ff3eff6160d965550dc109f71ed2f4174494a29b8bc88",
+      "plainSha256": "0752f8ebbec1a3db024ff3eff6160d965550dc109f71ed2f4174494a29b8bc88",
+      "initialStateSha256": "992c9e2baa66c1a75faeebf004aabe9b7e202c59b09556b1b0dbb76ed7a93ca8",
+      "plainInitialStateSha256": "992c9e2baa66c1a75faeebf004aabe9b7e202c59b09556b1b0dbb76ed7a93ca8"
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V2.5-P12",
+      "passed": true,
+      "physicalSha256": "1ccf688cff0498296873cde266e3b76e3da3e67daf3c3b46e9e86f67c8e5f891",
+      "plainSha256": "1ccf688cff0498296873cde266e3b76e3da3e67daf3c3b46e9e86f67c8e5f891",
+      "initialStateSha256": "77016d71fa5db832bc1b49c867fc8ba5d76d5fa2df44f250ad8ba352f9af4449",
+      "plainInitialStateSha256": "77016d71fa5db832bc1b49c867fc8ba5d76d5fa2df44f250ad8ba352f9af4449"
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V4-P12",
+      "passed": true,
+      "physicalSha256": "22d5282c5fd422050386f1c2664683141a04d5b567f7931d27783f6432e4485a",
+      "plainSha256": "22d5282c5fd422050386f1c2664683141a04d5b567f7931d27783f6432e4485a",
+      "initialStateSha256": "38dc0ec594c5db4d2bb3db3159637dcce7533e420e63c4ea47405d2106cdff93",
+      "plainInitialStateSha256": "38dc0ec594c5db4d2bb3db3159637dcce7533e420e63c4ea47405d2106cdff93"
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V0-P12",
+      "passed": true,
+      "physicalSha256": "4bd9e58d9ed6c59e495d58303bd2f38d57c0f0bbc51d518f78891a32ff174aa4",
+      "plainSha256": "4bd9e58d9ed6c59e495d58303bd2f38d57c0f0bbc51d518f78891a32ff174aa4",
+      "initialStateSha256": "63ac08111b14f05ec7f7e264ebfd301fc99b1fcde26524c94bda9d7776365be1",
+      "plainInitialStateSha256": "63ac08111b14f05ec7f7e264ebfd301fc99b1fcde26524c94bda9d7776365be1"
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V2.5-P12",
+      "passed": true,
+      "physicalSha256": "9ecb961dc613eccc807bdc0551c0b84e3eb59c961a0327c098abadce024babfe",
+      "plainSha256": "9ecb961dc613eccc807bdc0551c0b84e3eb59c961a0327c098abadce024babfe",
+      "initialStateSha256": "f37756aaa3a64794b2a5ccf70aeef4561778bbbde21287daeb5f7909936ef8f4",
+      "plainInitialStateSha256": "f37756aaa3a64794b2a5ccf70aeef4561778bbbde21287daeb5f7909936ef8f4"
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V4-P12",
+      "passed": true,
+      "physicalSha256": "fb1d7c6f6adf38cabfce51b96d1561e38564e874ed0f39bbef84b909ae3d700c",
+      "plainSha256": "fb1d7c6f6adf38cabfce51b96d1561e38564e874ed0f39bbef84b909ae3d700c",
+      "initialStateSha256": "e06426a8878a36b16f65a4f260aa9106b7b8acab41249de6c7d8eebd53136edd",
+      "plainInitialStateSha256": "e06426a8878a36b16f65a4f260aa9106b7b8acab41249de6c7d8eebd53136edd"
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V0-P12",
+      "passed": true,
+      "physicalSha256": "1329bc6c9514ab02823df6d9eceb6e47d1cc50617775fcc0b35eaaf447f1545d",
+      "plainSha256": "1329bc6c9514ab02823df6d9eceb6e47d1cc50617775fcc0b35eaaf447f1545d",
+      "initialStateSha256": "37ef99e37ce844815ba41b03e5ef4ad2dd6a6a6c751a9f528d1bf1fa09ac8f0b",
+      "plainInitialStateSha256": "37ef99e37ce844815ba41b03e5ef4ad2dd6a6a6c751a9f528d1bf1fa09ac8f0b"
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V2.5-P12",
+      "passed": true,
+      "physicalSha256": "efef67b1c2de140b90400ee942e15ea9f3bd4076893616a39ba5c94fd8b7bd06",
+      "plainSha256": "efef67b1c2de140b90400ee942e15ea9f3bd4076893616a39ba5c94fd8b7bd06",
+      "initialStateSha256": "ad2df145f5b9b3531fd4498fb51e0e8811b65afd22ab7457dba6b03155c58a0a",
+      "plainInitialStateSha256": "ad2df145f5b9b3531fd4498fb51e0e8811b65afd22ab7457dba6b03155c58a0a"
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V4-P12",
+      "passed": true,
+      "physicalSha256": "eff7f97e3ac211f9ebae2b9dedfc78658bef5d41b23bbf942cead8f875c0e146",
+      "plainSha256": "eff7f97e3ac211f9ebae2b9dedfc78658bef5d41b23bbf942cead8f875c0e146",
+      "initialStateSha256": "16e09b35eac9e6cd36435bd2c251b5850fc7e90d22caaa8e07bfdf295feac52c",
+      "plainInitialStateSha256": "16e09b35eac9e6cd36435bd2c251b5850fc7e90d22caaa8e07bfdf295feac52c"
+    },
+    {
+      "id": "MC-S7-initialReachNegative-R-V8-P12",
+      "passed": true,
+      "physicalSha256": "cf3e9487c9b643fe2f8bdabf44b99e34d9a35fcfb1620cfcd0f9de8bb9ad9ea7",
+      "plainSha256": "cf3e9487c9b643fe2f8bdabf44b99e34d9a35fcfb1620cfcd0f9de8bb9ad9ea7",
+      "initialStateSha256": "00aa9da0d7e87737fe408ebc46d7c9ebbb0aa7b37ec6046661e024edff4b8781",
+      "plainInitialStateSha256": "00aa9da0d7e87737fe408ebc46d7c9ebbb0aa7b37ec6046661e024edff4b8781"
+    },
+    {
+      "id": "MC-S7-initialReachNegative-L-V8-P12",
+      "passed": true,
+      "physicalSha256": "9c154f259a4d2476befb382d8f87e3e76cde80bfa11f19acbba17d76b682dec3",
+      "plainSha256": "9c154f259a4d2476befb382d8f87e3e76cde80bfa11f19acbba17d76b682dec3",
+      "initialStateSha256": "8815e415b0eca73f9d53750098a79498a773c4b91808e2353d8b4806d6310086",
+      "plainInitialStateSha256": "8815e415b0eca73f9d53750098a79498a773c4b91808e2353d8b4806d6310086"
+    }
+  ],
+  "scope": "Read-only export; exact raw recordings, actors, indices/events and full telemetry. Existing viewer quantizes positions/facing to0.1; no state resimulation. Neutral packing yards field is hidden, flags are clear; no down/game clock/result is fabricated."
+}

@@ -1,7 +1,26 @@
 # Physics development and testing
 
+Read [Sustained hand-force integration](reviews/hand-force-integration.md) first
+for the latest numerical repair. Continuous bounded hand forces now use their
+midpoint velocity for travel, with the existing force/work budgets; impacts
+are unchanged. Exact constant-force checks and retained football/convergence
+guards support the change without more physics steps or new body parameters.
+Remaining nonuniform refinement error is disclosed; physics still has not
+earned the final OK. [Boundary braking](reviews/carrier-boundary-control.md)
+and [combination ownership](reviews/ol-path-audit.md) fix diagnosed requests,
+not physical capabilities. Their isolated evidence is separate from the
+combined engine's football results.
+
+Use the [football stress-test plan](FOOTBALL_STRESS_TEST_PLAN.md) to choose
+actual football witnesses alongside ordinary controls. The first slice-block
+lab starts with momentum, while the long-yardage probe uses the existing
+three-rusher/eight-cover ledger. Neither implements an offensive pre-snap
+motion install, a screen package or full NFL prevent playcalling. Measure
+setup, decisions, requested motion, achieved motion and actual transmitted load
+separately; an engagement label alone does not prove a loaded block.
+
 Read [Bounded lower attachments and contact transfer](reviews/bounded-attachment-and-contact-transfer.md)
-first. This actual-World increment keeps held recovery and its shared force/work
+for the preceding increment. It keeps held recovery and its shared force/work
 budgets, while bounding lower-grip geometry with a consistent velocity/load
 derivative. It is now the **live default**; explicit false retains the linear
 comparison law and the research backend's default is unchanged. Read the retained

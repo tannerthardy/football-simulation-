@@ -1,8 +1,35 @@
 # Shared NFL data
 
-Current physics/data status: [Bounded lower attachments and contact transfer](../docs/reviews/bounded-attachment-and-contact-transfer.md).
+Current physics status: [Sustained hand-force integration](../docs/reviews/hand-force-integration.md).
 
-The latest actual-World increment gives lower grips a finite point with matching
+The latest repair centers actual bounded hand-force travel without changing
+strength or global resolution. Source/mode-labelled refinement, same-input
+run/tackle guards and validation are retained in
+[hand-force evidence](reviews/physics-world/hand-force/README.md).
+The [sideline controller repair](../docs/reviews/carrier-boundary-control.md)
+has a three-recording [offline film](../viewer/carrier-boundary.zip): parent,
+carrier-only fix, and separately labelled combined current engine. The
+[OL audit](../docs/reviews/ol-path-audit.md) retains the lost-combination trace
+and unresolved reach/cutoff approach debt.
+
+The [football stress-test plan](../docs/FOOTBALL_STRESS_TEST_PLAN.md) documents
+checked formation/motion rules and diamond/quads sources. New controlled
+slice-contact and long-yardage observations complement the existing ordinary
+football panel. They are engine tests, not new NFL observations or league-rate
+calibration. Keep NFL data conditional on situation/concept/body demands; do
+not fit physics to points or a tiny cohort's rushing averages.
+
+Watch the [14 moving slice-block inspection clips](../viewer/motion-contact.zip)
+with [contact/momentum evidence and rerun commands](reviews/physics-world/motion-contact/README.md),
+and the [four controlled third-and-27 run clips](../viewer/long-yardage-runs.zip)
+with [actual role/read ledgers and rerun commands](reviews/physics-world/long-yardage-run/README.md).
+Unzip each library and open its HTML; the clips are embedded. Acquisition and
+actual block load are recorded separately. These labs do not yet validate a
+complete presnap motion exchange or installed diamond screen.
+
+Previous physics/data status: [Bounded lower attachments and contact transfer](../docs/reviews/bounded-attachment-and-contact-transfer.md).
+
+That actual-World increment gives lower grips a finite point with matching
 velocity, load, directional mobility and work. It retains existing capabilities
 and force budgets, and is now the live default. The [paired evidence and commands](reviews/physics-world/bounded-attachment/README.md)
 include reduced restarts, matched tackles/runs, stretched-hold diagnosis,

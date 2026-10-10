@@ -2,8 +2,26 @@
 
 Start with these shared project references:
 
+- [Sustained hand-force integration](docs/reviews/hand-force-integration.md):
+  **latest shipped physics increment.** Achieved bounded hand forces now carry
+  midpoint velocity over their physical interval; instantaneous torso impacts
+  retain their timing. The retained redirect's native/refined error falls from
+  0.822 to 0.182 yd without more solver steps or force fitting. Individual
+  numerical regressions and remaining convergence debt are retained. Read the
+  paired run guards and exact constant-force checks before further solver work.
+  Two diagnosed controller fixes also ship: [boundary braking](docs/reviews/carrier-boundary-control.md)
+  and [combination ownership](docs/reviews/ol-path-audit.md). Do not treat better
+  contact numerics as proof of correct OL footwork or pursuit.
+- [Football stress-test plan](docs/FOOTBALL_STRESS_TEST_PLAN.md): motion split-zone,
+  hard block approaches, combo/climb, diamond-screen traffic, long-yardage runs
+  and boundary/multiple-pursuer tests, with ordinary controls. The executable
+  slice witness tests snap-time momentum; actual offensive motion/screens are
+  still unimplemented. The long-yardage probe audits three rush/eight cover
+  using an existing dropped edge, not a complete NFL prevent package. Keep
+  assignments, reads, requests and physical execution separately observable.
+
 - [Bounded lower attachments and contact transfer](docs/reviews/bounded-attachment-and-contact-transfer.md):
-  **latest shipped reduced-physics increment.** The held point,
+  Previous shipped reduced-physics increment. The held point,
   velocity, transmitted force, directional mobility and work share one bounded
   geometry/Jacobian; the live default is now bounded. Explicit false retains
   linear comparison, and the research backend keeps its old default. Read the reduced restart,

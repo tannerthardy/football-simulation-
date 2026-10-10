@@ -646,7 +646,14 @@ export class RunBlocker implements Behavior {
     }
 
     let target = plan.target;
-    if (!target || target.isDown(t) || (target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && plan.kind !== 'combo')) {
+    // Either member can land first. The covered owner's drive/reach/down
+    // label does not make his partner's contact somebody else's block.
+    // Keep the shared responsibility until the combination read releases it;
+    // ordinary reach and useful helper contact still decide whether he joins.
+    const partnerOwns = target?.engagement && plan.combination && !plan.combination.released
+      && plan.combination.defender === target && plan.combination.members.includes(a)
+      && plan.combination.members.includes(target.engagement.blocker);
+    if (!target || target.isDown(t) || (target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
       if (t >= this.retarget) {
         this.retarget = t + a.mind.decisionInterval;
         plan.target = target = this.findWork(a, sim);

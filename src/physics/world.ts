@@ -298,6 +298,9 @@ export class World {
   /** Production uses analytic recovery except during a lower hold. The
    * global averaged-motor mode remains a research comparison. */
   readonly supportModel: 'legacy' | 'virtual-foot';
+  /** Sustained bounded hand force acts over the interval, unlike an impact.
+   * The end rule is retained for source-matched numerical comparisons. */
+  readonly handIntegration: 'end' | 'centered';
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -358,9 +361,10 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
+    this.handIntegration = opts.handIntegration ?? 'centered';
     this.supportModel = opts.supportModel ?? 'legacy';
     this.constraintWork = opts.constraintWork ?? 'per-solve';
     this.impactTiming = opts.impactTiming ?? 'speculative';
@@ -966,6 +970,20 @@ export class World {
           : undefined);
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
         if (jt.kind === 'hands') {
+          if (this.handIntegration === 'centered') {
+            // These are achieved finite-force impulses, accumulated over h,
+            // rather than instantaneous torso impacts. Carry their midpoint
+            // velocity over the interval: the old end velocity adds a
+            // spurious half-impulse of travel on every solver substep. Use the
+            // final net row, including work-limited corrections and tangent
+            // steering, so iterations/duplicate constraints add no travel.
+            const x = r.nx * r.ln - r.ny * r.lt;
+            const y = r.ny * r.ln + r.nx * r.lt;
+            this.travelAdjustX[r.i] += .5 * x / this.mass[r.i];
+            this.travelAdjustY[r.i] += .5 * y / this.mass[r.i];
+            this.travelAdjustX[r.j] -= .5 * x / this.mass[r.j];
+            this.travelAdjustY[r.j] -= .5 * y / this.mass[r.j];
+          }
           if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(r.ln,r.lt);
           else { report.armImpulse[r.actor]+=Math.abs(r.ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
           jt.normalForce = (jt.normalForce ?? 0) + r.ln;
@@ -985,7 +1003,8 @@ export class World {
       }
     }
 
-    // ---- 3. integrate positions (trapezoidal in the ground force)
+    // ---- 3. integrate positions (ground and sustained hands use midpoint
+    // velocity; instantaneous torso impacts keep their impulse timing)
     for (const i of ids) {
       const b = bs[i];
       this.travelVx[i] = b.vel.x - 0.5 * this.amx[i] * h + this.travelAdjustX[i];
