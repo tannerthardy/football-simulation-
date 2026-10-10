@@ -1,6 +1,11 @@
 # Shared NFL data
 
-Current physics/data status: [Constraint work, impact timing and physical support](../docs/reviews/constraint-work-and-impact-timing.md).
+Current physics/data status: [Finite feet and the next physical foundation](../docs/reviews/finite-support-foundation.md).
+The [finite support evidence and commands](reviews/physics-world/finite-support/README.md)
+cover the unused kernel's finite lifecycle, coupled grip/ground work, independent
+budget stress and explicit rejection counts. Production support is unchanged.
+Physics is NOT READY; local active-set failures, nominal gait and achieved-support
+balance remain before World integration.
 Physics remains NOT READY. NFL references support conditional comparisons;
 they are not mandatory averages for every generated roster.
 

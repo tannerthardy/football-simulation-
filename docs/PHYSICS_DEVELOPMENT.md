@@ -1,7 +1,16 @@
 # Physics development and testing
 
+Read [Finite feet and the next physical foundation](reviews/finite-support-foundation.md)
+first for the current increment. A finite plant/swing kernel now couples grip,
+ground and bounded motor response with persistent support identities and actual
+landing. It is unused by World. Physics is NOT READY: retained late-transfer,
+active-set and mirror-status failures prevent promotion. Next: local constrained
+solve, nominal gait with one shared motor budget, then achieved-support balance.
+Raw capture-point substitution is incompatible with the present nominal-gait
+error state. Do not raise global resolution or tune forces to game outcomes.
+
 Read [Constraint work, impact timing and physical support](reviews/constraint-work-and-impact-timing.md)
-first for the current source and evidence. Per-solve correction work now keeps
+for the preceding production source and evidence. Per-solve correction work now keeps
 numerical guesses separate from real muscle actions. Local onset splitting and
 integrated filtered foot response remain experiments; sustained fall disagreements
 remain. Physics is NOT READY. The finite two-slot support/ground/grip lifecycle

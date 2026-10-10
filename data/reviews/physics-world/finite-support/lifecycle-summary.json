@@ -1,0 +1,4141 @@
+{
+  "sourceSha256": "4f30952b05e5f6962ab49c66aa4eb7df6d366728e0f5eb0b96e98b13e65e3bfc",
+  "nodeVersion": "v22.23.3",
+  "duration": 0.4,
+  "baseProfile": {
+    "massKg": 100,
+    "radius": 0.3,
+    "reach": 1,
+    "heightYd": 2.05,
+    "vmax": 9,
+    "tau": 1.3,
+    "brake": 6,
+    "lateral": 6,
+    "turnRate": 8,
+    "backpedal": 0.6,
+    "shuffle": 0.55,
+    "maxCatchHeight": 3,
+    "reactReach": 2.6,
+    "reactionTime": 0.25,
+    "power": 100,
+    "balance": 0.5,
+    "bend": 0.5,
+    "stepSpeed": 3.4
+  },
+  "variants": {
+    "base": {},
+    "strong": {
+      "power": 130
+    },
+    "heavy": {
+      "massKg": 125
+    },
+    "wideBase": {
+      "balance": 1
+    }
+  },
+  "capacities": {
+    "free": 0,
+    "moving": 0,
+    "weak-hold": 20,
+    "medium-hold": 200,
+    "strong-hold": 900
+  },
+  "note": "Planar massless-foot research kernel. Prescribed quasi-static loads; finite stroke lands at actual flat-ground point. No running gait, vertical dynamics, falls, World selection or football-technique validation. Rejected ticks rollback; their reports remain diagnostic candidates.",
+  "enabled": {
+    "summary": {
+      "cases": 160,
+      "completed": 138,
+      "rejected": 22,
+      "contractViolations": 0,
+      "mirrorStatusDisagreements": 2,
+      "maxMirrorBodyErrorYd": 1.3280522618418426e-13,
+      "maxBodyErrorVsFineYd": 0.019095502435446613,
+      "maximaOfCompleted": {
+        "workResidual": 4.3726182589382594e-14,
+        "momentumResidual": 7.815970093361102e-14,
+        "passiveWork": 1.322568057933317e-11,
+        "reachViolation": 0,
+        "tractionFraction": 0.8299391801876905,
+        "commandFraction": 1,
+        "motorWorkExcess": 0,
+        "iterations": 133,
+        "stiffnessRatio": 0.2296158309606851
+      }
+    },
+    "comparisons": [
+      {
+        "condition": "free",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "moving",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.00967429682448253
+      },
+      {
+        "condition": "moving",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.004041547773701588
+      },
+      {
+        "condition": "moving",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0003508178801169756
+      },
+      {
+        "condition": "moving",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0006790385927227065
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.00020964767287273467
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 5.432709916230247e-15,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.3877787807814457e-17,
+        "bodyErrorVsFineYd": 0.005512027633025452
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.9024223371368218e-16,
+        "bodyErrorVsFineYd": 0.001754459324702087
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": true,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 3.2390619290095524e-17,
+        "bodyErrorVsFineYd": 0.018762925333905098
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 2.9958528781297536e-17,
+        "bodyErrorVsFineYd": 0.0020526464265072084
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 5.53285429614943e-15,
+        "bodyErrorVsFineYd": 0.0006667658402920011
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 2.077573087023801e-15,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "moving",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.008632080801698888
+      },
+      {
+        "condition": "moving",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0036138903552697457
+      },
+      {
+        "condition": "moving",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0003610451278551405
+      },
+      {
+        "condition": "moving",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 8.673617379884035e-19,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 8.673617379884035e-19,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 6.938893903907228e-18,
+        "bodyErrorVsFineYd": 0.005526546082077612
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 2.318283870792219e-16,
+        "bodyErrorVsFineYd": 0.001724221327708866
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.0408340855860843e-17,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.0625181290357943e-17,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 4.336808689942018e-18,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.6593407254550426e-14,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": true,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "free",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "moving",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.011510416522695396
+      },
+      {
+        "condition": "moving",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.004820777187778846
+      },
+      {
+        "condition": "moving",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0004037450969215997
+      },
+      {
+        "condition": "moving",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0005216643287605555
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 8.673617379884035e-19,
+        "bodyErrorVsFineYd": 0.00017165726446113615
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.3904866443919908e-17,
+        "bodyErrorVsFineYd": 0.004387926351078172
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.2816443718723412e-16,
+        "bodyErrorVsFineYd": 0.0013133720425048468
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 3.776111963377192e-14,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 2.816255578577367e-17,
+        "bodyErrorVsFineYd": 0.017457217217915006
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.0408340855860843e-17,
+        "bodyErrorVsFineYd": 0.0032765405608266153
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 3.0833055983622804e-14,
+        "bodyErrorVsFineYd": 0.0005677448127872559
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 7.152448122690996e-17,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "moving",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.00967429682448253
+      },
+      {
+        "condition": "moving",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.004041547773701588
+      },
+      {
+        "condition": "moving",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0003508178801169756
+      },
+      {
+        "condition": "moving",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.734723475976807e-18,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 4.336808689942018e-19,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.3010426069826053e-18,
+        "bodyErrorVsFineYd": 0.005524059472104723
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 5.722108267010164e-15,
+        "bodyErrorVsFineYd": 0.0017561024871584952
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 4.334340885762705e-16,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.3444106938820255e-17,
+        "bodyErrorVsFineYd": 0.019095502435446613
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 4.336808689942018e-18,
+        "bodyErrorVsFineYd": 0.0021198223856405927
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 6.8386051952172264e-15,
+        "bodyErrorVsFineYd": 0.0006584863139809693
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 1.3280522618418426e-13,
+        "bodyErrorVsFineYd": 0
+      }
+    ],
+    "rejectedCases": [
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 95,
+          "maxImpulseChange": 5.059119105830882e-08,
+          "maxPassiveWork": 3.9454112885661557e-10,
+          "maxReachViolation": 0,
+          "workResidual": 4.9986782910520885e-20,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 95,
+          "maxImpulseChange": 5.05911910514414e-08,
+          "maxPassiveWork": 3.945411280198709e-10,
+          "maxReachViolation": 0,
+          "workResidual": -6.7128033154151e-20,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 83,
+          "maxImpulseChange": 8.867081961638321e-08,
+          "maxPassiveWork": 1.1362865735277846e-08,
+          "maxReachViolation": 0,
+          "workResidual": 1.1275702593849246e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 83,
+          "maxImpulseChange": 8.867081966764936e-08,
+          "maxPassiveWork": 1.1362865701534085e-08,
+          "maxReachViolation": 0,
+          "workResidual": -8.673617379884035e-19,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.3100000000000002,
+        "interval": {
+          "dt": 0.0001470588235295534,
+          "iterations": 256,
+          "coupledUpdates": 256,
+          "maxImpulseChange": 8.368349503596713e-05,
+          "maxPassiveWork": 6.297689962835723e-19,
+          "maxReachViolation": 0,
+          "workResidual": -1.849919956803392e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 86,
+          "maxImpulseChange": 4.489570579342737e-08,
+          "maxPassiveWork": 2.9732049184753796e-10,
+          "maxReachViolation": 0,
+          "workResidual": -3.596116014286003e-21,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.3100000000000002,
+        "interval": {
+          "dt": 0.0001470588235295534,
+          "iterations": 256,
+          "coupledUpdates": 256,
+          "maxImpulseChange": 2.897012892312409e-06,
+          "maxPassiveWork": 1.71021753902048e-12,
+          "maxReachViolation": 0,
+          "workResidual": 1.3751050503081532e-20,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 86,
+          "maxImpulseChange": 4.489570579342737e-08,
+          "maxPassiveWork": 2.973204916864166e-10,
+          "maxReachViolation": 0,
+          "workResidual": 3.851513198290579e-20,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.3100000000000002,
+        "interval": {
+          "dt": 0.0001470588235295534,
+          "iterations": 256,
+          "coupledUpdates": 256,
+          "maxImpulseChange": 2.8970128923187357e-06,
+          "maxPassiveWork": 1.7102175385485348e-12,
+          "maxReachViolation": 0,
+          "workResidual": 1.4306915874717167e-20,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 74,
+          "maxImpulseChange": 7.140431749543465e-08,
+          "maxPassiveWork": 7.841797229577692e-09,
+          "maxReachViolation": 0,
+          "workResidual": 1.734723475976807e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 74,
+          "maxImpulseChange": 7.140431749543465e-08,
+          "maxPassiveWork": 7.841797249566856e-09,
+          "maxReachViolation": 0,
+          "workResidual": 7.806255641895632e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.3100000000000002,
+        "interval": {
+          "dt": 0.0001470588235295534,
+          "iterations": 256,
+          "coupledUpdates": 256,
+          "maxImpulseChange": 6.307511714754372e-05,
+          "maxPassiveWork": 2.809284347256726e-09,
+          "maxReachViolation": 0,
+          "workResidual": 1.9996753818779522e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 113,
+          "maxImpulseChange": 3.831997594483522e-08,
+          "maxPassiveWork": 2.496952653359333e-10,
+          "maxReachViolation": 0,
+          "workResidual": -2.416217316734239e-19,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 113,
+          "maxImpulseChange": 3.831997594172204e-08,
+          "maxPassiveWork": 2.496952656209479e-10,
+          "maxReachViolation": 0,
+          "workResidual": -2.0579426459706776e-19,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 78,
+          "maxImpulseChange": 7.872207001512205e-08,
+          "maxPassiveWork": 1.10070217763811e-08,
+          "maxReachViolation": 0,
+          "workResidual": 2.6020852139652106e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 78,
+          "maxImpulseChange": 7.872207003354237e-08,
+          "maxPassiveWork": 1.1007021816505738e-08,
+          "maxReachViolation": 0,
+          "workResidual": -2.0816681711721685e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 124,
+          "maxImpulseChange": 4.4086396598248156e-08,
+          "maxPassiveWork": 2.1236174141170198e-10,
+          "maxReachViolation": 0,
+          "workResidual": -1.5805301855568692e-20,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 256,
+          "maxImpulseChange": 7.863256766785226e-05,
+          "maxPassiveWork": 2.3300620186811387e-09,
+          "maxReachViolation": 0,
+          "workResidual": 4.4291352811927365e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 124,
+          "maxImpulseChange": 4.408639659898957e-08,
+          "maxPassiveWork": 2.12361742123086e-10,
+          "maxReachViolation": 0,
+          "workResidual": 1.7525628149586437e-19,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 256,
+          "maxImpulseChange": 7.863256766785226e-05,
+          "maxPassiveWork": 2.330062018769563e-09,
+          "maxReachViolation": 0,
+          "workResidual": 1.641126335305207e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 102,
+          "maxImpulseChange": 1.1826685341086232e-07,
+          "maxPassiveWork": 1.4363591645507849e-08,
+          "maxReachViolation": 0,
+          "workResidual": 1.214306433183765e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.3100000000000001,
+        "interval": {
+          "dt": 0.00235294117647058,
+          "iterations": 256,
+          "coupledUpdates": 102,
+          "maxImpulseChange": 1.1826685338977233e-07,
+          "maxPassiveWork": 1.4363591718259608e-08,
+          "maxReachViolation": 0,
+          "workResidual": -3.469446951953614e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.9901960784313726,
+              0.009803921568627416
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "ablation": {
+    "summary": {
+      "cases": 160,
+      "completed": 88,
+      "rejected": 72,
+      "contractViolations": 0,
+      "mirrorStatusDisagreements": 0,
+      "maxMirrorBodyErrorYd": 0,
+      "maxBodyErrorVsFineYd": 0.011510416522695396,
+      "maximaOfCompleted": {
+        "workResidual": 5.553686164230679e-14,
+        "momentumResidual": 2.020991396041139e-13,
+        "passiveWork": 6.88396818618715e-11,
+        "reachViolation": 0,
+        "tractionFraction": 0.7338172948141608,
+        "commandFraction": 1,
+        "motorWorkExcess": 0,
+        "iterations": 255,
+        "stiffnessRatio": 0.2296158309606851
+      }
+    },
+    "comparisons": [
+      {
+        "condition": "free",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "moving",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.00967429682448253
+      },
+      {
+        "condition": "moving",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.004041547773701588
+      },
+      {
+        "condition": "moving",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0003508178801169756
+      },
+      {
+        "condition": "moving",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "free",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "moving",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.008632080801698888
+      },
+      {
+        "condition": "moving",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0036138903552697457
+      },
+      {
+        "condition": "moving",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0003610451278551405
+      },
+      {
+        "condition": "moving",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "free",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "moving",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.011510416522695396
+      },
+      {
+        "condition": "moving",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.004820777187778846
+      },
+      {
+        "condition": "moving",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0004037450969215997
+      },
+      {
+        "condition": "moving",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "free",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "free",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "moving",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.00967429682448253
+      },
+      {
+        "condition": "moving",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.004041547773701588
+      },
+      {
+        "condition": "moving",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0.0003508178801169756
+      },
+      {
+        "condition": "moving",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": true,
+        "fineCompleted": true,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": 0
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "tick": 0.4,
+        "mirrorCompleted": true,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": 0,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "tick": 0.05,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "tick": 0.01,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "tick": 0.0025,
+        "mirrorCompleted": false,
+        "fineCompleted": false,
+        "mirrorStatusDisagreement": false,
+        "mirrorBodyErrorYd": null,
+        "bodyErrorVsFineYd": null
+      }
+    ],
+    "rejectedCases": [
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.4535579004578238e-09,
+          "maxPassiveWork": 1.6410260829043536e-12,
+          "maxReachViolation": 0,
+          "workResidual": -6.38585940928404e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.21000000000000005,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 4.35632381610445e-05,
+          "maxPassiveWork": 2.168404344971009e-19,
+          "maxReachViolation": 0,
+          "workResidual": -3.2610768469290563e-20,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.18872549019607826,
+              0.8112745098039218
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.3005747732920858e-05,
+          "maxPassiveWork": 3.5572556873247453e-10,
+          "maxReachViolation": 0,
+          "workResidual": -3.9855613320724005e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.4535579004578238e-09,
+          "maxPassiveWork": 1.6410260829043536e-12,
+          "maxReachViolation": 0,
+          "workResidual": -6.38585940928404e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.21000000000000005,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 4.35632381610445e-05,
+          "maxPassiveWork": 2.168404344971009e-19,
+          "maxReachViolation": 0,
+          "workResidual": -3.2610768469290563e-20,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.18872549019607826,
+              0.8112745098039218
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.3005747732920858e-05,
+          "maxPassiveWork": 3.5572556873247453e-10,
+          "maxReachViolation": 0,
+          "workResidual": -3.9855613320724005e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 6.979313089078236e-08,
+          "maxPassiveWork": 3.625812509732575e-10,
+          "maxReachViolation": 0,
+          "workResidual": 1.2989187380418142e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.22000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0005554158394399847,
+          "maxPassiveWork": 6.938893903907228e-18,
+          "maxReachViolation": 0,
+          "workResidual": 5.610746242612485e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294116,
+              0.7279411764705884
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.21500000000000014,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0007496443981062458,
+          "maxPassiveWork": 2.244282994586845e-07,
+          "maxReachViolation": 0,
+          "workResidual": -4.1362312880321994e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.19914215686274567,
+              0.8008578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 6.979313089078236e-08,
+          "maxPassiveWork": 3.625812509732575e-10,
+          "maxReachViolation": 0,
+          "workResidual": 1.2989187380418142e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.22000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0005554158394399847,
+          "maxPassiveWork": 6.938893903907228e-18,
+          "maxReachViolation": 0,
+          "workResidual": 5.610746242612485e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294116,
+              0.7279411764705884
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.21500000000000014,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0007496443981062458,
+          "maxPassiveWork": 2.244282994586845e-07,
+          "maxReachViolation": 0,
+          "workResidual": -4.1362312880321994e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.19914215686274567,
+              0.8008578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.2981055803140626e-07,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": 3.563717695576518e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.25000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.6576686952570188e-05,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -3.8637153779120734e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.5220588235294117,
+              0.47794117647058837
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.23500000000000015,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0008528846007142052,
+          "maxPassiveWork": 1.3966652111091224e-06,
+          "maxReachViolation": 0,
+          "workResidual": -1.687614891582312e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.36580882352941224,
+              0.6341911764705878
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.2981055803140626e-07,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": 3.563717695576518e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.25000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.6576686952570188e-05,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -3.8637153779120734e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.5220588235294117,
+              0.47794117647058837
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "base",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.23500000000000015,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0008528846007142052,
+          "maxPassiveWork": 1.3966652111091224e-06,
+          "maxReachViolation": 0,
+          "workResidual": -1.687614891582312e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.36580882352941224,
+              0.6341911764705878
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.4374025797586764e-09,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": 6.167465645918838e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.21000000000000005,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.3091340747517366e-05,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -4.339985063494221e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.18872549019607826,
+              0.8112745098039218
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.2178468991083215e-05,
+          "maxPassiveWork": 3.545704657465208e-10,
+          "maxReachViolation": 0,
+          "workResidual": 2.462682119692874e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.4374025797586764e-09,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": 6.167465645918838e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.21000000000000005,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.3091340747517366e-05,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -4.339985063494221e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.18872549019607826,
+              0.8112745098039218
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.2178468991083215e-05,
+          "maxPassiveWork": 3.545704657465208e-10,
+          "maxReachViolation": 0,
+          "workResidual": 2.462682119692874e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.9303669271927324e-08,
+          "maxPassiveWork": 1.050763085174559e-10,
+          "maxReachViolation": 0,
+          "workResidual": 2.4836752795611033e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.22000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.00043316816031442476,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -4.823615465388009e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294116,
+              0.7279411764705884
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.21500000000000014,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0006804582497342881,
+          "maxPassiveWork": 2.1433608908754874e-07,
+          "maxReachViolation": 0,
+          "workResidual": -2.638405986743475e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.19914215686274567,
+              0.8008578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.9303669271927324e-08,
+          "maxPassiveWork": 1.050763085174559e-10,
+          "maxReachViolation": 0,
+          "workResidual": 2.4836752795611033e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.22000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.00043316816031442476,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -4.823615465388009e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294116,
+              0.7279411764705884
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.21500000000000014,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0006804582497342881,
+          "maxPassiveWork": 2.1433608908754874e-07,
+          "maxReachViolation": 0,
+          "workResidual": -2.638405986743475e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.19914215686274567,
+              0.8008578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 6.154879300012453e-08,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -3.774758283725532e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.25000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 7.59847157835778e-05,
+          "maxPassiveWork": 1.2943040304152087e-05,
+          "maxReachViolation": 0,
+          "workResidual": 2.523451757339805e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.5220588235294117,
+              0.47794117647058837
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.23500000000000015,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.002015137488221313,
+          "maxPassiveWork": 3.5755930132585154e-06,
+          "maxReachViolation": 0,
+          "workResidual": -6.882515390937982e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.36580882352941224,
+              0.6341911764705878
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 6.154879300012453e-08,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -3.774758283725532e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.25000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 7.59847157835778e-05,
+          "maxPassiveWork": 1.2943040304152087e-05,
+          "maxReachViolation": 0,
+          "workResidual": 2.523451757339805e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.5220588235294117,
+              0.47794117647058837
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "strong",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.23500000000000015,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.002015137488221313,
+          "maxPassiveWork": 3.5755930132585154e-06,
+          "maxReachViolation": 0,
+          "workResidual": -6.882515390937982e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.36580882352941224,
+              0.6341911764705878
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.1048185042229704e-09,
+          "maxPassiveWork": 1.0681664272091329e-12,
+          "maxReachViolation": 0,
+          "workResidual": -1.8806588181314144e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.21000000000000005,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.3399489682446396e-05,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": 1.1420121711356104e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.18872549019607826,
+              0.8112745098039218
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.2150651351271e-05,
+          "maxPassiveWork": 6.320809448514672e-10,
+          "maxReachViolation": 0,
+          "workResidual": 5.350971825601432e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.1048185042229704e-09,
+          "maxPassiveWork": 1.0681664272091329e-12,
+          "maxReachViolation": 0,
+          "workResidual": -1.8806588181314144e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.21000000000000005,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.3399489682446396e-05,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": 1.1420121711356104e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.18872549019607826,
+              0.8112745098039218
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 3.2150651351271e-05,
+          "maxPassiveWork": 6.320809448514672e-10,
+          "maxReachViolation": 0,
+          "workResidual": 5.350971825601432e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 5.790246760432742e-08,
+          "maxPassiveWork": 2.1682759003461408e-10,
+          "maxReachViolation": 0,
+          "workResidual": -6.569759029988948e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.23000000000000007,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.00047133074425089876,
+          "maxPassiveWork": 3.971399416190481e-07,
+          "maxReachViolation": 0,
+          "workResidual": 2.476317761956892e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.35539215686274495,
+              0.644607843137255
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.21500000000000014,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.7665474543765443e-05,
+          "maxPassiveWork": 6.597874575018701e-07,
+          "maxReachViolation": 0,
+          "workResidual": -4.0768331026059916e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.19914215686274567,
+              0.8008578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 5.790246760432742e-08,
+          "maxPassiveWork": 2.1682759003461408e-10,
+          "maxReachViolation": 0,
+          "workResidual": -6.569759029988948e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.23000000000000007,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.00047133074425089876,
+          "maxPassiveWork": 3.971399416190481e-07,
+          "maxReachViolation": 0,
+          "workResidual": 2.476317761956892e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.35539215686274495,
+              0.644607843137255
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.21500000000000014,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 1.7665474543765443e-05,
+          "maxPassiveWork": 6.597874575018701e-07,
+          "maxReachViolation": 0,
+          "workResidual": -4.0768331026059916e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.19914215686274567,
+              0.8008578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.527400087536144e-07,
+          "maxPassiveWork": 3.3306690738754696e-15,
+          "maxReachViolation": 0,
+          "workResidual": 7.226849107073432e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.23000000000000007,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0012267785673672749,
+          "maxPassiveWork": 5.942561641031263e-06,
+          "maxReachViolation": 0,
+          "workResidual": 4.64255370258293e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.35539215686274495,
+              0.644607843137255
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.23250000000000015,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0011311985141635567,
+          "maxPassiveWork": 1.4002374952485359e-06,
+          "maxReachViolation": 0,
+          "workResidual": -4.208113892067988e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.34497549019607887,
+              0.6550245098039211
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.527400087536144e-07,
+          "maxPassiveWork": 3.3306690738754696e-15,
+          "maxReachViolation": 0,
+          "workResidual": 7.226849107073432e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.23000000000000007,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0012267785673672749,
+          "maxPassiveWork": 5.942561641031263e-06,
+          "maxReachViolation": 0,
+          "workResidual": 4.64255370258293e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.35539215686274495,
+              0.644607843137255
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "heavy",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.23250000000000015,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0011311985141635567,
+          "maxPassiveWork": 1.4002374952485359e-06,
+          "maxReachViolation": 0,
+          "workResidual": -4.208113892067988e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.34497549019607887,
+              0.6550245098039211
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 4.038657977924272e-09,
+          "maxPassiveWork": 2.0791054244879152e-12,
+          "maxReachViolation": 0,
+          "workResidual": 2.437142447821326e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.21000000000000005,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.864573363831758e-05,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -2.513252633621916e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.18872549019607826,
+              0.8112745098039218
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 7.863260751527921e-05,
+          "maxPassiveWork": 2.330063338407436e-09,
+          "maxReachViolation": 0,
+          "workResidual": -5.788199645062261e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 4.038657977924272e-09,
+          "maxPassiveWork": 2.0791054244879152e-12,
+          "maxReachViolation": 0,
+          "workResidual": 2.437142447821326e-17,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.21000000000000005,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.864573363831758e-05,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -2.513252633621916e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.18872549019607826,
+              0.8112745098039218
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "weak-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.20750000000000013,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 7.863260751527921e-05,
+          "maxPassiveWork": 2.330063338407436e-09,
+          "maxReachViolation": 0,
+          "workResidual": -5.788199645062261e-18,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.1366421568627456,
+              0.8633578431372544
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 7.558601146071844e-08,
+          "maxPassiveWork": 4.2504968971502445e-10,
+          "maxReachViolation": 0,
+          "workResidual": 1.5588641432116495e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.22000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.00044131765415735534,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -3.7982312607598434e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294116,
+              0.7279411764705884
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.21750000000000014,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0003240055761714785,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -1.8474805019152996e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.21997549019607898,
+              0.780024509803921
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.2,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 7.558601146071844e-08,
+          "maxPassiveWork": 4.2504968971502445e-10,
+          "maxReachViolation": 0,
+          "workResidual": 1.5588641432116495e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294119,
+              0.7279411764705881
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.22000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.00044131765415735534,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -3.7982312607598434e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.2720588235294116,
+              0.7279411764705884
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "medium-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.21750000000000014,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0003240055761714785,
+          "maxPassiveWork": 0,
+          "maxReachViolation": 0,
+          "workResidual": -1.8474805019152996e-16,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.21997549019607898,
+              0.780024509803921
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.3007320708453628e-07,
+          "maxPassiveWork": 1.4432899320127035e-15,
+          "maxReachViolation": 0,
+          "workResidual": 2.9180992834817196e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.01,
+        "time": 0.25000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.6480489627720628e-05,
+          "maxPassiveWork": 6.903417288071143e-06,
+          "maxReachViolation": 0,
+          "workResidual": 1.1055440146245238e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.5220588235294117,
+              0.47794117647058837
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "side": 1,
+        "tick": 0.0025,
+        "time": 0.23500000000000015,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0018523900671331517,
+          "maxPassiveWork": 3.264473735129382e-06,
+          "maxReachViolation": 0,
+          "workResidual": -1.4502288259166107e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.36580882352941224,
+              0.6341911764705878
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.05,
+        "time": 0.25,
+        "interval": {
+          "dt": 0.05,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.3007320708453628e-07,
+          "maxPassiveWork": 1.4432899320127035e-15,
+          "maxReachViolation": 0,
+          "workResidual": 2.9180992834817196e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.6887254901960785,
+              0.31127450980392146
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.01,
+        "time": 0.25000000000000006,
+        "interval": {
+          "dt": 0.01,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 2.6480489627720628e-05,
+          "maxPassiveWork": 6.903417288071143e-06,
+          "maxReachViolation": 0,
+          "workResidual": 1.1055440146245238e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.5220588235294117,
+              0.47794117647058837
+            ]
+          ]
+        }
+      },
+      {
+        "condition": "strong-hold",
+        "variant": "wideBase",
+        "side": -1,
+        "tick": 0.0025,
+        "time": 0.23500000000000015,
+        "interval": {
+          "dt": 0.0025,
+          "iterations": 256,
+          "coupledUpdates": 0,
+          "maxImpulseChange": 0.0018523900671331517,
+          "maxPassiveWork": 3.264473735129382e-06,
+          "maxReachViolation": 0,
+          "workResidual": -1.4502288259166107e-15,
+          "normalShares": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.36580882352941224,
+              0.6341911764705878
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [Finite feet and the next physical foundation](docs/reviews/finite-support-foundation.md):
+  **read first.** Persistent support slots, finite unloading/swing/actual landing,
+  shared grip/ground/motor work and local active-set blocks exist in an unused
+  research kernel. World still uses legacy support. Physics is NOT READY:
+  22/160 lifecycle cases and 11/240 stress candidates remain rejected, including
+  two mirror-status disagreements. Next: fix the retained late-transfer/local
+  active-set failures, nominal gait with one motor budget, then achieved-support
+  balance and explicit experimental World integration. No global resolution
+  increase, force fitting, fall grace timer or PR #1 changes.
+
 - [Constraint work, impact timing and physical support](docs/reviews/constraint-work-and-impact-timing.md):
-  **read first.** Per-solve correction accounting is now production: numerical
+  Previous production repair. Per-solve correction accounting is now production: numerical
   guesses no longer consume fictitious arm effort or prevent passive convergence.
   Actual interval/channel budget guards pass. Local impact onset and nonlinear
   filter integration are explicit default-off experiments; they do not solve
