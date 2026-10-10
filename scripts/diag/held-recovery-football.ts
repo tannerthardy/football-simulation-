@@ -1,5 +1,5 @@
 /** Source-pinned two-game guard and warmed, matched-input World benchmark.
- * node --import tsx scripts/diag/held-recovery-football.ts [output.json] [seed=9] [--benchmark-only]
+ * node --import tsx scripts/diag/held-recovery-football.ts [output.json] [seed=9] [--benchmark-only | --games-only]
  * Run unchanged against each source in separate processes; no model preload.
  */
 import { createHash } from 'node:crypto';
@@ -15,6 +15,8 @@ import { sourceVersion } from '../source-version.js';
 
 const output = process.argv[2] ?? 'out/held-recovery-football.json';
 const benchmarkOnly = process.argv.includes('--benchmark-only');
+const gamesOnly = process.argv.includes('--games-only');
+if (benchmarkOnly && gamesOnly) throw new Error('Choose either --benchmark-only or --games-only');
 const collectGarbage = (globalThis as unknown as { gc?: () => void }).gc;
 const seed = Number(process.argv[3] ?? 9), sourceBefore = sourceVersion();
 if (!Number.isInteger(seed)) throw new Error('Seed must be an integer');
@@ -34,7 +36,9 @@ const physics = { ticks: 0, lowerJointTicks: 0, maxHeldRecoveryExcursionYd: null
 let observing = false;
 const original = World.prototype.step;
 World.prototype.step = function (intents, dt) {
-  if (!observing) return original.call(this, intents, dt);
+  // Controller free-movement previews use one-body scratch worlds. They count
+  // toward game CPU/wall time, but are not extra physical game ticks/contacts.
+  if (!observing || this.bodies.length !== 22) return original.call(this, intents, dt);
   const momentum = () => this.bodies.reduce((p, b) => ({ x: p.x + b.profile.massKg * b.vel.x,
     y: p.y + b.profile.massKg * b.vel.y }), { x: 0, y: 0 });
   const hasLower = () => this.joints.some(j => j.kind === 'grasp' && !j.broken && j.legs > 0 && j.capacity > 0);
@@ -115,7 +119,7 @@ function fixture(kind: 'free' | 'trench' | 'multi-grip') {
     world.joints.push({ kind: 'grasp', a: bodies[j], b: bodies[i], reach: 1.5, hold: 1, capacity: 600, legs: 1 });
   return { world, intents };
 }
-const benchmark = (['free', 'trench', 'multi-grip'] as const).map(kind => {
+const benchmark = (gamesOnly ? [] : ['free', 'trench', 'multi-grip'] as const).map(kind => {
   const blocks: Array<{ cpuMs: number; wallMs: number; worldTickMedianMs: number | null; worldTickP95Ms: number | null }> = [];
   for (let block = 0; block < 10; block++) {
     const reps = Array.from({ length: 400 }, () => fixture(kind)), tickTimes: number[] = [];
@@ -141,7 +145,8 @@ const sourceAfter = sourceVersion();
 if (sourceBefore !== sourceAfter) throw new Error('Source changed during guard; refusing unpinned result');
 mkdirSync(dirname(output), { recursive: true });
 writeFileSync(output, JSON.stringify({ schema: 'held-recovery-football-v1', node: process.version, executable: process.execPath,
-  command: [process.execPath, '--import', 'tsx', 'scripts/diag/held-recovery-football.ts', output, String(seed), ...(benchmarkOnly ? ['--benchmark-only'] : [])], seed, benchmarkOnly,
+  command: [process.execPath, '--import', 'tsx', 'scripts/diag/held-recovery-football.ts', output, String(seed),
+    ...(benchmarkOnly ? ['--benchmark-only'] : []), ...(gamesOnly ? ['--games-only'] : [])], seed, benchmarkOnly, gamesOnly,
   allocationGcBeforeBenchmark: !!collectGarbage,
   sourceBefore, sourceAfter, scriptSha256: createHash('sha256').update(readFileSync('scripts/diag/held-recovery-football.ts')).digest('hex'),
   rosterSha256, excludedWarmGameSeed: gameSeeds[0], games, physics: { ...physics,
@@ -149,6 +154,7 @@ writeFileSync(output, JSON.stringify({ schema: 'held-recovery-football-v1', node
     nativeWorldTickMedianMs: quantile(worldTimes, .5), nativeWorldTickP95Ms: quantile(worldTimes, .95) }, benchmark,
   limitations: ['Two games and one fixed roster pair are regression guards, not league estimates or NFL calibration.',
     'Game World timing excludes observer accounting; game wall/CPU includes it. Benchmark observer is disabled.',
+    'One-body controller previews contribute to game CPU/wall time, but are excluded from physical game tick/contact accounting.',
     'Lower-grip occurrence samples pre/post ticks and can miss a hold acquired and released within one tick.',
     'Run after-contact yards are final gain minus engine first-carrier-contact gain; pass YAC is a separate statistic.',
     'Native tick timings include changing contact islands; matched benchmark uses one tick per fresh World, with identical initial bodies/commands/constraints across revisions.',

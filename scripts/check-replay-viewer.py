@@ -51,7 +51,7 @@ def main():
             # Keep large trajectory/telemetry arrays in the browser. The checks
             # need library metadata and event counts, not a second 200MB copy.
             data = page.evaluate('''() => ({meta:REPLAY.meta, games:REPLAY.games,
-                plays:REPLAY.plays.map(p => ({id:p.id, index:p.index, game:p.game,
+                plays:REPLAY.plays.map(p => ({id:p.id, index:p.index, game:p.game, kind:p.kind,
                     ...(p.fixtureSeed!=null ? {fixtureSeed:p.fixtureSeed} : {}), concept:p.concept, plan:p.plan,
                     flags:p.flags, nullified:p.nullified, ev:p.ev,
                     ...(p.eventDetails ? {eventDetails:p.eventDetails} : {}),
@@ -78,6 +78,23 @@ def main():
 
             def indices():
                 return page.locator('.play').evaluate_all('(rows) => rows.map((el) => Number(el.dataset.i))')
+
+            def select_populated_family(preferred):
+                keys = page.locator('[data-f]').evaluate_all('(buttons) => buttons.map((el) => el.dataset.f)')
+                # Focused libraries need not contain zone/gap plays or expose
+                # a chip for every custom lab family. Prefer the original
+                # family check, then a populated family, then a play kind.
+                candidates = [preferred] + [key for key in keys if key not in ['all', 'run', 'pass', preferred]] + ['run', 'pass', 'all']
+                for key in candidates:
+                    if key not in keys:
+                        continue
+                    expected_family = [i for i in filmed if key == 'all' or
+                        (data['plays'][i]['kind'] == key if key in ['run', 'pass'] else data['plays'][i]['concept']['family'] == key)]
+                    if expected_family:
+                        page.locator(f'[data-f="{key}"]').click()
+                        assert sorted(indices()) == sorted(expected_family)
+                        return key
+                raise AssertionError('No populated family or kind filter for the recorded clips')
 
             for group in ['front', 'coverage', 'formation', 'game', 'concept']:
                 page.select_option('#group-by', group)
@@ -190,9 +207,8 @@ def main():
             assert 'Copied' in page.locator('#copy-status').inner_text() or 'selected' in page.locator('#copy-status').inner_text()
             checks.append('Play IDs search precisely; copied references include film version and timestamp')
             page.click('#reset-filters')
-            page.locator('[data-f="gap"]').click()
-            assert all(data['plays'][i]['concept']['family'] == 'gap' for i in indices())
-            checks.append('Run-family filters retain only the selected schemes')
+            family = select_populated_family('gap')
+            checks.append(f'Populated family/kind filters retain exactly the recorded clips ({family})')
 
             page.select_option('#inspect-player', '0')
             page.wait_for_function('document.getElementById("player-motion").textContent.includes("mph")')
@@ -428,7 +444,7 @@ def main():
                 page.screenshot(path=str(args.screenshots / 'desktop.png'), full_page=True)
             page.set_viewport_size({'width': 390, 'height': 844})
             assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
-            page.locator('[data-f="zone"]').click()
+            select_populated_family('zone')
             page.click('#watch')
             page.click('#playbtn')
             if args.screenshots:

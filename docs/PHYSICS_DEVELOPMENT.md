@@ -1,7 +1,14 @@
 # Physics development and testing
 
+Read [Achievable approach control and remaining contact work](reviews/approach-control-and-remaining-contact.md)
+first for the latest controller repair, matched film and exposed contact limits.
+Short free-movement World forecasts apply only to imminent crossing approaches.
+Next compare attainable tackle quality, isolate the lower attachment-bound
+release, and localize sustained hand-contact divergence. Keep these repairs
+small and grounded in retained football cases; full 3D feet remain paused.
+
 Read [Recovery allocation and run-contact transfer](reviews/recovery-allocation-and-run-contact.md)
-for the latest implementation, paired football film and validation. Grounded
+for the latest solver implementation, paired football film and validation. Grounded
 held and unheld recovery share actual unused drive/yaw effort, with finite
 profile-derived passive mobility. Next improve achievable approach/braking
 and localize remaining sustained-contact divergence; use the evidence gates

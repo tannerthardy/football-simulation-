@@ -5,6 +5,7 @@ import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type
 import { availability, supportParams } from '../../physics/support.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
+import { chooseApproach } from '../approach-control.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -198,7 +199,14 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const p = pursuitPoint(sim, a, target, horizon);
   // Away from the ball, pursuit runs below top speed (more so for low motors).
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
-  return { ...runThrough(a, p, { speed: effort }), effort };
+  const original = { ...runThrough(a, p, { speed: effort }), effort };
+  const reach = a.profile.radius + target.profile.radius + a.profile.reach * .65;
+  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
+  const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
+    * clamp((dist - reach) / 6, 0, 1);
+  // A new grip may exist before its first solved load reaches body support.
+  if (sim.bond?.tacklers.includes(a)) return original;
+  return chooseApproach(a, seen, reach, offset, original, sim.t);
 }
 
 export function ttr(a: Agent, p: Vec2, radius = 0): number {

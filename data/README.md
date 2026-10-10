@@ -1,14 +1,26 @@
 # Shared NFL data
 
-Current physics/data status: [Recovery allocation and run-contact transfer](../docs/reviews/recovery-allocation-and-run-contact.md).
+Current physics/data status: [Achievable approach control and remaining contact work](../docs/reviews/approach-control-and-remaining-contact.md).
+
+Imminent crossing pursuit now compares a small movement shortlist through the
+unchanged production World. The [evidence and commands](reviews/physics-world/approach-control/README.md)
+retain 120 mechanical cases, four separately labelled crossing witnesses,
+144 paired runs, four full-game guards and isolated command costs. Watch the
+[paired run film](../viewer/approach-control-review.html) or its
+[offline ZIP](../viewer/approach-control-review.zip), and the
+[16 isolated tackle clips](../viewer/approach-tackles.html) or their
+[offline ZIP](../viewer/approach-tackles.zip). Next: attainable tackle-attempt
+quality, a retained low-attachment release and sustained hand-contact divergence.
+No new physical constants or NFL outcome averages were fitted.
+
+Previous solver increment: [Recovery allocation and run-contact transfer](../docs/reviews/recovery-allocation-and-run-contact.md).
 
 Grounded held/unheld recovery now shares unused drive/yaw effort, with finite
 profile-derived passive response. The [evidence and commands](reviews/physics-world/recovery-allocation/README.md)
 retain 432 mechanical trials, 144 paired runs across three roster pairs,
 four matched games, repeat cost measurements and rejected-candidate witnesses.
 Watch the [26 paired film clips](../viewer/run-contact-review.html), or download
-the [offline ZIP](../viewer/run-contact-review.zip). Next: achievable approach
-and braking, plus the first remaining sustained-contact divergence.
+the [offline ZIP](../viewer/run-contact-review.zip).
 The contact-anatomy tool now measures canonical carrier contact and physical
 carrier endpoints separately from official forward progress; it rejects missed
 reaches and ambiguous possession chains. See the report's NFL cohort caveats.

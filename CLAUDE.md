@@ -2,8 +2,16 @@
 
 Start with these shared project references:
 
+- [Achievable approach control and remaining contact work](docs/reviews/approach-control-and-remaining-contact.md):
+  **latest shipped controller increment.** A small shortlist uses the unchanged
+  World to redirect imminent crossing approaches. Read the 120-case panel,
+  actual tackle follow-up, 144 paired runs, four-game guard and source-labelled
+  film. Next: attainable tackle-attempt quality, the retained low-attachment
+  bound release and sustained hand-contact divergence. No anatomical foot
+  expansion or force fitting; physics has not earned the final OK.
+
 - [Recovery allocation and run-contact transfer](docs/reviews/recovery-allocation-and-run-contact.md):
-  **latest shipped physics increment.** Grounded held and unheld recovery now
+  **latest shipped solver increment.** Grounded held and unheld recovery now
   share unused effort after drive/yaw; passive held response has finite,
   profile-derived mobility. Read the 432 mechanical trials, 144 paired runs,
   four-game guard and 26 source-labelled film clips. The rejected weak-reach
