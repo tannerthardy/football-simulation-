@@ -1,7 +1,11 @@
 # Physics development and testing
 
-Read [Smaller live recovery model](reviews/force-coupled-held-recovery.md)
-for the latest implementation and evidence, then
+Read [Recovery allocation and run-contact transfer](reviews/recovery-allocation-and-run-contact.md)
+for the latest implementation, paired football film and validation. Grounded
+held and unheld recovery share actual unused drive/yaw effort, with finite
+profile-derived passive mobility. Next improve achievable approach/braking
+and localize remaining sustained-contact divergence; use the evidence gates
+rather than treating complete biomechanics as a prerequisite. Then read
 [Physics cost-benefit and development philosophy](reviews/physics-cost-benefit-and-development-philosophy.md).
 Four independent reviews challenge the need for universal two-foot gait.
 Keep the current World bodies; first evaluate bounded effective support/recovery
@@ -9,8 +13,10 @@ with a coherent shared ground/leg/grip force path. Persistent lower geometry or
 two massless slots must earn their complexity in retained football cases. Full
 3D foot/ground expansion remains paused. Use transparent reduced laws and stable
 football-scale convergence; permit diagnosed controller repairs within existing
-capabilities. Production now selectively couples recovery to actual lower-hold
-forces while preserving analytic unheld support. The `legacy` API label remains
+capabilities. Production selectively couples recovery to actual lower-hold
+forces while analytic unheld support uses the same allocated correction speed.
+The preceding [Smaller live recovery model](reviews/force-coupled-held-recovery.md)
+records the first held-support integration. The `legacy` API label remains
 for compatibility; previous production behavior requires its historical source.
 The preceding
 [live-World evidence and one-command rerun](../data/reviews/physics-world/football-first/README.md)

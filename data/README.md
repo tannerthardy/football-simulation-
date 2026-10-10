@@ -1,8 +1,19 @@
 # Shared NFL data
 
-Current physics/data status: [Smaller live recovery model](../docs/reviews/force-coupled-held-recovery.md).
+Current physics/data status: [Recovery allocation and run-contact transfer](../docs/reviews/recovery-allocation-and-run-contact.md).
 
-The first live simplification increment uses one force-coupled corrective
+Grounded held/unheld recovery now shares unused drive/yaw effort, with finite
+profile-derived passive response. The [evidence and commands](reviews/physics-world/recovery-allocation/README.md)
+retain 432 mechanical trials, 144 paired runs across three roster pairs,
+four matched games, repeat cost measurements and rejected-candidate witnesses.
+Watch the [26 paired film clips](../viewer/run-contact-review.html), or download
+the [offline ZIP](../viewer/run-contact-review.zip). Next: achievable approach
+and braking, plus the first remaining sustained-contact divergence.
+The contact-anatomy tool now measures canonical carrier contact and physical
+carrier endpoints separately from official forward progress; it rejects missed
+reaches and ambiguous possession chains. See the report's NFL cohort caveats.
+
+The previous live simplification increment uses one force-coupled corrective
 coordinate only during low holds. Its source-pinned contact, game and cost
 evidence is in [held-recovery](reviews/physics-world/held-recovery/README.md).
 Full spatial feet remain paused under the

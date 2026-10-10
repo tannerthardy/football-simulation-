@@ -347,6 +347,8 @@ export class World {
   private readonly active: Float64Array;
   private readonly footImpulseX: Float64Array;
   private readonly footImpulseY: Float64Array;
+  /** Peak corrective speed allocated from this interval's common leg budget. */
+  private readonly recovery: Float64Array;
   private report!: StepReport;
   private tickDt = .05;
 
@@ -378,6 +380,7 @@ export class World {
     this.leanX = f(); this.leanY = f();
     this.armScale = f(); this.armCap = f(); this.active = f();
     this.footImpulseX = f(); this.footImpulseY = f();
+    this.recovery = f();
   }
 
   indexOf(b: Body): number {
@@ -679,24 +682,26 @@ export class World {
     return fraction;
   }
 
-  /** Allocate corrective placement from the existing common leg capacity.
-   * No separate leg-lock strength or scenario-specific recovery bonus. */
-  private prepareFoot(i: number, h: number, capacity: number): number {
+  /** Common recovery allocation, including the analytic unheld path. The
+   * body's finite compliance comes from its profile, not unused effort:
+   * exhausting active drive cannot make a weak grip infinitely effective. */
+  private prepareRecovery(i: number, h: number, capacity: number): number {
     const b = this.bodies[i], sup = b.support!, foot = sup.foot;
-    if (!foot) return 0;
-    const e = Math.hypot(sup.xi.x, sup.xi.y), rb = baseRadiusAt(this.sp[i], sup.posture);
-    const speed = this.sp[i].stepSpeed * this.fat[i];
+    const sp = this.sp[i];
+    const mobility = sp.pushForce > 0 ? sp.stepSpeed / sp.pushForce : 0;
+    const speed = Math.min(sp.stepSpeed * this.fat[i], mobility * capacity);
+    if (!foot) return speed;
+    const e = Math.hypot(sup.xi.x, sup.xi.y), rb = baseRadiusAt(sp, sup.posture);
     foot.capacity = capacity;
-    foot.mobility = capacity > 1e-9 ? speed / capacity : 0;
-    if (capacity <= 1e-9) return 0;
+    foot.mobility = mobility;
     foot.state = e > rb ? 'placing' : 'supported';
-    if (e <= rb) return 0;
+    if (e <= rb) return speed;
     const requested = Math.min(speed * recoveryRamp(sup.out, STEP_LATENCY, h), (e - rb) / h);
     foot.desired = { x: sup.xi.x / e * requested, y: sup.xi.y / e * requested };
     foot.target = { x: foot.anchor.x + sup.xi.x / e * (e - rb),
       y: foot.anchor.y + sup.xi.y / e * (e - rb) };
     this.report.supportMotorWorkLimit[i] += capacity * speed * h;
-    return requested / foot.mobility;
+    return speed;
   }
 
   private plan(b: Body, i: number, intent: Intent, dt: number): Plan {
@@ -1023,6 +1028,7 @@ export class World {
     const p = b.profile;
     const sp = this.sp[i];
     const m = this.mass[i];
+    this.recovery[i] = 0;
     const spinBefore=b.spin??0;
     this.v0x[i] = b.vel.x; this.v0y[i] = b.vel.y;
     let fx = 0, fy = 0;
@@ -1129,8 +1135,9 @@ export class World {
         const tfx = lx + leanX, tfy = ly + leanY;
         const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, angleDiff(b.facing, Math.atan2(tfy, tfx))) : 1;
         const capacity = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), sp.traction * a);
-        const supportEffort = this.prepareFoot(i, h, capacity);
-        const cap = sup.foot ? Math.sqrt(Math.max(0, capacity * capacity - supportEffort * supportEffort)) : capacity;
+        // Availability already limits gait during recovery. Reserve actual
+        // unused effort after ordinary translation and yaw, for every body.
+        const cap = capacity;
         let px = leanX, py = leanY;
         if (tfx * tfx + tfy * tfy > cap * cap) {
           const qa = px * px + py * py, qb = lx * px + ly * py, qc = lx * lx + ly * ly - cap * cap;
@@ -1142,7 +1149,21 @@ export class World {
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
-        turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,sup.foot?Math.hypot(fx,fy,supportEffort):Math.hypot(fx,fy));
+        const yaw = turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,Math.hypot(fx,fy));
+        // Strength limits drive+correction; traction also pays for yaw at
+        // the physical support radius. Difference-of-squares keeps the
+        // near-saturation subtraction well conditioned. Passive compliance
+        // stays finite even when this active reserve is zero.
+        // Correction uses profile strength, independent of the direction of
+        // an arbitrarily small residual gait request. The existing gait law
+        // can demand more than pushForce; that leaves zero corrective effort
+        // rather than expanding strength to fund another simultaneous action.
+        const total = sp.pushForce, force = Math.hypot(fx, fy);
+        const yawForce = yaw.impulse / (h * baseRadiusAt(sp, sup.posture));
+        const groundDemand = Math.hypot(force, yawForce);
+        const reserve = Math.sqrt(Math.max(0, Math.min((total - force) * (total + force),
+          (sp.traction - groundDemand) * (sp.traction + groundDemand))));
+        this.recovery[i] = this.prepareRecovery(i, h, reserve);
       }
     } else {
       this.alpha[i] = 0; this.cut[i] = 1;
@@ -1298,7 +1319,7 @@ export class World {
         y: foot.achieved.y - foot.desired.y } : { x: 0, y: 0 };
       const nx = e > 1e-12 ? xx / e : 1, ny = e > 1e-12 ? xy / e : 0;
       const radial = deficit.x * nx + deficit.y * ny;
-      const recovery = advanceRecovery(e, rb, w0, rec, outsideBefore, STEP_LATENCY, h, radial);
+      const recovery = advanceRecovery(e, rb, w0, this.recovery[i], outsideBefore, STEP_LATENCY, h, radial);
       if (e > 1e-12) { xx *= recovery.next / e; xy *= recovery.next / e; }
       else { xx = nx * recovery.next; xy = ny * recovery.next; }
       xx -= (deficit.x - radial * nx) * recovery.weight;

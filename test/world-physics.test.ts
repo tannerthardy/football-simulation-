@@ -370,7 +370,12 @@ describe('temporal stability', () => {
     const recover = (outsideFor: number, dt: number, count: number) => {
       const b = body(100, 0, 0), w = new World([b]);
       b.support!.xi = {x:.5,y:0};b.support!.out = outsideFor;
-      for(let k=0;k<count;k++)w.step([{vel:{x:0,y:0},free:true}],dt);
+      // Grounded, without a locomotion or posture request: corrective steps
+      // need ground support. FREE also represents airborne motion.
+      for(let k=0;k<count;k++) {
+        b.energy=1; // Isolate support integration from tick-level metabolism.
+        w.step([{vel:{x:0,y:0},posture:b.support!.posture}],dt);
+      }
       expect(b.support!.state).toBe('up');
       return b.support!.xi.x;
     };
@@ -385,7 +390,10 @@ describe('temporal stability', () => {
       const b=body(100,0,0),w=new World([b]);
       const base=baseRadiusAt(supportParams(b.profile),b.support!.posture);
       b.support!.xi={x:base+.02,y:0};b.support!.out=outsideFor;
-      for(let k=0;k<count;k++)w.step([FREE],dt);
+      for(let k=0;k<count;k++) {
+        b.energy=1;
+        w.step([{vel:{x:0,y:0},posture:b.support!.posture}],dt);
+      }
       expect(b.support!.state).toBe('up');expect(b.support!.xi.x).toBeLessThan(base);
       expect(b.support!.out).toBe(0);
       return b.support!.xi.x;
@@ -401,7 +409,12 @@ describe('temporal stability', () => {
       // high hit now causes a fall, whose ground impulses also change velocity.
       const a = body(80, 0, 0, 6, 0), b = body(105, 0, 1.35, 6, -3, -Math.PI / 2);
       const w = new World([a, b], { substeps: n });
-      for (let k = 0; k < 12; k++) w.step([FREE, FREE], 0.05);
+      // Measure after impact but before a passive, non-stepping body loses
+      // its base. Later fall/friction impulses are a separate interaction.
+      for (let k = 0; k < 7; k++) {
+        const report = w.step([FREE, FREE], 0.05);
+        expect(report.falls).toEqual([]);
+      }
       return -a.vel.y;
     };
     // Perfectly inelastic sideways hit: 105/(80+105) of the 3 yd/s closing.

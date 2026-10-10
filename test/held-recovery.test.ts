@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Vec2 } from '../src/core/vec.js';
 import type { Body } from '../src/physics/kinematics.js';
-import { newSupport, supportParams } from '../src/physics/support.js';
+import { baseRadiusAt, newSupport, omega0, supportParams } from '../src/physics/support.js';
 import { World, type GraspJoint, type Intent, type StepReport } from '../src/physics/world.js';
 
 const profile = { massKg: 100, radius: .28, reach: 1, heightYd: 2.05,
@@ -54,6 +54,104 @@ function stationary(capacity: number | null, count = 1, substeps = 12, gap = 1) 
   return { a, b, world, grips, impulse, motorWork };
 }
 
+function moving(capacity: number | null, substeps: number, speed: number, direction: number, turn: number) {
+  const rotate = (x: number, y: number): Vec2 => ({ x: x * Math.cos(direction) - y * Math.sin(direction),
+    y: x * Math.sin(direction) + y * Math.cos(direction) });
+  const a = body(0), b = body(1), world = new World([a, b], { substeps });
+  b.pos = rotate(1, 0); b.vel = rotate(speed, 0); a.facing = b.facing = direction;
+  b.support!.xi = rotate(.45, .03); b.support!.out = .12;
+  world.joints.push({ kind: 'hands', a, b, extension: 3, push: 0, hold: 0, steer: 0 });
+  const grip = capacity === null ? undefined : hold(a, b, capacity);
+  if (grip) world.joints.push(grip);
+  const groundIntervals: Array<{ force: number; yawForce: number; correction: number; legLimit: number; traction: number }> = [];
+  // Observe actual ground impulses and commanded motor effort before contact
+  // constraints. No duplicated force formula or simulated alternate solver.
+  const engine = world as unknown as {
+    feet(i: number, intent: Intent, plan: unknown, h: number, remaining: number, report: StepReport): void;
+  };
+  const feet = engine.feet;
+  engine.feet = function(i, intent, plan, h, remaining, report) {
+    const impulse = { ...report.groundImpulse[i] }, yaw = report.groundYawImpulse[i];
+    feet.call(world, i, intent, plan, h, remaining, report);
+    const subject = world.bodies[i], support = subject.support!, sp = supportParams(subject.profile), foot = support.foot;
+    const force = magnitude({ x: (report.groundImpulse[i].x - impulse.x) / h,
+      y: (report.groundImpulse[i].y - impulse.y) / h });
+    const yawForce = Math.abs(report.groundYawImpulse[i] - yaw) / h / baseRadiusAt(sp, support.posture);
+    const correction = foot && foot.mobility > 0 ? magnitude(foot.desired) / foot.mobility : 0;
+    groundIntervals.push({ force, yawForce, correction, legLimit: sp.pushForce, traction: sp.traction });
+  };
+  const before = momentum(world.bodies), report = world.step([stand,
+    { vel: rotate(7 * Math.cos(turn), 7 * Math.sin(turn)), posture: .2 }], .05);
+  physical(world.bodies, before, report);
+  return { a, b, report, grip, groundIntervals };
+}
+
+function persistentTurn(capacity: number | null, legs: number, substeps: number, speed: number, side: number) {
+  const make = (x: number): Body => ({ ...body(x), energy: .72, vel: { x: speed, y: 0 },
+    profile: { ...profile, massKg: 125, radius: .32, power: 120, stepSpeed: 3.1, balance: .65 } });
+  const a = make(0), b = make(1), world = new World([a, b], { substeps });
+  b.support!.xi = { x: .45, y: side * .08 }; b.support!.out = .12;
+  world.joints.push({ kind: 'hands', a, b, extension: 3, push: 0, hold: 0, steer: 0 });
+  const grip = capacity === null ? undefined : hold(a, b, capacity, { legs, reach: 10 });
+  if (grip) world.joints.push(grip);
+  const engine = world as unknown as {
+    feet(i: number, intent: Intent, plan: unknown, h: number, remaining: number, report: StepReport): void;
+    updateSupport(i: number, h: number, report: StepReport): void;
+    alpha: Float64Array; v0x: Float64Array; v0y: Float64Array; tipX: Float64Array; tipY: Float64Array;
+    tripX: Float64Array; tripY: Float64Array;
+  };
+  let maxUtilization = 0, forceSamples = 0;
+  const feet = engine.feet;
+  engine.feet = function(i, intent, plan, h, remaining, report) {
+    const impulse = { ...report.groundImpulse[i] }, yaw = report.groundYawImpulse[i];
+    feet.call(world, i, intent, plan, h, remaining, report);
+    if (i !== 1 || b.support!.state !== 'up') return;
+    const sp = supportParams(b.profile), ground = magnitude({ x: (report.groundImpulse[i].x - impulse.x) / h,
+      y: (report.groundImpulse[i].y - impulse.y) / h });
+    const yawForce = (report.groundYawImpulse[i] - yaw) / h / baseRadiusAt(sp, b.support!.posture);
+    maxUtilization = Math.max(maxUtilization, Math.hypot(ground, yawForce) / (sp.traction * engine.alpha[i]));
+  };
+  const update = engine.updateSupport;
+  engine.updateSupport = function(i, h, report) {
+    const subject = world.bodies[i], sup = subject.support!, sp = supportParams(subject.profile), foot = sup.foot;
+    const beforeXi = { ...sup.xi }, rate = omega0(sp, sup.posture);
+    const mobilityBound = sp.stepSpeed / sp.pushForce;
+    const motorForce = foot ? magnitude(foot.force) : 0;
+    if (foot) {
+      const perturbation = magnitude({ x: foot.achieved.x - foot.desired.x, y: foot.achieved.y - foot.desired.y });
+      // Finite profile compliance, even when available active reserve is tiny.
+      // Passive load is measured independently of requested motor effort.
+      expect(perturbation).toBeLessThanOrEqual(mobilityBound * motorForce + 1e-8);
+      if (motorForce > 0) forceSamples++;
+    }
+    const acceleration = magnitude({ x: (subject.vel.x - engine.v0x[i]) / h,
+      y: (subject.vel.y - engine.v0y[i]) / h });
+    const filteredAcceleration = magnitude(sup.accel ?? { x: 0, y: 0 });
+    const moment = magnitude({ x: engine.tipX[i] / h, y: engine.tipY[i] / h });
+    const filteredMoment = magnitude(sup.tipAccel ?? { x: 0, y: 0 });
+    const lowContact = magnitude({ x: engine.tripX[i], y: engine.tripY[i] }) / rate;
+    const disturbance = (Math.max(acceleration, filteredAcceleration) + Math.max(moment, filteredMoment)) * h / rate + lowContact;
+    const overspeed = Math.max(0, magnitude(subject.vel) - subject.profile.vmax) * h;
+    // Triangle bound on capture-point dynamics from actual acceleration and
+    // contact moments, bounded stepping and finite grip-induced correction.
+    const bound = Math.exp(rate * h) * (disturbance + overspeed +
+      h * (rate * magnitude(beforeXi) + sp.stepSpeed + mobilityBound * motorForce));
+    update.call(world, i, h, report);
+    expect(magnitude({ x: sup.xi.x - beforeXi.x, y: sup.xi.y - beforeXi.y })).toBeLessThanOrEqual(bound + 1e-7);
+  };
+  const trajectory: Array<{ pos: Vec2; vel: Vec2; xi: Vec2; facing: number; state: string }> = [];
+  let impulse = 0;
+  for (let tick = 0; tick < 8; tick++) {
+    const intent: Intent = { vel: { x: 7, y: side }, facing: 1.2 * side, posture: .2 };
+    const before = momentum(world.bodies), report = world.step([intent, intent], .05);
+    physical(world.bodies, before, report);
+    impulse += (grip?.force ?? 0) * .05;
+    trajectory.push({ pos: { ...b.pos }, vel: { ...b.vel }, xi: { ...b.support!.xi },
+      facing: b.facing, state: b.support!.state });
+  }
+  return { trajectory, maxUtilization, forceSamples, impulse };
+}
+
 describe('production force-coupled held recovery', () => {
   it('weak, medium and strong holds transmit real force and progressively oppose recovery', () => {
     for (const substeps of [12, 48]) {
@@ -88,6 +186,80 @@ describe('production force-coupled held recovery', () => {
     expect(magnitude({ x: weak.b.support!.xi.x - free.b.support!.xi.x,
       y: weak.b.support!.xi.y - free.b.support!.xi.y })).toBeLessThan(.005);
     expect(magnitude({ x: weak.b.pos.x - free.b.pos.x, y: weak.b.pos.y - free.b.pos.y })).toBeLessThan(.005);
+  });
+
+  it('vanishing restraint preserves moving acceleration, braking and turning at both resolutions', () => {
+    for (const substeps of [12, 48]) for (const speed of [0, 3, 7])
+      for (const direction of [0, Math.PI / 2]) for (const turn of [0, Math.PI / 3, Math.PI]) {
+        const free = moving(null, substeps, speed, direction, turn);
+        const weak = moving(1e-6, substeps, speed, direction, turn);
+        expect((weak.grip!.force ?? 0) * .05).toBeLessThanOrEqual(1e-6 * .05 + 1e-10);
+        expect(magnitude({ x: weak.report.groundImpulse[1].x - free.report.groundImpulse[1].x,
+          y: weak.report.groundImpulse[1].y - free.report.groundImpulse[1].y })).toBeLessThan(.001);
+        expect(magnitude({ x: weak.b.pos.x - free.b.pos.x, y: weak.b.pos.y - free.b.pos.y })).toBeLessThan(1e-5);
+        expect(magnitude({ x: weak.b.vel.x - free.b.vel.x, y: weak.b.vel.y - free.b.vel.y })).toBeLessThan(1e-4);
+        expect(Math.abs(weak.b.facing - free.b.facing)).toBeLessThan(1e-4);
+        expect(Math.abs((weak.b.spin ?? 0) - (free.b.spin ?? 0))).toBeLessThan(.001);
+        expect(magnitude({ x: weak.b.support!.xi.x - free.b.support!.xi.x,
+          y: weak.b.support!.xi.y - free.b.support!.xi.y })).toBeLessThan(.002);
+      }
+  });
+
+  it('moving ground drive, yaw and commanded recovery share the existing physical allowances', () => {
+    for (const substeps of [12, 48]) for (const capacity of [1e-6, 50, 900])
+      for (const speed of [0, 3, 7]) for (const turn of [0, Math.PI / 3, Math.PI]) {
+        const row = moving(capacity, substeps, speed, Math.PI / 2, turn);
+        expect(row.groundIntervals.length).toBeGreaterThan(0);
+        for (const interval of row.groundIntervals) {
+          expect(Math.hypot(interval.force, interval.correction)).toBeLessThanOrEqual(interval.legLimit + 1e-7);
+          expect(Math.hypot(interval.force, interval.yawForce, interval.correction)).toBeLessThanOrEqual(interval.traction + 1e-7);
+        }
+      }
+  });
+
+  it('a tiny hold stays continuous during sustained fatigued heavy-player turning', () => {
+    for (const substeps of [12, 48]) for (const speed of [3, 7]) for (const side of [1, -1]) {
+      const free = persistentTurn(null, 1, substeps, speed, side);
+      const weak = persistentTurn(1e-6, 1, substeps, speed, side);
+      expect(free.maxUtilization).toBeGreaterThan(.95);
+      expect(weak.impulse).toBeLessThanOrEqual(1e-6 * .4 + 1e-10);
+      for (let tick = 0; tick < weak.trajectory.length; tick++) {
+        const a = free.trajectory[tick], b = weak.trajectory[tick];
+        expect(b.state).toBe(a.state);
+        expect(magnitude({ x: b.pos.x - a.pos.x, y: b.pos.y - a.pos.y })).toBeLessThan(1e-4);
+        expect(magnitude({ x: b.vel.x - a.vel.x, y: b.vel.y - a.vel.y })).toBeLessThan(.001);
+        expect(magnitude({ x: b.xi.x - a.xi.x, y: b.xi.y - a.xi.y })).toBeLessThan(.001);
+        expect(Math.abs(b.facing - a.facing)).toBeLessThan(.001);
+      }
+    }
+  });
+
+  it('a partial-leg sprinting hold cannot amplify finite force into an abrupt balance jump', () => {
+    for (const substeps of [12, 48]) for (const side of [1, -1]) {
+      const partial = persistentTurn(348, .14, substeps, 7, side);
+      expect(partial.forceSamples).toBeGreaterThan(0);
+      expect(partial.impulse).toBeGreaterThan(0);
+      expect(partial.impulse).toBeLessThanOrEqual(348 * .4 + 1e-8);
+      // Every physical interval checks finite force/velocity response and a
+      // force-derived balance change bound, without requiring a tackle win.
+    }
+  });
+
+  it('free and diving players do not receive an active corrective step through a hold', () => {
+    for (const diving of [false, true]) {
+      const a = body(0), b = body(1), world = new World([a, b], { substeps: 12 });
+      a.vel = { x: 2, y: 0 }; b.vel = { x: 3, y: 0 };
+      b.support!.xi = { x: .45, y: .03 }; b.support!.out = .12;
+      const grip = hold(a, b, 50);
+      world.joints.push(grip);
+      const before = momentum(world.bodies), report = world.step([{ vel: { x: 0, y: 0 }, free: true },
+        diving ? { vel: { x: 0, y: 0 }, dive: { x: 1, y: 0 } } : { vel: { x: 0, y: 0 }, free: true }], .05);
+      physical(world.bodies, before, report);
+      expect(grip.force!).toBeGreaterThan(0);
+      expect(report.supportMotorWork).toEqual([0, 0]);
+      expect(report.supportMotorWorkLimit).toEqual([0, 0]);
+      if (b.support!.foot) expect(magnitude(b.support!.foot.desired)).toBe(0);
+    }
   });
 
   it('free movement, braking, cuts and ordinary hand contact use no held motor', () => {

@@ -151,9 +151,15 @@ def main():
             if len(data['games']) > 1:
                 page.select_option('#game-filter', '1')
                 assert all(data['plays'][i]['game'] == 1 for i in indices())
-                assert 'Game 2' in page.locator('#game-label').text_content()
-                assert f"{data['games'][1]['final']['home']}" == page.locator('#teams .pts').nth(1).inner_text()
-                checks.append('Game filters and scoreboard use the selected clip’s game')
+                assert data['plays'][current()]['game'] == 1
+                if data['meta'].get('cohort'):
+                    assert 'controlled inspection fixtures' in page.locator('#game-label').text_content()
+                    assert page.locator('#teams').is_hidden() and page.locator('#linescore').is_hidden()
+                    checks.append('Source-group filters select the matching controlled fixtures and keep fictional scores hidden')
+                else:
+                    assert 'Game 2' in page.locator('#game-label').text_content()
+                    assert f"{data['games'][1]['final']['home']}" == page.locator('#teams .pts').nth(1).inner_text()
+                    checks.append('Game filters and scoreboard use the selected clip’s game')
             page.click('#reset-filters')
             front = data['plays'][filmed[0]]['plan']['front']
             page.select_option('#front-filter', front)

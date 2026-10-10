@@ -2,8 +2,17 @@
 
 Start with these shared project references:
 
+- [Recovery allocation and run-contact transfer](docs/reviews/recovery-allocation-and-run-contact.md):
+  **latest shipped physics increment.** Grounded held and unheld recovery now
+  share unused effort after drive/yaw; passive held response has finite,
+  profile-derived mobility. Read the 432 mechanical trials, 144 paired runs,
+  four-game guard and 26 source-labelled film clips. The rejected weak-reach
+  fall is retained. Next: achievable tackle approach/braking and the first
+  remaining sustained-contact divergence. Allow targeted football controller
+  work within shared capabilities; full 3D feet remain paused.
+
 - [Smaller live recovery model](docs/reviews/force-coupled-held-recovery.md):
-  **latest shipped physics increment.** Default World couples actual low-grip
+  Previous production increment. Default World couples actual low-grip
   forces to one effective corrective coordinate only while held; ordinary gait,
   blocks and jams retain analytic support. Read the paired evidence, cost and
   limitations. Continue with retained sustained-contact divergence, lower-reach

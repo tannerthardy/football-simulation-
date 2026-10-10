@@ -1,0 +1,2998 @@
+{
+  "schema": "rejected-recovery-allocation-witness-v1",
+  "sourceBefore": "c62105fdb51b10d859c2744fd133f0f24408d49011a9241c5ae034ac0722e0b6",
+  "sourceAfter": "c62105fdb51b10d859c2744fd133f0f24408d49011a9241c5ae034ac0722e0b6",
+  "scriptSha256": "93e1049c384d9335c370daf84f890ef08829401dfba88f74488d3e29a899be17",
+  "cohort": {
+    "generatedRosterPairs": [
+      [
+        31,
+        32
+      ],
+      [
+        41,
+        42
+      ],
+      [
+        51,
+        52
+      ]
+    ],
+    "rosterSha256": "2520815c7ea398a5a8d81c1bcdb7e8f1f74c784e30126cb5492522034f82aa11",
+    "strength": 0.55,
+    "playSeeds": [
+      3,
+      11
+    ],
+    "runs": [
+      "iz_strong",
+      "oz_strong",
+      "wz_strong",
+      "power",
+      "counter",
+      "trap"
+    ],
+    "fronts": [
+      "over",
+      "under"
+    ],
+    "flips": [
+      false,
+      true
+    ],
+    "formation": "ace_11",
+    "coverage": "cover3",
+    "pressure": null,
+    "los": 40,
+    "ballY": 26.666666666666668,
+    "firstDownX": 50,
+    "fullPlayLimitSeconds": 25
+  },
+  "observerVerifiedCount": 6,
+  "status": "rejected provisional unused-headroom allocation; never a football realism calibration target",
+  "reason": "At7.2yd/s a weak CB reach with leg share~0.14 made capture deviation jump0\u21923.014yd during the next native tick, causing an instant legs fall; near-zero active allowance was used as reciprocal passive mobility.",
+  "trial": {
+    "id": "RC-R3-counter-under-L-S3",
+    "roster": 2,
+    "run": "counter",
+    "scheme": "counter",
+    "front": "under",
+    "seed": 3,
+    "flip": true,
+    "observedSignature": "d0acd0343ac0253eb591104f5fced93adaa8cd3da7e60230510e4d71bdfd7024",
+    "observerVerified": null,
+    "rbProfile": {
+      "vmax": 9.70490714188915,
+      "tau": 1.3941652264776083,
+      "brake": 6.423526077097504,
+      "lateral": 6.5954353741496625,
+      "turnRate": 8.517777777777777,
+      "backpedal": 0.536734693877551,
+      "shuffle": 0.5268,
+      "massKg": 92.07925111,
+      "heightYd": 1.963888888888889,
+      "radius": 0.2609090909090909,
+      "reach": 0.99375,
+      "maxCatchHeight": 3.3208611111111113,
+      "reactReach": 2.8778055555555557,
+      "reactionTime": 0.25918367346938775,
+      "power": 73.72917178165,
+      "balance": 0.6122448979591837,
+      "bend": 0.6717823129251701,
+      "stepSpeed": 3.7969024943310656,
+      "getUp": 0.8941111111111111
+    },
+    "rbRatings": {
+      "strength": 40,
+      "stamina": 78,
+      "balance": 61,
+      "toughness": 51,
+      "throwPower": 33,
+      "accShort": 16,
+      "accMid": 30,
+      "accDeep": 34,
+      "release": 31,
+      "throwOnRun": 44,
+      "touch": 21,
+      "pocketPresence": 29,
+      "vision": 53,
+      "elusiveness": 60,
+      "breakTackle": 53,
+      "ballSecurity": 55,
+      "patience": 70,
+      "routeRunning": 70,
+      "releaseVsPress": 28,
+      "hands": 62,
+      "contestedCatch": 32,
+      "ballTracking": 43,
+      "passBlock": 61,
+      "runBlock": 33,
+      "handTechnique": 22,
+      "leadBlock": 21,
+      "passRushPower": 23,
+      "passRushFinesse": 25,
+      "blockShedding": 35,
+      "tackling": 39,
+      "hitPower": 28,
+      "pursuit": 30,
+      "manCoverage": 37,
+      "zoneCoverage": 32,
+      "press": 20,
+      "ballSkills": 37,
+      "kickPower": 34,
+      "kickAccuracy": 26,
+      "puntPower": 20,
+      "puntAccuracy": 28,
+      "awareness": 52,
+      "playRecognition": 62,
+      "decisionMaking": 59,
+      "composure": 56,
+      "discipline": 76,
+      "anticipation": 6,
+      "consistency": 68,
+      "workRate": 50
+    },
+    "yards": 5.46,
+    "outcome": "tackle",
+    "finishCause": "physical-down-by-contact",
+    "duration": 4.95,
+    "possession": "O",
+    "turnover": false,
+    "penalty": "holding",
+    "handoffAt": 1.45,
+    "firstContact": {
+      "t": 4.4,
+      "carrier": "RB",
+      "opponent": "CB_W",
+      "kind": "grasp",
+      "x": 43.24917584616766,
+      "yardsBeforeContact": 3.2491758461676596,
+      "afterTransfer": true
+    },
+    "yardsAfterFirstContact": 2.2108241538323403,
+    "firstBlockContactAt": 0.5,
+    "missedAttempts": 0,
+    "brokenHolds": 1,
+    "carrierFalls": [
+      {
+        "t": 4.5,
+        "cause": "legs"
+      }
+    ],
+    "lowerJointTicks": 3,
+    "carrierHoldTicks": 3,
+    "maxHoldForce": 336.709809,
+    "lowerReachReleases": 0,
+    "maxMomentumResidual": 1.71710410847859e-12,
+    "maxWorkResidual": 7.331024676204834e-12,
+    "maxMotorWorkExcess": 0,
+    "stateAtFinish": {
+      "slot": "RB",
+      "pos": {
+        "x": 45.279046,
+        "y": 14.615952
+      },
+      "vel": {
+        "x": 3.904525,
+        "y": -5.576996
+      },
+      "facing": -1.151765,
+      "energy": 0.958131,
+      "support": {
+        "state": "down",
+        "cause": "legs",
+        "xi": {
+          "x": 1.773738,
+          "y": -2.436878
+        },
+        "out": 0.004167,
+        "posture": 0.212627,
+        "baseRadiusYd": 0.121595,
+        "recoverySpeedYdS": 3.790648,
+        "fallThresholdYd": 1.298625,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0.006581,
+          "y": 0.014726
+        },
+        "feetLock": 0,
+        "causes": {
+          "contact": 0,
+          "legs": 3.034322,
+          "overspeed": 0
+        },
+        "foot": null
+      }
+    },
+    "contactWindow": [
+      {
+        "t": 3.95,
+        "tickEnd": 4,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 41.64833,
+            "y": 20.513687
+          },
+          "vel": {
+            "x": 2.695198,
+            "y": -5.547939
+          },
+          "facing": -1.114023,
+          "energy": 0.966478,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.193461,
+            "baseRadiusYd": 0.120234,
+            "recoverySpeedYdS": 3.792321,
+            "fallThresholdYd": 1.300148,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 41.785633,
+            "y": 20.234068
+          },
+          "vel": {
+            "x": 2.796925,
+            "y": -5.636802
+          },
+          "facing": -0.992977,
+          "energy": 0.965652,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.193296,
+            "baseRadiusYd": 0.120223,
+            "recoverySpeedYdS": 3.792162,
+            "fallThresholdYd": 1.300108,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 5.496182,
+            "y": -7.998575
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 9.366982,
+          "y": -8.182455
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4,
+        "tickEnd": 4.05,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 41.785633,
+            "y": 20.234068
+          },
+          "vel": {
+            "x": 2.796925,
+            "y": -5.636802
+          },
+          "facing": -0.992977,
+          "energy": 0.965652,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.193296,
+            "baseRadiusYd": 0.120223,
+            "recoverySpeedYdS": 3.792162,
+            "fallThresholdYd": 1.300108,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 41.927928,
+            "y": 19.950089
+          },
+          "vel": {
+            "x": 2.894858,
+            "y": -5.722345
+          },
+          "facing": -0.908227,
+          "energy": 0.964822,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.19313,
+            "baseRadiusYd": 0.120211,
+            "recoverySpeedYdS": 3.792001,
+            "fallThresholdYd": 1.300066,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 5.496182,
+            "y": -7.998575
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 9.017554,
+          "y": -7.876766
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.05,
+        "tickEnd": 4.1,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 41.927928,
+            "y": 19.950089
+          },
+          "vel": {
+            "x": 2.894858,
+            "y": -5.722345
+          },
+          "facing": -0.908227,
+          "energy": 0.964822,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.19313,
+            "baseRadiusYd": 0.120211,
+            "recoverySpeedYdS": 3.792001,
+            "fallThresholdYd": 1.300066,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.075028,
+            "y": 19.661913
+          },
+          "vel": {
+            "x": 2.989144,
+            "y": -5.804699
+          },
+          "facing": -0.926375,
+          "energy": 0.963988,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192964,
+            "baseRadiusYd": 0.120199,
+            "recoverySpeedYdS": 3.791837,
+            "fallThresholdYd": 1.300024,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 5.496182,
+            "y": -7.998575
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 8.681855,
+          "y": -7.583082
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.1,
+        "tickEnd": 4.15,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.075028,
+            "y": 19.661913
+          },
+          "vel": {
+            "x": 2.989144,
+            "y": -5.804699
+          },
+          "facing": -0.926375,
+          "energy": 0.963988,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192964,
+            "baseRadiusYd": 0.120199,
+            "recoverySpeedYdS": 3.791837,
+            "fallThresholdYd": 1.300024,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.226755,
+            "y": 19.369696
+          },
+          "vel": {
+            "x": 3.079928,
+            "y": -5.883988
+          },
+          "facing": -0.977824,
+          "energy": 0.963151,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192798,
+            "baseRadiusYd": 0.120187,
+            "recoverySpeedYdS": 3.791672,
+            "fallThresholdYd": 1.299981,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 5.496182,
+            "y": -7.998575
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 8.359265,
+          "y": -7.300858
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.15,
+        "tickEnd": 4.2,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.226755,
+            "y": 19.369696
+          },
+          "vel": {
+            "x": 3.079928,
+            "y": -5.883988
+          },
+          "facing": -0.977824,
+          "energy": 0.963151,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192798,
+            "baseRadiusYd": 0.120187,
+            "recoverySpeedYdS": 3.791672,
+            "fallThresholdYd": 1.299981,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.382936,
+            "y": 19.073588
+          },
+          "vel": {
+            "x": 3.167344,
+            "y": -5.960331
+          },
+          "facing": -0.994474,
+          "energy": 0.962311,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.19263,
+            "baseRadiusYd": 0.120175,
+            "recoverySpeedYdS": 3.791504,
+            "fallThresholdYd": 1.299938,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 5.496182,
+            "y": -7.998575
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 8.0492,
+          "y": -7.029586
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.2,
+        "tickEnd": 4.25,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.382936,
+            "y": 19.073588
+          },
+          "vel": {
+            "x": 3.167344,
+            "y": -5.960331
+          },
+          "facing": -0.994474,
+          "energy": 0.962311,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.19263,
+            "baseRadiusYd": 0.120175,
+            "recoverySpeedYdS": 3.791504,
+            "fallThresholdYd": 1.299938,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.543408,
+            "y": 18.773734
+          },
+          "vel": {
+            "x": 3.251522,
+            "y": -6.033841
+          },
+          "facing": -0.977075,
+          "energy": 0.961468,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192462,
+            "baseRadiusYd": 0.120163,
+            "recoverySpeedYdS": 3.791334,
+            "fallThresholdYd": 1.299894,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 5.496182,
+            "y": -7.998575
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 7.751112,
+          "y": -6.768786
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.25,
+        "tickEnd": 4.3,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.543408,
+            "y": 18.773734
+          },
+          "vel": {
+            "x": 3.251522,
+            "y": -6.033841
+          },
+          "facing": -0.977075,
+          "energy": 0.961468,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192462,
+            "baseRadiusYd": 0.120163,
+            "recoverySpeedYdS": 3.791334,
+            "fallThresholdYd": 1.299894,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.709585,
+            "y": 18.471309
+          },
+          "vel": {
+            "x": 3.395567,
+            "y": -6.063142
+          },
+          "facing": -0.863175,
+          "energy": 0.960639,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192294,
+            "baseRadiusYd": 0.120151,
+            "recoverySpeedYdS": 3.791166,
+            "fallThresholdYd": 1.29985,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 6.93339,
+            "y": -6.79068
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 13.263509,
+          "y": -2.698
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.3,
+        "tickEnd": 4.35,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.709585,
+            "y": 18.471309
+          },
+          "vel": {
+            "x": 3.395567,
+            "y": -6.063142
+          },
+          "facing": -0.863175,
+          "energy": 0.960639,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192294,
+            "baseRadiusYd": 0.120151,
+            "recoverySpeedYdS": 3.791166,
+            "fallThresholdYd": 1.29985,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.882807,
+            "y": 18.167452
+          },
+          "vel": {
+            "x": 3.533314,
+            "y": -6.091153
+          },
+          "facing": -0.71805,
+          "energy": 0.959806,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192128,
+            "baseRadiusYd": 0.12014,
+            "recoverySpeedYdS": 3.790995,
+            "fallThresholdYd": 1.299806,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 6.93339,
+            "y": -6.79068
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 12.683678,
+          "y": -2.579195
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.35,
+        "tickEnd": 4.4,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 42.882807,
+            "y": 18.167452
+          },
+          "vel": {
+            "x": 3.533314,
+            "y": -6.091153
+          },
+          "facing": -0.71805,
+          "energy": 0.959806,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.192128,
+            "baseRadiusYd": 0.12014,
+            "recoverySpeedYdS": 3.790995,
+            "fallThresholdYd": 1.299806,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.062768,
+            "y": 17.862224
+          },
+          "vel": {
+            "x": 3.665098,
+            "y": -6.117941
+          },
+          "facing": -0.702437,
+          "energy": 0.95897,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.191961,
+            "baseRadiusYd": 0.120128,
+            "recoverySpeedYdS": 3.790823,
+            "fallThresholdYd": 1.29976,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 6.93339,
+            "y": -6.79068
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 12.134581,
+          "y": -2.466672
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.4,
+        "tickEnd": 4.45,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.062768,
+            "y": 17.862224
+          },
+          "vel": {
+            "x": 3.665098,
+            "y": -6.117941
+          },
+          "facing": -0.702437,
+          "energy": 0.95897,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.191961,
+            "baseRadiusYd": 0.120128,
+            "recoverySpeedYdS": 3.790823,
+            "fallThresholdYd": 1.29976,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.249176,
+            "y": 17.555687
+          },
+          "vel": {
+            "x": 3.79123,
+            "y": -6.143572
+          },
+          "facing": -0.767194,
+          "energy": 0.958131,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.191794,
+            "baseRadiusYd": 0.120116,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.299715,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 6.93339,
+            "y": -6.79068
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 11.614123,
+          "y": -2.360002
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [
+          {
+            "t": 4.4,
+            "type": "carrier_contact",
+            "a": "RB",
+            "b": "CB_W",
+            "note": "grasp"
+          },
+          {
+            "t": 4.4,
+            "type": "tackle_wrap",
+            "a": "CB_W",
+            "b": "RB",
+            "note": "initial"
+          }
+        ],
+        "afterTickHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 44.318068,
+              "y": 18.408321
+            },
+            "holderVel": {
+              "x": -3.473165,
+              "y": 0.934779
+            },
+            "legs": 0,
+            "capacity": 348.063144,
+            "force": 0,
+            "reach": 1.517302,
+            "hold": 1.367302,
+            "slipping": false,
+            "broken": false,
+            "origin": "reach"
+          }
+        ],
+        "bond": {
+          "carrier": "RB",
+          "start": 4.4,
+          "progressX": 43.249176,
+          "stalled": 0,
+          "down": false,
+          "tacklers": [
+            "CB_W"
+          ]
+        }
+      },
+      {
+        "t": 4.45,
+        "tickEnd": 4.5,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.249176,
+            "y": 17.555687
+          },
+          "vel": {
+            "x": 3.79123,
+            "y": -6.143572
+          },
+          "facing": -0.767194,
+          "energy": 0.958131,
+          "support": {
+            "state": "up",
+            "cause": null,
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "out": 0,
+            "posture": 0.191794,
+            "baseRadiusYd": 0.120116,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.299715,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.444093,
+            "y": 17.252361
+          },
+          "vel": {
+            "x": 3.963522,
+            "y": -6.003459
+          },
+          "facing": -0.811304,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 194.400984,
+              "y": 288.714755
+            },
+            "felt": {
+              "x": 153.650593,
+              "y": 178.050251
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": {
+              "offset": {
+                "x": 0,
+                "y": 0
+              },
+              "target": {
+                "x": 43.427581,
+                "y": 17.277374
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": 0,
+                "y": 0
+              },
+              "force": {
+                "x": 25.209001,
+                "y": 37.439165
+              },
+              "capacity": 0,
+              "mobility": 0,
+              "state": "unloaded"
+            }
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": 1,
+          "posture": 0.5,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 44.318068,
+              "y": 18.408321
+            },
+            "holderVel": {
+              "x": -3.473165,
+              "y": 0.934779
+            },
+            "legs": 0,
+            "capacity": 348.063144,
+            "force": 0,
+            "reach": 1.517302,
+            "hold": 1.367302,
+            "slipping": false,
+            "broken": false,
+            "origin": "reach"
+          }
+        ],
+        "afterHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 44.147091,
+              "y": 18.4384
+            },
+            "holderVel": {
+              "x": -3.357207,
+              "y": 0.26398
+            },
+            "legs": 0.14168,
+            "capacity": 348.063144,
+            "force": 319.079574,
+            "reach": 1.517302,
+            "hold": 1.362721,
+            "slipping": true,
+            "broken": false,
+            "origin": "reach"
+          }
+        ],
+        "carrierGroundImpulse": {
+          "x": 5.110333,
+          "y": 1.218815
+        },
+        "carrierSupportMotorWork": -0.010894,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": true,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [
+          {
+            "t": 4.45,
+            "type": "fall",
+            "a": "RB",
+            "b": null,
+            "note": "legs"
+          }
+        ],
+        "afterTickHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 44.147091,
+              "y": 18.4384
+            },
+            "holderVel": {
+              "x": -3.357207,
+              "y": 0.26398
+            },
+            "legs": 0.14168,
+            "capacity": 348.063144,
+            "force": 319.079574,
+            "reach": 1.517302,
+            "hold": 1.362721,
+            "slipping": true,
+            "broken": false,
+            "origin": "reach"
+          }
+        ],
+        "bond": {
+          "carrier": "RB",
+          "start": 4.4,
+          "progressX": 43.444093,
+          "stalled": 0,
+          "down": false,
+          "tacklers": [
+            "CB_W"
+          ]
+        }
+      },
+      {
+        "t": 4.5,
+        "tickEnd": 4.55,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.444093,
+            "y": 17.252361
+          },
+          "vel": {
+            "x": 3.963522,
+            "y": -6.003459
+          },
+          "facing": -0.811304,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 194.400984,
+              "y": 288.714755
+            },
+            "felt": {
+              "x": 153.650593,
+              "y": 178.050251
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": {
+              "offset": {
+                "x": 0,
+                "y": 0
+              },
+              "target": {
+                "x": 43.427581,
+                "y": 17.277374
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": 0,
+                "y": 0
+              },
+              "force": {
+                "x": 25.209001,
+                "y": 37.439165
+              },
+              "capacity": 0,
+              "mobility": 0,
+              "state": "unloaded"
+            }
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.644806,
+            "y": 16.956361
+          },
+          "vel": {
+            "x": 4.049684,
+            "y": -5.84684
+          },
+          "facing": -0.852092,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 89.790537,
+              "y": 324.516802
+            },
+            "felt": {
+              "x": 132.772728,
+              "y": 273.26093
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": {
+              "offset": {
+                "x": 0,
+                "y": 0
+              },
+              "target": {
+                "x": 43.627935,
+                "y": 16.980721
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": 0,
+                "y": 0
+              },
+              "force": {
+                "x": 23.640594,
+                "y": 85.440739
+              },
+              "capacity": 0,
+              "mobility": 0,
+              "state": "unloaded"
+            }
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": 1,
+          "posture": 0.5,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 44.147091,
+              "y": 18.4384
+            },
+            "holderVel": {
+              "x": -3.357207,
+              "y": 0.26398
+            },
+            "legs": 0.14168,
+            "capacity": 336.709809,
+            "force": 319.079574,
+            "reach": 1.517302,
+            "hold": 1.362721,
+            "slipping": true,
+            "broken": false,
+            "origin": "reach"
+          }
+        ],
+        "afterHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 43.983124,
+              "y": 18.433662
+            },
+            "holderVel": {
+              "x": -3.186155,
+              "y": -0.443245
+            },
+            "legs": 0.273447,
+            "capacity": 336.709809,
+            "force": 336.709809,
+            "reach": 1.517302,
+            "hold": 1.488394,
+            "slipping": true,
+            "broken": false,
+            "origin": "reach"
+          }
+        ],
+        "carrierGroundImpulse": {
+          "x": 1.218731,
+          "y": -0.939111
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 43.983124,
+              "y": 18.433662
+            },
+            "holderVel": {
+              "x": -3.186155,
+              "y": -0.443245
+            },
+            "legs": 0.273447,
+            "capacity": 336.709809,
+            "force": 336.709809,
+            "reach": 1.517302,
+            "hold": 1.488394,
+            "slipping": true,
+            "broken": false,
+            "origin": "reach"
+          }
+        ],
+        "bond": {
+          "carrier": "RB",
+          "start": 4.4,
+          "progressX": 43.644806,
+          "stalled": 0,
+          "down": false,
+          "tacklers": [
+            "CB_W"
+          ]
+        }
+      },
+      {
+        "t": 4.55,
+        "tickEnd": 4.6,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.644806,
+            "y": 16.956361
+          },
+          "vel": {
+            "x": 4.049684,
+            "y": -5.84684
+          },
+          "facing": -0.852092,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 89.790537,
+              "y": 324.516802
+            },
+            "felt": {
+              "x": 132.772728,
+              "y": 273.26093
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": {
+              "offset": {
+                "x": 0,
+                "y": 0
+              },
+              "target": {
+                "x": 43.627935,
+                "y": 16.980721
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": 0,
+                "y": 0
+              },
+              "force": {
+                "x": 23.640594,
+                "y": 85.440739
+              },
+              "capacity": 0,
+              "mobility": 0,
+              "state": "unloaded"
+            }
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.847814,
+            "y": 16.664695
+          },
+          "vel": {
+            "x": 4.066171,
+            "y": -5.83812
+          },
+          "facing": -0.892121,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 41.532419,
+              "y": 92.928768
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": 1,
+          "posture": 0.5,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 43.983124,
+              "y": 18.433662
+            },
+            "holderVel": {
+              "x": -3.186155,
+              "y": -0.443245
+            },
+            "legs": 0.273447,
+            "capacity": 226.789498,
+            "force": 336.709809,
+            "reach": 1.517302,
+            "hold": 1.488394,
+            "slipping": true,
+            "broken": false,
+            "origin": "reach"
+          }
+        ],
+        "afterHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 43.830098,
+              "y": 18.397346
+            },
+            "holderVel": {
+              "x": -2.930661,
+              "y": -0.988922
+            },
+            "legs": 0.293352,
+            "capacity": 226.789498,
+            "force": 37.79825,
+            "reach": 1.517302,
+            "hold": 1.518372,
+            "slipping": true,
+            "broken": true,
+            "origin": "reach"
+          }
+        ],
+        "carrierGroundImpulse": {
+          "x": 1.078428,
+          "y": -1.034978
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [
+          {
+            "holder": "CB_W",
+            "holderState": "up",
+            "holderPos": {
+              "x": 43.830098,
+              "y": 18.397346
+            },
+            "holderVel": {
+              "x": -2.930661,
+              "y": -0.988922
+            },
+            "legs": 0.293352,
+            "capacity": 226.789498,
+            "force": 37.79825,
+            "reach": 1.517302,
+            "hold": 1.518372,
+            "slipping": true,
+            "broken": true,
+            "origin": "reach"
+          }
+        ],
+        "bond": {
+          "carrier": "RB",
+          "start": 4.4,
+          "progressX": 43.847814,
+          "stalled": 0,
+          "down": false,
+          "tacklers": [
+            "CB_W"
+          ]
+        }
+      },
+      {
+        "t": 4.6,
+        "tickEnd": 4.65,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 43.847814,
+            "y": 16.664695
+          },
+          "vel": {
+            "x": 4.066171,
+            "y": -5.83812
+          },
+          "facing": -0.892121,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 41.532419,
+              "y": 92.928768
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.051412,
+            "y": 16.372506
+          },
+          "vel": {
+            "x": 4.077784,
+            "y": -5.849429
+          },
+          "facing": -0.931408,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 11.899237,
+              "y": 26.624538
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 1.069275,
+          "y": -1.041295
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [
+          {
+            "t": 4.6,
+            "type": "broken_tackle",
+            "a": "RB",
+            "b": "CB_W",
+            "note": "hold slipped"
+          }
+        ],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.65,
+        "tickEnd": 4.7,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.051412,
+            "y": 16.372506
+          },
+          "vel": {
+            "x": 4.077784,
+            "y": -5.849429
+          },
+          "facing": -0.931408,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 11.899237,
+              "y": 26.624538
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.255591,
+            "y": 16.079751
+          },
+          "vel": {
+            "x": 4.08935,
+            "y": -5.86077
+          },
+          "facing": -0.96997,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 3.409189,
+              "y": 7.628058
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 1.065005,
+          "y": -1.044238
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.7,
+        "tickEnd": 4.75,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.255591,
+            "y": 16.079751
+          },
+          "vel": {
+            "x": 4.08935,
+            "y": -5.86077
+          },
+          "facing": -0.96997,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 3.409189,
+              "y": 7.628058
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.460346,
+            "y": 15.786428
+          },
+          "vel": {
+            "x": 4.100871,
+            "y": -5.872141
+          },
+          "facing": -1.007824,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.976749,
+              "y": 2.185475
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 1.060833,
+          "y": -1.047117
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.75,
+        "tickEnd": 4.8,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.460346,
+            "y": 15.786428
+          },
+          "vel": {
+            "x": 4.100871,
+            "y": -5.872141
+          },
+          "facing": -1.007824,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.976749,
+              "y": 2.185475
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.665677,
+            "y": 15.492536
+          },
+          "vel": {
+            "x": 4.112347,
+            "y": -5.883544
+          },
+          "facing": -1.044983,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.279843,
+              "y": 0.626149
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 1.056757,
+          "y": -1.049932
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.8,
+        "tickEnd": 4.85,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.665677,
+            "y": 15.492536
+          },
+          "vel": {
+            "x": 4.112347,
+            "y": -5.883544
+          },
+          "facing": -1.044983,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.279843,
+              "y": 0.626149
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.87158,
+            "y": 15.198073
+          },
+          "vel": {
+            "x": 4.123781,
+            "y": -5.894976
+          },
+          "facing": -1.081461,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.080176,
+              "y": 0.179395
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 1.052776,
+          "y": -1.052686
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.85,
+        "tickEnd": 4.9,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 44.87158,
+            "y": 15.198073
+          },
+          "vel": {
+            "x": 4.123781,
+            "y": -5.894976
+          },
+          "facing": -1.081461,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.080176,
+              "y": 0.179395
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 45.078054,
+            "y": 14.903038
+          },
+          "vel": {
+            "x": 4.135172,
+            "y": -5.906438
+          },
+          "facing": -1.117273,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.022971,
+              "y": 0.051397
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": 1.048885,
+          "y": -1.055379
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": false,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [],
+        "afterTickHolds": [],
+        "bond": null
+      },
+      {
+        "t": 4.9,
+        "tickEnd": 4.95,
+        "carrier": "RB",
+        "before": {
+          "slot": "RB",
+          "pos": {
+            "x": 45.078054,
+            "y": 14.903038
+          },
+          "vel": {
+            "x": 4.135172,
+            "y": -5.906438
+          },
+          "facing": -1.117273,
+          "energy": 0.958131,
+          "support": {
+            "state": "falling",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.022971,
+              "y": 0.051397
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "afterPhysics": {
+          "slot": "RB",
+          "pos": {
+            "x": 45.279046,
+            "y": 14.615952
+          },
+          "vel": {
+            "x": 3.904525,
+            "y": -5.576996
+          },
+          "facing": -1.151765,
+          "energy": 0.958131,
+          "support": {
+            "state": "down",
+            "cause": "legs",
+            "xi": {
+              "x": 1.773738,
+              "y": -2.436878
+            },
+            "out": 0.004167,
+            "posture": 0.212627,
+            "baseRadiusYd": 0.121595,
+            "recoverySpeedYdS": 3.790648,
+            "fallThresholdYd": 1.298625,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0.006581,
+              "y": 0.014726
+            },
+            "feetLock": 0,
+            "causes": {
+              "contact": 0,
+              "legs": 3.034322,
+              "overspeed": 0
+            },
+            "foot": null
+          }
+        },
+        "intended": {
+          "velocity": {
+            "x": 8.985353,
+            "y": -3.667241
+          },
+          "push": null,
+          "posture": null,
+          "behavior": "carrier"
+        },
+        "beforeHolds": [],
+        "afterHolds": [],
+        "carrierGroundImpulse": {
+          "x": -21.237782,
+          "y": 30.334808
+        },
+        "carrierSupportMotorWork": 0,
+        "carrierSupportMotorWorkLimit": 0,
+        "carrierPhysicalContacts": [],
+        "carrierFall": false,
+        "carrierDown": true,
+        "lowerReachReleases": 0,
+        "substeps": 12,
+        "newEvents": [
+          {
+            "t": 4.9,
+            "type": "tackle",
+            "a": null,
+            "b": "RB",
+            "note": null
+          }
+        ],
+        "afterTickHolds": [],
+        "bond": null
+      }
+    ]
+  }
+}
