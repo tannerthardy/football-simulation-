@@ -1,5 +1,10 @@
 # Football-first physics: the smallest useful support model
 
+**Cost-benefit update:** read [the newer philosophy review](physics-cost-benefit-and-development-philosophy.md)
+first. Independent reviews recommend a bounded effective-support contender
+before making universal two-foot gait a prerequisite. This document retains
+the comparison evidence and two-slot fallback design.
+
 ## Recommendation and current priority
 
 **Pause expansion of the spatial foot/ground solver. Build and evaluate a small

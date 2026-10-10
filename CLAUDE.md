@@ -2,20 +2,27 @@
 
 Start with these shared project references:
 
-- [Football-first physics and the simpler support model](docs/reviews/football-first-physics-simplification.md):
-  **current priority, following the owner's simplicity review.** Pause further
-  3D foot/ground expansion. Keep existing World bodies and evaluate two persistent
-  massless support points with finite achieved placement and shared traction,
-  leg/grip force and work budgets. This is a recommendation, not a shipped
-  two-foot model. Fresh live-World comparisons retain the hand-fall improvement
-  and serious press-jam regression of the virtual-foot experiment. Read the
-  next three bounded increments and promotion gates. Earlier research remains
-  reference material; its spatial-integration “next” lists are superseded.
-  No new unused backend, hidden strength fitting, global resolution increase,
+- [Physics cost-benefit and development philosophy](docs/reviews/physics-cost-benefit-and-development-philosophy.md):
+  **current priority.** Four independent reviews challenge mandatory two-foot
+  gait as well as 3D expansion. First evaluate bounded effective support/recovery
+  with actual shared-force coupling inside World; add persistent lower geometry
+  where a retained interaction needs it. Two massless slots are a fallback if
+  reduced state cannot generalize or exceptions become harder to maintain.
+  This is a recommendation, not a shipped candidate or measured speedup.
+  Allow diagnosed braking/pursuit/re-anchor control repairs within shared limits;
+  do not treat physics-first as an indefinite control freeze. Read the candidate
+  gates and revised philosophy before implementation. No new unused backend,
+  final outcome overrides, hidden strength fitting, global resolution increase,
   or PR #1 changes. Physics is not yet ready for the owner's final OK.
 
 The entries below are historical checkpoints. Their proposed next steps do not
 override the current football-first priority above.
+
+- [Football-first physics and the simpler support model](docs/reviews/football-first-physics-simplification.md):
+  Previous review with source-pinned actual-World comparisons and a detailed
+  two-slot fallback design. Hand-fall agreement improves in virtual-foot while
+  press-jam convergence worsens. The newer cost-benefit review changes candidate
+  order; two slots have not earned prerequisite status.
 
 - [Sole slip events and the contact lifecycle](docs/reviews/sole-slip-events-and-contact-lifecycle.md):
   Previous, now paused research direction. The model resolves an isolated fixed-normal

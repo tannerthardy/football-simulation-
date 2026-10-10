@@ -1,15 +1,16 @@
 # Physics development and testing
 
-Read [Football-first physics and the simpler support model](reviews/football-first-physics-simplification.md)
-first. The owner paused further 3D expansion and requested the simplest coherent
-football model. Keep the current World bodies; evaluate two persistent massless
-support points with reachable achieved placement and shared ground/leg/grip
-force and work. The first implementation milestone is actual-World stationary
-bracing and held recovery, followed by shared football tasks, ordinary gait,
-localized divergence and before/after film. This model is recommended, not
-implemented. Production still uses legacy support. The fresh
+Read [Physics cost-benefit and development philosophy](reviews/physics-cost-benefit-and-development-philosophy.md)
+first. Four independent reviews challenge the need for universal two-foot gait.
+Keep the current World bodies; first evaluate bounded effective support/recovery
+with a coherent shared ground/leg/grip force path. Persistent lower geometry or
+two massless slots must earn their complexity in retained football cases. Full
+3D foot/ground expansion remains paused. Use transparent reduced laws and stable
+football-scale convergence; permit diagnosed controller repairs within existing
+capabilities. No new candidate is implemented. Production uses legacy support.
+The preceding
 [live-World evidence and one-command rerun](../data/reviews/physics-world/football-first/README.md)
-retain both the experimental hand-fall improvement and the press-jam regression.
+retains both the experimental hand-fall improvement and the press-jam regression.
 
 This priority supersedes earlier research “next” lists below. Keep their
 tests, contracts and independently pinned references; do not make complete
@@ -205,17 +206,23 @@ those same controls. They are never a lower tackle-success number.
 
 What this means for code:
 
-- **No outcome rolls.** Do not decide "the tackle succeeds with probability p"
-  or "the block wins if rating A > rating B". Outcomes emerge from bodies, joints
-  and forces.
+- **No arbitrary final outcome overrides.** Do not replace actual contact with
+  "the tackle succeeds with probability p" or "the block wins if rating A >
+  rating B". Disclosed execution variation may affect perception, placement,
+  timing or grip acquisition before the result. It cannot bypass reach, force,
+  movement or shared effort limits.
 - **Ratings map to control, not results.** A rating may change reaction delay,
   aim error, hand timing, posture, step frequency or force limits. It must not
   scale a win chance or multiply yards.
-- **Few parameters, each physical.** Add a rating or constant only if you can
-  name the physical quantity it controls and roughly how large it is in real
-  players. Prefer measured numbers (tracking data, biomechanics) to tuned ones.
+- **Few interpretable parameters.** Name the physical or control quantity,
+  effective response law and plausible range. Prefer measurements, and allow
+  calibration of identifiable movement/recovery parameters against matched
+  data. Label assumptions where observations cannot identify the detail.
+  An anatomical mechanism is not required to justify a reduced response law.
 - **No timers pretending to be physics.** A block lasts as long as the hands
   hold and the feet keep the base. It does not last "0.8 s".
+  Finite response, placement and get-up times may be declared effective laws;
+  they must not arbitrarily award a block win or terminate a valid contact.
 - **One world.** Every body moves through `src/physics/world.ts`. A technique
   works by sending intents (feet, hands, grasp, lunge) into it. A technique
   never moves bodies directly.
@@ -233,14 +240,15 @@ cheaper one can.
 
 | Layer | What it checks | Where | Cost | When to run |
 |---|---|---|---|---|
-| 1. Contracts | Conservation and correctness of the world: momentum accounted for by recorded ground impulse, no energy created by contacts, inelastic collisions, bounded penetration, finite state, rotation and mirror invariance, results that do not change with the substep count | `test/world-physics.test.ts`, `test/grasp-world.test.ts`, `test/physics.test.ts` | seconds | every change |
+| 1. Contracts | Momentum accounted for by ground/external impulses, no unexplained passive energy, bounded penetration, finite state, symmetry and declared numerical tolerances; exact analytic checks where applicable | `test/world-physics.test.ts`, `test/grasp-world.test.ts`, `test/physics.test.ts` | seconds | changes affecting these mechanisms |
 | 2. Scenarios | The owner's six interactions (redirect, squeeze, release, seal, approach tackle, side hit), run with the real techniques. Asserts the contracts plus coarse physical directions: a harder hit displaces more, both sides of the field match | `test/scenario-pack.test.ts`; full report from `scripts/scenario-pack.ts` | seconds | every change |
 | 3. Technique regressions | Pursuit, tackle and pass-contact behavior that was diagnosed and fixed before | `test/pursuit-contact.test.ts`, `test/pass-contact.test.ts` | seconds | every change |
 | 4. Probes and convergence | Repeatable measurements, not pass/fail: interaction readiness, results across substep counts (6/12/24/48), labs that isolate one interaction | `scripts/interaction-readiness.ts`, `scripts/diag/pack-converge.ts`, `scripts/open-field-lab.ts`, `scripts/tackle-lab.ts`, `scripts/trench-lab.ts`, `scripts/diag/*` | a minute or two | when you change a mechanism, before committing |
 | 5. Real-world comparison | Speed, acceleration, get-off and yards before contact against NFL tracking summaries; whole-game calibration | `scripts/kinematics-compare.ts`, `scripts/calibrate.ts` | minutes; games are noisy (about ±3 points over 8 games) | before committing a change that moves players; as a guard, not a tuning target |
 
-`npm test` runs layers 1–3 together with the rest of the project's tests. It
-currently takes about 40 s. Write probe and calibration output to the ignored
+`npm test` runs layers 1–3 together with the rest of the project's tests. Cost
+varies by source and host; the latest recorded 476-test checkpoint took 76.71 s.
+Test counts do not establish football readiness. Write probe output to the ignored
 `out/` folder. Commit only summaries you have reviewed, under
 `data/reviews/physics-world/`.
 
@@ -255,9 +263,9 @@ feed into it. Never tune physics to move a game total.
 1. **Start from an observation.** Choose one thing that looks physically wrong,
    in a scenario, a trace or a tracking comparison. Write down what a real
    player's body would do instead.
-2. **Trace it before fixing it.** Use a diag script to find which force, joint
-   or intent produced the result. Most "wrong outcomes" come from one bad
-   number or a missing term, not from a missing rule.
+2. **Trace it before fixing it.** Find which force, joint or intent produced
+   the result. Determine whether coupling, control, a reduced law or missing
+   state explains the failure before adding physical detail.
 3. **Fix the cause in the physics or in the control.** Decide which one it is:
    - something the body *cannot* do, or does in a way no body could, belongs in
      the world (`src/physics/`);
@@ -273,8 +281,9 @@ feed into it. Never tune physics to move a game total.
    before/after numbers, and what is still wrong. Regressions belong in the doc;
    do not hide them.
 
-Change one mechanism at a time. If a change needs two compensating constants to
-look right, the model is probably wrong. Stop and trace.
+Change one mechanism at a time. Stop if success depends on compensating,
+unidentifiable strength changes. Calibrating a small set of identifiable
+movement/control parameters is legitimate; fitting forces to game totals is not.
 
 ## 4. How much testing is enough
 
@@ -284,9 +293,10 @@ real mistakes cheaply and fails only for real reasons.
 
 **Worth it (high benefit, low cost):**
 
-- Invariant tests for every mechanism: conservation, symmetry, finiteness,
-  no penetration, substep independence. They are exact and cheap. When they
-  fail, something is wrong.
+- Tests for accounting, force limits, symmetry, finite state and bounded
+  penetration. Use exact analytic assertions where justified. General contact
+  refinement uses declared tolerances and fall margins over football intervals,
+  not bit-identical full trajectories at every resolution.
 - One or two scenario tests per owner interaction, asserting directions
   ("harder hit, more displacement") rather than exact values.
 - A regression test for each bug that was hard to find.
@@ -355,8 +365,9 @@ grip or force limits. This catches control code that bypasses the physics.
 ### B. Physics cannot be cheated (cheap, exact, run every time)
 
 1. **Order independence:** shuffle the order of the bodies in the world and
-   get the same result, within float tolerance. Solver order bias is a classic
-   hidden asymmetry, such as offense always winning ties.
+   compare within declared solver/trajectory tolerances. Reject systematic
+   team or role advantage from row order. Do not require floating-point identity
+   for every finite iterative multi-contact solve.
 2. **Determinism:** the same seed gives an identical play, tick for tick.
 3. **Random-intent fuzzing:** run random bodies, from very light to very heavy,
    with random intents for a few hundred ticks. The contracts must hold:

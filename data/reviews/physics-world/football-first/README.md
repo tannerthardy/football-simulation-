@@ -1,7 +1,8 @@
 # Football-first support review: live-World evidence
 
-Read [the recommendation](../../../../docs/reviews/football-first-physics-simplification.md)
-first. The owner paused further 3D expansion. This is an observational comparison
+Read [the current cost-benefit recommendation](../../../../docs/reviews/physics-cost-benefit-and-development-philosophy.md)
+first; the [previous two-slot design](../../../../docs/reviews/football-first-physics-simplification.md)
+remains a fallback. The owner paused further 3D expansion. This is an observational comparison
 of existing `World` support modes, **not an implementation or validation of the
 recommended two-foot model**.
 
@@ -85,6 +86,6 @@ cloud environment for the pinned runtime.
 
 Read [PHYSICS_DEVELOPMENT.md](../../../../docs/PHYSICS_DEVELOPMENT.md) for the
 renewed implementation order. Next is a narrow support experiment inside actual
-World, followed by shared capability/real-technique transfer, normal movement,
+World with bounded effective support/recovery, followed by shared capability/real-technique transfer, normal movement,
 localized convergence and before/after film. A new unused physics backend or a
 more complete 3D contact lifecycle is not the next gate.

@@ -1,12 +1,14 @@
 # Shared NFL data
 
-Current physics/data status: [Football-first physics and the simpler support model](../docs/reviews/football-first-physics-simplification.md).
+Current physics/data status: [Physics cost-benefit and development philosophy](../docs/reviews/physics-cost-benefit-and-development-philosophy.md).
 The [live-World comparisons and one-command rerun](reviews/physics-world/football-first/README.md)
 compare the actual legacy and experimental virtual-foot modes. They retain a
 hand-fall improvement and a press-jam regression; neither model is a new two-foot
-implementation. The owner paused further 3D expansion. Next: minimal persistent
-support inside World, shared football tasks, ordinary gait and localized
-convergence/film gates. No new dataset or full spatial solver is a prerequisite.
+implementation. The owner paused further 3D expansion. Next: bounded effective
+support/recovery inside World, adding persistent lower geometry only when a
+retained interaction requires it. Two massless slots remain a fallback; shared
+football, movement and convergence/film gates select the simpler coherent model.
+No new dataset or full spatial solver is a prerequisite.
 Previous research directions below retain their original source pins; their
 “next” lists are superseded by the current review.
 
