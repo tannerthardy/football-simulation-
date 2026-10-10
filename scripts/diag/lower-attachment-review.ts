@@ -1,6 +1,6 @@
 /** A small actual-World restart of the retained lower-attachment release.
- * node --import tsx scripts/diag/lower-attachment-review.ts [output.json]
- * No production patch: the only private accesses restore an already acquired
+ * node --import tsx scripts/diag/lower-attachment-review.ts [output.json] [--bounded-attachment]
+ * Default-off experiment: the only private accesses restore an already acquired
  * attachment and observe when its ordinary geometry validation invalidates it.
  * The retained football trace lacks several optional filters/gait coordinates;
  * these are disclosed below. This is not an exact replay of the original play.
@@ -16,7 +16,8 @@ import { World, type GraspJoint, type Intent } from '../../src/physics/world.js'
 import { sourceVersion } from '../source-version.js';
 
 const output = process.argv[2] ?? 'out/lower-attachment-review/report.json';
-if (process.argv.length > 3) throw new Error('Usage: lower-attachment-review.ts [output.json]');
+const bounded = process.argv[3] === '--bounded-attachment';
+if (process.argv.length > (bounded ? 4 : 3)) throw new Error('Usage: lower-attachment-review.ts [output.json] [--bounded-attachment]');
 const traceFile = 'data/reviews/physics-world/approach-control/scope-witness-broad-candidate.json.gz';
 const traceBytes = readFileSync(traceFile), trace = JSON.parse(gunzipSync(traceBytes).toString('utf8'));
 const sourceBefore = sourceVersion(), scriptBefore = sha(readFileSync(import.meta.filename));
@@ -78,7 +79,7 @@ function make(input: Input) {
   const savedSupport = clone(held.support);
   // Constructor intentionally rejects inherited foot state; install the
   // reduced foot and acquired attachment only after making the normal World.
-  const world = new World([holder, held], { substeps: input.substeps });
+  const world = new World([holder, held], { substeps: input.substeps, boundedAttachment: bounded });
   held.support = savedSupport;
   const old = sample.beforeJoints.find((j: any) => j.kind === 'grasp' && j.a === holderIdx && j.b === heldIdx);
   const joint: GraspJoint = { kind: 'grasp', a: holder, b: held, reach: old.reach, capacity: old.capacity * input.capacityScale,
@@ -122,7 +123,13 @@ function trial(input: Input, observe: boolean) {
   };
   const sync = internals.syncHeldSupport;
   if (observe) internals.syncHeldSupport = function () {
+    const oldMapped = internals.attachments.get(joint)?.bounded;
     const before = state(); sync.call(this); const after = state();
+    if (oldMapped === undefined && internals.attachments.get(joint)?.bounded === true) {
+      const drift = Math.hypot(after.point.x - before.point.x, after.point.y - before.point.y);
+      if (drift > 1e-10) throw new Error(`Attachment conversion moved acquired point by ${drift} yd`);
+      transitions.push({ method: 'bounded-map-initialization', pointDriftYd: drift, before, after });
+    }
     if (before.broken !== after.broken || (before.foot && after.foot && length(before.foot.offset) > .5 && length(after.foot.offset) < .1))
       transitions.push({ method: 'syncHeldSupport', before, after });
   };
@@ -174,7 +181,7 @@ const mirrorPairs = rows.filter(row => row.input.side === 1).map(right => {
     holderVelocityError: error(right.final.holder.vel, left.final.holder.vel),
     heldVelocityError: error(right.final.held.vel, left.final.held.vel) };
 });
-const report = { sourceBefore, sourceAfter, scriptBefore, scriptAfter, trace: { file: traceFile, compressedSha256: sha(traceBytes),
+const report = { sourceBefore, sourceAfter, scriptBefore, scriptAfter, boundedAttachment: bounded, trace: { file: traceFile, compressedSha256: sha(traceBytes),
   id: trace.id, source: trace.sourceBefore, result: { outcome: trace.result.outcome, yards: trace.result.offenseYards },
   exactOriginalReplay: false, missingState: ['spin', 'squeeze', 'sprintLoad', 'support.since', 'support.feetVel', 'support.fall',
     'support.accel', 'support.tipAccel', 'support.feltTip', 'support.yaw', 'support.strike', 'support.causes'],

@@ -10,6 +10,10 @@ export function isolated(mode: 'per-update' | 'per-solve', budget = 100) {
   // Deliberately expose private methods only in this numerical isolation.
   const w: any = Object.create(World.prototype);
   w.constraintWork = mode;
+  // This prototype-only fixture has no lower attachments. Keep the World
+  // state read by the real grasp solver explicit even though no constructor
+  // or support integration is run here.
+  w.attachments = new WeakMap();
   w.bodies = [0, 2, 1].map(x => ({ vel: { x, y: 0 }, support: {} }));
   w.mass = [1, 1, 1];
   w.report = { armWorkLimit: [budget, budget, budget], armWork: [0, 0, 0],

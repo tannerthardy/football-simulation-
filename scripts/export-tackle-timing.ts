@@ -1,8 +1,9 @@
 /** Export the fixed full-recording subset from two tackle-timing panels.
- * node --import tsx scripts/export-tackle-timing.ts baseline-film.json candidate-film.json output.html [baseline-brake-film.json candidate-brake-film.json]
+ * node --import tsx scripts/export-tackle-timing.ts baseline-film.json candidate-film.json output.html [baseline-brake-film.json candidate-brake-film.json] [--bounded-attachment-comparison]
  * Reads stored recordings only; it never resimulates or selects by outcome.
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PlayLog } from '../src/game/game.js';
@@ -11,9 +12,14 @@ import type { TimingTackleFilm, TimingTackleFilmPlay } from './diag/tackle-timin
 import { compactReplayPlays } from './replay-telemetry-packing.js';
 import { packReplayPlay } from './replay-data.js';
 
-const [baselinePath, candidatePath, output, baselineBrakePath, candidateBrakePath] = process.argv.slice(2);
-if (!baselinePath || !candidatePath || !output || ![5, 7].includes(process.argv.length))
-  throw new Error('Usage: export-tackle-timing.ts baseline-film.json candidate-film.json output.html [baseline-brake-film.json candidate-brake-film.json]');
+const args = process.argv.slice(2), boundedComparison = args.at(-1) === '--bounded-attachment-comparison';
+if (boundedComparison) args.pop();
+const [baselinePath, candidatePath, output, baselineBrakePath, candidateBrakePath] = args;
+if (!baselinePath || !candidatePath || !output || ![3, 5].includes(args.length))
+  throw new Error('Usage: export-tackle-timing.ts baseline-film.json candidate-film.json output.html [baseline-brake-film.json candidate-brake-film.json] [--bounded-attachment-comparison]');
+const hashFile = (path: URL): string => createHash('sha256').update(readFileSync(path)).digest('hex');
+const preloadPath = 'scripts/diag/enable-bounded-attachment.ts';
+const preloadSha256 = boundedComparison ? hashFile(new URL('./diag/enable-bounded-attachment.ts', import.meta.url)) : null;
 const films = [baselinePath, candidatePath].map(path => JSON.parse(readFileSync(path, 'utf8')) as TimingTackleFilm);
 const concepts = {
   frontalForm: 'Square frontal form',
@@ -37,6 +43,9 @@ for (const film of films) {
 }
 for (const pin of ['scriptSha256', 'inputSha256', 'cohortSha256', 'profilesSha256'] as const)
   if (films[0][pin] !== films[1][pin]) throw new Error(`Baseline/candidate ${pin} mismatch`);
+if (boundedComparison && (films[0].sourceBefore !== films[1].sourceBefore
+  || films[0].scriptSha256 !== hashFile(new URL('./diag/tackle-timing-review.ts', import.meta.url))))
+  throw new Error('Bounded comparison requires one engine source and the unchanged pinned timing diagnostic');
 for (let k = 0; k < expectedIds.length; k++) {
   const a = films[0].plays[k], b = films[1].plays[k];
   if (a.profileSha256 !== b.profileSha256 || JSON.stringify(a.input) !== JSON.stringify(b.input)
@@ -60,7 +69,11 @@ function relativeReplay(p: Pick<TimingTackleFilmPlay, 'id' | 'result' | 'simulat
   return result;
 }
 
-const labels = ['Baseline', 'Candidate'];
+const labels = boundedComparison ? ['Linear', 'Bounded experiment'] : ['Baseline', 'Candidate'];
+const modeFields = (group: number) => boundedComparison
+  ? { physicsMode: group === 1, preloadSha256: group === 1 ? preloadSha256 : null,
+    modeSelection: group === 1 ? 'explicit-preload diagnostic opt-in; not production' : 'production linear default' }
+  : {};
 const panelPlays = films.flatMap((film, group) => film.plays.map((p, index) => {
   const result = relativeReplay(p), witness = p.input.group !== 'primary';
   const conceptId = witness ? 'retrospectiveCrossingWitness' : p.input.geometry;
@@ -74,6 +87,7 @@ const panelPlays = films.flatMap((film, group) => film.plays.map((p, index) => {
   const observedX = result.frames!.at(-1)!.agents[initialCarrier * 3];
   const advance = (windowCensored ? observedX : result.endX) - p.initialCarrierPosition.x;
   const text = `${labels[group]} · ${p.id} · source ${film.sourceBefore.slice(0, 12)}`
+    + (boundedComparison ? ` · ${group === 1 ? 'bounded attachment explicitly opted in by diagnostic preload; production remains linear' : 'linear attachment production default'}` : '')
     + (windowCensored ? ` · inspection window ended live · ${advance.toFixed(2)} observed yd after staged catch; no credited gain.`
       : ` · ${result.outcome} · ${advance.toFixed(2)} credited yd after staged catch · raw LOS gain ${result.yards.toFixed(2)} yd includes the initial 10 yd lead.`)
     + (witness ? ' Retrospective diagnostic geometry; kept separate from the primary cohort.'
@@ -103,6 +117,7 @@ const panelPlays = films.flatMap((film, group) => film.plays.map((p, index) => {
     kindLabel: 'Tackle timing probe', read: undefined,
     concept: { id: conceptId, name, family: witness ? 'diagnostic witness' : 'primary tackle encounters' },
     fixtureId: p.id, fixtureSeed: p.input.seed, sourceLabel: labels[group], sourceSha256: film.sourceBefore,
+    ...modeFields(group),
     filmSelection: p.selection, cohortGroup: p.input.group, profileSha256: p.profileSha256,
     postCatchAdvanceYd: round(advance), postCatchAdvanceType: windowCensored ? 'observed-at-window-end' : 'credited-at-whistle',
     windowCensored, rawEngineGainYd: result.yards,
@@ -142,6 +157,7 @@ const brakePlays = brakeFilms.flatMap((film, group) => film.plays.map((p, index)
   const result = relativeReplay(p), advance = result.endX - p.initialCarrierPosition.x;
   const name = 'Retrospective plant/brake witness', conceptId = 'retrospectiveBrakeWitness';
   const text = `${labels[group]} · ${p.id} · source ${film.sourceBefore.slice(0, 12)} · ${result.outcome}`
+    + (boundedComparison ? ` · ${group === 1 ? 'bounded attachment explicitly opted in by diagnostic preload; production remains linear' : 'linear attachment production default'}` : '')
     + ` · ${advance.toFixed(2)} credited yd after staged catch · raw LOS gain ${result.yards.toFixed(2)} yd includes the initial 10 yd lead.`
     + ' Separate retrospective command-consistency witness: momentum initially closes, but the defender has already requested a plant/brake.'
     + ' Two play seeds and both mirrors share one unedited generated roster pair. Natural execution rolls, strike/grip physics and support remain active.'
@@ -160,25 +176,31 @@ const brakePlays = brakeFilms.flatMap((film, group) => film.plays.map((p, index)
     id: `${group === 0 ? 'BASE' : 'CAND'}-${p.id}`, kindLabel: 'Tackle timing probe', read: undefined,
     concept: { id: conceptId, name, family: 'diagnostic witness' }, fixtureId: p.id, fixtureSeed: p.seed,
     sourceLabel: labels[group], sourceSha256: film.sourceBefore, filmSelection: p.selection,
+    ...modeFields(group),
     cohortGroup: 'retrospective-brake-witness', profileSha256: p.profileSha256,
     postCatchAdvanceYd: round(advance), postCatchAdvanceType: 'credited-at-whistle', windowCensored: false,
     rawEngineGainYd: result.yards, rawSimulationStartedAt: p.simulationStartedAt, rawSimulationDuration: p.result.duration };
 }));
 const plays = [...panelPlays, ...brakePlays];
-const cohort = '18 paired, fixed isolated tackle clips under two engine sources: seven primary encounter geometries and two separate retrospective crossing witnesses. '
+const cohort = (boundedComparison ? '18 paired, fixed isolated tackle clips under one engine source in Linear and Bounded experiment modes: ' : '18 paired, fixed isolated tackle clips under two engine sources: ')
+  + 'seven primary encounter geometries and two separate retrospective crossing witnesses. '
   + 'Primary film uses one preselected roster pair/play seed/mirror; the retained panel contains two roster pairs, two play seeds and both mirrors. '
   + 'One straight carrier and one pursuer use the production 22-body tackle/World lifecycle. The traffic clip adds one idle standing tight end; other bystanders are parked. '
   + 'No forced tackle outcomes, edited strength, NFL-rate calibration or future traffic oracle. A live six-second endpoint is a censored inspection window. '
   + 'Raw credited LOS gain includes the staged runner’s existing 10-yard lead; post-catch advance is shown separately. Raw recordings retain absolute time; viewer subtracts 2 s. '
   + 'Live inspection windows have no credited result/gain; their text shows the observed carrier advance, and completed-result filters do not include them. '
   + 'Player assignments/QB beliefs from setup scaffolding are retained state and do not mean a four-vertical/Cover 3 play is executing.'
-  + (brakePlays.length ? ' Eight additional clips retain a separate retrospective plant/brake decision witness: two play seeds, both mirrors and both sources. Its results are not pooled into the primary cohort.' : '');
+  + (brakePlays.length ? ` Eight additional clips retain a separate retrospective plant/brake decision witness: two play seeds, both mirrors and both ${boundedComparison ? 'compared recordings' : 'sources'}. Its results are not pooled into the primary cohort.` : '')
+  + (boundedComparison ? ` Input order declares Linear followed by the explicit diagnostic preload experiment (${preloadPath}, SHA-256 ${preloadSha256}). Production has not enabled this experiment. Runtime mode was not recorded by the original film schema; mode labels preserve the declared generation commands, with unchanged source/script/input/cohort/profile checks.` : '');
 const data = { meta: { sourceSha256: films[1].sourceBefore,
-  sourceComparison: films.map((f, i) => ({ label: labels[i], sourceSha256: f.sourceBefore })),
+  sourceComparison: films.map((f, i) => ({ label: labels[i], sourceSha256: f.sourceBefore, ...modeFields(i) })),
+  ...(boundedComparison ? { physicsMode: [false, true], preloadPath, preloadSha256, experimentOptIn: true,
+    productionEnabled: false, scriptSha256: films[0].scriptSha256, inputSha256: films[0].inputSha256,
+    cohortSha256: films[0].cohortSha256, profilesSha256: films[0].profilesSha256 } : {}),
   telemetryLevel: 'full', cohort, seed: 83, final: { home: 0, away: 0 }, quarters: [],
   home: { name: 'Isolated Carrier', abbr: 'OFF', color: '#1d4f91', text: '#ffffff' },
   away: { name: 'Isolated Pursuer', abbr: 'DEF', color: '#a3302a', text: '#ffffff' } },
-  games: films.map((film, group) => ({ seed: 83, label: labels[group], sourceSha256: film.sourceBefore,
+  games: films.map((film, group) => ({ seed: 83, label: labels[group], sourceSha256: film.sourceBefore, ...modeFields(group),
     final: { home: 0, away: 0 }, quarters: [] })), plays: compactReplayPlays(plays),
   catalog: { coverage: { isolated_pursuit: 'One pursuing defender', plant_brake: 'One defender planting/braking' },
     front: { isolated: 'One pursuer; parked bystanders', traffic: 'One pursuer; idle TE in traffic' },

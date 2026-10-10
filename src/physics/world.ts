@@ -37,6 +37,7 @@ import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, loco
 import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBody, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
+import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
 import { integrateFilteredFollow } from './filtered-follow.js';
 
 export interface Intent extends MoveCommand {
@@ -255,6 +256,8 @@ interface JointRow {
   nx: number;
   ny: number;
   mn: number;
+  /** An anisotropic lower attachment has a different tangent mobility. */
+  mt?: number;
   /** Normal regime: +1 compressive (hands), −1 tension, 0 inactive. */
   mode: number;
   c: number;
@@ -300,6 +303,8 @@ export class World {
   /** Research-only onset handling; production keeps speculative contacts. */
   readonly impactTiming: 'speculative' | 'local-sweep';
   readonly supportIntegration: 'mean' | 'integrated';
+  /** Default-off reduced lower geometry; no anatomical foot or extra force. */
+  readonly boundedAttachment: boolean;
   joints: Joint[] = [];
   /** World clock, seconds (the owner may set it to keep a shared clock). */
   time = 0;
@@ -310,7 +315,8 @@ export class World {
   private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number }> = [];
   private readonly reels = new Map<GraspJoint, number>();
   /** Reference adjustment preserves the held point when a grip slides down. */
-  private readonly attachments = new WeakMap<GraspJoint, { share: number; reference: Vec2; foot: NonNullable<Support['foot']> }>();
+  private readonly attachments = new WeakMap<GraspJoint, { share: number; reference: Vec2; foot: NonNullable<Support['foot']>; bounded?: boolean;
+    geometry?: { x: number; y: number; limit: number; value: BoundedAttachment } }>();
   private readonly heldBodies = new Set<Body>();
   // Per-body scratch, reused every substep.
   private readonly n: number;
@@ -352,13 +358,16 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated' } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.supportModel = opts.supportModel ?? 'legacy';
     this.constraintWork = opts.constraintWork ?? 'per-solve';
     this.impactTiming = opts.impactTiming ?? 'speculative';
     this.supportIntegration = opts.supportIntegration ?? 'mean';
+    this.boundedAttachment = opts.boundedAttachment ?? false;
+    if (this.boundedAttachment && this.supportModel !== 'legacy')
+      throw new RangeError('Bounded attachments require the live held-only support lifecycle');
     const n = (this.n = bodies.length);
     bodies.forEach((b, i) => {
       this.index.set(b, i);
@@ -581,11 +590,52 @@ export class World {
 
   /** The attachment and velocity use the same reduced coordinate/Jacobian.
    * Body-only reach paired with foot-point velocity would be inconsistent. */
+  private boundedGeometry(jt: GraspJoint): BoundedAttachment {
+    const attachment = this.attachments.get(jt)!;
+    const share = clamp(jt.legs, 0, 1), foot = jt.b.support!.foot!;
+    const x = share * foot.offset.x + attachment.reference.x;
+    const y = share * foot.offset.y + attachment.reference.y;
+    const limit = this.sp[this.indexOf(jt.b)].comHeight, cached = attachment.geometry;
+    // Geometry is fixed through a force solve. Reuse its map/Jacobian while
+    // impulses change velocities; actual coordinate/reference changes invalidate
+    // the exact key. Body translation is added separately by graspPoint.
+    if (cached && cached.x === x && cached.y === y && cached.limit === limit) return cached.value;
+    const value = boundedAttachment({ x, y }, limit);
+    attachment.geometry = { x, y, limit, value };
+    return value;
+  }
+
   private graspPoint(jt: GraspJoint): Vec2 {
     const foot = jt.b.support!.foot, share = foot ? clamp(jt.legs, 0, 1) : 0;
-    const reference = foot && share > 0 ? this.attachments.get(jt)?.reference : undefined;
+    const attachment = foot && share > 0 ? this.attachments.get(jt) : undefined;
+    const reference = attachment?.reference;
+    if (attachment?.bounded) {
+      const r = this.boundedGeometry(jt).offset;
+      return { x: jt.b.pos.x + r.x, y: jt.b.pos.y + r.y };
+    }
     return { x: jt.b.pos.x + share * (foot?.offset.x ?? 0) + (reference?.x ?? 0),
       y: jt.b.pos.y + share * (foot?.offset.y ?? 0) + (reference?.y ?? 0) };
+  }
+
+  /** Same derivative owns point velocity, generalized load and directional
+   * mobility. The corrective coordinate stays fixed throughout each solve. */
+  private graspJacobian(jt: GraspJoint): { xx: number; xy: number; yy: number } {
+    const foot = jt.b.support!.foot, share = foot ? clamp(jt.legs, 0, 1) : 0;
+    const attachment = this.attachments.get(jt);
+    if (!foot || !attachment?.bounded) return { xx: share, xy: 0, yy: share };
+    const d = this.boundedGeometry(jt).derivative;
+    return { xx: share * d.xx, xy: share * d.xy, yy: share * d.yy };
+  }
+
+  private attachmentMobility(jt: GraspJoint, nx: number, ny: number): number {
+    const j = this.graspJacobian(jt), x = j.xx * nx + j.xy * ny, y = j.xy * nx + j.yy * ny;
+    return (jt.b.support!.foot?.mobility ?? 0) * (x * x + y * y);
+  }
+
+  private sameAttachmentJacobian(a: GraspJoint, b: GraspJoint): boolean {
+    if (this.attachments.get(a)?.bounded !== this.attachments.get(b)?.bounded) return false;
+    const x = this.graspJacobian(a), y = this.graspJacobian(b);
+    return Math.abs(x.xx - y.xx) < 1e-12 && Math.abs(x.xy - y.xy) < 1e-12 && Math.abs(x.yy - y.yy) < 1e-12;
   }
 
   /** A held corrective support coordinate is sufficient here; ordinary gait
@@ -614,16 +664,28 @@ export class World {
       this.report.maxHeldRecoveryExcursion = Math.max(this.report.maxHeldRecoveryExcursion, excursion);
       for (const jt of holds) {
         const share = clamp(jt.legs, 0, 1), old = this.attachments.get(jt);
-        if (!old || old.foot !== foot) this.attachments.set(jt, { share, reference: { x: -share * foot.offset.x, y: -share * foot.offset.y }, foot });
-        else if (old.share !== share) {
-          old.reference.x += (old.share - share) * foot.offset.x;
-          old.reference.y += (old.share - share) * foot.offset.y;
-          old.share = share;
+        if (!old || old.foot !== foot) this.attachments.set(jt, { share, reference: { x: -share * foot.offset.x, y: -share * foot.offset.y }, foot,
+          bounded: this.boundedAttachment });
+        else {
+          if (old.share !== share) {
+            old.reference.x += (old.share - share) * foot.offset.x;
+            old.reference.y += (old.share - share) * foot.offset.y;
+            old.share = share;
+          }
+          // An explicitly restored linear attachment converts once without
+          // moving its acquired point. At/outside the finite map's domain,
+          // retain the linear law and its ordinary reach validation.
+          if (this.boundedAttachment && old.bounded === undefined) {
+            const z = inverseBoundedAttachment({ x: share * foot.offset.x + old.reference.x,
+              y: share * foot.offset.y + old.reference.y }, reach);
+            old.bounded = z !== null;
+            if (z) old.reference = { x: z.x - share * foot.offset.x, y: z.y - share * foot.offset.y };
+          }
         }
         const point = this.graspPoint(jt);
         // Only actual held geometry can invalidate a grip, not how far the
         // common correction chart has accumulated under a small leg share.
-        if (Math.hypot(point.x - b.pos.x, point.y - b.pos.y) > reach) {
+        if (!this.attachments.get(jt)!.bounded && Math.hypot(point.x - b.pos.x, point.y - b.pos.y) > reach) {
           jt.broken = true; this.report.lowerHoldReleases++;
         }
       }
@@ -647,6 +709,11 @@ export class World {
   private graspVelocity(jt: GraspJoint): Vec2 {
     const foot = jt.b.support!.foot, share = foot ? clamp(jt.legs, 0, 1) : 0;
     const u = foot ? supportVelocity(foot, foot.force) : { x: 0, y: 0 };
+    if (this.attachments.get(jt)?.bounded) {
+      const j = this.graspJacobian(jt);
+      return { x: jt.b.vel.x - jt.a.vel.x + j.xx * u.x + j.xy * u.y,
+        y: jt.b.vel.y - jt.a.vel.y + j.xy * u.x + j.yy * u.y };
+    }
     return { x: jt.b.vel.x - jt.a.vel.x + share * u.x,
       y: jt.b.vel.y - jt.a.vel.y + share * u.y };
   }
@@ -659,8 +726,13 @@ export class World {
     const foot = b.support!.foot!, share = clamp(jt.legs, 0, 1);
     const bodyLinear = (b.vel.x - a.vel.x) * x + (b.vel.y - a.vel.y) * y;
     const bodyQuadratic = .5 * (x * x + y * y) * (1 / this.mass[i] + 1 / this.mass[j]);
+    let change = { x: share * x, y: share * y };
+    if (this.attachments.get(jt)?.bounded) {
+      const jacobian = this.graspJacobian(jt);
+      change = { x: jacobian.xx * x + jacobian.xy * y, y: jacobian.xy * x + jacobian.yy * y };
+    }
     const motor = supportWorkChange(foot, { x: this.footImpulseX[j], y: this.footImpulseY[j] },
-      { x: share * x, y: share * y }, h);
+      change, h);
     const ledger = this.constraintWork === 'per-solve' ? channel : undefined;
     const previous = ledger?.net ?? 0;
     const budget = (active ? Math.max(0, this.report.armWorkLimit[i] - this.report.armWork[i]) : 0)
@@ -671,7 +743,9 @@ export class World {
     const motorWork = motor.linear * fraction + motor.quadratic * fraction * fraction;
     a.vel.x -= x / this.mass[i]; a.vel.y -= y / this.mass[i];
     b.vel.x += x / this.mass[j]; b.vel.y += y / this.mass[j];
-    this.footImpulseX[j] += share * x; this.footImpulseY[j] += share * y;
+    // Preserve the old operation order on the default linear path.
+    this.footImpulseX[j] += this.attachments.get(jt)?.bounded ? change.x * fraction : share * x;
+    this.footImpulseY[j] += this.attachments.get(jt)?.bounded ? change.y * fraction : share * y;
     foot.force = { x: this.footImpulseX[j] / h, y: this.footImpulseY[j] / h };
     this.report.work.grasps += bodyWork;
     const passive = bodyWork - motorWork;
@@ -852,7 +926,7 @@ export class World {
       const vn=rv.x*nx+rv.y*ny;
       const foot=jt.b.support!.foot, share=foot?clamp(jt.legs,0,1):0;
       const demandMobility = (1 / this.mass[i] + 1 / this.mass[j]) * this.tickDt
-        + share * share * (foot?.mobility ?? 0);
+        + (this.attachments.get(jt)?.bounded ? this.attachmentMobility(jt,nx,ny) : share * share * (foot?.mobility ?? 0));
       // Preserve the production operation order: tiny rounding changes can
       // alter later closed-loop contacts even with the experiment disabled.
       const wanted=foot ? Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/demandMobility
@@ -1473,6 +1547,11 @@ export class World {
         row.reel = this.reels.get(jt)??0;
         const foot = b.support!.foot;
         if (foot) row.mn = 1 / supportInverseMass(1 / this.mass[i] + 1 / this.mass[j], foot, clamp(jt.legs, 0, 1), h);
+        if (foot && this.attachments.get(jt)?.bounded) {
+          const inverseBodyMass = 1 / this.mass[i] + 1 / this.mass[j];
+          row.mn = 1 / (inverseBodyMass + this.attachmentMobility(jt,nx,ny) / h);
+          row.mt = 1 / (inverseBodyMass + this.attachmentMobility(jt,-ny,nx) / h);
+        }
         if (foot) {
           // Duplicating the same physical attachment must not create another
           // spring, motor or grip capacity. Distinct locations stay distinct.
@@ -1481,7 +1560,8 @@ export class World {
             return old.kind === 'grasp' && old.a === jt.a && old.b === jt.b
               && old.legs === jt.legs && old.height === jt.height && old.reach === jt.reach
               && old.ground === jt.ground && old.hold === jt.hold && old.pull === jt.pull
-              && Math.hypot(this.graspPoint(old).x - point.x, this.graspPoint(old).y - point.y) < 1e-10;
+              && Math.hypot(this.graspPoint(old).x - point.x, this.graspPoint(old).y - point.y) < 1e-10
+              && (!this.boundedAttachment || this.sameAttachmentJacobian(old,jt));
           });
           if (same) {
             same.limit += row.limit; same.reel += row.reel;
@@ -1540,7 +1620,7 @@ export class World {
     if (coupled) {
       const rv = this.graspVelocity(jt), tx = -r.ny, ty = r.nx;
       const vt = rv.x * tx + rv.y * ty;
-      const lt = clamp(r.lt - r.mn * vt, -tangentLimit, tangentLimit), dt = lt - r.lt;
+      const lt = clamp(r.lt - (r.mt ?? r.mn) * vt, -tangentLimit, tangentLimit), dt = lt - r.lt;
       r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0});
     } else this.solveTangent(r, a, b, tangentLimit);
   }
