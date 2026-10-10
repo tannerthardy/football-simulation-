@@ -1,0 +1,41 @@
+{
+  "schema": "block-fit-film-integrity-v1",
+  "clips": 12,
+  "sourceComparison": [
+    {
+      "label": "Baseline: old block approach",
+      "sourceSha256": "ac876d5633b8172b7622ba65ec0579de56054df9a80c571a69e1da14b146e29c",
+      "diagnosticScriptSha256": "683005a74c0462ebdaed263d1de00acf7eec48a6845f7509c1789c261972041c",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "9c7d009c98f928287e0d0c3f173bab7bc7dcba8515a54d8e95d069bb6a7aeb73",
+        "src/physics/world.ts": "6b8abedfa540b68e4b8997c14bd461dfd16e90f9b541722cf06056d26aa75b0e"
+      },
+      "inputSha256": "e03399f4b723f7ea760ad9fb3888258d2eedc4b196e7f6bb5d7881f23a07798a",
+      "profilesSha256": "646e4407f85925518031970843f3014b8c295d6d6fb63f657b5acd85cf4f272d",
+      "rawFilmSha256": "1af7517100c3a533cb1d0afd572ad4f0cb441f2a05392141964e5c921bedf195",
+      "rawDecodedFilmSha256": "5336bc3dd38446dbb8a528a9ca5b091a3aa5bc03efa167cbec58cb1701854401"
+    },
+    {
+      "label": "Candidate: controlled contact fit",
+      "sourceSha256": "ad945eb091cb8a699dbff4f020ed183266e492a18f5afb585716d3acaf958aeb",
+      "diagnosticScriptSha256": "683005a74c0462ebdaed263d1de00acf7eec48a6845f7509c1789c261972041c",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "c68fd909b6b0cf2f9cadf301121380cfbdc99aaf3af79cf8866a968a4ab692c8",
+        "src/physics/world.ts": "6b8abedfa540b68e4b8997c14bd461dfd16e90f9b541722cf06056d26aa75b0e"
+      },
+      "inputSha256": "e03399f4b723f7ea760ad9fb3888258d2eedc4b196e7f6bb5d7881f23a07798a",
+      "profilesSha256": "646e4407f85925518031970843f3014b8c295d6d6fb63f657b5acd85cf4f272d",
+      "rawFilmSha256": "d7751b1bfe69867535be0afca8ea0629d827d473420d801b952c722d1c06a296",
+      "rawDecodedFilmSha256": "bd4ee940aff62fb707cc955056e4ee670c1e6f41d7da87432b266e413636de8f"
+    }
+  ],
+  "exactFullTelemetryIncludingPhysicalPostureAndIntent": true,
+  "exactRawEventsActorsNotesTimes": true,
+  "exactInitialContextsProfilesRatingsAndWeights": true,
+  "exactContactAcquisitionSummariesAndCensoredEndpoints": true,
+  "recordedFrameTimesAndPossession": true,
+  "maxExistingPackingPositionFacingError": 0.050000000000000044,
+  "zipHtmlByteExact": true,
+  "htmlSha256": "7b7f81a940983e30899963cb639f0160c45e5e715f38cb9525005bc5112c9244",
+  "zipSha256": "892f5688ea75cb996af0cd627cbb0f7c166288e61afa6e5b51491deb30f83a52"
+}

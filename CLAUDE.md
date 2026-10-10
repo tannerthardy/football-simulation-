@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [Run-block contact fits and current priorities](docs/reviews/run-block-fit-and-current-priorities.md):
+  **latest controller increment and broad review.** Reach/cutoff OL use their
+  consumed observation to recover a lost shoulder before committing, preserving
+  drive direction and shared physical limits. Read the matched 24-play force
+  observations, adverse cases, cost guard and 12 paired clips. The expensive
+  forecast prototype was rejected; the bounded arrival request ships. Next:
+  retained fit losses, delayed visible grounded/rising cues for false deep help,
+  and a localized active-grasp oracle. The current hand panel has 0/9 fall
+  disagreements; do not restart the historical fall reversal. Full anatomical
+  foot expansion remains paused; physics has not earned the final OK.
 - [OL base and contact approach](docs/reviews/ol-base-and-contact-approach.md):
-  **latest physics/controller increment.** The visible low stance had not
+  Previous controller increment. The visible low stance had not
   reached World during first-level OL approaches. Preserve the existing snap
   posture through those commands; keep finite lowering, movement costs and
   shared support/force limits. Read the matched 24-play panel and retained

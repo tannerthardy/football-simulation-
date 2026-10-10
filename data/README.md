@@ -1,6 +1,16 @@
 # Shared NFL data
 
-Current physics status: [OL base and contact approach](../docs/reviews/ol-base-and-contact-approach.md).
+Current engine status: [Run-block contact fits and current priorities](../docs/reviews/run-block-fit-and-current-priorities.md).
+The [evidence and commands](reviews/physics-world/block-fit/README.md) retain
+the matched 24-play force/approach panel, all adverse cases, production guards
+and sequential cost comparisons. Watch the [12 paired offline clips](../viewer/block-fit-film-room.zip).
+Both versions already use the same low stance; this repair changes bounded
+reach/cutoff footwork and observed commitment decisions. Shared physics stays
+the same. These are engine validation cases, not new NFL observations or
+calibration to league averages. The report also identifies a staged false deep
+roof in coverage and the next local force-integration oracle.
+
+Previous controller status: [OL base and contact approach](../docs/reviews/ol-base-and-contact-approach.md).
 The [evidence and commands](reviews/physics-world/ol-base/README.md) retain a
 matched 24-play approach panel, actual force observations and adverse cases.
 Watch the [12 paired offline clips](../viewer/ol-base.zip). The existing low

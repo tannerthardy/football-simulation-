@@ -1,12 +1,25 @@
 # Physics development and testing
 
+Read [Run-block contact fits and current priorities](reviews/run-block-fit-and-current-priorities.md)
+first. Keep the reduced shared World and improve demonstrated requests within
+its capabilities. The new OL fit helper preserves intended drive, observed
+errors and actual contact/force limits; compare real delivered loads, adverse
+cases and ordinary controls rather than counting fewer rejected grabs as wins.
+Its geometric arrival request avoids the forecast prototype's measured cost.
+Next inspect remaining fit losses, fix the staged false deep roof through
+delayed visible body pose, and prove a local active-grasp/reeling oracle.
+The current retained hand panel has 0/9 fall disagreements, with .0617/.1817 yd
+mean/max closest-distance error; its older fall reversal is historical.
+Full anatomical foot expansion remains paused. Final physics OK is pending,
+but adding body detail is not a prerequisite for these football improvements.
+
 Read [OL base and contact approach](reviews/ol-base-and-contact-approach.md)
-first. The blocker now requests the physical low stance his visible cue already
+for the preceding controller increment. The blocker now requests the physical low stance his visible cue already
 advertised. Existing World support, finite posture transitions and movement
 costs supply the effect; no extra strength or solver detail. Read the matched
 panel, adverse guard fall and production transfer before changing approaches.
-Next test attainable contact fits with the same drive direction; the wrong-side
-WZ cutoff aim and stale regrab remain. Keep full anatomical expansion paused.
+The newer fit report addresses a bounded subset of the wrong-side WZ cutoff
+and stale regrab requests. Keep its remaining adverse cases and limitations.
 
 Then read [Finite strike forces and slice validation](reviews/strike-force-and-slice-validation.md).
 Bounded strikes now use achieved midpoint travel alongside hands;

@@ -1,0 +1,3477 @@
+{
+  "schema": "run-block-fit-cost-v1",
+  "sourceBefore": "ad945eb091cb8a699dbff4f020ed183266e492a18f5afb585716d3acaf958aeb",
+  "sourceAfter": "ad945eb091cb8a699dbff4f020ed183266e492a18f5afb585716d3acaf958aeb",
+  "toolHashes": {
+    "scripts/diag/run-block-fit-cost.ts": "4908082cf0a824dd45547fb6e71a127813d9f4375b1ee5fa79ab8157567cd087",
+    "scripts/diag/ol-base-review.ts": "683005a74c0462ebdaed263d1de00acf7eec48a6845f7509c1789c261972041c",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+  },
+  "startedAt": "2026-10-10T23:13:25.210Z",
+  "invocation": [
+    "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+    "--expose-gc",
+    "--import",
+    "tsx",
+    "/workspace/football-simulation-/scripts/diag/run-block-fit-cost.ts",
+    "out/block-fit/cost-simple.json"
+  ],
+  "runtime": {
+    "node": "v22.23.3",
+    "execPath": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+    "versions": {
+      "node": "22.23.3",
+      "acorn": "8.16.0",
+      "ada": "2.9.2",
+      "amaro": "1.1.8",
+      "ares": "1.34.8",
+      "brotli": "1.1.0",
+      "cjs_module_lexer": "2.2.0",
+      "cldr": "48.0",
+      "icu": "78.3",
+      "llhttp": "9.4.3",
+      "modules": "127",
+      "napi": "10",
+      "nbytes": "0.1.3",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.69.0",
+      "openssl": "3.5.8",
+      "simdjson": "4.5.0",
+      "simdutf": "6.4.2",
+      "sqlite": "3.51.3",
+      "tz": "2026c",
+      "undici": "6.28.1",
+      "unicode": "17.0",
+      "uv": "1.51.0",
+      "uvwasi": "0.0.23",
+      "v8": "12.4.254.21-node.57",
+      "zlib": "1.3.1-e00f703",
+      "zstd": "1.5.7"
+    },
+    "platform": "linux",
+    "arch": "x64",
+    "logicalCpus": 5,
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "inputs": [
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "iz_strong",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "iz_strong",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "wz_strong",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "wz_strong",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "power",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "power",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "trap",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "trap",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "counter",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "counter",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "oz_strong",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "oz_strong",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "iz_strong",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "iz_strong",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "wz_strong",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "wz_strong",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "power",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "power",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "trap",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "trap",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "counter",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "counter",
+      "flip": true,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "oz_strong",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 41,
+      "defenseSeed": 42,
+      "concept": "oz_strong",
+      "flip": true,
+      "playSeed": 3
+    }
+  ],
+  "inputSha256": "e03399f4b723f7ea760ad9fb3888258d2eedc4b196e7f6bb5d7881f23a07798a",
+  "profileSha256": "0d81910b3b7b29e7a1c3f30d9b2f8ba347b735439e95ad3b6fed1d68b9fbec94",
+  "warmInputs": [
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "iz_strong",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "wz_strong",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "power",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "trap",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "counter",
+      "flip": false,
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "concept": "oz_strong",
+      "flip": false,
+      "playSeed": 3
+    }
+  ],
+  "warmInputSha256": "56c62f279308fcd803ec573218b963958510d10ed8bf8018e5adb2c9105aec5a",
+  "warmTrialsExcluded": 6,
+  "measuredRepeatsPerInput": 2,
+  "measuredTrials": 48,
+  "gcBeforeMeasuredTrial": true,
+  "observe": false,
+  "recording": false,
+  "scope": "Same fixed 24-input Ace/4-3 Over/Cover3 cohort. Six first-roster unflipped concepts warm the process and are excluded; two complete measured repeats retain natural finishes or live3s inspection censors. Timing includes fresh roster/trial construction, production simulation and existing diagnostic endpoint snapshots/hashes. Optional per-tick observers and replay recording are disabled. Forced GC, when available, precedes timing.",
+  "limits": "A small end-to-end guard, not an isolated helper benchmark, full-game overhead, portable speed estimate, NFL sample or confidence interval. Only compare paired versions with identical tool/input/profile bytes and runtime while other CPU-heavy work is idle. Reused inputs/rosters are not independent observations; natural finishes can change workload.",
+  "summary": {
+    "totalWallMs": 4922.181315000002,
+    "totalCpuMs": 16931.587999999992,
+    "medianWallMsPerTrial": 105.39003399999979,
+    "medianCpuMsPerTrial": 371.66200000000003,
+    "naturalFinishes": 0,
+    "censored": 48,
+    "inspectedSimulationSeconds": 144
+  },
+  "warm": [
+    {
+      "id": "OLB-R1-iz_strong-R-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "concept": "iz_strong",
+        "flip": false,
+        "playSeed": 3
+      },
+      "initialSignature": "5c7124deb5b09955313b58d0e9112760950f0b403ef2b6b09cbb823316b26569",
+      "signature": "154158d10b44aca1aa6a2f5463b23b22ac543ce8e03692be9b168a6cbab79685",
+      "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+      "end": {
+        "t": 3,
+        "phase": "live",
+        "censored": true,
+        "outcome": null,
+        "endSpot": null,
+        "carrier": 6,
+        "carrierPosition": {
+          "x": 40.911423216942254,
+          "y": 25.117755484700705
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "O1-OG3",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 40.51167287713089
+        }
+      },
+      "physics": {
+        "handIntegration": "centered",
+        "boundedAttachment": true,
+        "substeps": "native"
+      },
+      "fixture": {
+        "formation": "ace_11",
+        "front": "over",
+        "coverage": "cover3",
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "down": 1,
+        "distance": 10,
+        "flip": false,
+        "playSeed": 3
+      },
+      "resolvedOffCall": {
+        "formation": "ace_11",
+        "concept": "iz_strong",
+        "flip": false
+      }
+    },
+    {
+      "id": "OLB-R1-wz_strong-R-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "concept": "wz_strong",
+        "flip": false,
+        "playSeed": 3
+      },
+      "initialSignature": "f8c127d1952e437114ea7a936760cead7285fd724f33fcd754ed6d1f3956b875",
+      "signature": "e9c9d968e59cef116069ee52defac5f93968428610e595411be054ab17d3d5c3",
+      "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+      "end": {
+        "t": 3,
+        "phase": "live",
+        "censored": true,
+        "outcome": null,
+        "endSpot": null,
+        "carrier": 6,
+        "carrierPosition": {
+          "x": 39.44840908217728,
+          "y": 23.007233830380827
+        },
+        "penalty": null
+      },
+      "physics": {
+        "handIntegration": "centered",
+        "boundedAttachment": true,
+        "substeps": "native"
+      },
+      "fixture": {
+        "formation": "ace_11",
+        "front": "over",
+        "coverage": "cover3",
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "down": 1,
+        "distance": 10,
+        "flip": false,
+        "playSeed": 3
+      },
+      "resolvedOffCall": {
+        "formation": "ace_11",
+        "concept": "wz_strong",
+        "flip": false
+      }
+    },
+    {
+      "id": "OLB-R1-power-R-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "concept": "power",
+        "flip": false,
+        "playSeed": 3
+      },
+      "initialSignature": "8e956c945efafe908f99180a314f2bd5e8178966e4eb3fb3bd0d7cd20952a6c4",
+      "signature": "6ebe9ad3ad736951708ccbd2b50f8b3d319a5dbe8142aab94afd3950050a76ca",
+      "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+      "end": {
+        "t": 3,
+        "phase": "live",
+        "censored": true,
+        "outcome": null,
+        "endSpot": null,
+        "carrier": 6,
+        "carrierPosition": {
+          "x": 39.23544623785875,
+          "y": 23.619590596806447
+        },
+        "penalty": null
+      },
+      "physics": {
+        "handIntegration": "centered",
+        "boundedAttachment": true,
+        "substeps": "native"
+      },
+      "fixture": {
+        "formation": "ace_11",
+        "front": "over",
+        "coverage": "cover3",
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "down": 1,
+        "distance": 10,
+        "flip": false,
+        "playSeed": 3
+      },
+      "resolvedOffCall": {
+        "formation": "ace_11",
+        "concept": "power",
+        "flip": false
+      }
+    },
+    {
+      "id": "OLB-R1-trap-R-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "concept": "trap",
+        "flip": false,
+        "playSeed": 3
+      },
+      "initialSignature": "12b7b3a9867cdcc06015d5f66ebda6bc13611ce9ef47159e9ae447ef1148fa5a",
+      "signature": "723f48d34886be92e9a1071b2d6bbc0484a38697143159faa2e0bf0a185a5c50",
+      "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+      "end": {
+        "t": 3,
+        "phase": "live",
+        "censored": true,
+        "outcome": null,
+        "endSpot": null,
+        "carrier": 6,
+        "carrierPosition": {
+          "x": 41.16263408649114,
+          "y": 23.182359420135274
+        },
+        "penalty": null
+      },
+      "physics": {
+        "handIntegration": "centered",
+        "boundedAttachment": true,
+        "substeps": "native"
+      },
+      "fixture": {
+        "formation": "ace_11",
+        "front": "over",
+        "coverage": "cover3",
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "down": 1,
+        "distance": 10,
+        "flip": false,
+        "playSeed": 3
+      },
+      "resolvedOffCall": {
+        "formation": "ace_11",
+        "concept": "trap",
+        "flip": false
+      }
+    },
+    {
+      "id": "OLB-R1-counter-R-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "concept": "counter",
+        "flip": false,
+        "playSeed": 3
+      },
+      "initialSignature": "dd9c96f975fc5f95db66ebf1f1a463fa9ad6ec493f4a2b7451da7aa614b6ed86",
+      "signature": "537017337dbe57522d4b2f53f27d26a91978fda0bda832215847121c0643d128",
+      "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+      "end": {
+        "t": 3,
+        "phase": "live",
+        "censored": true,
+        "outcome": null,
+        "endSpot": null,
+        "carrier": 6,
+        "carrierPosition": {
+          "x": 39.654518890241334,
+          "y": 28.52578629362197
+        },
+        "penalty": null
+      },
+      "physics": {
+        "handIntegration": "centered",
+        "boundedAttachment": true,
+        "substeps": "native"
+      },
+      "fixture": {
+        "formation": "ace_11",
+        "front": "over",
+        "coverage": "cover3",
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "down": 1,
+        "distance": 10,
+        "flip": false,
+        "playSeed": 3
+      },
+      "resolvedOffCall": {
+        "formation": "ace_11",
+        "concept": "counter",
+        "flip": false
+      }
+    },
+    {
+      "id": "OLB-R1-oz_strong-R-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "concept": "oz_strong",
+        "flip": false,
+        "playSeed": 3
+      },
+      "initialSignature": "27fd026aff16db66b38edb1d53b7270a35ae07924f09dcadb215cd25226889de",
+      "signature": "d5bee5e9ac41ad4d247dec173b8d216bc2413feb62888b87f999a14c91dfbfc8",
+      "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+      "end": {
+        "t": 3,
+        "phase": "live",
+        "censored": true,
+        "outcome": null,
+        "endSpot": null,
+        "carrier": 6,
+        "carrierPosition": {
+          "x": 40.762131711640336,
+          "y": 22.402578412691735
+        },
+        "penalty": null
+      },
+      "physics": {
+        "handIntegration": "centered",
+        "boundedAttachment": true,
+        "substeps": "native"
+      },
+      "fixture": {
+        "formation": "ace_11",
+        "front": "over",
+        "coverage": "cover3",
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "down": 1,
+        "distance": 10,
+        "flip": false,
+        "playSeed": 3
+      },
+      "resolvedOffCall": {
+        "formation": "ace_11",
+        "concept": "oz_strong",
+        "flip": false
+      }
+    }
+  ],
+  "repeatChecks": [
+    {
+      "id": "OLB-R1-iz_strong-R-S3",
+      "passed": true,
+      "signature": "154158d10b44aca1aa6a2f5463b23b22ac543ce8e03692be9b168a6cbab79685"
+    },
+    {
+      "id": "OLB-R1-iz_strong-L-S3",
+      "passed": true,
+      "signature": "8d9e1028ee6f4d449a4c2fb6999768f3bc22d3b4fe69f085bf91430bcb0fd87d"
+    },
+    {
+      "id": "OLB-R1-wz_strong-R-S3",
+      "passed": true,
+      "signature": "e9c9d968e59cef116069ee52defac5f93968428610e595411be054ab17d3d5c3"
+    },
+    {
+      "id": "OLB-R1-wz_strong-L-S3",
+      "passed": true,
+      "signature": "ac499abf40d0290b8649ef262dd067385b1ed27afdb3a13b125e78e75ae7b57b"
+    },
+    {
+      "id": "OLB-R1-power-R-S3",
+      "passed": true,
+      "signature": "6ebe9ad3ad736951708ccbd2b50f8b3d319a5dbe8142aab94afd3950050a76ca"
+    },
+    {
+      "id": "OLB-R1-power-L-S3",
+      "passed": true,
+      "signature": "3ba31575018c564ac78ac22f05c99fdc078573b3f6d850960646b722879123c8"
+    },
+    {
+      "id": "OLB-R1-trap-R-S3",
+      "passed": true,
+      "signature": "723f48d34886be92e9a1071b2d6bbc0484a38697143159faa2e0bf0a185a5c50"
+    },
+    {
+      "id": "OLB-R1-trap-L-S3",
+      "passed": true,
+      "signature": "a314a988ba93605813696222d810b7606e598699c23f9b5a9586c06d076de0d3"
+    },
+    {
+      "id": "OLB-R1-counter-R-S3",
+      "passed": true,
+      "signature": "537017337dbe57522d4b2f53f27d26a91978fda0bda832215847121c0643d128"
+    },
+    {
+      "id": "OLB-R1-counter-L-S3",
+      "passed": true,
+      "signature": "fd435586fdd0eb2a525e09a8954bebb551a4c2218b68a733ef8a144fdb4732e7"
+    },
+    {
+      "id": "OLB-R1-oz_strong-R-S3",
+      "passed": true,
+      "signature": "d5bee5e9ac41ad4d247dec173b8d216bc2413feb62888b87f999a14c91dfbfc8"
+    },
+    {
+      "id": "OLB-R1-oz_strong-L-S3",
+      "passed": true,
+      "signature": "c8fcc73f849ab2b8245a561ed39f812075800d80d714d3dccdb571b59bd77c28"
+    },
+    {
+      "id": "OLB-R2-iz_strong-R-S3",
+      "passed": true,
+      "signature": "5de7568ff8d972c2130b0c02756fcb54d9438bf164234f2374c102c88a4c8d54"
+    },
+    {
+      "id": "OLB-R2-iz_strong-L-S3",
+      "passed": true,
+      "signature": "be8496f023fb5006929e2a91b086831eab7978e0c4e13c330e10f9195f567653"
+    },
+    {
+      "id": "OLB-R2-wz_strong-R-S3",
+      "passed": true,
+      "signature": "4ea93dc8c77e9a47ff203de66ce640494b029b38d5871452b98d2a931ec830a7"
+    },
+    {
+      "id": "OLB-R2-wz_strong-L-S3",
+      "passed": true,
+      "signature": "690bb7f8bfa8719afa3e88e37a3a24e9066d316d1906cfc8c7f6d951f03ee4ab"
+    },
+    {
+      "id": "OLB-R2-power-R-S3",
+      "passed": true,
+      "signature": "182d48581cd5e0fc459b257a629f5d292527c207b05411db9f82b03079bbd6fb"
+    },
+    {
+      "id": "OLB-R2-power-L-S3",
+      "passed": true,
+      "signature": "9de000180552a344c9da1c220d08e33b46641f88f57136928f4fff602deb4eb1"
+    },
+    {
+      "id": "OLB-R2-trap-R-S3",
+      "passed": true,
+      "signature": "f6f7195df09c7846f53539fa3f6be3907d1e6926ceca0418fce11a6f84a45ee2"
+    },
+    {
+      "id": "OLB-R2-trap-L-S3",
+      "passed": true,
+      "signature": "04f31770e46279e820959fe90141802919303ac7382728c104ba92538c9f4ad8"
+    },
+    {
+      "id": "OLB-R2-counter-R-S3",
+      "passed": true,
+      "signature": "3d1ebbb4e8c71c8d302e04e2cf0e9c5b7a09972fdcd0eebe676bbe2cf7a05870"
+    },
+    {
+      "id": "OLB-R2-counter-L-S3",
+      "passed": true,
+      "signature": "41700a233f0edd6079551a31dfad59ea4f7e961371171ad37c76381c392513ee"
+    },
+    {
+      "id": "OLB-R2-oz_strong-R-S3",
+      "passed": true,
+      "signature": "e59e7bebc75f5f576c5db6037d6024c658ca59cb8ab7fde9058f5e7e9d01cf8a"
+    },
+    {
+      "id": "OLB-R2-oz_strong-L-S3",
+      "passed": true,
+      "signature": "1cded873d6b7d3bb4645fa74b0854a556d6ac68ad4c02fa65a111d9fc901b64e"
+    }
+  ],
+  "rows": [
+    {
+      "repeat": 0,
+      "wallMs": 124.83362800000009,
+      "cpuMs": 378.569,
+      "cpuUserMs": 366.741,
+      "cpuSystemMs": 11.828,
+      "trial": {
+        "id": "OLB-R1-iz_strong-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "iz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "5c7124deb5b09955313b58d0e9112760950f0b403ef2b6b09cbb823316b26569",
+        "signature": "154158d10b44aca1aa6a2f5463b23b22ac543ce8e03692be9b168a6cbab79685",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.911423216942254,
+            "y": 25.117755484700705
+          },
+          "penalty": {
+            "kind": "holding",
+            "against": "O",
+            "playerId": "O1-OG3",
+            "yards": 10,
+            "autoFirst": false,
+            "spotX": 40.51167287713089
+          }
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "iz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 141.22802100000013,
+      "cpuMs": 455.994,
+      "cpuUserMs": 452.125,
+      "cpuSystemMs": 3.869,
+      "trial": {
+        "id": "OLB-R1-iz_strong-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "iz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "a9e1a8144fe5197e601aa957a3e11355ab01ca12149d667c5964b127f86c7c99",
+        "signature": "8d9e1028ee6f4d449a4c2fb6999768f3bc22d3b4fe69f085bf91430bcb0fd87d",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.06759857134261,
+            "y": 27.406214765158854
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "iz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 117.79652699999997,
+      "cpuMs": 429.428,
+      "cpuUserMs": 421.973,
+      "cpuSystemMs": 7.455,
+      "trial": {
+        "id": "OLB-R1-wz_strong-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "wz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "f8c127d1952e437114ea7a936760cead7285fd724f33fcd754ed6d1f3956b875",
+        "signature": "e9c9d968e59cef116069ee52defac5f93968428610e595411be054ab17d3d5c3",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.44840908217728,
+            "y": 23.007233830380827
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "wz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 109.03105200000005,
+      "cpuMs": 385.849,
+      "cpuUserMs": 385.849,
+      "cpuSystemMs": 0,
+      "trial": {
+        "id": "OLB-R1-wz_strong-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "wz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "01ca3e77569e87c8060505ad307662f1ca0c2c6fa25e3a25b6f633847742b35e",
+        "signature": "ac499abf40d0290b8649ef262dd067385b1ed27afdb3a13b125e78e75ae7b57b",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 38.877654007960565,
+            "y": 30.364042198171774
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "wz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 130.088573,
+      "cpuMs": 483.427,
+      "cpuUserMs": 475.125,
+      "cpuSystemMs": 8.302,
+      "trial": {
+        "id": "OLB-R1-power-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "power",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "8e956c945efafe908f99180a314f2bd5e8178966e4eb3fb3bd0d7cd20952a6c4",
+        "signature": "6ebe9ad3ad736951708ccbd2b50f8b3d319a5dbe8142aab94afd3950050a76ca",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.23544623785875,
+            "y": 23.619590596806447
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "power",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 78.32180900000003,
+      "cpuMs": 247.928,
+      "cpuUserMs": 240.277,
+      "cpuSystemMs": 7.651,
+      "trial": {
+        "id": "OLB-R1-power-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "power",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "1b8782b11514fa681ec6f7f9b230d0ba476ba5d54493f2d1babd2fcd5533da9d",
+        "signature": "3ba31575018c564ac78ac22f05c99fdc078573b3f6d850960646b722879123c8",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.231860211978734,
+            "y": 29.683633328880884
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "power",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 87.68631500000015,
+      "cpuMs": 293.917,
+      "cpuUserMs": 290.19,
+      "cpuSystemMs": 3.727,
+      "trial": {
+        "id": "OLB-R1-trap-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "trap",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "12b7b3a9867cdcc06015d5f66ebda6bc13611ce9ef47159e9ae447ef1148fa5a",
+        "signature": "723f48d34886be92e9a1071b2d6bbc0484a38697143159faa2e0bf0a185a5c50",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 41.16263408649114,
+            "y": 23.182359420135274
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "trap",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 122.0642049999999,
+      "cpuMs": 427.5,
+      "cpuUserMs": 419.444,
+      "cpuSystemMs": 8.056,
+      "trial": {
+        "id": "OLB-R1-trap-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "trap",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "ac1e947f04a1e634ce755eb7282a3615c61062a04ad3807dfe620b6aafe1706f",
+        "signature": "a314a988ba93605813696222d810b7606e598699c23f9b5a9586c06d076de0d3",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 41.342177712044816,
+            "y": 30.078723902810633
+          },
+          "penalty": {
+            "kind": "holding",
+            "against": "O",
+            "playerId": "O1-OG2",
+            "yards": 10,
+            "autoFirst": false,
+            "spotX": 41.94452730837032
+          }
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "trap",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 115.0285530000001,
+      "cpuMs": 493.302,
+      "cpuUserMs": 469.224,
+      "cpuSystemMs": 24.078,
+      "trial": {
+        "id": "OLB-R1-counter-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "counter",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "dd9c96f975fc5f95db66ebf1f1a463fa9ad6ec493f4a2b7451da7aa614b6ed86",
+        "signature": "537017337dbe57522d4b2f53f27d26a91978fda0bda832215847121c0643d128",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.654518890241334,
+            "y": 28.52578629362197
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "counter",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 68.52110300000004,
+      "cpuMs": 252.934,
+      "cpuUserMs": 252.934,
+      "cpuSystemMs": 0,
+      "trial": {
+        "id": "OLB-R1-counter-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "counter",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "8576afd28c3005df165c5b8e7d7ad5a854a743dbd3e1393ba98785c6bf262663",
+        "signature": "fd435586fdd0eb2a525e09a8954bebb551a4c2218b68a733ef8a144fdb4732e7",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.38498577728916,
+            "y": 24.976443340233168
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "counter",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 121.27770199999986,
+      "cpuMs": 388.627,
+      "cpuUserMs": 381.278,
+      "cpuSystemMs": 7.349,
+      "trial": {
+        "id": "OLB-R1-oz_strong-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "oz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "27fd026aff16db66b38edb1d53b7270a35ae07924f09dcadb215cd25226889de",
+        "signature": "d5bee5e9ac41ad4d247dec173b8d216bc2413feb62888b87f999a14c91dfbfc8",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.762131711640336,
+            "y": 22.402578412691735
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "oz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 105.41821200000004,
+      "cpuMs": 366.092,
+      "cpuUserMs": 362.086,
+      "cpuSystemMs": 4.006,
+      "trial": {
+        "id": "OLB-R1-oz_strong-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "oz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "ad1601df56482c3375bb6e560be62bcefaebceb6b3bfe28ed905c4abb6a8977e",
+        "signature": "c8fcc73f849ab2b8245a561ed39f812075800d80d714d3dccdb571b59bd77c28",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 38.443199371525004,
+            "y": 30.635973461861408
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "oz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 94.6846700000001,
+      "cpuMs": 283.401,
+      "cpuUserMs": 279.808,
+      "cpuSystemMs": 3.593,
+      "trial": {
+        "id": "OLB-R2-iz_strong-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "iz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "2347a8fc43adf143a6649c60b1195926c877ef10a29d851fa25940dbea6fde2a",
+        "signature": "5de7568ff8d972c2130b0c02756fcb54d9438bf164234f2374c102c88a4c8d54",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.700476891786856,
+            "y": 24.681282253952034
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "iz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 156.19038,
+      "cpuMs": 452.876,
+      "cpuUserMs": 444.42,
+      "cpuSystemMs": 8.456,
+      "trial": {
+        "id": "OLB-R2-iz_strong-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "iz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "1adbb60606f9e6a835e9dbdce185d09b448c38c062eeaf851a0db8e889b3b5db",
+        "signature": "be8496f023fb5006929e2a91b086831eab7978e0c4e13c330e10f9195f567653",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.388282705869884,
+            "y": 27.879660451923293
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "iz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 107.4571689999998,
+      "cpuMs": 415.43,
+      "cpuUserMs": 407.788,
+      "cpuSystemMs": 7.642,
+      "trial": {
+        "id": "OLB-R2-wz_strong-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "wz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "3475bd5ab3f6affc12297bdeda4839cd39102a00eddaea8f9bb16882531cb4a2",
+        "signature": "4ea93dc8c77e9a47ff203de66ce640494b029b38d5871452b98d2a931ec830a7",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.912954559354404,
+            "y": 22.452042584083777
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "wz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 101.16163299999971,
+      "cpuMs": 299.188,
+      "cpuUserMs": 291.74,
+      "cpuSystemMs": 7.448,
+      "trial": {
+        "id": "OLB-R2-wz_strong-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "wz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "64d3255f1239aa71e886025bfeeee0e9cc83fc10289754f3a2dd81dc9cdd9aa5",
+        "signature": "690bb7f8bfa8719afa3e88e37a3a24e9066d316d1906cfc8c7f6d951f03ee4ab",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.62261315549201,
+            "y": 30.860273071093726
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "wz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 123.042735,
+      "cpuMs": 404.176,
+      "cpuUserMs": 392.377,
+      "cpuSystemMs": 11.799,
+      "trial": {
+        "id": "OLB-R2-power-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "power",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "565d94a0b145761357d43dc043c659c68101e29e4c20f350b98a95f94b7c8e9c",
+        "signature": "182d48581cd5e0fc459b257a629f5d292527c207b05411db9f82b03079bbd6fb",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.826349495568074,
+            "y": 25.215550673019113
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "power",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 86.42525700000033,
+      "cpuMs": 357.355,
+      "cpuUserMs": 353.899,
+      "cpuSystemMs": 3.456,
+      "trial": {
+        "id": "OLB-R2-power-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "power",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "515a1d243d68dcb47c229e49b0560aaf3e055d72732fc9903fe2a9a6069f4ee4",
+        "signature": "9de000180552a344c9da1c220d08e33b46641f88f57136928f4fff602deb4eb1",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.01326499751695,
+            "y": 29.754437158468168
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "power",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 82.94807600000013,
+      "cpuMs": 269.48,
+      "cpuUserMs": 253.49,
+      "cpuSystemMs": 15.99,
+      "trial": {
+        "id": "OLB-R2-trap-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "trap",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "e0115acad5bf95b453d231fa285b52c05c1f95bf6cfc8e375c64a5cb1fb7830e",
+        "signature": "f6f7195df09c7846f53539fa3f6be3907d1e6926ceca0418fce11a6f84a45ee2",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 41.17077863831903,
+            "y": 23.75488243778129
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "trap",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 115.87560899999971,
+      "cpuMs": 377.232,
+      "cpuUserMs": 372.195,
+      "cpuSystemMs": 5.037,
+      "trial": {
+        "id": "OLB-R2-trap-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "trap",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "27e88eb03901dde3be1c01022717fdbbc67ba354bac4e62732278694d2e051ff",
+        "signature": "04f31770e46279e820959fe90141802919303ac7382728c104ba92538c9f4ad8",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.340146098540544,
+            "y": 29.932638398331196
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "trap",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 84.23091199999999,
+      "cpuMs": 323.04,
+      "cpuUserMs": 314.863,
+      "cpuSystemMs": 8.177,
+      "trial": {
+        "id": "OLB-R2-counter-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "counter",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "2c4f2a29fd3e93ffe56461167e8ade835e1238a7c3cd2a7a3ceaa15ac7f2fa28",
+        "signature": "3d1ebbb4e8c71c8d302e04e2cf0e9c5b7a09972fdcd0eebe676bbe2cf7a05870",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.19620834601729,
+            "y": 28.14199956778274
+          },
+          "penalty": {
+            "kind": "holding",
+            "against": "O",
+            "playerId": "O2-OG4",
+            "yards": 10,
+            "autoFirst": false,
+            "spotX": 39.10379162241231
+          }
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "counter",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 59.70468200000005,
+      "cpuMs": 186.771,
+      "cpuUserMs": 186.472,
+      "cpuSystemMs": 0.299,
+      "trial": {
+        "id": "OLB-R2-counter-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "counter",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "4a23b4eed2b632478f6b704397dc508560f7f1d71023100c01e165d6fa110b0a",
+        "signature": "41700a233f0edd6079551a31dfad59ea4f7e961371171ad37c76381c392513ee",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 38.88339136434153,
+            "y": 24.137235505918152
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "counter",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 118.17226399999981,
+      "cpuMs": 448.324,
+      "cpuUserMs": 435.971,
+      "cpuSystemMs": 12.353,
+      "trial": {
+        "id": "OLB-R2-oz_strong-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "oz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "afbfe963d881801fcfeeac8e13bfc9c8b8054bacc31330481d9c3257bb399305",
+        "signature": "e59e7bebc75f5f576c5db6037d6024c658ca59cb8ab7fde9058f5e7e9d01cf8a",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.92459458089946,
+            "y": 23.37073553460561
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "oz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 0,
+      "wallMs": 107.90785400000004,
+      "cpuMs": 278.14,
+      "cpuUserMs": 269.705,
+      "cpuSystemMs": 8.435,
+      "trial": {
+        "id": "OLB-R2-oz_strong-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "oz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "2e57ef01693de9c7ffce51a290bfc6c235a996b008a7c3e037ff7f37780fe1f7",
+        "signature": "1cded873d6b7d3bb4645fa74b0854a556d6ac68ad4c02fa65a111d9fc901b64e",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.03350807518973,
+            "y": 31.190802853521152
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "oz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 132.7046409999998,
+      "cpuMs": 481.971,
+      "cpuUserMs": 478.504,
+      "cpuSystemMs": 3.467,
+      "trial": {
+        "id": "OLB-R1-iz_strong-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "iz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "5c7124deb5b09955313b58d0e9112760950f0b403ef2b6b09cbb823316b26569",
+        "signature": "154158d10b44aca1aa6a2f5463b23b22ac543ce8e03692be9b168a6cbab79685",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.911423216942254,
+            "y": 25.117755484700705
+          },
+          "penalty": {
+            "kind": "holding",
+            "against": "O",
+            "playerId": "O1-OG3",
+            "yards": 10,
+            "autoFirst": false,
+            "spotX": 40.51167287713089
+          }
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "iz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 117.04313300000013,
+      "cpuMs": 451.954,
+      "cpuUserMs": 431.867,
+      "cpuSystemMs": 20.087,
+      "trial": {
+        "id": "OLB-R1-iz_strong-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "iz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "a9e1a8144fe5197e601aa957a3e11355ab01ca12149d667c5964b127f86c7c99",
+        "signature": "8d9e1028ee6f4d449a4c2fb6999768f3bc22d3b4fe69f085bf91430bcb0fd87d",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.06759857134261,
+            "y": 27.406214765158854
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "iz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 77.4943659999999,
+      "cpuMs": 181.671,
+      "cpuUserMs": 177.775,
+      "cpuSystemMs": 3.896,
+      "trial": {
+        "id": "OLB-R1-wz_strong-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "wz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "f8c127d1952e437114ea7a936760cead7285fd724f33fcd754ed6d1f3956b875",
+        "signature": "e9c9d968e59cef116069ee52defac5f93968428610e595411be054ab17d3d5c3",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.44840908217728,
+            "y": 23.007233830380827
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "wz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 120.61519300000009,
+      "cpuMs": 430.97,
+      "cpuUserMs": 430.97,
+      "cpuSystemMs": 0,
+      "trial": {
+        "id": "OLB-R1-wz_strong-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "wz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "01ca3e77569e87c8060505ad307662f1ca0c2c6fa25e3a25b6f633847742b35e",
+        "signature": "ac499abf40d0290b8649ef262dd067385b1ed27afdb3a13b125e78e75ae7b57b",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 38.877654007960565,
+            "y": 30.364042198171774
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "wz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 77.0584429999999,
+      "cpuMs": 308.292,
+      "cpuUserMs": 296.539,
+      "cpuSystemMs": 11.753,
+      "trial": {
+        "id": "OLB-R1-power-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "power",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "8e956c945efafe908f99180a314f2bd5e8178966e4eb3fb3bd0d7cd20952a6c4",
+        "signature": "6ebe9ad3ad736951708ccbd2b50f8b3d319a5dbe8142aab94afd3950050a76ca",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.23544623785875,
+            "y": 23.619590596806447
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "power",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 62.480837000000065,
+      "cpuMs": 179.907,
+      "cpuUserMs": 179.907,
+      "cpuSystemMs": 0,
+      "trial": {
+        "id": "OLB-R1-power-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "power",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "1b8782b11514fa681ec6f7f9b230d0ba476ba5d54493f2d1babd2fcd5533da9d",
+        "signature": "3ba31575018c564ac78ac22f05c99fdc078573b3f6d850960646b722879123c8",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.231860211978734,
+            "y": 29.683633328880884
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "power",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 120.04025300000012,
+      "cpuMs": 420.198,
+      "cpuUserMs": 412.607,
+      "cpuSystemMs": 7.591,
+      "trial": {
+        "id": "OLB-R1-trap-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "trap",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "12b7b3a9867cdcc06015d5f66ebda6bc13611ce9ef47159e9ae447ef1148fa5a",
+        "signature": "723f48d34886be92e9a1071b2d6bbc0484a38697143159faa2e0bf0a185a5c50",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 41.16263408649114,
+            "y": 23.182359420135274
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "trap",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 114.88859700000012,
+      "cpuMs": 456.606,
+      "cpuUserMs": 452.469,
+      "cpuSystemMs": 4.137,
+      "trial": {
+        "id": "OLB-R1-trap-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "trap",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "ac1e947f04a1e634ce755eb7282a3615c61062a04ad3807dfe620b6aafe1706f",
+        "signature": "a314a988ba93605813696222d810b7606e598699c23f9b5a9586c06d076de0d3",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 41.342177712044816,
+            "y": 30.078723902810633
+          },
+          "penalty": {
+            "kind": "holding",
+            "against": "O",
+            "playerId": "O1-OG2",
+            "yards": 10,
+            "autoFirst": false,
+            "spotX": 41.94452730837032
+          }
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "trap",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 83.11390400000073,
+      "cpuMs": 284.755,
+      "cpuUserMs": 280.789,
+      "cpuSystemMs": 3.966,
+      "trial": {
+        "id": "OLB-R1-counter-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "counter",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "dd9c96f975fc5f95db66ebf1f1a463fa9ad6ec493f4a2b7451da7aa614b6ed86",
+        "signature": "537017337dbe57522d4b2f53f27d26a91978fda0bda832215847121c0643d128",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.654518890241334,
+            "y": 28.52578629362197
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "counter",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 66.26508699999977,
+      "cpuMs": 230.103,
+      "cpuUserMs": 225.985,
+      "cpuSystemMs": 4.118,
+      "trial": {
+        "id": "OLB-R1-counter-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "counter",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "8576afd28c3005df165c5b8e7d7ad5a854a743dbd3e1393ba98785c6bf262663",
+        "signature": "fd435586fdd0eb2a525e09a8954bebb551a4c2218b68a733ef8a144fdb4732e7",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.38498577728916,
+            "y": 24.976443340233168
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "counter",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 119.49899499999992,
+      "cpuMs": 465.023,
+      "cpuUserMs": 452.833,
+      "cpuSystemMs": 12.19,
+      "trial": {
+        "id": "OLB-R1-oz_strong-R-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "oz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "27fd026aff16db66b38edb1d53b7270a35ae07924f09dcadb215cd25226889de",
+        "signature": "d5bee5e9ac41ad4d247dec173b8d216bc2413feb62888b87f999a14c91dfbfc8",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.762131711640336,
+            "y": 22.402578412691735
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "oz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 98.44482599999992,
+      "cpuMs": 343.775,
+      "cpuUserMs": 335.871,
+      "cpuSystemMs": 7.904,
+      "trial": {
+        "id": "OLB-R1-oz_strong-L-S3",
+        "input": {
+          "roster": 1,
+          "offenseSeed": 31,
+          "defenseSeed": 32,
+          "concept": "oz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "ad1601df56482c3375bb6e560be62bcefaebceb6b3bfe28ed905c4abb6a8977e",
+        "signature": "c8fcc73f849ab2b8245a561ed39f812075800d80d714d3dccdb571b59bd77c28",
+        "profileSha256": "ae87d8f4456dadbd9e3e094125aea77f59aafc96b938ddeb276b080c8b9c7626",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 38.443199371525004,
+            "y": 30.635973461861408
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "oz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 87.95397099999991,
+      "cpuMs": 210.935,
+      "cpuUserMs": 202.875,
+      "cpuSystemMs": 8.06,
+      "trial": {
+        "id": "OLB-R2-iz_strong-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "iz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "2347a8fc43adf143a6649c60b1195926c877ef10a29d851fa25940dbea6fde2a",
+        "signature": "5de7568ff8d972c2130b0c02756fcb54d9438bf164234f2374c102c88a4c8d54",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.700476891786856,
+            "y": 24.681282253952034
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "iz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 140.2666680000002,
+      "cpuMs": 537.478,
+      "cpuUserMs": 525.692,
+      "cpuSystemMs": 11.786,
+      "trial": {
+        "id": "OLB-R2-iz_strong-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "iz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "1adbb60606f9e6a835e9dbdce185d09b448c38c062eeaf851a0db8e889b3b5db",
+        "signature": "be8496f023fb5006929e2a91b086831eab7978e0c4e13c330e10f9195f567653",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.388282705869884,
+            "y": 27.879660451923293
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "iz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 102.67505299999993,
+      "cpuMs": 421.833,
+      "cpuUserMs": 417.99,
+      "cpuSystemMs": 3.843,
+      "trial": {
+        "id": "OLB-R2-wz_strong-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "wz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "3475bd5ab3f6affc12297bdeda4839cd39102a00eddaea8f9bb16882531cb4a2",
+        "signature": "4ea93dc8c77e9a47ff203de66ce640494b029b38d5871452b98d2a931ec830a7",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.912954559354404,
+            "y": 22.452042584083777
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "wz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 121.83006000000023,
+      "cpuMs": 412.849,
+      "cpuUserMs": 400.899,
+      "cpuSystemMs": 11.95,
+      "trial": {
+        "id": "OLB-R2-wz_strong-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "wz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "64d3255f1239aa71e886025bfeeee0e9cc83fc10289754f3a2dd81dc9cdd9aa5",
+        "signature": "690bb7f8bfa8719afa3e88e37a3a24e9066d316d1906cfc8c7f6d951f03ee4ab",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.62261315549201,
+            "y": 30.860273071093726
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "wz_strong",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 96.83784399999968,
+      "cpuMs": 345.403,
+      "cpuUserMs": 329.332,
+      "cpuSystemMs": 16.071,
+      "trial": {
+        "id": "OLB-R2-power-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "power",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "565d94a0b145761357d43dc043c659c68101e29e4c20f350b98a95f94b7c8e9c",
+        "signature": "182d48581cd5e0fc459b257a629f5d292527c207b05411db9f82b03079bbd6fb",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.826349495568074,
+            "y": 25.215550673019113
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "power",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 123.89820599999985,
+      "cpuMs": 488.685,
+      "cpuUserMs": 483.604,
+      "cpuSystemMs": 5.081,
+      "trial": {
+        "id": "OLB-R2-power-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "power",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "515a1d243d68dcb47c229e49b0560aaf3e055d72732fc9903fe2a9a6069f4ee4",
+        "signature": "9de000180552a344c9da1c220d08e33b46641f88f57136928f4fff602deb4eb1",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.01326499751695,
+            "y": 29.754437158468168
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "power",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 99.3517950000005,
+      "cpuMs": 414.259,
+      "cpuUserMs": 406.236,
+      "cpuSystemMs": 8.023,
+      "trial": {
+        "id": "OLB-R2-trap-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "trap",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "e0115acad5bf95b453d231fa285b52c05c1f95bf6cfc8e375c64a5cb1fb7830e",
+        "signature": "f6f7195df09c7846f53539fa3f6be3907d1e6926ceca0418fce11a6f84a45ee2",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 41.17077863831903,
+            "y": 23.75488243778129
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "trap",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 105.36185599999953,
+      "cpuMs": 298.821,
+      "cpuUserMs": 283.15,
+      "cpuSystemMs": 15.671,
+      "trial": {
+        "id": "OLB-R2-trap-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "trap",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "27e88eb03901dde3be1c01022717fdbbc67ba354bac4e62732278694d2e051ff",
+        "signature": "04f31770e46279e820959fe90141802919303ac7382728c104ba92538c9f4ad8",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.340146098540544,
+            "y": 29.932638398331196
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "trap",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 85.58772000000044,
+      "cpuMs": 306.368,
+      "cpuUserMs": 302.28,
+      "cpuSystemMs": 4.088,
+      "trial": {
+        "id": "OLB-R2-counter-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "counter",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "2c4f2a29fd3e93ffe56461167e8ade835e1238a7c3cd2a7a3ceaa15ac7f2fa28",
+        "signature": "3d1ebbb4e8c71c8d302e04e2cf0e9c5b7a09972fdcd0eebe676bbe2cf7a05870",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.19620834601729,
+            "y": 28.14199956778274
+          },
+          "penalty": {
+            "kind": "holding",
+            "against": "O",
+            "playerId": "O2-OG4",
+            "yards": 10,
+            "autoFirst": false,
+            "spotX": 39.10379162241231
+          }
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "counter",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 62.61843200000021,
+      "cpuMs": 225.478,
+      "cpuUserMs": 216.99,
+      "cpuSystemMs": 8.488,
+      "trial": {
+        "id": "OLB-R2-counter-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "counter",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "4a23b4eed2b632478f6b704397dc508560f7f1d71023100c01e165d6fa110b0a",
+        "signature": "41700a233f0edd6079551a31dfad59ea4f7e961371171ad37c76381c392513ee",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 38.88339136434153,
+            "y": 24.137235505918152
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "counter",
+          "flip": true
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 70.29895699999997,
+      "cpuMs": 189.567,
+      "cpuUserMs": 189.567,
+      "cpuSystemMs": 0,
+      "trial": {
+        "id": "OLB-R2-oz_strong-R-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "oz_strong",
+          "flip": false,
+          "playSeed": 3
+        },
+        "initialSignature": "afbfe963d881801fcfeeac8e13bfc9c8b8054bacc31330481d9c3257bb399305",
+        "signature": "e59e7bebc75f5f576c5db6037d6024c658ca59cb8ab7fde9058f5e7e9d01cf8a",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 40.92459458089946,
+            "y": 23.37073553460561
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": false,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "oz_strong",
+          "flip": false
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "wallMs": 76.755537,
+      "cpuMs": 145.707,
+      "cpuUserMs": 141.982,
+      "cpuSystemMs": 3.725,
+      "trial": {
+        "id": "OLB-R2-oz_strong-L-S3",
+        "input": {
+          "roster": 2,
+          "offenseSeed": 41,
+          "defenseSeed": 42,
+          "concept": "oz_strong",
+          "flip": true,
+          "playSeed": 3
+        },
+        "initialSignature": "2e57ef01693de9c7ffce51a290bfc6c235a996b008a7c3e037ff7f37780fe1f7",
+        "signature": "1cded873d6b7d3bb4645fa74b0854a556d6ac68ad4c02fa65a111d9fc901b64e",
+        "profileSha256": "37da6f4b7573ae3d5a8a28baf8e495460e68542bcc71c5a6e57cbdf8cd32b816",
+        "end": {
+          "t": 3,
+          "phase": "live",
+          "censored": true,
+          "outcome": null,
+          "endSpot": null,
+          "carrier": 6,
+          "carrierPosition": {
+            "x": 39.03350807518973,
+            "y": 31.190802853521152
+          },
+          "penalty": null
+        },
+        "physics": {
+          "handIntegration": "centered",
+          "boundedAttachment": true,
+          "substeps": "native"
+        },
+        "fixture": {
+          "formation": "ace_11",
+          "front": "over",
+          "coverage": "cover3",
+          "los": 40,
+          "ballY": 26.666666666666668,
+          "firstDownX": 50,
+          "down": 1,
+          "distance": 10,
+          "flip": true,
+          "playSeed": 3
+        },
+        "resolvedOffCall": {
+          "formation": "ace_11",
+          "concept": "oz_strong",
+          "flip": true
+        }
+      }
+    }
+  ]
+}

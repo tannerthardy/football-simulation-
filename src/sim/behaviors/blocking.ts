@@ -19,6 +19,7 @@ import type { Intent } from '../../physics/world.js';
 import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
+import { chooseRunBlockFit, observedBlockLeverage } from '../run-block-fit.js';
 import { helperSupport, passSetDepth, traits } from '../engagement.js';
 import { goTo, runThrough, stand, track } from './common.js';
 
@@ -725,7 +726,14 @@ export class RunBlocker implements Behavior {
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
     const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
-    if (dd < contact && sim.engage(a, target, 'run', plan.drive)) return stand();
+    const fit = isOL(a) && (plan.kind === 'reach' || plan.kind === 'cutoff')
+      && (!plan.combination || plan.combination.released)
+      && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
+    // A clearly lost shoulder is a foot-recovery decision, not a fresh hold.
+    // Keep marginal reaches and actual collisions; use the same observed
+    // leverage boundary as an established run block, without a time grace.
+    const lost = fit && Math.abs(observedBlockLeverage(a, seen, plan.drive)) >= 1.1;
+    if (!lost && dd < contact && sim.engage(a, target, 'run', plan.drive)) return stand();
     // Aiming point: reach blocks work to the playside shoulder.
     let aim = seen.pos;
     if (plan.kind === 'combo' && plan.combination) {
@@ -738,7 +746,9 @@ export class RunBlocker implements Behavior {
     else if (plan.kind === 'climb' || plan.kind === 'lead') {
       aim = a.mind.aim('block-fit', { x: seen.pos.x + seen.vel.x * 0.25, y: seen.pos.y + seen.vel.y * 0.25 }, sim.t);
     }
-    aim = { x: aim.x, y: clamp(aim.y + a.mind.placementError * (1 - 0.5 * a.r('runBlock')), 0.5, FIELD_WIDTH - 0.5) };
+    const nominalAim = aim;
+    const placementError = a.mind.placementError * (1 - 0.5 * a.r('runBlock'));
+    aim = { x: aim.x, y: clamp(aim.y + placementError, 0.5, FIELD_WIDTH - 0.5) };
     // A kick/trap is a fit on a moving shoulder, not a sprint through the
     // defender's old spot. Match his lateral motion and brake the offset;
     // ordinary drive blocks retain their downhill strike.
@@ -747,7 +757,9 @@ export class RunBlocker implements Behavior {
       const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
       return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
     }
-    return runThrough(a, aim, { speed: 1 });
+    const original = runThrough(a, aim, { speed: 1 });
+    return fit ? chooseRunBlockFit(a, seen, plan.drive, nominalAim, placementError,
+      contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t) : original;
   }
 
   private readRules(a: Agent, sim: PlaySim): void {
