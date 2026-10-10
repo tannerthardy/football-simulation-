@@ -1,0 +1,3438 @@
+{
+  "sourceSha256Start": "3b328c7bddc6354e7559d5d491e8a7d579bb2865adf257e2aa58385dade872df",
+  "sourceSha256End": "3b328c7bddc6354e7559d5d491e8a7d579bb2865adf257e2aa58385dade872df",
+  "scriptSha256Start": "6dc5031b948e22f8ebd5d36671e032a876b4c04eefe5a34360fc7dfce79a7682",
+  "scriptSha256End": "6dc5031b948e22f8ebd5d36671e032a876b4c04eefe5a34360fc7dfce79a7682",
+  "seed": 9713,
+  "cases": 200,
+  "requestedGrips": 4,
+  "graphCounts": {
+    "zeroGrip": 581,
+    "oneGrip": 0,
+    "multiGrip": 1219,
+    "repeatedOwner": 1219,
+    "sharedOwnerSlot": 1219,
+    "multipleOwners": 1219
+  },
+  "gripModel": "tether",
+  "node": "v22.23.3",
+  "panels": {
+    "midpoint-ablation": {
+      "candidates": 1845,
+      "accepted": 1845,
+      "rejected": 0,
+      "maxima": {
+        "iterations": 25,
+        "impulseChange": 9.345167643694658e-10,
+        "maxPassiveWork": 1.7104942833391602e-11,
+        "workResidualAbs": 1.3642420526593924e-12,
+        "linearResidual": 5.720310336735898e-14,
+        "angularResidual": 6.394884621840902e-14,
+        "explicitGripGap": 3.439470930288735e-13,
+        "angularClosure": 6.394884621840902e-14,
+        "maxReachViolation": 2.220446049250313e-16,
+        "strengthExcess": 9.094947017729282e-13,
+        "tractionCapExcess": 0,
+        "gripCapExcess": 1.1738165994756855e-11,
+        "gripCapRecoveryRank": 4,
+        "gripCapRecoveryUnknowns": 4,
+        "gripCapRecoveryResidual": 2.972067036921544e-13,
+        "uncappedHoldViolation": 3.439470930288735e-13,
+        "slippingHoldExtension": 0.975586384452472,
+        "unrepresentedGripAngular": 3.909095269705176e-12,
+        "stoppingFlags": 0,
+        "projectionReversal": 3.3856375270024515
+      }
+    },
+    "endpoint-static": {
+      "candidates": 1836,
+      "accepted": 1836,
+      "rejected": 0,
+      "maxima": {
+        "iterations": 19,
+        "impulseChange": 9.692820231490661e-10,
+        "maxPassiveWork": 7.023237457962383e-14,
+        "workResidualAbs": 8.455458555545192e-13,
+        "linearResidual": 5.5067062021407764e-14,
+        "angularResidual": 5.950795411990839e-14,
+        "explicitGripGap": 5.146993942162226e-13,
+        "angularClosure": 5.950795411990839e-14,
+        "maxReachViolation": 4.440892098500626e-16,
+        "strengthExcess": 9.094947017729282e-13,
+        "tractionCapExcess": 0,
+        "gripCapExcess": 9.85522774499259e-12,
+        "gripCapRecoveryRank": 4,
+        "gripCapRecoveryUnknowns": 4,
+        "gripCapRecoveryResidual": 2.2642998587230068e-13,
+        "uncappedHoldViolation": 5.146993942162226e-13,
+        "slippingHoldExtension": 0.8802947130936564,
+        "unrepresentedGripAngular": 3.9610537072576335e-12,
+        "stoppingFlags": 0,
+        "projectionReversal": 0
+      }
+    },
+    "endpoint-slip": {
+      "candidates": 1827,
+      "accepted": 710,
+      "rejected": 1117,
+      "maxima": {
+        "iterations": 83,
+        "impulseChange": 9.90664177473104e-10,
+        "maxPassiveWork": 1268.671214111429,
+        "workResidualAbs": 2.6290081223123707e-12,
+        "linearResidual": 6.355287432313019e-14,
+        "angularResidual": 6.039613253960852e-14,
+        "explicitGripGap": 1.2030376694838196e-12,
+        "angularClosure": 6.039613253960852e-14,
+        "maxReachViolation": 2.020605904817785e-14,
+        "strengthExcess": 9.094947017729282e-13,
+        "tractionCapExcess": 1.4210854715202004e-14,
+        "gripCapExcess": 2.2517543385447425e-12,
+        "gripCapRecoveryRank": 4,
+        "gripCapRecoveryUnknowns": 4,
+        "gripCapRecoveryResidual": 2.0727863869751673e-13,
+        "uncappedHoldViolation": 1.2030376694838196e-12,
+        "slippingHoldExtension": 1.231457999255737,
+        "unrepresentedGripAngular": 4.517286544825083e-11,
+        "stoppingFlags": 0,
+        "projectionReversal": 3.385637527002452
+      }
+    },
+    "coupled-slip-midpoint": {
+      "candidates": 1836,
+      "accepted": 1836,
+      "rejected": 0,
+      "maxima": {
+        "iterations": 25,
+        "impulseChange": 9.345167643694658e-10,
+        "maxPassiveWork": 1.7104942833391602e-11,
+        "workResidualAbs": 1.3642420526593924e-12,
+        "linearResidual": 5.720310336735898e-14,
+        "angularResidual": 6.394884621840902e-14,
+        "explicitGripGap": 3.439470930288735e-13,
+        "angularClosure": 6.394884621840902e-14,
+        "maxReachViolation": 2.220446049250313e-16,
+        "strengthExcess": 9.094947017729282e-13,
+        "tractionCapExcess": 0,
+        "gripCapExcess": 1.1738165994756855e-11,
+        "gripCapRecoveryRank": 4,
+        "gripCapRecoveryUnknowns": 4,
+        "gripCapRecoveryResidual": 2.972067036921544e-13,
+        "uncappedHoldViolation": 3.439470930288735e-13,
+        "slippingHoldExtension": 0.975586384452472,
+        "unrepresentedGripAngular": 3.909095269705176e-12,
+        "stoppingFlags": 0,
+        "projectionReversal": 3.3856375270024515
+      }
+    }
+  },
+  "contractViolations": [],
+  "gripCapUnverifiedCases": [],
+  "expectedUnsplitSlipBracketRejects": 1117,
+  "criteria": {
+    "workResidual": 1e-07,
+    "linearAngularClosure": 1e-07,
+    "passiveWork": 1e-07,
+    "reach": 1e-07,
+    "strengthTractionGripCapacityAndUncappedHold": 1e-07
+  },
+  "scope": "Seeded inertial research-kernel mechanics only; no gait calibration or production readiness claim.",
+  "rejectedCount": 1117,
+  "rejectedIds": [
+    {"panel":"endpoint-slip","id":"random-9-seedcase-9"},
+    {"panel":"endpoint-slip","id":"random-28-seedcase-28"},
+    {"panel":"endpoint-slip","id":"random-36-seedcase-36"},
+    {"panel":"endpoint-slip","id":"random-48-seedcase-48"},
+    {"panel":"endpoint-slip","id":"random-50-seedcase-50"},
+    {"panel":"endpoint-slip","id":"random-63-seedcase-63"},
+    {"panel":"endpoint-slip","id":"random-67-seedcase-67"},
+    {"panel":"endpoint-slip","id":"random-71-seedcase-71"},
+    {"panel":"endpoint-slip","id":"random-77-seedcase-77"},
+    {"panel":"endpoint-slip","id":"random-79-seedcase-79"},
+    {"panel":"endpoint-slip","id":"random-90-seedcase-90"},
+    {"panel":"endpoint-slip","id":"random-96-seedcase-96"},
+    {"panel":"endpoint-slip","id":"random-97-seedcase-97"},
+    {"panel":"endpoint-slip","id":"random-99-seedcase-99"},
+    {"panel":"endpoint-slip","id":"random-119-seedcase-119"},
+    {"panel":"endpoint-slip","id":"random-146-seedcase-146"},
+    {"panel":"endpoint-slip","id":"random-161-seedcase-161"},
+    {"panel":"endpoint-slip","id":"random-162-seedcase-162"},
+    {"panel":"endpoint-slip","id":"random-163-seedcase-163"},
+    {"panel":"endpoint-slip","id":"random-166-seedcase-166"},
+    {"panel":"endpoint-slip","id":"random-173-seedcase-173"},
+    {"panel":"endpoint-slip","id":"random-177-seedcase-177"},
+    {"panel":"endpoint-slip","id":"random-178-seedcase-178"},
+    {"panel":"endpoint-slip","id":"random-193-seedcase-193"},
+    {"panel":"endpoint-slip","id":"random-200-seedcase-0"},
+    {"panel":"endpoint-slip","id":"random-201-seedcase-1"},
+    {"panel":"endpoint-slip","id":"random-202-seedcase-2"},
+    {"panel":"endpoint-slip","id":"random-203-seedcase-3"},
+    {"panel":"endpoint-slip","id":"random-204-seedcase-4"},
+    {"panel":"endpoint-slip","id":"random-205-seedcase-5"},
+    {"panel":"endpoint-slip","id":"random-206-seedcase-6"},
+    {"panel":"endpoint-slip","id":"random-207-seedcase-7"},
+    {"panel":"endpoint-slip","id":"random-208-seedcase-8"},
+    {"panel":"endpoint-slip","id":"random-209-seedcase-9"},
+    {"panel":"endpoint-slip","id":"random-210-seedcase-10"},
+    {"panel":"endpoint-slip","id":"random-211-seedcase-11"},
+    {"panel":"endpoint-slip","id":"random-212-seedcase-12"},
+    {"panel":"endpoint-slip","id":"random-213-seedcase-13"},
+    {"panel":"endpoint-slip","id":"random-214-seedcase-14"},
+    {"panel":"endpoint-slip","id":"random-215-seedcase-15"},
+    {"panel":"endpoint-slip","id":"random-216-seedcase-16"},
+    {"panel":"endpoint-slip","id":"random-217-seedcase-17"},
+    {"panel":"endpoint-slip","id":"random-218-seedcase-18"},
+    {"panel":"endpoint-slip","id":"random-219-seedcase-19"},
+    {"panel":"endpoint-slip","id":"random-220-seedcase-20"},
+    {"panel":"endpoint-slip","id":"random-221-seedcase-21"},
+    {"panel":"endpoint-slip","id":"random-222-seedcase-22"},
+    {"panel":"endpoint-slip","id":"random-223-seedcase-23"},
+    {"panel":"endpoint-slip","id":"random-224-seedcase-24"},
+    {"panel":"endpoint-slip","id":"random-225-seedcase-25"},
+    {"panel":"endpoint-slip","id":"random-226-seedcase-26"},
+    {"panel":"endpoint-slip","id":"random-228-seedcase-28"},
+    {"panel":"endpoint-slip","id":"random-229-seedcase-29"},
+    {"panel":"endpoint-slip","id":"random-230-seedcase-30"},
+    {"panel":"endpoint-slip","id":"random-231-seedcase-31"},
+    {"panel":"endpoint-slip","id":"random-232-seedcase-32"},
+    {"panel":"endpoint-slip","id":"random-233-seedcase-33"},
+    {"panel":"endpoint-slip","id":"random-234-seedcase-34"},
+    {"panel":"endpoint-slip","id":"random-235-seedcase-35"},
+    {"panel":"endpoint-slip","id":"random-236-seedcase-36"},
+    {"panel":"endpoint-slip","id":"random-237-seedcase-37"},
+    {"panel":"endpoint-slip","id":"random-238-seedcase-38"},
+    {"panel":"endpoint-slip","id":"random-239-seedcase-39"},
+    {"panel":"endpoint-slip","id":"random-240-seedcase-40"},
+    {"panel":"endpoint-slip","id":"random-241-seedcase-41"},
+    {"panel":"endpoint-slip","id":"random-242-seedcase-42"},
+    {"panel":"endpoint-slip","id":"random-243-seedcase-43"},
+    {"panel":"endpoint-slip","id":"random-244-seedcase-44"},
+    {"panel":"endpoint-slip","id":"random-245-seedcase-45"},
+    {"panel":"endpoint-slip","id":"random-246-seedcase-46"},
+    {"panel":"endpoint-slip","id":"random-247-seedcase-47"},
+    {"panel":"endpoint-slip","id":"random-248-seedcase-48"},
+    {"panel":"endpoint-slip","id":"random-249-seedcase-49"},
+    {"panel":"endpoint-slip","id":"random-250-seedcase-50"},
+    {"panel":"endpoint-slip","id":"random-251-seedcase-51"},
+    {"panel":"endpoint-slip","id":"random-252-seedcase-52"},
+    {"panel":"endpoint-slip","id":"random-253-seedcase-53"},
+    {"panel":"endpoint-slip","id":"random-254-seedcase-54"},
+    {"panel":"endpoint-slip","id":"random-255-seedcase-55"},
+    {"panel":"endpoint-slip","id":"random-256-seedcase-56"},
+    {"panel":"endpoint-slip","id":"random-257-seedcase-57"},
+    {"panel":"endpoint-slip","id":"random-258-seedcase-58"},
+    {"panel":"endpoint-slip","id":"random-259-seedcase-59"},
+    {"panel":"endpoint-slip","id":"random-260-seedcase-60"},
+    {"panel":"endpoint-slip","id":"random-261-seedcase-61"},
+    {"panel":"endpoint-slip","id":"random-262-seedcase-62"},
+    {"panel":"endpoint-slip","id":"random-263-seedcase-63"},
+    {"panel":"endpoint-slip","id":"random-264-seedcase-64"},
+    {"panel":"endpoint-slip","id":"random-265-seedcase-65"},
+    {"panel":"endpoint-slip","id":"random-266-seedcase-66"},
+    {"panel":"endpoint-slip","id":"random-268-seedcase-68"},
+    {"panel":"endpoint-slip","id":"random-269-seedcase-69"},
+    {"panel":"endpoint-slip","id":"random-270-seedcase-70"},
+    {"panel":"endpoint-slip","id":"random-271-seedcase-71"},
+    {"panel":"endpoint-slip","id":"random-272-seedcase-72"},
+    {"panel":"endpoint-slip","id":"random-273-seedcase-73"},
+    {"panel":"endpoint-slip","id":"random-274-seedcase-74"},
+    {"panel":"endpoint-slip","id":"random-275-seedcase-75"},
+    {"panel":"endpoint-slip","id":"random-276-seedcase-76"},
+    {"panel":"endpoint-slip","id":"random-277-seedcase-77"},
+    {"panel":"endpoint-slip","id":"random-279-seedcase-79"},
+    {"panel":"endpoint-slip","id":"random-280-seedcase-80"},
+    {"panel":"endpoint-slip","id":"random-281-seedcase-81"},
+    {"panel":"endpoint-slip","id":"random-282-seedcase-82"},
+    {"panel":"endpoint-slip","id":"random-283-seedcase-83"},
+    {"panel":"endpoint-slip","id":"random-284-seedcase-84"},
+    {"panel":"endpoint-slip","id":"random-285-seedcase-85"},
+    {"panel":"endpoint-slip","id":"random-287-seedcase-87"},
+    {"panel":"endpoint-slip","id":"random-288-seedcase-88"},
+    {"panel":"endpoint-slip","id":"random-289-seedcase-89"},
+    {"panel":"endpoint-slip","id":"random-290-seedcase-90"},
+    {"panel":"endpoint-slip","id":"random-291-seedcase-91"},
+    {"panel":"endpoint-slip","id":"random-292-seedcase-92"},
+    {"panel":"endpoint-slip","id":"random-293-seedcase-93"},
+    {"panel":"endpoint-slip","id":"random-294-seedcase-94"},
+    {"panel":"endpoint-slip","id":"random-295-seedcase-95"},
+    {"panel":"endpoint-slip","id":"random-296-seedcase-96"},
+    {"panel":"endpoint-slip","id":"random-297-seedcase-97"},
+    {"panel":"endpoint-slip","id":"random-298-seedcase-98"},
+    {"panel":"endpoint-slip","id":"random-299-seedcase-99"},
+    {"panel":"endpoint-slip","id":"random-300-seedcase-100"},
+    {"panel":"endpoint-slip","id":"random-301-seedcase-101"},
+    {"panel":"endpoint-slip","id":"random-302-seedcase-102"},
+    {"panel":"endpoint-slip","id":"random-303-seedcase-103"},
+    {"panel":"endpoint-slip","id":"random-304-seedcase-104"},
+    {"panel":"endpoint-slip","id":"random-305-seedcase-105"},
+    {"panel":"endpoint-slip","id":"random-306-seedcase-106"},
+    {"panel":"endpoint-slip","id":"random-307-seedcase-107"},
+    {"panel":"endpoint-slip","id":"random-308-seedcase-108"},
+    {"panel":"endpoint-slip","id":"random-309-seedcase-109"},
+    {"panel":"endpoint-slip","id":"random-310-seedcase-110"},
+    {"panel":"endpoint-slip","id":"random-311-seedcase-111"},
+    {"panel":"endpoint-slip","id":"random-312-seedcase-112"},
+    {"panel":"endpoint-slip","id":"random-313-seedcase-113"},
+    {"panel":"endpoint-slip","id":"random-314-seedcase-114"},
+    {"panel":"endpoint-slip","id":"random-315-seedcase-115"},
+    {"panel":"endpoint-slip","id":"random-316-seedcase-116"},
+    {"panel":"endpoint-slip","id":"random-317-seedcase-117"},
+    {"panel":"endpoint-slip","id":"random-318-seedcase-118"},
+    {"panel":"endpoint-slip","id":"random-319-seedcase-119"},
+    {"panel":"endpoint-slip","id":"random-320-seedcase-120"},
+    {"panel":"endpoint-slip","id":"random-321-seedcase-121"},
+    {"panel":"endpoint-slip","id":"random-322-seedcase-122"},
+    {"panel":"endpoint-slip","id":"random-324-seedcase-124"},
+    {"panel":"endpoint-slip","id":"random-325-seedcase-125"},
+    {"panel":"endpoint-slip","id":"random-326-seedcase-126"},
+    {"panel":"endpoint-slip","id":"random-327-seedcase-127"},
+    {"panel":"endpoint-slip","id":"random-328-seedcase-128"},
+    {"panel":"endpoint-slip","id":"random-329-seedcase-129"},
+    {"panel":"endpoint-slip","id":"random-330-seedcase-130"},
+    {"panel":"endpoint-slip","id":"random-331-seedcase-131"},
+    {"panel":"endpoint-slip","id":"random-332-seedcase-132"},
+    {"panel":"endpoint-slip","id":"random-333-seedcase-133"},
+    {"panel":"endpoint-slip","id":"random-334-seedcase-134"},
+    {"panel":"endpoint-slip","id":"random-335-seedcase-135"},
+    {"panel":"endpoint-slip","id":"random-336-seedcase-136"},
+    {"panel":"endpoint-slip","id":"random-337-seedcase-137"},
+    {"panel":"endpoint-slip","id":"random-338-seedcase-138"},
+    {"panel":"endpoint-slip","id":"random-339-seedcase-139"},
+    {"panel":"endpoint-slip","id":"random-340-seedcase-140"},
+    {"panel":"endpoint-slip","id":"random-341-seedcase-141"},
+    {"panel":"endpoint-slip","id":"random-342-seedcase-142"},
+    {"panel":"endpoint-slip","id":"random-343-seedcase-143"},
+    {"panel":"endpoint-slip","id":"random-344-seedcase-144"},
+    {"panel":"endpoint-slip","id":"random-345-seedcase-145"},
+    {"panel":"endpoint-slip","id":"random-346-seedcase-146"},
+    {"panel":"endpoint-slip","id":"random-347-seedcase-147"},
+    {"panel":"endpoint-slip","id":"random-348-seedcase-148"},
+    {"panel":"endpoint-slip","id":"random-349-seedcase-149"},
+    {"panel":"endpoint-slip","id":"random-350-seedcase-150"},
+    {"panel":"endpoint-slip","id":"random-351-seedcase-151"},
+    {"panel":"endpoint-slip","id":"random-352-seedcase-152"},
+    {"panel":"endpoint-slip","id":"random-353-seedcase-153"},
+    {"panel":"endpoint-slip","id":"random-354-seedcase-154"},
+    {"panel":"endpoint-slip","id":"random-355-seedcase-155"},
+    {"panel":"endpoint-slip","id":"random-356-seedcase-156"},
+    {"panel":"endpoint-slip","id":"random-357-seedcase-157"},
+    {"panel":"endpoint-slip","id":"random-358-seedcase-158"},
+    {"panel":"endpoint-slip","id":"random-359-seedcase-159"},
+    {"panel":"endpoint-slip","id":"random-360-seedcase-160"},
+    {"panel":"endpoint-slip","id":"random-361-seedcase-161"},
+    {"panel":"endpoint-slip","id":"random-362-seedcase-162"},
+    {"panel":"endpoint-slip","id":"random-363-seedcase-163"},
+    {"panel":"endpoint-slip","id":"random-364-seedcase-164"},
+    {"panel":"endpoint-slip","id":"random-365-seedcase-165"},
+    {"panel":"endpoint-slip","id":"random-366-seedcase-166"},
+    {"panel":"endpoint-slip","id":"random-367-seedcase-167"},
+    {"panel":"endpoint-slip","id":"random-368-seedcase-168"},
+    {"panel":"endpoint-slip","id":"random-369-seedcase-169"},
+    {"panel":"endpoint-slip","id":"random-370-seedcase-170"},
+    {"panel":"endpoint-slip","id":"random-371-seedcase-171"},
+    {"panel":"endpoint-slip","id":"random-372-seedcase-172"},
+    {"panel":"endpoint-slip","id":"random-373-seedcase-173"},
+    {"panel":"endpoint-slip","id":"random-374-seedcase-174"},
+    {"panel":"endpoint-slip","id":"random-375-seedcase-175"},
+    {"panel":"endpoint-slip","id":"random-376-seedcase-176"},
+    {"panel":"endpoint-slip","id":"random-377-seedcase-177"},
+    {"panel":"endpoint-slip","id":"random-378-seedcase-178"},
+    {"panel":"endpoint-slip","id":"random-379-seedcase-179"},
+    {"panel":"endpoint-slip","id":"random-380-seedcase-180"},
+    {"panel":"endpoint-slip","id":"random-381-seedcase-181"},
+    {"panel":"endpoint-slip","id":"random-382-seedcase-182"},
+    {"panel":"endpoint-slip","id":"random-383-seedcase-183"},
+    {"panel":"endpoint-slip","id":"random-384-seedcase-184"},
+    {"panel":"endpoint-slip","id":"random-385-seedcase-185"},
+    {"panel":"endpoint-slip","id":"random-386-seedcase-186"},
+    {"panel":"endpoint-slip","id":"random-387-seedcase-187"},
+    {"panel":"endpoint-slip","id":"random-388-seedcase-188"},
+    {"panel":"endpoint-slip","id":"random-389-seedcase-189"},
+    {"panel":"endpoint-slip","id":"random-390-seedcase-190"},
+    {"panel":"endpoint-slip","id":"random-391-seedcase-191"},
+    {"panel":"endpoint-slip","id":"random-392-seedcase-192"},
+    {"panel":"endpoint-slip","id":"random-393-seedcase-193"},
+    {"panel":"endpoint-slip","id":"random-394-seedcase-194"},
+    {"panel":"endpoint-slip","id":"random-395-seedcase-195"},
+    {"panel":"endpoint-slip","id":"random-396-seedcase-196"},
+    {"panel":"endpoint-slip","id":"random-397-seedcase-197"},
+    {"panel":"endpoint-slip","id":"random-398-seedcase-198"},
+    {"panel":"endpoint-slip","id":"random-399-seedcase-199"},
+    {"panel":"endpoint-slip","id":"random-400-seedcase-0"},
+    {"panel":"endpoint-slip","id":"random-401-seedcase-1"},
+    {"panel":"endpoint-slip","id":"random-402-seedcase-2"},
+    {"panel":"endpoint-slip","id":"random-403-seedcase-3"},
+    {"panel":"endpoint-slip","id":"random-404-seedcase-4"},
+    {"panel":"endpoint-slip","id":"random-405-seedcase-5"},
+    {"panel":"endpoint-slip","id":"random-406-seedcase-6"},
+    {"panel":"endpoint-slip","id":"random-407-seedcase-7"},
+    {"panel":"endpoint-slip","id":"random-408-seedcase-8"},
+    {"panel":"endpoint-slip","id":"random-409-seedcase-9"},
+    {"panel":"endpoint-slip","id":"random-410-seedcase-10"},
+    {"panel":"endpoint-slip","id":"random-411-seedcase-11"},
+    {"panel":"endpoint-slip","id":"random-412-seedcase-12"},
+    {"panel":"endpoint-slip","id":"random-413-seedcase-13"},
+    {"panel":"endpoint-slip","id":"random-414-seedcase-14"},
+    {"panel":"endpoint-slip","id":"random-415-seedcase-15"},
+    {"panel":"endpoint-slip","id":"random-416-seedcase-16"},
+    {"panel":"endpoint-slip","id":"random-417-seedcase-17"},
+    {"panel":"endpoint-slip","id":"random-418-seedcase-18"},
+    {"panel":"endpoint-slip","id":"random-419-seedcase-19"},
+    {"panel":"endpoint-slip","id":"random-420-seedcase-20"},
+    {"panel":"endpoint-slip","id":"random-421-seedcase-21"},
+    {"panel":"endpoint-slip","id":"random-422-seedcase-22"},
+    {"panel":"endpoint-slip","id":"random-423-seedcase-23"},
+    {"panel":"endpoint-slip","id":"random-424-seedcase-24"},
+    {"panel":"endpoint-slip","id":"random-425-seedcase-25"},
+    {"panel":"endpoint-slip","id":"random-426-seedcase-26"},
+    {"panel":"endpoint-slip","id":"random-427-seedcase-27"},
+    {"panel":"endpoint-slip","id":"random-428-seedcase-28"},
+    {"panel":"endpoint-slip","id":"random-429-seedcase-29"},
+    {"panel":"endpoint-slip","id":"random-430-seedcase-30"},
+    {"panel":"endpoint-slip","id":"random-431-seedcase-31"},
+    {"panel":"endpoint-slip","id":"random-432-seedcase-32"},
+    {"panel":"endpoint-slip","id":"random-433-seedcase-33"},
+    {"panel":"endpoint-slip","id":"random-434-seedcase-34"},
+    {"panel":"endpoint-slip","id":"random-435-seedcase-35"},
+    {"panel":"endpoint-slip","id":"random-436-seedcase-36"},
+    {"panel":"endpoint-slip","id":"random-437-seedcase-37"},
+    {"panel":"endpoint-slip","id":"random-438-seedcase-38"},
+    {"panel":"endpoint-slip","id":"random-439-seedcase-39"},
+    {"panel":"endpoint-slip","id":"random-440-seedcase-40"},
+    {"panel":"endpoint-slip","id":"random-441-seedcase-41"},
+    {"panel":"endpoint-slip","id":"random-442-seedcase-42"},
+    {"panel":"endpoint-slip","id":"random-443-seedcase-43"},
+    {"panel":"endpoint-slip","id":"random-444-seedcase-44"},
+    {"panel":"endpoint-slip","id":"random-445-seedcase-45"},
+    {"panel":"endpoint-slip","id":"random-446-seedcase-46"},
+    {"panel":"endpoint-slip","id":"random-447-seedcase-47"},
+    {"panel":"endpoint-slip","id":"random-448-seedcase-48"},
+    {"panel":"endpoint-slip","id":"random-449-seedcase-49"},
+    {"panel":"endpoint-slip","id":"random-450-seedcase-50"},
+    {"panel":"endpoint-slip","id":"random-451-seedcase-51"},
+    {"panel":"endpoint-slip","id":"random-452-seedcase-52"},
+    {"panel":"endpoint-slip","id":"random-453-seedcase-53"},
+    {"panel":"endpoint-slip","id":"random-454-seedcase-54"},
+    {"panel":"endpoint-slip","id":"random-455-seedcase-55"},
+    {"panel":"endpoint-slip","id":"random-456-seedcase-56"},
+    {"panel":"endpoint-slip","id":"random-457-seedcase-57"},
+    {"panel":"endpoint-slip","id":"random-458-seedcase-58"},
+    {"panel":"endpoint-slip","id":"random-459-seedcase-59"},
+    {"panel":"endpoint-slip","id":"random-460-seedcase-60"},
+    {"panel":"endpoint-slip","id":"random-461-seedcase-61"},
+    {"panel":"endpoint-slip","id":"random-462-seedcase-62"},
+    {"panel":"endpoint-slip","id":"random-463-seedcase-63"},
+    {"panel":"endpoint-slip","id":"random-464-seedcase-64"},
+    {"panel":"endpoint-slip","id":"random-465-seedcase-65"},
+    {"panel":"endpoint-slip","id":"random-466-seedcase-66"},
+    {"panel":"endpoint-slip","id":"random-467-seedcase-67"},
+    {"panel":"endpoint-slip","id":"random-468-seedcase-68"},
+    {"panel":"endpoint-slip","id":"random-469-seedcase-69"},
+    {"panel":"endpoint-slip","id":"random-470-seedcase-70"},
+    {"panel":"endpoint-slip","id":"random-471-seedcase-71"},
+    {"panel":"endpoint-slip","id":"random-472-seedcase-72"},
+    {"panel":"endpoint-slip","id":"random-473-seedcase-73"},
+    {"panel":"endpoint-slip","id":"random-474-seedcase-74"},
+    {"panel":"endpoint-slip","id":"random-475-seedcase-75"},
+    {"panel":"endpoint-slip","id":"random-476-seedcase-76"},
+    {"panel":"endpoint-slip","id":"random-477-seedcase-77"},
+    {"panel":"endpoint-slip","id":"random-478-seedcase-78"},
+    {"panel":"endpoint-slip","id":"random-479-seedcase-79"},
+    {"panel":"endpoint-slip","id":"random-480-seedcase-80"},
+    {"panel":"endpoint-slip","id":"random-481-seedcase-81"},
+    {"panel":"endpoint-slip","id":"random-482-seedcase-82"},
+    {"panel":"endpoint-slip","id":"random-483-seedcase-83"},
+    {"panel":"endpoint-slip","id":"random-484-seedcase-84"},
+    {"panel":"endpoint-slip","id":"random-485-seedcase-85"},
+    {"panel":"endpoint-slip","id":"random-486-seedcase-86"},
+    {"panel":"endpoint-slip","id":"random-487-seedcase-87"},
+    {"panel":"endpoint-slip","id":"random-488-seedcase-88"},
+    {"panel":"endpoint-slip","id":"random-489-seedcase-89"},
+    {"panel":"endpoint-slip","id":"random-490-seedcase-90"},
+    {"panel":"endpoint-slip","id":"random-491-seedcase-91"},
+    {"panel":"endpoint-slip","id":"random-492-seedcase-92"},
+    {"panel":"endpoint-slip","id":"random-493-seedcase-93"},
+    {"panel":"endpoint-slip","id":"random-494-seedcase-94"},
+    {"panel":"endpoint-slip","id":"random-495-seedcase-95"},
+    {"panel":"endpoint-slip","id":"random-496-seedcase-96"},
+    {"panel":"endpoint-slip","id":"random-497-seedcase-97"},
+    {"panel":"endpoint-slip","id":"random-498-seedcase-98"},
+    {"panel":"endpoint-slip","id":"random-499-seedcase-99"},
+    {"panel":"endpoint-slip","id":"random-500-seedcase-100"},
+    {"panel":"endpoint-slip","id":"random-501-seedcase-101"},
+    {"panel":"endpoint-slip","id":"random-502-seedcase-102"},
+    {"panel":"endpoint-slip","id":"random-503-seedcase-103"},
+    {"panel":"endpoint-slip","id":"random-504-seedcase-104"},
+    {"panel":"endpoint-slip","id":"random-505-seedcase-105"},
+    {"panel":"endpoint-slip","id":"random-506-seedcase-106"},
+    {"panel":"endpoint-slip","id":"random-507-seedcase-107"},
+    {"panel":"endpoint-slip","id":"random-508-seedcase-108"},
+    {"panel":"endpoint-slip","id":"random-509-seedcase-109"},
+    {"panel":"endpoint-slip","id":"random-510-seedcase-110"},
+    {"panel":"endpoint-slip","id":"random-511-seedcase-111"},
+    {"panel":"endpoint-slip","id":"random-512-seedcase-112"},
+    {"panel":"endpoint-slip","id":"random-513-seedcase-113"},
+    {"panel":"endpoint-slip","id":"random-514-seedcase-114"},
+    {"panel":"endpoint-slip","id":"random-515-seedcase-115"},
+    {"panel":"endpoint-slip","id":"random-516-seedcase-116"},
+    {"panel":"endpoint-slip","id":"random-517-seedcase-117"},
+    {"panel":"endpoint-slip","id":"random-518-seedcase-118"},
+    {"panel":"endpoint-slip","id":"random-519-seedcase-119"},
+    {"panel":"endpoint-slip","id":"random-520-seedcase-120"},
+    {"panel":"endpoint-slip","id":"random-521-seedcase-121"},
+    {"panel":"endpoint-slip","id":"random-522-seedcase-122"},
+    {"panel":"endpoint-slip","id":"random-523-seedcase-123"},
+    {"panel":"endpoint-slip","id":"random-524-seedcase-124"},
+    {"panel":"endpoint-slip","id":"random-525-seedcase-125"},
+    {"panel":"endpoint-slip","id":"random-526-seedcase-126"},
+    {"panel":"endpoint-slip","id":"random-527-seedcase-127"},
+    {"panel":"endpoint-slip","id":"random-528-seedcase-128"},
+    {"panel":"endpoint-slip","id":"random-529-seedcase-129"},
+    {"panel":"endpoint-slip","id":"random-530-seedcase-130"},
+    {"panel":"endpoint-slip","id":"random-531-seedcase-131"},
+    {"panel":"endpoint-slip","id":"random-532-seedcase-132"},
+    {"panel":"endpoint-slip","id":"random-533-seedcase-133"},
+    {"panel":"endpoint-slip","id":"random-534-seedcase-134"},
+    {"panel":"endpoint-slip","id":"random-535-seedcase-135"},
+    {"panel":"endpoint-slip","id":"random-536-seedcase-136"},
+    {"panel":"endpoint-slip","id":"random-537-seedcase-137"},
+    {"panel":"endpoint-slip","id":"random-538-seedcase-138"},
+    {"panel":"endpoint-slip","id":"random-539-seedcase-139"},
+    {"panel":"endpoint-slip","id":"random-540-seedcase-140"},
+    {"panel":"endpoint-slip","id":"random-541-seedcase-141"},
+    {"panel":"endpoint-slip","id":"random-542-seedcase-142"},
+    {"panel":"endpoint-slip","id":"random-543-seedcase-143"},
+    {"panel":"endpoint-slip","id":"random-544-seedcase-144"},
+    {"panel":"endpoint-slip","id":"random-545-seedcase-145"},
+    {"panel":"endpoint-slip","id":"random-546-seedcase-146"},
+    {"panel":"endpoint-slip","id":"random-547-seedcase-147"},
+    {"panel":"endpoint-slip","id":"random-548-seedcase-148"},
+    {"panel":"endpoint-slip","id":"random-549-seedcase-149"},
+    {"panel":"endpoint-slip","id":"random-550-seedcase-150"},
+    {"panel":"endpoint-slip","id":"random-551-seedcase-151"},
+    {"panel":"endpoint-slip","id":"random-552-seedcase-152"},
+    {"panel":"endpoint-slip","id":"random-553-seedcase-153"},
+    {"panel":"endpoint-slip","id":"random-554-seedcase-154"},
+    {"panel":"endpoint-slip","id":"random-555-seedcase-155"},
+    {"panel":"endpoint-slip","id":"random-556-seedcase-156"},
+    {"panel":"endpoint-slip","id":"random-557-seedcase-157"},
+    {"panel":"endpoint-slip","id":"random-558-seedcase-158"},
+    {"panel":"endpoint-slip","id":"random-559-seedcase-159"},
+    {"panel":"endpoint-slip","id":"random-560-seedcase-160"},
+    {"panel":"endpoint-slip","id":"random-561-seedcase-161"},
+    {"panel":"endpoint-slip","id":"random-562-seedcase-162"},
+    {"panel":"endpoint-slip","id":"random-563-seedcase-163"},
+    {"panel":"endpoint-slip","id":"random-564-seedcase-164"},
+    {"panel":"endpoint-slip","id":"random-565-seedcase-165"},
+    {"panel":"endpoint-slip","id":"random-566-seedcase-166"},
+    {"panel":"endpoint-slip","id":"random-567-seedcase-167"},
+    {"panel":"endpoint-slip","id":"random-568-seedcase-168"},
+    {"panel":"endpoint-slip","id":"random-569-seedcase-169"},
+    {"panel":"endpoint-slip","id":"random-570-seedcase-170"},
+    {"panel":"endpoint-slip","id":"random-571-seedcase-171"},
+    {"panel":"endpoint-slip","id":"random-572-seedcase-172"},
+    {"panel":"endpoint-slip","id":"random-573-seedcase-173"},
+    {"panel":"endpoint-slip","id":"random-574-seedcase-174"},
+    {"panel":"endpoint-slip","id":"random-575-seedcase-175"},
+    {"panel":"endpoint-slip","id":"random-576-seedcase-176"},
+    {"panel":"endpoint-slip","id":"random-577-seedcase-177"},
+    {"panel":"endpoint-slip","id":"random-578-seedcase-178"},
+    {"panel":"endpoint-slip","id":"random-579-seedcase-179"},
+    {"panel":"endpoint-slip","id":"random-580-seedcase-180"},
+    {"panel":"endpoint-slip","id":"random-581-seedcase-181"},
+    {"panel":"endpoint-slip","id":"random-582-seedcase-182"},
+    {"panel":"endpoint-slip","id":"random-583-seedcase-183"},
+    {"panel":"endpoint-slip","id":"random-584-seedcase-184"},
+    {"panel":"endpoint-slip","id":"random-585-seedcase-185"},
+    {"panel":"endpoint-slip","id":"random-586-seedcase-186"},
+    {"panel":"endpoint-slip","id":"random-587-seedcase-187"},
+    {"panel":"endpoint-slip","id":"random-588-seedcase-188"},
+    {"panel":"endpoint-slip","id":"random-589-seedcase-189"},
+    {"panel":"endpoint-slip","id":"random-590-seedcase-190"},
+    {"panel":"endpoint-slip","id":"random-591-seedcase-191"},
+    {"panel":"endpoint-slip","id":"random-592-seedcase-192"},
+    {"panel":"endpoint-slip","id":"random-593-seedcase-193"},
+    {"panel":"endpoint-slip","id":"random-594-seedcase-194"},
+    {"panel":"endpoint-slip","id":"random-595-seedcase-195"},
+    {"panel":"endpoint-slip","id":"random-596-seedcase-196"},
+    {"panel":"endpoint-slip","id":"random-598-seedcase-198"},
+    {"panel":"endpoint-slip","id":"random-599-seedcase-199"},
+    {"panel":"endpoint-slip","id":"random-648-seedcase-48"},
+    {"panel":"endpoint-slip","id":"random-650-seedcase-50"},
+    {"panel":"endpoint-slip","id":"random-693-seedcase-93"},
+    {"panel":"endpoint-slip","id":"random-698-seedcase-98"},
+    {"panel":"endpoint-slip","id":"random-752-seedcase-152"},
+    {"panel":"endpoint-slip","id":"random-767-seedcase-167"},
+    {"panel":"endpoint-slip","id":"random-800-seedcase-0"},
+    {"panel":"endpoint-slip","id":"random-801-seedcase-1"},
+    {"panel":"endpoint-slip","id":"random-802-seedcase-2"},
+    {"panel":"endpoint-slip","id":"random-803-seedcase-3"},
+    {"panel":"endpoint-slip","id":"random-804-seedcase-4"},
+    {"panel":"endpoint-slip","id":"random-805-seedcase-5"},
+    {"panel":"endpoint-slip","id":"random-806-seedcase-6"},
+    {"panel":"endpoint-slip","id":"random-807-seedcase-7"},
+    {"panel":"endpoint-slip","id":"random-808-seedcase-8"},
+    {"panel":"endpoint-slip","id":"random-809-seedcase-9"},
+    {"panel":"endpoint-slip","id":"random-810-seedcase-10"},
+    {"panel":"endpoint-slip","id":"random-811-seedcase-11"},
+    {"panel":"endpoint-slip","id":"random-812-seedcase-12"},
+    {"panel":"endpoint-slip","id":"random-813-seedcase-13"},
+    {"panel":"endpoint-slip","id":"random-814-seedcase-14"},
+    {"panel":"endpoint-slip","id":"random-815-seedcase-15"},
+    {"panel":"endpoint-slip","id":"random-816-seedcase-16"},
+    {"panel":"endpoint-slip","id":"random-817-seedcase-17"},
+    {"panel":"endpoint-slip","id":"random-818-seedcase-18"},
+    {"panel":"endpoint-slip","id":"random-819-seedcase-19"},
+    {"panel":"endpoint-slip","id":"random-820-seedcase-20"},
+    {"panel":"endpoint-slip","id":"random-821-seedcase-21"},
+    {"panel":"endpoint-slip","id":"random-823-seedcase-23"},
+    {"panel":"endpoint-slip","id":"random-824-seedcase-24"},
+    {"panel":"endpoint-slip","id":"random-826-seedcase-26"},
+    {"panel":"endpoint-slip","id":"random-827-seedcase-27"},
+    {"panel":"endpoint-slip","id":"random-828-seedcase-28"},
+    {"panel":"endpoint-slip","id":"random-829-seedcase-29"},
+    {"panel":"endpoint-slip","id":"random-832-seedcase-32"},
+    {"panel":"endpoint-slip","id":"random-833-seedcase-33"},
+    {"panel":"endpoint-slip","id":"random-834-seedcase-34"},
+    {"panel":"endpoint-slip","id":"random-835-seedcase-35"},
+    {"panel":"endpoint-slip","id":"random-836-seedcase-36"},
+    {"panel":"endpoint-slip","id":"random-837-seedcase-37"},
+    {"panel":"endpoint-slip","id":"random-838-seedcase-38"},
+    {"panel":"endpoint-slip","id":"random-840-seedcase-40"},
+    {"panel":"endpoint-slip","id":"random-841-seedcase-41"},
+    {"panel":"endpoint-slip","id":"random-842-seedcase-42"},
+    {"panel":"endpoint-slip","id":"random-843-seedcase-43"},
+    {"panel":"endpoint-slip","id":"random-844-seedcase-44"},
+    {"panel":"endpoint-slip","id":"random-845-seedcase-45"},
+    {"panel":"endpoint-slip","id":"random-846-seedcase-46"},
+    {"panel":"endpoint-slip","id":"random-847-seedcase-47"},
+    {"panel":"endpoint-slip","id":"random-850-seedcase-50"},
+    {"panel":"endpoint-slip","id":"random-851-seedcase-51"},
+    {"panel":"endpoint-slip","id":"random-852-seedcase-52"},
+    {"panel":"endpoint-slip","id":"random-853-seedcase-53"},
+    {"panel":"endpoint-slip","id":"random-854-seedcase-54"},
+    {"panel":"endpoint-slip","id":"random-856-seedcase-56"},
+    {"panel":"endpoint-slip","id":"random-857-seedcase-57"},
+    {"panel":"endpoint-slip","id":"random-858-seedcase-58"},
+    {"panel":"endpoint-slip","id":"random-859-seedcase-59"},
+    {"panel":"endpoint-slip","id":"random-860-seedcase-60"},
+    {"panel":"endpoint-slip","id":"random-861-seedcase-61"},
+    {"panel":"endpoint-slip","id":"random-862-seedcase-62"},
+    {"panel":"endpoint-slip","id":"random-863-seedcase-63"},
+    {"panel":"endpoint-slip","id":"random-865-seedcase-65"},
+    {"panel":"endpoint-slip","id":"random-866-seedcase-66"},
+    {"panel":"endpoint-slip","id":"random-868-seedcase-68"},
+    {"panel":"endpoint-slip","id":"random-869-seedcase-69"},
+    {"panel":"endpoint-slip","id":"random-870-seedcase-70"},
+    {"panel":"endpoint-slip","id":"random-871-seedcase-71"},
+    {"panel":"endpoint-slip","id":"random-872-seedcase-72"},
+    {"panel":"endpoint-slip","id":"random-873-seedcase-73"},
+    {"panel":"endpoint-slip","id":"random-875-seedcase-75"},
+    {"panel":"endpoint-slip","id":"random-876-seedcase-76"},
+    {"panel":"endpoint-slip","id":"random-877-seedcase-77"},
+    {"panel":"endpoint-slip","id":"random-878-seedcase-78"},
+    {"panel":"endpoint-slip","id":"random-879-seedcase-79"},
+    {"panel":"endpoint-slip","id":"random-880-seedcase-80"},
+    {"panel":"endpoint-slip","id":"random-881-seedcase-81"},
+    {"panel":"endpoint-slip","id":"random-883-seedcase-83"},
+    {"panel":"endpoint-slip","id":"random-884-seedcase-84"},
+    {"panel":"endpoint-slip","id":"random-885-seedcase-85"},
+    {"panel":"endpoint-slip","id":"random-886-seedcase-86"},
+    {"panel":"endpoint-slip","id":"random-887-seedcase-87"},
+    {"panel":"endpoint-slip","id":"random-888-seedcase-88"},
+    {"panel":"endpoint-slip","id":"random-889-seedcase-89"},
+    {"panel":"endpoint-slip","id":"random-891-seedcase-91"},
+    {"panel":"endpoint-slip","id":"random-892-seedcase-92"},
+    {"panel":"endpoint-slip","id":"random-893-seedcase-93"},
+    {"panel":"endpoint-slip","id":"random-894-seedcase-94"},
+    {"panel":"endpoint-slip","id":"random-896-seedcase-96"},
+    {"panel":"endpoint-slip","id":"random-897-seedcase-97"},
+    {"panel":"endpoint-slip","id":"random-898-seedcase-98"},
+    {"panel":"endpoint-slip","id":"random-899-seedcase-99"},
+    {"panel":"endpoint-slip","id":"random-900-seedcase-100"},
+    {"panel":"endpoint-slip","id":"random-901-seedcase-101"},
+    {"panel":"endpoint-slip","id":"random-902-seedcase-102"},
+    {"panel":"endpoint-slip","id":"random-904-seedcase-104"},
+    {"panel":"endpoint-slip","id":"random-905-seedcase-105"},
+    {"panel":"endpoint-slip","id":"random-907-seedcase-107"},
+    {"panel":"endpoint-slip","id":"random-908-seedcase-108"},
+    {"panel":"endpoint-slip","id":"random-909-seedcase-109"},
+    {"panel":"endpoint-slip","id":"random-912-seedcase-112"},
+    {"panel":"endpoint-slip","id":"random-915-seedcase-115"},
+    {"panel":"endpoint-slip","id":"random-916-seedcase-116"},
+    {"panel":"endpoint-slip","id":"random-917-seedcase-117"},
+    {"panel":"endpoint-slip","id":"random-919-seedcase-119"},
+    {"panel":"endpoint-slip","id":"random-920-seedcase-120"},
+    {"panel":"endpoint-slip","id":"random-921-seedcase-121"},
+    {"panel":"endpoint-slip","id":"random-922-seedcase-122"},
+    {"panel":"endpoint-slip","id":"random-923-seedcase-123"},
+    {"panel":"endpoint-slip","id":"random-924-seedcase-124"},
+    {"panel":"endpoint-slip","id":"random-926-seedcase-126"},
+    {"panel":"endpoint-slip","id":"random-927-seedcase-127"},
+    {"panel":"endpoint-slip","id":"random-928-seedcase-128"},
+    {"panel":"endpoint-slip","id":"random-929-seedcase-129"},
+    {"panel":"endpoint-slip","id":"random-930-seedcase-130"},
+    {"panel":"endpoint-slip","id":"random-931-seedcase-131"},
+    {"panel":"endpoint-slip","id":"random-932-seedcase-132"},
+    {"panel":"endpoint-slip","id":"random-933-seedcase-133"},
+    {"panel":"endpoint-slip","id":"random-935-seedcase-135"},
+    {"panel":"endpoint-slip","id":"random-936-seedcase-136"},
+    {"panel":"endpoint-slip","id":"random-937-seedcase-137"},
+    {"panel":"endpoint-slip","id":"random-938-seedcase-138"},
+    {"panel":"endpoint-slip","id":"random-939-seedcase-139"},
+    {"panel":"endpoint-slip","id":"random-941-seedcase-141"},
+    {"panel":"endpoint-slip","id":"random-942-seedcase-142"},
+    {"panel":"endpoint-slip","id":"random-944-seedcase-144"},
+    {"panel":"endpoint-slip","id":"random-945-seedcase-145"},
+    {"panel":"endpoint-slip","id":"random-946-seedcase-146"},
+    {"panel":"endpoint-slip","id":"random-947-seedcase-147"},
+    {"panel":"endpoint-slip","id":"random-949-seedcase-149"},
+    {"panel":"endpoint-slip","id":"random-950-seedcase-150"},
+    {"panel":"endpoint-slip","id":"random-951-seedcase-151"},
+    {"panel":"endpoint-slip","id":"random-952-seedcase-152"},
+    {"panel":"endpoint-slip","id":"random-953-seedcase-153"},
+    {"panel":"endpoint-slip","id":"random-954-seedcase-154"},
+    {"panel":"endpoint-slip","id":"random-955-seedcase-155"},
+    {"panel":"endpoint-slip","id":"random-956-seedcase-156"},
+    {"panel":"endpoint-slip","id":"random-957-seedcase-157"},
+    {"panel":"endpoint-slip","id":"random-958-seedcase-158"},
+    {"panel":"endpoint-slip","id":"random-959-seedcase-159"},
+    {"panel":"endpoint-slip","id":"random-960-seedcase-160"},
+    {"panel":"endpoint-slip","id":"random-962-seedcase-162"},
+    {"panel":"endpoint-slip","id":"random-963-seedcase-163"},
+    {"panel":"endpoint-slip","id":"random-964-seedcase-164"},
+    {"panel":"endpoint-slip","id":"random-965-seedcase-165"},
+    {"panel":"endpoint-slip","id":"random-966-seedcase-166"},
+    {"panel":"endpoint-slip","id":"random-967-seedcase-167"},
+    {"panel":"endpoint-slip","id":"random-968-seedcase-168"},
+    {"panel":"endpoint-slip","id":"random-969-seedcase-169"},
+    {"panel":"endpoint-slip","id":"random-970-seedcase-170"},
+    {"panel":"endpoint-slip","id":"random-971-seedcase-171"},
+    {"panel":"endpoint-slip","id":"random-972-seedcase-172"},
+    {"panel":"endpoint-slip","id":"random-973-seedcase-173"},
+    {"panel":"endpoint-slip","id":"random-974-seedcase-174"},
+    {"panel":"endpoint-slip","id":"random-975-seedcase-175"},
+    {"panel":"endpoint-slip","id":"random-977-seedcase-177"},
+    {"panel":"endpoint-slip","id":"random-978-seedcase-178"},
+    {"panel":"endpoint-slip","id":"random-979-seedcase-179"},
+    {"panel":"endpoint-slip","id":"random-981-seedcase-181"},
+    {"panel":"endpoint-slip","id":"random-982-seedcase-182"},
+    {"panel":"endpoint-slip","id":"random-983-seedcase-183"},
+    {"panel":"endpoint-slip","id":"random-984-seedcase-184"},
+    {"panel":"endpoint-slip","id":"random-985-seedcase-185"},
+    {"panel":"endpoint-slip","id":"random-986-seedcase-186"},
+    {"panel":"endpoint-slip","id":"random-987-seedcase-187"},
+    {"panel":"endpoint-slip","id":"random-988-seedcase-188"},
+    {"panel":"endpoint-slip","id":"random-989-seedcase-189"},
+    {"panel":"endpoint-slip","id":"random-990-seedcase-190"},
+    {"panel":"endpoint-slip","id":"random-991-seedcase-191"},
+    {"panel":"endpoint-slip","id":"random-992-seedcase-192"},
+    {"panel":"endpoint-slip","id":"random-993-seedcase-193"},
+    {"panel":"endpoint-slip","id":"random-994-seedcase-194"},
+    {"panel":"endpoint-slip","id":"random-995-seedcase-195"},
+    {"panel":"endpoint-slip","id":"random-996-seedcase-196"},
+    {"panel":"endpoint-slip","id":"random-997-seedcase-197"},
+    {"panel":"endpoint-slip","id":"random-998-seedcase-198"},
+    {"panel":"endpoint-slip","id":"random-999-seedcase-199"},
+    {"panel":"endpoint-slip","id":"random-1000-seedcase-0"},
+    {"panel":"endpoint-slip","id":"random-1001-seedcase-1"},
+    {"panel":"endpoint-slip","id":"random-1002-seedcase-2"},
+    {"panel":"endpoint-slip","id":"random-1003-seedcase-3"},
+    {"panel":"endpoint-slip","id":"random-1004-seedcase-4"},
+    {"panel":"endpoint-slip","id":"random-1005-seedcase-5"},
+    {"panel":"endpoint-slip","id":"random-1006-seedcase-6"},
+    {"panel":"endpoint-slip","id":"random-1007-seedcase-7"},
+    {"panel":"endpoint-slip","id":"random-1008-seedcase-8"},
+    {"panel":"endpoint-slip","id":"random-1009-seedcase-9"},
+    {"panel":"endpoint-slip","id":"random-1010-seedcase-10"},
+    {"panel":"endpoint-slip","id":"random-1011-seedcase-11"},
+    {"panel":"endpoint-slip","id":"random-1012-seedcase-12"},
+    {"panel":"endpoint-slip","id":"random-1013-seedcase-13"},
+    {"panel":"endpoint-slip","id":"random-1014-seedcase-14"},
+    {"panel":"endpoint-slip","id":"random-1015-seedcase-15"},
+    {"panel":"endpoint-slip","id":"random-1016-seedcase-16"},
+    {"panel":"endpoint-slip","id":"random-1017-seedcase-17"},
+    {"panel":"endpoint-slip","id":"random-1018-seedcase-18"},
+    {"panel":"endpoint-slip","id":"random-1019-seedcase-19"},
+    {"panel":"endpoint-slip","id":"random-1020-seedcase-20"},
+    {"panel":"endpoint-slip","id":"random-1021-seedcase-21"},
+    {"panel":"endpoint-slip","id":"random-1022-seedcase-22"},
+    {"panel":"endpoint-slip","id":"random-1023-seedcase-23"},
+    {"panel":"endpoint-slip","id":"random-1024-seedcase-24"},
+    {"panel":"endpoint-slip","id":"random-1025-seedcase-25"},
+    {"panel":"endpoint-slip","id":"random-1026-seedcase-26"},
+    {"panel":"endpoint-slip","id":"random-1027-seedcase-27"},
+    {"panel":"endpoint-slip","id":"random-1028-seedcase-28"},
+    {"panel":"endpoint-slip","id":"random-1029-seedcase-29"},
+    {"panel":"endpoint-slip","id":"random-1031-seedcase-31"},
+    {"panel":"endpoint-slip","id":"random-1032-seedcase-32"},
+    {"panel":"endpoint-slip","id":"random-1033-seedcase-33"},
+    {"panel":"endpoint-slip","id":"random-1034-seedcase-34"},
+    {"panel":"endpoint-slip","id":"random-1035-seedcase-35"},
+    {"panel":"endpoint-slip","id":"random-1036-seedcase-36"},
+    {"panel":"endpoint-slip","id":"random-1037-seedcase-37"},
+    {"panel":"endpoint-slip","id":"random-1038-seedcase-38"},
+    {"panel":"endpoint-slip","id":"random-1039-seedcase-39"},
+    {"panel":"endpoint-slip","id":"random-1040-seedcase-40"},
+    {"panel":"endpoint-slip","id":"random-1041-seedcase-41"},
+    {"panel":"endpoint-slip","id":"random-1042-seedcase-42"},
+    {"panel":"endpoint-slip","id":"random-1043-seedcase-43"},
+    {"panel":"endpoint-slip","id":"random-1044-seedcase-44"},
+    {"panel":"endpoint-slip","id":"random-1045-seedcase-45"},
+    {"panel":"endpoint-slip","id":"random-1046-seedcase-46"},
+    {"panel":"endpoint-slip","id":"random-1047-seedcase-47"},
+    {"panel":"endpoint-slip","id":"random-1049-seedcase-49"},
+    {"panel":"endpoint-slip","id":"random-1050-seedcase-50"},
+    {"panel":"endpoint-slip","id":"random-1051-seedcase-51"},
+    {"panel":"endpoint-slip","id":"random-1052-seedcase-52"},
+    {"panel":"endpoint-slip","id":"random-1053-seedcase-53"},
+    {"panel":"endpoint-slip","id":"random-1054-seedcase-54"},
+    {"panel":"endpoint-slip","id":"random-1055-seedcase-55"},
+    {"panel":"endpoint-slip","id":"random-1056-seedcase-56"},
+    {"panel":"endpoint-slip","id":"random-1057-seedcase-57"},
+    {"panel":"endpoint-slip","id":"random-1058-seedcase-58"},
+    {"panel":"endpoint-slip","id":"random-1059-seedcase-59"},
+    {"panel":"endpoint-slip","id":"random-1060-seedcase-60"},
+    {"panel":"endpoint-slip","id":"random-1061-seedcase-61"},
+    {"panel":"endpoint-slip","id":"random-1062-seedcase-62"},
+    {"panel":"endpoint-slip","id":"random-1063-seedcase-63"},
+    {"panel":"endpoint-slip","id":"random-1064-seedcase-64"},
+    {"panel":"endpoint-slip","id":"random-1065-seedcase-65"},
+    {"panel":"endpoint-slip","id":"random-1066-seedcase-66"},
+    {"panel":"endpoint-slip","id":"random-1067-seedcase-67"},
+    {"panel":"endpoint-slip","id":"random-1068-seedcase-68"},
+    {"panel":"endpoint-slip","id":"random-1069-seedcase-69"},
+    {"panel":"endpoint-slip","id":"random-1070-seedcase-70"},
+    {"panel":"endpoint-slip","id":"random-1071-seedcase-71"},
+    {"panel":"endpoint-slip","id":"random-1072-seedcase-72"},
+    {"panel":"endpoint-slip","id":"random-1073-seedcase-73"},
+    {"panel":"endpoint-slip","id":"random-1074-seedcase-74"},
+    {"panel":"endpoint-slip","id":"random-1075-seedcase-75"},
+    {"panel":"endpoint-slip","id":"random-1076-seedcase-76"},
+    {"panel":"endpoint-slip","id":"random-1077-seedcase-77"},
+    {"panel":"endpoint-slip","id":"random-1078-seedcase-78"},
+    {"panel":"endpoint-slip","id":"random-1079-seedcase-79"},
+    {"panel":"endpoint-slip","id":"random-1080-seedcase-80"},
+    {"panel":"endpoint-slip","id":"random-1081-seedcase-81"},
+    {"panel":"endpoint-slip","id":"random-1082-seedcase-82"},
+    {"panel":"endpoint-slip","id":"random-1083-seedcase-83"},
+    {"panel":"endpoint-slip","id":"random-1084-seedcase-84"},
+    {"panel":"endpoint-slip","id":"random-1085-seedcase-85"},
+    {"panel":"endpoint-slip","id":"random-1086-seedcase-86"},
+    {"panel":"endpoint-slip","id":"random-1087-seedcase-87"},
+    {"panel":"endpoint-slip","id":"random-1088-seedcase-88"},
+    {"panel":"endpoint-slip","id":"random-1089-seedcase-89"},
+    {"panel":"endpoint-slip","id":"random-1090-seedcase-90"},
+    {"panel":"endpoint-slip","id":"random-1091-seedcase-91"},
+    {"panel":"endpoint-slip","id":"random-1092-seedcase-92"},
+    {"panel":"endpoint-slip","id":"random-1093-seedcase-93"},
+    {"panel":"endpoint-slip","id":"random-1094-seedcase-94"},
+    {"panel":"endpoint-slip","id":"random-1095-seedcase-95"},
+    {"panel":"endpoint-slip","id":"random-1096-seedcase-96"},
+    {"panel":"endpoint-slip","id":"random-1097-seedcase-97"},
+    {"panel":"endpoint-slip","id":"random-1098-seedcase-98"},
+    {"panel":"endpoint-slip","id":"random-1099-seedcase-99"},
+    {"panel":"endpoint-slip","id":"random-1100-seedcase-100"},
+    {"panel":"endpoint-slip","id":"random-1101-seedcase-101"},
+    {"panel":"endpoint-slip","id":"random-1102-seedcase-102"},
+    {"panel":"endpoint-slip","id":"random-1103-seedcase-103"},
+    {"panel":"endpoint-slip","id":"random-1104-seedcase-104"},
+    {"panel":"endpoint-slip","id":"random-1105-seedcase-105"},
+    {"panel":"endpoint-slip","id":"random-1106-seedcase-106"},
+    {"panel":"endpoint-slip","id":"random-1107-seedcase-107"},
+    {"panel":"endpoint-slip","id":"random-1108-seedcase-108"},
+    {"panel":"endpoint-slip","id":"random-1109-seedcase-109"},
+    {"panel":"endpoint-slip","id":"random-1110-seedcase-110"},
+    {"panel":"endpoint-slip","id":"random-1111-seedcase-111"},
+    {"panel":"endpoint-slip","id":"random-1112-seedcase-112"},
+    {"panel":"endpoint-slip","id":"random-1113-seedcase-113"},
+    {"panel":"endpoint-slip","id":"random-1114-seedcase-114"},
+    {"panel":"endpoint-slip","id":"random-1115-seedcase-115"},
+    {"panel":"endpoint-slip","id":"random-1116-seedcase-116"},
+    {"panel":"endpoint-slip","id":"random-1117-seedcase-117"},
+    {"panel":"endpoint-slip","id":"random-1118-seedcase-118"},
+    {"panel":"endpoint-slip","id":"random-1119-seedcase-119"},
+    {"panel":"endpoint-slip","id":"random-1120-seedcase-120"},
+    {"panel":"endpoint-slip","id":"random-1121-seedcase-121"},
+    {"panel":"endpoint-slip","id":"random-1122-seedcase-122"},
+    {"panel":"endpoint-slip","id":"random-1123-seedcase-123"},
+    {"panel":"endpoint-slip","id":"random-1124-seedcase-124"},
+    {"panel":"endpoint-slip","id":"random-1125-seedcase-125"},
+    {"panel":"endpoint-slip","id":"random-1126-seedcase-126"},
+    {"panel":"endpoint-slip","id":"random-1127-seedcase-127"},
+    {"panel":"endpoint-slip","id":"random-1128-seedcase-128"},
+    {"panel":"endpoint-slip","id":"random-1129-seedcase-129"},
+    {"panel":"endpoint-slip","id":"random-1130-seedcase-130"},
+    {"panel":"endpoint-slip","id":"random-1131-seedcase-131"},
+    {"panel":"endpoint-slip","id":"random-1132-seedcase-132"},
+    {"panel":"endpoint-slip","id":"random-1133-seedcase-133"},
+    {"panel":"endpoint-slip","id":"random-1134-seedcase-134"},
+    {"panel":"endpoint-slip","id":"random-1135-seedcase-135"},
+    {"panel":"endpoint-slip","id":"random-1136-seedcase-136"},
+    {"panel":"endpoint-slip","id":"random-1137-seedcase-137"},
+    {"panel":"endpoint-slip","id":"random-1138-seedcase-138"},
+    {"panel":"endpoint-slip","id":"random-1139-seedcase-139"},
+    {"panel":"endpoint-slip","id":"random-1140-seedcase-140"},
+    {"panel":"endpoint-slip","id":"random-1141-seedcase-141"},
+    {"panel":"endpoint-slip","id":"random-1142-seedcase-142"},
+    {"panel":"endpoint-slip","id":"random-1143-seedcase-143"},
+    {"panel":"endpoint-slip","id":"random-1144-seedcase-144"},
+    {"panel":"endpoint-slip","id":"random-1145-seedcase-145"},
+    {"panel":"endpoint-slip","id":"random-1146-seedcase-146"},
+    {"panel":"endpoint-slip","id":"random-1147-seedcase-147"},
+    {"panel":"endpoint-slip","id":"random-1148-seedcase-148"},
+    {"panel":"endpoint-slip","id":"random-1149-seedcase-149"},
+    {"panel":"endpoint-slip","id":"random-1150-seedcase-150"},
+    {"panel":"endpoint-slip","id":"random-1151-seedcase-151"},
+    {"panel":"endpoint-slip","id":"random-1152-seedcase-152"},
+    {"panel":"endpoint-slip","id":"random-1153-seedcase-153"},
+    {"panel":"endpoint-slip","id":"random-1154-seedcase-154"},
+    {"panel":"endpoint-slip","id":"random-1155-seedcase-155"},
+    {"panel":"endpoint-slip","id":"random-1156-seedcase-156"},
+    {"panel":"endpoint-slip","id":"random-1157-seedcase-157"},
+    {"panel":"endpoint-slip","id":"random-1158-seedcase-158"},
+    {"panel":"endpoint-slip","id":"random-1159-seedcase-159"},
+    {"panel":"endpoint-slip","id":"random-1160-seedcase-160"},
+    {"panel":"endpoint-slip","id":"random-1161-seedcase-161"},
+    {"panel":"endpoint-slip","id":"random-1162-seedcase-162"},
+    {"panel":"endpoint-slip","id":"random-1163-seedcase-163"},
+    {"panel":"endpoint-slip","id":"random-1164-seedcase-164"},
+    {"panel":"endpoint-slip","id":"random-1165-seedcase-165"},
+    {"panel":"endpoint-slip","id":"random-1166-seedcase-166"},
+    {"panel":"endpoint-slip","id":"random-1167-seedcase-167"},
+    {"panel":"endpoint-slip","id":"random-1169-seedcase-169"},
+    {"panel":"endpoint-slip","id":"random-1170-seedcase-170"},
+    {"panel":"endpoint-slip","id":"random-1171-seedcase-171"},
+    {"panel":"endpoint-slip","id":"random-1172-seedcase-172"},
+    {"panel":"endpoint-slip","id":"random-1173-seedcase-173"},
+    {"panel":"endpoint-slip","id":"random-1174-seedcase-174"},
+    {"panel":"endpoint-slip","id":"random-1175-seedcase-175"},
+    {"panel":"endpoint-slip","id":"random-1176-seedcase-176"},
+    {"panel":"endpoint-slip","id":"random-1177-seedcase-177"},
+    {"panel":"endpoint-slip","id":"random-1178-seedcase-178"},
+    {"panel":"endpoint-slip","id":"random-1179-seedcase-179"},
+    {"panel":"endpoint-slip","id":"random-1180-seedcase-180"},
+    {"panel":"endpoint-slip","id":"random-1181-seedcase-181"},
+    {"panel":"endpoint-slip","id":"random-1182-seedcase-182"},
+    {"panel":"endpoint-slip","id":"random-1183-seedcase-183"},
+    {"panel":"endpoint-slip","id":"random-1184-seedcase-184"},
+    {"panel":"endpoint-slip","id":"random-1185-seedcase-185"},
+    {"panel":"endpoint-slip","id":"random-1186-seedcase-186"},
+    {"panel":"endpoint-slip","id":"random-1187-seedcase-187"},
+    {"panel":"endpoint-slip","id":"random-1188-seedcase-188"},
+    {"panel":"endpoint-slip","id":"random-1189-seedcase-189"},
+    {"panel":"endpoint-slip","id":"random-1190-seedcase-190"},
+    {"panel":"endpoint-slip","id":"random-1191-seedcase-191"},
+    {"panel":"endpoint-slip","id":"random-1192-seedcase-192"},
+    {"panel":"endpoint-slip","id":"random-1193-seedcase-193"},
+    {"panel":"endpoint-slip","id":"random-1194-seedcase-194"},
+    {"panel":"endpoint-slip","id":"random-1195-seedcase-195"},
+    {"panel":"endpoint-slip","id":"random-1196-seedcase-196"},
+    {"panel":"endpoint-slip","id":"random-1197-seedcase-197"},
+    {"panel":"endpoint-slip","id":"random-1198-seedcase-198"},
+    {"panel":"endpoint-slip","id":"random-1199-seedcase-199"},
+    {"panel":"endpoint-slip","id":"random-1266-seedcase-66"},
+    {"panel":"endpoint-slip","id":"random-1303-seedcase-103"},
+    {"panel":"endpoint-slip","id":"random-1327-seedcase-127"},
+    {"panel":"endpoint-slip","id":"random-1400-seedcase-0"},
+    {"panel":"endpoint-slip","id":"random-1401-seedcase-1"},
+    {"panel":"endpoint-slip","id":"random-1407-seedcase-7"},
+    {"panel":"endpoint-slip","id":"random-1408-seedcase-8"},
+    {"panel":"endpoint-slip","id":"random-1410-seedcase-10"},
+    {"panel":"endpoint-slip","id":"random-1411-seedcase-11"},
+    {"panel":"endpoint-slip","id":"random-1412-seedcase-12"},
+    {"panel":"endpoint-slip","id":"random-1413-seedcase-13"},
+    {"panel":"endpoint-slip","id":"random-1415-seedcase-15"},
+    {"panel":"endpoint-slip","id":"random-1418-seedcase-18"},
+    {"panel":"endpoint-slip","id":"random-1419-seedcase-19"},
+    {"panel":"endpoint-slip","id":"random-1420-seedcase-20"},
+    {"panel":"endpoint-slip","id":"random-1421-seedcase-21"},
+    {"panel":"endpoint-slip","id":"random-1422-seedcase-22"},
+    {"panel":"endpoint-slip","id":"random-1423-seedcase-23"},
+    {"panel":"endpoint-slip","id":"random-1424-seedcase-24"},
+    {"panel":"endpoint-slip","id":"random-1426-seedcase-26"},
+    {"panel":"endpoint-slip","id":"random-1427-seedcase-27"},
+    {"panel":"endpoint-slip","id":"random-1428-seedcase-28"},
+    {"panel":"endpoint-slip","id":"random-1434-seedcase-34"},
+    {"panel":"endpoint-slip","id":"random-1438-seedcase-38"},
+    {"panel":"endpoint-slip","id":"random-1441-seedcase-41"},
+    {"panel":"endpoint-slip","id":"random-1445-seedcase-45"},
+    {"panel":"endpoint-slip","id":"random-1448-seedcase-48"},
+    {"panel":"endpoint-slip","id":"random-1449-seedcase-49"},
+    {"panel":"endpoint-slip","id":"random-1451-seedcase-51"},
+    {"panel":"endpoint-slip","id":"random-1453-seedcase-53"},
+    {"panel":"endpoint-slip","id":"random-1454-seedcase-54"},
+    {"panel":"endpoint-slip","id":"random-1456-seedcase-56"},
+    {"panel":"endpoint-slip","id":"random-1457-seedcase-57"},
+    {"panel":"endpoint-slip","id":"random-1458-seedcase-58"},
+    {"panel":"endpoint-slip","id":"random-1459-seedcase-59"},
+    {"panel":"endpoint-slip","id":"random-1462-seedcase-62"},
+    {"panel":"endpoint-slip","id":"random-1464-seedcase-64"},
+    {"panel":"endpoint-slip","id":"random-1465-seedcase-65"},
+    {"panel":"endpoint-slip","id":"random-1466-seedcase-66"},
+    {"panel":"endpoint-slip","id":"random-1467-seedcase-67"},
+    {"panel":"endpoint-slip","id":"random-1469-seedcase-69"},
+    {"panel":"endpoint-slip","id":"random-1470-seedcase-70"},
+    {"panel":"endpoint-slip","id":"random-1473-seedcase-73"},
+    {"panel":"endpoint-slip","id":"random-1474-seedcase-74"},
+    {"panel":"endpoint-slip","id":"random-1476-seedcase-76"},
+    {"panel":"endpoint-slip","id":"random-1477-seedcase-77"},
+    {"panel":"endpoint-slip","id":"random-1480-seedcase-80"},
+    {"panel":"endpoint-slip","id":"random-1481-seedcase-81"},
+    {"panel":"endpoint-slip","id":"random-1482-seedcase-82"},
+    {"panel":"endpoint-slip","id":"random-1484-seedcase-84"},
+    {"panel":"endpoint-slip","id":"random-1488-seedcase-88"},
+    {"panel":"endpoint-slip","id":"random-1491-seedcase-91"},
+    {"panel":"endpoint-slip","id":"random-1492-seedcase-92"},
+    {"panel":"endpoint-slip","id":"random-1495-seedcase-95"},
+    {"panel":"endpoint-slip","id":"random-1499-seedcase-99"},
+    {"panel":"endpoint-slip","id":"random-1501-seedcase-101"},
+    {"panel":"endpoint-slip","id":"random-1503-seedcase-103"},
+    {"panel":"endpoint-slip","id":"random-1504-seedcase-104"},
+    {"panel":"endpoint-slip","id":"random-1506-seedcase-106"},
+    {"panel":"endpoint-slip","id":"random-1508-seedcase-108"},
+    {"panel":"endpoint-slip","id":"random-1510-seedcase-110"},
+    {"panel":"endpoint-slip","id":"random-1511-seedcase-111"},
+    {"panel":"endpoint-slip","id":"random-1512-seedcase-112"},
+    {"panel":"endpoint-slip","id":"random-1514-seedcase-114"},
+    {"panel":"endpoint-slip","id":"random-1516-seedcase-116"},
+    {"panel":"endpoint-slip","id":"random-1518-seedcase-118"},
+    {"panel":"endpoint-slip","id":"random-1520-seedcase-120"},
+    {"panel":"endpoint-slip","id":"random-1523-seedcase-123"},
+    {"panel":"endpoint-slip","id":"random-1524-seedcase-124"},
+    {"panel":"endpoint-slip","id":"random-1526-seedcase-126"},
+    {"panel":"endpoint-slip","id":"random-1527-seedcase-127"},
+    {"panel":"endpoint-slip","id":"random-1528-seedcase-128"},
+    {"panel":"endpoint-slip","id":"random-1529-seedcase-129"},
+    {"panel":"endpoint-slip","id":"random-1531-seedcase-131"},
+    {"panel":"endpoint-slip","id":"random-1532-seedcase-132"},
+    {"panel":"endpoint-slip","id":"random-1534-seedcase-134"},
+    {"panel":"endpoint-slip","id":"random-1535-seedcase-135"},
+    {"panel":"endpoint-slip","id":"random-1537-seedcase-137"},
+    {"panel":"endpoint-slip","id":"random-1539-seedcase-139"},
+    {"panel":"endpoint-slip","id":"random-1540-seedcase-140"},
+    {"panel":"endpoint-slip","id":"random-1541-seedcase-141"},
+    {"panel":"endpoint-slip","id":"random-1543-seedcase-143"},
+    {"panel":"endpoint-slip","id":"random-1544-seedcase-144"},
+    {"panel":"endpoint-slip","id":"random-1545-seedcase-145"},
+    {"panel":"endpoint-slip","id":"random-1547-seedcase-147"},
+    {"panel":"endpoint-slip","id":"random-1548-seedcase-148"},
+    {"panel":"endpoint-slip","id":"random-1550-seedcase-150"},
+    {"panel":"endpoint-slip","id":"random-1551-seedcase-151"},
+    {"panel":"endpoint-slip","id":"random-1552-seedcase-152"},
+    {"panel":"endpoint-slip","id":"random-1553-seedcase-153"},
+    {"panel":"endpoint-slip","id":"random-1556-seedcase-156"},
+    {"panel":"endpoint-slip","id":"random-1557-seedcase-157"},
+    {"panel":"endpoint-slip","id":"random-1558-seedcase-158"},
+    {"panel":"endpoint-slip","id":"random-1559-seedcase-159"},
+    {"panel":"endpoint-slip","id":"random-1563-seedcase-163"},
+    {"panel":"endpoint-slip","id":"random-1564-seedcase-164"},
+    {"panel":"endpoint-slip","id":"random-1569-seedcase-169"},
+    {"panel":"endpoint-slip","id":"random-1570-seedcase-170"},
+    {"panel":"endpoint-slip","id":"random-1572-seedcase-172"},
+    {"panel":"endpoint-slip","id":"random-1573-seedcase-173"},
+    {"panel":"endpoint-slip","id":"random-1575-seedcase-175"},
+    {"panel":"endpoint-slip","id":"random-1578-seedcase-178"},
+    {"panel":"endpoint-slip","id":"random-1579-seedcase-179"},
+    {"panel":"endpoint-slip","id":"random-1582-seedcase-182"},
+    {"panel":"endpoint-slip","id":"random-1583-seedcase-183"},
+    {"panel":"endpoint-slip","id":"random-1584-seedcase-184"},
+    {"panel":"endpoint-slip","id":"random-1585-seedcase-185"},
+    {"panel":"endpoint-slip","id":"random-1588-seedcase-188"},
+    {"panel":"endpoint-slip","id":"random-1589-seedcase-189"},
+    {"panel":"endpoint-slip","id":"random-1593-seedcase-193"},
+    {"panel":"endpoint-slip","id":"random-1595-seedcase-195"},
+    {"panel":"endpoint-slip","id":"random-1599-seedcase-199"},
+    {"panel":"endpoint-slip","id":"random-1600-seedcase-0"},
+    {"panel":"endpoint-slip","id":"random-1601-seedcase-1"},
+    {"panel":"endpoint-slip","id":"random-1602-seedcase-2"},
+    {"panel":"endpoint-slip","id":"random-1603-seedcase-3"},
+    {"panel":"endpoint-slip","id":"random-1604-seedcase-4"},
+    {"panel":"endpoint-slip","id":"random-1605-seedcase-5"},
+    {"panel":"endpoint-slip","id":"random-1606-seedcase-6"},
+    {"panel":"endpoint-slip","id":"random-1607-seedcase-7"},
+    {"panel":"endpoint-slip","id":"random-1608-seedcase-8"},
+    {"panel":"endpoint-slip","id":"random-1609-seedcase-9"},
+    {"panel":"endpoint-slip","id":"random-1610-seedcase-10"},
+    {"panel":"endpoint-slip","id":"random-1611-seedcase-11"},
+    {"panel":"endpoint-slip","id":"random-1612-seedcase-12"},
+    {"panel":"endpoint-slip","id":"random-1613-seedcase-13"},
+    {"panel":"endpoint-slip","id":"random-1614-seedcase-14"},
+    {"panel":"endpoint-slip","id":"random-1615-seedcase-15"},
+    {"panel":"endpoint-slip","id":"random-1616-seedcase-16"},
+    {"panel":"endpoint-slip","id":"random-1617-seedcase-17"},
+    {"panel":"endpoint-slip","id":"random-1618-seedcase-18"},
+    {"panel":"endpoint-slip","id":"random-1619-seedcase-19"},
+    {"panel":"endpoint-slip","id":"random-1621-seedcase-21"},
+    {"panel":"endpoint-slip","id":"random-1622-seedcase-22"},
+    {"panel":"endpoint-slip","id":"random-1623-seedcase-23"},
+    {"panel":"endpoint-slip","id":"random-1624-seedcase-24"},
+    {"panel":"endpoint-slip","id":"random-1625-seedcase-25"},
+    {"panel":"endpoint-slip","id":"random-1626-seedcase-26"},
+    {"panel":"endpoint-slip","id":"random-1627-seedcase-27"},
+    {"panel":"endpoint-slip","id":"random-1628-seedcase-28"},
+    {"panel":"endpoint-slip","id":"random-1629-seedcase-29"},
+    {"panel":"endpoint-slip","id":"random-1630-seedcase-30"},
+    {"panel":"endpoint-slip","id":"random-1631-seedcase-31"},
+    {"panel":"endpoint-slip","id":"random-1632-seedcase-32"},
+    {"panel":"endpoint-slip","id":"random-1633-seedcase-33"},
+    {"panel":"endpoint-slip","id":"random-1634-seedcase-34"},
+    {"panel":"endpoint-slip","id":"random-1635-seedcase-35"},
+    {"panel":"endpoint-slip","id":"random-1636-seedcase-36"},
+    {"panel":"endpoint-slip","id":"random-1637-seedcase-37"},
+    {"panel":"endpoint-slip","id":"random-1638-seedcase-38"},
+    {"panel":"endpoint-slip","id":"random-1639-seedcase-39"},
+    {"panel":"endpoint-slip","id":"random-1640-seedcase-40"},
+    {"panel":"endpoint-slip","id":"random-1641-seedcase-41"},
+    {"panel":"endpoint-slip","id":"random-1642-seedcase-42"},
+    {"panel":"endpoint-slip","id":"random-1643-seedcase-43"},
+    {"panel":"endpoint-slip","id":"random-1644-seedcase-44"},
+    {"panel":"endpoint-slip","id":"random-1646-seedcase-46"},
+    {"panel":"endpoint-slip","id":"random-1647-seedcase-47"},
+    {"panel":"endpoint-slip","id":"random-1648-seedcase-48"},
+    {"panel":"endpoint-slip","id":"random-1649-seedcase-49"},
+    {"panel":"endpoint-slip","id":"random-1650-seedcase-50"},
+    {"panel":"endpoint-slip","id":"random-1651-seedcase-51"},
+    {"panel":"endpoint-slip","id":"random-1652-seedcase-52"},
+    {"panel":"endpoint-slip","id":"random-1653-seedcase-53"},
+    {"panel":"endpoint-slip","id":"random-1654-seedcase-54"},
+    {"panel":"endpoint-slip","id":"random-1655-seedcase-55"},
+    {"panel":"endpoint-slip","id":"random-1656-seedcase-56"},
+    {"panel":"endpoint-slip","id":"random-1657-seedcase-57"},
+    {"panel":"endpoint-slip","id":"random-1658-seedcase-58"},
+    {"panel":"endpoint-slip","id":"random-1659-seedcase-59"},
+    {"panel":"endpoint-slip","id":"random-1660-seedcase-60"},
+    {"panel":"endpoint-slip","id":"random-1661-seedcase-61"},
+    {"panel":"endpoint-slip","id":"random-1662-seedcase-62"},
+    {"panel":"endpoint-slip","id":"random-1664-seedcase-64"},
+    {"panel":"endpoint-slip","id":"random-1665-seedcase-65"},
+    {"panel":"endpoint-slip","id":"random-1666-seedcase-66"},
+    {"panel":"endpoint-slip","id":"random-1667-seedcase-67"},
+    {"panel":"endpoint-slip","id":"random-1668-seedcase-68"},
+    {"panel":"endpoint-slip","id":"random-1669-seedcase-69"},
+    {"panel":"endpoint-slip","id":"random-1670-seedcase-70"},
+    {"panel":"endpoint-slip","id":"random-1671-seedcase-71"},
+    {"panel":"endpoint-slip","id":"random-1672-seedcase-72"},
+    {"panel":"endpoint-slip","id":"random-1673-seedcase-73"},
+    {"panel":"endpoint-slip","id":"random-1674-seedcase-74"},
+    {"panel":"endpoint-slip","id":"random-1675-seedcase-75"},
+    {"panel":"endpoint-slip","id":"random-1676-seedcase-76"},
+    {"panel":"endpoint-slip","id":"random-1677-seedcase-77"},
+    {"panel":"endpoint-slip","id":"random-1678-seedcase-78"},
+    {"panel":"endpoint-slip","id":"random-1679-seedcase-79"},
+    {"panel":"endpoint-slip","id":"random-1680-seedcase-80"},
+    {"panel":"endpoint-slip","id":"random-1681-seedcase-81"},
+    {"panel":"endpoint-slip","id":"random-1682-seedcase-82"},
+    {"panel":"endpoint-slip","id":"random-1683-seedcase-83"},
+    {"panel":"endpoint-slip","id":"random-1684-seedcase-84"},
+    {"panel":"endpoint-slip","id":"random-1685-seedcase-85"},
+    {"panel":"endpoint-slip","id":"random-1686-seedcase-86"},
+    {"panel":"endpoint-slip","id":"random-1687-seedcase-87"},
+    {"panel":"endpoint-slip","id":"random-1688-seedcase-88"},
+    {"panel":"endpoint-slip","id":"random-1689-seedcase-89"},
+    {"panel":"endpoint-slip","id":"random-1690-seedcase-90"},
+    {"panel":"endpoint-slip","id":"random-1691-seedcase-91"},
+    {"panel":"endpoint-slip","id":"random-1692-seedcase-92"},
+    {"panel":"endpoint-slip","id":"random-1693-seedcase-93"},
+    {"panel":"endpoint-slip","id":"random-1694-seedcase-94"},
+    {"panel":"endpoint-slip","id":"random-1695-seedcase-95"},
+    {"panel":"endpoint-slip","id":"random-1696-seedcase-96"},
+    {"panel":"endpoint-slip","id":"random-1697-seedcase-97"},
+    {"panel":"endpoint-slip","id":"random-1698-seedcase-98"},
+    {"panel":"endpoint-slip","id":"random-1699-seedcase-99"},
+    {"panel":"endpoint-slip","id":"random-1700-seedcase-100"},
+    {"panel":"endpoint-slip","id":"random-1701-seedcase-101"},
+    {"panel":"endpoint-slip","id":"random-1702-seedcase-102"},
+    {"panel":"endpoint-slip","id":"random-1703-seedcase-103"},
+    {"panel":"endpoint-slip","id":"random-1704-seedcase-104"},
+    {"panel":"endpoint-slip","id":"random-1705-seedcase-105"},
+    {"panel":"endpoint-slip","id":"random-1706-seedcase-106"},
+    {"panel":"endpoint-slip","id":"random-1707-seedcase-107"},
+    {"panel":"endpoint-slip","id":"random-1708-seedcase-108"},
+    {"panel":"endpoint-slip","id":"random-1709-seedcase-109"},
+    {"panel":"endpoint-slip","id":"random-1710-seedcase-110"},
+    {"panel":"endpoint-slip","id":"random-1711-seedcase-111"},
+    {"panel":"endpoint-slip","id":"random-1712-seedcase-112"},
+    {"panel":"endpoint-slip","id":"random-1713-seedcase-113"},
+    {"panel":"endpoint-slip","id":"random-1714-seedcase-114"},
+    {"panel":"endpoint-slip","id":"random-1715-seedcase-115"},
+    {"panel":"endpoint-slip","id":"random-1716-seedcase-116"},
+    {"panel":"endpoint-slip","id":"random-1717-seedcase-117"},
+    {"panel":"endpoint-slip","id":"random-1718-seedcase-118"},
+    {"panel":"endpoint-slip","id":"random-1719-seedcase-119"},
+    {"panel":"endpoint-slip","id":"random-1720-seedcase-120"},
+    {"panel":"endpoint-slip","id":"random-1721-seedcase-121"},
+    {"panel":"endpoint-slip","id":"random-1722-seedcase-122"},
+    {"panel":"endpoint-slip","id":"random-1724-seedcase-124"},
+    {"panel":"endpoint-slip","id":"random-1725-seedcase-125"},
+    {"panel":"endpoint-slip","id":"random-1726-seedcase-126"},
+    {"panel":"endpoint-slip","id":"random-1727-seedcase-127"},
+    {"panel":"endpoint-slip","id":"random-1728-seedcase-128"},
+    {"panel":"endpoint-slip","id":"random-1729-seedcase-129"},
+    {"panel":"endpoint-slip","id":"random-1730-seedcase-130"},
+    {"panel":"endpoint-slip","id":"random-1731-seedcase-131"},
+    {"panel":"endpoint-slip","id":"random-1732-seedcase-132"},
+    {"panel":"endpoint-slip","id":"random-1733-seedcase-133"},
+    {"panel":"endpoint-slip","id":"random-1734-seedcase-134"},
+    {"panel":"endpoint-slip","id":"random-1735-seedcase-135"},
+    {"panel":"endpoint-slip","id":"random-1736-seedcase-136"},
+    {"panel":"endpoint-slip","id":"random-1737-seedcase-137"},
+    {"panel":"endpoint-slip","id":"random-1738-seedcase-138"},
+    {"panel":"endpoint-slip","id":"random-1739-seedcase-139"},
+    {"panel":"endpoint-slip","id":"random-1740-seedcase-140"},
+    {"panel":"endpoint-slip","id":"random-1741-seedcase-141"},
+    {"panel":"endpoint-slip","id":"random-1742-seedcase-142"},
+    {"panel":"endpoint-slip","id":"random-1743-seedcase-143"},
+    {"panel":"endpoint-slip","id":"random-1744-seedcase-144"},
+    {"panel":"endpoint-slip","id":"random-1745-seedcase-145"},
+    {"panel":"endpoint-slip","id":"random-1746-seedcase-146"},
+    {"panel":"endpoint-slip","id":"random-1747-seedcase-147"},
+    {"panel":"endpoint-slip","id":"random-1748-seedcase-148"},
+    {"panel":"endpoint-slip","id":"random-1749-seedcase-149"},
+    {"panel":"endpoint-slip","id":"random-1750-seedcase-150"},
+    {"panel":"endpoint-slip","id":"random-1751-seedcase-151"},
+    {"panel":"endpoint-slip","id":"random-1752-seedcase-152"},
+    {"panel":"endpoint-slip","id":"random-1753-seedcase-153"},
+    {"panel":"endpoint-slip","id":"random-1754-seedcase-154"},
+    {"panel":"endpoint-slip","id":"random-1755-seedcase-155"},
+    {"panel":"endpoint-slip","id":"random-1756-seedcase-156"},
+    {"panel":"endpoint-slip","id":"random-1757-seedcase-157"},
+    {"panel":"endpoint-slip","id":"random-1758-seedcase-158"},
+    {"panel":"endpoint-slip","id":"random-1759-seedcase-159"},
+    {"panel":"endpoint-slip","id":"random-1760-seedcase-160"},
+    {"panel":"endpoint-slip","id":"random-1761-seedcase-161"},
+    {"panel":"endpoint-slip","id":"random-1762-seedcase-162"},
+    {"panel":"endpoint-slip","id":"random-1763-seedcase-163"},
+    {"panel":"endpoint-slip","id":"random-1764-seedcase-164"},
+    {"panel":"endpoint-slip","id":"random-1765-seedcase-165"},
+    {"panel":"endpoint-slip","id":"random-1766-seedcase-166"},
+    {"panel":"endpoint-slip","id":"random-1768-seedcase-168"},
+    {"panel":"endpoint-slip","id":"random-1769-seedcase-169"},
+    {"panel":"endpoint-slip","id":"random-1770-seedcase-170"},
+    {"panel":"endpoint-slip","id":"random-1771-seedcase-171"},
+    {"panel":"endpoint-slip","id":"random-1772-seedcase-172"},
+    {"panel":"endpoint-slip","id":"random-1773-seedcase-173"},
+    {"panel":"endpoint-slip","id":"random-1774-seedcase-174"},
+    {"panel":"endpoint-slip","id":"random-1775-seedcase-175"},
+    {"panel":"endpoint-slip","id":"random-1776-seedcase-176"},
+    {"panel":"endpoint-slip","id":"random-1777-seedcase-177"},
+    {"panel":"endpoint-slip","id":"random-1778-seedcase-178"},
+    {"panel":"endpoint-slip","id":"random-1779-seedcase-179"},
+    {"panel":"endpoint-slip","id":"random-1780-seedcase-180"},
+    {"panel":"endpoint-slip","id":"random-1781-seedcase-181"},
+    {"panel":"endpoint-slip","id":"random-1782-seedcase-182"},
+    {"panel":"endpoint-slip","id":"random-1783-seedcase-183"},
+    {"panel":"endpoint-slip","id":"random-1784-seedcase-184"},
+    {"panel":"endpoint-slip","id":"random-1785-seedcase-185"},
+    {"panel":"endpoint-slip","id":"random-1786-seedcase-186"},
+    {"panel":"endpoint-slip","id":"random-1787-seedcase-187"},
+    {"panel":"endpoint-slip","id":"random-1788-seedcase-188"},
+    {"panel":"endpoint-slip","id":"random-1789-seedcase-189"},
+    {"panel":"endpoint-slip","id":"random-1790-seedcase-190"},
+    {"panel":"endpoint-slip","id":"random-1791-seedcase-191"},
+    {"panel":"endpoint-slip","id":"random-1792-seedcase-192"},
+    {"panel":"endpoint-slip","id":"random-1793-seedcase-193"},
+    {"panel":"endpoint-slip","id":"random-1794-seedcase-194"},
+    {"panel":"endpoint-slip","id":"random-1795-seedcase-195"},
+    {"panel":"endpoint-slip","id":"random-1796-seedcase-196"},
+    {"panel":"endpoint-slip","id":"random-1797-seedcase-197"},
+    {"panel":"endpoint-slip","id":"random-1798-seedcase-198"},
+    {"panel":"endpoint-slip","id":"random-1799-seedcase-199"},
+    {"panel":"endpoint-slip","id":"stop-0.01-0.25-0.001"},
+    {"panel":"endpoint-slip","id":"stop-0.01-0.25-0.01"},
+    {"panel":"endpoint-slip","id":"stop-0.01-0.25-0.04"},
+    {"panel":"endpoint-slip","id":"stop-0.01-1-0.01"},
+    {"panel":"endpoint-slip","id":"stop-0.01-1-0.04"},
+    {"panel":"endpoint-slip","id":"stop-0.01-3-0.01"},
+    {"panel":"endpoint-slip","id":"stop-0.01-3-0.04"},
+    {"panel":"endpoint-slip","id":"stop-0.020842-0.25-0.001"},
+    {"panel":"endpoint-slip","id":"stop-0.020842-0.25-0.01"},
+    {"panel":"endpoint-slip","id":"stop-0.020842-0.25-0.04"},
+    {"panel":"endpoint-slip","id":"stop-0.020842-1-0.01"},
+    {"panel":"endpoint-slip","id":"stop-0.020842-1-0.04"},
+    {"panel":"endpoint-slip","id":"stop-0.020842-3-0.04"},
+    {"panel":"endpoint-slip","id":"stop-0.04-0.25-0.01"},
+    {"panel":"endpoint-slip","id":"stop-0.04-0.25-0.04"},
+    {"panel":"endpoint-slip","id":"stop-0.04-1-0.01"},
+    {"panel":"endpoint-slip","id":"stop-0.04-1-0.04"},
+    {"panel":"endpoint-slip","id":"stop-0.04-3-0.04"}
+  ],
+  "rejectedExamples": [
+    {
+      "panel": "endpoint-slip",
+      "id": "random-9-seedcase-9",
+      "massFractions": [
+        [
+          0.01,
+          0.01
+        ],
+        [
+          0.01,
+          0.01
+        ],
+        [
+          0.01,
+          0.01
+        ]
+      ],
+      "dt": 0.001,
+      "metric": {
+        "converged": false,
+        "iterations": 1,
+        "impulseChange": 0,
+        "maxPassiveWork": 0.008004270172513622,
+        "workResidualAbs": 4.263256414560601e-14,
+        "linearResidual": 1.432144669219779e-14,
+        "angularResidual": 7.993605777301127e-15,
+        "explicitGripGap": 0,
+        "angularClosure": 7.993605777301127e-15,
+        "maxReachViolation": 0,
+        "strengthExcess": 2.2737367544323206e-13,
+        "tractionCapExcess": 2.220446049250313e-16,
+        "gripCapExcess": 0,
+        "gripCapRecoverable": true,
+        "gripCapRecoveryRank": 4,
+        "gripCapRecoveryUnknowns": 4,
+        "gripCapRecoveryResidual": 3.707390312312489e-15,
+        "uncappedHoldViolation": 0,
+        "slippingHoldExtension": 0,
+        "unrepresentedGripAngular": 0,
+        "stoppingFlags": 0,
+        "projectionReversal": 0.7465200728849157,
+        "workBySource": [
+          2.9731600098684803,
+          -3.196449719344626,
+          0,
+          0,
+          47.576967706905364
+        ]
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "footMass": [
+              1,
+              1
+            ],
+            "position": {
+              "x": -0.07582245403900743,
+              "y": 0.07690431573428214
+            },
+            "velocity": {
+              "x": -1.229488623328507,
+              "y": 1.4328309770207852
+            },
+            "footVelocity": [
+              {
+                "x": -1.187726711727504,
+                "y": 1.4328309770207852
+              },
+              {
+                "x": -1.2712505349295098,
+                "y": 1.4328309770207852
+              }
+            ],
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": -0.07582245403900743,
+                  "y": -0.04351235093238452
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "swing",
+                "load": 0,
+                "target": {
+                  "x": -0.07582245403900743,
+                  "y": -0.04351235093238452
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": -0.07582245403900743,
+                  "y": 0.1973209824009488
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 1,
+                "target": {
+                  "x": -0.07582245403900743,
+                  "y": 0.1973209824009488
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1179.7151137357832,
+            "legForce": 1924.6271774284462,
+            "angle": 0.004201500676572323,
+            "angularVelocity": 0.34681172263808546,
+            "yawInertia": 2.25
+          },
+          {
+            "mass": 100,
+            "footMass": [
+              1,
+              1
+            ],
+            "position": {
+              "x": 0.4242388232145458,
+              "y": 0.024424786493182183
+            },
+            "velocity": {
+              "x": 0.5057825013063848,
+              "y": -0.48280257638543844
+            },
+            "footVelocity": [
+              {
+                "x": 0.44218473297245026,
+                "y": -0.48280257638543844
+              },
+              {
+                "x": 0.5693802696403194,
+                "y": -0.48280257638543844
+              }
+            ],
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.4242388232145458,
+                  "y": -0.09599188017348448
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.07399565163068474,
+                "target": {
+                  "x": 0.4242388232145458,
+                  "y": -0.09599188017348448
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.4242388232145458,
+                  "y": 0.14484145315984884
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9260043483693152,
+                "target": {
+                  "x": 0.4242388232145458,
+                  "y": 0.14484145315984884
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1179.7151137357832,
+            "legForce": 1562.7443689000113,
+            "angle": -0.10631105169886723,
+            "angularVelocity": -0.5281475570984184,
+            "yawInertia": 2.25
+          },
+          {
+            "mass": 100,
+            "footMass": [
+              1,
+              1
+            ],
+            "position": {
+              "x": 0.7061686307191848,
+              "y": 0.08726144577376545
+            },
+            "velocity": {
+              "x": 0.5847406815737486,
+              "y": 1.4497021904680878
+            },
+            "footVelocity": [
+              {
+                "x": 0.5372614470869109,
+                "y": 1.4497021904680878
+              },
+              {
+                "x": 0.6322199160605863,
+                "y": 1.4497021904680878
+              }
+            ],
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.7061686307191848,
+                  "y": -0.03315522089290121
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.3542622496606782,
+                "target": {
+                  "x": 0.7061686307191848,
+                  "y": -0.03315522089290121
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.7061686307191848,
+                  "y": 0.2076781124404321
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.6457377503393218,
+                "target": {
+                  "x": 0.7061686307191848,
+                  "y": 0.2076781124404321
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1179.7151137357832,
+            "legForce": 2211.0875981505474,
+            "angle": -0.11844978563021868,
+            "angularVelocity": -0.3942912206519395,
+            "yawInertia": 2.25
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.3250069231726229
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.3848618830088526
+            },
+            "capacity": 399.5066265761852,
+            "holdDistance": 1.0410324918526412,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.44995884341187775
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.9798981286585331
+            },
+            "capacity": 164.9386541172862,
+            "holdDistance": 0.9030745194196517,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.1262635448947549
+            },
+            "b": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.0631339147221297
+            },
+            "capacity": 202.37666063010693,
+            "holdDistance": 0.9121219447274562,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.07989705889485776
+            },
+            "b": {
+              "body": 0,
+              "slot": 1,
+              "share": 0.8880249359644949
+            },
+            "capacity": 784.0834190323949,
+            "holdDistance": 1.0992603359193756,
+            "reach": 2.5
+          }
+        ],
+        "dt": 0.001,
+        "forces": [
+          [
+            {
+              "x": -940.7265294358049,
+              "y": -1300.7162335521903
+            },
+            {
+              "x": 1032.3108832181504,
+              "y": -1159.6666314434792
+            }
+          ],
+          [
+            {
+              "x": 788.4185035748762,
+              "y": 738.0577472820687
+            },
+            {
+              "x": -1016.9604891550645,
+              "y": -317.8051015542715
+            }
+          ],
+          [
+            {
+              "x": -71.49438134600985,
+              "y": 817.9164063534204
+            },
+            {
+              "x": 1225.8795517871665,
+              "y": 1279.5638582967572
+            }
+          ]
+        ],
+        "external": [
+          {
+            "x": -20.317668170901015,
+            "y": -0.7693079602904618
+          },
+          {
+            "x": -18.090287268860266,
+            "y": -15.394665109924972
+          },
+          {
+            "x": -2.1596384758595377,
+            "y": 14.302577862981707
+          }
+        ]
+      },
+      "report": {
+        "dt": 0.001,
+        "iterations": 1,
+        "coupledUpdates": 0,
+        "converged": false,
+        "maxImpulseChange": 0,
+        "energyBefore": 325.4880250498819,
+        "energyAfter": 372.84170304731117,
+        "motorWork": 2.9731600098684803,
+        "motorWorkByBody": [
+          1.5005451324926162,
+          0.8527365287131734,
+          0.6198783486626904
+        ],
+        "groundWork": -3.196449719344626,
+        "gripWork": 0,
+        "reachWork": 0,
+        "externalWork": 47.576967706905364,
+        "workResidual": 4.263256414560601e-14,
+        "momentumResidual": {
+          "x": -1.2434497875801753e-14,
+          "y": -7.105427357601002e-15
+        },
+        "maxReachViolation": 0,
+        "maxPassiveWork": 0.008004270172513622,
+        "motorReactionAngularImpulse": [
+          [
+            0.06910002427396283,
+            0.07578304467225902
+          ],
+          [
+            -0.06912124664711362,
+            -0.08939063361287805
+          ],
+          [
+            0.007385154265686446,
+            0.12570428029079042
+          ]
+        ],
+        "rotorWork": 0.09567323954366169,
+        "slotMotorRotationalWork": [
+          [
+            0.02618945924857994,
+            0.028722377177590803
+          ],
+          [
+            0.038941003954036664,
+            0.05036021752825671
+          ],
+          [
+            -0.0026934823778242615,
+            -0.04584633598697815
+          ]
+        ],
+        "unrepresentedAngularImpulse": {
+          "motor": 0,
+          "reach": 0,
+          "grip": 0,
+          "total": 0
+        },
+        "maxPassiveGroundWork": 0.008004270172513622,
+        "maxPassiveGripWork": 0,
+        "maxPassiveReachWork": 0,
+        "angularMomentumBefore": 72.83253448541097,
+        "angularMomentumAfter": 78.30807371337141,
+        "externalAngularImpulse": 5.475539227960447,
+        "angularMomentumResidual": -7.993605777301127e-15,
+        "physicalLegForces": [
+          [
+            {
+              "x": -573.3525297832771,
+              "y": -792.7584900625633
+            },
+            {
+              "x": 629.1712180913097,
+              "y": -706.7917997828109
+            }
+          ],
+          [
+            {
+              "x": 574.288683118749,
+              "y": 537.60561152527
+            },
+            {
+              "x": -740.7600119131341,
+              "y": -231.4911083802204
+            }
+          ],
+          [
+            {
+              "x": -60.96290625455406,
+              "y": 697.433284488001
+            },
+            {
+              "x": 1045.3014459037165,
+              "y": 1091.0777892116732
+            }
+          ]
+        ],
+        "physicalLegImpulse": [
+          [
+            {
+              "x": -0.5733525297832771,
+              "y": -0.7927584900625633
+            },
+            {
+              "x": 0.6291712180913097,
+              "y": -0.7067917997828109
+            }
+          ],
+          [
+            {
+              "x": 0.5742886831187489,
+              "y": 0.53760561152527
+            },
+            {
+              "x": -0.7407600119131341,
+              "y": -0.23149110838022038
+            }
+          ],
+          [
+            {
+              "x": -0.06096290625455406,
+              "y": 0.697433284488001
+            },
+            {
+              "x": 1.0453014459037164,
+              "y": 1.0910777892116732
+            }
+          ]
+        ],
+        "actualLegMeanVelocity": [
+          [
+            {
+              "x": -0.14096799176405891,
+              "y": -0.4001049712024801
+            },
+            {
+              "x": 0.7682410235839737,
+              "y": -0.7983499357383603
+            }
+          ],
+          [
+            {
+              "x": 0.28551525688800916,
+              "y": 0.38109607168644455
+            },
+            {
+              "x": -0.6319359545669374,
+              "y": 0.3176154197641736
+            }
+          ],
+          [
+            {
+              "x": -0.13453605835545046,
+              "y": 0.08892812027615439
+            },
+            {
+              "x": 0.43391085259178036,
+              "y": 0.13255460493203147
+            }
+          ]
+        ],
+        "slotMotorWork": [
+          [
+            0.4242004267819748,
+            1.0763447057106414
+          ],
+          [
+            0.4077885715114319,
+            0.4449479572017415
+          ],
+          [
+            0.06752965774309864,
+            0.5523486909195918
+          ]
+        ],
+        "gripModel": "tether",
+        "gripSlips": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "gripBrokenAtEnd": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "maxHoldDistanceViolation": 0,
+        "maxUncappedHoldDistanceViolation": 0,
+        "slotEndVelocity": [
+          [
+            {
+              "x": -1.7610792415107812,
+              "y": 0.6400724869582219
+            },
+            {
+              "x": 0.1408626123872898,
+              "y": -0.15641744211353847
+            }
+          ],
+          [
+            {
+              "x": 0.9575147023952573,
+              "y": 0.11917753011938925
+            },
+            {
+              "x": -1.0045832571825053,
+              "y": -0.0077837737251524874
+            }
+          ],
+          [
+            {
+              "x": 0.3310664012322496,
+              "y": 1.7552529900947031
+            },
+            {
+              "x": 1.373001754153036,
+              "y": 1.8425059594064572
+            }
+          ]
+        ],
+        "groundStopping": [
+          [
+            false,
+            false
+          ],
+          [
+            false,
+            false
+          ],
+          [
+            false,
+            false
+          ]
+        ],
+        "projectedReversals": [
+          [
+            false,
+            true
+          ],
+          [
+            false,
+            true
+          ],
+          [
+            false,
+            false
+          ]
+        ],
+        "commandForce": [
+          1924.6271774284464,
+          1562.7443689000115,
+          2211.0875981505474
+        ],
+        "groundImpulse": [
+          {
+            "x": 0.7829419292254899,
+            "y": -0.8824566193515126
+          },
+          {
+            "x": -0.8921622286056322,
+            "y": 0.770884406020064
+          },
+          {
+            "x": -0.4497517474113739,
+            "y": -1.0901565051346895
+          }
+        ],
+        "slotGroundImpulse": [
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0.7829419292254899,
+              "y": -0.8824566193515126
+            }
+          ],
+          [
+            {
+              "x": -0.058958713695941696,
+              "y": 0.06437449497955776
+            },
+            {
+              "x": -0.8332035149096905,
+              "y": 0.7065099110405063
+            }
+          ],
+          [
+            {
+              "x": -0.14523213960010722,
+              "y": -0.3918824848613857
+            },
+            {
+              "x": -0.3045196078112667,
+              "y": -0.6982740202733039
+            }
+          ]
+        ],
+        "slotReachImpulse": [
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ],
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ],
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ]
+        ],
+        "relativeImpulse": [
+          [
+            {
+              "x": -0.36545980673012357,
+              "y": -0.8002099424049604
+            },
+            {
+              "x": 1.6200058703699531,
+              "y": -1.5966998714767207
+            }
+          ],
+          [
+            {
+              "x": 0.6982260504438875,
+              "y": 0.7621921433728891
+            },
+            {
+              "x": -1.3910674458017442,
+              "y": 0.6352308395283474
+            }
+          ],
+          [
+            {
+              "x": -0.17411364773722557,
+              "y": 0.1778562405523088
+            },
+            {
+              "x": 0.7728632362098855,
+              "y": 0.26510920986406294
+            }
+          ]
+        ],
+        "slotMeanVelocity": [
+          [
+            {
+              "x": -1.4744029766191427,
+              "y": 1.0364517319895037
+            },
+            {
+              "x": -0.56519396127111,
+              "y": 0.6382067674536234
+            }
+          ],
+          [
+            {
+              "x": 0.6998497176838538,
+              "y": -0.1818125231330246
+            },
+            {
+              "x": -0.21760149377109295,
+              "y": -0.24529317505529546
+            }
+          ],
+          [
+            {
+              "x": 0.4341639241595803,
+              "y": 1.6024775902813955
+            },
+            {
+              "x": 1.002610835106811,
+              "y": 1.6461040749372724
+            }
+          ]
+        ]
+      },
+      "gripGapBefore": [
+        -0.25903506436850876,
+        -0.10006184631027282,
+        -0.4111810668790713,
+        -0.31244954710826267
+      ],
+      "gripGapAfter": [
+        -0.25713790051302243,
+        -0.09764571123970223,
+        -0.40938923144171724,
+        -0.3112901270214281
+      ]
+    },
+    {
+      "panel": "endpoint-slip",
+      "id": "random-28-seedcase-28",
+      "massFractions": [
+        [
+          0.01,
+          0.01
+        ],
+        [
+          0.01,
+          0.01
+        ],
+        [
+          0.01,
+          0.01
+        ]
+      ],
+      "dt": 0.001,
+      "metric": {
+        "converged": false,
+        "iterations": 1,
+        "impulseChange": 0,
+        "maxPassiveWork": 0.162443872736581,
+        "workResidualAbs": 1.4210854715202004e-14,
+        "linearResidual": 1.1234667099445444e-14,
+        "angularResidual": 4.385380947269368e-15,
+        "explicitGripGap": 0,
+        "angularClosure": 4.385380947269368e-15,
+        "maxReachViolation": 0,
+        "strengthExcess": 2.2737367544323206e-13,
+        "tractionCapExcess": 0,
+        "gripCapExcess": 0,
+        "gripCapRecoverable": true,
+        "gripCapRecoveryRank": 4,
+        "gripCapRecoveryUnknowns": 4,
+        "gripCapRecoveryResidual": 3.56721715091881e-15,
+        "uncappedHoldViolation": 0,
+        "slippingHoldExtension": 0,
+        "unrepresentedGripAngular": 0,
+        "stoppingFlags": 0,
+        "projectionReversal": 0.6138448928550676,
+        "workBySource": [
+          2.611553526544416,
+          -3.746819021210758,
+          0,
+          0,
+          33.1498158537303
+        ]
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "footMass": [
+              1,
+              1
+            ],
+            "position": {
+              "x": 0.03532267906703055,
+              "y": -0.07041235640645027
+            },
+            "velocity": {
+              "x": 0.10509506380185485,
+              "y": -0.6112586902454495
+            },
+            "footVelocity": [
+              {
+                "x": 0.056288241078106996,
+                "y": -0.6112586902454495
+              },
+              {
+                "x": 0.1539018865256027,
+                "y": -0.6112586902454495
+              }
+            ],
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.03532267906703055,
+                  "y": -0.19082902307311694
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.8594283708836884,
+                "target": {
+                  "x": 0.03532267906703055,
+                  "y": -0.19082902307311694
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.03532267906703055,
+                  "y": 0.050004310260216386
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.1405716291163116,
+                "target": {
+                  "x": 0.03532267906703055,
+                  "y": 0.050004310260216386
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1179.7151137357832,
+            "legForce": 1555.2736408690164,
+            "angle": -0.1004173150868155,
+            "angularVelocity": -0.40531617486849425,
+            "yawInertia": 2.25
+          },
+          {
+            "mass": 100,
+            "footMass": [
+              1,
+              1
+            ],
+            "position": {
+              "x": 0.2754442822188139,
+              "y": -0.008926134230569005
+            },
+            "velocity": {
+              "x": 1.765084432438016,
+              "y": 1.2906558627728373
+            },
+            "footVelocity": [
+              {
+                "x": 1.7454615115127332,
+                "y": 1.2906558627728373
+              },
+              {
+                "x": 1.7847073533632987,
+                "y": 1.2906558627728373
+              }
+            ],
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.2754442822188139,
+                  "y": -0.12934280089723565
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.06579062819946557,
+                "target": {
+                  "x": 0.2754442822188139,
+                  "y": -0.12934280089723565
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.2754442822188139,
+                  "y": 0.11149053243609765
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9342093718005344,
+                "target": {
+                  "x": 0.2754442822188139,
+                  "y": 0.11149053243609765
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1179.7151137357832,
+            "legForce": 1646.2582069397388,
+            "angle": 0.09204182086978108,
+            "angularVelocity": -0.16295851287432014,
+            "yawInertia": 2.25
+          },
+          {
+            "mass": 100,
+            "footMass": [
+              1,
+              1
+            ],
+            "position": {
+              "x": 0.6489201560150831,
+              "y": -0.030095399077981713
+            },
+            "velocity": {
+              "x": 2.4002400976605713,
+              "y": -0.46751685021445155
+            },
+            "footVelocity": [
+              {
+                "x": 2.3286316082374348,
+                "y": -0.46751685021445155
+              },
+              {
+                "x": 2.471848587083708,
+                "y": -0.46751685021445155
+              }
+            ],
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.6489201560150831,
+                  "y": -0.15051206574464837
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9245382944121957,
+                "target": {
+                  "x": 0.6489201560150831,
+                  "y": -0.15051206574464837
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.6489201560150831,
+                  "y": 0.09032126758868494
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.0754617055878043,
+                "target": {
+                  "x": 0.6489201560150831,
+                  "y": 0.09032126758868494
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1179.7151137357832,
+            "legForce": 1543.9158517103976,
+            "angle": -0.12117085367208347,
+            "angularVelocity": -0.5946725765243173,
+            "yawInertia": 2.25
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.5417384172324091
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.3750117486342788
+            },
+            "capacity": 563.5707565769553,
+            "holdDistance": 0.904340971077493,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.8886907137930393
+            },
+            "b": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.1464443316217512
+            },
+            "capacity": 419.7285345941782,
+            "holdDistance": 0.48250332791744865,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.14841025019995868
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.8077820590697229
+            },
+            "capacity": 564.3528026714921,
+            "holdDistance": 0.7698994190903008,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.97735450649634
+            },
+            "b": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.2459937932435423
+            },
+            "capacity": 73.81334409117699,
+            "holdDistance": 0.7565625186312588,
+            "reach": 2.5
+          }
+        ],
+        "dt": 0.001,
+        "forces": [
+          [
+            {
+              "x": 423.274669774614,
+              "y": 693.2689400352253
+            },
+            {
+              "x": 1034.7089731916035,
+              "y": 324.62930513812296
+            }
+          ],
+          [
+            {
+              "x": -553.5339437124786,
+              "y": -652.3570009880799
+            },
+            {
+              "x": -969.4861767063685,
+              "y": 637.0983591969122
+            }
+          ],
+          [
+            {
+              "x": -155.89167213666602,
+              "y": 861.8904020479342
+            },
+            {
+              "x": 217.64971064359338,
+              "y": 26.080687512878484
+            }
+          ]
+        ],
+        "external": [
+          {
+            "x": -18.803662571590394,
+            "y": 7.140841771615669
+          },
+          {
+            "x": 16.601499798707664,
+            "y": 17.169835396343842
+          },
+          {
+            "x": -8.324385064188391,
+            "y": -4.99792953603901
+          }
+        ]
+      },
+      "report": {
+        "dt": 0.001,
+        "iterations": 1,
+        "coupledUpdates": 0,
+        "converged": false,
+        "maxImpulseChange": 0,
+        "energyBefore": 557.9065411231555,
+        "energyAfter": 589.9210914822195,
+        "motorWork": 2.611553526544416,
+        "motorWorkByBody": [
+          0.9881412923296373,
+          1.019616158338204,
+          0.6037960758765745
+        ],
+        "groundWork": -3.746819021210758,
+        "gripWork": 0,
+        "reachWork": 0,
+        "externalWork": 33.1498158537303,
+        "workResidual": -1.4210854715202004e-14,
+        "momentumResidual": {
+          "x": 3.552713678800501e-15,
+          "y": 1.0658141036401503e-14
+        },
+        "maxReachViolation": 0,
+        "maxPassiveWork": 0.162443872736581,
+        "motorReactionAngularImpulse": [
+          [
+            -0.04171399941069656,
+            0.10217014950455972
+          ],
+          [
+            0.05442702160475606,
+            -0.0950511700809971
+          ],
+          [
+            0.01900408456134061,
+            0.02621189947753385
+          ]
+        ],
+        "rotorWork": -0.04313923202350509,
+        "slotMotorRotationalWork": [
+          [
+            0.016346943610857177,
+            -0.040038588873250305
+          ],
+          [
+            -0.009360691257954249,
+            0.016347480178076888
+          ],
+          [
+            -0.011110254956311977,
+            -0.015324120724922627
+          ]
+        ],
+        "unrepresentedAngularImpulse": {
+          "motor": 0,
+          "reach": 0,
+          "grip": 0,
+          "total": 0
+        },
+        "maxPassiveGroundWork": 0.162443872736581,
+        "maxPassiveGripWork": 0,
+        "maxPassiveReachWork": 0,
+        "angularMomentumBefore": 9.941935888226627,
+        "angularMomentumAfter": 10.169120997460798,
+        "externalAngularImpulse": 0.22718510923417495,
+        "angularMomentumResidual": -4.385380947269368e-15,
+        "physicalLegForces": [
+          [
+            {
+              "x": 347.07905096924867,
+              "y": 568.4704116643887
+            },
+            {
+              "x": 848.4462550899524,
+              "y": 266.1912918250983
+            }
+          ],
+          [
+            {
+              "x": -452.0951046025498,
+              "y": -532.8081682251908
+            },
+            {
+              "x": -791.8212775338982,
+              "y": 520.3457757467739
+            }
+          ],
+          [
+            {
+              "x": -155.89167213666602,
+              "y": 861.8904020479342
+            },
+            {
+              "x": 217.6497106435934,
+              "y": 26.080687512878484
+            }
+          ]
+        ],
+        "physicalLegImpulse": [
+          [
+            {
+              "x": 0.3470790509692487,
+              "y": 0.5684704116643887
+            },
+            {
+              "x": 0.8484462550899524,
+              "y": 0.26619129182509826
+            }
+          ],
+          [
+            {
+              "x": -0.45209510460254976,
+              "y": -0.5328081682251908
+            },
+            {
+              "x": -0.7918212775338982,
+              "y": 0.520345775746774
+            }
+          ],
+          [
+            {
+              "x": -0.15589167213666602,
+              "y": 0.8618904020479342
+            },
+            {
+              "x": 0.2176497106435934,
+              "y": 0.026080687512878484
+            }
+          ]
+        ],
+        "actualLegMeanVelocity": [
+          [
+            {
+              "x": 0.1802840513347049,
+              "y": 0.7568653361420651
+            },
+            {
+              "x": 0.5548216628510911,
+              "y": 0.18132903040881707
+            }
+          ],
+          [
+            {
+              "x": -0.36792171055554884,
+              "y": -0.3771416131553435
+            },
+            {
+              "x": -0.9138588856365227,
+              "y": -0.15040628909875783
+            }
+          ],
+          [
+            {
+              "x": -0.6414443235961312,
+              "y": 0.5683217175138112
+            },
+            {
+              "x": 0.17948353844436166,
+              "y": 0.05134257143027585
+            }
+          ]
+        ],
+        "slotMotorWork": [
+          [
+            0.5091753102641836,
+            0.4789659820654537
+          ],
+          [
+            0.35791904502799776,
+            0.6616971133102061
+          ],
+          [
+            0.5787166068322128,
+            0.025079469044361626
+          ]
+        ],
+        "gripModel": "tether",
+        "gripSlips": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "gripBrokenAtEnd": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "maxHoldDistanceViolation": 0,
+        "maxUncappedHoldDistanceViolation": 0,
+        "slotEndVelocity": [
+          [
+            {
+              "x": 0.3103966435047105,
+              "y": 0.9668207582440501
+            },
+            {
+              "x": 0.9618582210899873,
+              "y": -0.18425185322244608
+            }
+          ],
+          [
+            {
+              "x": 1.230960015730202,
+              "y": 0.7117022057358467
+            },
+            {
+              "x": 0.09983982371768874,
+              "y": 1.165172853849018
+            }
+          ],
+          [
+            {
+              "x": 1.1033870510884318,
+              "y": 0.6090663743478668
+            },
+            {
+              "x": 2.6020257963231446,
+              "y": -0.4248919178192041
+            }
+          ]
+        ],
+        "groundStopping": [
+          [
+            false,
+            false
+          ],
+          [
+            false,
+            false
+          ],
+          [
+            false,
+            false
+          ]
+        ],
+        "projectedReversals": [
+          [
+            true,
+            false
+          ],
+          [
+            false,
+            false
+          ],
+          [
+            false,
+            false
+          ]
+        ],
+        "commandForce": [
+          1555.2736408690166,
+          1646.258206939739,
+          1095.0818991058063
+        ],
+        "groundImpulse": [
+          {
+            "x": -0.1334605690682129,
+            "y": 1.170424582023016
+          },
+          {
+            "x": -0.955452643291693,
+            "y": -0.691974273482393
+          },
+          {
+            "x": -1.1568253864164937,
+            "y": 0.23123706739675304
+          }
+        ],
+        "slotGroundImpulse": [
+          [
+            {
+              "x": -0.09297064854264507,
+              "y": 1.0096090368251107
+            },
+            {
+              "x": -0.040489920525567824,
+              "y": 0.16081554519790517
+            }
+          ],
+          [
+            {
+              "x": -0.0624063911799813,
+              "y": -0.046145488811799765
+            },
+            {
+              "x": -0.8930462521117117,
+              "y": -0.6458287846705932
+            }
+          ],
+          [
+            {
+              "x": -1.069352885012337,
+              "y": 0.2146928225143841
+            },
+            {
+              "x": -0.08747250140415669,
+              "y": 0.016544244882368938
+            }
+          ]
+        ],
+        "slotReachImpulse": [
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ],
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ],
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ]
+        ],
+        "relativeImpulse": [
+          [
+            {
+              "x": 0.45818174811690554,
+              "y": 1.5137306722841304
+            },
+            {
+              "x": 1.0120296802546866,
+              "y": 0.3626580608176342
+            }
+          ],
+          [
+            {
+              "x": -0.6965975792605321,
+              "y": -0.7542832263106871
+            },
+            {
+              "x": -1.8669636131236111,
+              "y": -0.3008125781975157
+            }
+          ],
+          [
+            {
+              "x": -1.1396716683459895,
+              "y": 1.1366434350276227
+            },
+            {
+              "x": 0.21575009804245016,
+              "y": 0.10268514286055172
+            }
+          ]
+        ],
+        "slotMeanVelocity": [
+          [
+            {
+              "x": 0.18334244229140878,
+              "y": 0.17778103399930023
+            },
+            {
+              "x": 0.557880053807795,
+              "y": -0.39775527173394787
+            }
+          ],
+          [
+            {
+              "x": 1.4882107636214676,
+              "y": 1.001179034254342
+            },
+            {
+              "x": 0.9422735885404937,
+              "y": 1.2279143583109278
+            }
+          ],
+          [
+            {
+              "x": 1.716009329662933,
+              "y": 0.07077476206670763
+            },
+            {
+              "x": 2.536937191703426,
+              "y": -0.4462043840168278
+            }
+          ]
+        ]
+      },
+      "gripGapBefore": [
+        -0.2877785217668861,
+        -0.17868734546471388,
+        -0.3723257147893309,
+        -0.3771423404058442
+      ],
+      "gripGapAfter": [
+        -0.2857832587822253,
+        -0.1766815281944879,
+        -0.371733990908444,
+        -0.37656545089644705
+      ]
+    },
+    {
+      "panel": "endpoint-slip",
+      "id": "random-36-seedcase-36",
+      "massFractions": [
+        [
+          0.01,
+          0.01
+        ],
+        [
+          0.01,
+          0.01
+        ]
+      ],
+      "dt": 0.001,
+      "metric": {
+        "converged": false,
+        "iterations": 1,
+        "impulseChange": 0,
+        "maxPassiveWork": 0.26188056548565924,
+        "workResidualAbs": 8.881784197001252e-15,
+        "linearResidual": 1.1374233532693354e-14,
+        "angularResidual": 3.552713678800501e-15,
+        "explicitGripGap": 0,
+        "angularClosure": 3.552713678800501e-15,
+        "maxReachViolation": 0,
+        "strengthExcess": 0,
+        "tractionCapExcess": 2.220446049250313e-16,
+        "gripCapExcess": 0,
+        "gripCapRecoverable": true,
+        "gripCapRecoveryRank": 4,
+        "gripCapRecoveryUnknowns": 4,
+        "gripCapRecoveryResidual": 4.857175206695356e-15,
+        "uncappedHoldViolation": 0,
+        "slippingHoldExtension": 0,
+        "unrepresentedGripAngular": 0,
+        "stoppingFlags": 0,
+        "projectionReversal": 0.17918471334878075,
+        "workBySource": [
+          0.9325397484237204,
+          -1.2914014703502201,
+          0,
+          0,
+          12.52869419639618
+        ]
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "footMass": [
+              1,
+              1
+            ],
+            "position": {
+              "x": 0.06600916623137891,
+              "y": -0.045365119446069004
+            },
+            "velocity": {
+              "x": -1.0666383183561265,
+              "y": -1.3652269472368062
+            },
+            "footVelocity": [
+              {
+                "x": -1.0195879599556017,
+                "y": -1.3652269472368062
+              },
+              {
+                "x": -1.1136886767566514,
+                "y": -1.3652269472368062
+              }
+            ],
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.06600916623137891,
+                  "y": -0.16578178611273567
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.4227822761051357,
+                "target": {
+                  "x": 0.06600916623137891,
+                  "y": -0.16578178611273567
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.06600916623137891,
+                  "y": 0.07505154722059765
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5772177238948644,
+                "target": {
+                  "x": 0.06600916623137891,
+                  "y": 0.07505154722059765
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1179.7151137357832,
+            "legForce": 1953.3814140613608,
+            "angle": 0.08970953320385888,
+            "angularVelocity": 0.39072961993515487,
+            "yawInertia": 2.25
+          },
+          {
+            "mass": 100,
+            "footMass": [
+              1,
+              1
+            ],
+            "position": {
+              "x": 0.3127147718332708,
+              "y": 0.05279936962760985
+            },
+            "velocity": {
+              "x": -0.041681368835270405,
+              "y": -0.1320263457018882
+            },
+            "footVelocity": [
+              {
+                "x": -0.12114539008352827,
+                "y": -0.1320263457018882
+              },
+              {
+                "x": 0.037782652412987464,
+                "y": -0.1320263457018882
+              }
+            ],
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.3127147718332708,
+                  "y": -0.0676172970390568
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 1,
+                "target": {
+                  "x": 0.3127147718332708,
+                  "y": -0.0676172970390568
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.3127147718332708,
+                  "y": 0.1732160362942765
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "swing",
+                "load": 0,
+                "target": {
+                  "x": 0.3127147718332708,
+                  "y": 0.1732160362942765
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1179.7151137357832,
+            "legForce": 1459.4538356667522,
+            "angle": -0.1025712601840496,
+            "angularVelocity": -0.6599088269751519,
+            "yawInertia": 2.25
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.4214658990968019
+            },
+            "b": {
+              "body": 1,
+              "slot": 0,
+              "share": 0.7617620769888163
+            },
+            "capacity": 235.81422578543425,
+            "holdDistance": 0.7038906419520181,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.30861067422665656
+            },
+            "b": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.41858509834855795
+            },
+            "capacity": 507.51728501170874,
+            "holdDistance": 0.5936088908154271,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.09658227604813874
+            },
+            "b": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.8491070009768009
+            },
+            "capacity": 83.49510591477156,
+            "holdDistance": 0.41157474384928794,
+            "reach": 2.5
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 0,
+              "share": 0.06626854673959315
+            },
+            "b": {
+              "body": 0,
+              "slot": 1,
+              "share": 0.8888296941295266
+            },
+            "capacity": 416.15113850682974,
+            "holdDistance": 0.26020345261344363,
+            "reach": 2.5
+          }
+        ],
+        "dt": 0.001,
+        "forces": [
+          [
+            {
+              "x": 466.1809695696186,
+              "y": 696.1560194539544
+            },
+            {
+              "x": 57.790249528196206,
+              "y": -307.05642407131495
+            }
+          ],
+          [
+            {
+              "x": 141.18840174599674,
+              "y": -825.4910587208112
+            },
+            {
+              "x": -797.9543886029406,
+              "y": 822.0552126396079
+            }
+          ]
+        ],
+        "external": [
+          {
+            "x": -6.970430187648162,
+            "y": -3.643917106091976
+          },
+          {
+            "x": 15.610321675194427,
+            "y": 12.68513694172725
+          }
+        ]
+      },
+      "report": {
+        "dt": 0.001,
+        "iterations": 1,
+        "coupledUpdates": 0,
+        "converged": false,
+        "maxImpulseChange": 0,
+        "energyBefore": 151.7067068304143,
+        "energyAfter": 163.87653930488398,
+        "motorWork": 0.9325397484237204,
+        "motorWorkByBody": [
+          0.5684634353394128,
+          0.36407631308430766
+        ],
+        "groundWork": -1.2914014703502201,
+        "gripWork": 0,
+        "reachWork": 0,
+        "externalWork": 12.52869419639618,
+        "workResidual": -8.881784197001252e-15,
+        "momentumResidual": {
+          "x": -7.105427357601002e-15,
+          "y": 8.881784197001252e-15
+        },
+        "maxReachViolation": 0,
+        "maxPassiveWork": 0.26188056548565924,
+        "motorReactionAngularImpulse": [
+          [
+            -0.05616621633306504,
+            0.006998816076669726
+          ],
+          [
+            -0.012420703539723797,
+            -0.07069412837626389
+          ]
+        ],
+        "rotorWork": 0.037709386847956584,
+        "slotMotorRotationalWork": [
+          [
+            -0.021332127285606392,
+            0.002658175058663766
+          ],
+          [
+            0.008425941833545792,
+            0.047957397241353415
+          ]
+        ],
+        "unrepresentedAngularImpulse": {
+          "motor": 0,
+          "reach": 0,
+          "grip": 0,
+          "total": 0
+        },
+        "maxPassiveGroundWork": 0.26188056548565924,
+        "maxPassiveGripWork": 0,
+        "maxPassiveReachWork": 0,
+        "angularMomentumBefore": -18.372610085721206,
+        "angularMomentumAfter": -15.384463893963435,
+        "externalAngularImpulse": 2.9881461917577674,
+        "angularMomentumResidual": 3.552713678800501e-15,
+        "physicalLegForces": [
+          [
+            {
+              "x": 466.1809695696186,
+              "y": 696.1560194539544
+            },
+            {
+              "x": 57.790249528196206,
+              "y": -307.05642407131495
+            }
+          ],
+          [
+            {
+              "x": 103.90569799426045,
+              "y": -607.5089992074292
+            },
+            {
+              "x": -587.2437586235569,
+              "y": 604.9804346734206
+            }
+          ]
+        ],
+        "physicalLegImpulse": [
+          [
+            {
+              "x": 0.4661809695696186,
+              "y": 0.6961560194539544
+            },
+            {
+              "x": 0.057790249528196204,
+              "y": -0.30705642407131495
+            }
+          ],
+          [
+            {
+              "x": 0.10390569799426046,
+              "y": -0.6075089992074292
+            },
+            {
+              "x": -0.5872437586235569,
+              "y": 0.6049804346734207
+            }
+          ]
+        ],
+        "actualLegMeanVelocity": [
+          [
+            {
+              "x": 0.46760027561685696,
+              "y": 0.5684636133904519
+            },
+            {
+              "x": 0.23529994070582969,
+              "y": 0.13087617692071724
+            }
+          ],
+          [
+            {
+              "x": 0.28917642217382006,
+              "y": 0.06612959770480747
+            },
+            {
+              "x": -0.2962683669197641,
+              "y": 0.23775723005986715
+            }
+          ]
+        ],
+        "slotMotorWork": [
+          [
+            0.5923935888747895,
+            -0.02393015353537676
+          ],
+          [
+            -0.0017013058966379915,
+            0.36577761898094563
+          ]
+        ],
+        "gripModel": "tether",
+        "gripSlips": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "gripBrokenAtEnd": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "maxHoldDistanceViolation": 0,
+        "maxUncappedHoldDistanceViolation": 0,
+        "slotEndVelocity": [
+          [
+            {
+              "x": -0.25496160926524336,
+              "y": -0.26945295210360243
+            },
+            {
+              "x": -0.6254615622862483,
+              "y": -1.1446278250430717
+            }
+          ],
+          [
+            {
+              "x": 0.7803565144731147,
+              "y": 0.1296988242614131
+            },
+            {
+              "x": -0.5494611062105696,
+              "y": 0.4729540889715325
+            }
+          ]
+        ],
+        "groundStopping": [
+          [
+            false,
+            false
+          ],
+          [
+            false,
+            false
+          ]
+        ],
+        "projectedReversals": [
+          [
+            false,
+            false
+          ],
+          [
+            true,
+            false
+          ]
+        ],
+        "commandForce": [
+          1150.2766508146574,
+          1459.4538356667522
+        ],
+        "groundImpulse": [
+          {
+            "x": 0.7288822460629469,
+            "y": 0.9272735219442985
+          },
+          {
+            "x": 0.7975962065623825,
+            "y": 0.8692341691707304
+          }
+        ],
+        "slotGroundImpulse": [
+          [
+            {
+              "x": 0.2984453811207399,
+              "y": 0.39961797567924917
+            },
+            {
+              "x": 0.43043686494220706,
+              "y": 0.5276555462650493
+            }
+          ],
+          [
+            {
+              "x": 0.7975962065623825,
+              "y": 0.8692341691707304
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ]
+        ],
+        "slotReachImpulse": [
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ],
+          [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ]
+        ],
+        "relativeImpulse": [
+          [
+            {
+              "x": 0.8410998344326643,
+              "y": 1.1369272267809039
+            },
+            {
+              "x": 0.5647005982127091,
+              "y": 0.26175235384143447
+            }
+          ],
+          [
+            {
+              "x": 0.737280886844156,
+              "y": 0.13225919540961495
+            },
+            {
+              "x": -0.7514647763360439,
+              "y": 0.4755144601197344
+            }
+          ]
+        ],
+        "slotMeanVelocity": [
+          [
+            {
+              "x": -0.6372747846104224,
+              "y": -0.8173399496702044
+            },
+            {
+              "x": -0.8695751195214497,
+              "y": -1.254927386139939
+            }
+          ],
+          [
+            {
+              "x": 0.3296055621947932,
+              "y": -0.00116376072023755
+            },
+            {
+              "x": -0.2558392268987911,
+              "y": 0.17046387163482216
+            }
+          ]
+        ]
+      },
+      "gripGapBefore": [
+        -0.45064367388375104,
+        -0.28480530797503895,
+        -0.0862669771257788,
+        -0.012923411903902893
+      ],
+      "gripGapAfter": [
+        -0.44924895993339403,
+        -0.28335696474018834,
+        -0.0851613908697667,
+        -0.01204925522979347
+      ]
+    }
+  ],
+  "projectionReversalCounts": {
+    "midpoint-ablation": 1271,
+    "endpoint-slip": 1286,
+    "coupled-slip-midpoint": 1271
+  },
+  "explicitGripGapCaseCount": 0,
+  "interpretation": "Unsplit candidates only. Midpoint zero can reverse terminal slip without a physical stop. Gait driver handles local dissipative contact events. Independent multigrip recovery reports rank/unknown states; redundant graphs may be unidentifiable from aggregate impulses."
+}

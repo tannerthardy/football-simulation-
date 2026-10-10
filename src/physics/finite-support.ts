@@ -59,6 +59,7 @@ export interface SupportIntervalReport {
   dt: number;
   iterations: number;
   coupledUpdates: number;
+  gripPairUpdates: number;
   converged: boolean;
   maxImpulseChange: number;
   groundImpulse: Vec2[];
@@ -94,7 +95,16 @@ const sub = (a: Vec2, b: Vec2): Vec2 => ({ x: a.x - b.x, y: a.y - b.y });
 const mul = (a: Vec2, s: number): Vec2 => ({ x: a.x * s, y: a.y * s });
 const dot = (a: Vec2, b: Vec2): number => a.x * b.x + a.y * b.y;
 const norm = (a: Vec2): number => Math.hypot(a.x, a.y);
-const disk = (a: Vec2, radius: number): Vec2 => norm(a) > radius ? mul(a, radius / norm(a)) : a;
+/** Return a representably feasible point, including a rounded cap boundary.
+ * Shrinking only after an actual excess preserves the physical force cap. */
+const disk = (a: Vec2, radius: number): Vec2 => {
+  if (radius === 0) return zero();
+  const size = norm(a);
+  if (size <= radius) return a;
+  let result = mul(a, radius / size);
+  while (norm(result) > radius) result = mul(result, 1 - 2 * Number.EPSILON);
+  return result;
+};
 
 /** Geometry/timing are stated provisional reductions. Strength and traction
  * come from the same profile/supportParams used by the production World. */
@@ -213,7 +223,14 @@ export function solveSupportInterval(bs: FiniteSupportBody[], grips: SupportGrip
       inverse: .5 / bs[g.a.body].mass + .5 / bs[g.b.body].mass
         + (g.a.share ** 2 * bs[g.a.body].mobility + g.b.share ** 2 * bs[g.b.body].mobility) / dt };
   });
-  let iterations = 0, maxChange = Infinity, coupledUpdates = 0;
+  const gripCross = (first: typeof rows[number], second: typeof rows[number]): number => {
+    let cross = 0;
+    for (const [a, sa] of [[first.g.a, -1], [first.g.b, 1]] as const)
+      for (const [b, sb] of [[second.g.a, -1], [second.g.b, 1]] as const) if (a.body === b.body)
+        cross += sa * sb * (.5 / bs[a.body].mass + (a.slot === b.slot ? a.share * b.share * bs[a.body].mobility / dt : 0));
+    return cross;
+  };
+  let iterations = 0, maxChange = Infinity, coupledUpdates = 0, gripPairUpdates = 0;
   for (; iterations < maxIterations; iterations++) {
     maxChange = 0;
     for (let i = 0; i < bs.length; i++) for (const f of bs[i].slots) {
@@ -250,20 +267,33 @@ export function solveSupportInterval(bs: FiniteSupportBody[], grips: SupportGrip
         const vg = slotVelocity(i, f.id);
         const vr = sub(sub(pointVelocity(row.g.b), pointVelocity(row.g.a)), mul(row.n, row.allowance));
         const groundLimit = bs[i].traction * f.load * dt;
-        // Eliminate an interior full grip. The ground Schur response is
-        // isotropic, so its force-limited projection is an ordinary disk.
-        let gNext = disk(sub(groundP[i][f.id], mul(sub(vg, mul(vr, c / row.inverse)),
-          row.inverse / determinant)), groundLimit);
-        let dg = sub(gNext, groundP[i][f.id]);
-        let dj = mul(add(vr, mul(dg, c)), -1 / row.inverse);
-        let jNext = add(row.impulse, dj);
+        const vgFree = sub(sub(vg, mul(groundP[i][f.id], a)), mul(row.impulse, c));
+        const vrFree = sub(sub(vr, mul(groundP[i][f.id], c)), mul(row.impulse, row.inverse));
+        // Eliminate the full grip at a given grip-disk multiplier beta.
+        // Ground's Schur response is isotropic even when it is sliding.
+        const fullAt = (beta: number) => {
+          const q = row.inverse + beta, schur = a - c * c / q;
+          const ground = disk(mul(sub(vgFree, mul(vrFree, c / q)), -1 / schur), groundLimit);
+          return { ground, grip: mul(add(vrFree, mul(ground, c)), -1 / q) };
+        };
+        let full = fullAt(0);
+        if (norm(full.grip) > row.limit) {
+          let lo = 0, hi = row.inverse;
+          while (norm(fullAt(hi).grip) > row.limit) hi *= 2;
+          for (let k = 0; k < 60; k++) {
+            const mid = .5 * (lo + hi);
+            if (norm(fullAt(mid).grip) > row.limit) lo = mid; else hi = mid;
+          }
+          full = fullAt(hi);
+        }
+        let jNext = disk(full.grip, row.limit);
+        let gNext = disk(mul(add(vgFree, mul(jNext, c)), -1 / a), groundLimit);
+        let dg = sub(gNext, groundP[i][f.id]), dj = sub(jNext, row.impulse);
         // Slack in the normal direction leaves the tangent sticking row
         // active. Solve that three-scalar block, rather than inventing a
         // compressive rope force to satisfy an inactive extension row.
-        if (dot(jNext, row.n) > 0 || norm(jNext) > row.limit) {
+        if (dot(jNext, row.n) > 0) {
           const tangent = { x: -row.n.y, y: row.n.x };
-          const vgFree = sub(sub(vg, mul(groundP[i][f.id], a)), mul(row.impulse, c));
-          const vrFree = sub(sub(vr, mul(groundP[i][f.id], c)), mul(row.impulse, row.inverse));
           // Eliminate ground for a given tangent impulse. The remaining
           // scalar gradient is monotone (positive Schur response); bracket
           // its optimum within the grip disk. This also handles a slipping
@@ -280,7 +310,8 @@ export function solveSupportInterval(bs: FiniteSupportBody[], grips: SupportGrip
             }
             z = .5 * (lo + hi);
           }
-          jNext = mul(tangent, z); gNext = groundAt(z);
+          jNext = disk(mul(tangent, z), row.limit);
+          gNext = disk(mul(add(vgFree, mul(jNext, c)), -1 / a), groundLimit);
           dj = sub(jNext, row.impulse); dg = sub(gNext, groundP[i][f.id]);
           const after = add(vrFree, add(mul(gNext, c), mul(jNext, row.inverse)));
           if (dot(after, row.n) > 1e-12) continue;
@@ -291,6 +322,63 @@ export function solveSupportInterval(bs: FiniteSupportBody[], grips: SupportGrip
         apply(row.g.a, mul(dj, -1)); apply(row.g.b, dj);
         maxChange = Math.max(maxChange, norm(dg), norm(dj)); coupledUpdates++;
       }
+    }
+    // Distinct grips on the same moving limb cannot be merged: their
+    // shares give different Jacobians. Solve strongly coupled grip pairs
+    // in their actual coordinates, preserving both force disks.
+    if (options.coupledUpdates !== false) for (let k = 0; k < rows.length; k++) for (let l = k + 1; l < rows.length; l++) {
+      const first = rows[k], second = rows[l];
+      if (first.g.broken || second.g.broken) continue;
+      const a = first.inverse, b = second.inverse, c = gripCross(first, second);
+      if (c * c < .5 * a * b || a * b - c * c <= 1e-12 * a * b) continue;
+      const rv = (r: typeof first) => sub(sub(pointVelocity(r.g.b), pointVelocity(r.g.a)), mul(r.n, r.allowance));
+      const freeA = sub(sub(rv(first), mul(first.impulse, a)), mul(second.impulse, c));
+      const freeB = sub(sub(rv(second), mul(second.impulse, b)), mul(first.impulse, c));
+      const fullAt = (betaA: number, betaB: number) => {
+        const aa = a + betaA, bb = b + betaB, determinant = aa * bb - c * c;
+        return [mul(sub(mul(freeB, c), mul(freeA, bb)), 1 / determinant),
+          mul(sub(mul(freeA, c), mul(freeB, aa)), 1 / determinant)];
+      };
+      let candidate = fullAt(0, 0);
+      // Exact single-active-disk blocks. A two-active-disk set stays with
+      // the outer projected solve unless the tangent box solve applies.
+      for (const index of [0, 1]) if (norm(candidate[index]) > (index === 0 ? first.limit : second.limit)) {
+        const limit = index === 0 ? first.limit : second.limit;
+        const at = (beta: number) => index === 0 ? fullAt(beta, 0) : fullAt(0, beta);
+        let lo = 0, hi = index === 0 ? a : b;
+        while (norm(at(hi)[index]) > limit) hi *= 2;
+        for (let j = 0; j < 60; j++) {
+          const mid = .5 * (lo + hi);
+          if (norm(at(mid)[index]) > limit) lo = mid; else hi = mid;
+        }
+        candidate = at(hi);
+        break;
+      }
+      let ja = disk(candidate[0], first.limit), jb = disk(candidate[1], second.limit);
+      let feasible = norm(candidate[0]) <= first.limit && norm(candidate[1]) <= second.limit
+        && dot(ja, first.n) <= 1e-12 && dot(jb, second.n) <= 1e-12;
+      if (!feasible) {
+        const ta = { x: -first.n.y, y: first.n.x }, tb = { x: -second.n.y, y: second.n.x };
+        const cross = c * dot(ta, tb), determinant = a * b - cross * cross;
+        const ga = dot(freeA, ta), gb = dot(freeB, tb);
+        const candidates: number[][] = [];
+        const unconstrained = [(cross * gb - b * ga) / determinant, (cross * ga - a * gb) / determinant];
+        if (Math.abs(unconstrained[0]) <= first.limit && Math.abs(unconstrained[1]) <= second.limit) candidates.push(unconstrained);
+        const clip = (x: number, cap: number) => Math.max(-cap, Math.min(cap, x));
+        for (const z of [-first.limit, first.limit]) candidates.push([z, clip(-(gb + cross * z) / b, second.limit)]);
+        for (const z of [-second.limit, second.limit]) candidates.push([clip(-(ga + cross * z) / a, first.limit), z]);
+        const cost = ([x, y]: number[]) => .5 * (a * x * x + b * y * y) + cross * x * y + ga * x + gb * y;
+        const best = candidates.reduce((best, next) => cost(next) < cost(best) ? next : best);
+        ja = disk(mul(ta, best[0]), first.limit); jb = disk(mul(tb, best[1]), second.limit);
+        feasible = dot(add(freeA, add(mul(ja, a), mul(jb, c))), first.n) <= 1e-12
+          && dot(add(freeB, add(mul(jb, b), mul(ja, c))), second.n) <= 1e-12;
+      }
+      if (!feasible) continue;
+      const da = sub(ja, first.impulse), db = sub(jb, second.impulse);
+      first.impulse = ja; second.impulse = jb;
+      apply(first.g.a, mul(da, -1)); apply(first.g.b, da);
+      apply(second.g.a, mul(db, -1)); apply(second.g.b, db);
+      maxChange = Math.max(maxChange, norm(da), norm(db)); coupledUpdates++; gripPairUpdates++;
     }
     for (let i = 0; i < bs.length; i++) for (const f of bs[i].slots) {
       // Exact disk proximal reaction in the massless relative coordinate.
@@ -334,7 +422,7 @@ export function solveSupportInterval(bs: FiniteSupportBody[], grips: SupportGrip
   const momentumResidual = bs.reduce((p, b, i) => sub(add(p, mul(sub(b.velocity, initial[i]), b.mass)),
     add(externalImpulses[i], groundImpulse[i])), zero());
   const maxReachViolation = Math.max(0, ...bs.flatMap(b => b.slots.map(f => norm(sub(f.position, b.position)) - b.reach)));
-  return { dt, iterations, coupledUpdates, converged: maxChange <= tolerance && maxReachViolation <= 1e-7 && maxPassiveWork <= 1e-7,
+  return { dt, iterations, coupledUpdates, gripPairUpdates, converged: maxChange <= tolerance && maxReachViolation <= 1e-7 && maxPassiveWork <= 1e-7,
     maxImpulseChange: maxChange, groundImpulse, groundWork, gripWork, reachWork, motorWork, externalWork,
     energyBefore, energyAfter, workResidual: energyAfter - energyBefore - motorWork - gripWork - groundWork - reachWork - externalWork,
     momentumResidual, motorWorkByBody: motorByBody, motorWorkLimit: bs.map(b => b.legForce * b.stepSpeed * dt),

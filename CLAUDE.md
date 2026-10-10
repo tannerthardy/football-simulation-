@@ -2,8 +2,19 @@
 
 Start with these shared project references:
 
+- [Inertial feet and support readiness](docs/reviews/inertial-feet-and-support-readiness.md):
+  **read first.** Finite foot/torso inertia, shared actuator effort/work, central
+  passive grips and coupled 2D friction now complete all 288 sampled gait cases.
+  World does not use them. Physics is NOT READY: prescribed normal loading,
+  loaded-foot sliding and coarse/fine gait sensitivity remain; no physical
+  vertical support or fall integration. Next: finite axial leg compliance with
+  stored energy, actual turf normals and finite joint control, then achieved
+  support/balance and a shared World path. See the integration design and pinned
+  evidence linked there. No global resolution increase, hidden force fitting,
+  support-debt filtering or PR #1 changes.
+
 - [Finite feet and the next physical foundation](docs/reviews/finite-support-foundation.md):
-  **read first.** Persistent support slots, finite unloading/swing/actual landing,
+  Previous massless reduction. Persistent support slots, finite unloading/swing/actual landing,
   shared grip/ground/motor work and local active-set blocks exist in an unused
   research kernel. World still uses legacy support. Physics is NOT READY:
   22/160 lifecycle cases and 11/240 stress candidates remain rejected, including

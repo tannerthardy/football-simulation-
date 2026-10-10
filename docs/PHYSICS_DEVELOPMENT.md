@@ -1,7 +1,18 @@
 # Physics development and testing
 
+Read [Inertial feet and support readiness](reviews/inertial-feet-and-support-readiness.md)
+first for the current increment. Actual foot/torso inertia, central passive
+grips and coupled 2D friction complete all 288 sampled planar gait cases with
+shared force/work accounting. This remains unused by World. Physics is NOT
+READY: prescribed loading, loaded-foot slip and coarse/fine controller
+sensitivity remain. Next: finite axial leg compliance with stored energy,
+actual ground normals, bounded joint control and physically achieved support.
+The linked integration design explains why current horizontal push and planar
+reach cannot become 3D strength and leg length unchanged. Do not filter away
+unrecovered impulse debt or treat an intended landing as physical support.
+
 Read [Finite feet and the next physical foundation](reviews/finite-support-foundation.md)
-first for the current increment. A finite plant/swing kernel now couples grip,
+for the previous massless reduction. A finite plant/swing kernel couples grip,
 ground and bounded motor response with persistent support identities and actual
 landing. It is unused by World. Physics is NOT READY: retained late-transfer,
 active-set and mirror-status failures prevent promotion. Next: local constrained

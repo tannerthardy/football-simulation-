@@ -1,5 +1,5 @@
 /** Deterministic mechanical stress, not a calibrated gait or game outcome.
- * node --import tsx scripts/diag/finite-support-stress.ts [output.json] [--no-block]
+ * node --import tsx scripts/diag/finite-support-stress.ts [output.json] [--no-block] [--seed=N] [--cases=N]
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -12,7 +12,17 @@ import { sourceVersion } from '../source-version.js';
 const profile: PhysicalProfile = { massKg: 100, radius: .3, reach: 1, heightYd: 2.05,
   vmax: 9, tau: 1.3, brake: 6, lateral: 6, turnRate: 8, backpedal: .6, shuffle: .55,
   maxCatchHeight: 3, reactReach: 2.6, reactionTime: .25, power: 100, balance: .5 };
-const seed = 4713, cases = 240;
+function integerOption(name: string, fallback: number, minimum: number, maximum: number): number {
+  const matches = process.argv.slice(2).filter(arg => arg.startsWith(`--${name}=`));
+  if (matches.length > 1) throw new RangeError(`Specify --${name} only once`);
+  if (!matches.length) return fallback;
+  const raw = matches[0].slice(name.length + 3), value = Number(raw);
+  if (!/^\d+$/.test(raw) || !Number.isInteger(value) || value < minimum || value > maximum)
+    throw new RangeError(`--${name} must be an integer in [${minimum}, ${maximum}]`);
+  return value;
+}
+const seed = integerOption('seed', 4713, 0, 0xffffffff);
+const cases = integerOption('cases', 240, 1, 100000);
 let state = seed;
 const random = (): number => { state = (Math.imul(state, 1664525) + 1013904223) >>> 0; return state / 4294967296; };
 const zero = (): Vec2 => ({ x: 0, y: 0 });
@@ -106,7 +116,7 @@ for (let caseId = 0; caseId < cases; caseId++) {
     b: { body: 2, slot: (k + 1) % 2 as 0 | 1, share: random() },
     capacity: 20 + random() * 1000, holdDistance: .2 + random(), reach: 3 }));
   const commands = bodies.map(() => [0, 1].map(() => ({ x: (random() - .5) * 20, y: (random() - .5) * 20 })));
-  run('seeded240', caseId, { bodies, grips, dt, commands });
+  run(`seeded${cases}`, caseId, { bodies, grips, dt, commands });
 }
 const output = process.argv.slice(2).find(arg => !arg.startsWith('--')) ?? 'out/finite-support-stress.json';
 mkdirSync(dirname(output), { recursive: true });

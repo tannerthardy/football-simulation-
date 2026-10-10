@@ -1,6 +1,12 @@
 # Shared NFL data
 
-Current physics/data status: [Finite feet and the next physical foundation](../docs/reviews/finite-support-foundation.md).
+Current physics/data status: [Inertial feet and support readiness](../docs/reviews/inertial-feet-and-support-readiness.md).
+The [inertial evidence and commands](reviews/physics-world/inertial-support/README.md)
+pin the unused research kernel, 288-case gait panel, phase-resolved slip,
+coarse/fine differences and model-mass priors. Physics is not ready; actual
+vertical ground loading and support/balance integration are next. Earlier
+reports retain their historical source/results.
+Previous massless reduction: [Finite feet and the next physical foundation](../docs/reviews/finite-support-foundation.md).
 The [finite support evidence and commands](reviews/physics-world/finite-support/README.md)
 cover the unused kernel's finite lifecycle, coupled grip/ground work, independent
 budget stress and explicit rejection counts. Production support is unchanged.

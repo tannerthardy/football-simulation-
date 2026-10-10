@@ -178,3 +178,27 @@ Retain the manifest's license and attribution when using or sharing aggregates:
   [10.7717/peerj.918](https://doi.org/10.7717/peerj.918). The original Zenodo
   record uses CC0; the acquired core derivative is used under the core catalog's
   CC BY 4.0 terms.
+
+## Segment inertia priors for the finite-foot model
+
+[model-inertial-priors.json](model-inertial-priors.json) retains the embedded
+OpenSim segment assignments from both existing Hamner subjects, including all
+three processing passes and the original full-file hashes. The kinematic and
+low-pass models assign **2.084% of model mass per foot** (talus, calcaneus, toes),
+with modeled foot masses 1.518 and 1.594 kg. Both are scaled models with the same
+proportions; these are not independently measured segment masses, a population
+range, or validated effective inertia for a collapsed point-foot model. The
+research panel sweeps 1%, 2.084% and 4% per foot. Dynamics-pass masses are
+force-fitted; prefer the kinematic/low-pass assignments as transparent priors.
+Local inertia tensors are kg m² and are not directly substituted into a torso
+rotor in kg yd². No additional subject was downloaded.
+
+Reproduce using the already acquired files and reader:
+
+```sh
+python3 scripts/data/biomechanics-inertial-priors.py --out out/biomechanics-inertial-priors.json
+```
+
+The extractor pins its own SHA and the input files. The current physical design
+and its limitations are in
+[inertial feet and support readiness](../../../docs/reviews/inertial-feet-and-support-readiness.md).
