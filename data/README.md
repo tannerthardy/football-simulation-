@@ -1,6 +1,11 @@
 # Shared NFL data
 
-Current physics/data status: [Sole traction and the next physics step](../docs/reviews/sole-traction-and-next-physics-step.md).
+Current physics/data status: [Sole slip events and the contact lifecycle](../docs/reviews/sole-slip-events-and-contact-lifecycle.md).
+The [event evidence and commands](reviews/physics-world/sole-events/README.md)
+pin actual coupled stop/unloading checks and independent normal lifecycle targets.
+The implemented slip event is restricted to isolated fixed-normal center contact;
+normal onset/release and generic gait remain pending. No production World change.
+Previous traction increment: [Sole traction and the next physics step](../docs/reviews/sole-traction-and-next-physics-step.md).
 The [sole traction evidence and commands](reviews/physics-world/sole-traction/README.md)
 pin independent force/energy/torque references for persistent finite shear
 coupled to achieved normal support. The [normal sole evidence](reviews/physics-world/sole-compliance/README.md)

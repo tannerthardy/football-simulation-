@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [Sole slip events and the contact lifecycle](docs/reviews/sole-slip-events-and-contact-lifecycle.md):
+  **current review.** The research model resolves an isolated fixed-normal
+  sliding stop through all 18 body momentum equations, keeps stored shear
+  energy and continues into elastic unloading. Constant forces are dosed at
+  solved duration; failures roll back body/shear/time. Independent stop/rebound
+  and normal lifecycle references are pinned. Unused by `World`; Physics is NOT
+  READY. Next: actual normal onset/release with a shared event-coordinate chart
+  and kinematic/work certificate, then bounded spatial control/grip-foot coupling
+  and World/transfer gates. Read the evidence README for supported scope and limits.
+
 - [Sole traction and the next physics step](docs/reviews/sole-traction-and-next-physics-step.md):
-  **current review.** Persistent finite shear joins achieved normal support in
+  Previous traction increment. Persistent finite shear joins achieved normal support in
   the same 18D torso/feet solve, with material-bound state, actual point torque,
   stored energy, plastic loss and atomic rollback. Independent references expose
   force-layer, split-capacity and hidden slip-reflection failures; regression

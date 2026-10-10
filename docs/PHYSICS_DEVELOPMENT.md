@@ -1,7 +1,17 @@
 # Physics development and testing
 
+Read [Sole slip events and the contact lifecycle](reviews/sole-slip-events-and-contact-lifecycle.md)
+first. An isolated fixed-normal slip stop is executed through the same 18D body
+solve, retaining stored shear energy for natural unloading. Independent
+stop/rebound and normal-event references separate force, timing and loss from
+energy closure. This is research-only and `World` is unchanged. Physics is NOT
+READY. Next: normal onset/release through a shared event-coordinate chart and
+explicit kinematic/work/candidate certificate, then executed spatial control,
+grip coupling, body-ground, World and universal/NFL transfer. Do not turn the
+restricted center-patch event into a generic gait or rotating-contact claim.
+
 Read [Sole traction and the next physics step](reviews/sole-traction-and-next-physics-step.md)
-first. Finite persistent shear and actual normal support now contribute force,
+for the preceding increment. Finite persistent shear and actual normal support contribute force,
 torque and stored energy to the same research torso/feet solve. Explicit
 plastic/initial-return loss, material identity and transactional state prevent
 free traction or silent energy resets. Independent references and reversal

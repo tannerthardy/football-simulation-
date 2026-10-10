@@ -1,0 +1,3313 @@
+{
+  "schemaVersion": 1,
+  "sourceSha256Start": "150d8ed430ec7321c9927cf967eb35824a01c721661e479edd18ec7813c07ff5",
+  "sourceSha256End": "150d8ed430ec7321c9927cf967eb35824a01c721661e479edd18ec7813c07ff5",
+  "scriptSha256Start": "2140a86809cf3de82b0cc9c0f1a811e0122bd20b65ee6a634c532636e33a3117",
+  "scriptSha256End": "2140a86809cf3de82b0cc9c0f1a811e0122bd20b65ee6a634c532636e33a3117",
+  "referenceSha256Start": "946188a24d8090fd8a5b3d05a79f78ffbd0acfb4193a44ed49c85eeca42982a0",
+  "referenceSha256End": "946188a24d8090fd8a5b3d05a79f78ffbd0acfb4193a44ed49c85eeca42982a0",
+  "node": "22.23.3",
+  "elapsedSeconds": 8.314272760999998,
+  "scope": "Research-only, isolated collinear center-patch fixed-normal stop; no World, generic rotating foot, touchdown/release, gait or NFL calibration",
+  "assumptions": "K, Kt, mu, mass/inertia and indentation are explicit sensitivity choices. Normal balance is force-controlled, never a fixed foot projection.",
+  "method": "18 body momentum equations re-solved at event duration. Independent continuum phase reference; independent chord law, force dose, normal impulse, state energy and rollback audits.",
+  "totals": {
+    "ordinaryIntervals": 4538,
+    "eventIntervals": 25,
+    "rejectedIntervals": 0,
+    "violations": 0
+  },
+  "maxima": {
+    "momentum": 2.269878729421748e-12,
+    "work": 2.7730595597574847e-12,
+    "capExcess": 2.7755575615628914e-17,
+    "strainLaw": 3.469446951953614e-18,
+    "forceLaw": 8.326672684688674e-17,
+    "stopVelocity": 0,
+    "stopTime": 0.00001914437125984103,
+    "stopRetention": 8.881784197001252e-16
+  },
+  "rows": [
+    {
+      "input": {
+        "id": "loaded-stop",
+        "mass": 2,
+        "normal": 500,
+        "mu": 0.2,
+        "kt": 4000,
+        "speed": 2,
+        "force": 0,
+        "horizon": 0.12
+      },
+      "runs": [
+        {
+          "nominalStep": 0.0016,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 76,
+          "stops": [
+            {
+              "time": 0.040000000000005774,
+              "position": 0.03999999999998394,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.0004000000000020145
+            }
+          ],
+          "endpoint": {
+            "position": -0.007676060265480798,
+            "velocity": 0.470736212411878,
+            "stretch": -0.022676060265464735
+          },
+          "plasticDissipation": 3.9999999999983937,
+          "normalImpulse": 59.999999999999915,
+          "tractionImpulse": 3.0585275751757894,
+          "externalWork": 0,
+          "continuumError": 0.0015462830508489178,
+          "tractionImpulseError": 0.0030925661012433103,
+          "normalImpulseError": 8.526512829121202e-14,
+          "exact": {
+            "state": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.04,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 4,
+                "externalWork": 0,
+                "plasticDissipation": 4,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.04,
+                "duration": 0.07999999999999999,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.007659978425403446,
+                  "stretch": -0.022659978425403446,
+                  "velocity": 0.47228249546272694
+                },
+                "tractionImpulse": -0.9445649909254538,
+                "externalWork": 0,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.04,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 3.055435009074546,
+              "externalWork": 0,
+              "plasticDissipation": 4
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 1.25,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0008,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 151,
+          "stops": [
+            {
+              "time": 0.04000000000002072,
+              "position": 0.04000000000000392,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.00020000000000508055
+            }
+          ],
+          "endpoint": {
+            "position": -0.007664006146247875,
+            "velocity": 0.4718958050290029,
+            "stretch": -0.0226640061462518
+          },
+          "plasticDissipation": 4.000000000000393,
+          "normalImpulse": 59.99999999999985,
+          "tractionImpulse": 3.0562083899474395,
+          "externalWork": 0,
+          "continuumError": 0.000386690433724024,
+          "tractionImpulseError": 0.0007733808728933589,
+          "normalImpulseError": 1.4921397450962104e-13,
+          "exact": {
+            "state": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.04,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 4,
+                "externalWork": 0,
+                "plasticDissipation": 4,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.04,
+                "duration": 0.07999999999999999,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.007659978425403446,
+                  "stretch": -0.022659978425403446,
+                  "velocity": 0.47228249546272694
+                },
+                "tractionImpulse": -0.9445649909254538,
+                "externalWork": 0,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.04,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 3.055435009074546,
+              "externalWork": 0,
+              "plasticDissipation": 4
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 1.25,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0004,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 301,
+          "stops": [
+            {
+              "time": 0.04000000000002359,
+              "position": 0.04000000000001177,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.00010000000000587951
+            }
+          ],
+          "endpoint": {
+            "position": -0.007660985809927766,
+            "velocity": 0.4721858153770477,
+            "stretch": -0.022660985809939534
+          },
+          "plasticDissipation": 4.000000000001177,
+          "normalImpulse": 60.000000000000306,
+          "tractionImpulse": 3.0556283692503423,
+          "externalWork": 0,
+          "continuumError": 0.00009668008567925712,
+          "tractionImpulseError": 0.0001933601757961867,
+          "normalImpulseError": 3.055333763768431e-13,
+          "exact": {
+            "state": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.04,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 4,
+                "externalWork": 0,
+                "plasticDissipation": 4,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.04,
+                "duration": 0.07999999999999999,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.007659978425403446,
+                  "stretch": -0.022659978425403446,
+                  "velocity": 0.47228249546272694
+                },
+                "tractionImpulse": -0.9445649909254538,
+                "externalWork": 0,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.04,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.04,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 3.055435009074546,
+              "externalWork": 0,
+              "plasticDissipation": 4
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 1.25,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        }
+      ],
+      "refinementRatios": [
+        3.9987621001053264,
+        3.9996906395686938
+      ]
+    },
+    {
+      "input": {
+        "id": "loaded-opposing-force",
+        "mass": 2,
+        "normal": 500,
+        "mu": 0.2,
+        "kt": 4000,
+        "speed": 0.4,
+        "force": -40,
+        "horizon": 0.12
+      },
+      "runs": [
+        {
+          "nominalStep": 0.0016,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 76,
+          "stops": [
+            {
+              "time": 0.005714285714270434,
+              "position": 0.0011428571428529818,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.0009142857142704336
+            },
+            {
+              "time": 0.09790174784519297,
+              "position": -0.08219047619030641,
+              "strain": -0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.0009874621309225332
+            }
+          ],
+          "endpoint": {
+            "position": -0.07544773598481656,
+            "velocity": 0.560031536051666,
+            "stretch": -0.018257259794510157
+          },
+          "plasticDissipation": 3.4476190476012376,
+          "normalImpulse": 59.99999999999992,
+          "tractionImpulse": -5.120063072095014,
+          "externalWork": 3.0179094393926618,
+          "continuumError": 0.0004676345145825378,
+          "tractionImpulseError": 0.0009352690374822004,
+          "normalImpulseError": 7.815970093361102e-14,
+          "exact": {
+            "state": {
+              "position": -0.07543185592309826,
+              "stretch": -0.018241379732622066,
+              "velocity": 0.5604991705662485
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.005714285714285714,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 0.5714285714285714,
+                "externalWork": -0.04571428571428573,
+                "plasticDissipation": 0.11428571428571431,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.005714285714285714,
+                "duration": 0.04502786568054425,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                },
+                "tractionImpulse": 1.0273124975244197,
+                "externalWork": 2,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.05074215139482997,
+                "duration": 0.04714045207910316,
+                "phase": "sliding",
+                "before": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                },
+                "after": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                },
+                "tractionImpulse": -4.714045207910316,
+                "externalWork": 1.3333333333333335,
+                "plasticDissipation": 3.333333333333334,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.09788260347393313,
+                "duration": 0.022117396526066868,
+                "phase": "elastic",
+                "before": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                },
+                "after": {
+                  "position": -0.07543185592309826,
+                  "stretch": -0.018241379732622066,
+                  "velocity": 0.5604991705662485
+                },
+                "tractionImpulse": -2.005694202175172,
+                "externalWork": -0.27034481069511784,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.005714285714285714,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              },
+              {
+                "time": 0.05074215139482997,
+                "kind": "yield",
+                "sign": -1,
+                "state": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                }
+              },
+              {
+                "time": 0.09788260347393313,
+                "kind": "unloading",
+                "sign": -1,
+                "state": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": -5.120998341132497,
+              "externalWork": 3.01727423692393,
+              "plasticDissipation": 3.4476190476190482
+            },
+            "budgets": {
+              "initialEnergy": 1.4100000000000001,
+              "finalEnergy": 0.9796551893048827,
+              "energyResidual": 8.881784197001252e-16,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0008,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 152,
+          "stops": [
+            {
+              "time": 0.005714285714278734,
+              "position": 0.0011428571428544613,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.00011428571427873408
+            },
+            {
+              "time": 0.09788739876786791,
+              "position": -0.08219047619041164,
+              "strain": -0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.000173113053589164
+            }
+          ],
+          "endpoint": {
+            "position": -0.07543583939576409,
+            "velocity": 0.5603819868839912,
+            "stretch": -0.01824536320535245
+          },
+          "plasticDissipation": 3.447619047612057,
+          "normalImpulse": 59.99999999999985,
+          "tractionImpulse": -5.120763973764364,
+          "externalWork": 3.0174335758305637,
+          "continuumError": 0.0001171836822573269,
+          "tractionImpulseError": 0.0002343673681322045,
+          "normalImpulseError": 1.4921397450962104e-13,
+          "exact": {
+            "state": {
+              "position": -0.07543185592309826,
+              "stretch": -0.018241379732622066,
+              "velocity": 0.5604991705662485
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.005714285714285714,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 0.5714285714285714,
+                "externalWork": -0.04571428571428573,
+                "plasticDissipation": 0.11428571428571431,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.005714285714285714,
+                "duration": 0.04502786568054425,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                },
+                "tractionImpulse": 1.0273124975244197,
+                "externalWork": 2,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.05074215139482997,
+                "duration": 0.04714045207910316,
+                "phase": "sliding",
+                "before": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                },
+                "after": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                },
+                "tractionImpulse": -4.714045207910316,
+                "externalWork": 1.3333333333333335,
+                "plasticDissipation": 3.333333333333334,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.09788260347393313,
+                "duration": 0.022117396526066868,
+                "phase": "elastic",
+                "before": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                },
+                "after": {
+                  "position": -0.07543185592309826,
+                  "stretch": -0.018241379732622066,
+                  "velocity": 0.5604991705662485
+                },
+                "tractionImpulse": -2.005694202175172,
+                "externalWork": -0.27034481069511784,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.005714285714285714,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              },
+              {
+                "time": 0.05074215139482997,
+                "kind": "yield",
+                "sign": -1,
+                "state": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                }
+              },
+              {
+                "time": 0.09788260347393313,
+                "kind": "unloading",
+                "sign": -1,
+                "state": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": -5.120998341132497,
+              "externalWork": 3.01727423692393,
+              "plasticDissipation": 3.4476190476190482
+            },
+            "budgets": {
+              "initialEnergy": 1.4100000000000001,
+              "finalEnergy": 0.9796551893048827,
+              "energyResidual": 8.881784197001252e-16,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0004,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 302,
+          "stops": [
+            {
+              "time": 0.005714285714278045,
+              "position": 0.0011428571428544012,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.00011428571427804552
+            },
+            {
+              "time": 0.09788380457886647,
+              "position": -0.0821904761903878,
+              "strain": -0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.00016951886458841566
+            }
+          ],
+          "endpoint": {
+            "position": -0.07543285515931616,
+            "velocity": 0.5604697831868715,
+            "stretch": -0.018242378968928365
+          },
+          "plasticDissipation": 3.4476190476096615,
+          "normalImpulse": 60.000000000000306,
+          "tractionImpulse": -5.120939566369605,
+          "externalWork": 3.0173142063726455,
+          "continuumError": 0.00002938737937707714,
+          "tractionImpulseError": 0.000058774762891289356,
+          "normalImpulseError": 3.055333763768431e-13,
+          "exact": {
+            "state": {
+              "position": -0.07543185592309826,
+              "stretch": -0.018241379732622066,
+              "velocity": 0.5604991705662485
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.005714285714285714,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 0.5714285714285714,
+                "externalWork": -0.04571428571428573,
+                "plasticDissipation": 0.11428571428571431,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.005714285714285714,
+                "duration": 0.04502786568054425,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                },
+                "tractionImpulse": 1.0273124975244197,
+                "externalWork": 2,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.05074215139482997,
+                "duration": 0.04714045207910316,
+                "phase": "sliding",
+                "before": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                },
+                "after": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                },
+                "tractionImpulse": -4.714045207910316,
+                "externalWork": 1.3333333333333335,
+                "plasticDissipation": 3.333333333333334,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.09788260347393313,
+                "duration": 0.022117396526066868,
+                "phase": "elastic",
+                "before": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                },
+                "after": {
+                  "position": -0.07543185592309826,
+                  "stretch": -0.018241379732622066,
+                  "velocity": 0.5604991705662485
+                },
+                "tractionImpulse": -2.005694202175172,
+                "externalWork": -0.27034481069511784,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.005714285714285714,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0011428571428571432,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              },
+              {
+                "time": 0.05074215139482997,
+                "kind": "yield",
+                "sign": -1,
+                "state": {
+                  "position": -0.04885714285714286,
+                  "stretch": -0.025,
+                  "velocity": -1.414213562373095
+                }
+              },
+              {
+                "time": 0.09788260347393313,
+                "kind": "unloading",
+                "sign": -1,
+                "state": {
+                  "position": -0.0821904761904762,
+                  "velocity": 0,
+                  "stretch": -0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": -5.120998341132497,
+              "externalWork": 3.01727423692393,
+              "plasticDissipation": 3.4476190476190482
+            },
+            "budgets": {
+              "initialEnergy": 1.4100000000000001,
+              "finalEnergy": 0.9796551893048827,
+              "energyResidual": 8.881784197001252e-16,
+              "momentumResidual": 0
+            }
+          }
+        }
+      ],
+      "refinementRatios": [
+        3.9906111975184926,
+        3.987551280218371
+      ]
+    },
+    {
+      "input": {
+        "id": "loaded-assisting-force",
+        "mass": 2,
+        "normal": 500,
+        "mu": 0.2,
+        "kt": 4000,
+        "speed": 2,
+        "force": 40,
+        "horizon": 0.12
+      },
+      "runs": [
+        {
+          "nominalStep": 0.0016,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 76,
+          "stops": [
+            {
+              "time": 0.06666666666673293,
+              "position": 0.06666666666670418,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.0010666666667329251
+            }
+          ],
+          "endpoint": {
+            "position": 0.04076778761998368,
+            "velocity": -0.46090006622973845,
+            "stretch": -0.0008988790467204938
+          },
+          "plasticDissipation": 6.666666666670418,
+          "normalImpulse": 59.99999999999992,
+          "tractionImpulse": 9.721800132461787,
+          "externalWork": 1.6307115047993477,
+          "continuumError": 0.00048485679343995836,
+          "tractionImpulseError": 0.0009697135891908459,
+          "normalImpulseError": 7.815970093361102e-14,
+          "exact": {
+            "state": {
+              "position": 0.04075754582858513,
+              "stretch": -0.0009091208380815324,
+              "velocity": -0.4604152094362985
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.06666666666666667,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 6.666666666666667,
+                "externalWork": 2.6666666666666665,
+                "plasticDissipation": 6.666666666666667,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.06666666666666667,
+                "duration": 0.05333333333333333,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.04075754582858513,
+                  "stretch": -0.0009091208380815324,
+                  "velocity": -0.4604152094362985
+                },
+                "tractionImpulse": 3.05416375220593,
+                "externalWork": -1.0363648335232614,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.06666666666666667,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 9.720830418872596,
+              "externalWork": 1.6303018331434052,
+              "plasticDissipation": 6.666666666666667
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 0.21363516647673872,
+              "energyResidual": 8.881784197001252e-16,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0008,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 151,
+          "stops": [
+            {
+              "time": 0.06666666666673374,
+              "position": 0.06666666666671311,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.000266666666733732
+            }
+          ],
+          "endpoint": {
+            "position": 0.04076014492270574,
+            "velocity": -0.46053834465300425,
+            "stretch": -0.00090652174400737
+          },
+          "plasticDissipation": 6.666666666671311,
+          "normalImpulse": 59.99999999999985,
+          "tractionImpulse": 9.721076689308248,
+          "externalWork": 1.63040579690823,
+          "continuumError": 0.00012313521670576089,
+          "tractionImpulseError": 0.0002462704356513967,
+          "normalImpulseError": 1.4921397450962104e-13,
+          "exact": {
+            "state": {
+              "position": 0.04075754582858513,
+              "stretch": -0.0009091208380815324,
+              "velocity": -0.4604152094362985
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.06666666666666667,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 6.666666666666667,
+                "externalWork": 2.6666666666666665,
+                "plasticDissipation": 6.666666666666667,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.06666666666666667,
+                "duration": 0.05333333333333333,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.04075754582858513,
+                  "stretch": -0.0009091208380815324,
+                  "velocity": -0.4604152094362985
+                },
+                "tractionImpulse": 3.05416375220593,
+                "externalWork": -1.0363648335232614,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.06666666666666667,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 9.720830418872596,
+              "externalWork": 1.6303018331434052,
+              "plasticDissipation": 6.666666666666667
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 0.21363516647673872,
+              "energyResidual": 8.881784197001252e-16,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0004,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 301,
+          "stops": [
+            {
+              "time": 0.06666666666672855,
+              "position": 0.06666666666671155,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.00026666666672854085
+            }
+          ],
+          "endpoint": {
+            "position": 0.04075819699418669,
+            "velocity": -0.46044606503676755,
+            "stretch": -0.0009084696725248573
+          },
+          "plasticDissipation": 6.666666666671156,
+          "normalImpulse": 60.0000000000003,
+          "tractionImpulse": 9.720892130075674,
+          "externalWork": 1.6303278797674665,
+          "continuumError": 0.00003085560046905966,
+          "tractionImpulseError": 0.00006171120307740807,
+          "normalImpulseError": 2.984279490192421e-13,
+          "exact": {
+            "state": {
+              "position": 0.04075754582858513,
+              "stretch": -0.0009091208380815324,
+              "velocity": -0.4604152094362985
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.06666666666666667,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 6.666666666666667,
+                "externalWork": 2.6666666666666665,
+                "plasticDissipation": 6.666666666666667,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.06666666666666667,
+                "duration": 0.05333333333333333,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.04075754582858513,
+                  "stretch": -0.0009091208380815324,
+                  "velocity": -0.4604152094362985
+                },
+                "tractionImpulse": 3.05416375220593,
+                "externalWork": -1.0363648335232614,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.06666666666666667,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.06666666666666667,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 9.720830418872596,
+              "externalWork": 1.6303018331434052,
+              "plasticDissipation": 6.666666666666667
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 0.21363516647673872,
+              "energyResidual": 8.881784197001252e-16,
+              "momentumResidual": 0
+            }
+          }
+        }
+      ],
+      "refinementRatios": [
+        3.937596460308778,
+        3.9906926079508405
+      ]
+    },
+    {
+      "input": {
+        "id": "stop-outside-horizon",
+        "mass": 2,
+        "normal": 500,
+        "mu": 0.2,
+        "kt": 4000,
+        "speed": 2,
+        "force": 75,
+        "horizon": 0.12
+      },
+      "runs": [
+        {
+          "nominalStep": 0.0016,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 75,
+          "stops": [],
+          "endpoint": {
+            "position": 0.14999999999998065,
+            "velocity": 0.5000000000018593,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 14.99999999999806,
+          "normalImpulse": 59.999999999999915,
+          "tractionImpulse": 12.000000000000005,
+          "externalWork": 11.249999999998545,
+          "continuumError": 1.9397816686250735e-12,
+          "tractionImpulseError": 5.329070518200751e-15,
+          "normalImpulseError": 8.526512829121202e-14,
+          "exact": {
+            "state": {
+              "position": 0.15,
+              "velocity": 0.5,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.12,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.15,
+                  "velocity": 0.5,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 12,
+                "externalWork": 11.25,
+                "plasticDissipation": 15,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 12,
+              "externalWork": 11.25,
+              "plasticDissipation": 15
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 1.5000000000000002,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0008,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 150,
+          "stops": [],
+          "endpoint": {
+            "position": 0.14999999999999777,
+            "velocity": 0.5000000000019247,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 14.99999999999977,
+          "normalImpulse": 59.99999999999985,
+          "tractionImpulse": 12.000000000000009,
+          "externalWork": 11.249999999999831,
+          "continuumError": 1.9246826354901714e-12,
+          "tractionImpulseError": 8.881784197001252e-15,
+          "normalImpulseError": 1.4921397450962104e-13,
+          "exact": {
+            "state": {
+              "position": 0.15,
+              "velocity": 0.5,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.12,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.15,
+                  "velocity": 0.5,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 12,
+                "externalWork": 11.25,
+                "plasticDissipation": 15,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 12,
+              "externalWork": 11.25,
+              "plasticDissipation": 15
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 1.5000000000000002,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0004,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 300,
+          "stops": [],
+          "endpoint": {
+            "position": 0.14999999999999614,
+            "velocity": 0.5000000000018835,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 14.999999999999607,
+          "normalImpulse": 60.0000000000003,
+          "tractionImpulse": 11.99999999999992,
+          "externalWork": 11.249999999999718,
+          "continuumError": 1.883493361276578e-12,
+          "tractionImpulseError": 7.993605777301127e-14,
+          "normalImpulseError": 2.984279490192421e-13,
+          "exact": {
+            "state": {
+              "position": 0.15,
+              "velocity": 0.5,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.12,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.15,
+                  "velocity": 0.5,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 12,
+                "externalWork": 11.25,
+                "plasticDissipation": 15,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 12,
+              "externalWork": 11.25,
+              "plasticDissipation": 15
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 1.5000000000000002,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        }
+      ],
+      "refinementRatios": [
+        1.0078449469312414,
+        1.0218685529030356
+      ]
+    },
+    {
+      "input": {
+        "id": "accelerating-no-stop",
+        "mass": 2,
+        "normal": 500,
+        "mu": 0.2,
+        "kt": 4000,
+        "speed": 2,
+        "force": 120,
+        "horizon": 0.12
+      },
+      "runs": [
+        {
+          "nominalStep": 0.0016,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 75,
+          "stops": [],
+          "endpoint": {
+            "position": 0.31199999999999795,
+            "velocity": 3.2000000000003017,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 31.199999999999797,
+          "normalImpulse": 59.999999999999915,
+          "tractionImpulse": 12.000000000000005,
+          "externalWork": 37.43999999999976,
+          "continuumError": 3.015365734881925e-13,
+          "tractionImpulseError": 5.329070518200751e-15,
+          "normalImpulseError": 8.526512829121202e-14,
+          "exact": {
+            "state": {
+              "position": 0.312,
+              "velocity": 3.2,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.12,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.312,
+                  "velocity": 3.2,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 12,
+                "externalWork": 37.44,
+                "plasticDissipation": 31.2,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 12,
+              "externalWork": 37.44,
+              "plasticDissipation": 31.2
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 11.490000000000002,
+              "energyResidual": 3.552713678800501e-15,
+              "momentumResidual": 1.7763568394002505e-15
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0008,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 150,
+          "stops": [],
+          "endpoint": {
+            "position": 0.3119999999999982,
+            "velocity": 3.2000000000001423,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 31.19999999999982,
+          "normalImpulse": 59.99999999999985,
+          "tractionImpulse": 12.000000000000009,
+          "externalWork": 37.4399999999998,
+          "continuumError": 1.7763568394002505e-13,
+          "tractionImpulseError": 8.881784197001252e-15,
+          "normalImpulseError": 1.4921397450962104e-13,
+          "exact": {
+            "state": {
+              "position": 0.312,
+              "velocity": 3.2,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.12,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.312,
+                  "velocity": 3.2,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 12,
+                "externalWork": 37.44,
+                "plasticDissipation": 31.2,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 12,
+              "externalWork": 37.44,
+              "plasticDissipation": 31.2
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 11.490000000000002,
+              "energyResidual": 3.552713678800501e-15,
+              "momentumResidual": 1.7763568394002505e-15
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0004,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.12,
+          "steps": 300,
+          "stops": [],
+          "endpoint": {
+            "position": 0.3120000000000109,
+            "velocity": 3.20000000000013,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 31.200000000001104,
+          "normalImpulse": 60.0000000000003,
+          "tractionImpulse": 11.99999999999992,
+          "externalWork": 37.440000000001305,
+          "continuumError": 1.1048939541069558e-12,
+          "tractionImpulseError": 7.993605777301127e-14,
+          "normalImpulseError": 2.984279490192421e-13,
+          "exact": {
+            "state": {
+              "position": 0.312,
+              "velocity": 3.2,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.12,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.12,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 2,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.312,
+                  "velocity": 3.2,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 12,
+                "externalWork": 37.44,
+                "plasticDissipation": 31.2,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 12,
+              "externalWork": 37.44,
+              "plasticDissipation": 31.2
+            },
+            "budgets": {
+              "initialEnergy": 5.25,
+              "finalEnergy": 11.490000000000002,
+              "energyResidual": 3.552713678800501e-15,
+              "momentumResidual": 1.7763568394002505e-15
+            }
+          }
+        }
+      ],
+      "refinementRatios": [
+        1.6975,
+        0.1607717041800643
+      ]
+    },
+    {
+      "input": {
+        "id": "exact-force-balance-no-stop",
+        "mass": 2,
+        "normal": 500,
+        "mu": 0.2,
+        "kt": 4000,
+        "speed": 0.4,
+        "force": 100,
+        "horizon": 0.06
+      },
+      "runs": [
+        {
+          "nominalStep": 0.0016,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.06,
+          "steps": 38,
+          "stops": [],
+          "endpoint": {
+            "position": 0.024000000000000018,
+            "velocity": 0.4,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 2.4000000000000012,
+          "normalImpulse": 30.000000000000014,
+          "tractionImpulse": 6.000000000000002,
+          "externalWork": 2.4000000000000012,
+          "continuumError": 1.3322676295501878e-15,
+          "tractionImpulseError": 1.7763568394002505e-15,
+          "normalImpulseError": 1.4210854715202004e-14,
+          "exact": {
+            "state": {
+              "position": 0.024,
+              "velocity": 0.4,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.06,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.06,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.024,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 6,
+                "externalWork": 2.4,
+                "plasticDissipation": 2.4,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 6,
+              "externalWork": 2.4,
+              "plasticDissipation": 2.4
+            },
+            "budgets": {
+              "initialEnergy": 1.4100000000000001,
+              "finalEnergy": 1.4100000000000001,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0008,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.06,
+          "steps": 75,
+          "stops": [],
+          "endpoint": {
+            "position": 0.02400000000000004,
+            "velocity": 0.4,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 2.4000000000000017,
+          "normalImpulse": 29.999999999999957,
+          "tractionImpulse": 6.000000000000003,
+          "externalWork": 2.4000000000000017,
+          "continuumError": 1.7763568394002505e-15,
+          "tractionImpulseError": 2.6645352591003757e-15,
+          "normalImpulseError": 4.263256414560601e-14,
+          "exact": {
+            "state": {
+              "position": 0.024,
+              "velocity": 0.4,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.06,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.06,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.024,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 6,
+                "externalWork": 2.4,
+                "plasticDissipation": 2.4,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 6,
+              "externalWork": 2.4,
+              "plasticDissipation": 2.4
+            },
+            "budgets": {
+              "initialEnergy": 1.4100000000000001,
+              "finalEnergy": 1.4100000000000001,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0004,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.06,
+          "steps": 150,
+          "stops": [],
+          "endpoint": {
+            "position": 0.024000000000000053,
+            "velocity": 0.4,
+            "stretch": 0.025
+          },
+          "plasticDissipation": 2.400000000000002,
+          "normalImpulse": 29.999999999999925,
+          "tractionImpulse": 6.000000000000004,
+          "externalWork": 2.400000000000002,
+          "continuumError": 2.220446049250313e-15,
+          "tractionImpulseError": 4.440892098500626e-15,
+          "normalImpulseError": 7.460698725481052e-14,
+          "exact": {
+            "state": {
+              "position": 0.024,
+              "velocity": 0.4,
+              "stretch": 0.025
+            },
+            "advancedTime": 0.06,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.06,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.024,
+                  "velocity": 0.4,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 6,
+                "externalWork": 2.4,
+                "plasticDissipation": 2.4,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [],
+            "totals": {
+              "tractionImpulse": 6,
+              "externalWork": 2.4,
+              "plasticDissipation": 2.4
+            },
+            "budgets": {
+              "initialEnergy": 1.4100000000000001,
+              "finalEnergy": 1.4100000000000001,
+              "energyResidual": 0,
+              "momentumResidual": 0
+            }
+          }
+        }
+      ],
+      "refinementRatios": [
+        0.75,
+        0.8
+      ]
+    },
+    {
+      "input": {
+        "id": "off-grid-stop",
+        "mass": 2,
+        "normal": 500,
+        "mu": 0.2,
+        "kt": 4000,
+        "speed": 0.37,
+        "force": 0,
+        "horizon": 0.037
+      },
+      "runs": [
+        {
+          "nominalStep": 0.0016,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.037,
+          "steps": 24,
+          "stops": [
+            {
+              "time": 0.007399999999983902,
+              "position": 0.001368999999995666,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.0009999999999839018
+            }
+          ],
+          "endpoint": {
+            "position": -0.017504333694831828,
+            "velocity": -1.083940920883952,
+            "stretch": 0.006126666305172501
+          },
+          "plasticDissipation": 0.13689999999956662,
+          "normalImpulse": 18.500000000000004,
+          "tractionImpulse": 2.9078818417699996,
+          "externalWork": 0,
+          "continuumError": 0.0001489891639361307,
+          "tractionImpulseError": 0.0002979783257770485,
+          "normalImpulseError": 3.552713678800501e-15,
+          "exact": {
+            "state": {
+              "position": -0.01751752852577353,
+              "stretch": 0.006113471474226473,
+              "velocity": -1.0840899100478882
+            },
+            "advancedTime": 0.037,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.0074,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.37,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 0.74,
+                "externalWork": 0,
+                "plasticDissipation": 0.13689999999999997,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.0074,
+                "duration": 0.029599999999999998,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.01751752852577353,
+                  "stretch": 0.006113471474226473,
+                  "velocity": -1.0840899100478882
+                },
+                "tractionImpulse": 2.1681798200957765,
+                "externalWork": 0,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.0074,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 2.9081798200957767,
+              "externalWork": 0,
+              "plasticDissipation": 0.13689999999999997
+            },
+            "budgets": {
+              "initialEnergy": 1.3869000000000002,
+              "finalEnergy": 1.25,
+              "energyResidual": -2.7755575615628914e-16,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0008,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.037,
+          "steps": 48,
+          "stops": [
+            {
+              "time": 0.007399999999990371,
+              "position": 0.0013689999999967036,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.0001999999999903701
+            }
+          ],
+          "endpoint": {
+            "position": -0.017514175773186872,
+            "velocity": -1.0840520848894415,
+            "stretch": 0.006116824226816423
+          },
+          "plasticDissipation": 0.13689999999967037,
+          "normalImpulse": 18.500000000000004,
+          "tractionImpulse": 2.908104169781649,
+          "externalWork": 0,
+          "continuumError": 0.000037825158446747054,
+          "tractionImpulseError": 0.00007565031412770651,
+          "normalImpulseError": 3.552713678800501e-15,
+          "exact": {
+            "state": {
+              "position": -0.01751752852577353,
+              "stretch": 0.006113471474226473,
+              "velocity": -1.0840899100478882
+            },
+            "advancedTime": 0.037,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.0074,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.37,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 0.74,
+                "externalWork": 0,
+                "plasticDissipation": 0.13689999999999997,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.0074,
+                "duration": 0.029599999999999998,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.01751752852577353,
+                  "stretch": 0.006113471474226473,
+                  "velocity": -1.0840899100478882
+                },
+                "tractionImpulse": 2.1681798200957765,
+                "externalWork": 0,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.0074,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 2.9081798200957767,
+              "externalWork": 0,
+              "plasticDissipation": 0.13689999999999997
+            },
+            "budgets": {
+              "initialEnergy": 1.3869000000000002,
+              "finalEnergy": 1.25,
+              "energyResidual": -2.7755575615628914e-16,
+              "momentumResidual": 0
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0004,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.037,
+          "steps": 94,
+          "stops": [
+            {
+              "time": 0.007399999999991172,
+              "position": 0.0013689999999970657,
+              "strain": 0.025,
+              "retainedEnergy": 1.2500000000000002,
+              "duration": 0.00019999999999117127
+            }
+          ],
+          "endpoint": {
+            "position": -0.01751668153447143,
+            "velocity": -1.0840803565236636,
+            "stretch": 0.00611431846553151
+          },
+          "plasticDissipation": 0.13689999999970656,
+          "normalImpulse": 18.49999999999997,
+          "tractionImpulse": 2.9081607130502762,
+          "externalWork": 0,
+          "continuumError": 0.000009553524224603649,
+          "tractionImpulseError": 0.000019107045500454944,
+          "normalImpulseError": 2.842170943040401e-14,
+          "exact": {
+            "state": {
+              "position": -0.01751752852577353,
+              "stretch": 0.006113471474226473,
+              "velocity": -1.0840899100478882
+            },
+            "advancedTime": 0.037,
+            "capacity": 100,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.0074,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.37,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "tractionImpulse": 0.74,
+                "externalWork": 0,
+                "plasticDissipation": 0.13689999999999997,
+                "maximumForceMagnitude": 100
+              },
+              {
+                "startTime": 0.0074,
+                "duration": 0.029599999999999998,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                },
+                "after": {
+                  "position": -0.01751752852577353,
+                  "stretch": 0.006113471474226473,
+                  "velocity": -1.0840899100478882
+                },
+                "tractionImpulse": 2.1681798200957765,
+                "externalWork": 0,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 100
+              }
+            ],
+            "events": [
+              {
+                "time": 0.0074,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0013689999999999998,
+                  "velocity": 0,
+                  "stretch": 0.025
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 2.9081798200957767,
+              "externalWork": 0,
+              "plasticDissipation": 0.13689999999999997
+            },
+            "budgets": {
+              "initialEnergy": 1.3869000000000002,
+              "finalEnergy": 1.25,
+              "energyResidual": -2.7755575615628914e-16,
+              "momentumResidual": 0
+            }
+          }
+        }
+      ],
+      "refinementRatios": [
+        3.9388906763176745,
+        3.9592884842783054
+      ]
+    },
+    {
+      "input": {
+        "id": "different-capabilities",
+        "mass": 3,
+        "normal": 420,
+        "mu": 0.35,
+        "kt": 2400,
+        "speed": 0.8,
+        "force": 15,
+        "horizon": 0.06
+      },
+      "runs": [
+        {
+          "nominalStep": 0.0016,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.06,
+          "steps": 39,
+          "stops": [
+            {
+              "time": 0.01818181818184038,
+              "position": 0.007272727272746504,
+              "strain": 0.06125,
+              "retainedEnergy": 4.501875,
+              "duration": 0.0005818181818403776
+            }
+          ],
+          "endpoint": {
+            "position": -0.026908744387727848,
+            "velocity": -1.4398857948538668,
+            "stretch": 0.027068528339525645
+          },
+          "plasticDissipation": 1.069090909093736,
+          "normalImpulse": 25.20000000000001,
+          "tractionImpulse": 7.619657384564226,
+          "externalWork": -0.40363116581591774,
+          "continuumError": 0.0001153026256799361,
+          "tractionImpulseError": 0.000345907874415019,
+          "normalImpulseError": 1.0658141036401503e-14,
+          "exact": {
+            "state": {
+              "position": -0.026918715615542793,
+              "stretch": 0.027058557111729935,
+              "velocity": -1.4400010974795467
+            },
+            "advancedTime": 0.06,
+            "capacity": 147,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.018181818181818184,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.8,
+                  "stretch": 0.06125
+                },
+                "after": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                },
+                "tractionImpulse": 2.6727272727272733,
+                "externalWork": 0.10909090909090911,
+                "plasticDissipation": 1.0690909090909093,
+                "maximumForceMagnitude": 147
+              },
+              {
+                "startTime": 0.018181818181818184,
+                "duration": 0.04181818181818181,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                },
+                "after": {
+                  "position": -0.026918715615542793,
+                  "stretch": 0.027058557111729935,
+                  "velocity": -1.4400010974795467
+                },
+                "tractionImpulse": 4.947276019711367,
+                "externalWork": -0.5128716433240511,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 147
+              }
+            ],
+            "events": [
+              {
+                "time": 0.018181818181818184,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 7.620003292438641,
+              "externalWork": -0.403780734233142,
+              "plasticDissipation": 1.0690909090909093
+            },
+            "budgets": {
+              "initialEnergy": 5.461875,
+              "finalEnergy": 3.989003356675949,
+              "energyResidual": 4.440892098500626e-16,
+              "momentumResidual": 1.7763568394002505e-15
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0008,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.06,
+          "steps": 76,
+          "stops": [
+            {
+              "time": 0.01818181818183304,
+              "position": 0.007272727272742733,
+              "strain": 0.06125,
+              "retainedEnergy": 4.501875,
+              "duration": 0.0005818181818330401
+            }
+          ],
+          "endpoint": {
+            "position": -0.0269161837475129,
+            "velocity": -1.4399718262446446,
+            "stretch": 0.02706108897974438
+          },
+          "plasticDissipation": 1.069090909093182,
+          "normalImpulse": 25.199999999999967,
+          "tractionImpulse": 7.61991547874224,
+          "externalWork": -0.4037427562126935,
+          "continuumError": 0.000029271234902150667,
+          "tractionImpulseError": 0.00008781369640065151,
+          "normalImpulseError": 3.197442310920451e-14,
+          "exact": {
+            "state": {
+              "position": -0.026918715615542793,
+              "stretch": 0.027058557111729935,
+              "velocity": -1.4400010974795467
+            },
+            "advancedTime": 0.06,
+            "capacity": 147,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.018181818181818184,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.8,
+                  "stretch": 0.06125
+                },
+                "after": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                },
+                "tractionImpulse": 2.6727272727272733,
+                "externalWork": 0.10909090909090911,
+                "plasticDissipation": 1.0690909090909093,
+                "maximumForceMagnitude": 147
+              },
+              {
+                "startTime": 0.018181818181818184,
+                "duration": 0.04181818181818181,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                },
+                "after": {
+                  "position": -0.026918715615542793,
+                  "stretch": 0.027058557111729935,
+                  "velocity": -1.4400010974795467
+                },
+                "tractionImpulse": 4.947276019711367,
+                "externalWork": -0.5128716433240511,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 147
+              }
+            ],
+            "events": [
+              {
+                "time": 0.018181818181818184,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 7.620003292438641,
+              "externalWork": -0.403780734233142,
+              "plasticDissipation": 1.0690909090909093
+            },
+            "budgets": {
+              "initialEnergy": 5.461875,
+              "finalEnergy": 3.989003356675949,
+              "energyResidual": 4.440892098500626e-16,
+              "momentumResidual": 1.7763568394002505e-15
+            }
+          }
+        },
+        {
+          "nominalStep": 0.0004,
+          "representation": {
+            "axis": "x",
+            "sign": 1,
+            "foot": 0,
+            "count": 1,
+            "shift": 0
+          },
+          "completedTime": 0.06,
+          "steps": 151,
+          "stops": [
+            {
+              "time": 0.01818181818183582,
+              "position": 0.007272727272743499,
+              "strain": 0.06125,
+              "retainedEnergy": 4.501875,
+              "duration": 0.0001818181818358159
+            }
+          ],
+          "endpoint": {
+            "position": -0.026918077127139634,
+            "velocity": -1.439993716229203,
+            "stretch": 0.027059195600116864
+          },
+          "plasticDissipation": 1.0690909090932945,
+          "normalImpulse": 25.199999999999932,
+          "tractionImpulse": 7.6199811486929585,
+          "externalWork": -0.4037711569070946,
+          "continuumError": 0.000007381250343829748,
+          "tractionImpulseError": 0.000022143745682434712,
+          "normalImpulseError": 6.750155989720952e-14,
+          "exact": {
+            "state": {
+              "position": -0.026918715615542793,
+              "stretch": 0.027058557111729935,
+              "velocity": -1.4400010974795467
+            },
+            "advancedTime": 0.06,
+            "capacity": 147,
+            "segments": [
+              {
+                "startTime": 0,
+                "duration": 0.018181818181818184,
+                "phase": "sliding",
+                "before": {
+                  "position": 0,
+                  "velocity": 0.8,
+                  "stretch": 0.06125
+                },
+                "after": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                },
+                "tractionImpulse": 2.6727272727272733,
+                "externalWork": 0.10909090909090911,
+                "plasticDissipation": 1.0690909090909093,
+                "maximumForceMagnitude": 147
+              },
+              {
+                "startTime": 0.018181818181818184,
+                "duration": 0.04181818181818181,
+                "phase": "elastic",
+                "before": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                },
+                "after": {
+                  "position": -0.026918715615542793,
+                  "stretch": 0.027058557111729935,
+                  "velocity": -1.4400010974795467
+                },
+                "tractionImpulse": 4.947276019711367,
+                "externalWork": -0.5128716433240511,
+                "plasticDissipation": 0,
+                "maximumForceMagnitude": 147
+              }
+            ],
+            "events": [
+              {
+                "time": 0.018181818181818184,
+                "kind": "unloading",
+                "sign": 1,
+                "state": {
+                  "position": 0.0072727272727272745,
+                  "velocity": 0,
+                  "stretch": 0.06125
+                }
+              }
+            ],
+            "totals": {
+              "tractionImpulse": 7.620003292438641,
+              "externalWork": -0.403780734233142,
+              "plasticDissipation": 1.0690909090909093
+            },
+            "budgets": {
+              "initialEnergy": 5.461875,
+              "finalEnergy": 3.989003356675949,
+              "energyResidual": 4.440892098500626e-16,
+              "momentumResidual": 1.7763568394002505e-15
+            }
+          }
+        }
+      ],
+      "refinementRatios": [
+        3.9391103950815682,
+        3.965620123780186
+      ]
+    }
+  ],
+  "representations": [
+    {
+      "nominalStep": 0.0008,
+      "representation": {
+        "axis": "x",
+        "sign": -1,
+        "foot": 0,
+        "count": 1,
+        "shift": 0
+      },
+      "completedTime": 0.12,
+      "steps": 151,
+      "stops": [
+        {
+          "time": 0.04000000000002115,
+          "position": 0.04000000000000551,
+          "strain": 0.025,
+          "retainedEnergy": 1.2500000000000002,
+          "duration": 0.0002000000000050587
+        }
+      ],
+      "endpoint": {
+        "position": -0.007664006146246452,
+        "velocity": 0.47189580502902584,
+        "stretch": -0.022664006146251966
+      },
+      "plasticDissipation": 4.00000000000055,
+      "normalImpulse": 59.99999999999986,
+      "tractionImpulse": 3.0562083899475203,
+      "externalWork": 0,
+      "continuumError": 0.0003866904337010979,
+      "tractionImpulseError": 0.0007733808729741831,
+      "normalImpulseError": 1.4210854715202004e-13,
+      "exact": {
+        "state": {
+          "position": -0.007659978425403446,
+          "stretch": -0.022659978425403446,
+          "velocity": 0.47228249546272694
+        },
+        "advancedTime": 0.12,
+        "capacity": 100,
+        "segments": [
+          {
+            "startTime": 0,
+            "duration": 0.04,
+            "phase": "sliding",
+            "before": {
+              "position": 0,
+              "velocity": 2,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "tractionImpulse": 4,
+            "externalWork": 0,
+            "plasticDissipation": 4,
+            "maximumForceMagnitude": 100
+          },
+          {
+            "startTime": 0.04,
+            "duration": 0.07999999999999999,
+            "phase": "elastic",
+            "before": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "tractionImpulse": -0.9445649909254538,
+            "externalWork": 0,
+            "plasticDissipation": 0,
+            "maximumForceMagnitude": 100
+          }
+        ],
+        "events": [
+          {
+            "time": 0.04,
+            "kind": "unloading",
+            "sign": 1,
+            "state": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            }
+          }
+        ],
+        "totals": {
+          "tractionImpulse": 3.055435009074546,
+          "externalWork": 0,
+          "plasticDissipation": 4
+        },
+        "budgets": {
+          "initialEnergy": 5.25,
+          "finalEnergy": 1.25,
+          "energyResidual": 0,
+          "momentumResidual": 0
+        }
+      }
+    },
+    {
+      "nominalStep": 0.0008,
+      "representation": {
+        "axis": "y",
+        "sign": 1,
+        "foot": 0,
+        "count": 1,
+        "shift": 0
+      },
+      "completedTime": 0.12,
+      "steps": 151,
+      "stops": [
+        {
+          "time": 0.04000000000002115,
+          "position": 0.04000000000000551,
+          "strain": 0.025,
+          "retainedEnergy": 1.2500000000000002,
+          "duration": 0.0002000000000050587
+        }
+      ],
+      "endpoint": {
+        "position": -0.007664006146246452,
+        "velocity": 0.47189580502902584,
+        "stretch": -0.022664006146251966
+      },
+      "plasticDissipation": 4.00000000000055,
+      "normalImpulse": 59.99999999999986,
+      "tractionImpulse": 3.0562083899475203,
+      "externalWork": 0,
+      "continuumError": 0.0003866904337010979,
+      "tractionImpulseError": 0.0007733808729741831,
+      "normalImpulseError": 1.4210854715202004e-13,
+      "exact": {
+        "state": {
+          "position": -0.007659978425403446,
+          "stretch": -0.022659978425403446,
+          "velocity": 0.47228249546272694
+        },
+        "advancedTime": 0.12,
+        "capacity": 100,
+        "segments": [
+          {
+            "startTime": 0,
+            "duration": 0.04,
+            "phase": "sliding",
+            "before": {
+              "position": 0,
+              "velocity": 2,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "tractionImpulse": 4,
+            "externalWork": 0,
+            "plasticDissipation": 4,
+            "maximumForceMagnitude": 100
+          },
+          {
+            "startTime": 0.04,
+            "duration": 0.07999999999999999,
+            "phase": "elastic",
+            "before": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "tractionImpulse": -0.9445649909254538,
+            "externalWork": 0,
+            "plasticDissipation": 0,
+            "maximumForceMagnitude": 100
+          }
+        ],
+        "events": [
+          {
+            "time": 0.04,
+            "kind": "unloading",
+            "sign": 1,
+            "state": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            }
+          }
+        ],
+        "totals": {
+          "tractionImpulse": 3.055435009074546,
+          "externalWork": 0,
+          "plasticDissipation": 4
+        },
+        "budgets": {
+          "initialEnergy": 5.25,
+          "finalEnergy": 1.25,
+          "energyResidual": 0,
+          "momentumResidual": 0
+        }
+      }
+    },
+    {
+      "nominalStep": 0.0008,
+      "representation": {
+        "axis": "x",
+        "sign": 1,
+        "foot": 1,
+        "count": 1,
+        "shift": 0
+      },
+      "completedTime": 0.12,
+      "steps": 151,
+      "stops": [
+        {
+          "time": 0.04000000000002072,
+          "position": 0.04000000000000392,
+          "strain": 0.025,
+          "retainedEnergy": 1.2500000000000002,
+          "duration": 0.00020000000000508055
+        }
+      ],
+      "endpoint": {
+        "position": -0.007664006146247875,
+        "velocity": 0.4718958050290029,
+        "stretch": -0.0226640061462518
+      },
+      "plasticDissipation": 4.000000000000393,
+      "normalImpulse": 59.99999999999985,
+      "tractionImpulse": 3.0562083899474395,
+      "externalWork": 0,
+      "continuumError": 0.000386690433724024,
+      "tractionImpulseError": 0.0007733808728933589,
+      "normalImpulseError": 1.4921397450962104e-13,
+      "exact": {
+        "state": {
+          "position": -0.007659978425403446,
+          "stretch": -0.022659978425403446,
+          "velocity": 0.47228249546272694
+        },
+        "advancedTime": 0.12,
+        "capacity": 100,
+        "segments": [
+          {
+            "startTime": 0,
+            "duration": 0.04,
+            "phase": "sliding",
+            "before": {
+              "position": 0,
+              "velocity": 2,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "tractionImpulse": 4,
+            "externalWork": 0,
+            "plasticDissipation": 4,
+            "maximumForceMagnitude": 100
+          },
+          {
+            "startTime": 0.04,
+            "duration": 0.07999999999999999,
+            "phase": "elastic",
+            "before": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "tractionImpulse": -0.9445649909254538,
+            "externalWork": 0,
+            "plasticDissipation": 0,
+            "maximumForceMagnitude": 100
+          }
+        ],
+        "events": [
+          {
+            "time": 0.04,
+            "kind": "unloading",
+            "sign": 1,
+            "state": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            }
+          }
+        ],
+        "totals": {
+          "tractionImpulse": 3.055435009074546,
+          "externalWork": 0,
+          "plasticDissipation": 4
+        },
+        "budgets": {
+          "initialEnergy": 5.25,
+          "finalEnergy": 1.25,
+          "energyResidual": 0,
+          "momentumResidual": 0
+        }
+      }
+    },
+    {
+      "nominalStep": 0.0008,
+      "representation": {
+        "axis": "x",
+        "sign": 1,
+        "foot": 0,
+        "count": 2,
+        "shift": 0
+      },
+      "completedTime": 0.12,
+      "steps": 151,
+      "stops": [
+        {
+          "time": 0.04000000000002072,
+          "position": 0.04000000000000392,
+          "strain": 0.025,
+          "retainedEnergy": 1.2500000000000002,
+          "duration": 0.00020000000000508055
+        }
+      ],
+      "endpoint": {
+        "position": -0.007664006146247875,
+        "velocity": 0.4718958050290029,
+        "stretch": -0.0226640061462518
+      },
+      "plasticDissipation": 4.000000000000393,
+      "normalImpulse": 59.99999999999985,
+      "tractionImpulse": 3.0562083899474395,
+      "externalWork": 0,
+      "continuumError": 0.000386690433724024,
+      "tractionImpulseError": 0.0007733808728933589,
+      "normalImpulseError": 1.4921397450962104e-13,
+      "exact": {
+        "state": {
+          "position": -0.007659978425403446,
+          "stretch": -0.022659978425403446,
+          "velocity": 0.47228249546272694
+        },
+        "advancedTime": 0.12,
+        "capacity": 100,
+        "segments": [
+          {
+            "startTime": 0,
+            "duration": 0.04,
+            "phase": "sliding",
+            "before": {
+              "position": 0,
+              "velocity": 2,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "tractionImpulse": 4,
+            "externalWork": 0,
+            "plasticDissipation": 4,
+            "maximumForceMagnitude": 100
+          },
+          {
+            "startTime": 0.04,
+            "duration": 0.07999999999999999,
+            "phase": "elastic",
+            "before": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "tractionImpulse": -0.9445649909254538,
+            "externalWork": 0,
+            "plasticDissipation": 0,
+            "maximumForceMagnitude": 100
+          }
+        ],
+        "events": [
+          {
+            "time": 0.04,
+            "kind": "unloading",
+            "sign": 1,
+            "state": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            }
+          }
+        ],
+        "totals": {
+          "tractionImpulse": 3.055435009074546,
+          "externalWork": 0,
+          "plasticDissipation": 4
+        },
+        "budgets": {
+          "initialEnergy": 5.25,
+          "finalEnergy": 1.25,
+          "energyResidual": 0,
+          "momentumResidual": 0
+        }
+      }
+    },
+    {
+      "nominalStep": 0.0008,
+      "representation": {
+        "axis": "x",
+        "sign": 1,
+        "foot": 0,
+        "count": 3,
+        "shift": 0
+      },
+      "completedTime": 0.12,
+      "steps": 151,
+      "stops": [
+        {
+          "time": 0.04000000000002179,
+          "position": 0.040000000000003276,
+          "strain": 0.02500000000000001,
+          "retainedEnergy": 1.2500000000000009,
+          "duration": 0.00020000000000547607
+        }
+      ],
+      "endpoint": {
+        "position": -0.00766400614624952,
+        "velocity": 0.4718958050289689,
+        "stretch": -0.022664006146252785
+      },
+      "plasticDissipation": 4.000000000000328,
+      "normalImpulse": 59.99999999999985,
+      "tractionImpulse": 3.056208389947513,
+      "externalWork": 8.326672684688674e-16,
+      "continuumError": 0.00038669043375805234,
+      "tractionImpulseError": 0.0007733808729670777,
+      "normalImpulseError": 1.4921397450962104e-13,
+      "exact": {
+        "state": {
+          "position": -0.007659978425403446,
+          "stretch": -0.022659978425403446,
+          "velocity": 0.47228249546272694
+        },
+        "advancedTime": 0.12,
+        "capacity": 100,
+        "segments": [
+          {
+            "startTime": 0,
+            "duration": 0.04,
+            "phase": "sliding",
+            "before": {
+              "position": 0,
+              "velocity": 2,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "tractionImpulse": 4,
+            "externalWork": 0,
+            "plasticDissipation": 4,
+            "maximumForceMagnitude": 100
+          },
+          {
+            "startTime": 0.04,
+            "duration": 0.07999999999999999,
+            "phase": "elastic",
+            "before": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "tractionImpulse": -0.9445649909254538,
+            "externalWork": 0,
+            "plasticDissipation": 0,
+            "maximumForceMagnitude": 100
+          }
+        ],
+        "events": [
+          {
+            "time": 0.04,
+            "kind": "unloading",
+            "sign": 1,
+            "state": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            }
+          }
+        ],
+        "totals": {
+          "tractionImpulse": 3.055435009074546,
+          "externalWork": 0,
+          "plasticDissipation": 4
+        },
+        "budgets": {
+          "initialEnergy": 5.25,
+          "finalEnergy": 1.25,
+          "energyResidual": 0,
+          "momentumResidual": 0
+        }
+      }
+    },
+    {
+      "nominalStep": 0.0008,
+      "representation": {
+        "axis": "x",
+        "sign": 1,
+        "foot": 0,
+        "count": 1,
+        "shift": 1.25
+      },
+      "completedTime": 0.12,
+      "steps": 151,
+      "stops": [
+        {
+          "time": 0.040000000000019076,
+          "position": 0.04000000000000625,
+          "strain": 0.025,
+          "retainedEnergy": 1.2500000000000002,
+          "duration": 0.0002000000000045398
+        }
+      ],
+      "endpoint": {
+        "position": -0.007664006146242075,
+        "velocity": 0.47189580502898426,
+        "stretch": -0.022664006146248326
+      },
+      "plasticDissipation": 4.000000000000625,
+      "normalImpulse": 59.99999999999985,
+      "tractionImpulse": 3.05620838994612,
+      "externalWork": 0,
+      "continuumError": 0.00038669043374267575,
+      "tractionImpulseError": 0.0007733808715739698,
+      "normalImpulseError": 1.4921397450962104e-13,
+      "exact": {
+        "state": {
+          "position": -0.007659978425403446,
+          "stretch": -0.022659978425403446,
+          "velocity": 0.47228249546272694
+        },
+        "advancedTime": 0.12,
+        "capacity": 100,
+        "segments": [
+          {
+            "startTime": 0,
+            "duration": 0.04,
+            "phase": "sliding",
+            "before": {
+              "position": 0,
+              "velocity": 2,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "tractionImpulse": 4,
+            "externalWork": 0,
+            "plasticDissipation": 4,
+            "maximumForceMagnitude": 100
+          },
+          {
+            "startTime": 0.04,
+            "duration": 0.07999999999999999,
+            "phase": "elastic",
+            "before": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            },
+            "after": {
+              "position": -0.007659978425403446,
+              "stretch": -0.022659978425403446,
+              "velocity": 0.47228249546272694
+            },
+            "tractionImpulse": -0.9445649909254538,
+            "externalWork": 0,
+            "plasticDissipation": 0,
+            "maximumForceMagnitude": 100
+          }
+        ],
+        "events": [
+          {
+            "time": 0.04,
+            "kind": "unloading",
+            "sign": 1,
+            "state": {
+              "position": 0.04,
+              "velocity": 0,
+              "stretch": 0.025
+            }
+          }
+        ],
+        "totals": {
+          "tractionImpulse": 3.055435009074546,
+          "externalWork": 0,
+          "plasticDissipation": 4
+        },
+        "budgets": {
+          "initialEnergy": 5.25,
+          "finalEnergy": 1.25,
+          "energyResidual": 0,
+          "momentumResidual": 0
+        }
+      }
+    }
+  ],
+  "representationErrors": [
+    1.5720758028692217e-13,
+    1.5720758028692217e-13,
+    0,
+    0,
+    7.37188088351104e-14,
+    1.319389042464536e-12
+  ],
+  "offGrid": {
+    "nominalStep": 0.00037,
+    "representation": {
+      "axis": "x",
+      "sign": 1,
+      "foot": 0,
+      "count": 1,
+      "shift": 0
+    },
+    "completedTime": 0.12,
+    "steps": 326,
+    "stops": [
+      {
+        "time": 0.04000000000004318,
+        "position": 0.0400000000000434,
+        "strain": 0.025,
+        "retainedEnergy": 1.2500000000000002,
+        "duration": 0.00004000000004317799
+      }
+    ],
+    "endpoint": {
+      "position": -0.007660837332230189,
+      "velocity": 0.472200066498913,
+      "stretch": -0.022660837332273573
+    },
+    "plasticDissipation": 4.0000000000043405,
+    "normalImpulse": 60.00000000000024,
+    "tractionImpulse": 3.055599867007421,
+    "externalWork": 0,
+    "continuumError": 0.00008242896381394083,
+    "tractionImpulseError": 0.00016485793287479567,
+    "normalImpulseError": 2.4158453015843406e-13,
+    "exact": {
+      "state": {
+        "position": -0.007659978425403446,
+        "stretch": -0.022659978425403446,
+        "velocity": 0.47228249546272694
+      },
+      "advancedTime": 0.12,
+      "capacity": 100,
+      "segments": [
+        {
+          "startTime": 0,
+          "duration": 0.04,
+          "phase": "sliding",
+          "before": {
+            "position": 0,
+            "velocity": 2,
+            "stretch": 0.025
+          },
+          "after": {
+            "position": 0.04,
+            "velocity": 0,
+            "stretch": 0.025
+          },
+          "tractionImpulse": 4,
+          "externalWork": 0,
+          "plasticDissipation": 4,
+          "maximumForceMagnitude": 100
+        },
+        {
+          "startTime": 0.04,
+          "duration": 0.07999999999999999,
+          "phase": "elastic",
+          "before": {
+            "position": 0.04,
+            "velocity": 0,
+            "stretch": 0.025
+          },
+          "after": {
+            "position": -0.007659978425403446,
+            "stretch": -0.022659978425403446,
+            "velocity": 0.47228249546272694
+          },
+          "tractionImpulse": -0.9445649909254538,
+          "externalWork": 0,
+          "plasticDissipation": 0,
+          "maximumForceMagnitude": 100
+        }
+      ],
+      "events": [
+        {
+          "time": 0.04,
+          "kind": "unloading",
+          "sign": 1,
+          "state": {
+            "position": 0.04,
+            "velocity": 0,
+            "stretch": 0.025
+          }
+        }
+      ],
+      "totals": {
+        "tractionImpulse": 3.055435009074546,
+        "externalWork": 0,
+        "plasticDissipation": 4
+      },
+      "budgets": {
+        "initialEnergy": 5.25,
+        "finalEnergy": 1.25,
+        "energyResidual": 0,
+        "momentumResidual": 0
+      }
+    }
+  },
+  "rejectionChecks": [
+    {
+      "input": "stop-outside-horizon",
+      "accepted": false,
+      "reason": "Slip-stop event lies outside the requested duration domain",
+      "duration": 0,
+      "unchanged": true,
+      "passed": true
+    },
+    {
+      "input": "accelerating-no-stop",
+      "accepted": false,
+      "reason": "Constant force does not produce a slip-stop event",
+      "duration": 0,
+      "unchanged": true,
+      "passed": true
+    }
+  ],
+  "violations": []
+}

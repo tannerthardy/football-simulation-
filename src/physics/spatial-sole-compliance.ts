@@ -117,6 +117,49 @@ export interface SpatialSoleComplianceReport extends SpatialSupportCandidate {
   /** Support energy excludes turf potential; this ledger includes it. */
   totalEnergyBefore: number; totalEnergyAfter: number;
 }
+/** Constant physical loads. These are forces, not a previously dosed impulse. */
+export interface SpatialSoleConstantBodyForces {
+  center?: Vec3;
+  couple?: Vec3;
+  points?: Array<{ id: string; local: Vec3; force: Vec3 }>;
+}
+export type SpatialSoleConstantForces = [SpatialSoleConstantBodyForces,
+  SpatialSoleConstantBodyForces, SpatialSoleConstantBodyForces];
+export interface SpatialSoleSlipStopOptions extends Omit<SpatialSoleComplianceOptions, 'externalImpulses' | 'shearState'> {
+  shearState: SpatialSoleShearState;
+  foot: 0 | 1;
+  patchId: string;
+  /** First event gate supports exactly one signed world x or y axis. */
+  direction: { x: number; y: number };
+  maxDuration: number;
+  externalForces?: SpatialSoleConstantForces;
+}
+export interface SpatialSoleSlipStopEvent {
+  kind: 'slip-stop';
+  foot: 0 | 1;
+  patchId: string;
+  direction: { x: number; y: number };
+  initialSlip: number;
+  finalSlip: number;
+  /** Algebraic solve domain; this is not a certified trajectory-root bracket. */
+  durationDomain: { lo: 0; hi: number };
+}
+export interface SpatialSoleSlipStopResult {
+  state: SpatialSupportState;
+  shearState: SpatialSoleShearState | null;
+  /** Zero on rejection; no physical time or partial state has been committed. */
+  duration: number;
+  event: SpatialSoleSlipStopEvent | null;
+  report: SpatialSoleComplianceReport;
+}
+interface SlipStopSolve {
+  column: number;
+  /** Seed physical duration conditions the unknown; horizon is only a bound. */
+  timeScale: number;
+  maxDuration: number;
+  forces: SpatialSoleConstantForces;
+  rejectReason: string | null;
+}
 const zero = (): Vec3 => ({ x: 0, y: 0, z: 0 });
 const normResidual = (r: number[]) => Math.max(...r.map(Math.abs));
 const bodies = (s: SpatialSupportState) => [s.torso, ...s.feet] as const;
@@ -301,6 +344,141 @@ export function advanceSpatialSoleCompliance(
   materialInput: SpatialSoleComplianceMaterial,
   options: SpatialSoleComplianceOptions = {},
 ): { state: SpatialSupportState; shearState: SpatialSoleShearState | null; report: SpatialSoleComplianceReport } {
+  const { duration: _duration, ...result } = solveSpatialSoleCompliance(beforeInput, h, materialInput, options);
+  return result;
+}
+
+function scaleConstantForces(forces: SpatialSoleConstantForces, h: number): SpatialImpulseSet {
+  return forces.map(load => ({
+    center: load.center && v3Scale(load.center, h),
+    couple: load.couple && v3Scale(load.couple, h),
+    points: load.points?.map(point => ({ id: point.id, local: { ...point.local },
+      impulse: v3Scale(point.force, h) })),
+  })) as SpatialImpulseSet;
+}
+
+/** Restricted research event: an isolated nonrotating foot already slides at
+ * its fixed normal-load yield limit. Co-located weighted patches are allowed.
+ * Duration replaces one endpoint velocity unknown, which is constructed as
+ * zero inside the same 18 momentum equations. No velocity projection follows
+ * the solve. Rotating/2D slip, variable normal loads, onset and release require
+ * separate event equations and are deliberately unsupported here.
+ */
+export function advanceSpatialSoleSlipStop(
+  beforeInput: SpatialSupportState,
+  materialInput: SpatialSoleComplianceMaterial,
+  options: SpatialSoleSlipStopOptions,
+): SpatialSoleSlipStopResult {
+  const before = newSpatialSupport(beforeInput);
+  const material = validateMaterial(materialInput);
+  const shear = validateShearState(options.shearState, material, true)!;
+  const direction = options.direction;
+  if ('externalImpulses' in options)
+    throw new RangeError('Slip-stop events require physical externalForces, not interval impulses');
+  if (!(Number.isFinite(options.maxDuration) && options.maxDuration > 0)
+    || (options.foot !== 0 && options.foot !== 1)
+    || !direction || !((Math.abs(direction.x) === 1 && direction.y === 0)
+      || (Math.abs(direction.y) === 1 && direction.x === 0)))
+    throw new RangeError('Finite positive event horizon, stable foot and signed x/y axis required');
+  const forces = options.externalForces ?? [{}, {}, {}];
+  const finiteVector = (v: Vec3 | undefined): boolean => !!v && [v.x, v.y, v.z].every(Number.isFinite);
+  if (!Array.isArray(forces) || forces.length !== 3 || forces.some(load => !load
+    || (load.center !== undefined && !finiteVector(load.center))
+    || (load.couple !== undefined && !finiteVector(load.couple))
+    || (load.points !== undefined && !Array.isArray(load.points))
+    || (load.points ?? []).some(point => !point || typeof point.id !== 'string'
+      || !point.id || point.id.startsWith('sole:')
+      || !finiteVector(point.local) || !finiteVector(point.force))
+    || new Set((load.points ?? []).map(point => point.id)).size !== (load.points ?? []).length))
+    throw new RangeError('Three finite uniquely identified constant force slots required');
+  if (before.gravity.x !== 0 || before.gravity.y !== 0
+    || before.legs.some(leg => leg.compliance.forceCap !== 0 || leg.compliance.dampingCap !== 0)
+    || forces.some(load => v3Norm(load.couple ?? zero()) !== 0
+      || (load.points ?? []).some(point => v3Norm(point.local) !== 0)))
+    throw new RangeError('Slip-stop gate requires disabled legs, no rotation and center-only physical forces');
+  const foot = options.foot;
+  const selectedBody = before.feet[foot];
+  const patches = material.points[foot];
+  const selectedPatch = patches.find(patch => patch.id === options.patchId);
+  if (!selectedPatch) throw new RangeError('Slip-stop material patch ID is missing');
+  const axis: 'x' | 'y' = direction.x !== 0 ? 'x' : 'y';
+  const otherAxis: 'x' | 'y' = axis === 'x' ? 'y' : 'x';
+  const sign = direction[axis];
+  const mu = selectedPatch.friction!;
+  const kt = material.shearStiffness![foot];
+  const gap = selectedBody.position.z - material.planeHeight!;
+  const normal = material.stiffness[foot] * Math.max(0, -gap);
+  const force = (forces[foot + 1].points ?? []).reduce((sum, point) => v3Add(sum, point.force),
+    forces[foot + 1].center ?? zero());
+  const initialSlip = sign * selectedBody.velocity[axis];
+  const capacity = mu * normal;
+  const motionEnergyScale = selectedBody.mass * initialSlip * initialSlip + normal * Math.abs(gap);
+  if (![normal, capacity, motionEnergyScale].every(Number.isFinite))
+    throw new RangeError('Slip-stop fixed normal support and physical motion scales must be finite');
+  if (bodies(before).some(body => v3Norm(body.angularMomentum)
+    > 256 * Number.EPSILON * Math.sqrt(body.inertia * motionEnergyScale)))
+    throw new RangeError('Slip-stop gate requires no rotation beyond physical-scale roundoff');
+  const forceRoundoff = 256 * Number.EPSILON * Math.max(Number.MIN_VALUE,
+    normal, Math.abs(force.z), Math.abs(selectedBody.mass * before.gravity.z), capacity);
+  // Accepted equilibrium intervals can retain floating-point normal and
+  // orthogonal velocity. Admit only scale-relative roundoff and keep these in
+  // the solve;
+  // unlike the stop coordinate it is never prescribed or reset to zero.
+  const normalVelocityRoundoff = 256 * Number.EPSILON * Math.max(Number.MIN_VALUE,
+    Math.abs(initialSlip), Math.sqrt(normal * Math.abs(gap) / selectedBody.mass));
+  if (Math.abs(selectedBody.velocity.z) > normalVelocityRoundoff
+    || Math.abs(selectedBody.velocity[otherAxis]) > normalVelocityRoundoff
+    || force[otherAxis] !== 0 || !(gap < 0 && normal > 0 && mu > 0 && kt > 0)
+    || Math.abs(force.z + selectedBody.mass * before.gravity.z + normal) > forceRoundoff
+    || patches.some(patch => v3Norm(patch.local) !== 0 || patch.friction !== mu)
+    || material.points[1 - foot].some(patch =>
+      rigidPointPosition(before.feet[1 - foot], patch.local).z <= material.planeHeight!))
+    throw new RangeError(`Slip-stop gate requires collinear center patches and fixed positive normal equilibrium (vz=${selectedBody.velocity.z}, off-axis velocity=${selectedBody.velocity[otherAxis]}, normal residual=${force.z + selectedBody.mass * before.gravity.z + normal})`);
+  if (patches.some(patch => {
+    const stretch = shear.points.find(p => p.foot === foot && p.id === patch.id)!.stretch;
+    return Math.abs(kt * stretch[otherAxis]) > forceRoundoff
+      || Math.abs(kt * stretch[axis] - sign * capacity) > forceRoundoff;
+  }) || shear.points.some(patch => patch.foot !== foot && (patch.stretch.x !== 0 || patch.stretch.y !== 0)))
+    throw new RangeError('Slip-stop gate requires saturated collinear retained shear strain and an unloaded other foot');
+  let rejectReason: string | null = null;
+  let initialDuration = options.maxDuration;
+  const deceleration = (capacity - sign * force[axis]) / selectedBody.mass;
+  if (!(initialSlip > 0)) rejectReason = 'Slip-stop event has no positive incoming sliding velocity';
+  else if (!(deceleration > 0)) rejectReason = 'Constant force does not produce a slip-stop event';
+  else {
+    const estimate = initialSlip / deceleration;
+    if (!Number.isFinite(estimate) || estimate > options.maxDuration)
+      rejectReason = 'Slip-stop event lies outside the requested duration domain';
+    else initialDuration = estimate;
+  }
+  const { externalForces: _forces, foot: _foot, patchId: _patchId,
+    direction: _direction, maxDuration: _maxDuration, ...ordinary } = options;
+  const solved = solveSpatialSoleCompliance(before, initialDuration, material, ordinary, {
+    column: 6 * (foot + 1) + (axis === 'x' ? 0 : 1),
+    timeScale: initialDuration, maxDuration: options.maxDuration, forces, rejectReason,
+  });
+  const accepted = solved.report.accepted;
+  return {
+    state: solved.state,
+    shearState: solved.shearState,
+    duration: accepted ? solved.duration : 0,
+    event: accepted ? { kind: 'slip-stop', foot, patchId: options.patchId,
+      direction: { ...direction }, initialSlip,
+      finalSlip: sign * solved.state.feet[foot].velocity[axis],
+      durationDomain: { lo: 0, hi: options.maxDuration } } : null,
+    report: solved.report,
+  };
+}
+
+function solveSpatialSoleCompliance(
+  beforeInput: SpatialSupportState,
+  initialH: number,
+  materialInput: SpatialSoleComplianceMaterial,
+  options: SpatialSoleComplianceOptions = {},
+  eventSolve?: SlipStopSolve,
+): { state: SpatialSupportState; shearState: SpatialSoleShearState | null;
+  report: SpatialSoleComplianceReport; duration: number } {
+  let h = initialH;
   const before = newSpatialSupport(beforeInput);
   const material = validateMaterial(materialInput);
   const shearActive = material.points.some((patches, foot) => material.shearStiffness![foot] > 0
@@ -320,7 +498,8 @@ export function advanceSpatialSoleCompliance(
     throw new RangeError('Finite positive interval and numerical budgets required');
   }
 
-  const known = options.externalImpulses ?? [{}, {}, {}];
+  let known = eventSolve ? scaleConstantForces(eventSolve.forces, h)
+    : options.externalImpulses ?? [{}, {}, {}];
   const start = spatialSupportEndpoints(before);
   let candidateEvaluations = 0;
   let shearConstitutiveEvaluations = 0;
@@ -412,12 +591,15 @@ export function advanceSpatialSoleCompliance(
     endpoint.angularMomentum.y / materialBodies[i].inertia,
     endpoint.angularMomentum.z / materialBodies[i].inertia,
   ]);
+  if (eventSolve) values[eventSolve.column] = h / eventSolve.timeScale;
   let candidate: SpatialSupportCandidate | null = null;
-  let reason: string | null = null;
+  let candidateDuration = h;
+  let reason: string | null = eventSolve?.rejectReason ?? null;
   let iterations = 0;
 
+  const endpointValue = (column: number) => eventSolve?.column === column ? 0 : values[column];
   const unpack = (): typeof start => [0, 1, 2].map(i => ({
-    velocity: { x: values[6 * i], y: values[6 * i + 1], z: values[6 * i + 2] },
+    velocity: { x: endpointValue(6 * i), y: endpointValue(6 * i + 1), z: values[6 * i + 2] },
     angularMomentum: {
       x: values[6 * i + 3] * materialBodies[i].inertia,
       y: values[6 * i + 4] * materialBodies[i].inertia,
@@ -426,11 +608,18 @@ export function advanceSpatialSoleCompliance(
   })) as typeof start;
   const evaluate = (unknowns: number[]): SpatialSupportCandidate => {
     values = unknowns;
+    if (eventSolve) {
+      h = values[eventSolve.column] * eventSolve.timeScale;
+      if (!(Number.isFinite(h) && h > 0 && h <= eventSolve.maxDuration))
+        throw new RangeError('Slip-stop candidate duration is outside the solve domain');
+      known = scaleConstantForces(eventSolve.forces, h);
+    }
     const provisional = evaluateSpatialSupportCandidate(before, h, unpack(), known, geometryTolerance);
     return evaluateSpatialSupportCandidate(before, h, unpack(), trialLoads(provisional), geometryTolerance);
   };
   try {
     candidate = evaluate(values);
+    candidateDuration = h;
   } catch (error) {
     if (error instanceof RangeError) reason = error.message;
     else throw error;
@@ -453,6 +642,7 @@ export function advanceSpatialSoleCompliance(
         foot.angularMomentum.z / foot.inertia,
       ]),
     ];
+    if (eventSolve) baseline[eventSolve.column] = candidateDuration / eventSolve.timeScale;
     const jacobian = Array.from({ length: 18 }, () => Array(18).fill(0) as number[]);
     let failedColumn = false;
 
@@ -499,6 +689,7 @@ export function advanceSpatialSoleCompliance(
         const nextCandidate = evaluate(nextValues);
         if (residual(nextCandidate) < currentResidual) {
           candidate = nextCandidate;
+          candidateDuration = h;
           acceptedLineSearch = true;
           break;
         }
@@ -528,6 +719,11 @@ export function advanceSpatialSoleCompliance(
         foot.angularMomentum.z / foot.inertia,
       ]),
     ];
+    h = candidateDuration;
+    if (eventSolve) {
+      values[eventSolve.column] = h / eventSolve.timeScale;
+      known = scaleConstantForces(eventSolve.forces, h);
+    }
   }
   if (candidate && !reason && residual(candidate) > tolerance)
     reason = 'Coupled sole/material iteration limit';
@@ -543,6 +739,11 @@ export function advanceSpatialSoleCompliance(
       -endpoint.angularMomentum.y / materialBodies[i].inertia,
       -endpoint.angularMomentum.z / materialBodies[i].inertia,
     ]);
+    if (eventSolve) {
+      h = initialH;
+      values[eventSolve.column] = h / eventSolve.timeScale;
+      known = scaleConstantForces(eventSolve.forces, h);
+    }
     try {
       candidate = evaluate(values);
     } catch (error) {
@@ -645,7 +846,7 @@ export function advanceSpatialSoleCompliance(
           totalEnergyBefore: energy.total + potential + shearPotential,
           totalEnergyAfter: energy.total + potential + shearPotential,
         };
-        return { state: before, shearState: inputShearState, report };
+        return { state: before, shearState: inputShearState, report, duration: h };
       }
     }
   }
@@ -947,6 +1148,7 @@ export function advanceSpatialSoleCompliance(
     state: report.accepted ? newSpatialSupport(converged.state) : before,
     shearState: report.accepted ? candidateShearState : inputShearState,
     report,
+    duration: h,
   };
 }
 
