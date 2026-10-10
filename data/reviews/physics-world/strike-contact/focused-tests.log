@@ -1,0 +1,13 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/strike-force-integration.test.ts (4 tests) 101ms
+ ✓ test/motion-contact.test.ts (9 tests) 558ms
+ ✓ test/actuation.test.ts (9 tests) 123ms
+ ✓ test/hand-force-integration.test.ts (4 tests) 54ms
+
+ Test Files  4 passed (4)
+      Tests  26 passed (26)
+   Start at  22:25:09
+   Duration  2.41s (transform 673ms, setup 0ms, collect 909ms, tests 836ms, environment 1ms, prepare 210ms)
+

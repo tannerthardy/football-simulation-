@@ -123,6 +123,17 @@ export interface ContactRecord {
   closing: number;
 }
 
+/** Achieved technique impulse, aggregated over one requested action's tick.
+ * Requested or out-of-reach strikes are not physical contact. */
+export interface StrikeRecord {
+  i: number;
+  j: number;
+  impulse: Vec2;
+  work: number;
+  /** Requested height; the support load uses its ordinary body-height clamp. */
+  height?: number;
+}
+
 export interface StepReport {
   /** Substeps used by the contact island (1 when nobody was near contact). */
   substeps: number;
@@ -142,6 +153,7 @@ export interface StepReport {
    * energy is represented by the reduced support model. */
   work: { before: number; after: number; hands: number; grasps: number; strikes: number; contacts: number; residual: number };
   contacts: ContactRecord[];
+  strikes: StrikeRecord[];
   /** Bodies that started to fall, reached the ground, or got up this step. */
   falls: number[];
   downs: number[];
@@ -315,7 +327,7 @@ export class World {
   substeps?: number;
   private readonly index = new Map<Body, number>();
   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
-  private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number }> = [];
+  private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; delivered?: StrikeRecord }> = [];
   private readonly reels = new Map<GraspJoint, number>();
   /** Reference adjustment preserves the held point when a grip slides down. */
   private readonly attachments = new WeakMap<GraspJoint, { share: number; reference: Vec2; foot: NonNullable<Support['foot']>; bounded?: boolean;
@@ -440,7 +452,7 @@ export class World {
       groundWork: new Array(n).fill(0), groundYawImpulse: new Array(n).fill(0), groundYawWork: new Array(n).fill(0),
       armWork: new Array(n).fill(0), armWorkLimit: new Array(n).fill(0), armImpulse: new Array(n).fill(0), armImpulseLimit: new Array(n).fill(0),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
-      contacts: [], falls: [], downs: [], rises: [], maxPenetration: 0,
+      contacts: [], strikes: [], falls: [], downs: [], rises: [], maxPenetration: 0,
       maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(() => ({ x: 0, y: 0 })),
       supportMotorWork: new Array(n).fill(0), supportMotorWorkLimit: new Array(n).fill(0), passiveGraspWork: 0,
       maxHeldRecoveryExcursion: 0, lowerHoldReleases: 0,
@@ -911,7 +923,26 @@ export class World {
         if (!this.canStrike(p.a,p.b)) continue;
         const scale = this.armScale[ia] * h / this.tickDt;
         const x = p.x*scale, y = p.y*scale;
+        const workBefore = report.work.strikes;
         const delivered = this.pairImpulse(ia,ib,x,y,ia,'strikes');
+        // A technique strike is a bounded force developed across h, just
+        // like hands, rather than a collision impulse at its start. Center
+        // only its achieved dose after shared force/work limits. Ground and
+        // hand corrections still accumulate independently; impacts do not.
+        this.travelAdjustX[ia] += .5 * x * delivered / this.mass[ia];
+        this.travelAdjustY[ia] += .5 * y * delivered / this.mass[ia];
+        this.travelAdjustX[ib] -= .5 * x * delivered / this.mass[ib];
+        this.travelAdjustY[ib] -= .5 * y * delivered / this.mass[ib];
+        if (delivered > 0 && Math.hypot(x, y) > 0) {
+          if (!p.delivered) {
+            p.delivered = { i: ia, j: ib, impulse: { x: 0, y: 0 }, work: 0, height: p.height };
+            report.strikes.push(p.delivered);
+          }
+          const record = p.delivered;
+          record.impulse.x += x * delivered;
+          record.impulse.y += y * delivered;
+          record.work += report.work.strikes - workBefore;
+        }
         report.armImpulse[ia] += Math.hypot(x,y)*delivered;
         this.addLoad(ia, ib, 1, 0, x*delivered, y*delivered, p.height);
       }

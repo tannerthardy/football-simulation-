@@ -2,8 +2,17 @@
 
 Start with these shared project references:
 
+- [Finite strike forces and slice validation](docs/reviews/strike-force-and-slice-validation.md):
+  **latest physics increment.** Center achieved finite strike-force travel
+  without changing force/work/reach limits or adding solver steps. Actual
+  delivered strikes are now observable. The slice lab's v2 installation checks
+  formation strength against staged motion and counts strike contact separately
+  from acquired/held hand load. The old lab used the opposite formation side
+  and omitted strikes; its no-load interpretation is superseded. Read the
+  corrected film, constant-force oracle, transfer guards and remaining OL
+  approach debt. Blanket cutoff reversal/slowdown candidates were rejected.
 - [Sustained hand-force integration](docs/reviews/hand-force-integration.md):
-  **latest shipped physics increment.** Achieved bounded hand forces now carry
+  Previous shipped physics increment. Achieved bounded hand forces now carry
   midpoint velocity over their physical interval; instantaneous torso impacts
   retain their timing. The retained redirect's native/refined error falls from
   0.822 to 0.182 yd without more solver steps or force fitting. Individual

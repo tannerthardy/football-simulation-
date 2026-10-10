@@ -1,5 +1,10 @@
 # Sustained hand force and position integration
 
+The [new strike/slice review](strike-force-and-slice-validation.md) supersedes
+the historical slice lab's no-load interpretation: formation strength was
+inconsistent and delivered strikes were omitted from its contact predicate.
+The numerical hand-force evidence below retains its original source and scope.
+
 ## Status and recommendation
 
 The live default uses centered travel for the **achieved finite-force hand
@@ -190,10 +195,11 @@ and lost combination ownership now have their own narrow repairs and isolated
 recordings, separate from this physical integration change.
 
 Start with `MC-S7-wideSurface-R-V0-P12` in the
-[moving slice-block film](../../viewer/motion-contact.zip): engagement is
-acquired and shed for leverage before transmitting load. Separate approach,
-fit angle, achieved hand/body force and actual sustain; do not count an
-engagement label as an established block. The
+[corrected moving slice-block film](../../viewer/motion-contact.zip). The
+historical clip shed before maintained hand/body load but did transmit a real
+defender strike; its inconsistent installation is repaired in v2. Separate
+approach, fit angle, achieved force channels and actual sustain; do not count
+an engagement label as an established block. The
 [OL assignment audit](ol-path-audit.md) also retains a wide-zone cutoff
 overrun with a stale perceived shoulder. Improve these requests within the
 shared capabilities before increasing force or agility. The

@@ -1,5 +1,16 @@
 # Reduced split-zone snap-momentum/contact witnesses
 
+**Historical v1 evidence.** The fixture declared formation strength opposite
+the staged TE's side, and its first-contact predicate omitted delivered
+technique strikes. The counts below therefore describe the historical
+hand/body channels only. They do not prove that no physical force acted.
+Read the [corrected installation/accounting review](../../../../docs/reviews/strike-force-and-slice-validation.md)
+and [v2 evidence](../strike-contact/README.md) before interpreting these trials.
+The original offline film is preserved as
+[historical HTML](../../../../viewer/motion-contact-historical.html) and
+[ZIP](../../../../viewer/motion-contact-historical.zip); its old exporter hashes
+refer to those exact bytes. The current `viewer/motion-contact` files show v2.
+
 Source: `bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631`.
 The exact diagnostic/tool/profile/input/initial-state pins are in `summary.json`,
 the raw report, and `export-validation.json`. All selections were fixed before outcomes.

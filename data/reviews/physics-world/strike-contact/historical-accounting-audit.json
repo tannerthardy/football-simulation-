@@ -1,0 +1,417 @@
+{
+  "schema": "historical-motion-accounting-audit-v1",
+  "parentCommit": "9be35b25e77c8f49a4b13bd2164002180ef1fbb3",
+  "rawPath": "data/reviews/physics-world/motion-contact/raw.json.gz",
+  "rawSha256": "6925a441fa2c4900ee487aded9e168f31a518e63fc81272e4c5f47049c9582d1",
+  "scope": "Historical firstContact omitted actual finite strikes; these are signed reported strike-work witnesses, not a replay resimulation or full per-pair achieved impulse recovery.",
+  "nativeWitnessCount": 24,
+  "nativeRowsWithSignedStrikeWork": [
+    {
+      "id": "MC-S7-wideSurface-R-V0-P12",
+      "t": 2.15,
+      "strikeWork": -56.01909207504552,
+      "armImpulse": [
+        0,
+        44.557004790094176
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S7-wideSurface-R-V2.5-P12",
+      "t": 1.8,
+      "strikeWork": -40.3162183704817,
+      "armImpulse": [
+        0,
+        44.55992286748563
+      ],
+      "reportedOldFirstContact": [
+        2.4000000000000004,
+        2.45
+      ]
+    },
+    {
+      "id": "MC-S7-wideSurface-R-V4-P12",
+      "t": 1.6500000000000001,
+      "strikeWork": -58.02807039284935,
+      "armImpulse": [
+        0,
+        44.56151271641057
+      ],
+      "reportedOldFirstContact": [
+        2.25,
+        2.3
+      ]
+    },
+    {
+      "id": "MC-S7-wideSurface-R-V4-P12",
+      "t": 2.45,
+      "strikeWork": -13.881109809792223,
+      "armImpulse": [
+        0,
+        44.552797579247
+      ],
+      "reportedOldFirstContact": [
+        2.25,
+        2.3
+      ]
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V0-P12",
+      "t": 2.3000000000000003,
+      "strikeWork": -66.205102981192,
+      "armImpulse": [
+        0,
+        44.55530334651534
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V2.5-P12",
+      "t": 1.6,
+      "strikeWork": 20.102330706924857,
+      "armImpulse": [
+        0,
+        44.56079393942458
+      ],
+      "reportedOldFirstContact": [
+        1.4000000000000001,
+        1.4500000000000002
+      ]
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V2.5-P12",
+      "t": 2.2,
+      "strikeWork": -21.669722548700932,
+      "armImpulse": [
+        0,
+        44.55439736388998
+      ],
+      "reportedOldFirstContact": [
+        1.4000000000000001,
+        1.4500000000000002
+      ]
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V4-P12",
+      "t": 1.6,
+      "strikeWork": -8.47025315372249,
+      "armImpulse": [
+        0,
+        44.560091219364864
+      ],
+      "reportedOldFirstContact": [
+        1.35,
+        1.4000000000000001
+      ]
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V4-P12",
+      "t": 2.2,
+      "strikeWork": 40.54456420798417,
+      "armImpulse": [
+        0,
+        44.55311191991672
+      ],
+      "reportedOldFirstContact": [
+        1.35,
+        1.4000000000000001
+      ]
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V0-P12",
+      "t": 2.15,
+      "strikeWork": -56.01909207504552,
+      "armImpulse": [
+        0,
+        44.557004790094176
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V2.5-P12",
+      "t": 1.8,
+      "strikeWork": -40.3162183704817,
+      "armImpulse": [
+        0,
+        44.55992286748563
+      ],
+      "reportedOldFirstContact": [
+        2.4000000000000004,
+        2.45
+      ]
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V4-P12",
+      "t": 1.6500000000000001,
+      "strikeWork": -58.02807039284935,
+      "armImpulse": [
+        0,
+        44.56151271641057
+      ],
+      "reportedOldFirstContact": [
+        2.25,
+        2.3
+      ]
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V4-P12",
+      "t": 2.45,
+      "strikeWork": -13.88110980979197,
+      "armImpulse": [
+        0,
+        44.552797579247
+      ],
+      "reportedOldFirstContact": [
+        2.25,
+        2.3
+      ]
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V0-P12",
+      "t": 2.3000000000000003,
+      "strikeWork": -66.20510298119203,
+      "armImpulse": [
+        0,
+        44.55530334651534
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V2.5-P12",
+      "t": 1.6,
+      "strikeWork": 20.102330706924857,
+      "armImpulse": [
+        0,
+        44.56079393942458
+      ],
+      "reportedOldFirstContact": [
+        1.4000000000000001,
+        1.4500000000000002
+      ]
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V2.5-P12",
+      "t": 2.2,
+      "strikeWork": -21.669722548700932,
+      "armImpulse": [
+        0,
+        44.55439736388998
+      ],
+      "reportedOldFirstContact": [
+        1.4000000000000001,
+        1.4500000000000002
+      ]
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V4-P12",
+      "t": 1.6,
+      "strikeWork": -8.47025315372249,
+      "armImpulse": [
+        0,
+        44.560091219364864
+      ],
+      "reportedOldFirstContact": [
+        1.35,
+        1.4000000000000001
+      ]
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V4-P12",
+      "t": 2.2,
+      "strikeWork": 40.54456420798431,
+      "armImpulse": [
+        0,
+        44.55311191991672
+      ],
+      "reportedOldFirstContact": [
+        1.35,
+        1.4000000000000001
+      ]
+    },
+    {
+      "id": "MC-S19-wideSurface-R-V0-P12",
+      "t": 2.1,
+      "strikeWork": -46.17341382036766,
+      "armImpulse": [
+        0,
+        46.501676578125675
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S19-wideSurface-R-V2.5-P12",
+      "t": 1.9000000000000001,
+      "strikeWork": -54.600390532210746,
+      "armImpulse": [
+        0,
+        46.50357774676403
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S19-wideSurface-R-V4-P12",
+      "t": 1.5,
+      "strikeWork": 14.427964761081677,
+      "armImpulse": [
+        0,
+        46.5066413636703
+      ],
+      "reportedOldFirstContact": [
+        1.4000000000000001,
+        1.4500000000000002
+      ]
+    },
+    {
+      "id": "MC-S19-wideSurface-R-V4-P12",
+      "t": 2.1,
+      "strikeWork": -28.924765023825298,
+      "armImpulse": [
+        0,
+        46.500120794401276
+      ],
+      "reportedOldFirstContact": [
+        1.4000000000000001,
+        1.4500000000000002
+      ]
+    },
+    {
+      "id": "MC-S19-penetratingEdge-R-V0-P12",
+      "t": 2.25,
+      "strikeWork": -49.77735733966548,
+      "armImpulse": [
+        0,
+        46.49981766497251
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S19-penetratingEdge-R-V2.5-P12",
+      "t": 1.9500000000000002,
+      "strikeWork": -49.36028081635778,
+      "armImpulse": [
+        0,
+        46.50294621456945
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S19-penetratingEdge-R-V4-P12",
+      "t": 1.4500000000000002,
+      "strikeWork": 24.565799135505564,
+      "armImpulse": [
+        0,
+        46.50369442156429
+      ],
+      "reportedOldFirstContact": [
+        1.2000000000000002,
+        1.2500000000000002
+      ]
+    },
+    {
+      "id": "MC-S19-penetratingEdge-R-V4-P12",
+      "t": 2.0500000000000003,
+      "strikeWork": 13.086607772230387,
+      "armImpulse": [
+        0,
+        46.493305669078374
+      ],
+      "reportedOldFirstContact": [
+        1.2000000000000002,
+        1.2500000000000002
+      ]
+    },
+    {
+      "id": "MC-S19-wideSurface-L-V0-P12",
+      "t": 2.1,
+      "strikeWork": -46.17341382036766,
+      "armImpulse": [
+        0,
+        46.501676578125675
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S19-wideSurface-L-V2.5-P12",
+      "t": 1.9000000000000001,
+      "strikeWork": -54.600390532210746,
+      "armImpulse": [
+        0,
+        46.50357774676403
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S19-wideSurface-L-V4-P12",
+      "t": 1.5,
+      "strikeWork": 14.427964761081677,
+      "armImpulse": [
+        0,
+        46.5066413636703
+      ],
+      "reportedOldFirstContact": [
+        1.4000000000000001,
+        1.4500000000000002
+      ]
+    },
+    {
+      "id": "MC-S19-wideSurface-L-V4-P12",
+      "t": 2.1,
+      "strikeWork": -28.9247650238253,
+      "armImpulse": [
+        0,
+        46.500120794401276
+      ],
+      "reportedOldFirstContact": [
+        1.4000000000000001,
+        1.4500000000000002
+      ]
+    },
+    {
+      "id": "MC-S19-penetratingEdge-L-V0-P12",
+      "t": 2.25,
+      "strikeWork": -49.77735733966549,
+      "armImpulse": [
+        0,
+        46.49981766497251
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S19-penetratingEdge-L-V2.5-P12",
+      "t": 1.9500000000000002,
+      "strikeWork": -49.36028081635777,
+      "armImpulse": [
+        0,
+        46.50294621456945
+      ],
+      "reportedOldFirstContact": null
+    },
+    {
+      "id": "MC-S19-penetratingEdge-L-V4-P12",
+      "t": 1.4500000000000002,
+      "strikeWork": 24.565799135505564,
+      "armImpulse": [
+        0,
+        46.50369442156429
+      ],
+      "reportedOldFirstContact": [
+        1.2000000000000002,
+        1.2500000000000002
+      ]
+    },
+    {
+      "id": "MC-S19-penetratingEdge-L-V4-P12",
+      "t": 2.0500000000000003,
+      "strikeWork": 13.086607772230344,
+      "armImpulse": [
+        0,
+        46.493305669078374
+      ],
+      "reportedOldFirstContact": [
+        1.2000000000000002,
+        1.2500000000000002
+      ]
+    }
+  ],
+  "fixtureIssue": "Historical formation strength opposes staged TE side/custom slice drive. Corrected fixture checks declared strength, staged side and slice direction."
+}

@@ -1,6 +1,13 @@
 # Shared NFL data
 
-Current physics status: [Sustained hand-force integration](../docs/reviews/hand-force-integration.md).
+Current physics status: [Finite strike forces and slice validation](../docs/reviews/strike-force-and-slice-validation.md).
+The [new evidence and commands](reviews/physics-world/strike-contact/README.md)
+separate the physical strike repair from the corrected slice installation.
+Watch the [updated offline slice film](../viewer/motion-contact.zip). Historical
+v1 no-load labels omitted actual strikes and used inconsistent formation
+strength; retain them as historical evidence, not current production failures.
+
+Previous physics status: [Sustained hand-force integration](../docs/reviews/hand-force-integration.md).
 
 The latest repair centers actual bounded hand-force travel without changing
 strength or global resolution. Source/mode-labelled refinement, same-input

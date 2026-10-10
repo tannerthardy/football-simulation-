@@ -15,7 +15,7 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../playbook/defense.js';
 import { FORMATION_BY_ID } from '../playbook/formations.js';
 import { fatigueFactor } from '../physics/kinematics.js';
 import { availability, baseRadiusAt, supportParams } from '../physics/support.js';
-import type { Intent } from '../physics/world.js';
+import type { HandJoint, Intent, StepReport } from '../physics/world.js';
 import type { Agent } from '../sim/agent.js';
 import { RunBlocker, type RunBlockPlan } from '../sim/behaviors/blocking.js';
 import { RunDefender } from '../sim/behaviors/defense.js';
@@ -41,6 +41,21 @@ export const motionContactDuration = 2.5;
 const vec = (p: Vec2) => ({ x: p.x, y: p.y });
 const parked = { kind: 'parked-reference', update: (): Intent => ({ vel: { x: 0, y: 0 } }) };
 
+/** Read achieved force channels, never engagement labels or requested strikes. */
+export function motionContactLoads(report: Pick<StepReport, 'contacts' | 'strikes'>, a: number, b: number,
+  hands?: Pick<HandJoint, 'normalForce' | 'tangentForce'>) {
+  const pair = (r: { i: number; j: number }) => (r.i === a && r.j === b) || (r.i === b && r.j === a);
+  const contacts = report.contacts.filter(r => pair(r) && r.impulse > 0);
+  const strikes = report.strikes.filter(r => pair(r) && Math.hypot(r.impulse.x, r.impulse.y) > 0);
+  const handNormalForce = hands?.normalForce ?? 0, handTangentialForce = hands?.tangentForce ?? 0;
+  const sources: Array<'body' | 'hands' | 'strike'> = [];
+  if (contacts.length) sources.push('body');
+  if (handNormalForce || handTangentialForce) sources.push('hands');
+  if (strikes.length) sources.push('strike');
+  return { contacts, strikes, sources, handNormalForce, handTangentialForce,
+    handBodyLoaded: sources.includes('body') || sources.includes('hands'), loaded: sources.length > 0 };
+}
+
 function body(a: Agent) {
   const s = a.body.support!, params = supportParams(a.profile);
   return { pos: vec(a.pos), vel: vec(a.vel), facing: a.facing, energy: a.body.energy, spin: a.body.spin ?? 0,
@@ -57,7 +72,7 @@ function build(input: MotionContactInput, recording: boolean) {
   const sim = new PlaySim({
     offense: pickOffense(generateTeam(new Rng(input.seed), 'Slice offense', 'OFF', { strength: .55 }), '12'),
     defense: pickDefense(generateTeam(new Rng(input.seed + 1), 'Slice defense', 'DEF', { strength: .55 }), 'base43'),
-    offCall: { formation: FORMATION_BY_ID.gun_wing_12, flip: input.side < 0, kind: 'run', run: RUN_BY_ID.split_zone, label: 'Reduced slice contact' },
+    offCall: { formation: FORMATION_BY_ID.gun_wing_12, flip: input.side > 0, kind: 'run', run: RUN_BY_ID.split_zone, label: 'Reduced slice contact' },
     defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Reduced edge fit' },
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed: input.seed, record: recording, recordLevel: 'full', recordEvery: 1,
   });
@@ -85,6 +100,11 @@ function build(input: MotionContactInput, recording: boolean) {
   const plan: RunBlockPlan = { kind: 'pull', target: end, pullRole: 'kick',
     drive: { x: .3 / Math.hypot(.3, 1), y: -side / Math.hypot(.3, 1) },
     pullPath: [{ x: sim.los - 1.4, y: te.pos.y }, { x: sim.los - 1.3, y: end.pos.y + side * .65 }] };
+  const installation = { name: 'formation-consistent-v2' as const,
+    formationFlip: sim.offCall.flip, strongSign: sim.offAlign.strongSign,
+    stagedTESide: side, sliceSign: -sim.offAlign.strongSign, plannedDriveSign: Math.sign(plan.drive.y) };
+  if (installation.strongSign !== side || installation.sliceSign !== installation.plannedDriveSign)
+    throw new Error('Staged slice installation does not match formation strength');
   te.behavior = new RunBlocker(plan);
   end.behavior = new RunDefender('C', -side);
   end.runFit = { gap: 'C', side: -side, kind: 'edge', technique: 'control', edge: 'box', pace: 'stack' };
@@ -104,7 +124,7 @@ function build(input: MotionContactInput, recording: boolean) {
     sim.perception.record(sim.agents);
   }
   sim.agents.forEach(a => { a.body.pos = initialPositions[a.idx]; });
-  return { sim, te, end, plan, executionErrors };
+  return { sim, te, end, plan, executionErrors, installation };
 }
 
 /**
@@ -113,7 +133,7 @@ function build(input: MotionContactInput, recording: boolean) {
  */
 export function motionContact(input: MotionContactInput, options: { observe?: boolean; recording?: boolean } = {}) {
   const observe = options.observe ?? true, recording = options.recording ?? false;
-  const { sim, te, end, plan, executionErrors } = build(input, recording);
+  const { sim, te, end, plan, executionErrors, installation } = build(input, recording);
   const frames: any[] = [], replayFrames: Frame[] = [];
   // Preserve the actual observation timestamp when the positional frame is at
   // the end of its 50 ms interval. Never issue extra perception reads.
@@ -128,7 +148,7 @@ export function motionContact(input: MotionContactInput, options: { observe?: bo
   const player = (a: Agent) => ({ idx: a.idx, team: a.team, slot: a.slot, name: `${a.player.firstName} ${a.player.lastName}`,
     jersey: a.player.jersey, position: a.player.position, heightIn: a.player.measurables.heightIn,
     weightLb: a.player.measurables.weightLb, ratings: { ...a.player.ratings }, profile: { ...a.profile } });
-  const initial = { te: body(te), end: body(end), plan: { ...plan, target: end.idx },
+  const initial = { te: body(te), end: body(end), plan: { ...plan, target: end.idx }, installation,
     readyAt: { te: te.snapReadyAt, end: end.snapReadyAt }, executionErrors,
     mirroredExecutionErrors: { te: te.mind.executionError, end: end.mind.executionError },
     teKineticEnergyKgYd2PerS2: .5 * te.profile.massKg * input.initialSpeed ** 2,
@@ -137,7 +157,7 @@ export function motionContact(input: MotionContactInput, options: { observe?: bo
   // Named streams/cached mind values are read, never advanced, for comparison.
   const copyState = (x: unknown) => JSON.parse(JSON.stringify(x, (_key, value) =>
     value instanceof Map ? { entries: [...value] } : value instanceof Set ? { values: [...value] } : value));
-  const initialContext = { rng: copyState(sim.rng), agents: sim.agents.map(a => ({ idx: a.idx, slot: a.slot,
+  const initialContext = { installation, rng: copyState(sim.rng), agents: sim.agents.map(a => ({ idx: a.idx, slot: a.slot,
     body: copyState(a.body), mind: copyState(a.mind), readyAt: a.snapReadyAt, runFit: a.runFit ?? null,
     behavior: a.behavior.kind })), history: { samples: 24, dt: motionContactDt, law: 'constant-velocity backward from staged state' } };
   const filmFrame = () => {
@@ -148,7 +168,11 @@ export function motionContact(input: MotionContactInput, options: { observe?: bo
     if (traceFrame && observations.length) traceFrame.perception = observations.slice();
   };
   if (recording) filmFrame();
-  let firstAcquisition: any = null, firstContact: any = null, closest = Infinity;
+  let firstAcquisition: any = null, firstContact: any = null, firstHandBodyContact: any = null, closest = Infinity;
+  const contactMetrics = { engagedDecisionIntervals: 0, actualLoadedDecisionIntervals: 0,
+    handBodyLoadedDecisionIntervals: 0, engagedHandBodyLoadedDecisionIntervals: 0,
+    handNormalAbsoluteImpulse: 0, handTangentialAbsoluteImpulse: 0, bodyNormalImpulse: 0,
+    strikeImpulseMagnitudeSum: 0, strikeKineticWork: 0 };
   let momentumResidual = 0, workResidual = 0, motorWorkExcess = 0, armImpulseExcess = 0, armWorkExcess = 0, overlap = 0;
   const falls: Array<{ t: number; slot: string; cause: string | null }> = [];
   const history: unknown[] = [];
@@ -185,20 +209,33 @@ export function motionContact(input: MotionContactInput, options: { observe?: bo
     armImpulseExcess = Math.max(armImpulseExcess, ...report.armImpulse.map((w, i) => w - report.armImpulseLimit[i]));
     armWorkExcess = Math.max(armWorkExcess, ...report.armWork.map((w, i) => w - report.armWorkLimit[i]));
     overlap = Math.max(overlap, report.maxPenetration);
-    const physical = report.contacts.filter(c => (c.i === te.idx && c.j === end.idx) || (c.j === te.idx && c.i === end.idx));
-    const handLoad = hands && (Math.abs(hands.normalForce ?? 0) + Math.abs(hands.tangentForce ?? 0));
-    if (!firstContact && (physical.length || handLoad)) {
+    const loads = motionContactLoads(report, te.idx, end.idx, hands), physical = loads.contacts;
+    contactMetrics.engagedDecisionIntervals += Number(!!te.engagement);
+    contactMetrics.actualLoadedDecisionIntervals += Number(loads.loaded);
+    contactMetrics.handBodyLoadedDecisionIntervals += Number(loads.handBodyLoaded);
+    contactMetrics.engagedHandBodyLoadedDecisionIntervals += Number(!!te.engagement && loads.handBodyLoaded);
+    contactMetrics.handNormalAbsoluteImpulse += Math.abs(loads.handNormalForce) * motionContactDt;
+    contactMetrics.handTangentialAbsoluteImpulse += Math.abs(loads.handTangentialForce) * motionContactDt;
+    contactMetrics.bodyNormalImpulse += physical.reduce((s, c) => s + c.impulse, 0);
+    contactMetrics.strikeImpulseMagnitudeSum += loads.strikes.reduce((s, c) => s + Math.hypot(c.impulse.x, c.impulse.y), 0);
+    contactMetrics.strikeKineticWork += loads.strikes.reduce((s, c) => s + c.work, 0);
+    if ((!firstContact && loads.loaded) || (!firstHandBodyContact && loads.handBodyLoaded)) {
       const dx = end.pos.x - te.pos.x, dy = end.pos.y - te.pos.y, d = Math.hypot(dx, dy),
         vx = te.vel.x - end.vel.x, vy = te.vel.y - end.vel.y;
-      firstContact = { interval: [sim.t, sim.t + motionContactDt], source: physical.length ? 'body' : 'hands', before,
+      const contact = { interval: [sim.t, sim.t + motionContactDt], source: loads.sources[0], sources: loads.sources, before,
         bodyClosingAtTouch: physical.length ? Math.max(...physical.map(c => c.closing)) : null,
         bodyNormalImpulse: physical.reduce((s, c) => s + c.impulse, 0),
         endpointRelativeNormalSpeed: (vx * dx + vy * dy) / d,
         endpointRelativeTangentialSpeed: (-vx * dy + vy * dx) / d,
         handNormalImpulse: (hands?.normalForce ?? 0) * motionContactDt,
         handTangentialImpulse: (hands?.tangentForce ?? 0) * motionContactDt, capacities,
+        strikes: loads.strikes,
         after: { te: body(te), end: body(end) } };
-      sim.event('block_contact', te, end, 'Reduced slice: actual hand/body load');
+      if (!firstContact && loads.loaded) {
+        firstContact = contact;
+        sim.event('block_contact', te, end, `Reduced slice: actual ${loads.sources.join('/')} load`);
+      }
+      if (!firstHandBodyContact && loads.handBodyLoaded) firstHandBodyContact = contact;
     }
     for (const idx of report.falls) if (idx === te.idx || idx === end.idx)
       falls.push({ t: sim.t + motionContactDt, slot: sim.agents[idx].slot, cause: sim.agents[idx].body.support?.cause ?? null });
@@ -209,7 +246,8 @@ export function motionContact(input: MotionContactInput, options: { observe?: bo
       tags: { te: [...te.tags], end: [...end.tags] }, handCapacities: capacities,
       handForces: hands ? { normal: hands.normalForce ?? 0, tangent: hands.tangentForce ?? 0 } : null,
       handImpulses: hands ? { normal: (hands.normalForce ?? 0) * motionContactDt, tangent: (hands.tangentForce ?? 0) * motionContactDt } : null,
-      contacts: physical, groundImpulse: [report.groundImpulse[te.idx], report.groundImpulse[end.idx]],
+      contacts: physical, strikes: loads.strikes, loadSources: loads.sources,
+      groundImpulse: [report.groundImpulse[te.idx], report.groundImpulse[end.idx]],
       groundWork: [report.groundWork[te.idx], report.groundWork[end.idx]], work: report.work,
       armImpulse: [report.armImpulse[te.idx], report.armImpulse[end.idx]],
       armImpulseLimit: [report.armImpulseLimit[te.idx], report.armImpulseLimit[end.idx]],
@@ -223,8 +261,10 @@ export function motionContact(input: MotionContactInput, options: { observe?: bo
   return { input, id: `MC-S${input.seed}-${input.geometry}-${input.side < 0 ? 'L' : 'R'}-V${input.initialSpeed}-P${input.substeps}`,
     selection: 'fixed-before-outcomes' as const, negativeControl: input.geometry === 'initialReachNegative',
     decisionDt: motionContactDt, duration: motionContactDuration, initial, initialContext,
-    participants: { te: player(te), end: player(end) }, closest, firstAcquisition, firstContact, falls,
-    contactClassification: firstContact ? 'loaded-contact' : firstAcquisition ? 'acquired-without-load' : 'no-acquisition-within-window',
+    participants: { te: player(te), end: player(end) }, closest, firstAcquisition, firstContact, firstHandBodyContact,
+    contactMetrics, falls,
+    contactClassification: firstHandBodyContact ? 'hand-body-loaded-contact' : firstContact ? 'strike-only-contact'
+      : firstAcquisition ? 'acquired-without-actual-load' : 'no-acquisition-within-window',
     endpoint: { te: body(te), end: body(end), engaged: !!te.engagement },
     invariants: { momentumResidual, workResidual, motorWorkExcess, armImpulseExcess, armWorkExcess, overlap },
     physicalHistory: history, rngNext: sim.rng.nextU32(), frames,

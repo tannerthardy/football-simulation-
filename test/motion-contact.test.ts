@@ -1,10 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
-import { motionContact, type MotionContactInput } from '../src/lab/motion-contact.js';
+import { motionContact, motionContactLoads, type MotionContactInput } from '../src/lab/motion-contact.js';
+import type { Body } from '../src/physics/kinematics.js';
+import { World } from '../src/physics/world.js';
 
 const fixture: MotionContactInput = { seed: 7, side: 1, geometry: 'wideSurface', initialSpeed: 4, substeps: 12 };
 const plain = (r: ReturnType<typeof motionContact>) => ({ history: r.physicalHistory, endpoint: r.endpoint,
-  initialContext: r.initialContext, firstAcquisition: r.firstAcquisition, falls: r.falls, rngNext: r.rngNext });
+  initialContext: r.initialContext, firstAcquisition: r.firstAcquisition, contactMetrics: r.contactMetrics,
+  firstContact: r.firstContact && { ...r.firstContact, before: null },
+  firstHandBodyContact: r.firstHandBodyContact && { ...r.firstHandBodyContact, before: null },
+  falls: r.falls, rngNext: r.rngNext });
+
+const strikeBody = (x: number): Body => ({ pos: { x, y: 0 }, vel: { x: 0, y: 0 }, facing: 0, energy: 1,
+  profile: { massKg: 100, radius: .3, reach: 1, heightYd: 2.05,
+    vmax: 9, tau: 1.3, brake: 6, lateral: 6, turnRate: 8, backpedal: .6,
+    shuffle: .55, maxCatchHeight: 3, reactReach: 2.6, reactionTime: .25,
+    power: 100, balance: .5, stepSpeed: 3.4, getUp: .9 } });
 
 describe('reduced split-zone snap-time momentum witness', () => {
   it('rejects invalid physical inputs', () => {
@@ -56,12 +67,56 @@ describe('reduced split-zone snap-time momentum witness', () => {
     }
   });
 
+  it('installs both staged sides consistently and permits the existing visible-cue log adjustment', () => {
+    for (const side of [1, -1] as const) {
+      const r = motionContact({ ...fixture, side, initialSpeed: 0 }, { recording: true });
+      expect(r.initial.installation).toEqual({ name: 'formation-consistent-v2', formationFlip: side > 0,
+        strongSign: side, stagedTESide: side, sliceSign: -side, plannedDriveSign: -side });
+      expect(Math.sign(r.initial.te.pos.y - CENTER_Y)).toBe(side);
+      expect(Math.sign(r.initial.end.pos.y - CENTER_Y)).toBe(-side);
+      const log = r.recording?.events.find(e => e.type === 'block_log');
+      expect(log?.note).toBe('kick target crossed inside shoulder');
+      expect(log!.t).toBeLessThan(r.firstAcquisition.t);
+      expect(r.firstHandBodyContact).not.toBeNull();
+      expect(r.contactMetrics.engagedHandBodyLoadedDecisionIntervals).toBeGreaterThan(0);
+    }
+  });
+
+  it('counts a physically delivered strike as actual contact without inventing a held hand/body block', () => {
+    const a = strikeBody(0), b = strikeBody(1), world = new World([a, b], { substeps: 12 });
+    world.strike(a, b, { x: 5, y: 2 });
+    const report = world.step([{ vel: { x: 0, y: 0 }, free: true }, { vel: { x: 0, y: 0 }, free: true }], .05);
+    const load = motionContactLoads(report, 0, 1);
+    expect(report.contacts).toHaveLength(0);
+    expect(report.strikes).toHaveLength(1);
+    expect(load.sources).toEqual(['strike']);
+    expect(load.loaded).toBe(true);
+    expect(load.handBodyLoaded).toBe(false);
+    expect(load.strikes[0].impulse.x).toBeGreaterThan(0);
+    expect(load.strikes[0].work).toBeCloseTo(report.work.strikes, 10);
+    expect(motionContactLoads(report, 0, 2).loaded).toBe(false);
+  });
+
+  it('does not turn an unreachable requested strike into a recorded contact', () => {
+    const a = strikeBody(0), b = strikeBody(3), world = new World([a, b], { substeps: 12 });
+    world.strike(a, b, { x: 5, y: 2 });
+    const report = world.step([{ vel: { x: 0, y: 0 }, free: true }, { vel: { x: 0, y: 0 }, free: true }], .05);
+    expect(report.strikes).toHaveLength(0);
+    expect(motionContactLoads(report, 0, 1).sources).toEqual([]);
+    expect(motionContactLoads(report, 0, 1).loaded).toBe(false);
+    expect(report.work.strikes).toBe(0);
+  });
+
   it('preserves unreachable high-speed negative instead of prescribing contact', () => {
     const r = motionContact({ ...fixture, geometry: 'initialReachNegative', initialSpeed: 8 });
     expect(r.initial.initialReachable).toBe(false);
     expect(r.negativeControl).toBe(true);
     expect(r.firstAcquisition).toBeNull();
     expect(r.firstContact).toBeNull();
+    expect(r.firstHandBodyContact).toBeNull();
+    expect(r.contactMetrics.actualLoadedDecisionIntervals).toBe(0);
+    expect(r.contactMetrics.strikeImpulseMagnitudeSum).toBe(0);
+    expect(r.frames.every(f => f.strikes.length === 0)).toBe(true);
     expect(r.contactClassification).toBe('no-acquisition-within-window');
     expect(r.initial.teKineticEnergyKgYd2PerS2).toBeGreaterThan(0);
   });

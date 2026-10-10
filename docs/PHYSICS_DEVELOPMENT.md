@@ -1,7 +1,15 @@
 # Physics development and testing
 
-Read [Sustained hand-force integration](reviews/hand-force-integration.md) first
-for the latest numerical repair. Continuous bounded hand forces now use their
+Read [Finite strike forces and slice validation](reviews/strike-force-and-slice-validation.md)
+first. Bounded strikes now use achieved midpoint travel alongside hands;
+force/work limits and instantaneous torso impacts are unchanged. The corrected
+slice lab validates formation/motion-side consistency and counts delivered
+strike contact separately from hand/body load and engagement labels. Its old
+wrong-side/no-load inference is superseded. Use corrected installation and
+observable loads before modifying OL approach or extending body complexity.
+
+Then read [Sustained hand-force integration](reviews/hand-force-integration.md)
+for the preceding numerical repair. Continuous bounded hand forces now use their
 midpoint velocity for travel, with the existing force/work budgets; impacts
 are unchanged. Exact constant-force checks and retained football/convergence
 guards support the change without more physics steps or new body parameters.
