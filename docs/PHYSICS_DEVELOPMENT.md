@@ -1,12 +1,34 @@
 # Physics development and testing
 
-Read [Sole slip events and the contact lifecycle](reviews/sole-slip-events-and-contact-lifecycle.md)
-first. An isolated fixed-normal slip stop is executed through the same 18D body
-solve, retaining stored shear energy for natural unloading. Independent
+Read [Football-first physics and the simpler support model](reviews/football-first-physics-simplification.md)
+first. The owner paused further 3D expansion and requested the simplest coherent
+football model. Keep the current World bodies; evaluate two persistent massless
+support points with reachable achieved placement and shared ground/leg/grip
+force and work. The first implementation milestone is actual-World stationary
+bracing and held recovery, followed by shared football tasks, ordinary gait,
+localized divergence and before/after film. This model is recommended, not
+implemented. Production still uses legacy support. The fresh
+[live-World evidence and one-command rerun](../data/reviews/physics-world/football-first/README.md)
+retain both the experimental hand-fall improvement and the press-jam regression.
+
+This priority supersedes earlier research “next” lists below. Keep their
+tests, contracts and independently pinned references; do not make complete
+spatial contact lifecycle, anatomical feet or a new backend prerequisites for
+football progress. No force fitting to game averages, global resolution
+increase or PR #1 changes. Physics is not yet ready for the final OK.
+
+## Historical research and production checkpoints
+
+The reports below retain their original source pins and development proposals.
+Their pending steps are historical, not current instructions.
+
+[Sole slip events and the contact lifecycle](reviews/sole-slip-events-and-contact-lifecycle.md)
+records the preceding research. An isolated fixed-normal slip stop is executed
+through the same 18D body solve, retaining stored shear energy for natural unloading. Independent
 stop/rebound and normal-event references separate force, timing and loss from
 energy closure. This is research-only and `World` is unchanged. Physics is NOT
-READY. Next: normal onset/release through a shared event-coordinate chart and
-explicit kinematic/work/candidate certificate, then executed spatial control,
+READY. Its then-proposed next step was normal onset/release through a shared
+event-coordinate chart and explicit kinematic/work/candidate certificate, then executed spatial control,
 grip coupling, body-ground, World and universal/NFL transfer. Do not turn the
 restricted center-patch event into a generic gait or rotating-contact claim.
 

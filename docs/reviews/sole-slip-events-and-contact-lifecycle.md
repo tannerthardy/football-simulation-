@@ -1,5 +1,10 @@
 # Sole slip events and the contact lifecycle
 
+**Priority update:** the owner's simplicity review pauses further spatial
+expansion. Read [Football-first physics and the simpler support model](football-first-physics-simplification.md)
+first. This report retains the validated research and its original proposed
+next steps; those steps are no longer prerequisites for football development.
+
 ## Status and where to start
 
 The research support model now executes a force-balanced sliding stop and

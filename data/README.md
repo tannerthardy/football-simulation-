@@ -1,6 +1,16 @@
 # Shared NFL data
 
-Current physics/data status: [Sole slip events and the contact lifecycle](../docs/reviews/sole-slip-events-and-contact-lifecycle.md).
+Current physics/data status: [Football-first physics and the simpler support model](../docs/reviews/football-first-physics-simplification.md).
+The [live-World comparisons and one-command rerun](reviews/physics-world/football-first/README.md)
+compare the actual legacy and experimental virtual-foot modes. They retain a
+hand-fall improvement and a press-jam regression; neither model is a new two-foot
+implementation. The owner paused further 3D expansion. Next: minimal persistent
+support inside World, shared football tasks, ordinary gait and localized
+convergence/film gates. No new dataset or full spatial solver is a prerequisite.
+Previous research directions below retain their original source pins; their
+“next” lists are superseded by the current review.
+
+Previous research: [Sole slip events and the contact lifecycle](../docs/reviews/sole-slip-events-and-contact-lifecycle.md).
 The [event evidence and commands](reviews/physics-world/sole-events/README.md)
 pin actual coupled stop/unloading checks and independent normal lifecycle targets.
 The implemented slip event is restricted to isolated fixed-normal center contact;

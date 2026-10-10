@@ -2,15 +2,29 @@
 
 Start with these shared project references:
 
+- [Football-first physics and the simpler support model](docs/reviews/football-first-physics-simplification.md):
+  **current priority, following the owner's simplicity review.** Pause further
+  3D foot/ground expansion. Keep existing World bodies and evaluate two persistent
+  massless support points with finite achieved placement and shared traction,
+  leg/grip force and work budgets. This is a recommendation, not a shipped
+  two-foot model. Fresh live-World comparisons retain the hand-fall improvement
+  and serious press-jam regression of the virtual-foot experiment. Read the
+  next three bounded increments and promotion gates. Earlier research remains
+  reference material; its spatial-integration “next” lists are superseded.
+  No new unused backend, hidden strength fitting, global resolution increase,
+  or PR #1 changes. Physics is not yet ready for the owner's final OK.
+
+The entries below are historical checkpoints. Their proposed next steps do not
+override the current football-first priority above.
+
 - [Sole slip events and the contact lifecycle](docs/reviews/sole-slip-events-and-contact-lifecycle.md):
-  **current review.** The research model resolves an isolated fixed-normal
+  Previous, now paused research direction. The model resolves an isolated fixed-normal
   sliding stop through all 18 body momentum equations, keeps stored shear
   energy and continues into elastic unloading. Constant forces are dosed at
   solved duration; failures roll back body/shear/time. Independent stop/rebound
   and normal lifecycle references are pinned. Unused by `World`; Physics is NOT
-  READY. Next: actual normal onset/release with a shared event-coordinate chart
-  and kinematic/work certificate, then bounded spatial control/grip-foot coupling
-  and World/transfer gates. Read the evidence README for supported scope and limits.
+  READY. Its proposed spatial expansion is superseded by the football-first
+  review above. Read the evidence README for supported scope and limits.
 
 - [Sole traction and the next physics step](docs/reviews/sole-traction-and-next-physics-step.md):
   Previous traction increment. Persistent finite shear joins achieved normal support in
