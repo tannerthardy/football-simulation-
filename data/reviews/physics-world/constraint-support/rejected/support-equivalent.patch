@@ -1,0 +1,84 @@
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -107,0 +108,6 @@
++  /** Mean force-feasible foot restriction last tick, 0–1 (diagnostic). */
++  footLock?: number;
++  /** Support-equivalent impulse used to justify foot restriction, kg·yd/s. */
++  footImpulse?: number;
++  /** Actual resisting leg-contact impulse available for that restriction, kg·yd/s. */
++  footLimit?: number;
+@@ -379 +385 @@
+-      else j.force = 0;
++      else { j.force = 0; j.footLock = 0; j.footImpulse = 0; j.footLimit = 0; }
+@@ -446 +452 @@
+-      else j.force = (j.force ?? 0) / dt;
++      else { j.force = (j.force ?? 0) / dt; j.footLock = (j.footLock ?? 0) / dt; }
+@@ -541,0 +548 @@
++      bs[i].support!.feetVel = { x: 0, y: 0 };
+@@ -545,15 +551,0 @@
+-    // Holds on the legs restrict stepping for this substep.
+-    if (contact) for (const j of this.joints) {
+-      if (j.kind !== 'grasp' || j.broken || j.legs <= 0) continue;
+-      const sup = j.b.support!;
+-      const touch = CONTACT_SCALE * (j.a.profile.radius + j.b.profile.radius);
+-      // A holder on the ground is stretched out behind his arms.
+-      const d = Math.hypot(j.b.pos.x - j.a.pos.x, j.b.pos.y - j.a.pos.y) - (j.a.support!.state === 'up' || j.ground !== undefined ? 0 : GROUND_STRETCH);
+-      // Hands sliding down a leg still hang the holder's weight on it.
+-      const firm = clamp(1 - (d - touch) / Math.max(0.05, j.reach - touch), 0, 1) * (j.slipping ? 0.8 : 1);
+-      const lock = clamp(j.legs * firm, 0, 1);
+-      if (lock > sup.feetLock) {
+-        sup.feetLock = lock;
+-        this.feetHolder[this.indexOf(j.b)] = this.indexOf(j.a);
+-      }
+-    }
+@@ -604 +596 @@
+-    let contacts: Contact[] = [];
++    let contacts: Contact[] = [], rows: JointRow[] = [];
+@@ -608 +600 @@
+-      const rows = this.jointRows(h);
++      rows = this.jointRows(h);
+@@ -645,0 +638,3 @@
++    // A geometric leg overlap is not a sustainable hold. Only the solved
++    // leg-contact load may prevent base placement in this same interval.
++    this.restrictFeet(rows, h);
+@@ -1023,0 +1019,40 @@
++  /** Conservative reduced support bound, not a simulated anatomical foot.
++   * A blocked base displacement du is capture-point deviation du. Its
++   * impulse equivalent is m*omega0*du, from deltaXi = J/(m*omega0).
++   * Bound both relative base travel and recovery stepping by the actual
++   * resisting impulse through this leg grip, already spent by the solver.
++   * This is the support response to that load, not a second applied force.
++   */
++  private restrictFeet(rows: JointRow[], h: number): void {
++    for (const r of rows) {
++      const jt = r.joint;
++      if (jt.kind !== 'grasp' || jt.broken || jt.legs <= 0) continue;
++      const sup = jt.b.support!, sp = this.sp[r.j];
++      const vx = this.travelVx[r.j] - this.travelVx[r.i], vy = this.travelVy[r.j] - this.travelVy[r.i];
++      const speed = Math.hypot(vx, vy), deviation = Math.hypot(sup.xi.x, sup.xi.y);
++      // A load aiding placement cannot be used as restraint. With no
++      // relative travel, inspect the direction of a needed recovery step.
++      const ux = speed > 1e-9 ? vx / speed : deviation > baseRadiusAt(sp, sup.posture) ? sup.xi.x / deviation : 0;
++      const uy = speed > 1e-9 ? vy / speed : deviation > baseRadiusAt(sp, sup.posture) ? sup.xi.y / deviation : 0;
++      const ix = r.nx * (r.ln - r.reel) - r.ny * r.lt, iy = r.ny * (r.ln - r.reel) + r.nx * r.lt;
++      const available = Math.max(0, -(ix * ux + iy * uy));
++      const recovery = deviation > baseRadiusAt(sp, sup.posture)
++        ? sp.stepSpeed * this.fat[r.j] * clamp((sup.out + .5 * h) / STEP_LATENCY, 0, 1) : 0;
++      const demand = this.mass[r.j] * omega0(sp, sup.posture) * (speed + recovery) * h;
++      const touch = CONTACT_SCALE * (jt.a.profile.radius + jt.b.profile.radius);
++      const d = Math.hypot(jt.b.pos.x - jt.a.pos.x, jt.b.pos.y - jt.a.pos.y)
++        - (jt.a.support!.state === 'up' || jt.ground !== undefined ? 0 : GROUND_STRETCH);
++      const geometry = clamp(jt.legs, 0, 1) * clamp(1 - (d - touch) / Math.max(0.05, jt.reach - touch), 0, 1);
++      const lock = demand > 1e-9 ? Math.min(geometry, available / demand) : 0;
++      jt.footLock = (jt.footLock ?? 0) + lock * h;
++      jt.footImpulse = (jt.footImpulse ?? 0) + lock * demand;
++      jt.footLimit = (jt.footLimit ?? 0) + available;
++      // Preserve the existing single held-base reduction. Independent
++      // holders do not sum arbitrary geometric locks or duplicate strength.
++      if (lock > sup.feetLock) {
++        sup.feetLock = lock;
++        this.feetHolder[r.j] = r.i;
++      }
++    }
++  }
++

@@ -2,8 +2,20 @@
 
 Start with these shared project references:
 
+- [Constraint loads, foot support and passive ground friction](docs/reviews/constraint-support-and-ground-friction.md):
+  **read first.** Unusable grasps now release before spending force or restricting
+  feet; off-feet sliding and yaw share one friction allowance and finite stopping
+  integration. The reproduced sustained mirror failure improves sharply, but
+  valid leg restraint still lacks a foot-load model. A broader foot shortcut was
+  rejected because ordinary frontal tackles failed. Native hand falls remain
+  3/9; long coarse/fine ending drift and pressure/sack guards worsen. Physics
+  is NOT READY. Next: couple attempted foot placement, sustainable restraint
+  and shared support, then persistent constraints and local fall/control timing.
+  Owner LAB-P001–005 observations are pinned and queued; facing is not gaze.
+  No force/profile retuning, global step increase or PR #1 changes.
+
 - [Physics step-back review and local repair](docs/reviews/physics-step-back-and-local-repair.md):
-  **read first.** Broad persistent-failure audit and candidate fixes precede
+  Previous evidence. Broad persistent-failure audit and candidate fixes precede
   the finite lean-release repair. Committed geometry now transfers before
   force relaxation and settles against updated shared support availability;
   actual transfer and local residual/iterations are observable. The controlled

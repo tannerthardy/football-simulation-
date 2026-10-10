@@ -291,6 +291,9 @@ export class World {
   /** Translation used by position integration, before velocity relaxation. */
   private readonly travelVx: Float64Array;
   private readonly travelVy: Float64Array;
+  /** Correction to trapezoidal ground travel when a passive body stops early. */
+  private readonly travelAdjustX: Float64Array;
+  private readonly travelAdjustY: Float64Array;
   private readonly tipX: Float64Array;
   private readonly tipY: Float64Array;
   private readonly braceX: Float64Array;
@@ -327,6 +330,7 @@ export class World {
     this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f();
     this.feetHolder = new Int32Array(n);
     this.travelVx = f(); this.travelVy = f();
+    this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
     this.comHeight = f(); this.padHeight = f();
     this.v0x = f(); this.v0y = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f();
@@ -538,8 +542,19 @@ export class World {
     for (const i of ids) {
       this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0;
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
+      this.travelAdjustX[i] = 0; this.travelAdjustY[i] = 0;
       bs[i].support!.feetLock = 0;
       this.feetHolder[i] = -1;
+    }
+    // A grasp that cannot exist must not spend arms, transmit one last
+    // remote impulse or restrict a foot before being released. Validate
+    // current geometry/capacity before all load and support paths.
+    if (contact) for (const jt of this.joints) {
+      if (jt.kind !== 'grasp' || jt.broken) continue;
+      const reach = jt.a.support!.state === 'up' ? jt.reach
+        : Math.max(jt.reach, jt.ground ?? jt.reach + GROUND_STRETCH);
+      const d = Math.hypot(jt.b.pos.x - jt.a.pos.x, jt.b.pos.y - jt.a.pos.y);
+      if (this.gripCapacity(jt) <= 0 || d > reach || (jt.hold ?? d) > reach) jt.broken = true;
     }
     this.allocateArms();
     // Holds on the legs restrict stepping for this substep.
@@ -638,8 +653,8 @@ export class World {
     // ---- 3. integrate positions (trapezoidal in the ground force)
     for (const i of ids) {
       const b = bs[i];
-      this.travelVx[i] = b.vel.x - 0.5 * this.amx[i] * h;
-      this.travelVy[i] = b.vel.y - 0.5 * this.amy[i] * h;
+      this.travelVx[i] = b.vel.x - 0.5 * this.amx[i] * h + this.travelAdjustX[i];
+      this.travelVy[i] = b.vel.y - 0.5 * this.amy[i] * h + this.travelAdjustY[i];
       b.pos.x += this.travelVx[i] * h;
       b.pos.y += this.travelVy[i] * h;
     }
@@ -868,14 +883,28 @@ export class World {
       this.passive(b, sup, sp, report, i);
       const fr = sup.state === 'falling' ? FALL_FRICTION : DOWN_FRICTION;
       if (sup.state === 'falling') { fx += sup.fall.x * FALL_TIP * m; fy += sup.fall.y * FALL_TIP * m; }
-      // Ground friction: never reverses the motion within the substep.
+      // Translation and yaw share one passive ground-friction allowance.
+      // The mean lever of a uniformly loaded circular footprint is 2r/3;
+      // this geometry proxy is not a measured prone-athlete contact patch.
       const vx = b.vel.x + fx / m * h, vy = b.vel.y + fy / m * h;
-      const sv = Math.hypot(vx, vy);
-      const stop = Math.min(sv, fr * G * h);
-      if (sv > 1e-9) { fx -= vx / sv * stop * m / h; fy -= vy / sv * stop * m / h; }
-      const spin=b.spin??0;
-      b.spin = spin * Math.exp(-h / .15);
-      b.facing += (b.spin ?? 0) * h;
+      const spin = b.spin ?? 0, lever = 2 * p.radius / 3;
+      const wantedX = -m * vx / h, wantedY = -m * vy / h;
+      const wantedTorque = -this.inertia[i] * spin / h;
+      const demand = Math.hypot(wantedX, wantedY, wantedTorque / lever);
+      const capacity = fr * G * m;
+      const fraction = demand > 0 ? Math.min(1, capacity / demand) : 0;
+      fx += wantedX * fraction; fy += wantedY * fraction;
+      b.spin = spin * (1 - fraction);
+      const movingTime = Math.min(h, demand / capacity * h);
+      b.facing += .5 * (spin + b.spin) * movingTime;
+      if (sup.state !== 'falling') {
+        // With no fall drive, constant coupled drag stops both motions at
+        // movingTime. A full-step trapezoid otherwise moves an already
+        // stopped body too far. Keep the same interval mean for held feet.
+        const factor = .5 * (2 - fraction) * (movingTime / h - 1);
+        this.travelAdjustX[i] = vx * factor;
+        this.travelAdjustY[i] = vy * factor;
+      }
     }
     // Includes the small remaining spin removed when he finishes rising.
     const spinAfter=b.spin??0;

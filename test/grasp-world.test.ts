@@ -91,14 +91,36 @@ describe('holds', () => {
   it('a common acceleration does not invent travel past a held foot', () => {
     for (const direction of [1, -1]) {
       const a=body(100,0,0),b=body(100,0,1.2),w=new World([a,b],{substeps:1});
-      // Isolate foot-restraint geometry from hand impulses. Both bodies
-      // move the same distance under the same ground acceleration.
+      // Both bodies move the same distance under the same ground force.
+      // A powerless grip cannot restrict their feet or invent a trip.
       w.joints.push(grasp(a,b,{capacity:0,legs:1,pull:0}));
       w.step([{vel:{x:direction*4,y:0}},{vel:{x:direction*4,y:0}}],.05);
       expect(Math.abs(a.vel.x)).toBeGreaterThan(0);
       expect(b.pos.x-a.pos.x).toBeCloseTo(0,12);
-      expect(b.support!.feetLock).toBeGreaterThan(0);
+      expect(b.support!.feetLock).toBe(0);
       expect(b.support!.causes!.legs).toBeLessThan(1e-12);
+    }
+  });
+
+  it('unusable leg grasps match the ungripped trajectory without a last impulse or foot lock', () => {
+    for (const kind of ['powerless', 'past-standing', 'past-ground'] as const) for (const substeps of [12, 48]) {
+      const run = (held: boolean) => {
+        const gap = kind === 'past-standing' ? 2.2 : kind === 'past-ground' ? 2.5 : 1;
+        const a = body(100, 0, 0), b = body(100, gap, 0, 3), w = new World([a, b], { substeps });
+        if (kind === 'past-ground') { a.support!.state = 'down'; a.support!.since = 0; }
+        // Force the same subdivision in the ungripped control.
+        w.joints.push({ kind: 'hands', a, b, extension: 3, push: 0, hold: 0, steer: 0 });
+        const j = grasp(a, b, { reach: 1.5, hold: gap, legs: 1,
+          capacity: kind === 'powerless' ? 0 : 900, ...(kind === 'past-ground' ? { ground: 2.4 } : {}) });
+        if (held) w.joints.push(j);
+        for (let k = 0; k < 5; k++) {
+          const r = w.step([{ vel: { x: 0, y: 0 } }, { vel: { x: 3, y: 0 } }], .05);
+          expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
+          if (held) { expect(j.broken).toBe(true); expect(j.force).toBe(0); expect(b.support!.feetLock).toBe(0); }
+        }
+        return [a, b];
+      };
+      expect(run(true)).toEqual(run(false));
     }
   });
 

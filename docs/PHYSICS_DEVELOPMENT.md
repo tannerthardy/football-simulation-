@@ -1,16 +1,23 @@
 # Physics development and testing
 
 Current evidence and ordered work are in
-[Physics step-back review and local repair](reviews/physics-step-back-and-local-repair.md).
+[Constraint loads, foot support and passive ground friction](reviews/constraint-support-and-ground-friction.md).
 Physics is still NOT READY. Shared active force limits and planar kinetic-work
 accounting are implemented; physical magnitudes and reduced support energy
-remain unvalidated. Next: the specific coupled QB/rusher hand/grasp fall disagreement;
+remain unvalidated. Unusable grips release before load/support; passive sliding
+and yaw now share finite friction and stop integration. Sustained reflection
+improves, but coarse/fine drift and football pressure guards worsen. Valid leg
+restraint still lacks a force-feasible foot model. A body-impulse shortcut was
+rejected because it removed ordinary frontal tackles. Next: couple attempted
+foot placement, sustainable restraint and actual support; then persistent
+constraints and the specific QB/rusher hand/grasp fall disagreement;
 initial run contact through get-off, OL response advantage, posture and doubles;
 executable far pursuit and achievable tackle approach. Fix the local convergence failure before raising
 resolution globally. These are work priorities, not additional tests to write
 before their mechanics exist.
 
-The current pass preserves unsupported committed lean before force relaxation
+The previous [step-back review](reviews/physics-step-back-and-local-repair.md)
+preserves unsupported committed lean before force relaxation
 and settles its finite geometric transfer against the same body's updated
 support availability. The isolated release now converges across subdivision;
 its transfer and local residual/iterations are recorded. Native hand fall

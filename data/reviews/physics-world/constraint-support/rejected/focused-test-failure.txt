@@ -1,0 +1,24 @@
+
+> gridiron-engine@0.1.0 test
+> vitest run test/grasp-world.test.ts test/world-physics.test.ts test/actuation.test.ts test/scenario-pack.test.ts test/pursuit-contact.test.ts test/pass-contact.test.ts
+
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/pursuit-contact.test.ts (19 tests) 314ms
+ ✓ test/world-physics.test.ts (27 tests) 871ms
+   ✓ temporal stability > the knockdown threshold converges as the physics substep is refined  318ms
+ ❯ test/scenario-pack.test.ts (4 tests | 1 failed) 820ms
+   × scenario pack: physical contracts and mirror symmetry > approach tackle, front and side 247ms
+     → expected false to be true // Object.is equality
+   ✓ scenario pack: physical contracts and mirror symmetry > a side hit displaces a back in proportion to the hit, and he recovers from a moderate one 138ms
+   ✓ scenario pack: physical contracts and mirror symmetry > redirect, seal and squeeze keep the contracts on both sides of the field  384ms
+   ✓ scenario pack: physical contracts and mirror symmetry > a side hit gives nearly the same balance loss at coarse and fine physics steps 49ms
+ ✓ test/pass-contact.test.ts (6 tests) 212ms
+ ✓ test/actuation.test.ts (7 tests) 168ms
+ ✓ test/grasp-world.test.ts (12 tests) 96ms
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 74 passed (75)
+   Start at  00:42:31
+   Duration  2.08s (transform 901ms, setup 0ms, collect 2.00s, tests 2.48s, environment 1ms, prepare 449ms)

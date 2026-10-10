@@ -85,6 +85,46 @@ describe('one body actuator budget',()=>{
     expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
   });
 
+  it('shares passive ground friction between sliding and spinning',()=>{
+    const run=(spin:number)=>{
+      const a=body(0),w=new World([a]);a.vel.x=3;a.spin=spin;a.support!.state='down';
+      const r=w.step([free],.05);
+      expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
+      expect(r.groundWork[0]).toBeLessThan(0);
+      return {a,r};
+    };
+    const sliding=run(0),mixed=run(8);
+    const pureImpulse=Math.hypot(sliding.r.groundImpulse[0].x,sliding.r.groundImpulse[0].y);
+    const mixedImpulse=Math.hypot(mixed.r.groundImpulse[0].x,mixed.r.groundImpulse[0].y);
+    // A circular pressure footprint has a mean friction lever of 2r/3.
+    // Rotation spends the same finite allowance as translation.
+    const lever=2*profile.radius/3;
+    expect(Math.hypot(mixedImpulse,mixed.r.groundYawImpulse[0]/lever)).toBeLessThanOrEqual(pureImpulse+1e-8);
+    expect(mixedImpulse).toBeLessThan(pureImpulse);
+    expect(mixed.a.spin!).toBeGreaterThan(0);expect(mixed.a.spin!).toBeLessThan(8);
+    expect(mixed.r.groundYawWork[0]).toBeLessThan(0);
+  });
+
+  it('integrates a passive stop at the same position and facing across subdivisions',()=>{
+    const run=(substeps:number,side:number)=>{
+      const a=body(0),anchor=body(4),w=new World([a,anchor],{substeps});
+      a.vel={x:.02,y:side*.01};a.spin=side*.02;a.support!.state='down';
+      // Same zero-force contact island; subdivision must actually execute.
+      w.joints.push({kind:'hands',a,b:anchor,extension:4,push:0,hold:0,steer:0});
+      const r=w.step([free,free],.05);
+      expect(Math.hypot(a.vel.x,a.vel.y)).toBeLessThan(1e-12);expect(Math.abs(a.spin!)).toBeLessThan(1e-12);
+      expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
+      return a;
+    };
+    const reference=run(48,1);
+    for(const substeps of [1,12,48])for(const side of [1,-1]){
+      const a=run(substeps,side);
+      expect(a.pos.x).toBeCloseTo(reference.pos.x,12);
+      expect(a.pos.y*side).toBeCloseTo(reference.pos.y,12);
+      expect(a.facing*side).toBeCloseTo(reference.facing,12);
+    }
+  });
+
   it('closes the planar work ledger through movement, hands, grasps, hits and falls',()=>{
     const a=body(0),b=body(.9),c=body(1.4,.5),w=new World([a,b,c]);c.vel={x:-4,y:-3};
     w.joints.push({kind:'hands',a,b,extension:1,push:900,hold:400,steer:600});

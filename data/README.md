@@ -251,6 +251,37 @@ drill/role metrics and matched observed speed ratios. Read the cohort and
 smoothing definitions before comparing it to an engine panel. No AddBiomechanics
 subject data or additional large archive was downloaded for this extraction.
 
+### Constraint loads, foot support and passive ground friction
+
+[The current physics review](../docs/reviews/constraint-support-and-ground-friction.md)
+and [source-pinned evidence](reviews/physics-world/constraint-support/README.md)
+retain the 162-trial foot audit, long reflected-contact trace, rejected
+foot-restraint candidate and adopted invalid-grip/ground-friction repairs.
+Unusable grasps release before force/support. Passive translation and yaw
+share one finite friction allowance and consistent early-stop integration.
+Mirror drift improves sharply; long subdivision drift and pressure/sack guards
+worsen. Valid leg holds still need actual support-force coupling. Physics is
+NOT READY; no force/profile fitting or global resolution increase was done.
+
+```sh
+node --import tsx scripts/diag/foot-contact-audit.ts out/foot-restraint/foot-after.json
+node --import tsx scripts/diag/long-contact-trace.ts out/foot-restraint/long-trace-after.json
+node --import tsx scripts/diag/moving-contact.ts out/foot-restraint/moving-after.json
+node --import tsx scripts/diag/hand-convergence.ts out/foot-restraint/hand-after.json
+node --import tsx scripts/diag/shared-capabilities.ts out/foot-restraint/shared-after.json
+node --import tsx scripts/diag/grip-budget.ts out/foot-restraint/grip-after.json
+node --import tsx scripts/diag/wrap-feedback.ts out/foot-restraint/wrap-after.json
+node --import tsx scripts/scenario-pack.ts out/foot-restraint/scenarios-after.json
+node --import tsx scripts/kinematics-compare.ts 4 5
+node --import tsx scripts/calibrate.ts 8 7 2
+python3 scripts/diag/constraint-support-summary.py out/foot-restraint out/constraint-review
+```
+
+The reduction also needs `foot-before.json` and `long-trace-before.json` from
+an isolated archive of `ba42c29`; the evidence README gives reconstruction
+commands. Refined physics is a numerical reference, not an NFL target.
+The unchanged viewer's LAB IDs remain pinned to their earlier recording source.
+
 ### Finite lean release and literature execution labs
 
 The [physics evidence](reviews/physics-world/lean-release/README.md) retains
