@@ -67,6 +67,19 @@ export class CoverageDefender implements Behavior {
     return this.sub instanceof ManCoverage ? this.sub.recordedTechnique() : undefined;
   }
 
+  /** Current rule branch plus keys actually consumed at `readTick`.
+   * Call after the controller tick with its pre-increment time. This copies
+   * cached declarations only: no new observation, interpretation or RNG.
+   * Inputs are witnesses, not a claimed causal explanation of the choice.
+   */
+  recordedRule(readTick: number) {
+    return { rule: this.rule, mode: this.state.mode ?? null, cut: this.state.cut?.idx ?? null,
+      judgment: this.judgment.reason, readTick,
+      reads: this.reader.recordedReads(readTick).map(rd => ({ target: rd.r.idx, slot: rd.r.slot,
+        position: { ...rd.pos }, velocity: { ...rd.vel }, depth: rd.depth, outward: rd.outward,
+        release: rd.release, first: rd.first, since: rd.since, climbed: rd.climbed })) };
+  }
+
   update(a: Agent, sim: PlaySim): MoveCommand {
     const sign = this.side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
     const primary = runRule(this.rule, { a, sim, reader: this.reader, side: this.side, sign, zone: this.zone, style: this.style, state: this.state });

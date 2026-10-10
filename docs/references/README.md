@@ -75,3 +75,24 @@ SHA-256: `d73cd1e8cd2ddd319d01cbf6de9eba3246d507525fe201e8ced0318b881486a2`.
 The run-game follow-up report distinguishes the PDF's useful proposals from
 verified public coaching references, implemented mechanics, and measured NFL
 observations. Raw Big Data Bowl files remain outside Git; see `data/README.md`.
+
+[Offensive_Playcalling_Textbook.md](Offensive_Playcalling_Textbook.md) and
+[Offensive_Playcalling_Glossary_453_Terms.md](Offensive_Playcalling_Glossary_453_Terms.md)
+are the user's uploaded offensive references, retained byte-for-byte for
+collaborators and later concept/playcalling development. The textbook covers
+response-based game planning, legal formation structure, motion, complementary
+runs/protection, QB reading systems and situational adaptation. The glossary
+contains 453 term rows with working definitions; team terminology varies.
+These are reference aids, not repository instructions or independently
+verified coaching/rules authority. Source citations need separate checking.
+Preserving them does not install the whole proposed offense.
+
+Textbook SHA-256: `f06753393eced8c45ba640011f8eaf1dc8aaa5c0d2f4448d2e1a9c1a50e32311`.
+Glossary SHA-256: `25a9a9a0bc51ad6a4889d12ef282201f007e5bd05fccb7f981db82c373c05609`.
+
+The [offense](../reviews/offense-literature-applications.md),
+[coverage](../reviews/coverage-literature-applications.md) and
+[contact](../reviews/contact-literature-applications.md) reviews synthesize
+all these aids into a few concrete mechanics and diagnostic proposals. The
+new run-process and coverage-contract labs observe actual execution. They
+do not validate every teaching claim or install the whole described playbook.

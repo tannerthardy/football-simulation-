@@ -2,8 +2,21 @@
 
 Start with these shared project references:
 
+- [Physics step-back review and local repair](docs/reviews/physics-step-back-and-local-repair.md):
+  **read first.** Broad persistent-failure audit and candidate fixes precede
+  the finite lean-release repair. Committed geometry now transfers before
+  force relaxation and settles against updated shared support availability;
+  actual transfer and local residual/iterations are observable. The controlled
+  release converges, but native hand fall disagreements worsen two→three;
+  sustained frontal drift/mirror and grip-independent foot restraint remain.
+  Physics is NOT READY. Follow sustainable foot restraint, actual fall/whistle
+  timing, pre-wrap hands and executable pursuit. No force/profile retuning,
+  global resolution increase or PR #1 changes. New offensive references and
+  three literature reviews add read-only run-process and coverage-key labs,
+  with initial/first-invalid contracts and exact observation noninterference.
+
 - [Shared grip budget and replay foundation](docs/reviews/grip-budget-and-replay-foundation.md):
-  **read first.** Active reeling and passive restraint now share the actual
+  Previous implementation/evidence. Active reeling and passive restraint share the actual
   grip force limit; momentum/work contracts and recording noninterference
   pass. Physics remains NOT READY: native hand convergence still has 0.822 yd
   error/two fall disagreements, with an additional disagreement at 24 steps.

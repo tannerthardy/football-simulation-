@@ -73,6 +73,28 @@ describe('observational replay recording', () => {
     expect(sim.trace.data).toBeUndefined();
   });
 
+  it('coverage rule inspection copies consumed keys and preserves the play and RNG', () => {
+    const plain = new PlaySim(setup('pass', 'light', false));
+    const inspected = new PlaySim(setup('pass', 'light', false));
+    let declarations = 0;
+    while (inspected.phase === 'live' && inspected.t < 2) {
+      const readTick = inspected.t;
+      plain.tick(); inspected.tick();
+      for (const a of inspected.defense) {
+        if (!(a.behavior instanceof CoverageDefender)) continue;
+        const snapshot = a.behavior.recordedRule(readTick);
+        const original = JSON.stringify(snapshot);
+        declarations += snapshot.reads.length;
+        for (const rd of snapshot.reads) { rd.position.x += 100; rd.velocity.y += 100; }
+        expect(JSON.stringify(a.behavior.recordedRule(readTick))).toBe(original);
+      }
+    }
+    expect(declarations).toBeGreaterThan(0);
+    expect(inspected.run()).toEqual(plain.run());
+    expect(JSON.stringify(inspected.agents.map(a => a.body))).toBe(JSON.stringify(plain.agents.map(a => a.body)));
+    expect(inspected.rng.nextU32()).toBe(plain.rng.nextU32());
+  });
+
   it('records staged pre-snap commands without changing movement and replaces the staged snap frame', () => {
     const make = (level: ReplayLevel) => {
       const input = setup('pass', level);

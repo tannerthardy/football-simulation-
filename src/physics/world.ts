@@ -144,6 +144,12 @@ export interface StepReport {
   downs: number[];
   rises: number[];
   maxPenetration: number;
+  /** Unsettled force-equivalent lean release after the local projection, kg·yd/s². */
+  maxLeanReleaseResidual: number;
+  /** Most iterations needed to settle one finite committed-lean transfer. */
+  maxLeanReleaseIterations: number;
+  /** Finite committed-lean geometry transferred into each body's support, yd. */
+  leanRelease: Vec2[];
 }
 
 /** Touch distance as a fraction of the two torso radii (pads and arms compress). */
@@ -363,7 +369,8 @@ export class World {
       groundWork: new Array(n).fill(0), groundYawImpulse: new Array(n).fill(0), groundYawWork: new Array(n).fill(0),
       armWork: new Array(n).fill(0), armWorkLimit: new Array(n).fill(0), armImpulse: new Array(n).fill(0), armImpulseLimit: new Array(n).fill(0),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
-      contacts: [], falls: [], downs: [], rises: [], maxPenetration: 0 };
+      contacts: [], falls: [], downs: [], rises: [], maxPenetration: 0,
+      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(() => ({ x: 0, y: 0 })) };
     this.report = report; this.tickDt = dt;
     this.joints = this.joints.filter((j) => !(j.kind === 'grasp' && j.broken) && this.indexOf(j.a) >= 0 && this.indexOf(j.b) >= 0 && j.a !== j.b
       && (j.kind!=='hands'||(this.indexOf(j.actor??j.a)>=0&&this.indexOf(j.holder??j.a)>=0)));
@@ -754,7 +761,7 @@ export class World {
         this.alpha[i] = 0; this.cut[i] = 1;
       } else {
         const fat = this.fat[i];
-        const a = availability(sup, sp, fat);
+        let a = availability(sup, sp, fat);
         this.alpha[i] = a;
         this.cut[i] = plan.cut;
         // Pad level moves at a finite rate. Contact geometry affects support,
@@ -793,28 +800,50 @@ export class World {
             tx = ux * mag; ty = uy * mag;
           }
         }
-        const rising = tx * tx + ty * ty >= sup.lean.x * sup.lean.x + sup.lean.y * sup.lean.y;
-        const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
-        let leanX = sup.lean.x + (tx - sup.lean.x) * k, leanY = sup.lean.y + (ty - sup.lean.y) * k;
+        let leanX = sup.lean.x, leanY = sup.lean.y;
         // A lean is his COM held ahead of his feet by the load. Whatever the
         // load no longer balances, beyond what his gait can accept as planned
         // acceleration, is a capture-point offset now: an overextension.
-        const Ll = Math.hypot(leanX, leanY);
-        if (Ll > 1e-6) {
-          const hx = leanX / Ll, hy = leanY / Ll;
-          const balanced = Math.max(0, -(sup.felt.x * hx + sup.felt.y * hy));
-          const unsupported = Ll - balanced * (1 + PUSH_GROWTH);
-          if (unsupported > 0) {
+        const releaseUnsupported = () => {
+          const excess = () => {
+            const mag = Math.hypot(leanX, leanY);
+            if (mag <= 1e-6) return 0;
+            const hx = leanX / mag, hy = leanY / mag;
+            const balanced = Math.max(0, -(sup.felt.x * hx + sup.felt.y * hy));
+            const unsupported = mag - balanced * (1 + PUSH_GROWTH);
+            if (unsupported <= 0) return 0;
             const env = followAccel(b, { x: hx * 1e3, y: hy * 1e3 }, plan.cut, a);
             const absorb = Math.max(0, Math.hypot(env.x, env.y) - Math.max(0, plan.ax * hx + plan.ay * hy)) * m;
-            const conv = Math.min(Ll, Math.max(0, unsupported - absorb));
-            if (conv > 0) {
-              const w0 = omega0(sp, sup.posture);
-              sup.xi = { x: sup.xi.x + hx * conv / (m * w0 * w0), y: sup.xi.y + hy * conv / (m * w0 * w0) };
-              leanX -= hx * conv; leanY -= hy * conv;
-            }
+            return Math.min(mag, Math.max(0, unsupported - absorb));
+          };
+          let iterations = 0, conv = excess();
+          const w0 = omega0(sp, sup.posture);
+          // Each pass consumes only the remaining committed lean. A finite
+          // local projection settles the existing reduced-model feedback;
+          // it does not add solver steps, muscles or a new force constant.
+          while (conv > 1e-9 && iterations < 64) {
+            const mag = Math.hypot(leanX, leanY), hx = leanX / mag, hy = leanY / mag;
+            const dx = hx * conv / (m * w0 * w0), dy = hy * conv / (m * w0 * w0);
+            sup.xi = { x: sup.xi.x + dx, y: sup.xi.y + dy };
+            report.leanRelease[i].x += dx; report.leanRelease[i].y += dy;
+            leanX -= hx * conv; leanY -= hy * conv;
+            // Transferred geometry changes what the same feet can absorb.
+            a = availability(sup, sp, fat); this.alpha[i] = a;
+            conv = excess(); iterations++;
           }
-        }
+          // Expose any unresolved local solve instead of silently claiming
+          // that the iteration limit establishes convergence.
+          report.maxLeanReleaseResidual = Math.max(report.maxLeanReleaseResidual, conv);
+          report.maxLeanReleaseIterations = Math.max(report.maxLeanReleaseIterations, iterations);
+        };
+        // Existing committed lean is geometry, not a new force request.
+        // Transfer the unsupported share before damping it away; otherwise
+        // a coarse substep erases more of the same incoming overextension.
+        releaseUnsupported();
+        const rising = tx * tx + ty * ty >= leanX * leanX + leanY * leanY;
+        const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
+        leanX += (tx - leanX) * k; leanY += (ty - leanY) * k;
+        releaseUnsupported();
         sup.lean = { x: leanX, y: leanY };
         // One budget: locomotion and lean share traction and leg strength.
         // Leg drive is directional: full straight ahead, a shuffle's or a

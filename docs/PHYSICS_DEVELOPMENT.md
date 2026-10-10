@@ -1,7 +1,7 @@
 # Physics development and testing
 
 Current evidence and ordered work are in
-[Shared grip budget and replay foundation](reviews/grip-budget-and-replay-foundation.md).
+[Physics step-back review and local repair](reviews/physics-step-back-and-local-repair.md).
 Physics is still NOT READY. Shared active force limits and planar kinetic-work
 accounting are implemented; physical magnitudes and reduced support energy
 remain unvalidated. Next: the specific coupled QB/rusher hand/grasp fall disagreement;
@@ -10,13 +10,26 @@ executable far pursuit and achievable tackle approach. Fix the local convergence
 resolution globally. These are work priorities, not additional tests to write
 before their mechanics exist.
 
-The latest pass repairs an actual force-budget defect: active arm reeling and
+The current pass preserves unsupported committed lean before force relaxation
+and settles its finite geometric transfer against the same body's updated
+support availability. The isolated release now converges across subdivision;
+its transfer and local residual/iterations are recorded. Native hand fall
+disagreements worsen two→three, and the specific QB wrap reversal is unresolved.
+Long frontal drift is still 8.10 yd, with 0.691 yd mirror drift. Next: sustainable
+held-foot load using the same grip budget, actual fall/whistle timing and
+pre-wrap hands, then executable pursuit. The broad review lists alternative
+mechanisms and falsifiable checks before implementation. Three supplied-literature
+reviews add read-only run execution and consumed coverage-key diagnostics;
+no offensive/coverage controller expansion or physical retuning is included.
+
+The previous [grip-budget pass](reviews/grip-budget-and-replay-foundation.md)
+repairs an actual force-budget defect: active arm reeling and
 passive restraint now spend one grip allowance. Conserved momentum and a
 closing work ledger had not caught this excessive transmitted force. New
 identical first-wrap and switched-resolution probes separate the post-wrap
 QB fall reversal from pre-wrap block-path sensitivity; neither is resolved.
-Native hand error remains 0.822 yd with two fall disagreements; the 24-step
-fall panel regresses. Do not certify physics from the passing contracts.
+That pass retains 0.822 yd error and two fall disagreements; the current
+handoff reports the new regression. Do not certify physics from contracts.
 No physical capacities or contact constants were retuned. Observational
 replay telemetry and short WebM exports now make real state inspectable,
 without changing decisions, trajectories or RNG. Read its

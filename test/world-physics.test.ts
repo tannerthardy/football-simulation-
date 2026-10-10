@@ -169,6 +169,33 @@ describe('fast and crowded encounters', () => {
 });
 
 describe('support and balance', () => {
+  it('releases the same committed lean across subdivision and mirrored/recentering support states', () => {
+    const run = (force: number, xi: number, side: number, substeps: number) => {
+      const a = body(100, 0, 0), anchor = body(100, 4, 0), w = new World([a, anchor], { substeps });
+      a.support!.lean = { x: force, y: 0 };
+      a.support!.xi = { x: xi, y: side * .04 };
+      // Force actual subdivision while providing no external hand load.
+      w.joints.push({ kind: 'hands', a, b: anchor, extension: 4, push: 0, hold: 0, steer: 0 });
+      const released = { x: 0, y: 0 };
+      for (let k = 0; k < 4; k++) {
+        const r = w.step([STANDING, FREE], .05);
+        expect(r.maxLeanReleaseResidual).toBeLessThan(1e-7);
+        expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
+        released.x += r.leanRelease[0].x; released.y += r.leanRelease[0].y;
+      }
+      return { x: released.x, y: side * released.y };
+    };
+    for (const force of [900, 1100]) for (const xi of [-.25, 0, .1]) {
+      const reference = run(force, xi, 1, 192);
+      for (const side of [-1, 1]) for (const substeps of [6, 12, 48]) {
+        const result = run(force, xi, side, substeps);
+        // Isolate the released geometry. A later fall freezes xi after a
+        // threshold crossing; that separate event-timing error remains open.
+        expect(result.x).toBeCloseTo(reference.x, 8);
+        expect(result.y).toBeCloseTo(reference.y, 8);
+      }
+    }
+  });
   const hit = (speed: number, posture = 0.2) => {
     const a = body(100, 0, 0, speed, 0), b = body(90, 0.62, 0, 0, 0, Math.PI);
     b.support = undefined;

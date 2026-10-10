@@ -1,6 +1,6 @@
 # Shared NFL data
 
-Current physics/data status: [Controlled tackle approach and owner-film observations](../docs/reviews/controlled-tackle-approach.md).
+Current physics/data status: [Physics step-back review and local repair](../docs/reviews/physics-step-back-and-local-repair.md).
 Physics remains NOT READY. NFL references support conditional comparisons;
 they are not mandatory averages for every generated roster.
 
@@ -251,6 +251,36 @@ drill/role metrics and matched observed speed ratios. Read the cohort and
 smoothing definitions before comparing it to an engine panel. No AddBiomechanics
 subject data or additional large archive was downloaded for this extraction.
 
+### Finite lean release and literature execution labs
+
+The [physics evidence](reviews/physics-world/lean-release/README.md) retains
+the broad audit's controlled release, live wrap feedback, hand convergence,
+shared-capability transfer, prolonged-contact/mirror and game/tracking guards.
+Committed lean no longer loses its geometric effect during force relaxation;
+local release uses updated shared support availability. Native hand fall
+disagreements worsen two→three, and the zero-capacity held-foot defect remains.
+Read the regressions before extending the physics. No force constants,
+player profiles or global step budget were fitted.
+
+The supplied offensive/defensive/contact literature adds a few observational
+process tools: [run execution](reviews/physics-world/offense-process/README.md)
+and [coverage ownership/consumed keys](reviews/physics-world/coverage-process/README.md).
+They record actual state, source pins, narrow contracts and unknown causes.
+These small controlled cohorts do not establish NFL scheme-quality rates.
+The user's new offensive textbook and glossary are in `docs/references/`.
+
+```sh
+node --import tsx scripts/diag/support-budget.ts out/support-budget.json
+node --import tsx scripts/diag/wrap-feedback.ts out/wrap-feedback.json
+node --import tsx scripts/diag/hand-convergence.ts out/hand-convergence.json
+node --import tsx scripts/diag/moving-contact.ts out/moving-contact.json
+node --import tsx scripts/diag/shared-capabilities.ts out/shared-capabilities.json
+node --import tsx scripts/diag/run-concept-process.ts out/run-process.json --verify
+node --import tsx scripts/diag/coverage-contracts.ts out/coverage-contracts.json
+node --import tsx scripts/kinematics-compare.ts 4 5
+node --import tsx scripts/calibrate.ts 16 7 2
+```
+
 ### Shared grip budget and replay inspection
 
 `reviews/physics-world/grip-budget/` retains the delivered-force audit,
@@ -259,7 +289,7 @@ first-wrap and switched-resolution probes, shared-capability scenarios and
 game/tracking guards. Active reeling and passive restraint share one force
 budget; physical constants are unchanged. Physics remains NOT READY: native
 fall/path failures remain and the 24-step fall panel regresses. Read
-[the current physics handoff](../docs/reviews/grip-budget-and-replay-foundation.md)
+[the previous physics handoff](../docs/reviews/grip-budget-and-replay-foundation.md)
 and [the recording/export handoff](../docs/reviews/replay-telemetry-and-export.md).
 
 ```sh
