@@ -24,10 +24,13 @@
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { PhysicalProfile } from '../players/physical.js';
+import type { VirtualFoot } from './virtual-foot.js';
 
 export type SupportStateKind = 'up' | 'falling' | 'down' | 'rising';
 
 export interface Support {
+  /** Explicit nominal-gait/corrective support state; not an articulated foot. */
+  foot?: VirtualFoot;
   /** Capture-point deviation from the controlled base, yd. */
   xi: Vec2;
   state: SupportStateKind;
@@ -160,7 +163,7 @@ export function availability(sup: Support, s: SupportParams, fatigue: number): n
   const e = Math.hypot(sup.xi.x, sup.xi.y);
   const rb = baseRadiusAt(s, sup.posture);
   if (e <= rb) return 1;
-  const crit = criticalDeviation(s, sup.posture, sup.feetLock, fatigue);
+  const crit = criticalDeviation(s, sup.posture, sup.foot ? 0 : sup.feetLock, fatigue);
   if (crit <= rb + 1e-9) return 0.1;
   return clamp(1 - ((e - rb) / (crit - rb)) ** 1.5, 0.1, 1);
 }
@@ -169,7 +172,7 @@ export function availability(sup: Support, s: SupportParams, fatigue: number): n
 export function deviationFraction(sup: Support, s: SupportParams, fatigue: number): number {
   if (sup.state !== 'up') return 1;
   const e = Math.hypot(sup.xi.x, sup.xi.y);
-  const crit = criticalDeviation(s, sup.posture, sup.feetLock, fatigue);
+  const crit = criticalDeviation(s, sup.posture, sup.foot ? 0 : sup.feetLock, fatigue);
   return clamp(e / Math.max(1e-6, crit), 0, 1);
 }
 

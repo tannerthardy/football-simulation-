@@ -2,8 +2,20 @@
 
 Start with these shared project references:
 
+- [Virtual support coupling and small biomechanics reference](docs/reviews/virtual-foot-coupling-and-biomechanics.md):
+  **read first.** A shared force/work support motor is implemented as an
+  explicit experiment; production still uses legacy support. Ordinary frontal
+  tackles survive and hand fall disagreements fall 3/9 to 0/9, but shared jam
+  convergence worsens and support offsets accumulate to 7.27 yd. Physics is
+  NOT READY. Next: two persistent support points, finite reachable planting,
+  actual normal-load transfer and grip attachment continuity. Do not reset
+  a held anchor, tune game outcomes or raise global substeps. Four small
+  AddBiomechanics subjects are now acquired/audited; Moore disturbance timing
+  remains missing. Exact measurements, limitations and reproduction commands
+  are in the handoff. PR #1 remains separate.
+
 - [Constraint loads, foot support and passive ground friction](docs/reviews/constraint-support-and-ground-friction.md):
-  **read first.** Unusable grasps now release before spending force or restricting
+  Previous production baseline. Unusable grasps now release before spending force or restricting
   feet; off-feet sliding and yaw share one friction allowance and finite stopping
   integration. The reproduced sustained mirror failure improves sharply, but
   valid leg restraint still lacks a foot-load model. A broader foot shortcut was
@@ -113,7 +125,8 @@ Start with these shared project references:
   hand-fight resolution disagreement, tackle approach/grasp feasibility,
   run first push and holding from actual restraint. AddBiomechanics metadata
   and proposed small movement/support subsets are in the linked evidence review;
-  subject files have not been downloaded or used to validate constants.
+  subject files were not downloaded in that earlier pass. The current handoff
+  links the newly acquired tiny subset; no contact constants are validated by it.
   Physics remains the priority; PR #1 and full QB mechanics stay separate.
 
 - [Physics development and testing](docs/PHYSICS_DEVELOPMENT.md): **read

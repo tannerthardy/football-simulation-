@@ -64,6 +64,8 @@ export interface PlaySetup {
   audibles?: boolean;
   /** Fixed physics substeps per tick (convergence studies); adaptive by default. */
   substeps?: number;
+  /** Research-only support-coordinate prototype; production uses legacy. */
+  supportModel?: 'legacy' | 'virtual-foot';
 }
 
 const MAX_PLAY_TIME = 25;
@@ -202,7 +204,7 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     this.snapX = this.agents.map((a) => a.pos.x);
-    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps });
+    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel });
     // Linemen and backs start in their stances; skill players upright.
     for (const a of this.agents) {
       const line = ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot) || a.player.position === 'DT' || a.player.position === 'EDGE';

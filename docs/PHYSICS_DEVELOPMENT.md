@@ -1,6 +1,20 @@
 # Physics development and testing
 
 Current evidence and ordered work are in
+[Virtual support coupling and small biomechanics reference](reviews/virtual-foot-coupling-and-biomechanics.md).
+Physics is still NOT READY. An explicitly experimental shared support motor
+now computes grip load against attempted corrective placement and records
+achieved support and motor/passive work. Ordinary frontal tackles survive;
+native hand fall disagreements fall 3/9 to 0/9. It remains default-off:
+shared jam convergence worsens and cumulative support offsets reach 7.27 yd.
+Next: two persistent point-support slots, finite reachable planting, actual
+ground normal-load transfer, and continuous grip attachment through transfer.
+Do not hide drift by resetting a held anchor or fit forces to improved sack
+averages. Four small AddBiomechanics subjects are acquired and audited;
+Moore perturbation alignment remains missing. Follow the owner's seven-step
+order in that handoff before expanding techniques or physics resolution.
+
+The preceding production baseline is in
 [Constraint loads, foot support and passive ground friction](reviews/constraint-support-and-ground-friction.md).
 Physics is still NOT READY. Shared active force limits and planar kinetic-work
 accounting are implemented; physical magnitudes and reduced support energy

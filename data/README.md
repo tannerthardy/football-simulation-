@@ -1,8 +1,32 @@
 # Shared NFL data
 
-Current physics/data status: [Physics step-back review and local repair](../docs/reviews/physics-step-back-and-local-repair.md).
+Current physics/data status: [Virtual support coupling and small biomechanics reference](../docs/reviews/virtual-foot-coupling-and-biomechanics.md).
 Physics remains NOT READY. NFL references support conditional comparisons;
 they are not mandatory averages for every generated roster.
+
+The [tiny biomechanics reference](reviews/biomechanics-support/README.md)
+now audits four core AddBiomechanics subjects, 12 short windows and 5,892
+frames, acquired using about 101 MB. Sources, checksums, attribution and
+aggregate measurements travel with Git; raw sparse subject files stay ignored.
+Measured force/marker observations are distinct from model-derived COM and
+force-fitted dynamics. Moore perturbation events and segment timing remain
+unverified; no grip, traction or NFL force constants were fitted.
+
+The [experimental support evidence](reviews/physics-world/virtual-foot/README.md)
+records default versus explicit candidate modes, force/work and football
+transfer checks, and the cumulative support drift that blocks adoption.
+Normal simulations retain legacy support. Reproduce the controlled recovery
+panel or opt into the candidate for existing diagnostics:
+
+```sh
+node --import tsx scripts/diag/virtual-foot-support.ts out/virtual-foot/support.json
+node --import tsx --import ./scripts/diag/enable-virtual-foot.ts scripts/diag/hand-convergence.ts out/virtual-foot/hand.json
+SUPPORT_TELEMETRY_OUTPUT=out/virtual-foot/support-telemetry.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./scripts/diag/support-telemetry.ts scripts/diag/shared-capabilities.ts out/virtual-foot/shared.json
+```
+
+The last command records sampled support drift without changing controllers,
+physics state or RNG. These observations are not instantaneous force peaks.
+See the handoff for the small game/tracking guards and required plant lifecycle.
 
 The engine's small calibration summaries are committed in this directory.
 Every collaborator who clones the private repository receives those summaries,
