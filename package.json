@@ -4,6 +4,9 @@
   "description": "Physics-driven American football simulation engine with Football-Manager-style depth",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

@@ -38,6 +38,9 @@ export interface LabOptions {
   substeps?: number;
   /** Explicit experimental support coordinate; no production default change. */
   supportModel?: 'legacy' | 'virtual-foot';
+  constraintWork?: 'per-update' | 'per-solve';
+  impactTiming?: 'speculative' | 'local-sweep';
+  supportIntegration?: 'mean' | 'integrated';
 }
 
 /** Physical bookkeeping over a scenario. */
@@ -62,7 +65,7 @@ function lab(o: LabOptions, run: boolean) {
     offCall: run ? { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'lab' }
       : { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'lab' },
     defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'lab' },
-    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: rng.nextU32(), supportModel: o.supportModel });
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: rng.nextU32(), supportModel: o.supportModel, constraintWork: o.constraintWork, impactTiming: o.impactTiming, supportIntegration: o.supportIntegration });
   if (o.substeps) sim.world.substeps = o.substeps;
   const side = o.side ?? 1;
   const park = (keep: Agent[]) => {

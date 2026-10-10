@@ -1,6 +1,15 @@
 # Physics development and testing
 
-Current evidence and ordered work are in
+Read [Constraint work, impact timing and physical support](reviews/constraint-work-and-impact-timing.md)
+first for the current source and evidence. Per-solve correction work now keeps
+numerical guesses separate from real muscle actions. Local onset splitting and
+integrated filtered foot response remain experiments; sustained fall disagreements
+remain. Physics is NOT READY. The finite two-slot support/ground/grip lifecycle
+is the next substantive model, following the owner's seven priorities. Earlier
+reports below retain their original measurements; do not treat them as current
+readiness results or full temporal convergence.
+
+The preceding support experiment and its evidence are in
 [Virtual support coupling and small biomechanics reference](reviews/virtual-foot-coupling-and-biomechanics.md).
 Physics is still NOT READY. An explicitly experimental shared support motor
 now computes grip load against attempted corrective placement and records

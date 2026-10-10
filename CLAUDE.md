@@ -2,8 +2,19 @@
 
 Start with these shared project references:
 
+- [Constraint work, impact timing and physical support](docs/reviews/constraint-work-and-impact-timing.md):
+  **read first.** Per-solve correction accounting is now production: numerical
+  guesses no longer consume fictitious arm effort or prevent passive convergence.
+  Actual interval/channel budget guards pass. Local impact onset and nonlinear
+  filter integration are explicit default-off experiments; they do not solve
+  sustained falls. Physics is NOT READY. Follow the owner's seven priorities:
+  finite support-slot lifecycle, coherent plant/swing force/ground/work paths,
+  achieved support, then localized convergence and executable approaches.
+  Do not raise global resolution, reset held anchors, tune game averages or
+  touch PR #1. Exact evidence and reproduction are in the linked review.
+
 - [Virtual support coupling and small biomechanics reference](docs/reviews/virtual-foot-coupling-and-biomechanics.md):
-  **read first.** A shared force/work support motor is implemented as an
+  Previous support experiment. A shared force/work support motor is implemented as an
   explicit experiment; production still uses legacy support. Ordinary frontal
   tackles survive and hand fall disagreements fall 3/9 to 0/9, but shared jam
   convergence worsens and support offsets accumulate to 7.27 yd. Physics is

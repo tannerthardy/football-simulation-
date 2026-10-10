@@ -66,6 +66,9 @@ export interface PlaySetup {
   substeps?: number;
   /** Research-only support-coordinate prototype; production uses legacy. */
   supportModel?: 'legacy' | 'virtual-foot';
+  constraintWork?: 'per-update' | 'per-solve';
+  impactTiming?: 'speculative' | 'local-sweep';
+  supportIntegration?: 'mean' | 'integrated';
 }
 
 const MAX_PLAY_TIME = 25;
@@ -204,7 +207,7 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     this.snapX = this.agents.map((a) => a.pos.x);
-    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel });
+    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration });
     // Linemen and backs start in their stances; skill players upright.
     for (const a of this.agents) {
       const line = ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot) || a.player.position === 'DT' || a.player.position === 'EDGE';

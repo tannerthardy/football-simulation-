@@ -1,8 +1,16 @@
 # Shared NFL data
 
-Current physics/data status: [Virtual support coupling and small biomechanics reference](../docs/reviews/virtual-foot-coupling-and-biomechanics.md).
+Current physics/data status: [Constraint work, impact timing and physical support](../docs/reviews/constraint-work-and-impact-timing.md).
 Physics remains NOT READY. NFL references support conditional comparisons;
 they are not mandatory averages for every generated roster.
+
+The [current work/contact evidence](reviews/physics-world/constraint-work/README.md)
+contains source-pinned solver checks, first-divergence traces and same-runtime
+parent/current game guards. Use Node 22.23.3 from `.nvmrc`; the manifest records
+the actual runtime and policies. Per-solve work accounting is production;
+local impact splitting and integrated filtered follow remain experiments.
+Neither experiment repairs the sustained fall disagreement. The finite
+planted/swinging support lifecycle remains the next model change.
 
 The [tiny biomechanics reference](reviews/biomechanics-support/README.md)
 now audits four core AddBiomechanics subjects, 12 short windows and 5,892

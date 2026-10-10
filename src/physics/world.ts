@@ -37,6 +37,7 @@ import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, loco
 import { availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBody, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
+import { integrateFilteredFollow } from './filtered-follow.js';
 
 export interface Intent extends MoveCommand {
   /** 0–1 willingness to lean into a felt load with leg drive beyond free movement. */
@@ -130,7 +131,7 @@ export interface StepReport {
   groundWork: number[];
   groundYawImpulse: number[];
   groundYawWork: number[];
-  /** Gross positive work delivered by each body's arms, bounded per tick. */
+  /** Positive final channel work plus real strike/reel effort, bounded per tick. */
   armWork: number[];
   armWorkLimit: number[];
   /** Scalar sum of hand/strike impulse magnitudes (one shared arm budget). */
@@ -158,6 +159,12 @@ export interface StepReport {
   supportMotorWorkLimit: number[];
   /** Work left in passive grips after subtracting support motor work. */
   passiveGraspWork: number;
+  /** Experimental local impact boundaries; nominal substeps stay unchanged. */
+  impactSplits: number;
+  impactSplitLimitHits: number;
+  /** Error estimate of frozen-frame filtered follow integration, yd/s. */
+  maxSupportIntegrationError: number | null;
+  supportIntegrationFailures: number;
 }
 
 /** Touch distance as a fraction of the two torso radii (pads and arms compress). */
@@ -261,6 +268,10 @@ interface JointRow {
   reel: number;
   /** Identical numerical copies share one physical compliant attachment. */
   members?: GraspJoint[];
+  /** Corrections can recover only this channel's earlier numerical work
+   * within the same physical substep, never another channel or interval. */
+  normalWork?: { net: number };
+  tangentWork?: { net: number };
 }
 
 /** The gait's plan for one 20 Hz tick: locomotion force, facing and footing. */
@@ -280,6 +291,11 @@ export class World {
   /** Research option: the averaged support motor is not a validated foot.
    * Keep explicit until ordinary tackles and sustained geometry transfer. */
   readonly supportModel: 'legacy' | 'virtual-foot';
+  /** Numerical row accounting; per-update remains only for comparison. */
+  readonly constraintWork: 'per-update' | 'per-solve';
+  /** Research-only onset handling; production keeps speculative contacts. */
+  readonly impactTiming: 'speculative' | 'local-sweep';
+  readonly supportIntegration: 'mean' | 'integrated';
   joints: Joint[] = [];
   /** World clock, seconds (the owner may set it to keep a shared clock). */
   time = 0;
@@ -329,10 +345,13 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot' } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.supportModel = opts.supportModel ?? 'legacy';
+    this.constraintWork = opts.constraintWork ?? 'per-solve';
+    this.impactTiming = opts.impactTiming ?? 'speculative';
+    this.supportIntegration = opts.supportIntegration ?? 'mean';
     const n = (this.n = bodies.length);
     bodies.forEach((b, i) => {
       this.index.set(b, i);
@@ -400,7 +419,8 @@ export class World {
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
       contacts: [], falls: [], downs: [], rises: [], maxPenetration: 0,
       maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(() => ({ x: 0, y: 0 })),
-      supportMotorWork: new Array(n).fill(0), supportMotorWorkLimit: new Array(n).fill(0), passiveGraspWork: 0 };
+      supportMotorWork: new Array(n).fill(0), supportMotorWorkLimit: new Array(n).fill(0), passiveGraspWork: 0,
+      impactSplits: 0, impactSplitLimitHits: 0, maxSupportIntegrationError: 0, supportIntegrationFailures: 0 };
     this.report = report; this.tickDt = dt;
     this.joints = this.joints.filter((j) => !(j.kind === 'grasp' && j.broken) && this.indexOf(j.a) >= 0 && this.indexOf(j.b) >= 0 && j.a !== j.b
       && (j.kind!=='hands'||(this.indexOf(j.actor??j.a)>=0&&this.indexOf(j.holder??j.a)>=0)));
@@ -466,7 +486,8 @@ export class World {
       const b = bs[i], plan = plans[i];
       if (plan.free || plan.dive || b.support!.state !== 'up') continue;
       const steps = near[i] ? report.substeps : 1;
-      const lx = this.leanX[i] / steps, ly = this.leanY[i] / steps;
+      const divisor = this.impactTiming === 'local-sweep' ? dt : steps;
+      const lx = this.leanX[i] / divisor, ly = this.leanY[i] / divisor;
       spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), dt);
     }
     report.contacts = [...pairs.values()];
@@ -521,22 +542,28 @@ export class World {
   }
 
   /** Apply internal impulse and record its exact planar kinetic work.
-   * Passive constraints have zero positive-work allowance. Muscles share
-   * the owner's remaining tick budget; solver corrections cannot refill it. */
+   * Passive channels finish with nonpositive work. Numerical corrections
+   * may refund their own earlier guess in this solve; real actions share
+   * the owner's remaining tick budget without cross-interval credit. */
   private pairImpulse(i: number,j: number,x: number,y: number,actor: number,
-    kind: 'hands'|'grasps'|'strikes', active=true): number {
+    kind: 'hands'|'grasps'|'strikes', active=true, channel?: { net: number }): number {
     const a=this.bodies[i],b=this.bodies[j];
     const linear=(b.vel.x-a.vel.x)*x+(b.vel.y-a.vel.y)*y;
     const quadratic=.5*(x*x+y*y)*(1/this.mass[i]+1/this.mass[j]);
-    const budget=active?Math.max(0,this.report.armWorkLimit[actor]-this.report.armWork[actor]):0;
+    const ledger = this.constraintWork === 'per-solve' ? channel : undefined;
+    const previous = ledger?.net ?? 0;
+    const budget=(active?Math.max(0,this.report.armWorkLimit[actor]-this.report.armWork[actor]):0)
+      + (ledger ? Math.max(0,-previous) : 0);
     const fraction=workFraction(linear,quadratic,budget);
     x*=fraction;y*=fraction;
     const work=linear*fraction+quadratic*fraction*fraction;
     a.vel.x-=x/this.mass[i];a.vel.y-=y/this.mass[i];
     b.vel.x+=x/this.mass[j];b.vel.y+=y/this.mass[j];
-      this.report.work[kind]+=work;
-      if (kind === 'grasps' && !active) this.report.passiveGraspWork += work;
-    if(active)this.report.armWork[actor]+=Math.max(0,work);
+    this.report.work[kind]+=work;
+    if (kind === 'grasps' && !active) this.report.passiveGraspWork += work;
+    if (ledger) ledger.net = previous + work;
+    if(active)this.report.armWork[actor]+=ledger
+      ? Math.max(0,ledger.net)-Math.max(0,previous) : Math.max(0,work);
     return fraction;
   }
 
@@ -558,14 +585,17 @@ export class World {
   /** Internal equal/opposite body load, with work of one common support
    * motor separated from passive grip dissipation. Solver updates telescope
    * in aggregate foot impulse; they do not refill/spend a motor budget. */
-  private supportImpulse(jt: GraspJoint, x: number, y: number, h: number, active = false): number {
+  private supportImpulse(jt: GraspJoint, x: number, y: number, h: number, active = false, channel?: { net: number }): number {
     const i = this.indexOf(jt.a), j = this.indexOf(jt.b), a = jt.a, b = jt.b;
     const foot = b.support!.foot!, share = clamp(jt.legs, 0, 1);
     const bodyLinear = (b.vel.x - a.vel.x) * x + (b.vel.y - a.vel.y) * y;
     const bodyQuadratic = .5 * (x * x + y * y) * (1 / this.mass[i] + 1 / this.mass[j]);
     const motor = supportWorkChange(foot, { x: this.footImpulseX[j], y: this.footImpulseY[j] },
       { x: share * x, y: share * y }, h);
-    const budget = active ? Math.max(0, this.report.armWorkLimit[i] - this.report.armWork[i]) : 0;
+    const ledger = this.constraintWork === 'per-solve' ? channel : undefined;
+    const previous = ledger?.net ?? 0;
+    const budget = (active ? Math.max(0, this.report.armWorkLimit[i] - this.report.armWork[i]) : 0)
+      + (ledger ? Math.max(0,-previous) : 0);
     const fraction = workFraction(bodyLinear - motor.linear, bodyQuadratic - motor.quadratic, budget);
     x *= fraction; y *= fraction;
     const bodyWork = bodyLinear * fraction + bodyQuadratic * fraction * fraction;
@@ -575,7 +605,10 @@ export class World {
     this.footImpulseX[j] += share * x; this.footImpulseY[j] += share * y;
     foot.force = { x: this.footImpulseX[j] / h, y: this.footImpulseY[j] / h };
     this.report.work.grasps += bodyWork;
-    if (active) this.report.armWork[i] += Math.max(0, bodyWork - motorWork);
+    const passive = bodyWork - motorWork;
+    if (ledger) ledger.net = previous + passive;
+    if (active) this.report.armWork[i] += ledger
+      ? Math.max(0,ledger.net)-Math.max(0,previous) : Math.max(0,passive);
     else this.report.passiveGraspWork += bodyWork - motorWork;
     return fraction;
   }
@@ -624,6 +657,61 @@ export class World {
 
   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
     report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean): void {
+    if (!contact || this.impactTiming === 'speculative') {
+      this.integrateSubstep(ids, intents, plans, h, remaining, report, pairs, contact);
+      return;
+    }
+    // This World currently advances all near bodies as one island. A split
+    // would change every attached/struck body's physical solve, even if that
+    // body was excluded from the free-flight prediction. Restrict the entire
+    // experiment to an island with no live joints or pending strikes.
+    if (this.joints.some(jt => !(jt.kind === 'grasp' && jt.broken)) || this.pending.length) {
+      this.integrateSubstep(ids, intents, plans, h, remaining, report, pairs, contact);
+      return;
+    }
+    let left = h, splits = 0;
+    while (left > 1e-12) {
+      const onset = this.firstImpactTime(ids, plans, left);
+      // Bounded local experiment. The predictor is a constant-acceleration
+      // chord, not a full coupled trajectory oracle. A miss is re-evaluated
+      // after the segment; persistent loads continue through the same solve.
+      if (onset > 1e-6 && onset < left - 1e-6 && splits < 8) {
+        this.integrateSubstep(ids, intents, plans, onset, remaining - (h-left), report, pairs, true, false);
+        left -= onset; splits++; report.impactSplits++;
+      } else {
+        if (splits >= 8 && onset > 1e-6 && onset < left - 1e-6) report.impactSplitLimitHits++;
+        this.integrateSubstep(ids, intents, plans, left, remaining - (h-left), report, pairs, true);
+        return;
+      }
+    }
+  }
+
+  /** Approximate incoming circle-contact time. The planned acceleration
+   * supplies a chord of the free trajectory; contact/joint loads can change
+   * it, so every local segment is re-evaluated and fallback is observable. */
+  private firstImpactTime(ids: number[], plans: Plan[], h: number): number {
+    let first = h;
+    for (let ii = 0; ii < ids.length; ii++) for (let jj = ii+1; jj < ids.length; jj++) {
+      const i=ids[ii],j=ids[jj],a=this.bodies[i],b=this.bodies[j];
+      const dx=b.pos.x-a.pos.x,dy=b.pos.y-a.pos.y,d=Math.hypot(dx,dy);
+      if (d < 1e-9) continue;
+      const R=CONTACT_SCALE*(bodyRadius(a,dx/d,dy/d)+bodyRadius(b,dx/d,dy/d));
+      if (d-R <= 1e-7) continue;
+      const acc=(k:number) => this.bodies[k].support!.state==='up'&&!plans[k].free
+        ? {x:plans[k].ax+this.bodies[k].support!.lean.x/this.mass[k],y:plans[k].ay+this.bodies[k].support!.lean.y/this.mass[k]}
+        : {x:0,y:0};
+      const aa=acc(i),ab=acc(j);
+      const vx=b.vel.x-a.vel.x+.5*(ab.x-aa.x)*h,vy=b.vel.y-a.vel.y+.5*(ab.y-aa.y)*h;
+      const qa=vx*vx+vy*vy,qb=dx*vx+dy*vy,qc=d*d-R*R,disc=qb*qb-qa*qc;
+      if (qa<1e-12||qb>=0||disc<0) continue;
+      const t=(-qb-Math.sqrt(disc))/qa;
+      if (t>0&&t<first) first=t;
+    }
+    return first;
+  }
+
+  private integrateSubstep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
+    report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean, swept = true): void {
     const bs = this.bodies;
     this.reels.clear();
     for (const i of ids) {
@@ -725,7 +813,7 @@ export class World {
     let contacts: Contact[] = [];
     if (contact) {
       const soft = softness(CONTACT_HZ, CONTACT_ZETA, h);
-      contacts = this.detect(ids, h, soft, report);
+      contacts = this.detect(ids, h, soft, report, swept);
       const rows = this.jointRows(h);
       const handSoft = softness(HANDS_HZ, HANDS_ZETA, h);
       const graspSoft = softness(GRASP_HZ, GRASP_ZETA, h);
@@ -1005,7 +1093,8 @@ export class World {
         }
         fx += lx + px; fy += ly + py;
         this.braceX[i] = px; this.braceY[i] = py;
-        this.leanX[i] += px; this.leanY[i] += py;
+        const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
+        this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
         turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,sup.foot?Math.hypot(fx,fy,supportEffort):Math.hypot(fx,fy));
       }
     } else {
@@ -1093,7 +1182,19 @@ export class World {
     const mean = GAIT_LAG / h * kg;
     const mx = ux + (acc.x - ux) * mean, my = uy + (acc.y - uy) * mean;
     // Accelerations the feet can follow are planned; the rest displaces support.
-    const f = followAccel(b, { x: mx, y: my }, this.cut[i], Math.max(this.alpha[i], 0.1) * (1 - lock) * FOLLOW_MARGIN);
+    const followCapacity = Math.max(this.alpha[i], 0.1) * (1 - lock) * FOLLOW_MARGIN;
+    let f = followAccel(b, { x: mx, y: my }, this.cut[i], followCapacity);
+    if (this.supportIntegration === 'integrated') {
+      // Preserve the same frozen body/envelope used by the old call, while
+      // applying its nonlinear limit before averaging the filter response.
+      // This does not infer missing within-step impulse timing or leg motion.
+      const followed = integrateFilteredFollow(b, acc, {x:ux,y:uy}, GAIT_LAG, h, this.cut[i], followCapacity);
+      f = {x:followed.integral.x/h,y:followed.integral.y/h};
+      if (followed.errorEstimate === null) report.maxSupportIntegrationError = null;
+      else if (report.maxSupportIntegrationError !== null) report.maxSupportIntegrationError
+        = Math.max(report.maxSupportIntegrationError, followed.errorEstimate);
+      if (!followed.converged) report.supportIntegrationFailures++;
+    }
     let dx = (mx - f.x) * h / w0;
     let dy = (my - f.y) * h / w0;
     // Pitch/roll angular momentum from contact height. Keep the translational
@@ -1214,7 +1315,7 @@ export class World {
     }
   }
 
-  private detect(ids: number[], h: number, soft: Softness, report: StepReport): Contact[] {
+  private detect(ids: number[], h: number, soft: Softness, report: StepReport, swept = true): Contact[] {
     const bs = this.bodies;
     const out: Contact[] = [];
     for (let ii = 0; ii < ids.length; ii++) {
@@ -1243,6 +1344,7 @@ export class World {
         let s = dist - R;
         let guard = false;
         if (s > 0) {
+          if (!swept) continue;
           // Swept test: do the two circles touch within this substep?
           const qa = rvx * rvx + rvy * rvy, qb = dx * rvx + dy * rvy, qc = d2 - R * R;
           const disc = qb * qb - qa * qc;
@@ -1357,7 +1459,7 @@ export class World {
       const imp = -r.mn * soft.massScale * (vn + bias) - soft.impulseScale * r.ln;
       const ln = r.mode > 0 ? clamp(r.ln + imp, 0, r.pushLim) : clamp(r.ln + imp, -r.holdLim, 0);
       const dn = ln - r.ln;
-      const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'hands');
+      const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'hands',true,r.normalWork??={net:0});
       r.ln+=dn*fraction;
     }
     if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);
@@ -1385,15 +1487,16 @@ export class World {
     ln=Math.max(ln,-passiveNormal);
     const dn = ln - r.ln;
     const coupled = !!b.support!.foot && jt.legs > 0;
-    const fraction=coupled?this.supportImpulse(jt,r.nx*dn,r.ny*dn,h)
-      :this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false);
+    const channel=r.normalWork??={net:0};
+    const fraction=coupled?this.supportImpulse(jt,r.nx*dn,r.ny*dn,h,false,channel)
+      :this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false,channel);
     r.ln+=dn*fraction;
     const tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
     if (coupled) {
       const rv = this.graspVelocity(jt), tx = -r.ny, ty = r.nx;
       const vt = rv.x * tx + rv.y * ty;
       const lt = clamp(r.lt - r.mn * vt, -tangentLimit, tangentLimit), dt = lt - r.lt;
-      r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h);
+      r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0});
     } else this.solveTangent(r, a, b, tangentLimit);
   }
 
@@ -1405,7 +1508,7 @@ export class World {
     const vt = (b.vel.x - a.vel.x) * tx + (b.vel.y - a.vel.y) * ty;
     const lt = clamp(r.lt - r.mn * vt, -lim, lim);
     const dt = lt - r.lt;
-    const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,r.actor,r.joint.kind==='hands'?'hands':'grasps',false);
+    const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,r.actor,r.joint.kind==='hands'?'hands':'grasps',false,r.tangentWork??={net:0});
     r.lt+=dt*fraction;
   }
 }
