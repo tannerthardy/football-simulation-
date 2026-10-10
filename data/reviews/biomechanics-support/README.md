@@ -202,3 +202,39 @@ python3 scripts/data/biomechanics-inertial-priors.py --out out/biomechanics-iner
 The extractor pins its own SHA and the input files. The current physical design
 and its limitations are in
 [inertial feet and support readiness](../../../docs/reviews/inertial-feet-and-support-readiness.md).
+
+## Pose-dependent rigid shape priors
+
+[rigid-shape-priors.json](rigid-shape-priors.json) adds pose-dependent grouped
+torso and foot mass/inertia summaries from the same two complete Hamner files.
+It samples eight existing running windows in kinematics and low-pass passes
+(16 selected stance frames per pass family across the two subjects); it does
+not download any data or change the engine. The non-foot body group forms a
+torso proxy, and each foot group includes talus, calcaneus and toes. Full
+tensors and principal moments are retained; `trace(I)/3` is only an isotropic
+rotor reduction for sensitivity studies. The report includes kg m² and kg yd²
+(`kg yd² = kg m² / 0.9144²`), world COMs and offsets transformed into pelvis or
+calcaneus frames.
+
+These are embedded processed-model assignments, not direct segment
+measurements, an NFL population interval, or an effective inertia validated for
+a collapsed point foot. The heel/toe locations are embedded model markers; they
+are not measured sole boundaries, cleat geometry or contact points. The pinned
+0.10.52.1 native Python wheel cannot return readable body inertia tensors via
+its six-scalar `getMomentOfInertia` output binding, and exposes no readable
+inertia property. All 80 inspected XML body/pass entries have zero off-diagonal
+terms, so the XML/native off-diagonal sign convention remains unverified. The
+JSON records these limits explicitly rather than claiming native agreement.
+
+Reproduce with the already acquired reader and BDB files:
+
+```sh
+python3 scripts/data/biomechanics-rigid-priors.py \
+  --out out/biomechanics-rigid-priors.json
+```
+
+The JSON pins the input manifest, each full subject hash, reader source commit,
+and extractor hashes at start and end. Raw files and the reader remain ignored
+under `out/virtual-foot-data/`. Current support-model interpretation and
+production status are in
+[solved ground and leg support](../../../docs/reviews/solved-ground-and-leg-support.md).

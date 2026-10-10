@@ -1,0 +1,253 @@
+{
+  "schema": "material-rigid-stress-v1",
+  "nodeVersion": "v22.23.3",
+  "seed": 713291,
+  "cases": 2000,
+  "overCases": 2000,
+  "multiloadCases": 128,
+  "sourceSha256Start": "45441b0fc60f6005908501fdbf8dc129e088aec97b959935d9cf3b1c301cbabe",
+  "sourceSha256End": "45441b0fc60f6005908501fdbf8dc129e088aec97b959935d9cf3b1c301cbabe",
+  "scriptSha256Start": "aa406124ce309865c102ca87e62afaca6b235e76a09fdcb50f890f62cd80027d",
+  "scriptSha256End": "aa406124ce309865c102ca87e62afaca6b235e76a09fdcb50f890f62cd80027d",
+  "sourceStable": true,
+  "scriptStable": true,
+  "method": {
+    "originalPanel": "Preserves the informal 2,000-case draw order and input generation; adds covariance transforms",
+    "secondaryPanel": "Independent Haar-uniform basis, 1–4 material point loads, COM load and explicit couple",
+    "negativeControl": "Sufficient local contraction bound B >= 1: expect atomic numeric rejection, not a strength limit",
+    "transforms": [
+      "base",
+      "translated by (23,-11,3) yd",
+      "reflect x with angular momentum/couple as axial pseudovectors and unchanged point IDs"
+    ],
+    "independentlyReconstructed": [
+      "full material kinetic energy",
+      "known impulse work from actual material-point displacement",
+      "linear momentum",
+      "spin response at actual midpoint offsets",
+      "orbital plus spin angular momentum about fixed origin",
+      "Cayley attachment identity",
+      "rigid orthonormality",
+      "atomic rejection and unchanged inputs",
+      "covariant states/status"
+    ],
+    "thresholds": {
+      "workAbs": "5e-9 + 1e-11 * max(1,Kbefore,Kafter,sum(abs(work channels)))",
+      "linearAbs": 1e-8,
+      "spinAbs": 1e-8,
+      "angularAbs": 1e-7,
+      "materialPointKinematicsAbs": 2e-9,
+      "orthonormalityAbs": 1e-10,
+      "covarianceAbs": 2e-8
+    },
+    "limits": "Fixed external-impulse numerical stress only. B<1 certifies a unique standalone angular impulse root, not time accuracy of fast free spin. angularPhase and Cayley angle expose that limit; the physical driver needs local angular/chord and first-hit checks. No gravity, normal/traction solve, joint capacity, gait, fall, or World readiness is validated."
+  },
+  "cohorts": {
+    "original-under-bound": {
+      "inputs": 2000,
+      "trajectories": 6000,
+      "accepted": 6000,
+      "rejected": 0,
+      "expectedRejects": 0,
+      "unexpectedRejects": 0,
+      "unexpectedAccepts": 0,
+      "atomicRejectFailures": 0,
+      "inputMutationFailures": 0,
+      "contractViolations": 0,
+      "covarianceStatusMismatches": 0,
+      "covarianceViolations": 0,
+      "maximumIterations": 6,
+      "maxima": {
+        "energyBefore": 917.6772335601114,
+        "energyAfter": 17953169.47776693,
+        "pointWork": 17953152.960214946,
+        "centerWork": 0,
+        "coupleWork": 0,
+        "workResidualAbs": 8.475035429000854e-8,
+        "workResidualRelative": 1.5876972774260038e-11,
+        "linearResidual": 4.067383956680332e-12,
+        "spinResidual": 9.555710676743731e-12,
+        "angularResidual": 2.4393454971490735e-10,
+        "attachmentIdentityResidual": 1.2583629602012753e-11,
+        "centerIdentityResidual": 5.510283276830866e-12,
+        "orthogonalityError": 1.5543122344752192e-15,
+        "massInertiaChange": 0,
+        "angularPhase": 33.760202625435916,
+        "cayleyAngle": 3.0232482677552905
+      },
+      "covarianceMaxima": {
+        "position": 2.865666069755988e-14,
+        "velocity": 0,
+        "angularMomentum": 0,
+        "basis": 0
+      },
+      "rejectedReasons": {},
+      "inputSha256": "8a70cc5e4c0db63242fb9a583d1dee06a0fb0efee8ca05bddc9f4346d1532a40",
+      "firstRejectedInput": null,
+      "firstViolation": null
+    },
+    "arbitrary-basis-multiload": {
+      "inputs": 128,
+      "trajectories": 384,
+      "accepted": 384,
+      "rejected": 0,
+      "expectedRejects": 0,
+      "unexpectedRejects": 0,
+      "unexpectedAccepts": 0,
+      "atomicRejectFailures": 0,
+      "inputMutationFailures": 0,
+      "contractViolations": 0,
+      "covarianceStatusMismatches": 0,
+      "covarianceViolations": 0,
+      "maximumIterations": 4,
+      "maxima": {
+        "energyBefore": 3254.9713625232066,
+        "energyAfter": 20180444.60782677,
+        "pointWork": 20174501.131460883,
+        "centerWork": 2100.478766726729,
+        "coupleWork": 3724.618724542979,
+        "workResidualAbs": 7.450580596923828e-9,
+        "workResidualRelative": 1.018320821853693e-12,
+        "linearResidual": 2.033691978340166e-12,
+        "spinResidual": 9.441869827622194e-12,
+        "angularResidual": 2.4043709915507213e-10,
+        "attachmentIdentityResidual": 8.233519534907403e-12,
+        "centerIdentityResidual": 6.426027242758046e-12,
+        "orthogonalityError": 1.3322676295501878e-15,
+        "massInertiaChange": 0,
+        "angularPhase": 1.4464804643582274,
+        "cayleyAngle": 1.2523075079821884
+      },
+      "covarianceMaxima": {
+        "position": 1.464821375527116e-14,
+        "velocity": 0,
+        "angularMomentum": 0,
+        "basis": 0
+      },
+      "rejectedReasons": {},
+      "inputSha256": "57dccfa9345af73cdebb61b9749af9b070c0950e6ef25092827827b31066cf7e",
+      "firstRejectedInput": null,
+      "firstViolation": null
+    },
+    "above-bound-negative-control": {
+      "inputs": 2000,
+      "trajectories": 6000,
+      "accepted": 0,
+      "rejected": 6000,
+      "expectedRejects": 6000,
+      "unexpectedRejects": 0,
+      "unexpectedAccepts": 0,
+      "atomicRejectFailures": 0,
+      "inputMutationFailures": 0,
+      "contractViolations": 0,
+      "covarianceStatusMismatches": 0,
+      "covarianceViolations": 0,
+      "maximumIterations": 0,
+      "maxima": {},
+      "covarianceMaxima": {},
+      "rejectedReasons": {
+        "Local angular interval not certified; subdivide the physical interval": 6000
+      },
+      "inputSha256": "a69cf05cd6180cd64f6e5758b71fb81f1b7a856cb08e393104d6c301fb1a6d42",
+      "firstRejectedInput": {
+        "caseId": 0,
+        "transform": "base",
+        "independentBound": 1.5820077660717071,
+        "reason": "Local angular interval not certified; subdivide the physical interval",
+        "atomic": true,
+        "input": {
+          "body": {
+            "mass": 78.60316234827042,
+            "inertia": 0.008160649256136422,
+            "position": {
+              "x": 59.3178913067095,
+              "y": 13.970211044885218,
+              "z": 1.5292658514808863
+            },
+            "velocity": {
+              "x": -0.22495804820209742,
+              "y": 4.065496132243425,
+              "z": 2.3102022148668766
+            },
+            "angularMomentum": {
+              "x": 0.022228054997894132,
+              "y": -0.024524973090938686,
+              "z": 0.04011702465677378
+            },
+            "basis": [
+              {
+                "x": -0.2553172786424789,
+                "y": -0.7887768748597936,
+                "z": -0.5591458923331334
+              },
+              {
+                "x": 0.4979010263594381,
+                "y": -0.6029986046507205,
+                "z": 0.6232874543414957
+              },
+              {
+                "x": -0.8287989232478628,
+                "y": -0.11926325702286195,
+                "z": 0.5466887783259154
+              }
+            ]
+          },
+          "dt": 0.009825965889263898,
+          "loads": [
+            {
+              "id": "point-0",
+              "local": {
+                "x": 0.35089216381311417,
+                "y": -0.7488930304534733,
+                "z": -0.6993796220049262
+              },
+              "impulse": {
+                "x": -0.7412910472898107,
+                "y": -0.8867563305766153,
+                "z": -1.6557586133919957
+              }
+            },
+            {
+              "id": "point-1",
+              "local": {
+                "x": 0.8611532254144549,
+                "y": -0.45533105870708823,
+                "z": 0.5416415296494961
+              },
+              "impulse": {
+                "x": 0.6396585258367655,
+                "y": -0.9833368634993381,
+                "z": -1.1002415961167633
+              }
+            },
+            {
+              "id": "point-2",
+              "local": {
+                "x": 0.1584931816905737,
+                "y": 0.33538944786414504,
+                "z": 0.5928420117124915
+              },
+              "impulse": {
+                "x": 1.549169537383578,
+                "y": 0.3234827107150452,
+                "z": 0.9078262500978738
+              }
+            }
+          ],
+          "center": {
+            "x": -2.5396450515836477,
+            "y": 2.041872185654938,
+            "z": -7.978813257068396
+          },
+          "couple": {
+            "x": -0.007683546946661939,
+            "y": -0.0010077470483138805,
+            "z": 0.005151940033430189
+          }
+        }
+      },
+      "firstViolation": null
+    }
+  },
+  "failures": 0
+}

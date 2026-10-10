@@ -1,6 +1,9 @@
 # Shared NFL data
 
-Current physics/data status: [Inertial feet and support readiness](../docs/reviews/inertial-feet-and-support-readiness.md).
+Current physics/data status: [Solved ground and leg support](../docs/reviews/solved-ground-and-leg-support.md).
+The review's [rigid-shape priors](reviews/biomechanics-support/rigid-shape-priors.json)
+aggregate existing Hamner OpenSim model assignments for research sensitivity;
+they are not measured NFL segment inertias or finite-sole geometry.
 The [inertial evidence and commands](reviews/physics-world/inertial-support/README.md)
 pin the unused research kernel, 288-case gait panel, phase-resolved slip,
 coarse/fine differences and model-mass priors. Physics is not ready; actual

@@ -1,14 +1,19 @@
 # Physics development and testing
 
-Read [Inertial feet and support readiness](reviews/inertial-feet-and-support-readiness.md)
-first for the current increment. Actual foot/torso inertia, central passive
-grips and coupled 2D friction complete all 288 sampled planar gait cases with
-shared force/work accounting. This remains unused by World. Physics is NOT
-READY: prescribed loading, loaded-foot slip and coarse/fine controller
-sensitivity remain. Next: finite axial leg compliance with stored energy,
-actual ground normals, bounded joint control and physically achieved support.
-The linked integration design explains why current horizontal push and planar
-reach cannot become 3D strength and leg length unchanged. Do not filter away
+Read [Solved ground and leg support](reviews/solved-ground-and-leg-support.md)
+first for the current increment. A finite-mass 1D vertical support solver,
+bounded series-rest-length control and material-rigid spatial primitives are
+research-only and unused by `World`. Energy closure alone did not establish
+physical contact: adhesion, early end-stop and hidden energy return must also
+be ruled out. Physics is NOT READY. Next: one coupled spatial torso/feet/hip/
+sole contact island, bounded executed control, a gated World adapter, then
+hand-fall convergence, universal contact and NFL gates. The linked shape priors
+are processed-model assignments, not NFL measurements.
+
+The preceding [inertial feet and support review](reviews/inertial-feet-and-support-readiness.md)
+retains the planar gait panel and its coarse/fine, loaded-slip and grip-break
+limitations. Its mechanics and reports are tied to their recorded source pins;
+they are not current production readiness evidence. Do not filter away
 unrecovered impulse debt or treat an intended landing as physical support.
 
 Read [Finite feet and the next physical foundation](reviews/finite-support-foundation.md)

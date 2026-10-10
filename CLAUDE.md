@@ -2,6 +2,15 @@
 
 Start with these shared project references:
 
+- [Solved ground and leg support](docs/reviews/solved-ground-and-leg-support.md):
+  **current review.** A 1D finite-mass vertical ground/leg solver, bounded
+  series-rest control and spatial material primitives are research-only and
+  unused by `World`. Energy closure alone misses adhesion, early end-stop and
+  hidden energy return. Physics is NOT READY. Next: one coupled spatial
+  torso/feet/hip/sole contact island, bounded executed control, gated World
+  integration, then hand-fall, universal-contact and NFL gates. The pinned
+  shape priors are processed-model assignments, not NFL measurements.
+
 - [Inertial feet and support readiness](docs/reviews/inertial-feet-and-support-readiness.md):
   **read first.** Finite foot/torso inertia, shared actuator effort/work, central
   passive grips and coupled 2D friction now complete all 288 sampled gait cases.
