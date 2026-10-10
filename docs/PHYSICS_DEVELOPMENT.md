@@ -1,10 +1,20 @@
 # Physics development and testing
 
-Read [Solved ground and leg support](reviews/solved-ground-and-leg-support.md)
-first for the current increment. A finite-mass 1D vertical support solver,
+Read [Spatial feet and ground readiness](reviews/spatial-feet-and-ground-readiness.md)
+first. The current research increment solves torso/two-foot material motion,
+passive leg forces and actual sole normals/friction in one coupled spatial
+system. Low-inertia sustained contact and independent work/momentum panels
+pass. It remains unused by `World` and has no complete contact-event, gait,
+active spatial-control or torso-ground lifecycle. Physics is NOT READY. Next:
+earliest contact geometry/events, bounded executed control, then coherent
+World integration and universal/production/NFL transfer gates. Numerical phase
+budgets and endpoint checks do not certify absence of hidden contact events.
+
+[Solved ground and leg support](reviews/solved-ground-and-leg-support.md)
+records the preceding increment. A finite-mass 1D vertical support solver,
 bounded series-rest-length control and material-rigid spatial primitives are
 research-only and unused by `World`. Energy closure alone did not establish
-physical contact: adhesion, early end-stop and hidden energy return must also
+physical contact: adhesion, early end-stop and hidden joint-bound crossings must also
 be ruled out. Physics is NOT READY. Next: one coupled spatial torso/feet/hip/
 sole contact island, bounded executed control, a gated World adapter, then
 hand-fall convergence, universal contact and NFL gates. The linked shape priors

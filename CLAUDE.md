@@ -2,17 +2,26 @@
 
 Start with these shared project references:
 
+- [Spatial feet and ground readiness](docs/reviews/spatial-feet-and-ground-readiness.md):
+  **current review.** One coupled 18D torso/two-rigid-foot solve with actual
+  hips/ankles, gravity, passive leg energy, unilateral sole normals and friction.
+  Independent smooth-contact/impact panels pass, including small foot inertia;
+  all modules remain unused by `World`. Physics is NOT READY. Next: earliest
+  contact geometry/events, bounded spatial control, torso-ground recovery, then
+  coherent World replacement and native hand-fall/universal/NFL transfer gates.
+  Endpoint checks and phase guards are not interior-event certificates.
+
 - [Solved ground and leg support](docs/reviews/solved-ground-and-leg-support.md):
-  **current review.** A 1D finite-mass vertical ground/leg solver, bounded
+  Previous vertical/material increment. A 1D finite-mass vertical ground/leg solver, bounded
   series-rest control and spatial material primitives are research-only and
   unused by `World`. Energy closure alone misses adhesion, early end-stop and
-  hidden energy return. Physics is NOT READY. Next: one coupled spatial
+  hidden joint-bound crossings. Physics is NOT READY. Its planned coupled spatial
   torso/feet/hip/sole contact island, bounded executed control, gated World
   integration, then hand-fall, universal-contact and NFL gates. The pinned
   shape priors are processed-model assignments, not NFL measurements.
 
 - [Inertial feet and support readiness](docs/reviews/inertial-feet-and-support-readiness.md):
-  **read first.** Finite foot/torso inertia, shared actuator effort/work, central
+  Previous planar increment. Finite foot/torso inertia, shared actuator effort/work, central
   passive grips and coupled 2D friction now complete all 288 sampled gait cases.
   World does not use them. Physics is NOT READY: prescribed normal loading,
   loaded-foot sliding and coarse/fine gait sensitivity remain; no physical

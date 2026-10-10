@@ -1,6 +1,10 @@
 # Shared NFL data
 
-Current physics/data status: [Solved ground and leg support](../docs/reviews/solved-ground-and-leg-support.md).
+Current physics/data status: [Spatial feet and ground readiness](../docs/reviews/spatial-feet-and-ground-readiness.md).
+The [spatial support evidence](reviews/physics-world/spatial-support/README.md)
+contains pinned independent work/momentum/contact panels and reproduction commands.
+The new spatial modules remain unused by `World`; contact events, active spatial
+control, gait and falls are not yet ready.
 The review's [rigid-shape priors](reviews/biomechanics-support/rigid-shape-priors.json)
 aggregate existing Hamner OpenSim model assignments for research sensitivity;
 they are not measured NFL segment inertias or finite-sole geometry.
