@@ -1,13 +1,17 @@
 # Physics development and testing
 
-Read [Physics cost-benefit and development philosophy](reviews/physics-cost-benefit-and-development-philosophy.md)
-first. Four independent reviews challenge the need for universal two-foot gait.
+Read [Smaller live recovery model](reviews/force-coupled-held-recovery.md)
+for the latest implementation and evidence, then
+[Physics cost-benefit and development philosophy](reviews/physics-cost-benefit-and-development-philosophy.md).
+Four independent reviews challenge the need for universal two-foot gait.
 Keep the current World bodies; first evaluate bounded effective support/recovery
 with a coherent shared ground/leg/grip force path. Persistent lower geometry or
 two massless slots must earn their complexity in retained football cases. Full
 3D foot/ground expansion remains paused. Use transparent reduced laws and stable
 football-scale convergence; permit diagnosed controller repairs within existing
-capabilities. No new candidate is implemented. Production uses legacy support.
+capabilities. Production now selectively couples recovery to actual lower-hold
+forces while preserving analytic unheld support. The `legacy` API label remains
+for compatibility; previous production behavior requires its historical source.
 The preceding
 [live-World evidence and one-command rerun](../data/reviews/physics-world/football-first/README.md)
 retains both the experimental hand-fall improvement and the press-jam regression.

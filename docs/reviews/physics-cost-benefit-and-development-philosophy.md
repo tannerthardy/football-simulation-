@@ -1,5 +1,10 @@
 # Physics cost-benefit: how simple can the football engine be?
 
+Implementation follow-up: [Smaller live recovery model](force-coupled-held-recovery.md)
+records the first shipped reduced repair, validation, costs and limitations.
+The statements below about unchanged production and unmeasured candidate cost
+describe this review's original checkpoint; the follow-up supersedes that status.
+
 ## Decision
 
 **Try a smaller support/recovery repair before committing to universal two-foot

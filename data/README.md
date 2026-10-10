@@ -1,6 +1,12 @@
 # Shared NFL data
 
-Current physics/data status: [Physics cost-benefit and development philosophy](../docs/reviews/physics-cost-benefit-and-development-philosophy.md).
+Current physics/data status: [Smaller live recovery model](../docs/reviews/force-coupled-held-recovery.md).
+
+The first live simplification increment uses one force-coupled corrective
+coordinate only during low holds. Its source-pinned contact, game and cost
+evidence is in [held-recovery](reviews/physics-world/held-recovery/README.md).
+Full spatial feet remain paused under the
+[cost-benefit development policy](../docs/reviews/physics-cost-benefit-and-development-philosophy.md).
 The [live-World comparisons and one-command rerun](reviews/physics-world/football-first/README.md)
 compare the actual legacy and experimental virtual-foot modes. They retain a
 hand-fall improvement and a press-jam regression; neither model is a new two-foot

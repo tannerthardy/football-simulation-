@@ -1,0 +1,2727 @@
+{
+  "schema": "held-recovery-results-v1",
+  "baselineSourceSha256": "150d8ed430ec7321c9927cf967eb35824a01c721661e479edd18ec7813c07ff5",
+  "candidateSourceSha256": "43ff53ab75d3deb3d6570ea067fd82265b4c8fc1c21fe0fed547c1031ab49edf",
+  "node": "v22.23.3",
+  "hand": {
+    "baseline": {
+      "substeps": 12,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.2083931298453867,
+      "maxClosestErrorYd": 0.8220399013420656,
+      "meanCarriedPastErrorYd": 0.0867402718624276,
+      "maxCarriedPastErrorYd": 0.20912040577516677,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 3,
+      "maxMomentumResidualKgYdPerS": 6.692694023125009e-13,
+      "maxOverlapYd": 0.003150591365223554,
+      "allFinite": true
+    },
+    "candidate": {
+      "substeps": 12,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.20544008846589426,
+      "maxClosestErrorYd": 0.8220399013420656,
+      "meanCarriedPastErrorYd": 0.08794933231205546,
+      "maxCarriedPastErrorYd": 0.20912040577516677,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 1,
+      "maxMomentumResidualKgYdPerS": 6.692694023125009e-13,
+      "maxOverlapYd": 0.003150591365223554,
+      "allFinite": true
+    },
+    "ordinaryFrontalAttempts": 12,
+    "ordinaryFrontalSuccesses": 12
+  },
+  "sharedCapabilities": {
+    "baseline": {
+      "substeps": 12,
+      "reps": 40,
+      "maxMirrorPositionErrorYd": 1.1546319456101628e-14,
+      "meanSubjectPositionErrorVs48Yd": 0.0297014101811173,
+      "maxSubjectPositionErrorVs48Yd": 0.06903261498797421,
+      "fallSetDisagreementsVs48": 0,
+      "maxMomentumResidualKgYdPerS": 5.684360209067985e-13,
+      "maxWorkResidualKgYd2PerS2": 2.149169731069378e-12,
+      "maxArmImpulseFraction": 1.0000000000000002,
+      "maxArmWorkFraction": 0.6113448115291875,
+      "maxOverlapYd": 0.00866280087728033,
+      "allFinite": true
+    },
+    "candidate": {
+      "substeps": 12,
+      "reps": 40,
+      "maxMirrorPositionErrorYd": 1.1546319456101628e-14,
+      "meanSubjectPositionErrorVs48Yd": 0.0297014101811173,
+      "maxSubjectPositionErrorVs48Yd": 0.06903261498797421,
+      "fallSetDisagreementsVs48": 0,
+      "maxMomentumResidualKgYdPerS": 5.684360209067985e-13,
+      "maxWorkResidualKgYd2PerS2": 2.149169731069378e-12,
+      "maxArmImpulseFraction": 1.0000000000000002,
+      "maxArmWorkFraction": 0.6113448115291875,
+      "maxOverlapYd": 0.00866280087728033,
+      "allFinite": true
+    },
+    "identicalRows": true
+  },
+  "approachTackles": {
+    "baseline": 14,
+    "candidate": 16,
+    "attempts": 24
+  },
+  "stationaryProgression": [
+    {
+      "supportModel": "legacy",
+      "capacity": 0,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "finalBodies": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0,
+          "profile": {
+            "massKg": 100,
+            "radius": 0.28,
+            "reach": 1,
+            "heightYd": 2.05,
+            "vmax": 9,
+            "tau": 1.3,
+            "brake": 6,
+            "lateral": 6,
+            "turnRate": 8,
+            "backpedal": 0.6,
+            "shuffle": 0.55,
+            "maxCatchHeight": 3,
+            "reactReach": 2.6,
+            "reactionTime": 0.25,
+            "power": 100,
+            "balance": 0.5,
+            "bend": 0.5,
+            "stepSpeed": 3.4,
+            "getUp": 0.9
+          },
+          "energy": 0.9981999999999998,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19968499999999997,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 0,
+              "y": 0
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 0,
+          "profile": {
+            "massKg": 100,
+            "radius": 0.28,
+            "reach": 1,
+            "heightYd": 2.05,
+            "vmax": 9,
+            "tau": 1.3,
+            "brake": 6,
+            "lateral": 6,
+            "turnRate": 8,
+            "backpedal": 0.6,
+            "shuffle": 0.55,
+            "maxCatchHeight": 3,
+            "reactReach": 2.6,
+            "reactionTime": 0.25,
+            "power": 100,
+            "balance": 0.5,
+            "bend": 0.5,
+            "stepSpeed": 3.4,
+            "getUp": 0.9
+          },
+          "energy": 0.9981999999999998,
+          "support": {
+            "xi": {
+              "x": 0.03816428985855382,
+              "y": 0.0063607149764256365
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19968499999999997,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.19168627044723988,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 0,
+              "y": 0
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0
+        }
+      ],
+      "ticks": [
+        {
+          "t": 0.05,
+          "xi": {
+            "x": 0.11451801469548613,
+            "y": 0.01908633578258102
+          },
+          "state": "up",
+          "foot": null,
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": 0,
+            "bodyGripWork": 0,
+            "workResidual": 0
+          }
+        },
+        {
+          "t": 0.1,
+          "xi": {
+            "x": 0.09788117460500152,
+            "y": 0.016313529100833585
+          },
+          "state": "up",
+          "foot": null,
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": 0,
+            "bodyGripWork": 0,
+            "workResidual": 0
+          }
+        },
+        {
+          "t": 0.15000000000000002,
+          "xi": {
+            "x": 0.08366133925808811,
+            "y": 0.013943556543014685
+          },
+          "state": "up",
+          "foot": null,
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": 0,
+            "bodyGripWork": 0,
+            "workResidual": 0
+          }
+        },
+        {
+          "t": 0.2,
+          "xi": {
+            "x": 0.07150735775000183,
+            "y": 0.011917892958333641
+          },
+          "state": "up",
+          "foot": null,
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": 0,
+            "bodyGripWork": 0,
+            "workResidual": 0
+          }
+        },
+        {
+          "t": 0.25,
+          "xi": {
+            "x": 0.061119096738963104,
+            "y": 0.010186516123160516
+          },
+          "state": "up",
+          "foot": null,
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": 0,
+            "bodyGripWork": 0,
+            "workResidual": 0
+          }
+        },
+        {
+          "t": 0.3,
+          "xi": {
+            "x": 0.05224002810747089,
+            "y": 0.008706671351245145
+          },
+          "state": "up",
+          "foot": null,
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": 0,
+            "bodyGripWork": 0,
+            "workResidual": 0
+          }
+        },
+        {
+          "t": 0.35,
+          "xi": {
+            "x": 0.04465089358573895,
+            "y": 0.007441815597623155
+          },
+          "state": "up",
+          "foot": null,
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": 0,
+            "bodyGripWork": 0,
+            "workResidual": 0
+          }
+        },
+        {
+          "t": 0.39999999999999997,
+          "xi": {
+            "x": 0.03816428985855382,
+            "y": 0.0063607149764256365
+          },
+          "state": "up",
+          "foot": null,
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": 0,
+            "bodyGripWork": 0,
+            "workResidual": 0
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 1,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 3.91923344106453e-21,
+      "maxMomentumError": 0,
+      "gripImpulse": 0.041735800922625355,
+      "motorWork": 0.1290549132337486,
+      "passiveWork": -0.12903755309448178,
+      "maxPositiveMotorFraction": 0.0008636198112556017,
+      "maxSampledOffset": 0.13064964458594538,
+      "maxSampledExternalForce": 0.0023451807126028184,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "finalBodies": [
+        {
+          "pos": {
+            "x": 2.3435667803980193e-05,
+            "y": 2.283124988722942e-07
+          },
+          "vel": {
+            "x": -7.376679334622312e-16,
+            "y": 5.467975110323465e-14
+          },
+          "facing": 0,
+          "profile": {
+            "massKg": 100,
+            "radius": 0.28,
+            "reach": 1,
+            "heightYd": 2.05,
+            "vmax": 9,
+            "tau": 1.3,
+            "brake": 6,
+            "lateral": 6,
+            "turnRate": 8,
+            "backpedal": 0.6,
+            "shuffle": 0.55,
+            "maxCatchHeight": 3,
+            "reactReach": 2.6,
+            "reactionTime": 0.25,
+            "power": 100,
+            "balance": 0.5,
+            "bend": 0.5,
+            "stepSpeed": 3.4,
+            "getUp": 0.9
+          },
+          "energy": 0.998199999998713,
+          "support": {
+            "xi": {
+              "x": 1.18152954205895e-05,
+              "y": 1.3479870968501737e-07
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19968499999974262,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 1.0665294804531537e-12,
+              "y": -1.933446321042129e-11
+            },
+            "felt": {
+              "x": 8.324890199562272e-05,
+              "y": 1.2056639630037422e-06
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 6.369854029979175e-05,
+            "out": 0,
+            "feltTip": {
+              "x": -1.4331072715734994e-06,
+              "y": -2.0755220137818984e-08
+            },
+            "causes": {
+              "contact": 6.175773708985485e-05,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -2.455614936046264e-06,
+              "y": -3.0701556222608606e-08
+            },
+            "tipAccel": {
+              "x": 1.2672926550607382e-05,
+              "y": 1.7789731670697566e-07
+            }
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0
+        },
+        {
+          "pos": {
+            "x": 0.9999765643321962,
+            "y": -2.283124988722942e-07
+          },
+          "vel": {
+            "x": 7.376679334622312e-16,
+            "y": -5.467975110323465e-14
+          },
+          "facing": 0,
+          "profile": {
+            "massKg": 100,
+            "radius": 0.28,
+            "reach": 1,
+            "heightYd": 2.05,
+            "vmax": 9,
+            "tau": 1.3,
+            "brake": 6,
+            "lateral": 6,
+            "turnRate": 8,
+            "backpedal": 0.6,
+            "shuffle": 0.55,
+            "maxCatchHeight": 3,
+            "reactReach": 2.6,
+            "reactionTime": 0.25,
+            "power": 100,
+            "balance": 0.5,
+            "bend": 0.5,
+            "stepSpeed": 3.4,
+            "getUp": 0.9
+          },
+          "energy": 0.998199999998713,
+          "support": {
+            "xi": {
+              "x": 0.038185828857464695,
+              "y": 0.006351432109668684
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19968499999974262,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": -1.0665294804531537e-12,
+              "y": 1.933446321042129e-11
+            },
+            "felt": {
+              "x": -8.324890199562272e-05,
+              "y": -1.2056639630037422e-06
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": -5.9016230521930926e-15,
+              "y": 8.645863057084449e-14
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.19171645293255554,
+            "out": 0,
+            "foot": {
+              "anchor": {
+                "x": 1.128847745854549,
+                "y": 0.021483338248298234
+              },
+              "offset": {
+                "x": 0.12887118152235272,
+                "y": 0.021483566560797106
+              },
+              "target": {
+                "x": 1.128847745854549,
+                "y": 0.021483338248297873
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": -6.0277200121274325e-15,
+                "y": 1.0927286395091542e-13
+              },
+              "force": {
+                "x": -1.066529480453154e-12,
+                "y": 1.933446321042129e-11
+              },
+              "capacity": 601.5773166815776,
+              "mobility": 0.005651714390085434,
+              "state": "supported"
+            },
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0.00010348332770898018,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 2.455614936046264e-06,
+              "y": 3.0701556222608606e-08
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0
+        }
+      ],
+      "ticks": [
+        {
+          "t": 0.05,
+          "xi": {
+            "x": 0.11458265252483057,
+            "y": 0.019058132099428055
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1288581589805837,
+              "y": 0.021483589588573163
+            },
+            "offset": {
+              "x": 0.1288711792366627,
+              "y": 0.021483686661879182
+            },
+            "target": {
+              "x": 1.1288598943754313,
+              "y": 0.021483638107574306
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": 1.4146944680573645e-07,
+              "y": -7.433479318654195e-06
+            },
+            "force": {
+              "x": 4.462396912528548e-05,
+              "y": -0.002344756122956878
+            },
+            "capacity": 1072.4682852143483,
+            "mobility": 0.0031702569174998597,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": 0.12905491344015163,
+            "motorLimit": 149.43486909189932,
+            "passiveWork": -0.1290375530917789,
+            "bodyGripWork": 1.7360348372781696e-05,
+            "workResidual": -3.3881317890172014e-21
+          }
+        },
+        {
+          "t": 0.1,
+          "xi": {
+            "x": 0.09793641573903634,
+            "y": 0.016289753888365066
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1288477459935324,
+              "y": 0.021483330945475127
+            },
+            "offset": {
+              "x": 0.1288711818321928,
+              "y": 0.021483550280371327
+            },
+            "target": {
+              "x": 1.1288478183603243,
+              "y": 0.021483329884135642
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": -1.6373979013630462e-08,
+              "y": 8.60366366396677e-07
+            },
+            "force": {
+              "x": -5.164784086789838e-06,
+              "y": 0.00027138220430572725
+            },
+            "capacity": 1072.4483049720357,
+            "mobility": 0.003170312396119482,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -2.0473942821741557e-10,
+            "motorLimit": 0,
+            "passiveWork": -2.6908419244428048e-12,
+            "bodyGripWork": -2.0743027014185836e-10,
+            "workResidual": 3.91923344106453e-21
+          }
+        },
+        {
+          "t": 0.15000000000000002,
+          "xi": {
+            "x": 0.0837085557316757,
+            "y": 0.013923204904878611
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1288477458448147,
+              "y": 0.02148333875981517
+            },
+            "offset": {
+              "x": 0.12887118150064458,
+              "y": 0.021483567701481344
+            },
+            "target": {
+              "x": 1.128847745840994,
+              "y": 0.02148333896056985
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": 1.1516552370640097e-09,
+              "y": -6.051364941775748e-08
+            },
+            "force": {
+              "x": 2.0001842907971285e-07,
+              "y": -1.0509955327670335e-05
+            },
+            "capacity": 590.5071669317975,
+            "mobility": 0.005757745635553629,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -1.6552184933711665e-12,
+            "motorLimit": 0,
+            "passiveWork": -1.197820146793753e-14,
+            "bodyGripWork": -1.6671966948391044e-12,
+            "workResidual": -5.6545549686242126e-27
+          }
+        },
+        {
+          "t": 0.2,
+          "xi": {
+            "x": 0.07154771476401528,
+            "y": 0.011900500076839045
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1288477458552482,
+              "y": 0.02148333821158435
+            },
+            "offset": {
+              "x": 0.128871181523911,
+              "y": 0.0214835664789496
+            },
+            "target": {
+              "x": 1.1288477458555195,
+              "y": 0.02148333819732001
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": -8.232413879167473e-11,
+              "y": 4.325481207501262e-09
+            },
+            "force": {
+              "x": -1.4563692322501543e-08,
+              "y": 7.652066377787773e-07
+            },
+            "capacity": 601.4797190201117,
+            "mobility": 0.00565269692387557,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -8.32204513044763e-15,
+            "motorLimit": 0,
+            "passiveWork": -6.134273340752511e-17,
+            "bodyGripWork": -8.383387863855154e-15,
+            "workResidual": 6.310887241768095e-30
+          }
+        },
+        {
+          "t": 0.25,
+          "xi": {
+            "x": 0.061153590873962174,
+            "y": 0.010171649846861247
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1288477458545,
+              "y": 0.021483338250870815
+            },
+            "offset": {
+              "x": 0.12887118152224394,
+              "y": 0.02148356656653396
+            },
+            "target": {
+              "x": 1.128847745854481,
+              "y": 0.02148333825188011
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": 5.786015539723017e-12,
+              "y": -3.0423296356866204e-10
+            },
+            "force": {
+              "x": 1.0049146438088768e-09,
+              "y": -5.2839152975063826e-08
+            },
+            "capacity": 590.5071642678804,
+            "mobility": 0.005757718404612532,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -4.183686798608335e-17,
+            "motorLimit": 0,
+            "passiveWork": -3.027593066064487e-19,
+            "bodyGripWork": -4.21396272926898e-17,
+            "workResidual": 2.2803010541544873e-31
+          }
+        },
+        {
+          "t": 0.3,
+          "xi": {
+            "x": 0.052269511111400525,
+            "y": 0.00869396478207728
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1288477458545525,
+              "y": 0.021483338248114582
+            },
+            "offset": {
+              "x": 0.1288711815223608,
+              "y": 0.021483566560387676
+            },
+            "target": {
+              "x": 1.128847745854554,
+              "y": 0.021483338248042865
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": -4.1799396133087874e-13,
+              "y": 2.1746454194897822e-11
+            },
+            "force": {
+              "x": -7.394647387600921e-11,
+              "y": 3.847121623237787e-09
+            },
+            "capacity": 601.4808994979805,
+            "mobility": 0.005652655757889902,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -2.1034804416017912e-19,
+            "motorLimit": 0,
+            "passiveWork": -1.5505103584361683e-21,
+            "bodyGripWork": -2.118985545186153e-19,
+            "workResidual": -5.537048590113303e-34
+          }
+        },
+        {
+          "t": 0.35,
+          "xi": {
+            "x": 0.04467609346635779,
+            "y": 0.007430954965872829
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1288477458545487,
+              "y": 0.021483338248312098
+            },
+            "offset": {
+              "x": 0.12887118152235233,
+              "y": 0.02148356656082801
+            },
+            "target": {
+              "x": 1.1288477458545485,
+              "y": 0.02148333824831717
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": 2.910947295693868e-14,
+              "y": -1.5295495311764987e-12
+            },
+            "force": {
+              "x": 5.055754433565725e-12,
+              "y": -2.656532749680264e-10
+            },
+            "capacity": 590.5065144503885,
+            "mobility": 0.005757691228766492,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -1.0574799999161302e-21,
+            "motorLimit": 0,
+            "passiveWork": -7.652606457911442e-24,
+            "bodyGripWork": -1.0651326063740418e-21,
+            "workResidual": -5.64237288394698e-37
+          }
+        },
+        {
+          "t": 0.39999999999999997,
+          "xi": {
+            "x": 0.038185828857464695,
+            "y": 0.006351432109668684
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.128847745854549,
+              "y": 0.021483338248298234
+            },
+            "offset": {
+              "x": 0.12887118152235272,
+              "y": 0.021483566560797106
+            },
+            "target": {
+              "x": 1.128847745854549,
+              "y": 0.021483338248297873
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": -6.0277200121274325e-15,
+              "y": 1.0927286395091542e-13
+            },
+            "force": {
+              "x": -1.066529480453154e-12,
+              "y": 1.933446321042129e-11
+            },
+            "capacity": 601.5773166815776,
+            "mobility": 0.005651714390085434,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -5.317738548726376e-24,
+            "motorLimit": 0,
+            "passiveWork": -3.9066809153120324e-26,
+            "bodyGripWork": -5.356805357879495e-24,
+            "workResidual": 1.0285575569695016e-38
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 50,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 1.3877787807814457e-17,
+      "maxMomentumError": 6.938893903907228e-18,
+      "gripImpulse": 2.309693145283216,
+      "motorWork": 7.026550517552149,
+      "passiveWork": -6.973607615299657,
+      "maxPositiveMotorFraction": 0.03915053313468091,
+      "maxSampledOffset": 0.1425275147872542,
+      "maxSampledExternalForce": 3.201161734276714,
+      "maxSampledCommandFraction": 0.015970367737678664,
+      "falls": [],
+      "finalBodies": [
+        {
+          "pos": {
+            "x": 0.0012438762099891494,
+            "y": 1.6603491832962358e-05
+          },
+          "vel": {
+            "x": -1.0276834476308724e-13,
+            "y": 4.984049144647599e-12
+          },
+          "facing": 0,
+          "profile": {
+            "massKg": 100,
+            "radius": 0.28,
+            "reach": 1,
+            "heightYd": 2.05,
+            "vmax": 9,
+            "tau": 1.3,
+            "brake": 6,
+            "lateral": 6,
+            "turnRate": 8,
+            "backpedal": 0.6,
+            "shuffle": 0.55,
+            "maxCatchHeight": 3,
+            "reactReach": 2.6,
+            "reactionTime": 0.25,
+            "power": 100,
+            "balance": 0.5,
+            "bend": 0.5,
+            "stepSpeed": 3.4,
+            "getUp": 0.9
+          },
+          "energy": 0.9981999960755361,
+          "support": {
+            "xi": {
+              "x": 0.0006564411001705443,
+              "y": 1.0999277377050305e-05
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19968499921510724,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 3.6464240095286606e-11,
+              "y": -1.766316102593813e-09
+            },
+            "felt": {
+              "x": 0.004903240460528601,
+              "y": 0.00010774393548405756
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.0034777287622765867,
+            "out": 0,
+            "feltTip": {
+              "x": -8.440795482046128e-05,
+              "y": -1.8547847659918164e-06
+            },
+            "causes": {
+              "contact": 0.0034094361726631594,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -0.0001325322461602719,
+              "y": -2.4273143863585638e-06
+            },
+            "tipAccel": {
+              "x": 0.0007398296294205753,
+              "y": 1.5767995147832645e-05
+            }
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0
+        },
+        {
+          "pos": {
+            "x": 0.9987561237900108,
+            "y": -1.6603491832962358e-05
+          },
+          "vel": {
+            "x": 1.0276834476308724e-13,
+            "y": -4.984049144647599e-12
+          },
+          "facing": 0,
+          "profile": {
+            "massKg": 100,
+            "radius": 0.28,
+            "reach": 1,
+            "heightYd": 2.05,
+            "vmax": 9,
+            "tau": 1.3,
+            "brake": 6,
+            "lateral": 6,
+            "turnRate": 8,
+            "backpedal": 0.6,
+            "shuffle": 0.55,
+            "maxCatchHeight": 3,
+            "reactReach": 2.6,
+            "reactionTime": 0.25,
+            "power": 100,
+            "balance": 0.5,
+            "bend": 0.5,
+            "stepSpeed": 3.4,
+            "getUp": 0.9
+          },
+          "energy": 0.9981999960755361,
+          "support": {
+            "xi": {
+              "x": 0.039761586031838415,
+              "y": 0.0059751190748207695
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19968499921510724,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": -3.6464240095286606e-11,
+              "y": 1.766316102593813e-09
+            },
+            "felt": {
+              "x": -0.004903240460528601,
+              "y": -0.00010774393548405756
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": -1.629155112783931e-13,
+              "y": 7.885168170539318e-12
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.19319554969414127,
+            "out": 0,
+            "foot": {
+              "anchor": {
+                "x": 1.1393282313469302,
+                "y": 0.023511481398173873
+              },
+              "offset": {
+                "x": 0.14057210755691943,
+                "y": 0.023528084890006837
+              },
+              "target": {
+                "x": 1.1393282313469308,
+                "y": 0.02351148139814102
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": -2.057836323225725e-13,
+                "y": 9.968093191350723e-12
+              },
+              "force": {
+                "x": -3.6464240095286606e-11,
+                "y": 1.766316102593813e-09
+              },
+              "capacity": 602.4596948063854,
+              "mobility": 0.005643436741992389,
+              "state": "supported"
+            },
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0.0057717885035181915,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 0.0001325322461602719,
+              "y": 2.4273143863585638e-06
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0
+        }
+      ],
+      "ticks": [
+        {
+          "t": 0.05,
+          "xi": {
+            "x": 0.11915727955784977,
+            "y": 0.01787564774359835
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1398268119457433,
+              "y": 0.023522073843280925
+            },
+            "offset": {
+              "x": 0.14049556842384578,
+              "y": 0.02352753726743819
+            },
+            "target": {
+              "x": 1.139951872362532,
+              "y": 0.023554054901606423
+            },
+            "desired": {
+              "x": 0.05370309889651745,
+              "y": 0.008024073337985741
+            },
+            "achieved": {
+              "x": 0.04669568069187781,
+              "y": 0.0006831695426985059
+            },
+            "force": {
+              "x": -2.210356203560789,
+              "y": -2.315547862251574
+            },
+            "capacity": 1072.465046703054,
+            "mobility": 0.003170266490690953,
+            "state": "placing"
+          },
+          "report": {
+            "motorWork": 7.026551274508849,
+            "motorLimit": 179.47523857049305,
+            "passiveWork": -6.973607500716436,
+            "bodyGripWork": 0.05294377379241427,
+            "workResidual": -1.3877787807814457e-17
+          }
+        },
+        {
+          "t": 0.1,
+          "xi": {
+            "x": 0.10197774961581094,
+            "y": 0.01532756068699934
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1393282450308664,
+              "y": 0.023510818579310526
+            },
+            "offset": {
+              "x": 0.1405721380618948,
+              "y": 0.023526607246424424
+            },
+            "target": {
+              "x": 1.1393322426744785,
+              "y": 0.023510713977190803
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": -1.6120780736789413e-06,
+              "y": 7.808820179972725e-05
+            },
+            "force": {
+              "x": -0.0005084817352140299,
+              "y": 0.024630583964369776
+            },
+            "capacity": 1072.426933309052,
+            "mobility": 0.0031703755750447675,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -7.432505627964433e-07,
+            "motorLimit": 15.192689130836538,
+            "passiveWork": -1.1448401481737923e-07,
+            "bodyGripWork": -8.577345776138228e-07,
+            "workResidual": -7.07166631838934e-18
+          }
+        },
+        {
+          "t": 0.15000000000000002,
+          "xi": {
+            "x": 0.08716283512642212,
+            "y": 0.013098066431807642
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.139328230388759,
+              "y": 0.023511527812069725
+            },
+            "offset": {
+              "x": 0.14057210542012472,
+              "y": 0.02352818839571598
+            },
+            "target": {
+              "x": 1.1393282300125889,
+              "y": 0.023511546033815934
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": 1.1339389102379878e-07,
+              "y": -5.492763062485026e-06
+            },
+            "force": {
+              "x": 1.9695982479724936e-05,
+              "y": -0.0009540669613434441
+            },
+            "capacity": 590.5621908601062,
+            "mobility": 0.005757209174029606,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -1.363712252928279e-08,
+            "motorLimit": 0,
+            "passiveWork": -9.86959864656811e-11,
+            "bodyGripWork": -1.3735818515748473e-08,
+            "workResidual": -1.6543612251060553e-24
+          }
+        },
+        {
+          "t": 0.2,
+          "xi": {
+            "x": 0.07450016640342738,
+            "y": 0.01119542776240002
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1393282314158257,
+              "y": 0.023511478060929937
+            },
+            "offset": {
+              "x": 0.14057210771050935,
+              "y": 0.02352807745018033
+            },
+            "target": {
+              "x": 1.139328231442579,
+              "y": 0.023511476765005524
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": -8.116870133972942e-09,
+              "y": 3.9317859079887023e-07
+            },
+            "force": {
+              "x": -1.4382640738456574e-06,
+              "y": 6.966905129902414e-05
+            },
+            "capacity": 602.4579281441938,
+            "mobility": 0.005643518656674711,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -6.866778110180258e-11,
+            "motorLimit": 0,
+            "passiveWork": -5.069811442059267e-13,
+            "bodyGripWork": -6.917476224600852e-11,
+            "workResidual": 1.6802106192483375e-25
+          }
+        },
+        {
+          "t": 0.25,
+          "xi": {
+            "x": 0.06367712416340643,
+            "y": 0.009568993462076781
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1393282313421045,
+              "y": 0.023511481631955437
+            },
+            "offset": {
+              "x": 0.14057210754615693,
+              "y": 0.023528085411353396
+            },
+            "target": {
+              "x": 1.1393282313402104,
+              "y": 0.02351148172370322
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": 5.709384981205851e-10,
+              "y": -2.765649376675115e-08
+            },
+            "force": {
+              "x": 9.916978801303961e-08,
+              "y": -4.803824988262385e-06
+            },
+            "capacity": 590.5622036826162,
+            "mobility": 0.0057571817945755175,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -3.457271127065421e-13,
+            "motorLimit": 0,
+            "passiveWork": -2.502143735732673e-15,
+            "bodyGripWork": -3.482292564422746e-13,
+            "workResidual": -2.271919407036514e-27
+          }
+        },
+        {
+          "t": 0.3,
+          "xi": {
+            "x": 0.054426438419100664,
+            "y": 0.008178860197037612
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1393282313472757,
+              "y": 0.02351148138145472
+            },
+            "offset": {
+              "x": 0.14057210755768904,
+              "y": 0.02352808485273427
+            },
+            "target": {
+              "x": 1.1393282313474105,
+              "y": 0.02351148137492962
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": -4.087785071202372e-11,
+              "y": 1.979693998011788e-09
+            },
+            "force": {
+              "x": -7.243364880211021e-09,
+              "y": 3.507925619618084e-07
+            },
+            "capacity": 602.4578788847411,
+            "mobility": 0.005643489094923632,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -1.7408747116464884e-15,
+            "motorLimit": 0,
+            "passiveWork": -1.2853120666622595e-17,
+            "bodyGripWork": -1.7537278323131108e-15,
+            "workResidual": 1.9721522630525295e-30
+          }
+        },
+        {
+          "t": 0.35,
+          "xi": {
+            "x": 0.04651967462967561,
+            "y": 0.006990681779653692
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1393282313469042,
+              "y": 0.023511481399435177
+            },
+            "offset": {
+              "x": 0.14057210755686142,
+              "y": 0.023528084892819552
+            },
+            "target": {
+              "x": 1.1393282313468949,
+              "y": 0.02351148139989714
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": 2.8706641097267996e-12,
+              "y": -1.392540518057985e-10
+            },
+            "force": {
+              "x": 4.98626043294736e-10,
+              "y": -2.4188025561546335e-08
+            },
+            "capacity": 590.5621955950605,
+            "mobility": 0.005757148364651224,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -8.76500457373845e-18,
+            "motorLimit": 0,
+            "passiveWork": -6.343566297491556e-20,
+            "bodyGripWork": -8.828440236713364e-18,
+            "workResidual": 2.311115933264683e-32
+          }
+        },
+        {
+          "t": 0.39999999999999997,
+          "xi": {
+            "x": 0.039761586031838415,
+            "y": 0.0059751190748207695
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.1393282313469302,
+              "y": 0.023511481398173873
+            },
+            "offset": {
+              "x": 0.14057210755691943,
+              "y": 0.023528084890006837
+            },
+            "target": {
+              "x": 1.1393282313469308,
+              "y": 0.02351148139814102
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": -2.057836323225725e-13,
+              "y": 9.968093191350723e-12
+            },
+            "force": {
+              "x": -3.6464240095286606e-11,
+              "y": 1.766316102593813e-09
+            },
+            "capacity": 602.4596948063854,
+            "mobility": 0.005643436741992389,
+            "state": "supported"
+          },
+          "report": {
+            "motorWork": -4.413589844846342e-20,
+            "motorLimit": 0,
+            "passiveWork": -3.258644287171898e-22,
+            "bodyGripWork": -4.44617628771806e-20,
+            "workResidual": -2.407412430484045e-34
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 900,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 4.618527782440651e-14,
+      "maxMomentumError": 8.533911106286719e-14,
+      "gripImpulse": 136.1206883356348,
+      "motorWork": 123.51897926776888,
+      "passiveWork": -10.950379625614287,
+      "maxPositiveMotorFraction": 0.24249643140803231,
+      "maxSampledOffset": 0.4076547848460539,
+      "maxSampledExternalForce": 667.9996354986454,
+      "maxSampledCommandFraction": 1,
+      "falls": [
+        1
+      ],
+      "finalBodies": [
+        {
+          "pos": {
+            "x": 0.09669585851693445,
+            "y": 0.010948746512164535
+          },
+          "vel": {
+            "x": 0.0001320224368872722,
+            "y": -0.07839316645222719
+          },
+          "facing": 0,
+          "profile": {
+            "massKg": 100,
+            "radius": 0.28,
+            "reach": 1,
+            "heightYd": 2.05,
+            "vmax": 9,
+            "tau": 1.3,
+            "brake": 6,
+            "lateral": 6,
+            "turnRate": 8,
+            "backpedal": 0.6,
+            "shuffle": 0.55,
+            "maxCatchHeight": 3,
+            "reactReach": 2.6,
+            "reactionTime": 0.25,
+            "power": 100,
+            "balance": 0.5,
+            "bend": 0.5,
+            "stepSpeed": 3.4,
+            "getUp": 0.9
+          },
+          "energy": 0.9981952943583634,
+          "support": {
+            "xi": {
+              "x": -0.04762033240107315,
+              "y": 0.008083729925132606
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.1996841339997514,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": -0.05045143195628177,
+              "y": 42.419999488827365
+            },
+            "felt": {
+              "x": 25.33842464394092,
+              "y": -47.87342114107753
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.1602024457320308,
+            "out": 0,
+            "feltTip": {
+              "x": -0.4362305863576786,
+              "y": 0.8242295738118506
+            },
+            "causes": {
+              "contact": 0.16892044128260209,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -1.3870110354962764,
+              "y": -0.7409797002320032
+            },
+            "tipAccel": {
+              "x": 0.8010204089211822,
+              "y": -0.30358252457629387
+            }
+          },
+          "spin": 0,
+          "squeeze": 0,
+          "sprintLoad": 0
+        },
+        {
+          "pos": {
+            "x": 0.6432937138706553,
+            "y": -0.05135197223214801
+          },
+          "vel": {
+            "x": -0.9582638036033104,
+            "y": -0.07953301657922653
+          },
+          "facing": -0.567963543932566,
+          "profile": {
+            "massKg": 100,
+            "radius": 0.28,
+            "reach": 1,
+            "heightYd": 2.05,
+            "vmax": 9,
+            "tau": 1.3,
+            "brake": 6,
+            "lateral": 6,
+            "turnRate": 8,
+            "backpedal": 0.6,
+            "shuffle": 0.55,
+            "maxCatchHeight": 3,
+            "reactReach": 2.6,
+            "reactionTime": 0.25,
+            "power": 100,
+            "balance": 0.5,
+            "bend": 0.5,
+            "stepSpeed": 3.4,
+            "getUp": 0.9
+          },
+          "energy": 0.9986103926841179,
+          "support": {
+            "xi": {
+              "x": 1.1953927483326012,
+              "y": 0.19033228692739518
+            },
+            "state": "falling",
+            "since": 0.34583333333333316,
+            "posture": 0.19972207853682358,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0.05045143195628177,
+              "y": -42.419999488827365
+            },
+            "felt": {
+              "x": -25.33842464394092,
+              "y": 47.87342114107753
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": -0.9698177991945578,
+              "y": -0.08095251315676663
+            },
+            "fall": {
+              "x": 0.9875602796634495,
+              "y": 0.157240879007494
+            },
+            "peak": 1.005892502638651,
+            "out": 0.4699999999999996,
+            "foot": {
+              "anchor": {
+                "x": 1.0459846974013354,
+                "y": 0.012070384953437284
+              },
+              "offset": {
+                "x": 0.40269098353068017,
+                "y": 0.0634223571855853
+              },
+              "target": {
+                "x": 1.0500256048979795,
+                "y": 0.012407687091590479
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": 0,
+                "y": 0
+              },
+              "force": {
+                "x": 0.05045143195628175,
+                "y": -42.419999488827365
+              },
+              "capacity": 0,
+              "mobility": 0,
+              "state": "unloaded"
+            },
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0.03816905697551481,
+              "legs": 0.771372746229763,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 3.7084736984724134,
+              "y": 0.9725727727238018
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            },
+            "cause": "legs"
+          },
+          "spin": -2.4261998485705267,
+          "squeeze": 0,
+          "sprintLoad": 0
+        }
+      ],
+      "ticks": [
+        {
+          "t": 0.05,
+          "xi": {
+            "x": 0.4598193008029676,
+            "y": 0.071984172051003
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.0198586384458481,
+              "y": 0.003857692580283914
+            },
+            "offset": {
+              "x": 0.03096696384919841,
+              "y": 0.005369071331627326
+            },
+            "target": {
+              "x": 1.3429096603598578,
+              "y": 0.05436713964222845
+            },
+            "desired": {
+              "x": 3.3592807776511213,
+              "y": 0.5246262068403341
+            },
+            "achieved": {
+              "x": 0.8489663552925979,
+              "y": 0.11548800178835855
+            },
+            "force": {
+              "x": -659.3003938486675,
+              "y": -107.45465879762982
+            },
+            "capacity": 892.9643709648897,
+            "mobility": 0.0038075427313254855,
+            "state": "placing"
+          },
+          "report": {
+            "motorWork": 23.946947471481995,
+            "motorLimit": 163.97277797580614,
+            "passiveWork": -8.421603038789966,
+            "bodyGripWork": 15.525344432692027,
+            "workResidual": -3.552713678800501e-15
+          }
+        },
+        {
+          "t": 0.1,
+          "xi": {
+            "x": 0.6286569182803454,
+            "y": 0.09958148915274721
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.0405042114647776,
+              "y": 0.006848110481338495
+            },
+            "offset": {
+              "x": 0.07910071031641294,
+              "y": 0.012536208961054186
+            },
+            "target": {
+              "x": 1.536111387507431,
+              "y": 0.08533103827657343
+            },
+            "desired": {
+              "x": 3.35815154252501,
+              "y": 0.5317818546083628
+            },
+            "achieved": {
+              "x": 1.0492900436617028,
+              "y": 0.16273375539631296
+            },
+            "force": {
+              "x": -495.5399680372672,
+              "y": -79.20703921728845
+            },
+            "capacity": 729.7250083171102,
+            "mobility": 0.004659284109833233,
+            "state": "placing"
+          },
+          "report": {
+            "motorWork": 27.77023645385342,
+            "motorLimit": 136.41132017430365,
+            "passiveWork": -1.4081606049947637,
+            "bodyGripWork": 26.362075848858655,
+            "workResidual": -1.7763568394002505e-14
+          }
+        },
+        {
+          "t": 0.15000000000000002,
+          "xi": {
+            "x": 0.7666665027605072,
+            "y": 0.12163017981992955
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.0568748559930057,
+              "y": 0.009520597382431292
+            },
+            "offset": {
+              "x": 0.13513449750669834,
+              "y": 0.021334260388763897
+            },
+            "target": {
+              "x": 1.6926095464593693,
+              "y": 0.11036340814351707
+            },
+            "desired": {
+              "x": 3.3579978836574527,
+              "y": 0.5327117139645101
+            },
+            "achieved": {
+              "x": 1.1663872431328879,
+              "y": 0.18414000028872574
+            },
+            "force": {
+              "x": -371.6114647567578,
+              "y": -59.10413222890151
+            },
+            "capacity": 576.505341082119,
+            "mobility": 0.005897586184428154,
+            "state": "placing"
+          },
+          "report": {
+            "motorWork": 24.39681573580859,
+            "motorLimit": 109.89061640064726,
+            "passiveWork": -0.1846128885084748,
+            "bodyGripWork": 24.21220284730012,
+            "workResidual": 0
+          }
+        },
+        {
+          "t": 0.2,
+          "xi": {
+            "x": 0.8852735733389749,
+            "y": 0.14055288762686333
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.0714303312778442,
+              "y": 0.011935232200538923
+            },
+            "offset": {
+              "x": 0.19835734648183284,
+              "y": 0.03130782943485597
+            },
+            "target": {
+              "x": 1.8273015085387492,
+              "y": 0.13192700425090786
+            },
+            "desired": {
+              "x": 3.357929710259128,
+              "y": 0.5330919094218025
+            },
+            "achieved": {
+              "x": 1.3305460676075533,
+              "y": 0.2097032034720399
+            },
+            "force": {
+              "x": -256.00961816350747,
+              "y": -40.83618777761732
+            },
+            "capacity": 429.33568421160516,
+            "mobility": 0.007919169823364727,
+            "state": "placing"
+          },
+          "report": {
+            "motorWork": 19.751198764606006,
+            "motorLimit": 84.30967362727364,
+            "passiveWork": -0.004868853215551302,
+            "bodyGripWork": 19.746329911390454,
+            "workResidual": -3.552713678800501e-15
+          }
+        },
+        {
+          "t": 0.25,
+          "xi": {
+            "x": 0.991242040904073,
+            "y": 0.15752523167593457
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.0850879840702818,
+              "y": 0.01417748944080173
+            },
+            "offset": {
+              "x": 0.26692818026495413,
+              "y": 0.042105340558637266
+            },
+            "target": {
+              "x": 1.9478404242794414,
+              "y": 0.15126745330242244
+            },
+            "desired": {
+              "x": 3.3578438169549334,
+              "y": 0.5335755431671435
+            },
+            "achieved": {
+              "x": 1.3923727352818018,
+              "y": 0.219090865388625
+            },
+            "force": {
+              "x": -166.56510450009247,
+              "y": -26.651205253687007
+            },
+            "capacity": 288.13290691532444,
+            "mobility": 0.01180001710185365,
+            "state": "placing"
+          },
+          "report": {
+            "motorWork": 14.473331941514823,
+            "motorLimit": 59.939522744894916,
+            "passiveWork": -0.0022357391695378213,
+            "bodyGripWork": 14.47109620234529,
+            "workResidual": -4.618527782440651e-14
+          }
+        },
+        {
+          "t": 0.3,
+          "xi": {
+            "x": 1.0910071808218902,
+            "y": 0.17354744457733104
+          },
+          "state": "up",
+          "foot": {
+            "anchor": {
+              "x": 1.0955241971637313,
+              "y": 0.015882722197202062
+            },
+            "offset": {
+              "x": 0.33628990947112436,
+              "y": 0.05300781256340951
+            },
+            "target": {
+              "x": 2.058667146256682,
+              "y": 0.1690755422788827
+            },
+            "desired": {
+              "x": 3.3577537590651128,
+              "y": 0.5340782703655101
+            },
+            "achieved": {
+              "x": 1.370968807899715,
+              "y": 0.21530014410887405
+            },
+            "force": {
+              "x": -92.35308406597551,
+              "y": -14.817981722332066
+            },
+            "capacity": 158.04281636162673,
+            "mobility": 0.02151292478490563,
+            "state": "placing"
+          },
+          "report": {
+            "motorWork": 8.799282096232744,
+            "motorLimit": 36.28623334842725,
+            "passiveWork": -0.0008222030209004256,
+            "bodyGripWork": 8.798459893211845,
+            "workResidual": 8.881784197001252e-15
+          }
+        },
+        {
+          "t": 0.35,
+          "xi": {
+            "x": 1.1953927483326012,
+            "y": 0.19033228692739518
+          },
+          "state": "falling",
+          "foot": {
+            "anchor": {
+              "x": 1.10083878212598,
+              "y": 0.016753321779463606
+            },
+            "offset": {
+              "x": 0.40269098353068017,
+              "y": 0.0634223571855853
+            },
+            "target": {
+              "x": 2.1673934349661232,
+              "y": 0.1865565228114126
+            },
+            "desired": {
+              "x": 3.357664388392784,
+              "y": 0.5345704215769986
+            },
+            "achieved": {
+              "x": 1.2884192009405457,
+              "y": 0.20197533294276016
+            },
+            "force": {
+              "x": -61.23440018871206,
+              "y": -9.842362268970701
+            },
+            "capacity": 100.61351905964696,
+            "mobility": 0.033792201459885984,
+            "state": "placing"
+          },
+          "report": {
+            "motorWork": 4.3811668042713015,
+            "motorLimit": 18.321938612391055,
+            "passiveWork": -0.00021870437721684404,
+            "bodyGripWork": 4.380948099894084,
+            "workResidual": -7.105427357601002e-15
+          }
+        },
+        {
+          "t": 0.39999999999999997,
+          "xi": {
+            "x": 1.1953927483326012,
+            "y": 0.19033228692739518
+          },
+          "state": "falling",
+          "foot": {
+            "anchor": {
+              "x": 1.0459846974013354,
+              "y": 0.012070384953437284
+            },
+            "offset": {
+              "x": 0.40269098353068017,
+              "y": 0.0634223571855853
+            },
+            "target": {
+              "x": 1.0500256048979795,
+              "y": 0.012407687091590479
+            },
+            "desired": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": {
+              "x": 0,
+              "y": 0
+            },
+            "force": {
+              "x": 0.05045143195628175,
+              "y": -42.419999488827365
+            },
+            "capacity": 0,
+            "mobility": 0,
+            "state": "unloaded"
+          },
+          "report": {
+            "motorWork": 0,
+            "motorLimit": 0,
+            "passiveWork": -0.9278575935378738,
+            "bodyGripWork": -0.9278575935378738,
+            "workResidual": 2.7644553313166398e-14
+          }
+        }
+      ]
+    }
+  ],
+  "football": {
+    "baseline": {
+      "pointsPerTeamGame": 40.0,
+      "officialScrimmagePlays": 254,
+      "missedTackles": 34,
+      "brokenTackles": 28,
+      "missedPlusBrokenPerPlay": 0.2440944881889764,
+      "rushes": 52,
+      "rushYardsPerAttempt": 2.3132692307692304,
+      "stuffRate": 0.25,
+      "rushExplosives10": 1,
+      "runContactSamples": 52,
+      "meanRunYardsAfterFirstContact": 2.105954047834523,
+      "interceptionsPerAttempt": 0.05084745762711865,
+      "completionExplosives20PerAttempt": 0.15254237288135594,
+      "physicalTimeouts": 0,
+      "measuredGameCpuMs": 21341.154000000002,
+      "nativeWorldTickMedianMs": 0.44533099999898695,
+      "nativeWorldTickP95Ms": 0.8134269999991375
+    },
+    "candidate": {
+      "pointsPerTeamGame": 36.25,
+      "officialScrimmagePlays": 257,
+      "missedTackles": 29,
+      "brokenTackles": 29,
+      "missedPlusBrokenPerPlay": 0.22568093385214008,
+      "rushes": 52,
+      "rushYardsPerAttempt": 1.9359615384615383,
+      "stuffRate": 0.4230769230769231,
+      "rushExplosives10": 2,
+      "runContactSamples": 52,
+      "meanRunYardsAfterFirstContact": 1.555037335715447,
+      "interceptionsPerAttempt": 0.07428571428571429,
+      "completionExplosives20PerAttempt": 0.14285714285714285,
+      "physicalTimeouts": 0,
+      "measuredGameCpuMs": 23732.767,
+      "nativeWorldTickMedianMs": 0.4783129999996163,
+      "nativeWorldTickP95Ms": 0.9440860000031535
+    },
+    "candidatePhysics": {
+      "ticks": 29339,
+      "lowerJointTicks": 3323,
+      "maxHeldRecoveryExcursionYd": 1.1874814093169344,
+      "lowerHoldReleases": 2,
+      "maxMomentumResidualKgYdS": 1.0414055856603672e-11,
+      "maxWorkResidualKgYd2S2": 6.871658797535929e-11,
+      "maxMotorWorkExcessKgYd2S2": 0,
+      "maxPassiveGripPositiveWorkKgYd2S2": 2.439178144021871e-15,
+      "sampledLowerJointTickFraction": 0.11326221070929479,
+      "nativeWorldTickMedianMs": 0.4783129999996163,
+      "nativeWorldTickP95Ms": 0.9440860000031535
+    }
+  },
+  "cost": [
+    {
+      "fixture": "free",
+      "baseline": {
+        "fixture": "free",
+        "bodies": 22,
+        "warmBlocksExcluded": 3,
+        "measuredBlocks": 7,
+        "repsPerBlock": 400,
+        "ticksPerRep": 1,
+        "dt": 0.05,
+        "medianBlockCpuMs": 48.107,
+        "medianBlockWallMs": 27.962467999999944,
+        "medianWorldTickMs": 0.05064300000003641,
+        "medianBlockWorldTickP95Ms": 0.12063499999999294,
+        "blocks": [
+          {
+            "cpuMs": 51.927,
+            "wallMs": 29.29740199999992,
+            "worldTickMedianMs": 0.05064300000003641,
+            "worldTickP95Ms": 0.12063499999999294
+          },
+          {
+            "cpuMs": 46.06,
+            "wallMs": 27.281182000000058,
+            "worldTickMedianMs": 0.05019100000004073,
+            "worldTickP95Ms": 0.11452399999996032
+          },
+          {
+            "cpuMs": 48.107,
+            "wallMs": 27.962467999999944,
+            "worldTickMedianMs": 0.05067599999995309,
+            "worldTickP95Ms": 0.13367300000004434
+          },
+          {
+            "cpuMs": 46.331,
+            "wallMs": 27.387076999999977,
+            "worldTickMedianMs": 0.0503879999999981,
+            "worldTickP95Ms": 0.11015899999995327
+          },
+          {
+            "cpuMs": 72.712,
+            "wallMs": 41.38679100000002,
+            "worldTickMedianMs": 0.05934300000001258,
+            "worldTickP95Ms": 0.2146700000000692
+          },
+          {
+            "cpuMs": 188.302,
+            "wallMs": 76.40515300000015,
+            "worldTickMedianMs": 0.1232639999998355,
+            "worldTickP95Ms": 0.3967689999999493
+          },
+          {
+            "cpuMs": 47.576,
+            "wallMs": 26.55576700000006,
+            "worldTickMedianMs": 0.04972799999995914,
+            "worldTickP95Ms": 0.10589000000004489
+          }
+        ]
+      },
+      "candidate": {
+        "fixture": "free",
+        "bodies": 22,
+        "warmBlocksExcluded": 3,
+        "measuredBlocks": 7,
+        "repsPerBlock": 400,
+        "ticksPerRep": 1,
+        "dt": 0.05,
+        "medianBlockCpuMs": 49.768,
+        "medianBlockWallMs": 27.371579999999994,
+        "medianWorldTickMs": 0.04912699999999859,
+        "medianBlockWorldTickP95Ms": 0.12545999999997548,
+        "blocks": [
+          {
+            "cpuMs": 49.768,
+            "wallMs": 26.63632700000005,
+            "worldTickMedianMs": 0.04697600000008606,
+            "worldTickP95Ms": 0.11434099999996761
+          },
+          {
+            "cpuMs": 51.478,
+            "wallMs": 31.465089000000035,
+            "worldTickMedianMs": 0.05012600000009115,
+            "worldTickP95Ms": 0.13944000000003598
+          },
+          {
+            "cpuMs": 47.214,
+            "wallMs": 27.371579999999994,
+            "worldTickMedianMs": 0.048238999999966836,
+            "worldTickP95Ms": 0.11787500000002638
+          },
+          {
+            "cpuMs": 46.022,
+            "wallMs": 26.42661499999997,
+            "worldTickMedianMs": 0.04734599999994771,
+            "worldTickP95Ms": 0.10887700000000677
+          },
+          {
+            "cpuMs": 68.198,
+            "wallMs": 40.50810999999999,
+            "worldTickMedianMs": 0.05991600000004382,
+            "worldTickP95Ms": 0.18278300000008585
+          },
+          {
+            "cpuMs": 212.552,
+            "wallMs": 86.74153000000001,
+            "worldTickMedianMs": 0.194342000000006,
+            "worldTickP95Ms": 0.4180900000000065
+          },
+          {
+            "cpuMs": 46.345,
+            "wallMs": 26.525573000000122,
+            "worldTickMedianMs": 0.04912699999999859,
+            "worldTickP95Ms": 0.12545999999997548
+          }
+        ]
+      },
+      "changePercent": {
+        "medianBlockCpuMs": 3.4527199783815243,
+        "medianWorldTickMs": -2.993503544491305,
+        "medianBlockWorldTickP95Ms": 3.9996684212565414
+      }
+    },
+    {
+      "fixture": "trench",
+      "baseline": {
+        "fixture": "trench",
+        "bodies": 22,
+        "warmBlocksExcluded": 3,
+        "measuredBlocks": 7,
+        "repsPerBlock": 400,
+        "ticksPerRep": 1,
+        "dt": 0.05,
+        "medianBlockCpuMs": 185.724,
+        "medianBlockWallMs": 156.3512270000001,
+        "medianWorldTickMs": 0.3211679999999433,
+        "medianBlockWorldTickP95Ms": 0.6868739999999889,
+        "blocks": [
+          {
+            "cpuMs": 255.314,
+            "wallMs": 231.728975,
+            "worldTickMedianMs": 0.3285110000001623,
+            "worldTickP95Ms": 1.1145060000001195
+          },
+          {
+            "cpuMs": 238.397,
+            "wallMs": 168.55493000000024,
+            "worldTickMedianMs": 0.32894400000031965,
+            "worldTickP95Ms": 0.9754370000000563
+          },
+          {
+            "cpuMs": 182.46,
+            "wallMs": 147.32275700000037,
+            "worldTickMedianMs": 0.3168639999998959,
+            "worldTickP95Ms": 0.6850279999998747
+          },
+          {
+            "cpuMs": 185.724,
+            "wallMs": 156.3512270000001,
+            "worldTickMedianMs": 0.3211679999999433,
+            "worldTickP95Ms": 0.6868739999999889
+          },
+          {
+            "cpuMs": 175.637,
+            "wallMs": 146.12271499999997,
+            "worldTickMedianMs": 0.3174340000000484,
+            "worldTickP95Ms": 0.5300240000001395
+          },
+          {
+            "cpuMs": 235.946,
+            "wallMs": 170.53308100000004,
+            "worldTickMedianMs": 0.32215999999971245,
+            "worldTickP95Ms": 0.9141319999998814
+          },
+          {
+            "cpuMs": 173.709,
+            "wallMs": 145.72048600000016,
+            "worldTickMedianMs": 0.3144449999999779,
+            "worldTickP95Ms": 0.6155539999999746
+          }
+        ]
+      },
+      "candidate": {
+        "fixture": "trench",
+        "bodies": 22,
+        "warmBlocksExcluded": 3,
+        "measuredBlocks": 7,
+        "repsPerBlock": 400,
+        "ticksPerRep": 1,
+        "dt": 0.05,
+        "medianBlockCpuMs": 175.494,
+        "medianBlockWallMs": 146.22977200000014,
+        "medianWorldTickMs": 0.31670100000019374,
+        "medianBlockWorldTickP95Ms": 0.6569219999996676,
+        "blocks": [
+          {
+            "cpuMs": 171.252,
+            "wallMs": 143.806732,
+            "worldTickMedianMs": 0.31379199999992125,
+            "worldTickP95Ms": 0.5537199999998847
+          },
+          {
+            "cpuMs": 231.281,
+            "wallMs": 165.52713500000004,
+            "worldTickMedianMs": 0.31853300000011586,
+            "worldTickP95Ms": 0.946393000000171
+          },
+          {
+            "cpuMs": 184.773,
+            "wallMs": 150.52607499999976,
+            "worldTickMedianMs": 0.32700500000009924,
+            "worldTickP95Ms": 0.6386670000001686
+          },
+          {
+            "cpuMs": 170.005,
+            "wallMs": 143.1332349999998,
+            "worldTickMedianMs": 0.3100280000003295,
+            "worldTickP95Ms": 0.6248570000002474
+          },
+          {
+            "cpuMs": 173.825,
+            "wallMs": 144.9452610000003,
+            "worldTickMedianMs": 0.31414700000004814,
+            "worldTickP95Ms": 0.7770579999996698
+          },
+          {
+            "cpuMs": 233.54,
+            "wallMs": 170.335595,
+            "worldTickMedianMs": 0.3292670000000726,
+            "worldTickP95Ms": 0.9422270000000026
+          },
+          {
+            "cpuMs": 175.494,
+            "wallMs": 146.22977200000014,
+            "worldTickMedianMs": 0.31670100000019374,
+            "worldTickP95Ms": 0.6569219999996676
+          }
+        ]
+      },
+      "changePercent": {
+        "medianBlockCpuMs": -5.508173418621176,
+        "medianWorldTickMs": -1.390860857791043,
+        "medianBlockWorldTickP95Ms": -4.360625092858628
+      }
+    },
+    {
+      "fixture": "multi-grip",
+      "baseline": {
+        "fixture": "multi-grip",
+        "bodies": 22,
+        "warmBlocksExcluded": 3,
+        "measuredBlocks": 7,
+        "repsPerBlock": 400,
+        "ticksPerRep": 1,
+        "dt": 0.05,
+        "medianBlockCpuMs": 228.145,
+        "medianBlockWallMs": 196.90338599999995,
+        "medianWorldTickMs": 0.43764999999984866,
+        "medianBlockWorldTickP95Ms": 0.8686760000000504,
+        "blocks": [
+          {
+            "cpuMs": 232.82,
+            "wallMs": 195.78272800000013,
+            "worldTickMedianMs": 0.4348119999995106,
+            "worldTickP95Ms": 0.8386470000000372
+          },
+          {
+            "cpuMs": 223.572,
+            "wallMs": 194.9527680000001,
+            "worldTickMedianMs": 0.4308660000006057,
+            "worldTickP95Ms": 0.8417330000002039
+          },
+          {
+            "cpuMs": 306.529,
+            "wallMs": 227.29661000000033,
+            "worldTickMedianMs": 0.4426899999998568,
+            "worldTickP95Ms": 1.1008200000005672
+          },
+          {
+            "cpuMs": 226.772,
+            "wallMs": 196.76125000000047,
+            "worldTickMedianMs": 0.43764999999984866,
+            "worldTickP95Ms": 0.9225960000003397
+          },
+          {
+            "cpuMs": 228.145,
+            "wallMs": 196.90338599999995,
+            "worldTickMedianMs": 0.4364210000003368,
+            "worldTickP95Ms": 0.8686760000000504
+          },
+          {
+            "cpuMs": 312.434,
+            "wallMs": 229.45452099999966,
+            "worldTickMedianMs": 0.4386629999999059,
+            "worldTickP95Ms": 1.1052319999998872
+          },
+          {
+            "cpuMs": 225.394,
+            "wallMs": 197.6025040000004,
+            "worldTickMedianMs": 0.44265900000027614,
+            "worldTickP95Ms": 0.7363330000007409
+          }
+        ]
+      },
+      "candidate": {
+        "fixture": "multi-grip",
+        "bodies": 22,
+        "warmBlocksExcluded": 3,
+        "measuredBlocks": 7,
+        "repsPerBlock": 400,
+        "ticksPerRep": 1,
+        "dt": 0.05,
+        "medianBlockCpuMs": 304.511,
+        "medianBlockWallMs": 270.7873930000005,
+        "medianWorldTickMs": 0.5951010000007955,
+        "medianBlockWorldTickP95Ms": 1.1712189999998373,
+        "blocks": [
+          {
+            "cpuMs": 322.685,
+            "wallMs": 277.939664,
+            "worldTickMedianMs": 0.6160769999996774,
+            "worldTickP95Ms": 1.1712189999998373
+          },
+          {
+            "cpuMs": 304.511,
+            "wallMs": 270.7873930000005,
+            "worldTickMedianMs": 0.5951010000007955,
+            "worldTickP95Ms": 1.1528889999999592
+          },
+          {
+            "cpuMs": 409.15,
+            "wallMs": 299.00412099999994,
+            "worldTickMedianMs": 0.5943859999997585,
+            "worldTickP95Ms": 1.4607129999994868
+          },
+          {
+            "cpuMs": 291.064,
+            "wallMs": 260.5435299999999,
+            "worldTickMedianMs": 0.5817729999998846,
+            "worldTickP95Ms": 1.1347560000003796
+          },
+          {
+            "cpuMs": 303.281,
+            "wallMs": 270.20912000000044,
+            "worldTickMedianMs": 0.5958499999997002,
+            "worldTickP95Ms": 1.120636999999988
+          },
+          {
+            "cpuMs": 400.938,
+            "wallMs": 296.87062400000013,
+            "worldTickMedianMs": 0.6052470000004178,
+            "worldTickP95Ms": 1.2842600000003586
+          },
+          {
+            "cpuMs": 298.175,
+            "wallMs": 267.12340099999983,
+            "worldTickMedianMs": 0.5901380000004792,
+            "worldTickP95Ms": 1.2193419999994148
+          }
+        ]
+      },
+      "changePercent": {
+        "medianBlockCpuMs": 33.47257226763682,
+        "medianWorldTickMs": 35.976465212156114,
+        "medianBlockWorldTickP95Ms": 34.82806017430771
+      }
+    }
+  ],
+  "inspection": [
+    {
+      "id": "LAB-P001",
+      "concept": "four_verts",
+      "fixtureSeed": 5,
+      "baselineYards": 0,
+      "candidateYards": 0,
+      "baselineFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": false,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "candidateFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": false,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      }
+    },
+    {
+      "id": "LAB-P002",
+      "concept": "insideZone",
+      "fixtureSeed": 7,
+      "baselineYards": 0.5,
+      "candidateYards": 0.83,
+      "baselineFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "candidateFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      }
+    },
+    {
+      "id": "LAB-P003",
+      "concept": "counter",
+      "fixtureSeed": 9,
+      "baselineYards": 3.67,
+      "candidateYards": 3.64,
+      "baselineFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "candidateFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      }
+    },
+    {
+      "id": "LAB-P004",
+      "concept": "stick",
+      "fixtureSeed": 11,
+      "baselineYards": 12.03,
+      "candidateYards": 11.71,
+      "baselineFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": true,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "candidateFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": true,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      }
+    },
+    {
+      "id": "LAB-P005",
+      "concept": "toss",
+      "fixtureSeed": 13,
+      "baselineYards": -0.44,
+      "candidateYards": -0.4,
+      "baselineFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": true,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "candidateFlags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": true,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      }
+    },
+    {
+      "id": "LAB-P006",
+      "concept": "mesh",
+      "fixtureSeed": 15,
+      "baselineYards": 0,
+      "candidateYards": 0,
+      "baselineFlags": {
+        "td": false,
+        "to": true,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "candidateFlags": {
+        "td": false,
+        "to": true,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      }
+    }
+  ],
+  "limitations": [
+    "Two games with one generated roster pair do not establish NFL calibration. Stuff rate and interceptions worsened; do not fit forces or contact reach to scores.",
+    "The provisional 10% CPU/20% p95 budget passes ordinary matched fixtures but fails the simultaneous eight-grip stress fixture (33.5% CPU, 34.8% p95). Accept this targeted coupling cost; profile before expanding it.",
+    "Full-game histories and contact-island counts differ; timing is a regression observation, not isolated solver overhead.",
+    "Both matched-cost processes use --benchmark-only, three excluded warm fixture blocks and --expose-gc. Never compare bench-only with game-warmed fixture timings. Separate-process noise prevents claiming speedup.",
+    "Baseline game guard predates the benchmark-only/GC additions and has a different script hash. Roster generation, game seeds, game summarization and physics observer semantics are unchanged. The matched cost scripts are identical.",
+    "The command metadata omits the Node --expose-gc startup flag. Both cost reports record allocationGcBeforeBenchmark=true; the exact invocation appears in README.md.",
+    "maxHeldRecoveryExcursionYd measures the accumulated corrective chart before rebasing, not an anatomical foot displacement. Only actual held attachment range releases a grip.",
+    "Benchmark-only reports run no games; zero-initialized momentum maxima there are not measured physics evidence."
+  ]
+}

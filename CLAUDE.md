@@ -2,13 +2,20 @@
 
 Start with these shared project references:
 
+- [Smaller live recovery model](docs/reviews/force-coupled-held-recovery.md):
+  **latest shipped physics increment.** Default World couples actual low-grip
+  forces to one effective corrective coordinate only while held; ordinary gait,
+  blocks and jams retain analytic support. Read the paired evidence, cost and
+  limitations. Continue with retained sustained-contact divergence, lower-reach
+  release traces and achievable approach control. Full 3D feet remain paused.
+
 - [Physics cost-benefit and development philosophy](docs/reviews/physics-cost-benefit-and-development-philosophy.md):
-  **current priority.** Four independent reviews challenge mandatory two-foot
+  **development policy.** Four independent reviews challenge mandatory two-foot
   gait as well as 3D expansion. First evaluate bounded effective support/recovery
   with actual shared-force coupling inside World; add persistent lower geometry
   where a retained interaction needs it. Two massless slots are a fallback if
   reduced state cannot generalize or exceptions become harder to maintain.
-  This is a recommendation, not a shipped candidate or measured speedup.
+  The smaller live recovery report above records its first implementation.
   Allow diagnosed braking/pursuit/re-anchor control repairs within shared limits;
   do not treat physics-first as an indefinite control freeze. Read the candidate
   gates and revised philosophy before implementation. No new unused backend,

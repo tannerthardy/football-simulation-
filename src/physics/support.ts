@@ -148,6 +148,46 @@ export function recoverySpeed(s: SupportParams, feetLock: number, fatigue: numbe
   return s.stepSpeed * (1 - clamp(feetLock, 0, 1)) * fatigue;
 }
 
+/** Analytic radial recovery, with a constant solved corrective velocity
+ * perturbation over the interval. Negative loadVelocity means a grip resists
+ * placement. Recompute the base crossing from achieved recovery. The weight
+ * integrates a transverse perturbation with the same frozen phase schedule.
+ * No extra gait phases, foot masses or strength constants are introduced. */
+export function advanceRecovery(e: number, rb: number, w: number, speed: number,
+  outsideFor: number, latency: number, h: number, loadVelocity = 0): { next: number; weight: number } {
+  const inside = (time: number) => {
+    const weight = -Math.expm1(-w * time) / w;
+    return { next: rb * Math.exp(-w * time) - loadVelocity * weight, weight };
+  };
+  if (e <= rb) {
+    const weight = -Math.expm1(-w * h) / w;
+    return { next: e * Math.exp(-w * h) - loadVelocity * weight, weight };
+  }
+  const ramp = Math.min(h, Math.max(0, latency - outsideFor));
+  const deviation = (time: number) => {
+    const growth = Math.expm1(w * time);
+    return (e - rb) * (1 + growth) - speed / latency *
+      (outsideFor * growth / w + (growth - w * time) / (w * w)) - loadVelocity * growth / w;
+  };
+  const atRamp = deviation(ramp), rest = h - ramp, eq = (speed + loadVelocity) / w;
+  let crossing: number | undefined;
+  if (atRamp <= 0) {
+    let lo = 0, hi = ramp;
+    for (let k = 0; k < 36; k++) {
+      const mid = (lo + hi) * .5;
+      if (deviation(mid) > 0) lo = mid; else hi = mid;
+    }
+    crossing = hi;
+  } else {
+    const end = eq + (atRamp - eq) * Math.exp(w * rest);
+    if (end <= 0) crossing = ramp + Math.log1p(atRamp / (eq - atRamp)) / w;
+    else return { next: rb + end, weight: Math.expm1(w * h) / w };
+  }
+  const after = inside(h - crossing);
+  return { next: after.next,
+    weight: Math.exp(-w * (h - crossing)) * Math.expm1(w * crossing) / w + after.weight };
+}
+
 /** Deviation beyond which gravity outruns stepping: the point of no return. */
 export function criticalDeviation(s: SupportParams, posture: number, feetLock: number, fatigue: number): number {
   return baseRadiusAt(s, posture) + recoverySpeed(s, feetLock, fatigue) / omega0(s, posture);
