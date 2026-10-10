@@ -1,6 +1,17 @@
 # Shared NFL data
 
-Current physics/data status: [Achievable approach control and remaining contact work](../docs/reviews/approach-control-and-remaining-contact.md).
+Current physics/data status: [Attainable tackle timing and the next contact repair](../docs/reviews/tackle-timing-and-lower-attachment.md).
+
+Tackle opportunity forecasts now use the executed movement command through the
+existing World and delayed observation. The [evidence and commands](reviews/physics-world/tackle-timing/README.md)
+retain the primary regression panel, separate braking/crossing witnesses, 144
+paired runs, four-game guards, isolated helper cost and a reproduced lower-bound
+release. Watch [26 paired tackle inspection clips](../viewer/tackle-timing-review.html)
+or their [offline ZIP](../viewer/tackle-timing-review.zip). The release is not
+fixed; a bounded attachment experiment is next, followed by sustained hand-contact
+divergence. No new physical constants or NFL averages were fitted.
+
+Previous controller increment: [Achievable approach control and remaining contact work](../docs/reviews/approach-control-and-remaining-contact.md).
 
 Imminent crossing pursuit now compares a small movement shortlist through the
 unchanged production World. The [evidence and commands](reviews/physics-world/approach-control/README.md)

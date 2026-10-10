@@ -1,7 +1,17 @@
 # Physics development and testing
 
+Read [Attainable tackle timing and the next contact repair](reviews/tackle-timing-and-lower-attachment.md)
+first. The latest controller compares delayed observed opportunities through
+the actual movement command and existing World. Ordinary tackle/escape guards
+remain unchanged; a separate braking witness demonstrates the corrected timing.
+The lower attachment-bound release is reproduced but **unfixed**. Next evaluate
+the bounded attachment map with matching geometry, velocity, force and work
+before enabling it; then localize sustained hand-contact divergence. Keep full
+3D foot/ground expansion paused. The shared model must earn changes in football
+cases without scenario-specific strength bonuses or fitting game averages.
+
 Read [Achievable approach control and remaining contact work](reviews/approach-control-and-remaining-contact.md)
-first for the latest controller repair, matched film and exposed contact limits.
+for the previous controller repair, matched film and exposed contact limits.
 Short free-movement World forecasts apply only to imminent crossing approaches.
 Next compare attainable tackle quality, isolate the lower attachment-bound
 release, and localize sustained hand-contact divergence. Keep these repairs

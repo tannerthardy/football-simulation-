@@ -29,6 +29,7 @@ import { supportParams, TURF_MU } from '../physics/support.js';
 import { GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { contactQuality, previewTackleWindow } from './tackle-window.js';
 
 export interface TackleBond {
   carrier: Agent;
@@ -81,21 +82,50 @@ export function tryTackles(sim: PlaySim): void {
     const range = arms + (engaged ? 0 : 0.45);
     if (dd <= range && !occluded(sim, d, c)) {
       // Contact quality: 1 = body to body (form tackle), 0 = fingertips / lunge.
-      const q = clamp(1 - (dd - body - 0.25) / Math.max(0.2, arms - body - 0.25), 0, 1);
+      const q = contactQuality(dd, body, arms);
       // A tackler reaches when he is in position to wrap, or when this is
       // the best shot the visible relative trajectory offers (a runner
       // passing or pulling away). While he is still closing on a better
       // shot he keeps his feet running; an assist takes whatever it gets.
       const closing = -((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
+      // Beyond standing reach he only lays out when the carrier is pulling
+      // away from him; otherwise he keeps running his feet. No opportunity
+      // forecast is needed when this attempt is already disallowed.
+      if (dd > arms && closing > -1.5) continue;
       const vx = c.vel.x - d.vel.x, vy = c.vel.y - d.vel.y;
       const closestAt = clamp(-(dx * vx + dy * vy) / Math.max(0.01, vx * vx + vy * vy), 0, 0.3);
       const closest = Math.hypot(dx + vx * closestAt, dy + vy * closestAt);
-      const futureQuality = clamp(1 - (closest - body - 0.25) / Math.max(0.2, arms - body - 0.25), 0, 1);
+      let futureQuality = contactQuality(closest, body, arms);
+      let waitingQuality = q;
       const form = 0.85 - 0.15 * d.r('tackling');
-      if (!sim.bond && q < form && futureQuality > q + 0.1) continue;
-      // Beyond standing reach he only lays out when the carrier is pulling
-      // away from him; otherwise he keeps running his feet.
-      if (dd > arms && closing > -1.5) continue;
+      if (!sim.bond && q < form && sim.intents[d.idx]
+        && !sim.world.joints.some(j => (j.a === d.body || j.b === d.body)
+          && (j.kind !== 'grasp' || !j.broken))
+        && !sim.lastStep?.contacts.some(hit => hit.i === d.idx || hit.j === d.idx)) {
+        // Forecast the command actually executed, without asking the behavior
+        // for another decision or drawing from its pursuit-error stream.
+        const look = (.12 + .12 * (1 - d.r('awareness'))) / Math.max(.1, d.profile.reactionTime);
+        const seen = sim.see(d, c, look);
+        // tryTackles follows physics. Perception was sampled at tick start;
+        // dead-reckon only its stale velocity to this body-state boundary.
+        const elapsed = clamp(sim.world.time - sim.t, 0, sim.dt);
+        const observed = { ...seen, pos: { x: seen.pos.x + seen.vel.x * elapsed,
+          y: seen.pos.y + seen.vel.y * elapsed } };
+        const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, arms, sim.world.time);
+        if (window) {
+          futureQuality = window.futureQuality;
+          // Compare two estimates from the same observation. Actual reach and
+          // the resulting grip still use current physical geometry below.
+          waitingQuality = window.currentQuality;
+          if (sim.trace.data) sim.trace.decide({ t: sim.t, a: d.idx,
+            kind: 'tackle-opportunity',
+            chose: futureQuality > waitingQuality + .1 ? 'keep feet moving' : 'attempt current opportunity',
+            cue: 'delayed carrier motion and attainable movement',
+            options: ['keep feet moving', 'attempt current opportunity'],
+            detail: `Observed wrap quality ${waitingQuality.toFixed(2)}; best attainable decision sample ${futureQuality.toFixed(2)} at ${window.closestAt.toFixed(2)} s. Held movement command; future cuts and contacts are unknown.` });
+        }
+      }
+      if (!sim.bond && q < form && futureQuality > waitingQuality + 0.1) continue;
       attempt(sim, d, c, q, engaged, dd > arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;

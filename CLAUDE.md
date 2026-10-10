@@ -2,8 +2,17 @@
 
 Start with these shared project references:
 
+- [Attainable tackle timing and the next contact repair](docs/reviews/tackle-timing-and-lower-attachment.md):
+  **latest controller increment.** Tackle opportunity forecasts hold the actual
+  movement command through the existing World and delayed observation. Read the
+  56-case primary regression panel, separately labelled crossing/braking witnesses,
+  144 paired runs, four-game guard and paired film. Next: the reproduced lower
+  attachment-bound release, then sustained hand-contact divergence. Neither is
+  fixed by timing. No anatomical expansion or force fitting; final physics OK
+  remains pending.
+
 - [Achievable approach control and remaining contact work](docs/reviews/approach-control-and-remaining-contact.md):
-  **latest shipped controller increment.** A small shortlist uses the unchanged
+  Previous controller increment. A small shortlist uses the unchanged
   World to redirect imminent crossing approaches. Read the 120-case panel,
   actual tackle follow-up, 144 paired runs, four-game guard and source-labelled
   film. Next: attainable tackle-attempt quality, the retained low-attachment

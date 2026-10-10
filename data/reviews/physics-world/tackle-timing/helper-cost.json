@@ -1,0 +1,1494 @@
+{
+  "sourceSha256": "bbfaf460a9962459702dc5702b62b5b5e5933eac7c7e5ab1986095690d1759db",
+  "scriptSha256": "8bb184bb0d41451e90dbdff7c848da6d2123074d158b7b4b2c9ccd5da6b9b839",
+  "inputSha256": "4f7ac4e2b33412549c96e6992ae8346020027fd2efd163ca8b08c0c171212aa4",
+  "cohortSha256": "521d0390a9f2c86313941f5e7caeef4b2a1652698f2567ad92fe94a5a7e7d17f",
+  "runtime": "v22.23.3",
+  "runtimeDetails": {
+    "execPath": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+    "versions": {
+      "node": "22.23.3",
+      "acorn": "8.16.0",
+      "ada": "2.9.2",
+      "amaro": "1.1.8",
+      "ares": "1.34.8",
+      "brotli": "1.1.0",
+      "cjs_module_lexer": "2.2.0",
+      "cldr": "48.0",
+      "icu": "78.3",
+      "llhttp": "9.4.3",
+      "modules": "127",
+      "napi": "10",
+      "nbytes": "0.1.3",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.69.0",
+      "openssl": "3.5.8",
+      "simdjson": "4.5.0",
+      "simdutf": "6.4.2",
+      "sqlite": "3.51.3",
+      "tz": "2026c",
+      "undici": "6.28.1",
+      "unicode": "17.0",
+      "uv": "1.51.0",
+      "uvwasi": "0.0.23",
+      "v8": "12.4.254.21-node.57",
+      "zlib": "1.3.1-e00f703",
+      "zstd": "1.5.7"
+    },
+    "platform": "linux",
+    "arch": "x64",
+    "logicalCpus": 5,
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "note": "Current-helper-only warmed calls on frozen body/command and delayed observed motion. Isolated helper cost, not a legacy analytical comparison, a tackle-success rate, or full-game overhead. Real players do not move. Counts and mutation/RNG checks run outside timing; measured blocks have no observer monkey patches.",
+  "warmBlocksExcluded": 3,
+  "measuredBlocks": 7,
+  "callsPerBlock": 1000,
+  "collectGarbageBeforeBlock": true,
+  "command": "node --expose-gc --import tsx scripts/diag/tackle-window-cost.ts OUTPUT.json",
+  "rows": [
+    {
+      "input": {
+        "id": "near-crossing",
+        "x": 0.8,
+        "y": 1.1,
+        "vx": 4,
+        "vy": -7,
+        "requestX": 6,
+        "requestY": -0.8,
+        "energy": 1,
+        "excluded": null
+      },
+      "rosterSha256": "205ef1902ee70c95c198bb8f70fb3a2978b8a55fa1f802130780ef443e48e299",
+      "inputState": {
+        "bodies": "48e91e22bc734190353772bd82e2506faddc9c4fa851da40347458f2cbd57617",
+        "perception": "7aa8953f43047c2d3e7f407a38dc7cc868bd5ce92feda0a76d1f6a23d6fcae4b",
+        "rng": "c90507747829582f42dd51becefbcc30eb955f8dc34fae13da99af3b13e88f14",
+        "minds": "70d40f00ab22eb5862fad0c14846ff05bddeaa834f5e3b96e7cee1529f5bd747",
+        "observedInput": "f4bdb7940c0c115596c7d79ad0c4505c50e79081a4d8c116c7948299f210d27b"
+      },
+      "profiles": {
+        "carrier": {
+          "vmax": 10.00211849020401,
+          "tau": 1.1725766015564252,
+          "brake": 7.116950113378685,
+          "lateral": 7.228197278911567,
+          "turnRate": 9.855555555555558,
+          "backpedal": 0.5275510204081633,
+          "shuffle": 0.542,
+          "massKg": 83.91458845000001,
+          "heightYd": 2.0305555555555554,
+          "radius": 0.24454545454545454,
+          "reach": 0.9961111111111111,
+          "maxCatchHeight": 3.5806388888888887,
+          "reactReach": 3.030638888888889,
+          "reactionTime": 0.2735102040816327,
+          "power": 67.7182166078393,
+          "balance": 0.45918367346938777,
+          "bend": 0.8065034013605445,
+          "stepSpeed": 4.156621315192743,
+          "getUp": 0.7722222222222221
+        },
+        "defender": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        }
+      },
+      "defenderBody": {
+        "pos": {
+          "x": 51.099999999999994,
+          "y": 27.76666666666667
+        },
+        "vel": {
+          "x": 4,
+          "y": -7
+        },
+        "facing": -1.0516502125483738,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "observation": {
+        "pos": {
+          "x": 50.3,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 6,
+          "y": 0
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.15000000000000002
+      },
+      "command": {
+        "vel": {
+          "x": 6,
+          "y": -0.8
+        },
+        "cutSkill": 1,
+        "posture": 0.6
+      },
+      "body": 0.5036363636363637,
+      "arms": 1.4714141414141415,
+      "now": 2.05,
+      "result": {
+        "currentQuality": 0.15501607041259735,
+        "futureQuality": 1,
+        "closest": 0.4741290917201288,
+        "closestAt": 0.2
+      },
+      "checks": {
+        "bodiesUnchanged": true,
+        "perceptionUnchanged": true,
+        "rngUnchanged": true,
+        "mindsUnchanged": true,
+        "observedInputUnchanged": true,
+        "observerResultMatches": true,
+        "repeatResultMatches": true,
+        "onlyScratchTicks": true,
+        "expectedPreviewSteps": true,
+        "expectedExclusion": true
+      },
+      "previewStepsPerCall": 6,
+      "blocks": [
+        {
+          "cpuMs": 36.968,
+          "wallMs": 30.143693999999982
+        },
+        {
+          "cpuMs": 33.488,
+          "wallMs": 27.561008000000015
+        },
+        {
+          "cpuMs": 52.363,
+          "wallMs": 32.531912000000034
+        },
+        {
+          "cpuMs": 35.299,
+          "wallMs": 28.922939000000042
+        },
+        {
+          "cpuMs": 34.861,
+          "wallMs": 28.83233199999995
+        },
+        {
+          "cpuMs": 55.502,
+          "wallMs": 35.505738000000065
+        },
+        {
+          "cpuMs": 34.086,
+          "wallMs": 27.95895699999994
+        }
+      ],
+      "medianCpuMsPerCall": 0.035299,
+      "medianWallMsPerCall": 0.028922939000000043,
+      "p95WallMsPerCall": 0.03253191200000003,
+      "checksum": 8921.840735481082
+    },
+    {
+      "input": {
+        "id": "near-crossing-mirror",
+        "x": 0.8,
+        "y": -1.1,
+        "vx": 4,
+        "vy": 7,
+        "requestX": 6,
+        "requestY": 0.8,
+        "energy": 1,
+        "excluded": null
+      },
+      "rosterSha256": "205ef1902ee70c95c198bb8f70fb3a2978b8a55fa1f802130780ef443e48e299",
+      "inputState": {
+        "bodies": "a9363de642820aa053660ebcde0f9c11bb5d74cfcd9ab7b2992ce45d5c9429c3",
+        "perception": "8317a341f30f2a4abf3cd38b13575c050ea49875efa47241bc89bd911bd10005",
+        "rng": "c90507747829582f42dd51becefbcc30eb955f8dc34fae13da99af3b13e88f14",
+        "minds": "70d40f00ab22eb5862fad0c14846ff05bddeaa834f5e3b96e7cee1529f5bd747",
+        "observedInput": "ecb39a3daf1ce820f0ba0ac90f51e98863ebe729e12f201d949658860cd9d1d9"
+      },
+      "profiles": {
+        "carrier": {
+          "vmax": 10.00211849020401,
+          "tau": 1.1725766015564252,
+          "brake": 7.116950113378685,
+          "lateral": 7.228197278911567,
+          "turnRate": 9.855555555555558,
+          "backpedal": 0.5275510204081633,
+          "shuffle": 0.542,
+          "massKg": 83.91458845000001,
+          "heightYd": 2.0305555555555554,
+          "radius": 0.24454545454545454,
+          "reach": 0.9961111111111111,
+          "maxCatchHeight": 3.5806388888888887,
+          "reactReach": 3.030638888888889,
+          "reactionTime": 0.2735102040816327,
+          "power": 67.7182166078393,
+          "balance": 0.45918367346938777,
+          "bend": 0.8065034013605445,
+          "stepSpeed": 4.156621315192743,
+          "getUp": 0.7722222222222221
+        },
+        "defender": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        }
+      },
+      "defenderBody": {
+        "pos": {
+          "x": 51.099999999999994,
+          "y": 25.566666666666666
+        },
+        "vel": {
+          "x": 4,
+          "y": 7
+        },
+        "facing": 1.0516502125483738,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "observation": {
+        "pos": {
+          "x": 50.3,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 6,
+          "y": 0
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.15000000000000002
+      },
+      "command": {
+        "vel": {
+          "x": 6,
+          "y": 0.8
+        },
+        "cutSkill": 1,
+        "posture": 0.6
+      },
+      "body": 0.5036363636363637,
+      "arms": 1.4714141414141415,
+      "now": 2.05,
+      "result": {
+        "currentQuality": 0.15501607041259735,
+        "futureQuality": 1,
+        "closest": 0.4741290917201288,
+        "closestAt": 0.2
+      },
+      "checks": {
+        "bodiesUnchanged": true,
+        "perceptionUnchanged": true,
+        "rngUnchanged": true,
+        "mindsUnchanged": true,
+        "observedInputUnchanged": true,
+        "observerResultMatches": true,
+        "repeatResultMatches": true,
+        "onlyScratchTicks": true,
+        "expectedPreviewSteps": true,
+        "expectedExclusion": true
+      },
+      "previewStepsPerCall": 6,
+      "blocks": [
+        {
+          "cpuMs": 33.995,
+          "wallMs": 28.135773000000086
+        },
+        {
+          "cpuMs": 58.975,
+          "wallMs": 37.285322000000065
+        },
+        {
+          "cpuMs": 34.453,
+          "wallMs": 28.053672000000006
+        },
+        {
+          "cpuMs": 35.733,
+          "wallMs": 29.296055000000024
+        },
+        {
+          "cpuMs": 58.193,
+          "wallMs": 36.263849999999934
+        },
+        {
+          "cpuMs": 33.993,
+          "wallMs": 27.598602000000028
+        },
+        {
+          "cpuMs": 34.685,
+          "wallMs": 28.39625100000012
+        }
+      ],
+      "medianCpuMsPerCall": 0.034685,
+      "medianWallMsPerCall": 0.02839625100000012,
+      "p95WallMsPerCall": 0.03626384999999993,
+      "checksum": 8921.840735481082
+    },
+    {
+      "input": {
+        "id": "head-on",
+        "x": 1.4,
+        "y": 0,
+        "vx": -2,
+        "vy": 0,
+        "requestX": -1.5,
+        "requestY": 0,
+        "energy": 1,
+        "excluded": null
+      },
+      "rosterSha256": "205ef1902ee70c95c198bb8f70fb3a2978b8a55fa1f802130780ef443e48e299",
+      "inputState": {
+        "bodies": "048c31d509cc1c0ce114eba21d2b95a3f3d6d277f583cfcdbc9d8dd8c7cd6d77",
+        "perception": "0628ae135c2a72f0391d3b98f74fdc03061843608f54e43e98cb868d50d31e06",
+        "rng": "c90507747829582f42dd51becefbcc30eb955f8dc34fae13da99af3b13e88f14",
+        "minds": "70d40f00ab22eb5862fad0c14846ff05bddeaa834f5e3b96e7cee1529f5bd747",
+        "observedInput": "3643310a5b7e1e24af6e1c3aaf2a6cd634722843b9fab427dc4672a17d43e170"
+      },
+      "profiles": {
+        "carrier": {
+          "vmax": 10.00211849020401,
+          "tau": 1.1725766015564252,
+          "brake": 7.116950113378685,
+          "lateral": 7.228197278911567,
+          "turnRate": 9.855555555555558,
+          "backpedal": 0.5275510204081633,
+          "shuffle": 0.542,
+          "massKg": 83.91458845000001,
+          "heightYd": 2.0305555555555554,
+          "radius": 0.24454545454545454,
+          "reach": 0.9961111111111111,
+          "maxCatchHeight": 3.5806388888888887,
+          "reactReach": 3.030638888888889,
+          "reactionTime": 0.2735102040816327,
+          "power": 67.7182166078393,
+          "balance": 0.45918367346938777,
+          "bend": 0.8065034013605445,
+          "stepSpeed": 4.156621315192743,
+          "getUp": 0.7722222222222221
+        },
+        "defender": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        }
+      },
+      "defenderBody": {
+        "pos": {
+          "x": 51.699999999999996,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": -2,
+          "y": 0
+        },
+        "facing": 3.141592653589793,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "observation": {
+        "pos": {
+          "x": 50.3,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 6,
+          "y": 0
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.15000000000000002
+      },
+      "command": {
+        "vel": {
+          "x": -1.5,
+          "y": 0
+        },
+        "cutSkill": 1,
+        "posture": 0.6
+      },
+      "body": 0.5036363636363637,
+      "arms": 1.4714141414141415,
+      "now": 2.05,
+      "result": {
+        "currentQuality": 0.0994933858710969,
+        "futureQuality": 1,
+        "closest": 0.1195186791383307,
+        "closestAt": 0.2
+      },
+      "checks": {
+        "bodiesUnchanged": true,
+        "perceptionUnchanged": true,
+        "rngUnchanged": true,
+        "mindsUnchanged": true,
+        "observedInputUnchanged": true,
+        "observerResultMatches": true,
+        "repeatResultMatches": true,
+        "onlyScratchTicks": true,
+        "expectedPreviewSteps": true,
+        "expectedExclusion": true
+      },
+      "previewStepsPerCall": 6,
+      "blocks": [
+        {
+          "cpuMs": 49.686,
+          "wallMs": 33.825327000000016
+        },
+        {
+          "cpuMs": 34.464,
+          "wallMs": 27.708572000000004
+        },
+        {
+          "cpuMs": 34.989,
+          "wallMs": 28.69323600000007
+        },
+        {
+          "cpuMs": 55.976,
+          "wallMs": 36.149220000000014
+        },
+        {
+          "cpuMs": 33.806,
+          "wallMs": 27.29784400000017
+        },
+        {
+          "cpuMs": 35.484,
+          "wallMs": 29.602449000000206
+        },
+        {
+          "cpuMs": 62.977,
+          "wallMs": 38.9805809999998
+        }
+      ],
+      "medianCpuMsPerCall": 0.035484,
+      "medianWallMsPerCall": 0.029602449000000208,
+      "p95WallMsPerCall": 0.03614922000000002,
+      "checksum": 5203.616287583826
+    },
+    {
+      "input": {
+        "id": "fatigued-crossing",
+        "x": 0.8,
+        "y": 1.1,
+        "vx": 4,
+        "vy": -7,
+        "requestX": 6,
+        "requestY": -0.8,
+        "energy": 0.38,
+        "excluded": null
+      },
+      "rosterSha256": "205ef1902ee70c95c198bb8f70fb3a2978b8a55fa1f802130780ef443e48e299",
+      "inputState": {
+        "bodies": "8bc80f154b559bd89e786244bff8cadec1afeee5f45a84fe50fe83d806db3dfa",
+        "perception": "7aa8953f43047c2d3e7f407a38dc7cc868bd5ce92feda0a76d1f6a23d6fcae4b",
+        "rng": "c90507747829582f42dd51becefbcc30eb955f8dc34fae13da99af3b13e88f14",
+        "minds": "70d40f00ab22eb5862fad0c14846ff05bddeaa834f5e3b96e7cee1529f5bd747",
+        "observedInput": "f4bdb7940c0c115596c7d79ad0c4505c50e79081a4d8c116c7948299f210d27b"
+      },
+      "profiles": {
+        "carrier": {
+          "vmax": 10.00211849020401,
+          "tau": 1.1725766015564252,
+          "brake": 7.116950113378685,
+          "lateral": 7.228197278911567,
+          "turnRate": 9.855555555555558,
+          "backpedal": 0.5275510204081633,
+          "shuffle": 0.542,
+          "massKg": 83.91458845000001,
+          "heightYd": 2.0305555555555554,
+          "radius": 0.24454545454545454,
+          "reach": 0.9961111111111111,
+          "maxCatchHeight": 3.5806388888888887,
+          "reactReach": 3.030638888888889,
+          "reactionTime": 0.2735102040816327,
+          "power": 67.7182166078393,
+          "balance": 0.45918367346938777,
+          "bend": 0.8065034013605445,
+          "stepSpeed": 4.156621315192743,
+          "getUp": 0.7722222222222221
+        },
+        "defender": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        }
+      },
+      "defenderBody": {
+        "pos": {
+          "x": 51.099999999999994,
+          "y": 27.76666666666667
+        },
+        "vel": {
+          "x": 4,
+          "y": -7
+        },
+        "facing": -1.0516502125483738,
+        "energy": 0.38,
+        "profile": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "observation": {
+        "pos": {
+          "x": 50.3,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 6,
+          "y": 0
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.15000000000000002
+      },
+      "command": {
+        "vel": {
+          "x": 6,
+          "y": -0.8
+        },
+        "cutSkill": 1,
+        "posture": 0.6
+      },
+      "body": 0.5036363636363637,
+      "arms": 1.4714141414141415,
+      "now": 2.05,
+      "result": {
+        "currentQuality": 0.15501607041259735,
+        "futureQuality": 1,
+        "closest": 0.4742337556486708,
+        "closestAt": 0.2
+      },
+      "checks": {
+        "bodiesUnchanged": true,
+        "perceptionUnchanged": true,
+        "rngUnchanged": true,
+        "mindsUnchanged": true,
+        "observedInputUnchanged": true,
+        "observerResultMatches": true,
+        "repeatResultMatches": true,
+        "onlyScratchTicks": true,
+        "expectedPreviewSteps": true,
+        "expectedExclusion": true
+      },
+      "previewStepsPerCall": 6,
+      "blocks": [
+        {
+          "cpuMs": 49.653,
+          "wallMs": 32.553416999999854
+        },
+        {
+          "cpuMs": 38.169,
+          "wallMs": 31.081953000000112
+        },
+        {
+          "cpuMs": 36.151,
+          "wallMs": 29.19284400000015
+        },
+        {
+          "cpuMs": 59.593,
+          "wallMs": 38.10557299999982
+        },
+        {
+          "cpuMs": 35.673,
+          "wallMs": 28.841444999999794
+        },
+        {
+          "cpuMs": 37.099,
+          "wallMs": 29.47817599999985
+        },
+        {
+          "cpuMs": 62.27,
+          "wallMs": 38.568673999999874
+        }
+      ],
+      "medianCpuMsPerCall": 0.038168999999999995,
+      "medianWallMsPerCall": 0.031081953000000113,
+      "p95WallMsPerCall": 0.03810557299999982,
+      "checksum": 8922.887374765975
+    },
+    {
+      "input": {
+        "id": "faster-carrier-escape",
+        "x": -1.4,
+        "y": 0,
+        "vx": 4,
+        "vy": 0,
+        "requestX": 6,
+        "requestY": 0,
+        "energy": 1,
+        "excluded": null
+      },
+      "rosterSha256": "205ef1902ee70c95c198bb8f70fb3a2978b8a55fa1f802130780ef443e48e299",
+      "inputState": {
+        "bodies": "44cc514b4ee5bf68fd1b5201f138f9b47b94b727d0f4dedfcad9d9df7de3d71d",
+        "perception": "36db6af8eabd252e85a24db1c7f36f0e8948a8928cd699a8f01267061622112d",
+        "rng": "c90507747829582f42dd51becefbcc30eb955f8dc34fae13da99af3b13e88f14",
+        "minds": "70d40f00ab22eb5862fad0c14846ff05bddeaa834f5e3b96e7cee1529f5bd747",
+        "observedInput": "5631f0c38c0310e63783e72955ba5f631327013d6308c7fdd4a6ec76865b0b42"
+      },
+      "profiles": {
+        "carrier": {
+          "vmax": 10.00211849020401,
+          "tau": 1.1725766015564252,
+          "brake": 7.116950113378685,
+          "lateral": 7.228197278911567,
+          "turnRate": 9.855555555555558,
+          "backpedal": 0.5275510204081633,
+          "shuffle": 0.542,
+          "massKg": 83.91458845000001,
+          "heightYd": 2.0305555555555554,
+          "radius": 0.24454545454545454,
+          "reach": 0.9961111111111111,
+          "maxCatchHeight": 3.5806388888888887,
+          "reactReach": 3.030638888888889,
+          "reactionTime": 0.2735102040816327,
+          "power": 67.7182166078393,
+          "balance": 0.45918367346938777,
+          "bend": 0.8065034013605445,
+          "stepSpeed": 4.156621315192743,
+          "getUp": 0.7722222222222221
+        },
+        "defender": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        }
+      },
+      "defenderBody": {
+        "pos": {
+          "x": 48.9,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 4,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "observation": {
+        "pos": {
+          "x": 50.3,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 6,
+          "y": 0
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.15000000000000002
+      },
+      "command": {
+        "vel": {
+          "x": 6,
+          "y": 0
+        },
+        "cutSkill": 1,
+        "posture": 0.6
+      },
+      "body": 0.5036363636363637,
+      "arms": 1.4714141414141415,
+      "now": 2.05,
+      "result": {
+        "currentQuality": 0.0994933858710969,
+        "futureQuality": 0.0994933858710969,
+        "closest": 1.3999999999999986,
+        "closestAt": 0
+      },
+      "checks": {
+        "bodiesUnchanged": true,
+        "perceptionUnchanged": true,
+        "rngUnchanged": true,
+        "mindsUnchanged": true,
+        "observedInputUnchanged": true,
+        "observerResultMatches": true,
+        "repeatResultMatches": true,
+        "onlyScratchTicks": true,
+        "expectedPreviewSteps": true,
+        "expectedExclusion": true
+      },
+      "previewStepsPerCall": 6,
+      "blocks": [
+        {
+          "cpuMs": 35.577,
+          "wallMs": 28.59158699999989
+        },
+        {
+          "cpuMs": 32.296,
+          "wallMs": 26.38819199999989
+        },
+        {
+          "cpuMs": 56.482,
+          "wallMs": 35.39649499999996
+        },
+        {
+          "cpuMs": 35.123,
+          "wallMs": 28.441283000000112
+        },
+        {
+          "cpuMs": 34.278,
+          "wallMs": 27.7593609999999
+        },
+        {
+          "cpuMs": 52.702,
+          "wallMs": 33.516783999999916
+        },
+        {
+          "cpuMs": 36.459,
+          "wallMs": 28.928780999999617
+        }
+      ],
+      "medianCpuMsPerCall": 0.035577,
+      "medianWallMsPerCall": 0.02859158699999989,
+      "p95WallMsPerCall": 0.03351678399999992,
+      "checksum": 14477.56825218282
+    },
+    {
+      "input": {
+        "id": "excluded-missing-command",
+        "x": 0.8,
+        "y": 1.1,
+        "vx": 4,
+        "vy": -7,
+        "requestX": 6,
+        "requestY": -0.8,
+        "energy": 1,
+        "excluded": "missing"
+      },
+      "rosterSha256": "205ef1902ee70c95c198bb8f70fb3a2978b8a55fa1f802130780ef443e48e299",
+      "inputState": {
+        "bodies": "48e91e22bc734190353772bd82e2506faddc9c4fa851da40347458f2cbd57617",
+        "perception": "7aa8953f43047c2d3e7f407a38dc7cc868bd5ce92feda0a76d1f6a23d6fcae4b",
+        "rng": "c90507747829582f42dd51becefbcc30eb955f8dc34fae13da99af3b13e88f14",
+        "minds": "70d40f00ab22eb5862fad0c14846ff05bddeaa834f5e3b96e7cee1529f5bd747",
+        "observedInput": "f100beccb930b0fb77d21bbc9566938c2c3da43dc81eb4bdbd82e804ff9e6be5"
+      },
+      "profiles": {
+        "carrier": {
+          "vmax": 10.00211849020401,
+          "tau": 1.1725766015564252,
+          "brake": 7.116950113378685,
+          "lateral": 7.228197278911567,
+          "turnRate": 9.855555555555558,
+          "backpedal": 0.5275510204081633,
+          "shuffle": 0.542,
+          "massKg": 83.91458845000001,
+          "heightYd": 2.0305555555555554,
+          "radius": 0.24454545454545454,
+          "reach": 0.9961111111111111,
+          "maxCatchHeight": 3.5806388888888887,
+          "reactReach": 3.030638888888889,
+          "reactionTime": 0.2735102040816327,
+          "power": 67.7182166078393,
+          "balance": 0.45918367346938777,
+          "bend": 0.8065034013605445,
+          "stepSpeed": 4.156621315192743,
+          "getUp": 0.7722222222222221
+        },
+        "defender": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        }
+      },
+      "defenderBody": {
+        "pos": {
+          "x": 51.099999999999994,
+          "y": 27.76666666666667
+        },
+        "vel": {
+          "x": 4,
+          "y": -7
+        },
+        "facing": -1.0516502125483738,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "observation": {
+        "pos": {
+          "x": 50.3,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 6,
+          "y": 0
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.15000000000000002
+      },
+      "command": null,
+      "body": 0.5036363636363637,
+      "arms": 1.4714141414141415,
+      "now": 2.05,
+      "result": null,
+      "checks": {
+        "bodiesUnchanged": true,
+        "perceptionUnchanged": true,
+        "rngUnchanged": true,
+        "mindsUnchanged": true,
+        "observedInputUnchanged": true,
+        "observerResultMatches": true,
+        "repeatResultMatches": true,
+        "onlyScratchTicks": true,
+        "expectedPreviewSteps": true,
+        "expectedExclusion": true
+      },
+      "previewStepsPerCall": 0,
+      "blocks": [
+        {
+          "cpuMs": 0.045,
+          "wallMs": 0.03787099999999555
+        },
+        {
+          "cpuMs": 0.117,
+          "wallMs": 0.03698899999972127
+        },
+        {
+          "cpuMs": 0.043,
+          "wallMs": 0.037373999999999796
+        },
+        {
+          "cpuMs": 0.044,
+          "wallMs": 0.036754999999629945
+        },
+        {
+          "cpuMs": 0.044,
+          "wallMs": 0.037502000000131375
+        },
+        {
+          "cpuMs": 0.063,
+          "wallMs": 0.05701900000030946
+        },
+        {
+          "cpuMs": 0.044,
+          "wallMs": 0.03716800000029252
+        }
+      ],
+      "medianCpuMsPerCall": 0.000044,
+      "medianWallMsPerCall": 0.000037373999999999795,
+      "p95WallMsPerCall": 0.000037870999999995545,
+      "checksum": 10000
+    },
+    {
+      "input": {
+        "id": "excluded-active-strike",
+        "x": 0.8,
+        "y": 1.1,
+        "vx": 4,
+        "vy": -7,
+        "requestX": 6,
+        "requestY": -0.8,
+        "energy": 1,
+        "excluded": "strike"
+      },
+      "rosterSha256": "205ef1902ee70c95c198bb8f70fb3a2978b8a55fa1f802130780ef443e48e299",
+      "inputState": {
+        "bodies": "2cba98a3e6e7dd962c0421f7b339fbe47912ab8eb96e9b7fb5477b5e98cefceb",
+        "perception": "7aa8953f43047c2d3e7f407a38dc7cc868bd5ce92feda0a76d1f6a23d6fcae4b",
+        "rng": "c90507747829582f42dd51becefbcc30eb955f8dc34fae13da99af3b13e88f14",
+        "minds": "70d40f00ab22eb5862fad0c14846ff05bddeaa834f5e3b96e7cee1529f5bd747",
+        "observedInput": "f4bdb7940c0c115596c7d79ad0c4505c50e79081a4d8c116c7948299f210d27b"
+      },
+      "profiles": {
+        "carrier": {
+          "vmax": 10.00211849020401,
+          "tau": 1.1725766015564252,
+          "brake": 7.116950113378685,
+          "lateral": 7.228197278911567,
+          "turnRate": 9.855555555555558,
+          "backpedal": 0.5275510204081633,
+          "shuffle": 0.542,
+          "massKg": 83.91458845000001,
+          "heightYd": 2.0305555555555554,
+          "radius": 0.24454545454545454,
+          "reach": 0.9961111111111111,
+          "maxCatchHeight": 3.5806388888888887,
+          "reactReach": 3.030638888888889,
+          "reactionTime": 0.2735102040816327,
+          "power": 67.7182166078393,
+          "balance": 0.45918367346938777,
+          "bend": 0.8065034013605445,
+          "stepSpeed": 4.156621315192743,
+          "getUp": 0.7722222222222221
+        },
+        "defender": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        }
+      },
+      "defenderBody": {
+        "pos": {
+          "x": 51.099999999999994,
+          "y": 27.76666666666667
+        },
+        "vel": {
+          "x": 4,
+          "y": -7
+        },
+        "facing": -1.0516502125483738,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.727775706849538,
+          "tau": 1.0053148446996494,
+          "brake": 7.192528344671201,
+          "lateral": 7.021704081632656,
+          "turnRate": 9.968888888888891,
+          "backpedal": 0.7136734693877551,
+          "shuffle": 0.6216,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9694444444444446,
+          "radius": 0.2590909090909091,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.4971388888888892,
+          "reactReach": 2.948527777777778,
+          "reactionTime": 0.18877551020408168,
+          "power": 83.37127273211786,
+          "balance": 0.29591836734693877,
+          "bend": 0.8345170068027212,
+          "stepSpeed": 4.036662131519275,
+          "getUp": 0.7857222222222221
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "strike": {
+            "x": 0.2,
+            "y": -0.1
+          }
+        },
+        "spin": 0
+      },
+      "observation": {
+        "pos": {
+          "x": 50.3,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 6,
+          "y": 0
+        },
+        "stance": null,
+        "facing": 0,
+        "age": 0.15000000000000002
+      },
+      "command": {
+        "vel": {
+          "x": 6,
+          "y": -0.8
+        },
+        "cutSkill": 1,
+        "posture": 0.6
+      },
+      "body": 0.5036363636363637,
+      "arms": 1.4714141414141415,
+      "now": 2.05,
+      "result": null,
+      "checks": {
+        "bodiesUnchanged": true,
+        "perceptionUnchanged": true,
+        "rngUnchanged": true,
+        "mindsUnchanged": true,
+        "observedInputUnchanged": true,
+        "observerResultMatches": true,
+        "repeatResultMatches": true,
+        "onlyScratchTicks": true,
+        "expectedPreviewSteps": true,
+        "expectedExclusion": true
+      },
+      "previewStepsPerCall": 0,
+      "blocks": [
+        {
+          "cpuMs": 0.053,
+          "wallMs": 0.04791900000009264
+        },
+        {
+          "cpuMs": 0.056,
+          "wallMs": 0.05033300000013696
+        },
+        {
+          "cpuMs": 0.055,
+          "wallMs": 0.048632999999881577
+        },
+        {
+          "cpuMs": 0.049,
+          "wallMs": 0.04106400000000576
+        },
+        {
+          "cpuMs": 0.049,
+          "wallMs": 0.041666000000077474
+        },
+        {
+          "cpuMs": 0.055,
+          "wallMs": 0.04787900000019363
+        },
+        {
+          "cpuMs": 0.055,
+          "wallMs": 0.048747000000275875
+        }
+      ],
+      "medianCpuMsPerCall": 0.000055,
+      "medianWallMsPerCall": 0.00004791900000009264,
+      "p95WallMsPerCall": 0.000048747000000275875,
+      "checksum": 10000
+    }
+  ]
+}

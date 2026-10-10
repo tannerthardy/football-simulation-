@@ -264,19 +264,33 @@ def main():
             if args.video_out:
                 if not shutil.which('ffprobe'):
                     raise RuntimeError('--video-out requires ffprobe to verify actual decoded video')
+                # A focused mechanical library may start with a short play
+                # (for example a 0.85s form tackle). Export needs an actual
+                # recorded 1.2s window; an invalid range correctly never locks.
+                video_indices = [i for i in indices() if
+                    data['plays'][i]['frames']['t'][-1] - max(0, data['plays'][i]['frames']['t'][0]) >= 1.2 - 1e-8]
+                assert video_indices, 'Video check needs a recorded clip with at least 1.2s available'
+                if current() not in video_indices:
+                    page.locator(f'.play[data-i="{video_indices[0]}"]').click()
+                    if page.locator('#playbtn').inner_text() == 'Pause':
+                        page.click('#playbtn')
+                clip = data['plays'][current()]
+                assert page.evaluate('async () => await window.TELEMETRY_READY'), page.locator('#telemetry-status').inner_text()
+                video_start = max(0, clip['frames']['t'][0])
+                video_end = video_start + 1.2
+                checks.append(f"Video checks select a recorded 1.2s window ({clip['id']})")
                 assert page.locator('#export-video').is_enabled()
                 page.click('#restart')
                 page.click('#fwd')
                 page.wait_for_timeout(150)
                 saved_reference = page.locator('#play-reference').input_value()
                 original_speed = page.locator('#speedbtn').inner_text()
-                page.fill('#clip-start', '0')
-                page.fill('#clip-end', '1.2')
-                page.fill('#clip-end', '0')
+                page.fill('#clip-start', str(video_start))
+                page.fill('#clip-end', str(video_start))
                 page.click('#export-video')
                 assert 'end after start' in page.locator('#export-status').inner_text()
                 assert page.locator('#playbtn').is_enabled()
-                page.fill('#clip-end', '1.2')
+                page.fill('#clip-end', str(video_end))
                 checks.append('Invalid video ranges are explained without changing playback state')
                 with page.expect_download(timeout=15000) as download_info:
                     page.click('#export-video')
@@ -365,17 +379,26 @@ def main():
                 race.wait_for_function('window.DECODE_STARTED > 0')
                 assert race.evaluate('() => REPLAY.plays[Number(document.querySelector(".play[aria-current]").dataset.i)].telemetry.encoding === "gzip-base64"')
                 target = filmed[min(5, len(filmed)-1)]
-                race.evaluate('(target) => document.querySelector(`.play[data-i="${target}"]`).click()', target)
+                # Keep the requested short clip selected while the two
+                # intentional decode delays run; playback auto-next is
+                # exercised separately above.
+                race.evaluate('''(target) => {
+                    document.querySelector(`.play[data-i="${target}"]`).click();
+                    document.getElementById('playbtn').click();
+                }''', target)
                 assert race.evaluate('async () => await window.TELEMETRY_READY')
                 assert int(race.locator('.play[aria-current]').get_attribute('data-i')) == target
                 assert race.evaluate('(target) => REPLAY.plays[target].telemetry.frames.length > 0', target)
                 assert race.evaluate('() => REPLAY.plays.filter(p => p.telemetry?.frames).length') <= 3
                 if args.video_out:
-                    cold = next(index for index in filmed if index != target)
+                    cold = next((index for index in filmed if index != target and
+                        data['plays'][index]['frames']['t'][-1] - max(0, data['plays'][index]['frames']['t'][0]) >= 1.2 - 1e-8), None)
+                    assert cold is not None, 'Decode/export overlap needs a second recorded 1.2s window'
                     race.locator(f'.play[data-i="{cold}"]').click()
                     race.click('#playbtn')
-                    race.fill('#clip-start', '0')
-                    race.fill('#clip-end', '1.2')
+                    cold_start = max(0, data['plays'][cold]['frames']['t'][0])
+                    race.fill('#clip-start', str(cold_start))
+                    race.fill('#clip-end', str(cold_start + 1.2))
                     with race.expect_download(timeout=15000) as overlap_download:
                         race.click('#export-video')
                         assert race.evaluate('async () => await window.TELEMETRY_READY')
