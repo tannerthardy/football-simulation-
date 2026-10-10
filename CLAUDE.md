@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [Sole traction and the next physics step](docs/reviews/sole-traction-and-next-physics-step.md):
+  **current review.** Persistent finite shear joins achieved normal support in
+  the same 18D torso/feet solve, with material-bound state, actual point torque,
+  stored energy, plastic loss and atomic rollback. Independent references expose
+  force-layer, split-capacity and hidden slip-reflection failures; regression
+  guards now cover them. Research-only and unused by `World`; Physics is NOT
+  READY. Next: actual contact/slip events, bounded executed spatial control and
+  grip-foot coupling, then body-ground/World and universal/NFL transfer gates.
+  Read the pinned evidence for validation totals and explicit material assumptions.
+
 - [Sole compliance and the next support step](docs/reviews/sole-compliance-and-next-support-step.md):
-  **current review.** Explicit surface energy, unilateral weighted sole forces
+  Previous normal-support increment. Explicit surface energy, unilateral weighted sole forces
   and actual material torque/work join the same 18D torso/feet/leg solve.
   Independent one-point pivot, small-foot heel/toe rocking and loaded support
   panels pass 9,632 intervals; the smooth rigid limit converges. Research-only:

@@ -1,17 +1,20 @@
-/** Research-only normal sole compliance coupled to the shared 18D material
- * support residual. Units kg, yd, s. No World, friction, impact, or capacity.
- * Each foot's K and C are totals over normalized positive patch area weights.
+/** Research-only compliant sole response coupled to the shared 18D material
+ * support residual. Units kg, yd, s. No World, gait, or impact integration.
+ * Each foot's K, C and Kt are totals over normalized positive patch weights.
  */
 import { evaluateSpatialSupportCandidate, newSpatialSupport, spatialSupportEnergy, spatialSupportEndpoints,
   type SpatialImpulseSet, type SpatialSupportCandidate, type SpatialSupportState } from './spatial-support.js';
 import { createMaterialPlaneCandidate, inspectMaterialPlane, type MaterialPlaneReport } from './material-plane.js';
-import { rigidAngularMomentum, rigidBasisError, rigidPointPosition, rigidWorldOffset, v3Add, v3Cross, v3Dot, v3Norm, v3Scale, v3Sub,
+import { rigidAngularMomentum, rigidBasisError, rigidPointPosition, rigidPointVelocity, rigidWorldOffset, v3Add, v3Cross, v3Dot, v3Norm, v3Scale, v3Sub,
   type Vec3 } from './material-rigid.js';
+import { advanceSoleShear, type SoleShearReport } from './sole-shear.js';
 
 export interface CompliantSolePatch {
   id: string;
   local: Vec3;
   areaWeight: number;
+  /** Coulomb coefficient for this patch; defaults to zero. */
+  friction?: number;
 }
 export interface SpatialSoleComplianceMaterial {
   planeHeight?: number;
@@ -20,10 +23,24 @@ export interface SpatialSoleComplianceMaterial {
   stiffness: [number, number];
   /** Per-foot total normal dashpot coefficient (force / speed). */
   damping: [number, number];
+  /** Optional per-foot total tangential stiffness (force / distance). */
+  shearStiffness?: [number, number];
 }
 /** Short alias used by standalone mechanics diagnostics. */
 export type CompliantSoleMaterial = SpatialSoleComplianceMaterial;
+export interface SpatialSoleShearPatchState {
+  foot: 0 | 1;
+  id: string;
+  stretch: { x: number; y: number };
+}
+/** Persistent shear stretch, bound to an exact versioned sole material. */
+export interface SpatialSoleShearState {
+  fingerprint: string;
+  points: SpatialSoleShearPatchState[];
+}
 export interface SpatialSoleComplianceOptions {
+  /** Required whenever any patch has positive friction and its foot has Kt>0. */
+  shearState?: SpatialSoleShearState;
   externalImpulses?: SpatialImpulseSet;
   tolerance?: number;
   geometryTolerance?: number;
@@ -34,6 +51,7 @@ export interface SpatialSoleComplianceOptions {
   maxCombinedElasticPhase?: number;
   /** Trace estimate for compressed sole damping response. */
   maxDampingNumber?: number;
+  maxShearElasticPhase?: number;
   materialPlaneOptions?: {
     timeTolerance?: number;
     gapTolerance?: number;
@@ -61,18 +79,41 @@ export interface SolePointReport {
   potentialBefore: number;
   potentialAfter: number;
   springWorkResidual: number;
+  shear: SoleShearPointReport | null;
+}
+export interface SoleShearPointReport {
+  friction: number;
+  stiffness: number;
+  capacityBefore: number;
+  capacityAfter: number;
+  inputStretch: { x: number; y: number };
+  finalStretch: { x: number; y: number };
+  constitutive: SoleShearReport;
+  actualAttachmentWork: number;
+  constitutiveAttachmentWork: number;
+  attachmentWorkResidual: number;
+  energyResidual: number;
+  potentialBefore: number;
+  potentialAfter: number;
 }
 export interface SpatialSoleComplianceReport extends SpatialSupportCandidate {
   accepted: boolean;
   reason: string | null;
   iterations: number;
+  candidateEvaluations: number;
+  shearConstitutiveEvaluations: number;
+  shearQuadratureEvaluations: number;
   residual: number;
   candidateState: SpatialSupportState;
+  candidateShearState: SpatialSoleShearState | null;
   solePoints: SolePointReport[];
   solePotentialBefore: number; solePotentialAfter: number;
+  shearPotentialBefore: number; shearPotentialAfter: number;
   soleSpringWork: number; soleDampingWork: number; knownExternalWork: number;
+  soleShearWork: number; soleShearDissipation: number;
   workResidual: number; linearMomentumResidual: Vec3; angularMomentumResidual: Vec3;
   maxCombinedElasticPhase: number; maxDampingNumber: number;
+  maxShearElasticPhase: number;
   /** Support energy excludes turf potential; this ledger includes it. */
   totalEnergyBefore: number; totalEnergyAfter: number;
 }
@@ -104,17 +145,86 @@ const mulIntervalScalar = (a: { lo: number; hi: number }, s: number) => s >= 0
   : { lo: nextFloat(a.hi * s, false), hi: nextFloat(a.lo * s, true) };
 function validateMaterial(m: SpatialSoleComplianceMaterial): SpatialSoleComplianceMaterial {
   const planeHeight = m.planeHeight ?? 0;
-  if (!Number.isFinite(planeHeight) || m.points.length !== 2 || m.stiffness.length !== 2 || m.damping.length !== 2)
+  const shearStiffness = m.shearStiffness ?? [0, 0];
+  if (!Number.isFinite(planeHeight) || m.points.length !== 2 || m.stiffness.length !== 2
+    || m.damping.length !== 2 || shearStiffness.length !== 2)
     throw new RangeError('Two finite sole material slots required');
+  const points = [0, 1].map(foot => m.points[foot].map(p => ({ ...p, friction: p.friction ?? 0 }))) as unknown as [CompliantSolePatch[], CompliantSolePatch[]];
   for (let f = 0; f < 2; f++) {
-    if (!(Number.isFinite(m.stiffness[f]) && m.stiffness[f] >= 0 && Number.isFinite(m.damping[f]) && m.damping[f] >= 0))
-      throw new RangeError('Sole stiffness and damping must be finite nonnegative material values');
-    const ps = m.points[f];
+    if (!(Number.isFinite(m.stiffness[f]) && m.stiffness[f] >= 0
+      && Number.isFinite(m.damping[f]) && m.damping[f] >= 0
+      && Number.isFinite(shearStiffness[f]) && shearStiffness[f] >= 0))
+      throw new RangeError('Sole normal/shear stiffness and damping must be finite nonnegative material values');
+    const ps = points[f];
     if (!ps.length || ps.some(p => !p.id || ![p.local.x, p.local.y, p.local.z, p.areaWeight].every(Number.isFinite) || !(p.areaWeight > 0))
+      || ps.some(p => !Number.isFinite(p.friction) || p.friction! < 0)
       || new Set(ps.map(p => p.id)).size !== ps.length || Math.abs(ps.reduce((a, p) => a + p.areaWeight, 0) - 1) > 1e-12)
       throw new RangeError('Each foot needs uniquely identified positive patch weights summing to one');
   }
-  return {...m,planeHeight};
+  return { ...m, points, shearStiffness, planeHeight };
+}
+
+function shearMaterialFingerprint(material: SpatialSoleComplianceMaterial): string {
+  const m = validateMaterial(material);
+  const canonical = {
+    version: 1,
+    planeHeight: m.planeHeight,
+    feet: [0, 1].map(foot => ({
+      normalStiffness: m.stiffness[foot],
+      normalDamping: m.damping[foot],
+      shearStiffness: m.shearStiffness![foot],
+      patches: m.points[foot].map(patch => ({
+        id: patch.id,
+        local: [patch.local.x, patch.local.y, patch.local.z],
+        weight: patch.areaWeight,
+        friction: patch.friction,
+      })).sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
+    })),
+  };
+  return `spatial-sole-shear-v1:${JSON.stringify(canonical)}`;
+}
+
+/** Make the required persistent state for an active finite-friction material. */
+export function createSpatialSoleShearState(materialInput: SpatialSoleComplianceMaterial): SpatialSoleShearState {
+  const material = validateMaterial(materialInput);
+  return {
+    fingerprint: shearMaterialFingerprint(material),
+    points: [0, 1].flatMap(foot => material.points[foot].map(patch => ({
+      foot: foot as 0 | 1,
+      id: patch.id,
+      stretch: { x: 0, y: 0 },
+    }))),
+  };
+}
+
+function validateShearState(
+  state: SpatialSoleShearState | undefined,
+  material: SpatialSoleComplianceMaterial,
+  required: boolean,
+): SpatialSoleShearState | null {
+  if (!state) {
+    if (required) throw new RangeError('Persistent shearState is required for active sole friction');
+    return null;
+  }
+  if (state.fingerprint !== shearMaterialFingerprint(material) || !Array.isArray(state.points))
+    throw new RangeError('Persistent sole shearState material fingerprint mismatch');
+  if (state.points.some(patch => !patch || typeof patch !== 'object' || !patch.stretch || typeof patch.id !== 'string'))
+    throw new RangeError('Persistent sole shearState patch entries are malformed');
+  const expected = [0, 1].flatMap(foot => material.points[foot].map(patch => `${foot}:${patch.id}`)).sort();
+  const keys = state.points.map(patch => `${patch.foot}:${patch.id}`);
+  if (keys.length !== expected.length || new Set(keys).size !== keys.length
+    || [...keys].sort().some((key, i) => key !== expected[i])
+    || state.points.some(patch => (patch.foot !== 0 && patch.foot !== 1)
+      || !patch.id || !Number.isFinite(patch.stretch.x) || !Number.isFinite(patch.stretch.y)))
+    throw new RangeError('Persistent sole shearState patch IDs or stretches are invalid');
+  for (const patch of state.points) {
+    const materialPatch = material.points[patch.foot].find(item => item.id === patch.id)!;
+    if ((material.shearStiffness![patch.foot] === 0 || materialPatch.friction === 0)
+      && (patch.stretch.x !== 0 || patch.stretch.y !== 0))
+      throw new RangeError('Disabled sole shear patch cannot retain stored stretch');
+  }
+  return { fingerprint: state.fingerprint,
+    points: state.points.map(patch => ({ ...patch, stretch: { ...patch.stretch } })) };
 }
 function certificate(
   before: SpatialSupportState,
@@ -190,24 +300,31 @@ export function advanceSpatialSoleCompliance(
   h: number,
   materialInput: SpatialSoleComplianceMaterial,
   options: SpatialSoleComplianceOptions = {},
-): { state: SpatialSupportState; report: SpatialSoleComplianceReport } {
+): { state: SpatialSupportState; shearState: SpatialSoleShearState | null; report: SpatialSoleComplianceReport } {
   const before = newSpatialSupport(beforeInput);
   const material = validateMaterial(materialInput);
+  const shearActive = material.points.some((patches, foot) => material.shearStiffness![foot] > 0
+    && patches.some(patch => patch.friction! > 0));
+  const inputShearState = validateShearState(options.shearState, material, shearActive);
   const tolerance = options.tolerance ?? 1e-10;
   const geometryTolerance = options.geometryTolerance ?? 1e-9;
   const maxAngular = options.maxAngularPhase ?? .5;
   const maxElastic = options.maxCombinedElasticPhase ?? .5;
   const maxDamping = options.maxDampingNumber ?? .5;
+  const maxShearPhase = options.maxShearElasticPhase ?? .5;
   const maxIterations = options.maxIterations ?? 60;
   const maxLineSearch = options.maxLineSearch ?? 24;
   if (!(Number.isFinite(h) && h > 0)
-    || ![tolerance, geometryTolerance, maxAngular, maxElastic, maxDamping].every(x => Number.isFinite(x) && x > 0)
+    || ![tolerance, geometryTolerance, maxAngular, maxElastic, maxDamping, maxShearPhase].every(x => Number.isFinite(x) && x > 0)
     || ![maxIterations, maxLineSearch].every(x => Number.isInteger(x) && x >= 1)) {
     throw new RangeError('Finite positive interval and numerical budgets required');
   }
 
   const known = options.externalImpulses ?? [{}, {}, {}];
   const start = spatialSupportEndpoints(before);
+  let candidateEvaluations = 0;
+  let shearConstitutiveEvaluations = 0;
+  let shearQuadratureEvaluations = 0;
   if (known.length !== 3 || known.some(load =>
     ![load.center ?? zero(), load.couple ?? zero()].every(v => [v.x, v.y, v.z].every(Number.isFinite))
     || (load.points ?? []).some(p => typeof p.id !== 'string' || p.id.startsWith('sole:')
@@ -217,6 +334,7 @@ export function advanceSpatialSoleCompliance(
   }
 
   const trialLoads = (candidate: SpatialSupportCandidate): SpatialImpulseSet => {
+    candidateEvaluations++;
     const extra: SoleImpulseAddition[] = [];
     for (let foot = 0; foot < 2; foot++) {
       for (const patch of material.points[foot]) {
@@ -253,6 +371,32 @@ export function advanceSpatialSoleCompliance(
             local: patch.local,
             impulse: { x: 0, y: 0, z: h * dampingForce },
           });
+        }
+        const friction = patch.friction ?? 0;
+        const shearStiffness = material.shearStiffness![foot] * weight;
+        if (friction > 0 && shearStiffness > 0) {
+          const patchState = inputShearState!.points.find(item => item.foot === foot && item.id === patch.id)!;
+          const beforePoint = rigidPointPosition(before.feet[foot], patch.local);
+          const afterPoint = rigidPointPosition(candidate.state.feet[foot], patch.local);
+          const capacityBefore = mode.mode === 'compressed'
+            ? friction * (stiffness * weight * indentationBefore + dampingForce) : 0;
+          const capacityAfter = mode.mode === 'compressed'
+            ? friction * (stiffness * weight * indentationAfter + dampingForce) : 0;
+          const shear = advanceSoleShear(patchState.stretch,
+            { x: afterPoint.x - beforePoint.x, y: afterPoint.y - beforePoint.y }, h,
+            { stiffness: shearStiffness, capacityBefore, capacityAfter });
+          shearConstitutiveEvaluations++;
+          shearQuadratureEvaluations += shear.report.quadratureEvaluations;
+          if (!shear.report.accepted)
+            throw new RangeError(`Sole shear ${foot}:${patch.id}: ${shear.report.reason}`);
+          if (shear.report.footImpulse.x !== 0 || shear.report.footImpulse.y !== 0) {
+            extra.push({
+              foot: foot as 0 | 1,
+              id: `sole:${foot}:${patch.id}:shear`,
+              local: patch.local,
+              impulse: { x: shear.report.footImpulse.x, y: shear.report.footImpulse.y, z: 0 },
+            });
+          }
         }
       }
     }
@@ -446,8 +590,14 @@ export function advanceSpatialSoleCompliance(
             potentialBefore: patchPotential,
             potentialAfter: patchPotential,
             springWorkResidual: 0,
+            shear: null,
           };
         }));
+        const shearPotential = inputShearState?.points.reduce((sum, patch) => {
+          const kt = material.shearStiffness![patch.foot]
+            * material.points[patch.foot].find(item => item.id === patch.id)!.areaWeight;
+          return sum + .5 * kt * (patch.stretch.x ** 2 + patch.stretch.y ** 2);
+        }, 0) ?? 0;
         const zeroLeg = {
           lengthBefore: 0, lengthAfter: 0, minimumChordLength: 0, discreteDirection: zero(),
           springForce: 0, dampingForce: 0, impulse: zero(), springWork: 0, dampingWork: 0,
@@ -456,9 +606,13 @@ export function advanceSpatialSoleCompliance(
         const report: SpatialSoleComplianceReport = {
           state: before,
           candidateState: before,
+          candidateShearState: inputShearState,
           accepted: false,
           reason: reason ?? error.message,
           iterations,
+          candidateEvaluations,
+          shearConstitutiveEvaluations,
+          shearQuadratureEvaluations,
           residual: Infinity,
           momentumResiduals: [0, 1, 2].map(() => ({ linear: zero(), angular: zero() })),
           normalizedResidual: Array(18).fill(Infinity),
@@ -475,18 +629,23 @@ export function advanceSpatialSoleCompliance(
           solePoints: unresolved,
           solePotentialBefore: potential,
           solePotentialAfter: potential,
+          shearPotentialBefore: shearPotential,
+          shearPotentialAfter: shearPotential,
           soleSpringWork: 0,
           soleDampingWork: 0,
+          soleShearWork: 0,
+          soleShearDissipation: 0,
           knownExternalWork: 0,
           workResidual: 0,
           linearMomentumResidual: zero(),
           angularMomentumResidual: zero(),
           maxCombinedElasticPhase: 0,
           maxDampingNumber: 0,
-          totalEnergyBefore: energy.total + potential,
-          totalEnergyAfter: energy.total + potential,
+          maxShearElasticPhase: 0,
+          totalEnergyBefore: energy.total + potential + shearPotential,
+          totalEnergyAfter: energy.total + potential + shearPotential,
         };
-        return { state: before, report };
+        return { state: before, shearState: inputShearState, report };
       }
     }
   }
@@ -500,6 +659,12 @@ export function advanceSpatialSoleCompliance(
   let soleDampingWork = 0;
   let soleRateSquared = 0;
   let soleDampingNumber = 0;
+  let shearRateSquared = 0;
+  let shearPotentialBefore = 0;
+  let shearPotentialAfter = 0;
+  let soleShearWork = 0;
+  let soleShearDissipation = 0;
+  const outputShearPatches: SpatialSoleShearPatchState[] = [];
 
   for (let foot = 0; foot < 2; foot++) {
     for (const patch of material.points[foot]) {
@@ -554,6 +719,113 @@ export function advanceSpatialSoleCompliance(
       const rotationalLever = v3Cross(midpointOffset, { x: 0, y: 0, z: 1 });
       const mobility = 1 / before.feet[foot].mass
         + v3Dot(rotationalLever, rotationalLever) / before.feet[foot].inertia;
+      const friction = patch.friction ?? 0;
+      const weight = patch.areaWeight;
+      const shearStiffness = material.shearStiffness![foot] * weight;
+      let shearReport: SoleShearPointReport | null = null;
+      if (inputShearState && friction > 0 && shearStiffness > 0) {
+        const patchState = inputShearState.points.find(item => item.foot === foot && item.id === patch.id)!;
+        const pointBefore = rigidPointPosition(before.feet[foot], patch.local);
+        const pointAfter = rigidPointPosition(converged.state.feet[foot], patch.local);
+        const tangentDisplacement = { x: pointAfter.x - pointBefore.x, y: pointAfter.y - pointBefore.y };
+        const capacityBefore = mode.mode === 'compressed'
+          ? friction * (stiffness * indentationBefore + dampingForce) : 0;
+        const capacityAfter = mode.mode === 'compressed'
+          ? friction * (stiffness * indentationAfter + dampingForce) : 0;
+        const shearResult = advanceSoleShear(patchState.stretch, tangentDisplacement, h,
+          { stiffness: shearStiffness, capacityBefore, capacityAfter });
+        shearConstitutiveEvaluations++;
+        shearQuadratureEvaluations += shearResult.report.quadratureEvaluations;
+        if (!shearResult.report.accepted) {
+          reason = reason ?? `Sole shear ${foot}:${patch.id}: ${shearResult.report.reason}`;
+        }
+        const actualAttachmentWork = converged.external
+          .find(entry => entry.id === `sole:${foot}:${patch.id}:shear`)?.work ?? 0;
+        const constitutiveAttachmentWork = v3Dot(
+          { x: shearResult.report.footImpulse.x, y: shearResult.report.footImpulse.y, z: 0 },
+          { x: tangentDisplacement.x / h, y: tangentDisplacement.y / h, z: 0 });
+        const shearPotentialBeforePatch = .5 * shearStiffness
+          * (patchState.stretch.x ** 2 + patchState.stretch.y ** 2);
+        const shearPotentialAfterPatch = .5 * shearStiffness
+          * (shearResult.stretch.x ** 2 + shearResult.stretch.y ** 2);
+        const energyResidual = actualAttachmentWork + shearPotentialAfterPatch - shearPotentialBeforePatch
+          + shearResult.report.totalDissipation;
+        shearPotentialBefore += shearPotentialBeforePatch;
+        shearPotentialAfter += shearPotentialAfterPatch;
+        soleShearWork += actualAttachmentWork;
+        soleShearDissipation += shearResult.report.totalDissipation;
+        outputShearPatches.push({ foot: foot as 0 | 1, id: patch.id, stretch: { ...shearResult.stretch } });
+
+        if (capacityBefore > 0 || capacityAfter > 0) {
+          const tangentMobilityTrace = (body: SpatialSupportState['feet'][number]): number => {
+            const r = rigidWorldOffset(body, patch.local);
+            return 2 / body.mass + (r.x * r.x + r.y * r.y + 2 * r.z * r.z) / body.inertia;
+          };
+          shearRateSquared += shearStiffness * Math.max(
+            tangentMobilityTrace(before.feet[foot]), tangentMobilityTrace(converged.state.feet[foot]));
+        }
+        const flowTolerance = 128 * Number.EPSILON
+          * Math.max(Number.MIN_VALUE, shearResult.report.plasticDissipation, shearResult.report.totalDissipation);
+        const startVelocity = rigidPointVelocity(before.feet[foot], patch.local);
+        const endVelocity = rigidPointVelocity(converged.state.feet[foot], patch.local);
+        const startSpeed = Math.hypot(startVelocity.x, startVelocity.y);
+        const endSpeed = Math.hypot(endVelocity.x, endVelocity.y);
+        const velocityDot = startVelocity.x * endVelocity.x + startVelocity.y * endVelocity.y;
+        const reversalTolerance = 128 * Number.EPSILON
+          * Math.max(Number.MIN_VALUE, startSpeed * endSpeed);
+        const startForce = {
+          x: shearStiffness * patchState.stretch.x,
+          y: shearStiffness * patchState.stretch.y,
+        };
+        const startForceMagnitude = Math.hypot(startForce.x, startForce.y);
+        const boundaryRoundoff = 128 * Number.EPSILON
+          * Math.max(Number.MIN_VALUE, startForceMagnitude, capacityBefore);
+        const initiallyAtOrBeyondYield = capacityBefore > 0
+          && startForceMagnitude >= capacityBefore - boundaryRoundoff;
+        let initialYieldLoading = false;
+        if (initiallyAtOrBeyondYield && shearStiffness > 0) {
+          const outwardSpeed = (startForce.x * startVelocity.x + startForce.y * startVelocity.y)
+            / startForceMagnitude;
+          const capacityRate = (capacityAfter - capacityBefore) / h;
+          const yieldRate = outwardSpeed - capacityRate / shearStiffness;
+          const yieldRateTolerance = 128 * Number.EPSILON
+            * Math.max(Number.MIN_VALUE, Math.abs(outwardSpeed), Math.abs(capacityRate / shearStiffness));
+          initialYieldLoading = yieldRate > yieldRateTolerance;
+        }
+        const unresolvedReversal = velocityDot < -reversalTolerance
+          && (shearResult.report.plasticDissipation > flowTolerance || initialYieldLoading);
+        if (unresolvedReversal)
+          reason = reason ?? 'Plastic sole shear interval contains an unresolved endpoint velocity reversal';
+        if (shearResult.report.plasticDissipation > flowTolerance
+          && Math.hypot(tangentDisplacement.x, tangentDisplacement.y) > 0) {
+          const chord = { x: tangentDisplacement.x / h, y: tangentDisplacement.y / h };
+          for (const endpointVelocity of [startVelocity, endVelocity]) {
+            const dotChord = endpointVelocity.x * chord.x + endpointVelocity.y * chord.y;
+            const chordTolerance = 128 * Number.EPSILON
+              * Math.max(Number.MIN_VALUE, Math.hypot(endpointVelocity.x, endpointVelocity.y) * Math.hypot(chord.x, chord.y));
+            if (dotChord < -chordTolerance)
+              reason = reason ?? 'Plastic sole shear interval contains an unresolved endpoint velocity reversal';
+          }
+        }
+        shearReport = {
+          friction,
+          stiffness: shearStiffness,
+          capacityBefore,
+          capacityAfter,
+          inputStretch: { ...patchState.stretch },
+          finalStretch: { ...shearResult.stretch },
+          constitutive: shearResult.report,
+          actualAttachmentWork,
+          constitutiveAttachmentWork,
+          attachmentWorkResidual: actualAttachmentWork - constitutiveAttachmentWork,
+          energyResidual,
+          potentialBefore: shearPotentialBeforePatch,
+          potentialAfter: shearPotentialAfterPatch,
+        };
+      } else {
+        const preserved = inputShearState?.points.find(item => item.foot === foot && item.id === patch.id);
+        if (preserved) outputShearPatches.push({ ...preserved, stretch: { ...preserved.stretch } });
+      }
       if (mode.mode === 'compressed') {
         // These trace estimates are local time-accuracy guards, not event
         // certificates, fitted material capacities, or strength limits.
@@ -584,23 +856,32 @@ export function advanceSpatialSoleCompliance(
         potentialBefore,
         potentialAfter,
         springWorkResidual: springWork + potentialAfter - potentialBefore,
+        shear: shearReport,
       });
     }
   }
-  const maxCombinedElasticPhase = h * Math.sqrt(converged.maxElasticPhase ** 2 / (h * h) + soleRateSquared);
-  const totalEnergyBefore = energyBefore.total + solePotentialBefore;
-  const totalEnergyAfter = energyAfter.total + solePotentialAfter;
+  const maxCombinedElasticPhase = h * Math.sqrt(
+    converged.maxElasticPhase ** 2 / (h * h) + soleRateSquared + shearRateSquared);
+  const maxShearElasticPhase = h * Math.sqrt(shearRateSquared);
+  const candidateShearState = inputShearState ? {
+    fingerprint: inputShearState.fingerprint,
+    points: outputShearPatches,
+  } : null;
+  const totalEnergyBefore = energyBefore.total + solePotentialBefore + shearPotentialBefore;
+  const totalEnergyAfter = energyAfter.total + solePotentialAfter + shearPotentialAfter;
   const knownExternalWork = converged.external
     .filter(entry => !entry.id.startsWith('sole:'))
     .reduce((sum, entry) => sum + entry.work, 0);
   const workResidual = totalEnergyAfter - totalEnergyBefore - knownExternalWork
-    - converged.dampingWork - soleDampingWork;
+    - converged.dampingWork - soleDampingWork + soleShearDissipation;
   if (!reason && converged.maxAngularPhase > maxAngular)
     reason = 'Angular trajectory budget requires a shorter physical interval';
   if (!reason && maxCombinedElasticPhase > maxElastic)
     reason = 'Combined leg/sole elastic response budget requires a shorter physical interval';
   if (!reason && soleDampingNumber > maxDamping)
     reason = 'Sole damping number requires a shorter physical interval';
+  if (!reason && maxShearElasticPhase > maxShearPhase)
+    reason = 'Sole shear elastic phase requires a shorter physical interval';
 
   const beforeBodies = bodies(before);
   const afterBodies = bodies(converged.state);
@@ -616,19 +897,28 @@ export function advanceSpatialSoleCompliance(
     accepted: reason === null,
     reason,
     iterations,
+    candidateEvaluations,
+    shearConstitutiveEvaluations,
+    shearQuadratureEvaluations,
     residual: residual(converged),
     candidateState: converged.state,
+    candidateShearState,
     solePoints: pointReports,
     solePotentialBefore,
     solePotentialAfter,
+    shearPotentialBefore,
+    shearPotentialAfter,
     soleSpringWork,
     soleDampingWork,
+    soleShearWork,
+    soleShearDissipation,
     knownExternalWork,
     workResidual,
     linearMomentumResidual: converged.momentumResiduals.reduce((sum, item) => v3Add(sum, item.linear), zero()),
     angularMomentumResidual: angularLedger,
     maxCombinedElasticPhase,
     maxDampingNumber: soleDampingNumber,
+    maxShearElasticPhase,
     totalEnergyBefore,
     totalEnergyAfter,
   };
@@ -639,7 +929,10 @@ export function advanceSpatialSoleCompliance(
       + v3Norm(v3Scale(v3Add(beforeBodies[i].angularMomentum, body.angularMomentum), .5)), 1);
   const soleWorkMismatch = pointReports.some(point => Math.abs(point.springWorkResidual) > workTolerance
     || Math.abs(point.springAttachmentWorkResidual) > workTolerance
-    || Math.abs(point.dampingAttachmentWorkResidual) > workTolerance);
+    || Math.abs(point.dampingAttachmentWorkResidual) > workTolerance
+    || (point.shear && (Math.abs(point.shear.attachmentWorkResidual) > workTolerance
+      || Math.abs(point.shear.energyResidual) > workTolerance
+      || point.shear.constitutive.totalDissipation < -workTolerance)));
   if (report.accepted && (Math.abs(workResidual) > workTolerance || soleWorkMismatch
     || soleDampingWork > workTolerance || converged.dampingWork > workTolerance)) {
     report.accepted = false;
@@ -650,7 +943,11 @@ export function advanceSpatialSoleCompliance(
     report.accepted = false;
     report.reason = 'Nonfinite work/geometry ledger or material attachment accuracy';
   }
-  return { state: report.accepted ? newSpatialSupport(converged.state) : before, report };
+  return {
+    state: report.accepted ? newSpatialSupport(converged.state) : before,
+    shearState: report.accepted ? candidateShearState : inputShearState,
+    report,
+  };
 }
 
 function solveLinear(matrix: number[][], rhs: number[]): number[] | null {

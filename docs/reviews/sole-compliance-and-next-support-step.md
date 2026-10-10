@@ -1,5 +1,9 @@
 # Sole compliance and the next support step
 
+For the current traction increment, read
+[Sole traction and the next physics step](sole-traction-and-next-physics-step.md).
+The source and measurements below retain this normal-support increment's pin.
+
 **Physics is not ready.** This increment makes the research foot/contact model
 more consistent; `World`, live football trajectories and replay behavior are
 unchanged. The new source pin is

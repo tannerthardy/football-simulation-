@@ -1,6 +1,14 @@
 # Shared NFL data
 
-Current physics/data status: [Foot contact events and the pivot barrier](../docs/reviews/foot-contact-events-and-pivot-barrier.md).
+Current physics/data status: [Sole traction and the next physics step](../docs/reviews/sole-traction-and-next-physics-step.md).
+The [sole traction evidence and commands](reviews/physics-world/sole-traction/README.md)
+pin independent force/energy/torque references for persistent finite shear
+coupled to achieved normal support. The [normal sole evidence](reviews/physics-world/sole-compliance/README.md)
+retains the pivot, small-foot rocking and loaded-support panel. These modules
+remain research-only and unused by `World`. Physics is NOT READY: actual
+contact/slip lifecycle, bounded spatial control, grip-foot and fall integration
+come next. Shoe/turf parameters are assumptions, not measured NFL forces.
+Previous geometry increment: [Foot contact events and the pivot barrier](../docs/reviews/foot-contact-events-and-pivot-barrier.md).
 The [candidate geometry and pivot evidence](reviews/physics-world/contact-events/README.md)
 contains independent analytic/Rodrigues checks and the retained one-point support
 failure. Candidate clearance is not a physical event or force-history certificate.

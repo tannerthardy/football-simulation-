@@ -1,7 +1,18 @@
 # Physics development and testing
 
+Read [Sole traction and the next physics step](reviews/sole-traction-and-next-physics-step.md)
+first. Finite persistent shear and actual normal support now contribute force,
+torque and stored energy to the same research torso/feet solve. Explicit
+plastic/initial-return loss, material identity and transactional state prevent
+free traction or silent energy resets. Independent references and reversal
+guards expose mechanics that energy closure alone misses. Physics is NOT
+READY and `World` is unchanged. Next: actual contact/slip lifecycle, bounded
+executed spatial control/grip-foot coupling, body-ground, coherent World
+replacement, then native fall/universal/NFL gates. Material values remain
+uncalibrated sensitivity assumptions; local phase guards are not event certificates.
+
 Read [Sole compliance and the next support step](reviews/sole-compliance-and-next-support-step.md)
-first. Weighted finite shoe/turf compression now contributes stored energy,
+for the preceding increment. Weighted finite shoe/turf compression contributes stored energy,
 unilateral point forces and actual torque/work to the same spatial material
 solve. Independent pivot/rocking/loaded-support mechanics pass; explicit K/C
 assumptions remain uncalibrated. This is research-only and unused by `World`.
