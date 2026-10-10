@@ -1,6 +1,9 @@
 # Shared NFL data
 
-Current physics/data status: [Spatial feet and ground readiness](../docs/reviews/spatial-feet-and-ground-readiness.md).
+Current physics/data status: [Foot contact events and the pivot barrier](../docs/reviews/foot-contact-events-and-pivot-barrier.md).
+The [candidate geometry and pivot evidence](reviews/physics-world/contact-events/README.md)
+contains independent analytic/Rodrigues checks and the retained one-point support
+failure. Candidate clearance is not a physical event or force-history certificate.
 The [spatial support evidence](reviews/physics-world/spatial-support/README.md)
 contains pinned independent work/momentum/contact panels and reproduction commands.
 The new spatial modules remain unused by `World`; contact events, active spatial

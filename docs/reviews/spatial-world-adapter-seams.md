@@ -25,10 +25,10 @@ planar COM/yaw model with reduced capture-point support.
   geometry. The impact call requires the sole points to already lie on the
   plane and holds pose fixed; it does not find touchdown time.
 - [`spatial-ground.ts`](../../src/physics/spatial-ground.ts) exposes
-  `advanceSpatialGroundContact` for two feet with at least three non-collinear
-  sole points each. It adds sole impulses to the same spatial candidate as leg
+  `advanceSpatialGroundContact` with at least three non-collinear
+  sole points per supporting foot; the other foot may be unloaded. It adds sole impulses to the same spatial candidate as leg
   response, checks endpoint gap, normal/friction rows, work, and negative
-  instantaneous held reaction. It explicitly does not handle touchdown or
+  instantaneous held reaction or an outward release demand. It explicitly does not handle touchdown or
   liftoff events, and reports `interiorEventCertification: 'not-provided'`.
   It requires established contacts with zero initial normal velocity; it is a
   smooth-contact prototype, not a lifecycle driver.

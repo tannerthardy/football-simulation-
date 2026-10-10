@@ -5,6 +5,7 @@
  * in a preceding vertical solve or projects a pose afterward.
  */
 import { axialLegDamping, axialLegForce } from './leg-compliance.js';
+import { createMaterialPlaneCandidate, inspectMaterialPlane, type MaterialPlaneReport } from './material-plane.js';
 import { projectNormalImpulse, projectTangentImpulse, solveSoleReaction,
   type SoleReactionContactReport, type TangentMobility } from './sole-contact.js';
 import { evaluateSpatialSupportCandidate, newSpatialSupport, spatialSupportEnergy,
@@ -22,6 +23,10 @@ export interface SpatialGroundContactOptions {
   maxElasticPhase?: number;
   /** Known interval impulses enter the same 18D candidate as sole reactions. */
   externalImpulses?: SpatialImpulseSet;
+  /** Optional complete sole geometry, including inactive airborne points.
+   * Geometry only: these points do not receive contact forces. Touchdown still
+   * rejects; a lifecycle driver must locate and re-solve its prefix. */
+  soleGeometry?: [SpatialGroundPoint[], SpatialGroundPoint[]];
 }
 export interface SpatialGroundPointReport {
   foot: 0 | 1; id: string; local: Vec3; point: Vec3; impulse: Vec3; force: Vec3;
@@ -52,6 +57,11 @@ export interface SpatialGroundContactReport extends SpatialSupportCandidate {
   maxContactNormalSpeed: number; maxSlipReversal: number;
   /** No enclosure of hidden interior events is attempted by this first scope. */
   interiorEventCertification: 'not-provided';
+  candidateGeometry: {
+    scope: 'fixed-candidate-path';
+    status: 'not-checked' | 'enclosed' | 'unresolved' | 'penetrated';
+    points: Array<{ foot: 0 | 1; id: string; report: MaterialPlaneReport }>;
+  };
   contacts: SpatialGroundPointReport[];
 }
 
@@ -144,6 +154,20 @@ export function advanceSpatialGroundContact(beforeInput: SpatialSupportState, h:
     || !(tolerance > 0 && geometryTolerance > 0 && maxAngularPhase > 0 && maxElasticPhase > 0) || ![maxIterations, maxLineSearch].every(n => Number.isInteger(n) && n > 0))
     throw new RangeError('Finite positive interval and solver tolerances required');
   validateContactGeometry(before, patches, plane, geometryTolerance, tolerance);
+  if (options.soleGeometry && (options.soleGeometry.length !== 2 || options.soleGeometry.some(points =>
+    !Array.isArray(points) || points.some(p => !p.id || !finite(p.local) || !Number.isFinite(p.friction) || p.friction < 0)
+    || new Set(points.map(p => p.id)).size !== points.length)))
+    throw new RangeError('Optional sole geometry needs two uniquely identified finite point lists');
+  const geometry = patches.map((points, foot) => {
+    const byId = new Map(points.map(p => [p.id, p]));
+    for (const p of options.soleGeometry?.[foot] ?? []) {
+      const old = byId.get(p.id);
+      if (old && (old.local.x !== p.local.x || old.local.y !== p.local.y || old.local.z !== p.local.z))
+        throw new RangeError('A sole point identity must refer to the same material geometry');
+      byId.set(p.id, p);
+    }
+    return [...byId.values()];
+  });
   if (options.externalImpulses && options.externalImpulses.length !== 3) throw new RangeError('Three material-body impulse slots required');
   const known: SpatialImpulseSet = options.externalImpulses ? options.externalImpulses.map(load => ({
     center: load.center && { ...load.center }, couple: load.couple && { ...load.couple },
@@ -337,6 +361,25 @@ export function advanceSpatialGroundContact(beforeInput: SpatialSupportState, h:
   const maxNormalResidual = maxAbs(current?.normal ?? []), maxTangentResidual = maxAbs(current?.tangent ?? []), maxFrictionCapExcess = maxAbs(current?.cap ?? []);
   if (current && !reason && (maxNormalResidual > tolerance || maxTangentResidual > tolerance || maxFrictionCapExcess > tolerance))
     reason = 'Coupled contact complementarity/friction rows did not converge';
+  const candidateGeometry: SpatialGroundContactReport['candidateGeometry'] = {
+    scope: 'fixed-candidate-path', status: 'not-checked', points: [],
+  };
+  if (!reason) {
+    candidateGeometry.status = 'enclosed';
+    for (let foot = 0; foot < 2; foot++) for (const p of geometry[foot]) {
+      const path = createMaterialPlaneCandidate(before.feet[foot], candidate.state.feet[foot], h, p.local,
+        { normal: { x: 0, y: 0, z: 1 }, height: plane });
+      const report = inspectMaterialPlane(path, { gapTolerance: geometryTolerance });
+      candidateGeometry.points.push({ foot: foot as 0 | 1, id: p.id, report });
+      if (report.penetrationBeyondTolerance.certain) {
+        candidateGeometry.status = 'penetrated';
+        reason = `Sole ${foot}:${p.id} crosses the plane inside the candidate; touchdown or contact transition is unsupported`;
+      } else if (report.penetrationBeyondTolerance.possible && candidateGeometry.status !== 'penetrated') {
+        candidateGeometry.status = 'unresolved';
+        reason = `Sole ${foot}:${p.id} interior candidate clearance is unresolved; subdivide and re-solve`;
+      }
+    }
+  }
   const accepted = reason === null;
   const resultCandidate = current?.candidate ?? candidate;
   return { state: accepted ? newSpatialSupport(candidate.state) : before,
@@ -353,5 +396,5 @@ export function advanceSpatialGroundContact(beforeInput: SpatialSupportState, h:
       maxInstantaneousReactionMismatch: maxReactionMismatch, maxContactNormalSpeed: maxNormalSpeed,
       maxSlipReversal, maxAngularPhase: candidate.maxAngularPhase, maxAngularPhaseLimit: maxAngularPhase,
       maxElasticPhaseLimit: maxElasticPhase,
-      interiorEventCertification: 'not-provided', contacts: pointRows } };
+      interiorEventCertification: 'not-provided', candidateGeometry, contacts: pointRows } };
 }

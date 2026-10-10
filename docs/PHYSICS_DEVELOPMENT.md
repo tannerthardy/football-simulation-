@@ -1,7 +1,14 @@
 # Physics development and testing
 
-Read [Spatial feet and ground readiness](reviews/spatial-feet-and-ground-readiness.md)
-first. The current research increment solves torso/two-foot material motion,
+Read [Foot contact events and the pivot barrier](reviews/foot-contact-events-and-pivot-barrier.md)
+first. Candidate geometry enclosures now reject hidden sole penetration. The
+next barrier is sustained rotating toe/heel contact: endpoint gap and work
+closure do not ensure compatible actual endpoint velocity. Derive and validate
+one constraint-consistent contact interval before enabling one/two-point support
+or a generic lifecycle. This remains research-only and unused by `World`.
+
+[Spatial feet and ground readiness](reviews/spatial-feet-and-ground-readiness.md)
+records the preceding research increment. It solves torso/two-foot material motion,
 passive leg forces and actual sole normals/friction in one coupled spatial
 system. Low-inertia sustained contact and independent work/momentum panels
 pass. It remains unused by `World` and has no complete contact-event, gait,

@@ -30,6 +30,7 @@ function close(report: ReturnType<typeof advanceSpatialGroundContact>['report'])
   expect(report.maxTangentResidual).toBeLessThan(2e-8);
   expect(report.maxFrictionCapExcess).toBeLessThan(2e-8);
   expect(report.interiorEventCertification).toBe('not-provided');
+  expect(report.candidateGeometry.status).toBe('enclosed');
 }
 
 describe('coupled spatial sustained sole contact', () => {
@@ -99,6 +100,34 @@ describe('coupled spatial sustained sole contact', () => {
     expect(result.report.contacts).toHaveLength(3);
     expect(result.state.feet[1].position.z).toBeLessThan(state.feet[1].position.z);
     expect(result.report.contacts.every(c => c.foot === 0)).toBe(true);
+  });
+
+  it('rejects a swinging sole crossing and returning above the plane without creating contact or snapping its pose', () => {
+    const { state, patches } = standing();
+    state.gravity = v();
+    for (const leg of state.legs) leg.compliance = { ...leg.compliance, forceCap: 0, damping: 0, dampingCap: 0 };
+    state.feet[1] = { mass: 2, inertia: .008, position: v(.3, 0, .040001),
+      velocity: v(0, 0, .199), angularMomentum: v(.016, 0, 0), basis: identityRigidBasis() };
+    const swing: SpatialGroundPoint[] = [
+      { id: 'low-toe', local: v(0, -.1, -.04), friction: .8 },
+      { id: 'other-toe', local: v(.05, .1, -.04), friction: .8 },
+      { id: 'heel', local: v(-.05, .1, -.04), friction: .8 },
+    ];
+    const original = structuredClone(state);
+    const ungated = advanceSpatialGroundContact(state, .025, [patches[0], []]);
+    close(ungated.report);
+    const foot = ungated.state.feet[1], toe = swing[0].local;
+    const endpointHeight = foot.position.z + foot.basis[0].z * toe.x + foot.basis[1].z * toe.y + foot.basis[2].z * toe.z;
+    expect(endpointHeight).toBeGreaterThan(0);
+    expect(state.feet[1].position.z + toe.z).toBeGreaterThan(0);
+    const gated = advanceSpatialGroundContact(state, .025, [patches[0], []], { soleGeometry: [patches[0], swing] });
+    expect(gated.report.accepted).toBe(false);
+    expect(gated.report.reason).toMatch(/crosses the plane inside/);
+    expect(gated.report.candidateGeometry.status).toBe('penetrated');
+    expect(gated.report.candidateGeometry.points.some(p => p.id === 'low-toe' && p.report.penetrationBeyondTolerance.certain)).toBe(true);
+    expect(gated.report.contacts.every(c => c.foot === 0)).toBe(true);
+    expect(gated.state).toEqual(original);
+    expect(state).toEqual(original);
   });
 
   it('rejects a step beyond its local rotor phase limit', () => {

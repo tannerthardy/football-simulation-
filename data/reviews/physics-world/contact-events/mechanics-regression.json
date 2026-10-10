@@ -1,0 +1,756 @@
+{
+  "reports": [
+    {
+      "sourceSha256Start": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+      "sourceSha256End": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+      "scriptSha256Start": "f4b13b2515d0cb4b83e72f8f0a5223c81b41c93d58ca35a15d7c5a772674687a",
+      "scriptSha256End": "f4b13b2515d0cb4b83e72f8f0a5223c81b41c93d58ca35a15d7c5a772674687a",
+      "scope": "Explicit moderate toy priors, free-flight passive rigid support and frozen-pose sole impact only. Every rejection is reported. No sustained ground, gait, anatomy, NFL calibration or readiness claim.",
+      "runtime": "v22.23.3",
+      "diagnostic": "out/spatial-support-events-final.json",
+      "unabridgedReportSha256": "d69f775234dda19a365640df58f6e99dbeb1193b1856e7db65557ba160de22be",
+      "seed": 1397705797,
+      "summary": {
+        "trajectories": 216,
+        "completedTrajectories": 216,
+        "acceptedIntervals": 3024,
+        "impacts": 120,
+        "acceptedImpacts": 120,
+        "rejectedOrdinaryCases": 0,
+        "independentViolations": 0,
+        "sensitivityPairs": 24,
+        "decreasingSensitivityPairs": 24
+      },
+      "steps": [
+        0.004,
+        0.002,
+        0.001
+      ],
+      "horizon": 0.024,
+      "controls": [
+        {
+          "id": "finite-angular-interval-budget",
+          "accepted": false,
+          "reason": "Angular trajectory budget requires a shorter physical interval",
+          "atomic": true
+        },
+        {
+          "id": "insufficient-newton-budget",
+          "accepted": false,
+          "reason": "Coupled material iteration limit; subdivide the physical interval",
+          "atomic": true
+        }
+      ],
+      "rejections": [],
+      "violations": [],
+      "independentMaxima": {
+        "workResidual": 7.424210551887356e-12,
+        "linearResidual": 1.19170056654269e-13,
+        "angularResidual": 2.611283222624477e-12,
+        "comResidual": 8.881784197001252e-15,
+        "bodyLinearResidual": 2.512284110616266e-13,
+        "bodyAngularResidual": 2.01166343456752e-14,
+        "attachmentResidual": 2.932998280412034e-12,
+        "basisError": 8.881784197001252e-16,
+        "maxAngularPhase": 0.019330753291510457
+      },
+      "sensitivity": [
+        {
+          "fixture": 0,
+          "comparable": true,
+          "coarseVersusFine": 0.0007087500197361296,
+          "mediumVersusFine": 0.00014139779015779393
+        },
+        {
+          "fixture": 1,
+          "comparable": true,
+          "coarseVersusFine": 0.00017870235078983634,
+          "mediumVersusFine": 3.5844820456810616e-05
+        },
+        {
+          "fixture": 2,
+          "comparable": true,
+          "coarseVersusFine": 0.00044980243655344965,
+          "mediumVersusFine": 8.984921714242438e-05
+        },
+        {
+          "fixture": 3,
+          "comparable": true,
+          "coarseVersusFine": 0.0006047758231677651,
+          "mediumVersusFine": 0.00012084178323146802
+        },
+        {
+          "fixture": 4,
+          "comparable": true,
+          "coarseVersusFine": 0.002761190587382652,
+          "mediumVersusFine": 0.0005606626531507042
+        },
+        {
+          "fixture": 5,
+          "comparable": true,
+          "coarseVersusFine": 0.000297513962576627,
+          "mediumVersusFine": 5.908758645407394e-05
+        },
+        {
+          "fixture": 6,
+          "comparable": true,
+          "coarseVersusFine": 0.0015427939311785828,
+          "mediumVersusFine": 0.00030833274697712146
+        },
+        {
+          "fixture": 7,
+          "comparable": true,
+          "coarseVersusFine": 0.001060044825249221,
+          "mediumVersusFine": 0.00021121447260191088
+        },
+        {
+          "fixture": 8,
+          "comparable": true,
+          "coarseVersusFine": 0.0004717913150797339,
+          "mediumVersusFine": 9.371793391718897e-05
+        },
+        {
+          "fixture": 9,
+          "comparable": true,
+          "coarseVersusFine": 0.0007183579701464643,
+          "mediumVersusFine": 0.00014309100186532924
+        },
+        {
+          "fixture": 10,
+          "comparable": true,
+          "coarseVersusFine": 0.0007124527979883116,
+          "mediumVersusFine": 0.0001421482668823759
+        },
+        {
+          "fixture": 11,
+          "comparable": true,
+          "coarseVersusFine": 0.00022043975834460741,
+          "mediumVersusFine": 4.8015770013458574e-05
+        },
+        {
+          "fixture": 12,
+          "comparable": true,
+          "coarseVersusFine": 0.0008451402627213727,
+          "mediumVersusFine": 0.00016807657913107902
+        },
+        {
+          "fixture": 13,
+          "comparable": true,
+          "coarseVersusFine": 0.0006026627209941114,
+          "mediumVersusFine": 0.00011964881993256957
+        },
+        {
+          "fixture": 14,
+          "comparable": true,
+          "coarseVersusFine": 0.0010939603528392714,
+          "mediumVersusFine": 0.0002183353263403763
+        },
+        {
+          "fixture": 15,
+          "comparable": true,
+          "coarseVersusFine": 0.00032434478328940346,
+          "mediumVersusFine": 6.83095776380633e-05
+        },
+        {
+          "fixture": 16,
+          "comparable": true,
+          "coarseVersusFine": 0.0009352998199284356,
+          "mediumVersusFine": 0.00018470615149131686
+        },
+        {
+          "fixture": 17,
+          "comparable": true,
+          "coarseVersusFine": 0.0009159235966888908,
+          "mediumVersusFine": 0.00018164036744822493
+        },
+        {
+          "fixture": 18,
+          "comparable": true,
+          "coarseVersusFine": 0.0010081809250550682,
+          "mediumVersusFine": 0.0002004110814016666
+        },
+        {
+          "fixture": 19,
+          "comparable": true,
+          "coarseVersusFine": 0.0008733779077398714,
+          "mediumVersusFine": 0.0001744962964527923
+        },
+        {
+          "fixture": 20,
+          "comparable": true,
+          "coarseVersusFine": 0.0010488462981101162,
+          "mediumVersusFine": 0.00021544885292999372
+        },
+        {
+          "fixture": 21,
+          "comparable": true,
+          "coarseVersusFine": 0.000819337216486042,
+          "mediumVersusFine": 0.0001670861212013182
+        },
+        {
+          "fixture": 22,
+          "comparable": true,
+          "coarseVersusFine": 0.00025020305099176724,
+          "mediumVersusFine": 4.9166771451933784e-05
+        },
+        {
+          "fixture": 23,
+          "comparable": true,
+          "coarseVersusFine": 0.002250160457297413,
+          "mediumVersusFine": 0.0004571157596259038
+        }
+      ]
+    },
+    {
+      "sourceSha256Start": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+      "sourceSha256End": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+      "scriptSha256Start": "47a49d4e03f8d37cf5a20bcfbf3b70d65dc62ba618ac9c6ead0950012824b74c",
+      "scriptSha256End": "47a49d4e03f8d37cf5a20bcfbf3b70d65dc62ba618ac9c6ead0950012824b74c",
+      "scope": "Established support only. All 18 material equations, finite sole impulses and work independently reconstructed. Instantaneous force audit is additional endpoint evidence only. Interior event certification is not provided; no gait, NFL calibration, balance or football readiness claim.",
+      "runtime": "v22.23.3",
+      "diagnostic": "out/spatial-ground-events-final.json",
+      "unabridgedReportSha256": "fc9297dfada7d55fc2c15f9364881628f35bdaefc35db7aa7dd0d80ce7a9682f",
+      "summary": {
+        "trajectories": 432,
+        "completedTrajectories": 432,
+        "acceptedIntervals": 6552,
+        "ordinaryRejects": 0,
+        "independentViolations": 0,
+        "comparableSensitivityPairs": 48,
+        "decreasingSensitivityPairs": 48
+      },
+      "steps": [
+        0.004,
+        0.002,
+        0.001
+      ],
+      "horizons": [
+        0.012,
+        0.04
+      ],
+      "frictions": [
+        0.05,
+        0.2,
+        0.8
+      ],
+      "forces": [
+        0,
+        10,
+        50,
+        100
+      ],
+      "variants": [
+        "base",
+        "mirror",
+        "translated"
+      ],
+      "plants": [
+        "two",
+        "single"
+      ],
+      "rejections": [],
+      "violations": [],
+      "independentMaxima": {
+        "workResidual": 8.501929349880206e-11,
+        "linearResidual": 4.96140182202044e-10,
+        "angularResidual": 5.6851917476582e-09,
+        "comResidual": 8.926082647349967e-15,
+        "bodyLinearResidual": 3.2558458078052427e-09,
+        "bodyAngularResidual": 1.8706852631237918e-11,
+        "attachmentResidual": 2.333363481633741e-12,
+        "basisError": 4.440892098500626e-16,
+        "maxAngularPhase": 1.5620634919217803e-06,
+        "normalViolation": 7.598088824778415e-13,
+        "tangentViolation": 3.9983905648491345e-09,
+        "frictionCapViolation": 1.269811353288297e-09,
+        "normalSpeed": 8.836395709234419e-12,
+        "slipReversal": 0,
+        "reactionNormalViolation": 9.796873007283935e-09,
+        "reactionTangentViolation": 9.990977178037722e-09,
+        "reactionFrictionCapViolation": 1.7763568394002505e-15,
+        "reactionAccelerationMismatch": 4.3698378249252947e-13
+      },
+      "sensitivity": [
+        {
+          "plant": "two",
+          "friction": 0.05,
+          "force": 0,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 3.744136744087434e-05,
+          "mediumVersusFine": 7.4844740489750425e-06
+        },
+        {
+          "plant": "two",
+          "friction": 0.05,
+          "force": 0,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 0.00014851048561311222,
+          "mediumVersusFine": 2.9685905087176404e-05
+        },
+        {
+          "plant": "two",
+          "friction": 0.05,
+          "force": 10,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 3.7441382156885174e-05,
+          "mediumVersusFine": 7.484476926522791e-06
+        },
+        {
+          "plant": "two",
+          "friction": 0.05,
+          "force": 10,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 0.00014851066859170115,
+          "mediumVersusFine": 2.9685978815892082e-05
+        },
+        {
+          "plant": "two",
+          "friction": 0.05,
+          "force": 50,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 3.7442300410223077e-05,
+          "mediumVersusFine": 7.484891721220354e-06
+        },
+        {
+          "plant": "two",
+          "friction": 0.05,
+          "force": 50,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 0.00014851592721862796,
+          "mediumVersusFine": 2.9687985861934425e-05
+        },
+        {
+          "plant": "two",
+          "friction": 0.05,
+          "force": 100,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 3.744421835943715e-05,
+          "mediumVersusFine": 7.485266282411325e-06
+        },
+        {
+          "plant": "two",
+          "friction": 0.05,
+          "force": 100,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 0.0001485284840714634,
+          "mediumVersusFine": 2.969046151790061e-05
+        },
+        {
+          "plant": "two",
+          "friction": 0.2,
+          "force": 0,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 0,
+          "mediumVersusFine": 0
+        },
+        {
+          "plant": "two",
+          "friction": 0.2,
+          "force": 0,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 0,
+          "mediumVersusFine": 0
+        },
+        {
+          "plant": "two",
+          "friction": 0.2,
+          "force": 10,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630025538688924e-07,
+          "mediumVersusFine": 5.12570582144244e-08
+        },
+        {
+          "plant": "two",
+          "friction": 0.2,
+          "force": 10,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.7453529914116e-07,
+          "mediumVersusFine": 1.7489680938232016e-07
+        },
+        {
+          "plant": "two",
+          "friction": 0.2,
+          "force": 50,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 1.2815012883572158e-06,
+          "mediumVersusFine": 2.5628529207600003e-07
+        },
+        {
+          "plant": "two",
+          "friction": 0.2,
+          "force": 50,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 4.3726752763100125e-06,
+          "mediumVersusFine": 8.744837860065963e-07
+        },
+        {
+          "plant": "two",
+          "friction": 0.2,
+          "force": 100,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630026696344947e-06,
+          "mediumVersusFine": 5.125705993926978e-07
+        },
+        {
+          "plant": "two",
+          "friction": 0.2,
+          "force": 100,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.745342652020146e-06,
+          "mediumVersusFine": 1.7489661097689942e-06
+        },
+        {
+          "plant": "two",
+          "friction": 0.8,
+          "force": 0,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 0,
+          "mediumVersusFine": 0
+        },
+        {
+          "plant": "two",
+          "friction": 0.8,
+          "force": 0,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 0,
+          "mediumVersusFine": 0
+        },
+        {
+          "plant": "two",
+          "friction": 0.8,
+          "force": 10,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.563002562224254e-07,
+          "mediumVersusFine": 5.1257057853904305e-08
+        },
+        {
+          "plant": "two",
+          "friction": 0.8,
+          "force": 10,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.74535301799217e-07,
+          "mediumVersusFine": 1.7489683468542919e-07
+        },
+        {
+          "plant": "two",
+          "friction": 0.8,
+          "force": 50,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 1.2815012936388592e-06,
+          "mediumVersusFine": 2.562852951248477e-07
+        },
+        {
+          "plant": "two",
+          "friction": 0.8,
+          "force": 50,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 4.372675347233857e-06,
+          "mediumVersusFine": 8.744838833405063e-07
+        },
+        {
+          "plant": "two",
+          "friction": 0.8,
+          "force": 100,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630026115243347e-06,
+          "mediumVersusFine": 5.125705927094655e-07
+        },
+        {
+          "plant": "two",
+          "friction": 0.8,
+          "force": 100,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.745343786685207e-06,
+          "mediumVersusFine": 1.7489661162692176e-06
+        },
+        {
+          "plant": "single",
+          "friction": 0.05,
+          "force": 0,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 3.4333647036532966e-14,
+          "mediumVersusFine": 1.1435297153639112e-14
+        },
+        {
+          "plant": "single",
+          "friction": 0.05,
+          "force": 0,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 5.739853037312059e-14,
+          "mediumVersusFine": 1.1435297153639112e-14
+        },
+        {
+          "plant": "single",
+          "friction": 0.05,
+          "force": 10,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630025421361817e-07,
+          "mediumVersusFine": 5.125705660569707e-08
+        },
+        {
+          "plant": "single",
+          "friction": 0.05,
+          "force": 10,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.745352419222004e-07,
+          "mediumVersusFine": 1.7489677158716668e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.05,
+          "force": 50,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 1.2815012779491222e-06,
+          "mediumVersusFine": 2.562852838447168e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.05,
+          "force": 50,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 4.372675527469349e-06,
+          "mediumVersusFine": 8.744837011541006e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.05,
+          "force": 100,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630025988986445e-06,
+          "mediumVersusFine": 5.125705727461187e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.05,
+          "force": 100,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.745346792538152e-06,
+          "mediumVersusFine": 1.7489664227896516e-06
+        },
+        {
+          "plant": "single",
+          "friction": 0.2,
+          "force": 0,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 3.4333647036532966e-14,
+          "mediumVersusFine": 1.1435297153639112e-14
+        },
+        {
+          "plant": "single",
+          "friction": 0.2,
+          "force": 0,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 5.739853037312059e-14,
+          "mediumVersusFine": 1.1435297153639112e-14
+        },
+        {
+          "plant": "single",
+          "friction": 0.2,
+          "force": 10,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630025421361817e-07,
+          "mediumVersusFine": 5.125705660569707e-08
+        },
+        {
+          "plant": "single",
+          "friction": 0.2,
+          "force": 10,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.745352419222004e-07,
+          "mediumVersusFine": 1.7489677158716668e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.2,
+          "force": 50,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 1.2815012779491222e-06,
+          "mediumVersusFine": 2.562852838447168e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.2,
+          "force": 50,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 4.372675527469349e-06,
+          "mediumVersusFine": 8.744837011541006e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.2,
+          "force": 100,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630025988986445e-06,
+          "mediumVersusFine": 5.125705727461187e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.2,
+          "force": 100,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.745346792538152e-06,
+          "mediumVersusFine": 1.7489664227896516e-06
+        },
+        {
+          "plant": "single",
+          "friction": 0.8,
+          "force": 0,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 3.4333647036532966e-14,
+          "mediumVersusFine": 1.1435297153639112e-14
+        },
+        {
+          "plant": "single",
+          "friction": 0.8,
+          "force": 0,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 5.739853037312059e-14,
+          "mediumVersusFine": 1.1435297153639112e-14
+        },
+        {
+          "plant": "single",
+          "friction": 0.8,
+          "force": 10,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630025421361817e-07,
+          "mediumVersusFine": 5.125705660569707e-08
+        },
+        {
+          "plant": "single",
+          "friction": 0.8,
+          "force": 10,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.745352419222004e-07,
+          "mediumVersusFine": 1.7489677158716668e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.8,
+          "force": 50,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 1.2815012779491222e-06,
+          "mediumVersusFine": 2.562852838447168e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.8,
+          "force": 50,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 4.372675527469349e-06,
+          "mediumVersusFine": 8.744837011541006e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.8,
+          "force": 100,
+          "horizon": 0.012,
+          "comparable": true,
+          "coarseVersusFine": 2.5630025988986445e-06,
+          "mediumVersusFine": 5.125705727461187e-07
+        },
+        {
+          "plant": "single",
+          "friction": 0.8,
+          "force": 100,
+          "horizon": 0.04,
+          "comparable": true,
+          "coarseVersusFine": 8.745346792538152e-06,
+          "mediumVersusFine": 1.7489664227896516e-06
+        }
+      ]
+    },
+    {
+      "sourceSha256Start": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+      "sourceSha256End": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+      "scriptSha256Start": "85cf27beeb4bf53b66e739e6bf3a650478477a9467d7d411d4655a8fbdfb9e8b",
+      "scriptSha256End": "85cf27beeb4bf53b66e739e6bf3a650478477a9467d7d411d4655a8fbdfb9e8b",
+      "scope": "Frozen-pose isotropic rigid foot impact only. No continuous ground support, leg control, first-touchdown timing, or World integration.",
+      "runtime": "v22.23.3",
+      "diagnostic": "out/sole-contact-events-final.json",
+      "unabridgedReportSha256": "a117c743efa32510ce97c4ca2d2151fc2e163308059ea34cca3aecabc2c29da4",
+      "summaries": [
+        {
+          "seed": 143991,
+          "cases": 1000,
+          "accepted": 1000,
+          "rejected": 0,
+          "mirrorAccepted": 1000,
+          "mirrorRejected": 0,
+          "mirrorStatusMismatch": 0,
+          "maxIterations": 80,
+          "maxAccelerations": 36,
+          "maxResidual": 9.999751547456491e-10,
+          "maxWorkResidual": 2.842170943040401e-14,
+          "maxMomentumResidual": 2.6737711109153337e-15,
+          "maxAngularResidual": 3.342213888644167e-16,
+          "maxMirrorObservableError": 0
+        },
+        {
+          "seed": 417,
+          "cases": 1000,
+          "accepted": 1000,
+          "rejected": 0,
+          "mirrorAccepted": 1000,
+          "mirrorRejected": 0,
+          "mirrorStatusMismatch": 0,
+          "maxIterations": 228,
+          "maxAccelerations": 99,
+          "maxResidual": 9.994558348327872e-10,
+          "maxWorkResidual": 4.263256414560601e-14,
+          "maxMomentumResidual": 5.329070518200751e-15,
+          "maxAngularResidual": 8.005932084973443e-16,
+          "maxMirrorObservableError": 0
+        }
+      ],
+      "violations": [],
+      "failures": []
+    }
+  ],
+  "publication": "Pinned reruns of unchanged ordinary fixtures plus the new candidate geometry guard. Full fixtures/results reconstructed by versioned scripts; no ordinary rejection or independent failure omitted."
+}

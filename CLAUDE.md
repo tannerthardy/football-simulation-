@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [Foot contact events and the pivot barrier](docs/reviews/foot-contact-events-and-pivot-barrier.md):
+  **current review.** Candidate plane-root enclosures now reject hidden sole
+  penetration in the research ground solve, including supplied airborne sole
+  geometry. One-point pivoting remains blocked: endpoint gap/work can close
+  while actual endpoint contact velocity points into turf. An independent rigid
+  pivot reference supplies a mechanical target. Next: compare explicitly
+  energy-accounted shoe/turf compliance against that limit, with coupled rigid
+  temporal contact as the alternative, before enabling a generic lifecycle. Physics
+  is NOT READY; research modules remain unused by `World`.
+
 - [Spatial feet and ground readiness](docs/reviews/spatial-feet-and-ground-readiness.md):
-  **current review.** One coupled 18D torso/two-rigid-foot solve with actual
+  Previous spatial increment. One coupled 18D torso/two-rigid-foot solve with actual
   hips/ankles, gravity, passive leg energy, unilateral sole normals and friction.
   Independent smooth-contact/impact panels pass, including small foot inertia;
   all modules remain unused by `World`. Physics is NOT READY. Next: earliest
