@@ -191,6 +191,8 @@ export class ProtectionCoordinator {
 
 export class PassProtector implements Behavior {
   readonly kind = 'pass-pro';
+  /** A check-release is an installed outlet; permanent protection is not. */
+  get passOption(): boolean { return this.releaseTo !== null; }
   released = false;
   /** Per-rep tendency to over-set (random, scaled by footwork). */
   private oversetBias = -1;

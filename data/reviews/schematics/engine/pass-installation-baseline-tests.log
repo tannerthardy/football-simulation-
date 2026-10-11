@@ -1,0 +1,78 @@
+
+ RUN  v3.2.4 /tmp/schematics-baseline-beae5c7
+
+ ❯ test/pass-installation.test.ts (6 tests | 4 failed) 83ms
+   × installed offensive contracts > every catalog formation has seven on the line and uncovered skill ends at either hash and flip 43ms
+     → ace_12: expected [ 'Y', 'RT', 'RG', 'C', 'LG', …(3) ] to have a length of 7 but got 8
+   × installed offensive contracts > keeps the dual attached TE surface when its exterior X is moved off the line 1ms
+     → expected 0.6 to be greater than 0.6
+   × installed offensive contracts > does not put a permanently protecting inline TE first in PA Shot 20ms
+     → expected 'Y' not to be 'Y' // Object.is equality
+   ✓ installed offensive contracts > retains a back who checks protection before releasing 7ms
+   ✓ installed offensive contracts > preserves receiving responsibility through a play-action fake wrapper 8ms
+   × installed offensive contracts > a permanently blocking back is not a receiving option even through a fake 3ms
+     → expected 'RB' not to be 'RB' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/pass-installation.test.ts > installed offensive contracts > every catalog formation has seven on the line and uncovered skill ends at either hash and flip
+AssertionError: ace_12: expected [ 'Y', 'RT', 'RG', 'C', 'LG', …(3) ] to have a length of 7 but got 8
+
+- Expected
++ Received
+
+- 7
++ 8
+
+ ❯ test/pass-installation.test.ts:43:38
+     41|           .sort((a, b) => aligned.spots[a].pos.y - aligned.spots[b].po…
+     42|         expect(Object.keys(aligned.spots), formation.id).toHaveLength(…
+     43|         expect(onLine, formation.id).toHaveLength(7);
+       |                                      ^
+     44|         expect(onSkills.every(slot => slot === onLine[0] || slot === o…
+     45|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/pass-installation.test.ts > installed offensive contracts > keeps the dual attached TE surface when its exterior X is moved off the line
+AssertionError: expected 0.6 to be greater than 0.6
+ ❯ test/pass-installation.test.ts:52:40
+     50|       const formation = FORMATION_BY_ID[id];
+     51|       const aligned = alignOffense(formation, false, 40, CENTER_Y);
+     52|       expect(formation.slots.X!.depth).toBeGreaterThan(.6);
+       |                                        ^
+     53|       expect(aligned.hasTE).toEqual({ S: true, W: true });
+     54|       expect(Math.abs(aligned.coreEdge.S - CENTER_Y)).toBeCloseTo(3.9,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/pass-installation.test.ts > installed offensive contracts > does not put a permanently protecting inline TE first in PA Shot
+AssertionError: expected 'Y' not to be 'Y' // Object.is equality
+ ❯ test/pass-installation.test.ts:63:32
+     61|     expect(sim.offAlign.numbering.S2).toBe('Y');
+     62|     expect(sim.slot('Y')!.behavior.kind).toBe('pass-pro');
+     63|     expect(firstRead(sim)).not.toBe('Y');
+       |                                ^
+     64|   });
+     65| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  test/pass-installation.test.ts > installed offensive contracts > a permanently blocking back is not a receiving option even through a fake
+AssertionError: expected 'RB' not to be 'RB' // Object.is equality
+ ❯ test/pass-installation.test.ts:83:32
+     81|     const sim = installed({ ...PASS_BY_ID.pa_shot, progression: ['B', …
+     82|     expect(sim.slot('RB')!.behavior.kind).toBe('pa-fake');
+     83|     expect(firstRead(sim)).not.toBe('RB');
+       |                                ^
+     84|   });
+     85| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 2 passed (6)
+   Start at  11:11:39
+   Duration  1.60s (transform 923ms, setup 0ms, collect 1.26s, tests 83ms, environment 0ms, prepare 112ms)
+

@@ -1,0 +1,31 @@
+import { Rng } from '../../src/core/rng.js';
+import { CENTER_Y } from '../../src/core/field.js';
+import { generateTeam, pickDefense, pickOffense } from '../../src/league/team.js';
+import { FORMATIONS, FORMATION_BY_ID } from '../../src/playbook/formations.js';
+import { PASS_CONCEPTS } from '../../src/playbook/concepts.js';
+import { COVERAGE_BY_ID } from '../../src/playbook/coverages.js';
+import { FRONT_BY_ID } from '../../src/playbook/defense.js';
+import { PlaySim } from '../../src/sim/playsim.js';
+import { sourceVersion } from '../../scripts/source-version.js';
+const source=sourceVersion();
+const offense=generateTeam(new Rng(21),'Offense','OFF',{strength:.6});
+const defense=generateTeam(new Rng(22),'Defense','DEF',{strength:.6});
+const rows=[];
+for(const formation of FORMATIONS)for(const concept of PASS_CONCEPTS){
+ const sim=new PlaySim({offense:pickOffense(offense,formation.personnel),defense:pickDefense(defense,'nickel'),
+  offCall:{formation,flip:false,kind:'pass',pass:concept,label:'audit'},defCall:{personnel:'nickel',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'audit'},
+  los:40,ballY:CENTER_Y,firstDownX:50,seed:5});
+ const absent=concept.progression.filter(ref=>!sim.offAlign.numbering[ref]);
+ const blockers=concept.progression.flatMap(ref=>{const slot=sim.offAlign.numbering[ref];const a=slot?sim.slot(slot):null;return a?.behavior.kind==='pass-pro'?[{ref,slot,backAssignment:concept.back,teBlock:!!concept.teBlock}]:[]});
+ const first=concept.progression[0]; const firstSlot=sim.offAlign.numbering[first];
+ const firstBehavior=firstSlot?sim.slot(firstSlot)?.behavior.kind:null;
+ const onLine=Object.entries(formation.slots).filter(([,a])=>a!.depth<=.6);
+ const covered=onLine.filter(([slot,a])=>onLine.some(([other,b])=>other!==slot&&b!.side===a!.side&&Math.abs(sim.offAlign.spots[other].pos.y-sim.ballY)>Math.abs(sim.offAlign.spots[slot].pos.y-sim.ballY))).map(([slot])=>({slot,behavior:sim.slot(slot)?.behavior.kind}));
+ rows.push({formation:formation.id,concept:concept.id,counts:sim.offAlign.counts,absent,blockers,first,firstSlot:firstSlot??null,firstBehavior:firstBehavior??null,empty:sim.snapContext.empty,back:sim.offAlign.numbering.B??null,onLine:5+onLine.length,covered});
+}
+if(sourceVersion()!==source)throw Error('Source changed during assignment audit');
+console.log(JSON.stringify({source,rows:rows.length,missingProgressionPairs:rows.filter(r=>r.absent.length).length,
+ blockerProgressionPairs:rows.filter(r=>r.blockers.length).length,
+ firstReadPermanentBlockPairs:rows.filter(r=>r.firstBehavior==='pass-pro'&&r.blockers.some(b=>b.ref===r.first&&b.teBlock)).length,
+ examples:rows.filter(r=>(r.formation==='gun_doubles_11'&&r.concept==='pa_shot')||(r.formation==='i_jumbo_22'&&r.concept==='mesh')||(r.formation==='gun_empty_11'&&r.concept==='slant_flat')||(r.formation==='heavy_13'&&r.concept==='pa_post_dig')),
+ all:rows},null,2));

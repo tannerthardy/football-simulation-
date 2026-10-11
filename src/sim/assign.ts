@@ -195,6 +195,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
  */
 export class PlayActionFake implements Behavior {
   readonly kind = 'pa-fake';
+  get passOption(): boolean { return this.job.passOption === true; }
   private meshed = false;
   constructor(
     private readonly job: Behavior,

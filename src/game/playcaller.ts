@@ -18,11 +18,12 @@ import { CENTER_Y } from '../core/field.js';
 import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
 import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
+import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
-import { OFF_PERSONNEL } from '../playbook/types.js';
+import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import type { Team } from '../league/team.js';
 
 export interface Situation {
@@ -331,7 +332,6 @@ export class DefensiveCoordinator {
       if (s.hurry && s.scoreDiff < 0 && ['cover2', 'cover4', 'cover6', 'tampa2'].includes(f)) fw[1] *= 2;
       fw[1] *= this.learned(f);
     }
-    const family = pickWeighted(rng, famW);
     // Variants within the family by tree; spot vs. match by the coach's habit.
     const m = coach.matchRate;
     const VARIANTS: Record<string, Array<[string, number]>> = {
@@ -345,7 +345,13 @@ export class DefensiveCoordinator {
       cover2man: [['cover2man', 1]],
       cover0: [['cover0', 1]],
     };
-    const coverage = COVERAGE_BY_ID[pickWeighted(rng, VARIANTS[family] ?? [[family, 1]])];
+    // Eligibility belongs to the actual variant's named zone players. Cover
+    // 9/inverted 2 retain a roof without FS, but his weak flat remains missing;
+    // reject that installation rather than invent a replacement silently.
+    const availableVariants = Object.fromEntries(Object.entries(VARIANTS).map(([family, variants]) =>
+      [family, variants.filter(([id]) => coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]))]));
+    const family = pickWeighted(rng, famW.filter(([id]) => availableVariants[id]?.length));
+    const coverage = COVERAGE_BY_ID[pickWeighted(rng, availableVariants[family])];
     // Zeus: a two-high tree doubles the opponent's best receiver with Cover 8 /
     // Stuff / Quads, chosen by where he lines up (resolved at the snap).
     let zeus: SkillSlot | undefined;
@@ -362,10 +368,15 @@ export class DefensiveCoordinator {
     if (s.hurry && s.scoreDiff < 0) blitz -= 0.12;
     let pressure = null;
     if (rng.chance(blitz)) {
-      const options = PRESSURES.filter((p) => p.coverages.includes(coverage.family ?? coverage.id) && Object.keys(p.blitzers).every((slot) => personnelHas(personnel, slot as DefSlot)));
+      const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
       if (options.length) pressure = rng.pick(options);
     }
-    if (coverage.id === 'cover0' && !pressure) pressure = PRESSURES.find((p) => p.id === 'zero_6')!;
+    if (coverage.id === 'cover0' && !pressure) {
+      // Dime has no Will slot. Keep an installed zero-help pressure instead
+      // of silently dropping an absent participant from a named six-man call.
+      const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
+      pressure = options.find((p) => p.id === 'zero_6') ?? options.find((p) => p.id === 'mike_a') ?? null;
+    }
 
     // Shadow: best corner on their best receiver in man coverage.
     const prefs: ManPreference = {};
@@ -383,7 +394,8 @@ export class DefensiveCoordinator {
     const disguiseRate = system === 'two-high' && look !== 'two-high' ? 0.85 : coach.disguise * (0.6 + 0.8 * dbIQ);
     if (rng.chance(disguiseRate)) {
       const pool = look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
-      shown = COVERAGE_BY_ID[rng.pick(pool.filter((id) => id !== coverage.id))];
+      const available = pool.filter((id) => id !== coverage.id && coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]));
+      if (available.length) shown = COVERAGE_BY_ID[rng.pick(available)];
     }
     // Zone technique: pattern-match or spot drop. Quarters is match by nature.
     let zoneStyle: ZoneStyle | undefined;
@@ -399,8 +411,7 @@ export class DefensiveCoordinator {
     const frontStem=alternatives.length && motionRng.chance(coach.disguise*.35) ? {
       from:motionRng.pick(alternatives),secondsBeforeSnap:motionRng.range(.4,1.6),
     } : undefined;
-    // Only a blitzer who is on the field can creep (a forced zero pressure can
-    // name slots this personnel group doesn't have).
+    // Only an installed pressure participant can creep.
     const pressureSlots=pressure ? (Object.keys(pressure.blitzers) as DefSlot[]).filter((slot)=>personnelHas(personnel,slot)) : [];
     const creep=pressureSlots.length && motionRng.chance(coach.disguise*.5) ? {
       slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
@@ -415,12 +426,5 @@ export class DefensiveCoordinator {
 }
 
 function personnelHas(p: DefPersonnelId, slot: DefSlot): boolean {
-  const table: Record<DefPersonnelId, DefSlot[]> = {
-    base43: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_S', 'LB_M', 'LB_W', 'CB_S', 'CB_W', 'FS', 'SS'],
-    base34: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_M', 'LB_W', 'CB_S', 'CB_W', 'FS', 'SS'],
-    nickel: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_M', 'LB_W', 'CB_S', 'CB_W', 'NB', 'FS', 'SS'],
-    dime: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_M', 'CB_S', 'CB_W', 'NB', 'DB', 'FS', 'SS'],
-    goalline: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W', 'CB_S', 'CB_W', 'SS'],
-  };
-  return table[p].includes(slot);
+  return !!DEF_PERSONNEL[p][slot];
 }

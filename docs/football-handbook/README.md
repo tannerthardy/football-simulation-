@@ -23,12 +23,14 @@ and proposed mechanisms are identified separately.
 | [Defense and perception](defense-and-perception.md) | Position-specific keys, coverage distribution, fits, vertical protection, motion, pursuit and legal contact. |
 | [Data and measurement](data-and-measurement.md) | What existing NFL data can test, useful public additions, matching definitions and realistic roster variation. |
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
+| [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
 
 For an OL problem, read the shared model, trenches and the relevant defensive
 fit. For a coverage problem, read defense, the WR/QB contracts and the data
 definitions. A coverage bust is not necessarily a bad physical turn; a good
 looking block is not necessarily transmitting load. Use the
-[current repair review](../reviews/traffic-turning-and-football-handbook.md)
+[current repair review](../reviews/schematics-and-physics-stress.md)
+and [previous movement repair](../reviews/traffic-turning-and-football-handbook.md)
 and [position audit](../reviews/position-technique-and-awareness.md) for actual
 engine status.
 
@@ -71,6 +73,10 @@ data or copyrighted coaching material into the repository as handbook content.
    those foundations hold. Keep player capacity separate from chosen effort.
 
 These are priorities, not a commitment to implement every chapter at once.
+The new [schematic audit and repair](../reviews/schematics-and-physics-stress.md)
+places coherent call installation and one complete Drive/protection/hot package
+ahead of a larger concept catalog. It provides actual native stress cases and
+an offline situational NFL reference alongside the position work above.
 The handbook should grow from inspected sources and reproduced football
 problems. Update a chapter when evidence changes its recommendation, while
 leaving published historical measurements and source identifiers intact.

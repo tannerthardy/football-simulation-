@@ -3,6 +3,12 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
+[schematics and physics stress](reviews/schematics-and-physics-stress.md):
+validate real installed roles before interpreting contact or final yards. The
+new native split/counter/bunch/quad/long-yardage cases reuse shared capacities
+and separate production plays from staged momentum witnesses. Complete one
+existing protection/route/answer package before enlarging the concept pool.
+No physical law changed in this installation repair. Then read
 [traffic turning and the handbook](reviews/traffic-turning-and-football-handbook.md):
 two short free-body commands use existing movement, with a conservative
 traction-based forecast screening bound. Preserve loaded/squeezed scope and

@@ -112,7 +112,7 @@ export class QBPass implements Behavior {
     const seen = new Set<Agent>();
     for (const ref of refs) {
       const r = this.receiverFor(sim, ref);
-      if (r && !seen.has(r)) {
+      if (r?.behavior.passOption && !seen.has(r)) {
         this.reads.push(r);
         seen.add(r);
       }

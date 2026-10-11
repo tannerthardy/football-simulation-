@@ -35,6 +35,7 @@ interface PressContact {
 
 export class RouteRunner implements Behavior {
   readonly kind = 'route';
+  readonly passOption = true;
   path: PathPoint[];
   idx = 0;
   settled = false;

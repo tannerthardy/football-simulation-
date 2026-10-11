@@ -20,6 +20,9 @@ export type TeamSide = 'O' | 'D';
 
 export interface Behavior {
   readonly kind: string;
+  /** Installed receiving option, including an outlet which first checks protection.
+   * This is a job contract, not current openness or readiness to catch. */
+  readonly passOption?: boolean;
   update(a: Agent, sim: PlaySim): MoveCommand;
 }
 

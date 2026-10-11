@@ -1,0 +1,42 @@
+{
+  "output": "viewer/schematic-stress.html",
+  "plays": 7,
+  "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "inputFiles": [
+    {
+      "path": "out/schematic-stress/panel.json",
+      "sha256": "d010aeeb925fa9ba79ea788587e516dc40bc05363dd37b891bea5d7562039e50"
+    },
+    {
+      "path": "out/schematic-stress/panel-film.json.gz",
+      "sha256": "82a73d89fe3fdf5dabe36ba7591caa0ae94b37701bc6304d72e309ae2b86ccf4"
+    },
+    {
+      "path": "out/scheme-audit/pass-baseline.json",
+      "sha256": "e37abfb353b82ca298fc7d56f6332e7db3db2aedbac1a2508c99863252579169"
+    },
+    {
+      "path": "out/scheme-audit/pass-baseline-film.json.gz",
+      "sha256": "e2d09d21baeb8b223dd19023da99645eb16e1f95f96b923237a69466582eacad"
+    },
+    {
+      "path": "out/scheme-audit/pass-candidate.json",
+      "sha256": "8915b2e8a8a874b22a7905e58b8242b7d76557367f04b22a4a6e1b2c8e8c2b94"
+    },
+    {
+      "path": "out/scheme-audit/pass-candidate-film.json.gz",
+      "sha256": "293056ffc782c27382544ab9dfd2421038fbaf0063bb6ec13b7241ae79f959c6"
+    }
+  ],
+  "outputSha256": "d34a0b82d9786ddee7141fb2fae73e9137879bb670a5aadce8db2bdc6148b97a",
+  "bytes": 3470779,
+  "ids": [
+    "SS-02-written",
+    "SS-04-written",
+    "SS-06-written",
+    "SS-08-written",
+    "SS-10-written",
+    "PA-SHOT-baseline",
+    "PA-SHOT-current"
+  ]
+}

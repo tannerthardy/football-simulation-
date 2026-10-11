@@ -1,6 +1,21 @@
 # Shared NFL data
 
-Current review: [Traffic turning and the football handbook](../docs/reviews/traffic-turning-and-football-handbook.md).
+Current review: [Schematics and physics stress](../docs/reviews/schematics-and-physics-stress.md).
+The [engine evidence and commands](reviews/schematics/engine/README.md) preserve
+formation/receiving-work census, native pass controls, automatic defensive role
+audits, twenty full 11v11 stress plays and eight reduced momentum/contact cases.
+These reuse shared physics and expose unsupported installations rather than
+fitting final yards. The [schematic handbook](../docs/football-handbook/playcalling-and-schematic-packages.md)
+and [new coaching source catalog](research/schematic-coaching-sources.json)
+describe complete packages and additional stress designs.
+The [situational pilot](../docs/reviews/schematic-data-context-pilot.md) uses
+67,488 pinned 2022/2023 observed calls with FTN's separate 2022 labels. Its
+[context evidence and reproduction](reviews/schematics/context/README.md)
+retain predeclared bins, denominators, common-cell comparisons and provenance.
+Trailing teams show more dropbacks; a universal deep-target increase is not
+supported. No physical or playcalling constants were fitted to these rates.
+
+Previous review: [Traffic turning and the football handbook](../docs/reviews/traffic-turning-and-football-handbook.md).
 The [original handbook](../docs/football-handbook/README.md) connects coaching
 and measurement across positions. Its [data chapter](../docs/football-handbook/data-and-measurement.md)
 distinguishes acquisition from actual extraction and describes useful public

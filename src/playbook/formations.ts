@@ -112,10 +112,12 @@ export const FORMATIONS: Formation[] = [
     },
   },
   // ---------------------------------------------------------------- 12
+  // With two attached on-line ends, the exterior receivers must be off the
+  // line so they do not cover either eligible TE (also applies to 22/13).
   {
     id: 'ace_12', name: 'Singleback Twin TE', personnel: '12', qb: 'under', tags: ['pro', 'heavy'],
     slots: {
-      X: { side: 'L', split: 'wide', depth: ON },
+      X: { side: 'L', split: 'wide', depth: OFF },
       H: { side: 'L', split: 'inline', depth: ON },
       Y: { side: 'R', split: 'inline', depth: ON },
       Z: { side: 'R', split: 'wide', depth: OFF },
@@ -135,7 +137,7 @@ export const FORMATIONS: Formation[] = [
   {
     id: 'pistol_12', name: 'Pistol Twin TE', personnel: '12', qb: 'pistol', tags: ['pistol', 'heavy'],
     slots: {
-      X: { side: 'L', split: 'wide', depth: ON },
+      X: { side: 'L', split: 'wide', depth: OFF },
       H: { side: 'L', split: 'inline', depth: ON },
       Y: { side: 'R', split: 'inline', depth: ON },
       Z: { side: 'R', split: 'wide', depth: OFF },
@@ -177,7 +179,7 @@ export const FORMATIONS: Formation[] = [
   {
     id: 'i_jumbo_22', name: 'I-Form Jumbo', personnel: '22', qb: 'under', tags: ['heavy', 'i-form', 'short-yardage'],
     slots: {
-      X: { side: 'L', split: 'wide', depth: ON },
+      X: { side: 'L', split: 'wide', depth: OFF },
       H: { side: 'L', split: 'inline', depth: ON },
       Y: { side: 'R', split: 'inline', depth: ON },
       F: { side: 'C', split: 0, depth: 4.3 },
@@ -187,7 +189,7 @@ export const FORMATIONS: Formation[] = [
   {
     id: 'heavy_13', name: 'Heavy Wing', personnel: '13', qb: 'under', tags: ['heavy', 'short-yardage'],
     slots: {
-      X: { side: 'L', split: 9, depth: ON },
+      X: { side: 'L', split: 9, depth: OFF },
       H: { side: 'L', split: 'inline', depth: ON },
       Y: { side: 'R', split: 'inline', depth: ON },
       F: { side: 'R', split: 'wing', depth: 1.4 },

@@ -7,8 +7,19 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [schematics and physics stress](docs/reviews/schematics-and-physics-stress.md)
+first. It connects the offensive/defensive audits to bounded legal-install and
+receiving-work repairs, actual call-role matrices, and the new native stress
+panel. The first roof-only guard was withheld after exposing more missing
+underneath goal-line work. The promoted guard also requires explicitly named
+zone players; optional man preferences remain flexible. Motion/screens and
+complete protection/hot contracts remain future installations, not lab features.
+The [schematic-package chapter](docs/football-handbook/playcalling-and-schematic-packages.md)
+provides inspected teaching examples. The [situational NFL pilot](docs/reviews/schematic-data-context-pilot.md)
+supports conditional pass volume, not a universal desperation/deep-throw bonus.
+
 Read [traffic turning and the football handbook](docs/reviews/traffic-turning-and-football-handbook.md)
-first. Free teammates can gather when their achievable curved path conflicts;
+for the preceding increment. Free teammates can gather when their achievable curved path conflicts;
 the shared physical laws stay unchanged. Its native adverse case avoids a real
 RB/RG impact while losing yards. Keep the mixed run/pass/game results visible.
 The [original handbook](docs/football-handbook/README.md) separates inspected
