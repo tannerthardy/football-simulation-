@@ -113,6 +113,7 @@ node --import tsx scripts/scenario-pack.ts out/checks/scenarios.json
 node --import tsx scripts/diag/shared-capabilities.ts out/checks/shared.json
 node --import tsx scripts/diag/hand-convergence.ts out/checks/hands.json
 node --import tsx scripts/diag/run-concept-process.ts out/checks/runs.json --verify
+node --import tsx scripts/diag/run-support-install.ts out/checks/support.json
 node --import tsx scripts/diag/coverage-contracts.ts out/checks/coverage.json
 node --import tsx scripts/diag/decision-awareness.ts out/checks/decisions.json.gz
 node --import tsx scripts/diag/physics-cost.ts out/checks/cost.json 2 9

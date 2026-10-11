@@ -119,3 +119,25 @@ source-pinned native game recordings. Its exact command and equality checks are
 in [the receipt](reviews/current/run-displacement.json). The same rounded
 position operator is applied to both sources; nearby blockers do not establish
 contact, a double team or its force.
+
+The [support-install receipt](reviews/current/run-support-install.json) covers
+called force ownership, conditional inside fits and pressure/exchange controls.
+The fixed collector checks all 24 runs against unrecorded execution and RNG:
+
+```sh
+node --import tsx scripts/diag/run-support-install.ts out/run-support-install/candidate.json
+```
+
+To reproduce its pre-change counterpart without changing this checkout:
+
+```sh
+mkdir -p out/run-support-install/baseline-source/scripts/diag
+git archive 5cbb8e4 src scripts/source-version.ts | tar -x -C out/run-support-install/baseline-source
+cp scripts/diag/run-support-install.ts out/run-support-install/baseline-source/scripts/diag/
+(cd out/run-support-install/baseline-source && node --import tsx scripts/diag/run-support-install.ts ../baseline.json)
+```
+
+Compare fixture/profile/initial-body pins before comparing jobs, requested
+motion, achieved bodies and events. Collector timestamps and cost vary, so a
+rerun is not expected to reproduce the entire report's byte hash. Live reps stop
+at four seconds; these are mechanism controls, not rushing-efficiency samples.

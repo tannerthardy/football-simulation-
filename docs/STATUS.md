@@ -56,12 +56,30 @@ preserves the puller-read, force-gather and fast-lead-cue repairs. Its selected
 original-game policy comparisons remain historical evidence. The new paired
 film is ignored output at `out/run-solidify/film/inside-zone-combo-review.html`.
 
-**Next run priority: install force responsibility from the coverage job before
-grading presentation and leverage.** Current-location filters can exclude the
-intended curl-flat player and promote a deep safety. This also occurs without
-disguise. Test matched aligned/presented calls, both sides, ordinary and adverse
-fits before altering pursuit ability. Then inspect climbers that actually miss
-their backer and the DL's acquired response to a second blocker. The
+**Outside support now follows the actual called flat/curl-flat job**, rather
+than disappearing at a lateral-position cutoff. Disguise still changes how
+hard the fit is to reach. Deep or inside help still cannot authorize immediate
+spill. Primary insertions keep their gaps first; eligible force backers retain
+an unclaimed same-side inside fit until an observed outside carrier threatens
+the surface. An explicit dropping end retains his front's boxed run gap, and
+force selection cannot cancel a called gap exchange. This is our selected
+installation, not a universal rule for every NFL defense.
+
+The [support receipt](../data/reviews/current/run-support-install.json) records
+24 matched native inputs, including both directions, disguise, pressure and
+man controls. No force, speed, perception or physics capability was increased.
+Two allocation prototypes exposed new problems and were withheld: a cross-box
+fit and a stolen primary gap. Reviewing the complete gap inventory resolved
+both. Remaining: the two explicit weak-exchange calls need an installed outside
+replacement; their fallback still promotes the deep safety. Unknown/deep-mesh
+pictures do not anticipate outside flow, and the free inside fit does not
+rewrite contact or pursuit leverage. One supplemental Buzz rep contacts later
+and allows more carrier travel; it remains in evidence.
+
+**Next contact priority: attainable tackling approaches**, following the
+consumed picture, requested motion, achieved movement and actual first grip.
+Do not strengthen grips to mask a bad approach. Also inspect climbers that
+actually miss their backer and the DL's acquired response to a second blocker. The
 [tracking pilot](../data/reviews/current/run-displacement.json) motivates those
 mechanism checks; it does not justify stronger anchors or a travel cap.
 
@@ -77,10 +95,11 @@ requested velocity and achieved support/contact in the same controlled setup.
 Nearest-defender speed is a tracking proxy, so it does not identify the actual
 tackler or prove a grip-strength problem. Outside-zone lateral technique is
 being investigated separately; do not retune movement capacities to mask it.
-The new eight-game check assesses all twelve guarded metrics, with none
-flagged off. Scoring still averages 78 points per team-game. Combo improvement
-does not establish realistic whole games; the contact and coverage problems
-remain substantial.
+The latest eight-game support check preserves all twelve guarded mechanisms.
+Scoring still averages 63.7 points per team-game; the after-catch broken-contact
+proxy is 31% and 90th-percentile YAC is 44.3 yd. These are unpaired full games,
+not causal estimates of the support repair. The earlier combo check averaged
+78 points. The contact and coverage problems remain substantial.
 
 ## Random film review: choose the next investigation
 
