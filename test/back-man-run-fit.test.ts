@@ -86,6 +86,23 @@ function alleyStage(carrying: Perceived['carrying'] = true, side = 1, read: Read
 }
 
 describe('inside man players insert from their acquired back possession', () => {
+  it.each([-1, 1])('keeps fitting a visibly leading fullback as he accelerates, side=%s', side => {
+    const f = stage(false, side, 'run', 'F', 'i_pro_21');
+    for (const speed of [2.8, 3.45, 2.85]) {
+      f.setPicture({ ...f.picture(), stance: 'low', vel: { x: speed, y: 0 } });
+      expect(f.update().vel.x).toBeLessThan(-1);
+      f.sim.t += .1;
+    }
+  });
+
+  it('does not treat an upright fullback release or a pass interpretation as confirmed lead work', () => {
+    for (const [read, stance] of [['run', 'high'], ['pass', 'low']] as const) {
+      const f = stage(false, 1, read, 'F', 'i_pro_21');
+      f.setPicture({ ...f.picture(), stance, vel: { x: 3.45, y: 0 } });
+      expect(f.update().vel.x).toBeGreaterThan(0);
+    }
+  });
+
   it.each([-1, 1])('stops maintaining receiver cushion after run plus positive possession, side=%s', side => {
     const f = stage(true, side), unknown = stage(null, side);
     const command = f.update();

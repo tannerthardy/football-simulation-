@@ -4,9 +4,12 @@ import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 
 export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = sim.see(a, r)): boolean {
-  if (cue.pos.x - sim.los > 2 || Math.hypot(cue.vel.x, cue.vel.y) > 3) return false;
+  if (cue.pos.x - sim.los > 2) return false;
   // Pads and hand-contact geometry are observable. Never inspect the route,
   // offensive call or engagement bookkeeping to infer intent.
+  // A lead/climbing blocker can approach faster than an engaged lineman.
+  // Speed alone does not erase his low pads or visible contact; otherwise
+  // his marker alternates between run fit and coverage as he accelerates.
   if (cue.stance === 'low' && cue.vel.x > 0.4) return true;
   return sim.defense.some(d => {
     const other = d === a ? { pos: a.pos } : sim.see(a, d);

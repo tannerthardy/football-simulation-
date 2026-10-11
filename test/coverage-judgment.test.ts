@@ -85,4 +85,54 @@ describe('coverage judgment and continuous evidence', () => {
     expect(cmd.facing).toBeUndefined();
     expect(cmd.vel.x).toBeGreaterThan(a.profile.vmax * a.profile.backpedal);
   });
+
+  it('retains a visible lead-block cue as the blocker accelerates past three yards per second', () => {
+    const { sim, a, one } = setup();
+    one.body.pos = { x: sim.los - 1, y: 10 };
+    one.stance = 'low';
+    for (const speed of [2.8, 3.0, 3.2, 4.5]) {
+      one.body.vel = { x: speed, y: 0 };
+      expect(showsBlock(a, sim, one)).toBe(true);
+    }
+  });
+
+  it('recognizes reachable, facing contact without assuming that fast movement is a route', () => {
+    const { sim, a, one } = setup();
+    one.body.pos = { x: sim.los - 1, y: 20 };
+    one.body.vel = { x: 4, y: 0 };
+    one.body.facing = 0;
+    one.stance = 'high';
+    a.body.pos = { x: one.pos.x + 0.75, y: one.pos.y };
+    expect(showsBlock(a, sim, one)).toBe(true);
+    // Turning away removes that visible hand-contact interpretation.
+    one.body.facing = Math.PI;
+    expect(showsBlock(a, sim, one)).toBe(false);
+  });
+
+  it('keeps upright releases and deep receivers out of the block interpretation', () => {
+    const { sim, a, one } = setup();
+    one.body.pos = { x: sim.los - 1, y: 10 };
+    one.stance = 'high';
+    for (const vel of [{ x: 6, y: 0 }, { x: 0, y: 5 }, { x: -4, y: 0 }]) {
+      one.body.vel = vel;
+      expect(showsBlock(a, sim, one)).toBe(false);
+    }
+    one.body.pos.x = sim.los + 3;
+    one.stance = 'low';
+    one.body.vel = { x: 4, y: 0 };
+    expect(showsBlock(a, sim, one)).toBe(false);
+  });
+
+  it('uses the delayed pad/contact picture instead of a blocker\'s current private state', () => {
+    const { sim, a, one } = setup();
+    // Live body has already changed; the older acquired picture still shows
+    // a lead blocker. The call and live stance do not overwrite that cue.
+    one.stance = 'high';
+    one.body.pos = { x: sim.los + 8, y: 10 };
+    one.body.vel = { x: 6, y: 0 };
+    const observed = { pos: { x: sim.los - 1, y: 10 }, vel: { x: 3.5, y: 0 },
+      facing: 0, stance: 'low' as const, age: 0.2 };
+    expect(showsBlock(a, sim, one, observed)).toBe(true);
+    expect(showsBlock(a, sim, one, { ...observed, stance: 'high' })).toBe(false);
+  });
 });
