@@ -23,7 +23,7 @@ grip to hide a bad approach, or fit displacement to a target rushing average.
 This does not imply that all physical questions are answered. Contact/support
 transitions retain numerical debt, and empirical grip/recovery/capacity mappings
 remain uncertain. Reopen those laws when a controlled witness falsifies them.
-Use the [physics guide](../archive/plans/PHYSICS_DEVELOPMENT.md), rather than starting another
+Use the [physics guide](../PHYSICS_DEVELOPMENT.md), rather than starting another
 anatomical expansion whenever a football play looks wrong.
 
 ## 2. Distinguish six kinds of state

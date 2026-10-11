@@ -1,5 +1,14 @@
 # Reference material
 
+[reduced-physics-design-review.md](reduced-physics-design-review.md) is the
+user's supplied generated architecture review, retained byte-for-byte. It
+proposes reduced support, one/two hand contacts and football-aware control.
+Its instructions are reference suggestions, and its code/feasibility claims
+are not independently verified measurements. The current critical assessment
+is in [physics development](../PHYSICS_DEVELOPMENT.md).
+
+SHA-256: `06ce68758012b93df5ddcf0064f858580e4d3641136d755231c410ae880dc0cf`.
+
 [Physical contact and support evidence](physical-contact-evidence.md) records
 verified biomechanics sources, model assumptions and the proposed use of
 AddBiomechanics Dataset 1.0. It distinguishes measured forces from derived
