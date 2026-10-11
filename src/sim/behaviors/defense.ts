@@ -181,6 +181,7 @@ export class ManCoverage implements Behavior {
   private readonly press: boolean;
   private readonly initialCushion: number;
   private hipsOpen = false;
+  private releaseObserved = false;
   private routeRead = false;
   private stemHeading: number | null = null;
   private stableSince = 0;
@@ -230,6 +231,7 @@ export class ManCoverage implements Behavior {
     const delayScale = this.routeRead ? 0.65 : 1;
     const seen = this.observation.read(sim.see(a, R, delayScale), sim.t, R.profile, a.profile.reactionTime,
       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
+    if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const o = this.opts;
     const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
@@ -256,7 +258,16 @@ export class ManCoverage implements Behavior {
       tx += this.initialCushion * (1 - developing) + 0.6 * developing;
     }
     else if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
-    else if (!this.hipsOpen) tx = Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
+    else if (!this.hipsOpen) {
+      // Before the release, hold the off-man cushion rather than charging a
+      // stationary back. Once his observed stem moves, close excess cushion:
+      // a late match must not inherit its current depth as a retreat floor.
+      // A later plant does not undo knowledge that this receiver released.
+      // Feed-forward motion still lets a receiver consume the cushion, and
+      // the ordinary body limits determine whether the defender can close.
+      tx = this.releaseObserved
+        ? seen.pos.x + cushion : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
+    }
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
     // low-hip under defender sits behind his hip with help over the top.
     if (o.overTop) {

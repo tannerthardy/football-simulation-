@@ -3,7 +3,17 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
-[schematics and physics stress](reviews/schematics-and-physics-stress.md):
+[pursuit, support and contact transfer](reviews/pursuit-and-tackle-transfer.md).
+The same physical model now sustains a retained standing wrap without a
+manufactured dive; its local 12/24/48-substep YAC spread is .0061 yd. Arrival,
+acquisition, late man matching and moving traffic gathers use bounded requests,
+not stronger bodies. Full-game rushing worsens despite fixed native tails:
+trace the new source-pinned rushing outliers, responsibility, acquired cues and
+actual support before opening a physical law. One stable witness is not universal
+readiness. Keep component isolation, adverse cases and small game/cost guards.
+
+The earlier [schematics and physics stress](reviews/schematics-and-physics-stress.md)
+review explains why we
 validate real installed roles before interpreting contact or final yards. The
 new native split/counter/bunch/quad/long-yardage cases reuse shared capacities
 and separate production plays from staged momentum witnesses. Complete one

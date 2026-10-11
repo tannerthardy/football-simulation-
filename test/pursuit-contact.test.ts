@@ -189,6 +189,14 @@ describe('physical tackle contact',()=>{
   });
   it('waits for body contact when a head-on carrier is still closing',()=>{
     const {sim,c,d}=stage();d.body.pos={x:51.4,y:CENTER_Y};c.body.vel={x:8,y:0};
+    // This staged slice has not run a decision tick. Supply its actual held
+    // standing command and a consistent incoming history, as native ticks do.
+    sim.intents[d.idx]={vel:{x:0,y:0},facing:d.facing};
+    for(let k=0;k<24;k++){
+      const lag=(23-k)*sim.dt;
+      sim.perception.record(sim.agents.map(a=>({pos:{x:a.pos.x-a.vel.x*lag,y:a.pos.y-a.vel.y*lag},
+        vel:a.vel,facing:a.facing,stance:a.stance,pose:a.pose})));
+    }
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     tryTackles(sim);expect(sim.bond).toBeNull();expect(d.nextTackleAt).toBe(0);
   });

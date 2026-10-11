@@ -92,11 +92,11 @@ export function tryTackles(sim: PlaySim): void {
       // away from him; otherwise he keeps running his feet. No opportunity
       // forecast is needed when this attempt is already disallowed.
       if (dd > arms && closing > -1.5) continue;
-      const vx = c.vel.x - d.vel.x, vy = c.vel.y - d.vel.y;
-      const closestAt = clamp(-(dx * vx + dy * vy) / Math.max(0.01, vx * vx + vy * vy), 0, 0.3);
-      const closest = Math.hypot(dx + vx * closestAt, dy + vy * closestAt);
-      let futureQuality = contactQuality(closest, body, arms);
-      let waitingQuality = q;
+      // Waiting needs affirmative evidence from the picture and the command
+      // actually held. A joint, recent contact or recovering support makes a
+      // one-body forecast unavailable; ideal current-state motion cannot
+      // promise that those constraints will let us reach a better hip.
+      let waitForBetter = false;
       const form = 0.85 - 0.15 * d.r('tackling');
       if (!sim.bond && q < form && sim.intents[d.idx]
         && !sim.world.joints.some(j => (j.a === d.body || j.b === d.body)
@@ -113,19 +113,18 @@ export function tryTackles(sim: PlaySim): void {
           y: seen.pos.y + seen.vel.y * elapsed } };
         const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, arms, sim.world.time);
         if (window) {
-          futureQuality = window.futureQuality;
           // Compare two estimates from the same observation. Actual reach and
           // the resulting grip still use current physical geometry below.
-          waitingQuality = window.currentQuality;
+          waitForBetter = window.futureQuality > window.currentQuality + .1;
           if (sim.trace.data) sim.trace.decide({ t: sim.t, a: d.idx,
             kind: 'tackle-opportunity',
-            chose: futureQuality > waitingQuality + .1 ? 'keep feet moving' : 'attempt current opportunity',
+            chose: waitForBetter ? 'keep feet moving' : 'attempt current opportunity',
             cue: 'delayed carrier motion and attainable movement',
             options: ['keep feet moving', 'attempt current opportunity'],
-            detail: `Observed wrap quality ${waitingQuality.toFixed(2)}; best attainable decision sample ${futureQuality.toFixed(2)} at ${window.closestAt.toFixed(2)} s. Held movement command; future cuts and contacts are unknown.` });
+            detail: `Observed wrap quality ${window.currentQuality.toFixed(2)}; best attainable decision sample ${window.futureQuality.toFixed(2)} at ${window.closestAt.toFixed(2)} s. Held movement command; future cuts and contacts are unknown.` });
         }
       }
-      if (!sim.bond && q < form && futureQuality > waitingQuality + 0.1) continue;
+      if (waitForBetter) continue;
       attempt(sim, d, c, q, engaged, dd > arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
@@ -368,14 +367,12 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // staying tight to the hold.
       intents[d.idx] = { vel: { x: -dir * 2.5 + tx * close, y: ty * close }, facing: Math.atan2(ty, tx), push: 1, posture: 0.7, dive: own?.dive, lunge: own?.lunge };
     } else {
-      // Beside or behind him: digging in against a runner's momentum only
-      // tears the grip. Run with him and work up to a wrap; once the arms
-      // are locked, drop the weight on him and let him carry it.
-      // He lets his legs go where the runner pulls him: no launch.
-      const locked = next >= 0.55 && cs > 2;
-      const drop = locked ? { x: c.vel.x / cs * 0.01, y: c.vel.y / cs * 0.01 } : undefined;
+      // Beside or behind him: run the feet into the hip while the arms close.
+      // A secure grip does not require abandoning cleat support. Ground and
+      // grip loads decide whether he can stay upright or gets dragged down;
+      // preserve a dive/lunge already committed by the approach technique.
       intents[d.idx] = { vel: { x: c.vel.x + tx * close, y: c.vel.y + ty * close }, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
-        dive: own?.dive ?? drop, lunge: own?.lunge };
+        dive: own?.dive, lunge: own?.lunge };
     }
   }
   // The carrier keeps his legs driving where his vision takes him.

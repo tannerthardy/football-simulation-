@@ -65,7 +65,9 @@ describe('achievable teammate turning', () => {
       expect(legacy.contacts.some(c => c.impulse > 0)).toBe(true);
       expect(preview).not.toHaveBeenCalled();
       const candidate = turning(side, false, true);
-      expect(Math.hypot(candidate.commands[0].vel.x, candidate.commands[0].vel.y)).toBeLessThan(1);
+      const firstSpeed = Math.hypot(candidate.commands[0].vel.x, candidate.commands[0].vel.y);
+      expect(firstSpeed).toBeGreaterThan(1);
+      expect(firstSpeed).toBeLessThan(9);
       expect(candidate.commands.slice(1).some(c => c.vel.x === 0 && c.vel.y === side * 9)).toBe(true);
       expect(candidate.contacts).toHaveLength(0);
       expect(candidate.a.vel.y * side).toBeGreaterThan(1);
@@ -75,7 +77,9 @@ describe('achievable teammate turning', () => {
 
   it.each([-1, 1])('preserves explicit body facing while gathering in mirror %s', side => {
     const candidate = turning(side, true, true);
-    expect(Math.hypot(candidate.commands[0].vel.x, candidate.commands[0].vel.y)).toBeLessThan(1);
+    const firstSpeed = Math.hypot(candidate.commands[0].vel.x, candidate.commands[0].vel.y);
+    expect(firstSpeed).toBeGreaterThan(1);
+    expect(firstSpeed).toBeLessThan(9);
     expect(candidate.commands.every(c => c.facing === side * Math.PI / 2 && c.cutSkill === 1)).toBe(true);
     expect(candidate.contacts).toHaveLength(0);
     expect(candidate.commands.slice(1).some(c => c.vel.y === side * 9)).toBe(true);
@@ -100,21 +104,23 @@ describe('achievable teammate turning', () => {
       return intents[0];
     };
     const before = run();
-    expect(Math.hypot(before.vel.x, before.vel.y)).toBeLessThan(1);
+    expect(Math.hypot(before.vel.x, before.vel.y)).toBeGreaterThan(1);
+    expect(Math.hypot(before.vel.x, before.vel.y)).toBeLessThan(9);
     b.body.pos = { x: 15, y: 2 }; b.body.vel = { x: -7, y: 4 };
     expect(run()).toEqual(before);
   });
 
   it('does not choose a gather that creates a new conflict behind the observer', () => {
     const { sim, a, b } = stage(), rear = sim.slot('LB_W')!;
-    rear.body.pos = { x: 49, y: CENTER_Y - .4 };
+    rear.body.pos = { x: 49, y: CENTER_Y };
     rear.body.vel = { x: 9, y: 0 }; rear.body.facing = 0; rear.body.support = newSupport();
     const original: Intent = { vel: { x: 0, y: 9 } };
     for (const peers of [[b, rear], [rear, b]]) {
       const intents: Intent[] = [structuredClone(original), ...peers.map(p => ({ vel: { ...p.vel } }))];
       spaceTeammates([a, ...peers], intents, (_a, other) => other, { now: 2 });
-      // Original turn clears the trailing picture; zero gather would let it
-      // cross the observer. The forward conflict does not authorize that swap.
+      // Original turn clears the trailing picture; both a moving gather and
+      // a stop let it cross the observer. Neither cures the forward conflict
+      // by creating a new one behind the observer.
       expect(intents[0]).toEqual(original);
     }
   });

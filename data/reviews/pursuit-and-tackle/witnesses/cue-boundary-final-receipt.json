@@ -1,0 +1,65 @@
+{
+  "schema": "tackle-cue-final-receipt-v1",
+  "sourceSHA256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "collectorSHA256": "6ada64ed23da4bf8381df11a6acf1d8eba52359b9fce065146a7eda065ac4a60",
+  "files": [
+    {
+      "path": "out/tackle-breakthrough/review/cue-boundary-final.ts",
+      "bytes": 8510,
+      "sha256": "6ada64ed23da4bf8381df11a6acf1d8eba52359b9fce065146a7eda065ac4a60"
+    },
+    {
+      "path": "out/tackle-breakthrough/review/cue-boundary-final.json.gz",
+      "bytes": 1330171,
+      "sha256": "9db26f4d39f16108c075274d8ceebd667047a3915ea7c14a58553b15a8ac8476"
+    },
+    {
+      "path": "out/tackle-breakthrough/review/cue-boundary-players.json",
+      "bytes": 215948,
+      "sha256": "2f1b5914513ad39a16c1841cf0882fb092e2a4e86657a9a674a65acab2b32865"
+    }
+  ],
+  "baselineCuePath": "out/tackle-breakthrough/review/cue-boundary.json.gz",
+  "baselineCueSHA256": "284327fa4bd87163778af35096516af2bf94b25e0bcaaa9cbe047ef669f68056",
+  "nativeBaselinePath": "out/tackle-breakthrough/approach-panel/baseline.json.gz",
+  "nativeFinalPath": "out/tackle-breakthrough/approach-panel/final.json.gz",
+  "rows": [
+    {
+      "id": "CT-R1-split_zone-over-L-S11",
+      "nativeId": "CT-R1-split_zone-over-L-S11",
+      "gain": 13.05,
+      "observerVerified": true,
+      "native32ProfileVerified": true,
+      "profileSHA256": "af7b9f26a0adb8fe597a3fd975c5e31fe71a1a50fa3b5a7d2964cc66035dca7e",
+      "frames": 94,
+      "hasTelemetry": true,
+      "playerCount": 22,
+      "metadataStable": true
+    },
+    {
+      "id": "CT-R1-split_zone-odd-R-S11",
+      "nativeId": "CT-R1-split_zone-odd-R-S11",
+      "gain": 11.88,
+      "observerVerified": true,
+      "native32ProfileVerified": true,
+      "profileSHA256": "4c6ff19469c215f01b8272de5b4128e4a61382ef2f5b64d685ea55b99c743465",
+      "frames": 87,
+      "hasTelemetry": true,
+      "playerCount": 22,
+      "metadataStable": true
+    },
+    {
+      "id": "CT-R1-iz_strong-over-R-S3",
+      "nativeId": "TA-R1-iz_strong-over-R-S3",
+      "gain": 2.91,
+      "observerVerified": true,
+      "native32ProfileVerified": true,
+      "profileSHA256": "617994f99df39f2837bff4062de3b5cc4b31d16edf4d7f15d0abe084f25a378f",
+      "frames": 71,
+      "hasTelemetry": true,
+      "playerCount": 22,
+      "metadataStable": true
+    }
+  ],
+  "metadataProvenance": "Full player objects copied read-only from final native setup before/after run. Before reuse for baseline cards, ordered team/slot/identity/profiles/ratings are matched exactly to BOTH saved native32 phases and baseline cue slots. Metadata is supplemental; baseline replay state itself is not rewritten."
+}

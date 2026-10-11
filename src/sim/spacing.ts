@@ -81,6 +81,14 @@ function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], c
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
   if(worst>=0)return original;
+  // Yield speed while continuing the turn when that already clears traffic.
+  // Maximizing clearance alone favors a full stop even when a moving gather
+  // safely follows the same observed peers. Keep posture/facing/skill and let
+  // ordinary movement decide whether this request is actually achievable.
+  const slowed:Intent={...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}};
+  const slower=previewFreeMovement(a.body,slowed,context.now,TURN_STEPS);
+  if(slower.every(sample=>sample.support==='up')
+    &&peers.every(peer=>sweptClearance(a,slower,peer)>=0))return slowed;
   const gather:Intent={...original,vel:{x:0,y:0}};
   const gathered=previewFreeMovement(a.body,gather,context.now,TURN_STEPS);
   if(gathered.some(sample=>sample.support!=='up'))return original;

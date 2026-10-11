@@ -1,0 +1,36 @@
+
+8 games, 1024 scrimmage plays in 114.7 s (14332 ms/game), ties 0
+metric                                          sim   target
+Points / team-game                            39.75   21–23.5  HIGH
+Scrimmage plays / team-game                   64.00   61–65  OK 
+Total yards / team-game                      523.01   320–345  HIGH
+Completion %                                  62.54%  63–66  LOW
+Yards / attempt                               11.11   6.8–7.2  HIGH
+Sack rate (per dropback)                       4.31%  6–7.5  LOW
+INT rate                                       7.30%  2–2.5  HIGH
+Pass TD rate                                  10.32%  4–4.8  HIGH
+20+ yd completions / att                      14.60%  7–9  HIGH
+aDOT                                           9.69   7.5–8.5  HIGH
+YAC / reception                               10.48   4.8–5.6  HIGH
+Time to throw                                  2.55s  2.7–2.9  LOW
+QB sensed pressure (internal)                 17.94%  internal; no NFL target
+Scramble rate                                  6.54%  3–5  HIGH
+Rush yards / carry                             5.12   4.1–4.5  HIGH
+Run stuff rate (<=0)                          16.72%  16–20  OK 
+10+ yd runs                                   10.16%  10–12  OK 
+Yards before contact (runs)                    0.98   1.5–2.3  LOW
+Pass rate (dropbacks / plays)                 70.21%  56–62  HIGH
+3rd-down conversion                           31.13%  37–41  LOW
+FG %                                         100.00%  83–87  HIGH
+XP %                                          98.53%  94–97  HIGH
+Fumbles lost / team-game                       0.38   0.4–0.7  LOW
+Punts / team-game                              5.88   3.5–4.5  HIGH
+Penalties / team-game (pre-snap+holding)       8.94   2.5–4  HIGH
+NGS separation at catch/incompletion           3.11   2.8–3.2  OK 
+NGS tight-window throws (<1 yd)                9.60%  13–17  LOW
+QB coverage family read right                 61.61%  70–90  LOW
+Checks at the line / play                      1.46%  2–8  LOW
+Missed + broken tackles / play                 0.30   0.11–0.16  HIGH
+
+Range across 2 leagues (4 games each):
+  points/team-game 37.63–41.88, YPA 11.03–11.18, sack % 3.18–5.36, YPC 4.59–5.62

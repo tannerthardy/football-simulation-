@@ -1,0 +1,32 @@
+{
+  "schema": "pursuit-tackle-final-validation-v1",
+  "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "testTreeSha256": "8f2d463d598578f043d2c127a2e8c775bb33ce9821c5b88f4b5375948bd478f3",
+  "node": "v22.23.3",
+  "tests": {
+    "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1",
+    "files": 89,
+    "passed": 993,
+    "failed": 0,
+    "log": "checks/full-tests.log.gz"
+  },
+  "python": {
+    "command": "python3 -m unittest discover -s test -p test_*.py",
+    "passed": 66,
+    "log": "checks/python-tests.log.gz"
+  },
+  "typecheck": {
+    "command": "npm run typecheck",
+    "exitCode": 0,
+    "log": "checks/typecheck.log.gz"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "log": "checks/build.log.gz"
+  },
+  "limits": [
+    "Full engine suite ran after engine/test freeze. Exporter added subsequently; final typecheck/build and focused 22 packing/export tests pass.",
+    "Recording neutrality and physical finishes are checked per native collector; unit counts alone do not establish realistic football."
+  ]
+}

@@ -7,17 +7,31 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [pursuit, support and contact transfer](docs/reviews/pursuit-and-tackle-transfer.md)
+first. Five bounded controller repairs retain the same World and capacities.
+The strongest retained standing wrap changes YAC 20.42→9.66 yd and its
+12/24/48-substep spread from 3.50 to .0061 yd. This is one local mechanical
+breakthrough, not universal convergence or NFL readiness. The
+[packet](data/reviews/pursuit-and-tackle/README.md) preserves 162 runs, 96 passes,
+32 separate approach cases, component phases, adverse outcomes and 38 paired
+clips. All 993 TS/66 Python tests pass. Eight games improve scoring/YAC but
+worsen rushing 6.95→7.27 YPC; start with their source-pinned rushing tails,
+especially the untouched 90.6-yard Duo and 83.3-yard Trap, before changing force.
+Weak holds, genuine falls and tackles missed under limited information remain.
+No global resolution or anatomical model expansion was needed.
+
 Read [awareness and committed action](docs/reviews/decision-awareness-and-commitment.md)
-first. Carriers now use their attention-dependent decision beat, engaged
+for the preceding increment. Carriers use their attention-dependent decision beat, engaged
 defenders keep their known fit and consume delayed runner cues, CB/S man keys
 follow their assignment, and QB classification uses acquired memory with a
 no-new-evidence guard. The [packet](data/reviews/decision-awareness/README.md)
 retains component phases, all adverse outcomes, 934 TS/66 Python passing tests
 and 20 paired clips. Shared physics/capacities stay unchanged. The two-game
 guard materially worsens (35.5→49.25 points/team, 3.83→8.46 rush yards/carry);
-this is bounded correctness progress, not a calibration win. Start next with
-the retained Split Zone Over/L/S11 free-safety wrap at 3.5s, observed quality
-0.00: trace approach, acquisition and recovery before changing grip strength.
+this is bounded correctness progress, not a calibration win. The subsequent
+review traces the retained Split Zone Over/L/S11 free-safety wrap: its zero
+observed quality preceded a legitimate actual fingertip reach. Do not strengthen
+grips or ban desperate reaches to erase that delayed-picture discrepancy.
 Protection still uses private rush/drop state; LB attention, component-fresh
 QB evidence and visible possession remain open work. Facing is not eyes.
 

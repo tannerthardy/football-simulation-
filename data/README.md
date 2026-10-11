@@ -1,6 +1,17 @@
 # Shared NFL data
 
-Current review: [Awareness and committed action](../docs/reviews/decision-awareness-and-commitment.md).
+Current review: [Pursuit, support and contact transfer](../docs/reviews/pursuit-and-tackle-transfer.md).
+The [packet and commands](reviews/pursuit-and-tackle/README.md) retain 162 native
+runs, 96 passes, 32 separately labeled approach cases, component phases,
+standing-wrap refinement and all adverse outcomes. Watch the
+[38-clip offline comparison](../viewer/pursuit-and-tackle.zip).
+One retained standing wrap now finishes physically with .0061 yd YAC spread
+across three resolutions; unchanged shared capacities support the repair.
+Eight games have worse rushing despite better scoring/YAC, so the packet also
+records every rushing tail and starting input. These are generated-roster
+diagnostics, not NFL population estimates or universal physics readiness.
+
+Previous review: [Awareness and committed action](../docs/reviews/decision-awareness-and-commitment.md).
 The [evidence and reproduction commands](reviews/decision-awareness/README.md)
 retain source-pinned offensive, defensive and QB controls, 162 native runs,
 96 native passes, component isolation and all adverse outcomes. The

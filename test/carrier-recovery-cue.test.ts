@@ -12,12 +12,14 @@ import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', { strength: .55 });
-function make() {
-  const formation = FORMATION_BY_ID.ace_11;
+function make(offFeetWitness = false) {
+  const formation = offFeetWitness ? FORMATION_BY_ID.gun_wing_12 : FORMATION_BY_ID.ace_11;
   return new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
-    offCall: { formation, kind: 'run', flip: false, run: RUN_BY_ID.iz_strong, label: 'recovery cue witness' },
-    defCall: { personnel: 'base43', front: FRONT_BY_ID.under, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Under Cover 3' },
-    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3, record: false });
+    offCall: { formation, kind: 'run', flip: offFeetWitness,
+      run: offFeetWitness ? RUN_BY_ID.split_zone : RUN_BY_ID.iz_strong, label: 'recovery cue witness' },
+    defCall: { personnel: 'base43', front: offFeetWitness ? FRONT_BY_ID.over : FRONT_BY_ID.under,
+      coverage: COVERAGE_BY_ID.cover3, pressure: null, label: offFeetWitness ? 'Over Cover 3' : 'Under Cover 3' },
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: offFeetWitness ? 11 : 3, record: false });
 }
 type Decision = { heading: number; score: number; blocked: boolean; exits: boolean };
 type InspectCarrier = { evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): Decision };
@@ -112,50 +114,54 @@ describe('carrier recovery is a bounded visible-pose estimate', () => {
     expect(parked.blocked).toBe(false);
   });
 
-  it('the retained native OL witness reads off-feet pictures on its actual decision beats', () => {
-    const sim = make(), inspected = new WeakSet<BallCarrier>();
-    const decisions: Decision[] = [], allowances: number[] = [];
-    const originalSee = sim.see, originalTick = sim.tick;
-    let evaluating = false;
-    sim.see = function (observer, target, ...rest) {
-      const picture = originalSee.call(this, observer, target, ...rest);
-      if (evaluating && observer.slot === 'RB' && target.team !== observer.team
-        && (picture.pose === 'down' || picture.pose === 'rising'))
-        allowances.push(observedRecoveryAllowance(picture, target.profile.getUp, sim.dt));
-      return picture;
-    };
-    sim.tick = function () {
-      const rb = sim.slot('RB')!, behavior = rb.behavior;
-      if (behavior instanceof BallCarrier && !inspected.has(behavior)) {
-        inspected.add(behavior);
-        const controller = behavior as unknown as InspectCarrier, evaluate = controller.evaluate;
-        controller.evaluate = function (a, s, dir, designed) {
-          evaluating = true;
-          try {
-            const result = evaluate.call(this, a, s, dir, designed);
-            decisions.push({ ...result });
-            return result;
-          } finally { evaluating = false; }
-        };
+  it('retains normal native decisions and reads actual off-feet pictures in the fixed Split Zone encounter', () => {
+    for (const offFeetWitness of [false, true]) {
+      const sim = make(offFeetWitness), inspected = new WeakSet<BallCarrier>();
+      const decisions: Decision[] = [], allowances: number[] = [];
+      const originalSee = sim.see, originalTick = sim.tick;
+      let evaluating = false;
+      sim.see = function (observer, target, ...rest) {
+        const picture = originalSee.call(this, observer, target, ...rest);
+        if (evaluating && observer.slot === 'RB' && target.team !== observer.team
+          && (picture.pose === 'down' || picture.pose === 'rising'))
+          allowances.push(observedRecoveryAllowance(picture, target.profile.getUp, sim.dt));
+        return picture;
+      };
+      sim.tick = function () {
+        const rb = sim.slot('RB')!, behavior = rb.behavior;
+        if (behavior instanceof BallCarrier && !inspected.has(behavior)) {
+          inspected.add(behavior);
+          const controller = behavior as unknown as InspectCarrier, evaluate = controller.evaluate;
+          controller.evaluate = function (a, s, dir, designed) {
+            evaluating = true;
+            try {
+              const result = evaluate.call(this, a, s, dir, designed);
+              decisions.push({ ...result });
+              return result;
+            } finally { evaluating = false; }
+          };
+        }
+        return originalTick.call(this);
+      };
+      const result = sim.run();
+      // The former assertion pinned 3.35 s and a specific heading from the old
+      // fixed 0.10 s reader. Finite player-specific cadence legitimately changes
+      // those beats and trajectories. Held-picture mechanism invariants above
+      // remain strict. Keep Inside Zone Under/right/seed 3 as the ordinary
+      // native control; its current path consumes no off-feet pictures. The
+      // retained Split Zone Over/left/seed 11 supplies actual down/rising cues
+      // through the same existing reads, without forcing falls or an outcome.
+      expect(result.outcome).not.toBe('timeout');
+      expect(decisions.length).toBeGreaterThan(0);
+      if (offFeetWitness) expect(allowances.length).toBeGreaterThan(0);
+      for (const decision of decisions) {
+        expect(Number.isFinite(decision.heading)).toBe(true);
+        expect(Number.isFinite(decision.score)).toBe(true);
       }
-      return originalTick.call(this);
-    };
-    const result = sim.run();
-    // The former assertion pinned 3.35 s and a specific heading from the old
-    // fixed 0.10 s reader. Finite player-specific cadence legitimately changes
-    // those beats and trajectories. Held-picture mechanism invariants above
-    // remain strict; native integration checks actual finite consumed cues,
-    // with no guaranteed opening, tackle failure or positive yardage.
-    expect(result.outcome).not.toBe('timeout');
-    expect(decisions.length).toBeGreaterThan(0);
-    expect(allowances.length).toBeGreaterThan(0);
-    for (const decision of decisions) {
-      expect(Number.isFinite(decision.heading)).toBe(true);
-      expect(Number.isFinite(decision.score)).toBe(true);
-    }
-    for (const allowance of allowances) {
-      expect(allowance).toBeGreaterThanOrEqual(sim.dt);
-      expect(allowance).toBeLessThanOrEqual(2);
+      for (const allowance of allowances) {
+        expect(allowance).toBeGreaterThanOrEqual(sim.dt);
+        expect(allowance).toBeLessThanOrEqual(2);
+      }
     }
   });
 });
