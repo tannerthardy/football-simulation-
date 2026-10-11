@@ -109,7 +109,11 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
   const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, path, { horizon, step: 0.1, radius: reach });
   let bias = angleBias.get(a);
   if (bias === undefined) {
-    bias = (1 - a.r('pursuit')) * 0.3 + sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
+    // Angle error is noise around the perceived intercept. The delayed
+    // picture of the carrier already makes pursuers lag him; a systematic
+    // lean toward his past path on top of that sent most near-misses in
+    // from behind (sim 2/3, NFL 1/3).
+    bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
   const p = path(clamp(ip.t - bias, 0, horizon));
