@@ -5,7 +5,8 @@ import type { DefSlot, Gap } from '../playbook/types.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
-import { chase, goTo, stand, track } from './behaviors/common.js';
+import { blendApproach, chase, gatheringApproach, goTo, stand, track } from './behaviors/common.js';
+import { chooseApproach } from './approach-control.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -144,7 +145,24 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
     const aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
-    return track(a,aim,{x:0,y:0},{speed:.9,gain:3,facing:Math.PI});
+    const fit = track(a,aim,{x:0,y:0},{speed:.9,gain:3,facing:Math.PI});
+    // A fit landmark is not permission to run through an approaching back.
+    // Gather for a personally identified runner threatening this surface,
+    // even before he crosses the old LOS pursuit gate. Keep the installed
+    // shoulder and use the same short, force-limited approach preview as
+    // ordinary pursuit; a distant/inside runner still leaves the edge intact.
+    const contact = a.profile.radius + c.profile.radius + a.profile.reach * .65;
+    const support = a.body.support;
+    const free = !a.isDown(sim.t) && !sim.bond?.tacklers.includes(a) && (!support ||
+      (support.state === 'up' && !support.foot && !support.strike &&
+        Math.hypot(support.lean.x,support.lean.y) < 1e-6 && Math.hypot(support.load.x,support.load.y) < 1e-6));
+    if (!premesh && seen.carrying === true && free && job.side * (seen.pos.y - gy) >= -contact) {
+      const offset = aim.y-seen.pos.y;
+      const { near, gather } = gatheringApproach(a,seen,contact,offset);
+      const approach = chooseApproach(a,seen,contact,offset,fit,sim.t);
+      return blendApproach(approach,near,gather);
+    }
+    return fit;
   }
   if (job.technique === 'lag' && Math.abs(seen.vel.y) > .8) gy = gapY(sim.offAlign,'A',-Math.sign(seen.vel.y));
   const flow = clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);

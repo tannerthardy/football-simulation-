@@ -133,15 +133,13 @@ export function leverage(a: Agent, y: number): number {
   return inside * (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
 }
 
-export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
-  const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  const seen = sim.see(a, target, look);
+/** Gather from an already consumed runner picture. A fit and a chase use
+ * the same braking and achievable arrival request; no new observation,
+ * decision, random draw or physical capability is introduced here. */
+export function gatheringApproach(a: Agent, seen: import('../perception.js').Perceived,
+  contact: number, offset: number): { near: MoveCommand | null; gather: number } {
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
-  const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
-  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
-  const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
-    * clamp((dist - contact) / 6, 0, 1);
   let near: MoveCommand | null = null;
   let gather = 0;
   if (dist > 0.3) {
@@ -183,9 +181,31 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
       }
       near = {vel,facing:Math.atan2(uy, ux),cutSkill,push:dist<contact+.5?1:undefined,
         posture:.4+.25*tackle} as MoveCommand;
-      if (gather >= 1 && !sim.bond?.tacklers.includes(a)) return near;
     }
   }
+  return { near, gather };
+}
+
+/** Preserve the original request outside the physically needed gather. */
+export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather: number): MoveCommand {
+  if (!near || gather <= 0) return far;
+  const travel = far.facing ?? angleOf(far.vel);
+  return { ...near, vel: { x: far.vel.x + (near.vel.x - far.vel.x) * gather,
+    y: far.vel.y + (near.vel.y - far.vel.y) * gather },
+    facing: travel + angleDiff(near.facing!, travel) * gather };
+}
+
+export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
+  const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
+  const seen = sim.see(a, target, look);
+  const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+  const tackle = a.r('tackling');
+  const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
+  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
+  const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
+    * clamp((dist - contact) / 6, 0, 1);
+  const { near, gather } = gatheringApproach(a, seen, contact, offset);
+  if (gather >= 1 && !sim.bond?.tacklers.includes(a)) return near!;
   const p = pursuitPoint(sim, a, target, horizon);
   // Away from the ball, pursuit runs below top speed (more so for low motors).
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
@@ -193,11 +213,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) return original;
   const far = chooseApproach(a, seen, contact, offset, original, sim.t);
-  if (!near || gather <= 0) return far;
-  const travel = far.facing ?? angleOf(far.vel);
-  return { ...near, vel: { x: far.vel.x + (near.vel.x - far.vel.x) * gather,
-    y: far.vel.y + (near.vel.y - far.vel.y) * gather },
-    facing: travel + angleDiff(near.facing!, travel) * gather };
+  return blendApproach(far, near, gather);
 }
 
 export function ttr(a: Agent, p: Vec2, radius = 0): number {
