@@ -47,4 +47,24 @@ describe('sim mechanism export', () => {
     expect(left.xy[1][3]).toBeCloseTo(160 / 3 - 22);
     expect(right.xy[1][3]).toBeCloseTo(22);
   });
+
+  it('keeps the intended target separate from the catcher and his post-catch contact', () => {
+    const p = play(1);
+    p.kind = 'pass';
+    p.replay!.players.push({ team: 'O', slot: 'X', name: 'w', jersey: 4, pos: 'WR' });
+    for (const frame of p.replay!.frames) frame.agents.push(52 + frame.t, 24, 0);
+    p.replay!.events = [
+      { t: 0.05, type: 'carrier_contact', a: 2, b: 0 },
+      { t: 0.1, type: 'throw', a: 0, b: 1 },
+      { t: 0.15, type: 'catch', a: 3 },
+      { t: 0.2, type: 'tackle_wrap', a: 2, b: 3 },
+      { t: 0.2, type: 'tackle', a: 2, b: 3 },
+    ];
+    const exported = commonPlay(p, 'different-catcher')!;
+    expect(exported.target).toBe(1);
+    expect(exported.receiver).toBe(3);
+    expect(exported.events.first_contact).toBe(0.2);
+    expect(exported.events.catch).toBe(0.15);
+    expect(exported.carrier).toBeNull();
+  });
 });

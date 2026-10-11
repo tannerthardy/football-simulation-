@@ -95,6 +95,7 @@ export function commonPlay(p: PlayLog, id: string) {
     players: rp.players.map(a => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER' })),
     dt: 0.1, xy, ball_y: r2(Y(ball[1])), events, carrier,
     target: throwEv?.b ?? null,
+    receiver,
     blocks: [...pairs.values()],
     cell: { concept: p.plan?.concept ?? null, coverage: p.plan?.coverage ?? null },
   };

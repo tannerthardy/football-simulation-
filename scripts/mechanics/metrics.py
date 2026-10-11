@@ -17,6 +17,8 @@ Common play format (one JSON object per play):
   events               seconds after the snap: handoff, pass_forward,
                        pass_arrived, first_contact, end (whistle or last frame)
   carrier, target      player index or null
+  receiver             optional actual catcher index; target remains the throw's
+                       intended receiver. Older/NFL plays use target for both.
 
 Positions are compared directly; speeds and accelerations are derived from
 positions (quantized to 0.1 yd, as the sim records them) with the same
@@ -70,7 +72,10 @@ class Play:
         return max(0, min(self.frames - 1, int(round(t / self.dt))))
 
     def live(self, t):
-        return t <= self.end + 1e-9 and self.k(t) * self.dt >= t - 1e-9
+        # Events can occur between recorded frames. Nearest-frame rounding
+        # selects the sample; it must not decide whether the event was live.
+        # Require the event itself to be inside both the recording and whistle.
+        return 0 <= t <= self.end + 1e-9 and t <= (self.frames - 1) * self.dt + 1e-9
 
     def pos(self, i, k):
         row = self.xy[k]
@@ -193,17 +198,18 @@ def pass_metrics(p, out):
             k = p.k(t)
             out[f"route.separation_{t}s"].extend(p.nearest(i, k) for i in eligible if p.pos(i, k)[0] >= 3.0)
     target, catch = p.raw.get("target"), ev.get("catch")
+    receiver = p.raw.get("receiver", target)
     if target is not None and throw is not None:
         out["route.target_depth_at_throw"].append(p.pos(target, p.k(throw))[0])
-    if target is not None and catch is not None:
+    if receiver is not None and catch is not None:
         kc = p.k(catch)
-        out["catch.depth"].append(p.pos(target, kc)[0])
-        out["catch.speed_at_catch"].append(p.speed(target, kc))
-        out["catch.yards_after_catch"].append(p.raw["yards"] - p.pos(target, kc)[0])
+        out["catch.depth"].append(p.pos(receiver, kc)[0])
+        out["catch.speed_at_catch"].append(p.speed(receiver, kc))
+        out["catch.yards_after_catch"].append(p.raw["yards"] - p.pos(receiver, kc)[0])
         out["catch.defenders_within_5yd_at_catch"].append(
-            sum(1 for d in defenders if p.dist(d, target, kc) <= 5.0))
+            sum(1 for d in defenders if p.dist(d, receiver, kc) <= 5.0))
         contact = ev.get("first_contact")
-        contact_metrics(p, out, "catch", target, contact if contact is not None and contact >= catch else None)
+        contact_metrics(p, out, "catch", receiver, contact if contact is not None and contact >= catch else None)
     block_metrics(p, out, "pass")
     ol = p.who("O", "OL")
     if ol and p.live(2.0):
@@ -384,7 +390,7 @@ DEFINITIONS = {
     "pass.rushers": "Defenders who get at least 1 yd into the backfield by the throw or 2.5 s.",
     "route.separation_Ns": "Before the throw, each WR/TE/RB at least 3 yd downfield: distance to the nearest defender.",
     "route.target_depth_at_throw": "Targeted receiver's depth past the line when the ball is thrown.",
-    "catch.*": "Completed passes: catch depth, receiver speed at the catch, yards after the catch.",
+    "catch.*": "Completed passes: actual catcher's depth, speed and yards after catch. Uses receiver when present; inputs without that channel fall back to target.",
     "run.*@family": "The same run metric within one concept family (inside_zone, outside_zone, gap_pull, man_duo, draw).",
     "move.*": "Per player per play, from positions: top speed (yd/s), peak acceleration and deceleration (yd/s^2), players who reach at least 1 yd/s.",
 }
