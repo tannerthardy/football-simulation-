@@ -2,15 +2,26 @@
 
 Start with these shared project references:
 
+- [Active grip force travel and current engine priorities](docs/reviews/active-grip-force-travel-and-current-priorities.md):
+  **latest increment and priorities.** Achieved active torso and lower-grip
+  forces now carry midpoint body travel through the existing shared budgets.
+  Both independent 48-trial oracles pass; actual lower support remains active.
+  Read the unchanged-input football guards, adverse cases and 18 paired clips.
+  Keep the reduced shared model. Next: observed coverage-help persistence,
+  retained OL recovery/combo/work pickup and pursuit in traffic. The
+  [coverage help audit](docs/reviews/coverage-roof-priority-audit.md) is a read-only
+  evidence and design review, not an implemented estimator. Do not delete the six-yard cap
+  alone, expand anatomy or increase global resolution. Final physics OK remains
+  pending; physics-first permits diagnosed football controller improvements.
 - [Visible help and primary route discipline](docs/reviews/visible-help-and-primary-route-discipline.md):
-  **latest increment and priorities.** Physical upright/down/rising pose now
+  Previous perception/controller increment. Physical upright/down/rising pose now
   enters the same delayed observation as movement. Unavailable observed help
   cannot supply a deep roof; stale pictures can still fool defenders. Confirmed
   own vertical stems retain responsibility before five yards. Read the staged
   controls, all 24 ordinary pairs and mixed outcomes; pose-only has no measured
   ordinary endpoint effect. The isolated active torso-reel oracle fails position
-  while force/work checks pass: repair that local path next, then football
-  transfer. The six-yard roof maximum remains unresolved. No body solver or
+  while force/work checks pass; the newer increment repairs both attachment
+  types and retains transfer. The six-yard roof maximum remains unresolved. No body solver or
   capacity changes; full anatomical expansion remains paused.
 - [Run-block contact fits and current priorities](docs/reviews/run-block-fit-and-current-priorities.md):
   Previous controller increment and broad review. Reach/cutoff OL use their

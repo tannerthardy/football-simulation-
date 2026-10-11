@@ -1,13 +1,25 @@
 # Physics development and testing
 
+Read [Active grip force travel and current engine priorities](reviews/active-grip-force-travel-and-current-priorities.md)
+first. Achieved active grip forces now use midpoint body travel for torso and
+lower attachments, with unchanged force/support budgets and resolution. Both
+48-trial oracles pass; the lower test uses real moving support. Football guards
+retain mixed outcomes and small path changes. Keep the reduced shared model;
+next pursue observed coverage-help persistence, OL recovery/combo/work pickup
+and pursuit in traffic. The [coverage help audit](reviews/coverage-roof-priority-audit.md)
+is the next bounded design experiment, not shipped coverage logic. Do not
+delete its depth limit alone or expand anatomy for a controller mistake.
+Localized contact-onset/support-chart convergence remains separate numerical
+debt; final universal physics OK is pending.
+
 Read [Visible help and primary route discipline](reviews/visible-help-and-primary-route-discipline.md)
-first. The existing physical pose now reaches delayed perception; confirmed own
+for the preceding increment. The existing physical pose now reaches delayed perception; confirmed own
 vertical stems keep responsibility before five yards. Ordinary outcomes remain
 mixed, and the pose-only change has 24 exact ordinary endpoints. Keep physical
 execution, observed decisions and game results distinct. The active torso-reel
 oracle exposes a small local position-integration defect despite correct force,
-momentum and work accounting. Repair that achieved-force travel next, then
-require ordinary tackle/block and multi-contact transfer. No new solver, strength
+momentum and work accounting. The newer report repairs both attachment types
+and retains ordinary tackle/block and multi-contact transfer. No new solver, strength
 fit or anatomy is justified by this error. Final physics OK remains pending.
 
 Read [Run-block contact fits and current priorities](reviews/run-block-fit-and-current-priorities.md)

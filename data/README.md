@@ -1,6 +1,16 @@
 # Shared NFL data
 
-Current engine status: [Visible help and primary route discipline](../docs/reviews/visible-help-and-primary-route-discipline.md).
+Current engine status: [Active grip force travel and current priorities](../docs/reviews/active-grip-force-travel-and-current-priorities.md).
+The [evidence and commands](reviews/physics-world/grasp-reel/README.md) retain
+both 48-trial force/travel oracles, all 144 run and 64 tackle pairs, sustained
+contact guards, mixed games and the separate torso-only phase. Watch the
+[18 paired tackle clips](../viewer/grasp-reel.html) or [offline ZIP](../viewer/grasp-reel.zip).
+This fixes achieved force-to-body travel without changing capabilities or
+resolution. It is engine validation, not new NFL observations or force fitting.
+The [coverage help audit](../docs/reviews/coverage-roof-priority-audit.md) records
+the next unimplemented experiment and its falsifying controls.
+
+Previous controller status: [Visible help and primary route discipline](../docs/reviews/visible-help-and-primary-route-discipline.md).
 The [evidence and commands](reviews/physics-world/visible-help/README.md) retain
 three source-pinned 24-play phases, staged latency/recovery controls, all adverse
 outcomes and a failing local active-grasp position oracle. Watch the

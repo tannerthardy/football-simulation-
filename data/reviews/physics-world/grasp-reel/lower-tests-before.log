@@ -1,0 +1,48 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ❯ test/grasp-reel-travel.test.ts (9 tests | 2 failed) 42ms
+   ✓ finite torso-reel travel > integrates saturated muscular force exactly with 1 substeps 8ms
+   ✓ finite torso-reel travel > integrates saturated muscular force exactly with 6 substeps 5ms
+   ✓ finite torso-reel travel > preserves unforced translating travel with a passive torso hold 2ms
+   ✓ finite torso-reel travel > uses the same force/travel relationship after rotating or mirroring by 0.8 radians 3ms
+   ✓ finite torso-reel travel > uses the same force/travel relationship after rotating or mirroring by -0.8 radians 2ms
+   ✓ finite torso-reel travel > scales motion progressively with the same weak and strong arm capacities 5ms
+   ✓ finite torso-reel travel > does not advance a requested reel when another reachable action has exhausted shared arm work 2ms
+   × finite lower-reel body travel > retains Newtonian COM motion with an ordinary moving support coordinate and 20 force cap 9ms
+     → expected 0.000052083333333285964 to be less than 1e-10
+   × finite lower-reel body travel > retains Newtonian COM motion with an ordinary moving support coordinate and 200 force cap 2ms
+     → expected 0.0005208333333333037 to be less than 1e-10
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/grasp-reel-travel.test.ts > finite lower-reel body travel > retains Newtonian COM motion with an ordinary moving support coordinate and 20 force cap
+AssertionError: expected 0.000052083333333285964 to be less than 1e-10
+ ❯ test/grasp-reel-travel.test.ts:181:41
+    179|       positionErrors.push(Math.hypot(q.pos.x - expectedX, q.pos.y));
+    180|     }
+    181|     expect(Math.max(...positionErrors)).toBeLessThan(1e-10);
+       |                                         ^
+    182|   });
+    183| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/grasp-reel-travel.test.ts > finite lower-reel body travel > retains Newtonian COM motion with an ordinary moving support coordinate and 200 force cap
+AssertionError: expected 0.0005208333333333037 to be less than 1e-10
+ ❯ test/grasp-reel-travel.test.ts:181:41
+    179|       positionErrors.push(Math.hypot(q.pos.x - expectedX, q.pos.y));
+    180|     }
+    181|     expect(Math.max(...positionErrors)).toBeLessThan(1e-10);
+       |                                         ^
+    182|   });
+    183| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 passed (9)
+   Start at  01:51:04
+   Duration  427ms (transform 183ms, setup 0ms, collect 226ms, tests 42ms, environment 0ms, prepare 47ms)
+

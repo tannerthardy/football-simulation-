@@ -94,7 +94,7 @@ const panelPlays = films.flatMap((film, group) => film.plays.map((p, index) => {
       : ' Fixed primary encounter; roster/seed/mirror selected for film before outcomes.')
     + (traffic ? ' One standing idle tight end occupies the encounter corridor; production spacing, occlusion and collision remain active.'
       : ' One straight runner and one pursuer; 20 other bodies parked.')
-    + ' Generated athletic profiles and ordinary tackle execution rolls/grip physics are unchanged.'
+    + ' Generated athletic profiles and ordinary tackle execution rolls are unchanged. Physical contact follows each recorded engine version.'
     + ' Viewer clocks subtract 2 s from raw engine labels; geometry and event labels retain the ordinary 50 ms tick convention.';
   const log: PlayLog = { index, quarter: 1, clock: 0, offense: 'OFF', down: 1, distance: 10, yardline: 30,
     call: `${labels[group]} · ${name}`, defense: traffic ? 'One pursuer; idle TE in traffic' : 'One pursuer; bystanders parked',
