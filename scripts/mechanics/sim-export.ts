@@ -3,16 +3,20 @@
  * format read by scripts/mechanics/metrics.py (see that file for the format).
  *
  *   node --import tsx scripts/mechanics/sim-export.ts [--seed 101] [--games 8] [--out out/mechanics/sim-plays.jsonl.gz]
+ * Add --review-out out/mechanics/outcomes.json for native stats/events and
+ * situation labels without copying replay frames or changing simulation.
  *
  * Teams are generated once (equal strength) and play consecutive seeds, so a
  * fixed seed and game count is a reproducible sample of the current engine.
  */
-import { createWriteStream, mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { createHash } from 'node:crypto';
+import { createWriteStream, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { createGzip } from 'node:zlib';
 import { Rng } from '../../src/core/rng.js';
 import { simulateGame, type PlayLog } from '../../src/game/game.js';
 import { generateTeam } from '../../src/league/team.js';
+import { sourceVersion } from '../source-version.js';
 
 const WIDTH = 160 / 3;
 const GROUP: Record<string, string> = {
@@ -91,6 +95,7 @@ export function commonPlay(p: PlayLog, id: string) {
     players: rp.players.map(a => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER' })),
     dt: 0.1, xy, ball_y: r2(Y(ball[1])), events, carrier,
     target: throwEv?.b ?? null,
+    receiver,
     blocks: [...pairs.values()],
     cell: { concept: p.plan?.concept ?? null, coverage: p.plan?.coverage ?? null },
   };
@@ -101,17 +106,33 @@ async function main() {
   const games = Number(arg('--games', '8'));
   const handContact = process.argv.includes('--common-patch') ? 'patch' : 'center';
   const out = arg('--out', 'out/mechanics/sim-plays.jsonl.gz');
+  const reviewOut = arg('--review-out', '');
+  if (process.argv.includes('--review-out') && !reviewOut) throw new Error('--review-out requires a path');
+  if (reviewOut && resolve(reviewOut) === resolve(out)) throw new Error('Review and tracking outputs must differ');
+  const sourceBefore = sourceVersion();
   mkdirSync(dirname(out), { recursive: true });
   const gz = createGzip();
   const done = new Promise<void>(resolve => gz.pipe(createWriteStream(out)).on('finish', () => resolve()));
   const rng = new Rng(seed);
   const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 });
   const away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+  const reviewGames: unknown[] = [], reviewPlays: unknown[] = [];
+  const rosterSha256 = createHash('sha256').update(JSON.stringify([home, away])).digest('hex');
   let count = 0;
   for (let g = 0; g < games; g++) {
     const result = simulateGame(home, away, { seed: seed + g, record: true, handContact });
+    if (reviewOut) reviewGames.push({ seed: seed + g, score: result.score,
+      home: home.abbr, away: away.abbr, plays: result.log.length });
     for (const p of result.log) {
-      const play = commonPlay(p, `S${seed + g}-P${p.index + 1}`);
+      const id = `S${seed + g}-P${p.index + 1}`;
+      if (reviewOut && (p.kind === 'run' || p.kind === 'pass')) {
+        const { replay, ...native } = p;
+        const touchdown = replay?.events.find(e => e.type === 'touchdown');
+        reviewPlays.push({ id, gameSeed: seed + g, ...native,
+          events: replay?.events ?? [],
+          touchdownTeam: touchdown?.a !== undefined ? replay!.players[touchdown.a]?.team ?? null : null });
+      }
+      const play = commonPlay(p, id);
       if (!play) continue;
       gz.write(JSON.stringify(play) + '\n');
       count++;
@@ -120,6 +141,18 @@ async function main() {
   }
   gz.end();
   await done;
+  const sourceAfter = sourceVersion();
+  if (sourceAfter !== sourceBefore) throw new Error('Engine changed during game collection');
+  if (reviewOut) {
+    mkdirSync(dirname(reviewOut), { recursive: true });
+    writeFileSync(reviewOut, JSON.stringify({ schema: 'native-game-outcome-review-v1', sourceBefore, sourceAfter,
+      collectorSha256: createHash('sha256').update(readFileSync('scripts/mechanics/sim-export.ts')).digest('hex'),
+      cohort: { seed, games, strength: .55, rosterSha256, handContact },
+      rosters: [home, away].map(t => ({ abbr: t.abbr, players: t.roster.map(p => ({ id: p.id,
+        position: p.position, ratings: p.ratings, measurables: p.measurables })) })),
+      games: reviewGames, plays: reviewPlays,
+      limitations: 'Native generated rosters and adaptive calls. Events/pressure flags describe association, not causal attribution. Includes nullified plays explicitly. Distance-based pressure is measured separately from the unchanged common plays by metrics.py. No additional player observation, decision or RNG call.' }));
+  }
   console.error(`${count} scrimmage plays -> ${out}`);
 }
 

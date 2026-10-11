@@ -73,35 +73,27 @@ report at the commit that added this system, so you can see what moved.
    test in `test/test_mechanics_metrics.py`, re-run `mech:nfl` and commit the
    new aggregate JSON.
 
-## What the report shows (two 8-game samples, seeds 101 and 202)
+## Current findings
 
-Matching on both samples (the guard): top speeds of backs, tight ends and
-receivers; yards before contact; box count; carrier speed at contact; tackler
-speed on catches; number of pass rushers; pass blocks still engaged at 2 s;
-catch and target depth.
+Read the [current comparison](reviews/nfl-gap-review.md) and its
+[compact receipt](../data/reviews/current/nfl-gap-review.json). They replace the
+older two-cohort table here and distinguish native outcomes from tracking
+proxies. Catch-to-pursuit and first effective contact are the strongest leads;
+early route separation is already small. The recent trench controller improved the
+drive distribution, while ordinary gap/pull runs remain weak. Do not carry
+older numbers forward as current evidence.
 
-Biggest gaps. Each holds on both sim samples, and the NFL value is stable
-across the seasons that measure it:
+Two measurement repairs matter: admit a live subframe contact based on its
+recording/whistle window, and follow the actual catcher rather than the throw's
+intended target. `sim-export.ts` now records both. `outcomes.py` can recover
+actual recipients in older common packets from their paired native sidecars.
+Without that sidecar, legacy catch measurements remain limited. NFL adapters
+keep their official receiver fallback and integer-frame admission; the current
+repair does not require pretending those aggregates were reprocessed.
 
-| Area | NFL (2022; other seasons) | Sim | Question to investigate |
-|---|---|---|---|
-| Run tackler's speed at first contact (median) | 2.85 yd/s (2017: 2.85) | 1.4-1.6 | Tacklers wait for the back instead of attacking him? |
-| Run contacts that are head-on | 9% (2017: 9%) | 20-22% | Same question: square-and-wait approach. |
-| First contact to whistle on runs (median) | 1.4 s (2017: 1.2) | 0.7 s | Runs end almost on contact; real ones keep moving. |
-| Carrier speed 0.5 s after run contact (median) | 3.3 yd/s (2017: 3.0) | 2.0-2.5 | Contact stops backs too abruptly. |
-| Catches: contact broken (still >= 4 yd/s and 5+ more yards) | 12.5% (2017: 10%) | 23-27% | Open-field tackles on receivers fail far too often, mostly from the side. |
-| Yards after catch (90th pct) | 12.5 (2017: 15) | 28-45 | The same open-field tackling problem, at the scoreboard. |
-| Route separation 1.5 s after the snap (median) | 3.3 yd (2017: 2.9; 2021: 3.4) | 1.9 | Coverage sits on receivers too early. |
-| Defender closing while the ball is in the air (median) | +0.5 yd (2017: +0.5; 2023: +0.7) | -0.1 | Defenders don't break on the ball. |
-| Separation at the throw (median) | 3.9 yd (2017: 3.4; 2023: 3.3) | 2.1-2.4 | QBs throw into tighter windows. |
-| Engaged DL driven back at 3 s (90th pct) | 2.5 yd (2017: 2.5) | 4.1-4.6 | Losing defenders never re-anchor. |
-| Engaged DL at 1 s (median; negative = penetrating) | -0.6 (2017: -0.7) | -0.3/-0.4 | Get-off too passive (rusher speed at 0.5 s also low). |
-| Outside zone run yards (median / 90th pct) | 3 / 10 | 4.4-5.9 / 15-20 | What breaks on the edge? |
-| Gap/pull run yards (median) | 3 | 0.7-0.8 | Why do power/counter/trap die at the line? |
-| QB peak deceleration (median) | 2.9 yd/s² (2017: 3.3) | 5.0-5.6 | QBs stop dead at the end of the drop. |
-
-Generated teams and small samples move medians, so confirm a gap with a
-second seed before acting on it.
+All twelve existing guards still pass on both current cohorts and pooled.
+Passing a guard does not prove a good decision, actual grip or correct force.
+Generated teams, call mix and sparse subgroups still need matched comparisons.
 
 ## The data we have
 

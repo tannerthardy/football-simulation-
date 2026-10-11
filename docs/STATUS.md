@@ -27,6 +27,22 @@ left all 24 `src/physics` files and the physical-profile mapping unchanged.
 The opt-in contact prototype below extends World without changing its production
 default. Complete check results and source pins are in the current receipts.
 
+## What to investigate now
+
+The [NFL comparison](reviews/nfl-gap-review.md) adds two native eight-game
+roster cohorts and corrected actual-catcher/contact measurements, with unchanged
+engine behavior. Mean completion gain is 20.2 yd against 10.9; mean YAC is
+12.3 against 5.2. Early route separation is already small. Trace catch-window selection,
+arrival momentum, post-catch pursuit and first effective contact before globally
+changing coverage or strength. Light film has nominated cases, not proved a cause.
+The quoted one-yard `playBall` stand-off is already gone.
+
+Next are run-tackle approaches and ordinary gap/pull failures; the run mean hides
+poor success and rare escapes. Match pocket pressure by release time, QB depth
+and protection. The current [receipt](../data/reviews/current/nfl-gap-review.json)
+includes a random 48-completion review that supplements the all-snap review below.
+Historical catch summaries without actual-recipient sidecars remain legacy.
+
 ## Latest run-game work
 
 The [combination receipt](../data/reviews/current/run-combination-security.json)
@@ -64,12 +80,13 @@ climber contacts fall from 4 to 1, while the supplemental panel rises from 4 to
 5. A longer Under run remains an adverse tackle/pursuit witness, not a solved
 run game. Trace the missed RG climb and actual grips before another change.
 
-**Next shared-physics priority: coherent hand/contact angular transfer.** The
+**Next shared-physics priority remains coherent hand/contact angular transfer.** The
 isolated oracle fails under tangential restraint with no ground reaction or
 body spin; refinement does not fix it. A single effective common patch must
 couple point velocity, angular effective mass, force/moments and rotational
 work. Football payoff and implementation cost are unmeasured. Do that before
-richer shoulder control, independent hands or additional foot detail.
+richer shoulder control, independent hands or additional foot detail. This
+bounded law repair can proceed alongside football-controller diagnosis.
 
 **Next tackling priority: attainable approaches**, tracing consumed picture,
 requested motion, achieved support and actual first grip. Frontal gathering
@@ -91,12 +108,12 @@ historic source-equivalence assertions, and the eight-game YBC mechanism guard.
 Trace those first divergences before promotion. No controller, capacity or
 assertion was changed to rescue these outcomes.
 
-The latest eight-game trench check preserves all twelve guarded mechanisms,
-but scoring is 67.4 points per team-game and 90th-percentile YAC 47.6 yd. The
-prior drive-recovery check averaged 58 points. These native-game checks have
-diverging calls/RNG, not matched-play explanations or readiness proof. The drive
-proxy's 90th percentile is now 2.6 yd; that number did not select the controller.
-Contact and coverage still need substantial work; see [NFL data](NFL_DATA.md).
+Both current cohorts preserve all twelve guarded mechanisms. Their scoring is
+67.4 and 44.4 points per team-game; corrected tracking YAC p90 is 47.6 and
+31.6 yd. These native-game checks have diverging calls/RNG, not matched-play
+explanations or readiness proof. The drive proxy's p90 is 2.6 and 3.2 yd;
+those numbers did not select the controller. Contact and coverage still need
+substantial work; see the current review and [NFL data](NFL_DATA.md).
 
 ## Random film review: choose the next investigation
 
@@ -123,7 +140,7 @@ Thirty-two plays had no clear wrong mechanism under the positional rubric;
 the safety **does brake** before missing. G7-P109 retreats and G3-P068 throws
 away; neither supports a blanket claim that QBs always freeze.
 
-The original random review prioritizes **pocket adjustment diagnosis**, using
+The original all-snap review nominated **pocket adjustment diagnosis**, using
 G1-P057 (2.6–3.2s), G6-P140 (2.3–2.75s) and G2-P037 (2.5–2.8s), plus ordinary
 clean-pocket controls.
 Trace what was seen, requested and achieved before changing anything.

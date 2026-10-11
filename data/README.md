@@ -10,6 +10,13 @@ Use real data to test mechanisms in comparable situations. Outcome averages
 can reveal a concern; they cannot tell us which controller or physical law is
 wrong. [Validation](../docs/VALIDATION.md) explains the layers and reserved exam.
 
+The [current NFL comparison](../docs/reviews/nfl-gap-review.md) includes two
+native roster cohorts, clean 2022–23 outcomes, limited context standardization
+and corrected actual-catcher/contact measurements. Its compact receipt is
+[here](reviews/current/nfl-gap-review.json). Reproduction commands use the
+existing tracking exporter plus `scripts/mechanics/nfl-outcomes.py` and
+`outcomes.py`; raw inputs, sidecars and full reports stay ignored.
+
 ## Inputs we have studied
 
 | Data | Useful evidence | Limits |
