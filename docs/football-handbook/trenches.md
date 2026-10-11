@@ -9,7 +9,7 @@ protection authority. An engine should represent those choices explicitly.
 
 The development baseline for the findings here is the position-technique review
 following `80e8151`; the promoted cutoff-only source is `dd4cbb75…`. Read
-[the current status](../archive/reviews/position-technique-and-awareness.md#what-shipped-and-how-it-was-checked)
+[the current status](../STATUS.md)
 before using a historical report as a description of today's engine. The
 cutoff repair demonstrated actual containment with unchanged physical laws;
 it did not improve every run or earn an NFL realism claim. The QB torso-direction
@@ -576,6 +576,39 @@ useful path denial in more than one relevant interaction. Stable bounded
 physics is a necessary foundation; believable teaching, correct counts and
 fallible evidence are separate requirements. No league scoring target or
 mandatory yards threshold should replace those checks.
+
+## Run-film coaching checks
+
+The current [combo audit](../../data/reviews/current/run-combo-audit.json)
+separates three questions often hidden by a prolonged double:
+
+- **Can the remaining blocker keep the surface?** Grade that player's acquired
+  contact and support, rather than the departing player's fit. Loaded hands
+  establish transmitted force; they do not establish won inside hands.
+- **Can the climber actually leave?** A linebacker target does not make a path
+  through the original defender available. Departure and second-level arrival
+  still need achievable movement and body clearance.
+- **Does the defender have a recovery response?** Inspect supported posture,
+  local load, changed surface and foot replacement before changing strength.
+  A short displacement can be an effective block; continued drive can also be
+  valid when no backer threatens. Do not impose a universal stall distance.
+
+Jerry Campbell's public [DL run/pass teaching][dl] and [continuation][dl2]
+describe defeating one member's fit, reducing exposed surface and keeping feet
+under the body. These are useful reduced-model hypotheses, not evidence for an
+immovable defender. The articles contain older head/leg-contact instructions;
+they are not a modern NFL legality authority. Only their available public prose
+was inspected, not clinic video or measured NFL block outcomes.
+
+Counter and Trap need another distinction: **clearing the wall is followed by
+reading a moving target**, rather than finishing an immutable snap-coordinate
+route. Preserve the kick/trap versus wrap jobs and use a delayed picture on the
+normal decision cadence. An invited defender can defeat the puller; that is
+different from the puller never observing him. Draw's pass influence must also
+retain contact responsibility; that remains separate work.
+
+[dl]: https://footballtoolbox.net/defensive-line-play-run-and-pass-techniques
+[dl2]: https://footballtoolbox.net/defensive-line-play-run-and-pass-techniques-part-2
 
 ## Sources and evidence status
 

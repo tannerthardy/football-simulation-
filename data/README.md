@@ -79,3 +79,20 @@ The current random play audit is [here](reviews/current/random-play-review.json)
 It uses saved native light frames and records what was observable, not invented
 mental states. Small reference extracts remain under `data/reviews/`; the old
 packet receipts may need archived files to be materialized before verification.
+
+The [current run-coaching receipt](reviews/current/run-coaching.json) links the
+puller, force-approach, combination, contact/movement and sustained-displacement
+reviews. Selected native policy comparisons reproduce the original prefix and
+initial state; they are not paired whole changed games. The new A/B film is local
+ignored output at `out/run-coaching/film/index.html`, with a standalone combined
+HTML and `rushing-policy-review.zip`. It has 20 clips, including unchanged and
+worse-result controls, and labels the exact policy intervention. Review these
+mechanisms rather than ranking candidates by their gains. The old pinned ZIP
+above remains a different, historical film.
+
+`python3 scripts/data/run_displacement.py --help` describes the inputs for the
+small 1/2/3-second run-line displacement pilot: BDB2025 week-one CSVs and eight
+source-pinned native game recordings. Its exact command and equality checks are
+in [the receipt](reviews/current/run-displacement.json). The same rounded
+position operator is applied to both sources; nearby blockers do not establish
+contact, a double team or its force.

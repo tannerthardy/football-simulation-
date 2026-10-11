@@ -6,7 +6,7 @@ Neither a better average nor a good-looking touchdown proves a repair works.
 
 Use the smallest existing check that can disprove the proposed explanation.
 The [current status](STATUS.md) identifies the next work; the
-[data guide](../data/archive/catalog-2026-10-11.md) locates reference inputs and saved evidence.
+[data guide](../data/README.md) locates reference inputs and saved evidence.
 
 ## Five layers, in order
 
@@ -102,6 +102,8 @@ Before publishing an engine change, `npm run test:all` runs all three projects
 without omitting any preserved assertion. Docs-only work needs no new games.
 Complete and integration runs use one worker to avoid the worker RPC timeout
 observed in the old parallel full suite; the fast default remains parallel.
+The native game tests yield between synchronous games so worker reports can
+be delivered. Their simulation inputs, assertions and test timeout are unchanged.
 
 Useful collectors; run only the layer affected, with unchanged source while
 collecting. These execute the current engine, unlike reading saved reports:

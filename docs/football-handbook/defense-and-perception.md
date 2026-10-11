@@ -10,7 +10,7 @@ universal algorithm.
 
 The source review began at `7ce3559` on 2026-10-11. The shipped OL cutoff repair
 does not change the defensive mechanisms discussed here. For current measured
-status, use [position technique and awareness](../archive/reviews/position-technique-and-awareness.md),
+status, use [current status](../STATUS.md),
 the [defensive audit](../archive/reviews/defensive-awareness-technique-audit.md) and the
 [pursuit audit](../archive/reviews/pursuit-and-tackle-technique-audit.md). Historical
 witnesses retain their own source labels. The ideas below do not inherit their
@@ -666,6 +666,37 @@ complete neuroscience model before making better football. The practical
 milestone is that sound local reads produce attainable technique, mistaken
 reads produce understandable recovery costs, and actual contact obeys the same
 shared physical limits across positions.
+
+## Run-support checks from the current film
+
+Treat fit, interception and recovery as different responsibilities. A force
+player protects his outside shoulder; interior help works toward that leverage;
+an alley or deep cap is not simply another immediate gap plugger. Installed
+relationships must survive disguise, but they do not supply perfect knowledge
+of where teammates currently are.
+
+Jerry Campbell's public [team-pursuit article][pursuit] teaches gap responsibility
+first, contain and inside-out help, avoiding a teammate's pursuit path, and
+gathering before contact. His [linebacker reaction article][lb-reaction] makes
+run-to/run-away duties front-dependent and retains a counter check. These are
+particular teaching installations, not measured NFL rates. Their public prose
+was inspected; videos and diagrams were not quantitatively audited. Use actual
+closing speed and physical stopping limits rather than making their fixed
+coaching gather distance a universal trigger.
+
+The current traces also distinguish a **fast lead blocker** from a receiver
+release. Speed alone cannot erase observed low pads or nearby facing bodies
+that suggest a block. That geometry is an inference, not measured hand contact.
+A defender still needs his own run interpretation; upright releases, play-action
+uncertainty and delayed pictures remain possible sources of mistakes.
+
+Large replay markers are identification glyphs, not body surfaces. Apparent
+overlap can be a reaching grab without a torso collision. Diagnose a miss from
+consumed cues, requested approach, actual movement and load before adding a
+generic tackle slowdown or stronger grip.
+
+[pursuit]: https://footballtoolbox.net/philosophy-of-team-pursuit
+[lb-reaction]: https://footballtoolbox.net/inside-linebackers-teaching-reaction-part-1
 
 ## Inspected source ledger
 

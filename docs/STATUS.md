@@ -19,9 +19,50 @@ convergence or good football decisions. Physical-profile mappings and contact
 capacities still have limited empirical evidence. Some controllers still use
 private state; light films cannot establish what a player actually perceived.
 
-No engine behavior changed in this reset. All 84 `src` files are byte-identical
-to `663193d`; a fixed Inside Zone and Smash also retain exact events and results.
-All 1,108 TypeScript assertions, 121 Python tests, typecheck and build pass.
+The cleanup preserved the engine at `663193d`. The subsequent run-coaching
+increment changes three controller mechanisms below. Every `src/physics` file
+and all shared force/movement capacities remain unchanged. All 1,140 TypeScript
+tests and 121 Python tests pass; typecheck and build are clean.
+
+## Latest run-game work
+
+The [current receipt](../data/reviews/current/run-coaching.json) connects the
+owner's selected clips and supplied twelve-play review to exact native traces,
+coaching sources, matched controller experiments and ordinary controls.
+
+- **Kick/trap pullers read moving targets after clearance**, retain their
+  delayed picture on normal decision cadence, and progress against the observed
+  landmark. Five native comparisons include two earlier random-review controls.
+  Wrappers keep their separate work. Better reads still permit lost blocks.
+- **Force/edge fits gather before contact**, using the existing pursuit law
+  and the acquired runner picture while retaining the installed shoulder.
+  G6-P181 establishes a natural wrap; three ordinary native controls are exactly
+  unchanged. The first unsuccessful candidate was withheld. Existing chase
+  requests and achieved movement match exactly across 108 controlled calls.
+- **Fast lead blockers remain blocking cues.** The old 3 yd/s veto sent a
+  run-reading linebacker back into coverage in G2-P136. Low pads or apparent
+  blocking geometry now survive acceleration; pass interpretation and upright
+  releases still matter.
+
+These are selected policy replacements on the unchanged original Game prefix
+and constructor, **not paired complete candidate games or frequency estimates**.
+The full suite includes current-engine games, but supplies no new NFL realism
+or scoring claim. Physics passed its existing contracts; it is not certified done.
+
+**Next blocking priority: keeper-specific combo security and an attainable climb
+exit.** In G1-P059/G4-P023, release checks grade the departing primary, while
+promotion would carry his hand-control state onto the keeper. Actual helper load
+does not establish inside hands, and both climb routes contain obstacles. A
+gate-only patch was withheld. Then test a DL response to a second blocker using
+the same capacities. The [tracking pilot](../data/reviews/current/run-displacement.json)
+finds a larger late displacement tail near OL, but the native defender already
+opposes load near his traction limit and recovers balance. No stronger anchor or
+travel cap is justified. Proximity is not proof of a double-team force.
+
+Also diagnosed, unmodified: backfield man alignment can bunch linebackers;
+disguised alignment can exclude an installed flat player from force allocation;
+Draw's pass influence can postpone its covered owner's rusher read. Fix their
+installed responsibility and acquired cue rules before changing physical ability.
 
 ## Random film review: choose the next investigation
 
@@ -48,16 +89,17 @@ Thirty-two plays had no clear wrong mechanism under the positional rubric;
 the safety **does brake** before missing. G7-P109 retreats and G3-P068 throws
 away; neither supports a blanket claim that QBs always freeze.
 
-**Start with pocket adjustment diagnosis**, using G1-P057 (2.6–3.2s), G6-P140
-(2.3–2.75s) and G2-P037 (2.5–2.8s), plus ordinary clean-pocket controls.
-Trace what was seen, requested and achieved before changing anything. Then
-expand random run review around G1-P060 and G8-P115's puller timing. Do not
+The original random review prioritizes **pocket adjustment diagnosis**, using
+G1-P057 (2.6–3.2s), G6-P140 (2.3–2.75s) and G2-P037 (2.5–2.8s), plus ordinary
+clean-pocket controls.
+Trace what was seen, requested and achieved before changing anything.
+G1-P060 and G8-P115 now also serve as declared puller controls. Do not
 increase strength or traction to make either result look better.
 
 ## Keep the project light
 
-`npm test` runs 934 production contracts; six slow game/ensemble assertions are
-in `test:integration`, and 168 paused anatomical/sole assertions in
+`npm test` runs 966 production tests; six slow game/ensemble tests are
+in `test:integration`, and 168 paused anatomical/sole tests in
 `test:research`. `test:all` retains them all. The 12 unused research modules stay
 as reproducible references; removing them would break research collectors
 without speeding production. Active support/contact tests remain in the default.
