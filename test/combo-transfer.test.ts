@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { fatigueFactor } from '../src/physics/kinematics.js';
@@ -9,7 +9,7 @@ import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { RunBlocker, readCombination, type Combination } from '../src/sim/behaviors/blocking.js';
-import { helperSupport, updateEngagements } from '../src/sim/engagement.js';
+import { contactControl, helperSupport, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
@@ -38,10 +38,10 @@ function fixture(side = 1, poorAngle = false, reverseInstallation = false, seed 
   }
   sim.t = 1; sim.world.time = 1;
   const primary = sim.slot('C')!, helper = sim.slot('LG')!, defender = sim.slot('DT_W')!, backer = sim.slot('LB_W')!;
-  primary.body.pos = { x: 40, y: CENTER_Y };
+  primary.body.pos = { x: 40, y: CENTER_Y - side * .4 };
   helper.body.pos = poorAngle ? { x: 40.75, y: CENTER_Y + side * .95 }
-    : { x: 40.05, y: CENTER_Y + side * .65 };
-  defender.body.pos = { x: 40.85, y: CENTER_Y };
+    : { x: 40, y: CENTER_Y + side * .4 };
+  defender.body.pos = { x: 40.75, y: CENTER_Y };
   backer.body.pos = poorAngle ? { x: 43, y: CENTER_Y + side }
     : { x: 42, y: CENTER_Y - side * 1.2 };
   // A runner who has not arrived cannot silently replace the linebacker cue.
@@ -112,6 +112,27 @@ function native(j: HandJoint) {
 }
 
 describe('a combination release asks whether the actual remaining blocker can keep contact', () => {
+  it.each([-1, 1])('lets an insecure primary leave when his partner has earned the keeping contact, side %s', side => {
+    const f = fixture(side, false, false, 3);
+    step(f);
+    expect(Math.hypot(f.engagement.helperHands!.get(f.helper)!.normalForce ?? 0,
+      f.engagement.helperHands!.get(f.helper)!.tangentForce ?? 0)).toBeGreaterThan(0);
+    readCombination(f.primary, f.sim, f.combination);
+    while (f.sim.t + 1e-9 < nextRead(f, f.primary)) step(f);
+    expect(f.engagement.control).toBeLessThan(-.12);
+    const keeperControl = contactControl(f.engagement, f.helper);
+    expect(keeperControl).not.toBeNull();
+    expect(keeperControl!).toBeGreaterThan(-.1);
+    expect(keeperControl!).toBeGreaterThan(f.engagement.control);
+    const keeperHands = f.engagement.helperHands!.get(f.helper)!;
+    readCombination(f.primary, f.sim, f.combination);
+    expect(f.combination.released).toBe(true);
+    expect(f.engagement.blocker.idx).toBe(f.helper.idx);
+    expect(f.engagement.hands).toBe(keeperHands);
+    expect(f.engagement.control).toBe(keeperControl);
+    budget(f, step(f, true));
+  });
+
   it.each([-1, 1])('lets a poorly fitted helper climb while the secure primary stays, side %s', side => {
     for (const reverse of [false, true]) {
       const f = ready(fixture(side, true, reverse), 'helper'), { engagement: e } = f;
@@ -136,8 +157,8 @@ describe('a combination release asks whether the actual remaining blocker can ke
     }
   });
 
-  it.each([-1, 1])('retains a double when real first hands leave the primary insecure, side %s', side => {
-    const f = fixture(side, false, false, 3);
+  it.each([-1, 1])('does not leave an insecure primary with a poorly fitted helper, side %s', side => {
+    const f = fixture(side, true, false, 3);
     for (let k = 0; k < 7; k++) {
       step(f); readCombination(f.primary, f.sim, f.combination);
     }
@@ -179,6 +200,22 @@ describe('a combination release asks whether the actual remaining blocker can ke
     expect(f.sim.agents.map(a => a.body)).toEqual(bodies);
   });
 
+  it('does not certify separated keeper hands from their old positive load and delayed picture', () => {
+    const f = ready(fixture()), joint = f.engagement.helperHands!.get(f.helper)!;
+    expect(Math.hypot(joint.normalForce ?? 0, joint.tangentForce ?? 0)).toBeGreaterThan(0);
+    const arm = f.helper.player.measurables.armIn / 36;
+    const sep = f.helper.profile.radius + f.defender.profile.radius;
+    const outsideWorkingReach = sep + .30 * arm + (.10 + .15 * arm) / 2;
+    f.helper.body.pos = { x: f.defender.pos.x-outsideWorkingReach, y: f.defender.pos.y };
+    expect(contactControl(f.engagement, f.helper)).not.toBeNull();
+    expect(f.sim.world.joints).toContain(joint);
+    // The reader still has the old acquired surface. The stale solved force
+    // cannot make an unreachable remaining arm physically support a release.
+    readCombination(f.primary, f.sim, f.combination);
+    expect(f.combination.released).toBe(false);
+    expect(f.engagement.blocker.idx).toBe(f.primary.idx);
+  });
+
   it('keeps the real primary when the preferred helper has only a stale joint reference', () => {
     const f = ready(fixture(), 'helper'), helperJoint = f.engagement.helperHands!.get(f.helper)!;
     f.sim.world.joints = f.sim.world.joints.filter(j => j !== helperJoint);
@@ -190,13 +227,44 @@ describe('a combination release asks whether the actual remaining blocker can ke
 });
 
 describe('promoting a real helper preserves the existing physical hand state', () => {
+  it.each([-1, 1])('requests a clear first step off the observed double and executes it through World, side %s', side => {
+    const f = ready(fixture(side));
+    const pictures = new Map<Fixture['primary'], ReturnType<PlaySim['see']>>();
+    const see = f.sim.see;
+    const spy = vi.spyOn(f.sim, 'see').mockImplementation(function (a, b, ...rest) {
+      const seen = see.call(f.sim, a, b, ...rest);
+      if (a === f.primary) pictures.set(b, structuredClone(seen));
+      return seen;
+    });
+    readCombination(f.primary, f.sim, f.combination);
+    spy.mockRestore();
+    expect(f.combination.released).toBe(true);
+    expect((f.primary.behavior as RunBlocker).plan.departure).toBeDefined();
+    const exit = f.combination.reads!.find(r => r.proposal?.climber === f.primary)!.proposal!.departure!.exit!;
+    const start = { ...f.primary.pos }, lane = { x: exit.x-start.x, y: exit.y-start.y };
+    for (const body of [f.defender, f.helper]) {
+      const seen = pictures.get(body)!;
+      const relative = { x: seen.pos.x-start.x, y: seen.pos.y-start.y };
+      const along = Math.max(0, Math.min(1, (relative.x*lane.x+relative.y*lane.y)/(lane.x*lane.x+lane.y*lane.y)));
+      const nearest = Math.hypot(relative.x-along*lane.x, relative.y-along*lane.y);
+      expect(nearest).toBeGreaterThanOrEqual(Math.min(f.primary.profile.radius+body.profile.radius,
+        Math.hypot(relative.x, relative.y))-1e-8);
+    }
+    for (let k = 0; k < 6; k++) step(f, true);
+    expect(Math.hypot(f.primary.pos.x-start.x, f.primary.pos.y-start.y)).toBeGreaterThan(.05);
+    expect(f.primary.body.support!.state).toBe('up');
+    expect(f.helper.engagement?.blocker.idx).toBe(f.helper.idx);
+    // A first available step is not a promised linebacker block. Moving DL
+    // and delayed later pictures may still close that route.
+  });
+
   it.each([-1, 1])('retains the same solved joint across the assignment read and following sync, side %s', side => {
     for (const reverse of [false, true]) {
       const f = ready(fixture(side, false, reverse)), e = f.engagement;
       const oldPrimary = e.hands!, keeperJoint = e.helperHands!.get(f.helper)!;
       expect(helperSupport(f.sim, e, f.helper)).toBeGreaterThan(.25);
       expect(Math.abs(keeperJoint.normalForce ?? 0) + Math.abs(keeperJoint.tangentForce ?? 0)).toBeGreaterThan(0);
-      const saved = native(keeperJoint), control = e.control, drive = { ...e.drive! }, seal = e.sealTarget;
+      const saved = native(keeperJoint), control = contactControl(e, f.helper), drive = { ...e.drive! }, seal = e.sealTarget;
       const body = f.sim.agents.map(a => structuredClone(a.body)), joints = [...f.sim.world.joints];
       readCombination(f.primary, f.sim, f.combination);
       expect(f.combination.released).toBe(true);

@@ -52,10 +52,12 @@ function fixture(side = 1, poorHelper = false, recognition?: [number, number]) {
   }
   sim.t = 1; sim.world.time = 1;
   const primary = sim.slot('C')!, helper = sim.slot('LG')!, defender = sim.slot('DT_W')!, backer = sim.slot('LB_W')!;
-  primary.body.pos = { x: 40, y: CENTER_Y };
+  // Both well-fitted blockers can reach the same surface without starting
+  // overlapped. Keep the original poor-fit geometry as an adverse control.
+  primary.body.pos = { x: 40, y: CENTER_Y - (poorHelper ? 0 : side * .4) };
   helper.body.pos = poorHelper ? { x: 40.75, y: CENTER_Y + side * .95 }
-    : { x: 39.95, y: CENTER_Y + side * .65 };
-  defender.body.pos = { x: 40.85, y: CENTER_Y };
+    : { x: 40, y: CENTER_Y + side * .4 };
+  defender.body.pos = { x: poorHelper ? 40.85 : 40.75, y: CENTER_Y };
   backer.body.pos = { x: 48, y: CENTER_Y + side };
   sim.qb.body.pos = { x: 36, y: CENTER_Y - side * 2 };
   sim.slot('RB')!.body.pos = { x: 34, y: CENTER_Y };
@@ -298,18 +300,33 @@ describe('joined pair proposals resolve before ordinary movement', () => {
   });
 
   it.each([0, -.5])('resolves an equal-cost surface consistently and honors a real cost advantage, backer shift %s', shift => {
+    // Find the fixture's equal attainable routes through actual private reads.
+    // A straight-line distance cannot account for stepping around the DL and
+    // partner. Each probe starts from the same genuinely loaded world, consumes
+    // each player's due read once, and never edits a proposal or hand state.
+    const differenceAt = (y: number) => {
+      const probe = prime(fixture());
+      probe.backer.body.pos = { x: 42, y }; probe.observe();
+      const before = bodies(probe);
+      read(probe, probe.primary); read(probe, probe.helper);
+      expect(probe.combo.released).toBe(false);
+      expect(bodies(probe)).toEqual(before);
+      const [primary, helper] = probe.combo.reads!;
+      expect(primary.proposal?.climber).toBe(probe.primary);
+      expect(helper.proposal?.climber).toBe(probe.helper);
+      return primary.proposal!.cost - helper.proposal!.cost;
+    };
+    let lo = CENTER_Y - 1.5, hi = CENTER_Y + 1.5;
+    expect(differenceAt(lo)).toBeLessThan(0);
+    expect(differenceAt(hi)).toBeGreaterThan(0);
+    for (let k = 0; k < 54; k++) {
+      const mid = (lo + hi) / 2;
+      if (differenceAt(mid) < 0) lo = mid; else hi = mid;
+    }
+    const equalRouteY = (lo + hi) / 2;
     const run = (reverse: boolean) => {
       const f = prime(fixture());
-      const cost = (a: Agent, y: number) => Math.hypot(42 - a.pos.x, y - a.pos.y) + (a === f.primary ? .30 : 0);
-      // Choose a real stationary LB position on the two approach surfaces'
-      // equal-cost curve. Costs are subsequently computed by the actual
-      // readers from their own ordinary delayed image, never set by this test.
-      let lo = CENTER_Y - 10, hi = CENTER_Y + 10;
-      for (let k = 0; k < 70; k++) {
-        const mid = (lo + hi) / 2;
-        if (cost(f.primary, mid) < cost(f.helper, mid)) lo = mid; else hi = mid;
-      }
-      const y = (lo + hi) / 2 + shift;
+      const y = equalRouteY + shift;
       f.backer.body.pos = { x: 42, y }; f.observe();
       for (const a of reverse ? [...f.combo.members].reverse() : f.combo.members) read(f, a);
       expect(f.combo.released).toBe(false);

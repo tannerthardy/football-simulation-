@@ -276,6 +276,99 @@ function armForce(a: Agent): number {
   return supportParams(a.profile).armForce;
 }
 
+// A joining blocker earns his own hands. The state belongs to the acquired
+// physical contact, rather than to whichever blocker currently owns the rep.
+// Primary reps retain their existing control/RNG law; pass helpers retain the
+// older behavior until their separate technique is addressed.
+interface RunHandControl { control: number; }
+const runHands = new WeakMap<HandJoint, RunHandControl>();
+
+/** Acquired hand position, never inferred from how much force a joint carries.
+ * The caller still checks that this joint is live and that the body can support
+ * the proposed work. A stale object reference alone establishes neither.
+ */
+export function contactControl(e: Engagement, member: Agent): number | null {
+  if (member === e.blocker) return e.control;
+  if (e.type !== 'run' || !e.helpers.includes(member)) return null;
+  const joint = e.helperHands?.get(member);
+  return joint?.a === member.body && joint.b === e.defender.body
+    ? runHands.get(joint)?.control ?? null : null;
+}
+
+/** Transfer the keeper's acquired contact without moving bodies or changing
+ * any joint capacity/load. The controller handles the departing player's job;
+ * the next ordinary sync removes that player's old physical contact.
+ */
+export function promoteContact(e: Engagement, keeper: Agent): boolean {
+  if (keeper === e.blocker) return true;
+  const joint = e.helperHands?.get(keeper), control = contactControl(e, keeper);
+  if (!joint || control === null) return false;
+  e.blocker = keeper;
+  e.hands = joint;
+  e.control = control;
+  e.helpers = e.helpers.filter(h => h !== keeper);
+  e.helperHands!.delete(keeper);
+  // A cloth grab by the departed primary is not the keeper's acquired hold.
+  e.holding = false;
+  // Nor did a move which cleared that primary's hands clear the keeper's
+  // independent contact. Existing physical strikes and body state remain.
+  e.moveOk = false;
+  return true;
+}
+
+/** The same working-distance and bounded arm law for either run blocker. */
+function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'run', c: number, holding: boolean): void {
+  const tb = traits(b, type), td = traits(d, type);
+  const sep = b.profile.radius + d.profile.radius;
+  const reach = (c >= 0 ? tb.arm : td.arm) / 36;
+  joint.actor = c >= 0 ? b.body : d.body;
+  joint.extension = sep + reach * 0.3 * (0.5 + 0.5 * Math.abs(c));
+  joint.push = (c >= 0 ? armForce(b) : armForce(d)) * (0.35 + 0.65 * Math.abs(c));
+  joint.hold = holding ? armForce(b) * 1.2 : c > 0.3 ? armForce(b) * 0.25 * c : 0;
+  joint.steer = c >= 0 ? armForce(b) * (0.15 + 0.55 * c) : armForce(d) * (0.15 + 0.4 * -c);
+}
+
+function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoint): void {
+  if (h.isDown(sim.t) || !inBlockReach(h, e.defender, 'run')) {
+    runHands.delete(joint);
+    joint.push = joint.hold = joint.steer = 0;
+    return;
+  }
+  let state = runHands.get(joint);
+  if (!state) {
+    const d = e.defender, tb = traits(h, 'run'), td = traits(d, 'run');
+    // A punch can extend to the longest working distance already represented
+    // by the shared hand law. Range permits an exchange; it does not win one.
+    const workingReach = h.profile.radius + d.profile.radius + tb.arm / 36 * 0.3;
+    const touching = Math.hypot(h.pos.x-d.pos.x, h.pos.y-d.pos.y) <= workingReach;
+    if (!touching) {
+      // Reaching toward a contact is not acquired inside hands. In particular
+      // an unacquired joint cannot steer through air or hold an opponent.
+      joint.extension = workingReach;
+      joint.push = joint.hold = joint.steer = 0;
+      return;
+    }
+    const armEdge = (tb.arm-td.arm)/3;
+    const repEdge = sim.rng.normal(0, 0.08);
+    const punch = tb.hands + 0.12*armEdge + sim.rng.normal(0, 0.18) + repEdge;
+    const strike = 0.5*td.hands + 0.5*d.r('strength') - 0.12*armEdge + sim.rng.normal(0, 0.18);
+    state = { control: clamp(punch-strike+0.1, -0.8, 0.8) };
+    runHands.set(joint, state);
+    helperTouches.set(h, { rep: e, at: sim.t, pos: { ...d.pos } });
+  }
+  setContactHands(joint, h, e.defender, 'run', state.control, false);
+}
+
+function advanceRunHelperHands(sim: PlaySim, e: Engagement): void {
+  const td = traits(e.defender, 'run');
+  for (const h of e.helpers) {
+    const joint = e.helperHands?.get(h), state = joint && runHands.get(joint);
+    if (!state) continue;
+    const tb = traits(h, 'run');
+    state.control = clamp(state.control + sim.dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + sim.rng.normal(0, 0.25)), -1, 1);
+  }
+}
+
 /**
  * Keep the world's hand joints in step with the rep: one for the blocker,
  * one per helper. A joint is the hand fight's physical consequence — working
@@ -300,22 +393,14 @@ export function syncJoints(sim: PlaySim, e: Engagement): void {
 
 function setHands(sim: PlaySim, e: Engagement): void {
   const b = e.blocker, d = e.defender;
-  const tb = traits(b, e.type), td = traits(d, e.type);
-  const sep = b.profile.radius + d.profile.radius;
   const t = sim.t;
   const inMove = t < e.moveUntil && e.moveOk;
-  const c = e.control;
   // Inside hands lock out at the controlling player's arm length; neither in
   // control, the hands meet in the middle.
-  const reach = (c >= 0 ? tb.arm : td.arm) / 36;
   const hands = e.hands!;
-  hands.actor = c >= 0 ? b.body : d.body;
-  hands.extension = sep + reach * 0.3 * (0.5 + 0.5 * Math.abs(c));
-  hands.push = (c >= 0 ? armForce(b) : armForce(d)) * (0.35 + 0.65 * Math.abs(c));
   // Latched hands can hold and steer; a defender in control steers the
   // blocker off his line just as well.
-  hands.hold = e.holding ? armForce(b) * 1.2 : c > 0.3 ? armForce(b) * 0.25 * c : 0;
-  hands.steer = c >= 0 ? armForce(b) * (0.15 + 0.55 * c) : armForce(d) * (0.15 + 0.4 * -c);
+  setContactHands(hands, b, d, e.type, e.control, e.holding);
   // A landed finesse move has the hands off for its window.
   if (inMove && e.move !== 'bull' && e.move !== 'longarm') {
     hands.steer *= 0.1;
@@ -324,6 +409,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   for (const h of e.helpers) {
     const j = e.helperHands?.get(h);
     if (!j) continue;
+    if (e.type === 'run') { setRunHelperHands(sim, e, h, j); continue; }
     const support = helperSupport(sim, e, h);
     j.extension = h.profile.radius + d.profile.radius + traits(h, e.type).arm / 36 * 0.2;
     j.push = armForce(h) * 0.8 * support;
@@ -352,6 +438,7 @@ function felt(e: Engagement, lat: Vec2): number {
 /** Remove a rep's joints from the world (disengage). */
 export function releaseJoints(sim: PlaySim, e: Engagement): void {
   const gone = new Set<HandJoint>([...(e.hands ? [e.hands] : []), ...(e.helperHands?.values() ?? [])]);
+  for (const joint of gone) runHands.delete(joint);
   sim.world.joints = sim.world.joints.filter((j) => !gone.has(j as HandJoint));
 }
 
@@ -703,6 +790,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const preferred = toAim.x * lat.x + toAim.y * lat.y;
   if (Math.abs(preferred) > .1) e.side = Math.sign(preferred);
   e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
+  advanceRunHelperHands(sim, e);
 
   // Shed attempts once the ball carrier threatens his area — not the QB
   // standing at the mesh before the handoff.
@@ -782,8 +870,13 @@ const helperFits = new WeakMap<Agent, HelperFitRead>();
 function helperFit(sim: PlaySim, e: Engagement, h: Agent, axis: Vec2): Intent | null {
   const hands = e.helperHands?.get(h);
   // Sustained hand load is immediate proprioception. Do not retreat from a
-  // real working block because an older visual picture extrapolates elsewhere.
-  if (hands?.normalForce || hands?.tangentForce) return null;
+  // useful working block because an older visual picture extrapolates
+  // elsewhere. Feeling load on the far side is not a usable run surface;
+  // keep replacing feet using the retained visual landmark in that case.
+  if (hands?.normalForce || hands?.tangentForce) {
+    const contact = norm(sub(h.pos, e.defender.pos));
+    if (contact.x*axis.x + contact.y*axis.y > 0) return null;
+  }
   let read = helperFits.get(h);
   if (!read || read.rep !== e || read.owner !== e.blocker || sim.t >= read.nextRead) {
     const owner = sim.see(h, e.blocker), visual = sim.see(h, e.defender);

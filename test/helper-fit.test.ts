@@ -8,7 +8,7 @@ import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { axisOf, helperSupport, updateEngagements } from '../src/sim/engagement.js';
+import { axisOf, contactControl, helperSupport, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
@@ -155,7 +155,12 @@ describe('joined helpers replace unusable feet through bounded physical movement
   });
 
   it('does not consume another random draw when an unusable helper needs to replace his feet', () => {
-    const useful = fixture({ wrong: false }), wrong = fixture();
+    // Match actual hand acquisition before comparing movement reads. A helper
+    // still reaching at air correctly has not sampled his own punch yet.
+    const useful = fixture({ wrong: false, depth: .35 }), wrong = fixture();
+    expect(contactControl(useful.engagement, useful.helper)).not.toBeNull();
+    expect(contactControl(useful.engagement, useful.helper))
+      .toBe(contactControl(wrong.engagement, wrong.helper));
     expect(structuredClone(useful.sim.rng)).toEqual(structuredClone(wrong.sim.rng));
     request(useful); request(wrong);
     expect(structuredClone(useful.sim.rng)).toEqual(structuredClone(wrong.sim.rng));

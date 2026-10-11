@@ -4,11 +4,14 @@ import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { bodyRadius, squeezeForGap } from '../src/physics/bodyshape.js';
 import { stepBody, type Body } from '../src/physics/kinematics.js';
+import { supportParams } from '../src/physics/support.js';
+import type { Intent } from '../src/physics/world.js';
 import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { RunBlocker, planRunBlocking, readCombination } from '../src/sim/behaviors/blocking.js';
+import { RunBlocker, planRunBlocking, readCombination, type Combination } from '../src/sim/behaviors/blocking.js';
 import { BallCarrier } from '../src/sim/behaviors/carrier.js';
+import { contactControl, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(11), 'O', 'OFF', { strength: 0.55 });
@@ -101,22 +104,62 @@ describe('run responsibilities', () => {
   });
 });
 
-function doubleTeam() {
-  const sim = setup();
-  const helper = sim.offense.find((a) => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'combo')!;
-  const combo = (helper.behavior as RunBlocker).plan.combination!;
-  const primary = combo.members.find((a) => a !== helper)!;
-  combo.defender.body.pos = { x: 40.7, y: CENTER_Y };
-  primary.body.pos = { x: 40, y: CENTER_Y };
-  helper.body.pos = { x: 40, y: CENTER_Y + 0.4 };
-  combo.backer!.body.pos = { x: 42, y: CENTER_Y + 1.5 };
-  const e = sim.engage(primary, combo.defender, 'run', { x: 1, y: 0 })!;
-  sim.engage(helper, combo.defender, 'run', { x: 1, y: 0 });
-  e.control = 0.5;
-  e.baseB = 1;
-  e.phi = 0;
-  for (let i = 0; i < 16; i++) sim.perception.record(sim.agents);
-  return { sim, helper, primary, combo, e };
+function doubleTeam(insecure = false, slant = false) {
+  // Reuse the declared ordinary contact panel's roster and acquisition seeds.
+  // No assigned win/control or special force: both blockers earn their hands.
+  const panelOffense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
+  const panelDefense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
+  const formation = FORMATION_BY_ID.ace_11;
+  const sim = new PlaySim({ offense: pickOffense(panelOffense, formation.personnel), defense: pickDefense(panelDefense, 'base43'),
+    offCall: { formation, flip: true, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'controlled combo' },
+    defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over' },
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: insecure ? 3 : 11 });
+  for (const a of sim.agents) {
+    a.body.pos = { x: 70 + (a.idx % 5) * 3, y: 3 + Math.floor(a.idx / 5) * 3 };
+    a.body.vel = { x: 0, y: 0 };
+    a.behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 }, facing: a.facing }) };
+  }
+  sim.t = sim.world.time = 1;
+  const primary = sim.slot('C')!, helper = sim.slot('LG')!, defender = sim.slot('DT_W')!, backer = sim.slot('LB_W')!;
+  primary.body.pos = { x: 40, y: CENTER_Y - .4 };
+  helper.body.pos = { x: 40, y: CENTER_Y + .4 };
+  defender.body.pos = { x: 40.75, y: CENTER_Y + (slant ? .1 : 0) };
+  backer.body.pos = { x: 42, y: CENTER_Y + 1.5 };
+  sim.slot('RB')!.body.pos = { x: 34, y: CENTER_Y };
+  sim.qb.body.pos = { x: 36, y: CENTER_Y - 2 };
+  primary.body.facing = helper.body.facing = 0; defender.body.facing = Math.PI;
+  defender.recog!.read = 'run';
+  const combo: Combination = { members: [primary, helper], defender, backer, released: false,
+    secureSince: -1, nextRead: 0, soloKind: 'drive' };
+  primary.behavior = new RunBlocker({ kind: 'drive', target: defender, drive: { x: 1, y: 0 }, combination: combo });
+  helper.behavior = new RunBlocker({ kind: 'combo', target: defender, drive: { x: 1, y: 0 }, combination: combo });
+  const observe = () => { for (let i = 0; i < 24; i++) sim.perception.record(sim.agents); };
+  observe();
+  const e = sim.engage(primary, defender, 'run', { x: 1, y: 0 })!;
+  expect(sim.engage(helper, defender, 'run', { x: 1, y: 0 })).toBe(e);
+  const step = () => {
+    const intents: Intent[] = sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
+    updateEngagements(sim, intents);
+    const report = sim.world.step(intents, sim.dt);
+    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+    for (const a of sim.agents) {
+      expect(report.armImpulse[a.idx]).toBeLessThanOrEqual(report.armImpulseLimit[a.idx] + 1e-8);
+      expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
+        .toBeLessThanOrEqual(supportParams(a.profile).traction * sim.dt + 1e-8);
+    }
+    sim.t += sim.dt; sim.perception.record(sim.agents);
+    return report;
+  };
+  for (let k = 0; k < 4; k++) step();
+  expect(e.baseB).toBeGreaterThan(.6);
+  expect(Math.hypot(e.helperHands!.get(helper)!.normalForce ?? 0,
+    e.helperHands!.get(helper)!.tangentForce ?? 0)).toBeGreaterThan(0);
+  observe();
+  const due = (reader: typeof primary) => {
+    const next = combo.reads?.[combo.members.indexOf(reader)]?.nextRead ?? combo.nextRead;
+    while (sim.t + 1e-9 < next) step();
+  };
+  return { sim, helper, primary, combo, e, step, due, observe };
 }
 
 describe('combination exchanges', () => {
@@ -139,9 +182,9 @@ describe('combination exchanges', () => {
   });
 
   it('keeps an insecure block even after the old fixed release time', () => {
-    const { sim, helper, combo, e } = doubleTeam();
+    const { sim, helper, combo, e } = doubleTeam(true);
     sim.t = 4;
-    e.control = -0.8;
+    expect(e.control).toBeLessThan(-.12);
     readCombination(helper, sim, combo);
     sim.t = 5;
     readCombination(helper, sim, combo);
@@ -151,11 +194,11 @@ describe('combination exchanges', () => {
   });
 
   it('releases exactly one blocker when the block is secured and the backer fills', () => {
-    const { sim, helper, primary, combo, e } = doubleTeam();
-    sim.t = 0.5;
+    const { sim, helper, primary, combo, e, due } = doubleTeam();
+    expect(e.control).toBeGreaterThan(0);
     readCombination(helper, sim, combo);
     expect(combo.released).toBe(false);
-    sim.t = 0.9;
+    due(helper);
     readCombination(helper, sim, combo);
     readCombination(primary, sim, combo);
     expect(combo.released).toBe(true);
@@ -168,18 +211,33 @@ describe('combination exchanges', () => {
   });
 
   it('allows the original blocker to climb when his partner has better leverage on the slant', () => {
-    const { sim, helper, primary, combo, e } = doubleTeam();
+    const { sim, helper, primary, combo, e, step, due, observe } = doubleTeam(false, true);
     combo.backer!.body.pos = { x: 41, y: CENTER_Y - 3 };
-    for (let i = 0; i < 16; i++) sim.perception.record(sim.agents);
-    sim.t = 0.5;
+    observe();
+    const hands = e.helperHands!.get(helper)!;
+    const angle = (a: typeof primary) => Math.abs(Math.atan2(a.pos.y - combo.defender.pos.y,
+      combo.defender.pos.x - a.pos.x));
+    expect(angle(helper)).toBeLessThan(angle(primary));
+    expect(contactControl(e, helper)).not.toBeNull();
+    expect(contactControl(e, helper)!).toBeGreaterThan(-.1);
     readCombination(primary, sim, combo);
-    sim.t = 0.9;
+    due(primary);
+    const bodies = sim.agents.map(a => structuredClone(a.body));
+    const acquiredControl = contactControl(e, helper);
     readCombination(primary, sim, combo);
     expect(combo.released).toBe(true);
     expect(e.blocker).toBe(helper);
+    expect(e.hands).toBe(hands);
+    expect(e.control).toBe(acquiredControl);
+    expect(sim.agents.map(a => a.body)).toEqual(bodies);
     expect(helper.engagement).toBe(e);
     expect(primary.engagement).toBeNull();
     expect((primary.behavior as RunBlocker).target).toBe(combo.backer);
+    // A balanced kept contact need not transmit load on every step. Its
+    // original joint must remain live and obey the shared World budgets.
+    step();
+    expect(sim.world.joints).toContain(hands);
+    expect(e.hands).toBe(hands);
   });
 });
 

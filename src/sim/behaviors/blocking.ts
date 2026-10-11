@@ -21,7 +21,7 @@ import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
-import { axisOf, helperSupport, passSetDepth, traits } from '../engagement.js';
+import { axisOf, contactControl, helperSupport, passSetDepth, promoteContact, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
@@ -350,6 +350,8 @@ export interface CombinationProposal {
   hands: HandJoint;
   phi: number;
   cost: number;
+  /** The reader's first achievable step off the double, not a promised block. */
+  departure?: { exit: Vec2 | null; flow: Vec2; backer: Perceived };
 }
 
 export interface CombinationRead {
@@ -395,6 +397,8 @@ export interface RunBlockPlan {
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
+  /** The old surface must be cleared before the new linebacker approach. */
+  departure?: { defender: Agent; keeper: Agent; backer: Agent };
 }
 
 function drawPresentation(plan: RunBlockPlan, t: number): boolean {
@@ -681,6 +685,8 @@ export class RunBlocker implements Behavior {
   /** The puller's last ordinary read, not the defender's current position. */
   private pullRead: { target: Agent; seen: Perceived; clearanceX: number; nextRead: number } | null = null;
   private pullCleared = false;
+  private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
+    flow: Vec2; backer: Perceived } | null = null;
   /** A personally consumed near-gap emergency, held through the normal beat. */
   private presentationThreat: Agent | null = null;
   /** Native technique read, retained between the player's ordinary decisions. */
@@ -734,6 +740,14 @@ export class RunBlocker implements Behavior {
     }
 
     const target = this.availableTarget(a, sim);
+    if (plan.departure && (plan.kind !== 'climb' || target !== plan.departure.backer)) {
+      delete plan.departure;
+      this.departureRead = null;
+    }
+    if (plan.kind === 'climb' && plan.departure && target === plan.departure.backer) {
+      const leaving = this.leaveCombination(a, sim);
+      if (leaving) return leaving;
+    }
     if (plan.kind === 'pull' && plan.pullPath && this.pullIdx < plan.pullPath.length) {
       if(plan.pullRole==='lead') {
         const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
@@ -827,6 +841,40 @@ export class RunBlocker implements Behavior {
     // pullers, climbs, unassigned movement and contact techniques own theirs.
     return isOL(a) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
       ? { ...command, posture: .7 } : command;
+  }
+
+  /** Keep the cue that authorized departure until the next ordinary read. */
+  startDeparture(a: Agent, sim: PlaySim, defender: Agent, keeper: Agent, backer: Agent,
+    picture: NonNullable<CombinationProposal['departure']>): void {
+    if (!picture.exit) return;
+    this.plan.departure = { defender, keeper, backer };
+    this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
+      exit: { ...picture.exit }, flow: { ...picture.flow }, backer: structuredClone(picture.backer) };
+  }
+
+  private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {
+    const departure = this.plan.departure!;
+    if (!this.departureRead || sim.t >= this.departureRead.nextRead) {
+      const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper);
+      const backer = sim.see(a, departure.backer);
+      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer);
+      this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
+        exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
+      // Only a personally observed clear route ends the departure. A blocked
+      // first step waits for another read; it cannot tunnel through the old DL.
+      if (route && !route.exit) {
+        delete this.plan.departure;
+        this.departureRead = null;
+        return null;
+      }
+    }
+    const read = this.departureRead;
+    if (!read?.exit) return stand();
+    const dt = sim.t - read.at;
+    const goal = { x: read.exit.x + read.flow.x * dt,
+      y: read.exit.y + read.flow.y * dt + a.mind.placementError * (1 - .5 * a.r('runBlock')) };
+    return track(a, goal, read.flow, { speed: 1, gain: 3,
+      facing: Math.atan2(read.backer.pos.y-a.pos.y, read.backer.pos.x-a.pos.x) });
   }
 
   private readPull(a: Agent, sim: PlaySim, target: Agent): NonNullable<RunBlocker['pullRead']> {
@@ -1139,6 +1187,50 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
   return clear(0) && clear(helper.mind.decisionInterval);
 }
 
+/** A short step off the observed surface. This is navigation, not a claim
+ * that the whole climb or linebacker block will succeed. Check the DL and
+ * partner through the next read; a moving or mistaken picture can still lose. */
+function climbRoute(a: Agent, defender: Agent, down: Perceived,
+  partner: Agent, covered: Perceived, backer: Perceived): { exit: Vec2 | null; flow: Vec2 } | null {
+  const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },
+    { seen: covered, radius: a.profile.radius + partner.profile.radius }];
+  const clear = (goal: Vec2, flow: Vec2): boolean => bodies.every(({ seen, radius }) => {
+    for (const dt of [0, a.mind.decisionInterval]) {
+      const point = { x: seen.pos.x + seen.vel.x * dt, y: seen.pos.y + seen.vel.y * dt };
+      const end = { x: goal.x + flow.x * dt, y: goal.y + flow.y * dt };
+      const lane = sub(end, a.pos), length2 = lane.x * lane.x + lane.y * lane.y;
+      const relative = sub(point, a.pos);
+      const along = clamp((relative.x * lane.x + relative.y * lane.y) / Math.max(1e-12, length2), 0, 1);
+      const nearest = Math.hypot(relative.x - along * lane.x, relative.y - along * lane.y);
+      // Contact may start with small overlap. A departure must move out,
+      // rather than requiring an impossible already-separated first frame.
+      const initial = Math.hypot(relative.x, relative.y);
+      if (nearest < Math.min(radius, initial) - 1e-9
+        || (initial < radius && Math.hypot(end.x-point.x,end.y-point.y) <= initial)) return false;
+    }
+    return true;
+  });
+  if (clear(backer.pos, backer.vel)) return { exit: null, flow: backer.vel };
+  for (const body of bodies) {
+    const relative = sub(a.pos, body.seen.pos), goal = sub(backer.pos, body.seen.pos);
+    const distance = Math.hypot(relative.x,relative.y);
+    if (distance < 1e-9) continue;
+    const turn = Math.atan2(relative.x*goal.y-relative.y*goal.x,relative.x*goal.x+relative.y*goal.y);
+    const direction = Math.sign(turn) || Math.sign(a.pos.y-covered.pos.y) || 1;
+    // Same short arc and body clearance as first-level fit recovery. Choose
+    // an available shoulder, not a route through the old defender's center.
+    for (const sign of [direction, -direction]) {
+      const angle = sign * Math.min(.35, Math.abs(turn) || .35);
+      const radius = Math.max(body.radius+.15,distance);
+      const exit = { x: body.seen.pos.x + (relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
+        y: body.seen.pos.y + (relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
+      if (exit.y >= .5 && exit.y <= FIELD_WIDTH-.5 && clear(exit,body.seen.vel))
+        return { exit, flow: body.seen.vel };
+    }
+  }
+  return null;
+}
+
 /** A shared physical fit is eligibility, not either member's perception. */
 function joinedEngagement(sim: PlaySim, combo: Combination): Engagement | null {
   const e = combo.defender.engagement;
@@ -1161,20 +1253,30 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
     ? availability(keeper.body.support, supportParams(keeper.profile), fatigueFactor(keeper.body.energy)) : 1;
   const contact = !!hands && hands.a === keeper.body && hands.b === combo.defender.body
     && sim.world.joints.includes(hands);
+  const distance = Math.hypot(keeper.pos.x-combo.defender.pos.x, keeper.pos.y-combo.defender.pos.y);
+  const workingReach = keeper.profile.radius + combo.defender.profile.radius
+    + .30 * traits(hands?.actor === combo.defender.body ? combo.defender : keeper, 'run').arm / 36;
+  // A remembered hand position or old force cannot certify a distant arm.
+  // Balanced hands need not carry load, but an extended contact must actually
+  // have carried force and remain within the same hand law's attainable reach.
+  const touching = hands && distance <= workingReach && (distance <= hands.extension
+    || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
   const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
-  if (Math.abs(phi) >= .65 || base <= .60 || !contact || !useful) return null;
+  const control = contactControl(e, keeper);
+  if (Math.abs(phi) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
+    || control <= -.12 + .12 * (.5 - climber.mind.urgency)) return null;
   return { climber, keeper, engagement: e, hands: hands!, phi };
 }
 
 /** The reader's own delayed evidence that his partner can carry the surface. */
-function readJoinedSurface(observer: Agent, sim: PlaySim, keeper: Agent, e: Engagement): boolean {
+function readJoinedSurface(observer: Agent, sim: PlaySim, keeper: Agent, e: Engagement): { covered: Perceived; down: Perceived } | null {
   const covered = sim.see(observer, keeper), down = sim.see(observer, e.defender);
   const axis = e.drive || e.surfaceAxis ? axisOf(sim, e) : { x: -1, y: 0 };
   const lat = { x: -axis.y, y: axis.x }, bd = norm(sub(covered.pos, down.pos));
   const phi = Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
   const reach = keeper.profile.radius + e.defender.profile.radius + keeper.player.measurables.armIn / 36;
   return covered.pose === 'up' && down.pose === 'up' && Math.abs(phi) < .55
-    && Math.hypot(covered.pos.x - down.pos.x, covered.pos.y - down.pos.y) <= reach;
+    && Math.hypot(covered.pos.x - down.pos.x, covered.pos.y - down.pos.y) <= reach ? { covered, down } : null;
 }
 
 function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination, e: Engagement, defer: boolean): void {
@@ -1188,9 +1290,8 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   read.readAt = sim.t;
   read.proposal = null;
   const candidate = keeperCandidate(observer, sim, combo, e);
-  const secure = e.control > -.12 + .12 * (.5 - observer.mind.urgency)
-    && e.baseB > .60 && Math.abs(e.phi) < .55;
-  if (!candidate || !secure || !readJoinedSurface(observer, sim, candidate.keeper, e)) {
+  const surface = candidate && readJoinedSurface(observer, sim, candidate.keeper, e);
+  if (!candidate || !surface) {
     read.secureSince = -1;
     observer.tags.add('combo-held');
     return;
@@ -1202,8 +1303,13 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
   if (!filling && !arriving) return;
-  read.proposal = { ...candidate, t: sim.t,
-    cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) + (observer === e.blocker ? .30 : 0) };
+  const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
+  if (!route) { observer.tags.add('combo-held'); return; }
+  const cost = route.exit ? Math.hypot(route.exit.x-observer.pos.x,route.exit.y-observer.pos.y)
+    + Math.hypot(backer.pos.x-route.exit.x,backer.pos.y-route.exit.y)
+    : Math.hypot(backer.pos.x-observer.pos.x,backer.pos.y-observer.pos.y);
+  read.proposal = { ...candidate, t: sim.t, departure: { ...route, backer },
+    cost: cost + (observer === e.blocker ? .30 : 0) };
   if (!defer) {
     const valid = revalidateJoinedProposal(read.proposal, sim, combo);
     if (valid) applyCombinationRelease(valid, sim, combo, false);
@@ -1215,8 +1321,7 @@ function revalidateJoinedProposal(p: CombinationProposal, sim: PlaySim, combo: C
   if (!e || p.t !== sim.t || p.engagement !== e || sim.t < p.climber.snapReadyAt
     || !combo.backer || combo.backer.isDown(sim.t)) return null;
   const candidate = keeperCandidate(p.climber, sim, combo, e);
-  if (!candidate || candidate.keeper !== p.keeper || candidate.hands !== p.hands
-    || e.control <= -.12 + .12 * (.5 - p.climber.mind.urgency) || e.baseB <= .60 || Math.abs(e.phi) >= .55) return null;
+  if (!candidate || candidate.keeper !== p.keeper || candidate.hands !== p.hands) return null;
   return { ...p, phi: candidate.phi };
 }
 
@@ -1340,17 +1445,13 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
 
 /** A release changes jobs/contact ownership, never a player's body or capacity. */
 function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, combo: Combination, check: boolean): void {
-  const { climber, keeper, phi, hands, engagement: e } = choice;
+  const { climber, keeper, phi, engagement: e } = choice;
   if (!(climber.behavior instanceof RunBlocker)) return;
   const solo = combinationSoloKind(combo);
   if (keeper !== e.blocker) {
     // Transfer ownership of hands that already exist, not a fresh hand fight.
     // Ordinary synchronization removes only the departing member's contact.
-    e.hands = hands;
-    e.helperHands?.delete(keeper);
-    // A cloth grab belongs to the departing primary, not his partner. Keep
-    // any recorded penalty; the new keeper does not inherit an illegal hold.
-    e.holding = false;
+    if (!promoteContact(e, keeper)) return;
   }
   e.blocker = keeper;
   e.helpers = e.helpers.filter((b) => b !== climber && b !== keeper);
@@ -1364,6 +1465,8 @@ function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, comb
   // The installed backer fit drives upfield. The old diagonal wall/stretch
   // vector belongs to the keeper's first-level job, not the new approach.
   climber.behavior.plan.drive = { x: 1, y: 0 };
+  if (!check && choice.departure)
+    climber.behavior.startDeparture(climber, sim, combo.defender, keeper, combo.backer!, choice.departure);
   combo.released = true;
   for (const member of combo.members) {
     if (!(member.behavior instanceof RunBlocker) || member.behavior.plan.combination !== combo) continue;

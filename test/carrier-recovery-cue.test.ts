@@ -114,7 +114,44 @@ describe('carrier recovery is a bounded visible-pose estimate', () => {
     expect(parked.blocked).toBe(false);
   });
 
-  it('retains normal native decisions and reads actual off-feet pictures in the fixed Split Zone encounter', () => {
+  it('consumes actual delayed off-feet pictures without reading the hidden recovery state', () => {
+    const sim = make(), rb = sim.slot('RB')!, threat = sim.slot('LB_M')!;
+    sim.t = 4;
+    for (const agent of sim.agents) {
+      agent.body.pos = { x: 100 + agent.idx, y: 5 };
+      agent.body.vel = { x: 0, y: 0 };
+    }
+    rb.body.pos = { x: 55, y: CENTER_Y }; rb.body.vel = { x: 4, y: 0 };
+    threat.body.pos = { x: 58, y: CENTER_Y + .5 };
+    const record = () => sim.perception.record(sim.agents);
+    for (let k = 0; k < 24; k++) record();
+    const controller = new BallCarrier({}, rb) as unknown as InspectCarrier;
+    const forecast = () => controller.evaluate(rb, sim, 1, false);
+    const upright = forecast();
+    const initialPicture = sim.see(rb, threat, .7);
+    expect(initialPicture.pose).toBe('up');
+    expect(initialPicture.age).toBeGreaterThanOrEqual(sim.dt);
+    // The controlled visible pose is an initial condition, not a forced
+    // tackle outcome. The ordinary buffer, latency and see path remain intact.
+    threat.body.support!.state = 'down'; threat.body.support!.since = sim.t;
+    record();
+    expect(sim.see(rb, threat, .7).pose).toBe('up');
+    expect(forecast()).toEqual(upright);
+    for (let k = 0; k < 24; k++) record();
+    const picture = sim.see(rb, threat, .7);
+    expect(picture.pose).toBe('down');
+    const allowance = observedRecoveryAllowance(picture, threat.profile.getUp, sim.dt);
+    expect(allowance).toBeGreaterThanOrEqual(sim.dt);
+    expect(allowance).toBeLessThanOrEqual(2);
+    const visiblyDown = forecast();
+    expect(visiblyDown.score).toBeGreaterThan(upright.score);
+    threat.body.support!.state = 'up'; threat.body.support!.since = -Infinity;
+    record();
+    expect(sim.see(rb, threat, .7).pose).toBe('down');
+    expect(forecast()).toEqual(visiblyDown);
+  });
+
+  it('observes finite decisions without changing either fixed native run', () => {
     for (const offFeetWitness of [false, true]) {
       const sim = make(offFeetWitness), inspected = new WeakSet<BallCarrier>();
       const decisions: Decision[] = [], allowances: number[] = [];
@@ -144,16 +181,17 @@ describe('carrier recovery is a bounded visible-pose estimate', () => {
         return originalTick.call(this);
       };
       const result = sim.run();
-      // The former assertion pinned 3.35 s and a specific heading from the old
-      // fixed 0.10 s reader. Finite player-specific cadence legitimately changes
-      // those beats and trajectories. Held-picture mechanism invariants above
-      // remain strict. Keep Inside Zone Under/right/seed 3 as the ordinary
-      // native control; its current path consumes no off-feet pictures. The
-      // retained Split Zone Over/left/seed 11 supplies actual down/rising cues
-      // through the same existing reads, without forcing falls or an outcome.
+      // Native controls retain the original calls and seeds. They establish
+      // observational equivalence, not a required incidental fall. Actual
+      // delayed off-feet consumption is tested above in a controlled setup.
       expect(result.outcome).not.toBe('timeout');
       expect(decisions.length).toBeGreaterThan(0);
-      if (offFeetWitness) expect(allowances.length).toBeGreaterThan(0);
+      const plain = make(offFeetWitness), plainResult = plain.run();
+      expect(result).toEqual(plainResult);
+      expect(sim.agents.map(a => a.body)).toEqual(plain.agents.map(a => a.body));
+      expect(sim.agents.map(a => a.mind)).toEqual(plain.agents.map(a => a.mind));
+      expect(sim.perception).toEqual(plain.perception);
+      expect(sim.rng.nextU32()).toBe(plain.rng.nextU32());
       for (const decision of decisions) {
         expect(Number.isFinite(decision.heading)).toBe(true);
         expect(Number.isFinite(decision.score)).toBe(true);
