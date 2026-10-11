@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { solveSoleImpact, solveSoleReaction, projectTangentImpulse, tangentMaximumDissipationResidual, normalComplementarityResidual, type SoleContactPoint } from '../src/physics/sole-contact.js';
-import { identityRigidBasis, type MaterialRigidState, v3Norm } from '../src/physics/material-rigid.js';
+import { solveSoleImpact, solveSoleReaction, projectTangentImpulse, tangentMaximumDissipationResidual, normalComplementarityResidual, type SoleContactPoint } from '../../src/physics/sole-contact.js';
+import { identityRigidBasis, type MaterialRigidState, v3Norm } from '../../src/physics/material-rigid.js';
 const foot = (velocity = {x:0,y:0,z:-3}, angularMomentum = {x:0,y:0,z:0}): MaterialRigidState => ({mass:2,inertia:.05,position:{x:0,y:0,z:.1},velocity,angularMomentum,basis:identityRigidBasis()});
 const sole = (friction:number):SoleContactPoint[] => [{id:'a',local:{x:-.2,y:-.1,z:-.1},friction},{id:'b',local:{x:.2,y:-.1,z:-.1},friction},{id:'c',local:{x:0,y:.2,z:-.1},friction}];
 function ledger(r:ReturnType<typeof solveSoleImpact>) {

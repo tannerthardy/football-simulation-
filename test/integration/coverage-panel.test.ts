@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { HASH_LEFT_Y } from '../src/core/field.js';
-import { Rng } from '../src/core/rng.js';
-import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
-import { PASS_BY_ID } from '../src/playbook/concepts.js';
-import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
-import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import type { DefensivePlayCall, OffensivePlayCall, ZoneStyle } from '../src/playbook/types.js';
-import { goTo } from '../src/sim/behaviors/common.js';
-import { ZoneCoverage } from '../src/sim/behaviors/defense.js';
-import { PlaySim } from '../src/sim/playsim.js';
+import { HASH_LEFT_Y } from '../../src/core/field.js';
+import { Rng } from '../../src/core/rng.js';
+import { generateTeam, pickDefense, pickOffense } from '../../src/league/team.js';
+import { PASS_BY_ID } from '../../src/playbook/concepts.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
+import type { DefensivePlayCall, OffensivePlayCall, ZoneStyle } from '../../src/playbook/types.js';
+import { goTo } from '../../src/sim/behaviors/common.js';
+import { ZoneCoverage } from '../../src/sim/behaviors/defense.js';
+import { PlaySim } from '../../src/sim/playsim.js';
 
 const home = generateTeam(new Rng(21), 'Home', 'HOM', { strength: 0.6 });
 const away = generateTeam(new Rng(22), 'Away', 'AWY', { strength: 0.6 });

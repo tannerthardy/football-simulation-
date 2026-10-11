@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { advanceSpatialSupport, newSpatialSupport, type SpatialSupportState, type SpatialImpulseSet } from '../src/physics/spatial-support.js';
+import { advanceSpatialSupport, newSpatialSupport, type SpatialSupportState, type SpatialImpulseSet } from '../../src/physics/spatial-support.js';
 import { identityRigidBasis, newMaterialRigid, v3Add, v3Scale, v3Sub, v3Cross, v3Norm, rigidPointPosition,
-  type Vec3, type MaterialRigidState, type RigidBasis } from '../src/physics/material-rigid.js';
-import { advanceVerticalSupport, newVerticalSupport } from '../src/physics/vertical-support.js';
+  type Vec3, type MaterialRigidState, type RigidBasis } from '../../src/physics/material-rigid.js';
+import { advanceVerticalSupport, newVerticalSupport } from '../../src/physics/vertical-support.js';
 
 const zero = (): Vec3 => ({ x: 0, y: 0, z: 0 });
 const body = (mass: number, inertia: number, position: Vec3): MaterialRigidState => newMaterialRigid({ mass, inertia, position,

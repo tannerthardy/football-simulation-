@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
-import {createMaterialPlaneCandidate,inspectMaterialPlane,type MaterialPlane} from '../src/physics/material-plane.js';
-import {identityRigidBasis,rigidMidpointState,type MaterialRigidState,type Vec3} from '../src/physics/material-rigid.js';
+import {createMaterialPlaneCandidate,inspectMaterialPlane,type MaterialPlane} from '../../src/physics/material-plane.js';
+import {identityRigidBasis,rigidMidpointState,type MaterialRigidState,type Vec3} from '../../src/physics/material-rigid.js';
 const plane:MaterialPlane={normal:{x:0,y:0,z:1},height:0};
 function fixture(z:number,local:Vec3,vz:number,h:number,omega:Vec3={x:2,y:0,z:0}){
  const before:MaterialRigidState={mass:2,inertia:1,position:{x:0,y:0,z},velocity:{x:0,y:0,z:vz},angularMomentum:omega,basis:identityRigidBasis()};

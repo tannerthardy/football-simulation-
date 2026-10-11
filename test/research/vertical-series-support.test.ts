@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { advanceVerticalSupport, newVerticalSupport, type VerticalSupportReport,
-  type VerticalSupportState } from '../src/physics/vertical-support.js';
+  type VerticalSupportState } from '../../src/physics/vertical-support.js';
 
 function standing(): VerticalSupportState {
   const leg = { restLength: 1.1, stiffness: 4800, forceCap: 1600, damping: 30, dampingCap: 300 };

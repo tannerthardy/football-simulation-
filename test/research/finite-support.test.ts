@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { loadedSupport, newFiniteSupport, requestSupportStep, solveSupportInterval, stepFiniteSupport, SupportSolveError,
-  type FiniteSupportBody, type SupportGrip, type SupportIntervalReport } from '../src/physics/finite-support.js';
-import type { Vec2 } from '../src/core/vec.js';
+  type FiniteSupportBody, type SupportGrip, type SupportIntervalReport } from '../../src/physics/finite-support.js';
+import type { Vec2 } from '../../src/core/vec.js';
 
 const profile = { massKg: 100, radius: .3, reach: 1, heightYd: 2.05, vmax: 9, tau: 1.3,
   brake: 6, lateral: 6, turnRate: 8, backpedal: .6, shuffle: .55, maxCatchHeight: 3,

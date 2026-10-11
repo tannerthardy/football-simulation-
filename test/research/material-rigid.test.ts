@@ -3,7 +3,7 @@ import { advanceMaterialRigid, identityRigidBasis, newMaterialRigid, rigidAngula
   rigidBasisError, rigidImpactAttachment, rigidImpactState, rigidKineticEnergy, rigidMidpointState,
   rigidPointImpulseResponse, rigidPointPosition, rigidPointVelocity, rigidWorldOffset,
   v3Add, v3Cross, v3Dot, v3Norm, v3Scale, v3Sub,
-  type MaterialRigidState, type Vec3 } from '../src/physics/material-rigid.js';
+  type MaterialRigidState, type Vec3 } from '../../src/physics/material-rigid.js';
 
 const vec = (x = 0, y = 0, z = 0): Vec3 => ({ x, y, z });
 const body = (extra: Partial<MaterialRigidState> = {}): MaterialRigidState => newMaterialRigid({

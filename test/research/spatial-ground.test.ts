@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { advanceSpatialGroundContact, type SpatialGroundPoint } from '../src/physics/spatial-ground.js';
-import { newSpatialSupport, spatialSupportEnergy, type SpatialSupportState } from '../src/physics/spatial-support.js';
-import { identityRigidBasis, type Vec3 } from '../src/physics/material-rigid.js';
+import { advanceSpatialGroundContact, type SpatialGroundPoint } from '../../src/physics/spatial-ground.js';
+import { newSpatialSupport, spatialSupportEnergy, type SpatialSupportState } from '../../src/physics/spatial-support.js';
+import { identityRigidBasis, type Vec3 } from '../../src/physics/material-rigid.js';
 
 const v = (x = 0, y = 0, z = 0): Vec3 => ({ x, y, z });
 function standing(): { state: SpatialSupportState; patches: [SpatialGroundPoint[], SpatialGroundPoint[]] } {

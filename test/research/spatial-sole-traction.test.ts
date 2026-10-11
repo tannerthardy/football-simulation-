@@ -4,14 +4,14 @@ import {
   createSpatialSoleShearState,
   type SpatialSoleComplianceMaterial,
   type SpatialSoleShearState,
-} from '../src/physics/spatial-sole-compliance.js';
-import { newSpatialSupport, type SpatialSupportState } from '../src/physics/spatial-support.js';
+} from '../../src/physics/spatial-sole-compliance.js';
+import { newSpatialSupport, type SpatialSupportState } from '../../src/physics/spatial-support.js';
 import {
   identityRigidBasis,
   newMaterialRigid,
   type MaterialRigidState,
   type Vec3,
-} from '../src/physics/material-rigid.js';
+} from '../../src/physics/material-rigid.js';
 
 const zero = (): Vec3 => ({ x: 0, y: 0, z: 0 });
 const body = (mass: number, inertia: number, position: Vec3, velocity: Vec3 = zero()): MaterialRigidState =>

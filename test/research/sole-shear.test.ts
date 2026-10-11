@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { advanceSoleShear } from '../src/physics/sole-shear.js';
-import type { Vec2 } from '../src/core/vec.js';
+import { advanceSoleShear } from '../../src/physics/sole-shear.js';
+import type { Vec2 } from '../../src/core/vec.js';
 
 const v = (x: number, y: number): Vec2 => ({ x, y });
 const near = (actual: number, expected: number, tolerance = 1e-9) =>

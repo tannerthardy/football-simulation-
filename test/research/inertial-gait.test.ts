@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import type { PhysicalProfile } from '../src/players/physical.js';
-import { newInertialSupport, solveInertialSupportInterval, torsoVelocity } from '../src/physics/inertial-support.js';
-import { advanceInertialGaits, newInertialGait, requestInertialStep, locomotorPowerPrior, planInertialStride } from '../src/physics/inertial-gait.js';
-import type { SupportGrip } from '../src/physics/finite-support.js';
+import type { PhysicalProfile } from '../../src/players/physical.js';
+import { newInertialSupport, solveInertialSupportInterval, torsoVelocity } from '../../src/physics/inertial-support.js';
+import { advanceInertialGaits, newInertialGait, requestInertialStep, locomotorPowerPrior, planInertialStride } from '../../src/physics/inertial-gait.js';
+import type { SupportGrip } from '../../src/physics/finite-support.js';
 const p: PhysicalProfile = { massKg: 100, radius: .3, reach: 1, heightYd: 2.05, vmax: 9, tau: 1.3,
   brake: 6, lateral: 6, turnRate: 8, backpedal: .6, shuffle: .55, maxCatchHeight: 3, reactReach: 2.6,
   reactionTime: .25, power: 100, balance: .5 };

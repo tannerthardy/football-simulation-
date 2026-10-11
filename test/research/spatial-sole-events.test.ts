@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { advanceSpatialSoleCompliance, advanceSpatialSoleSlipStop, createSpatialSoleShearState,
   type SpatialSoleComplianceMaterial, type SpatialSoleConstantForces,
-  type SpatialSoleSlipStopOptions } from '../src/physics/spatial-sole-compliance.js';
-import { identityRigidBasis, type MaterialRigidState, type Vec3 } from '../src/physics/material-rigid.js';
-import type { SpatialSupportState } from '../src/physics/spatial-support.js';
+  type SpatialSoleSlipStopOptions } from '../../src/physics/spatial-sole-compliance.js';
+import { identityRigidBasis, type MaterialRigidState, type Vec3 } from '../../src/physics/material-rigid.js';
+import type { SpatialSupportState } from '../../src/physics/spatial-support.js';
 
 const zero = (): Vec3 => ({ x: 0, y: 0, z: 0 });
 const body = (mass: number, inertia: number, position: Vec3): MaterialRigidState =>

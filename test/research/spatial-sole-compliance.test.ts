@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   advanceSpatialSoleCompliance,
   type SpatialSoleComplianceMaterial,
-} from '../src/physics/spatial-sole-compliance.js';
-import { advanceSpatialSupport, newSpatialSupport, type SpatialSupportState } from '../src/physics/spatial-support.js';
+} from '../../src/physics/spatial-sole-compliance.js';
+import { advanceSpatialSupport, newSpatialSupport, type SpatialSupportState } from '../../src/physics/spatial-support.js';
 import {
   identityRigidBasis,
   newMaterialRigid,
@@ -11,7 +11,7 @@ import {
   v3Sub,
   type MaterialRigidState,
   type Vec3,
-} from '../src/physics/material-rigid.js';
+} from '../../src/physics/material-rigid.js';
 
 const zero = (): Vec3 => ({ x: 0, y: 0, z: 0 });
 

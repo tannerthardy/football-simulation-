@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { newVerticalSupport, advanceVerticalSupport, verticalSupportEnergy, type VerticalSupportState } from '../src/physics/vertical-support.js';
-import { axialLegForce, axialLegDamping } from '../src/physics/leg-compliance.js';
+import { newVerticalSupport, advanceVerticalSupport, verticalSupportEnergy, type VerticalSupportState } from '../../src/physics/vertical-support.js';
+import { axialLegForce, axialLegDamping } from '../../src/physics/leg-compliance.js';
 function standing(): VerticalSupportState {
   return newVerticalSupport({ torsoMass: 100, footMass: [2, 2], torso: { position: 1.15, velocity: 0 },
     feet: [{ id: 0, position: 0, velocity: 0 }, { id: 1, position: 0, velocity: 0 }], gravity: 10,

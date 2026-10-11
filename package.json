@@ -10,7 +10,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --project core",
+    "test:integration": "vitest run --project integration",
+    "test:research": "vitest run --project research",
+    "test:all": "vitest run",
     "sim:play": "tsx scripts/sim-play.ts",
     "sim:game": "tsx scripts/sim-game.ts",
     "calibrate": "tsx scripts/calibrate.ts",

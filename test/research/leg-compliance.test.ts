@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { axialLegChangingRestForce, axialLegConfigurationWork, axialLegDamping, axialLegDiscreteForce, axialLegForce,
-  axialLegPotential, type AxialLegCompliance } from '../src/physics/leg-compliance.js';
+  axialLegPotential, type AxialLegCompliance } from '../../src/physics/leg-compliance.js';
 
 const leg: AxialLegCompliance = { restLength: 1.1, stiffness: 6000, forceCap: 900, damping: 80, dampingCap: 250 };
 describe('persistent finite axial compliance', () => {

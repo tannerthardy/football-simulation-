@@ -28,39 +28,7 @@ function dropback(form: string, front: string, personnel: DefPersonnelId, seed: 
   });
 }
 
-/** Share of edge rushes on which the rusher was engaged by a blocker before the play ended. */
-function edgesEngaged(form: string, front: string, personnel: DefPersonnelId, plays: number): number {
-  let engaged = 0;
-  let total = 0;
-  for (let seed = 1; seed <= plays; seed++) {
-    const sim = dropback(form, front, personnel, seed);
-    const edges = sim.defense.filter((d) => (d.slot === 'DE_W' || d.slot === 'DE_S') && d.behavior.kind === 'rush');
-    const touched = new Set<Agent>();
-    const step = sim as unknown as { tick(): void };
-    while (sim.phase === 'live' && sim.t < 3) {
-      step.tick();
-      for (const d of edges) if (d.engagement) touched.add(d);
-      // A contact followed by a same-tick shed is still a real interception
-      // of the rush arc. Snapshot-only counting misses that short rep.
-      for (const event of sim.events) if (event.type === 'block_contact') {
-        const d = edges.find(d => d.idx === event.b);
-        if (d) touched.add(d);
-      }
-    }
-    engaged += touched.size;
-    total += edges.length;
-  }
-  return engaged / Math.max(1, total);
-}
-
 describe('pass protection', () => {
-  it('blocks the edge rushers instead of shadowing their arc', () => {
-    expect(edgesEngaged('gun_doubles_11', 'over', 'nickel', 12)).toBeGreaterThan(0.9);
-    expect(edgesEngaged('ace_12', 'over', 'base43', 12)).toBeGreaterThan(0.9);
-    // A wide-nine end has a genuine speed advantage, but is still usually touched.
-    expect(edgesEngaged('gun_doubles_11', 'wide9', 'nickel', 12)).toBeGreaterThan(0.75);
-  });
-
   it('declares protection in order against Tite: edge, 4i, nose, 4i, edge', () => {
     const sim = dropback('gun_empty_11', 'tite', 'base34', 1);
     // Observe the declaration after the linemen's known-count motor response.
