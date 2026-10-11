@@ -2,8 +2,18 @@
 
 Start with these shared project references:
 
+- [Visible help and primary route discipline](docs/reviews/visible-help-and-primary-route-discipline.md):
+  **latest increment and priorities.** Physical upright/down/rising pose now
+  enters the same delayed observation as movement. Unavailable observed help
+  cannot supply a deep roof; stale pictures can still fool defenders. Confirmed
+  own vertical stems retain responsibility before five yards. Read the staged
+  controls, all 24 ordinary pairs and mixed outcomes; pose-only has no measured
+  ordinary endpoint effect. The isolated active torso-reel oracle fails position
+  while force/work checks pass: repair that local path next, then football
+  transfer. The six-yard roof maximum remains unresolved. No body solver or
+  capacity changes; full anatomical expansion remains paused.
 - [Run-block contact fits and current priorities](docs/reviews/run-block-fit-and-current-priorities.md):
-  **latest controller increment and broad review.** Reach/cutoff OL use their
+  Previous controller increment and broad review. Reach/cutoff OL use their
   consumed observation to recover a lost shoulder before committing, preserving
   drive direction and shared physical limits. Read the matched 24-play force
   observations, adverse cases, cost guard and 12 paired clips. The expensive

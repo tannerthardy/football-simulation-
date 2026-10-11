@@ -1,0 +1,2050 @@
+{
+  "schema": "coverage-help-review-v1",
+  "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+  "toolSha256": "fa04d9ac372ab0c351566f5b998ce7ba810bba09104b0e5436bda6b79b62231e",
+  "sourceVersionToolSha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+  "node": "v22.23.3",
+  "inputSha256": "f64ed0e21054ee5d97111a8f61d8f86f6f8f6b9c40b180eceb4ba648d657f80c",
+  "profilesSha256": "027216828b35be1c1be08151300090c380d61ffebe3a17b6d109ad46120e2ed2",
+  "inputs": [
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_doubles_11",
+      "concept": "four_verts",
+      "coverage": "cover4",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_doubles_11",
+      "concept": "dagger",
+      "coverage": "cover4",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "coverage": "cover4",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_trips_11",
+      "concept": "smash",
+      "coverage": "cover4",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_doubles_11",
+      "concept": "four_verts",
+      "coverage": "cover3_match",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_doubles_11",
+      "concept": "dagger",
+      "coverage": "cover3_match",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "coverage": "cover3_match",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_trips_11",
+      "concept": "smash",
+      "coverage": "cover3_match",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_doubles_11",
+      "concept": "four_verts",
+      "coverage": "cover1",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_doubles_11",
+      "concept": "dagger",
+      "coverage": "cover1",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "coverage": "cover1",
+      "playSeed": 3
+    },
+    {
+      "roster": 1,
+      "offenseSeed": 7,
+      "defenseSeed": 19,
+      "formation": "gun_trips_11",
+      "concept": "smash",
+      "coverage": "cover1",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_doubles_11",
+      "concept": "four_verts",
+      "coverage": "cover4",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_doubles_11",
+      "concept": "dagger",
+      "coverage": "cover4",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "coverage": "cover4",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_trips_11",
+      "concept": "smash",
+      "coverage": "cover4",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_doubles_11",
+      "concept": "four_verts",
+      "coverage": "cover3_match",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_doubles_11",
+      "concept": "dagger",
+      "coverage": "cover3_match",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "coverage": "cover3_match",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_trips_11",
+      "concept": "smash",
+      "coverage": "cover3_match",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_doubles_11",
+      "concept": "four_verts",
+      "coverage": "cover1",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_doubles_11",
+      "concept": "dagger",
+      "coverage": "cover1",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "coverage": "cover1",
+      "playSeed": 3
+    },
+    {
+      "roster": 2,
+      "offenseSeed": 31,
+      "defenseSeed": 32,
+      "formation": "gun_trips_11",
+      "concept": "smash",
+      "coverage": "cover1",
+      "playSeed": 3
+    }
+  ],
+  "inspectionSeconds": 8,
+  "observerNeutrality": [
+    {
+      "id": "HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+      "initial": true,
+      "final": true,
+      "recording": true,
+      "observedInitialSignature": "c0f03cb9ec042b4a23869301e99d871ae88aa8ee40d5f3d90e739e47076e9b8b",
+      "plainInitialSignature": "c0f03cb9ec042b4a23869301e99d871ae88aa8ee40d5f3d90e739e47076e9b8b",
+      "observedSignature": "e4ef068cdfc78d85629ec246608ee46090e38494a0bd55b3e012e40342df3ef3",
+      "plainSignature": "e4ef068cdfc78d85629ec246608ee46090e38494a0bd55b3e012e40342df3ef3"
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-dagger-cover4-S3",
+      "initial": true,
+      "final": true,
+      "recording": true,
+      "observedInitialSignature": "2d1082001d3a16d66e5fe1e4bd704a52326b83fd75a8fbc2f2bfbe04bdf0f460",
+      "plainInitialSignature": "2d1082001d3a16d66e5fe1e4bd704a52326b83fd75a8fbc2f2bfbe04bdf0f460",
+      "observedSignature": "8e8d351e2147082a401d161086f61b465ca9178d0205cb3358921bd59f7a7f0c",
+      "plainSignature": "8e8d351e2147082a401d161086f61b465ca9178d0205cb3358921bd59f7a7f0c"
+    },
+    {
+      "id": "HELP-R1-gun_bunch_11-mesh-cover4-S3",
+      "initial": true,
+      "final": true,
+      "recording": true,
+      "observedInitialSignature": "1e0ddb229ace971d3872e859ee9f4eb9db4504a667ebbdf273f1b053b629e1f8",
+      "plainInitialSignature": "1e0ddb229ace971d3872e859ee9f4eb9db4504a667ebbdf273f1b053b629e1f8",
+      "observedSignature": "eb906fb0df4c87842fc761814eb3e40c7c2acbe25753e8368b0bfac660c5fb78",
+      "plainSignature": "eb906fb0df4c87842fc761814eb3e40c7c2acbe25753e8368b0bfac660c5fb78"
+    },
+    {
+      "id": "HELP-R1-gun_trips_11-smash-cover4-S3",
+      "initial": true,
+      "final": true,
+      "recording": true,
+      "observedInitialSignature": "01403089c093abfeb1859051c538c43cc9afd6ac760b1fffe20fdf32846c5531",
+      "plainInitialSignature": "01403089c093abfeb1859051c538c43cc9afd6ac760b1fffe20fdf32846c5531",
+      "observedSignature": "4c6cc74526979f5b69c9b55f70e87afc663051415dce948a38106617afb2f73d",
+      "plainSignature": "4c6cc74526979f5b69c9b55f70e87afc663051415dce948a38106617afb2f73d"
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-four_verts-cover3_match-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "d7aa3864a7535dd6462fb038b2bad70d4b485d60bd6c2fbdbe2c28bee552a5f3",
+      "plainInitialSignature": "d7aa3864a7535dd6462fb038b2bad70d4b485d60bd6c2fbdbe2c28bee552a5f3",
+      "observedSignature": "c1d31fa57e057f1dae29451b866ea5aac3ba4b74cd469fb4e0abc26736a59846",
+      "plainSignature": "c1d31fa57e057f1dae29451b866ea5aac3ba4b74cd469fb4e0abc26736a59846"
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-dagger-cover3_match-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "188af35e2f7c094d1f043c0791cb48e3dfc9cf3c79d9b25c5b731108639c2eff",
+      "plainInitialSignature": "188af35e2f7c094d1f043c0791cb48e3dfc9cf3c79d9b25c5b731108639c2eff",
+      "observedSignature": "bf27ab09ba79149069c7a7915ddb88436ca0aa607772613500d905c427714cc5",
+      "plainSignature": "bf27ab09ba79149069c7a7915ddb88436ca0aa607772613500d905c427714cc5"
+    },
+    {
+      "id": "HELP-R1-gun_bunch_11-mesh-cover3_match-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "148bbc9d07ef9c78af21af524b9b26c0768909b39477e3fbda109c61f104fa3f",
+      "plainInitialSignature": "148bbc9d07ef9c78af21af524b9b26c0768909b39477e3fbda109c61f104fa3f",
+      "observedSignature": "c6933ada91ab8c9e7e73c78ba202bb6e13df5c234123372bb7b92b13a50e6954",
+      "plainSignature": "c6933ada91ab8c9e7e73c78ba202bb6e13df5c234123372bb7b92b13a50e6954"
+    },
+    {
+      "id": "HELP-R1-gun_trips_11-smash-cover3_match-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "9bd78916254aa6610be900ac0be758b4547ed7f50c10dd5fd1d37ded1b11d973",
+      "plainInitialSignature": "9bd78916254aa6610be900ac0be758b4547ed7f50c10dd5fd1d37ded1b11d973",
+      "observedSignature": "0174f6bda24f6fd4df986b3826075487625b235d4acfc40f9354d20f81bae78e",
+      "plainSignature": "0174f6bda24f6fd4df986b3826075487625b235d4acfc40f9354d20f81bae78e"
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-four_verts-cover1-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "6e63ccc9d33dd28e3aae9655e87a6fc49f26ee19a14fd8e7f1f4f1ba58634c6f",
+      "plainInitialSignature": "6e63ccc9d33dd28e3aae9655e87a6fc49f26ee19a14fd8e7f1f4f1ba58634c6f",
+      "observedSignature": "0613df7b7694494e219600e543b5e5c7ffe27b89ac8843c9dfb8841c023143e8",
+      "plainSignature": "0613df7b7694494e219600e543b5e5c7ffe27b89ac8843c9dfb8841c023143e8"
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-dagger-cover1-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "c6a315313304f074d820c0418edb404986ed2a6b4472b67d7fc9d12c5b3c2ef4",
+      "plainInitialSignature": "c6a315313304f074d820c0418edb404986ed2a6b4472b67d7fc9d12c5b3c2ef4",
+      "observedSignature": "7315ca37f800f72a97cc7e5ed96f7f06b481230925ec01b2f8f5caf47e0da2d4",
+      "plainSignature": "7315ca37f800f72a97cc7e5ed96f7f06b481230925ec01b2f8f5caf47e0da2d4"
+    },
+    {
+      "id": "HELP-R1-gun_bunch_11-mesh-cover1-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "e953deee371f2e837452b414c7f5553f1c1bf6cd80456b2724ca7d1966812d25",
+      "plainInitialSignature": "e953deee371f2e837452b414c7f5553f1c1bf6cd80456b2724ca7d1966812d25",
+      "observedSignature": "d8a9129a7b594aae5e9c5866e3620727b9dc9949206d377f9d8e0ea7efd89b46",
+      "plainSignature": "d8a9129a7b594aae5e9c5866e3620727b9dc9949206d377f9d8e0ea7efd89b46"
+    },
+    {
+      "id": "HELP-R1-gun_trips_11-smash-cover1-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "2f951812c33f23ff967f707e451c593b35674f54afd9a2edebfbbaf811c68e75",
+      "plainInitialSignature": "2f951812c33f23ff967f707e451c593b35674f54afd9a2edebfbbaf811c68e75",
+      "observedSignature": "eced98bd3eaad0c0595a083e486850e34cfc2f02ac311cc7b6dbb5b1192a7565",
+      "plainSignature": "eced98bd3eaad0c0595a083e486850e34cfc2f02ac311cc7b6dbb5b1192a7565"
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-four_verts-cover4-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "c801b71b48957eafc43edbb488a25d759df2760a11efd2423a21051c87da9a18",
+      "plainInitialSignature": "c801b71b48957eafc43edbb488a25d759df2760a11efd2423a21051c87da9a18",
+      "observedSignature": "0aff8d729954139a77a97bf35ad6ed0666ee0e0bfd7c07879e48d48468a64784",
+      "plainSignature": "0aff8d729954139a77a97bf35ad6ed0666ee0e0bfd7c07879e48d48468a64784"
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-dagger-cover4-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "bb8fffe15e6cf40841886f9fe91d5e1fd45f3fb8f9b10e3f235c9a7d97eb88a8",
+      "plainInitialSignature": "bb8fffe15e6cf40841886f9fe91d5e1fd45f3fb8f9b10e3f235c9a7d97eb88a8",
+      "observedSignature": "20898d8f4c71e3db8cb5e7d5729dd979405aebb10c00b93b1656e0c1c58a5e93",
+      "plainSignature": "20898d8f4c71e3db8cb5e7d5729dd979405aebb10c00b93b1656e0c1c58a5e93"
+    },
+    {
+      "id": "HELP-R2-gun_bunch_11-mesh-cover4-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "2431d3ad071bad442c63bb2432da812a1a032227ab8e31d7ce9463fe660855a7",
+      "plainInitialSignature": "2431d3ad071bad442c63bb2432da812a1a032227ab8e31d7ce9463fe660855a7",
+      "observedSignature": "2af828be9942270a46664998461bf476c0e3633ae7d01c6300d9a138a66a4aa6",
+      "plainSignature": "2af828be9942270a46664998461bf476c0e3633ae7d01c6300d9a138a66a4aa6"
+    },
+    {
+      "id": "HELP-R2-gun_trips_11-smash-cover4-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "1eb2ef94fe26a2afd33552b649d6c6789b5c94439115936db15e8b1f862aa8aa",
+      "plainInitialSignature": "1eb2ef94fe26a2afd33552b649d6c6789b5c94439115936db15e8b1f862aa8aa",
+      "observedSignature": "5c8fe73e5b439f7b440b70df9f8b0e2859a7b3410e1e6683070668d360a295c6",
+      "plainSignature": "5c8fe73e5b439f7b440b70df9f8b0e2859a7b3410e1e6683070668d360a295c6"
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-four_verts-cover3_match-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "6afa3ed1979ef7417db8576eceb911572b88ba32aa83f4b7cce384de1b7d8348",
+      "plainInitialSignature": "6afa3ed1979ef7417db8576eceb911572b88ba32aa83f4b7cce384de1b7d8348",
+      "observedSignature": "4b5be247da461e5aca797d70163bc9dc29bbe77444aa69d83ce14f01082f9dd5",
+      "plainSignature": "4b5be247da461e5aca797d70163bc9dc29bbe77444aa69d83ce14f01082f9dd5"
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-dagger-cover3_match-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "e3ef1810e8c5ff92af7f1737af499454dd8dd976b4e755222aef182f65246e2b",
+      "plainInitialSignature": "e3ef1810e8c5ff92af7f1737af499454dd8dd976b4e755222aef182f65246e2b",
+      "observedSignature": "bfb07685713f5a7f9823a486ef345d31b3e4eaab4e7ee700f046c2b495596157",
+      "plainSignature": "bfb07685713f5a7f9823a486ef345d31b3e4eaab4e7ee700f046c2b495596157"
+    },
+    {
+      "id": "HELP-R2-gun_bunch_11-mesh-cover3_match-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "f42eae19cf7c6fbd317e113ccd02b0d1f6b69cf15cb9ce2da6468d94d5856d3f",
+      "plainInitialSignature": "f42eae19cf7c6fbd317e113ccd02b0d1f6b69cf15cb9ce2da6468d94d5856d3f",
+      "observedSignature": "ec067abca09054db281f19ce43c3f4d0e8d0128a6bb218ed783ea3a5e2335594",
+      "plainSignature": "ec067abca09054db281f19ce43c3f4d0e8d0128a6bb218ed783ea3a5e2335594"
+    },
+    {
+      "id": "HELP-R2-gun_trips_11-smash-cover3_match-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "47de8511db82273168362ba261e2cd7aeb40cffda818ae89a9fac685563641d5",
+      "plainInitialSignature": "47de8511db82273168362ba261e2cd7aeb40cffda818ae89a9fac685563641d5",
+      "observedSignature": "d6c30bbaae49bf457f7c741b395dbb80fbb3c70a32eabd6931cb94b5c4c044b1",
+      "plainSignature": "d6c30bbaae49bf457f7c741b395dbb80fbb3c70a32eabd6931cb94b5c4c044b1"
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-four_verts-cover1-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "090233e3a17c3ed04648b22a1d6f9a15b8b0612afcc8935d09b793d58a04f29e",
+      "plainInitialSignature": "090233e3a17c3ed04648b22a1d6f9a15b8b0612afcc8935d09b793d58a04f29e",
+      "observedSignature": "3cf6a43a22edac83947a77f1cd1f45d43d5ae4257c595e93155257f8efc1069d",
+      "plainSignature": "3cf6a43a22edac83947a77f1cd1f45d43d5ae4257c595e93155257f8efc1069d"
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-dagger-cover1-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "92c89c5e286f2be9adbca5a47f4ad420738bc5c8625a025a2ee1442cf00abc69",
+      "plainInitialSignature": "92c89c5e286f2be9adbca5a47f4ad420738bc5c8625a025a2ee1442cf00abc69",
+      "observedSignature": "4f71b6e25ee63694ae33307a3f85f41f929978d68d63a6af58e8f0fc0bda08d6",
+      "plainSignature": "4f71b6e25ee63694ae33307a3f85f41f929978d68d63a6af58e8f0fc0bda08d6"
+    },
+    {
+      "id": "HELP-R2-gun_bunch_11-mesh-cover1-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "6455ee069e7f15a018c94662d360ca9d43eb7902e3736e7438a6796c165a3846",
+      "plainInitialSignature": "6455ee069e7f15a018c94662d360ca9d43eb7902e3736e7438a6796c165a3846",
+      "observedSignature": "2726a83fe5097c23906e966748047383a0cb164e39ca4a0e1050e5a4b1ea2d34",
+      "plainSignature": "2726a83fe5097c23906e966748047383a0cb164e39ca4a0e1050e5a4b1ea2d34"
+    },
+    {
+      "id": "HELP-R2-gun_trips_11-smash-cover1-S3",
+      "initial": true,
+      "final": true,
+      "recording": false,
+      "observedInitialSignature": "36d0c84ec2e6a3435e22d66de2fdf916534552b3516fd63ea1550e50f035f1d6",
+      "plainInitialSignature": "36d0c84ec2e6a3435e22d66de2fdf916534552b3516fd63ea1550e50f035f1d6",
+      "observedSignature": "efe38d08423726c3b7ef40d54a01fb75af6c203ab038b8c0bb1e0a69baf7c873",
+      "plainSignature": "efe38d08423726c3b7ef40d54a01fb75af6c203ab038b8c0bb1e0a69baf7c873"
+    }
+  ],
+  "summary": {
+    "freshDecisions": 352,
+    "capQueries": 457,
+    "acceptedCaps": 120,
+    "acceptedSampledDownOrRising": 0,
+    "acceptedActualHiddenUnavailable": 0,
+    "acceptedSampledUnknown": 0,
+    "acceptedStationaryOrRetreating": 14,
+    "acceptedStraightLineCushionUnderHalfSecond": 61,
+    "geometricDownOrRisingCandidates": 0,
+    "protectVerticalDecisions": 13,
+    "squeezeBreakDecisions": 7
+  },
+  "scope": "24 fixed ordinary 11v11 pass calls: two generated rosters, three coverage families, four concepts/formations. Actual controllers and collisions; no prescribed movement or off-play fall.",
+  "limits": [
+    "Sampled visible pose is reconstructed from copied actual support states at the existing perception-record calls. It is diagnostic evidence only, never injected into a decision. Missing initial/pre-snap history is null.",
+    "Current actual support, downUntil, job and target are hidden diagnostics, distinct from sampled visible pose and consumed Perceived data.",
+    "Cap accepted/rejected is reconstructed from the exact consumed stable judgment error and seen geometry plus optional visible pose guard. No extra see, read or judgment call.",
+    "Repeated cap queries and candidates within a real decision are retained. They are not independent plays or bust-frequency estimates.",
+    "Straight-line time until level uses consumed longitudinal motion only; it ignores turning, pursuit, lateral spacing and physical capabilities, and does not establish that an upright cap is incapable.",
+    "No NFL target fitting. Any still-live eight-second endpoint is inspection-censored with no forced whistle, timeout or fabricated yards/result.",
+    "Four predetermined first-roster Cover4 films. Full physical/controller/RNG/perception state matches an unobserved, unrecorded execution for every panel input."
+  ],
+  "rows": [
+    {
+      "id": "HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_doubles_11",
+        "concept": "four_verts",
+        "coverage": "cover4",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "61326ed28b576d11e1c5cc44870e07ba679e39ea4c8e064959fb30f0934cc051",
+      "signature": "e4ef068cdfc78d85629ec246608ee46090e38494a0bd55b3e012e40342df3ef3",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 6.1,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "slide",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 43.10942222070515,
+          "y": 18.825269413767728
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          }
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 100,
+        "capQueries": 117,
+        "acceptedCaps": 14,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 10,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-dagger-cover4-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_doubles_11",
+        "concept": "dagger",
+        "coverage": "cover4",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "109e33ad7306bfcaf4bf6b67807e7994f090b4405e4ae06b2b9ecb54e4835a27",
+      "signature": "8e8d351e2147082a401d161086f61b465ca9178d0205cb3358921bd59f7a7f0c",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 6.25,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 55.95344354359456,
+          "y": 16.15222311435755
+        },
+        "stats": {
+          "tacklers": [
+            "D1-CB3",
+            "D1-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.25,
+          "target": "O1-WR1",
+          "airYards": 13.86316901249915,
+          "separation": 0.8,
+          "receiver": "O1-WR1"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 20,
+        "capQueries": 35,
+        "acceptedCaps": 10,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 7,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_bunch_11-mesh-cover4-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "coverage": "cover4",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "530ce78e1ae0401503313d8edecfe2c37f4be84a580a37a1814186eb2341601a",
+      "signature": "eb906fb0df4c87842fc761814eb3e40c7c2acbe25753e8368b0bfac660c5fb78",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 5.95,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 57.504278541030224,
+          "y": 41.794552161561725
+        },
+        "stats": {
+          "tacklers": [
+            "D1-CB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.25,
+          "target": "O1-TE2",
+          "airYards": 4.368553138685641,
+          "separation": 4.4,
+          "receiver": "O1-TE2"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 18,
+        "capQueries": 29,
+        "acceptedCaps": 20,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 2,
+        "acceptedStraightLineCushionUnderHalfSecond": 9,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 1,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_trips_11-smash-cover4-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_trips_11",
+        "concept": "smash",
+        "coverage": "cover4",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "6f5750ef2d5dc51e72c3091c45f849ce2dc6c631dfc4f1af4e8e86d31d3681fb",
+      "signature": "4c6cc74526979f5b69c9b55f70e87afc663051415dce948a38106617afb2f73d",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 4.2,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "D",
+        "carrier": null,
+        "endSpot": {
+          "x": 43.05695290765537,
+          "y": 9.881162433679975
+        },
+        "stats": {
+          "tacklers": [
+            "O1-WR1"
+          ],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.55,
+          "target": "O1-WR1",
+          "airYards": 5.108101723744717,
+          "separation": 1.1,
+          "interceptedBy": "D1-CB3"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 14,
+        "capQueries": 22,
+        "acceptedCaps": 10,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 4,
+        "acceptedStraightLineCushionUnderHalfSecond": 2,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 2
+      }
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-four_verts-cover3_match-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_doubles_11",
+        "concept": "four_verts",
+        "coverage": "cover3_match",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "147a56f8f07fae040807dccd907a2fe559d7771d3e0ab9c475b8f5a01f51ad80",
+      "signature": "c1d31fa57e057f1dae29451b866ea5aac3ba4b74cd469fb4e0abc26736a59846",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 5.05,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 62.105659415545496,
+          "y": 22.444531384936383
+        },
+        "stats": {
+          "tacklers": [
+            "D1-LB3",
+            "D1-S1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover1"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.25,
+          "target": "O1-TE2",
+          "airYards": 20.639600508658212,
+          "separation": 2.9,
+          "receiver": "O1-TE2"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 15,
+        "capQueries": 15,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-dagger-cover3_match-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_doubles_11",
+        "concept": "dagger",
+        "coverage": "cover3_match",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "94b6129e6ccba51fc8d34c6f0a81252feda63ad320d1f2abcbce4c519ce36ca4",
+      "signature": "bf27ab09ba79149069c7a7915ddb88436ca0aa607772613500d905c427714cc5",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 4.15,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "incomplete",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 40,
+          "y": 26.666666666666668
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover1"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.25,
+          "target": "O1-TE2",
+          "airYards": 20.639600508658212,
+          "separation": 3
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 14,
+        "capQueries": 14,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_bunch_11-mesh-cover3_match-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "coverage": "cover3_match",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "bc0eb6433667173a870c9a5727fa36f051b1eb97219bcfc5e600608b5aeca3c4",
+      "signature": "c6933ada91ab8c9e7e73c78ba202bb6e13df5c234123372bb7b92b13a50e6954",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 4.3,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 45.261126111138445,
+          "y": 38.972873563902134
+        },
+        "stats": {
+          "tacklers": [
+            "D1-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.25,
+          "target": "O1-TE2",
+          "airYards": 4.368553138685641,
+          "separation": 4.7,
+          "receiver": "O1-TE2"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 8,
+        "capQueries": 8,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_trips_11-smash-cover3_match-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_trips_11",
+        "concept": "smash",
+        "coverage": "cover3_match",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "ff2353c86edcf81992d58f8331ee02a7042e3e3677ee451c34e9e484f55339a9",
+      "signature": "0174f6bda24f6fd4df986b3826075487625b235d4acfc40f9354d20f81bae78e",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 4.3,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 58.28605973132821,
+          "y": 14.420279215608444
+        },
+        "stats": {
+          "tacklers": [
+            "D1-CB1",
+            "D1-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.1,
+          "target": "O1-WR6",
+          "airYards": 17.376680308266458,
+          "separation": 3.7,
+          "receiver": "O1-WR6"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 7,
+        "capQueries": 10,
+        "acceptedCaps": 3,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 2,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 3,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-four_verts-cover1-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_doubles_11",
+        "concept": "four_verts",
+        "coverage": "cover1",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "fcc14b3a427061b7591288f106e6e6dc315e0ed3497ab54e4ee5f086b2d630aa",
+      "signature": "0613df7b7694494e219600e543b5e5c7ffe27b89ac8843c9dfb8841c023143e8",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 4.6,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "incomplete",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 40,
+          "y": 26.666666666666668
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.25,
+          "target": "O1-WR6",
+          "airYards": 24.65277828789162,
+          "separation": 1.6
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 0,
+        "capQueries": 0,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_doubles_11-dagger-cover1-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_doubles_11",
+        "concept": "dagger",
+        "coverage": "cover1",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "da53a1153e5ecfa8e08fe33cd928488aa27478b88e6bed0db90ce3a11affc623",
+      "signature": "7315ca37f800f72a97cc7e5ed96f7f06b481230925ec01b2f8f5caf47e0da2d4",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 5.8,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 55.392606609511816,
+          "y": 45.47312148704578
+        },
+        "stats": {
+          "tacklers": [
+            "D1-CB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.25,
+          "target": "O1-WR6",
+          "airYards": 9.09146925837075,
+          "receiver": "O1-RB3"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 0,
+        "capQueries": 0,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_bunch_11-mesh-cover1-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "coverage": "cover1",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "c9538c787178222ac913417b444d5d437865931a6f6e98bf1774fbef2a74412a",
+      "signature": "d8a9129a7b594aae5e9c5866e3620727b9dc9949206d377f9d8e0ea7efd89b46",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 3.6,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "incomplete",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 40,
+          "y": 26.666666666666668
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": true,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.25,
+          "target": "O1-TE2",
+          "airYards": 3.9648853623516658,
+          "separation": 1.1
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 0,
+        "capQueries": 0,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R1-gun_trips_11-smash-cover1-S3",
+      "input": {
+        "roster": 1,
+        "offenseSeed": 7,
+        "defenseSeed": 19,
+        "formation": "gun_trips_11",
+        "concept": "smash",
+        "coverage": "cover1",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "8698a873539d5b4139cb31a0580ea1d4f4b1b277ffddf65de8b65f7b52e5cbfc",
+      "signature": "eced98bd3eaad0c0595a083e486850e34cfc2f02ac311cc7b6dbb5b1192a7565",
+      "profileSha256": "f86dba458a8440599258bf6e15ad506b6c52ac573da333073acdd5015754ab87",
+      "end": {
+        "t": 5.65,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 52.32816906451729,
+          "y": 37.02535788230648
+        },
+        "stats": {
+          "tacklers": [
+            "D1-LB1",
+            "D1-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "O1-QB2",
+          "timeToThrow": 2.35,
+          "target": "O1-WR3",
+          "airYards": 5.113089136621774,
+          "separation": 1.7,
+          "receiver": "O1-WR3"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 0,
+        "capQueries": 0,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-four_verts-cover4-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_doubles_11",
+        "concept": "four_verts",
+        "coverage": "cover4",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "a5c702f6be3c716a86d661b027c4642ec8f612b21fe0060449de9da1df4166e9",
+      "signature": "0aff8d729954139a77a97bf35ad6ed0666ee0e0bfd7c07879e48d48468a64784",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 6.2,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 71.50489154430484,
+          "y": 24.444217336915266
+        },
+        "stats": {
+          "tacklers": [
+            "D2-CB2",
+            "D2-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 3.2,
+          "target": "O2-TE2",
+          "airYards": 28.855792778832694,
+          "separation": 1.7,
+          "receiver": "O2-TE2"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 41,
+        "capQueries": 53,
+        "acceptedCaps": 9,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 5,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-dagger-cover4-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_doubles_11",
+        "concept": "dagger",
+        "coverage": "cover4",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "c89386fbf0eab4e678eee325d0752c1232d90107c315bfbdac1d6f8d6abc1f59",
+      "signature": "20898d8f4c71e3db8cb5e7d5729dd979405aebb10c00b93b1656e0c1c58a5e93",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 4.4,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 55.76750467339158,
+          "y": 13.86289835502425
+        },
+        "stats": {
+          "tacklers": [
+            "D2-CB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2.4,
+          "target": "O2-WR3",
+          "airYards": 13.711507398366066,
+          "separation": 0.9,
+          "receiver": "O2-WR3"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 24,
+        "capQueries": 38,
+        "acceptedCaps": 13,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 8,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_bunch_11-mesh-cover4-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "coverage": "cover4",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "aa006b3830e014c8fc19335e27c0f8611afd54502827033f004bccb3d4d881f8",
+      "signature": "2af828be9942270a46664998461bf476c0e3633ae7d01c6300d9a138a66a4aa6",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 5.85,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 56.26776781227758,
+          "y": 38.35847808831204
+        },
+        "stats": {
+          "tacklers": [
+            "D2-CB3",
+            "D2-S2",
+            "D2-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2,
+          "target": "O2-TE2",
+          "airYards": 3.813352034577271,
+          "separation": 4.3,
+          "receiver": "O2-TE2"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 12,
+        "capQueries": 16,
+        "acceptedCaps": 10,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 6,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_trips_11-smash-cover4-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_trips_11",
+        "concept": "smash",
+        "coverage": "cover4",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "426e032b938dea227e9028c35aaf8ef6ef476c5a53daacf523f8d9c91bcc925e",
+      "signature": "5c8fe73e5b439f7b440b70df9f8b0e2859a7b3410e1e6683070668d360a295c6",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 8,
+        "phase": "live",
+        "censored": true,
+        "outcome": null,
+        "possession": "D",
+        "carrier": 16,
+        "endSpot": null,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 4.65,
+          "target": "O2-TE2",
+          "airYards": 6.497369223110553,
+          "passDefendedBy": "D2-LB3",
+          "interceptedBy": "D2-LB1"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 28,
+        "capQueries": 46,
+        "acceptedCaps": 28,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 6,
+        "acceptedStraightLineCushionUnderHalfSecond": 10,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 3,
+        "squeezeBreakDecisions": 5
+      }
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-four_verts-cover3_match-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_doubles_11",
+        "concept": "four_verts",
+        "coverage": "cover3_match",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "1f5d5f56024deabb7a4fcefb795b15d542f2805598a495a0985743ccef430ebb",
+      "signature": "4b5be247da461e5aca797d70163bc9dc29bbe77444aa69d83ce14f01082f9dd5",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 4,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "incomplete",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 40,
+          "y": 26.666666666666668
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2.35,
+          "target": "O2-TE2",
+          "airYards": 17.427503505559088,
+          "passDefendedBy": "D2-LB3"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 15,
+        "capQueries": 15,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-dagger-cover3_match-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_doubles_11",
+        "concept": "dagger",
+        "coverage": "cover3_match",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "f95e62e1f95d75d3af1b0ec74b0fd53cdb705ef141900d3bcd24656d0d895239",
+      "signature": "bfb07685713f5a7f9823a486ef345d31b3e4eaab4e7ee700f046c2b495596157",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 4.1,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "incomplete",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 40,
+          "y": 26.666666666666668
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": true,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2.85,
+          "target": "O2-WR1",
+          "airYards": 8.374247420483236,
+          "separation": 4.2
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 20,
+        "capQueries": 20,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_bunch_11-mesh-cover3_match-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "coverage": "cover3_match",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "7a86412351014c991b692fb6e27a362c3536ce81618f2f251f989bd5f8009704",
+      "signature": "ec067abca09054db281f19ce43c3f4d0e8d0128a6bb218ed783ea3a5e2335594",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 3.2,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "incomplete",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 40,
+          "y": 26.666666666666668
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2,
+          "target": "O2-TE2",
+          "airYards": 3.813352034577271,
+          "separation": 4.7
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 6,
+        "capQueries": 6,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_trips_11-smash-cover3_match-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_trips_11",
+        "concept": "smash",
+        "coverage": "cover3_match",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "c97369aa180d40b9afb687afdf149b745c033988f0564bce99ac51513935c2a9",
+      "signature": "d6c30bbaae49bf457f7c741b395dbb80fbb3c70a32eabd6931cb94b5c4c044b1",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 8,
+        "phase": "live",
+        "censored": true,
+        "outcome": null,
+        "possession": "O",
+        "carrier": 9,
+        "endSpot": null,
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2.75,
+          "target": "O2-WR3",
+          "airYards": 5.1084895955490595,
+          "separation": 8.7,
+          "receiver": "O2-WR3"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 10,
+        "capQueries": 13,
+        "acceptedCaps": 3,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 2,
+        "acceptedStraightLineCushionUnderHalfSecond": 2,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 6,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-four_verts-cover1-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_doubles_11",
+        "concept": "four_verts",
+        "coverage": "cover1",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "710db101beda5e80639bfae1fcac6b4b114c2dd31fe7b2e6575b497c6f8f612f",
+      "signature": "3cf6a43a22edac83947a77f1cd1f45d43d5ae4257c595e93155257f8efc1069d",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 5,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "incomplete",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 40,
+          "y": 26.666666666666668
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 3,
+          "target": "O2-TE2",
+          "airYards": 21.966090968239357,
+          "separation": 0.5,
+          "passDefendedBy": "D2-S1"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 0,
+        "capQueries": 0,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_doubles_11-dagger-cover1-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_doubles_11",
+        "concept": "dagger",
+        "coverage": "cover1",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "616ff1fe2767f780b2da00d09e00a86be4878512671682c18eda1a0a77f514e2",
+      "signature": "4f71b6e25ee63694ae33307a3f85f41f929978d68d63a6af58e8f0fc0bda08d6",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 4.35,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 46.05628217545036,
+          "y": 33.4870931847368
+        },
+        "stats": {
+          "tacklers": [
+            "D2-CB2",
+            "D2-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2.4,
+          "target": "O2-WR1",
+          "airYards": 6.66507224741747,
+          "separation": 1.1,
+          "receiver": "O2-WR1"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 0,
+        "capQueries": 0,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_bunch_11-mesh-cover1-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "coverage": "cover1",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "2a5ee0f9f46f9a988caa4ba78b439497013be952d2d4684f59a6c48a79672256",
+      "signature": "2726a83fe5097c23906e966748047383a0cb164e39ca4a0e1050e5a4b1ea2d34",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 4.2,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 44.3933513254426,
+          "y": 34.20845743195984
+        },
+        "stats": {
+          "tacklers": [
+            "D2-S1",
+            "D2-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2,
+          "target": "O2-TE2",
+          "airYards": 3.4555549135164085,
+          "separation": 1.3,
+          "receiver": "O2-TE2"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 0,
+        "capQueries": 0,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    },
+    {
+      "id": "HELP-R2-gun_trips_11-smash-cover1-S3",
+      "input": {
+        "roster": 2,
+        "offenseSeed": 31,
+        "defenseSeed": 32,
+        "formation": "gun_trips_11",
+        "concept": "smash",
+        "coverage": "cover1",
+        "playSeed": 3
+      },
+      "initialFootballSignature": "ef2749b8fc719393405a690b0a1150603dcd0bed51f156810b756daaa3d1d0d8",
+      "signature": "efe38d08423726c3b7ef40d54a01fb75af6c203ab038b8c0bb1e0a69baf7c873",
+      "profileSha256": "6d68715334117a01ef8850c4fd87cd12d9d9bd20a493c40a1c3b02abd940f42a",
+      "end": {
+        "t": 4.85,
+        "phase": "dead",
+        "censored": false,
+        "outcome": "tackle",
+        "possession": "O",
+        "carrier": null,
+        "endSpot": {
+          "x": 42.124023464346074,
+          "y": 12.976226164228276
+        },
+        "stats": {
+          "tacklers": [
+            "D2-CB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "O2-QB3",
+          "timeToThrow": 2.35,
+          "target": "O2-WR3",
+          "airYards": 5.102831089201352,
+          "separation": 2,
+          "receiver": "O2-WR3"
+        },
+        "penalty": null
+      },
+      "summary": {
+        "freshDecisions": 0,
+        "capQueries": 0,
+        "acceptedCaps": 0,
+        "acceptedSampledDownOrRising": 0,
+        "acceptedActualHiddenUnavailable": 0,
+        "acceptedSampledUnknown": 0,
+        "acceptedStationaryOrRetreating": 0,
+        "acceptedStraightLineCushionUnderHalfSecond": 0,
+        "geometricDownOrRisingCandidates": 0,
+        "protectVerticalDecisions": 0,
+        "squeezeBreakDecisions": 0
+      }
+    }
+  ],
+  "rawSha256": "7970c5ea45ea73a63f374a7f1c5467dfa54bb718464dacffaa4e5e630a747486"
+}

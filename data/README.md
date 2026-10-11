@@ -1,6 +1,13 @@
 # Shared NFL data
 
-Current engine status: [Run-block contact fits and current priorities](../docs/reviews/run-block-fit-and-current-priorities.md).
+Current engine status: [Visible help and primary route discipline](../docs/reviews/visible-help-and-primary-route-discipline.md).
+The [evidence and commands](reviews/physics-world/visible-help/README.md) retain
+three source-pinned 24-play phases, staged latency/recovery controls, all adverse
+outcomes and a failing local active-grasp position oracle. Watch the
+[eight paired clips](../viewer/visible-help.html) or [offline ZIP](../viewer/visible-help.zip).
+No physical capacity or World change; observed pose is imperfect and delayed.
+
+Previous controller increment: [Run-block contact fits and current priorities](../docs/reviews/run-block-fit-and-current-priorities.md).
 The [evidence and commands](reviews/physics-world/block-fit/README.md) retain
 the matched 24-play force/approach panel, all adverse cases, production guards
 and sequential cost comparisons. Watch the [12 paired offline clips](../viewer/block-fit-film-room.zip).

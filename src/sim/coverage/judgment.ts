@@ -41,8 +41,10 @@ export class CoverageJudgment {
     });
     const climbing = (r: ReceiverRead) => r.depth > 5 && r.vel.x > 3 && r.release === 'vertical';
     const capped = (r: ReceiverRead) => hasVisibleCap(a, sim, r);
-    // Never desert an uncapped vertical of your own to chase another route.
-    if (own && climbing(own) && !capped(own)) return primary;
+    // A confirmed upfield stem is already the primary's responsibility.
+    // Waiting for five yards can abandon him during the release itself.
+    // A visible roof or an observed break can still permit help elsewhere.
+    if (own && own.release === 'vertical' && own.vel.x > 3 && !capped(own)) return primary;
     const danger = routes.filter(r => r.r !== own?.r && climbing(r) && !capped(r))
       .sort((p, q) => (q.depth - 0.25 * Math.abs(q.pos.y - a.pos.y)) - (p.depth - 0.25 * Math.abs(p.pos.y - a.pos.y)))[0];
     if (danger && danger.pos.x > a.pos.x - 5) {
@@ -68,13 +70,17 @@ export class CoverageJudgment {
   }
 }
 
-/** A teammate ahead and near the route, still gaining depth, looks like a
- * cap. No access to his assignment or to current (unseen) receiver motion. */
+/** A teammate ahead and near the route can look like a cap while upright.
+ * No access to his assignment, hidden capacity or current unseen body state. */
 export function hasVisibleCap(a: Agent, sim: PlaySim, rd: ReceiverRead): boolean {
   const error = 0.45 * (1 - a.r('discipline')) + 0.35 * a.mind.judgment(`cap:${rd.r.slot}`);
   return sim.defense.some(d => {
     if (d === a) return false;
     const seen = sim.see(a, d);
+    // A falling/grounded or recovering teammate cannot supply this roof.
+    // This is the sampled picture: a newly fallen teammate can still look up,
+    // and a recovered one can still look down. Unknown cues retain geometry.
+    if (seen.pose != null && seen.pose !== 'up') return false;
     const depth = seen.pos.x - rd.pos.x;
     const lateral = Math.abs(seen.pos.y + seen.vel.y * 0.2 - rd.pos.y - rd.vel.y * 0.2);
     return depth > 0.4 - error && depth < 6 && lateral < 2.3 + error && seen.vel.x > -1;

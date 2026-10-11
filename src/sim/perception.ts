@@ -8,12 +8,18 @@
 import type { Vec2 } from '../core/vec.js';
 
 const HISTORY = 24;
+const STRIDE = 7;
+
+/** Coarse visible body pose, separate from pad-level technique or capability. */
+export type VisiblePose = 'up' | 'down' | 'rising';
 
 export interface Perceived {
   pos: Vec2;
   vel: Vec2;
   stance: 'high' | 'low' | null;
   facing: number;
+  /** Sampled with the same latency as position; absent/null means unknown. */
+  pose?: VisiblePose | null;
   /** Age of the sampled visual state before constant-velocity prediction. */
   age?: number;
 }
@@ -29,22 +35,23 @@ export class PerceptionBuffer {
     private readonly dt: number,
   ) {
     this.n = agents;
-    this.data = new Float64Array(HISTORY * agents * 6);
+    this.data = new Float64Array(HISTORY * agents * STRIDE);
   }
 
-  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number }>): void {
+  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null }>): void {
     this.head = (this.head + 1) % HISTORY;
     this.count = Math.min(HISTORY, this.count + 1);
-    const base = this.head * this.n * 6;
+    const base = this.head * this.n * STRIDE;
     for (let i = 0; i < this.n; i++) {
       const s = states[i];
-      const o = base + i * 6;
+      const o = base + i * STRIDE;
       this.data[o] = s.pos.x;
       this.data[o + 1] = s.pos.y;
       this.data[o + 2] = s.vel.x;
       this.data[o + 3] = s.vel.y;
       this.data[o + 4] = s.stance === 'high' ? 1 : s.stance === 'low' ? -1 : 0;
       this.data[o + 5] = s.facing ?? 0;
+      this.data[o + 6] = s.pose === 'up' ? 1 : s.pose === 'down' ? -1 : s.pose === 'rising' ? 2 : 0;
     }
   }
 
@@ -53,13 +60,16 @@ export class PerceptionBuffer {
     if (!this.count) throw new Error('Perception requires an initial snapshot');
     const back = Math.min(this.count - 1, Math.max(0, Math.round(delay / this.dt)));
     const idx = (this.head - back + HISTORY) % HISTORY;
-    const o = idx * this.n * 6 + i * 6;
+    const o = idx * this.n * STRIDE + i * STRIDE;
     const x = this.data[o];
     const y = this.data[o + 1];
     const vx = this.data[o + 2];
     const vy = this.data[o + 3];
     const lag = back * this.dt;
     const stance = this.data[o + 4];
-    return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy }, stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5], age: lag };
+    const pose = this.data[o + 6];
+    return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy },
+      stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5], age: lag,
+      pose: pose === 1 ? 'up' : pose === -1 ? 'down' : pose === 2 ? 'rising' : null };
   }
 }

@@ -14,6 +14,7 @@ import type { Recognition } from './recognition.js';
 import { SnapMind } from './mind.js';
 import { Rng } from '../core/rng.js';
 import type { RunFitJob } from './run-fits.js';
+import type { VisiblePose } from './perception.js';
 
 export type TeamSide = 'O' | 'D';
 
@@ -133,6 +134,14 @@ export class Agent {
   }
   get facing(): number {
     return this.body.facing;
+  }
+  /** Visible off-feet/recovery cue for the snapshot, not a recovery forecast.
+   * Scenario parking does not imply a physical pose. Falls and ground time
+   * share the off-feet cue; another player learns it through perception.
+   */
+  get pose(): VisiblePose | null {
+    const state = this.body.support?.state;
+    return state === undefined ? null : state === 'up' ? 'up' : state === 'rising' ? 'rising' : 'down';
   }
   get name(): string {
     return `${this.player.firstName[0]}.${this.player.lastName}`;

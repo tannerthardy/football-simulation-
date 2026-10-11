@@ -1,7 +1,17 @@
 # Physics development and testing
 
+Read [Visible help and primary route discipline](reviews/visible-help-and-primary-route-discipline.md)
+first. The existing physical pose now reaches delayed perception; confirmed own
+vertical stems keep responsibility before five yards. Ordinary outcomes remain
+mixed, and the pose-only change has 24 exact ordinary endpoints. Keep physical
+execution, observed decisions and game results distinct. The active torso-reel
+oracle exposes a small local position-integration defect despite correct force,
+momentum and work accounting. Repair that achieved-force travel next, then
+require ordinary tackle/block and multi-contact transfer. No new solver, strength
+fit or anatomy is justified by this error. Final physics OK remains pending.
+
 Read [Run-block contact fits and current priorities](reviews/run-block-fit-and-current-priorities.md)
-first. Keep the reduced shared World and improve demonstrated requests within
+for the preceding OL increment. Keep the reduced shared World and improve demonstrated requests within
 its capabilities. The new OL fit helper preserves intended drive, observed
 errors and actual contact/force limits; compare real delivered loads, adverse
 cases and ordinary controls rather than counting fewer rejected grabs as wins.

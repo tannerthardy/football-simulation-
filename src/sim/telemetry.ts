@@ -38,7 +38,7 @@ export class ReplayTrace {
     if (this.data?.level !== 'full') return;
     if (this.observationT !== t) { this.observations.clear(); this.observationT = t; }
     this.observations.set(`${a.idx}:${b.idx}:${source}`, { a: a.idx, b: b.idx, t: q(t), source,
-      position: vec(p.pos), velocity: vec(p.vel), age: p.age === undefined ? null : q(p.age) });
+      position: vec(p.pos), velocity: vec(p.vel), age: p.age === undefined ? null : q(p.age), pose: p.pose ?? null });
   }
 
   /** Controllers submit an actual choice; a missing cause stays null. */
