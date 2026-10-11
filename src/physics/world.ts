@@ -270,6 +270,9 @@ interface JointRow {
   mn: number;
   /** An anisotropic lower attachment has a different tangent mobility. */
   mt?: number;
+  /** Lever arms to one common hand patch, along the frozen contact normal. */
+  ri?: number;
+  rj?: number;
   /** Normal regime: +1 compressive (hands), −1 tension, 0 inactive. */
   mode: number;
   c: number;
@@ -313,6 +316,9 @@ export class World {
   /** Sustained bounded hand force acts over the interval, unlike an impact.
    * The end rule is retained for source-matched numerical comparisons. */
   readonly handIntegration: 'end' | 'centered';
+  /** Experimental common-patch angular transfer. Center retains production
+   * behavior until native helper and mirrored-controller regressions resolve. */
+  readonly handContact: 'center' | 'patch';
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -373,10 +379,13 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered' } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
+    this.handContact = opts.handContact ?? 'center';
+    if (this.handContact === 'patch' && this.handIntegration !== 'centered')
+      throw new RangeError('Common hand patches require centered force integration');
     this.supportModel = opts.supportModel ?? 'legacy';
     this.constraintWork = opts.constraintWork ?? 'per-solve';
     this.impactTiming = opts.impactTiming ?? 'speculative';
@@ -583,10 +592,15 @@ export class World {
    * may refund their own earlier guess in this solve; real actions share
    * the owner's remaining tick budget without cross-interval credit. */
   private pairImpulse(i: number,j: number,x: number,y: number,actor: number,
-    kind: 'hands'|'grasps'|'strikes', active=true, channel?: { net: number }): number {
+    kind: 'hands'|'grasps'|'strikes', active=true, channel?: { net: number },
+    angularA = 0, angularB = 0): number {
     const a=this.bodies[i],b=this.bodies[j];
-    const linear=(b.vel.x-a.vel.x)*x+(b.vel.y-a.vel.y)*y;
-    const quadratic=.5*(x*x+y*y)*(1/this.mass[i]+1/this.mass[j]);
+    let linear=(b.vel.x-a.vel.x)*x+(b.vel.y-a.vel.y)*y;
+    let quadratic=.5*(x*x+y*y)*(1/this.mass[i]+1/this.mass[j]);
+    if (angularA || angularB) {
+      linear += (a.spin ?? 0) * angularA + (b.spin ?? 0) * angularB;
+      quadratic += .5 * (angularA * angularA / this.inertia[i] + angularB * angularB / this.inertia[j]);
+    }
     const ledger = this.constraintWork === 'per-solve' ? channel : undefined;
     const previous = ledger?.net ?? 0;
     const budget=(active?Math.max(0,this.report.armWorkLimit[actor]-this.report.armWork[actor]):0)
@@ -596,6 +610,8 @@ export class World {
     const work=linear*fraction+quadratic*fraction*fraction;
     a.vel.x-=x/this.mass[i];a.vel.y-=y/this.mass[i];
     b.vel.x+=x/this.mass[j];b.vel.y+=y/this.mass[j];
+    if (angularA) a.spin = (a.spin ?? 0) + angularA * fraction / this.inertia[i];
+    if (angularB) b.spin = (b.spin ?? 0) + angularB * fraction / this.inertia[j];
     this.report.work[kind]+=work;
     if (kind === 'grasps' && !active) this.report.passiveGraspWork += work;
     if (ledger) ledger.net = previous + work;
@@ -1010,6 +1026,14 @@ export class World {
           : undefined);
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
         if (jt.kind === 'hands') {
+          // Facing carries the same interval-centered angular impulse as
+          // translation. feet() already advanced the pre-hand yaw; do not
+          // defer all newly transmitted hand rotation to the next substep.
+          if (this.handContact === 'patch') {
+            const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
+            this.bodies[r.i].facing -= yawTime * (r.ri ?? 0) * r.lt / this.inertia[r.i];
+            this.bodies[r.j].facing -= yawTime * (r.rj ?? 0) * r.lt / this.inertia[r.j];
+          }
           if (this.handIntegration === 'centered') {
             // These are achieved finite-force impulses, accumulated over h,
             // rather than instantaneous torso impacts. Carry their midpoint
@@ -1581,12 +1605,31 @@ export class World {
       const i = this.indexOf(jt.a), j = this.indexOf(jt.b);
       const a = jt.a, b = jt.b;
       const point = jt.kind === 'grasp' ? this.graspPoint(jt) : b.pos;
-      const dx = point.x - a.pos.x, dy = point.y - a.pos.y;
+      // Sustained hands act at the midpoint of their force interval. Freeze
+      // the frame at the same centered transport used for achieved hand
+      // travel, rather than applying a sideways force at two different COMs.
+      // All rows read the pre-solve velocities; solver corrections cannot
+      // manufacture another patch or rotate the frame during this interval.
+      let dx = point.x - a.pos.x, dy = point.y - a.pos.y;
+      if (jt.kind === 'hands' && this.handContact === 'patch' && this.handIntegration === 'centered') {
+        dx += .5 * h * (b.vel.x - a.vel.x);
+        dy += .5 * h * (b.vel.y - a.vel.y);
+      }
       const dist = Math.hypot(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
       const row: JointRow = { joint: jt, i, j, nx, ny, mn: 1 / (1 / this.mass[i] + 1 / this.mass[j]),
         mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0,actor: i,steerActor: i,reel: 0 };
       if (jt.kind === 'hands') {
+        // The effective patch lies between the bodies, weighted by their
+        // torso radii. At touching distance these are the pad-surface arms;
+        // extended hands use the same single reduced patch, not two joints.
+        if (this.handContact === 'patch') {
+          const radius = a.profile.radius + b.profile.radius;
+          row.ri = dist * a.profile.radius / radius;
+          row.rj = dist * b.profile.radius / radius;
+          row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j]
+            + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
+        }
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
         row.pushLim = Math.max(0, jt.push) * h * scale;
@@ -1689,10 +1732,13 @@ export class World {
   private solveTangent(r: JointRow, a: Body, b: Body, lim: number): void {
     const ima = 1 / this.mass[r.i], imb = 1 / this.mass[r.j];
     const tx = -r.ny, ty = r.nx;
-    const vt = (b.vel.x - a.vel.x) * tx + (b.vel.y - a.vel.y) * ty;
-    const lt = clamp(r.lt - r.mn * vt, -lim, lim);
+    const ri = r.ri ?? 0, rj = r.rj ?? 0;
+    let vt = (b.vel.x - a.vel.x) * tx + (b.vel.y - a.vel.y) * ty;
+    if (ri || rj) vt -= ri * (a.spin ?? 0) + rj * (b.spin ?? 0);
+    const lt = clamp(r.lt - (r.mt ?? r.mn) * vt, -lim, lim);
     const dt = lt - r.lt;
-    const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,r.actor,r.joint.kind==='hands'?'hands':'grasps',false,r.tangentWork??={net:0});
+    const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,r.actor,r.joint.kind==='hands'?'hands':'grasps',false,r.tangentWork??={net:0},
+      -ri * dt, -rj * dt);
     r.lt+=dt*fraction;
   }
 }

@@ -99,6 +99,7 @@ export function commonPlay(p: PlayLog, id: string) {
 async function main() {
   const seed = Number(arg('--seed', '101'));
   const games = Number(arg('--games', '8'));
+  const handContact = process.argv.includes('--common-patch') ? 'patch' : 'center';
   const out = arg('--out', 'out/mechanics/sim-plays.jsonl.gz');
   mkdirSync(dirname(out), { recursive: true });
   const gz = createGzip();
@@ -108,7 +109,7 @@ async function main() {
   const away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
   let count = 0;
   for (let g = 0; g < games; g++) {
-    const result = simulateGame(home, away, { seed: seed + g, record: true });
+    const result = simulateGame(home, away, { seed: seed + g, record: true, handContact });
     for (const p of result.log) {
       const play = commonPlay(p, `S${seed + g}-P${p.index + 1}`);
       if (!play) continue;

@@ -129,6 +129,15 @@ nonzero. This is a tracked defect, not a passing readiness check:
 node --import tsx scripts/diag/hand-angular-law.ts out/checks/hand-angular.json --assert-law
 ```
 
+The [common-patch prototype](reviews/zone-flow-prototype.md) is opt-in because
+native helper/mirror controls and the candidate YBC guard still fail. Its isolated
+law audit passes; a passing law is not permission to promote a football regression:
+
+```sh
+node --import tsx scripts/diag/hand-angular-law.ts out/checks/patch-angular.json --common-patch --assert-law
+node --import tsx scripts/diag/zone-flow.ts out/checks/zone-flow.json
+```
+
 Movement and contact mechanisms against 2022 NFL all-22 tracking, measured by
 the same code on both sides (no raw data needed; see [NFL data](NFL_DATA.md)):
 

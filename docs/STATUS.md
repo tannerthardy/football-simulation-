@@ -22,10 +22,10 @@ The new isolated angular-law audit also finds a concrete gap: tangential hand
 restraint changes total planar angular momentum without a corresponding spin
 or ground reaction. Existing linear momentum/work checks do not catch it.
 
-The cleanup preserved the engine at `663193d`. Subsequent run work improves
-controllers and how acquired hands use the existing contact law. All 24
-`src/physics` files and the physical-profile mapping remain unchanged. Complete
-check results and source pins are in the current receipt below.
+The cleanup preserved the engine at `663193d`. The promoted run-controller work
+left all 24 `src/physics` files and the physical-profile mapping unchanged.
+The opt-in contact prototype below extends World without changing its production
+default. Complete check results and source pins are in the current receipts.
 
 ## Latest run-game work
 
@@ -80,6 +80,16 @@ refits, the response to a second blocker and contact-clearing run sheds.
 The [displacement pilot](../data/reviews/current/run-displacement.json) motivates
 these checks; it does not justify stronger anchors or a travel cap.
 Outside-zone lateral technique is being investigated separately.
+
+The [zone-flow prototype](reviews/zone-flow-prototype.md) and
+[receipt](../data/reviews/current/zone-flow-prototype.json) preserve two rejected
+early-footwork attempts and an opt-in common hand patch. `handContact: 'patch'`
+couples patch velocity, rotational effective mass, moments and work; its isolated
+144-case angular audit passes. Production still uses center hands and retains
+the known defect: the candidate fails six native helper/mirror controls, two
+historic source-equivalence assertions, and the eight-game YBC mechanism guard.
+Trace those first divergences before promotion. No controller, capacity or
+assertion was changed to rescue these outcomes.
 
 The latest eight-game trench check preserves all twelve guarded mechanisms,
 but scoring is 67.4 points per team-game and 90th-percentile YAC 47.6 yd. The

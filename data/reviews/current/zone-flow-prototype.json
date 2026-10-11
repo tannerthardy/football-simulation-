@@ -1,0 +1,1411 @@
+{
+  "status": "experimental-unpromoted",
+  "baseCommit": "dc4bea61b64a669538bb3456a797f2fa280981ab",
+  "sourceSha256": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+  "node": "v22.23.3",
+  "productionDefault": "center",
+  "experimentOption": "handContact: 'patch'",
+  "cohort": {
+    "rosterSeeds": [
+      [
+        31,
+        32
+      ],
+      [
+        41,
+        42
+      ]
+    ],
+    "fronts": [
+      "over",
+      "under"
+    ],
+    "flips": [
+      false,
+      true
+    ],
+    "runs": [
+      "oz_strong",
+      "wz_strong",
+      "iz_strong",
+      "power",
+      "counter"
+    ],
+    "seed": 3,
+    "timeLimit": 2.01,
+    "inputCount": 80
+  },
+  "pairedDisplacement": [
+    {
+      "run": "oz_strong",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.044558720632654314
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.14923151400068946
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.05654464541292192
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.3625058128826506
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.3158388223753068
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.5481766732998352
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.6518508325692061
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9731952552243612
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.7791840049057956
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 1.0510234633493898
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.7356579365103713
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.044558720632654314
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.14923151400068946
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.05654464541292192
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.31880780547414744
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.28137087834908137
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.531120383547858
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.5468438102456101
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9731952552243612
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.8299636910274852
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.7672525549451699
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.7356579365103713
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": "wz_strong",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.04506299483186815
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.15499848035799424
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.05654464541292192
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.38250225912470803
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.3228855506730035
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.5797079014698472
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.6805438227492377
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9731952552243612
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.736398676484443
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 1.1944414946366813
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.7657765283787832
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.04506299483186815
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.15499848035799424
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.05654464541292192
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.4040256019886872
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.28689705389888864
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.6697461526120687
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.5444421387883018
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9731952552243612
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 1.0565783344744126
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.8050057990062509
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.7657765283787832
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": "iz_strong",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.04089126202523019
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.13769580617870325
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.05654464541292192
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.2951504878273692
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.26467602606723695
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.5060374132177774
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.5031525242316075
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9658467321857565
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.9138361925417975
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.9055736769090856
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.2387132781664292
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.04089126202523019
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.13769580617870325
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.05654464541292192
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.20196052547479404
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.22551276652580654
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.4126231115250505
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.5111101155330893
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9658467321857565
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": 0.8644918187266022
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.7436743323653427
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.2381103379872762
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": "power",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.043244605566089334
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.0967657396732875
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.052140276573274136
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.17776519181972006
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.1898262705395286
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.32893708508746755
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.09961313314895825
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9732778601183636
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.46406231352163196
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.14315593576969654
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.5653264456371012
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.043244605566089334
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.0967657396732875
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.05007008535555002
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.21221807243463253
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.17681533909208014
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.372043123217356
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.05496114082884063
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9732778601183636
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.43200190943757555
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0.25769842420242384
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.570604775797154
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": "counter",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.043244605566089334
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.1324574301773911
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.04813241837674731
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.19051069617359495
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.26270212304840257
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.49832612795893105
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.5938766400979887
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9658467321857565
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -1.0679367538556068
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.7342121494832785
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.2265305059376796
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffTimes": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.45,
+            1.45,
+            1.45,
+            1.45
+          ],
+          "displacement": [
+            {
+              "t": 0.25,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.043244605566089334
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": 0
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.028551528441843388
+                }
+              ]
+            },
+            {
+              "t": 0.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.1324574301773911
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.04961746377997933
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.1350116964753294
+                }
+              ]
+            },
+            {
+              "t": 1,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.12846174104431896
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.3130042333194769
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.5149425375268937
+                }
+              ]
+            },
+            {
+              "t": 1.5,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -0.5177798370137019
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.39847306285338036
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 0.9658467321857565
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "survivingPlays": 8,
+              "groups": [
+                {
+                  "group": "OL",
+                  "n": 40,
+                  "medianYd": -1.1557502686931915
+                },
+                {
+                  "group": "DL",
+                  "n": 32,
+                  "medianYd": -0.3701042715762295
+                },
+                {
+                  "group": "RB",
+                  "n": 8,
+                  "medianYd": 1.2231433377470378
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "isolatedLaw": {
+    "candidate": "PASS",
+    "production": "KNOWN FAILURE",
+    "casesPerMode": 144,
+    "tolerance": 1e-08,
+    "candidateSummary": {
+      "normal": {
+        "cases": 72,
+        "lawConserved": true,
+        "absAngularChangeRange": [
+          0,
+          6.139089236967266e-11
+        ],
+        "maxMomentumError": 6.821210263296962e-12,
+        "maxEnergyResidual": 3.035349749325178e-13,
+        "handWorkRange": [
+          0.17999999999996377,
+          0.18000000000004993
+        ],
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxNormalOracleError": 7.105427357601002e-14
+      },
+      "tangent": {
+        "cases": 72,
+        "lawConserved": true,
+        "absAngularChangeRange": [
+          0,
+          4.092726157978177e-12
+        ],
+        "maxMomentumError": 2.2914314707516465e-13,
+        "maxEnergyResidual": 1.8912649224489542e-13,
+        "handWorkRange": [
+          -5.86475998415777,
+          -5.8646492881828785
+        ],
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxNormalOracleError": 0
+      }
+    }
+  },
+  "validation": {
+    "typecheck": "passed",
+    "build": "passed",
+    "testAll": {
+      "files": 106,
+      "passed": 1235,
+      "failed": 0,
+      "skipped": 0
+    },
+    "testData": {
+      "passed": 129,
+      "failed": 0
+    },
+    "forcedPatchExistingWitnesses": {
+      "passed": 42,
+      "failed": 8,
+      "filesFailed": 4,
+      "scope": "Test-only World.step wrapper selects patch for centered worlds; original fixture assertions are unmodified."
+    }
+  },
+  "mechanismGuard": {
+    "baseline": {
+      "passed": 12,
+      "failed": 0,
+      "cohort": "8 games, seeds 101-108 at dc4bea6"
+    },
+    "candidate": {
+      "passed": 11,
+      "failed": [
+        "run.yards_before_contact"
+      ],
+      "cohort": "8 games, seeds 101-108 using --common-patch"
+    }
+  },
+  "promotionBlockers": [
+    "Mirrored redirect differs by roughly 0.009 yd in closest approach.",
+    "Four existing optional-zone-helper assertions fail.",
+    "One useful-helper-contact assertion fails.",
+    "Two historical exact-source hand-fight equivalence checks differ.",
+    "Candidate native-game YBC guard is off."
+  ],
+  "notImplemented": [
+    "Zone first-step or loaded-controller rewrite; both early candidates were rejected.",
+    "QB/RB mesh and moving outside landmark.",
+    "Free interior moving-gap geometry.",
+    "A general angular-law certification for grounded/torso/grasp interactions."
+  ],
+  "artifactsLocalOnly": true,
+  "artifacts": [
+    {
+      "path": "out/zone-development/final-zone-flow.json",
+      "sha256": "c9a0a7bb0a6eca513c36acfa57287f99bfdb7979e2689e225eaaa215b3d5c4c5"
+    },
+    {
+      "path": "out/zone-development/final-zone-flow.json.traces.json.gz",
+      "sha256": "4d19847fb5a5b250e3dea593856a6ca8870d56684a5c91e0113071c6dc3b150c"
+    },
+    {
+      "path": "out/zone-development/angular-final.json",
+      "sha256": "283fb12d440fbe02a62d9e2d5cae92324302fbe539659ccf2f1fc5a2e9a85d25"
+    },
+    {
+      "path": "out/zone-development/angular-center.json",
+      "sha256": "290e69279a2d55cb2a54bd3987df974449e5d1ca7b3cc881f6de50f71035b79d"
+    },
+    {
+      "path": "out/zone-development/test-all-final.log",
+      "sha256": "a1b5f99d307fd681dcd860f5fd1d1670e8a2bad17534deac3131076e1725e1a4"
+    },
+    {
+      "path": "out/zone-development/test-data-final.log",
+      "sha256": "c4b985fb01a49ff4ae30d513910da7595dba26536c25468b02f7d1650b37040d"
+    },
+    {
+      "path": "out/zone-development/patch-regressions-final.log",
+      "sha256": "1d7f37a46665a667eddb09a1fad43e6bf4110971968b8edec479b4133bdafd31"
+    },
+    {
+      "path": "out/zone-development/patch-mechanics.json",
+      "sha256": "d4e4be5fa696d56b891835dd1640d31f78d5e00c47157952b4787a5095cae2e9"
+    },
+    {
+      "path": "out/zone-development/patch-report.md",
+      "sha256": "dccabae582ac268b35665182bfcadd15942f13cd7e7670a501894253e3224d99"
+    },
+    {
+      "path": "out/zone-development/force-patch.ts",
+      "sha256": "3828038c883885722258e0033f12610d5539801b9f1484db477fb07470f4df85"
+    },
+    {
+      "path": "out/zone-development/patch-vitest.config.ts",
+      "sha256": "eca92503e651d16b74fbd6e93fb4df94bf8616f7fc6eba00dc10db567f866841"
+    }
+  ]
+}
