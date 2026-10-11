@@ -253,6 +253,8 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
 }
 
 const helperSince = new WeakMap<Agent, number>();
+const fitSides = new WeakMap<Engagement, number>();
+const holdPoints = new WeakMap<Engagement, number>();
 // The local point acquired by new hands, not a continuously fresh visual fix.
 const helperTouches = new WeakMap<Agent, { rep: Engagement; at: number; pos: Vec2 }>();
 export function inBlockReach(b: Agent, d: Agent, type: 'run' | 'pass'): boolean {
@@ -753,6 +755,40 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // escapes sideways by winning a shed with his hands, not by running out of
   // a blocker's grip.
   const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (read.reading ? 1 : 0.3);
+  if (process.env.TRENCH_FLOW === '1' || process.env.TRENCH_FLOW === '2' || process.env.TRENCH_FLOW === '3') {
+    // EXPERIMENT (local): press the line, keep the gap-side shoulder on the
+    // moving blocker and flow with him, instead of pushing straight back
+    // against his drive vector.
+    let fitSide = fitSides.get(e);
+    if (fitSide === undefined) {
+      const job = d.runFit;
+      fitSide = job ? (job.kind === 'edge' || job.kind === 'force' ? job.side
+        : Math.sign(gapY(sim.offAlign, job.gap, job.side) - b.pos.y) || e.side) : e.side;
+      fitSides.set(e, fitSide);
+    }
+    const toOffense = -sim.attackDir(b.team);
+    // Variant 2: beat him to the spot — lead his felt lateral movement.
+    const lead = process.env.TRENCH_FLOW !== '1' ? Number(process.env.TRENCH_LEAD ?? 0.5) : 0;
+    const shoulder = b.pos.y + fitSide * sep * 0.6 + b.vel.y * lead;
+    const flow = clamp(b.vel.y + (shoulder - d.pos.y) * 3, -td.lateral, td.lateral);
+    // Variant 3: fight to hold (or, for an attacking fit, win half a yard of)
+    // the point where he met the block, instead of a fixed forward speed.
+    let press = toOffense * 1.0;
+    if (process.env.TRENCH_FLOW === '3') {
+      let hold = holdPoints.get(e);
+      if (hold === undefined) { hold = d.pos.x + toOffense * (d.runFit?.technique === 'attack' ? Number(process.env.TRENCH_ATTACK ?? 0.5) : 0); holdPoints.set(e, hold); }
+      press = clamp((hold - d.pos.x) * 2, -1, 1);
+    }
+    intents[d.idx] = {
+      vel: { x: press, y: flow },
+      facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+      push: 1,
+      posture: 0.85,
+      cutSkill: 0.8 + 0.4 * td.bend,
+    };
+    helperIntents(sim, e, intents, axis);
+    return;
+  }
   intents[d.idx] = {
     vel: { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work },
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),

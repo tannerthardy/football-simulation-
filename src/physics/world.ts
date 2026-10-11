@@ -207,6 +207,10 @@ const HANDS_ZETA = 0.7;
 const HANDS_SLACK = 0.06;
 const GRASP_HZ = 6;
 const GRASP_ZETA = 0.8;
+/** EXPERIMENT: scale of the leverage/normal-load coupling (0 = off). */
+const LEVER = Number(process.env.TRENCH_LEV ?? 0);
+/** EXPERIMENT: eccentric reserve when driven backward against one's own lean (0 = off). */
+const ECC = Number(process.env.TRENCH_ECC ?? 0);
 /** A lean can grow past the felt load by this fraction (force development). */
 const PUSH_GROWTH = 0.25;
 /** Time constant of the sensed load, s. */
@@ -340,6 +344,11 @@ export class World {
   private readonly inertia: Float64Array;
   private readonly fat: Float64Array;
   private readonly impX: Float64Array;
+  /** EXPERIMENT (TRENCH_LEV): vertical contact impulse and its filtered load (+ = pressed down). */
+  private readonly impV: Float64Array;
+  /** DIAGNOSTIC: which limit bound each body's ground force on its last feet() step. */
+  readonly limiter: string[] = [];
+  private readonly vLoad: Float64Array;
   private readonly impY: Float64Array;
   private readonly tripX: Float64Array;
   private readonly tripY: Float64Array;
@@ -396,7 +405,7 @@ export class World {
     this.mass = Float64Array.from(bodies, (b) => b.profile.massKg);
     this.inertia = Float64Array.from(this.sp, (s) => s.yawInertia);
     const f = () => new Float64Array(n);
-    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f();
+    this.fat = f(); this.impX = f(); this.impY = f(); this.impV = f(); this.vLoad = f(); this.tripX = f(); this.tripY = f();
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
@@ -877,7 +886,7 @@ export class World {
     this.syncHeldSupport();
     this.reels.clear();
     for (const i of ids) {
-      this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0;
+      this.impX[i] = 0; this.impY[i] = 0; this.impV[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0;
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
       this.travelAdjustX[i] = 0; this.travelAdjustY[i] = 0;
       bs[i].support!.feetLock = 0;
@@ -1008,7 +1017,7 @@ export class World {
         const height = jt.height ?? (jt.kind === 'grasp'
           ? this.comHeight[r.j] * (1 - 0.55 * clamp(jt.legs, 0, 1))
           : undefined);
-        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
+        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0, jt.kind === 'hands');
         if (jt.kind === 'hands') {
           if (this.handIntegration === 'centered') {
             // These are achieved finite-force impulses, accumulated over h,
@@ -1083,7 +1092,7 @@ export class World {
         }
       }
       for (const c of contacts) {
-        this.addLoad(c.i, c.j, c.nx, c.ny, c.ln, c.lt);
+        this.addLoad(c.i, c.j, c.nx, c.ny, c.ln, c.lt, undefined, false, true);
         if (c.ln > 0 || c.touched) {
           const key = c.i * 1024 + c.j;
           const rec = pairs.get(key);
@@ -1115,6 +1124,7 @@ export class World {
       this.tipY[i] -= oldTip.y * braced * h;
       sup.feltTip = { x: oldTip.x + (tx - oldTip.x) * kf, y: oldTip.y + (ty - oldTip.y) * kf };
       sup.load = { x: lx, y: ly };
+      this.vLoad[i] += (this.impV[i] / h - this.vLoad[i]) * kf;
       sup.felt = { x: sup.felt.x + (lx - sup.felt.x) * kf, y: sup.felt.y + (ly - sup.felt.y) * kf };
     }
     // Grasps that slipped slide out; past reach they are broken.
@@ -1202,6 +1212,7 @@ export class World {
           sup.strike = f > 0 && left > 1e-3 ? { x: ux * left, y: uy * left } : undefined;
         }
         // Lean: leg drive into a felt load, along that load's axis.
+        this.limiter[i] = 'not-requesting-more';
         const push = clamp(intent.push ?? 0, 0, 1);
         let tx = 0, ty = 0;
         const L = Math.hypot(sup.felt.x, sup.felt.y);
@@ -1214,6 +1225,7 @@ export class World {
             const dir = directionalSpeedFactor(p, angleDiff(b.facing, Math.atan2(uy, ux)));
             const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, 1.2) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + PUSH_GROWTH), m * ex / h);
+            this.limiter[i] = mag === capacity ? 'lean-capacity' : mag === m * ex / h ? 'speed-reached' : 'matching-load';
             tx = ux * mag; ty = uy * mag;
           }
         }
@@ -1267,7 +1279,17 @@ export class World {
         // backpedal's share sideways or backward. Traction caps all of it.
         const tfx = lx + leanX, tfy = ly + leanY;
         const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, angleDiff(b.facing, Math.atan2(tfy, tfx))) : 1;
-        const capacity = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), sp.traction * a);
+        const traction = LEVER > 0 ? sp.traction * clamp(1 + this.vLoad[i] / (m * G), 0.4, 1.6) : sp.traction;
+        const pushForce = LEVER > 0 ? Math.min(p.power * G, traction) : sp.pushForce;
+        // EXPERIMENT (TRENCH_ECC): a braced player driven backward against his
+        // own lean resists eccentrically, above his concentric drive limit.
+        const leanMag = Math.hypot(leanX, leanY);
+        const yielding = leanMag > 1e-6 ? Math.min(0, (b.vel.x * leanX + b.vel.y * leanY) / leanMag) : 0;
+        const ecc = ECC > 0 ? 1 + ECC * (1 - Math.exp(yielding / 0.3)) : 1;
+        const capacity = Math.min(Math.max(Math.hypot(lx, ly), pushForce * along * a * ecc), traction * a * ecc);
+        if (!(push > 0 && L > 1e-6)) this.limiter[i] = 'no-lean';
+        if ((lx + leanX) ** 2 + (ly + leanY) ** 2 > capacity * capacity)
+          this.limiter[i] = traction * a <= Math.max(Math.hypot(lx, ly), pushForce * along * a) ? 'TRACTION-capped' : 'STRENGTH-capped';
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
         const cap = capacity;
@@ -1471,8 +1493,16 @@ export class World {
     }
   }
 
-  private addLoad(i: number, j: number, nx: number, ny: number, ln: number, lt: number, height?: number, legHold = false): void {
+  private addLoad(i: number, j: number, nx: number, ny: number, ln: number, lt: number, height?: number, legHold = false, lever = false): void {
     const fx = nx * ln - ny * lt, fy = ny * ln + nx * lt;
+    if (lever && LEVER > 0) {
+      // EXPERIMENT: the lower pad drives up into the higher one. The vertical
+      // share unloads the higher player's feet and loads the lower player's.
+      const rsum = this.bodies[i].profile.radius + this.bodies[j].profile.radius;
+      const slope = clamp((this.padHeight[j] - this.padHeight[i]) / rsum, -0.6, 0.6) * LEVER;
+      const v = Math.hypot(fx, fy) * slope;
+      this.impV[i] += v; this.impV[j] -= v;
+    }
     // The impulse on j is +(n·ln + t·lt); on i its opposite.
     this.impX[j] += fx; this.impY[j] += fy;
     this.impX[i] -= fx; this.impY[i] -= fy;
