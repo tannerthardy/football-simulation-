@@ -17,7 +17,8 @@ import { availability, supportParams } from '../../src/physics/support.js';
 import { fatigueFactor } from '../../src/physics/kinematics.js';
 import type { HandJoint, Joint } from '../../src/physics/world.js';
 import type { Agent, Engagement } from '../../src/sim/agent.js';
-import { RunBlocker, type Combination } from '../../src/sim/behaviors/blocking.js';
+import { RunBlocker, isOL, type Combination } from '../../src/sim/behaviors/blocking.js';
+import { observedBlockLeverage } from '../../src/sim/run-block-fit.js';
 import { axisOf, helperSupport } from '../../src/sim/engagement.js';
 import * as EngagementState from '../../src/sim/engagement.js';
 import { PlaySim, type PlaySetup } from '../../src/sim/playsim.js';
@@ -133,7 +134,8 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
     decisionInterval: a.mind.decisionInterval, snapDelay: a.mind.snapDelay})),
     ownership: sim.offense.filter(a => a.behavior instanceof RunBlocker).map(a => ({slot: a.slot, plan: plan(a),
       engagement: null, tags: [...a.tags]}))};
-  const ticks: any[] = [], climbs: any[] = [], backerContacts: any[] = [];
+  const ticks: any[] = [], climbs: any[] = [], backerContacts: any[] = [], driveAttempts: any[] = [];
+  const attemptCommands = new WeakMap<object, {requested: unknown}>();
   const touched = new Set<string>();
   let activeTick: any = null, phase = 'outside-tick', activeBoundary: any = null;
   const see = sim.see;
@@ -142,6 +144,31 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
     if (activeTick) activeTick.consumedImages.push({ordinal: activeTick.consumedImages.length,
       phase, observer: observer.slot, target: target.slot, image: structuredClone(seen)});
     return seen;
+  };
+  // Copy actual solo-drive acquisition attempts and the latest existing read.
+  // This never asks the player to see again or predicts a contact outcome.
+  const engage = sim.engage;
+  sim.engage = function (blocker, defender, type, drive = null, surface) {
+    const behavior = blocker.behavior;
+    if (type !== 'run' || !isOL(blocker) || !(behavior instanceof RunBlocker)
+      || behavior.plan.kind !== 'drive' || blocker.engagement
+      || (behavior.plan.combination && !behavior.plan.combination.released))
+      return engage.call(this, blocker, defender, type, drive, surface);
+    const cue = activeTick?.consumedImages.findLast((i: any) => i.observer === blocker.slot && i.target === defender.slot);
+    const row: any = {t: this.t, phase, actor: blocker.slot, actorIndex: blocker.idx,
+      target: defender.slot, targetIndex: defender.idx, plan: plan(blocker),
+      driveArgument: drive && vec(drive), surfaceArgument: surface && structuredClone(surface),
+      consumed: cue && {t: this.t, phase: cue.phase, ordinal: cue.ordinal, image: structuredClone(cue.image)},
+      observedPhi: cue && drive ? observedBlockLeverage(blocker, cue.image, drive) : null,
+      actualPhi: drive ? observedBlockLeverage(blocker, {pos: defender.pos, vel: defender.vel, stance: defender.stance, facing: defender.facing}, drive) : null,
+      beforeActor: body(blocker), beforeTarget: {pos: vec(defender.pos), vel: vec(defender.vel),
+        support: structuredClone(defender.body.support), engagement: engagement(defender.engagement)},
+      eventIndexAtAttempt: this.events.length};
+    if (activeBoundary) attemptCommands.set(row, activeBoundary);
+    driveAttempts.push(row); activeTick?.driveAttempts.push(row);
+    const returned = engage.call(this, blocker, defender, type, drive, surface);
+    row.returnedRep = engagement(returned);
+    return returned;
   };
   const event = sim.event;
   sim.event = function (type, a, b, note) {
@@ -209,7 +236,7 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
   const tick = sim.tick;
   sim.tick = function () {
     discover();
-    activeTick = {t: this.t, beforeCombinations: [...comboIds.keys()].map(combination), consumedImages: [], commands: [], climbs: [], prepass: null};
+    activeTick = {t: this.t, beforeCombinations: [...comboIds.keys()].map(combination), consumedImages: [], commands: [], climbs: [], driveAttempts: [], prepass: null};
     phase = 'native-tick';
     const previousReport = this.lastStep;
     tick.call(this);
@@ -234,6 +261,14 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
         touched.add(key); backerContacts.push({climbT: climb.t, completedAt: this.t, climber: a.slot, backer: b.slot,
           hands: hands.map(nativeJoint), bodyContacts: structuredClone(contacts), loads: loads([a.slot], report)});
       }
+    }
+    for (const row of activeTick.driveAttempts) {
+      const actor = this.slot(row.actor)!, target = this.slot(row.target)!;
+      row.completedAt = this.t; row.requested = structuredClone(attemptCommands.get(row)?.requested ?? null);
+      row.appliedIntent = structuredClone(this.intents[actor.idx]); row.afterActor = body(actor);
+      row.afterTarget = {pos: vec(target.pos), vel: vec(target.vel), support: structuredClone(target.body.support), engagement: engagement(target.engagement)};
+      row.sameTickSheds = this.events.slice(row.eventIndexAtAttempt).filter(e => e.type === 'shed'
+        && e.a === row.targetIndex && e.b === row.actorIndex && Math.abs(e.t-row.t)<1e-9).map(e => structuredClone(e));
     }
     ticks.push(activeTick); activeTick = null; phase = 'outside-tick';
   };
@@ -267,7 +302,7 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
     initialProjection, initialSha256: hash(initialProjection), profileSha256: hash(initialProjection.players.map(a => ({slot: a.slot, profile: a.profile, ratings: a.ratings}))),
     prepassAvailable: hasPrepass, personalReadSchemaAvailable: ticks.some(t => t.afterCombinations.some((c: any) => c.personalReads !== null)),
     observerVerified: true, observedSignature, plainSignature, naturalEnd: result.outcome !== 'timeout',
-    result, ticks, climbs, backerContacts,
+    result, ticks, climbs, backerContacts, driveAttempts,
     players: sim.agents.map(a => ({team: a.team, slot: a.slot, name: a.name, jersey: a.player.jersey,
       position: a.player.position, weightLb: a.player.measurables.weightLb, heightIn: a.player.measurables.heightIn,
       ratings: a.player.ratings, profile: a.profile}))};
@@ -286,7 +321,8 @@ const report = {schema: 'combo-attention-native-witness-v1', sourceBefore, sourc
   collectorSha256: createHash('sha256').update(readFileSync('scripts/diag/combo-attention-witness.ts')).digest('hex'),
   moduleSha256: Object.fromEntries(['src/sim/behaviors/blocking.ts', 'src/sim/engagement.ts', 'src/physics/world.ts', 'src/players/physical.ts', 'src/sim/playsim.ts'].map(p => [p,
     createHash('sha256').update(readFileSync(p)).digest('hex')])), helperControlAvailable, cohort, plays,
-  definitions: {observers: 'All existing sim.see calls across every native tick are captured with actual observer and phase. No see calls are added.',
+  definitions: {driveAttempts: 'Every actual unengaged solo OL drive sim.engage attempt, with its latest original same-tick target picture. observedPhi and actualPhi share the drive frame. requested is the RunBlocker command; appliedIntent is the native post-contact command. Associated same-tick sheds do not prove every physical contact was useless.',
+    observers: 'All existing sim.see calls across every native tick are captured with actual observer and phase. No see calls are added.',
     prepass: 'Only wrap prepareJoinedRunBlocks when the source actually has it. Historical B has no prepass or personal reads; no equivalent fields are invented.',
     personalReads: 'Personal readAt/nextRead/secureSince and actual same-tick proposals are snapshots of native state. Legacy shared nextRead is only labelled historical bookkeeping.',
     helperControl: 'Independent earned contactControl is read only when the source exports it; unavailable historical values are null with helperControlAvailable=false. Hand load is recorded separately.',

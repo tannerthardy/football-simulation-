@@ -1,0 +1,706 @@
+{
+  "date": "2026-10-11",
+  "review": "docs/reviews/ol-interactions.md",
+  "goal": "Improve useful-surface acquisition, contact and recovery using shared physical capabilities; no rushing-average fitting.",
+  "baselineCommit": "8119f08665584dda1b59412c998591c65e53c291",
+  "baselineSourceSha256": "5735f707bd4bbfde97743a784b198fa3c9b3052a5f39b968238aa7c8a8bb8e91",
+  "candidateSourceSha256": "116e2f7a993342d22b9e3346a873a8b0c9b449565388f2202606beb8adcf1d34",
+  "changedEngineFiles": [
+    "src/sim/behaviors/blocking.ts"
+  ],
+  "unchanged": {
+    "physicsModulesByteIdentical": 24,
+    "physicalProfileMappingByteIdentical": true,
+    "engagedRunLawByteIdentical": true,
+    "runSupportAllocatorByteIdentical": true,
+    "forceSpeedGripOrBalanceBoosts": false,
+    "outsideZoneReachPolicyByteIdentical": true
+  },
+  "diagnosis": "Solo OL drive approaches bypassed the existing personally observed lost-shoulder recovery. They sprinted toward the old center, sometimes acquiring new hands and shedding for leverage during the same tick.",
+  "repair": "Only known-lost unengaged solo OL drive joins the existing bounded shoulder/torso-clearance arrival policy. Existing1.1 quarter-turn boundary, physical profiles and World limits are reused. Square drives, unknown losses, live combinations, acquired/jointed contacts and other techniques remain controls.",
+  "nativePanel": {
+    "inputs": {
+      "rosterSeeds": [
+        7,
+        8
+      ],
+      "rosterSha256": "b3c61045e98ac2dca9c5fbe2acc04e801fff01aa094f556405129fa9f38a3b88",
+      "strength": "generator default",
+      "formation": "ace_11",
+      "coverage": "cover3",
+      "pressure": null,
+      "los": 40,
+      "ballY": 26.666666666666668,
+      "firstDownX": 50,
+      "fixtures": [
+        {
+          "run": "iz_strong",
+          "front": "over",
+          "seed": 3,
+          "flip": false
+        },
+        {
+          "run": "iz_strong",
+          "front": "over",
+          "seed": 3,
+          "flip": true
+        },
+        {
+          "run": "iz_strong",
+          "front": "over",
+          "seed": 11,
+          "flip": false
+        },
+        {
+          "run": "iz_strong",
+          "front": "over",
+          "seed": 11,
+          "flip": true
+        },
+        {
+          "run": "iz_strong",
+          "front": "under",
+          "seed": 3,
+          "flip": false
+        },
+        {
+          "run": "iz_strong",
+          "front": "under",
+          "seed": 3,
+          "flip": true
+        },
+        {
+          "run": "iz_strong",
+          "front": "under",
+          "seed": 11,
+          "flip": false
+        },
+        {
+          "run": "iz_strong",
+          "front": "under",
+          "seed": 11,
+          "flip": true
+        }
+      ],
+      "selection": "Eight ordinary IZ inputs fixed before candidate outcomes: Over/Under, seeds3/11, both directions. Same roster7/8 setup as run-concept-process; natural-end supplemental trace, not NFL rates."
+    },
+    "collector": "scripts/diag/combo-attention-witness.ts",
+    "collectorSha256": "08d1e3030df2c0bebe285778efe774dc2fc181f41fc298a90ebca7bf58d217c3",
+    "baseline": {
+      "path": "out/run-drive-fit/tracked-baseline.json.gz",
+      "packetSha256": "0c689105089b6997ba45f97f24b9befa01c6f2198b83a4282d0d9cf76b59e272",
+      "sourceBefore": "5735f707bd4bbfde97743a784b198fa3c9b3052a5f39b968238aa7c8a8bb8e91",
+      "sourceAfter": "5735f707bd4bbfde97743a784b198fa3c9b3052a5f39b968238aa7c8a8bb8e91",
+      "counts": {
+        "actualAttempts": 249,
+        "returnedNewPrimary": 33,
+        "returnedAndSameTickShed": 7,
+        "knownLostAttempts": 166,
+        "knownLostReturned": 7,
+        "knownLostSameTickShed": 6,
+        "observerControls": 8,
+        "naturalEnds": 8
+      }
+    },
+    "candidate": {
+      "path": "out/run-drive-fit/tracked-current.json.gz",
+      "packetSha256": "f832ffd765afec3f03625fbddf52159de6817eb91223574ef1a0f38e28e4e36d",
+      "sourceBefore": "116e2f7a993342d22b9e3346a873a8b0c9b449565388f2202606beb8adcf1d34",
+      "sourceAfter": "116e2f7a993342d22b9e3346a873a8b0c9b449565388f2202606beb8adcf1d34",
+      "counts": {
+        "actualAttempts": 79,
+        "returnedNewPrimary": 23,
+        "returnedAndSameTickShed": 1,
+        "knownLostAttempts": 0,
+        "knownLostReturned": 0,
+        "knownLostSameTickShed": 0,
+        "observerControls": 8,
+        "naturalEnds": 8
+      }
+    },
+    "allRecordedInitialProjectionsAndProfilesMatch": true,
+    "firstChangedActorsWithEqualRecordedBodyPictureAndPrehistory": 7,
+    "restoredSampledLoadedContacts": 2,
+    "firstForkActorsWithoutOriginalTargetRecontact": 5,
+    "unaffectedEntirePlay": "CA-R1-iz_strong-over-R-S11",
+    "remainingUnknownLoss": [
+      {
+        "play": "CA-R1-iz_strong-under-R-S11",
+        "t": 4.5,
+        "actor": "C",
+        "target": "DT_S",
+        "observedPhi": 1.0415350825526595,
+        "actualPhi": 1.1034491634501207,
+        "sameTickSheds": [
+          {
+            "t": 4.5,
+            "type": "shed",
+            "a": 13,
+            "b": 3,
+            "pos": {
+              "x": 39.84,
+              "y": 25.12
+            },
+            "note": "run: leverage"
+          }
+        ]
+      }
+    ],
+    "observerNeutrality": "All8 baseline and8 candidate native runs match plain execution/RNG. Sixteen final tracked play payloads exactly match preserved adapter evidence, including acquisitions and telemetry.",
+    "trackedEquivalencePacket": "out/run-drive-fit/tracked-equivalence.json",
+    "trackedEquivalenceSha256": "06488f7b826f527b382bf587aafd9752a55884f78dfd6d6df36c302d3aab6fc3",
+    "reducerProvenance": "The preserved original adapter reducer produced this matrix. Every full final tracked play payload exactly reproduces its original reducer input; tracked-equivalence.json verifies all16. Matrix, first forks, counts and limits therefore apply unchanged to the tracked packets. Final packet/tool pins replace adapter metadata only.",
+    "limits": [
+      "Eight native controlled inputs, not random-game or NFL failure rates.",
+      "First forks compare recorded bodies, pictures and prehistory; initial projection is not every hidden state.",
+      "Later histories and RNG diverge after the repair; late native plays are not paired state counterfactuals.",
+      "Positive force establishes actual loaded contact, not won hands or a guaranteed block.",
+      "Later sampled loads and the next associated shed do not prove every substep was continuously loaded.",
+      "All endpoints are retained as adverse/ordinary context, not an optimization objective.",
+      "The original below-threshold baseline Under-R-S11 LG3.20 needs a staged matched-state control."
+    ],
+    "matrix": [
+      {
+        "id": "CA-R1-iz_strong-over-R-S3",
+        "initialProjectionSha256": "dac3167d8286d3b7e5121ffd12411a0df6750f191168addffc3cb8969a09d7e0",
+        "profileSha256": "a6c866979cc61da233f4786da709af260a90244382892eb1f7e8909fdc015bf9",
+        "sameRecordedInitialProjection": true,
+        "entirePlayEqual": false,
+        "firstChangedRequest": {
+          "t": 2.6,
+          "actor": "RG",
+          "target": "DT_S",
+          "kind": "drive",
+          "observedPhi": 1.2222008133751396,
+          "recordedPriorTicksEqual": true,
+          "beforeCombinationsEqual": true,
+          "beforeBodyEqual": true,
+          "consumedPictureEqual": true,
+          "baselineRequest": {
+            "vel": {
+              "x": -5.933647823525878,
+              "y": -4.569901583437135
+            },
+            "posture": 0.7
+          },
+          "candidateRequest": {
+            "vel": {
+              "x": -1.8178446339749206,
+              "y": 0.8143948284072797
+            },
+            "posture": 0.7,
+            "facing": -2.4602480485259886
+          }
+        },
+        "laterSampledContacts": [],
+        "baselineEnd": {
+          "outcome": "tackle",
+          "duration": 3,
+          "offenseYards": -0.39
+        },
+        "candidateEnd": {
+          "outcome": "tackle",
+          "duration": 3,
+          "offenseYards": -0.38
+        }
+      },
+      {
+        "id": "CA-R1-iz_strong-over-L-S3",
+        "initialProjectionSha256": "6fb845f3cbc5673e5b4f6e1ad317b4787cc148adb4ba35814a8d7b3b76a3e3d6",
+        "profileSha256": "a6c866979cc61da233f4786da709af260a90244382892eb1f7e8909fdc015bf9",
+        "sameRecordedInitialProjection": true,
+        "entirePlayEqual": false,
+        "firstChangedRequest": {
+          "t": 1.45,
+          "actor": "RG",
+          "target": "DT_W",
+          "kind": "drive",
+          "observedPhi": 1.14027176408516,
+          "recordedPriorTicksEqual": true,
+          "beforeCombinationsEqual": true,
+          "beforeBodyEqual": true,
+          "consumedPictureEqual": true,
+          "baselineRequest": {
+            "vel": {
+              "x": 2.437219359752633,
+              "y": -7.081817476353199
+            },
+            "posture": 0.7
+          },
+          "candidateRequest": {
+            "vel": {
+              "x": -1.58229444028402,
+              "y": -0.8205083746104783
+            },
+            "posture": 0.7,
+            "facing": -1.2507151983023221
+          }
+        },
+        "laterSampledContacts": [],
+        "baselineEnd": {
+          "outcome": "tackle",
+          "duration": 3.15,
+          "offenseYards": -0.18
+        },
+        "candidateEnd": {
+          "outcome": "tackle",
+          "duration": 3.15,
+          "offenseYards": -0.16
+        }
+      },
+      {
+        "id": "CA-R1-iz_strong-over-R-S11",
+        "initialProjectionSha256": "09d59649475ff2f30eea13dd04acd65a723e392dfac918ba9b9e5cffd749d150",
+        "profileSha256": "a6c866979cc61da233f4786da709af260a90244382892eb1f7e8909fdc015bf9",
+        "sameRecordedInitialProjection": true,
+        "entirePlayEqual": true,
+        "firstChangedRequest": null,
+        "laterSampledContacts": [],
+        "baselineEnd": {
+          "outcome": "tackle",
+          "duration": 3.7,
+          "offenseYards": 0.7
+        },
+        "candidateEnd": {
+          "outcome": "tackle",
+          "duration": 3.7,
+          "offenseYards": 0.7
+        }
+      },
+      {
+        "id": "CA-R1-iz_strong-over-L-S11",
+        "initialProjectionSha256": "945390b250c3472c2fb28d139f2ed5a8dbed1a5709117da664d3ab5698d1ae0b",
+        "profileSha256": "a6c866979cc61da233f4786da709af260a90244382892eb1f7e8909fdc015bf9",
+        "sameRecordedInitialProjection": true,
+        "entirePlayEqual": false,
+        "firstChangedRequest": {
+          "t": 2.55,
+          "actor": "LG",
+          "target": "DT_S",
+          "kind": "drive",
+          "observedPhi": 1.1470799146607396,
+          "recordedPriorTicksEqual": true,
+          "beforeCombinationsEqual": true,
+          "beforeBodyEqual": true,
+          "consumedPictureEqual": true,
+          "baselineRequest": {
+            "vel": {
+              "x": 2.3094514143415448,
+              "y": -7.307885862480099
+            },
+            "posture": 0.7
+          },
+          "candidateRequest": {
+            "vel": {
+              "x": -1.6522504416843098,
+              "y": -0.972078385253802
+            },
+            "posture": 0.7,
+            "facing": -1.2614094162187088
+          }
+        },
+        "laterSampledContacts": [],
+        "baselineEnd": {
+          "outcome": "tackle",
+          "duration": 3.05,
+          "offenseYards": -0.76
+        },
+        "candidateEnd": {
+          "outcome": "tackle",
+          "duration": 3.05,
+          "offenseYards": -0.76
+        }
+      },
+      {
+        "id": "CA-R1-iz_strong-under-R-S3",
+        "initialProjectionSha256": "545c9bd054be52405a785f854394d3cee369d0687c3d4d4a5d6095a94b182fcc",
+        "profileSha256": "a6c866979cc61da233f4786da709af260a90244382892eb1f7e8909fdc015bf9",
+        "sameRecordedInitialProjection": true,
+        "entirePlayEqual": false,
+        "firstChangedRequest": {
+          "t": 1,
+          "actor": "LG",
+          "target": "DT_W",
+          "kind": "drive",
+          "observedPhi": -1.2251919690273312,
+          "recordedPriorTicksEqual": true,
+          "beforeCombinationsEqual": true,
+          "beforeBodyEqual": true,
+          "consumedPictureEqual": true,
+          "baselineRequest": {
+            "vel": {
+              "x": 1.4197177018569123,
+              "y": 7.531478159118222
+            },
+            "posture": 0.7
+          },
+          "candidateRequest": {
+            "vel": {
+              "x": -1.9843496625693542,
+              "y": -0.7726906031086798
+            },
+            "posture": 0.7,
+            "facing": 1.3841075442961543
+          }
+        },
+        "laterSampledContacts": [
+          {
+            "t": 2.3,
+            "observedPhi": 1.0589373850888595,
+            "actualPhi": 1.0756191531503685,
+            "exactLoadedForce": 521.0532481607778,
+            "nextAssociatedShed": {
+              "t": 2.55,
+              "type": "shed",
+              "a": 14,
+              "b": 4,
+              "pos": {
+                "x": 40.18,
+                "y": 27.78
+              },
+              "note": "run: leverage"
+            },
+            "sampledContact": [
+              {
+                "t": 2.3,
+                "phi": 1.08,
+                "force": 521.0532481607778
+              },
+              {
+                "t": 2.4,
+                "phi": 1.06,
+                "force": 594.8436785097615
+              },
+              {
+                "t": 2.5,
+                "phi": 1.09,
+                "force": 633.1305887739621
+              }
+            ]
+          }
+        ],
+        "baselineEnd": {
+          "outcome": "tackle",
+          "duration": 3.05,
+          "offenseYards": 0.81
+        },
+        "candidateEnd": {
+          "outcome": "tackle",
+          "duration": 3.1,
+          "offenseYards": 0.98
+        }
+      },
+      {
+        "id": "CA-R1-iz_strong-under-L-S3",
+        "initialProjectionSha256": "a2eb624fbe12b024a7ef0ef2653fd2869f35d0a578a9eefb76301a69b12670a1",
+        "profileSha256": "a6c866979cc61da233f4786da709af260a90244382892eb1f7e8909fdc015bf9",
+        "sameRecordedInitialProjection": true,
+        "entirePlayEqual": false,
+        "firstChangedRequest": {
+          "t": 1,
+          "actor": "RG",
+          "target": "DT_W",
+          "kind": "drive",
+          "observedPhi": 1.3833576391276838,
+          "recordedPriorTicksEqual": true,
+          "beforeCombinationsEqual": true,
+          "beforeBodyEqual": true,
+          "consumedPictureEqual": true,
+          "baselineRequest": {
+            "vel": {
+              "x": -0.48833824969801304,
+              "y": -7.473533483554917
+            },
+            "posture": 0.7
+          },
+          "candidateRequest": {
+            "vel": {
+              "x": -1.9002415530865453,
+              "y": 1.4888137970448374
+            },
+            "posture": 0.7,
+            "facing": -1.6325535979148418
+          }
+        },
+        "laterSampledContacts": [],
+        "baselineEnd": {
+          "outcome": "tackle",
+          "duration": 3.25,
+          "offenseYards": 2.08
+        },
+        "candidateEnd": {
+          "outcome": "tackle",
+          "duration": 3.35,
+          "offenseYards": 2.52
+        }
+      },
+      {
+        "id": "CA-R1-iz_strong-under-R-S11",
+        "initialProjectionSha256": "92cfed26bcdbdaeeb8d9174a2f87906c1faaae5fbdfaaf7342141ee9d45d6272",
+        "profileSha256": "a6c866979cc61da233f4786da709af260a90244382892eb1f7e8909fdc015bf9",
+        "sameRecordedInitialProjection": true,
+        "entirePlayEqual": false,
+        "firstChangedRequest": {
+          "t": 1,
+          "actor": "LG",
+          "target": "DT_W",
+          "kind": "drive",
+          "observedPhi": -1.419840859069218,
+          "recordedPriorTicksEqual": true,
+          "beforeCombinationsEqual": true,
+          "beforeBodyEqual": true,
+          "consumedPictureEqual": true,
+          "baselineRequest": {
+            "vel": {
+              "x": -0.9286293269763614,
+              "y": 7.607654644325023
+            },
+            "posture": 0.7
+          },
+          "candidateRequest": {
+            "vel": {
+              "x": -1.7265082111290493,
+              "y": -1.8024122869232932
+            },
+            "posture": 0.7,
+            "facing": 1.6898613057886538
+          }
+        },
+        "laterSampledContacts": [
+          {
+            "t": 3.2,
+            "observedPhi": 1.0676820111765797,
+            "actualPhi": 1.05105094368101,
+            "exactLoadedForce": 873.686076519342,
+            "nextAssociatedShed": {
+              "t": 3.6,
+              "type": "shed",
+              "a": 14,
+              "b": 4,
+              "pos": {
+                "x": 39.93,
+                "y": 27.4
+              },
+              "note": "run: leverage"
+            },
+            "sampledContact": [
+              {
+                "t": 3.2,
+                "phi": 1.05,
+                "force": 873.686076519342
+              },
+              {
+                "t": 3.3,
+                "phi": 1.01,
+                "force": 556.8600011388443
+              },
+              {
+                "t": 3.4,
+                "phi": 1.02,
+                "force": 435.386018756755
+              },
+              {
+                "t": 3.5,
+                "phi": 1.06,
+                "force": 442.8695395110615
+              }
+            ]
+          }
+        ],
+        "baselineEnd": {
+          "outcome": "tackle",
+          "duration": 4.85,
+          "offenseYards": 15.88
+        },
+        "candidateEnd": {
+          "outcome": "tackle",
+          "duration": 5,
+          "offenseYards": 17
+        }
+      },
+      {
+        "id": "CA-R1-iz_strong-under-L-S11",
+        "initialProjectionSha256": "a82fdd2320cbc83f205617280a23cd8c5204ddc5efa60ae58c095bd05f276cce",
+        "profileSha256": "a6c866979cc61da233f4786da709af260a90244382892eb1f7e8909fdc015bf9",
+        "sameRecordedInitialProjection": true,
+        "entirePlayEqual": false,
+        "firstChangedRequest": {
+          "t": 1.05,
+          "actor": "RG",
+          "target": "DT_W",
+          "kind": "drive",
+          "observedPhi": 1.2678324426066174,
+          "recordedPriorTicksEqual": true,
+          "beforeCombinationsEqual": true,
+          "beforeBodyEqual": true,
+          "consumedPictureEqual": true,
+          "baselineRequest": {
+            "vel": {
+              "x": 1.0765046414717918,
+              "y": -7.411701203693003
+            },
+            "posture": 0.7
+          },
+          "candidateRequest": {
+            "vel": {
+              "x": -1.8016576641012463,
+              "y": 1.3364633554352787
+            },
+            "posture": 0.7,
+            "facing": -1.4510870435672922
+          }
+        },
+        "laterSampledContacts": [],
+        "baselineEnd": {
+          "outcome": "tackle",
+          "duration": 2.9,
+          "offenseYards": -1.25
+        },
+        "candidateEnd": {
+          "outcome": "tackle",
+          "duration": 3.1,
+          "offenseYards": 0.32
+        }
+      }
+    ],
+    "storedContactLimit": "Only first sampled recontact per first-fork actor is retained in this compact receipt; full subsequent samples remain in the pinned native packets."
+  },
+  "angularLaw": {
+    "collector": "scripts/diag/hand-angular-law.ts",
+    "sourceSha256": "116e2f7a993342d22b9e3346a873a8b0c9b449565388f2202606beb8adcf1d34",
+    "toolSha256": "a6dfcbf37b61fcbc6bededea8cca76b5ab57ab2f6cfe83b9fb0d2726ec37b369",
+    "node": "v22.23.3",
+    "cases": 144,
+    "tolerance": 1e-08,
+    "status": "KNOWN FAILURE",
+    "lawConserved": false,
+    "formula": "sum(m*(pos.x*vel.y-pos.y*vel.x) + yawInertia*spin)",
+    "summary": {
+      "normal": {
+        "cases": 72,
+        "lawConserved": true,
+        "absAngularChangeRange": [
+          0,
+          6.139089236967266e-11
+        ],
+        "maxMomentumError": 6.821210263296962e-12,
+        "maxEnergyResidual": 3.035349749325178e-13,
+        "handWorkRange": [
+          0.17999999999996374,
+          0.18000000000004993
+        ],
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxNormalOracleError": 7.105427357601002e-14
+      },
+      "tangent": {
+        "cases": 72,
+        "lawConserved": false,
+        "absAngularChangeRange": [
+          3.7124773258256027,
+          3.712757620082357
+        ],
+        "maxMomentumError": 1.4836567898030567e-13,
+        "maxEnergyResidual": 2.156053113822054e-13,
+        "handWorkRange": [
+          -7.601341607703635,
+          -7.58815415312843
+        ],
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxNormalOracleError": 0
+      }
+    },
+    "maxParityError": 6.139089236967266e-11,
+    "baseExample": {
+      "durationSeconds": 0.2,
+      "normalAndTangentForceLimit": 20,
+      "massesKg": [
+        100,
+        80
+      ],
+      "centerSeparationYards": 0.9,
+      "initialAngularMomentum": 144,
+      "finalAngularMomentum": 140.287336,
+      "spinContribution": 0,
+      "groundReactionAndContacts": 0,
+      "units": "kg*yd^2/s"
+    },
+    "defaultMeasurementExitStatus": 0,
+    "assertLawExitStatus": 1,
+    "meaning": "Measurement controls pass; angular conservation FAILS. This is an unmodified shared-law gap, not an expected successful physics check or a proven ordinary-film cause.",
+    "evidenceLimit": "Does not establish ordinary-film frequency, football outcomes, NFL force magnitudes or a need for two anatomical hands.",
+    "packet": "out/ol-interactions/hand-angular-law.json",
+    "packetSha256": "27b0c71503b80e2de97d326375f17925b6e95d43010db788eae54050a50e68a0"
+  },
+  "recommendation": [
+    "Use one responsibility/observation/useful-fit/contact/recovery loop across drive, down, reach, combinations and pullers.",
+    "Correct shared contact angular transfer with a coherent common-patch experiment before richer hand counters; do not append yaw after a linear solve.",
+    "Separate reaching/attached/slipped/refitting contact state from advantage, and make run sheds require achieved clearance without deleting independently surviving helper hands.",
+    "Diagnose loaded primary/DL support replacement at unchanged budgets before adding directional support or bilateral feet.",
+    "Independent hands or a bounded torsional patch need a witness that one force point cannot explain. Defer anatomical solvers and technique-specific strength factors."
+  ],
+  "validation": {
+    "typeScriptTestsPassed": 1206,
+    "pythonTestsPassed": 129,
+    "typecheckPassed": true,
+    "buildPassed": true,
+    "completeSuiteWallSeconds": 122.564,
+    "timingLimit": "One complete run, with independent collectors; not an isolated speed benchmark.",
+    "newFitFileTests": 22,
+    "focusedTestsPassed": 62,
+    "angularConservationCheckPassed": false
+  },
+  "widerCheck": {
+    "sourceSha256": "116e2f7a993342d22b9e3346a873a8b0c9b449565388f2202606beb8adcf1d34",
+    "games": 8,
+    "seeds": [
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108
+    ],
+    "runs": 260,
+    "dropbacks": 817,
+    "guardedMechanismsPassing": 12,
+    "guardedMechanismsTotal": 12,
+    "pointsPerTeamGame": 58,
+    "selectedDiagnostics": {
+      "contact.run.tackler_speed_at_contact": {
+        "n": 170,
+        "mean": 1.732,
+        "p50": 1.5,
+        "p90": 3.162
+      },
+      "contact.catch.broke_contact": {
+        "n": 169,
+        "mean": 0.225,
+        "p50": 0.0,
+        "p90": 1.0
+      },
+      "catch.yards_after_catch": {
+        "n": 481,
+        "mean": 11.555,
+        "p50": 4.58,
+        "p90": 40.1
+      },
+      "run.max_engaged_dl_driven_back_3s": {
+        "n": 217,
+        "mean": 1.431,
+        "p50": 1.3,
+        "p90": 4.0
+      }
+    },
+    "definition": "Same shared sim/NFL measurement code. Contact metrics use nearest-defender/broken-contact proxies, not actual tackle labels. Whole games diverge in later calls/RNG and are not paired causal outcomes or tuning targets.",
+    "report": "out/run-drive-fit/mechanics-report.md",
+    "reportSha256": "d1a902309ffb5e079d7ab6b5eab35dbb79c252e3dc12cf5cee024f91ac0d0265",
+    "ordinaryProcessControls": 16,
+    "processObserverVerified": true,
+    "processNote": "Duo/OZ/Counter/Power Over/Under seed3 bothflips, at most4s. Execution-neutral smoke controls, not matching NFL efficiency or promising old outcomes."
+  },
+  "candidateEngineCommit": "8823635"
+}

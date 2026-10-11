@@ -18,6 +18,9 @@ useful foundation. They do not prove NFL force magnitudes, universal numerical
 convergence or good football decisions. Physical-profile mappings and contact
 capacities still have limited empirical evidence. Some controllers still use
 private state; light films cannot establish what a player actually perceived.
+The new isolated angular-law audit also finds a concrete gap: tangential hand
+restraint changes total planar angular momentum without a corresponding spin
+or ground reaction. Existing linear momentum/work checks do not catch it.
 
 The cleanup preserved the engine at `663193d`. Subsequent run work improves
 controllers and how acquired hands use the existing contact law. All 24
@@ -27,79 +30,50 @@ check results and source pins are in the current receipt below.
 ## Latest run-game work
 
 The [combination receipt](../data/reviews/current/run-combination-security.json)
-records the latest run-game increment:
-
-- **Each run helper earns his own hands**, using the existing hand-fight law
-  and shared arm budgets. Reaching is distinct from acquired contact; positive
-  load does not mean inside hands or a useful blocking side.
-- **Release grades the remaining blocker.** Promotion retains his actual hand
-  joint and control, including a contested near-neutral contact. It cannot
-  borrow the departing blocker's hand position, cloth grab or landed move.
-- **The climber reads an available first step**, around the observed DL and
-  partner where necessary, then re-reads on his normal cadence. This grants
-  neither instantaneous movement nor a completed linebacker block.
-- **Wrong-side helpers still replace their feet.** A genuine but badly directed
-  hand load no longer cancels recovery. Useful loaded contact still overrides
-  an old visual picture. The existing physical recovery tests remain strict.
-
-Eight predeclared ordinary Inside Zone inputs use identical recorded starting
-projections and profiles across baseline/current engines. Actual climber/backer
-contacts rise from 3 to 5; two persistent Under-front doubles release instead
-of continuing their long drive. Six further native cases and sixteen ordinary
-process controls retain adverse cases and verify observation does not change
-execution or RNG. These are controlled football situations, **not frequency
-estimates or paired full games**. Some climbs still miss. A moving DL can close
-a previously available exit; the short arc does not solve every traffic problem.
-
-The earlier [run-coaching receipt](../data/reviews/current/run-coaching.json)
-preserves the puller-read, force-gather and fast-lead-cue repairs. Its selected
-original-game policy comparisons remain historical evidence. The new paired
-film is ignored output at `out/run-solidify/film/inside-zone-combo-review.html`.
-
-**Outside support now follows the actual called flat/curl-flat job**, rather
-than disappearing at a lateral-position cutoff. Disguise still changes how
-hard the fit is to reach. Deep or inside help still cannot authorize immediate
-spill. Primary insertions keep their gaps first; eligible force backers retain
-an unclaimed same-side inside fit until an observed outside carrier threatens
-the surface. An explicit dropping end retains his front's boxed run gap, and
-force selection cannot cancel a called gap exchange. This is our selected
-installation, not a universal rule for every NFL defense.
+records independently earned helper contact, actual keeper hand continuity and
+clear first steps off a double. Eight fixed IZ inputs increased actual climber
+contacts from 3 to 5 with unchanged physics. Missed climbs remain.
 
 The [support receipt](../data/reviews/current/run-support-install.json) records
-24 matched native inputs, including both directions, disguise, pressure and
-man controls. No force, speed, perception or physics capability was increased.
-Two allocation prototypes exposed new problems and were withheld: a cross-box
-fit and a stolen primary gap. Reviewing the complete gap inventory resolved
-both. Remaining: the two explicit weak-exchange calls need an installed outside
-replacement; their fallback still promotes the deep safety. Unknown/deep-mesh
-pictures do not anticipate outside flow, and the free inside fit does not
-rewrite contact or pursuit leverage. One supplemental Buzz rep contacts later
-and allows more carrier travel; it remains in evidence.
+force ownership from actual flat/curl-flat jobs, conditional same-side inside
+fits, retained dropper run gaps and reserved exchanges. Disguise still changes
+physical availability. Both explicit weak-exchange controls still need a called
+outside replacement; their fallback promotes the deep safety. Backfield man
+alignment can bunch linebackers, and Draw can postpone its covered owner's
+rusher read. Correct those responsibilities/cues before changing ability.
 
-**Next contact priority: attainable tackling approaches**, following the
-consumed picture, requested motion, achieved movement and actual first grip.
-Do not strengthen grips to mask a bad approach. Also inspect climbers that
-actually miss their backer and the DL's acquired response to a second blocker. The
-[tracking pilot](../data/reviews/current/run-displacement.json) motivates those
-mechanism checks; it does not justify stronger anchors or a travel cap.
+The latest [OL review](reviews/ol-interactions.md) and
+[receipt](../data/reviews/current/ol-leverage-review.json) distinguish path
+leverage, orientation, contact ownership, support and escape access. Solo drives
+now reuse bounded foot recovery when their consumed shoulder picture is already
+lost. In eight fixed IZ inputs, known-lost acquisitions fall from 7 to 0; two
+first-fork blockers recover actual loaded contact and later lose again. Five
+others never regain their opponent before the natural end. Square drives,
+unseen losses, live doubles and loaded contacts retain their policies.
+This is pre-acquisition control, not a loaded-primary or physics rewrite.
 
-Also diagnosed, unmodified: backfield man alignment can bunch linebackers;
-Draw's pass influence can postpone its covered owner's rusher read. Correct
-responsibilities and acquired cues before changing physical ability.
+**Next shared-physics priority: coherent hand/contact angular transfer.** The
+isolated oracle fails under tangential restraint with no ground reaction or
+body spin; refinement does not fix it. A single effective common patch must
+couple point velocity, angular effective mass, force/moments and rotational
+work. Football payoff and implementation cost are unmeasured. Do that before
+richer shoulder control, independent hands or additional foot detail.
 
-The newly integrated [NFL mechanism comparisons](NFL_DATA.md) also flag
-different tackling patterns on runs and after catches. Trace the shared
-gathering approach: a frontal cue can brake early, while a crossing approach
-can retain too much relative sideways speed. Compare acquired pictures,
-requested velocity and achieved support/contact in the same controlled setup.
-Nearest-defender speed is a tracking proxy, so it does not identify the actual
-tackler or prove a grip-strength problem. Outside-zone lateral technique is
-being investigated separately; do not retune movement capacities to mask it.
-The latest eight-game support check preserves all twelve guarded mechanisms.
-Scoring still averages 63.7 points per team-game; the after-catch broken-contact
-proxy is 31% and 90th-percentile YAC is 44.3 yd. These are unpaired full games,
-not causal estimates of the support repair. The earlier combo check averaged
-78 points. The contact and coverage problems remain substantial.
+**Next tackling priority: attainable approaches**, tracing consumed picture,
+requested motion, achieved support and actual first grip. Frontal gathering
+can brake early; crossing approaches can retain excessive relative speed. Do
+not strengthen grips to mask that. Nearest-defender tracking speed is a proxy,
+not proof of grip failure. Then inspect missed climbers, loaded primary/DL
+refits, the response to a second blocker and contact-clearing run sheds.
+The [displacement pilot](../data/reviews/current/run-displacement.json) motivates
+these checks; it does not justify stronger anchors or a travel cap.
+Outside-zone lateral technique is being investigated separately.
+
+The latest eight-game drive-recovery check preserves all twelve guarded
+mechanisms, but scoring remains 58 points per team-game and 90th-percentile
+YAC 40.1 yd. The prior support check averaged 63.7 points. These are unpaired
+native games with changing calls/RNG, not causal estimates or readiness proof.
+Contact and coverage still need substantial work; see [NFL data](NFL_DATA.md).
 
 ## Random film review: choose the next investigation
 

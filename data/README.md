@@ -113,6 +113,32 @@ process panel is censored and has no OL request trace. New review film at
 `out/run-solidify/film/inside-zone-combo-review.html` contains all eight IZ input pairs, not
 just successful runs. Its ZIP and generated traces remain ignored output.
 
+The [OL leverage receipt](reviews/current/ol-leverage-review.json) records the
+solo-drive recovery repair and the independent hand angular-law failure. The
+existing native collector now also records actual acquisition attempts against
+the pictures already consumed; it adds no observation or decision. Reproduce
+current ordinary inputs with the first `--ordinary` command above. For the
+paired pre-repair engine, without changing this checkout:
+
+```sh
+mkdir -p out/run-drive-fit/baseline-source/scripts/diag
+git archive 8119f08 src scripts/source-version.ts | tar -x -C out/run-drive-fit/baseline-source
+cp scripts/diag/combo-attention-witness.ts out/run-drive-fit/baseline-source/scripts/diag/
+(cd out/run-drive-fit/baseline-source && node --import tsx scripts/diag/combo-attention-witness.ts ../baseline.json.gz --ordinary)
+```
+
+The new law oracle is separate from football outcomes and solver refinement:
+
+```sh
+node --import tsx scripts/diag/hand-angular-law.ts out/hand-angular.json --assert-law
+```
+
+That assertion currently fails under tangential restraint with no ground
+reaction. Normal force/travel, linear momentum and energy controls pass.
+Reports and failed-law evidence stay under ignored `out/`; the receipt pins
+their source and measurement definitions. Do not describe this oracle as passed
+because the normal controls or the production test suite passed.
+
 `python3 scripts/data/run_displacement.py --help` describes the inputs for the
 small 1/2/3-second run-line displacement pilot: BDB2025 week-one CSVs and eight
 source-pinned native game recordings. Its exact command and equality checks are

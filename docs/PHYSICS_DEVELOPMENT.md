@@ -47,8 +47,17 @@ physical coherence. Check timestep refinement, shared capacities, unaffected
 football cases and runtime before adopting an extension. NFL position tracking
 does not identify the hand forces or foot pressures that caused a trajectory.
 
-For now, keep the current reduced World and the priorities in [status](STATUS.md):
-installed run-support responsibilities, achieved climber contact and attainable
-tackle approaches. Outside-zone lateral technique is being studied separately.
-The recent combo repair demonstrates useful gains without adding foot or hand
-degrees of freedom; it does not prove those extensions will never be useful.
+The [current OL review](reviews/ol-interactions.md) now distinguishes one proven
+law gap from hypothetical anatomical detail. The isolated hand audit conserves
+linear momentum and work but loses angular momentum under tangential restraint,
+without ground reaction or body spin. Refinement does not remove that defect.
+Use `scripts/diag/hand-angular-law.ts --assert-law` as the independent oracle;
+it currently fails, explicitly. A common contact patch must couple force and
+moment in the same solve before richer shoulder-control techniques are built.
+
+Keep the reduced World and the priorities in [status](STATUS.md): coherent
+angular transfer, achieved climber contact and attainable tackle approaches.
+Outside-zone lateral technique is being studied separately. The combination
+and solo-drive recovery repairs demonstrate useful gains without additional
+degrees of freedom; they do not excuse the shared contact-law gap or establish
+that foot/hand extensions will never be useful.

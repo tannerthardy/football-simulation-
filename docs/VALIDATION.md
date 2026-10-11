@@ -119,6 +119,16 @@ node --import tsx scripts/diag/decision-awareness.ts out/checks/decisions.json.g
 node --import tsx scripts/diag/physics-cost.ts out/checks/cost.json 2 9
 ```
 
+The isolated angular-law audit fills a missing law check. Its normal-force
+controls validate momentum, force/travel, work, mirrors and coordinate changes.
+Tangential hand restraint currently loses angular momentum with no ground
+reaction; the measurement reports **KNOWN FAILURE**, and `--assert-law` exits
+nonzero. This is a tracked defect, not a passing readiness check:
+
+```sh
+node --import tsx scripts/diag/hand-angular-law.ts out/checks/hand-angular.json --assert-law
+```
+
 Movement and contact mechanisms against 2022 NFL all-22 tracking, measured by
 the same code on both sides (no raw data needed; see [NFL data](NFL_DATA.md)):
 
