@@ -15,7 +15,7 @@ const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
 afterEach(() => vi.restoreAllMocks());
 
-function fixture(side = 1, primaryHands = 10, helperHands = 90, type: 'run' | 'pass' = 'run', noise = false) {
+function fixture(side = 1, primaryHands = 10, helperHands = 90, type: 'run' | 'pass' = 'run', noise = false, legacyRunPolicy = false) {
   const formation = FORMATION_BY_ID.ace_11;
   const personnel = pickOffense(offense, formation.personnel);
   for (const [slot, handTechnique] of [['C', primaryHands], ['LG', helperHands]] as const) {
@@ -41,6 +41,10 @@ function fixture(side = 1, primaryHands = 10, helperHands = 90, type: 'run' | 'p
   }
   sim.t = sim.world.time = 1;
   const primary = sim.slot('C')!, helper = sim.slot('LG')!, defender = sim.slot('DT_W')!;
+  // The frozen hand-law witness uses the preserved insertion policy. Its gap
+  // read is the old interior read, while the new first-level foot policy is
+  // tested independently with real interior/edge jobs in run-contact-flow.
+  if (legacyRunPolicy) defender.runFit = { ...defender.runFit!, kind: 'insert' };
   primary.body.pos = { x: 40, y: CENTER_Y };
   defender.body.pos = { x: 40 + primary.profile.radius + defender.profile.radius + .05, y: CENTER_Y };
   helper.body.pos = { x: defender.pos.x - .32, y: CENTER_Y + side * .6 };
@@ -257,9 +261,9 @@ describe('run helpers earn contact and retain it through ownership', () => {
   });
 });
 
-describe('solo hand-fight execution is unchanged', () => {
-  it.each(['run', 'pass'] as const)('matches frozen 923dbe0 %s commands, bodies, loads and RNG', type => {
-    const f = fixture(1, 10, 90, type, true), trace: unknown[] = [];
+describe('solo hand-fight execution with the preserved legacy policy is unchanged', () => {
+  it.each(['run', 'pass'] as const)('matches frozen 923dbe0 legacy %s commands, bodies, loads and RNG', type => {
+    const f = fixture(1, 10, 90, type, true, type === 'run'), trace: unknown[] = [];
     for (let k = 0; k < 6; k++) {
       const { intents, report } = step(f);
       trace.push({ intents, control: f.engagement.control,

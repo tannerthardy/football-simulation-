@@ -35,7 +35,7 @@ function natural(run = 'power', front = 'under', flip = true) {
 }
 
 /** Same RT/DE bodies and RNG on both sides. Only explicit geometry,
- * displacement and signed coherent execution error are reflected. */
+ * displacement, installed edge duty and signed execution error are reflected. */
 function fixture(side = 1, distance = .95) {
   const sim = natural();
   for (const a of sim.agents) {
@@ -45,6 +45,9 @@ function fixture(side = 1, distance = .95) {
   }
   sim.t = sim.world.time = 1;
   const blocker = sim.slot('RT')!, defender = sim.slot('DE_W')!;
+  // natural() has the same flip in both controlled islands. Reflect its
+  // assigned duty as well as the bodies; otherwise these are different fits.
+  defender.runFit = { ...defender.runFit!, side: side * defender.runFit!.side };
   const drive = norm({ x: 1, y: side * .8 });
   const surface: Surface = { axis: norm({ x: -.3, y: drive.y * .6 }), sealTarget: 0 };
   defender.body.pos = { x: 42, y: CENTER_Y - side * 1.3 };

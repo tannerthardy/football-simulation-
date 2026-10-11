@@ -738,6 +738,19 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
  * Ball-holder identity remains the engine's existing public interface; this
  * does not claim a complete model of seeing possession through congestion.
  */
+interface RunStackRead {
+  owner: Agent;
+  fit: string;
+  depth: number;
+  shoulder: number;
+  nextRead: number;
+  flow: number;
+  aim?: Vec2;
+  runner: boolean;
+  contacted: boolean;
+}
+const runStacks = new WeakMap<Engagement, RunStackRead>();
+
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
   const carrier = sim.carrier;
@@ -753,21 +766,64 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const reading = d.recog?.read === 'run' || advanced;
   const declared = !!(reading && runnerCue && runnerCue.pos.x > sim.los - 1.6);
   const edge = job?.kind === 'edge' || job?.kind === 'force';
+  const fit = job ? `${job.kind}:${job.gap}:${job.side}:${job.edge}:${job.technique}` : 'unassigned';
+  let stack: RunStackRead | undefined;
+  let blockerY = b.pos.y;
+  // Narrow installation: first-level gap/edge fits. Stalked support players,
+  // inserts and unassigned pass-converted contacts retain their old policy.
+  if (job && (job.kind === 'interior' || job.kind === 'edge')) {
+    stack = runStacks.get(e);
+    const picture = sim.see(d, b);
+    const touch = !!(e.hands?.normalForce || e.hands?.tangentForce);
+    const local = touch ? b.pos : picture.pos;
+    blockerY = local.y;
+    // A contact episode remembers our own depth, not a displacement allowance.
+    // Keeper promotion changes the opponent picture, not the point we defend.
+    if (!stack || stack.owner !== b || stack.fit !== fit) {
+      const sep = b.profile.radius + d.profile.radius;
+      stack = { owner: b, fit, depth: stack?.depth ?? d.pos.x,
+        shoulder: edge ? job.side * (job.edge === 'spill' ? -.45 : .65)
+          : clamp(gapY(sim.offAlign, job.gap, job.side) - local.y, -sep * .65, sep * .65),
+        nextRead: -Infinity, flow: 0, runner: false, contacted: stack?.contacted ?? false };
+      runStacks.set(e, stack);
+    }
+    // Reaching is not touching. Only the first transmitted hand load installs
+    // the useful contact depth; a keeper change cannot move that memory back.
+    if (touch && !stack.contacted) {
+      stack.depth = d.pos.x;
+      stack.contacted = true;
+    }
+    // Motion is a personally acquired cue held for an ordinary decision beat.
+    // Touch supplies local position/load, never the OL's private drive.
+    if (sim.t >= stack.nextRead) {
+      stack.flow = picture.vel.y;
+      if (!edge && job.technique === 'lag' && reading && Math.abs(stack.flow) > .8)
+        stack.shoulder = -Math.sign(stack.flow) * (b.profile.radius + d.profile.radius) * .65;
+      stack.nextRead = sim.t + d.mind.decisionInterval;
+    }
+  }
   // Preserve the box/spill shoulder until the runner is beyond the surface,
   // just as the free fit does. The touching blocker's position is haptic.
-  const y = job ? edge ? b.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65)
+  const y = stack ? blockerY + stack.shoulder : job ? edge
+    ? b.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65)
     : gapY(sim.offAlign, job.gap, job.side) : b.pos.y;
   let desired = { x: d.pos.x, y };
   if (declared && (!edge || advanced)) desired = { ...runnerCue!.pos };
   else if (!job && runnerCue && reading) desired = { ...runnerCue.pos };
-  const aim = d.mind.aim(`run-contact:${b.idx}`, desired, sim.t);
+  const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
+  // The selected target mode belongs to the same held decision as its aim.
+  // A newly seen declaration cannot drop flow feedforward midway through it.
+  if (stack && stack.aim !== aim) {
+    stack.aim = aim;
+    stack.runner = declared && (!edge || advanced);
+  }
   // A close observed back can threaten a penetrating lineman deep behind
   // the surface; shedding must not wait for the free-fit declaration depth.
   // A standing deep QB is still a mesh key, not a run target. An observed
   // advanced carrier supplies urgency even after an original pass read.
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
-  return { aim, reading, threat };
+  return { aim, reading, threat, declared: stack?.runner ?? false, stack };
 }
 
 function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
@@ -837,12 +893,19 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: 0.85,
     cutSkill: 0.8 + 0.3 * tb.feet,
   };
-  // Engaged, a defender stacks the block and keeps his gap leverage; he
-  // escapes sideways by winning a shed with his hands, not by running out of
-  // a blocker's grip.
+  // Follow acquired flow while preserving the chosen shoulder. Control/lag
+  // replace feet toward their remembered contact depth; attack retains useful
+  // forward intent. These are finite requests, not stronger ground support.
+  // A declared runner can redirect the fit on the existing decision cadence.
   const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (read.reading ? 1 : 0.3);
+  const legacy = { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work };
+  const recover = d.runFit?.technique !== 'attack';
+  const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
+    : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
+      : -sim.attackDir(b.team) * 1.5;
+  const flow = clamp((read.declared ? 0 : read.stack?.flow ?? 0) + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
   intents[d.idx] = {
-    vel: { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work },
+    vel: read.stack ? { x: depth, y: flow } : legacy,
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: 0.85,
