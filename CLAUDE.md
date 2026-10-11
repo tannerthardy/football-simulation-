@@ -2,8 +2,16 @@
 
 Start with these shared project references:
 
+- [OL retargeting and combination lifecycle](docs/reviews/ol-retarget-and-combination-lifecycle.md):
+  **latest increment.** Actual new work cancels the exact live shared job;
+  former helpers resume first-level technique without releasing real hands.
+  Read the 144 matched ordinary snaps, 24 paired clips and mixed guards.
+  Stale combinations fall 16 snaps to zero; gains remain almost identical.
+  Next: earned-release keeper recovery, new-work technique classification,
+  earlier sustained fits and pursuit in traffic. Keep shared physics unchanged
+  for controller mistakes; no anatomy/strength fitting or global resolution.
 - [Nearby coverage help and current priorities](docs/reviews/near-help-persistence-and-current-priorities.md):
-  **latest increment.** A consumed moving picture must sustain nearby help
+  Previous controller increment. A consumed moving picture must sustain nearby help
   through the next read. Short persistence ships; the two-second far-help
   forecast stays a separately pinned prototype. Read the fixed 24 pairs,
   ten clips, observer controls and adverse game guards. Shared World,

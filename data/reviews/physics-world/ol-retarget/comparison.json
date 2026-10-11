@@ -1,0 +1,1826 @@
+{
+  "schema": "ol-retarget-comparison-v1",
+  "inputs": [
+    "data/reviews/physics-world/ol-retarget/panel-before.json.gz",
+    "data/reviews/physics-world/ol-retarget/panel-after.json.gz"
+  ],
+  "comparisonToolSha256": "94f36ba3426f720496df01a33dda62e4f1eb65e38d3d107f9341fafa58d5b2d3",
+  "inputSha256": {
+    "data/reviews/physics-world/ol-retarget/panel-before.json.gz": "d5c1087987a7c50c51a5901437cd855883cc48a571f9864d013c9494dbae5b98",
+    "data/reviews/physics-world/ol-retarget/panel-after.json.gz": "e2875162399bc05ad691975c0adbb329a20a18d6989b0b1914490b65c98b33e0",
+    "data/reviews/physics-world/projected-help/current-runs.json.gz": "ca6acae91256f8f3d856094610f8200dd6753484501eddfb595b858d04fe8101",
+    "data/reviews/physics-world/ol-retarget/current-runs.json.gz": "c93bb0b147893f2a37fa0d7ca8881c71004ce9771e0cece0e6698f5d09a50082",
+    "data/reviews/physics-world/projected-help/current-tackles.json.gz": "877e00ff654a6e043248eb76a82abe6501a5c44c36b8f87c4ca72efcf944bd44",
+    "data/reviews/physics-world/ol-retarget/current-tackles.json.gz": "937e584a7a6c0dba1a26afa12f4c2515437aad2b65c58b28596995b0082bdcb1",
+    "data/reviews/physics-world/projected-help/current-games9.json": "09e4d17372ce799737cb23c2cbee5eadbde1460bdc561a3151c7133acd5de9aa",
+    "data/reviews/physics-world/ol-retarget/current-games9.json": "9903cbe36bb0ec059758e537072a11670a25a05f3570481fd21de914892d359c"
+  },
+  "beforeSource": "704158f29be7a7e31b669fddfbf1cecb2fe2332d37a18eaa2db16a3f69e59c12",
+  "afterSource": "fedfb636eb7a02f298cff1fdf2e2fb213ef37645cc7e1f31b1ef05b52d338205",
+  "collectorSha256": "e87765a50479e572b172f4a8852267cddcd71cef6cbeca4841b2bb97a8ef1860",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "matchedInputProfileCount": 144,
+  "observerVerifiedBefore": 144,
+  "observerVerifiedAfter": 144,
+  "beforeSummary": {
+    "snaps": 144,
+    "observerVerifiedCount": 144,
+    "staleSnaps": 16,
+    "staleMemberUpdates": 507,
+    "staleOLMemberUpdates": 400,
+    "staleTicks": 255,
+    "targetTransitions": 241,
+    "cancelledTransitions": 6,
+    "earnedClimbs": 40,
+    "meanYards": 1.3261111111111108,
+    "naturalEnds": 144,
+    "censors": 0
+  },
+  "afterSummary": {
+    "snaps": 144,
+    "observerVerifiedCount": 144,
+    "staleSnaps": 0,
+    "staleMemberUpdates": 0,
+    "staleOLMemberUpdates": 0,
+    "staleTicks": 0,
+    "targetTransitions": 243,
+    "cancelledTransitions": 21,
+    "earnedClimbs": 40,
+    "meanYards": 1.3263194444444444,
+    "naturalEnds": 144,
+    "censors": 0
+  },
+  "completeObservedExecutionExact": 123,
+  "nonEventResultExact": 139,
+  "creditedGainExact": 143,
+  "earnedClimbEventsExact": 144,
+  "firstCarrierContactEventsExact": 144,
+  "handoffEventsExact": 144,
+  "blockContactEventsExact": 140,
+  "conservation": {
+    "before": {
+      "maxMomentumResidual": 4.040439899107461e-12,
+      "maxWorkResidual": 3.2224889423559944e-11,
+      "maxMotorWorkExcess": 0
+    },
+    "after": {
+      "maxMomentumResidual": 4.040439899107461e-12,
+      "maxWorkResidual": 3.2224889423559944e-11,
+      "maxMotorWorkExcess": 0
+    }
+  },
+  "changes": [
+    {
+      "id": "OR-R1-iz_strong-over-R-S3",
+      "beforeGain": 1.36,
+      "afterGain": 1.36,
+      "beforeStaleUpdates": 15,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R1-wz_strong-over-R-S3",
+      "beforeGain": -0.27,
+      "afterGain": -0.27,
+      "beforeStaleUpdates": 8,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 1,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R1-power-over-L-S11",
+      "beforeGain": -0.3,
+      "afterGain": -0.3,
+      "beforeStaleUpdates": 12,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R1-power-under-R-S3",
+      "beforeGain": 0.14,
+      "afterGain": 0.14,
+      "beforeStaleUpdates": 42,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R2-iz_strong-over-R-S3",
+      "beforeGain": -0.29,
+      "afterGain": -0.29,
+      "beforeStaleUpdates": 46,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {
+        "endX": {
+          "before": 39.705099001440814,
+          "after": 39.705153085801015
+        },
+        "endY": {
+          "before": 24.65298366838447,
+          "after": 24.65574039271894
+        },
+        "segments": {
+          "before": [
+            {
+              "team": "O",
+              "carrier": "O2-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.63145036330828,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O2-RB1",
+              "how": "handoff",
+              "startX": 35.50215534332849,
+              "endX": 39.705099001440814,
+              "end": "dead"
+            }
+          ],
+          "after": [
+            {
+              "team": "O",
+              "carrier": "O2-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.63145036330828,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O2-RB1",
+              "how": "handoff",
+              "startX": 35.50215534332849,
+              "endX": 39.705153085801015,
+              "end": "dead"
+            }
+          ]
+        },
+        "stats": {
+          "before": {
+            "tacklers": [
+              "D2-DT3"
+            ],
+            "completed": false,
+            "attempted": false,
+            "sacked": false,
+            "scramble": false,
+            "throwaway": false,
+            "pressured": false,
+            "brokenTackles": 0,
+            "missedTackles": 0,
+            "dropped": false,
+            "qbRead": {
+              "pre": "cover3",
+              "actual": "cover3"
+            },
+            "rusher": "O2-RB1",
+            "yardsBeforeContact": -0.9957733177036019
+          },
+          "after": {
+            "tacklers": [
+              "D2-DT3"
+            ],
+            "completed": false,
+            "attempted": false,
+            "sacked": false,
+            "scramble": false,
+            "throwaway": false,
+            "pressured": false,
+            "brokenTackles": 0,
+            "missedTackles": 0,
+            "dropped": false,
+            "qbRead": {
+              "pre": "cover3",
+              "actual": "cover3"
+            },
+            "rusher": "O2-RB1",
+            "yardsBeforeContact": -0.9957828677811662
+          }
+        }
+      },
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R2-oz_strong-under-R-S3",
+      "beforeGain": 1.32,
+      "afterGain": 1.32,
+      "beforeStaleUpdates": 14,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R2-wz_strong-over-R-S3",
+      "beforeGain": 4.79,
+      "afterGain": 4.79,
+      "beforeStaleUpdates": 42,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R2-power-over-L-S3",
+      "beforeGain": 1.2,
+      "afterGain": 1.2,
+      "beforeStaleUpdates": 0,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 1,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R2-power-under-R-S3",
+      "beforeGain": -0.54,
+      "afterGain": -0.54,
+      "beforeStaleUpdates": 0,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 1,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R2-counter-under-L-S11",
+      "beforeGain": 1.66,
+      "afterGain": 1.66,
+      "beforeStaleUpdates": 46,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {
+        "endX": {
+          "before": 38.92779581859486,
+          "after": 38.81871602390902
+        },
+        "endY": {
+          "before": 20.51573327671101,
+          "after": 20.414803023967465
+        },
+        "penalty": {
+          "before": {
+            "kind": "holding",
+            "against": "O",
+            "playerId": "O2-C1",
+            "yards": 10,
+            "autoFirst": false,
+            "spotX": 41.20987130230421
+          },
+          "after": {
+            "kind": "holding",
+            "against": "O",
+            "playerId": "O2-C1",
+            "yards": 10,
+            "autoFirst": false,
+            "spotX": 41.20987131305251
+          }
+        },
+        "segments": {
+          "before": [
+            {
+              "team": "O",
+              "carrier": "O2-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.63145036330829,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O2-RB1",
+              "how": "handoff",
+              "startX": 35.50215534332849,
+              "endX": 41.66157373729164,
+              "end": "fumble"
+            },
+            {
+              "team": "D",
+              "carrier": "D2-CB1",
+              "how": "recovery",
+              "startX": 41.28780999478001,
+              "endX": 38.92779581859486,
+              "end": "dead"
+            }
+          ],
+          "after": [
+            {
+              "team": "O",
+              "carrier": "O2-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.63145036330829,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O2-RB1",
+              "how": "handoff",
+              "startX": 35.50215534332849,
+              "endX": 41.66157373729164,
+              "end": "fumble"
+            },
+            {
+              "team": "D",
+              "carrier": "D2-CB1",
+              "how": "recovery",
+              "startX": 41.28780999478001,
+              "endX": 38.81871602390902,
+              "end": "dead"
+            }
+          ]
+        },
+        "stats": {
+          "before": {
+            "tacklers": [
+              "O2-OG1"
+            ],
+            "completed": false,
+            "attempted": false,
+            "sacked": false,
+            "scramble": false,
+            "throwaway": false,
+            "pressured": false,
+            "brokenTackles": 1,
+            "missedTackles": 0,
+            "dropped": false,
+            "qbRead": {
+              "pre": "cover3",
+              "actual": "cover3"
+            },
+            "rusher": "O2-RB1",
+            "fumbledBy": "O2-RB1",
+            "fumbleLost": true,
+            "fumbleRecoveredBy": "D2-CB1",
+            "returnYards": 2.360014176185153,
+            "yardsBeforeContact": 1.2878099947800123
+          },
+          "after": {
+            "tacklers": [
+              "O2-OG1"
+            ],
+            "completed": false,
+            "attempted": false,
+            "sacked": false,
+            "scramble": false,
+            "throwaway": false,
+            "pressured": false,
+            "brokenTackles": 1,
+            "missedTackles": 0,
+            "dropped": false,
+            "qbRead": {
+              "pre": "cover3",
+              "actual": "cover3"
+            },
+            "rusher": "O2-RB1",
+            "fumbledBy": "O2-RB1",
+            "fumbleLost": true,
+            "fumbleRecoveredBy": "D2-CB1",
+            "returnYards": 2.4690939708709934,
+            "yardsBeforeContact": 1.2878099947800123
+          }
+        }
+      },
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R2-trap-over-R-S11",
+      "beforeGain": 0.66,
+      "afterGain": 0.66,
+      "beforeStaleUpdates": 20,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {
+        "endX": {
+          "before": 40.65533588701482,
+          "after": 40.66108902399403
+        },
+        "endY": {
+          "before": 22.921330189673746,
+          "after": 22.94913358891042
+        },
+        "segments": {
+          "before": [
+            {
+              "team": "O",
+              "carrier": "O2-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.63145036330829,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O2-RB1",
+              "how": "handoff",
+              "startX": 35.50215534332849,
+              "endX": 40.65533588701482,
+              "end": "dead"
+            }
+          ],
+          "after": [
+            {
+              "team": "O",
+              "carrier": "O2-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.63145036330829,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O2-RB1",
+              "how": "handoff",
+              "startX": 35.50215534332849,
+              "endX": 40.66108902399403,
+              "end": "dead"
+            }
+          ]
+        }
+      },
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R2-trap-under-R-S11",
+      "beforeGain": 1.84,
+      "afterGain": 1.84,
+      "beforeStaleUpdates": 52,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-iz_strong-over-R-S3",
+      "beforeGain": -0.67,
+      "afterGain": -0.67,
+      "beforeStaleUpdates": 40,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-oz_strong-over-L-S3",
+      "beforeGain": 0.57,
+      "afterGain": 0.57,
+      "beforeStaleUpdates": 26,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {
+        "endX": {
+          "before": 40.571842796680116,
+          "after": 40.57171549074251
+        },
+        "endY": {
+          "before": 29.99822136718252,
+          "after": 29.998345681462528
+        },
+        "segments": {
+          "before": [
+            {
+              "team": "O",
+              "carrier": "O3-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.709602808135806,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O3-RB2",
+              "how": "handoff",
+              "startX": 35.5374795014359,
+              "endX": 40.571842796680116,
+              "end": "dead"
+            }
+          ],
+          "after": [
+            {
+              "team": "O",
+              "carrier": "O3-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.709602808135806,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O3-RB2",
+              "how": "handoff",
+              "startX": 35.5374795014359,
+              "endX": 40.57171549074251,
+              "end": "dead"
+            }
+          ]
+        }
+      },
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-wz_strong-under-L-S11",
+      "beforeGain": 2.21,
+      "afterGain": 2.21,
+      "beforeStaleUpdates": 0,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 1,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-power-over-R-S3",
+      "beforeGain": 2.35,
+      "afterGain": 2.35,
+      "beforeStaleUpdates": 58,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-counter-over-R-S3",
+      "beforeGain": 0.2,
+      "afterGain": 0.2,
+      "beforeStaleUpdates": 10,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-counter-over-L-S11",
+      "beforeGain": -0.05,
+      "afterGain": -0.02,
+      "beforeStaleUpdates": 48,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {
+        "duration": {
+          "before": 4,
+          "after": 4.5
+        },
+        "endX": {
+          "before": 39.949520407568244,
+          "after": 39.97844870943166
+        },
+        "endY": {
+          "before": 25.066975297978317,
+          "after": 25.38354957983362
+        },
+        "offenseYards": {
+          "before": -0.05,
+          "after": -0.02
+        },
+        "segments": {
+          "before": [
+            {
+              "team": "O",
+              "carrier": "O3-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.709602808135806,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O3-RB2",
+              "how": "handoff",
+              "startX": 35.5374795014359,
+              "endX": 39.949520407568244,
+              "end": "dead"
+            }
+          ],
+          "after": [
+            {
+              "team": "O",
+              "carrier": "O3-QB2",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.709602808135806,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O3-RB2",
+              "how": "handoff",
+              "startX": 35.5374795014359,
+              "endX": 39.97844870943166,
+              "end": "dead"
+            }
+          ]
+        },
+        "yards": {
+          "before": -0.05,
+          "after": -0.02
+        }
+      },
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-counter-under-L-S3",
+      "beforeGain": 1.9,
+      "afterGain": 1.9,
+      "beforeStaleUpdates": 28,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 0,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-trap-over-R-S11",
+      "beforeGain": -0.53,
+      "afterGain": -0.53,
+      "beforeStaleUpdates": 0,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 1,
+      "afterCancelled": 1
+    },
+    {
+      "id": "OR-R3-trap-over-L-S11",
+      "beforeGain": -0.25,
+      "afterGain": -0.25,
+      "beforeStaleUpdates": 0,
+      "afterStaleUpdates": 0,
+      "nonEventResultChanges": {},
+      "beforeCancelled": 1,
+      "afterCancelled": 1
+    }
+  ],
+  "witnesses": [
+    {
+      "id": "OR-R1-wz_strong-over-R-S3",
+      "selection": "fixed-before-outcomes",
+      "beforeGain": -0.27,
+      "afterGain": -0.27,
+      "transition": [
+        {
+          "phase": "before",
+          "t": 2.9,
+          "actor": "RT",
+          "before": {
+            "slot": "RT",
+            "plan": {
+              "kind": "combo",
+              "target": "DE_S",
+              "drive": {
+                "x": 0.485642931178632,
+                "y": -0.8741572761215376
+              },
+              "climbTo": "LB_S",
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "Y",
+                  "RT"
+                ],
+                "defender": "DE_S",
+                "backer": "LB_S",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.9587941990794437
+              },
+              "pullIdx": 0,
+              "retarget": 0,
+              "homeY": 24.066666666666666,
+              "firstStep": {
+                "x": 39.63,
+                "y": 23.58588016479982
+              },
+              "nextRuleRead": 3.058161692266293
+            },
+            "engagement": null,
+            "tags": [
+              "combo-held"
+            ]
+          },
+          "after": {
+            "slot": "RT",
+            "plan": {
+              "kind": "combo",
+              "target": "LB_S",
+              "drive": {
+                "x": 0.485642931178632,
+                "y": -0.8741572761215376
+              },
+              "climbTo": "LB_S",
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "Y",
+                  "RT"
+                ],
+                "defender": "DE_S",
+                "backer": "LB_S",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.9587941990794437
+              },
+              "pullIdx": 0,
+              "retarget": 3.1079181819214448,
+              "homeY": 24.066666666666666,
+              "firstStep": {
+                "x": 39.63,
+                "y": 23.58588016479982
+              },
+              "nextRuleRead": 3.058161692266293
+            },
+            "engagement": null,
+            "tags": [
+              "combo-held"
+            ]
+          },
+          "oldCombinationAfter": {
+            "id": 1,
+            "members": [
+              "Y",
+              "RT"
+            ],
+            "defender": "DE_S",
+            "backer": "LB_S",
+            "released": false,
+            "secureSince": -1,
+            "nextRead": 2.9587941990794437
+          },
+          "requested": {
+            "vel": {
+              "x": 2.8659519729300698,
+              "y": 7.021120271664609
+            },
+            "posture": 0.7
+          },
+          "deliveredStep": {
+            "slot": "RT",
+            "appliedIntent": {
+              "vel": {
+                "x": 2.8659519729300698,
+                "y": 7.021120271664609
+              },
+              "posture": 0.7
+            },
+            "achievedPos": {
+              "x": 40.3098342732591,
+              "y": 21.526758520722126
+            },
+            "achievedVel": {
+              "x": -0.32417037082219036,
+              "y": 0.6855541753228506
+            },
+            "groundImpulse": {
+              "x": 19.34835732307174,
+              "y": 33.68092692494418
+            },
+            "armImpulse": 0,
+            "armImpulseLimit": 60.45137794045471,
+            "armWork": 0,
+            "armWorkLimit": 181.35413382136414,
+            "supportMotorWork": 0,
+            "supportMotorWorkLimit": 0,
+            "physicalContacts": [],
+            "deliveredStrikes": [],
+            "liveHandsAfterPhysics": [],
+            "fall": false,
+            "down": false
+          },
+          "events": []
+        },
+        {
+          "phase": "after",
+          "t": 2.9,
+          "actor": "RT",
+          "before": {
+            "slot": "RT",
+            "plan": {
+              "kind": "combo",
+              "target": "DE_S",
+              "drive": {
+                "x": 0.485642931178632,
+                "y": -0.8741572761215376
+              },
+              "climbTo": "LB_S",
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "Y",
+                  "RT"
+                ],
+                "defender": "DE_S",
+                "backer": "LB_S",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.9587941990794437
+              },
+              "pullIdx": 0,
+              "retarget": 0,
+              "homeY": 24.066666666666666,
+              "firstStep": {
+                "x": 39.63,
+                "y": 23.58588016479982
+              },
+              "nextRuleRead": 3.058161692266293
+            },
+            "engagement": null,
+            "tags": [
+              "combo-held"
+            ]
+          },
+          "after": {
+            "slot": "RT",
+            "plan": {
+              "kind": "climb",
+              "target": "LB_S",
+              "drive": {
+                "x": 0.485642931178632,
+                "y": -0.8741572761215376
+              },
+              "climbTo": null,
+              "pullRole": null,
+              "pullPath": null,
+              "combination": null,
+              "pullIdx": 0,
+              "retarget": 3.1079181819214448,
+              "homeY": 24.066666666666666,
+              "firstStep": {
+                "x": 39.63,
+                "y": 23.58588016479982
+              },
+              "nextRuleRead": 3.058161692266293
+            },
+            "engagement": null,
+            "tags": [
+              "combo-held"
+            ]
+          },
+          "oldCombinationAfter": {
+            "id": 1,
+            "members": [
+              "Y",
+              "RT"
+            ],
+            "defender": "DE_S",
+            "backer": "LB_S",
+            "released": true,
+            "secureSince": -1,
+            "nextRead": 2.9587941990794437
+          },
+          "requested": {
+            "vel": {
+              "x": 3.065715085534337,
+              "y": 6.936223871433841
+            }
+          },
+          "deliveredStep": {
+            "slot": "RT",
+            "appliedIntent": {
+              "vel": {
+                "x": 3.065715085534337,
+                "y": 6.936223871433841
+              }
+            },
+            "achievedPos": {
+              "x": 40.310023216803955,
+              "y": 21.5266446187344
+            },
+            "achievedVel": {
+              "x": -0.31661262902804077,
+              "y": 0.6809980958138849
+            },
+            "groundImpulse": {
+              "x": 20.43850393896926,
+              "y": 33.0237472019873
+            },
+            "armImpulse": 0,
+            "armImpulseLimit": 60.45137794045471,
+            "armWork": 0,
+            "armWorkLimit": 181.35413382136414,
+            "supportMotorWork": 0,
+            "supportMotorWorkLimit": 0,
+            "physicalContacts": [],
+            "deliveredStrikes": [],
+            "liveHandsAfterPhysics": [],
+            "fall": false,
+            "down": false
+          },
+          "events": [
+            {
+              "t": 2.9,
+              "type": "block_abandon",
+              "a": 2,
+              "b": 12,
+              "pos": {
+                "x": 40.33,
+                "y": 21.5
+              },
+              "note": "original target unavailable; finding work"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OR-R1-iz_strong-over-R-S3",
+      "selection": "fixed-before-outcomes",
+      "beforeGain": 1.36,
+      "afterGain": 1.36,
+      "transition": [
+        {
+          "phase": "before",
+          "t": 2.85,
+          "actor": "Y",
+          "before": {
+            "slot": "Y",
+            "plan": {
+              "kind": "drive",
+              "target": "DE_S",
+              "drive": {
+                "x": 0.8574929257125443,
+                "y": -0.5144957554275266
+              },
+              "climbTo": null,
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "Y",
+                  "RT"
+                ],
+                "defender": "DE_S",
+                "backer": "LB_S",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.9623269903402853
+              },
+              "pullIdx": 0,
+              "retarget": 0,
+              "homeY": 22.76666666666667,
+              "firstStep": {
+                "x": 39.58,
+                "y": 22.48369400118153
+              },
+              "nextRuleRead": 2.9343117637476652
+            },
+            "engagement": null,
+            "tags": []
+          },
+          "after": {
+            "slot": "Y",
+            "plan": {
+              "kind": "drive",
+              "target": "LB_S",
+              "drive": {
+                "x": 0.8574929257125443,
+                "y": -0.5144957554275266
+              },
+              "climbTo": null,
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "Y",
+                  "RT"
+                ],
+                "defender": "DE_S",
+                "backer": "LB_S",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.9623269903402853
+              },
+              "pullIdx": 0,
+              "retarget": 3.036098931101995,
+              "homeY": 22.76666666666667,
+              "firstStep": {
+                "x": 39.58,
+                "y": 22.48369400118153
+              },
+              "nextRuleRead": 2.9343117637476652
+            },
+            "engagement": null,
+            "tags": []
+          },
+          "oldCombinationAfter": {
+            "id": 1,
+            "members": [
+              "Y",
+              "RT"
+            ],
+            "defender": "DE_S",
+            "backer": "LB_S",
+            "released": false,
+            "secureSince": -1,
+            "nextRead": 2.9623269903402853
+          },
+          "requested": {
+            "vel": {
+              "x": 8.72395884800819,
+              "y": 3.1509893789987338
+            }
+          },
+          "deliveredStep": null,
+          "events": []
+        },
+        {
+          "phase": "after",
+          "t": 2.85,
+          "actor": "Y",
+          "before": {
+            "slot": "Y",
+            "plan": {
+              "kind": "drive",
+              "target": "DE_S",
+              "drive": {
+                "x": 0.8574929257125443,
+                "y": -0.5144957554275266
+              },
+              "climbTo": null,
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "Y",
+                  "RT"
+                ],
+                "defender": "DE_S",
+                "backer": "LB_S",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.9623269903402853
+              },
+              "pullIdx": 0,
+              "retarget": 0,
+              "homeY": 22.76666666666667,
+              "firstStep": {
+                "x": 39.58,
+                "y": 22.48369400118153
+              },
+              "nextRuleRead": 2.9343117637476652
+            },
+            "engagement": null,
+            "tags": []
+          },
+          "after": {
+            "slot": "Y",
+            "plan": {
+              "kind": "climb",
+              "target": "LB_S",
+              "drive": {
+                "x": 0.8574929257125443,
+                "y": -0.5144957554275266
+              },
+              "climbTo": null,
+              "pullRole": null,
+              "pullPath": null,
+              "combination": null,
+              "pullIdx": 0,
+              "retarget": 3.036098931101995,
+              "homeY": 22.76666666666667,
+              "firstStep": {
+                "x": 39.58,
+                "y": 22.48369400118153
+              },
+              "nextRuleRead": 2.9343117637476652
+            },
+            "engagement": null,
+            "tags": []
+          },
+          "oldCombinationAfter": {
+            "id": 1,
+            "members": [
+              "Y",
+              "RT"
+            ],
+            "defender": "DE_S",
+            "backer": "LB_S",
+            "released": true,
+            "secureSince": -1,
+            "nextRead": 2.9623269903402853
+          },
+          "requested": {
+            "vel": {
+              "x": 8.326262579345865,
+              "y": 4.0877308507395576
+            }
+          },
+          "deliveredStep": null,
+          "events": [
+            {
+              "t": 2.85,
+              "type": "block_abandon",
+              "a": 7,
+              "b": 12,
+              "pos": {
+                "x": 39.3,
+                "y": 23.55
+              },
+              "note": "original target unavailable; finding work"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OR-R3-counter-over-L-S11",
+      "selection": "retrospective-transition-inspection-no-film",
+      "beforeGain": -0.05,
+      "afterGain": -0.02,
+      "transition": [
+        {
+          "phase": "before",
+          "t": 2.8,
+          "actor": "RT",
+          "before": {
+            "slot": "RT",
+            "plan": {
+              "kind": "combo",
+              "target": "DT_W",
+              "drive": {
+                "x": 0.7071067811865475,
+                "y": 0.7071067811865475
+              },
+              "climbTo": "LB_W",
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "RG",
+                  "RT"
+                ],
+                "defender": "DT_W",
+                "backer": "LB_W",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.816844192501513
+              },
+              "pullIdx": 0,
+              "retarget": 0,
+              "homeY": 24.066666666666666,
+              "firstStep": {
+                "x": 39.63,
+                "y": 24.45557539631927
+              },
+              "nextRuleRead": 2.967084867532063
+            },
+            "engagement": null,
+            "tags": [
+              "combo-held"
+            ]
+          },
+          "after": {
+            "slot": "RT",
+            "plan": {
+              "kind": "combo",
+              "target": "LB_M",
+              "drive": {
+                "x": 0.7071067811865475,
+                "y": 0.7071067811865475
+              },
+              "climbTo": "LB_W",
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "RG",
+                  "RT"
+                ],
+                "defender": "DT_W",
+                "backer": "LB_W",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.816844192501513
+              },
+              "pullIdx": 0,
+              "retarget": 3.017141612117258,
+              "homeY": 24.066666666666666,
+              "firstStep": {
+                "x": 39.63,
+                "y": 24.45557539631927
+              },
+              "nextRuleRead": 2.967084867532063
+            },
+            "engagement": null,
+            "tags": [
+              "combo-held"
+            ]
+          },
+          "oldCombinationAfter": {
+            "id": 1,
+            "members": [
+              "RG",
+              "RT"
+            ],
+            "defender": "DT_W",
+            "backer": "LB_W",
+            "released": false,
+            "secureSince": -1,
+            "nextRead": 2.816844192501513
+          },
+          "requested": {
+            "vel": {
+              "x": 4.115724185606163,
+              "y": -6.19726847137288
+            },
+            "posture": 0.7
+          },
+          "deliveredStep": {
+            "slot": "RT",
+            "appliedIntent": {
+              "vel": {
+                "x": 0.025173184794458514,
+                "y": -1.8426244752971455
+              },
+              "posture": 0.7
+            },
+            "achievedPos": {
+              "x": 40.21775631994394,
+              "y": 26.34660744691529
+            },
+            "achievedVel": {
+              "x": -0.1327409593921331,
+              "y": -0.8451611880487123
+            },
+            "groundImpulse": {
+              "x": 30.23743701063584,
+              "y": -20.681479606718217
+            },
+            "armImpulse": 0,
+            "armImpulseLimit": 70.13619669219302,
+            "armWork": 0,
+            "armWorkLimit": 210.40859007657912,
+            "supportMotorWork": 0,
+            "supportMotorWorkLimit": 0,
+            "physicalContacts": [],
+            "deliveredStrikes": [],
+            "liveHandsAfterPhysics": [],
+            "fall": false,
+            "down": false
+          },
+          "events": []
+        },
+        {
+          "phase": "after",
+          "t": 2.8,
+          "actor": "RT",
+          "before": {
+            "slot": "RT",
+            "plan": {
+              "kind": "combo",
+              "target": "DT_W",
+              "drive": {
+                "x": 0.7071067811865475,
+                "y": 0.7071067811865475
+              },
+              "climbTo": "LB_W",
+              "pullRole": null,
+              "pullPath": null,
+              "combination": {
+                "id": 1,
+                "members": [
+                  "RG",
+                  "RT"
+                ],
+                "defender": "DT_W",
+                "backer": "LB_W",
+                "released": false,
+                "secureSince": -1,
+                "nextRead": 2.816844192501513
+              },
+              "pullIdx": 0,
+              "retarget": 0,
+              "homeY": 24.066666666666666,
+              "firstStep": {
+                "x": 39.63,
+                "y": 24.45557539631927
+              },
+              "nextRuleRead": 2.967084867532063
+            },
+            "engagement": null,
+            "tags": [
+              "combo-held"
+            ]
+          },
+          "after": {
+            "slot": "RT",
+            "plan": {
+              "kind": "down",
+              "target": "LB_M",
+              "drive": {
+                "x": 0.7071067811865475,
+                "y": 0.7071067811865475
+              },
+              "climbTo": null,
+              "pullRole": null,
+              "pullPath": null,
+              "combination": null,
+              "pullIdx": 0,
+              "retarget": 3.017141612117258,
+              "homeY": 24.066666666666666,
+              "firstStep": {
+                "x": 39.63,
+                "y": 24.45557539631927
+              },
+              "nextRuleRead": 2.967084867532063
+            },
+            "engagement": null,
+            "tags": [
+              "combo-held"
+            ]
+          },
+          "oldCombinationAfter": {
+            "id": 1,
+            "members": [
+              "RG",
+              "RT"
+            ],
+            "defender": "DT_W",
+            "backer": "LB_W",
+            "released": true,
+            "secureSince": -1,
+            "nextRead": 2.816844192501513
+          },
+          "requested": {
+            "vel": {
+              "x": 5.145662294914829,
+              "y": -5.372846696579732
+            },
+            "posture": 0.7
+          },
+          "deliveredStep": {
+            "slot": "RT",
+            "appliedIntent": {
+              "vel": {
+                "x": 0.9837238448299281,
+                "y": -0.942206354947861
+              },
+              "posture": 0.7
+            },
+            "achievedPos": {
+              "x": 40.21875379696763,
+              "y": 26.34896253420928
+            },
+            "achievedVel": {
+              "x": -0.09284187844389026,
+              "y": -0.7509576962891328
+            },
+            "groundImpulse": {
+              "x": 36.282141852473046,
+              "y": -6.409664586824203
+            },
+            "armImpulse": 0,
+            "armImpulseLimit": 70.13619669219302,
+            "armWork": 0,
+            "armWorkLimit": 210.40859007657912,
+            "supportMotorWork": 0,
+            "supportMotorWorkLimit": 0,
+            "physicalContacts": [],
+            "deliveredStrikes": [],
+            "liveHandsAfterPhysics": [],
+            "fall": false,
+            "down": false
+          },
+          "events": [
+            {
+              "t": 2.8,
+              "type": "block_abandon",
+              "a": 2,
+              "b": 14,
+              "pos": {
+                "x": 40.23,
+                "y": 26.39
+              },
+              "note": "original target unavailable; finding work"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Snapshot ownership correction is demonstrated; this panel does not establish a run-efficiency improvement.",
+    "Complete execution signatures include new diagnostic events; a different signature alone does not prove a changed physical path.",
+    "The fixed WZ witness changes real native-step motion, but its rounded 10Hz film positions and credited gain remain identical.",
+    "Result statistics and credited yardage are distinct from the native-step requested/achieved motion and load."
+  ],
+  "guards": {
+    "runs": {
+      "inputs": [
+        "data/reviews/physics-world/projected-help/current-runs.json.gz",
+        "data/reviews/physics-world/ol-retarget/current-runs.json.gz"
+      ],
+      "collectorSha256": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971",
+      "matchedInputs": 144,
+      "completeRowsExact": 123,
+      "creditedGainExact": 143,
+      "beforeSummary": {
+        "snaps": 144,
+        "meanYards": 1.3261111111111108,
+        "medianYards": 0.84,
+        "stuffs": 38,
+        "stuffRate": 0.2638888888888889,
+        "explosives10": 2,
+        "explosive10Rate": 0.013888888888888888,
+        "firstCarrierContactSamples": 142,
+        "firstNonQBContactAfterTransferSamples": 142,
+        "meanYardsBeforeFirstCarrierContact": 0.06699564539589851,
+        "meanYardsAfterFirstCarrierContact": 1.2591311151674813,
+        "meanFirstContactTime": 3.0894366197183087,
+        "meanYardsAfterFirstContactAfterTransfer": 1.2591311151674813,
+        "lowerHeldSnaps": 141,
+        "lowerJointTicks": 2018,
+        "lowerReachReleases": 0,
+        "missedAttempts": 20,
+        "brokenHolds": 5,
+        "timeouts": 0,
+        "finishCauses": {
+          "physical-down-by-contact": 130,
+          "tackle-other-or-fumble-recovery": 4,
+          "forward-progress-stalled": 10
+        },
+        "carrierFallCauses": {
+          "legs": 106,
+          "contact": 33
+        }
+      },
+      "afterSummary": {
+        "snaps": 144,
+        "meanYards": 1.3263194444444444,
+        "medianYards": 0.84,
+        "stuffs": 38,
+        "stuffRate": 0.2638888888888889,
+        "explosives10": 2,
+        "explosive10Rate": 0.013888888888888888,
+        "firstCarrierContactSamples": 142,
+        "firstNonQBContactAfterTransferSamples": 142,
+        "meanYardsBeforeFirstCarrierContact": 0.06699557814183116,
+        "meanYardsAfterFirstCarrierContact": 1.2593424500271826,
+        "meanFirstContactTime": 3.0894366197183087,
+        "meanYardsAfterFirstContactAfterTransfer": 1.2593424500271826,
+        "lowerHeldSnaps": 141,
+        "lowerJointTicks": 2028,
+        "lowerReachReleases": 0,
+        "missedAttempts": 20,
+        "brokenHolds": 5,
+        "timeouts": 0,
+        "finishCauses": {
+          "physical-down-by-contact": 130,
+          "tackle-other-or-fumble-recovery": 4,
+          "forward-progress-stalled": 10
+        },
+        "carrierFallCauses": {
+          "legs": 106,
+          "contact": 33
+        }
+      }
+    },
+    "tackles": {
+      "inputs": [
+        "data/reviews/physics-world/projected-help/current-tackles.json.gz",
+        "data/reviews/physics-world/ol-retarget/current-tackles.json.gz"
+      ],
+      "collectorSha256": "34ec2d65255b06d9182311ebd1d31de86e74993638ff2636a1df9232d5fcce91",
+      "primaryCount": 56,
+      "witnessCount": 8,
+      "completePrimaryRowsExact": 56,
+      "completeWitnessRowsExact": 8,
+      "beforePrimarySummary": {
+        "encounters": 56,
+        "unmirroredInputCases": 28,
+        "attempts": 48,
+        "firstWraps": 48,
+        "tackleWhistles": 42,
+        "missedAttempts": 0,
+        "brokenHolds": 6,
+        "stillLiveAtWindowEnd": 14,
+        "maxWorkResidual": 9.977574322306282e-12,
+        "maxMotorWorkExcess": 0
+      },
+      "afterPrimarySummary": {
+        "encounters": 56,
+        "unmirroredInputCases": 28,
+        "attempts": 48,
+        "firstWraps": 48,
+        "tackleWhistles": 42,
+        "missedAttempts": 0,
+        "brokenHolds": 6,
+        "stillLiveAtWindowEnd": 14,
+        "maxWorkResidual": 9.977574322306282e-12,
+        "maxMotorWorkExcess": 0
+      }
+    },
+    "games": {
+      "inputs": [
+        "data/reviews/physics-world/projected-help/current-games9.json",
+        "data/reviews/physics-world/ol-retarget/current-games9.json"
+      ],
+      "collectorSha256": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91",
+      "matchedInitialRosterAndSeedGames": 2,
+      "beforeGames": [
+        {
+          "seed": 1085687574,
+          "score": {
+            "home": 25,
+            "away": 14
+          },
+          "box": {
+            "home": {
+              "firstDowns": 21,
+              "plays": 73,
+              "totalYds": 579.29,
+              "passYds": 578.33,
+              "rushYds": 0.9599999999999977,
+              "turnovers": 5,
+              "penalties": 11,
+              "penaltyYds": 95.06219963268657,
+              "thirdAtt": 15,
+              "thirdConv": 5,
+              "fourthAtt": 1,
+              "fourthConv": 0,
+              "redZoneTrips": 6,
+              "redZoneTDs": 1,
+              "timeOfPossession": 2303.263576786002,
+              "sacksAllowed": 3,
+              "explosivePlays": 13
+            },
+            "away": {
+              "firstDowns": 9,
+              "plays": 54,
+              "totalYds": 286.84,
+              "passYds": 257.99,
+              "rushYds": 28.85,
+              "turnovers": 5,
+              "penalties": 11,
+              "penaltyYds": 86.27346882939182,
+              "thirdAtt": 13,
+              "thirdConv": 4,
+              "fourthAtt": 1,
+              "fourthConv": 0,
+              "redZoneTrips": 0,
+              "redZoneTDs": 0,
+              "timeOfPossession": 1296.7364232139985,
+              "sacksAllowed": 1,
+              "explosivePlays": 3
+            }
+          },
+          "officialScrimmagePlays": 127,
+          "physicalTimeoutsIncludingNullified": 0,
+          "missedTackles": 11,
+          "brokenTackles": 16,
+          "rushes": 24,
+          "rushYards": 35.04,
+          "rushYardsPerAttempt": 1.46,
+          "rushStuffs": 9,
+          "rushExplosives10": 0,
+          "runContactSamples": 24,
+          "meanRunYardsAfterFirstContact": 1.8895306574671586,
+          "dropbacks": 103,
+          "passAttempts": 92,
+          "completions": 53,
+          "completionYards": 871.0400000000001,
+          "sacks": 4,
+          "interceptions": 10,
+          "completionExplosives20": 16,
+          "meanReceiverYardsAfterCatch": 9.47491189789471
+        },
+        {
+          "seed": 2979654235,
+          "score": {
+            "home": 20,
+            "away": 27
+          },
+          "box": {
+            "home": {
+              "firstDowns": 18,
+              "plays": 67,
+              "totalYds": 400.6300000000001,
+              "passYds": 325.1100000000001,
+              "rushYds": 75.52000000000001,
+              "turnovers": 2,
+              "penalties": 4,
+              "penaltyYds": 40,
+              "thirdAtt": 14,
+              "thirdConv": 4,
+              "fourthAtt": 1,
+              "fourthConv": 0,
+              "redZoneTrips": 4,
+              "redZoneTDs": 1,
+              "timeOfPossession": 1809.8316495433792,
+              "sacksAllowed": 6,
+              "explosivePlays": 6
+            },
+            "away": {
+              "firstDowns": 13,
+              "plays": 51,
+              "totalYds": 412.41999999999996,
+              "passYds": 391.11999999999995,
+              "rushYds": 21.299999999999997,
+              "turnovers": 3,
+              "penalties": 6,
+              "penaltyYds": 50.791957882514176,
+              "thirdAtt": 12,
+              "thirdConv": 3,
+              "fourthAtt": 1,
+              "fourthConv": 1,
+              "redZoneTrips": 1,
+              "redZoneTDs": 0,
+              "timeOfPossession": 1790.168350456619,
+              "sacksAllowed": 3,
+              "explosivePlays": 4
+            }
+          },
+          "officialScrimmagePlays": 118,
+          "physicalTimeoutsIncludingNullified": 0,
+          "missedTackles": 12,
+          "brokenTackles": 11,
+          "rushes": 32,
+          "rushYards": 102.98999999999998,
+          "rushYardsPerAttempt": 3.2184374999999994,
+          "rushStuffs": 8,
+          "rushExplosives10": 1,
+          "runContactSamples": 32,
+          "meanRunYardsAfterFirstContact": 2.1968023149531386,
+          "dropbacks": 86,
+          "passAttempts": 75,
+          "completions": 51,
+          "completionYards": 786.3600000000001,
+          "sacks": 9,
+          "interceptions": 5,
+          "completionExplosives20": 9,
+          "meanReceiverYardsAfterCatch": 9.140687289942669
+        }
+      ],
+      "afterGames": [
+        {
+          "seed": 1085687574,
+          "score": {
+            "home": 41,
+            "away": 27
+          },
+          "box": {
+            "home": {
+              "firstDowns": 17,
+              "plays": 61,
+              "totalYds": 539.49,
+              "passYds": 530.0699999999999,
+              "rushYds": 9.42,
+              "turnovers": 2,
+              "penalties": 8,
+              "penaltyYds": 60.26219963268656,
+              "thirdAtt": 12,
+              "thirdConv": 3,
+              "fourthAtt": 0,
+              "fourthConv": 0,
+              "redZoneTrips": 1,
+              "redZoneTDs": 1,
+              "timeOfPossession": 1483.127887581989,
+              "sacksAllowed": 2,
+              "explosivePlays": 9
+            },
+            "away": {
+              "firstDowns": 22,
+              "plays": 83,
+              "totalYds": 512.26,
+              "passYds": 460.31999999999994,
+              "rushYds": 51.940000000000005,
+              "turnovers": 3,
+              "penalties": 12,
+              "penaltyYds": 100,
+              "thirdAtt": 19,
+              "thirdConv": 7,
+              "fourthAtt": 4,
+              "fourthConv": 2,
+              "redZoneTrips": 3,
+              "redZoneTDs": 2,
+              "timeOfPossession": 2116.87211241801,
+              "sacksAllowed": 4,
+              "explosivePlays": 6
+            }
+          },
+          "officialScrimmagePlays": 144,
+          "physicalTimeoutsIncludingNullified": 0,
+          "missedTackles": 15,
+          "brokenTackles": 25,
+          "rushes": 23,
+          "rushYards": 51.75999999999999,
+          "rushYardsPerAttempt": 2.2504347826086954,
+          "rushStuffs": 8,
+          "rushExplosives10": 1,
+          "runContactSamples": 23,
+          "meanRunYardsAfterFirstContact": 2.1353554050813193,
+          "dropbacks": 121,
+          "passAttempts": 104,
+          "completions": 57,
+          "completionYards": 1041.47,
+          "sacks": 6,
+          "interceptions": 7,
+          "completionExplosives20": 14,
+          "meanReceiverYardsAfterCatch": 10.69541565730537
+        },
+        {
+          "seed": 2979654235,
+          "score": {
+            "home": 25,
+            "away": 49
+          },
+          "box": {
+            "home": {
+              "firstDowns": 16,
+              "plays": 56,
+              "totalYds": 411.65999999999985,
+              "passYds": 383.0099999999998,
+              "rushYds": 28.65,
+              "turnovers": 5,
+              "penalties": 7,
+              "penaltyYds": 70,
+              "thirdAtt": 11,
+              "thirdConv": 2,
+              "fourthAtt": 1,
+              "fourthConv": 1,
+              "redZoneTrips": 1,
+              "redZoneTDs": 0,
+              "timeOfPossession": 1696.357748161546,
+              "sacksAllowed": 3,
+              "explosivePlays": 7
+            },
+            "away": {
+              "firstDowns": 19,
+              "plays": 58,
+              "totalYds": 556.7500000000001,
+              "passYds": 410.60999999999996,
+              "rushYds": 146.14,
+              "turnovers": 0,
+              "penalties": 16,
+              "penaltyYds": 139.94342389880273,
+              "thirdAtt": 12,
+              "thirdConv": 6,
+              "fourthAtt": 0,
+              "fourthConv": 0,
+              "redZoneTrips": 2,
+              "redZoneTDs": 2,
+              "timeOfPossession": 1903.6422518384527,
+              "sacksAllowed": 4,
+              "explosivePlays": 8
+            }
+          },
+          "officialScrimmagePlays": 114,
+          "physicalTimeoutsIncludingNullified": 0,
+          "missedTackles": 15,
+          "brokenTackles": 21,
+          "rushes": 28,
+          "rushYards": 164.53,
+          "rushYardsPerAttempt": 5.876071428571429,
+          "rushStuffs": 7,
+          "rushExplosives10": 3,
+          "runContactSamples": 28,
+          "meanRunYardsAfterFirstContact": 5.254254850582766,
+          "dropbacks": 86,
+          "passAttempts": 73,
+          "completions": 55,
+          "completionYards": 846.27,
+          "sacks": 7,
+          "interceptions": 5,
+          "completionExplosives20": 12,
+          "meanReceiverYardsAfterCatch": 6.904237835597743
+        }
+      ],
+      "beforePhysics": {
+        "ticks": 26282,
+        "lowerJointTicks": 3108,
+        "maxHeldRecoveryExcursionYd": 1.2114122017547553,
+        "lowerHoldReleases": 0,
+        "maxMomentumResidualKgYdS": 1.0458385938006895e-11,
+        "maxWorkResidualKgYd2S2": 5.374722888973338e-11,
+        "maxMotorWorkExcessKgYd2S2": 0,
+        "maxPassiveGripPositiveWorkKgYd2S2": 1.3806033220234588e-17,
+        "sampledLowerJointTickFraction": 0.11825584049920097
+      },
+      "afterPhysics": {
+        "ticks": 30887,
+        "lowerJointTicks": 3154,
+        "maxHeldRecoveryExcursionYd": 1.2047039123634278,
+        "lowerHoldReleases": 0,
+        "maxMomentumResidualKgYdS": 1.0899873788287097e-11,
+        "maxWorkResidualKgYd2S2": 5.700662164542791e-11,
+        "maxMotorWorkExcessKgYd2S2": 0,
+        "maxPassiveGripPositiveWorkKgYd2S2": 4.5484454466954175e-15,
+        "sampledLowerJointTickFraction": 0.10211415806002526
+      },
+      "scope": "Two games are regression guards. Later decisions, RNG and calls diverge; no causal attribution of passing statistics or performance benchmark."
+    }
+  }
+}

@@ -1,6 +1,15 @@
 # Shared NFL data
 
-Current engine status: [Nearby coverage help and current priorities](../docs/reviews/near-help-persistence-and-current-priorities.md).
+Current engine status: [OL retargeting and combination lifecycle](../docs/reviews/ol-retarget-and-combination-lifecycle.md).
+The [evidence and commands](reviews/physics-world/ol-retarget/README.md) retain
+all 144 ordinary before/after snaps, actual requests/contact loads, tests and
+mixed game guards. Watch the [24 paired run clips](../viewer/ol-retarget.html)
+or [offline ZIP](../viewer/ol-retarget.zip). Native OL state makes job changes
+inspectable when rounded field paths look alike. Stale live combination plans
+fall from 16 snaps to zero; rushing gains barely change. This is a controller
+repair with shared physics unchanged, not new NFL observations or force fitting.
+
+Previous controller status: [Nearby coverage help and current priorities](../docs/reviews/near-help-persistence-and-current-priorities.md).
 The [evidence and commands](reviews/physics-world/projected-help/README.md)
 retain 24 ordinary pairs, unchanged-input run/tackle guards, mixed games and
 the separately pinned unpromoted far-help prototype. Watch the

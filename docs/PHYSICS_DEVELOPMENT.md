@@ -1,7 +1,17 @@
 # Physics development and testing
 
+Read [OL retargeting and combination lifecycle](reviews/ol-retarget-and-combination-lifecycle.md)
+first. Actual new work ends obsolete live shared assignments, restores the
+helper's standalone technique and preserves real contact. The shared World,
+capabilities and resolution are unchanged. All 144 ordinary starts/observer
+controls match; stale combinations fall 16 snaps to zero, with almost identical
+rushing gains. Read the 24 paired films and adverse guards. Next stage earned
+release keeper recovery, consistent new-work techniques and earlier leverage
+failures before changing physics. Full anatomical expansion remains paused;
+the universal physics OK is pending.
+
 Read [Nearby coverage help and current priorities](reviews/near-help-persistence-and-current-priorities.md)
-first. Observed nearby help must keep its cushion/corridor through the next read.
+for the previous controller increment. Observed nearby help must keep its cushion/corridor through the next read.
 This fixes a demonstrated controller decision within the existing World; no
 physical capability, resolution or anatomical state changes. The longer far-help
 forecast stays a prototype because staged geometry has not earned an executed

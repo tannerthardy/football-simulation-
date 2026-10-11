@@ -81,6 +81,7 @@ export type PlayEventType =
   | 'block_contact'
   | 'block_exchange'
   | 'block_collect'
+  | 'block_abandon'
   | 'block_log'
   | 'squeeze'
   | 'carrier_contact'

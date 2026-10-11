@@ -658,7 +658,14 @@ export class RunBlocker implements Behavior {
     if (!target || target.isDown(t) || (target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
       if (t >= this.retarget) {
         this.retarget = t + a.mind.decisionInterval;
-        plan.target = target = this.findWork(a, sim);
+        const replacement = this.findWork(a, sim);
+        const combination = plan.combination;
+        if (combination && !combination.released && replacement !== combination.defender) {
+          abandonCombination(a, sim, combination, 'original target unavailable; finding work');
+          // This is a new approach job, not an earned transfer of a live block.
+          if (replacement && replacement === combination.backer) plan.kind = 'climb';
+        }
+        plan.target = target = replacement;
       }
     }
     if (plan.kind === 'pull' && plan.pullPath && this.pullIdx < plan.pullPath.length) {
@@ -789,10 +796,8 @@ export class RunBlocker implements Behavior {
       return s.pos.x < sim.los-.25 && s.pos.x > a.pos.x-1 && Math.abs(s.pos.y-(this.homeY ?? a.pos.y)) < .9;
     });
     if (!threat || threat === p.target) return;
-    if (p.combination && !p.combination.released) {
-      p.combination.released = true;
-      for (const member of p.combination.members) if (member.behavior instanceof RunBlocker) member.behavior.plan.combination = undefined;
-    }
+    if (p.combination && !p.combination.released)
+      abandonCombination(a, sim, p.combination, 'collecting penetration before climb');
     p.target = threat; p.kind = 'drive';
     a.tags.add('block-collect');
     sim.event('block_collect',a,threat,'penetration before climb');
@@ -821,6 +826,28 @@ export class RunBlocker implements Behavior {
     }
     return best;
   }
+}
+
+/** End an obsolete shared assignment, without releasing any actual contact.
+ * A former helper resumes the covered owner's first-level technique. Capture
+ * it before mutation and clear only this exact job: a member may already have
+ * another plan. Earned releases have their own contact/ownership transition. */
+function abandonCombination(observer: Agent, sim: PlaySim, combo: Combination, reason: string): void {
+  if (combo.released) return;
+  const owner = combo.members[0].behavior;
+  const original = owner instanceof RunBlocker && owner.plan.combination === combo ? owner.plan.kind : null;
+  const solo: RunBlockKind = original && ['drive', 'reach', 'down', 'cutoff', 'draw'].includes(original)
+    ? original : 'drive';
+  combo.released = true;
+  for (const member of combo.members) {
+    if (!(member.behavior instanceof RunBlocker)) continue;
+    const p = member.behavior.plan;
+    if (p.combination !== combo) continue;
+    p.combination = undefined;
+    p.climbTo = undefined;
+    if (p.kind === 'combo') p.kind = solo;
+  }
+  sim.event('block_abandon', observer, combo.defender, reason);
 }
 
 /** A double team releases from leverage and the filling backer, never a mesh timer. */
