@@ -1,0 +1,9 @@
+{
+  "output": "out/job-exchange/witness-after.json.gz",
+  "sourceBefore": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+  "sourceAfter": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+  "clips": 4,
+  "observerControls": 4,
+  "naturalEnds": 4,
+  "exchanges": 2
+}

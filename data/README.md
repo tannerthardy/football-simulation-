@@ -1,6 +1,17 @@
 # Shared NFL data
 
-Current engine status: [Keeper-based OL combinations](../docs/reviews/keeper-based-combination-work.md).
+Current engine status: [Coherent OL work exchanges](../docs/reviews/ol-work-exchanges.md).
+The [evidence and commands](reviews/physics-world/ol-job-exchange/README.md) reuse
+the immutable 162-input baseline and retain both participants' actual delayed
+pictures in four fixed paired witness inputs. Watch the
+[eight paired clips](../viewer/ol-work-exchanges.html) or
+[offline ZIP](../viewer/ol-work-exchanges.zip). Adjacent target exchanges now
+classify both linemen's new work; seven recorded initiator mismatches fall to
+zero while rushing results barely change. Shared physics and capacities stay
+unchanged. The [validation review](../docs/reviews/practical-validation-and-stable-physics.md)
+defines stable physics contracts and cheaper baseline reuse for controller fixes.
+
+Previous engine status: [Keeper-based OL combinations](../docs/reviews/keeper-based-combination-work.md).
 The [evidence and commands](reviews/physics-world/combo-transfer/README.md) retain
 160 ordinary fixed pairs, two separately labelled witnesses, actual keeper
 hands/support, delayed reads and unchanged-input guards. Watch the

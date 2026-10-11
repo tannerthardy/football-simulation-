@@ -1,0 +1,209 @@
+{
+  "sources": {
+    "before": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+    "after": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9"
+  },
+  "ordinary": {
+    "before": {
+      "snaps": 160,
+      "naturalEnds": 160,
+      "censors": 0,
+      "observerPlainMatches": 160,
+      "meanYards": 1.3888125,
+      "stuffs": 37,
+      "runs10Plus": 1,
+      "earnedClimbs": 118,
+      "cancelledTransitions": 6,
+      "staleMemberUpdates": 0,
+      "olFalls": 13,
+      "olDowns": 12,
+      "blockExchangeEvents": 18,
+      "exchangesWithKindChanges": 0,
+      "exchangesWithDriveChanges": 3,
+      "ownNewTargetImagesCapturedAtExchange": 18,
+      "partnerOwnImagesAbsentAtExchange": 18,
+      "recordedExchangeKindsMatchingDepthRule": 11,
+      "recordedExchangeKindsMismatchingDepthRule": 7,
+      "recordedExchangeSurfaceDriveEqualsInstallation": 8,
+      "recordedExchangeSurfaceDriveDiffersFromInstallation": 6,
+      "firstLevelKindOnConsumedDeepPictureUpdates": 957,
+      "climbKindOnConsumedSurfacePictureUpdates": 16,
+      "maxMomentumResidual": 3.0801843197744646e-12,
+      "maxWorkResidual": 1.4351186905514624e-11,
+      "maxMotorWorkExcess": 0
+    },
+    "after": {
+      "snaps": 160,
+      "naturalEnds": 160,
+      "censors": 0,
+      "observerPlainMatches": 160,
+      "meanYards": 1.3894375,
+      "stuffs": 37,
+      "runs10Plus": 1,
+      "earnedClimbs": 118,
+      "cancelledTransitions": 6,
+      "staleMemberUpdates": 0,
+      "olFalls": 13,
+      "olDowns": 12,
+      "blockExchangeEvents": 18,
+      "exchangesWithKindChanges": 10,
+      "exchangesWithDriveChanges": 8,
+      "ownNewTargetImagesCapturedAtExchange": 18,
+      "partnerOwnImagesAbsentAtExchange": 18,
+      "recordedExchangeKindsMatchingDepthRule": 18,
+      "recordedExchangeKindsMismatchingDepthRule": 0,
+      "recordedExchangeSurfaceDriveEqualsInstallation": 12,
+      "recordedExchangeSurfaceDriveDiffersFromInstallation": 2,
+      "firstLevelKindOnConsumedDeepPictureUpdates": 945,
+      "climbKindOnConsumedSurfacePictureUpdates": 12,
+      "maxMomentumResidual": 3.0801843197744646e-12,
+      "maxWorkResidual": 1.4351186905514624e-11,
+      "maxMotorWorkExcess": 0
+    }
+  },
+  "supplemental": {
+    "before": {
+      "snaps": 2,
+      "naturalEnds": 2,
+      "censors": 0,
+      "observerPlainMatches": 2,
+      "meanYards": 14.524999999999999,
+      "stuffs": 0,
+      "runs10Plus": 1,
+      "earnedClimbs": 3,
+      "cancelledTransitions": 0,
+      "staleMemberUpdates": 0,
+      "olFalls": 0,
+      "olDowns": 0,
+      "blockExchangeEvents": 0,
+      "exchangesWithKindChanges": 0,
+      "exchangesWithDriveChanges": 0,
+      "ownNewTargetImagesCapturedAtExchange": 0,
+      "partnerOwnImagesAbsentAtExchange": 0,
+      "recordedExchangeKindsMatchingDepthRule": 0,
+      "recordedExchangeKindsMismatchingDepthRule": 0,
+      "recordedExchangeSurfaceDriveEqualsInstallation": 0,
+      "recordedExchangeSurfaceDriveDiffersFromInstallation": 0,
+      "firstLevelKindOnConsumedDeepPictureUpdates": 79,
+      "climbKindOnConsumedSurfacePictureUpdates": 1,
+      "maxMomentumResidual": 4.575917284786428e-12,
+      "maxWorkResidual": 2.3781865365890553e-11,
+      "maxMotorWorkExcess": 0
+    },
+    "after": {
+      "snaps": 2,
+      "naturalEnds": 2,
+      "censors": 0,
+      "observerPlainMatches": 2,
+      "meanYards": 14.524999999999999,
+      "stuffs": 0,
+      "runs10Plus": 1,
+      "earnedClimbs": 3,
+      "cancelledTransitions": 0,
+      "staleMemberUpdates": 0,
+      "olFalls": 0,
+      "olDowns": 0,
+      "blockExchangeEvents": 0,
+      "exchangesWithKindChanges": 0,
+      "exchangesWithDriveChanges": 0,
+      "ownNewTargetImagesCapturedAtExchange": 0,
+      "partnerOwnImagesAbsentAtExchange": 0,
+      "recordedExchangeKindsMatchingDepthRule": 0,
+      "recordedExchangeKindsMismatchingDepthRule": 0,
+      "recordedExchangeSurfaceDriveEqualsInstallation": 0,
+      "recordedExchangeSurfaceDriveDiffersFromInstallation": 0,
+      "firstLevelKindOnConsumedDeepPictureUpdates": 79,
+      "climbKindOnConsumedSurfacePictureUpdates": 1,
+      "maxMomentumResidual": 4.575917284786428e-12,
+      "maxWorkResidual": 2.3781865365890553e-11,
+      "maxMotorWorkExcess": 0
+    }
+  },
+  "identicalCompleteExecutions": 149,
+  "adverse2YardPairs": [],
+  "beneficial2YardPairs": [],
+  "nativeLimits": {
+    "before": {
+      "observedNativeTicks": 2839,
+      "armImpulseExcess": 2.842170943040401e-14,
+      "armWorkExcess": 0.0,
+      "supportMotorWorkExcess": 0.0,
+      "groundTractionExcess": 0.0
+    },
+    "after": {
+      "observedNativeTicks": 2829,
+      "armImpulseExcess": 2.842170943040401e-14,
+      "armWorkExcess": 0.0,
+      "supportMotorWorkExcess": 0.0,
+      "groundTractionExcess": 0.0
+    }
+  },
+  "keeperContinuity": {
+    "all162": {
+      "before": {
+        "records": 121,
+        "promotedHelperRecords": 3,
+        "sameKeeperJointAfterController": 121,
+        "sameKeeperJointAfterSolve": 121,
+        "positiveKeeperPairForceAfterSolve": 121,
+        "keeperRecordsWithOLDeliveredLoad": 105,
+        "positiveOLKeeperArmImpulse": 89,
+        "continuityFailures": []
+      },
+      "after": {
+        "records": 121,
+        "promotedHelperRecords": 3,
+        "sameKeeperJointAfterController": 121,
+        "sameKeeperJointAfterSolve": 121,
+        "positiveKeeperPairForceAfterSolve": 121,
+        "keeperRecordsWithOLDeliveredLoad": 105,
+        "positiveOLKeeperArmImpulse": 89,
+        "continuityFailures": []
+      }
+    },
+    "ordinary160": {
+      "before": {
+        "records": 118,
+        "promotedHelperRecords": 2,
+        "sameKeeperJointAfterController": 118,
+        "sameKeeperJointAfterSolve": 118,
+        "positiveKeeperPairForceAfterSolve": 118,
+        "keeperRecordsWithOLDeliveredLoad": 102,
+        "positiveOLKeeperArmImpulse": 87,
+        "continuityFailures": []
+      },
+      "after": {
+        "records": 118,
+        "promotedHelperRecords": 2,
+        "sameKeeperJointAfterController": 118,
+        "sameKeeperJointAfterSolve": 118,
+        "positiveKeeperPairForceAfterSolve": 118,
+        "keeperRecordsWithOLDeliveredLoad": 102,
+        "positiveOLKeeperArmImpulse": 87,
+        "continuityFailures": []
+      }
+    },
+    "supplemental2": {
+      "before": {
+        "records": 3,
+        "promotedHelperRecords": 1,
+        "sameKeeperJointAfterController": 3,
+        "sameKeeperJointAfterSolve": 3,
+        "positiveKeeperPairForceAfterSolve": 3,
+        "keeperRecordsWithOLDeliveredLoad": 3,
+        "positiveOLKeeperArmImpulse": 2,
+        "continuityFailures": []
+      },
+      "after": {
+        "records": 3,
+        "promotedHelperRecords": 1,
+        "sameKeeperJointAfterController": 3,
+        "sameKeeperJointAfterSolve": 3,
+        "positiveKeeperPairForceAfterSolve": 3,
+        "keeperRecordsWithOLDeliveredLoad": 3,
+        "positiveOLKeeperArmImpulse": 2,
+        "continuityFailures": []
+      }
+    }
+  }
+}

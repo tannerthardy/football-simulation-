@@ -1,0 +1,72 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 37b0b2f..09e1d29 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -338,6 +338,7 @@ function runLook(a: Agent, sim: PlaySim): boolean {
+ // ------------------------------------------------------------- run blocking
+ 
+ export type RunBlockKind = 'drive' | 'reach' | 'down' | 'combo' | 'climb' | 'pull' | 'cutoff' | 'lead' | 'stalk' | 'draw';
++const RESERVED_RUN_KINDS = new Set<RunBlockKind>(['pull', 'lead', 'stalk', 'draw']);
+ 
+ export interface Combination {
+   members: [Agent, Agent];
+@@ -639,9 +640,7 @@ export class RunBlocker implements Behavior {
+     const t = sim.t;
+     this.homeY ??= a.pos.y;
+     this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
+-    this.soloKind ??= plan.kind === 'combo' ? combinationSoloKind(plan.combination)
+-      : plan.kind === 'climb' ? 'drive' : plan.kind;
+-    this.soloDrive ??= { ...plan.drive };
++    this.rememberSoloWork();
+     // Draw blockers show pass first; everyone else fires out low.
+     a.stance = plan.kind === 'draw' && t < 1.0 ? 'high' : 'low';
+     if (t < a.mind.snapDelay) return stand();
+@@ -845,11 +844,18 @@ export class RunBlocker implements Behavior {
+       Math.sin(read.sealTarget * Math.PI / 2) * -e.surfaceAxis.x);
+   }
+ 
++  private rememberSoloWork(): void {
++    const p = this.plan;
++    this.soloKind ??= p.kind === 'combo' ? combinationSoloKind(p.combination)
++      : p.kind === 'climb' ? 'drive' : p.kind;
++    this.soloDrive ??= { ...p.drive };
++  }
++
+   private classifyWork(a: Agent, sim: PlaySim, target: Agent): void {
+     const p = this.plan;
+     // Reserved kick/trap jobs and pass influence retain their installed
+     // responsibility. A wrap/lead already has a second-level approach.
+-    if (p.kind === 'pull' || p.kind === 'lead' || p.kind === 'stalk' || p.kind === 'draw') return;
++    if (RESERVED_RUN_KINDS.has(p.kind)) return;
+     const seen = sim.see(a, target);
+     // Location in the consumed picture, not a linebacker roster label or the
+     // defender's unseen current depth, identifies a new second-level job.
+@@ -867,18 +873,26 @@ export class RunBlocker implements Behavior {
+ 
+   private readRules(a: Agent, sim: PlaySim): void {
+     const p = this.plan;
+-    if (!isOL(a) || p.kind === 'pull' || p.kind === 'stalk') return;
++    if (!isOL(a) || RESERVED_RUN_KINDS.has(p.kind)) return;
+     // Adjacent unengaged owners can pass crossing shades. Both must benefit;
+     // an engaged defender or a live double is never reassigned remotely.
+     for (const b of sim.offense) {
+       if (b === a || !isOL(b) || b.engagement || !(b.behavior instanceof RunBlocker) || Math.abs(b.pos.y-a.pos.y)>2) continue;
+       const q = b.behavior.plan;
+-      if (!p.target || !q.target || p.target === q.target || p.combination || q.combination || q.kind === 'pull') continue;
++      if (!p.target || !q.target || p.target === q.target || p.combination || q.combination || RESERVED_RUN_KINDS.has(q.kind)) continue;
+       if (p.target.engagement || q.target.engagement) continue;
+       const d = sim.see(a,p.target), other = sim.see(a,q.target);
+       const mine = Math.abs(d.pos.y-a.pos.y), theirs = Math.abs(other.pos.y-b.pos.y);
+       if (Math.abs(other.pos.y-a.pos.y)+.35 < mine && Math.abs(d.pos.y-b.pos.y)+.35 < theirs) {
++        // The recipient may not have updated yet. Save his installed solo
++        // technique before exchanging and reclassifying either responsibility.
++        b.behavior.rememberSoloWork();
+         [p.target,q.target] = [q.target,p.target];
++        // An exchanged responsibility changes the approach too. Each player
++        // classifies his new work from his own delayed picture, not the
++        // exchanging neighbor's image or the defender's roster position.
++        this.classifyWork(a, sim, p.target);
++        b.behavior.classifyWork(b, sim, q.target);
+         sim.event('block_exchange',a,b,'adjacent crossing threats');
+         return;
+       }
