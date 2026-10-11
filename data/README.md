@@ -1,6 +1,17 @@
 # Shared NFL data
 
-Current review: [Pursuit, support and contact transfer](../docs/reviews/pursuit-and-tackle-transfer.md).
+Current review: [Run fits, Draw presentation and recovery](../docs/reviews/run-fit-and-recovery.md).
+The [packet and commands](reviews/run-fit-and-recovery/README.md) retain a
+selected-snap Duo counterfactual (90.6-yard TD→6.0-yard physical tackle),
+isolated possession/Draw/recovery controls and all 24 predeclared targeted
+native pairs. Watch the [48-clip offline comparison](../viewer/run-fit-and-recovery.zip).
+Broader fixed runs/passes and approach controls remain, including a new
+defensive-return touchdown. Draw presentation improves but its eight-call mean
+worsens; eight-game rushing improves while scoring worsens. Shared physical
+laws/capacities are unchanged. These are source-pinned mechanical diagnostics,
+not NFL population estimates or universal physics readiness.
+
+Previous review: [Pursuit, support and contact transfer](../docs/reviews/pursuit-and-tackle-transfer.md).
 The [packet and commands](reviews/pursuit-and-tackle/README.md) retain 162 native
 runs, 96 passes, 32 separately labeled approach cases, component phases,
 standing-wrap refinement and all adverse outcomes. Watch the

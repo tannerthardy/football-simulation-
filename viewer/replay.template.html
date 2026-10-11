@@ -855,7 +855,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     }
     for (const contact of frame?.contacts ?? []) if (contact.a===player || contact.b===player) links.push(`Contact ${playerName(contact.a)} / ${playerName(contact.b)} · closing ${contact.closing.toFixed(2)} yd/s · impulse ${contact.impulse.toFixed(1)} kg·yd/s`);
     const perceived = (frame?.perception ?? []).filter((entry)=>entry.a===player);
-    if (perceived.length) links.push(`Perceived ${perceived.map((entry)=>`${playerName(entry.b)} (${entry.age==null?'age unrecorded':entry.age.toFixed(2)+'s old'}, ${entry.source==='qb'?'QB memory':'vision delay'}${entry.pose?' · saw '+entry.pose:''})`).join(', ')}`);
+    if (perceived.length) links.push(`Perceived ${perceived.map((entry)=>`${playerName(entry.b)} (${entry.age==null?'age unrecorded':entry.age.toFixed(2)+'s old'}, ${entry.source==='qb'?'QB memory':'vision delay'}${entry.pose?' · saw '+entry.pose:''}${entry.carrying===true?' · saw ball held':entry.carrying===false?' · saw no ball held':''})`).join(', ')}`);
     $('inspector-links').innerHTML = links.map((line)=>`<div>${esc(line)}</div>`).join('');
     const decisions = (p.telemetry?.decisions ?? []).filter((d)=>d.a===player && d.t<=t).slice(-3);
     $('inspector-decisions').innerHTML = decisions.length ? '<strong>Latest recorded decisions</strong>'+decisions.map((d)=>`<div>${d.t.toFixed(2)}s · ${esc(d.kind)} → ${esc(d.chose)} · cue: ${esc(d.cue ?? 'not recorded')}${d.detail?' · '+esc(d.detail):''}${d.options?.length?' · options: '+esc(d.options.join(', ')):''}</div>`).join('') : '<div>No decision records available for this player yet.</div>';

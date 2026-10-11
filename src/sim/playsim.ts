@@ -248,7 +248,7 @@ export class PlaySim {
    * arrivals keep their velocity into the snap instead of teleporting home. */
   private stageDefense(prefs?: ManPreference): void {
     const stem = this.defCall.frontStem, creep = this.defCall.creep;
-    if (!stem && !creep) { this.perception.record(this.agents); return; }
+    if (!stem && !creep) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
     }
@@ -274,7 +274,7 @@ export class PlaySim {
     const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0)/this.dt);
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
-    this.perception.record(this.agents);
+    this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (let i=ticks;i>0;i--) {
       this.t = -i*this.dt;
       const intents: Intent[] = this.agents.map((a) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
@@ -287,11 +287,11 @@ export class PlaySim {
       this.world.time = this.t;
       this.world.step(intents, this.dt);
       for (const d of this.defense) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
-      this.perception.record(this.agents);
+      this.perception.record(this.agents, this.carrier?.idx ?? null);
       if (this.record && i%this.recordEvery===0) this.recordFrame(intents);
     }
     this.t=0;
-    this.perception.record(this.agents);
+    this.perception.record(this.agents, this.carrier?.idx ?? null);
     if (this.record) this.recordFrame();
   }
 
@@ -534,7 +534,7 @@ export class PlaySim {
 
   tick(): void {
     const t = this.t;
-    this.perception.record(this.agents);
+    this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (const a of this.agents) {
       let nearby = 0;
       for (const other of this.opponents(a)) {
@@ -731,10 +731,9 @@ export class PlaySim {
       const hadIt = ball.lastTeam;
       this.possess(best, 'recovery');
       if (best.team !== hadIt) this.stats.fumbleLost = true;
-      // A recovering player usually falls on it.
-      if (this.rng.chance(0.75)) {
-        this.whistle('tackle', best.pos);
-      }
+      // Eligible recoverers are upright. Securing the ball does not put a
+      // body on the turf: World contact/support and the ordinary carrier
+      // rules determine whether this recovery can advance or is tackled.
     }
   }
 

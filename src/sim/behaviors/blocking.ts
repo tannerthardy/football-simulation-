@@ -383,6 +383,9 @@ export interface Combination {
 
 export interface RunBlockPlan {
   kind: RunBlockKind;
+  /** Installed initial presentation, independent of later combo/climb work.
+   * Draw's one-second motor phase is authored technique, not a visual read. */
+  presentation?: 'draw';
   target: Agent | null;
   climbTo?: Agent | null;
   drive: Vec2;
@@ -392,6 +395,10 @@ export interface RunBlockPlan {
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
+}
+
+function drawPresentation(plan: RunBlockPlan, t: number): boolean {
+  return (plan.presentation === 'draw' || plan.kind === 'draw') && t < 1.0;
 }
 
 function classify(sim: PlaySim): { dl: Agent[]; lb: Agent[]; db: Agent[] } {
@@ -508,7 +515,10 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const last = line[line.length - 1];
     const lp = plans.get(last);
     if (lp && (lp.kind === 'drive' || lp.kind === 'reach')) lp.kind = 'cutoff';
-    if (scheme === 'draw' || scheme === 'qbDraw') for (const p of plans.values()) p.kind = p.kind === 'combo' || p.kind === 'climb' ? p.kind : 'draw';
+    if (scheme === 'draw' || scheme === 'qbDraw') for (const p of plans.values()) {
+      p.presentation = 'draw';
+      p.kind = p.kind === 'combo' || p.kind === 'climb' ? p.kind : 'draw';
+    }
   } else if (scheme === 'duo') {
     // Duo uses vertical displacement and adjacent doubles to the inside
     // backers. It has no zone-side reach step and no pulling guard.
@@ -668,6 +678,8 @@ export class RunBlocker implements Behavior {
   private nextRuleRead = 0;
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
+  /** A personally consumed near-gap emergency, held through the normal beat. */
+  private presentationThreat: Agent | null = null;
   /** Native technique read, retained between the player's ordinary decisions. */
   zoneRead: ZoneReachRead | null = null;
   constructor(public plan: RunBlockPlan) {}
@@ -685,7 +697,8 @@ export class RunBlocker implements Behavior {
     this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
     this.rememberSoloWork();
     // Draw blockers show pass first; everyone else fires out low.
-    a.stance = plan.kind === 'draw' && t < 1.0 ? 'high' : 'low';
+    const presentingDraw = drawPresentation(plan, t);
+    a.stance = presentingDraw ? 'high' : 'low';
     if (t < a.mind.snapDelay) return stand();
     if (!a.engagement && t >= this.nextRuleRead) {
       this.nextRuleRead = t + a.mind.decisionInterval;
@@ -697,7 +710,17 @@ export class RunBlocker implements Behavior {
       return stand();
     }
     // Sell pass until just before the handoff.
-    if (plan.kind === 'draw' && t < 1.0) {
+    if (presentingDraw) {
+      if (plan.kind !== 'draw') {
+        // Presentation belongs to the installed call even if the original
+        // double disappears. Keep the ordinary unavailable-work transition,
+        // and let a personally read penetration use real attack/contact.
+        const target = this.availableTarget(a, sim);
+        if (target && target === this.presentationThreat) {
+          a.stance = 'low';
+          return this.withBase(a, this.attack(a, sim, target));
+        }
+      }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
     }
     if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
@@ -707,29 +730,7 @@ export class RunBlocker implements Behavior {
       return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
     }
 
-    let target = plan.target;
-    // Either member can land first. The covered owner's drive/reach/down
-    // label does not make his partner's contact somebody else's block.
-    // Keep the shared responsibility until the combination read releases it;
-    // ordinary reach and useful helper contact still decide whether he joins.
-    const partnerOwns = target?.engagement && plan.combination && !plan.combination.released
-      && plan.combination.defender === target && plan.combination.members.includes(a)
-      && plan.combination.members.includes(target.engagement.blocker);
-    if (!target || target.isDown(t) || (target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
-      if (t >= this.retarget) {
-        this.retarget = t + a.mind.decisionInterval;
-        const previous = target;
-        const replacement = this.findWork(a, sim);
-        const combination = plan.combination;
-        if (combination && !combination.released && replacement !== combination.defender) {
-          abandonCombination(a, sim, combination, 'original target unavailable; finding work');
-        }
-        plan.target = target = replacement;
-        if (replacement !== previous) delete plan.contactFit;
-        if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
-          this.classifyWork(a, sim, replacement);
-      }
-    }
+    const target = this.availableTarget(a, sim);
     if (plan.kind === 'pull' && plan.pullPath && this.pullIdx < plan.pullPath.length) {
       if(plan.pullRole==='lead') {
         const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
@@ -767,6 +768,34 @@ export class RunBlocker implements Behavior {
       return goTo(a, fit, { speed: 0.85, through: 1 });
     }
     return this.withBase(a, this.attack(a, sim, target));
+  }
+
+  private availableTarget(a: Agent, sim: PlaySim): Agent | null {
+    const plan = this.plan, t = sim.t;
+    let target = plan.target;
+    // Either member can land first. The covered owner's drive/reach/down
+    // label does not make his partner's contact somebody else's block.
+    // Keep the shared responsibility until the combination read releases it;
+    // ordinary reach and useful helper contact still decide whether he joins.
+    const partnerOwns = target?.engagement && plan.combination && !plan.combination.released
+      && plan.combination.defender === target && plan.combination.members.includes(a)
+      && plan.combination.members.includes(target.engagement.blocker);
+    if (!target || target.isDown(t) || (target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
+      if (t >= this.retarget) {
+        this.retarget = t + a.mind.decisionInterval;
+        const previous = target;
+        const replacement = this.findWork(a, sim);
+        const combination = plan.combination;
+        if (combination && !combination.released && replacement !== combination.defender) {
+          abandonCombination(a, sim, combination, 'original target unavailable; finding work');
+        }
+        plan.target = target = replacement;
+        if (replacement !== previous) delete plan.contactFit;
+        if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
+          this.classifyWork(a, sim, replacement);
+      }
+    }
+    return target;
   }
 
   private withBase(a: Agent, command: MoveCommand): Intent {
@@ -951,11 +980,12 @@ export class RunBlocker implements Behavior {
     // Look–lean–climb: an uncovered lineman collects a penetrating body in
     // his gap before leaving for the backer. Reserved kick targets are only
     // collected after they have actually penetrated the surface.
-    if (p.kind !== 'climb' && p.kind !== 'combo') return;
+    if (p.kind !== 'climb' && p.kind !== 'combo' && !drawPresentation(p, sim.t)) return;
     const threat = sim.defense.filter((d) => !d.engagement && !d.isDown(sim.t)).find((d) => {
       const s = sim.see(a,d);
       return s.pos.x < sim.los-.25 && s.pos.x > a.pos.x-1 && Math.abs(s.pos.y-(this.homeY ?? a.pos.y)) < .9;
     });
+    this.presentationThreat = threat ?? null;
     if (!threat || threat === p.target) return;
     if (p.combination && !p.combination.released)
       abandonCombination(a, sim, p.combination, 'collecting penetration before climb');
@@ -1184,7 +1214,8 @@ export function prepareJoinedCombinations(sim: PlaySim): void {
 export function readCombination(observer: Agent, sim: PlaySim, combo: Combination, deferJoined = false): void {
   const index = combo.members.indexOf(observer);
   if (index < 0 || combo.released || !combo.backer || combo.backer.isDown(sim.t)
-    || sim.t < observer.snapReadyAt) return;
+    || sim.t < observer.snapReadyAt
+    || (observer.behavior instanceof RunBlocker && drawPresentation(observer.behavior.plan, sim.t))) return;
   if (observer.isDown(sim.t) || !combo.members.every((a) => a.behavior instanceof RunBlocker
     && a.behavior.plan.combination === combo && a.behavior.plan.target === combo.defender)) {
     const read = combo.reads?.[index];

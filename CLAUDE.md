@@ -7,8 +7,27 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [run fits, Draw presentation and recovery](docs/reviews/run-fit-and-recovery.md)
+first. The retained 90.6-yard Duo becomes a six-yard physical tackle in an
+explicit selected-snap controller counterfactual; earlier game history, bodies,
+minds and RNG remain unchanged. Delayed possession alone is inert. The new
+man insertion requires known backfield assignment, run belief and an acquired
+positive possession cue. Draw helpers/climbers retain their installed pass
+presentation; upright loose-ball recovery stays live instead of a 75% tackle
+coin. Shared physics/capacities remain unchanged. The
+[packet](data/reviews/run-fit-and-recovery/README.md) and
+[48-clip offline film](viewer/run-fit-and-recovery.zip) retain all 24 predeclared
+targeted pairs, broader controls, causal witnesses and adverse results.
+All 1,074 TS/66 Python tests pass; typecheck/build are clean. Draw presentation
+is more consistent but its eight-call mean worsens 2.85→.88 yd. Eight games
+reduce rushing 7.27→5.94 YPC while scoring rises 41.88→46.50 points/team.
+Start next with the retained adverse Draw's ineffective joined-helper surface,
+then trace excessive early run contact; do not recover averages by increasing
+strength. The new possession channel is delayed knowledge without gaze or
+occlusion; private Recognition handoff/protection/carrier shortcuts remain.
+
 Read [pursuit, support and contact transfer](docs/reviews/pursuit-and-tackle-transfer.md)
-first. Five bounded controller repairs retain the same World and capacities.
+for the preceding increment. Five bounded controller repairs retain the same World and capacities.
 The strongest retained standing wrap changes YAC 20.42→9.66 yd and its
 12/24/48-substep spread from 3.50 to .0061 yd. This is one local mechanical
 breakthrough, not universal convergence or NFL readiness. The

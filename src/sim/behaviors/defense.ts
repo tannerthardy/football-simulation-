@@ -18,7 +18,7 @@ import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track 
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { showsBlock } from '../coverage-cues.js';
-import { executeRunFit } from '../run-fits.js';
+import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
@@ -146,8 +146,8 @@ export class Blitzer implements Behavior {
  * Gap-sound run defense: defend the assigned gap until the carrier commits,
  * then fit on him with pursuit leverage. DBs force/alley from outside-in.
  */
-export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number): MoveCommand {
-  return executeRunFit(a, sim, gap, gapSign);
+export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, keyed?: KeyedRunFit): MoveCommand {
+  return executeRunFit(a, sim, gap, gapSign, keyed);
 }
 
 export class RunDefender implements Behavior {
@@ -186,6 +186,7 @@ export class ManCoverage implements Behavior {
   private stemHeading: number | null = null;
   private stableSince = 0;
   private readonly observation = new RouteObservation();
+  private keyedFitRecorded = false;
 
   /** The technique actually in use, without updating receiver observation. */
   recordedTechnique(): NonNullable<import('../types.js').ReplayAgentState['man']> {
@@ -209,13 +210,29 @@ export class ManCoverage implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
+    if (sim.ball.kind === 'air') return playBall(a, sim, R);
+    const receiverCue = sim.see(a, R);
+    // A back carrying the ball will not look like a stalk blocker. An inside
+    // man player who reads run and personally acquires that possession uses
+    // his installed insertion rather than retreating with receiver cushion.
+    // Unknown/negative possession preserves ordinary man/PA responsibility.
+    const backfieldBack = sim.offAlign.spots[R.slot]?.backfield
+      && (R.player.position === 'RB' || R.player.position === 'FB');
+    if (a.runFit?.kind === 'insert' && backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
+      if (!this.keyedFitRecorded) {
+        this.keyedFitRecorded = true;
+        if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-run-fit', chose: `keyed-fit:${R.slot}`,
+          cue: `${R.slot} carrying=true in consumed picture; run belief; installed insert`,
+          options: [`man:${R.slot}`, `keyed-fit:${R.slot}`],
+          detail: `Installed ${a.runFit.gap}-gap, side ${a.runFit.side}; known target ${R.slot}; picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s, depth ${(receiverCue.pos.x - sim.los).toFixed(2)} yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit.` });
+      }
+      return runFit(a, sim, this.gap, this.gapSign, { target: R, cue: receiverCue });
+    }
     const live = pursueIfLive(sim, a);
     if (live && (sim.carrier !== R || sim.catchAt >= 0 || !sim.isPass)) {
       // On runs, the man defender plays the run once he reads it (or when his man blocks).
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
-    if (sim.ball.kind === 'air') return playBall(a, sim, R);
-    const receiverCue = sim.see(a, R);
     const blockingLook = showsBlock(a, sim, R, receiverCue);
     if (believesRun(sim, a) && blockingLook) return runFit(a, sim, this.gap, this.gapSign);
 

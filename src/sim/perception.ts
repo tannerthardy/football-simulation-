@@ -8,7 +8,7 @@
 import type { Vec2 } from '../core/vec.js';
 
 const HISTORY = 24;
-const STRIDE = 7;
+const STRIDE = 8;
 
 /** Coarse visible body pose, separate from pad-level technique or capability. */
 export type VisiblePose = 'up' | 'down' | 'rising';
@@ -20,6 +20,9 @@ export interface Perceived {
   facing: number;
   /** Sampled with the same latency as position; absent/null means unknown. */
   pose?: VisiblePose | null;
+  /** Held possession sampled with position/pose; absent/null means unknown.
+   * This delayed channel does not model gaze, occlusion or ball-flight reads. */
+  carrying?: boolean | null;
   /** Age of the sampled visual state before constant-velocity prediction. */
   age?: number;
 }
@@ -38,7 +41,9 @@ export class PerceptionBuffer {
     this.data = new Float64Array(HISTORY * agents * STRIDE);
   }
 
-  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null }>): void {
+  /** Omitted possession is unknown. Null records a known unheld ball; an
+   * index records that holder and known non-possession for the other bodies. */
+  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null }>, heldCarrierIndex?: number | null): void {
     this.head = (this.head + 1) % HISTORY;
     this.count = Math.min(HISTORY, this.count + 1);
     const base = this.head * this.n * STRIDE;
@@ -52,6 +57,7 @@ export class PerceptionBuffer {
       this.data[o + 4] = s.stance === 'high' ? 1 : s.stance === 'low' ? -1 : 0;
       this.data[o + 5] = s.facing ?? 0;
       this.data[o + 6] = s.pose === 'up' ? 1 : s.pose === 'down' ? -1 : s.pose === 'rising' ? 2 : 0;
+      this.data[o + 7] = heldCarrierIndex === undefined ? 0 : heldCarrierIndex === i ? 1 : -1;
     }
   }
 
@@ -68,8 +74,10 @@ export class PerceptionBuffer {
     const lag = back * this.dt;
     const stance = this.data[o + 4];
     const pose = this.data[o + 6];
+    const carrying = this.data[o + 7];
     return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy },
       stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5], age: lag,
-      pose: pose === 1 ? 'up' : pose === -1 ? 'down' : pose === 2 ? 'rising' : null };
+      pose: pose === 1 ? 'up' : pose === -1 ? 'down' : pose === 2 ? 'rising' : null,
+      carrying: carrying > 0 ? true : carrying < 0 ? false : null };
   }
 }

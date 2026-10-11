@@ -3,6 +3,18 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
+[run fits, Draw presentation and recovery](reviews/run-fit-and-recovery.md).
+An exact selected-snap controller counterfactual repairs a cushion retreat
+after an acquired handoff, changing an untouched 90.6-yard Duo into a six-yard
+physical tackle with unchanged capabilities. Native targeted controls retain
+genuine blocks/mistakes and adverse Draw outcomes. Every Draw OL now shares
+the installed presentation; upright recoveries require actual later contact
+to be physically tackled. Inspect the adverse joined-helper surface and early
+run contact next. They are hypotheses until the first invalid request or
+physical transition is demonstrated. Broader games remain mixed; the new
+delayed held-possession cue does not implement gaze or remove all private reads.
+
+Then read
 [pursuit, support and contact transfer](reviews/pursuit-and-tackle-transfer.md).
 The same physical model now sustains a retained standing wrap without a
 manufactured dive; its local 12/24/48-substep YAC spread is .0061 yd. Arrival,

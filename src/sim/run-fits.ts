@@ -3,6 +3,7 @@ import { clamp, type Vec2 } from '../core/vec.js';
 import { gapY, isDeepZone } from '../playbook/alignment.js';
 import type { DefSlot, Gap } from '../playbook/types.js';
 import type { Agent } from './agent.js';
+import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import { chase, goTo, stand, track } from './behaviors/common.js';
 
@@ -14,6 +15,12 @@ export interface RunFitJob {
   edge: 'box' | 'spill';
   pace: 'plug' | 'stack';
   partner?: string;
+}
+
+/** A personally identified possible runner, separate from authoritative possession. */
+export interface KeyedRunFit {
+  target: Agent;
+  cue: Perceived;
 }
 
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
@@ -91,15 +98,19 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
   return null;
 }
 
-export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number) {
+export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, keyed?: KeyedRunFit) {
   if (a.engagement) return stand();
   const job = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
-  const c = sim.carrier;
+  const c = keyed?.target ?? sim.carrier;
   const back = sim.slot('RB');
-  const premesh = c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
+  // A keyed fit has already consumed its runner picture. Deep mesh geometry
+  // keeps the insertion at its surface; the actual handoff/carrier cannot
+  // choose another target or prematurely declare this observed crease.
+  const premesh = keyed ? keyed.cue.pos.x <= sim.los - 1.6
+    : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: gapY(sim.offAlign, job.gap, job.side) }, { speed: .7 });
-  const seen = sim.see(a, premesh ? back! : c);
-  if (!premesh && seen.pos.x > sim.los + 2) return chase(sim, a, c);
+  const seen = keyed?.cue ?? sim.see(a, premesh ? back! : c);
+  if (!premesh && seen.pos.x > sim.los + (keyed ? 0 : 2)) return chase(sim, a, c);
   const indicator = blockingIndicator(a, sim);
   let gy = gapY(sim.offAlign, job.gap, job.side);
   if (job.kind === 'alley') {

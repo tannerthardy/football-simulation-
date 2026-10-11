@@ -1,0 +1,33 @@
+{
+  "schema": "back-man-keyed-fit-feature-check-v1",
+  "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "sourceAfterFocusedCheck": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "featureTest": "test/back-man-run-fit.test.ts",
+  "featureTestSha256": "6437489bd3a013fdc364a5bdd91f7f8e29a0282bd30be1f556620ebd8880695d",
+  "baselineFeatureLog": "out/run-fit-awareness/old-fit-feature.log",
+  "baselineFeatureLogSha256": "b0cdefcba4c40630a1e10ab0aae33eb507b657ce04852719e7a72dc3c7c12763",
+  "focusedLog": "out/run-fit-awareness/focused-fit.log",
+  "focusedLogSha256": "c1ac105b8217034479305d2639723840d3d9b4cf0a9733b3faa4bf8ce0078b69",
+  "baselineFeatureTests": {
+    "failed": 10,
+    "passed": 14,
+    "total": 24
+  },
+  "finalFeatureTests": {
+    "passed": 24,
+    "total": 24
+  },
+  "nearbyExistingTests": {
+    "passed": 44,
+    "total": 44
+  },
+  "productionFiles": {
+    "src/sim/behaviors/defense.ts": "1b93a47cd5dcccad02e0014b29a6a0bf00eba2786c28a07290361bc91fcb557a",
+    "src/sim/run-fits.ts": "72b41250318f4f342735540838151ef227853eb608fe4468d524490223e67056"
+  },
+  "limits": [
+    "Source after focused checks recorded; no source-before guard was recorded by this shell test invocation.",
+    "Feature fixture uses translated native first-retreat geometry with explicit run/possession interpretations and separate generated players; it does not prove natural cue acquisition or final football outcomes.",
+    "Existing baseline src copied byte-for-byte from the prior frozen final-source archive; current dedicated tests intentionally run against old source without typechecking the added carrying declaration."
+  ]
+}

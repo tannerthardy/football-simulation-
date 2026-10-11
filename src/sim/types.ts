@@ -38,7 +38,7 @@ export interface ReplayTelemetryFrame {
     hands?: { extension: number; push: number; hold: number; steer: number; height?: number; normalForce?: number; tangentForce?: number } }>;
   tackle?: { carrier: number; tacklers: Array<{ a: number; grip: number | null; legs: number; force?: number; slipping?: boolean; origin?: string }>; stall: number; progressX: number };
   /** Actual calls to PlaySim.see and QB perception, not omniscient extra reads. */
-  perception?: Array<{ a: number; b: number; t: number; position: [number, number]; velocity: [number, number]; age: number | null; source: 'see' | 'qb'; pose?: 'up' | 'down' | 'rising' | null }>;
+  perception?: Array<{ a: number; b: number; t: number; position: [number, number]; velocity: [number, number]; age: number | null; source: 'see' | 'qb'; pose?: 'up' | 'down' | 'rising' | null; carrying?: boolean | null }>;
   qb?: { eyes: number | null; belief: Record<string, number>; best: string; phase?: string; read?: number | null; pressure?: number;
     pending?: { target: number; point: [number, number, number]; flightTime: number; completion: number; interceptionRisk: number; value: number } | null };
   contacts?: Array<{ a: number; b: number; closing: number; impulse: number }>;

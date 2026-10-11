@@ -4,7 +4,7 @@
  * Companion reports replace -film.json.gz with .json.gz. Optional overrides:
  * --baseline-root DIR, --run-baseline-report FILE, --run-final-report FILE,
  * --pass-baseline-report FILE, --pass-final-report FILE,
- * --cue-baseline FILE, --cue-final FILE, --cue-players FILE.
+ * --cue-baseline FILE, --cue-final FILE, --cue-players FILE, --title TEXT.
  */
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -32,7 +32,7 @@ function requireMatch(a: unknown, b: unknown, label: string) {
 }
 const positional: string[] = [], flags: Record<string, string> = {};
 const allowed = ['baseline-root', 'run-baseline-report', 'run-final-report', 'pass-baseline-report',
-  'pass-final-report', 'cue-baseline', 'cue-final', 'cue-players'];
+  'pass-final-report', 'cue-baseline', 'cue-final', 'cue-players', 'title'];
 const args = process.argv.slice(2);
 for (let i = 0; i < args.length; i++) {
   const arg = args[i];
@@ -211,7 +211,7 @@ for (let i = 0; i < 3; i++) for (let k = 0; k < 2; k++) {
   add(p, p.result, m.players, k, 2, retrospective ? 'gun_wing_12' : 'ace_11', p.input.run,
     p.input.front, 'cover3', p.input.flip, p.input.seed,
     retrospective ? 'retrospective-explosive-cue-witness' : 'predeclared-ordinary-cue-control',
-    retrospective ? 'Retrospective explosive witness selected after viewing the baseline; not a representative sample.'
+    retrospective ? 'Retrospective witness originally selected after viewing an earlier baseline; not a representative sample.'
       : 'Predeclared ordinary cue-boundary control; higher recording rate than ordinary film.',
     k === 0 ? 'Baseline cards use supplemental final metadata verified against both saved native profile sets and baseline slot order; baseline replay state is unchanged.'
       : 'Player cards copied from final cue recording; matched initial slots/profiles/ratings verified.');
@@ -224,7 +224,7 @@ const cohort = '38 paired clips: 20 ordinary runs and 12 ordinary passes selecte
   + 'These fixed generated-roster fixtures diagnose mechanics; their yards and selection do not represent league rates.';
 const inputPaths = [...phases.flatMap(p => [p.path, p.reportPath]), ...cuePaths, cuePlayersPath];
 const data = { meta: { sourceSha256: sources[1], sourceComparison: labels.map((label, i) => ({ label, sourceSha256: sources[i] })),
-    title: 'Pursuit and tackling: baseline / final', telemetryLevel: 'full', cohort, seed: 3,
+    title: flags.title ?? 'Pursuit and tackling: baseline / final', telemetryLevel: 'full', cohort, seed: 3,
     savedInputs: inputPaths.map(path => ({ path, sha256: fileHash(path) })),
     exporterSha256: fileHash(fileURLToPath(import.meta.url)), final: { home: 0, away: 0 }, quarters: [],
     home: { name: 'Controlled Offense', abbr: 'OFF', color: '#1d4f91', text: '#ffffff' },
