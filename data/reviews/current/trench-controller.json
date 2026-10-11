@@ -40,6 +40,10 @@
     "final-games-mechanics.json": {
       "sha256": "55cef1afa42879f75a80c88be0c3b066220bbb458e650a61a8dcf24c21ea8844",
       "bytes": 51190
+    },
+    "checked-process.json": {
+      "sha256": "e58bbd3f7544c006e1059bec7e630f2723512b716612b8dbde7f7f6f325ca839",
+      "bytes": 2690292
     }
   },
   "method": [
@@ -1067,8 +1071,32 @@
       "npm test -- test/run-contact-flow.test.ts test/cutoff-surface.test.ts test/run-hand-control.test.ts",
       "node --import tsx scripts/mechanics/sim-export.ts --seed 101 --games 8 --out out/trench-controller/games.jsonl.gz",
       "python3 -I scripts/mechanics/measure.py out/trench-controller/games.jsonl.gz out/trench-controller/games.json",
-      "python3 -I scripts/mechanics/compare.py --sim out/trench-controller/games.json --out out/trench-controller/report.md --guard data/reviews/mechanics/guard.json"
+      "python3 -I scripts/mechanics/compare.py --sim out/trench-controller/games.json --out out/trench-controller/report.md --guard data/reviews/mechanics/guard.json",
+      "node --import tsx scripts/diag/run-concept-process.ts out/trench-controller/process.json --runs iz_strong,duo,power,counter --fronts over,under,tite --seeds 3,11 --seconds 4 --verify"
     ],
     "baseline": "Archive src and scripts from immutable5879913 into an ignored scratch directory, share Node22 dependencies, and copy the same contact collector from ebaa48c. Run both native commands there. No branch checkout, merge or worktree is needed."
+  },
+  "runProcessControl": {
+    "source": "b11642896c86eecfab19c71dd92965ca0e821369eb2a5f6d4caebbe236a0bb85",
+    "trials": 48,
+    "runs": [
+      "iz_strong",
+      "duo",
+      "power",
+      "counter"
+    ],
+    "fronts": [
+      "over",
+      "under",
+      "tite"
+    ],
+    "seeds": [
+      3,
+      11
+    ],
+    "bothDirections": true,
+    "horizonSeconds": 4,
+    "observerVerified": true,
+    "limitations": "Fixed four-second process panel, not natural-end outcomes or NFL league rates. Complete natural-end controls are the separate14-play packets."
   }
 }
