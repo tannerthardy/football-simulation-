@@ -1,7 +1,17 @@
 # Physics development and testing
 
+Read [Zone reach, run-off and displacement](reviews/zone-reach-and-displacement.md)
+first. Solo outside/wide-zone blocks use delayed hip motion to separate the
+body surface they seek from the direction they drive. Real hands retain their
+acquired frame through technique changes, including promotion from a different
+job. Read the fixed 48 pairs, 24 films, physical transition tests and mixed
+broader guards. The shared reduced World, support, traction and arm/work
+budgets remain unchanged. Next prove coordinated post/check/climb and overtakes
+with actual contact and observed linebacker threats. Keep the reduced physics
+model; final universal physics OK remains pending.
+
 Read [OL run technique and validation](reviews/ol-technique-implementation.md)
-first, alongside the [coaching review](reviews/offensive-line-run-technique.md).
+for the preceding increment, alongside the [coaching review](reviews/offensive-line-run-technique.md).
 The shared reduced World remains the executor; the new repair keeps individual
 jobs coherent after earned doubles and actual new-work selection, bounds
 second-level approaches without stopping the strike, and recovers lost solo

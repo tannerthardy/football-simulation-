@@ -1,0 +1,15 @@
+{
+  "schema": "zone-reach-checks-v1",
+  "finalSourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+  "typescriptTestsPassed": 732,
+  "typescriptTestFilesPassed": 68,
+  "pythonTestsPassed": 22,
+  "focusedTestsPassed": 18,
+  "baselineFocusedControlsPassed": 5,
+  "baselineFeatureFailures": 13,
+  "fullTestsExitCode": 0,
+  "typecheckExitCode": 0,
+  "buildExitCode": 0,
+  "pythonTestsExitCode": 0,
+  "focusedTestsExitCode": 0
+}

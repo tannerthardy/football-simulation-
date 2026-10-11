@@ -1,6 +1,16 @@
 # Shared NFL data
 
-Current engine status: [OL run technique and validation](../docs/reviews/ol-technique-implementation.md),
+Current engine status: [Zone reach, run-off and displacement](../docs/reviews/zone-reach-and-displacement.md).
+The [evidence and commands](reviews/physics-world/zone-reach/README.md) retain
+48 fixed pairs, consumed hip pictures, actual hand/ground loads, intermediate
+source patches and unchanged-input run/tackle/game guards. Watch the
+[24 paired clips](../viewer/zone-reach.html) or [offline ZIP](../viewer/zone-reach.zip).
+Solo OZ/WZ blocks distinguish an outside reach from inside run-off; actual
+hands retain their acquired leverage reference through technique changes.
+These are controller/contact-reference repairs using the existing shared
+physics, not new NFL observations or fitted strength parameters.
+
+Previous engine status: [OL run technique and validation](../docs/reviews/ol-technique-implementation.md),
 with a [zone/gap coaching review](../docs/reviews/offensive-line-run-technique.md).
 The [evidence and commands](reviews/physics-world/ol-technique/README.md) retain
 160 fixed ordinary pairs across eight concepts and five fronts, two separate

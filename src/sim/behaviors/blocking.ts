@@ -20,7 +20,9 @@ import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
-import { helperSupport, passSetDepth, traits } from '../engagement.js';
+import { axisOf, helperSupport, passSetDepth, traits } from '../engagement.js';
+import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
+import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -623,6 +625,8 @@ export class RunBlocker implements Behavior {
   private nextRuleRead = 0;
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
+  /** Native technique read, retained between the player's ordinary decisions. */
+  zoneRead: ZoneReachRead | null = null;
   constructor(public plan: RunBlockPlan) {}
 
   get target(): Agent | null {
@@ -646,6 +650,7 @@ export class RunBlocker implements Behavior {
     }
     if (plan.combination) readCombination(a, sim, plan.combination);
     if (a.engagement) {
+      if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
       return stand();
     }
     // Sell pass until just before the handoff.
@@ -732,6 +737,7 @@ export class RunBlocker implements Behavior {
   private attack(a: Agent, sim: PlaySim, target: Agent): MoveCommand {
     const plan = this.plan;
     const seen = sim.see(a,target);
+    const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
       // If the end crosses the puller's inside shoulder, getting back inside
@@ -752,11 +758,21 @@ export class RunBlocker implements Behavior {
     // A clearly lost shoulder is a foot-recovery decision, not a fresh hold.
     // Keep marginal reaches and actual collisions; use the same observed
     // leverage boundary as an established run block, without a time grace.
-    const lost = fit && Math.abs(observedBlockLeverage(a, seen, plan.drive)) >= 1.1;
-    if (!lost && dd < contact && sim.engage(a, target, 'run', plan.drive)) return stand();
+    const fitDrive = zone ? { x: 1, y: 0 } : plan.drive;
+    const lost = fit && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+    if (!lost && dd < contact) {
+      const e = sim.engage(a, target, 'run', plan.drive);
+      if (e) {
+        if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a, sim, true);
+        return stand();
+      }
+    }
     // Aiming point: reach blocks work to the playside shoulder.
     let aim = seen.pos;
-    if (plan.kind === 'combo' && plan.combination) {
+    if (zone) {
+      const side = zone.phase === 'runoff' ? -zone.side : zone.side;
+      aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
+    } else if (plan.kind === 'combo' && plan.combination) {
       const partner = plan.combination.members.find((b) => b !== a)!;
       const side = Math.sign(a.pos.y - partner.pos.y) || 1;
       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
@@ -784,8 +800,48 @@ export class RunBlocker implements Behavior {
         contact, a.profile.radius + target.profile.radius, command, sim.t);
     }
     const original = runThrough(a, aim, { speed: 1 });
-    return fit ? chooseRunBlockFit(a, seen, plan.drive, nominalAim, placementError,
-      contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t) : original;
+    return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
+      contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
+      !!zone, zone ? 2.4 : 0) : original;
+  }
+
+  private zoneEligible(a: Agent, sim: PlaySim): boolean {
+    const e = a.engagement;
+    return isOL(a) && this.plan.kind === 'reach'
+      && (sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone')
+      && (!this.plan.combination || this.plan.combination.released)
+      && (!e || (e.type === 'run' && e.blocker === a && !e.helpers.length))
+      && !sim.world.joints.some(j => (j.a === a.body || j.b === a.body) && j !== e?.hands);
+  }
+
+  private readZone(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): ZoneReachRead {
+    if (!this.zoneRead || this.zoneRead.target !== target.idx || sim.t >= this.zoneRead.nextRead) {
+      const seen = picture ?? sim.see(a, target);
+      const bodyContact = a.profile.radius + target.profile.radius;
+      const contact = bodyContact + .1 + a.player.measurables.armIn / 36 * .45;
+      const side = playSideSign(sim, sim.offCall.run!);
+      const choice = readZoneReach(a, seen, side, this.soloDrive!, contact, bodyContact);
+      this.zoneRead = { ...choice, target: target.idx, side, t: sim.t,
+        nextRead: sim.t + a.mind.decisionInterval,
+        seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } } };
+      this.plan.drive = { ...choice.drive };
+      this.applyZoneContact(a, sim);
+    }
+    return this.zoneRead;
+  }
+
+  private applyZoneContact(a: Agent, sim: PlaySim, acquired = false): void {
+    const e = a.engagement, read = this.zoneRead;
+    if (!e || !read || e.blocker !== a || e.helpers.length) return;
+    // Acquire new solo-zone hands in the vertical fit frame. A real rep that
+    // arrived through another job retains its acquired surface instead: a
+    // new read must not rotate the loss angle of loaded hands without motion.
+    e.surfaceAxis ??= acquired ? { x: -1, y: 0 } : { ...axisOf(sim, e) };
+    e.drive = { ...read.drive };
+    // Project the desired world-lateral fit into that persistent frame. This
+    // is an intention, never a body-position or hand-control assignment.
+    e.sealTarget = 2 / Math.PI * Math.asin(
+      Math.sin(read.sealTarget * Math.PI / 2) * -e.surfaceAxis.x);
   }
 
   private classifyWork(a: Agent, sim: PlaySim, target: Agent): void {
@@ -918,8 +974,7 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
 
   // The defender's slant can change who stays and who climbs. Require the
   // remaining blocker to have his body on the drive side before transferring.
-  const drive = e.drive ?? { x: 1, y: 0 };
-  const axis = { x: -drive.x, y: -drive.y };
+  const axis = e.drive || e.surfaceAxis ? axisOf(sim, e) : { x: -1, y: 0 };
   const lat = { x: -axis.y, y: axis.x };
   const candidates = combo.members.map((climber) => {
     const keeper = combo.members.find((b) => b !== climber)!;

@@ -35,8 +35,8 @@ export interface PassSetIntent {
 
 /**
  * A block in progress (see engagement.ts for the model). Angles/positions are
- * relative to the engagement axis: from the defender toward the thing the
- * blocker protects (QB on pass pro) or against the drive direction (runs).
+ * relative to the engagement axis: toward the protected QB on pass pro or
+ * the intended contact surface on runs (normally against the drive).
  */
 export interface Engagement {
   /** Emitted once when the physical hands/torso actually carry load. */
@@ -67,7 +67,10 @@ export interface Engagement {
   pushBoost: number;
   /** Direction the blocker is driving (unit vector), for run blocks. */
   drive: Vec2 | null;
-  /** Blocker's target lateral position on run blocks: 0 drive, <0 seal/reach. */
+  /** Optional stable contact surface, separate from displacement intention.
+   * Stretch-zone fit uses the vertical front while its feet may run laterally. */
+  surfaceAxis?: Vec2;
+  /** Desired signed lateral surface angle on runs, in quarter turns. */
   sealTarget: number;
   /** Per-rep variance (positive favors the blocker). */
   repEdge: number;

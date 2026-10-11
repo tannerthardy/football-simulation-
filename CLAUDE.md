@@ -2,8 +2,17 @@
 
 Start with these shared project references:
 
+- [Zone reach, run-off and displacement](docs/reviews/zone-reach-and-displacement.md):
+  **latest increment.** Solo OZ/WZ reaches separate outside surface acquisition
+  from lateral stretch. Delayed hip reads choose reach/run-off/finish intentions;
+  real hands keep their acquired reference across technique changes. Read all
+  48 fixed pairs, the 24 paired films, retained prototypes and adverse cases.
+  Shared World, capabilities and resolution remain unchanged. Next: coordinated
+  post/check/climb, achieved overtakes and front-specific helper work. Do not
+  infer a successful seal from a phase label or tune strength to hide footwork.
+  Final universal physics OK is still pending.
 - [OL run technique and validation](docs/reviews/ol-technique-implementation.md):
-  **latest increment.** Read the [coaching review](docs/reviews/offensive-line-run-technique.md)
+  Previous increment. Read the [coaching review](docs/reviews/offensive-line-run-technique.md)
   for zone, gap, doubles, pullers and front-specific responsibilities. Earned
   combo releases restore solo keeper work; actual newly selected threats use
   their consumed observed depth; climbs/lead/wrap approaches gather with

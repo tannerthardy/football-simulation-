@@ -88,9 +88,10 @@ export function traits(a: Agent): TrenchTraits {
 
 // ------------------------------------------------------------ geometry
 
-/** Engagement axis: unit vector from the defender toward the protected point. */
-function axisOf(sim: PlaySim, e: Engagement): Vec2 {
+/** Reference contact surface, normally against the displacement intention. */
+export function axisOf(sim: PlaySim, e: Engagement): Vec2 {
   if (e.type === 'pass') return norm(sub(sim.qb.pos, e.defender.pos));
+  if (e.surfaceAxis) return e.surfaceAxis;
   const d = e.drive ?? norm(sub(e.defender.pos, e.blocker.pos));
   return { x: -d.x, y: -d.y };
 }
@@ -622,7 +623,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const d = e.defender;
   const tb = traits(b);
   const td = traits(d);
-  const axis = axisOf(sim, e); // from defender back toward the blocker (against the drive)
+  const axis = axisOf(sim, e); // defender toward the intended contact surface
   const lat = latOf(axis);
   const c = sim.carrier;
   e.phi = measurePhi(axis, d, b);
@@ -663,10 +664,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     return;
   }
   setHands(sim, e);
-  // The blocker drives his man along the drive line, mirrors his lateral
-  // work and fits his head to the seal side; the defender stacks him and
-  // works toward the ball.
-  const drive = { x: -axis.x, y: -axis.y };
+  // Feet request displacement along the drive line; contact geometry and the
+  // lateral fit use the surface frame. These can differ in a stretch-zone rep.
+  // Actual hand normal, ground traction and work remain physical constraints.
+  const drive = e.drive ?? { x: -axis.x, y: -axis.y };
   const sep = b.profile.radius + d.profile.radius;
   const dLat = d.vel.x * lat.x + d.vel.y * lat.y;
   // Seal target as a lateral offset of the blocker from the defender, where
@@ -689,7 +690,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const reading = d.recog?.read === 'run' || !sim.isPass;
   const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (reading ? 1 : 0.3);
   intents[d.idx] = {
-    vel: { x: axis.x * 1.5 + lat.x * e.side * work, y: axis.y * 1.5 + lat.y * e.side * work },
+    vel: { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work },
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: 0.85,
@@ -707,7 +708,8 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
     const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
     const toSpot = sub(spot, h.pos);
-    const drive = e.type === 'run' ? { x: -axis.x * 2.2, y: -axis.y * 2.2 } : { x: -axis.x * 0.5, y: -axis.y * 0.5 };
+    const direction = e.drive ?? { x: -axis.x, y: -axis.y };
+    const drive = e.type === 'run' ? { x: direction.x * 2.2, y: direction.y * 2.2 } : { x: -axis.x * 0.5, y: -axis.y * 0.5 };
     intents[h.idx] = {
       vel: { x: drive.x + toSpot.x * 3, y: drive.y + toSpot.y * 3 },
       facing: Math.atan2(d.pos.y - h.pos.y, d.pos.x - h.pos.x),

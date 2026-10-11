@@ -1,0 +1,193 @@
+
+ RUN  v3.2.4 /tmp/football-zone-reach-tests.8S7oFP
+
+ ❯ test/zone-reach.test.ts (18 tests | 13 failed) 86ms
+   ✓ the narrow zone acquisition controller preserves other installed jobs > keeps the ordinary reach request on iz_strong 24ms
+   ✓ the narrow zone acquisition controller preserves other installed jobs > keeps the ordinary reach request on toss 9ms
+   ✓ the narrow zone acquisition controller preserves other installed jobs > keeps the ordinary cutoff request on wz_strong 5ms
+   ✓ the narrow zone acquisition controller preserves other installed jobs > preserves the shared surface of a live planned double 3ms
+   ✓ the narrow zone acquisition controller preserves other installed jobs > leaves a body with a foreign physical hand constraint under its existing controller 2ms
+   × zone surface acquisition is separate from the intended displacement > approaches the playside half of an even defender on oz_strong 10ms
+     → expected undefined to be defined
+   × zone surface acquisition is separate from the intended displacement > approaches the playside half of an even defender on wz_strong 2ms
+     → expected undefined to be defined
+   × zone surface acquisition is separate from the intended displacement > runs a widening defender outward instead of declaring an unattained outside seal 2ms
+     → expected undefined to be defined
+   × zone surface acquisition is separate from the intended displacement > recognizes physically attained outside position without assigning a block win 3ms
+     → expected undefined to be defined
+   × zone surface acquisition is separate from the intended displacement > recovers a truly lost upfield shoulder without treating lateral position as an attained seal 3ms
+     → expected undefined to be defined
+   × zone surface acquisition is separate from the intended displacement > mirrors phase and football surface while retaining imperfect physical execution 3ms
+     → expected undefined to be defined
+   × zone reads have real latency and finite reassessment > holds the previous decision between reads, then responds to an observed inward slant 2ms
+     → expected undefined to be defined
+   × zone reads have real latency and finite reassessment > uses delayed hip motion rather than an unseen current widening move 2ms
+     → expected undefined to be defined
+   × zone reads have real latency and finite reassessment > does not turn a stale near hip into physical hands on a remote defender 2ms
+     → expected undefined to be defined
+   × real zone contact retains its stable surface and ordinary force budgets > preserves an already acquired diagonal inside-hip contact through the next solve, side -1 4ms
+     → expected undefined to be 'runoff' // Object.is equality
+   × real zone contact retains its stable surface and ordinary force budgets > preserves an already acquired diagonal inside-hip contact through the next solve, side 1 3ms
+     → expected undefined to be 'runoff' // Object.is equality
+   × real zone contact retains its stable surface and ordinary force budgets > changes lateral drive intention under owned hands without rotating or replacing the contact 2ms
+     → expected undefined to be 'reach' // Object.is equality
+   × real zone contact retains its stable surface and ordinary force budgets > keeps the established surface when a physically reachable helper joins 2ms
+     → expected undefined to be defined
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/zone-reach.test.ts > zone surface acquisition is separate from the intended displacement > approaches the playside half of an even defender on oz_strong
+ FAIL  test/zone-reach.test.ts > zone surface acquisition is separate from the intended displacement > approaches the playside half of an even defender on wz_strong
+AssertionError: expected undefined to be defined
+ ❯ test/zone-reach.test.ts:141:18
+    139|     const command = f.behavior.update(f.blocker, f.sim) as Intent;
+    140|     const zone = read(f.blocker)!;
+    141|     expect(zone).toBeDefined();
+       |                  ^
+    142|     expect(zone.phase).toBe('reach');
+    143|     expect(zone.drive).toEqual({ x: 1, y: 0 });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  test/zone-reach.test.ts > zone surface acquisition is separate from the intended displacement > runs a widening defender outward instead of declaring an unattained outside seal
+AssertionError: expected undefined to be defined
+ ❯ test/zone-reach.test.ts:163:18
+    161|     const command = f.behavior.update(f.blocker, f.sim) as Intent;
+    162|     const zone = read(f.blocker)!;
+    163|     expect(zone).toBeDefined();
+       |                  ^
+    164|     expect(zone.phase).toBe('runoff');
+    165|     expect(zone.drive).toEqual(f.stretch);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  test/zone-reach.test.ts > zone surface acquisition is separate from the intended displacement > recognizes physically attained outside position without assigning a block win
+AssertionError: expected undefined to be defined
+ ❯ test/zone-reach.test.ts:182:18
+    180|     f.behavior.update(f.blocker, f.sim);
+    181|     const zone = read(f.blocker)!;
+    182|     expect(zone).toBeDefined();
+       |                  ^
+    183|     expect(zone.phase).toBe('seal');
+    184|     expect(zone.drive).toEqual({ x: 1, y: 0 });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  test/zone-reach.test.ts > zone surface acquisition is separate from the intended displacement > recovers a truly lost upfield shoulder without treating lateral position as an attained seal
+AssertionError: expected undefined to be defined
+ ❯ test/zone-reach.test.ts:209:18
+    207|     const command = f.behavior.update(f.blocker, f.sim) as Intent;
+    208|     const zone = read(f.blocker)!;
+    209|     expect(zone).toBeDefined();
+       |                  ^
+    210|     expect(zone.phase).toBe('reach');
+    211|     expect(f.blocker.body).toEqual(before);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  test/zone-reach.test.ts > zone surface acquisition is separate from the intended displacement > mirrors phase and football surface while retaining imperfect physical execution
+AssertionError: expected undefined to be defined
+ ❯ run test/zone-reach.test.ts:227:20
+    225|       const command = f.behavior.update(f.blocker, f.sim) as Intent;
+    226|       const zone = read(f.blocker)!;
+    227|       expect(zone).toBeDefined();
+       |                    ^
+    228|       expect(command.vel.y * side).toBeGreaterThan(0);
+    229|       const body = advance(f.blocker.body, command);
+ ❯ test/zone-reach.test.ts:234:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  test/zone-reach.test.ts > zone reads have real latency and finite reassessment > holds the previous decision between reads, then responds to an observed inward slant
+AssertionError: expected undefined to be defined
+ ❯ test/zone-reach.test.ts:255:17
+    253|     f.behavior.update(f.blocker, f.sim);
+    254|     const old = read(f.blocker)!;
+    255|     expect(old).toBeDefined();
+       |                 ^
+    256|     expect(old.phase).toBe('runoff');
+    257|     f.defender.body.vel = { x: 0, y: -2 };
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  test/zone-reach.test.ts > zone reads have real latency and finite reassessment > uses delayed hip motion rather than an unseen current widening move
+AssertionError: expected undefined to be defined
+ ❯ test/zone-reach.test.ts:283:18
+    281|     f.behavior.update(f.blocker, f.sim);
+    282|     const zone = read(f.blocker)!;
+    283|     expect(zone).toBeDefined();
+       |                  ^
+    284|     expect(zone.seen).toEqual(seen);
+    285|     expect(zone.phase).toBe('reach');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  test/zone-reach.test.ts > zone reads have real latency and finite reassessment > does not turn a stale near hip into physical hands on a remote defender
+AssertionError: expected undefined to be defined
+ ❯ test/zone-reach.test.ts:298:18
+    296|     f.behavior.update(f.blocker, f.sim);
+    297|     const zone = read(f.blocker)!;
+    298|     expect(zone).toBeDefined();
+       |                  ^
+    299|     expect(zone.seen.pos.x).toBe(sampledX);
+    300|     expect(zone.phase).toBe('seal');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  test/zone-reach.test.ts > real zone contact retains its stable surface and ordinary force budgets > preserves an already acquired diagonal inside-hip contact through the next solve, side -1
+ FAIL  test/zone-reach.test.ts > real zone contact retains its stable surface and ordinary force budgets > preserves an already acquired diagonal inside-hip contact through the next solve, side 1
+AssertionError: expected undefined to be 'runoff' // Object.is equality
+
+- Expected: 
+"runoff"
+
++ Received: 
+undefined
+
+ ❯ test/zone-reach.test.ts:324:36
+    322|     const bodies = f.sim.agents.map(a => structuredClone(a.body));
+    323|     f.behavior.update(f.blocker, f.sim);
+    324|     expect(read(f.blocker)?.phase).toBe('runoff');
+       |                                    ^
+    325|     expect((e as typeof e & { surfaceAxis?: Vec2 }).surfaceAxis)
+    326|       .toEqual({ x: -f.stretch.x, y: -f.stretch.y });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  test/zone-reach.test.ts > real zone contact retains its stable surface and ordinary force budgets > changes lateral drive intention under owned hands without rotating or replacing the contact
+AssertionError: expected undefined to be 'reach' // Object.is equality
+
+- Expected: 
+"reach"
+
++ Received: 
+undefined
+
+ ❯ test/zone-reach.test.ts:362:36
+    360|     const e = f.blocker.engagement!;
+    361|     expect(e).not.toBeNull();
+    362|     expect(read(f.blocker)?.phase).toBe('reach');
+       |                                    ^
+    363|     // Let actual hand contact carry load before making the next techn…
+    364|     f.sim.tick();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+
+ FAIL  test/zone-reach.test.ts > real zone contact retains its stable surface and ordinary force budgets > keeps the established surface when a physically reachable helper joins
+AssertionError: expected undefined to be defined
+ ❯ test/zone-reach.test.ts:402:17
+    400|     expect(e).not.toBeNull();
+    401|     const old = read(f.blocker)!;
+    402|     expect(old).toBeDefined();
+       |                 ^
+    403|     const primaryHands = e.hands!, before = structuredClone(primaryHan…
+    404|     const helper = f.sim.slot('LG')!;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  13 failed | 5 passed (18)
+   Start at  06:11:27
+   Duration  1.04s (transform 617ms, setup 0ms, collect 767ms, tests 86ms, environment 0ms, prepare 59ms)
+
