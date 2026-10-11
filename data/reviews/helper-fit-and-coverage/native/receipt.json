@@ -1,0 +1,310 @@
+{
+  "schema": "promoted-helper-native-receipt-v1",
+  "method": "Saved-only byte/source/collector/hash validation of canonical Map/Set serialization. Recomputed initial physical/mind bytes match exactly. Each refreshed baseline and promoted final execution matches prior native bodies/controllers/reports/RNG signatures and all per-tick checkpoints; observational/plain equality enforced in original collector. Absolute ground-traction envelope and shared arm impulse/work bounds audited from achieved reports. Natural carrier-down/grip endings retained.",
+  "files": [
+    {
+      "path": "out/helper-fit/baseline-promoted-metadata.json.gz",
+      "sha256": "84eab81f9af9011b97e2c8fb47dd4857205149d43c49c49164cf0e1d8cf8121d"
+    },
+    {
+      "path": "out/helper-fit/promoted.json.gz",
+      "sha256": "4a1fcd3c7aad31ddbeb98be3cdac9f5c3b1c23e0b6820442e0bdb6fd88830373"
+    },
+    {
+      "path": "out/helper-fit/helper-surface-review.ts",
+      "sha256": "d4b9268076350ce40a703a034a0def6ce52e3d0cf25eaf9cc18601961144c432"
+    },
+    {
+      "path": "out/helper-fit/power-baseline-promoted.json.gz",
+      "sha256": "35d6440d36e292305ee0b5cf06776504436c7f373a1cad1f3a6282799ff82fcc"
+    },
+    {
+      "path": "out/helper-fit/power-promoted.json.gz",
+      "sha256": "401ef9bbd6b3c1d3a171d047a891aaae3faa91d49e08d58152c4d8c4192ced24"
+    },
+    {
+      "path": "out/helper-fit/power-helper-surface-review.ts",
+      "sha256": "f8a1e454ac04dbe3cb0a07d0718be08d9b5464b1f63e6cce510039910e4403ac"
+    }
+  ],
+  "checks": [
+    {
+      "cohort": "original-four",
+      "id": "DRAW-Over-R-S3",
+      "gainBefore": 6.78,
+      "gainAfter": 6.77,
+      "sourceBefore": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "sourceAfter": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+      "physicalInitialSha256": "5ee96cf4b7f99d1debd68e48d9c4ae6cfdb6e65698aa1f704c26b36275341dc7",
+      "savedHashRecomputed": true,
+      "sourceAndCollectorGuarded": true,
+      "oldExecutionUnchanged": true,
+      "observerNeutralEveryTick": true,
+      "observerSignature": "474732593a402a52e23ae68e7dd7af6d1bba43fbd19b017348a994a8826287fd",
+      "plainSignature": "474732593a402a52e23ae68e7dd7af6d1bba43fbd19b017348a994a8826287fd",
+      "nextRng": 2983965749,
+      "groundBound": "Absolute 1.1 m g dt traction envelope; not proof of every instantaneous support-reduced bound.",
+      "maxGroundRatio": 1.0000000000000002,
+      "maxArmImpulseRatio": 1.0000000000000002,
+      "maxArmWorkRatio": 0.6026656912365703,
+      "maxWorkResidual": 1.0395240224170266e-11,
+      "finish": {
+        "t": 4.2,
+        "carrier": 6,
+        "state": "down",
+        "tackle": {
+          "carrier": 6,
+          "stall": 0.1,
+          "progressX": 46.54,
+          "tacklers": [
+            {
+              "a": 17,
+              "grip": 0.4146938878157007,
+              "legs": 0.9357542702551616,
+              "force": 465.47686026092475,
+              "slipping": false,
+              "origin": "reach+assist"
+            },
+            {
+              "a": 20,
+              "grip": 1,
+              "legs": 0.1296752741666091,
+              "force": 434.604563783614,
+              "slipping": false,
+              "origin": "reach+assist"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "cohort": "original-four",
+      "id": "DRAW-Over-L-S3",
+      "gainBefore": -0.23,
+      "gainAfter": 2.79,
+      "sourceBefore": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "sourceAfter": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+      "physicalInitialSha256": "0c249fd2a24e13d7228e822d52abdebe42b729b6ae914de18fb131234cb0ce91",
+      "savedHashRecomputed": true,
+      "sourceAndCollectorGuarded": true,
+      "oldExecutionUnchanged": true,
+      "observerNeutralEveryTick": true,
+      "observerSignature": "6539a2ada6045c9e828145dedd79e1281838827226019d9766fd913b7b744631",
+      "plainSignature": "6539a2ada6045c9e828145dedd79e1281838827226019d9766fd913b7b744631",
+      "nextRng": 1621131266,
+      "groundBound": "Absolute 1.1 m g dt traction envelope; not proof of every instantaneous support-reduced bound.",
+      "maxGroundRatio": 0.9999881211943771,
+      "maxArmImpulseRatio": 1.0000000000000002,
+      "maxArmWorkRatio": 0.9433687263148883,
+      "maxWorkResidual": 6.761702309177053e-12,
+      "finish": {
+        "t": 4.45,
+        "carrier": 6,
+        "state": "down",
+        "tackle": {
+          "carrier": 6,
+          "stall": 0.15,
+          "progressX": 42.54,
+          "tacklers": [
+            {
+              "a": 13,
+              "grip": 0.7876719084854183,
+              "legs": 0.7733464507092453,
+              "force": 1083.0765938716931,
+              "slipping": false,
+              "origin": "block"
+            },
+            {
+              "a": 15,
+              "grip": 0.8833843039584534,
+              "legs": 0.4078104619574791,
+              "force": 455.9565842595255,
+              "slipping": false,
+              "origin": "reach+assist"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "cohort": "original-four",
+      "id": "IZ-Over-R-S3",
+      "gainBefore": 3.11,
+      "gainAfter": 1.38,
+      "sourceBefore": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "sourceAfter": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+      "physicalInitialSha256": "5ee96cf4b7f99d1debd68e48d9c4ae6cfdb6e65698aa1f704c26b36275341dc7",
+      "savedHashRecomputed": true,
+      "sourceAndCollectorGuarded": true,
+      "oldExecutionUnchanged": true,
+      "observerNeutralEveryTick": true,
+      "observerSignature": "eeae37fef1feed23afeaecc4376abe9784410e4f5db7b2f6b6b1fdeaf4156d0d",
+      "plainSignature": "eeae37fef1feed23afeaecc4376abe9784410e4f5db7b2f6b6b1fdeaf4156d0d",
+      "nextRng": 2983965749,
+      "groundBound": "Absolute 1.1 m g dt traction envelope; not proof of every instantaneous support-reduced bound.",
+      "maxGroundRatio": 0.9999767047732494,
+      "maxArmImpulseRatio": 1.0000000000000002,
+      "maxArmWorkRatio": 0.5001812056227963,
+      "maxWorkResidual": 4.976463685579802e-12,
+      "finish": {
+        "t": 3.15,
+        "carrier": 6,
+        "state": "down",
+        "tackle": {
+          "carrier": 6,
+          "stall": 0.3,
+          "progressX": 41.38,
+          "tacklers": [
+            {
+              "a": 15,
+              "grip": 0.9220098839631901,
+              "legs": 0.6162020760850208,
+              "force": 225.0127600912459,
+              "slipping": false,
+              "origin": "block"
+            },
+            {
+              "a": 17,
+              "grip": 1,
+              "legs": 0.46076110020041555,
+              "force": 929.8745818384062,
+              "slipping": false,
+              "origin": "form+assist"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "cohort": "original-four",
+      "id": "IZ-Over-L-S3",
+      "gainBefore": 2.38,
+      "gainAfter": 2.1,
+      "sourceBefore": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "sourceAfter": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+      "physicalInitialSha256": "0c249fd2a24e13d7228e822d52abdebe42b729b6ae914de18fb131234cb0ce91",
+      "savedHashRecomputed": true,
+      "sourceAndCollectorGuarded": true,
+      "oldExecutionUnchanged": true,
+      "observerNeutralEveryTick": true,
+      "observerSignature": "6371a6c820a2e475ec8fb8144b124f7f887f66c25f525d07178733dc5802445c",
+      "plainSignature": "6371a6c820a2e475ec8fb8144b124f7f887f66c25f525d07178733dc5802445c",
+      "nextRng": 2789831544,
+      "groundBound": "Absolute 1.1 m g dt traction envelope; not proof of every instantaneous support-reduced bound.",
+      "maxGroundRatio": 0.9999917297991472,
+      "maxArmImpulseRatio": 1.0000000000000002,
+      "maxArmWorkRatio": 0.8197602243858083,
+      "maxWorkResidual": 7.0961014841941505e-12,
+      "finish": {
+        "t": 3.25,
+        "carrier": 6,
+        "state": "down",
+        "tackle": {
+          "carrier": 6,
+          "stall": 0,
+          "progressX": 42.1,
+          "tacklers": [
+            {
+              "a": 15,
+              "grip": 1,
+              "legs": 0.6163956109064135,
+              "force": 439.093734461093,
+              "slipping": false,
+              "origin": "form"
+            },
+            {
+              "a": 17,
+              "grip": 0.7949878270475627,
+              "legs": 0.5100912129623166,
+              "force": 907.8525328605826,
+              "slipping": false,
+              "origin": "form+assist"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "cohort": "selected-power-and-declared-mirror",
+      "id": "CT-R1-power-over-R-S3",
+      "gainBefore": 2.08,
+      "gainAfter": 2.08,
+      "sourceBefore": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "sourceAfter": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+      "physicalInitialSha256": "c2e563db103a8710c7b59fc1d2f8e553b927c1591c4ec32b2e68dcf600c69bef",
+      "savedHashRecomputed": true,
+      "sourceAndCollectorGuarded": true,
+      "oldExecutionUnchanged": true,
+      "observerNeutralEveryTick": true,
+      "observerSignature": "62d3532778ec157e908a831f4f927617d8b2fbd51c49ecaba39adb6f0f0f21c2",
+      "plainSignature": "62d3532778ec157e908a831f4f927617d8b2fbd51c49ecaba39adb6f0f0f21c2",
+      "nextRng": 141699011,
+      "groundBound": "Absolute 1.1 m g dt traction envelope; not proof of every instantaneous support-reduced bound.",
+      "maxGroundRatio": 0.999990250179159,
+      "maxArmImpulseRatio": 1.0000000000000002,
+      "maxArmWorkRatio": 0.23268511573716977,
+      "maxWorkResidual": 6.181721801112872e-12,
+      "finish": {
+        "t": 4.25,
+        "carrier": 6,
+        "state": "down",
+        "tackle": {
+          "carrier": 6,
+          "stall": 0,
+          "progressX": 42.08,
+          "tacklers": [
+            {
+              "a": 20,
+              "grip": 1,
+              "legs": 0.7075483108952657,
+              "force": 278.63218534896436,
+              "slipping": false,
+              "origin": "form"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "cohort": "selected-power-and-declared-mirror",
+      "id": "CT-R1-power-over-L-S3",
+      "gainBefore": 0.68,
+      "gainAfter": 3.07,
+      "sourceBefore": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "sourceAfter": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+      "physicalInitialSha256": "a43e8949306d03d5c8b9fc62c3b15f022da2661c2a1ec2412a4479cbbfcfb6fa",
+      "savedHashRecomputed": true,
+      "sourceAndCollectorGuarded": true,
+      "oldExecutionUnchanged": true,
+      "observerNeutralEveryTick": true,
+      "observerSignature": "bc7689cec176260a447bb8c2b921642056087a4e5e8b6fe613b89d8a994276cc",
+      "plainSignature": "bc7689cec176260a447bb8c2b921642056087a4e5e8b6fe613b89d8a994276cc",
+      "nextRng": 4026907569,
+      "groundBound": "Absolute 1.1 m g dt traction envelope; not proof of every instantaneous support-reduced bound.",
+      "maxGroundRatio": 1.0000000000000002,
+      "maxArmImpulseRatio": 1.0000000000000002,
+      "maxArmWorkRatio": 1.0000000000000002,
+      "maxWorkResidual": 5.574207762037986e-12,
+      "finish": {
+        "t": 4.9,
+        "carrier": 6,
+        "state": "down",
+        "tackle": {
+          "carrier": 6,
+          "stall": 0.2,
+          "progressX": 43.05,
+          "tacklers": [
+            {
+              "a": 18,
+              "grip": 1,
+              "legs": 0.8116169137038914,
+              "force": 865.0649144790623,
+              "slipping": false,
+              "origin": "reach+assist"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

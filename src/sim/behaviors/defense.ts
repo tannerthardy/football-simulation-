@@ -332,6 +332,7 @@ export class ZoneCoverage implements Behavior {
   private readonly initialDepth: number;
   private turnedWith: Agent | null = null;
   private readonly observations = new Map<Agent, RouteObservation>();
+  private flatExpansionRecorded = false;
 
   constructor(
     a: Agent,
@@ -534,6 +535,43 @@ export class ZoneCoverage implements Behavior {
       if (dd < bd && dd < this.radius + 2) {
         bd = dd;
         best = th;
+      }
+    }
+    // A two-receiver curl/flat conflict is not a contest for proximity to
+    // the landmark. Hold off #1's curl, but widen beneath it when the known
+    // #2 has actually declared outside the curl landmark. Otherwise the
+    // generic lane score can leave a visible flat entirely out-leveraged.
+    // Trips/Fast-3 exchanges need their installed rules, not this two-man
+    // shortcut. With no acquired wide flat, ordinary carries remain intact.
+    if (knowsPass(sim, a) && (this.zone === 'curl_flat_s' || this.zone === 'curl_flat_w')) {
+      const side = this.zone === 'curl_flat_s' ? 'S' : 'W';
+      const sign = side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+      const one = sim.offAlign.numbering[`${side}1`];
+      const two = sim.offAlign.numbering[`${side}2`];
+      const flat = threats.find(th => th.r.slot === two);
+      const fastBack = threats.some(th => sim.offAlign.spots[th.r.slot]?.backfield
+        && th.pos.x > sim.los - 1 && sign * th.vel.y > 1.8);
+      if (best && best.r.slot === one && flat && !sim.offAlign.numbering[`${side}3`] && !fastBack) {
+        const depth = flat.pos.x - sim.los;
+        const vOut = sign * flat.vel.y;
+        const outward = sign * (flat.pos.y - sim.offAlign.spots[flat.r.slot].pos.y);
+        if (depth > -1 && depth < 7.5 && sign * (flat.pos.y - lm.y) > 0
+          && ((vOut > 1.8 && vOut > Math.abs(flat.vel.x) * 0.6) || outward > 3)) {
+          this.target = flat.r;
+          if (!this.flatExpansionRecorded) {
+            this.flatExpansionRecorded = true;
+            if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-flat-expand',
+              chose: `flat:${flat.r.slot}`, options: [`lane:${best.r.slot}`, `flat:${flat.r.slot}`],
+              cue: `Known ${side}2 beyond curl landmark in consumed shallow outward picture; pass belief`,
+              detail: `${flat.r.slot} depth ${depth.toFixed(2)} yd, outward ${outward.toFixed(2)} yd, velocity (${flat.vel.x.toFixed(2)},${flat.vel.y.toFixed(2)}) yd/s. Widen beneath #1, not a new man assignment or a confirmed throw target.` });
+          }
+          const across = Math.abs(flat.vel.y) > 3 && Math.abs(flat.vel.y) > Math.abs(flat.vel.x);
+          const tgt = { x: Math.min(lm.x, Math.max(a.pos.x, flat.pos.x + 1)),
+            y: clamp(flat.fut.y + sign * 0.6, 0.5, FIELD_WIDTH - 0.5) };
+          return track(a, tgt, { x: Math.max(0, flat.vel.x) * 0.5, y: flat.vel.y * 0.9 }, {
+            facing: across ? Math.atan2(flat.vel.y, flat.vel.x) : facingQB,
+            speed: across ? 1 : zs * 1.05, gain: 1.8 });
+        }
       }
     }
     this.target = best?.r ?? null;

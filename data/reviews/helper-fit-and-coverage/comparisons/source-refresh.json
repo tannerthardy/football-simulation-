@@ -1,0 +1,18 @@
+[
+  {
+    "family": "runs",
+    "initialSource": "d6161eaa5138ecc6eff90da965282ebf938bf26d51b815cc39c495ae673e9b4d",
+    "promotedSource": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+    "completeRowsExact": true,
+    "beforeFileSha256": "6b7502e4062270ab4fbe9fc921743505f657e37ee0d4a4bf472a4d4f8ba2d280",
+    "promotedFileSha256": "31e94a2d0def121148e45dc289db6767cb5caccf536e826bb6ec9b8bde90f94d"
+  },
+  {
+    "family": "passing",
+    "initialSource": "d6161eaa5138ecc6eff90da965282ebf938bf26d51b815cc39c495ae673e9b4d",
+    "promotedSource": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+    "completeRowsExact": true,
+    "beforeFileSha256": "60aeb89b4011b25f8e43b01f2266693296499636902a2fac2fa405c44a709cdc",
+    "promotedFileSha256": "c639dd96cb553d5b1a6905f0916f64dfbaabb7fda47648a4b069bbfd08f07b72"
+  }
+]

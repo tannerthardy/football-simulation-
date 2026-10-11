@@ -3,6 +3,17 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
+[helper footwork and curl-flat responsibility](reviews/helper-fit-and-flat-responsibility.md).
+Actual hand load now preserves useful helper work when a delayed visual
+forecast disagrees; unloaded bad surfaces receive bounded foot replacement.
+One native Power achieves earlier working contact with unchanged budgets.
+A known #2 flat also pulls its curl-flat defender away from duplicated #1 work,
+turning one untouched 70-yard TD into a 13.95-yard physical tackle. The Draw
+helper still fails to recover its original contact and small games worsen.
+Trace remaining native explosive tails and keep those adverse cases visible;
+do not add anatomy, solver resolution or strength to force NFL averages.
+
+Then read
 [run fits, Draw presentation and recovery](reviews/run-fit-and-recovery.md).
 An exact selected-snap controller counterfactual repairs a cushion retreat
 after an acquired handoff, changing an untouched 90.6-yard Duo into a six-yard

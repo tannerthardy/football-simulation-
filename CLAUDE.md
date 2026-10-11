@@ -7,8 +7,23 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [helper footwork and curl-flat responsibility](docs/reviews/helper-fit-and-flat-responsibility.md)
+first. Unloaded run helpers replace bad feet through the existing movement
+envelope; real hand load takes priority over a stale visual forecast. The native
+Power witness achieves earlier useful helper load (.68→3.07 yd), but the retained
+Draw helper still fails to recover before the owner sheds. Match curl-flat
+players widen against an acquired #2 flat instead of duplicating the corner;
+one 70-yard TD becomes a 13.95-yard physical tackle. World/capacities stay unchanged.
+The [packet](data/reviews/helper-fit-and-coverage/README.md) preserves all adverse
+outcomes and [20-clip offline film](viewer/helper-fit-and-coverage.zip).
+All 1,099 TS/66 Python tests pass; typecheck/build are clean. The 160-run mean
+only improves 2.534→2.617; eight games worsen 46.50→51.13 points/team and
+5.94→7.83 run YPC. No overall calibration win is claimed. Trace the remaining
+Cover 2 curl-flat/post-dig and full-game rushing tails before changing force.
+Local first hand information requires actual working reach; facing is not eyes.
+
 Read [run fits, Draw presentation and recovery](docs/reviews/run-fit-and-recovery.md)
-first. The retained 90.6-yard Duo becomes a six-yard physical tackle in an
+for the preceding increment. The retained 90.6-yard Duo becomes a six-yard physical tackle in an
 explicit selected-snap controller counterfactual; earlier game history, bodies,
 minds and RNG remain unchanged. Delayed possession alone is inert. The new
 man insertion requires known backfield assignment, run belief and an acquired

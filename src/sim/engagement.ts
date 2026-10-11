@@ -30,7 +30,7 @@
  * past — never a jump in leverage or a prescribed speed.
  */
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
-import { fatigueFactor } from '../physics/kinematics.js';
+import { fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
 import { gapY } from '../playbook/alignment.js';
 import { availability, supportParams } from '../physics/support.js';
 import type { HandJoint, Intent } from '../physics/world.js';
@@ -161,6 +161,9 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
       helperSince.set(blocker, t);
       blocker.engagement = existing;
       syncJoints(sim, existing);
+      const hands = existing.helperHands!.get(blocker)!;
+      if (Math.hypot(blocker.pos.x-defender.pos.x,blocker.pos.y-defender.pos.y) <= hands.extension)
+        helperTouches.set(blocker, { rep: existing, at: t, pos: { ...defender.pos } });
       return existing;
     }
     return null;
@@ -250,6 +253,8 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
 }
 
 const helperSince = new WeakMap<Agent, number>();
+// The local point acquired by new hands, not a continuously fresh visual fix.
+const helperTouches = new WeakMap<Agent, { rep: Engagement; at: number; pos: Vec2 }>();
 export function inBlockReach(b: Agent, d: Agent, type: 'run' | 'pass'): boolean {
   const range = b.profile.radius + d.profile.radius + .1 + b.player.measurables.armIn / 36 * (type === 'run' ? .45 : .85);
   return Math.hypot(b.pos.x-d.pos.x,b.pos.y-d.pos.y) <= range;
@@ -758,12 +763,85 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   helperIntents(sim, e, intents, axis);
 }
 
-/** A helper fits on the blocker's hip and drives the defender with him. */
+interface HelperFitRead {
+  rep: Engagement;
+  owner: Agent;
+  side: number;
+  nextRead: number;
+  recovery: boolean;
+  goal: Vec2;
+  defender: Vec2;
+}
+const helperFits = new WeakMap<Agent, HelperFitRead>();
+
+/** A joined helper cannot drive through the defender to replace his feet.
+ * Retain one personally observed foot landmark for the ordinary decision
+ * beat. The acquired surface is known work; the two bodies are delayed visual
+ * pictures. This requests movement only, leaving actual hands/support intact.
+ */
+function helperFit(sim: PlaySim, e: Engagement, h: Agent, axis: Vec2): Intent | null {
+  const hands = e.helperHands?.get(h);
+  // Sustained hand load is immediate proprioception. Do not retreat from a
+  // real working block because an older visual picture extrapolates elsewhere.
+  if (hands?.normalForce || hands?.tangentForce) return null;
+  let read = helperFits.get(h);
+  if (!read || read.rep !== e || read.owner !== e.blocker || sim.t >= read.nextRead) {
+    const owner = sim.see(h, e.blocker), visual = sim.see(h, e.defender);
+    const touch = helperTouches.get(h);
+    const defender = touch?.rep === e && touch.at === sim.t
+      ? { ...visual, pos: touch.pos } : visual;
+    const lat = latOf(axis);
+    const side = read?.rep === e && read.owner === e.blocker ? read.side
+      : Math.sign((h.pos.x-owner.pos.x)*lat.x+(h.pos.y-owner.pos.y)*lat.y) || e.side;
+    const width = (h.profile.radius+e.blocker.profile.radius)*.95;
+    const hip = { x: owner.pos.x+lat.x*width*side, y: owner.pos.y+lat.y*width*side };
+    const offset = sub(hip, defender.pos), relative = sub(h.pos, defender.pos);
+    const depth = offset.x*axis.x+offset.y*axis.y;
+    const recovery = depth <= 0 || relative.x*axis.x+relative.y*axis.y <= 0;
+    let goal = hip;
+    if (recovery) {
+      const contact = h.profile.radius+e.defender.profile.radius;
+      // Keep a neighboring lane while replacing feet on the useful surface.
+      // No actual body, contact axis or hand extension is projected here.
+      const replace = Math.max(0, .5*contact-depth);
+      let fit = { x: offset.x+axis.x*replace, y: offset.y+axis.y*replace };
+      const length = Math.hypot(fit.x,fit.y), clearance = contact+.15;
+      if (length < clearance) fit = { x: fit.x*clearance/length, y: fit.y*clearance/length };
+      const dx = fit.x-relative.x, dy = fit.y-relative.y;
+      const along = clamp(-(relative.x*dx+relative.y*dy)/Math.max(1e-12,dx*dx+dy*dy),0,1);
+      if (Math.hypot(relative.x+along*dx,relative.y+along*dy) < contact) {
+        const distance = Math.hypot(relative.x,relative.y);
+        if (distance > 1e-9) {
+          const cross = relative.x*fit.y-relative.y*fit.x;
+          // Antipodal feet still have a known joining side to work around.
+          const angle = (Math.sign(cross)||-side)*Math.min(.35,Math.acos(clamp(
+            (relative.x*fit.x+relative.y*fit.y)/(distance*Math.hypot(fit.x,fit.y)),-1,1)));
+          const radius = Math.max(clearance,(distance+clearance)/2);
+          fit = { x:(relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
+            y:(relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
+        }
+      }
+      goal = { x:defender.pos.x+fit.x, y:defender.pos.y+fit.y+h.mind.placementError };
+    }
+    read = { rep:e, owner:e.blocker, side, nextRead:sim.t+h.mind.decisionInterval, recovery,
+      goal, defender:{...defender.pos} };
+    helperFits.set(h,read);
+  }
+  if (!read.recovery) return null;
+  // A foot landmark is held for this beat. Chasing its stale extrapolated
+  // velocity would add a second prediction on top of the visual picture.
+  return { vel:movingArrivalVelocity(h.body,read.goal,{x:0,y:0},h.profile.vmax,.1,0,1,baseOf(h)),
+    facing:Math.atan2(read.defender.y-h.pos.y,read.defender.x-h.pos.x), push:1, posture:.75 };
+}
+
+/** Useful helpers drive normally; an unusable run surface first needs feet. */
 function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec2): void {
   const b = e.blocker, d = e.defender;
   const lat = latOf(axis);
   const sep = b.profile.radius + d.profile.radius;
   for (const h of e.helpers) {
+    const recovery = e.type === 'run' ? helperFit(sim,e,h,axis) : null;
+    if (recovery) { intents[h.idx] = recovery; continue; }
     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
     const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
     const toSpot = sub(spot, h.pos);
