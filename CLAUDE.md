@@ -7,15 +7,16 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
-Read [zone-helper checks](docs/reviews/zone-helper-check-and-climb.md) for the
-current verified increment, source pins and evidence. Original IZ/split-zone
-helpers can check supported near work and climb using their own pictures;
-their optional cadence must not change joined-double timing. The unpromoted
-shared-clock candidate and adverse Bear input are retained. Next isolate
-personal attention in joined combinations; read the
+Read [joined-combination attention](docs/reviews/joined-combination-attention.md)
+for the current verified increment, source pins, mixed results and adverse
+review. Each member reads on his own cadence and proposes only his own climb;
+real keeper hands survive the transition. The old command-local collector misses
+prepass decisions, so use whole-play events and the common native witness tap.
+Next diagnose the cutoff approach/contact-frame contradiction; read the
 [common OL controller recommendation](docs/reviews/universal-ol-controller.md).
-The [work-exchange increment](docs/reviews/ol-work-exchanges.md) classifies
-both recipients' new jobs. Do not treat unmeasured candidates as proven fixes.
+The [zone-helper](docs/reviews/zone-helper-check-and-climb.md) and
+[work-exchange](docs/reviews/ol-work-exchanges.md) increments explain earlier
+repairs. Do not treat unmeasured candidates as proven fixes.
 
 Read [Physics development](docs/PHYSICS_DEVELOPMENT.md) for the model/change loop
 and [Practical validation](docs/reviews/practical-validation-and-stable-physics.md)

@@ -1,0 +1,54 @@
+{
+  "sourceSha256": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+  "baselineCommit": "4e2abaf",
+  "baselineSourceSha256": "d6dfa190412da52725780c71db02f73305b3e3f5541b4c8e9d755a3296ee568f",
+  "node": "v22.23.3",
+  "sourceFilesChanged": [
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/playsim.ts"
+  ],
+  "fullTypeScriptTests": {
+    "passed": 812,
+    "files": 72,
+    "durationSeconds": 92.47,
+    "log": "full-tests.log",
+    "exitCode": 0
+  },
+  "pythonTests": {
+    "passed": 22,
+    "log": "python.log",
+    "exitCode": 0
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": "typecheck.log"
+  },
+  "build": {
+    "exitCode": 0,
+    "log": "build.log"
+  },
+  "attentionTests": {
+    "passed": 20,
+    "baselineFeatureFailures": 19,
+    "baselineControlPasses": 1,
+    "source": "controlled-tests.ts",
+    "candidateLog": "tests-after.log",
+    "baselineLog": "tests-before.log",
+    "exitCode": 0
+  },
+  "optionalHelperControls": {
+    "existingControlsPassedOnBaseline": 18,
+    "newRecoveryFailureOnBaseline": 1,
+    "candidatePassed": 19,
+    "baselineLog": "optional-controls-before.log"
+  },
+  "migrationReview": "test-migration-review.md",
+  "measurementPolicy": "Whole-play block_climb events; old command-local counts omit the new prepass. Detailed own-cue/contact proofs cover six predeclared neutral witnesses. Post-hoc adverse investigations remain separate.",
+  "sourceFrozen": true,
+  "finalDiagnosticExportCompile": {
+    "exitCode": 0,
+    "typecheck": true,
+    "build": true,
+    "note": "Compiler and build repeated after new witness/adverse/export tools froze; source/tests unchanged."
+  }
+}

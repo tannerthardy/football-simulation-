@@ -90,14 +90,20 @@ function step(f: Fixture, runClimber = false) {
   return report;
 }
 
-function ready(f: Fixture) {
+function nextRead(f: Fixture, observer: Fixture['primary']) {
+  const index = f.combination.members.indexOf(observer);
+  return f.combination.reads?.[index]?.nextRead ?? f.combination.nextRead;
+}
+
+function ready(f: Fixture, departing: 'primary' | 'helper' = 'primary') {
+  const reader = f[departing];
   const first = step(f);
   expect(f.engagement.baseB).toBeGreaterThan(.60);
   expect(Math.abs(f.engagement.phi)).toBeLessThan(.55);
   expect(first.armImpulse[f.primary.idx]).toBeGreaterThan(0);
-  readCombination(f.primary, f.sim, f.combination);
-  while (f.sim.t + 1e-9 < f.combination.nextRead) step(f);
-  return f;
+  readCombination(reader, f.sim, f.combination);
+  while (f.sim.t + 1e-9 < nextRead(f, reader)) step(f);
+  return { ...f, reader };
 }
 
 function native(j: HandJoint) {
@@ -108,11 +114,11 @@ function native(j: HandJoint) {
 describe('a combination release asks whether the actual remaining blocker can keep contact', () => {
   it.each([-1, 1])('lets a poorly fitted helper climb while the secure primary stays, side %s', side => {
     for (const reverse of [false, true]) {
-      const f = ready(fixture(side, true, reverse)), { engagement: e } = f;
+      const f = ready(fixture(side, true, reverse), 'helper'), { engagement: e } = f;
       expect(e.control).toBeGreaterThan(0);
       expect(helperSupport(f.sim, e, f.helper)).toBeLessThan(.25);
       const primaryHands = e.hands!, before = f.sim.agents.map(a => structuredClone(a.body));
-      readCombination(f.primary, f.sim, f.combination);
+      readCombination(f.reader, f.sim, f.combination);
       expect(f.combination.released).toBe(true);
       expect(e.blocker).toBe(f.primary);
       expect(e.hands).toBe(primaryHands);
@@ -146,14 +152,14 @@ describe('a combination release asks whether the actual remaining blocker can ke
   });
 
   it.each([-1, 1])('does not promote a preferred helper who is recovering his support, side %s', side => {
-    const f = ready(fixture(side)), sup = f.helper.body.support!, sp = supportParams(f.helper.profile);
+    const f = ready(fixture(side), 'helper'), sup = f.helper.body.support!, sp = supportParams(f.helper.profile);
     const radius = baseRadiusAt(sp, sup.posture), critical = criticalDeviation(sp, sup.posture, 0, 1);
     // A controlled, physically legal perturbation is the initial condition;
     // its recovery continues through World after the assignment read.
     sup.xi = { x: radius + .75 * (critical - radius), y: 0 };
     expect(availability(sup, sp, fatigueFactor(f.helper.body.energy))).toBeLessThan(.60);
     expect(sup.state).toBe('up');
-    readCombination(f.primary, f.sim, f.combination);
+    readCombination(f.reader, f.sim, f.combination);
     expect(f.combination.released).toBe(true);
     expect(f.engagement.blocker).toBe(f.primary);
     expect(f.primary.tags.has('combo-climb')).toBe(false);
@@ -174,9 +180,9 @@ describe('a combination release asks whether the actual remaining blocker can ke
   });
 
   it('keeps the real primary when the preferred helper has only a stale joint reference', () => {
-    const f = ready(fixture()), helperJoint = f.engagement.helperHands!.get(f.helper)!;
+    const f = ready(fixture(), 'helper'), helperJoint = f.engagement.helperHands!.get(f.helper)!;
     f.sim.world.joints = f.sim.world.joints.filter(j => j !== helperJoint);
-    readCombination(f.primary, f.sim, f.combination);
+    readCombination(f.reader, f.sim, f.combination);
     expect(f.combination.released).toBe(true);
     expect(f.engagement.blocker).toBe(f.primary);
     expect(f.helper.tags.has('combo-climb')).toBe(true);
@@ -235,12 +241,12 @@ describe('promoting a real helper preserves the existing physical hand state', (
   });
 
   it('retains the original primary\'s hold when that player keeps the block', () => {
-    const f = ready(fixture(1, true)), e = f.engagement;
+    const f = ready(fixture(1, true), 'helper'), e = f.engagement;
     e.holding = true; f.primary.tags.add('held');
     const primaryJoint = e.hands!;
     step(f);
     expect(primaryJoint.hold).toBeGreaterThan(0);
-    readCombination(f.primary, f.sim, f.combination);
+    readCombination(f.reader, f.sim, f.combination);
     expect(f.combination.released).toBe(true);
     expect(e.blocker).toBe(f.primary); expect(e.hands).toBe(primaryJoint);
     expect(e.holding).toBe(true); expect(f.primary.tags.has('held')).toBe(true);
@@ -279,20 +285,20 @@ describe('a combo responds to the filling backer that the observer actually saw'
 
   it.each([-1, 1])('holds while a newly arriving backer is still outside the delayed picture, side %s', side => {
     const f = fixture(side);
-    f.backer.body.pos = { x: 48, y: CENTER_Y + side }; f.observe(); ready(f);
+    f.backer.body.pos = { x: 48, y: CENTER_Y + side }; f.observe(); ready(f, 'helper');
     f.backer.body.pos = { x: 42, y: CENTER_Y + side };
     f.sim.perception.record(f.sim.agents);
-    const seen = f.sim.see(f.primary, f.backer);
+    const seen = f.sim.see(f.helper, f.backer);
     expect(seen.pos.x).toBe(48); expect(seen.age).toBeGreaterThan(.05);
-    readCombination(f.primary, f.sim, f.combination);
+    readCombination(f.helper, f.sim, f.combination);
     expect(f.combination.released).toBe(false);
     // The visual sample can take longer to arrive than the next decision.
     // Advance the real World until that ordinary buffer latency has elapsed.
     let ticks = 0;
-    while (f.sim.see(f.primary, f.backer).pos.x !== 42 && ticks++ < 14) step(f);
-    while (f.sim.t + 1e-9 < f.combination.nextRead) step(f);
-    expect(f.sim.see(f.primary, f.backer).pos.x).toBe(42);
-    readCombination(f.primary, f.sim, f.combination);
+    while (f.sim.see(f.helper, f.backer).pos.x !== 42 && ticks++ < 14) step(f);
+    while (f.sim.t + 1e-9 < nextRead(f, f.helper)) step(f);
+    expect(f.sim.see(f.helper, f.backer).pos.x).toBe(42);
+    readCombination(f.helper, f.sim, f.combination);
     expect(f.combination.released).toBe(true);
   });
 

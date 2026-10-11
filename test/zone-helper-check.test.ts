@@ -9,7 +9,7 @@ import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
+import { RunBlocker, readCombination, type Combination } from '../src/sim/behaviors/blocking.js';
 import { updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
@@ -154,6 +154,30 @@ describe('the original inside-zone helper may check a supported owner before cli
     f.uncovered.update(f.helper, f.sim);
     expect(checked(f)).toBe(false); expect(f.combination.released).toBe(false);
     readUntil(f); expect(checked(f)).toBe(true);
+  });
+
+  it('an unjoined helper who loses his footing must confirm the owner again after recovering', () => {
+    const f = prime(loaded()), hands = f.engagement.hands!;
+    expect(f.combination.checkSince).toBeGreaterThanOrEqual(0);
+    expect(f.helper.engagement).toBeNull();
+    f.helper.body.support!.state = 'down';
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.checkSince).toBe(-1);
+    expect(f.combination.released).toBe(false);
+    f.helper.body.support!.state = 'up';
+    const recoveredAt = f.sim.t;
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(false);
+    expect(f.combination.checkSince).toBe(recoveredAt);
+    expect(f.helper.engagement).toBeNull();
+    expect(f.engagement.hands).toBe(hands);
+    readUntil(f);
+    expect(checked(f)).toBe(true);
+    expect(f.engagement.hands).toBe(hands);
+    expect(f.engagement.helpers).toEqual([]);
+    expect(f.sim.world.joints).toContain(hands);
+    expect(f.sim.world.joints.every(j => j.a !== f.helper.body && j.b !== f.helper.body)).toBe(true);
+    expect(step(f, true).armImpulse[f.owner.idx]).toBeGreaterThan(0);
   });
 });
 
@@ -364,30 +388,36 @@ describe('optional checks preserve the later genuine double\'s decision phase', 
       if (!optional) for (const a of sim.offense)
         if (a.behavior instanceof RunBlocker && a.behavior.plan.combination)
           delete a.behavior.plan.combination.helpPolicy;
-      const original = behavior.update;
       const reads: Array<{ t: number; control: number; phi: number; released: boolean }> = [];
-      behavior.update = function (a, s) {
+      while (!combo.released && sim.t < 2 && sim.phase !== 'dead') {
         const e = combo.defender.engagement;
         const joined = !!e && combo.members.every(member => member.engagement === e);
-        const phase = combo.nextRead, state = e ? { control: e.control, phi: e.phi } : null;
-        const command = original.call(this, a, s);
-        if (joined && state && combo.nextRead !== phase)
-          reads.push({ t: s.t, ...state, released: combo.released });
-        return command;
-      };
-      while (!combo.released && sim.t < 2 && sim.phase !== 'dead') sim.tick();
+        const member = combo.members.indexOf(owner);
+        const phase = combo.reads?.[member]?.readAt ?? combo.nextRead;
+        const state = e ? { control: e.control, phi: e.phi } : null;
+        const t = sim.t;
+        sim.tick();
+        const after = combo.reads?.[member]?.readAt ?? combo.nextRead;
+        if (joined && state && after !== phase)
+          reads.push({ t, ...state, released: combo.released });
+      }
       expect(combo.released).toBe(true);
-      expect(helper.tags.has('combo-climb')).toBe(true);
-      expect(helper.tags.has('combo-check-climb')).toBe(false);
-      expect(owner.engagement?.blocker).toBe(owner);
-      expect(owner.engagement!.hands!.a).toBe(owner.body);
-      expect(sim.world.joints).toContain(owner.engagement!.hands);
-      expect(owner.engagement!.hands!.normalForce).toBeGreaterThan(0);
-      return { reads, event: sim.events.find(e => e.type === 'block_climb' && e.a === helper.idx)! };
+      const climbers = combo.members.filter(a => a.tags.has('combo-climb'));
+      expect(climbers).toHaveLength(1);
+      const climber = climbers[0], keeper = combo.members.find(a => a !== climber)!;
+      expect(climber.tags.has('combo-check-climb')).toBe(false);
+      expect(keeper.engagement?.blocker).toBe(keeper);
+      expect(keeper.engagement!.hands!.a).toBe(keeper.body);
+      expect(sim.world.joints).toContain(keeper.engagement!.hands);
+      expect(keeper.engagement!.hands!.normalForce).toBeGreaterThan(0);
+      return { reads, climber: climber.slot, keeper: keeper.slot,
+        event: sim.events.find(e => e.type === 'block_climb' && e.a === climber.idx)! };
     };
     const sustained = run(false), optional = run(true);
     expect(sustained.reads.length).toBeGreaterThan(1);
     expect(optional.reads).toEqual(sustained.reads);
+    expect(optional.climber).toBe(sustained.climber);
+    expect(optional.keeper).toBe(sustained.keeper);
     expect(optional.event).toEqual(sustained.event);
   });
 });

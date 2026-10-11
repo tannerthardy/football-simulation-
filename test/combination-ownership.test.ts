@@ -113,10 +113,11 @@ describe('shared combination ownership before either member climbs', () => {
     readCombination(owner, sim, combination);
     expect(helperSupport(sim, e, owner)).toBeLessThan(.4);
     expect(combination.released).toBe(false);
-    combination.nextRead = 0;
     sim.t = 1.2; observe();
     readCombination(owner, sim, combination);
-    expect(combination.secureSince).toBeCloseTo(1.2);
+    // The observer already began his own credible-contact confirmation;
+    // an earlier partner/global schedule does not restart that dwell.
+    expect(combination.reads?.[combination.members.indexOf(owner)].secureSince).toBeCloseTo(1.05);
     expect(combination.released).toBe(false);
     sim.t = 1.2 + owner.mind.decisionInterval + .16; observe();
     readCombination(owner, sim, combination);

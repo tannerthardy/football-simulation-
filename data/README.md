@@ -1,6 +1,17 @@
 # Shared NFL data
 
-Current engine status: [Zone-helper checks and climbs](../docs/reviews/zone-helper-check-and-climb.md).
+Current engine status: [Joined-combination attention](../docs/reviews/joined-combination-attention.md).
+The [evidence and commands](reviews/physics-world/combo-attention/README.md)
+reuse the pinned 162-input baseline and add six common neutral B/C witnesses,
+plus a separately labelled post-hoc adverse inspection. Watch
+[12 paired clips](../viewer/combo-attention.html) or the
+[offline ZIP](../viewer/combo-attention.zip). Each joined member reads personally
+and proposes his own climb while preserving real keeper hands. Rushing results
+and falls remain mixed. Whole-play events count climbs; the older command-local
+collector misses the prepass. Next diagnose the cutoff approach/contact-frame
+contradiction using unchanged physical capacities.
+
+Previous engine status: [Zone-helper checks and climbs](../docs/reviews/zone-helper-check-and-climb.md).
 The [evidence and commands](reviews/physics-world/zone-helper-check/README.md)
 reuse the immutable 162-input baseline and retain the unpromoted shared-clock
 candidate. Watch [ten paired clips](../viewer/zone-helper-check.html) or the
@@ -10,7 +21,7 @@ real keeper hands. All five later establish loaded linebacker contact; rushing
 results remain mixed. Optional reads have their own cadence and preserve joined
 timing. Shared World and capacities stay unchanged. The
 [common OL controller recommendation](../docs/reviews/universal-ol-controller.md)
-identifies personal joined-double attention as the next common repair.
+explains the subsequent personal joined-double attention repair.
 
 Previous engine status: [Coherent OL work exchanges](../docs/reviews/ol-work-exchanges.md).
 The [evidence and commands](reviews/physics-world/ol-job-exchange/README.md) reuse

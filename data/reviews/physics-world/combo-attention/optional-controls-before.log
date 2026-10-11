@@ -1,0 +1,52 @@
+
+ RUN  v3.2.4 /tmp/football-combo-attention-baseline
+
+ ❯ test/zone-helper-check.test.ts (19 tests | 1 failed) 1249ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side -1 111ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side 1 64ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > keeps the helper reading independently of his supported owner's ordinary earlier update 70ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > requires a stable helper check instead of inheriting an owner's historical secure time 56ms
+   × the original inside-zone helper may check a supported owner before climbing > an unjoined helper who loses his footing must confirm the owner again after recovering 34ms
+     → expected -1 to be 1.5000000000000004 // Object.is equality
+   ✓ a check does not bypass a physical or near-level responsibility > rejects down despite the owner's stale visible up pose 37ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects unbalanced despite the owner's stale visible up pose 51ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects missing-hands despite the owner's stale visible up pose 26ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects foreign-hands despite the owner's stale visible up pose 53ms
+   ✓ a check does not bypass a physical or near-level responsibility > retains assistance when the owned defender approaches the helper's near hip 38ms
+   ✓ a check does not bypass a physical or near-level responsibility > does not ignore another unengaged near-level penetrator in the helper corridor 43ms
+   ✓ a check does not bypass a physical or near-level responsibility > keeps a physically restrained helper from being treated as a free climber 31ms
+   ✓ a check does not bypass a physical or near-level responsibility > does not send the installed covered owner uphill to manufacture optional help 16ms
+   ✓ helper decisions consume delayed visible responsibility cues > does not climb through a near hip still in his picture merely because the hidden DL has moved away 36ms
+   ✓ helper decisions consume delayed visible responsibility cues > does not anticipate a filling backer whose delayed picture is still far from the helper 33ms
+   ✓ optional inside-zone help respects other concepts and real double teams > retains sustained help for Duo, gap schemes, stretch zone, Draw and Toss 53ms
+   ✓ optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path 22ms
+   ✓ an ordinary Split Zone Tite rep establishes the same check and climb > lets RT use the supported Y block without first inventing a second pair of hands 163ms
+   ✓ optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help 294ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/zone-helper-check.test.ts > the original inside-zone helper may check a supported owner before climbing > an unjoined helper who loses his footing must confirm the owner again after recovering
+AssertionError: expected -1 to be 1.5000000000000004 // Object.is equality
+
+- Expected
++ Received
+
+- 1.5000000000000004
++ -1
+
+ ❯ test/zone-helper-check.test.ts:171:38
+    169|     readCombination(f.helper, f.sim, f.combination);
+    170|     expect(f.combination.released).toBe(false);
+    171|     expect(f.combination.checkSince).toBe(recoveredAt);
+       |                                      ^
+    172|     expect(f.helper.engagement).toBeNull();
+    173|     expect(f.engagement.hands).toBe(hands);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 18 passed (19)
+   Start at  08:32:02
+   Duration  2.45s (transform 762ms, setup 0ms, collect 964ms, tests 1.25s, environment 0ms, prepare 83ms)
+

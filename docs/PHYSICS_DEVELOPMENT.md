@@ -3,12 +3,12 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
-[zone-helper checks](reviews/zone-helper-check-and-climb.md): the verified
-increment adds original IZ/split-zone helper check/climb work without changing
-joined-double cadence. The rejected shared-clock candidate is retained. Read
-the exact source, mixed results and omissions, then the
-[common OL controller recommendation](reviews/universal-ol-controller.md).
-Next isolate personal attention in joined combinations. The
+[joined-combination attention](reviews/joined-combination-attention.md): each
+member reads and proposes his own climb while preserving actual keeper contact.
+Read its exact source, mixed results, adverse review and recording omissions,
+then the [common OL controller recommendation](reviews/universal-ol-controller.md).
+Next diagnose the reproduced cutoff approach/contact-frame contradiction.
+The [zone-helper](reviews/zone-helper-check-and-climb.md),
 [work-exchange](reviews/ol-work-exchanges.md) and
 [keeper](reviews/keeper-based-combination-work.md) increments explain earlier
 job/contact repairs; coherent contact alone does not make rushing better.

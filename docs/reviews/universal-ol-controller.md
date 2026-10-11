@@ -13,7 +13,11 @@ that loop: changing the target must also classify the new job using the
 recipient's own picture. The [zone-helper increment](zone-helper-check-and-climb.md)
 adds original uncovered inside/split-zone check and climb, with personal optional
 cadence and real keeper admissibility. Its rejected shared-clock candidate and
-mixed final results are retained. Joined-double attention remains the next step.
+mixed final results are retained. The
+[joined-attention increment](joined-combination-attention.md) now gives both
+members personal confirmation and current self-departure proposals. Native
+adverse traces expose plausible changed reads rather than hidden shared timing;
+rushing efficiency remains mixed.
 
 ## What trained should mean
 
@@ -56,7 +60,7 @@ A sustained Duo/down double, OZ overtake and IZ check are different installed
 relationships executing through the same controller and capacities. They should
 not share a blanket departure exception simply because each can have two blockers.
 
-## Highest-value remaining common defect
+## Repaired attention defect
 
 The prior source-`ff641a8` ordinary panel, described in the
 [work-exchange review](ol-work-exchanges.md#remaining-limits-and-next-work), has 190
@@ -66,21 +70,34 @@ counts of the new helper's private checks. Shared
 `combo.nextRead` lets the first member in iteration do both people's reading.
 This prevents a good guard's recognition from helping the pair.
 
-Repair attention separately after the helper rule is stable. Each member needs
-his own read cadence and cue confirmation; factual contact ownership remains
-shared. Simply adding two clocks is insufficient if one reader still decides
-both members' departures using his picture. A member should propose his own
-departure, or an explicit installed communication rule should explain delegation.
-One player's caution must not reset the other's personal confirmation.
+The current repair uses two finite member states and a pre-command pair pass,
+not a new engine-wide scheduler. A member proposes his own departure from his
+own delayed picture; current physical ownership remains shared. Simultaneous
+proposals have a stable resolver, tested with conflicting pictures and reversed
+read order. Physical ineligibility can stop an attention attempt before eyes
+consume anything. The six natural witnesses have no pair where both consume
+visual surface pictures, despite seven pairs scheduling both members; controlled
+good-fit tests cover that case. Reading more often never changes force caps.
 
-If both propose on the same tick, define a stable pair rule and test conflicting
-pictures. Do not claim order independence merely because both now read. Keep
-this small: two finite member states or member-owned fields, not a new scheduler
-for the entire engine. Reading more often does not justify changing force caps.
+## Highest-value remaining common defect
+
+In Power/Under/left/S3, the backside RT reaches the instructed cutoff shoulder,
+but the acquired contact frame treats that shoulder as severe lost leverage.
+The nominal aim is almost tangent to that frame; tiny angle changes also switch
+the approach between controlled recovery and the original sprint. Native hands
+arrive, stay within shared caps, then shed for leverage. A successful inside-shade
+cutoff shows why resetting every frame would hide real bad fits.
+
+Start with the [pinned native diagnosis](../../data/reviews/physics-world/combo-attention/cutoff-next-witness.md).
+Separate installed useful contact surface from displacement intention only where
+the contradiction is reproduced. Preserve genuine achieved geometry, normal
+inside-shade and natural opposite-side controls. A better trained blocker must
+be able to request a coherent shoulder and arrive there through the existing
+body limits; the installation must not punish that shoulder as the wrong one.
 
 ## Subsequent work and acceptance
 
-After attention, diagnose recovery/collection and contextual engaged footwork.
+After the cutoff contradiction, diagnose recovery/collection and contextual engaged footwork.
 Current offensive foot/hand traits emphasize pass-block ratings even during
 run work. Review that through a reproduced specialist-control failure; do not
 fix it by increasing strength or traction. Also preserve the distinction between

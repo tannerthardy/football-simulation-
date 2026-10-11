@@ -27,6 +27,7 @@ import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { spaceTeammates } from './spacing.js';
+import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { ReplayTrace } from './telemetry.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
@@ -516,6 +517,11 @@ export class PlaySim {
 
   // ------------------------------------------------------------ loop
 
+  /** Let both joined linemen make their own read before movement commands. */
+  prepareJoinedRunBlocks(): void {
+    prepareJoinedCombinations(this);
+  }
+
   run(): PlayResult {
     this.event('snap', this.slot('C') ?? this.qb);
     while (this.phase === 'live' && this.t < MAX_PLAY_TIME) this.tick();
@@ -538,6 +544,8 @@ export class PlaySim {
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
     for (const d of this.defense) d.recog?.update(d, this);
+
+    this.prepareJoinedRunBlocks();
 
     // Decide.
     for (let i = 0; i < this.agents.length; i++) {
