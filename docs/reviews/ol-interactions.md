@@ -38,6 +38,52 @@ explain all five. Head-on-the-number and hip-to-hip coaching language should
 initially become surface, orientation and support requests, not skeletal parts.
 Body facing also does not prove eye direction.
 
+## Applying the separate trench investigation
+
+The [reference investigation](https://github.com/tannerthardy/football-simulation-/blob/b6a48f1/docs/reviews/trench-deep-dive.md)
+was reviewed against current source, rather than merged. Its useful controller
+finding reproduces: the engaged defender's old foot request directly opposed
+the OL's private drive direction, even before acquiring a changed movement cue.
+The [current receipt](../../data/reviews/current/trench-controller.json) records
+the clean reapplication, matched controls and adverse outcomes.
+
+Only first-level interior/edge contact fits receive this change:
+
+- The defender acquires blocker motion through his delayed picture, holds it
+  for his decision beat and follows it while keeping a remembered gap-side
+  shoulder. Actual transmitted hand load supplies local position; reaching
+  alone does not. A newly declared runner changes the selected target and
+  movement together on the next decision.
+- Box and spill retain opposite shoulders. Interior lag answers acquired
+  lateral flow on its backside; it does not override an edge's box/spill duty.
+- Control and lag request finite foot replacement toward their own first
+  loaded-contact depth. Attack keeps forward intent. A keeper change refreshes
+  the opponent picture while preserving that depth. A double can still drive
+  the defender backward. There is no displacement ceiling or resistance bonus.
+
+This changes neither the OL's lateral technique nor World forces, traction,
+support, contact law or physical profiles. The placement rule is a reduced
+coaching model, not a measured NFL shoulder distance. Support players, inserts,
+unassigned contacts and pass reps retain their policies. Conditional inside
+support, gaze/occlusion, inherited true-position facing, drive-derived fallback
+contact frames and outcome-awarded sheds remain separate limitations.
+
+Do **not** promote the experimental force flags from their better percentiles.
+`TRENCH_ECC` raises turf traction as well as muscular capacity. `TRENCH_LEV`
+alters normal-load allowance without a complete vertical force/work model, and
+translation, turning and recovery do not share that altered allowance. Neither
+repairs the angular-law failure. Their measurements also mix proximity with
+contact, snap-relative with engagement-relative time, and changing blocker
+identities. Flat weight curves and NFL drive tails are diagnostic comparisons,
+not acceptance gates or evidence that mass should cease to matter.
+
+The optional `--contacts` mode of
+`scripts/diag/combo-attention-witness.ts` now copies real pre/post-solve run
+requests, acquired pictures, bodies, hand loads and returned budgets. It makes
+no extra decisions, observations or RNG draws. Native outcomes include worse
+runs and missed climber contacts; a correct request does not certify a better
+whole play. The receipt retains these negatives and reproduction commands.
+
 ## What the lineman should keep doing
 
 Use one reusable responsibility-and-control loop:

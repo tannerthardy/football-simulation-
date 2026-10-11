@@ -52,6 +52,18 @@ others never regain their opponent before the natural end. Square drives,
 unseen losses, live doubles and loaded contacts retain their policies.
 This is pre-acquisition control, not a loaded-primary or physics rewrite.
 
+The separate `claude/trench-investigation` was reviewed and reapplied narrowly;
+see the [trench receipt](../data/reviews/current/trench-controller.json).
+First-level interior/edge defenders now acquire blocker flow and preserve a
+moving gap-side shoulder. Control/lag attempt bounded recovery toward their
+first loaded-contact depth; attack retains forward intent. New runner choices
+respect the held decision, and keeper transfers preserve depth. World and OL
+lateral technique remain unchanged. The experimental force/traction bonuses
+were withheld. Fourteen matched native plays retain mixed results: ordinary
+climber contacts fall from 4 to 1, while the supplemental panel rises from 4 to
+5. A longer Under run remains an adverse tackle/pursuit witness, not a solved
+run game. Trace the missed RG climb and actual grips before another change.
+
 **Next shared-physics priority: coherent hand/contact angular transfer.** The
 isolated oracle fails under tangential restraint with no ground reaction or
 body spin; refinement does not fix it. A single effective common patch must
@@ -69,10 +81,11 @@ The [displacement pilot](../data/reviews/current/run-displacement.json) motivate
 these checks; it does not justify stronger anchors or a travel cap.
 Outside-zone lateral technique is being investigated separately.
 
-The latest eight-game drive-recovery check preserves all twelve guarded
-mechanisms, but scoring remains 58 points per team-game and 90th-percentile
-YAC 40.1 yd. The prior support check averaged 63.7 points. These are unpaired
-native games with changing calls/RNG, not causal estimates or readiness proof.
+The latest eight-game trench check preserves all twelve guarded mechanisms,
+but scoring is 67.4 points per team-game and 90th-percentile YAC 47.6 yd. The
+prior drive-recovery check averaged 58 points. These native-game checks have
+diverging calls/RNG, not matched-play explanations or readiness proof. The drive
+proxy's 90th percentile is now 2.6 yd; that number did not select the controller.
 Contact and coverage still need substantial work; see [NFL data](NFL_DATA.md).
 
 ## Random film review: choose the next investigation
