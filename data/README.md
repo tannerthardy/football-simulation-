@@ -1,6 +1,19 @@
 # Shared NFL data
 
-Current engine status: [Joined-combination attention](../docs/reviews/joined-combination-attention.md).
+Current review: [Position technique and awareness](../docs/reviews/position-technique-and-awareness.md).
+It separates wrong instructions, hidden information and movement prediction from
+physical uncertainty. The [movement audit](../docs/reviews/movement-and-nfl-validation-audit.md)
+adds 72 pinned baseline trials using existing NFL drill paths. The
+[pursuit audit](../docs/reviews/pursuit-and-tackle-technique-audit.md) retains
+small controlled failures rather than estimating their frequency from highlights.
+The [position-technique evidence and commands](reviews/physics-world/position-technique/README.md)
+include the promoted cutoff-only panel and separately retained QB/RB experiments.
+The QB torso proxy was withheld after adverse native/game checks; the existing
+coverage information shortcut remains known debt.
+NFL data supports conditional task comparisons; it is not a scoring target or
+proof that today's capacity mappings are calibrated.
+
+Previous engine status: [Joined-combination attention](../docs/reviews/joined-combination-attention.md).
 The [evidence and commands](reviews/physics-world/combo-attention/README.md)
 reuse the pinned 162-input baseline and add six common neutral B/C witnesses,
 plus a separately labelled post-hoc adverse inspection. Watch

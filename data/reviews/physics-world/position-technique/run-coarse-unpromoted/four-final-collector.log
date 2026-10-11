@@ -1,0 +1,10 @@
+{
+  "output": "out/cutoff-surface/four-final.json.gz",
+  "sourceBefore": "f641f128241746ab1b0b6a90f13affb05a0c8505e35792195ce19497ea5bccdd",
+  "sourceAfter": "f641f128241746ab1b0b6a90f13affb05a0c8505e35792195ce19497ea5bccdd",
+  "clips": 4,
+  "observerControls": 4,
+  "naturalEnds": 4,
+  "prepassAvailable": 4,
+  "climbs": 5
+}

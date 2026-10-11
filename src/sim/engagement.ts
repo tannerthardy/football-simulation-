@@ -33,7 +33,7 @@ import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { fatigueFactor } from '../physics/kinematics.js';
 import { availability, supportParams } from '../physics/support.js';
 import type { HandJoint, Intent } from '../physics/world.js';
-import type { Agent, Engagement, RushMove } from './agent.js';
+import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
 // ------------------------------------------------------------ traits
@@ -125,7 +125,7 @@ function baseOf(a: Agent): number {
 
 // ------------------------------------------------------------ creation
 
-export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null): Engagement | null {
+export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null, surface?: RunContactSurface): Engagement | null {
   const t = sim.t;
   if (sim.bond && [sim.bond.carrier, ...sim.bond.tacklers].some((a) => a === blocker || a === defender)) return null;
   if (blocker.engagement) return blocker.engagement;
@@ -170,6 +170,12 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
     repEdge: rng.normal(0, 0.08),
     holding: false,
   };
+  // This is the installed shoulder, never inferred from the actual arrival.
+  // Existing hands and joining helpers returned above keep their acquired frame.
+  if (type === 'run' && surface) {
+    e.surfaceAxis = { ...surface.axis };
+    e.sealTarget = surface.sealTarget;
+  }
   const axis = axisOf(sim, e);
   const lat = latOf(axis);
   e.phi = clamp(measurePhi(axis, defender, blocker), -0.95, 0.95);
@@ -215,7 +221,7 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
     e.control = clamp(punchB - strike + 0.1, -0.8, 0.8);
     e.move = 'shed';
     // Reach blocks want the defender sealed on the backside.
-    if (drive) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
+    if (drive && !surface) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
   }
   blocker.engagement = e;
   defender.engagement = e;

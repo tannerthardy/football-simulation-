@@ -1,0 +1,44 @@
+
+FINAL: Ironmen 47 — Comets 33   (simulated in 19302 ms, 185 plays)
+Schemes: IRN wide-zone/4-3  COM power/4-3
+
+Ironmen (IRN): 659 yds (521 pass, 138 rush), 62 plays, 18 1st downs, 3rd 4/12, 4th 0/1, TO 3, sacks allowed 1, pen 6-43.86440762109054, TOP 27:10
+  PASS A.Sullivan     20/37 531 yds 5 TD 3 INT, sacked 1
+  RUSH H.Freeman      19-132 (6.9) 1 TD long 75
+  RUSH A.Sullivan     5-6 (1.3) 0 TD long 7
+  REC  C.Mitchell     4/6 250 yds 3 TD long 91 YAC 184
+  REC  J.Cooper       2/6 95 yds 1 TD long 75 YAC 77
+  REC  C.Freeman      4/8 94 yds 1 TD long 55 YAC 44
+  REC  H.Freeman      6/7 66 yds 0 TD long 19 YAC 44
+  REC  M.Richardson   1/1 10 yds 0 TD long 10 YAC 4
+  REC  D.Simmons      2/7 8 yds 0 TD long 5 YAC 7
+  REC  E.Stewart      1/1 8 yds 0 TD long 8 YAC 2
+  REC  D.Holmes       0/1 0 yds 0 TD long 0 YAC 0
+  DEF  M.Patterson    LB   tkl 6.0 sacks 0.0 INT 0 PD 1 pressures 1
+  DEF  K.Porter       LB   tkl 5.3 sacks 2.0 INT 0 PD 1 pressures 4
+  DEF  J.Woods        S    tkl 5.2 sacks 0.0 INT 0 PD 0 pressures 0
+  DEF  J.Baker        DT   tkl 3.8 sacks 0.0 INT 0 PD 0 pressures 1
+  DEF  R.Lindqvist    LB   tkl 3.8 sacks 0.0 INT 0 PD 0 pressures 0
+  DEF  K.Clark        EDGE tkl 3.8 sacks 0.0 INT 0 PD 0 pressures 0
+  K/P  D.Reed         FG 0/0 XP 0/0 punts 4 avg 47.5
+  K/P  B.Phillips     FG 2/2 XP 5/6 punts 0 avg 0.0
+
+Comets (COM): 522 yds (503 pass, 18 rush), 68 plays, 19 1st downs, 3rd 4/15, 4th 1/1, TO 5, sacks allowed 3, pen 7-70, TOP 32:49
+  PASS A.Thomas       32/48 525 yds 4 TD 3 INT, sacked 3
+  RUSH S.Lockett      15-13 (0.9) 0 TD long 4
+  RUSH A.Thomas       1-5 (5.1) 0 TD long 5
+  REC  P.Dixon        11/16 229 yds 2 TD long 55 YAC 76
+  REC  B.Lindqvist    7/10 95 yds 0 TD long 38 YAC 41
+  REC  R.Woods        1/1 64 yds 1 TD long 64 YAC 44
+  REC  M.Campbell     5/9 61 yds 0 TD long 34 YAC 13
+  REC  R.Bryant       4/8 40 yds 0 TD long 16 YAC -2
+  REC  S.Lockett      3/2 24 yds 1 TD long 18 YAC 33
+  REC  C.Anderson     1/2 13 yds 0 TD long 13 YAC 12
+  DEF  A.Campbell     LB   tkl 6.8 sacks 0.0 INT 0 PD 0 pressures 0
+  DEF  D.Wilson       S    tkl 5.3 sacks 0.0 INT 0 PD 0 pressures 1
+  DEF  V.Dawson       LB   tkl 4.8 sacks 0.0 INT 0 PD 0 pressures 0
+  DEF  T.Simmons      CB   tkl 3.8 sacks 0.0 INT 1 PD 1 pressures 0
+  DEF  C.Dawson       LB   tkl 3.0 sacks 0.0 INT 0 PD 1 pressures 1
+  DEF  R.Anderson     DT   tkl 2.5 sacks 0.0 INT 1 PD 0 pressures 0
+  K/P  D.Lindqvist    FG 0/0 XP 0/0 punts 6 avg 44.0
+  K/P  R.Grant        FG 2/2 XP 3/3 punts 0 avg 0.0

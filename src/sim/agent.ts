@@ -33,6 +33,14 @@ export interface PassSetIntent {
   outside: number;
 }
 
+/** Installed run-contact shoulder, separate from the displacement request. */
+export interface RunContactSurface {
+  /** Unit axis from defender toward the desired blocker shoulder. */
+  axis: Vec2;
+  /** Desired signed angle in this frame, in quarter turns. */
+  sealTarget: number;
+}
+
 /**
  * A block in progress (see engagement.ts for the model). Angles/positions are
  * relative to the engagement axis: toward the protected QB on pass pro or
@@ -68,7 +76,7 @@ export interface Engagement {
   /** Direction the blocker is driving (unit vector), for run blocks. */
   drive: Vec2 | null;
   /** Optional stable contact surface, separate from displacement intention.
-   * Stretch-zone fit uses the vertical front while its feet may run laterally. */
+   * Stretch-zone and cutoff fits can wall a shoulder while driving elsewhere. */
   surfaceAxis?: Vec2;
   /** Desired signed lateral surface angle on runs, in quarter turns. */
   sealTarget: number;

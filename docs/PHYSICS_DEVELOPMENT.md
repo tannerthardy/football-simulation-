@@ -3,11 +3,15 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
-[joined-combination attention](reviews/joined-combination-attention.md): each
-member reads and proposes his own climb while preserving actual keeper contact.
-Read its exact source, mixed results, adverse review and recording omissions,
-then the [common OL controller recommendation](reviews/universal-ol-controller.md).
-Next diagnose the reproduced cutoff approach/contact-frame contradiction.
+[position technique and awareness](reviews/position-technique-and-awareness.md)
+for the current cross-position review, bounded repairs, movement evidence and
+next steps. Installed contact geometry, achievable movement requests and a
+player's acquired information must agree before adding more techniques.
+The [joined-combination attention](reviews/joined-combination-attention.md)
+review retains the preceding increment: each member reads and proposes his own
+climb while preserving actual keeper contact. Read its exact source, mixed
+results, adverse review and recording omissions, then the
+[common OL controller recommendation](reviews/universal-ol-controller.md).
 The [zone-helper](reviews/zone-helper-check-and-climb.md),
 [work-exchange](reviews/ol-work-exchanges.md) and
 [keeper](reviews/keeper-based-combination-work.md) increments explain earlier

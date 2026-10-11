@@ -1,0 +1,59 @@
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { CENTER_Y } from '../../src/core/field.js';
+import { Rng } from '../../src/core/rng.js';
+import { generateTeam,pickDefense,pickOffense } from '../../src/league/team.js';
+import { PASS_BY_ID } from '../../src/playbook/concepts.js';
+import { COVERAGE_BY_ID,FRONT_BY_ID } from '../../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
+import { PlaySim } from '../../src/sim/playsim.js';
+import { chase } from '../../src/sim/behaviors/common.js';
+import { tryTackles } from '../../src/sim/tackle.js';
+import { spaceTeammates } from '../../src/sim/spacing.js';
+import { World,type Intent } from '../../src/physics/world.js';
+import { newSupport } from '../../src/physics/support.js';
+import { sourceVersion } from '../../scripts/source-version.js';
+const sourceBefore=sourceVersion();
+function make(seed=83){return new PlaySim({offense:pickOffense(generateTeam(new Rng(19),'O','OFF'),'11'),defense:pickDefense(generateTeam(new Rng(20),'D','DEF'),'nickel'),offCall:{formation:FORMATION_BY_ID.gun_doubles_11,flip:false,kind:'pass',pass:PASS_BY_ID.four_verts,label:'audit'},defCall:{personnel:'nickel',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'audit'},los:40,ballY:CENTER_Y,firstDownX:50,seed});}
+function observe(sim:PlaySim){for(let k=0;k<24;k++){const lag=(23-k)*.05;sim.perception.record(sim.agents.map(a=>({pos:{x:a.pos.x-a.vel.x*lag,y:a.pos.y-a.vel.y*lag},vel:a.vel,facing:a.facing,stance:a.stance,pose:a.pose})));}}
+const traffic=[];
+for(const side of [-1,1])for(const requested of ['turn','straight'] as const){
+ const sim=make(),a=sim.slot('FS')!,b=sim.slot('NB')!;
+ a.body.pos={x:50,y:CENTER_Y};a.body.vel={x:9,y:0};a.body.facing=0;a.body.support=newSupport();
+ b.body.pos={x:54.3,y:CENTER_Y+side*1.1};b.body.vel={x:0,y:0};b.body.facing=0;b.body.support=newSupport();
+ const commanded:Intent[]=[{vel:requested==='turn'?{x:0,y:side*9}:{x:9,y:0}},{vel:{x:0,y:0}}];
+ const before=structuredClone(commanded);spaceTeammates([a,b],commanded);
+ const bodyInitial=structuredClone([a.body,b.body]);
+ const world=new World([a.body,b.body]);world.time=2;
+ const ticks=[];let firstContact:number|null=null;
+ for(let k=0;k<16;k++){const r=world.step(commanded,.05);if(r.contacts.length && firstContact===null)firstContact=(k+1)*.05;ticks.push({t:(k+1)*.05,a:{pos:{...a.pos},vel:{...a.vel},support:a.body.support?.state},b:{pos:{...b.pos},vel:{...b.vel},support:b.body.support?.state},contacts:r.contacts,workResidual:r.work.residual,motorExcess:Math.max(...r.supportMotorWork.map((x,i)=>x-r.supportMotorWorkLimit[i]))});}
+ traffic.push({side,requested,bodyInitial,commandBefore:before,commandAfter:commanded,firstContact,ticks});
+}
+const cone=[];
+for(const side of [-1,1])for(const ratio of [.6999,.7001]){
+ const sim=make(),c=sim.slot('Z')!,d=sim.slot('FS')!;sim.t=2;
+ c.body.pos={x:50,y:CENTER_Y};c.body.vel={x:6*ratio,y:side*6*Math.sqrt(1-ratio*ratio)};c.body.facing=Math.atan2(c.vel.y,c.vel.x);
+ d.body.pos={x:56,y:CENTER_Y};d.body.vel={x:0,y:0};d.body.facing=Math.PI;
+ observe(sim);const cmd=chase(sim,d,c);cone.push({side,ratio,carrierVelocity:c.vel,command:cmd,requestedSpeed:Math.hypot(cmd.vel.x,cmd.vel.y)});
+}
+const role=[];
+for(const side of [-1,1])for(const kind of ['force','alley'] as const){
+ const sim=make(),c=sim.slot('Z')!,d=sim.slot('FS')!;sim.t=2;
+ c.body.pos={x:50,y:CENTER_Y+side*12};c.body.vel={x:6,y:0};c.body.facing=0;
+ d.body.pos={x:54,y:c.pos.y+side*1.5};d.body.vel={x:0,y:0};d.body.facing=Math.PI;
+ d.runFit={kind,side,gap:'D',technique:'attack',edge:'box',pace:'stack'};
+ observe(sim);role.push({side,kind,command:chase(sim,d,c)});
+}
+const rear=[];
+for(const seed of [83,131])for(const facing of [0,Math.PI]){
+ const sim=make(seed),c=sim.slot('Z')!,d=sim.slot('FS')!;
+ for(const a of sim.agents){a.body.pos={x:5+a.idx*.2,y:1+a.idx*2};a.body.vel={x:0,y:0};a.downUntil=99;}
+ c.downUntil=d.downUntil=-1;sim.t=2;sim.world.time=2;sim.ball={kind:'held',carrier:c};sim.catchAt=0;
+ d.body.pos={x:51.2,y:CENTER_Y};d.body.facing=facing;
+ const distance=c.profile.radius+d.profile.radius+.3;c.body.pos={x:d.pos.x-distance,y:CENTER_Y};c.body.facing=0;
+ observe(sim);sim.intents[d.idx]={vel:{x:0,y:0},facing};
+ const before={c:structuredClone(c.body),d:structuredClone(d.body)};tryTackles(sim);
+ rear.push({seed,facing,distance,touch:.9*(c.profile.radius+d.profile.radius),bodyInitial:before,events:sim.events,hasBond:!!sim.bond,grip:sim.bond?.grip?.get(d),nextTackleAt:d.nextTackleAt,joint:sim.bond?.holds?.get(d)?{quality:sim.bond.grip?.get(d),capacity:sim.bond.holds.get(d)?.capacity}:null});
+}
+const report={schema:'pursuit-technique-readonly-probe-v1',sourceBefore,sourceAfter:sourceVersion(),probeSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),method:'Deterministic post-hoc source-law counterexamples, not sampled football or rate calibration. Unchanged generated roster O19/D20; no physics parameters or source modified. Traffic uses two-body production World and fixed held intents. Cone/role inspect one ordinary chase command; rear calls existing post-physics tackle selector at a staged stationary boundary. Facing is body orientation, not eye tracking.',traffic,cone,role,rear};
+if(report.sourceAfter!==sourceBefore)throw new Error('Engine source changed during audit');writeFileSync('out/pursuit-technique-audit/probe.json',JSON.stringify(report));console.log(JSON.stringify({sourceBefore,sourceAfter:report.sourceAfter,traffic:traffic.map(({side,requested,commandBefore,commandAfter,firstContact})=>({side,requested,commandBefore,commandAfter,firstContact})),cone,role,rear:rear.map(({seed,facing,distance,touch,hasBond,nextTackleAt,grip})=>({seed,facing,distance,touch,hasBond,nextTackleAt,grip}))},null,2));

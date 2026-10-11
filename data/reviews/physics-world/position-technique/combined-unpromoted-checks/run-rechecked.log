@@ -1,0 +1,137 @@
+{
+  "sources": {
+    "cachedC": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+    "combinedFinal": "d73aaed8c8095e2b7050ae1fd07fe257ff44c8b7805811369b955750856b1121"
+  },
+  "initialCommonInputsExact": 162,
+  "ordinary": {
+    "before": {
+      "snaps": 160,
+      "naturalEnds": 160,
+      "censors": 0,
+      "observerPlainMatches": 160,
+      "meanYards": 1.386,
+      "stuffs": 37,
+      "runs10Plus": 0,
+      "actualWholePlayClimbs": 116,
+      "actualCheckClimbs": 5,
+      "commandLocalClimbsReportedByOldCollector": 5,
+      "actualClimbsOutsideCommandLocalCapture": 111,
+      "olFalls": 17,
+      "olDowns": 15,
+      "cancelledTransitions": 9,
+      "staleMemberUpdates": 0,
+      "maxMomentumResidual": 3.0801843197744646e-12,
+      "maxWorkResidual": 1.13518083821873e-11,
+      "maxMotorWorkExcess": 0
+    },
+    "after": {
+      "snaps": 160,
+      "naturalEnds": 160,
+      "censors": 0,
+      "observerPlainMatches": 160,
+      "meanYards": 1.334875,
+      "stuffs": 41,
+      "runs10Plus": 0,
+      "actualWholePlayClimbs": 114,
+      "actualCheckClimbs": 5,
+      "commandLocalClimbsReportedByOldCollector": 5,
+      "actualClimbsOutsideCommandLocalCapture": 109,
+      "olFalls": 20,
+      "olDowns": 18,
+      "cancelledTransitions": 10,
+      "staleMemberUpdates": 0,
+      "maxMomentumResidual": 3.1209977996993765e-12,
+      "maxWorkResidual": 1.1025846902157355e-11,
+      "maxMotorWorkExcess": 0
+    }
+  },
+  "supplemental": {
+    "before": {
+      "snaps": 2,
+      "naturalEnds": 2,
+      "censors": 0,
+      "observerPlainMatches": 2,
+      "meanYards": 1.52,
+      "stuffs": 0,
+      "runs10Plus": 0,
+      "actualWholePlayClimbs": 3,
+      "actualCheckClimbs": 0,
+      "commandLocalClimbsReportedByOldCollector": 0,
+      "actualClimbsOutsideCommandLocalCapture": 3,
+      "olFalls": 0,
+      "olDowns": 0,
+      "cancelledTransitions": 0,
+      "staleMemberUpdates": 0,
+      "maxMomentumResidual": 1.4236411273450577e-12,
+      "maxWorkResidual": 3.959499395023158e-12,
+      "maxMotorWorkExcess": 0
+    },
+    "after": {
+      "snaps": 2,
+      "naturalEnds": 2,
+      "censors": 0,
+      "observerPlainMatches": 2,
+      "meanYards": 1.575,
+      "stuffs": 0,
+      "runs10Plus": 0,
+      "actualWholePlayClimbs": 3,
+      "actualCheckClimbs": 0,
+      "commandLocalClimbsReportedByOldCollector": 0,
+      "actualClimbsOutsideCommandLocalCapture": 3,
+      "olFalls": 0,
+      "olDowns": 0,
+      "cancelledTransitions": 0,
+      "staleMemberUpdates": 0,
+      "maxMomentumResidual": 1.1372235930902297e-12,
+      "maxWorkResidual": 5.286437954055145e-12,
+      "maxMotorWorkExcess": 0
+    }
+  },
+  "nativeLimits": {
+    "before": {
+      "observedNativeTicks": 1708,
+      "armImpulseExcess": 2.842170943040401e-14,
+      "armWorkExcess": 0.0,
+      "supportMotorWorkExcess": 0.0,
+      "groundTractionExcess": 0.0
+    },
+    "after": {
+      "observedNativeTicks": 1668,
+      "armImpulseExcess": 2.1316282072803006e-14,
+      "armWorkExcess": 0.0,
+      "supportMotorWorkExcess": 0.0,
+      "groundTractionExcess": 0.0
+    }
+  }
+}
+{
+  "four": [
+    {
+      "id": "CT-R1-power-under-R-S3",
+      "loadedTicks": 50,
+      "minimumActualInsideSeparation": 0.5242648115644037,
+      "afterYards": 4.12
+    },
+    {
+      "id": "CT-R1-power-under-L-S3",
+      "loadedTicks": 42,
+      "minimumActualInsideSeparation": 0.7078333000455537,
+      "afterYards": -1.14
+    },
+    {
+      "id": "CT-R1-split_zone-tite-R-S3",
+      "loadedTicks": 46,
+      "minimumActualInsideSeparation": -0.21776373063512366,
+      "afterYards": 0.01
+    },
+    {
+      "id": "CT-R1-split_zone-tite-L-S3",
+      "loadedTicks": 54,
+      "minimumActualInsideSeparation": -0.16519304523168188,
+      "afterYards": 1.18
+    }
+  ],
+  "adverse2YardPairs": 6,
+  "beneficial2YardPairs": 5
+}

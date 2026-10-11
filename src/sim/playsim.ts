@@ -19,7 +19,7 @@ import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { applyCheck, resolveZeus } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
-import { Agent, type Behavior, type Engagement, type TeamSide } from './agent.js';
+import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
 import { CoverageScouting, QBMind } from './qbmind.js';
 import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
@@ -482,8 +482,8 @@ export class PlaySim {
     this.lunges.set(a, dv);
   }
 
-  engage(blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null = null): Engagement | null {
-    return createEngagement(this, blocker, defender, type, drive);
+  engage(blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null = null, surface?: RunContactSurface): Engagement | null {
+    return createEngagement(this, blocker, defender, type, drive, surface);
   }
 
   disengage(e: Engagement): void {

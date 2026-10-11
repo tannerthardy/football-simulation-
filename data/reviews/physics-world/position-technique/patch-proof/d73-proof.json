@@ -1,0 +1,32 @@
+{
+  "schema": "independent-position-technique-patch-proof-v1",
+  "passed": true,
+  "toolSha256": "9d1554e871830ee698e748aaa76cf0d36741aaf9a04687c95db7f8543970f386",
+  "proofs": [
+    {
+      "patch": "data/reviews/physics-world/position-technique/coarse-engine.patch",
+      "patchSha256": "578abc60d6d2901e5e370f339c44b2a88c7775012477944ba4b4ec9d81f50ef3",
+      "baselineCommit": "80e815102709a19026eb5398a7e5daaa844d7bb4",
+      "beforeSource": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "afterSource": "f641f128241746ab1b0b6a90f13affb05a0c8505e35792195ce19497ea5bccdd",
+      "reverseSource": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "actualCanonicalSourceVersion": true,
+      "forwardPatchApplied": true,
+      "reversePatchApplied": true,
+      "finalWholeTreeMatchesLive": null
+    },
+    {
+      "patch": "data/reviews/physics-world/position-technique/engine.patch",
+      "patchSha256": "d8f9a5cf820ef82bdbf06137a376f8776f41dd5616ae9d00592ffc0587aea8bb",
+      "baselineCommit": "80e815102709a19026eb5398a7e5daaa844d7bb4",
+      "beforeSource": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "afterSource": "d73aaed8c8095e2b7050ae1fd07fe257ff44c8b7805811369b955750856b1121",
+      "reverseSource": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "actualCanonicalSourceVersion": true,
+      "forwardPatchApplied": true,
+      "reversePatchApplied": true,
+      "finalWholeTreeMatchesLive": true
+    }
+  ],
+  "scope": "Ephemeral independent git archives only; no baseline or production files modified; source identity comes from actual scripts/source-version.ts."
+}

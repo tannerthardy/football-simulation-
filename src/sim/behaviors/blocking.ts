@@ -18,7 +18,7 @@ import { cornerSpeed, fatigueFactor, type MoveCommand } from '../../physics/kine
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint, Intent } from '../../physics/world.js';
 import type { RunConcept } from '../../playbook/types.js';
-import type { Agent, Behavior, Engagement } from '../agent.js';
+import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { axisOf, helperSupport, passSetDepth, traits } from '../engagement.js';
@@ -388,6 +388,8 @@ export interface RunBlockPlan {
   /** Pullers: 'kick' the end man or 'lead' to a linebacker. */
   pullRole?: 'kick' | 'lead' | 'trap';
   combination?: Combination;
+  /** A solo cutoff's installed shoulder belongs to this exact down threat. */
+  contactFit?: RunContactSurface & { target: Agent };
 }
 
 function classify(sim: PlaySim): { dl: Agent[]; lb: Agent[]; db: Agent[] } {
@@ -645,6 +647,13 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   // pass-influence conversion, rather than an intermediate owner label.
   for (const p of plans.values()) if (p.combination)
     p.combination.soloKind = plans.get(p.combination.members[0])!.kind;
+  for (const [b, p] of plans) {
+    // Only a clearly outside solo backside threat calls for this wall. Inside
+    // shades, doubles, pullers and Draw retain their original contact frame.
+    if (isOL(b) && p.kind === 'cutoff' && p.target && dl.includes(p.target) && !p.combination
+      && rel(b) < 0 && (b.pos.y - p.target.pos.y) * ps > b.profile.radius + p.target.profile.radius)
+      p.contactFit = { target: p.target, axis: norm({ x: -.3, y: p.drive.y * .6 }), sealTarget: 0 };
+  }
   return plans;
 }
 
@@ -668,6 +677,8 @@ export class RunBlocker implements Behavior {
   update(a: Agent, sim: PlaySim): Intent {
     const plan = this.plan;
     const t = sim.t;
+    if (plan.contactFit && (plan.kind !== 'cutoff' || plan.target !== plan.contactFit.target
+      || (plan.combination && !plan.combination.released))) delete plan.contactFit;
     this.homeY ??= a.pos.y;
     this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
     this.rememberSoloWork();
@@ -712,6 +723,7 @@ export class RunBlocker implements Behavior {
           abandonCombination(a, sim, combination, 'original target unavailable; finding work');
         }
         plan.target = target = replacement;
+        if (replacement !== previous) delete plan.contactFit;
         if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
           this.classifyWork(a, sim, replacement);
       }
@@ -785,13 +797,16 @@ export class RunBlocker implements Behavior {
     const fit = isOL(a) && (plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
       && (!plan.combination || plan.combination.released)
       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
+    const contactFit = fit && plan.kind === 'cutoff' && plan.contactFit?.target === target
+      ? plan.contactFit : null;
     // A clearly lost shoulder is a foot-recovery decision, not a fresh hold.
     // Keep marginal reaches and actual collisions; use the same observed
     // leverage boundary as an established run block, without a time grace.
-    const fitDrive = zone ? { x: 1, y: 0 } : plan.drive;
+    const fitDrive = contactFit ? { x: -contactFit.axis.x, y: -contactFit.axis.y }
+      : zone ? { x: 1, y: 0 } : plan.drive;
     const lost = fit && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
     if (!lost && dd < contact) {
-      const e = sim.engage(a, target, 'run', plan.drive);
+      const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? undefined);
       if (e) {
         if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a, sim, true);
         return stand();
@@ -799,7 +814,10 @@ export class RunBlocker implements Behavior {
     }
     // Aiming point: reach blocks work to the playside shoulder.
     let aim = seen.pos;
-    if (zone) {
+    if (contactFit) {
+      const sep = a.profile.radius + target.profile.radius + .15;
+      aim = { x: seen.pos.x + contactFit.axis.x * sep, y: seen.pos.y + contactFit.axis.y * sep };
+    } else if (zone) {
       const side = zone.phase === 'runoff' ? -zone.side : zone.side;
       aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
     } else if (plan.kind === 'combo' && plan.combination) {
@@ -832,7 +850,7 @@ export class RunBlocker implements Behavior {
     const original = runThrough(a, aim, { speed: 1 });
     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
-      !!zone, zone ? 2.4 : 0) : original;
+      !!zone || !!contactFit, zone ? 2.4 : 0) : original;
   }
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {
@@ -883,6 +901,7 @@ export class RunBlocker implements Behavior {
 
   private classifyWork(a: Agent, sim: PlaySim, target: Agent): void {
     const p = this.plan;
+    delete p.contactFit;
     // Reserved kick/trap jobs and pass influence retain their installed
     // responsibility. A wrap/lead already has a second-level approach.
     if (RESERVED_RUN_KINDS.has(p.kind)) return;
@@ -939,6 +958,7 @@ export class RunBlocker implements Behavior {
     if (p.combination && !p.combination.released)
       abandonCombination(a, sim, p.combination, 'collecting penetration before climb');
     p.target = threat; p.kind = 'drive';
+    delete p.contactFit;
     a.tags.add('block-collect');
     sim.event('block_collect',a,threat,'penetration before climb');
   }
@@ -1263,6 +1283,7 @@ function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, comb
   climber.engagement = null;
   climber.behavior.plan.kind = 'climb';
   climber.behavior.plan.target = combo.backer;
+  delete climber.behavior.plan.contactFit;
   // The installed backer fit drives upfield. The old diagonal wall/stretch
   // vector belongs to the keeper's first-level job, not the new approach.
   climber.behavior.plan.drive = { x: 1, y: 0 };
