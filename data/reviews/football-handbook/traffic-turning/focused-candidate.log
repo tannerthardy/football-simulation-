@@ -1,0 +1,12 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/traffic-turning.test.ts (12 tests) 267ms
+ ✓ test/traffic-control.test.ts (3 tests) 50ms
+ ✓ test/movement-preview.test.ts (8 tests) 23ms
+
+ Test Files  3 passed (3)
+      Tests  23 passed (23)
+   Start at  10:32:52
+   Duration  2.14s (transform 783ms, setup 0ms, collect 1.04s, tests 341ms, environment 1ms, prepare 246ms)
+

@@ -1,0 +1,2084 @@
+{
+  "schema": "traffic-forecast-screening-equivalence-v1",
+  "sources": {
+    "preliminary": "0cc15b157559dd30f8df7400aae5cb3c2a0aedb4517b6efa9c6fb349dfbc3615",
+    "final": "0d2387ee2350df36a6af9b881a6efeee586b61cb4a2967ef7722431cc8e921b2"
+  },
+  "groups": [
+    {
+      "kind": "trials",
+      "inputs": 162,
+      "inputFiles": {
+        "candidate.json.gz": "a9e9d5ae0832b976f5c84dd6c178776f00fe5d0aa6b2abece166879074c76ae6",
+        "optimized/candidate.json.gz": "50c7b96fb542d8cde7d4a5950f5e7b25372cd8c757f9ea88873bbd3a89ef1002"
+      },
+      "rows": [
+        {
+          "id": "CT-R1-iz_strong-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "dd1eb7ec0224da63ab0dcc7938c392258cedae7bc3cabd9b0fb60a8f1205930c",
+          "finalSignature": "dd1eb7ec0224da63ab0dcc7938c392258cedae7bc3cabd9b0fb60a8f1205930c"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "a6b043fd60567f1899f078f2e7419e6d38c0b5bbcffd4a1499380d9637005d4f",
+          "finalSignature": "a6b043fd60567f1899f078f2e7419e6d38c0b5bbcffd4a1499380d9637005d4f"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "9ae7bea87ca179ec51d46c5874bcb2256f388f5e4dabe22dda8df532c7bfd1f6",
+          "finalSignature": "9ae7bea87ca179ec51d46c5874bcb2256f388f5e4dabe22dda8df532c7bfd1f6"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "e0555b5272eec3842ba9e8972b992ede54730dadc6c1db13150768631240667d",
+          "finalSignature": "e0555b5272eec3842ba9e8972b992ede54730dadc6c1db13150768631240667d"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "12960f899239f5f57fd95f3e779d37ceffe21d7575469b41b98940c4d053f30c",
+          "finalSignature": "12960f899239f5f57fd95f3e779d37ceffe21d7575469b41b98940c4d053f30c"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "d2aaab2e90afbf790e1e1b83744fe20090bad48129155bef00cad6e681ac1e40",
+          "finalSignature": "d2aaab2e90afbf790e1e1b83744fe20090bad48129155bef00cad6e681ac1e40"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "cd255d3bf6d02e81e4a1286a390158ac0842cbf9c9e516b9b14490fbd390cc69",
+          "finalSignature": "cd255d3bf6d02e81e4a1286a390158ac0842cbf9c9e516b9b14490fbd390cc69"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "7ac00519a3078911591dcb17b1efbf7a68573ad5d35b2d78b878428512316a78",
+          "finalSignature": "7ac00519a3078911591dcb17b1efbf7a68573ad5d35b2d78b878428512316a78"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "b8f51fd38eadbb020cde7c7dd002e58fda059161a3322dfa87e717a89e43ae22",
+          "finalSignature": "b8f51fd38eadbb020cde7c7dd002e58fda059161a3322dfa87e717a89e43ae22"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "5074f0b8ca98829382f28e2204f21354bd95550ad317b96dfac6355fc95024e4",
+          "finalSignature": "5074f0b8ca98829382f28e2204f21354bd95550ad317b96dfac6355fc95024e4"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "8afc07e3f08f0ca393665bc64d648eeacaa86073381f287143eb67c04ef98cbf",
+          "finalSignature": "8afc07e3f08f0ca393665bc64d648eeacaa86073381f287143eb67c04ef98cbf"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "d2e1f0139227aed80f505ec6d774e0870b0ea41aa3977154fa41b95e829cfcda",
+          "finalSignature": "d2e1f0139227aed80f505ec6d774e0870b0ea41aa3977154fa41b95e829cfcda"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "d6b42fb1739fc037a7f9158c114a2b4dc2d5ac52250f51959a8051b95ccacf1f",
+          "finalSignature": "d6b42fb1739fc037a7f9158c114a2b4dc2d5ac52250f51959a8051b95ccacf1f"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "1ec1704f8cc61eada5470738fdc790873e8ae947f1f35bf3b9ed0175926b55fa",
+          "finalSignature": "1ec1704f8cc61eada5470738fdc790873e8ae947f1f35bf3b9ed0175926b55fa"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "2dfb68ee87cd9073e9899d721292cdb850e4ed0e8cba5af67ca4ffa440de9700",
+          "finalSignature": "2dfb68ee87cd9073e9899d721292cdb850e4ed0e8cba5af67ca4ffa440de9700"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "a1d00391ecee8473c9eb18a66f50d551a0de9ba35f8ad1d734e23a1f6969766b",
+          "finalSignature": "a1d00391ecee8473c9eb18a66f50d551a0de9ba35f8ad1d734e23a1f6969766b"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "e9ae19b07d546db072a354142d15aba5f9f98f00fb496a5d4dffdf88fbe4cb64",
+          "finalSignature": "e9ae19b07d546db072a354142d15aba5f9f98f00fb496a5d4dffdf88fbe4cb64"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "d26b4ef09eb7b14a7af52057fc0079143e9401eb9b04b21dc7440c96815e57c2",
+          "finalSignature": "d26b4ef09eb7b14a7af52057fc0079143e9401eb9b04b21dc7440c96815e57c2"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "91301c72ee3b8fdcee4b0aeb0aa6e3cc2d1bf1f68ad6d62d6eef2a061b0572b7",
+          "finalSignature": "91301c72ee3b8fdcee4b0aeb0aa6e3cc2d1bf1f68ad6d62d6eef2a061b0572b7"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "a7e60c696504db3736a66a7def2754e7bb36dea32fc743cb3410354bc3b264e1",
+          "finalSignature": "a7e60c696504db3736a66a7def2754e7bb36dea32fc743cb3410354bc3b264e1"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "edd4cddf08407ea586373e7cd4aa9b90ef5e35224a5f32be78f47a0fb5cdfbe8",
+          "finalSignature": "edd4cddf08407ea586373e7cd4aa9b90ef5e35224a5f32be78f47a0fb5cdfbe8"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "ebde97683c64e6d4efdfc30d62697f51439f3f19ab9ccba396830888e25d978b",
+          "finalSignature": "ebde97683c64e6d4efdfc30d62697f51439f3f19ab9ccba396830888e25d978b"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "36a2084181c6f67bf6a6cf775441c4aa02c1df7e5559a8d5c11efba64c992e13",
+          "finalSignature": "36a2084181c6f67bf6a6cf775441c4aa02c1df7e5559a8d5c11efba64c992e13"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "bd5101ac686470a7c0349c60365cfff77e9c828dae26277bf55c7ace51749de6",
+          "finalSignature": "bd5101ac686470a7c0349c60365cfff77e9c828dae26277bf55c7ace51749de6"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "d23a19d043740c2df42d573e89ea7e99cd7819c838b1799c3ba9721c7918f4fb",
+          "finalSignature": "d23a19d043740c2df42d573e89ea7e99cd7819c838b1799c3ba9721c7918f4fb"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "4e1a5bf30bf266a10ae39f0e43798823a96647cf1d2685c07b1c4871cd717504",
+          "finalSignature": "4e1a5bf30bf266a10ae39f0e43798823a96647cf1d2685c07b1c4871cd717504"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "994101753937d3c69a9ff40f1d03d838d73375e518698f3c892347b022afe7f0",
+          "finalSignature": "994101753937d3c69a9ff40f1d03d838d73375e518698f3c892347b022afe7f0"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "c2b51beb18744358d00f9b86ae95877aa986cc9a460b8afe9196b002d0f3f0e4",
+          "finalSignature": "c2b51beb18744358d00f9b86ae95877aa986cc9a460b8afe9196b002d0f3f0e4"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "f622638ddfd9acae03ea0d70255e7b7f4a6d3a20bb2c255ffc07cd746c8f752f",
+          "finalSignature": "f622638ddfd9acae03ea0d70255e7b7f4a6d3a20bb2c255ffc07cd746c8f752f"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "79e3793f1df3e2dff50e1e9ed74715afe21271cf6cd42c8e9936ec484d5c4809",
+          "finalSignature": "79e3793f1df3e2dff50e1e9ed74715afe21271cf6cd42c8e9936ec484d5c4809"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "0984db43e5df046c07d2f1d6179ad7544d4cad85fe9f77f76a6114a0d565c77d",
+          "finalSignature": "0984db43e5df046c07d2f1d6179ad7544d4cad85fe9f77f76a6114a0d565c77d"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "b43a5cff7edfc45cbfebc1b8f7218879060ca7ba193906e04b6cde13bf6a4bce",
+          "finalSignature": "b43a5cff7edfc45cbfebc1b8f7218879060ca7ba193906e04b6cde13bf6a4bce"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "4f102e68db358e6f564f7ae0069f4831996a2d966ade3b98568b8a32fd1cb426",
+          "finalSignature": "4f102e68db358e6f564f7ae0069f4831996a2d966ade3b98568b8a32fd1cb426"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "6c219d0ac18c5ecf7936614500a9f156e73356acf70c84661213b05258a18aee",
+          "finalSignature": "6c219d0ac18c5ecf7936614500a9f156e73356acf70c84661213b05258a18aee"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "e362e085ace223d5977a728f8fbc1677bab656b23e27964c95e48acf146069ce",
+          "finalSignature": "e362e085ace223d5977a728f8fbc1677bab656b23e27964c95e48acf146069ce"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "508f89a2fadb2569432bde2902566b39f7912572a02e4ee3051ebc913644022f",
+          "finalSignature": "508f89a2fadb2569432bde2902566b39f7912572a02e4ee3051ebc913644022f"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "00dde1faf4c327023c31beb1d9f407e106b0b6a7e580ace980972fb44bfdcbd7",
+          "finalSignature": "00dde1faf4c327023c31beb1d9f407e106b0b6a7e580ace980972fb44bfdcbd7"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "5dbf0f6632c4e803a999203787f9ae4e6f011866b45b8635d60b054785bc8605",
+          "finalSignature": "5dbf0f6632c4e803a999203787f9ae4e6f011866b45b8635d60b054785bc8605"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "cc1447631ab99c5e38423fa87e8eeebbe50105455fe6d67b1059183059fd0bbf",
+          "finalSignature": "cc1447631ab99c5e38423fa87e8eeebbe50105455fe6d67b1059183059fd0bbf"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "620443c0c74eb922de20e73184bbdcfe83c149b0f024c413671cc77099f0afe2",
+          "finalSignature": "620443c0c74eb922de20e73184bbdcfe83c149b0f024c413671cc77099f0afe2"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "4a3725d02ede9f278df7a8d8f2e6d37acf3547f7c0bd008216defe296d6b8cf1",
+          "finalSignature": "4a3725d02ede9f278df7a8d8f2e6d37acf3547f7c0bd008216defe296d6b8cf1"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "c4ec27aabc579d1037bb76866b16dfb84f573ae667422a2a4c7537999cb51db0",
+          "finalSignature": "c4ec27aabc579d1037bb76866b16dfb84f573ae667422a2a4c7537999cb51db0"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "3b6290982c2942eaa57b58b870c80cdd622150154ce2893555165fe1e821cd0d",
+          "finalSignature": "3b6290982c2942eaa57b58b870c80cdd622150154ce2893555165fe1e821cd0d"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "963255f1b2fac07e7e699054cdc4d64c443c04f5368d63ab2d817079d8de717c",
+          "finalSignature": "963255f1b2fac07e7e699054cdc4d64c443c04f5368d63ab2d817079d8de717c"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "5988460b87eecb4eab5dd9d17a1879e113c96e85496c293c0e5b996f4b306d88",
+          "finalSignature": "5988460b87eecb4eab5dd9d17a1879e113c96e85496c293c0e5b996f4b306d88"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "a58b2d9aaaab4719d696c21b52c7fcbca8ad76b066be3eadc5560e78dced516b",
+          "finalSignature": "a58b2d9aaaab4719d696c21b52c7fcbca8ad76b066be3eadc5560e78dced516b"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "242dd2ae1509a91c6d9f976b32bcc8823e69704a16100bb707fd3ec5fdf30014",
+          "finalSignature": "242dd2ae1509a91c6d9f976b32bcc8823e69704a16100bb707fd3ec5fdf30014"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "2909349e66b2f43f4f38018fcc878ffb2249e8517383116e626404b141ba8744",
+          "finalSignature": "2909349e66b2f43f4f38018fcc878ffb2249e8517383116e626404b141ba8744"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "2ef821de689dcf0b0be51233e616aeac284c57d6d9c04782e3e4b15cd1fe5e8e",
+          "finalSignature": "2ef821de689dcf0b0be51233e616aeac284c57d6d9c04782e3e4b15cd1fe5e8e"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "552b975ec4d051c8beac9429263930c55e4846b9ef20fa6c7bd54986921f8e9f",
+          "finalSignature": "552b975ec4d051c8beac9429263930c55e4846b9ef20fa6c7bd54986921f8e9f"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "b9346c9a1acb873c4036198d5eccf0e96009836a542921bc37e112c1683cc82f",
+          "finalSignature": "b9346c9a1acb873c4036198d5eccf0e96009836a542921bc37e112c1683cc82f"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "8eca2090196e681bbdd41cbddee065b62f14b22a5031c562f6781814a22493db",
+          "finalSignature": "8eca2090196e681bbdd41cbddee065b62f14b22a5031c562f6781814a22493db"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "2f3ea2913a5a945f6ef9fede2233ff156b91524aa47c5deb69ef16879267724d",
+          "finalSignature": "2f3ea2913a5a945f6ef9fede2233ff156b91524aa47c5deb69ef16879267724d"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "985b0307efaab11f6771b3ed54817e758f09756dab604f10cef7796c289112e8",
+          "finalSignature": "985b0307efaab11f6771b3ed54817e758f09756dab604f10cef7796c289112e8"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "02e7fb0b2e941fe89c47a20ffd301cd8ec305b3efaca1b9d0fb5daa12171db7d",
+          "finalSignature": "02e7fb0b2e941fe89c47a20ffd301cd8ec305b3efaca1b9d0fb5daa12171db7d"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "95b6d71c60888c99c0d03ebb8882ca2e6bec05c9f8c090d7a6a85c81ec6c6a14",
+          "finalSignature": "95b6d71c60888c99c0d03ebb8882ca2e6bec05c9f8c090d7a6a85c81ec6c6a14"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "38b54710b73c59f9b4009bdab70f0c09fb21c5b51ca3003a9a09cc72318e1a80",
+          "finalSignature": "38b54710b73c59f9b4009bdab70f0c09fb21c5b51ca3003a9a09cc72318e1a80"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "5c4aa8ca724c10b808b32e302b5ea58eb2cae3ed71dee1ae5558e4e625c42a58",
+          "finalSignature": "5c4aa8ca724c10b808b32e302b5ea58eb2cae3ed71dee1ae5558e4e625c42a58"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "220709bbb92e1b9f9a68b1022762364332e1fe2ad2eb14e6dbb03a50da739be5",
+          "finalSignature": "220709bbb92e1b9f9a68b1022762364332e1fe2ad2eb14e6dbb03a50da739be5"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "6e6a66d4fa30b2c75fdcd86a04f85c1badaffc7111be755afa69065e2b9a7d83",
+          "finalSignature": "6e6a66d4fa30b2c75fdcd86a04f85c1badaffc7111be755afa69065e2b9a7d83"
+        },
+        {
+          "id": "CT-R1-power-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "f8d1ed7bebb5f27fa43c089ca565ad9dd6795e780ef94753383d9bc99d3ecef1",
+          "finalSignature": "f8d1ed7bebb5f27fa43c089ca565ad9dd6795e780ef94753383d9bc99d3ecef1"
+        },
+        {
+          "id": "CT-R1-power-over-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "99ee55dbbf98c296b20341c0d1f555c4409a0f1483f905e827f3c1962d24c3e3",
+          "finalSignature": "99ee55dbbf98c296b20341c0d1f555c4409a0f1483f905e827f3c1962d24c3e3"
+        },
+        {
+          "id": "CT-R1-power-over-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "82913c0646e300e68fc526554fc35a1049c5b237808fe0fe5243888bc345d7ad",
+          "finalSignature": "82913c0646e300e68fc526554fc35a1049c5b237808fe0fe5243888bc345d7ad"
+        },
+        {
+          "id": "CT-R1-power-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "89c0c1fda2e96952ade8251ab97b6162a2f95bda2313f76022f822f39e9ad245",
+          "finalSignature": "89c0c1fda2e96952ade8251ab97b6162a2f95bda2313f76022f822f39e9ad245"
+        },
+        {
+          "id": "CT-R1-power-under-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "124958cc66dc7c3255726ecd97ae35733999026409195a37dd7bd8dbd702842c",
+          "finalSignature": "124958cc66dc7c3255726ecd97ae35733999026409195a37dd7bd8dbd702842c"
+        },
+        {
+          "id": "CT-R1-power-under-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "d07f5f2865186d26299807cfd9f2897285d4346a6f4b4b4ccd17cf7335b92dc2",
+          "finalSignature": "d07f5f2865186d26299807cfd9f2897285d4346a6f4b4b4ccd17cf7335b92dc2"
+        },
+        {
+          "id": "CT-R1-power-under-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "9ae01c4cd971a5ae0573f5df6ed9bfac71302b3c0d15a18aea8b8dedf6dc7f9a",
+          "finalSignature": "9ae01c4cd971a5ae0573f5df6ed9bfac71302b3c0d15a18aea8b8dedf6dc7f9a"
+        },
+        {
+          "id": "CT-R1-power-under-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "61c4378695f945e0b39a5be9be493d5a59b45ab48193f60ebba5344b52ac4867",
+          "finalSignature": "61c4378695f945e0b39a5be9be493d5a59b45ab48193f60ebba5344b52ac4867"
+        },
+        {
+          "id": "CT-R1-power-odd-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "ca07385346a1068988678f488291cd4388cfe72b193047eacfb106f9746fd8cb",
+          "finalSignature": "ca07385346a1068988678f488291cd4388cfe72b193047eacfb106f9746fd8cb"
+        },
+        {
+          "id": "CT-R1-power-odd-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "2da3fad61015d5462dd849246b5101985d5d8314b992c3a814531f03d27c8573",
+          "finalSignature": "2da3fad61015d5462dd849246b5101985d5d8314b992c3a814531f03d27c8573"
+        },
+        {
+          "id": "CT-R1-power-odd-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "3ae7d71c2af368da0b1ee4c61b89c335df941ed7b7496b64060346f105195883",
+          "finalSignature": "3ae7d71c2af368da0b1ee4c61b89c335df941ed7b7496b64060346f105195883"
+        },
+        {
+          "id": "CT-R1-power-odd-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "d40edc611fff5ed3f81db406b0342f3a7936f4c374c9bf87e62f31d3333e9fb6",
+          "finalSignature": "d40edc611fff5ed3f81db406b0342f3a7936f4c374c9bf87e62f31d3333e9fb6"
+        },
+        {
+          "id": "CT-R1-power-tite-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "70a59fd16f688985358a18a62739e74f87843d913386f92b868d39ede1e954ee",
+          "finalSignature": "70a59fd16f688985358a18a62739e74f87843d913386f92b868d39ede1e954ee"
+        },
+        {
+          "id": "CT-R1-power-tite-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "1336b0b94b174a28f9077f12cc70402beea265e1536c857721745bf21dcaeaff",
+          "finalSignature": "1336b0b94b174a28f9077f12cc70402beea265e1536c857721745bf21dcaeaff"
+        },
+        {
+          "id": "CT-R1-power-tite-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "8e1a4a400925d81cbd2a5744f69994960b531c66d16194dc65f0f5c8489c57aa",
+          "finalSignature": "8e1a4a400925d81cbd2a5744f69994960b531c66d16194dc65f0f5c8489c57aa"
+        },
+        {
+          "id": "CT-R1-power-tite-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "0a394b689e12a9b036fced0f71905f57506e86a01b46f3c8d29317ff1e965eb8",
+          "finalSignature": "0a394b689e12a9b036fced0f71905f57506e86a01b46f3c8d29317ff1e965eb8"
+        },
+        {
+          "id": "CT-R1-power-bear-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "303fa14eed3acb87c88b4187278c5be9c51f3cf94887b15b5cf42588489e45d1",
+          "finalSignature": "303fa14eed3acb87c88b4187278c5be9c51f3cf94887b15b5cf42588489e45d1"
+        },
+        {
+          "id": "CT-R1-power-bear-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "e1ca6affd03cc976c7ef9aa4233034d8d1ddbcfd051298368f8706117066757b",
+          "finalSignature": "e1ca6affd03cc976c7ef9aa4233034d8d1ddbcfd051298368f8706117066757b"
+        },
+        {
+          "id": "CT-R1-power-bear-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "c66565514b5248e94454177c9e737d80eaf115b4a81b874d1feaaf6be5a6cf5f",
+          "finalSignature": "c66565514b5248e94454177c9e737d80eaf115b4a81b874d1feaaf6be5a6cf5f"
+        },
+        {
+          "id": "CT-R1-power-bear-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "c4ff39618951792713a3e9c1b319fb2041d69a0f66e5807c5d4f1fa75d1d5e84",
+          "finalSignature": "c4ff39618951792713a3e9c1b319fb2041d69a0f66e5807c5d4f1fa75d1d5e84"
+        },
+        {
+          "id": "CT-R1-counter-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "6582e90bf5af092cf5260b87ec24a8aa0eeee2ae17d9f868dcf94dbd31dacca3",
+          "finalSignature": "6582e90bf5af092cf5260b87ec24a8aa0eeee2ae17d9f868dcf94dbd31dacca3"
+        },
+        {
+          "id": "CT-R1-counter-over-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "a6983aa55e734a03870949b3ce184765651abdbdebd43b257fa83329b6503962",
+          "finalSignature": "a6983aa55e734a03870949b3ce184765651abdbdebd43b257fa83329b6503962"
+        },
+        {
+          "id": "CT-R1-counter-over-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "51b6e47db5331ab9c926f17f0b134c48c4673fee912695958bc88334ab04fab8",
+          "finalSignature": "51b6e47db5331ab9c926f17f0b134c48c4673fee912695958bc88334ab04fab8"
+        },
+        {
+          "id": "CT-R1-counter-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "58a7e6458d9af4dd487b19bdfd5a418326ec408b285b33b61bebde47fbb25da5",
+          "finalSignature": "58a7e6458d9af4dd487b19bdfd5a418326ec408b285b33b61bebde47fbb25da5"
+        },
+        {
+          "id": "CT-R1-counter-under-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "fca3d3e641fc015f46f90f4da557444879d2e62878539b7cd3f070d64d595fea",
+          "finalSignature": "fca3d3e641fc015f46f90f4da557444879d2e62878539b7cd3f070d64d595fea"
+        },
+        {
+          "id": "CT-R1-counter-under-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "8d5869819271dab8af6807c5b7c3cddb878fb0c19e0296e7aa0cf66af4afee05",
+          "finalSignature": "8d5869819271dab8af6807c5b7c3cddb878fb0c19e0296e7aa0cf66af4afee05"
+        },
+        {
+          "id": "CT-R1-counter-under-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "cbd6979ed81a16a3a9247689a494d37b256ee0ab07f561410f46738ad065f622",
+          "finalSignature": "cbd6979ed81a16a3a9247689a494d37b256ee0ab07f561410f46738ad065f622"
+        },
+        {
+          "id": "CT-R1-counter-under-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "4e19daaa0d67f674658b28414cccce0a8d6c742ab499ebb7aab7da96f8ab7f17",
+          "finalSignature": "4e19daaa0d67f674658b28414cccce0a8d6c742ab499ebb7aab7da96f8ab7f17"
+        },
+        {
+          "id": "CT-R1-counter-odd-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "5994e18ad39b8e6f4180973a09ab8e786d6228cea9f0e55227131a2953f839eb",
+          "finalSignature": "5994e18ad39b8e6f4180973a09ab8e786d6228cea9f0e55227131a2953f839eb"
+        },
+        {
+          "id": "CT-R1-counter-odd-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "958c5e031c02fa91bdcab9af12cbc64f188917cfc176358daeeda0b4fc53499f",
+          "finalSignature": "958c5e031c02fa91bdcab9af12cbc64f188917cfc176358daeeda0b4fc53499f"
+        },
+        {
+          "id": "CT-R1-counter-odd-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "59af8e1b3438b21e2caa6e0258092b1ec1b55c03a369a17f41c5ae931083da63",
+          "finalSignature": "59af8e1b3438b21e2caa6e0258092b1ec1b55c03a369a17f41c5ae931083da63"
+        },
+        {
+          "id": "CT-R1-counter-odd-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "38d552ce2598496e79239de99779a47ebc4c76804f4978f6a59c68bc8cbbc108",
+          "finalSignature": "38d552ce2598496e79239de99779a47ebc4c76804f4978f6a59c68bc8cbbc108"
+        },
+        {
+          "id": "CT-R1-counter-tite-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "7fcd8b52e4e243dcf3adbdfd5aeefa1274c6272a1cc1dd1b578e967bded9d909",
+          "finalSignature": "7fcd8b52e4e243dcf3adbdfd5aeefa1274c6272a1cc1dd1b578e967bded9d909"
+        },
+        {
+          "id": "CT-R1-counter-tite-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "9054996d9cfb6e2471d9d067aa94218883eb9cfdf63d094b8190c1a3bd52a426",
+          "finalSignature": "9054996d9cfb6e2471d9d067aa94218883eb9cfdf63d094b8190c1a3bd52a426"
+        },
+        {
+          "id": "CT-R1-counter-tite-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "ae112d23a39aa6cf51f2a604d08bdfdac07c21c65c98c8cba3bfbb535ee6ab41",
+          "finalSignature": "ae112d23a39aa6cf51f2a604d08bdfdac07c21c65c98c8cba3bfbb535ee6ab41"
+        },
+        {
+          "id": "CT-R1-counter-tite-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "84d6864b88b3fc6097d7727229204a697a1b1a9fd999092e0b73b57528bd3016",
+          "finalSignature": "84d6864b88b3fc6097d7727229204a697a1b1a9fd999092e0b73b57528bd3016"
+        },
+        {
+          "id": "CT-R1-counter-bear-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "41502a97f6f676411301d42372e3b31681bd5dc49dbc18799ad6331a9c0a9308",
+          "finalSignature": "41502a97f6f676411301d42372e3b31681bd5dc49dbc18799ad6331a9c0a9308"
+        },
+        {
+          "id": "CT-R1-counter-bear-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "2cb9b5074644a4570f9b6dcc3477527176172dc2ac78ab819c0966ecd0da0f9d",
+          "finalSignature": "2cb9b5074644a4570f9b6dcc3477527176172dc2ac78ab819c0966ecd0da0f9d"
+        },
+        {
+          "id": "CT-R1-counter-bear-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "f3f87be03d02909c76f415756ca5c13bd6d3c506a50cd1c345078f54d2731ec2",
+          "finalSignature": "f3f87be03d02909c76f415756ca5c13bd6d3c506a50cd1c345078f54d2731ec2"
+        },
+        {
+          "id": "CT-R1-counter-bear-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "5b964bfc1c887a3ec8a157f8ed78eccec6328add1dde9b914e7128276b85cae4",
+          "finalSignature": "5b964bfc1c887a3ec8a157f8ed78eccec6328add1dde9b914e7128276b85cae4"
+        },
+        {
+          "id": "CT-R1-trap-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "639800956cf2333c1bc9151ed9f6f9306649379268dfc50e1adc40401c741543",
+          "finalSignature": "639800956cf2333c1bc9151ed9f6f9306649379268dfc50e1adc40401c741543"
+        },
+        {
+          "id": "CT-R1-trap-over-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "2d5ae15e17c91aea2d23e9315112e394fbe5ebfeecae12837725815bbec5c4b5",
+          "finalSignature": "2d5ae15e17c91aea2d23e9315112e394fbe5ebfeecae12837725815bbec5c4b5"
+        },
+        {
+          "id": "CT-R1-trap-over-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "73d3a1eeee9d102ae88ab141a6e4c6c446ee87510be038b16a1590e032374503",
+          "finalSignature": "73d3a1eeee9d102ae88ab141a6e4c6c446ee87510be038b16a1590e032374503"
+        },
+        {
+          "id": "CT-R1-trap-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "f968739d4f1b055a806a162a11995cbc6e685cd5a0e53066b137864e2c951802",
+          "finalSignature": "f968739d4f1b055a806a162a11995cbc6e685cd5a0e53066b137864e2c951802"
+        },
+        {
+          "id": "CT-R1-trap-under-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "c767ef42c0b1a56461906d868cd06a545dd4fe31cf716344c3b30260cf50b2ce",
+          "finalSignature": "c767ef42c0b1a56461906d868cd06a545dd4fe31cf716344c3b30260cf50b2ce"
+        },
+        {
+          "id": "CT-R1-trap-under-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "300325c304c08ed111bcecb2c41adf5a4c51e398c2001f1e66e6baf39632b5e9",
+          "finalSignature": "300325c304c08ed111bcecb2c41adf5a4c51e398c2001f1e66e6baf39632b5e9"
+        },
+        {
+          "id": "CT-R1-trap-under-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "f02b157015014bb87076b0c1c495cbde25abd1b786cea8299aadaf4681f74da0",
+          "finalSignature": "f02b157015014bb87076b0c1c495cbde25abd1b786cea8299aadaf4681f74da0"
+        },
+        {
+          "id": "CT-R1-trap-under-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "28d22d8d0a59abd7d342972dcab13641ee65ab7346d06de1dbbf43bfb9d1de4f",
+          "finalSignature": "28d22d8d0a59abd7d342972dcab13641ee65ab7346d06de1dbbf43bfb9d1de4f"
+        },
+        {
+          "id": "CT-R1-trap-odd-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "b90a10b598d4d63f1a996e471e3c98a2d6f6e1fcb6da20d8f8a3595f0b2dd76d",
+          "finalSignature": "b90a10b598d4d63f1a996e471e3c98a2d6f6e1fcb6da20d8f8a3595f0b2dd76d"
+        },
+        {
+          "id": "CT-R1-trap-odd-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "cb039a65214769f1cbb6e981652ea1e2d4bc708de9a69d7454ee33d94bc8a697",
+          "finalSignature": "cb039a65214769f1cbb6e981652ea1e2d4bc708de9a69d7454ee33d94bc8a697"
+        },
+        {
+          "id": "CT-R1-trap-odd-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "0df5361135d0519e3d3884675b16f6017d4bed29735e31d161b6b4692ae24942",
+          "finalSignature": "0df5361135d0519e3d3884675b16f6017d4bed29735e31d161b6b4692ae24942"
+        },
+        {
+          "id": "CT-R1-trap-odd-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "2bb2de5da94ce018c8e8c282df801e4a0a0a2aa8204a696f8a157cd2c027fcbe",
+          "finalSignature": "2bb2de5da94ce018c8e8c282df801e4a0a0a2aa8204a696f8a157cd2c027fcbe"
+        },
+        {
+          "id": "CT-R1-trap-tite-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "ea54f8d612ef631e66faffc77d888bbf46d56aadd2a775ded7470c4bf6622f93",
+          "finalSignature": "ea54f8d612ef631e66faffc77d888bbf46d56aadd2a775ded7470c4bf6622f93"
+        },
+        {
+          "id": "CT-R1-trap-tite-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "535b5b377b06ef2654bf173748b2ded1f99f03ab520905b8478bc223cd30ab2f",
+          "finalSignature": "535b5b377b06ef2654bf173748b2ded1f99f03ab520905b8478bc223cd30ab2f"
+        },
+        {
+          "id": "CT-R1-trap-tite-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "ed93bec48046a2fb46a6f525870fac728cc77e21f36aab4b4849a29f3e7a4fe7",
+          "finalSignature": "ed93bec48046a2fb46a6f525870fac728cc77e21f36aab4b4849a29f3e7a4fe7"
+        },
+        {
+          "id": "CT-R1-trap-tite-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "3a4896663e99072bbe6c62e7a08cf972e787559c60244feefefb48170d6c4276",
+          "finalSignature": "3a4896663e99072bbe6c62e7a08cf972e787559c60244feefefb48170d6c4276"
+        },
+        {
+          "id": "CT-R1-trap-bear-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "0b13ca90f190dda2d7c1682e3ab4fe741e13558d75f098eea6851e308314ce67",
+          "finalSignature": "0b13ca90f190dda2d7c1682e3ab4fe741e13558d75f098eea6851e308314ce67"
+        },
+        {
+          "id": "CT-R1-trap-bear-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "ec050984d8efbb3ef73b9faf4f7b1e486e7a5bee11faa5681b281ccfba050578",
+          "finalSignature": "ec050984d8efbb3ef73b9faf4f7b1e486e7a5bee11faa5681b281ccfba050578"
+        },
+        {
+          "id": "CT-R1-trap-bear-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "ea32073f0f88adcfbe2d6198e539b259276011306f38aeb7bdb312c47b69ded4",
+          "finalSignature": "ea32073f0f88adcfbe2d6198e539b259276011306f38aeb7bdb312c47b69ded4"
+        },
+        {
+          "id": "CT-R1-trap-bear-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "3fdd3af5767e9ff9da6e457e95dcec9fc8e9b28cf0b6f92f72104c292a790fc4",
+          "finalSignature": "3fdd3af5767e9ff9da6e457e95dcec9fc8e9b28cf0b6f92f72104c292a790fc4"
+        },
+        {
+          "id": "CT-R1-duo-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "e914e9d4c03ea17e80cc2d70decb221019008c961a22e405a383629bb3bd0dfe",
+          "finalSignature": "e914e9d4c03ea17e80cc2d70decb221019008c961a22e405a383629bb3bd0dfe"
+        },
+        {
+          "id": "CT-R1-duo-over-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "25cb480b5fb117b3e74a3dbeafd32037f22b98ca6556194991379e5b3c0483ed",
+          "finalSignature": "25cb480b5fb117b3e74a3dbeafd32037f22b98ca6556194991379e5b3c0483ed"
+        },
+        {
+          "id": "CT-R1-duo-over-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "9cb79ae7664c1faee53751268b3054831ff2878c58273e248d2a9291e09c7073",
+          "finalSignature": "9cb79ae7664c1faee53751268b3054831ff2878c58273e248d2a9291e09c7073"
+        },
+        {
+          "id": "CT-R1-duo-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "5edacc9baf20238663f47e4fca27d58c8ddd8502eecea15ac62222ca9f9af2c1",
+          "finalSignature": "5edacc9baf20238663f47e4fca27d58c8ddd8502eecea15ac62222ca9f9af2c1"
+        },
+        {
+          "id": "CT-R1-duo-under-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "b015e5b076849b70c2a564bc36844c7f3e111ae5f2d11231ed098c88ae5b26c5",
+          "finalSignature": "b015e5b076849b70c2a564bc36844c7f3e111ae5f2d11231ed098c88ae5b26c5"
+        },
+        {
+          "id": "CT-R1-duo-under-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "6bdeb30069a72ba93b1500a78938bfa03b55692a58ec42ac9937c1805045bdb6",
+          "finalSignature": "6bdeb30069a72ba93b1500a78938bfa03b55692a58ec42ac9937c1805045bdb6"
+        },
+        {
+          "id": "CT-R1-duo-under-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "98624ff72d10054c59c7cf47df6359d6a7586918f3c888272c5c0c815670d03a",
+          "finalSignature": "98624ff72d10054c59c7cf47df6359d6a7586918f3c888272c5c0c815670d03a"
+        },
+        {
+          "id": "CT-R1-duo-under-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "9540edb73f9067577f7205b2608fc771a0fffc0fe88b71943a00fb20106f8e86",
+          "finalSignature": "9540edb73f9067577f7205b2608fc771a0fffc0fe88b71943a00fb20106f8e86"
+        },
+        {
+          "id": "CT-R1-duo-odd-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "9adb9fb103b16ede934e8c83472d75142dc6eb234f0b46a6c33183b37a5400d5",
+          "finalSignature": "9adb9fb103b16ede934e8c83472d75142dc6eb234f0b46a6c33183b37a5400d5"
+        },
+        {
+          "id": "CT-R1-duo-odd-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "1f08dabad437bdc00e6b90906a265cbb43f80e2918ab14e481ec29141605b00e",
+          "finalSignature": "1f08dabad437bdc00e6b90906a265cbb43f80e2918ab14e481ec29141605b00e"
+        },
+        {
+          "id": "CT-R1-duo-odd-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "f834fa50e61a10c7e17f747248051fea09f770193cc0e72dd276db7925129b34",
+          "finalSignature": "f834fa50e61a10c7e17f747248051fea09f770193cc0e72dd276db7925129b34"
+        },
+        {
+          "id": "CT-R1-duo-odd-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "d21c70f9f2fc549cfe52b0f61b40529ffec979fa6daaf688159e07aca640d9e1",
+          "finalSignature": "d21c70f9f2fc549cfe52b0f61b40529ffec979fa6daaf688159e07aca640d9e1"
+        },
+        {
+          "id": "CT-R1-duo-tite-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "e53fe0465045bdb9062c71cfcbbc50e3461d5b5bc945962afde226a1cf522016",
+          "finalSignature": "e53fe0465045bdb9062c71cfcbbc50e3461d5b5bc945962afde226a1cf522016"
+        },
+        {
+          "id": "CT-R1-duo-tite-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "4a56580e3615e7b16bcf049dac620c20eb1c70af48e334beade0ff3216573edf",
+          "finalSignature": "4a56580e3615e7b16bcf049dac620c20eb1c70af48e334beade0ff3216573edf"
+        },
+        {
+          "id": "CT-R1-duo-tite-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "cf3d0a151795c267ce73d3c7c2f3367ff18943aec73d8f9b057d4e8440bfc4ff",
+          "finalSignature": "cf3d0a151795c267ce73d3c7c2f3367ff18943aec73d8f9b057d4e8440bfc4ff"
+        },
+        {
+          "id": "CT-R1-duo-tite-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "bbe76f2a5bceec53f6c2ee05643452a18e9ea2cfde6a8301e13d92e16048276d",
+          "finalSignature": "bbe76f2a5bceec53f6c2ee05643452a18e9ea2cfde6a8301e13d92e16048276d"
+        },
+        {
+          "id": "CT-R1-duo-bear-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "007cd7530fa79e2f57ec88cc3ca03d151bcfc1c66a05e637dcb1c74fba190727",
+          "finalSignature": "007cd7530fa79e2f57ec88cc3ca03d151bcfc1c66a05e637dcb1c74fba190727"
+        },
+        {
+          "id": "CT-R1-duo-bear-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "05a385f0c9b7601d7121072110d59573191b56cc543c128a1cf7c6a3673f8550",
+          "finalSignature": "05a385f0c9b7601d7121072110d59573191b56cc543c128a1cf7c6a3673f8550"
+        },
+        {
+          "id": "CT-R1-duo-bear-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "aa54e83c4bbef3f66b05c8fdd2c7cb22bef3f20e15f3580e87265f9a7a4fa7a5",
+          "finalSignature": "aa54e83c4bbef3f66b05c8fdd2c7cb22bef3f20e15f3580e87265f9a7a4fa7a5"
+        },
+        {
+          "id": "CT-R1-duo-bear-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "9096b49745915695ec5d739d8d1e6061c38abf49aa8af7a67296df18bf19236c",
+          "finalSignature": "9096b49745915695ec5d739d8d1e6061c38abf49aa8af7a67296df18bf19236c"
+        },
+        {
+          "id": "CT-R1-split_zone-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "1fd3db3e47c4c53e7579bbbaf809060d67f218347e10273db8d8b0adaf41db96",
+          "finalSignature": "1fd3db3e47c4c53e7579bbbaf809060d67f218347e10273db8d8b0adaf41db96"
+        },
+        {
+          "id": "CT-R1-split_zone-over-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "82fca9ea618b956ce8c5341e5c32c45f7e7983410aed90ba4494f6485c232ae2",
+          "finalSignature": "82fca9ea618b956ce8c5341e5c32c45f7e7983410aed90ba4494f6485c232ae2"
+        },
+        {
+          "id": "CT-R1-split_zone-over-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "fecce22ce3a56f95fd61de7aec9dd8966f2d5ac0cabad97a5385b8bc99c2008e",
+          "finalSignature": "fecce22ce3a56f95fd61de7aec9dd8966f2d5ac0cabad97a5385b8bc99c2008e"
+        },
+        {
+          "id": "CT-R1-split_zone-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "ff942f32ecfbe92ca042890ecfac8c9ef6b56585ddebff875ea2d54bf6f2355a",
+          "finalSignature": "ff942f32ecfbe92ca042890ecfac8c9ef6b56585ddebff875ea2d54bf6f2355a"
+        },
+        {
+          "id": "CT-R1-split_zone-under-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "8797c9d1650c98b9e060f6d1a72bed025825adcd64ea57af8c52781054ea4349",
+          "finalSignature": "8797c9d1650c98b9e060f6d1a72bed025825adcd64ea57af8c52781054ea4349"
+        },
+        {
+          "id": "CT-R1-split_zone-under-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "3235ead6decd778b96e6f3c118aa80f6723fe5265c8ca99a31b4e387c554ef3b",
+          "finalSignature": "3235ead6decd778b96e6f3c118aa80f6723fe5265c8ca99a31b4e387c554ef3b"
+        },
+        {
+          "id": "CT-R1-split_zone-under-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "3b2e5c451706c9878e73951071bf5dc6908bfe1bd7adb466ea1e37685b292dbb",
+          "finalSignature": "3b2e5c451706c9878e73951071bf5dc6908bfe1bd7adb466ea1e37685b292dbb"
+        },
+        {
+          "id": "CT-R1-split_zone-under-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "f56f18cf277d85060b8a5e6ff20e5cd7ea8fd6ab6b6a5b3e170ecf10a04bc1a8",
+          "finalSignature": "f56f18cf277d85060b8a5e6ff20e5cd7ea8fd6ab6b6a5b3e170ecf10a04bc1a8"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "8eee439786571d943aa50f15f83de840a7250e0d565599f8f01f8458d0f12487",
+          "finalSignature": "8eee439786571d943aa50f15f83de840a7250e0d565599f8f01f8458d0f12487"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "168496790ecf6838a1d90a536534502bfe64ec4f2776b8a724d87d8412687f52",
+          "finalSignature": "168496790ecf6838a1d90a536534502bfe64ec4f2776b8a724d87d8412687f52"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "e30d340110b2e475ab2426b9940a5b33f9d9e225d51d76329275d1145030b38c",
+          "finalSignature": "e30d340110b2e475ab2426b9940a5b33f9d9e225d51d76329275d1145030b38c"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "aa58806b1fcb311ac7a9de3d5a2220d2268bc67ba777731d88e57c740bbf9de5",
+          "finalSignature": "aa58806b1fcb311ac7a9de3d5a2220d2268bc67ba777731d88e57c740bbf9de5"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "83dee5d8cf8ed4c59548187bd191fb0aa7abe576f8b0b3ee027b204877bbc221",
+          "finalSignature": "83dee5d8cf8ed4c59548187bd191fb0aa7abe576f8b0b3ee027b204877bbc221"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "92429a8299f46830e44ed7a7c4b937f6e79900ee115414958e00fa6fdf7836fc",
+          "finalSignature": "92429a8299f46830e44ed7a7c4b937f6e79900ee115414958e00fa6fdf7836fc"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "6554216b924bc6677e06919b2c5157100355d2e04645ba64ca47b1304ce45cd2",
+          "finalSignature": "6554216b924bc6677e06919b2c5157100355d2e04645ba64ca47b1304ce45cd2"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "6bb3eb157f872ed1045c01dc6aac46cd6918d308b664d11d89f051280b9a65bd",
+          "finalSignature": "6bb3eb157f872ed1045c01dc6aac46cd6918d308b664d11d89f051280b9a65bd"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "e43d08e9ba371ac4b5a2047d247f2f8d14f22cf135df5d536583128581497f37",
+          "finalSignature": "e43d08e9ba371ac4b5a2047d247f2f8d14f22cf135df5d536583128581497f37"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-R-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "71762d0857bab2ef97bd6c3e38d30ba197736504bd597b18ee08e2d36fea3eae",
+          "finalSignature": "71762d0857bab2ef97bd6c3e38d30ba197736504bd597b18ee08e2d36fea3eae"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-L-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "f3a14c2d0e5f83b39673a2c4a3abb79717e84c71da58162bc18f815a868471ad",
+          "finalSignature": "f3a14c2d0e5f83b39673a2c4a3abb79717e84c71da58162bc18f815a868471ad"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "1eb6ddfe9bfcec02e4a9f637219cb6fd1eb25a4f17b3c0008d5655bbdbef8713",
+          "finalSignature": "1eb6ddfe9bfcec02e4a9f637219cb6fd1eb25a4f17b3c0008d5655bbdbef8713"
+        },
+        {
+          "id": "CT-R2-oz_strong-over-L-S11",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "3d1616118fc63b21622ac82a1f4c7f15e6bc3cb7221e279299c04045a95ed73c",
+          "finalSignature": "3d1616118fc63b21622ac82a1f4c7f15e6bc3cb7221e279299c04045a95ed73c"
+        },
+        {
+          "id": "CT-R2-power-over-R-S3",
+          "equalFields": [
+            "observedSignature",
+            "plainSignature",
+            "initialProjection",
+            "profileSha256"
+          ],
+          "preliminarySignature": "3f97db31e7151c79db09527bdf19c8eefd83ed8b276bf090bd6d8e5cf511cd5e",
+          "finalSignature": "3f97db31e7151c79db09527bdf19c8eefd83ed8b276bf090bd6d8e5cf511cd5e"
+        }
+      ],
+      "beforeTiming": {
+        "wallMs": 51316.844411,
+        "cpuMs": 63269.823,
+        "runtime": null
+      },
+      "afterTiming": {
+        "wallMs": 41194.112081,
+        "cpuMs": 53479.77,
+        "runtime": null
+      }
+    },
+    {
+      "kind": "rows",
+      "inputs": 24,
+      "inputFiles": {
+        "pass-candidate/raw.json.gz": "d32de216c0ae321fb01a2ff8fd0df88f42d21ca8bdbec0df7e6eea0ee759e807",
+        "optimized/pass-candidate/raw.json.gz": "5673e2eaec88aa325addb75a1c73cd5e6547621845551cb014cec7bef8f369d6"
+      },
+      "rows": [
+        {
+          "id": "QBCUE-R1-gun_doubles_11-four_verts-cover4-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "473a8675652681b42dc6be265b9e954688d9055073701ba5c26a2e104e4952b6",
+          "finalSignature": "473a8675652681b42dc6be265b9e954688d9055073701ba5c26a2e104e4952b6"
+        },
+        {
+          "id": "QBCUE-R1-gun_doubles_11-dagger-cover4-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "95b43582ce72cfb3a06e3484709c88a2fc261de325d41bf1d68a147b316f67fc",
+          "finalSignature": "95b43582ce72cfb3a06e3484709c88a2fc261de325d41bf1d68a147b316f67fc"
+        },
+        {
+          "id": "QBCUE-R1-gun_bunch_11-mesh-cover4-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "8256fe57508b67b692e682a0f700464a9dfb04fddea229b4df017700a049084a",
+          "finalSignature": "8256fe57508b67b692e682a0f700464a9dfb04fddea229b4df017700a049084a"
+        },
+        {
+          "id": "QBCUE-R1-gun_trips_11-smash-cover4-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "b9c1d9633cec696751e3cf50f54f462306cb86a94e877ba769b57ba465f68a70",
+          "finalSignature": "b9c1d9633cec696751e3cf50f54f462306cb86a94e877ba769b57ba465f68a70"
+        },
+        {
+          "id": "QBCUE-R1-gun_doubles_11-four_verts-cover3_match-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "bb0d84e625f42d0d8ca04401eb5aa7a90c3a673c9d578b6628b301df24f6d5a9",
+          "finalSignature": "bb0d84e625f42d0d8ca04401eb5aa7a90c3a673c9d578b6628b301df24f6d5a9"
+        },
+        {
+          "id": "QBCUE-R1-gun_doubles_11-dagger-cover3_match-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "7e03199071e1aef9f2fab1def74b7820e8c993dd35815a685d38526578edb981",
+          "finalSignature": "7e03199071e1aef9f2fab1def74b7820e8c993dd35815a685d38526578edb981"
+        },
+        {
+          "id": "QBCUE-R1-gun_bunch_11-mesh-cover3_match-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "01708bbedb2c42c0cb34b8f5be8608d113a5161b18429d0180a9407695deb01a",
+          "finalSignature": "01708bbedb2c42c0cb34b8f5be8608d113a5161b18429d0180a9407695deb01a"
+        },
+        {
+          "id": "QBCUE-R1-gun_trips_11-smash-cover3_match-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "6e136a14e87bb86548911724db6167240b9cdc3252935656f517b61816f60ab6",
+          "finalSignature": "6e136a14e87bb86548911724db6167240b9cdc3252935656f517b61816f60ab6"
+        },
+        {
+          "id": "QBCUE-R1-gun_doubles_11-four_verts-cover1-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "88fa6c823e961662e323574b468333b5f1087debd5fd7712702406f474820280",
+          "finalSignature": "88fa6c823e961662e323574b468333b5f1087debd5fd7712702406f474820280"
+        },
+        {
+          "id": "QBCUE-R1-gun_doubles_11-dagger-cover1-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "bcfaad977cc6ba85d825555187eb0f74de38c240d89fb257d377cbbd7dffe940",
+          "finalSignature": "bcfaad977cc6ba85d825555187eb0f74de38c240d89fb257d377cbbd7dffe940"
+        },
+        {
+          "id": "QBCUE-R1-gun_bunch_11-mesh-cover1-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "d6137635b6320f45d33114af17d4fc8d4414de98ebe6e81d33cce8a8aabe72a7",
+          "finalSignature": "d6137635b6320f45d33114af17d4fc8d4414de98ebe6e81d33cce8a8aabe72a7"
+        },
+        {
+          "id": "QBCUE-R1-gun_trips_11-smash-cover1-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "b47441cec7aa0b317cf49996190c93a1734dad4c3d5ba6199c891ddb334f2204",
+          "finalSignature": "b47441cec7aa0b317cf49996190c93a1734dad4c3d5ba6199c891ddb334f2204"
+        },
+        {
+          "id": "QBCUE-R2-gun_doubles_11-four_verts-cover4-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "55a4fd286ab6b9c670c0aff2810ab2baba7f5ad6877c97879ec42a57426ece5f",
+          "finalSignature": "55a4fd286ab6b9c670c0aff2810ab2baba7f5ad6877c97879ec42a57426ece5f"
+        },
+        {
+          "id": "QBCUE-R2-gun_doubles_11-dagger-cover4-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "e490274c85878ea5d1b34ef1cedf4fab1fe5facf706a0248d623d85744a594d2",
+          "finalSignature": "e490274c85878ea5d1b34ef1cedf4fab1fe5facf706a0248d623d85744a594d2"
+        },
+        {
+          "id": "QBCUE-R2-gun_bunch_11-mesh-cover4-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "fb8b7a9abe061fa8e714275ff3d5276275420e39cbbe5bbbf556a7c4ea8e2108",
+          "finalSignature": "fb8b7a9abe061fa8e714275ff3d5276275420e39cbbe5bbbf556a7c4ea8e2108"
+        },
+        {
+          "id": "QBCUE-R2-gun_trips_11-smash-cover4-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "e146a99cc78c2f45e48c1be73293bea89e9ca08b863a5abfde74fda282bb37a6",
+          "finalSignature": "e146a99cc78c2f45e48c1be73293bea89e9ca08b863a5abfde74fda282bb37a6"
+        },
+        {
+          "id": "QBCUE-R2-gun_doubles_11-four_verts-cover3_match-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "211fd44b9e53e3311387d543ff243b07c054077ffbafdf13409eddafd6137ce7",
+          "finalSignature": "211fd44b9e53e3311387d543ff243b07c054077ffbafdf13409eddafd6137ce7"
+        },
+        {
+          "id": "QBCUE-R2-gun_doubles_11-dagger-cover3_match-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "2f6d2de360227913f9350d37d9ec3ed799af0dfcb94dd9340dce9b9c786571dd",
+          "finalSignature": "2f6d2de360227913f9350d37d9ec3ed799af0dfcb94dd9340dce9b9c786571dd"
+        },
+        {
+          "id": "QBCUE-R2-gun_bunch_11-mesh-cover3_match-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "9e961a67329209a126cada530255ed3647ea4fc3d6fa9f137b53015b46dcc195",
+          "finalSignature": "9e961a67329209a126cada530255ed3647ea4fc3d6fa9f137b53015b46dcc195"
+        },
+        {
+          "id": "QBCUE-R2-gun_trips_11-smash-cover3_match-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "8ff572ee36b3157dfc15dda570c9c3be12e4c62bec1a53d16dd1fa689c59901b",
+          "finalSignature": "8ff572ee36b3157dfc15dda570c9c3be12e4c62bec1a53d16dd1fa689c59901b"
+        },
+        {
+          "id": "QBCUE-R2-gun_doubles_11-four_verts-cover1-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "4d9572c823f9017ab853373f887a1065c4d89f2e6844d4dfd7fd2217a3bf9293",
+          "finalSignature": "4d9572c823f9017ab853373f887a1065c4d89f2e6844d4dfd7fd2217a3bf9293"
+        },
+        {
+          "id": "QBCUE-R2-gun_doubles_11-dagger-cover1-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "33aef63f7052c97c3e840c9e41f1a2a0321d8693f50db90eb9db4ba1e857f05b",
+          "finalSignature": "33aef63f7052c97c3e840c9e41f1a2a0321d8693f50db90eb9db4ba1e857f05b"
+        },
+        {
+          "id": "QBCUE-R2-gun_bunch_11-mesh-cover1-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "4392b9740ce4918e56de5cf8ee3f97c0043f0319d8d0a69c8a37b1a96b841617",
+          "finalSignature": "4392b9740ce4918e56de5cf8ee3f97c0043f0319d8d0a69c8a37b1a96b841617"
+        },
+        {
+          "id": "QBCUE-R2-gun_trips_11-smash-cover1-S3",
+          "equalFields": [
+            "endpointSignature",
+            "nextRng",
+            "initialSignature"
+          ],
+          "preliminarySignature": "87572c8e38d5c3e9ed06f50d32df34711c7c62939902792e0df5fc7cabf94251",
+          "finalSignature": "87572c8e38d5c3e9ed06f50d32df34711c7c62939902792e0df5fc7cabf94251"
+        }
+      ],
+      "beforeTiming": {
+        "wallMs": null,
+        "cpuMs": null,
+        "runtime": {
+          "elapsedSeconds": 8.996650024,
+          "cpuSeconds": 14.108073,
+          "note": "Whole48-execution collector runtime, not an idle engine-performance comparison."
+        }
+      },
+      "afterTiming": {
+        "wallMs": null,
+        "cpuMs": null,
+        "runtime": {
+          "elapsedSeconds": 11.015238934,
+          "cpuSeconds": 15.493262,
+          "note": "Whole48-execution collector runtime, not an idle engine-performance comparison."
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Complete recorded execution signatures agree on these fixed inputs only.",
+    "Runtime includes observers/plain controls and uncontrolled host load.",
+    "Coaching validity and true future-peer motion are not established by this comparison."
+  ]
+}

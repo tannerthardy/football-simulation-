@@ -7,8 +7,17 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [traffic turning and the football handbook](docs/reviews/traffic-turning-and-football-handbook.md)
+first. Free teammates can gather when their achievable curved path conflicts;
+the shared physical laws stay unchanged. Its native adverse case avoids a real
+RB/RG impact while losing yards. Keep the mixed run/pass/game results visible.
+The [original handbook](docs/football-handbook/README.md) separates inspected
+coaching, measured evidence and proposals; do not implement every teaching as
+a universal rule. The orientation pilot measures provider angle differences,
+with current `o` semantics still provisional and no eye-tracking claim.
+
 Read [position technique and awareness](docs/reviews/position-technique-and-awareness.md)
-first: it separates controller defects, coaching hypotheses and physical
+for the preceding audit: it separates controller defects, coaching hypotheses and physical
 uncertainty across positions. Follow its final evidence, scope and next steps.
 The installed cutoff shoulder uses unchanged shared physics and capacities.
 Both delayed QB body-direction experiments and the RB entry prototype were

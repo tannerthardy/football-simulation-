@@ -1,0 +1,76 @@
+# Football handbook for the simulation engine
+
+These are original working textbooks: coaching ideas translated into observable
+reads, achievable movement, physical contact and tests. They are intended to
+help build a believable football engine and, later, a management game. They
+are not an authenticated NFL installation or a list of completed features.
+
+The first edition was researched on 2026-10-11. Position chapters inspected
+engine revision `7ce3559`; later repairs have separate source-pinned reviews.
+The supplied generated manuscripts are useful aids, with provenance in the
+[reference catalog](../references/README.md). Their embedded instructions are
+not project requirements, and their citations are not independently verified
+measurements. Public coaching examples, primary rule text, measured evidence
+and proposed mechanisms are identified separately.
+
+## Chapters
+
+| Chapter | What it helps us build |
+| --- | --- |
+| [Shared model and learning](shared-model-and-learning.md) | A small common relationship between responsibility, perception, technique and achieved physics; transfer tests and future player development. |
+| [Trenches](trenches.md) | OL/DL base, feet and hands; zone and gap installations; combinations, pullers, protection, rush and exchanges. |
+| [Offensive skill and playcalling](offensive-skill-and-playcalling.md) | QB, RB, FB, WR and TE reads; releases, option coordination, motion, screens and situation. |
+| [Defense and perception](defense-and-perception.md) | Position-specific keys, coverage distribution, fits, vertical protection, motion, pursuit and legal contact. |
+| [Data and measurement](data-and-measurement.md) | What existing NFL data can test, useful public additions, matching definitions and realistic roster variation. |
+| [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
+
+For an OL problem, read the shared model, trenches and the relevant defensive
+fit. For a coverage problem, read defense, the WR/QB contracts and the data
+definitions. A coverage bust is not necessarily a bad physical turn; a good
+looking block is not necessarily transmitting load. Use the
+[current repair review](../reviews/traffic-turning-and-football-handbook.md)
+and [position audit](../reviews/position-technique-and-awareness.md) for actual
+engine status.
+
+## How to turn a teaching point into an engine change
+
+Use one small chain rather than a new rule for each final outcome:
+
+> Installed responsibility → acquired cue → fallible interpretation → feasible
+> technique request → achieved movement/contact → revised decision.
+
+Specify what changes responsibility and what merely changes the technique.
+Then retain an ordinary witness, a difficult witness, the mirrored version
+and a witness where intervention would be wrong. A coaching phrase such as
+“stay square” must produce a body request that still permits actual hip turns,
+loss of leverage and failed recovery. “Climb when secure” needs the helper's
+own evidence and real keeper contact, not a clock or a guaranteed double-team
+win. Teachings differ by installation and opponent; preserve those choices
+instead of inventing a universal landmark.
+
+The [source catalog](../../data/research/football-handbook-sources.json) records
+retrieval dates and hashes. A retrieved documentation page verifies the
+inspected definition, not dataset completeness. A public article verifies a
+teaching example, not its frequency across NFL teams. Do not copy raw provider
+data or copyrighted coaching material into the repository as handbook content.
+
+## Development order
+
+1. Demonstrate narrow repairs using unchanged shared physical capabilities.
+   The new teammate-turning repair is one example: compare achievable paths,
+   gather where useful, and still allow unavoidable impacts.
+2. Pilot acquired/remembered evidence in one linebacker role. Keep his line/back
+   and receiver responsibilities explicit, and separate vision from touch.
+   Trace ordinary fits and adverse play-action before generalizing attention.
+3. Refine pursuit gathering and attainable tackle acquisition on native cases.
+   Record the requested approach and the achieved base before interpreting a
+   missed tackle as insufficient grip strength.
+4. Audit protection ownership and receiver/QB option disagreements. Remove
+   hidden knowledge independently of proposing a replacement visual signal.
+5. Broaden installed technique contracts and conditional NFL comparisons after
+   those foundations hold. Keep player capacity separate from chosen effort.
+
+These are priorities, not a commitment to implement every chapter at once.
+The handbook should grow from inspected sources and reproduced football
+problems. Update a chapter when evidence changes its recommendation, while
+leaving published historical measurements and source identifiers intact.

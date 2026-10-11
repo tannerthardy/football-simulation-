@@ -3,6 +3,13 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
+[traffic turning and the handbook](reviews/traffic-turning-and-football-handbook.md):
+two short free-body commands use existing movement, with a conservative
+traction-based forecast screening bound. Preserve loaded/squeezed scope and
+adverse cases. The [original handbook](football-handbook/README.md) connects
+coaching to physical requests; its proposals are not implemented features.
+The [orientation pilot](football-handbook/orientation-pilot.md) uses existing
+NFL fields without fitting capacity or claiming measured gaze. Read
 [position technique and awareness](reviews/position-technique-and-awareness.md)
 for the current cross-position review, bounded repairs, movement evidence and
 next steps. Installed contact geometry, achievable movement requests and a

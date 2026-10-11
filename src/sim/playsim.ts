@@ -565,7 +565,18 @@ export class PlaySim {
     this.lunges.clear();
     updateEngagements(this, this.intents);
     if (this.bond) updateBond(this, this.bond, this.intents);
-    spaceTeammates(this.agents, this.intents, (a,b)=>this.see(a,b));
+    // Constraint ownership and last-step touch are felt by the actor. Free
+    // movement forecasts must not pretend these loads or joints are absent.
+    const constrained=new Set(this.world.joints.filter(j=>j.kind!=='grasp'||!j.broken)
+      .flatMap(j=>[j.a,j.b]));
+    if(this.bond){
+      constrained.add(this.bond.carrier.body);
+      for(const tackler of this.bond.tacklers)constrained.add(tackler.body);
+    }
+    for(const contact of this.lastStep?.contacts??[]){
+      constrained.add(this.agents[contact.i].body);constrained.add(this.agents[contact.j].body);
+    }
+    spaceTeammates(this.agents, this.intents, (a,b)=>this.see(a,b),{now:t,constrained});
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,

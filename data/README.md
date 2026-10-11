@@ -1,6 +1,19 @@
 # Shared NFL data
 
-Current review: [Position technique and awareness](../docs/reviews/position-technique-and-awareness.md).
+Current review: [Traffic turning and the football handbook](../docs/reviews/traffic-turning-and-football-handbook.md).
+The [original handbook](../docs/football-handbook/README.md) connects coaching
+and measurement across positions. Its [data chapter](../docs/football-handbook/data-and-measurement.md)
+distinguishes acquisition from actual extraction and describes useful public
+participation/charting references. The [source catalog](research/football-handbook-sources.json)
+retains 30 documentation/coaching retrieval records, not copied source articles.
+The [orientation pilot](../docs/football-handbook/orientation-pilot.md) processes
+244 selected pass windows across two declared regular-season games. Provider
+angle differences are provisional orientation/travel evidence, never gaze or
+NFL prevalence. The [new evidence and commands](reviews/football-handbook/traffic-turning/README.md)
+reuse the immutable cutoff-only baseline and retain native run/pass controls,
+adverse collision evidence and separate orientation provenance.
+
+Previous review: [Position technique and awareness](../docs/reviews/position-technique-and-awareness.md).
 It separates wrong instructions, hidden information and movement prediction from
 physical uncertainty. The [movement audit](../docs/reviews/movement-and-nfl-validation-audit.md)
 adds 72 pinned baseline trials using existing NFL drill paths. The
