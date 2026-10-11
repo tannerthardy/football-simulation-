@@ -150,18 +150,19 @@
   },
   "testContractUpdates": "Overlapping fixtures and inherited-primary-control assumptions became nonoverlapping earned-contact setups. A native incidental-fall assertion became an actual delayed-pose contract plus unchanged native observer checks. No seed search or forced win.",
   "acceptance": {
-    "typeScriptTestsPassed": 1160,
-    "coreTests": 986,
+    "typeScriptTestsPassed": 1162,
+    "coreTests": 988,
     "integrationTests": 6,
     "researchTests": 168,
-    "completeTypeScriptCommand": "npm run test:all -- --reporter=json --outputFile=out/run-solidify/all-tests-final.json",
-    "completeTypeScriptWallSeconds": 135.53,
-    "pythonTestsPassed": 121,
+    "completeTypeScriptCommand": "npm run test:all -- --reporter=json --outputFile=out/run-solidify/all-tests-integrated.json",
+    "completeTypeScriptWallSeconds": 126.05,
+    "pythonTestsPassed": 129,
     "pythonCommand": "npm run test:data",
     "typecheck": "pass",
     "build": "pass",
     "independentFinalDiffReview": "No concrete pre-push blocker; no reviewer source edits",
-    "typeScriptReportSha256": "a706345814527a0d07ba787c079b553432186a6e6b405b9e8eeadbf2d1efed54"
+    "typeScriptReportSha256": "516a6f6324aa6a60a53beb03f221c4de9410b0aefcfea58ac569ac0cccacc0dd",
+    "scope": "Complete checks repeated after integrating remote measurements; new mechanics adapter/metric tests included. Production engine source and native evidence pins unchanged."
   },
   "evidence": {
     "directory": "out/run-solidify/",
@@ -200,6 +201,51 @@
     "These are controlled situations, not NFL population frequencies or paired full games. Supplemental backer contacts remain four rather than improving.",
     "Shared physical laws/capacities were preserved, not newly certified against every NFL contact or timestep."
   ],
-  "nextWork": "Check force responsibility against the installed coverage job before current-location/presentation filters. A curl-flat player can be excluded without disguise, leaving a deep safety as force. Compare matched calls before changing pursuit capacity; then diagnose actual climber misses and DL response to a second blocker.",
-  "candidateEngineCommit": "24c495ac587497e7e8a4624c5b6a35b7a9011ea0"
+  "nextWork": "Check force responsibility against the installed coverage job before current-location/presentation filters. A curl-flat player can be excluded without disguise, leaving a deep safety as force. Compare matched calls before changing pursuit capacity; then diagnose actual climber misses and DL response to a second blocker. Also trace frontal gathering (common.ts) and crossing-arrival feasibility (approach-control.ts): fixed ordinary/adverse support, both mirrors, observed picture through requested/achieved velocity and actual contact. Do not raise grip or tackle speed based only on the proxy.",
+  "candidateEngineCommit": "17db7fb570c4a9b8534eaa8bb6ddd08be47058d7",
+  "integratedRemoteCommit": "dd06dd4",
+  "integrationScope": "Four measurement/data-only remote commits were integrated. No additional production source change; engine and native packet source pins remain identical.",
+  "widerMechanismCheck": {
+    "input": "Eight generated-roster games, seeds 101-108, same constructor as the upstream measured baseline",
+    "baseline": "data/reviews/mechanics/sim-baseline.json, measured at ff6e993; production src byte-identical to 923dbe0",
+    "candidateSourceSha256": "850ea36e598d6cd252f701ce11b9b110ae06c834c7d6760922dd60b5b6f9acf3",
+    "candidatePlays": {
+      "run": 225,
+      "pass": 884,
+      "air": 0
+    },
+    "baselinePlays": {
+      "run": 265,
+      "pass": 793,
+      "air": 0
+    },
+    "guard": "All 12 explicitly checked with n >= 30: none off (9 ok, 3 check). The tool alone would also pass missing rows, so coverage was checked separately.",
+    "lateProximityDisplacementP90Yards": {
+      "allRunsBaseline": 4.1,
+      "allRunsCandidate": 3.6,
+      "insideZoneBaseline": 4.6,
+      "insideZoneCandidate": 3.6
+    },
+    "remainingTacklePatterns": {
+      "runTacklerMedianSpeedYdPerSecond": 1.521,
+      "runHeadOnProxyShare": 0.213,
+      "runContactToWhistleMedianSeconds": 0.65,
+      "catchBrokenContactProxyShare": 0.241
+    },
+    "outcomeLimit": "Current eight games average 78 points per team-game. This increment does not establish credible full-game results; no scoring target was used to choose it.",
+    "comparisonLimit": "Same generated roster constructor and game seeds, not matched snap inputs: altered outcomes change later calls and mix (225 versus 265 runs). Proximity is not double-team identity; nearest defender is not the actual tackler. This is side-effect surveillance, not causal proof or an NFL population claim.",
+    "report": "out/run-solidify/mechanics-report.md",
+    "reportSha256": "3fc73190ed8794141c78eeef53fd04547647ae7816a1aacb59748d37d64d738b",
+    "candidateSummary": "out/run-solidify/mechanics-candidate.json",
+    "candidateSummarySha256": "321119f72b1e0a09e899eb50ddcd8e8bf11a61ac7bd3fa1d8fec431e590d96a8",
+    "candidatePacket": "out/run-solidify/mechanics-candidate-plays.jsonl.gz",
+    "candidatePacketSha256": "670a921075a74663f5acb45cdb671e10af4640794bb3381715d5d5a24d73f171",
+    "metricsToolSha256": "0a749b02e0d32fb5921b6232b8c76417991ac738c75c383ba5ef25f83c7c6438",
+    "exportToolSha256": "d04ab8be1bcecd8fff7a3e85d3ebf631e45c91f6c97f880e562ccebbe229f414",
+    "commands": [
+      "node --import tsx scripts/mechanics/sim-export.ts --seed 101 --games 8 --out out/run-solidify/mechanics-candidate-plays.jsonl.gz",
+      "python3 -I scripts/mechanics/measure.py out/run-solidify/mechanics-candidate-plays.jsonl.gz out/run-solidify/mechanics-candidate.json --label 'seed101, 8 games; engine850ea36; integrated measurement tools at dd06dd4'",
+      "python3 -I scripts/mechanics/compare.py --sim out/run-solidify/mechanics-candidate.json --out out/run-solidify/mechanics-report.md --guard data/reviews/mechanics/guard.json"
+    ]
+  }
 }

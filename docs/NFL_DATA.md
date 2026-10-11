@@ -10,8 +10,9 @@ sim with it, and the rules for using the comparison.
 We measure the same mechanisms in NFL tracking and in sim replays, **with the
 same code**. Both are converted to one play format (positions every 0.1 s,
 x = yards past the line in the offense's direction), and one metric module
-(`scripts/mechanics/metrics.py`) measures both. So a gap between sim and NFL
-can only come from the football, never from two different definitions. The
+(`scripts/mechanics/metrics.py`) measures both. Shared definitions remove one
+avoidable source of disagreement. Event annotation, inferred contacts, the
+available tracking window and the roster/call mix can still differ. The
 metrics are mechanisms, not final outcomes: handoff timing, how far blocked
 linemen get driven, what contact does to a ball carrier, tackle speed and
 angle, pass protection, route separation, the ball in the air, top speeds.

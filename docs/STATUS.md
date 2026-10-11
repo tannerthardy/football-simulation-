@@ -69,6 +69,19 @@ Also diagnosed, unmodified: backfield man alignment can bunch linebackers;
 Draw's pass influence can postpone its covered owner's rusher read. Correct
 responsibilities and acquired cues before changing physical ability.
 
+The newly integrated [NFL mechanism comparisons](NFL_DATA.md) also flag
+different tackling patterns on runs and after catches. Trace the shared
+gathering approach: a frontal cue can brake early, while a crossing approach
+can retain too much relative sideways speed. Compare acquired pictures,
+requested velocity and achieved support/contact in the same controlled setup.
+Nearest-defender speed is a tracking proxy, so it does not identify the actual
+tackler or prove a grip-strength problem. Outside-zone lateral technique is
+being investigated separately; do not retune movement capacities to mask it.
+The new eight-game check assesses all twelve guarded metrics, with none
+flagged off. Scoring still averages 78 points per team-game. Combo improvement
+does not establish realistic whole games; the contact and coverage problems
+remain substantial.
+
 ## Random film review: choose the next investigation
 
 The [review records](../data/reviews/current/random-play-review.json) preserve
