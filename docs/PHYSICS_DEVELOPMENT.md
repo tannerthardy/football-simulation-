@@ -3,12 +3,15 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
-[OL work exchanges](reviews/ol-work-exchanges.md): the validated increment repairs
-actual adjacent target changes that retain the wrong job technique. Read that
-review's exact source, results and ship status. The
-[keeper increment](reviews/keeper-based-combination-work.md) supplies the adverse
-Duo Odd/right/seed3 witness and shows why coherent contact alone does not make
-rushing better.
+[zone-helper checks](reviews/zone-helper-check-and-climb.md): the verified
+increment adds original IZ/split-zone helper check/climb work without changing
+joined-double cadence. The rejected shared-clock candidate is retained. Read
+the exact source, mixed results and omissions, then the
+[common OL controller recommendation](reviews/universal-ol-controller.md).
+Next isolate personal attention in joined combinations. The
+[work-exchange](reviews/ol-work-exchanges.md) and
+[keeper](reviews/keeper-based-combination-work.md) increments explain earlier
+job/contact repairs; coherent contact alone does not make rushing better.
 
 The owner wants the simplest physically coherent model that generalizes across
 football interactions. Full anatomical foot/ground expansion remains paused.

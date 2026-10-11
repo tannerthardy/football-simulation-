@@ -1,6 +1,18 @@
 # Shared NFL data
 
-Current engine status: [Coherent OL work exchanges](../docs/reviews/ol-work-exchanges.md).
+Current engine status: [Zone-helper checks and climbs](../docs/reviews/zone-helper-check-and-climb.md).
+The [evidence and commands](reviews/physics-world/zone-helper-check/README.md)
+reuse the immutable 162-input baseline and retain the unpromoted shared-clock
+candidate. Watch [ten paired clips](../viewer/zone-helper-check.html) or the
+[offline ZIP](../viewer/zone-helper-check.zip). Original IZ/split-zone helpers
+can check secure near work and climb from their own delayed cues while preserving
+real keeper hands. All five later establish loaded linebacker contact; rushing
+results remain mixed. Optional reads have their own cadence and preserve joined
+timing. Shared World and capacities stay unchanged. The
+[common OL controller recommendation](../docs/reviews/universal-ol-controller.md)
+identifies personal joined-double attention as the next common repair.
+
+Previous engine status: [Coherent OL work exchanges](../docs/reviews/ol-work-exchanges.md).
 The [evidence and commands](reviews/physics-world/ol-job-exchange/README.md) reuse
 the immutable 162-input baseline and retain both participants' actual delayed
 pictures in four fixed paired witness inputs. Watch the

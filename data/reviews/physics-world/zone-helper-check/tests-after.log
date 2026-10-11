@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/zone-helper-check.test.ts (18 tests) 584ms
+
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Start at  07:59:20
+   Duration  1.57s (transform 549ms, setup 0ms, collect 723ms, tests 584ms, environment 0ms, prepare 72ms)
+

@@ -1,0 +1,99 @@
+
+ RUN  v3.2.4 /tmp/football-zone-helper-before
+
+ ❯ test/zone-helper-check.test.ts (18 tests | 5 failed) 621ms
+   × the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side -1 83ms
+     → expected false to be true // Object.is equality
+   × the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side 1 51ms
+     → expected false to be true // Object.is equality
+   × the original inside-zone helper may check a supported owner before climbing > keeps the helper reading independently of his supported owner's ordinary earlier update 15ms
+     → actual value must be number or bigint, received "undefined"
+   × the original inside-zone helper may check a supported owner before climbing > requires a stable helper check instead of inheriting an owner's historical secure time 32ms
+     → expected false to be true // Object.is equality
+   ✓ a check does not bypass a physical or near-level responsibility > rejects down despite the owner's stale visible up pose 20ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects unbalanced despite the owner's stale visible up pose 16ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects missing-hands despite the owner's stale visible up pose 21ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects foreign-hands despite the owner's stale visible up pose 16ms
+   ✓ a check does not bypass a physical or near-level responsibility > retains assistance when the owned defender approaches the helper's near hip 18ms
+   ✓ a check does not bypass a physical or near-level responsibility > does not ignore another unengaged near-level penetrator in the helper corridor 20ms
+   ✓ a check does not bypass a physical or near-level responsibility > keeps a physically restrained helper from being treated as a free climber 21ms
+   ✓ a check does not bypass a physical or near-level responsibility > does not send the installed covered owner uphill to manufacture optional help 15ms
+   ✓ helper decisions consume delayed visible responsibility cues > does not climb through a near hip still in his picture merely because the hidden DL has moved away 12ms
+   ✓ helper decisions consume delayed visible responsibility cues > does not anticipate a filling backer whose delayed picture is still far from the helper 13ms
+   ✓ optional inside-zone help respects other concepts and real double teams > retains sustained help for Duo, gap schemes, stretch zone, Draw and Toss 34ms
+   ✓ optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path 19ms
+   × an ordinary Split Zone Tite rep establishes the same check and climb > lets RT use the supported Y block without first inventing a second pair of hands 2ms
+     → Cannot read properties of undefined (reading 'kind')
+   ✓ optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help 210ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/zone-helper-check.test.ts > the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side -1
+ FAIL  test/zone-helper-check.test.ts > the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side 1
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/zone-helper-check.test.ts:118:24
+    116|     const f = loaded(side), hands = f.engagement.hands!, ownerBody = f…
+    117|     readUntil(f);
+    118|     expect(checked(f)).toBe(true);
+       |                        ^
+    119|     expect(f.combination.released).toBe(true);
+    120|     expect(f.helper.engagement).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/zone-helper-check.test.ts > the original inside-zone helper may check a supported owner before climbing > keeps the helper reading independently of his supported owner's ordinary earlier update
+TypeError: actual value must be number or bigint, received "undefined"
+ ❯ test/zone-helper-check.test.ts:144:41
+    142|     f.uncovered.update(f.helper, f.sim);
+    143|     expect(f.combination.nextRead).toBe(ownerTime);
+    144|     expect(f.combination.checkNextRead).toBeGreaterThan(f.sim.t);
+       |                                         ^
+    145|     expect(eyes.mock.calls.some(([observer, target]) => observer === f…
+    146|     expect(f.sim.see(f.helper, f.owner).age).toBeGreaterThan(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/zone-helper-check.test.ts > the original inside-zone helper may check a supported owner before climbing > requires a stable helper check instead of inheriting an owner's historical secure time
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/zone-helper-check.test.ts:156:38
+    154|     f.uncovered.update(f.helper, f.sim);
+    155|     expect(checked(f)).toBe(false); expect(f.combination.released).toB…
+    156|     readUntil(f); expect(checked(f)).toBe(true);
+       |                                      ^
+    157|   });
+    158| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/zone-helper-check.test.ts > an ordinary Split Zone Tite rep establishes the same check and climb > lets RT use the supported Y block without first inventing a second pair of hands
+TypeError: Cannot read properties of undefined (reading 'kind')
+ ❯ test/zone-helper-check.test.ts:306:30
+    304|     expect(combo.members.map(a => a.slot)).toEqual(['Y', 'RT']);
+    305|     expect(combo.defender.slot).toBe('DE_S'); expect(combo.backer!.slo…
+    306|     expect(combo.helpPolicy!.kind).toBe('check');
+       |                              ^
+    307|     const original = behavior.update;
+    308|     const transitions: Array<{ t: number; hands: NonNullable<Fixture['…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 13 passed (18)
+   Start at  07:58:53
+   Duration  1.44s (transform 505ms, setup 0ms, collect 637ms, tests 621ms, environment 0ms, prepare 59ms)
+

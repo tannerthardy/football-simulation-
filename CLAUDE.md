@@ -7,12 +7,15 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
-Read [OL work exchanges](docs/reviews/ol-work-exchanges.md) for the current
-validated increment, source pins and evidence. Actual adjacent DL/LB target
-exchanges must classify their new jobs rather than retain the old technique.
-The adverse Duo Odd/right/seed3 input from the
-[keeper increment](docs/reviews/keeper-based-combination-work.md) is the fixed
-starting witness. Do not treat an unmeasured candidate as a demonstrated fix.
+Read [zone-helper checks](docs/reviews/zone-helper-check-and-climb.md) for the
+current verified increment, source pins and evidence. Original IZ/split-zone
+helpers can check supported near work and climb using their own pictures;
+their optional cadence must not change joined-double timing. The unpromoted
+shared-clock candidate and adverse Bear input are retained. Next isolate
+personal attention in joined combinations; read the
+[common OL controller recommendation](docs/reviews/universal-ol-controller.md).
+The [work-exchange increment](docs/reviews/ol-work-exchanges.md) classifies
+both recipients' new jobs. Do not treat unmeasured candidates as proven fixes.
 
 Read [Physics development](docs/PHYSICS_DEVELOPMENT.md) for the model/change loop
 and [Practical validation](docs/reviews/practical-validation-and-stable-physics.md)
