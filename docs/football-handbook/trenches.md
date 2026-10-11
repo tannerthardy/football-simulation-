@@ -579,7 +579,7 @@ mandatory yards threshold should replace those checks.
 
 ## Run-film coaching checks
 
-The current [combo audit](../../data/reviews/current/run-combo-audit.json)
+The [combo diagnosis](../../data/reviews/current/run-combo-audit.json)
 separates three questions often hidden by a prolonged double:
 
 - **Can the remaining blocker keep the surface?** Grade that player's acquired
@@ -592,6 +592,12 @@ separates three questions often hidden by a prolonged double:
   local load, changed surface and foot replacement before changing strength.
   A short displacement can be an effective block; continued drive can also be
   valid when no backer threatens. Do not impose a universal stall distance.
+
+The [implemented combination increment](../../data/reviews/current/run-combination-security.json)
+now carries each keeper's earned hands through the handoff and checks an
+observed first departure step. It also separates loaded contact from useful
+contact: a helper on the wrong side must still replace his feet. These rules
+use the same physical capacities; a possible climb can still miss its backer.
 
 Jerry Campbell's public [DL run/pass teaching][dl] and [continuation][dl2]
 describe defeating one member's fit, reducing exposed surface and keeping feet

@@ -19,50 +19,55 @@ convergence or good football decisions. Physical-profile mappings and contact
 capacities still have limited empirical evidence. Some controllers still use
 private state; light films cannot establish what a player actually perceived.
 
-The cleanup preserved the engine at `663193d`. The subsequent run-coaching
-increment changes three controller mechanisms below. Every `src/physics` file
-and all shared force/movement capacities remain unchanged. All 1,140 TypeScript
-tests and 121 Python tests pass; typecheck and build are clean.
+The cleanup preserved the engine at `663193d`. Subsequent run work improves
+controllers and how acquired hands use the existing contact law. All 24
+`src/physics` files and the physical-profile mapping remain unchanged. Complete
+check results and source pins are in the current receipt below.
 
 ## Latest run-game work
 
-The [current receipt](../data/reviews/current/run-coaching.json) connects the
-owner's selected clips and supplied twelve-play review to exact native traces,
-coaching sources, matched controller experiments and ordinary controls.
+The [combination receipt](../data/reviews/current/run-combination-security.json)
+records the latest run-game increment:
 
-- **Kick/trap pullers read moving targets after clearance**, retain their
-  delayed picture on normal decision cadence, and progress against the observed
-  landmark. Five native comparisons include two earlier random-review controls.
-  Wrappers keep their separate work. Better reads still permit lost blocks.
-- **Force/edge fits gather before contact**, using the existing pursuit law
-  and the acquired runner picture while retaining the installed shoulder.
-  G6-P181 establishes a natural wrap; three ordinary native controls are exactly
-  unchanged. The first unsuccessful candidate was withheld. Existing chase
-  requests and achieved movement match exactly across 108 controlled calls.
-- **Fast lead blockers remain blocking cues.** The old 3 yd/s veto sent a
-  run-reading linebacker back into coverage in G2-P136. Low pads or apparent
-  blocking geometry now survive acceleration; pass interpretation and upright
-  releases still matter.
+- **Each run helper earns his own hands**, using the existing hand-fight law
+  and shared arm budgets. Reaching is distinct from acquired contact; positive
+  load does not mean inside hands or a useful blocking side.
+- **Release grades the remaining blocker.** Promotion retains his actual hand
+  joint and control, including a contested near-neutral contact. It cannot
+  borrow the departing blocker's hand position, cloth grab or landed move.
+- **The climber reads an available first step**, around the observed DL and
+  partner where necessary, then re-reads on his normal cadence. This grants
+  neither instantaneous movement nor a completed linebacker block.
+- **Wrong-side helpers still replace their feet.** A genuine but badly directed
+  hand load no longer cancels recovery. Useful loaded contact still overrides
+  an old visual picture. The existing physical recovery tests remain strict.
 
-These are selected policy replacements on the unchanged original Game prefix
-and constructor, **not paired complete candidate games or frequency estimates**.
-The full suite includes current-engine games, but supplies no new NFL realism
-or scoring claim. Physics passed its existing contracts; it is not certified done.
+Eight predeclared ordinary Inside Zone inputs use identical recorded starting
+projections and profiles across baseline/current engines. Actual climber/backer
+contacts rise from 3 to 5; two persistent Under-front doubles release instead
+of continuing their long drive. Six further native cases and sixteen ordinary
+process controls retain adverse cases and verify observation does not change
+execution or RNG. These are controlled football situations, **not frequency
+estimates or paired full games**. Some climbs still miss. A moving DL can close
+a previously available exit; the short arc does not solve every traffic problem.
 
-**Next blocking priority: keeper-specific combo security and an attainable climb
-exit.** In G1-P059/G4-P023, release checks grade the departing primary, while
-promotion would carry his hand-control state onto the keeper. Actual helper load
-does not establish inside hands, and both climb routes contain obstacles. A
-gate-only patch was withheld. Then test a DL response to a second blocker using
-the same capacities. The [tracking pilot](../data/reviews/current/run-displacement.json)
-finds a larger late displacement tail near OL, but the native defender already
-opposes load near his traction limit and recovers balance. No stronger anchor or
-travel cap is justified. Proximity is not proof of a double-team force.
+The earlier [run-coaching receipt](../data/reviews/current/run-coaching.json)
+preserves the puller-read, force-gather and fast-lead-cue repairs. Its selected
+original-game policy comparisons remain historical evidence. The new paired
+film is ignored output at `out/run-solidify/film/inside-zone-combo-review.html`.
+
+**Next run priority: install force responsibility from the coverage job before
+grading presentation and leverage.** Current-location filters can exclude the
+intended curl-flat player and promote a deep safety. This also occurs without
+disguise. Test matched aligned/presented calls, both sides, ordinary and adverse
+fits before altering pursuit ability. Then inspect climbers that actually miss
+their backer and the DL's acquired response to a second blocker. The
+[tracking pilot](../data/reviews/current/run-displacement.json) motivates those
+mechanism checks; it does not justify stronger anchors or a travel cap.
 
 Also diagnosed, unmodified: backfield man alignment can bunch linebackers;
-disguised alignment can exclude an installed flat player from force allocation;
-Draw's pass influence can postpone its covered owner's rusher read. Fix their
-installed responsibility and acquired cue rules before changing physical ability.
+Draw's pass influence can postpone its covered owner's rusher read. Correct
+responsibilities and acquired cues before changing physical ability.
 
 ## Random film review: choose the next investigation
 
@@ -98,7 +103,7 @@ increase strength or traction to make either result look better.
 
 ## Keep the project light
 
-`npm test` runs 966 production tests; six slow game/ensemble tests are
+`npm test` runs the production tests; six slow game/ensemble tests are
 in `test:integration`, and 168 paused anatomical/sole tests in
 `test:research`. `test:all` retains them all. The 12 unused research modules stay
 as reproducible references; removing them would break research collectors

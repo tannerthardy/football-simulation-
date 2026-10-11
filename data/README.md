@@ -96,6 +96,23 @@ worse-result controls, and labels the exact policy intervention. Review these
 mechanisms rather than ranking candidates by their gains. The old pinned ZIP
 above remains a different, historical film.
 
+The latest [combination receipt](reviews/current/run-combination-security.json)
+uses paired complete-engine runs on fixed ordinary setups. The small shared
+collector now records independent helper control and the existing departure cue:
+
+```sh
+node --import tsx scripts/diag/combo-attention-witness.ts out/combos.json.gz --ordinary
+node --import tsx scripts/diag/combo-attention-witness.ts out/combos-supplemental.json.gz
+node --import tsx scripts/diag/run-concept-process.ts out/run-controls.json --runs duo,oz_strong,counter,power --fronts over,under --seeds 3 --seconds 4 --verify
+```
+
+Both native commands verify plain-run execution and RNG internally. The receipt
+pins the baseline commit, source and tools for paired reproduction. Recorded
+initial projections are not complete hidden-state hashes; the four-second
+process panel is censored and has no OL request trace. New review film at
+`out/run-solidify/film/inside-zone-combo-review.html` contains all eight IZ input pairs, not
+just successful runs. Its ZIP and generated traces remain ignored output.
+
 `python3 scripts/data/run_displacement.py --help` describes the inputs for the
 small 1/2/3-second run-line displacement pilot: BDB2025 week-one CSVs and eight
 source-pinned native game recordings. Its exact command and equality checks are

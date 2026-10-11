@@ -1,5 +1,6 @@
-/** Six predeclared ordinary joined-combination witnesses, with a neutral B/C tap.
- * node --import tsx scripts/diag/combo-attention-witness.ts OUTPUT.json.gz
+/** Predeclared joined-combination witnesses, with a neutral observation tap.
+ * node --import tsx scripts/diag/combo-attention-witness.ts OUTPUT.json.gz [--ordinary]
+ * Default: six existing witnesses. --ordinary: eight IZ Over/Under inputs.
  * All pictures, decision boundaries and solves come from the unmodified run.
  */
 import { createHash } from 'node:crypto';
@@ -18,22 +19,42 @@ import type { HandJoint, Joint } from '../../src/physics/world.js';
 import type { Agent, Engagement } from '../../src/sim/agent.js';
 import { RunBlocker, type Combination } from '../../src/sim/behaviors/blocking.js';
 import { axisOf, helperSupport } from '../../src/sim/engagement.js';
+import * as EngagementState from '../../src/sim/engagement.js';
 import { PlaySim, type PlaySetup } from '../../src/sim/playsim.js';
 import type { PlayResult } from '../../src/sim/types.js';
 import { sourceVersion } from '../source-version.js';
 
-const output = process.argv[2];
-if (process.argv.length !== 3 || !output?.endsWith('.json.gz')) throw new Error('Usage: combo-attention-witness.ts OUTPUT.json.gz');
+const args = process.argv.slice(2);
+const usage = 'Usage: combo-attention-witness.ts OUTPUT.json.gz [--ordinary]';
+const unknown = args.find(arg => arg.startsWith('--') && arg !== '--ordinary');
+if (unknown) throw new Error(`Unknown option ${unknown}. ${usage}`);
+if (args.filter(arg => arg === '--ordinary').length > 1) throw new Error(`Repeated --ordinary option. ${usage}`);
+const ordinary = args.includes('--ordinary'), outputs = args.filter(arg => arg !== '--ordinary');
+const output = outputs[0];
+if (outputs.length !== 1 || !output?.endsWith('.json.gz')) throw new Error(usage);
 const sourceBefore = sourceVersion(), startedAt = new Date().toISOString();
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const vec = (v: {x: number; y: number}) => ({x: v.x, y: v.y});
-const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', {strength: .55});
-const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', {strength: .55});
-const fixed = [{run: 'iz_strong', front: 'over', seed: 3}, {run: 'duo', front: 'odd', seed: 11}, {run: 'power', front: 'under', seed: 3}];
-const cohort = {rosterSeeds: [31, 32], rosterSha256: hash({offense, defense}), strength: .55,
+// Historical sources have no independent helper hand state; do not infer it
+// from joint force or borrow the primary's control for their diagnostic field.
+const helperContactControl = (EngagementState as {
+  contactControl?: (e: Engagement, member: Agent) => number | null;
+}).contactControl;
+const helperControlAvailable = typeof helperContactControl === 'function';
+const offense = ordinary ? generateTeam(new Rng(7), 'Process offense', 'OFF')
+  : generateTeam(new Rng(31), 'Panel offense 1', 'O1', {strength: .55});
+const defense = ordinary ? generateTeam(new Rng(8), 'Process defense', 'DEF')
+  : generateTeam(new Rng(32), 'Panel defense 1', 'D1', {strength: .55});
+const fixed = ordinary
+  ? ['over', 'under'].flatMap(front => [3, 11].map(seed => ({run: 'iz_strong', front, seed})))
+  : [{run: 'iz_strong', front: 'over', seed: 3}, {run: 'duo', front: 'odd', seed: 11}, {run: 'power', front: 'under', seed: 3}];
+const cohort = {rosterSeeds: ordinary ? [7, 8] : [31, 32], rosterSha256: hash({offense, defense}),
+  strength: ordinary ? 'generator default' : .55,
   formation: 'ace_11', coverage: 'cover3', pressure: null, los: 40, ballY: CENTER_Y, firstDownX: 50,
   fixtures: fixed.flatMap(c => [false, true].map(flip => ({...c, flip}))),
-  selection: 'Six ordinary inputs fixed before candidate outcomes: IZ Over R/L seed3, Duo Odd R/L seed11, Power Under R/L seed3. This is a mechanism panel, not an NFL sample.'};
+  selection: ordinary
+    ? 'Eight ordinary IZ inputs fixed before candidate outcomes: Over/Under, seeds3/11, both directions. Same roster7/8 setup as run-concept-process; natural-end supplemental trace, not NFL rates.'
+    : 'Six ordinary inputs fixed before candidate outcomes: IZ Over R/L seed3, Duo Odd R/L seed11, Power Under R/L seed3. This is a mechanism panel, not an NFL sample.'};
 
 function collect(input: PlaySetup, run: string, front: string, flip: boolean, seed: number) {
   const sim = new PlaySim(input), id = `CA-R1-${run}-${front}-${flip ? 'L' : 'R'}-S${seed}`;
@@ -59,7 +80,8 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
     return {blocker: e.blocker.slot, defender: e.defender.slot, helpers: e.helpers.map(a => a.slot),
       control: e.control, phi: e.phi, baseB: e.baseB, baseD: e.baseD, start: e.start,
       drive: e.drive && vec(e.drive), surfaceAxis: e.surfaceAxis && vec(e.surfaceAxis), axis: vec(axis),
-      hands: nativeJoint(e.hands), helperHands: [...(e.helperHands ?? [])].map(([a, j]) => ({slot: a.slot, joint: nativeJoint(j)})),
+      hands: nativeJoint(e.hands), helperHands: [...(e.helperHands ?? [])].map(([a, j]) => ({
+        slot: a.slot, control: helperContactControl?.(e, a) ?? null, joint: nativeJoint(j)})),
       members: [e.blocker, ...e.helpers].map(a => {
         const dx = a.pos.x - e.defender.pos.x, dy = a.pos.y - e.defender.pos.y;
         return {slot: a.slot, position: vec(a.pos), velocity: vec(a.vel), supportAvailability: supportAvailability(a),
@@ -85,7 +107,8 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
     for (const a of sim.offense) if (a.behavior instanceof RunBlocker && a.behavior.plan.combination) cid(a.behavior.plan.combination);
   };
   type PersonalRead = {nextRead: number; secureSince: number; readAt: number; proposal: null | {
-    t: number; climber: Agent; keeper: Agent; engagement: Engagement; hands: HandJoint; phi: number; cost: number}};
+    t: number; climber: Agent; keeper: Agent; engagement: Engagement; hands: HandJoint; phi: number; cost: number;
+    departure?: unknown}};
   const combination = (c: Combination) => {
     const observed = c as Combination & {reads?: [PersonalRead, PersonalRead]; checkSince?: number; checkNextRead?: number};
     const e = c.members[0].engagement;
@@ -96,10 +119,12 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
       personalReads: observed.reads?.map((r, i) => ({observer: c.members[i].slot, nextRead: r.nextRead,
         secureSince: r.secureSince, readAt: r.readAt, proposal: r.proposal ? {t: r.proposal.t,
           climber: r.proposal.climber.slot, keeper: r.proposal.keeper.slot, defender: r.proposal.engagement.defender.slot,
-          hands: nativeJoint(r.proposal.hands), phi: r.proposal.phi, cost: r.proposal.cost} : null})) ?? null,
+          hands: nativeJoint(r.proposal.hands), phi: r.proposal.phi, cost: r.proposal.cost,
+          departure: structuredClone(r.proposal.departure ?? null)} : null})) ?? null,
       genuinelyJoined: !!e && e.defender === c.defender && !c.released && c.members.every(a => a.engagement === e
         && (a === e.blocker || e.helpers.includes(a)) && a.behavior instanceof RunBlocker
         && a.behavior.plan.combination === c && a.behavior.plan.target === c.defender),
+      defenderPhysical: {pos: vec(c.defender.pos), vel: vec(c.defender.vel), support: structuredClone(c.defender.body.support)},
       memberState: c.members.map(body)};
   };
   discover();
@@ -250,9 +275,9 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
 const plays = fixed.flatMap(c => [false, true].map(flip => {
   const formation = FORMATION_BY_ID.ace_11, personnel = FRONT_BY_ID[c.front].personnel[0];
   return collect({offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, personnel),
-    offCall: {formation, flip, kind: 'run', run: RUN_BY_ID[c.run], label: `${formation.name} · ${RUN_BY_ID[c.run].name}`},
+    offCall: {formation, flip, kind: 'run', run: RUN_BY_ID[c.run], label: ordinary ? 'run-process fixture' : `${formation.name} · ${RUN_BY_ID[c.run].name}`},
     defCall: {personnel, front: FRONT_BY_ID[c.front], coverage: COVERAGE_BY_ID.cover3, pressure: null,
-      label: `${FRONT_BY_ID[c.front].name} · Cover 3`}, los: 40, ballY: CENTER_Y, firstDownX: 50,
+      label: ordinary ? 'run-process fixture' : `${FRONT_BY_ID[c.front].name} · Cover 3`}, los: 40, ballY: CENTER_Y, firstDownX: 50,
     seed: c.seed, record: true, recordLevel: 'full'}, c.run, c.front, flip, c.seed);
 }));
 const sourceAfter = sourceVersion();
@@ -260,10 +285,12 @@ if (sourceBefore !== sourceAfter) throw new Error('Engine changed during witness
 const report = {schema: 'combo-attention-native-witness-v1', sourceBefore, sourceAfter, startedAt, finishedAt: new Date().toISOString(),
   collectorSha256: createHash('sha256').update(readFileSync('scripts/diag/combo-attention-witness.ts')).digest('hex'),
   moduleSha256: Object.fromEntries(['src/sim/behaviors/blocking.ts', 'src/sim/engagement.ts', 'src/physics/world.ts', 'src/players/physical.ts', 'src/sim/playsim.ts'].map(p => [p,
-    createHash('sha256').update(readFileSync(p)).digest('hex')])), cohort, plays,
+    createHash('sha256').update(readFileSync(p)).digest('hex')])), helperControlAvailable, cohort, plays,
   definitions: {observers: 'All existing sim.see calls across every native tick are captured with actual observer and phase. No see calls are added.',
     prepass: 'Only wrap prepareJoinedRunBlocks when the source actually has it. Historical B has no prepass or personal reads; no equivalent fields are invented.',
     personalReads: 'Personal readAt/nextRead/secureSince and actual same-tick proposals are snapshots of native state. Legacy shared nextRead is only labelled historical bookkeeping.',
+    helperControl: 'Independent earned contactControl is read only when the source exports it; unavailable historical values are null with helperControlAvailable=false. Hand load is recorded separately.',
+    departure: 'The existing proposal departure cue is copied as plain exit/flow/backer data; null means this source/proposal recorded none. No new perception or route choice is invoked.',
     decisionBoundary: 'beforeCombination is the current public prepass or RunBlocker command entry; eventBoundaryCombination is actual block_climb emission. A later command can legitimately acquire different work.',
     physics: 'CompletedAt, ownership and loads come from the actual completed native tick containing the release. Backer contacts require positive hand load or body impulse after that climb.',
     controls: 'Observed versus plain runs compare final physical bodies, intents, events, ownership, live joint state, extant personal read state and the next native RNG value.',
