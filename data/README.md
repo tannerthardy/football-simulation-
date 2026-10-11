@@ -1,6 +1,19 @@
 # Shared NFL data
 
-Current engine status: [Zone reach, run-off and displacement](../docs/reviews/zone-reach-and-displacement.md).
+Current engine status: [Keeper-based OL combinations](../docs/reviews/keeper-based-combination-work.md).
+The [evidence and commands](reviews/physics-world/combo-transfer/README.md) retain
+160 ordinary fixed pairs, two separately labelled witnesses, actual keeper
+hands/support, delayed reads and unchanged-input guards. Watch the
+[20 paired clips](../viewer/combo-transfer.html) or [offline ZIP](../viewer/combo-transfer.zip).
+The remaining blocker's real fit determines whether a member can climb;
+existing helper hands survive promotion. Contact continuity improves while
+rushing and game results remain mixed. The adverse Duo input identifies a
+subsequent DL/LB target exchange that retains the wrong job technique.
+These are controller/contact-ownership repairs within the existing physics,
+not additional NFL extraction or fitted strength. Call training is not yet a
+separate player attribute; current familiarity means position comfort.
+
+Previous engine status: [Zone reach, run-off and displacement](../docs/reviews/zone-reach-and-displacement.md).
 The [evidence and commands](reviews/physics-world/zone-reach/README.md) retain
 48 fixed pairs, consumed hip pictures, actual hand/ground loads, intermediate
 source patches and unchanged-input run/tackle/game guards. Watch the

@@ -2,8 +2,20 @@
 
 Start with these shared project references:
 
+- [Keeper-based OL combinations](docs/reviews/keeper-based-combination-work.md):
+  **latest increment.** Decide who can remain in real supported contact, rather
+  than requiring a redundant helper to become useful before anyone climbs.
+  Genuine helper takeovers preserve the existing hand joint; cloth holds belong
+  to their original player. Read all 160 ordinary pairs, two separate witnesses,
+  20 fixed clips and adverse cases. Climb/contact coherence improves; stuffs
+  increase and game outcomes remain mixed. Shared physics/capabilities/resolution
+  are unchanged. Next: `readRules` adjacent exchanges bypass `classifyWork` and
+  retain the wrong technique on new DL/LB targets, reproduced in Duo Odd/right/S3.
+  Then independent member attention, brief post/check/climb and work lanes.
+  Call familiarity is not implemented; player familiarity means position comfort.
+  Final universal physics OK remains pending.
 - [Zone reach, run-off and displacement](docs/reviews/zone-reach-and-displacement.md):
-  **latest increment.** Solo OZ/WZ reaches separate outside surface acquisition
+  Previous increment. Solo OZ/WZ reaches separate outside surface acquisition
   from lateral stretch. Delayed hip reads choose reach/run-off/finish intentions;
   real hands keep their acquired reference across technique changes. Read all
   48 fixed pairs, the 24 paired films, retained prototypes and adverse cases.

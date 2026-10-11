@@ -1,0 +1,447 @@
+{
+  "schema": "combo-transfer-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 34,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 31,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-power-under-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 39,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-power-under-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 38,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-counter-odd-R-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 34,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-counter-odd-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 35,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-duo-odd-R-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 42,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-duo-odd-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 50,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-split_zone-tite-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 30,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-CT-R1-split_zone-tite-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 30,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 32,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 31,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-power-under-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 55,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-power-under-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 46,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-counter-odd-R-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 34,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-counter-odd-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 35,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-duo-odd-R-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 53,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-duo-odd-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 50,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-split_zone-tite-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 30,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-CT-R1-split_zone-tite-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "rawEventCount": 30,
+      "actualSupportOwnershipHandsAndDeliveredLoadsInspected": true,
+      "copiedReferenceUsesSelectedEngineSource": true
+    }
+  ],
+  "pageErrors": [],
+  "localSelfContainedHtmlOpened": true,
+  "offlineFontsBlocked": true,
+  "stuffFilterUsesRecordedResults": true,
+  "pairedFixtureSearch": true,
+  "frontFilterAndGrouping": true,
+  "recordedSourceFilter": true,
+  "conceptAndCoverageGrouping": true,
+  "mobileNoHorizontalOverflow": true,
+  "copiedReferenceUsesSelectedEngineSource": true,
+  "videoExportUsesSelectedEngineSource": [
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-R-S3",
+      "selectedSourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+      "downloadFilename": "BEFORE-CT-R1-iz_strong-over-R-S3_cf53e3f0e729_0.00-1.00s.webm",
+      "nonemptyBytes": 301016,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film cf53e3f0e729 \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-R-S3",
+      "selectedSourceSha256": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+      "downloadFilename": "FINAL-CT-R1-iz_strong-over-R-S3_ff641a802030_0.00-1.00s.webm",
+      "nonemptyBytes": 301308,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film ff641a802030 \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    }
+  ],
+  "nativeTransferInspections": [
+    {
+      "group": 0,
+      "fixture": "CT-R1-duo-odd-L-S11",
+      "t": 1.05,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "LG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.1600000000000001,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.10\u20131.15s: C drive \u2192 NT\nNo shared combination pointer\nEntry-step target 39.63, 26.67 yd \u00b7 pending\nActual engagement: C \u2192 NT \u00b7 helpers none\nActual contact frame -1.00, 0.00 \u00b7 surface override none \u00b7 drive 1.00, 0.00 \u00b7 \u03c6 -0.35 \u00b7 engagement control 0.12\nRecorded base: blocker 1.00 / defender 1.00\nPrimary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48\nActual member C \u00b7 support availability 1.00 \u00b7 surface \u03c6 -0.35 \u00b7 not down \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48\nActual support up \u00b7 posture 0.85 \u00b7 capture deviation -0.02, -0.02 yd \u00b7 lean 1027.71, 1090.71 \u00b7 received load -1028.99, -467.36\nController read at 1.10s: requested velocity 0.00, 0.00 yd/s\nActual achieved center 40.16, 26.67 yd \u00b7 velocity 1.03, 0.21 yd/s \u00b7 ground impulse 61.96, 34.69\nArm impulse 34.74 / 73.49 \u00b7 arm work 0.00 / 220.46\nSupport motor work 0.00 / 0.00\nPhysical contacts 1 \u00b7 surviving hand joints 1\nAfter physics hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48\nRead at 1.05s: earned-climb by C: drive \u2192 drive \u00b7 target NT \u2192 NT\nRecorded cue: secured NT; C stays\nKeeper support at decision: C \u00b7 availability 1.00 \u00b7 surface \u03c6 -0.36 \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 636.49 / 0.00 / 323.66 \u00b7 normal/tangent 636.49 / 296.97\nAt decision, actual blocker C \u2192 C \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 636.49 / 0.00 / 323.66 \u00b7 normal/tangent 636.49 / 296.97 \u2192 #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 636.49 / 0.00 / 323.66 \u00b7 normal/tangent 636.49 / 296.97\nTransfer completed tick 1.10s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 641.09 / 0.00 / 327.55 \u00b7 normal/tangent 641.09 / 327.55 \u00b7 delivered arm impulse 36.00 / 73.49\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 641.09 / 0.00 / 327.55 \u00b7 normal/tangent 641.09 / 327.55\nNext completed tick 1.15s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48 \u00b7 delivered arm impulse 34.74 / 73.49\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48"
+    },
+    {
+      "group": 0,
+      "fixture": "CT-R1-split_zone-tite-R-S3",
+      "t": 1.75,
+      "observer": "RT",
+      "defender": "DE_S",
+      "beforeBlocker": "Y",
+      "keeper": "Y",
+      "comboMembers": [
+        "Y",
+        "RT"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.86,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.80\u20131.85s: RT climb \u2192 LB_M\nNo shared combination pointer\nEntry-step target 39.63, 23.78 yd \u00b7 pending\nNo actual block engagement\nActual support up \u00b7 posture 0.70 \u00b7 capture deviation -0.00, -0.00 yd \u00b7 lean 216.80, 164.86 \u00b7 received load 0.00, 0.00\nController read at 1.80s: requested velocity -1.80, 4.06 yd/s\nConsumed DE_W image: age 0.25s \u00b7 up \u00b7 position 40.25, 30.73 yd \u00b7 velocity 1.41, -1.49 yd/s\nConsumed LB_M image: age 0.25s \u00b7 up \u00b7 position 42.07, 24.44 yd \u00b7 velocity -2.94, -0.12 yd/s\nConsumed LB_W image: age 0.25s \u00b7 up \u00b7 position 41.81, 28.83 yd \u00b7 velocity -2.95, -0.21 yd/s\nConsumed CB_S image: age 0.25s \u00b7 up \u00b7 position 49.64, 9.61 yd \u00b7 velocity 1.33, 2.36 yd/s\nConsumed CB_W image: age 0.25s \u00b7 up \u00b7 position 49.48, 43.74 yd \u00b7 velocity 1.19, -2.23 yd/s\nConsumed FS image: age 0.25s \u00b7 up \u00b7 position 54.89, 26.76 yd \u00b7 velocity 0.21, 1.07 yd/s\nConsumed SS image: age 0.25s \u00b7 up \u00b7 position 45.03, 20.50 yd \u00b7 velocity -2.11, 2.58 yd/s\nConsumed LB_M image: age 0.25s \u00b7 up \u00b7 position 42.07, 24.44 yd \u00b7 velocity -2.94, -0.12 yd/s\nActual achieved center 40.98, 23.15 yd \u00b7 velocity 1.23, 0.99 yd/s \u00b7 ground impulse -22.12, -2.06\nArm impulse 0.00 / 60.54 \u00b7 arm work 0.00 / 181.62\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 1.75s: earned-climb by RT: combo \u2192 climb \u00b7 target DE_S \u2192 LB_M\nRecorded cue: secured DE_S; Y stays\nKeeper support at decision: Y \u00b7 availability 1.00 \u00b7 surface \u03c6 0.07 \u00b7 hands #4 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 347.07 / 0.00 / 156.74 \u00b7 normal/tangent 347.07 / -156.74\nAt decision, actual blocker Y \u2192 Y \u00b7 primary hands #4 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 347.07 / 0.00 / 156.74 \u00b7 normal/tangent 347.07 / -156.74 \u2192 #4 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 347.07 / 0.00 / 156.74 \u00b7 normal/tangent 347.07 / -156.74\nTransfer completed tick 1.80s: Y actual engagement DE_S \u00b7 primary hands #4 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 336.08 / 0.00 / 149.97 \u00b7 normal/tangent 336.08 / -149.97 \u00b7 per-body load row unrecorded for this non-OL keeper\nNext completed tick 1.85s: no completed ownership snapshot recorded for Y; block outcome unrecorded here."
+    },
+    {
+      "group": 0,
+      "fixture": "CT-R1-split_zone-tite-L-S3",
+      "t": 1.3,
+      "observer": "LT",
+      "defender": "DT_S",
+      "beforeBlocker": "LT",
+      "keeper": "LT",
+      "comboMembers": [
+        "LT",
+        "LG"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.4100000000000001,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.35\u20131.40s: LT drive \u2192 DT_S\nNo shared combination pointer\nEntry-step target 39.63, 29.55 yd \u00b7 pending\nActual engagement: LT \u2192 DT_S \u00b7 helpers none\nActual contact frame -0.86, -0.51 \u00b7 surface override none \u00b7 drive 0.86, 0.51 \u00b7 \u03c6 0.33 \u00b7 engagement control 0.55\nRecorded base: blocker 1.00 / defender 1.00\nPrimary hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22\nActual member LT \u00b7 support availability 1.00 \u00b7 surface \u03c6 0.33 \u00b7 not down \u00b7 hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22\nActual support up \u00b7 posture 0.84 \u00b7 capture deviation 0.01, -0.00 yd \u00b7 lean 1220.41, -663.19 \u00b7 received load -933.96, 86.88\nController read at 1.35s: requested velocity 0.00, 0.00 yd/s\nActual achieved center 40.55, 29.58 yd \u00b7 velocity 1.68, 0.22 yd/s \u00b7 ground impulse 61.04, -29.26\nArm impulse 48.54 / 65.56 \u00b7 arm work 0.39 / 196.68\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 1\nAfter physics hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22\nRead at 1.30s: earned-climb by LT: drive \u2192 drive \u00b7 target DT_S \u2192 DT_S\nRecorded cue: secured DT_S; LT stays\nKeeper support at decision: LT \u00b7 availability 1.00 \u00b7 surface \u03c6 0.34 \u00b7 hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.98 / 181.01 / 595.09 \u00b7 normal/tangent 929.98 / -595.09\nAt decision, actual blocker LT \u2192 LT \u00b7 primary hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.98 / 181.01 / 595.09 \u00b7 normal/tangent 929.98 / -595.09 \u2192 #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.98 / 181.01 / 595.09 \u00b7 normal/tangent 929.98 / -595.09\nTransfer completed tick 1.35s: LT actual engagement DT_S \u00b7 primary hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.79 / 180.94 / 594.93 \u00b7 normal/tangent 929.79 / -594.93 \u00b7 delivered arm impulse 55.19 / 65.57\nKeeper-to-defender hands after this solve #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.79 / 180.94 / 594.93 \u00b7 normal/tangent 929.79 / -594.93\nNext completed tick 1.40s: LT actual engagement DT_S \u00b7 primary hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22 \u00b7 delivered arm impulse 48.54 / 65.56\nKeeper-to-defender hands after this solve #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22"
+    },
+    {
+      "group": 0,
+      "fixture": "CT-R1-split_zone-tite-L-S3",
+      "t": 2.45,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "RG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 2.56,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 2.50\u20132.55s: C drive \u2192 NT\nNo shared combination pointer\nEntry-step target 39.63, 26.95 yd \u00b7 pending\nActual engagement: C \u2192 NT \u00b7 helpers none\nActual contact frame -0.86, -0.51 \u00b7 surface override none \u00b7 drive 0.86, 0.51 \u00b7 \u03c6 0.48 \u00b7 engagement control 0.46\nRecorded base: blocker 1.00 / defender 1.00\nPrimary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71\nActual member C \u00b7 support availability 1.00 \u00b7 surface \u03c6 0.48 \u00b7 not down \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71\nActual support up \u00b7 posture 0.84 \u00b7 capture deviation 0.00, -0.00 yd \u00b7 lean 1154.79, -758.03 \u00b7 received load -1251.95, 182.53\nController read at 2.50s: requested velocity 0.00, 0.00 yd/s\nActual achieved center 42.42, 26.76 yd \u00b7 velocity 1.82, 0.49 yd/s \u00b7 ground impulse 54.84, -18.99\nArm impulse 47.97 / 73.26 \u00b7 arm work 0.00 / 219.78\nSupport motor work 0.00 / 0.00\nPhysical contacts 1 \u00b7 surviving hand joints 1\nAfter physics hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71\nRead at 2.45s: earned-climb by C: drive \u2192 drive \u00b7 target NT \u2192 NT\nRecorded cue: secured NT; C stays\nKeeper support at decision: C \u00b7 availability 1.00 \u00b7 surface \u03c6 0.48 \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 973.93 / 176.65 / 609.19 \u00b7 normal/tangent 973.93 / -609.19\nAt decision, actual blocker C \u2192 C \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 973.93 / 176.65 / 609.19 \u00b7 normal/tangent 973.93 / -609.19 \u2192 #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 973.93 / 176.65 / 609.19 \u00b7 normal/tangent 973.93 / -609.19\nTransfer completed tick 2.50s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 960.22 / 171.37 / 597.58 \u00b7 normal/tangent 960.22 / -494.95 \u00b7 delivered arm impulse 54.42 / 73.27\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 960.22 / 171.37 / 597.58 \u00b7 normal/tangent 960.22 / -494.95\nNext completed tick 2.55s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71 \u00b7 delivered arm impulse 47.97 / 73.26\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71"
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-iz_strong-over-R-S3",
+      "t": 1.05,
+      "observer": "C",
+      "defender": "DT_W",
+      "beforeBlocker": "LG",
+      "keeper": "LG",
+      "comboMembers": [
+        "C",
+        "LG"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.1600000000000001,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.10\u20131.15s: LG drive \u2192 DT_W\nNo shared combination pointer\nEntry-step target 39.63, 27.68 yd \u00b7 pending\nActual engagement: LG \u2192 DT_W \u00b7 helpers none\nActual contact frame -0.86, 0.51 \u00b7 surface override none \u00b7 drive 0.86, -0.51 \u00b7 \u03c6 -0.02 \u00b7 engagement control 0.49\nRecorded base: blocker 1.00 / defender 1.00\nPrimary hands #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 908.47 / 167.17 / 570.85 \u00b7 normal/tangent 908.47 / -314.14\nActual member LG \u00b7 support availability 1.00 \u00b7 surface \u03c6 -0.02 \u00b7 not down \u00b7 hands #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 908.47 / 167.17 / 570.85 \u00b7 normal/tangent 908.47 / -314.14\nActual support up \u00b7 posture 0.85 \u00b7 capture deviation -0.04, 0.02 yd \u00b7 lean 1448.51, -919.29 \u00b7 received load -1220.99, 817.50\nController read at 1.10s: requested velocity 0.00, 0.00 yd/s\nActual achieved center 39.80, 27.51 yd \u00b7 velocity -0.15, -0.14 yd/s \u00b7 ground impulse 72.80, -42.58\nArm impulse 48.06 / 67.67 \u00b7 arm work 0.00 / 203.00\nSupport motor work 0.00 / 0.00\nPhysical contacts 1 \u00b7 surviving hand joints 1\nAfter physics hands #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 908.47 / 167.17 / 570.85 \u00b7 normal/tangent 908.47 / -314.14\nRead at 1.05s: earned-climb by C: combo \u2192 drive \u00b7 target DT_W \u2192 DT_W\nRecorded cue: secured DT_W; LG stays\nKeeper support at decision: LG \u00b7 availability 1.00 \u00b7 surface \u03c6 -0.02 \u00b7 hands #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 874.07 / 153.94 / 541.74 \u00b7 normal/tangent 874.07 / 63.18\nAt decision, actual blocker LG \u2192 LG \u00b7 primary hands #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 874.07 / 153.94 / 541.74 \u00b7 normal/tangent 874.07 / 63.18 \u2192 #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 874.07 / 153.94 / 541.74 \u00b7 normal/tangent 874.07 / 63.18\nTransfer completed tick 1.10s: LG actual engagement DT_W \u00b7 primary hands #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 895.41 / 162.15 / 559.80 \u00b7 normal/tangent 895.41 / -320.28 \u00b7 delivered arm impulse 47.80 / 67.67\nKeeper-to-defender hands after this solve #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 895.41 / 162.15 / 559.80 \u00b7 normal/tangent 895.41 / -320.28\nNext completed tick 1.15s: LG actual engagement DT_W \u00b7 primary hands #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 908.47 / 167.17 / 570.85 \u00b7 normal/tangent 908.47 / -314.14 \u00b7 delivered arm impulse 48.06 / 67.67\nKeeper-to-defender hands after this solve #4 LG \u2194 DT_W \u00b7 live \u00b7 actor LG \u00b7 push/hold/steer 908.47 / 167.17 / 570.85 \u00b7 normal/tangent 908.47 / -314.14"
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-power-under-R-S3",
+      "t": 1.25,
+      "observer": "RT",
+      "defender": "DE_S",
+      "beforeBlocker": "Y",
+      "keeper": "Y",
+      "comboMembers": [
+        "Y",
+        "RT"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.36,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.30\u20131.35s: RT climb \u2192 LB_M\nNo shared combination pointer\nEntry-step target 39.63, 24.46 yd \u00b7 pending\nNo actual block engagement\nActual support up \u00b7 posture 0.50 \u00b7 capture deviation 0.00, 0.00 yd \u00b7 lean 0.00, 0.00 \u00b7 received load 0.00, 0.00\nController read at 1.30s: requested velocity 3.22, 2.69 yd/s\nConsumed LB_M image: age 0.25s \u00b7 up \u00b7 position 43.57, 24.96 yd \u00b7 velocity -2.35, 0.41 yd/s\nConsumed LB_W image: age 0.25s \u00b7 up \u00b7 position 42.98, 27.27 yd \u00b7 velocity -2.33, -1.00 yd/s\nConsumed LB_S image: age 0.25s \u00b7 up \u00b7 position 40.31, 21.96 yd \u00b7 velocity -0.25, -0.16 yd/s\nConsumed CB_S image: age 0.25s \u00b7 up \u00b7 position 48.83, 8.63 yd \u00b7 velocity 2.36, 0.82 yd/s\nConsumed CB_W image: age 0.25s \u00b7 up \u00b7 position 48.74, 44.71 yd \u00b7 velocity 2.04, -0.70 yd/s\nConsumed FS image: age 0.25s \u00b7 up \u00b7 position 53.17, 26.25 yd \u00b7 velocity -1.07, -0.13 yd/s\nConsumed SS image: age 0.25s \u00b7 up \u00b7 position 45.88, 20.63 yd \u00b7 velocity -1.94, 2.32 yd/s\nConsumed LB_M image: age 0.25s \u00b7 up \u00b7 position 43.57, 24.96 yd \u00b7 velocity -2.35, 0.41 yd/s\nActual achieved center 40.20, 23.99 yd \u00b7 velocity -0.15, 0.22 yd/s \u00b7 ground impulse 17.82, 13.09\nArm impulse 0.00 / 60.55 \u00b7 arm work 0.00 / 181.65\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 1.25s: earned-climb by RT: combo \u2192 climb \u00b7 target DE_S \u2192 LB_M\nRecorded cue: secured DE_S; Y stays\nKeeper support at decision: Y \u00b7 availability 1.00 \u00b7 surface \u03c6 0.23 \u00b7 hands #1 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 501.60 / 0.00 / 225.87 \u00b7 normal/tangent 501.60 / 223.83\nAt decision, actual blocker Y \u2192 Y \u00b7 primary hands #1 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 501.60 / 0.00 / 225.87 \u00b7 normal/tangent 501.60 / 223.83 \u2192 #1 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 501.60 / 0.00 / 225.87 \u00b7 normal/tangent 501.60 / 223.83\nTransfer completed tick 1.30s: Y actual engagement DE_S \u00b7 primary hands #1 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 498.67 / 0.00 / 224.06 \u00b7 normal/tangent 498.67 / 224.06 \u00b7 per-body load row unrecorded for this non-OL keeper\nNext completed tick 1.35s: no completed ownership snapshot recorded for Y; block outcome unrecorded here."
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-power-under-L-S3",
+      "t": 1.3,
+      "observer": "LT",
+      "defender": "DE_S",
+      "beforeBlocker": "Y",
+      "keeper": "Y",
+      "comboMembers": [
+        "LT",
+        "Y"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.4100000000000001,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.35\u20131.40s: LT climb \u2192 LB_M\nNo shared combination pointer\nEntry-step target 39.63, 28.88 yd \u00b7 pending\nNo actual block engagement\nActual support up \u00b7 posture 0.50 \u00b7 capture deviation 0.00, -0.00 yd \u00b7 lean 0.04, -0.04 \u00b7 received load 0.00, 0.00\nController read at 1.35s: requested velocity 3.02, -2.92 yd/s\nConsumed LB_M image: age 0.30s \u00b7 up \u00b7 position 43.45, 28.32 yd \u00b7 velocity -2.34, -0.44 yd/s\nConsumed LB_W image: age 0.30s \u00b7 up \u00b7 position 42.91, 25.73 yd \u00b7 velocity -2.23, 1.23 yd/s\nConsumed LB_S image: age 0.30s \u00b7 up \u00b7 position 40.29, 31.15 yd \u00b7 velocity -0.23, 0.05 yd/s\nConsumed CB_S image: age 0.30s \u00b7 up \u00b7 position 48.95, 44.54 yd \u00b7 velocity 2.34, -0.82 yd/s\nConsumed CB_W image: age 0.30s \u00b7 up \u00b7 position 48.84, 8.64 yd \u00b7 velocity 2.04, 0.70 yd/s\nConsumed FS image: age 0.30s \u00b7 up \u00b7 position 53.09, 26.99 yd \u00b7 velocity -1.13, 0.36 yd/s\nConsumed SS image: age 0.30s \u00b7 up \u00b7 position 45.80, 32.75 yd \u00b7 velocity -1.90, -2.36 yd/s\nConsumed LB_M image: age 0.30s \u00b7 up \u00b7 position 43.45, 28.32 yd \u00b7 velocity -2.34, -0.44 yd/s\nActual achieved center 39.98, 29.31 yd \u00b7 velocity -0.15, -0.05 yd/s \u00b7 ground impulse 16.30, -8.91\nArm impulse 0.00 / 65.61 \u00b7 arm work 0.00 / 196.84\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 1.30s: earned-climb by LT: down \u2192 climb \u00b7 target DE_S \u2192 LB_M\nRecorded cue: secured DE_S; Y stays\nKeeper support at decision: Y \u00b7 availability 1.00 \u00b7 surface \u03c6 -0.07 \u00b7 hands #1 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 489.50 / 0.00 / 218.42 \u00b7 normal/tangent 489.50 / -156.41\nAt decision, actual blocker Y \u2192 Y \u00b7 primary hands #1 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 489.50 / 0.00 / 218.42 \u00b7 normal/tangent 489.50 / -156.41 \u2192 #1 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 489.50 / 0.00 / 218.42 \u00b7 normal/tangent 489.50 / -156.41\nTransfer completed tick 1.35s: Y actual engagement DE_S \u00b7 primary hands #1 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 504.20 / 0.00 / 227.47 \u00b7 normal/tangent 504.20 / -217.55 \u00b7 per-body load row unrecorded for this non-OL keeper\nNext completed tick 1.40s: no completed ownership snapshot recorded for Y; block outcome unrecorded here."
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-duo-odd-R-S11",
+      "t": 1.25,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "RG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.36,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.30\u20131.35s: C drive \u2192 NT\nNo shared combination pointer\nEntry-step target 39.63, 26.67 yd \u00b7 pending\nActual engagement: C \u2192 NT \u00b7 helpers none\nActual contact frame -1.00, 0.00 \u00b7 surface override none \u00b7 drive 1.00, 0.00 \u00b7 \u03c6 0.03 \u00b7 engagement control 0.21\nRecorded base: blocker 1.00 / defender 1.00\nPrimary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 712.56 / 0.00 / 388.03 \u00b7 normal/tangent 712.56 / -107.79\nActual member C \u00b7 support availability 1.00 \u00b7 surface \u03c6 0.03 \u00b7 not down \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 712.56 / 0.00 / 388.03 \u00b7 normal/tangent 712.56 / -107.79\nActual support up \u00b7 posture 0.85 \u00b7 capture deviation -0.02, 0.01 yd \u00b7 lean 1637.98, -86.32 \u00b7 received load -1660.04, 82.81\nController read at 1.30s: requested velocity 0.00, 0.00 yd/s\nActual achieved center 39.90, 27.13 yd \u00b7 velocity 0.30, 0.89 yd/s \u00b7 ground impulse 84.22, -2.62\nArm impulse 36.03 / 73.48 \u00b7 arm work 0.00 / 220.43\nSupport motor work 0.00 / 0.00\nPhysical contacts 1 \u00b7 surviving hand joints 1\nAfter physics hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 712.56 / 0.00 / 388.03 \u00b7 normal/tangent 712.56 / -107.79\nRead at 1.25s: earned-climb by C: drive \u2192 drive \u00b7 target NT \u2192 NT\nRecorded cue: secured NT; C stays\nKeeper support at decision: C \u00b7 availability 1.00 \u00b7 surface \u03c6 0.03 \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 689.38 / 0.00 / 368.41 \u00b7 normal/tangent 689.38 / -109.06\nAt decision, actual blocker C \u2192 C \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 689.38 / 0.00 / 368.41 \u00b7 normal/tangent 689.38 / -109.06 \u2192 #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 689.38 / 0.00 / 368.41 \u00b7 normal/tangent 689.38 / -109.06\nTransfer completed tick 1.30s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 692.64 / 0.00 / 371.17 \u00b7 normal/tangent 692.64 / -109.13 \u00b7 delivered arm impulse 35.06 / 73.48\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 692.64 / 0.00 / 371.17 \u00b7 normal/tangent 692.64 / -109.13\nNext completed tick 1.35s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 712.56 / 0.00 / 388.03 \u00b7 normal/tangent 712.56 / -107.79 \u00b7 delivered arm impulse 36.03 / 73.48\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 712.56 / 0.00 / 388.03 \u00b7 normal/tangent 712.56 / -107.79"
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-duo-odd-L-S11",
+      "t": 1.05,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "LG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.1600000000000001,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.10\u20131.15s: C drive \u2192 NT\nNo shared combination pointer\nEntry-step target 39.63, 26.67 yd \u00b7 pending\nActual engagement: C \u2192 NT \u00b7 helpers none\nActual contact frame -1.00, 0.00 \u00b7 surface override none \u00b7 drive 1.00, 0.00 \u00b7 \u03c6 -0.35 \u00b7 engagement control 0.12\nRecorded base: blocker 1.00 / defender 1.00\nPrimary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48\nActual member C \u00b7 support availability 1.00 \u00b7 surface \u03c6 -0.35 \u00b7 not down \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48\nActual support up \u00b7 posture 0.85 \u00b7 capture deviation -0.02, -0.02 yd \u00b7 lean 1027.71, 1090.71 \u00b7 received load -1028.99, -467.36\nController read at 1.10s: requested velocity 0.00, 0.00 yd/s\nActual achieved center 40.16, 26.67 yd \u00b7 velocity 1.03, 0.21 yd/s \u00b7 ground impulse 61.96, 34.69\nArm impulse 34.74 / 73.49 \u00b7 arm work 0.00 / 220.46\nSupport motor work 0.00 / 0.00\nPhysical contacts 1 \u00b7 surviving hand joints 1\nAfter physics hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48\nRead at 1.05s: earned-climb by C: drive \u2192 drive \u00b7 target NT \u2192 NT\nRecorded cue: secured NT; C stays\nKeeper support at decision: C \u00b7 availability 1.00 \u00b7 surface \u03c6 -0.36 \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 636.49 / 0.00 / 323.66 \u00b7 normal/tangent 636.49 / 296.97\nAt decision, actual blocker C \u2192 C \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 636.49 / 0.00 / 323.66 \u00b7 normal/tangent 636.49 / 296.97 \u2192 #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 636.49 / 0.00 / 323.66 \u00b7 normal/tangent 636.49 / 296.97\nTransfer completed tick 1.10s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 641.09 / 0.00 / 327.55 \u00b7 normal/tangent 641.09 / 327.55 \u00b7 delivered arm impulse 36.00 / 73.49\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 641.09 / 0.00 / 327.55 \u00b7 normal/tangent 641.09 / 327.55\nNext completed tick 1.15s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48 \u00b7 delivered arm impulse 34.74 / 73.49\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 627.14 / 0.00 / 315.75 \u00b7 normal/tangent 627.14 / -20.48"
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-split_zone-tite-R-S3",
+      "t": 1.75,
+      "observer": "RT",
+      "defender": "DE_S",
+      "beforeBlocker": "Y",
+      "keeper": "Y",
+      "comboMembers": [
+        "Y",
+        "RT"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.86,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.80\u20131.85s: RT climb \u2192 LB_M\nNo shared combination pointer\nEntry-step target 39.63, 23.78 yd \u00b7 pending\nNo actual block engagement\nActual support up \u00b7 posture 0.70 \u00b7 capture deviation -0.00, -0.00 yd \u00b7 lean 216.80, 164.86 \u00b7 received load 0.00, 0.00\nController read at 1.80s: requested velocity -1.80, 4.06 yd/s\nConsumed DE_W image: age 0.25s \u00b7 up \u00b7 position 40.25, 30.73 yd \u00b7 velocity 1.41, -1.49 yd/s\nConsumed LB_M image: age 0.25s \u00b7 up \u00b7 position 42.07, 24.44 yd \u00b7 velocity -2.94, -0.12 yd/s\nConsumed LB_W image: age 0.25s \u00b7 up \u00b7 position 41.81, 28.83 yd \u00b7 velocity -2.95, -0.21 yd/s\nConsumed CB_S image: age 0.25s \u00b7 up \u00b7 position 49.64, 9.61 yd \u00b7 velocity 1.33, 2.36 yd/s\nConsumed CB_W image: age 0.25s \u00b7 up \u00b7 position 49.48, 43.74 yd \u00b7 velocity 1.19, -2.23 yd/s\nConsumed FS image: age 0.25s \u00b7 up \u00b7 position 54.89, 26.76 yd \u00b7 velocity 0.21, 1.07 yd/s\nConsumed SS image: age 0.25s \u00b7 up \u00b7 position 45.03, 20.50 yd \u00b7 velocity -2.11, 2.58 yd/s\nConsumed LB_M image: age 0.25s \u00b7 up \u00b7 position 42.07, 24.44 yd \u00b7 velocity -2.94, -0.12 yd/s\nActual achieved center 40.98, 23.15 yd \u00b7 velocity 1.23, 0.99 yd/s \u00b7 ground impulse -22.12, -2.06\nArm impulse 0.00 / 60.54 \u00b7 arm work 0.00 / 181.62\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 1.75s: earned-climb by RT: combo \u2192 climb \u00b7 target DE_S \u2192 LB_M\nRecorded cue: secured DE_S; Y stays\nKeeper support at decision: Y \u00b7 availability 1.00 \u00b7 surface \u03c6 0.07 \u00b7 hands #4 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 347.07 / 0.00 / 156.74 \u00b7 normal/tangent 347.07 / -156.74\nAt decision, actual blocker Y \u2192 Y \u00b7 primary hands #4 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 347.07 / 0.00 / 156.74 \u00b7 normal/tangent 347.07 / -156.74 \u2192 #4 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 347.07 / 0.00 / 156.74 \u00b7 normal/tangent 347.07 / -156.74\nTransfer completed tick 1.80s: Y actual engagement DE_S \u00b7 primary hands #4 Y \u2194 DE_S \u00b7 live \u00b7 actor DE_S \u00b7 push/hold/steer 336.08 / 0.00 / 149.97 \u00b7 normal/tangent 336.08 / -149.97 \u00b7 per-body load row unrecorded for this non-OL keeper\nNext completed tick 1.85s: no completed ownership snapshot recorded for Y; block outcome unrecorded here."
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-split_zone-tite-L-S3",
+      "t": 1.3,
+      "observer": "LT",
+      "defender": "DT_S",
+      "beforeBlocker": "LT",
+      "keeper": "LT",
+      "comboMembers": [
+        "LT",
+        "LG"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 1.4100000000000001,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 1.35\u20131.40s: LT drive \u2192 DT_S\nNo shared combination pointer\nEntry-step target 39.63, 29.55 yd \u00b7 pending\nActual engagement: LT \u2192 DT_S \u00b7 helpers none\nActual contact frame -0.86, -0.51 \u00b7 surface override none \u00b7 drive 0.86, 0.51 \u00b7 \u03c6 0.33 \u00b7 engagement control 0.55\nRecorded base: blocker 1.00 / defender 1.00\nPrimary hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22\nActual member LT \u00b7 support availability 1.00 \u00b7 surface \u03c6 0.33 \u00b7 not down \u00b7 hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22\nActual support up \u00b7 posture 0.84 \u00b7 capture deviation 0.01, -0.00 yd \u00b7 lean 1220.41, -663.19 \u00b7 received load -933.96, 86.88\nController read at 1.35s: requested velocity 0.00, 0.00 yd/s\nActual achieved center 40.55, 29.58 yd \u00b7 velocity 1.68, 0.22 yd/s \u00b7 ground impulse 61.04, -29.26\nArm impulse 48.54 / 65.56 \u00b7 arm work 0.39 / 196.68\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 1\nAfter physics hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22\nRead at 1.30s: earned-climb by LT: drive \u2192 drive \u00b7 target DT_S \u2192 DT_S\nRecorded cue: secured DT_S; LT stays\nKeeper support at decision: LT \u00b7 availability 1.00 \u00b7 surface \u03c6 0.34 \u00b7 hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.98 / 181.01 / 595.09 \u00b7 normal/tangent 929.98 / -595.09\nAt decision, actual blocker LT \u2192 LT \u00b7 primary hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.98 / 181.01 / 595.09 \u00b7 normal/tangent 929.98 / -595.09 \u2192 #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.98 / 181.01 / 595.09 \u00b7 normal/tangent 929.98 / -595.09\nTransfer completed tick 1.35s: LT actual engagement DT_S \u00b7 primary hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.79 / 180.94 / 594.93 \u00b7 normal/tangent 929.79 / -594.93 \u00b7 delivered arm impulse 55.19 / 65.57\nKeeper-to-defender hands after this solve #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 929.79 / 180.94 / 594.93 \u00b7 normal/tangent 929.79 / -594.93\nNext completed tick 1.40s: LT actual engagement DT_S \u00b7 primary hands #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22 \u00b7 delivered arm impulse 48.54 / 65.56\nKeeper-to-defender hands after this solve #4 LT \u2194 DT_S \u00b7 live \u00b7 actor LT \u00b7 push/hold/steer 932.12 / 181.84 / 596.90 \u00b7 normal/tangent 932.12 / -219.22"
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-split_zone-tite-L-S3",
+      "t": 2.45,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "RG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true,
+      "inspectionTime": 2.56,
+      "actualKeeperHandAndNativeSolveSnapshotShown": true,
+      "nonOLPerBodyLoadNotInvented": true,
+      "inspectedText": "After tick 2.50\u20132.55s: C drive \u2192 NT\nNo shared combination pointer\nEntry-step target 39.63, 26.95 yd \u00b7 pending\nActual engagement: C \u2192 NT \u00b7 helpers none\nActual contact frame -0.86, -0.51 \u00b7 surface override none \u00b7 drive 0.86, 0.51 \u00b7 \u03c6 0.48 \u00b7 engagement control 0.46\nRecorded base: blocker 1.00 / defender 1.00\nPrimary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71\nActual member C \u00b7 support availability 1.00 \u00b7 surface \u03c6 0.48 \u00b7 not down \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71\nActual support up \u00b7 posture 0.84 \u00b7 capture deviation 0.00, -0.00 yd \u00b7 lean 1154.79, -758.03 \u00b7 received load -1251.95, 182.53\nController read at 2.50s: requested velocity 0.00, 0.00 yd/s\nActual achieved center 42.42, 26.76 yd \u00b7 velocity 1.82, 0.49 yd/s \u00b7 ground impulse 54.84, -18.99\nArm impulse 47.97 / 73.26 \u00b7 arm work 0.00 / 219.78\nSupport motor work 0.00 / 0.00\nPhysical contacts 1 \u00b7 surviving hand joints 1\nAfter physics hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71\nRead at 2.45s: earned-climb by C: drive \u2192 drive \u00b7 target NT \u2192 NT\nRecorded cue: secured NT; C stays\nKeeper support at decision: C \u00b7 availability 1.00 \u00b7 surface \u03c6 0.48 \u00b7 hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 973.93 / 176.65 / 609.19 \u00b7 normal/tangent 973.93 / -609.19\nAt decision, actual blocker C \u2192 C \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 973.93 / 176.65 / 609.19 \u00b7 normal/tangent 973.93 / -609.19 \u2192 #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 973.93 / 176.65 / 609.19 \u00b7 normal/tangent 973.93 / -609.19\nTransfer completed tick 2.50s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 960.22 / 171.37 / 597.58 \u00b7 normal/tangent 960.22 / -494.95 \u00b7 delivered arm impulse 54.42 / 73.27\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 960.22 / 171.37 / 597.58 \u00b7 normal/tangent 960.22 / -494.95\nNext completed tick 2.55s: C actual engagement NT \u00b7 primary hands #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71 \u00b7 delivered arm impulse 47.97 / 73.26\nKeeper-to-defender hands after this solve #1 C \u2194 NT \u00b7 live \u00b7 actor C \u00b7 push/hold/steer 957.66 / 170.39 / 595.41 \u00b7 normal/tangent 957.66 / -52.71"
+    }
+  ]
+}

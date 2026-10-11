@@ -1,0 +1,2547 @@
+{
+  "schema": "combo-transfer-film-integrity-v1",
+  "clips": 20,
+  "predeterminedClips": 20,
+  "sourceComparison": [
+    {
+      "label": "Baseline: shared combo release",
+      "sourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+      "collectorSha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+      "cohortSha256": "efa27d3b3aefc024ebfc8be06ff73fb5e7d1aaf602bb60e86ea532ae70ab12e0",
+      "filmRawSha256": "63cac3cdd4369bb34df9a318a11588992efb6274f2eca11863cad4e2ef9160f3",
+      "reportRawSha256": "a830d5210fbf92f041a2802e0c0ce48723d363a952d6225685013db119d99ad2",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "da775f98acf1e414874955aad252dee8cd3edde61a72467661aeb82963060611",
+        "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+        "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+      },
+      "observerChecks": [
+        {
+          "id": "CT-R1-iz_strong-over-R-S3",
+          "initialSha256": "84624eed8f2dd2929243fea6857eb8f1435bdc1860dd7adc0f9f8728ee8576b3",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "e050b81785d23bf37952de707d128b5ee5d8e12176bf0e8d066e7ab88e99da8d",
+          "plainSignature": "e050b81785d23bf37952de707d128b5ee5d8e12176bf0e8d066e7ab88e99da8d"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-R-S11",
+          "initialSha256": "e8a4bdd446723a27eb5873ed8657fa0c6bc250e837c29dbe797a302abbc4d7c7",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "5437b765d2aa3aaa0d48c8ebef56641e4e9d60d08fdcf4eb008f16456d8df708",
+          "plainSignature": "5437b765d2aa3aaa0d48c8ebef56641e4e9d60d08fdcf4eb008f16456d8df708"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-L-S3",
+          "initialSha256": "722b5398e6bdb4571b83bf03198040066f0cea4c6621941349bb56abe3a44b1c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "f4261f79bd178d9e85b8bb2b73f9bdb7fab7c33fe598e87a2fe6503037439e10",
+          "plainSignature": "f4261f79bd178d9e85b8bb2b73f9bdb7fab7c33fe598e87a2fe6503037439e10"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-L-S11",
+          "initialSha256": "aeddc4b3e7f9e11e732fd4bf4903cc2752ed93a8cf08cb9d16b684c50d669d48",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "c91c6c0bdacff75209a251c8c24b7ff30c77f659edc9b699b8e1dfca3976b978",
+          "plainSignature": "c91c6c0bdacff75209a251c8c24b7ff30c77f659edc9b699b8e1dfca3976b978"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-R-S3",
+          "initialSha256": "f9e348299968acb707c58bb2343d0859efcc4dbe0c30b3a25cda62ddfc08e658",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "d775399a15de42d9d4e8d3d9a9dbc66edbc8c19331229c5c7064a718b5cb7e56",
+          "plainSignature": "d775399a15de42d9d4e8d3d9a9dbc66edbc8c19331229c5c7064a718b5cb7e56"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-R-S11",
+          "initialSha256": "9099c45c6e064967cf9d5048f29ee5569b37d60dcdc0a3c7137f708537f9edba",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "4f3300b2e0e899b345dddfc163c5a2074f646b9ab377356f02821958af330583",
+          "plainSignature": "4f3300b2e0e899b345dddfc163c5a2074f646b9ab377356f02821958af330583"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-L-S3",
+          "initialSha256": "e3310951293fe1f460cdb34776ffa8faa4010fc5171644a978455c8dd769fde5",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0efe24fc5b5b3d7d7a5c0a0e4b4156ab7b4f9a398b371ab95a7c9da6447ab4b8",
+          "plainSignature": "0efe24fc5b5b3d7d7a5c0a0e4b4156ab7b4f9a398b371ab95a7c9da6447ab4b8"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-L-S11",
+          "initialSha256": "80a6eceb945ef4d93642b5d99f1306f8d4f5fa1d49cb2ddf2af9999a53f66779",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "187f610fe2abcb05ee123d85e501c60ecf7d505a4cf9bbfaa67940a5057aeae9",
+          "plainSignature": "187f610fe2abcb05ee123d85e501c60ecf7d505a4cf9bbfaa67940a5057aeae9"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-R-S3",
+          "initialSha256": "862753cd6c7b726221a83e7b1ac9b7c789112bcd3e33940fdfd108a28fd54a9c",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "4f21ba816359b181fc2fadfdca560b3dd6a0f50f2fd55e384649b6d050a19368",
+          "plainSignature": "4f21ba816359b181fc2fadfdca560b3dd6a0f50f2fd55e384649b6d050a19368"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-R-S11",
+          "initialSha256": "653fced975631a683f486ba2718b14bf871a5097b4ab450bd755477147d74522",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "eb43e13f41fca0d464aae2a62dc7a0c05cd099887b7d5d8ff9b248df8927202f",
+          "plainSignature": "eb43e13f41fca0d464aae2a62dc7a0c05cd099887b7d5d8ff9b248df8927202f"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-L-S3",
+          "initialSha256": "9fe441b437c946fa5f5b0066269c60c2cc61fbfd4b3ee0bd47dd788b171767eb",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "419b5eb7037c1b6a40dec72eed479b6c5a2c74c314b14c2b4f73f08573eff1bc",
+          "plainSignature": "419b5eb7037c1b6a40dec72eed479b6c5a2c74c314b14c2b4f73f08573eff1bc"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-L-S11",
+          "initialSha256": "e65b125f673d4c7d564f1af1830a6fefd4e13a162adf00e2c94e874d3cbdc4a7",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "35eb1bbb89dbfa8cb0f7d168c311ab61a49ad2d62061b7623122c2aa6b267c7c",
+          "plainSignature": "35eb1bbb89dbfa8cb0f7d168c311ab61a49ad2d62061b7623122c2aa6b267c7c"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-R-S3",
+          "initialSha256": "e9057ebca7f245d35617a6535c10df77551b33ca9e7db5058ce23d7d4aa03cd1",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "103cf3813230995654e22353810c809a6cb1eb92f57aecb2dad0dfd6f1d70983",
+          "plainSignature": "103cf3813230995654e22353810c809a6cb1eb92f57aecb2dad0dfd6f1d70983"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-R-S11",
+          "initialSha256": "764c41245709efd1cf716592aa9a3708b0e6d1b6f1200f9be5e45845c7573f39",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "2186c16af64f8510ba9aee20c13f93067e849b4e75b2d08bb7fd28a7ace233ab",
+          "plainSignature": "2186c16af64f8510ba9aee20c13f93067e849b4e75b2d08bb7fd28a7ace233ab"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-L-S3",
+          "initialSha256": "476ca84be715fc255ea8f4d25fdef1fd9bb7569683a21d46549ad81913bcbbbd",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5798cdfc8d5f0de579cc273655eefd2cb925fbc6227065b1973888e1bfb70e09",
+          "plainSignature": "5798cdfc8d5f0de579cc273655eefd2cb925fbc6227065b1973888e1bfb70e09"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-L-S11",
+          "initialSha256": "113c1f8232d11f0dbf5b8d0d2c18ba4691cb9b579945b6d5ff1e1b2aea6384e5",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "aacb0bfce26f37e6f88086e05d203390d6446f61552b4470df0360b61e7df7c1",
+          "plainSignature": "aacb0bfce26f37e6f88086e05d203390d6446f61552b4470df0360b61e7df7c1"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-R-S3",
+          "initialSha256": "2bfaa5a1c19af1bd82d005559d4e9e360e5338eb3bf05fc3f2f43662fcd10be7",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "4162c3316de3e335fc5126db82764e8f417b680181d3858f8c25abd21358cc5b",
+          "plainSignature": "4162c3316de3e335fc5126db82764e8f417b680181d3858f8c25abd21358cc5b"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-R-S11",
+          "initialSha256": "687e19e2f00b06cf2643b57d331ba328c59415f7a4277e990a741d16ae442cbb",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "ed18d0fefe6665469d2095b0c4e4176515038e4cc364cd20beb7366861e4c077",
+          "plainSignature": "ed18d0fefe6665469d2095b0c4e4176515038e4cc364cd20beb7366861e4c077"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-L-S3",
+          "initialSha256": "fed7dedca940bcf483bae2291cd78fe5f396642c264185bcc20f8c8ad6046032",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "cb3bcce654ea636d80dc6280bb01c48ce5337ed50a0d307958d80b4778912cf2",
+          "plainSignature": "cb3bcce654ea636d80dc6280bb01c48ce5337ed50a0d307958d80b4778912cf2"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-L-S11",
+          "initialSha256": "cdda4ef0f140ac891a862caba2e1e962cd231a6966bb034b382af92b1fd12b26",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "3c6be46f3a7720b2d40ca11424bfed24f833f1ceeb2b3283424cef5139da2a49",
+          "plainSignature": "3c6be46f3a7720b2d40ca11424bfed24f833f1ceeb2b3283424cef5139da2a49"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-R-S3",
+          "initialSha256": "556ecc87f6d190f1d7a0bc8e6d60e6222e67025d4dd9d497019905dd734e37c0",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "2ad0a097ffda4d0b65629b010b10223a908667de08da668f6fd5e33fe1c61c45",
+          "plainSignature": "2ad0a097ffda4d0b65629b010b10223a908667de08da668f6fd5e33fe1c61c45"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-R-S11",
+          "initialSha256": "bb3e285b460ddc93450a2673b0a187073dfec73adef21d053ec111469e6d5725",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "a6d0135b677729e0c8bbaa18c395f6631b5d923da5b78ea5854047150fa371f9",
+          "plainSignature": "a6d0135b677729e0c8bbaa18c395f6631b5d923da5b78ea5854047150fa371f9"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-L-S3",
+          "initialSha256": "310d24307eaeac9e35c14a72dd842185dcdb6d6aad35658d5872436ed28b6e30",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "07d5833a6be5744a3dd7626be48b46d4d5e4e75a23e4d3b2bc2c8244af214d67",
+          "plainSignature": "07d5833a6be5744a3dd7626be48b46d4d5e4e75a23e4d3b2bc2c8244af214d67"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-L-S11",
+          "initialSha256": "c63491e6651172a82ca614898b049744e58261eef7a833f12e8fd138509b8921",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "9e487997969e88cc3b586bfb44537faece361fadafd620cf13fb9a244286c9c3",
+          "plainSignature": "9e487997969e88cc3b586bfb44537faece361fadafd620cf13fb9a244286c9c3"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-R-S3",
+          "initialSha256": "e7a0ee6a5dafddc1d33edfe0f9e9293428d9bc40be027e3f25d9b10fa9054a3b",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "c8889a03750bc2f4f10fe8035db956b972ce02ff53fb705304f9f117ce2f8006",
+          "plainSignature": "c8889a03750bc2f4f10fe8035db956b972ce02ff53fb705304f9f117ce2f8006"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-R-S11",
+          "initialSha256": "cc42f1f1ff8b318effcf6ab81ef7729c030f3c189aed13aed60cdda1ca2adc10",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "527ca7240bc115f2f0245e23dd97a811755a20ce883b8f07a0492ae7e9358ad6",
+          "plainSignature": "527ca7240bc115f2f0245e23dd97a811755a20ce883b8f07a0492ae7e9358ad6"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-L-S3",
+          "initialSha256": "022564ca625057bcb8c655f8cf8d2dbc9f0e273f5a0985c46361a75de6e672d2",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "ecb05c101a5573b0fddf0170fc611f228bcaa24071bd9bafa0253d6e0d6dd9ee",
+          "plainSignature": "ecb05c101a5573b0fddf0170fc611f228bcaa24071bd9bafa0253d6e0d6dd9ee"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-L-S11",
+          "initialSha256": "f29307bd2348773c269f7794425a2bd7d4356c3e24cf7048c803818a8cafa90c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "b9e38a245cf7e72f735f568a3749d3a046ce32b39f3c75adf459eb1b14f36797",
+          "plainSignature": "b9e38a245cf7e72f735f568a3749d3a046ce32b39f3c75adf459eb1b14f36797"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-R-S3",
+          "initialSha256": "fd168ee965ae05574161f5fc3cc58e972e453dbb8e86b43b64e510a95306623c",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "6f784ab00f40e88615a0a8c2014707c5a4c578d63e4c8c95a48a1bc182fffae7",
+          "plainSignature": "6f784ab00f40e88615a0a8c2014707c5a4c578d63e4c8c95a48a1bc182fffae7"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-R-S11",
+          "initialSha256": "6c055d65c5d981675c81f11a23b99962a2af3b16ecf1aa73394138e07a742d0c",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "a2cf328f3c8845feef371adf4900414c2c3cfa87d6bf6205856c8cc09b4617d7",
+          "plainSignature": "a2cf328f3c8845feef371adf4900414c2c3cfa87d6bf6205856c8cc09b4617d7"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-L-S3",
+          "initialSha256": "53017010ef5b208163db9a77124f25e6f246a83912385a2ee119ddbfee32f5f4",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5fd2b49959a2a4c40fcdf39f695b81c0a6cbb2269d32f309cef1f945f365a0d0",
+          "plainSignature": "5fd2b49959a2a4c40fcdf39f695b81c0a6cbb2269d32f309cef1f945f365a0d0"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-L-S11",
+          "initialSha256": "6787d88f408e2efb8562acbef9dd466306fd796f570cf07279c46179c489d02c",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "7420ef00d0beb991bce08a5c5c7c00b50f97c0ba9936a62bf8c89c7647fdf886",
+          "plainSignature": "7420ef00d0beb991bce08a5c5c7c00b50f97c0ba9936a62bf8c89c7647fdf886"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-R-S3",
+          "initialSha256": "45dbd3e0d3372035061eac1411efa0ae627d798707151da567cf8a73f5d65de1",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "95c385250094ca5501b49318e863f5a8736541b27215aed56b000a5b4635500d",
+          "plainSignature": "95c385250094ca5501b49318e863f5a8736541b27215aed56b000a5b4635500d"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-R-S11",
+          "initialSha256": "3fb5e019f8f9bdf75b6f6a3d98064d04c03596b4f9dac89f93d88f52e5a69216",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "68e14dc8bee18aea61b88286450285e70c9a92bab74139737863463bea3dae82",
+          "plainSignature": "68e14dc8bee18aea61b88286450285e70c9a92bab74139737863463bea3dae82"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-L-S3",
+          "initialSha256": "bc594783ba3af213378d23c732a7fb537a53f64a2151f9304f28816e1118798e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "e8925422e94a46c79c63bfdda3adcd46f4846a1574e6cab26ac58218f757cafa",
+          "plainSignature": "e8925422e94a46c79c63bfdda3adcd46f4846a1574e6cab26ac58218f757cafa"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-L-S11",
+          "initialSha256": "4aaa2aae7f98346ad3b52981a4479e635912c46b66c14ca1c2c39e4c857bd841",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "a95420f786b72a00800fd5fcac92fd822099e57830b7162db2aaf46b732736f7",
+          "plainSignature": "a95420f786b72a00800fd5fcac92fd822099e57830b7162db2aaf46b732736f7"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-R-S3",
+          "initialSha256": "09a54543a7d6b30bde493e99a9476c7a43e9be57756bda3364d08acb6833ee48",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "8dd599f032605666cdb76f12d1e467fab63eefe73c204a51284fb09c0558c277",
+          "plainSignature": "8dd599f032605666cdb76f12d1e467fab63eefe73c204a51284fb09c0558c277"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-R-S11",
+          "initialSha256": "9f29bd627ea8134c4ab81914f5174ac52544ed99ed28f63c26abc6dd31ddba68",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "7146e7f1ed7f8ffa972f7be2b0335e966c6728920a54edcf160a1be7cdb56227",
+          "plainSignature": "7146e7f1ed7f8ffa972f7be2b0335e966c6728920a54edcf160a1be7cdb56227"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-L-S3",
+          "initialSha256": "3c94579f0a5b203792b061adc222bd919b7e9f44ff0d1e62fafee8409e70553d",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "2ae2202480539dd06c806860563ec9307b894c6815abc88705d20c068bd0f6b8",
+          "plainSignature": "2ae2202480539dd06c806860563ec9307b894c6815abc88705d20c068bd0f6b8"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-L-S11",
+          "initialSha256": "a0d3e6f697a907ed4467438ce4f9f9e84218c49048d3a4944dfbde318404c508",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "c442c3353ee8c1b5334e9b5a75fa667e7187370158574e6f0ee9970800febe8d",
+          "plainSignature": "c442c3353ee8c1b5334e9b5a75fa667e7187370158574e6f0ee9970800febe8d"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-R-S3",
+          "initialSha256": "62a002899fe1698f15c798dbc62d31143386d88016d4e23f7b7839917238ba4b",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "4185522bcd5fd5f40f05f4d1755ca3a28c4fcfc9d6143717d7c7e4afad8b9106",
+          "plainSignature": "4185522bcd5fd5f40f05f4d1755ca3a28c4fcfc9d6143717d7c7e4afad8b9106"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-R-S11",
+          "initialSha256": "4828c17f3b71b5c9158e4b121985a6beaeaadf36caf5881694610fabbfba2c77",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "050c68617659a72ca80bd624592db64d49ec2399e6001e2de56f21f71e54a055",
+          "plainSignature": "050c68617659a72ca80bd624592db64d49ec2399e6001e2de56f21f71e54a055"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-L-S3",
+          "initialSha256": "cbf94c8228744bb8ba9b3f8bceea7db7df52b423a3449098602c96158355b23e",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "6b161580e551b765e42ab31f9d92cf97f9bf86e7b24012ed6aa74ea2744e8f76",
+          "plainSignature": "6b161580e551b765e42ab31f9d92cf97f9bf86e7b24012ed6aa74ea2744e8f76"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-L-S11",
+          "initialSha256": "4e71ca14555f847bcf3fb030d04505b852c9f34c3230d0c190ec443dd90c1887",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "5b70f32ba96ddc5972faec52b5d5dd1c0d8bdac86eeacc1ff4c75bc34ee61075",
+          "plainSignature": "5b70f32ba96ddc5972faec52b5d5dd1c0d8bdac86eeacc1ff4c75bc34ee61075"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-R-S3",
+          "initialSha256": "b5edc5aca9d87cb12ebf45cfbad7f57b3a6cfc0b031a65bcba6b54b0c1bbc8bd",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "73983e41b9008df59f6e3babbb00b32d4d78c120381df075ab208f6f5c98be35",
+          "plainSignature": "73983e41b9008df59f6e3babbb00b32d4d78c120381df075ab208f6f5c98be35"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-R-S11",
+          "initialSha256": "da3787364e74b5208eb54c82c637b28c7e7a422d165a880a7dfaf70b00ec4f3a",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "877378ad48520b69d87376746b98b1adc691e8f61cae8853344a4a1589166e29",
+          "plainSignature": "877378ad48520b69d87376746b98b1adc691e8f61cae8853344a4a1589166e29"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-L-S3",
+          "initialSha256": "a2367b7d52e2575320f6358e196623b41bd5a6f53bc0d83b05f552376896bc59",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "3b38db4f0e996c5146616b1a9695411c355df30f21e690c041c62c86edc19528",
+          "plainSignature": "3b38db4f0e996c5146616b1a9695411c355df30f21e690c041c62c86edc19528"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-L-S11",
+          "initialSha256": "d7561d28bc7535e73131c1f732ec717cc3001bc9f4f1f5e90cdc84fa4ae2150e",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "19b923720dd51b5862bbfb206a830f2a662abedc6e78548cb33e24e592b0dc0d",
+          "plainSignature": "19b923720dd51b5862bbfb206a830f2a662abedc6e78548cb33e24e592b0dc0d"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-R-S3",
+          "initialSha256": "448bdc483542979fa99a653726f527f8e2dc8717be270d45a787298a93479819",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "a87b15ad0676c81f2626bb867558ec1c5005808192589e1c7c071077b9d65ba0",
+          "plainSignature": "a87b15ad0676c81f2626bb867558ec1c5005808192589e1c7c071077b9d65ba0"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-R-S11",
+          "initialSha256": "b29601cbbc50269d6b72d75f471c8d0a42581867100244e3c3cf0e71e1dc3d80",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "a79f18822382ad8f3d8d81a444038cbc79c4043255285adb39dbe2b3ff103db4",
+          "plainSignature": "a79f18822382ad8f3d8d81a444038cbc79c4043255285adb39dbe2b3ff103db4"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-L-S3",
+          "initialSha256": "c136ff12bab6d2aedf48a45eb65f9ddcd91e3be5776c832a6d9a7808fd6d8fab",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "f8fd47be38b5d5c34dcfc7f8d6695166d729cb1481d2ac6bde5d5244cad350c8",
+          "plainSignature": "f8fd47be38b5d5c34dcfc7f8d6695166d729cb1481d2ac6bde5d5244cad350c8"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-L-S11",
+          "initialSha256": "fc9c7c4051f48dc362f991293c084dfc2fc91e4d4a8a433a406ef74bc4f774fc",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "ea3c6b28015cf132ca6b5f1e4f9ab813d73e6885169652c94a68ae0aa0d3b343",
+          "plainSignature": "ea3c6b28015cf132ca6b5f1e4f9ab813d73e6885169652c94a68ae0aa0d3b343"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-R-S3",
+          "initialSha256": "2c65bd45b03b66980e23c6f8aaa9e499f2ff7c841c842dd4fe153151220eae83",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b49abd2b6b587ffa3406ff7d2c2f607c783a9d661fe2abffed660df7d0b6d921",
+          "plainSignature": "b49abd2b6b587ffa3406ff7d2c2f607c783a9d661fe2abffed660df7d0b6d921"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-R-S11",
+          "initialSha256": "9b4fdd3df2f173837dc80f8934da6c98fabb4e52b7e5bc462da7586ce9947d40",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "cf88cb74546bf50cb54e2848318068231e7ea4437868f6f240acf015ef38b2bf",
+          "plainSignature": "cf88cb74546bf50cb54e2848318068231e7ea4437868f6f240acf015ef38b2bf"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-L-S3",
+          "initialSha256": "2348bd7957f3b159de22a466f1b1d6cec5c14ebe8723171c5ca8a7ea877a3db7",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5acea64bb946a9017e8a2373d1be30576f0a86760a4a6aeac8bce98f6566d417",
+          "plainSignature": "5acea64bb946a9017e8a2373d1be30576f0a86760a4a6aeac8bce98f6566d417"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-L-S11",
+          "initialSha256": "840b927a6ba06105708c2d389d6a6ba160847d1226136836b35f8785a655f4c9",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "625cf6a2fb287393e5998b608f3043da83864511a659f5c2ecd82fb46ed68dd9",
+          "plainSignature": "625cf6a2fb287393e5998b608f3043da83864511a659f5c2ecd82fb46ed68dd9"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-R-S3",
+          "initialSha256": "e68e84e23993600de086c1ef7d36eb3be9ec1dd67f575a5e394c68e48d9f3a34",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "1dd9af433c17fa66aa667ced5f4e6eaa02bb4d55577bde78d10eeeb2bc841e72",
+          "plainSignature": "1dd9af433c17fa66aa667ced5f4e6eaa02bb4d55577bde78d10eeeb2bc841e72"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-R-S11",
+          "initialSha256": "3118f2447c6b57f7ad79027f481249b35d54f2093a91768e25c89f74267598ee",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "ebc7b5e861c06b8d4eabf61d4d0ce73f4a75a03f4bc035a1e1f1edad52e3dedf",
+          "plainSignature": "ebc7b5e861c06b8d4eabf61d4d0ce73f4a75a03f4bc035a1e1f1edad52e3dedf"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-L-S3",
+          "initialSha256": "9f1ffdbe5d091763d09efe849a1a6dc5ea57d89ee785e4b49e24deb89551ae16",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "efd865f0cd03617a73be8318f3a54724b4e70083e2fb9abb9ad6bc5739d799de",
+          "plainSignature": "efd865f0cd03617a73be8318f3a54724b4e70083e2fb9abb9ad6bc5739d799de"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-L-S11",
+          "initialSha256": "2258f3d7937af06e1f5651eeeeb39227f03fc963c090f0c41d55e0c339cb7342",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "147cb7a5907e6a7ecf0a6243f04b05ef22e0ad34775f5a24bc2779a7fa970926",
+          "plainSignature": "147cb7a5907e6a7ecf0a6243f04b05ef22e0ad34775f5a24bc2779a7fa970926"
+        },
+        {
+          "id": "CT-R1-power-over-R-S3",
+          "initialSha256": "fe57416a6cea9f0b3a8f9805e2d13b1ae2cb9466df6ee005981a8bf6081277cf",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0b98b3defcabd2d9ebe9fc16426f3b3bf35135aed10ac03568e9b1d2027434b8",
+          "plainSignature": "0b98b3defcabd2d9ebe9fc16426f3b3bf35135aed10ac03568e9b1d2027434b8"
+        },
+        {
+          "id": "CT-R1-power-over-R-S11",
+          "initialSha256": "ce9d60457e3e96f4e8e5847d1c0e427ea5d89935e0f766517a82de4f87294af4",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "166a788ab6c72bd74fe170e06699d830881a48de12620d1cd95670c6e38f4c7e",
+          "plainSignature": "166a788ab6c72bd74fe170e06699d830881a48de12620d1cd95670c6e38f4c7e"
+        },
+        {
+          "id": "CT-R1-power-over-L-S3",
+          "initialSha256": "a55d4e7e279d212de9856c72e0c71665c53151edd763e22f190090c11ff2b02f",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "23a56fae3fc4d45bab5277221a6558f5898d2bab983d972de1eca69dae110547",
+          "plainSignature": "23a56fae3fc4d45bab5277221a6558f5898d2bab983d972de1eca69dae110547"
+        },
+        {
+          "id": "CT-R1-power-over-L-S11",
+          "initialSha256": "ad99f0bbb5d8e9d040ce01b33c7ccb2905a5582e87b2bfc61df869282993bba4",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "d4ab10ea0febe2bd732b1be9214884323c3df8b56135c74eb7843db2f7159642",
+          "plainSignature": "d4ab10ea0febe2bd732b1be9214884323c3df8b56135c74eb7843db2f7159642"
+        },
+        {
+          "id": "CT-R1-power-under-R-S3",
+          "initialSha256": "fbfbc2391c0364055e2d5cdcb170b3686adfbbcdb5ea829e07095a59a972acf2",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "febb2ba976a665bad89260f7e103c4e25d5c02039979da0e895dce0d1bcc0082",
+          "plainSignature": "febb2ba976a665bad89260f7e103c4e25d5c02039979da0e895dce0d1bcc0082"
+        },
+        {
+          "id": "CT-R1-power-under-R-S11",
+          "initialSha256": "b40338a14bc9cedc32162aa481c17e0fa1f09d290319a2c68b21c25e28781cff",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "47af92f19b3c5ba33214eed0577e036b67b762243fa1a24c45552425b59b63cf",
+          "plainSignature": "47af92f19b3c5ba33214eed0577e036b67b762243fa1a24c45552425b59b63cf"
+        },
+        {
+          "id": "CT-R1-power-under-L-S3",
+          "initialSha256": "c0db423442b7705be8136b021ba32b225810d66380ded79fe0fabed5c4ccd37c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "af8e371447fd40192dc15bd974bad19ef39022b869a3317d9883526c43f148c5",
+          "plainSignature": "af8e371447fd40192dc15bd974bad19ef39022b869a3317d9883526c43f148c5"
+        },
+        {
+          "id": "CT-R1-power-under-L-S11",
+          "initialSha256": "3a483bf3b09b972da7271e4546635bd628a1cb606512e549e122aba33438e9a5",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "a754e90a4c144a4fa5e878ddd62100d7bd9c406a4bf9f1f095f5bef50c468bd0",
+          "plainSignature": "a754e90a4c144a4fa5e878ddd62100d7bd9c406a4bf9f1f095f5bef50c468bd0"
+        },
+        {
+          "id": "CT-R1-power-odd-R-S3",
+          "initialSha256": "3313e5777af73aebade500eade4d1ecc426bf42683b798fc0bab47e0ef111437",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "3c4bf07503dd0969f7a9b9e0dd4ac4b72b445e66de6a0395d281cd05858ff8ae",
+          "plainSignature": "3c4bf07503dd0969f7a9b9e0dd4ac4b72b445e66de6a0395d281cd05858ff8ae"
+        },
+        {
+          "id": "CT-R1-power-odd-R-S11",
+          "initialSha256": "a8b9fc0e619643c8aae623463d111f1066594e4b7f4c0a073b686f9f861bcd83",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "78daf56fddc346afb962480557da9f85f5397bd59df1381c2bd386e9cdeb2eb2",
+          "plainSignature": "78daf56fddc346afb962480557da9f85f5397bd59df1381c2bd386e9cdeb2eb2"
+        },
+        {
+          "id": "CT-R1-power-odd-L-S3",
+          "initialSha256": "112461c168dcd7f826acfbd45a94b041dfa794efbe6351c3087c541a3732047e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "f099cbbd6babb9d874fac27d39893ca0edf6b504d8c9f38e7f203ad1827cd977",
+          "plainSignature": "f099cbbd6babb9d874fac27d39893ca0edf6b504d8c9f38e7f203ad1827cd977"
+        },
+        {
+          "id": "CT-R1-power-odd-L-S11",
+          "initialSha256": "cb1b6282b26275f8dc539839558da36c7cad7ac6b055c71999dc797ec9903462",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "fc740ca43910f9282e4d14b7fadce84c05763801bbdd98c758270e12fbaa5ffc",
+          "plainSignature": "fc740ca43910f9282e4d14b7fadce84c05763801bbdd98c758270e12fbaa5ffc"
+        },
+        {
+          "id": "CT-R1-power-tite-R-S3",
+          "initialSha256": "0b3c535ae1e4794408b375f4126d11a7be3c0e1a10ce929cbfa365484dc5861e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "37426d83a41a0c603694d8fa604ed660e5bf48ed3ba4b54ac96b4be5d7f39347",
+          "plainSignature": "37426d83a41a0c603694d8fa604ed660e5bf48ed3ba4b54ac96b4be5d7f39347"
+        },
+        {
+          "id": "CT-R1-power-tite-R-S11",
+          "initialSha256": "3d0b5e7a79ba64fec8dcbaecbd1ffbb01336e6f9bca568357b9318dce5abccdc",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "1fd3e4c7ddd774302b32227475288f577150295f8fcb5c07a10757f9a3385f2a",
+          "plainSignature": "1fd3e4c7ddd774302b32227475288f577150295f8fcb5c07a10757f9a3385f2a"
+        },
+        {
+          "id": "CT-R1-power-tite-L-S3",
+          "initialSha256": "2ba918b04aff60052d3ae9332208b2653f6bd8df4c97c14f948ec76c64f9e994",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "7054b1a125e32a3d99995343eca845d8f7f5c915f66e58c04448082e5f0aaeb0",
+          "plainSignature": "7054b1a125e32a3d99995343eca845d8f7f5c915f66e58c04448082e5f0aaeb0"
+        },
+        {
+          "id": "CT-R1-power-tite-L-S11",
+          "initialSha256": "2c2be7fb412d53677c75a2265ae49abab1b81f443bce6bd483ea87d1b07cd3d5",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "32ec6747f6f8caa56ed1c7f7c52d340e42c1df3c5dbb19b6684adbdfd6076466",
+          "plainSignature": "32ec6747f6f8caa56ed1c7f7c52d340e42c1df3c5dbb19b6684adbdfd6076466"
+        },
+        {
+          "id": "CT-R1-power-bear-R-S3",
+          "initialSha256": "f2c7ca9cb3a8eeab3c63a92de5309866f60ca06e869b823eec6ce6ae07f3981a",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "e331e5d8b760e8bd97b40ad21f82f59258de421db72d6e2b98ef511f15040878",
+          "plainSignature": "e331e5d8b760e8bd97b40ad21f82f59258de421db72d6e2b98ef511f15040878"
+        },
+        {
+          "id": "CT-R1-power-bear-R-S11",
+          "initialSha256": "a25e281e1d32b2a582cf120e751b439821d86352ca69e803e60a96a6c6e44d58",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "c1f1440186f05135b6c292842c379eb470763bfc6af7aeea4f247f34a617157e",
+          "plainSignature": "c1f1440186f05135b6c292842c379eb470763bfc6af7aeea4f247f34a617157e"
+        },
+        {
+          "id": "CT-R1-power-bear-L-S3",
+          "initialSha256": "10d7acd4d93a1c257b374dc24e8ad85c14c18ccbfcbb6918bbe33afe8beaf66c",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "005a4a749f2553643343c9302c441d8fc7f26fd34c3a200afae2ceafd366ba4a",
+          "plainSignature": "005a4a749f2553643343c9302c441d8fc7f26fd34c3a200afae2ceafd366ba4a"
+        },
+        {
+          "id": "CT-R1-power-bear-L-S11",
+          "initialSha256": "ef8e324ae5135c6dfde7d1c3827afe44cbd2b9f518d56385845a2a4cdaa2c637",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "b84cb742bd23f7a233cf070baba9fdd1a41f5ce7233ef0d6ba8bc555bcec1d6e",
+          "plainSignature": "b84cb742bd23f7a233cf070baba9fdd1a41f5ce7233ef0d6ba8bc555bcec1d6e"
+        },
+        {
+          "id": "CT-R1-counter-over-R-S3",
+          "initialSha256": "545e8f3505e282f1e91dade16243e7e7ba3d5446820beb23d6372bb2193edec6",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "e435ed21070f046089a7e1947108089a679e14ca9bf9b02a47a9aeb8fb465671",
+          "plainSignature": "e435ed21070f046089a7e1947108089a679e14ca9bf9b02a47a9aeb8fb465671"
+        },
+        {
+          "id": "CT-R1-counter-over-R-S11",
+          "initialSha256": "db1580532b8da8bf51881724176f7b792243d63d5ed3785b097095b2668b7e4a",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "ff9da1b82975b7fdef623415d9c9912ebb03f618a8bfc2077a5d0f86e5d4873d",
+          "plainSignature": "ff9da1b82975b7fdef623415d9c9912ebb03f618a8bfc2077a5d0f86e5d4873d"
+        },
+        {
+          "id": "CT-R1-counter-over-L-S3",
+          "initialSha256": "848369a4c39f6ca1784c6e5542e106f985e141c4c6bf9bd15fed36fba1aad5a2",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0d75530ce72b1a6fa89962b5b1090c6b6bfe00bd2323d2bbcca71a7c179b1d87",
+          "plainSignature": "0d75530ce72b1a6fa89962b5b1090c6b6bfe00bd2323d2bbcca71a7c179b1d87"
+        },
+        {
+          "id": "CT-R1-counter-over-L-S11",
+          "initialSha256": "5809df6b1ff0e8a7aa7052b361cf5e8c2882e2770302e4d52e9959b12adfb8ae",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "7ac865219754650b26eb67589772472d287e8b36cd12b5e5d6cd590043e7fbb1",
+          "plainSignature": "7ac865219754650b26eb67589772472d287e8b36cd12b5e5d6cd590043e7fbb1"
+        },
+        {
+          "id": "CT-R1-counter-under-R-S3",
+          "initialSha256": "abae2b3f05d2fe9d1b654aeac335522e4dad42e06d4417f398a08ecd3351b2d7",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "e45f7292f073b701842cb871754219a0d71e860f92270e434b5848b77fb54e84",
+          "plainSignature": "e45f7292f073b701842cb871754219a0d71e860f92270e434b5848b77fb54e84"
+        },
+        {
+          "id": "CT-R1-counter-under-R-S11",
+          "initialSha256": "f13da8691e0b26dc61aeb82d5ab52a2be14d5367aaa81f4b23c521c1bc8e7130",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "fcbef94e20e8a4897127e8ca4fbd7b015dad9ae74967c9aa20d2c957145c558f",
+          "plainSignature": "fcbef94e20e8a4897127e8ca4fbd7b015dad9ae74967c9aa20d2c957145c558f"
+        },
+        {
+          "id": "CT-R1-counter-under-L-S3",
+          "initialSha256": "60e70bb7d02723d8a80ebb2efca548df639077a907945d5f69b16251a4d0e6f1",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "f330b81cc4c872a9eb812e484aa72753b11a09cbb00cfc523049f21e3914558c",
+          "plainSignature": "f330b81cc4c872a9eb812e484aa72753b11a09cbb00cfc523049f21e3914558c"
+        },
+        {
+          "id": "CT-R1-counter-under-L-S11",
+          "initialSha256": "c324ea8cc5316858bd02f7d49cd0abda739ae81079b42435e1036b6e3ca0d14a",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "8129d1514a3b69a4f4af8dfa21b2d45971ad0ab5c049e7fc3b67d74b7fd0de66",
+          "plainSignature": "8129d1514a3b69a4f4af8dfa21b2d45971ad0ab5c049e7fc3b67d74b7fd0de66"
+        },
+        {
+          "id": "CT-R1-counter-odd-R-S3",
+          "initialSha256": "633a13d209d6344da6b07be4adf7be8939993447573621e3d446269ecfbc8a61",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "e786b0b7c52b7518e4c043434dbb6cecf1f4ce86c74b5e70a8ccc3fe9bbf428a",
+          "plainSignature": "e786b0b7c52b7518e4c043434dbb6cecf1f4ce86c74b5e70a8ccc3fe9bbf428a"
+        },
+        {
+          "id": "CT-R1-counter-odd-R-S11",
+          "initialSha256": "cf48282b03f769c31aa07bb23dfc9f015a9c48743a58ded2e60ee23b1e603dbf",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "97c282927247e244294f3048b1fbe07136a8b61a328916b27a27510455225335",
+          "plainSignature": "97c282927247e244294f3048b1fbe07136a8b61a328916b27a27510455225335"
+        },
+        {
+          "id": "CT-R1-counter-odd-L-S3",
+          "initialSha256": "6dfd12561973896ca8c16ee70a6853c187c6394f69a7ed5d8cbb72f45debc6d2",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "fe62ba3c399fe12268f15d45389f5d20211d07524d71b8f7b3155e0d59953ac9",
+          "plainSignature": "fe62ba3c399fe12268f15d45389f5d20211d07524d71b8f7b3155e0d59953ac9"
+        },
+        {
+          "id": "CT-R1-counter-odd-L-S11",
+          "initialSha256": "d53f3b2784eab4454560b5abce7f2a8a4e5e758ba5285bf3c271bf4d78cd64bf",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "56a4ca6501b951810ff7fc04ee5bf7399a265030f8a31827fb5cb936c92ced96",
+          "plainSignature": "56a4ca6501b951810ff7fc04ee5bf7399a265030f8a31827fb5cb936c92ced96"
+        },
+        {
+          "id": "CT-R1-counter-tite-R-S3",
+          "initialSha256": "c08f62a821d804c794f7bb94e38b8573f9aa698ae86aa3558b00519d62d0f020",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "848f4e7620d136f7a36092ae8375ce06ce826fc8e59857781a9007344004ac81",
+          "plainSignature": "848f4e7620d136f7a36092ae8375ce06ce826fc8e59857781a9007344004ac81"
+        },
+        {
+          "id": "CT-R1-counter-tite-R-S11",
+          "initialSha256": "06f5f6f792d139f2c6bf1d5e2ae46332751950dd8b6d0bba0e6288363cb1789d",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "7249af963dfe8c230401b2a3d09faef73194b1034cd9930e51b12cd0dd2f7117",
+          "plainSignature": "7249af963dfe8c230401b2a3d09faef73194b1034cd9930e51b12cd0dd2f7117"
+        },
+        {
+          "id": "CT-R1-counter-tite-L-S3",
+          "initialSha256": "e9db2f5db85598d82ac3f31a2d10c88301779b0634a950c0c4a353af167fa653",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "ecc91986797ab5d0cfcc9e235db80617e9daa2c71be5f8f68dfb436d50b5df5b",
+          "plainSignature": "ecc91986797ab5d0cfcc9e235db80617e9daa2c71be5f8f68dfb436d50b5df5b"
+        },
+        {
+          "id": "CT-R1-counter-tite-L-S11",
+          "initialSha256": "080174f5737153fb437b707ed00f43f745c5d9db39b9da477abcafe9ae4ee618",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "cc7f7892037578f0ac5b41b9e4028d57bd00e896000b6602fa4f46dd1a96a5eb",
+          "plainSignature": "cc7f7892037578f0ac5b41b9e4028d57bd00e896000b6602fa4f46dd1a96a5eb"
+        },
+        {
+          "id": "CT-R1-counter-bear-R-S3",
+          "initialSha256": "dab5d1f54aca7971bb8f903aed25ddba1904a6fdcbfa351a2ee5dc24ccda928a",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "41502a97f6f676411301d42372e3b31681bd5dc49dbc18799ad6331a9c0a9308",
+          "plainSignature": "41502a97f6f676411301d42372e3b31681bd5dc49dbc18799ad6331a9c0a9308"
+        },
+        {
+          "id": "CT-R1-counter-bear-R-S11",
+          "initialSha256": "b9dc3652c210f6056c05bb283017a0dcc834774b8e9d9947b040716f03f1d5c2",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "84cc67d04fdc9cc2ecda8afd023649f995bd2db39e29b66a31fb8546b21c588f",
+          "plainSignature": "84cc67d04fdc9cc2ecda8afd023649f995bd2db39e29b66a31fb8546b21c588f"
+        },
+        {
+          "id": "CT-R1-counter-bear-L-S3",
+          "initialSha256": "167b7248640812e856432baa6ac844b5b98b9ff94992b8c5d8e82df18449a3bb",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "f3f87be03d02909c76f415756ca5c13bd6d3c506a50cd1c345078f54d2731ec2",
+          "plainSignature": "f3f87be03d02909c76f415756ca5c13bd6d3c506a50cd1c345078f54d2731ec2"
+        },
+        {
+          "id": "CT-R1-counter-bear-L-S11",
+          "initialSha256": "730a6576cdc5f56b748e75856bd48557a6e378efe9b587b17b9119d75ad0813d",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "5b964bfc1c887a3ec8a157f8ed78eccec6328add1dde9b914e7128276b85cae4",
+          "plainSignature": "5b964bfc1c887a3ec8a157f8ed78eccec6328add1dde9b914e7128276b85cae4"
+        },
+        {
+          "id": "CT-R1-trap-over-R-S3",
+          "initialSha256": "3d3b64a266d3b0974217c5366800fe2128cfa21d9cd02ecf74862df9a575949f",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "063bfff560a366e3e4d435d3a377d5c0aee3099ddb5fcd24be5c92befa9644fd",
+          "plainSignature": "063bfff560a366e3e4d435d3a377d5c0aee3099ddb5fcd24be5c92befa9644fd"
+        },
+        {
+          "id": "CT-R1-trap-over-R-S11",
+          "initialSha256": "2f8c300a8d6c9fd1d9b3ca95928e792341d42dcc470574b96b8e03aabb5ed944",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "409e0545ddc475a02083bf635486b593e4f8dfb296ee1a0fc2a9d8e0ce740c84",
+          "plainSignature": "409e0545ddc475a02083bf635486b593e4f8dfb296ee1a0fc2a9d8e0ce740c84"
+        },
+        {
+          "id": "CT-R1-trap-over-L-S3",
+          "initialSha256": "24406d37d806a6a98665e79c2da31208dd8191aede5442b7f725502af68bec32",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "8f848aace90682c0608540463404a01eb5cb426e6b6b64f9eb9112b4ba202740",
+          "plainSignature": "8f848aace90682c0608540463404a01eb5cb426e6b6b64f9eb9112b4ba202740"
+        },
+        {
+          "id": "CT-R1-trap-over-L-S11",
+          "initialSha256": "6fa510f6573123a615f01b90bdf46897c8851975bacb16fb96d21de9939d3f14",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "e62f5425fb0204cdd232ccfe5de8db368e9a8203f37f85f24c945f0d21f49df7",
+          "plainSignature": "e62f5425fb0204cdd232ccfe5de8db368e9a8203f37f85f24c945f0d21f49df7"
+        },
+        {
+          "id": "CT-R1-trap-under-R-S3",
+          "initialSha256": "3629fcf70c0ace27f84359f09161c86626cbb84b2d665f582e576bea903e363d",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "eaa4fa63f8aa812908c70a68303ebb14878e56b0c00ada503d58b3529e056bce",
+          "plainSignature": "eaa4fa63f8aa812908c70a68303ebb14878e56b0c00ada503d58b3529e056bce"
+        },
+        {
+          "id": "CT-R1-trap-under-R-S11",
+          "initialSha256": "8f4de8a0ef132d5528e663839334378f2d9843fc922fbbc30af281eadbea7cb3",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "8577838f4a9ed65c179b923cda7f56e84cd31dcb75fdbac3b0fca2321e6aba7e",
+          "plainSignature": "8577838f4a9ed65c179b923cda7f56e84cd31dcb75fdbac3b0fca2321e6aba7e"
+        },
+        {
+          "id": "CT-R1-trap-under-L-S3",
+          "initialSha256": "50265a9af4b05bb9f47cc3ca13fdcad278cf75bdf3d9cf5935b8ae007a7bc17e",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "81f1496facd7317edac79082c50528929d80cd1db036ef571cbb9a8d79598980",
+          "plainSignature": "81f1496facd7317edac79082c50528929d80cd1db036ef571cbb9a8d79598980"
+        },
+        {
+          "id": "CT-R1-trap-under-L-S11",
+          "initialSha256": "157bc531f2b6aaebdea902539f9669cfdcc9e349b964109641e9fcf4889c8a01",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "902a91dbb4e4cb32e7716b61ac6498b610757598537577101625a343156501f4",
+          "plainSignature": "902a91dbb4e4cb32e7716b61ac6498b610757598537577101625a343156501f4"
+        },
+        {
+          "id": "CT-R1-trap-odd-R-S3",
+          "initialSha256": "30b4968d089f4103cb71a5d7e5bf0ff69f421efc992068c95488f64e8451c913",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "c556da45984e7a1369a4d7952910a7b79d6bbad99a3d6026d4abb4ae8d9c4b90",
+          "plainSignature": "c556da45984e7a1369a4d7952910a7b79d6bbad99a3d6026d4abb4ae8d9c4b90"
+        },
+        {
+          "id": "CT-R1-trap-odd-R-S11",
+          "initialSha256": "f430a764bcb92c14c200878f301bc7b77246d6e16db3ca88623b47549ebb6fe6",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "513a2cbd120a1e8f93c412e284da1c359ac176d3fa5ed47ccfdb5e733a782c0e",
+          "plainSignature": "513a2cbd120a1e8f93c412e284da1c359ac176d3fa5ed47ccfdb5e733a782c0e"
+        },
+        {
+          "id": "CT-R1-trap-odd-L-S3",
+          "initialSha256": "bb82c7ef32c3d835d6d3167f56ede6e50411e755c459a861d29601b073d01801",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "3336f4bfd925968a86a7d0bb5492f7429a159729ba30d9c76dcb5b9e7ed2ba2c",
+          "plainSignature": "3336f4bfd925968a86a7d0bb5492f7429a159729ba30d9c76dcb5b9e7ed2ba2c"
+        },
+        {
+          "id": "CT-R1-trap-odd-L-S11",
+          "initialSha256": "08606e77b813a7b2d2e8165c98dc7b00ed41af96cd67870a0881f7c6eed02b95",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b80139474c28ac1fd9cb4c62ce99f2d9ada2d71647b133db5ccc2d656df72fbe",
+          "plainSignature": "b80139474c28ac1fd9cb4c62ce99f2d9ada2d71647b133db5ccc2d656df72fbe"
+        },
+        {
+          "id": "CT-R1-trap-tite-R-S3",
+          "initialSha256": "f4aa35a74a540ca16e43576026c538a1fcaaf003646c8c120ab98ec98402fb72",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "e2587e1c4a2c3b7c8683c08a8192c9b10c2dbc973ff328bb0dc5174a0c21d0df",
+          "plainSignature": "e2587e1c4a2c3b7c8683c08a8192c9b10c2dbc973ff328bb0dc5174a0c21d0df"
+        },
+        {
+          "id": "CT-R1-trap-tite-R-S11",
+          "initialSha256": "db50b52ebb9fbf634d8872bed5f14e5c489465b2b32f02a58f30e1a862f8e6db",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "1fb0bc7f206b9dfc32b7aa10a5e28139af718e222153311708e8c04551183176",
+          "plainSignature": "1fb0bc7f206b9dfc32b7aa10a5e28139af718e222153311708e8c04551183176"
+        },
+        {
+          "id": "CT-R1-trap-tite-L-S3",
+          "initialSha256": "8054db236a75b3486920866d9dd5d60c0c56859540687703ec6e58525201c849",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "edf18267f882e204c52d630f725c7141cf0e2b3f25b93830637d7038bd309ef2",
+          "plainSignature": "edf18267f882e204c52d630f725c7141cf0e2b3f25b93830637d7038bd309ef2"
+        },
+        {
+          "id": "CT-R1-trap-tite-L-S11",
+          "initialSha256": "de227706ba8e187089d7c88ea4fd32c790fb51f24a834a08cfddae540fec8571",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "430b169ea310c8d5dc3af44b20e1e18107c59446815b2d1d1e8f2ec9f2553085",
+          "plainSignature": "430b169ea310c8d5dc3af44b20e1e18107c59446815b2d1d1e8f2ec9f2553085"
+        },
+        {
+          "id": "CT-R1-trap-bear-R-S3",
+          "initialSha256": "c8362cab5c7e7795c55e08950a09493b41999cf4809ff4a6ad356a58bd31c08f",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "f756f22d30e43bd467220f6b6e946c95b03e5fd14b57187130cbd873aa806c06",
+          "plainSignature": "f756f22d30e43bd467220f6b6e946c95b03e5fd14b57187130cbd873aa806c06"
+        },
+        {
+          "id": "CT-R1-trap-bear-R-S11",
+          "initialSha256": "af91b52c8b7ce32044b90fa1fafa468f19f26d613313397c583b41e1a03d7276",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "53b7148472d6c9e58acbdb761ca5daaf0f52ca6529fe6e37d5f5da5fcebe6672",
+          "plainSignature": "53b7148472d6c9e58acbdb761ca5daaf0f52ca6529fe6e37d5f5da5fcebe6672"
+        },
+        {
+          "id": "CT-R1-trap-bear-L-S3",
+          "initialSha256": "e674255c7c200ba2486e1effc06cd2c6e7a0d041c2a59ee8312ea974acc033ee",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "247c964600e29d6f3c324e701bf2bcca51c2fb60c06917fa486e04f3b4604b94",
+          "plainSignature": "247c964600e29d6f3c324e701bf2bcca51c2fb60c06917fa486e04f3b4604b94"
+        },
+        {
+          "id": "CT-R1-trap-bear-L-S11",
+          "initialSha256": "a5f092be9fc0e15d68d9c633a7d53696aba71b26e6f76374eda836b1f89ed7be",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "4fb590d87d9a3b9f19f8aac0d4854ce9b62c1bc207851be927b534be222f75e9",
+          "plainSignature": "4fb590d87d9a3b9f19f8aac0d4854ce9b62c1bc207851be927b534be222f75e9"
+        },
+        {
+          "id": "CT-R1-duo-over-R-S3",
+          "initialSha256": "fa9f73c1af9f8d0b3ac89441a27c0b85d4f1f5b0f2cf3d94ba17da87cec4e449",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "72a108bee144851c4e3aef25b5ecef3d77df5cba339cb0a69ecbadebed20a427",
+          "plainSignature": "72a108bee144851c4e3aef25b5ecef3d77df5cba339cb0a69ecbadebed20a427"
+        },
+        {
+          "id": "CT-R1-duo-over-R-S11",
+          "initialSha256": "2471a7f162933bc5bfd7dd025ca46d8178a9261f59f63f02cfaae2b46a232589",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "9cfabd6b2655c139855f3b5258b7a97820d0544dc6b294313e51e2efcc5663c9",
+          "plainSignature": "9cfabd6b2655c139855f3b5258b7a97820d0544dc6b294313e51e2efcc5663c9"
+        },
+        {
+          "id": "CT-R1-duo-over-L-S3",
+          "initialSha256": "f90be96217e34777b7c2b4aced12558985bee0dc16a371f32b731548de8735a7",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "de9a6cbea205542cb16b785e94d7f419d3fbb90dc0f4c0c6a48b95873c985c62",
+          "plainSignature": "de9a6cbea205542cb16b785e94d7f419d3fbb90dc0f4c0c6a48b95873c985c62"
+        },
+        {
+          "id": "CT-R1-duo-over-L-S11",
+          "initialSha256": "b0b16f1694ed6fb9028c51ccf9e78de3f18d1049ba40b6673948bf83f76eaf85",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "e23b79824c2e8dd76a70c95e6d5d78037e4f05c56f03232171d135e0438cefb8",
+          "plainSignature": "e23b79824c2e8dd76a70c95e6d5d78037e4f05c56f03232171d135e0438cefb8"
+        },
+        {
+          "id": "CT-R1-duo-under-R-S3",
+          "initialSha256": "8b1f447708fa508b755263bb699e6c5645aba95e90222872dfbc8782d985fc2b",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "c79a857dc070545c0982b1c5c18680ddc0b9dbc4bc6cf39179862161c205888f",
+          "plainSignature": "c79a857dc070545c0982b1c5c18680ddc0b9dbc4bc6cf39179862161c205888f"
+        },
+        {
+          "id": "CT-R1-duo-under-R-S11",
+          "initialSha256": "0ffc0f279a702a64d8ef3d3120bf1cfde88e497ae68c60986752e683ba3c7b19",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "24b40c9551269b6d0de2bef8c82ef473ecf10787df421e1bae07666982833213",
+          "plainSignature": "24b40c9551269b6d0de2bef8c82ef473ecf10787df421e1bae07666982833213"
+        },
+        {
+          "id": "CT-R1-duo-under-L-S3",
+          "initialSha256": "d21e21f200888330ca1b5ad3f2d8e7439da4b3314e275d712fbfe43d8ec14d95",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "315d6250a812ad06a042a32c126137481953e782e58ebc72700e45d0f8f88295",
+          "plainSignature": "315d6250a812ad06a042a32c126137481953e782e58ebc72700e45d0f8f88295"
+        },
+        {
+          "id": "CT-R1-duo-under-L-S11",
+          "initialSha256": "6bd68c2faf35b715d06da898f9f542a97de01769d1f8ac2a45b07eda0c60c56c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "88de8fd68983c9d07ad5f3a5057bda187b987dcf80042f797202cf365630da09",
+          "plainSignature": "88de8fd68983c9d07ad5f3a5057bda187b987dcf80042f797202cf365630da09"
+        },
+        {
+          "id": "CT-R1-duo-odd-R-S3",
+          "initialSha256": "3fd6bebb0e0efd6e5f54dd6fc5ce9efaa486677155c6f65b39e393f47828d097",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "bb8e9f1953778b2edfd35af2aa9c3d7cc247d28521caed8bc4d13fea3fd061f2",
+          "plainSignature": "bb8e9f1953778b2edfd35af2aa9c3d7cc247d28521caed8bc4d13fea3fd061f2"
+        },
+        {
+          "id": "CT-R1-duo-odd-R-S11",
+          "initialSha256": "5cfdd8c1e501ebb4619b600cf78de6559987ff7c922e9ed277560bc63a0d9b2f",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "e60ac4cab5792c6b66aa38185df188a553ce6d0f5c24d64dccf34a4f11a2584c",
+          "plainSignature": "e60ac4cab5792c6b66aa38185df188a553ce6d0f5c24d64dccf34a4f11a2584c"
+        },
+        {
+          "id": "CT-R1-duo-odd-L-S3",
+          "initialSha256": "f6ccd6535a850ec5b4318c6f509394cdb384da0dc30414215b39789c45579f5e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b6c068d6c8706327dd166e9d78cc38e9926a22ba0f535ec0a951ce10931dc17a",
+          "plainSignature": "b6c068d6c8706327dd166e9d78cc38e9926a22ba0f535ec0a951ce10931dc17a"
+        },
+        {
+          "id": "CT-R1-duo-odd-L-S11",
+          "initialSha256": "ae9a636b0a0e453123df25ae3ce687cebada5f554d08d4ee6e98931775d6483e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5c6cbf49e7cafea74d856f8313e9fe6a526398aa899a05be02bc119972e9d125",
+          "plainSignature": "5c6cbf49e7cafea74d856f8313e9fe6a526398aa899a05be02bc119972e9d125"
+        },
+        {
+          "id": "CT-R1-duo-tite-R-S3",
+          "initialSha256": "edde7ab64da5280bdef5b60168b8b9b2c02c4aeb6617cda428ee51eaa9d15aea",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "74e7b157a85c4fd501493df6c9ca9c3920d28d9e5b29839be1fca0fc1d661e57",
+          "plainSignature": "74e7b157a85c4fd501493df6c9ca9c3920d28d9e5b29839be1fca0fc1d661e57"
+        },
+        {
+          "id": "CT-R1-duo-tite-R-S11",
+          "initialSha256": "89a68c61cde068a977a809398bf62f28fd7e62c207fc20bfc89187c22a3bbd3a",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "63b334c9bfe62d42a5275c7df7dcc886eaeb63486aff83c813c97cc489ec4356",
+          "plainSignature": "63b334c9bfe62d42a5275c7df7dcc886eaeb63486aff83c813c97cc489ec4356"
+        },
+        {
+          "id": "CT-R1-duo-tite-L-S3",
+          "initialSha256": "6a014d4144396084a4f67256173a0c7ca2a32c25bff8b570f3fb8861f8cc4fe8",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "2096481a6d63fe38ea76e70d0ef3485a3564fa5eb30d696327c3fef0b5ce5a59",
+          "plainSignature": "2096481a6d63fe38ea76e70d0ef3485a3564fa5eb30d696327c3fef0b5ce5a59"
+        },
+        {
+          "id": "CT-R1-duo-tite-L-S11",
+          "initialSha256": "cb88e14d9d6588ca3b08bb437eb6a92e9806ad51d4071937be00be2f0f5d7d3a",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "f7d9e39858b847af30755a1fbd8f62e066d308311ae5f4afa61e732c2edaa80e",
+          "plainSignature": "f7d9e39858b847af30755a1fbd8f62e066d308311ae5f4afa61e732c2edaa80e"
+        },
+        {
+          "id": "CT-R1-duo-bear-R-S3",
+          "initialSha256": "d45a519bbf98aabbb22ff7b11cfe0129c8ab6d845f35ccabd5b5386d265c20d9",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "d059c1accc4efadf000a88e6c951dc5c9a8a28e14b6d7c6d1ab5742f74a51d75",
+          "plainSignature": "d059c1accc4efadf000a88e6c951dc5c9a8a28e14b6d7c6d1ab5742f74a51d75"
+        },
+        {
+          "id": "CT-R1-duo-bear-R-S11",
+          "initialSha256": "2f04128c389e76d43b3b627916b18db89aa3dd48c451d21398429785661a54c2",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "a3f6a89fcdf98c290a7262b47ceaaf51ce66bfa0332588b6ed2a88815723d23c",
+          "plainSignature": "a3f6a89fcdf98c290a7262b47ceaaf51ce66bfa0332588b6ed2a88815723d23c"
+        },
+        {
+          "id": "CT-R1-duo-bear-L-S3",
+          "initialSha256": "fe11404da4b0f7774132fc0aa55baa54936a6bab95f3b979a392249b33f766ce",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "af22ef3007e786a040b8e0770e595935c23a788c57bf87e5f328acaa28cb0f83",
+          "plainSignature": "af22ef3007e786a040b8e0770e595935c23a788c57bf87e5f328acaa28cb0f83"
+        },
+        {
+          "id": "CT-R1-duo-bear-L-S11",
+          "initialSha256": "6d0d4bf882ca99b2909a95e607320ccfd406835da53978b2f325d50a93e98b51",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "2d9fc6d6ed7fa8ee46e718bdeb01979f55259c39f039349686af67b774842650",
+          "plainSignature": "2d9fc6d6ed7fa8ee46e718bdeb01979f55259c39f039349686af67b774842650"
+        },
+        {
+          "id": "CT-R1-split_zone-over-R-S3",
+          "initialSha256": "af8bed5856883f6d4f4c0b85a72c5dfd0ea4cb00339a1fd0e104ae51badf0556",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "f6ee6b97573447cf86ea84323d295348c64395d32eb99be7d44ec74aba0680c1",
+          "plainSignature": "f6ee6b97573447cf86ea84323d295348c64395d32eb99be7d44ec74aba0680c1"
+        },
+        {
+          "id": "CT-R1-split_zone-over-R-S11",
+          "initialSha256": "030af379a7a473aabeb951abc25cfc376867f835d3aac852ca81aa30252d9be4",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "7c2c54410e5df1e20e2d61fe781e44fb3f26a14c060164237e3dc7039a592367",
+          "plainSignature": "7c2c54410e5df1e20e2d61fe781e44fb3f26a14c060164237e3dc7039a592367"
+        },
+        {
+          "id": "CT-R1-split_zone-over-L-S3",
+          "initialSha256": "fdf0f2d4ba478022103dd56099b70df08fc1a55c6ffd51b7d8e7bd7e11205a36",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "04a52581cad03cfe9fda2543866230b2244ef93551e8a0e4d05ff6b887988198",
+          "plainSignature": "04a52581cad03cfe9fda2543866230b2244ef93551e8a0e4d05ff6b887988198"
+        },
+        {
+          "id": "CT-R1-split_zone-over-L-S11",
+          "initialSha256": "d7ccb3441885e973105e03d37af638a2be2de3d52da82b897da01e77920089a3",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "7dc835b7f32e1016eca22449582749b561c133c23fe72f549a8a1ddd0576f5f2",
+          "plainSignature": "7dc835b7f32e1016eca22449582749b561c133c23fe72f549a8a1ddd0576f5f2"
+        },
+        {
+          "id": "CT-R1-split_zone-under-R-S3",
+          "initialSha256": "e5667877162c4b7a2cfdbbf011f983a84822569c9797d295f3f4d1f85394ac15",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "431f29ee88b6970d9f2562efa1a091566477cb97ee00033fb1af38308fc85188",
+          "plainSignature": "431f29ee88b6970d9f2562efa1a091566477cb97ee00033fb1af38308fc85188"
+        },
+        {
+          "id": "CT-R1-split_zone-under-R-S11",
+          "initialSha256": "2ff45a6c0c7197e5a983ca1519d0d3319c04faac51ad3f706fcb29f817d050ec",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "02e9c183baec5f54d1759d66ff52d7173980658575b8ab3a69695fc8db43c6af",
+          "plainSignature": "02e9c183baec5f54d1759d66ff52d7173980658575b8ab3a69695fc8db43c6af"
+        },
+        {
+          "id": "CT-R1-split_zone-under-L-S3",
+          "initialSha256": "f38f7f84e0a8733aba36b622d956e4856959b2f32189edcd896471e86930c27a",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "7f4e9b13698459709f58ba503d6bfdc4d05aa259f96c79dbce4a3804e98e8fb6",
+          "plainSignature": "7f4e9b13698459709f58ba503d6bfdc4d05aa259f96c79dbce4a3804e98e8fb6"
+        },
+        {
+          "id": "CT-R1-split_zone-under-L-S11",
+          "initialSha256": "c586bf69f71e8e372170b0e91102921f53f461bae7acd1f6ccd65ed26147a945",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "cb748c482bbb49b90d755b2e1ecb13eaf51f8d3c0618389c137d583b717218d1",
+          "plainSignature": "cb748c482bbb49b90d755b2e1ecb13eaf51f8d3c0618389c137d583b717218d1"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-R-S3",
+          "initialSha256": "04551cfd5f4e899cef90943215654a97cba784f800a2e745bb9eb21d43fdd647",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "0f7dae5c5201eff294942c5088fee2fc22a6f039df4db8ee2ced82998437415a",
+          "plainSignature": "0f7dae5c5201eff294942c5088fee2fc22a6f039df4db8ee2ced82998437415a"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-R-S11",
+          "initialSha256": "67130241e7bedd12a55e9aec1899e726fbd7035af642492f1a362f6983470174",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "580e73743f5bb5d3cebd26a34fc54eb1dc3b2ecfe9b910fce8e515188731934b",
+          "plainSignature": "580e73743f5bb5d3cebd26a34fc54eb1dc3b2ecfe9b910fce8e515188731934b"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-L-S3",
+          "initialSha256": "7afb62673a93ea3ee5d5f2e1f8bf191593a58455fb1f4c2672cda628c2e18da1",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "97d288fbc82a905d9f801cf80b5d41742997fb48ce4102b08a2a3e68d8db064f",
+          "plainSignature": "97d288fbc82a905d9f801cf80b5d41742997fb48ce4102b08a2a3e68d8db064f"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-L-S11",
+          "initialSha256": "0571eccd0524fea09b86b323c9acf6f8f044186644620ab621950ae4b83fcec8",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "a854042da41cfcffb3f32a5e6f7fc86373184d8335432c1255523c287196ca53",
+          "plainSignature": "a854042da41cfcffb3f32a5e6f7fc86373184d8335432c1255523c287196ca53"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-R-S3",
+          "initialSha256": "c83fe36f96e379b5adfa5e892344ecadef0a831c93c1b6c270d1a2c7f46c7164",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "4479cc2b2ebbda4922ee8f098a4a490dd3e49da72ba60ed9939ab96d8a257df8",
+          "plainSignature": "4479cc2b2ebbda4922ee8f098a4a490dd3e49da72ba60ed9939ab96d8a257df8"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-R-S11",
+          "initialSha256": "a1f87e6d95ae328cb2ef26076d1c15fcbcc8ba01d2a901bf6af377b15e2f4616",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "0f34054f918bcd73d5f8133adf436a77a12d1a29facab0e686ac07e011d84bca",
+          "plainSignature": "0f34054f918bcd73d5f8133adf436a77a12d1a29facab0e686ac07e011d84bca"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-L-S3",
+          "initialSha256": "697e460e23bc5e7449592b5779ef24bde8d25e7049d5203c220788211a352838",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "6d11a69d76ffa66f356d642f1cc8e94a63f44bd0b39d76e19cc157a00c470506",
+          "plainSignature": "6d11a69d76ffa66f356d642f1cc8e94a63f44bd0b39d76e19cc157a00c470506"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-L-S11",
+          "initialSha256": "30273f15625ff2179f14a838b5ba54d927a5dd5d42c2c4b12cc722ae340bc0c0",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "c5099bc55be0d47c417d597355c33f9433632dc2e556d7745e1c4d8a11858f35",
+          "plainSignature": "c5099bc55be0d47c417d597355c33f9433632dc2e556d7745e1c4d8a11858f35"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-R-S3",
+          "initialSha256": "23922ff2f1086449240719a7c8d7791718bfad79e28a5516af5a0036fe846aba",
+          "profileSha256": "82a0371648b421e8d721c9461ee48c8a92d7efd88b227a90888d848192867194",
+          "observedSignature": "9e60cf2340d963063cf67f4832763642fba0902092603f40cd72cdf2b72b2945",
+          "plainSignature": "9e60cf2340d963063cf67f4832763642fba0902092603f40cd72cdf2b72b2945"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-R-S11",
+          "initialSha256": "889bb77db1191f2163f153eff35a26970cc9b882f35088c5d4c748813cc8654e",
+          "profileSha256": "82a0371648b421e8d721c9461ee48c8a92d7efd88b227a90888d848192867194",
+          "observedSignature": "a687331f5ab773895ea2cca3a539c4caebedc1cc1e9cdebd66665eb4662c0455",
+          "plainSignature": "a687331f5ab773895ea2cca3a539c4caebedc1cc1e9cdebd66665eb4662c0455"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-L-S3",
+          "initialSha256": "6fcccd74d7fa2c20c7298197d1f24c067aade7a48181011c94ce636c23a1ce1f",
+          "profileSha256": "82a0371648b421e8d721c9461ee48c8a92d7efd88b227a90888d848192867194",
+          "observedSignature": "ac3387758d764e430b0b532821358c6eef9acd5499e71c7cfd76521a68fb8885",
+          "plainSignature": "ac3387758d764e430b0b532821358c6eef9acd5499e71c7cfd76521a68fb8885"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-L-S11",
+          "initialSha256": "15b5d24c7d2b24a12953fdfce2fcf07ef4486524c87edb3f9c226c133f990211",
+          "profileSha256": "82a0371648b421e8d721c9461ee48c8a92d7efd88b227a90888d848192867194",
+          "observedSignature": "dff10aec057e38c7223175d12e38c251d24ec019f2ea3d9465c3ae9bfba2e120",
+          "plainSignature": "dff10aec057e38c7223175d12e38c251d24ec019f2ea3d9465c3ae9bfba2e120"
+        },
+        {
+          "id": "CT-R2-oz_strong-over-L-S11",
+          "initialSha256": "d40b59ad461fb75e5c777fd08ff6572109cb89f2fcbd1782609f08cbf89be31f",
+          "profileSha256": "d3403583473b6a71eab8a1abbfb157aecbba2f78ec201564b049379270bd0b64",
+          "observedSignature": "e8654ab79917de718d2d33a6d91f2bee45ac6ad9dcde4c0a456fb160eee0722d",
+          "plainSignature": "e8654ab79917de718d2d33a6d91f2bee45ac6ad9dcde4c0a456fb160eee0722d"
+        },
+        {
+          "id": "CT-R2-power-over-R-S3",
+          "initialSha256": "e985597c1005b06a39ceb0f172635bba550ee52c50b3c18fb5fd09a71d308c79",
+          "profileSha256": "d3403583473b6a71eab8a1abbfb157aecbba2f78ec201564b049379270bd0b64",
+          "observedSignature": "b2417f71a5e6ec4c906d106405039700f3d3eeec2622555a6cc4041c3b882f42",
+          "plainSignature": "b2417f71a5e6ec4c906d106405039700f3d3eeec2622555a6cc4041c3b882f42"
+        }
+      ]
+    },
+    {
+      "label": "Candidate: keeper-based combo release",
+      "sourceSha256": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+      "collectorSha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+      "cohortSha256": "efa27d3b3aefc024ebfc8be06ff73fb5e7d1aaf602bb60e86ea532ae70ab12e0",
+      "filmRawSha256": "b2758fd51d91e218de2c3b15f56c2d1a2cb9f341456606f8ca4711cd04f786ab",
+      "reportRawSha256": "516b283112b38d7617d626a300c50b2e91edec07e8c012991fd30cc0ad0c529b",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "65a88253937a1ca6d438472f6eb84f339b03df4676ff9413fc78b6f6f435a56c",
+        "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+        "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+      },
+      "observerChecks": [
+        {
+          "id": "CT-R1-iz_strong-over-R-S3",
+          "initialSha256": "84624eed8f2dd2929243fea6857eb8f1435bdc1860dd7adc0f9f8728ee8576b3",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "aee1cfc6ee9588c257570c20e998938ff70845c80ff8ba4b25bb5abc08d458b2",
+          "plainSignature": "aee1cfc6ee9588c257570c20e998938ff70845c80ff8ba4b25bb5abc08d458b2"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-R-S11",
+          "initialSha256": "e8a4bdd446723a27eb5873ed8657fa0c6bc250e837c29dbe797a302abbc4d7c7",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "5437b765d2aa3aaa0d48c8ebef56641e4e9d60d08fdcf4eb008f16456d8df708",
+          "plainSignature": "5437b765d2aa3aaa0d48c8ebef56641e4e9d60d08fdcf4eb008f16456d8df708"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-L-S3",
+          "initialSha256": "722b5398e6bdb4571b83bf03198040066f0cea4c6621941349bb56abe3a44b1c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "f4261f79bd178d9e85b8bb2b73f9bdb7fab7c33fe598e87a2fe6503037439e10",
+          "plainSignature": "f4261f79bd178d9e85b8bb2b73f9bdb7fab7c33fe598e87a2fe6503037439e10"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-L-S11",
+          "initialSha256": "aeddc4b3e7f9e11e732fd4bf4903cc2752ed93a8cf08cb9d16b684c50d669d48",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "dafd82843a83f04bd6044280de517d45dbe32a52e1c31c5e0cc2c50b333b0b8c",
+          "plainSignature": "dafd82843a83f04bd6044280de517d45dbe32a52e1c31c5e0cc2c50b333b0b8c"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-R-S3",
+          "initialSha256": "f9e348299968acb707c58bb2343d0859efcc4dbe0c30b3a25cda62ddfc08e658",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "d775399a15de42d9d4e8d3d9a9dbc66edbc8c19331229c5c7064a718b5cb7e56",
+          "plainSignature": "d775399a15de42d9d4e8d3d9a9dbc66edbc8c19331229c5c7064a718b5cb7e56"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-R-S11",
+          "initialSha256": "9099c45c6e064967cf9d5048f29ee5569b37d60dcdc0a3c7137f708537f9edba",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "4f3300b2e0e899b345dddfc163c5a2074f646b9ab377356f02821958af330583",
+          "plainSignature": "4f3300b2e0e899b345dddfc163c5a2074f646b9ab377356f02821958af330583"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-L-S3",
+          "initialSha256": "e3310951293fe1f460cdb34776ffa8faa4010fc5171644a978455c8dd769fde5",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0efe24fc5b5b3d7d7a5c0a0e4b4156ab7b4f9a398b371ab95a7c9da6447ab4b8",
+          "plainSignature": "0efe24fc5b5b3d7d7a5c0a0e4b4156ab7b4f9a398b371ab95a7c9da6447ab4b8"
+        },
+        {
+          "id": "CT-R1-iz_strong-under-L-S11",
+          "initialSha256": "80a6eceb945ef4d93642b5d99f1306f8d4f5fa1d49cb2ddf2af9999a53f66779",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "187f610fe2abcb05ee123d85e501c60ecf7d505a4cf9bbfaa67940a5057aeae9",
+          "plainSignature": "187f610fe2abcb05ee123d85e501c60ecf7d505a4cf9bbfaa67940a5057aeae9"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-R-S3",
+          "initialSha256": "862753cd6c7b726221a83e7b1ac9b7c789112bcd3e33940fdfd108a28fd54a9c",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "4f21ba816359b181fc2fadfdca560b3dd6a0f50f2fd55e384649b6d050a19368",
+          "plainSignature": "4f21ba816359b181fc2fadfdca560b3dd6a0f50f2fd55e384649b6d050a19368"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-R-S11",
+          "initialSha256": "653fced975631a683f486ba2718b14bf871a5097b4ab450bd755477147d74522",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "eb43e13f41fca0d464aae2a62dc7a0c05cd099887b7d5d8ff9b248df8927202f",
+          "plainSignature": "eb43e13f41fca0d464aae2a62dc7a0c05cd099887b7d5d8ff9b248df8927202f"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-L-S3",
+          "initialSha256": "9fe441b437c946fa5f5b0066269c60c2cc61fbfd4b3ee0bd47dd788b171767eb",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5a085f88217de4aa8dbf8a799cb1b97ad486d4e8416368a1f9b3a089bf94c729",
+          "plainSignature": "5a085f88217de4aa8dbf8a799cb1b97ad486d4e8416368a1f9b3a089bf94c729"
+        },
+        {
+          "id": "CT-R1-iz_strong-odd-L-S11",
+          "initialSha256": "e65b125f673d4c7d564f1af1830a6fefd4e13a162adf00e2c94e874d3cbdc4a7",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "35eb1bbb89dbfa8cb0f7d168c311ab61a49ad2d62061b7623122c2aa6b267c7c",
+          "plainSignature": "35eb1bbb89dbfa8cb0f7d168c311ab61a49ad2d62061b7623122c2aa6b267c7c"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-R-S3",
+          "initialSha256": "e9057ebca7f245d35617a6535c10df77551b33ca9e7db5058ce23d7d4aa03cd1",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "103cf3813230995654e22353810c809a6cb1eb92f57aecb2dad0dfd6f1d70983",
+          "plainSignature": "103cf3813230995654e22353810c809a6cb1eb92f57aecb2dad0dfd6f1d70983"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-R-S11",
+          "initialSha256": "764c41245709efd1cf716592aa9a3708b0e6d1b6f1200f9be5e45845c7573f39",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "2186c16af64f8510ba9aee20c13f93067e849b4e75b2d08bb7fd28a7ace233ab",
+          "plainSignature": "2186c16af64f8510ba9aee20c13f93067e849b4e75b2d08bb7fd28a7ace233ab"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-L-S3",
+          "initialSha256": "476ca84be715fc255ea8f4d25fdef1fd9bb7569683a21d46549ad81913bcbbbd",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5798cdfc8d5f0de579cc273655eefd2cb925fbc6227065b1973888e1bfb70e09",
+          "plainSignature": "5798cdfc8d5f0de579cc273655eefd2cb925fbc6227065b1973888e1bfb70e09"
+        },
+        {
+          "id": "CT-R1-iz_strong-tite-L-S11",
+          "initialSha256": "113c1f8232d11f0dbf5b8d0d2c18ba4691cb9b579945b6d5ff1e1b2aea6384e5",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "51f24990364c2ff3e3a876697315bdba30604d3b3a7e123946fb0bc532dc5f9a",
+          "plainSignature": "51f24990364c2ff3e3a876697315bdba30604d3b3a7e123946fb0bc532dc5f9a"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-R-S3",
+          "initialSha256": "2bfaa5a1c19af1bd82d005559d4e9e360e5338eb3bf05fc3f2f43662fcd10be7",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "4162c3316de3e335fc5126db82764e8f417b680181d3858f8c25abd21358cc5b",
+          "plainSignature": "4162c3316de3e335fc5126db82764e8f417b680181d3858f8c25abd21358cc5b"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-R-S11",
+          "initialSha256": "687e19e2f00b06cf2643b57d331ba328c59415f7a4277e990a741d16ae442cbb",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "ed18d0fefe6665469d2095b0c4e4176515038e4cc364cd20beb7366861e4c077",
+          "plainSignature": "ed18d0fefe6665469d2095b0c4e4176515038e4cc364cd20beb7366861e4c077"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-L-S3",
+          "initialSha256": "fed7dedca940bcf483bae2291cd78fe5f396642c264185bcc20f8c8ad6046032",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "cb3bcce654ea636d80dc6280bb01c48ce5337ed50a0d307958d80b4778912cf2",
+          "plainSignature": "cb3bcce654ea636d80dc6280bb01c48ce5337ed50a0d307958d80b4778912cf2"
+        },
+        {
+          "id": "CT-R1-iz_strong-bear-L-S11",
+          "initialSha256": "cdda4ef0f140ac891a862caba2e1e962cd231a6966bb034b382af92b1fd12b26",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "3c6be46f3a7720b2d40ca11424bfed24f833f1ceeb2b3283424cef5139da2a49",
+          "plainSignature": "3c6be46f3a7720b2d40ca11424bfed24f833f1ceeb2b3283424cef5139da2a49"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-R-S3",
+          "initialSha256": "556ecc87f6d190f1d7a0bc8e6d60e6222e67025d4dd9d497019905dd734e37c0",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "369a06aa3c1b20cdd542da49c52a0cd2e3107555d5e085ac8f3f29f0a3ebb43f",
+          "plainSignature": "369a06aa3c1b20cdd542da49c52a0cd2e3107555d5e085ac8f3f29f0a3ebb43f"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-R-S11",
+          "initialSha256": "bb3e285b460ddc93450a2673b0a187073dfec73adef21d053ec111469e6d5725",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "8ff9e16052865363880fe603577c5f295dfb44aa35c3702773732855af6d73cf",
+          "plainSignature": "8ff9e16052865363880fe603577c5f295dfb44aa35c3702773732855af6d73cf"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-L-S3",
+          "initialSha256": "310d24307eaeac9e35c14a72dd842185dcdb6d6aad35658d5872436ed28b6e30",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "dac9a239aa3c80b90c682071cff39562266b17424edee0b43eb8136cd000e16b",
+          "plainSignature": "dac9a239aa3c80b90c682071cff39562266b17424edee0b43eb8136cd000e16b"
+        },
+        {
+          "id": "CT-R1-oz_strong-over-L-S11",
+          "initialSha256": "c63491e6651172a82ca614898b049744e58261eef7a833f12e8fd138509b8921",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "da3a16706542db97a9cb4f856e10a62ee3d714c7bf401d267a0ae6a22bee35fe",
+          "plainSignature": "da3a16706542db97a9cb4f856e10a62ee3d714c7bf401d267a0ae6a22bee35fe"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-R-S3",
+          "initialSha256": "e7a0ee6a5dafddc1d33edfe0f9e9293428d9bc40be027e3f25d9b10fa9054a3b",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "440c7e8e4ebf2e49d55c46229643364b7a74b1db0112ed4fa8774dd10a602f3d",
+          "plainSignature": "440c7e8e4ebf2e49d55c46229643364b7a74b1db0112ed4fa8774dd10a602f3d"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-R-S11",
+          "initialSha256": "cc42f1f1ff8b318effcf6ab81ef7729c030f3c189aed13aed60cdda1ca2adc10",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "c49084b4c0632110663a0f9e629d532b95d5577b067f6b3a0b74100f6237f86f",
+          "plainSignature": "c49084b4c0632110663a0f9e629d532b95d5577b067f6b3a0b74100f6237f86f"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-L-S3",
+          "initialSha256": "022564ca625057bcb8c655f8cf8d2dbc9f0e273f5a0985c46361a75de6e672d2",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "d2b58ce92f8a260f61efaef6398c3b951d4c01f512b31c1914355adc89fcb6b3",
+          "plainSignature": "d2b58ce92f8a260f61efaef6398c3b951d4c01f512b31c1914355adc89fcb6b3"
+        },
+        {
+          "id": "CT-R1-oz_strong-under-L-S11",
+          "initialSha256": "f29307bd2348773c269f7794425a2bd7d4356c3e24cf7048c803818a8cafa90c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "b9e38a245cf7e72f735f568a3749d3a046ce32b39f3c75adf459eb1b14f36797",
+          "plainSignature": "b9e38a245cf7e72f735f568a3749d3a046ce32b39f3c75adf459eb1b14f36797"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-R-S3",
+          "initialSha256": "fd168ee965ae05574161f5fc3cc58e972e453dbb8e86b43b64e510a95306623c",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "6f784ab00f40e88615a0a8c2014707c5a4c578d63e4c8c95a48a1bc182fffae7",
+          "plainSignature": "6f784ab00f40e88615a0a8c2014707c5a4c578d63e4c8c95a48a1bc182fffae7"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-R-S11",
+          "initialSha256": "6c055d65c5d981675c81f11a23b99962a2af3b16ecf1aa73394138e07a742d0c",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "a2cf328f3c8845feef371adf4900414c2c3cfa87d6bf6205856c8cc09b4617d7",
+          "plainSignature": "a2cf328f3c8845feef371adf4900414c2c3cfa87d6bf6205856c8cc09b4617d7"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-L-S3",
+          "initialSha256": "53017010ef5b208163db9a77124f25e6f246a83912385a2ee119ddbfee32f5f4",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5fd2b49959a2a4c40fcdf39f695b81c0a6cbb2269d32f309cef1f945f365a0d0",
+          "plainSignature": "5fd2b49959a2a4c40fcdf39f695b81c0a6cbb2269d32f309cef1f945f365a0d0"
+        },
+        {
+          "id": "CT-R1-oz_strong-odd-L-S11",
+          "initialSha256": "6787d88f408e2efb8562acbef9dd466306fd796f570cf07279c46179c489d02c",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "7420ef00d0beb991bce08a5c5c7c00b50f97c0ba9936a62bf8c89c7647fdf886",
+          "plainSignature": "7420ef00d0beb991bce08a5c5c7c00b50f97c0ba9936a62bf8c89c7647fdf886"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-R-S3",
+          "initialSha256": "45dbd3e0d3372035061eac1411efa0ae627d798707151da567cf8a73f5d65de1",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "95c385250094ca5501b49318e863f5a8736541b27215aed56b000a5b4635500d",
+          "plainSignature": "95c385250094ca5501b49318e863f5a8736541b27215aed56b000a5b4635500d"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-R-S11",
+          "initialSha256": "3fb5e019f8f9bdf75b6f6a3d98064d04c03596b4f9dac89f93d88f52e5a69216",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "68e14dc8bee18aea61b88286450285e70c9a92bab74139737863463bea3dae82",
+          "plainSignature": "68e14dc8bee18aea61b88286450285e70c9a92bab74139737863463bea3dae82"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-L-S3",
+          "initialSha256": "bc594783ba3af213378d23c732a7fb537a53f64a2151f9304f28816e1118798e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "e8925422e94a46c79c63bfdda3adcd46f4846a1574e6cab26ac58218f757cafa",
+          "plainSignature": "e8925422e94a46c79c63bfdda3adcd46f4846a1574e6cab26ac58218f757cafa"
+        },
+        {
+          "id": "CT-R1-oz_strong-tite-L-S11",
+          "initialSha256": "4aaa2aae7f98346ad3b52981a4479e635912c46b66c14ca1c2c39e4c857bd841",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5cb9ce40dab69f9f44a76d8353f28d89139cc7a12cdd611effaf48c1eddb5fc3",
+          "plainSignature": "5cb9ce40dab69f9f44a76d8353f28d89139cc7a12cdd611effaf48c1eddb5fc3"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-R-S3",
+          "initialSha256": "09a54543a7d6b30bde493e99a9476c7a43e9be57756bda3364d08acb6833ee48",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "4a9452e71e4a5c341f66e0a9ff897225783fb0c063e71846e3e61d9c53c7cee6",
+          "plainSignature": "4a9452e71e4a5c341f66e0a9ff897225783fb0c063e71846e3e61d9c53c7cee6"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-R-S11",
+          "initialSha256": "9f29bd627ea8134c4ab81914f5174ac52544ed99ed28f63c26abc6dd31ddba68",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "0e5454c93ff0088fa1b844d9f8eccbd7bff5ffaf2bb26e56b49acfc96cc0ed48",
+          "plainSignature": "0e5454c93ff0088fa1b844d9f8eccbd7bff5ffaf2bb26e56b49acfc96cc0ed48"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-L-S3",
+          "initialSha256": "3c94579f0a5b203792b061adc222bd919b7e9f44ff0d1e62fafee8409e70553d",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "31f16b4a4de1f67775b226391139e77678601c020b9953bdfe865bec3b52c557",
+          "plainSignature": "31f16b4a4de1f67775b226391139e77678601c020b9953bdfe865bec3b52c557"
+        },
+        {
+          "id": "CT-R1-oz_strong-bear-L-S11",
+          "initialSha256": "a0d3e6f697a907ed4467438ce4f9f9e84218c49048d3a4944dfbde318404c508",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "c442c3353ee8c1b5334e9b5a75fa667e7187370158574e6f0ee9970800febe8d",
+          "plainSignature": "c442c3353ee8c1b5334e9b5a75fa667e7187370158574e6f0ee9970800febe8d"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-R-S3",
+          "initialSha256": "62a002899fe1698f15c798dbc62d31143386d88016d4e23f7b7839917238ba4b",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "1cba18b050d0b461f6c95a0de3401936e46edb44cc4cdad9a44b525270eaf9d5",
+          "plainSignature": "1cba18b050d0b461f6c95a0de3401936e46edb44cc4cdad9a44b525270eaf9d5"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-R-S11",
+          "initialSha256": "4828c17f3b71b5c9158e4b121985a6beaeaadf36caf5881694610fabbfba2c77",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "4e5e4933e0f238967126935d724c5de8a1072bab59c2f5e77f92cb32fdbc2ba6",
+          "plainSignature": "4e5e4933e0f238967126935d724c5de8a1072bab59c2f5e77f92cb32fdbc2ba6"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-L-S3",
+          "initialSha256": "cbf94c8228744bb8ba9b3f8bceea7db7df52b423a3449098602c96158355b23e",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "5abdb3a343fe74f3b5de63c1b2ecf4234a6a7e5397ad7bcb1699fbbfead0e833",
+          "plainSignature": "5abdb3a343fe74f3b5de63c1b2ecf4234a6a7e5397ad7bcb1699fbbfead0e833"
+        },
+        {
+          "id": "CT-R1-wz_strong-over-L-S11",
+          "initialSha256": "4e71ca14555f847bcf3fb030d04505b852c9f34c3230d0c190ec443dd90c1887",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "d0e23ddbd763cdc87bd77ca6def4f2e2f9532e23c45dfe60cf932acd498f1e6a",
+          "plainSignature": "d0e23ddbd763cdc87bd77ca6def4f2e2f9532e23c45dfe60cf932acd498f1e6a"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-R-S3",
+          "initialSha256": "b5edc5aca9d87cb12ebf45cfbad7f57b3a6cfc0b031a65bcba6b54b0c1bbc8bd",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "73983e41b9008df59f6e3babbb00b32d4d78c120381df075ab208f6f5c98be35",
+          "plainSignature": "73983e41b9008df59f6e3babbb00b32d4d78c120381df075ab208f6f5c98be35"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-R-S11",
+          "initialSha256": "da3787364e74b5208eb54c82c637b28c7e7a422d165a880a7dfaf70b00ec4f3a",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "6f7a1f8e39893789d45173170381114d206ea18a7e497741a5df5501bbe14cf8",
+          "plainSignature": "6f7a1f8e39893789d45173170381114d206ea18a7e497741a5df5501bbe14cf8"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-L-S3",
+          "initialSha256": "a2367b7d52e2575320f6358e196623b41bd5a6f53bc0d83b05f552376896bc59",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "1546f7c263c73370b943e5220815d18ff386a8bbb09976a5a4d01cefc82c08cb",
+          "plainSignature": "1546f7c263c73370b943e5220815d18ff386a8bbb09976a5a4d01cefc82c08cb"
+        },
+        {
+          "id": "CT-R1-wz_strong-under-L-S11",
+          "initialSha256": "d7561d28bc7535e73131c1f732ec717cc3001bc9f4f1f5e90cdc84fa4ae2150e",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "19b923720dd51b5862bbfb206a830f2a662abedc6e78548cb33e24e592b0dc0d",
+          "plainSignature": "19b923720dd51b5862bbfb206a830f2a662abedc6e78548cb33e24e592b0dc0d"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-R-S3",
+          "initialSha256": "448bdc483542979fa99a653726f527f8e2dc8717be270d45a787298a93479819",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "ebd99b2be86ed040ef876d00bc97259e873a6acc27e77b717b97e9e796aebe08",
+          "plainSignature": "ebd99b2be86ed040ef876d00bc97259e873a6acc27e77b717b97e9e796aebe08"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-R-S11",
+          "initialSha256": "b29601cbbc50269d6b72d75f471c8d0a42581867100244e3c3cf0e71e1dc3d80",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "a79f18822382ad8f3d8d81a444038cbc79c4043255285adb39dbe2b3ff103db4",
+          "plainSignature": "a79f18822382ad8f3d8d81a444038cbc79c4043255285adb39dbe2b3ff103db4"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-L-S3",
+          "initialSha256": "c136ff12bab6d2aedf48a45eb65f9ddcd91e3be5776c832a6d9a7808fd6d8fab",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "f8fd47be38b5d5c34dcfc7f8d6695166d729cb1481d2ac6bde5d5244cad350c8",
+          "plainSignature": "f8fd47be38b5d5c34dcfc7f8d6695166d729cb1481d2ac6bde5d5244cad350c8"
+        },
+        {
+          "id": "CT-R1-wz_strong-odd-L-S11",
+          "initialSha256": "fc9c7c4051f48dc362f991293c084dfc2fc91e4d4a8a433a406ef74bc4f774fc",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "75b5c3a47cce07883cf26ab0ae0308ee4fda3250b665c285cf9e8addb8ff62ef",
+          "plainSignature": "75b5c3a47cce07883cf26ab0ae0308ee4fda3250b665c285cf9e8addb8ff62ef"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-R-S3",
+          "initialSha256": "2c65bd45b03b66980e23c6f8aaa9e499f2ff7c841c842dd4fe153151220eae83",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b49abd2b6b587ffa3406ff7d2c2f607c783a9d661fe2abffed660df7d0b6d921",
+          "plainSignature": "b49abd2b6b587ffa3406ff7d2c2f607c783a9d661fe2abffed660df7d0b6d921"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-R-S11",
+          "initialSha256": "9b4fdd3df2f173837dc80f8934da6c98fabb4e52b7e5bc462da7586ce9947d40",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "089d21cb611cc6d37683cfa3f5efae609d1c674a9f8b6da76ecf9ad1f08c1a11",
+          "plainSignature": "089d21cb611cc6d37683cfa3f5efae609d1c674a9f8b6da76ecf9ad1f08c1a11"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-L-S3",
+          "initialSha256": "2348bd7957f3b159de22a466f1b1d6cec5c14ebe8723171c5ca8a7ea877a3db7",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "8a9157ea271785973199b9245d35e6208ad26b6fa88afa5e543f292257bf091d",
+          "plainSignature": "8a9157ea271785973199b9245d35e6208ad26b6fa88afa5e543f292257bf091d"
+        },
+        {
+          "id": "CT-R1-wz_strong-tite-L-S11",
+          "initialSha256": "840b927a6ba06105708c2d389d6a6ba160847d1226136836b35f8785a655f4c9",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "241d4841f58b89a481088774e0ccb3c5c2c6754b77c3ddf92a8fbea66590b9c1",
+          "plainSignature": "241d4841f58b89a481088774e0ccb3c5c2c6754b77c3ddf92a8fbea66590b9c1"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-R-S3",
+          "initialSha256": "e68e84e23993600de086c1ef7d36eb3be9ec1dd67f575a5e394c68e48d9f3a34",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "1e5024ef46c8fc13942e9f4a97e7abdd4498c3b8cabce537b7d2f1e237838610",
+          "plainSignature": "1e5024ef46c8fc13942e9f4a97e7abdd4498c3b8cabce537b7d2f1e237838610"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-R-S11",
+          "initialSha256": "3118f2447c6b57f7ad79027f481249b35d54f2093a91768e25c89f74267598ee",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "e27069949e8054d104540336308a6549701ffbfc5ca17f7a7bb37461ac709277",
+          "plainSignature": "e27069949e8054d104540336308a6549701ffbfc5ca17f7a7bb37461ac709277"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-L-S3",
+          "initialSha256": "9f1ffdbe5d091763d09efe849a1a6dc5ea57d89ee785e4b49e24deb89551ae16",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "e4b726db908e3b49037ad8c334d55ed592e1f321cc06d0b4ae412798177b09b0",
+          "plainSignature": "e4b726db908e3b49037ad8c334d55ed592e1f321cc06d0b4ae412798177b09b0"
+        },
+        {
+          "id": "CT-R1-wz_strong-bear-L-S11",
+          "initialSha256": "2258f3d7937af06e1f5651eeeeb39227f03fc963c090f0c41d55e0c339cb7342",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "3ee90330036b51b548c16c6b80b9fd4bb8fa92f3795ca782c91b2783fc0d38f9",
+          "plainSignature": "3ee90330036b51b548c16c6b80b9fd4bb8fa92f3795ca782c91b2783fc0d38f9"
+        },
+        {
+          "id": "CT-R1-power-over-R-S3",
+          "initialSha256": "fe57416a6cea9f0b3a8f9805e2d13b1ae2cb9466df6ee005981a8bf6081277cf",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0b98b3defcabd2d9ebe9fc16426f3b3bf35135aed10ac03568e9b1d2027434b8",
+          "plainSignature": "0b98b3defcabd2d9ebe9fc16426f3b3bf35135aed10ac03568e9b1d2027434b8"
+        },
+        {
+          "id": "CT-R1-power-over-R-S11",
+          "initialSha256": "ce9d60457e3e96f4e8e5847d1c0e427ea5d89935e0f766517a82de4f87294af4",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "f47bcda47779555dbd4748a3ed07abc903a6a83c9d5f9f3516ca903ee106f168",
+          "plainSignature": "f47bcda47779555dbd4748a3ed07abc903a6a83c9d5f9f3516ca903ee106f168"
+        },
+        {
+          "id": "CT-R1-power-over-L-S3",
+          "initialSha256": "a55d4e7e279d212de9856c72e0c71665c53151edd763e22f190090c11ff2b02f",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "cccb82e4d57e59e19657dbbb0cd12cd5f4d05b7e6ac06e6c2cf37f32b1a5ac06",
+          "plainSignature": "cccb82e4d57e59e19657dbbb0cd12cd5f4d05b7e6ac06e6c2cf37f32b1a5ac06"
+        },
+        {
+          "id": "CT-R1-power-over-L-S11",
+          "initialSha256": "ad99f0bbb5d8e9d040ce01b33c7ccb2905a5582e87b2bfc61df869282993bba4",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "3662edf47c8a63790f68acaea469cafbe44e92d248df4322a2f7177034e1919c",
+          "plainSignature": "3662edf47c8a63790f68acaea469cafbe44e92d248df4322a2f7177034e1919c"
+        },
+        {
+          "id": "CT-R1-power-under-R-S3",
+          "initialSha256": "fbfbc2391c0364055e2d5cdcb170b3686adfbbcdb5ea829e07095a59a972acf2",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "4d637f007811cd4c48dff11e74af091ccee1848541a5b1dc21e0a152cbb8d6b5",
+          "plainSignature": "4d637f007811cd4c48dff11e74af091ccee1848541a5b1dc21e0a152cbb8d6b5"
+        },
+        {
+          "id": "CT-R1-power-under-R-S11",
+          "initialSha256": "b40338a14bc9cedc32162aa481c17e0fa1f09d290319a2c68b21c25e28781cff",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "513e4bd81aa5b74bffbc981f684e3282eb370294e10c3dbd40bc94a091ce26a3",
+          "plainSignature": "513e4bd81aa5b74bffbc981f684e3282eb370294e10c3dbd40bc94a091ce26a3"
+        },
+        {
+          "id": "CT-R1-power-under-L-S3",
+          "initialSha256": "c0db423442b7705be8136b021ba32b225810d66380ded79fe0fabed5c4ccd37c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0e02b37fbf2bb75fef637f14b216ef8a5ff625e920febeb04705d336cc040c41",
+          "plainSignature": "0e02b37fbf2bb75fef637f14b216ef8a5ff625e920febeb04705d336cc040c41"
+        },
+        {
+          "id": "CT-R1-power-under-L-S11",
+          "initialSha256": "3a483bf3b09b972da7271e4546635bd628a1cb606512e549e122aba33438e9a5",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "cfe2f0aa9fc15a214e6275020ac421dc2124b36d8c7e02b95d414dec3acc09a0",
+          "plainSignature": "cfe2f0aa9fc15a214e6275020ac421dc2124b36d8c7e02b95d414dec3acc09a0"
+        },
+        {
+          "id": "CT-R1-power-odd-R-S3",
+          "initialSha256": "3313e5777af73aebade500eade4d1ecc426bf42683b798fc0bab47e0ef111437",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "3c4bf07503dd0969f7a9b9e0dd4ac4b72b445e66de6a0395d281cd05858ff8ae",
+          "plainSignature": "3c4bf07503dd0969f7a9b9e0dd4ac4b72b445e66de6a0395d281cd05858ff8ae"
+        },
+        {
+          "id": "CT-R1-power-odd-R-S11",
+          "initialSha256": "a8b9fc0e619643c8aae623463d111f1066594e4b7f4c0a073b686f9f861bcd83",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b5434304461c6768c8d24e800de9762bb05e99cd6e3730d7106db567d630e797",
+          "plainSignature": "b5434304461c6768c8d24e800de9762bb05e99cd6e3730d7106db567d630e797"
+        },
+        {
+          "id": "CT-R1-power-odd-L-S3",
+          "initialSha256": "112461c168dcd7f826acfbd45a94b041dfa794efbe6351c3087c541a3732047e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "3d0c6206f5e621b8ab84fcec99ba39944a8050fcc0e7c8d93300b76bd559291d",
+          "plainSignature": "3d0c6206f5e621b8ab84fcec99ba39944a8050fcc0e7c8d93300b76bd559291d"
+        },
+        {
+          "id": "CT-R1-power-odd-L-S11",
+          "initialSha256": "cb1b6282b26275f8dc539839558da36c7cad7ac6b055c71999dc797ec9903462",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "fc740ca43910f9282e4d14b7fadce84c05763801bbdd98c758270e12fbaa5ffc",
+          "plainSignature": "fc740ca43910f9282e4d14b7fadce84c05763801bbdd98c758270e12fbaa5ffc"
+        },
+        {
+          "id": "CT-R1-power-tite-R-S3",
+          "initialSha256": "0b3c535ae1e4794408b375f4126d11a7be3c0e1a10ce929cbfa365484dc5861e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "37426d83a41a0c603694d8fa604ed660e5bf48ed3ba4b54ac96b4be5d7f39347",
+          "plainSignature": "37426d83a41a0c603694d8fa604ed660e5bf48ed3ba4b54ac96b4be5d7f39347"
+        },
+        {
+          "id": "CT-R1-power-tite-R-S11",
+          "initialSha256": "3d0b5e7a79ba64fec8dcbaecbd1ffbb01336e6f9bca568357b9318dce5abccdc",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "1fd3e4c7ddd774302b32227475288f577150295f8fcb5c07a10757f9a3385f2a",
+          "plainSignature": "1fd3e4c7ddd774302b32227475288f577150295f8fcb5c07a10757f9a3385f2a"
+        },
+        {
+          "id": "CT-R1-power-tite-L-S3",
+          "initialSha256": "2ba918b04aff60052d3ae9332208b2653f6bd8df4c97c14f948ec76c64f9e994",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "7054b1a125e32a3d99995343eca845d8f7f5c915f66e58c04448082e5f0aaeb0",
+          "plainSignature": "7054b1a125e32a3d99995343eca845d8f7f5c915f66e58c04448082e5f0aaeb0"
+        },
+        {
+          "id": "CT-R1-power-tite-L-S11",
+          "initialSha256": "2c2be7fb412d53677c75a2265ae49abab1b81f443bce6bd483ea87d1b07cd3d5",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "ad9543c7455bd034d410b615d8a9b565927aee96b24126d05843a1ea57f33212",
+          "plainSignature": "ad9543c7455bd034d410b615d8a9b565927aee96b24126d05843a1ea57f33212"
+        },
+        {
+          "id": "CT-R1-power-bear-R-S3",
+          "initialSha256": "f2c7ca9cb3a8eeab3c63a92de5309866f60ca06e869b823eec6ce6ae07f3981a",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "e331e5d8b760e8bd97b40ad21f82f59258de421db72d6e2b98ef511f15040878",
+          "plainSignature": "e331e5d8b760e8bd97b40ad21f82f59258de421db72d6e2b98ef511f15040878"
+        },
+        {
+          "id": "CT-R1-power-bear-R-S11",
+          "initialSha256": "a25e281e1d32b2a582cf120e751b439821d86352ca69e803e60a96a6c6e44d58",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "0c3ebea7c4dade8d206a5768ba9a2550a86db03190fea5f5971c396cf26d1e69",
+          "plainSignature": "0c3ebea7c4dade8d206a5768ba9a2550a86db03190fea5f5971c396cf26d1e69"
+        },
+        {
+          "id": "CT-R1-power-bear-L-S3",
+          "initialSha256": "10d7acd4d93a1c257b374dc24e8ad85c14c18ccbfcbb6918bbe33afe8beaf66c",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "005a4a749f2553643343c9302c441d8fc7f26fd34c3a200afae2ceafd366ba4a",
+          "plainSignature": "005a4a749f2553643343c9302c441d8fc7f26fd34c3a200afae2ceafd366ba4a"
+        },
+        {
+          "id": "CT-R1-power-bear-L-S11",
+          "initialSha256": "ef8e324ae5135c6dfde7d1c3827afe44cbd2b9f518d56385845a2a4cdaa2c637",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "b84cb742bd23f7a233cf070baba9fdd1a41f5ce7233ef0d6ba8bc555bcec1d6e",
+          "plainSignature": "b84cb742bd23f7a233cf070baba9fdd1a41f5ce7233ef0d6ba8bc555bcec1d6e"
+        },
+        {
+          "id": "CT-R1-counter-over-R-S3",
+          "initialSha256": "545e8f3505e282f1e91dade16243e7e7ba3d5446820beb23d6372bb2193edec6",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "e435ed21070f046089a7e1947108089a679e14ca9bf9b02a47a9aeb8fb465671",
+          "plainSignature": "e435ed21070f046089a7e1947108089a679e14ca9bf9b02a47a9aeb8fb465671"
+        },
+        {
+          "id": "CT-R1-counter-over-R-S11",
+          "initialSha256": "db1580532b8da8bf51881724176f7b792243d63d5ed3785b097095b2668b7e4a",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "ff9da1b82975b7fdef623415d9c9912ebb03f618a8bfc2077a5d0f86e5d4873d",
+          "plainSignature": "ff9da1b82975b7fdef623415d9c9912ebb03f618a8bfc2077a5d0f86e5d4873d"
+        },
+        {
+          "id": "CT-R1-counter-over-L-S3",
+          "initialSha256": "848369a4c39f6ca1784c6e5542e106f985e141c4c6bf9bd15fed36fba1aad5a2",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0d75530ce72b1a6fa89962b5b1090c6b6bfe00bd2323d2bbcca71a7c179b1d87",
+          "plainSignature": "0d75530ce72b1a6fa89962b5b1090c6b6bfe00bd2323d2bbcca71a7c179b1d87"
+        },
+        {
+          "id": "CT-R1-counter-over-L-S11",
+          "initialSha256": "5809df6b1ff0e8a7aa7052b361cf5e8c2882e2770302e4d52e9959b12adfb8ae",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "7ac865219754650b26eb67589772472d287e8b36cd12b5e5d6cd590043e7fbb1",
+          "plainSignature": "7ac865219754650b26eb67589772472d287e8b36cd12b5e5d6cd590043e7fbb1"
+        },
+        {
+          "id": "CT-R1-counter-under-R-S3",
+          "initialSha256": "abae2b3f05d2fe9d1b654aeac335522e4dad42e06d4417f398a08ecd3351b2d7",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "3fa6896ac518e2da944164ca0884a004f541846115912808e4b930b3bb7c100f",
+          "plainSignature": "3fa6896ac518e2da944164ca0884a004f541846115912808e4b930b3bb7c100f"
+        },
+        {
+          "id": "CT-R1-counter-under-R-S11",
+          "initialSha256": "f13da8691e0b26dc61aeb82d5ab52a2be14d5367aaa81f4b23c521c1bc8e7130",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "8a477b7f035c6fd016b4fe915bc82686c1fbb87f58bc69015d69f7fd0f299880",
+          "plainSignature": "8a477b7f035c6fd016b4fe915bc82686c1fbb87f58bc69015d69f7fd0f299880"
+        },
+        {
+          "id": "CT-R1-counter-under-L-S3",
+          "initialSha256": "60e70bb7d02723d8a80ebb2efca548df639077a907945d5f69b16251a4d0e6f1",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "c5a75eb95b52ea0468a01f33eaf58e17b43c0f4e2ec2a879adf05b922c2d55cb",
+          "plainSignature": "c5a75eb95b52ea0468a01f33eaf58e17b43c0f4e2ec2a879adf05b922c2d55cb"
+        },
+        {
+          "id": "CT-R1-counter-under-L-S11",
+          "initialSha256": "c324ea8cc5316858bd02f7d49cd0abda739ae81079b42435e1036b6e3ca0d14a",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "6d7e608a885f0591d6c26661dad1d7d5ed0fcd22a3e21e92301b0ca9921899b7",
+          "plainSignature": "6d7e608a885f0591d6c26661dad1d7d5ed0fcd22a3e21e92301b0ca9921899b7"
+        },
+        {
+          "id": "CT-R1-counter-odd-R-S3",
+          "initialSha256": "633a13d209d6344da6b07be4adf7be8939993447573621e3d446269ecfbc8a61",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "e786b0b7c52b7518e4c043434dbb6cecf1f4ce86c74b5e70a8ccc3fe9bbf428a",
+          "plainSignature": "e786b0b7c52b7518e4c043434dbb6cecf1f4ce86c74b5e70a8ccc3fe9bbf428a"
+        },
+        {
+          "id": "CT-R1-counter-odd-R-S11",
+          "initialSha256": "cf48282b03f769c31aa07bb23dfc9f015a9c48743a58ded2e60ee23b1e603dbf",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "97c282927247e244294f3048b1fbe07136a8b61a328916b27a27510455225335",
+          "plainSignature": "97c282927247e244294f3048b1fbe07136a8b61a328916b27a27510455225335"
+        },
+        {
+          "id": "CT-R1-counter-odd-L-S3",
+          "initialSha256": "6dfd12561973896ca8c16ee70a6853c187c6394f69a7ed5d8cbb72f45debc6d2",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "fe62ba3c399fe12268f15d45389f5d20211d07524d71b8f7b3155e0d59953ac9",
+          "plainSignature": "fe62ba3c399fe12268f15d45389f5d20211d07524d71b8f7b3155e0d59953ac9"
+        },
+        {
+          "id": "CT-R1-counter-odd-L-S11",
+          "initialSha256": "d53f3b2784eab4454560b5abce7f2a8a4e5e758ba5285bf3c271bf4d78cd64bf",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "56a4ca6501b951810ff7fc04ee5bf7399a265030f8a31827fb5cb936c92ced96",
+          "plainSignature": "56a4ca6501b951810ff7fc04ee5bf7399a265030f8a31827fb5cb936c92ced96"
+        },
+        {
+          "id": "CT-R1-counter-tite-R-S3",
+          "initialSha256": "c08f62a821d804c794f7bb94e38b8573f9aa698ae86aa3558b00519d62d0f020",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "848f4e7620d136f7a36092ae8375ce06ce826fc8e59857781a9007344004ac81",
+          "plainSignature": "848f4e7620d136f7a36092ae8375ce06ce826fc8e59857781a9007344004ac81"
+        },
+        {
+          "id": "CT-R1-counter-tite-R-S11",
+          "initialSha256": "06f5f6f792d139f2c6bf1d5e2ae46332751950dd8b6d0bba0e6288363cb1789d",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "7249af963dfe8c230401b2a3d09faef73194b1034cd9930e51b12cd0dd2f7117",
+          "plainSignature": "7249af963dfe8c230401b2a3d09faef73194b1034cd9930e51b12cd0dd2f7117"
+        },
+        {
+          "id": "CT-R1-counter-tite-L-S3",
+          "initialSha256": "e9db2f5db85598d82ac3f31a2d10c88301779b0634a950c0c4a353af167fa653",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "ecc91986797ab5d0cfcc9e235db80617e9daa2c71be5f8f68dfb436d50b5df5b",
+          "plainSignature": "ecc91986797ab5d0cfcc9e235db80617e9daa2c71be5f8f68dfb436d50b5df5b"
+        },
+        {
+          "id": "CT-R1-counter-tite-L-S11",
+          "initialSha256": "080174f5737153fb437b707ed00f43f745c5d9db39b9da477abcafe9ae4ee618",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "cc7f7892037578f0ac5b41b9e4028d57bd00e896000b6602fa4f46dd1a96a5eb",
+          "plainSignature": "cc7f7892037578f0ac5b41b9e4028d57bd00e896000b6602fa4f46dd1a96a5eb"
+        },
+        {
+          "id": "CT-R1-counter-bear-R-S3",
+          "initialSha256": "dab5d1f54aca7971bb8f903aed25ddba1904a6fdcbfa351a2ee5dc24ccda928a",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "41502a97f6f676411301d42372e3b31681bd5dc49dbc18799ad6331a9c0a9308",
+          "plainSignature": "41502a97f6f676411301d42372e3b31681bd5dc49dbc18799ad6331a9c0a9308"
+        },
+        {
+          "id": "CT-R1-counter-bear-R-S11",
+          "initialSha256": "b9dc3652c210f6056c05bb283017a0dcc834774b8e9d9947b040716f03f1d5c2",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "84cc67d04fdc9cc2ecda8afd023649f995bd2db39e29b66a31fb8546b21c588f",
+          "plainSignature": "84cc67d04fdc9cc2ecda8afd023649f995bd2db39e29b66a31fb8546b21c588f"
+        },
+        {
+          "id": "CT-R1-counter-bear-L-S3",
+          "initialSha256": "167b7248640812e856432baa6ac844b5b98b9ff94992b8c5d8e82df18449a3bb",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "f3f87be03d02909c76f415756ca5c13bd6d3c506a50cd1c345078f54d2731ec2",
+          "plainSignature": "f3f87be03d02909c76f415756ca5c13bd6d3c506a50cd1c345078f54d2731ec2"
+        },
+        {
+          "id": "CT-R1-counter-bear-L-S11",
+          "initialSha256": "730a6576cdc5f56b748e75856bd48557a6e378efe9b587b17b9119d75ad0813d",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "5b964bfc1c887a3ec8a157f8ed78eccec6328add1dde9b914e7128276b85cae4",
+          "plainSignature": "5b964bfc1c887a3ec8a157f8ed78eccec6328add1dde9b914e7128276b85cae4"
+        },
+        {
+          "id": "CT-R1-trap-over-R-S3",
+          "initialSha256": "3d3b64a266d3b0974217c5366800fe2128cfa21d9cd02ecf74862df9a575949f",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "ff968d1f32ea57382372fab9d5f821e5772188cf05616cad1ca8c85edaba17c7",
+          "plainSignature": "ff968d1f32ea57382372fab9d5f821e5772188cf05616cad1ca8c85edaba17c7"
+        },
+        {
+          "id": "CT-R1-trap-over-R-S11",
+          "initialSha256": "2f8c300a8d6c9fd1d9b3ca95928e792341d42dcc470574b96b8e03aabb5ed944",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "d77b553d4ccd1b492c340449d228dfb80bec7f37674b2f9b31e44fb2a6edc52f",
+          "plainSignature": "d77b553d4ccd1b492c340449d228dfb80bec7f37674b2f9b31e44fb2a6edc52f"
+        },
+        {
+          "id": "CT-R1-trap-over-L-S3",
+          "initialSha256": "24406d37d806a6a98665e79c2da31208dd8191aede5442b7f725502af68bec32",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "ae5c8f62f542e71ee316087c2a116360e10041c0dda9f61a1dde5ea11c64a094",
+          "plainSignature": "ae5c8f62f542e71ee316087c2a116360e10041c0dda9f61a1dde5ea11c64a094"
+        },
+        {
+          "id": "CT-R1-trap-over-L-S11",
+          "initialSha256": "6fa510f6573123a615f01b90bdf46897c8851975bacb16fb96d21de9939d3f14",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "11726974443fe480f86e4a0e2b446a72828b6de336fbd2f7d5937cc986ecda2f",
+          "plainSignature": "11726974443fe480f86e4a0e2b446a72828b6de336fbd2f7d5937cc986ecda2f"
+        },
+        {
+          "id": "CT-R1-trap-under-R-S3",
+          "initialSha256": "3629fcf70c0ace27f84359f09161c86626cbb84b2d665f582e576bea903e363d",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "eaa4fa63f8aa812908c70a68303ebb14878e56b0c00ada503d58b3529e056bce",
+          "plainSignature": "eaa4fa63f8aa812908c70a68303ebb14878e56b0c00ada503d58b3529e056bce"
+        },
+        {
+          "id": "CT-R1-trap-under-R-S11",
+          "initialSha256": "8f4de8a0ef132d5528e663839334378f2d9843fc922fbbc30af281eadbea7cb3",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "8577838f4a9ed65c179b923cda7f56e84cd31dcb75fdbac3b0fca2321e6aba7e",
+          "plainSignature": "8577838f4a9ed65c179b923cda7f56e84cd31dcb75fdbac3b0fca2321e6aba7e"
+        },
+        {
+          "id": "CT-R1-trap-under-L-S3",
+          "initialSha256": "50265a9af4b05bb9f47cc3ca13fdcad278cf75bdf3d9cf5935b8ae007a7bc17e",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "81f1496facd7317edac79082c50528929d80cd1db036ef571cbb9a8d79598980",
+          "plainSignature": "81f1496facd7317edac79082c50528929d80cd1db036ef571cbb9a8d79598980"
+        },
+        {
+          "id": "CT-R1-trap-under-L-S11",
+          "initialSha256": "157bc531f2b6aaebdea902539f9669cfdcc9e349b964109641e9fcf4889c8a01",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "8c546c69e6004301ff5bd06814cb1b66ad4670ff24ed407abe966fd9897f78ce",
+          "plainSignature": "8c546c69e6004301ff5bd06814cb1b66ad4670ff24ed407abe966fd9897f78ce"
+        },
+        {
+          "id": "CT-R1-trap-odd-R-S3",
+          "initialSha256": "30b4968d089f4103cb71a5d7e5bf0ff69f421efc992068c95488f64e8451c913",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "a859782612953b4716bd207dabb6f84d60e924cbcf699df404a19a8cbf6940fe",
+          "plainSignature": "a859782612953b4716bd207dabb6f84d60e924cbcf699df404a19a8cbf6940fe"
+        },
+        {
+          "id": "CT-R1-trap-odd-R-S11",
+          "initialSha256": "f430a764bcb92c14c200878f301bc7b77246d6e16db3ca88623b47549ebb6fe6",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "e73204527d4d8f837501a48c2fd104ad1841000daae4a297492342a78526f111",
+          "plainSignature": "e73204527d4d8f837501a48c2fd104ad1841000daae4a297492342a78526f111"
+        },
+        {
+          "id": "CT-R1-trap-odd-L-S3",
+          "initialSha256": "bb82c7ef32c3d835d6d3167f56ede6e50411e755c459a861d29601b073d01801",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "041800ea97bf6d02fc8f796e9868505539b30573f65cc8449abed00901b80afd",
+          "plainSignature": "041800ea97bf6d02fc8f796e9868505539b30573f65cc8449abed00901b80afd"
+        },
+        {
+          "id": "CT-R1-trap-odd-L-S11",
+          "initialSha256": "08606e77b813a7b2d2e8165c98dc7b00ed41af96cd67870a0881f7c6eed02b95",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b80139474c28ac1fd9cb4c62ce99f2d9ada2d71647b133db5ccc2d656df72fbe",
+          "plainSignature": "b80139474c28ac1fd9cb4c62ce99f2d9ada2d71647b133db5ccc2d656df72fbe"
+        },
+        {
+          "id": "CT-R1-trap-tite-R-S3",
+          "initialSha256": "f4aa35a74a540ca16e43576026c538a1fcaaf003646c8c120ab98ec98402fb72",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "81eef4b099be047bcfa730a99437230631b91abbbfe707f84d602fc6cb5dceb8",
+          "plainSignature": "81eef4b099be047bcfa730a99437230631b91abbbfe707f84d602fc6cb5dceb8"
+        },
+        {
+          "id": "CT-R1-trap-tite-R-S11",
+          "initialSha256": "db50b52ebb9fbf634d8872bed5f14e5c489465b2b32f02a58f30e1a862f8e6db",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "1fb0bc7f206b9dfc32b7aa10a5e28139af718e222153311708e8c04551183176",
+          "plainSignature": "1fb0bc7f206b9dfc32b7aa10a5e28139af718e222153311708e8c04551183176"
+        },
+        {
+          "id": "CT-R1-trap-tite-L-S3",
+          "initialSha256": "8054db236a75b3486920866d9dd5d60c0c56859540687703ec6e58525201c849",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "edf18267f882e204c52d630f725c7141cf0e2b3f25b93830637d7038bd309ef2",
+          "plainSignature": "edf18267f882e204c52d630f725c7141cf0e2b3f25b93830637d7038bd309ef2"
+        },
+        {
+          "id": "CT-R1-trap-tite-L-S11",
+          "initialSha256": "de227706ba8e187089d7c88ea4fd32c790fb51f24a834a08cfddae540fec8571",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "430b169ea310c8d5dc3af44b20e1e18107c59446815b2d1d1e8f2ec9f2553085",
+          "plainSignature": "430b169ea310c8d5dc3af44b20e1e18107c59446815b2d1d1e8f2ec9f2553085"
+        },
+        {
+          "id": "CT-R1-trap-bear-R-S3",
+          "initialSha256": "c8362cab5c7e7795c55e08950a09493b41999cf4809ff4a6ad356a58bd31c08f",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "d5f238939832b9e0a9f9fd8342d910ff29dfb90e8b139b9e39ffbf3017ddd2ca",
+          "plainSignature": "d5f238939832b9e0a9f9fd8342d910ff29dfb90e8b139b9e39ffbf3017ddd2ca"
+        },
+        {
+          "id": "CT-R1-trap-bear-R-S11",
+          "initialSha256": "af91b52c8b7ce32044b90fa1fafa468f19f26d613313397c583b41e1a03d7276",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "6b000ce5a657ac9464fbee75203dcfbf1e2268bd9d511e5524f48100c5823bbe",
+          "plainSignature": "6b000ce5a657ac9464fbee75203dcfbf1e2268bd9d511e5524f48100c5823bbe"
+        },
+        {
+          "id": "CT-R1-trap-bear-L-S3",
+          "initialSha256": "e674255c7c200ba2486e1effc06cd2c6e7a0d041c2a59ee8312ea974acc033ee",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "de245a27f98e4c09864f3180dea985341b86b31df151c16550229e97a9563310",
+          "plainSignature": "de245a27f98e4c09864f3180dea985341b86b31df151c16550229e97a9563310"
+        },
+        {
+          "id": "CT-R1-trap-bear-L-S11",
+          "initialSha256": "a5f092be9fc0e15d68d9c633a7d53696aba71b26e6f76374eda836b1f89ed7be",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "4484b45ff3c22e8774abb9296e6aed3911d22b5325760b0dfbde3cae0eace3dc",
+          "plainSignature": "4484b45ff3c22e8774abb9296e6aed3911d22b5325760b0dfbde3cae0eace3dc"
+        },
+        {
+          "id": "CT-R1-duo-over-R-S3",
+          "initialSha256": "fa9f73c1af9f8d0b3ac89441a27c0b85d4f1f5b0f2cf3d94ba17da87cec4e449",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "a6122329574c768b86fb08b6650d32ff246a512825476152379e6ec450148a54",
+          "plainSignature": "a6122329574c768b86fb08b6650d32ff246a512825476152379e6ec450148a54"
+        },
+        {
+          "id": "CT-R1-duo-over-R-S11",
+          "initialSha256": "2471a7f162933bc5bfd7dd025ca46d8178a9261f59f63f02cfaae2b46a232589",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "9cfabd6b2655c139855f3b5258b7a97820d0544dc6b294313e51e2efcc5663c9",
+          "plainSignature": "9cfabd6b2655c139855f3b5258b7a97820d0544dc6b294313e51e2efcc5663c9"
+        },
+        {
+          "id": "CT-R1-duo-over-L-S3",
+          "initialSha256": "f90be96217e34777b7c2b4aced12558985bee0dc16a371f32b731548de8735a7",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "de9a6cbea205542cb16b785e94d7f419d3fbb90dc0f4c0c6a48b95873c985c62",
+          "plainSignature": "de9a6cbea205542cb16b785e94d7f419d3fbb90dc0f4c0c6a48b95873c985c62"
+        },
+        {
+          "id": "CT-R1-duo-over-L-S11",
+          "initialSha256": "b0b16f1694ed6fb9028c51ccf9e78de3f18d1049ba40b6673948bf83f76eaf85",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "e23b79824c2e8dd76a70c95e6d5d78037e4f05c56f03232171d135e0438cefb8",
+          "plainSignature": "e23b79824c2e8dd76a70c95e6d5d78037e4f05c56f03232171d135e0438cefb8"
+        },
+        {
+          "id": "CT-R1-duo-under-R-S3",
+          "initialSha256": "8b1f447708fa508b755263bb699e6c5645aba95e90222872dfbc8782d985fc2b",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "c79a857dc070545c0982b1c5c18680ddc0b9dbc4bc6cf39179862161c205888f",
+          "plainSignature": "c79a857dc070545c0982b1c5c18680ddc0b9dbc4bc6cf39179862161c205888f"
+        },
+        {
+          "id": "CT-R1-duo-under-R-S11",
+          "initialSha256": "0ffc0f279a702a64d8ef3d3120bf1cfde88e497ae68c60986752e683ba3c7b19",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "24b40c9551269b6d0de2bef8c82ef473ecf10787df421e1bae07666982833213",
+          "plainSignature": "24b40c9551269b6d0de2bef8c82ef473ecf10787df421e1bae07666982833213"
+        },
+        {
+          "id": "CT-R1-duo-under-L-S3",
+          "initialSha256": "d21e21f200888330ca1b5ad3f2d8e7439da4b3314e275d712fbfe43d8ec14d95",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "315d6250a812ad06a042a32c126137481953e782e58ebc72700e45d0f8f88295",
+          "plainSignature": "315d6250a812ad06a042a32c126137481953e782e58ebc72700e45d0f8f88295"
+        },
+        {
+          "id": "CT-R1-duo-under-L-S11",
+          "initialSha256": "6bd68c2faf35b715d06da898f9f542a97de01769d1f8ac2a45b07eda0c60c56c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "88de8fd68983c9d07ad5f3a5057bda187b987dcf80042f797202cf365630da09",
+          "plainSignature": "88de8fd68983c9d07ad5f3a5057bda187b987dcf80042f797202cf365630da09"
+        },
+        {
+          "id": "CT-R1-duo-odd-R-S3",
+          "initialSha256": "3fd6bebb0e0efd6e5f54dd6fc5ce9efaa486677155c6f65b39e393f47828d097",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "253d261b39c29503bc6a55c9c6f8482df547e75a0381fa4afe21a37addf5f887",
+          "plainSignature": "253d261b39c29503bc6a55c9c6f8482df547e75a0381fa4afe21a37addf5f887"
+        },
+        {
+          "id": "CT-R1-duo-odd-R-S11",
+          "initialSha256": "5cfdd8c1e501ebb4619b600cf78de6559987ff7c922e9ed277560bc63a0d9b2f",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b6397abfb910bcc137f87eca4fb18891075b81bcbdc5580b40e8482ea299e821",
+          "plainSignature": "b6397abfb910bcc137f87eca4fb18891075b81bcbdc5580b40e8482ea299e821"
+        },
+        {
+          "id": "CT-R1-duo-odd-L-S3",
+          "initialSha256": "f6ccd6535a850ec5b4318c6f509394cdb384da0dc30414215b39789c45579f5e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "258233b8a59b4603948a019c230c8b6d19355de2e378da458cead034a0974f8b",
+          "plainSignature": "258233b8a59b4603948a019c230c8b6d19355de2e378da458cead034a0974f8b"
+        },
+        {
+          "id": "CT-R1-duo-odd-L-S11",
+          "initialSha256": "ae9a636b0a0e453123df25ae3ce687cebada5f554d08d4ee6e98931775d6483e",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "5c6cbf49e7cafea74d856f8313e9fe6a526398aa899a05be02bc119972e9d125",
+          "plainSignature": "5c6cbf49e7cafea74d856f8313e9fe6a526398aa899a05be02bc119972e9d125"
+        },
+        {
+          "id": "CT-R1-duo-tite-R-S3",
+          "initialSha256": "edde7ab64da5280bdef5b60168b8b9b2c02c4aeb6617cda428ee51eaa9d15aea",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "74e7b157a85c4fd501493df6c9ca9c3920d28d9e5b29839be1fca0fc1d661e57",
+          "plainSignature": "74e7b157a85c4fd501493df6c9ca9c3920d28d9e5b29839be1fca0fc1d661e57"
+        },
+        {
+          "id": "CT-R1-duo-tite-R-S11",
+          "initialSha256": "89a68c61cde068a977a809398bf62f28fd7e62c207fc20bfc89187c22a3bbd3a",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "63b334c9bfe62d42a5275c7df7dcc886eaeb63486aff83c813c97cc489ec4356",
+          "plainSignature": "63b334c9bfe62d42a5275c7df7dcc886eaeb63486aff83c813c97cc489ec4356"
+        },
+        {
+          "id": "CT-R1-duo-tite-L-S3",
+          "initialSha256": "6a014d4144396084a4f67256173a0c7ca2a32c25bff8b570f3fb8861f8cc4fe8",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "2096481a6d63fe38ea76e70d0ef3485a3564fa5eb30d696327c3fef0b5ce5a59",
+          "plainSignature": "2096481a6d63fe38ea76e70d0ef3485a3564fa5eb30d696327c3fef0b5ce5a59"
+        },
+        {
+          "id": "CT-R1-duo-tite-L-S11",
+          "initialSha256": "cb88e14d9d6588ca3b08bb437eb6a92e9806ad51d4071937be00be2f0f5d7d3a",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "f7d9e39858b847af30755a1fbd8f62e066d308311ae5f4afa61e732c2edaa80e",
+          "plainSignature": "f7d9e39858b847af30755a1fbd8f62e066d308311ae5f4afa61e732c2edaa80e"
+        },
+        {
+          "id": "CT-R1-duo-bear-R-S3",
+          "initialSha256": "d45a519bbf98aabbb22ff7b11cfe0129c8ab6d845f35ccabd5b5386d265c20d9",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "a0404857b1fa65710ab1834c9bb3212ff203a7dcb590d66a5826fb18ad95a61c",
+          "plainSignature": "a0404857b1fa65710ab1834c9bb3212ff203a7dcb590d66a5826fb18ad95a61c"
+        },
+        {
+          "id": "CT-R1-duo-bear-R-S11",
+          "initialSha256": "2f04128c389e76d43b3b627916b18db89aa3dd48c451d21398429785661a54c2",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "a3f6a89fcdf98c290a7262b47ceaaf51ce66bfa0332588b6ed2a88815723d23c",
+          "plainSignature": "a3f6a89fcdf98c290a7262b47ceaaf51ce66bfa0332588b6ed2a88815723d23c"
+        },
+        {
+          "id": "CT-R1-duo-bear-L-S3",
+          "initialSha256": "fe11404da4b0f7774132fc0aa55baa54936a6bab95f3b979a392249b33f766ce",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "af22ef3007e786a040b8e0770e595935c23a788c57bf87e5f328acaa28cb0f83",
+          "plainSignature": "af22ef3007e786a040b8e0770e595935c23a788c57bf87e5f328acaa28cb0f83"
+        },
+        {
+          "id": "CT-R1-duo-bear-L-S11",
+          "initialSha256": "6d0d4bf882ca99b2909a95e607320ccfd406835da53978b2f325d50a93e98b51",
+          "profileSha256": "bbcdc6145f822d1075751f5ced1fb544cae1c68bda0b286c9676ca21aafd8d35",
+          "observedSignature": "2d9fc6d6ed7fa8ee46e718bdeb01979f55259c39f039349686af67b774842650",
+          "plainSignature": "2d9fc6d6ed7fa8ee46e718bdeb01979f55259c39f039349686af67b774842650"
+        },
+        {
+          "id": "CT-R1-split_zone-over-R-S3",
+          "initialSha256": "af8bed5856883f6d4f4c0b85a72c5dfd0ea4cb00339a1fd0e104ae51badf0556",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "4892c05b2c07183b546add04d6d564adc4545e6ab1ee7ee0b9035eb0a04e3fa9",
+          "plainSignature": "4892c05b2c07183b546add04d6d564adc4545e6ab1ee7ee0b9035eb0a04e3fa9"
+        },
+        {
+          "id": "CT-R1-split_zone-over-R-S11",
+          "initialSha256": "030af379a7a473aabeb951abc25cfc376867f835d3aac852ca81aa30252d9be4",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "7c2c54410e5df1e20e2d61fe781e44fb3f26a14c060164237e3dc7039a592367",
+          "plainSignature": "7c2c54410e5df1e20e2d61fe781e44fb3f26a14c060164237e3dc7039a592367"
+        },
+        {
+          "id": "CT-R1-split_zone-over-L-S3",
+          "initialSha256": "fdf0f2d4ba478022103dd56099b70df08fc1a55c6ffd51b7d8e7bd7e11205a36",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "04a52581cad03cfe9fda2543866230b2244ef93551e8a0e4d05ff6b887988198",
+          "plainSignature": "04a52581cad03cfe9fda2543866230b2244ef93551e8a0e4d05ff6b887988198"
+        },
+        {
+          "id": "CT-R1-split_zone-over-L-S11",
+          "initialSha256": "d7ccb3441885e973105e03d37af638a2be2de3d52da82b897da01e77920089a3",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "33d52f29593a22a4b0fbc8d7af85f9adcc2cd45eb49eb8a900dd93f1eecbe775",
+          "plainSignature": "33d52f29593a22a4b0fbc8d7af85f9adcc2cd45eb49eb8a900dd93f1eecbe775"
+        },
+        {
+          "id": "CT-R1-split_zone-under-R-S3",
+          "initialSha256": "e5667877162c4b7a2cfdbbf011f983a84822569c9797d295f3f4d1f85394ac15",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "40101db4711287f2dddab80e5c759ca1e276b5da3030a9ed2a81e63482b13992",
+          "plainSignature": "40101db4711287f2dddab80e5c759ca1e276b5da3030a9ed2a81e63482b13992"
+        },
+        {
+          "id": "CT-R1-split_zone-under-R-S11",
+          "initialSha256": "2ff45a6c0c7197e5a983ca1519d0d3319c04faac51ad3f706fcb29f817d050ec",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "02e9c183baec5f54d1759d66ff52d7173980658575b8ab3a69695fc8db43c6af",
+          "plainSignature": "02e9c183baec5f54d1759d66ff52d7173980658575b8ab3a69695fc8db43c6af"
+        },
+        {
+          "id": "CT-R1-split_zone-under-L-S3",
+          "initialSha256": "f38f7f84e0a8733aba36b622d956e4856959b2f32189edcd896471e86930c27a",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "7f4e9b13698459709f58ba503d6bfdc4d05aa259f96c79dbce4a3804e98e8fb6",
+          "plainSignature": "7f4e9b13698459709f58ba503d6bfdc4d05aa259f96c79dbce4a3804e98e8fb6"
+        },
+        {
+          "id": "CT-R1-split_zone-under-L-S11",
+          "initialSha256": "c586bf69f71e8e372170b0e91102921f53f461bae7acd1f6ccd65ed26147a945",
+          "profileSha256": "ef1db86ece4779135f5f8b247f4c3df68bbcd1c2c54e0b353836caa8e873fa49",
+          "observedSignature": "616bdb7522d182512bf3cdd6a22cde29d4e24e0b60a2852037b67a53864cdffb",
+          "plainSignature": "616bdb7522d182512bf3cdd6a22cde29d4e24e0b60a2852037b67a53864cdffb"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-R-S3",
+          "initialSha256": "04551cfd5f4e899cef90943215654a97cba784f800a2e745bb9eb21d43fdd647",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "0f7dae5c5201eff294942c5088fee2fc22a6f039df4db8ee2ced82998437415a",
+          "plainSignature": "0f7dae5c5201eff294942c5088fee2fc22a6f039df4db8ee2ced82998437415a"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-R-S11",
+          "initialSha256": "67130241e7bedd12a55e9aec1899e726fbd7035af642492f1a362f6983470174",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "580e73743f5bb5d3cebd26a34fc54eb1dc3b2ecfe9b910fce8e515188731934b",
+          "plainSignature": "580e73743f5bb5d3cebd26a34fc54eb1dc3b2ecfe9b910fce8e515188731934b"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-L-S3",
+          "initialSha256": "7afb62673a93ea3ee5d5f2e1f8bf191593a58455fb1f4c2672cda628c2e18da1",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "97d288fbc82a905d9f801cf80b5d41742997fb48ce4102b08a2a3e68d8db064f",
+          "plainSignature": "97d288fbc82a905d9f801cf80b5d41742997fb48ce4102b08a2a3e68d8db064f"
+        },
+        {
+          "id": "CT-R1-split_zone-odd-L-S11",
+          "initialSha256": "0571eccd0524fea09b86b323c9acf6f8f044186644620ab621950ae4b83fcec8",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "a854042da41cfcffb3f32a5e6f7fc86373184d8335432c1255523c287196ca53",
+          "plainSignature": "a854042da41cfcffb3f32a5e6f7fc86373184d8335432c1255523c287196ca53"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-R-S3",
+          "initialSha256": "c83fe36f96e379b5adfa5e892344ecadef0a831c93c1b6c270d1a2c7f46c7164",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "4479cc2b2ebbda4922ee8f098a4a490dd3e49da72ba60ed9939ab96d8a257df8",
+          "plainSignature": "4479cc2b2ebbda4922ee8f098a4a490dd3e49da72ba60ed9939ab96d8a257df8"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-R-S11",
+          "initialSha256": "a1f87e6d95ae328cb2ef26076d1c15fcbcc8ba01d2a901bf6af377b15e2f4616",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "0f34054f918bcd73d5f8133adf436a77a12d1a29facab0e686ac07e011d84bca",
+          "plainSignature": "0f34054f918bcd73d5f8133adf436a77a12d1a29facab0e686ac07e011d84bca"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-L-S3",
+          "initialSha256": "697e460e23bc5e7449592b5779ef24bde8d25e7049d5203c220788211a352838",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "6d11a69d76ffa66f356d642f1cc8e94a63f44bd0b39d76e19cc157a00c470506",
+          "plainSignature": "6d11a69d76ffa66f356d642f1cc8e94a63f44bd0b39d76e19cc157a00c470506"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-L-S11",
+          "initialSha256": "30273f15625ff2179f14a838b5ba54d927a5dd5d42c2c4b12cc722ae340bc0c0",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "e26ede3e5a52d90af89b81266d7a669b7fb97a47cd5f2243208603a6e29567ee",
+          "plainSignature": "e26ede3e5a52d90af89b81266d7a669b7fb97a47cd5f2243208603a6e29567ee"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-R-S3",
+          "initialSha256": "23922ff2f1086449240719a7c8d7791718bfad79e28a5516af5a0036fe846aba",
+          "profileSha256": "82a0371648b421e8d721c9461ee48c8a92d7efd88b227a90888d848192867194",
+          "observedSignature": "289a2184ef0e052018efa83b846e5c3498a0ddbeda38a29dad94bd39d02247f7",
+          "plainSignature": "289a2184ef0e052018efa83b846e5c3498a0ddbeda38a29dad94bd39d02247f7"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-R-S11",
+          "initialSha256": "889bb77db1191f2163f153eff35a26970cc9b882f35088c5d4c748813cc8654e",
+          "profileSha256": "82a0371648b421e8d721c9461ee48c8a92d7efd88b227a90888d848192867194",
+          "observedSignature": "a687331f5ab773895ea2cca3a539c4caebedc1cc1e9cdebd66665eb4662c0455",
+          "plainSignature": "a687331f5ab773895ea2cca3a539c4caebedc1cc1e9cdebd66665eb4662c0455"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-L-S3",
+          "initialSha256": "6fcccd74d7fa2c20c7298197d1f24c067aade7a48181011c94ce636c23a1ce1f",
+          "profileSha256": "82a0371648b421e8d721c9461ee48c8a92d7efd88b227a90888d848192867194",
+          "observedSignature": "ac3387758d764e430b0b532821358c6eef9acd5499e71c7cfd76521a68fb8885",
+          "plainSignature": "ac3387758d764e430b0b532821358c6eef9acd5499e71c7cfd76521a68fb8885"
+        },
+        {
+          "id": "CT-R1-split_zone-bear-L-S11",
+          "initialSha256": "15b5d24c7d2b24a12953fdfce2fcf07ef4486524c87edb3f9c226c133f990211",
+          "profileSha256": "82a0371648b421e8d721c9461ee48c8a92d7efd88b227a90888d848192867194",
+          "observedSignature": "987b706a9b685a9f267e4227ac5be57db015f22b77d0609e4860aacb53114f61",
+          "plainSignature": "987b706a9b685a9f267e4227ac5be57db015f22b77d0609e4860aacb53114f61"
+        },
+        {
+          "id": "CT-R2-oz_strong-over-L-S11",
+          "initialSha256": "d40b59ad461fb75e5c777fd08ff6572109cb89f2fcbd1782609f08cbf89be31f",
+          "profileSha256": "d3403583473b6a71eab8a1abbfb157aecbba2f78ec201564b049379270bd0b64",
+          "observedSignature": "b7c1bc73dd213105660752f2ba1d220d9fba19c344fbee6a2280c9a4629806cc",
+          "plainSignature": "b7c1bc73dd213105660752f2ba1d220d9fba19c344fbee6a2280c9a4629806cc"
+        },
+        {
+          "id": "CT-R2-power-over-R-S3",
+          "initialSha256": "e985597c1005b06a39ceb0f172635bba550ee52c50b3c18fb5fd09a71d308c79",
+          "profileSha256": "d3403583473b6a71eab8a1abbfb157aecbba2f78ec201564b049379270bd0b64",
+          "observedSignature": "cca091f79db1e89f2ad1466f1c601f4a4005387d44d9c05056b85db29802bd6f",
+          "plainSignature": "cca091f79db1e89f2ad1466f1c601f4a4005387d44d9c05056b85db29802bd6f"
+        }
+      ]
+    }
+  ],
+  "exactFullTelemetry": true,
+  "exactRawEventsActorsNotesTimes": true,
+  "exactPlayersProfilesRatingsWeights": true,
+  "exactNativeSupportOwnershipHandsImagesAndDeliveredLoads": true,
+  "crossSourceProfilesAndInitialPositionsMatch": true,
+  "all162ObserverControlsPerPhaseNeutral": true,
+  "naturalFinishes": 20,
+  "inspectionCensors": 0,
+  "recordedFrameTimesAndPossession": true,
+  "maxExistingPackingPositionFacingError": 0.050000000000000044,
+  "baselineStaleStates": 0,
+  "candidateStaleStates": 0,
+  "recordedCancellations": [
+    {
+      "group": 0,
+      "fixture": "CT-R1-iz_strong-over-R-S3",
+      "observer": "Y",
+      "t": 2.85
+    },
+    {
+      "group": 0,
+      "fixture": "CT-R1-power-under-R-S3",
+      "observer": "RT",
+      "t": 3.05
+    }
+  ],
+  "recordedTransfers": [
+    {
+      "group": 0,
+      "fixture": "CT-R1-duo-odd-L-S11",
+      "t": 1.05,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "LG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 0,
+      "fixture": "CT-R1-split_zone-tite-R-S3",
+      "t": 1.75,
+      "observer": "RT",
+      "defender": "DE_S",
+      "beforeBlocker": "Y",
+      "keeper": "Y",
+      "comboMembers": [
+        "Y",
+        "RT"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 0,
+      "fixture": "CT-R1-split_zone-tite-L-S3",
+      "t": 1.3,
+      "observer": "LT",
+      "defender": "DT_S",
+      "beforeBlocker": "LT",
+      "keeper": "LT",
+      "comboMembers": [
+        "LT",
+        "LG"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 0,
+      "fixture": "CT-R1-split_zone-tite-L-S3",
+      "t": 2.45,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "RG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-iz_strong-over-R-S3",
+      "t": 1.05,
+      "observer": "C",
+      "defender": "DT_W",
+      "beforeBlocker": "LG",
+      "keeper": "LG",
+      "comboMembers": [
+        "C",
+        "LG"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-power-under-R-S3",
+      "t": 1.25,
+      "observer": "RT",
+      "defender": "DE_S",
+      "beforeBlocker": "Y",
+      "keeper": "Y",
+      "comboMembers": [
+        "Y",
+        "RT"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-power-under-L-S3",
+      "t": 1.3,
+      "observer": "LT",
+      "defender": "DE_S",
+      "beforeBlocker": "Y",
+      "keeper": "Y",
+      "comboMembers": [
+        "LT",
+        "Y"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-duo-odd-R-S11",
+      "t": 1.25,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "RG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-duo-odd-L-S11",
+      "t": 1.05,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "LG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-split_zone-tite-R-S3",
+      "t": 1.75,
+      "observer": "RT",
+      "defender": "DE_S",
+      "beforeBlocker": "Y",
+      "keeper": "Y",
+      "comboMembers": [
+        "Y",
+        "RT"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-split_zone-tite-L-S3",
+      "t": 1.3,
+      "observer": "LT",
+      "defender": "DT_S",
+      "beforeBlocker": "LT",
+      "keeper": "LT",
+      "comboMembers": [
+        "LT",
+        "LG"
+      ],
+      "beforePrimaryJointId": 4,
+      "afterPrimaryJointId": 4,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    },
+    {
+      "group": 1,
+      "fixture": "CT-R1-split_zone-tite-L-S3",
+      "t": 2.45,
+      "observer": "C",
+      "defender": "NT",
+      "beforeBlocker": "C",
+      "keeper": "C",
+      "comboMembers": [
+        "C",
+        "RG"
+      ],
+      "beforePrimaryJointId": 1,
+      "afterPrimaryJointId": 1,
+      "promoted": false,
+      "afterDecisionPrimaryLive": true
+    }
+  ],
+  "zipHtmlByteExact": true,
+  "htmlSha256": "e40d3367187cd9e9722bc044c99d8fddcf56b4810fa8a1adc3212bfdeab3a438",
+  "zipSha256": "753e6d0d7ed6cc4627f23598cf089a314ae0428ce808eac783e469015ed39397",
+  "checkerSha256": "1de36184fadea0a3fbb77e95d1ca18e6ccc15f64c4e84f8fca1f163e167995af",
+  "exportToolSha256": {
+    "scripts/export-combo-transfer.ts": "0345aa1f8ae10d66ccb18a5dd8e38b1ba272627dca5693504275ebc9af3da9cd",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4"
+  }
+}

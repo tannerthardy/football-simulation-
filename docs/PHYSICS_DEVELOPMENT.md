@@ -1,7 +1,19 @@
 # Physics development and testing
 
+Read [Keeper-based OL combinations](reviews/keeper-based-combination-work.md)
+first. A departure asks whether the remaining player can keep genuine supported
+contact. Helper promotion preserves the existing physical hands and releases
+only the departing player's cloth grab. Read 160 fixed ordinary pairs, two
+separate witnesses, 20 paired clips and all adverse cases. Native keeper contact
+is coherent, but more climbs do not establish better rushing: stuffs increase
+and full games diverge. Shared World, support, capabilities and resolution remain
+unchanged. Next repair adjacent DL/LB job exchanges that change targets without
+reclassifying technique; Duo Odd/right/seed3 provides a fixed native witness.
+Then prove independent attention, optional posts and lane-aware work pickup.
+Keep the reduced model; final universal physics OK remains pending.
+
 Read [Zone reach, run-off and displacement](reviews/zone-reach-and-displacement.md)
-first. Solo outside/wide-zone blocks use delayed hip motion to separate the
+for the preceding increment. Solo outside/wide-zone blocks use delayed hip motion to separate the
 body surface they seek from the direction they drive. Real hands retain their
 acquired frame through technique changes, including promotion from a different
 job. Read the fixed 48 pairs, 24 films, physical transition tests and mixed

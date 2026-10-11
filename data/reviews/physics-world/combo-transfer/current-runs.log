@@ -1,0 +1,216 @@
+{
+  "output": "out/combo-transfer/current-runs.json",
+  "sourceBefore": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+  "sourceAfter": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+  "observerVerifiedCount": 7,
+  "summary": {
+    "snaps": 144,
+    "meanYards": 1.7888194444444447,
+    "medianYards": 1.25,
+    "stuffs": 36,
+    "stuffRate": 0.25,
+    "explosives10": 3,
+    "explosive10Rate": 0.020833333333333332,
+    "firstCarrierContactSamples": 144,
+    "firstNonQBContactAfterTransferSamples": 144,
+    "meanYardsBeforeFirstCarrierContact": 0.19696991022602997,
+    "meanYardsAfterFirstCarrierContact": 1.5918495342184142,
+    "meanFirstContactTime": 3.0631944444444446,
+    "meanYardsAfterFirstContactAfterTransfer": 1.5918495342184142,
+    "lowerHeldSnaps": 144,
+    "lowerJointTicks": 2117,
+    "lowerReachReleases": 0,
+    "missedAttempts": 22,
+    "brokenHolds": 13,
+    "timeouts": 0,
+    "finishCauses": {
+      "physical-down-by-contact": 134,
+      "forward-progress-stalled": 10
+    },
+    "carrierFallCauses": {
+      "legs": 103,
+      "contact": 36
+    }
+  },
+  "byConcept": [
+    {
+      "run": "iz_strong",
+      "snaps": 24,
+      "meanYards": 0.7870833333333334,
+      "medianYards": 0.55,
+      "stuffs": 9,
+      "stuffRate": 0.375,
+      "explosives10": 0,
+      "explosive10Rate": 0,
+      "firstCarrierContactSamples": 24,
+      "firstNonQBContactAfterTransferSamples": 24,
+      "meanYardsBeforeFirstCarrierContact": -0.17520223484585173,
+      "meanYardsAfterFirstCarrierContact": 0.9622855681791851,
+      "meanFirstContactTime": 2.716666666666667,
+      "meanYardsAfterFirstContactAfterTransfer": 0.9622855681791851,
+      "lowerHeldSnaps": 24,
+      "lowerJointTicks": 333,
+      "lowerReachReleases": 0,
+      "missedAttempts": 2,
+      "brokenHolds": 0,
+      "timeouts": 0,
+      "finishCauses": {
+        "physical-down-by-contact": 22,
+        "forward-progress-stalled": 2
+      },
+      "carrierFallCauses": {
+        "legs": 17,
+        "contact": 5
+      }
+    },
+    {
+      "run": "oz_strong",
+      "snaps": 24,
+      "meanYards": 2.6008333333333336,
+      "medianYards": 1.27,
+      "stuffs": 5,
+      "stuffRate": 0.20833333333333334,
+      "explosives10": 1,
+      "explosive10Rate": 0.041666666666666664,
+      "firstCarrierContactSamples": 24,
+      "firstNonQBContactAfterTransferSamples": 24,
+      "meanYardsBeforeFirstCarrierContact": 0.38134122700297307,
+      "meanYardsAfterFirstCarrierContact": 2.2194921063303603,
+      "meanFirstContactTime": 3.004166666666667,
+      "meanYardsAfterFirstContactAfterTransfer": 2.2194921063303603,
+      "lowerHeldSnaps": 24,
+      "lowerJointTicks": 376,
+      "lowerReachReleases": 0,
+      "missedAttempts": 4,
+      "brokenHolds": 3,
+      "timeouts": 0,
+      "finishCauses": {
+        "physical-down-by-contact": 22,
+        "forward-progress-stalled": 2
+      },
+      "carrierFallCauses": {
+        "legs": 15,
+        "contact": 8
+      }
+    },
+    {
+      "run": "wz_strong",
+      "snaps": 24,
+      "meanYards": 2.129166666666667,
+      "medianYards": 1.64,
+      "stuffs": 2,
+      "stuffRate": 0.08333333333333333,
+      "explosives10": 0,
+      "explosive10Rate": 0,
+      "firstCarrierContactSamples": 24,
+      "firstNonQBContactAfterTransferSamples": 24,
+      "meanYardsBeforeFirstCarrierContact": 0.39391713340020446,
+      "meanYardsAfterFirstCarrierContact": 1.7352495332664624,
+      "meanFirstContactTime": 3.00625,
+      "meanYardsAfterFirstContactAfterTransfer": 1.7352495332664624,
+      "lowerHeldSnaps": 24,
+      "lowerJointTicks": 349,
+      "lowerReachReleases": 0,
+      "missedAttempts": 7,
+      "brokenHolds": 2,
+      "timeouts": 0,
+      "finishCauses": {
+        "physical-down-by-contact": 24
+      },
+      "carrierFallCauses": {
+        "legs": 23,
+        "contact": 1
+      }
+    },
+    {
+      "run": "power",
+      "snaps": 24,
+      "meanYards": 1.1416666666666664,
+      "medianYards": 0.56,
+      "stuffs": 8,
+      "stuffRate": 0.3333333333333333,
+      "explosives10": 0,
+      "explosive10Rate": 0,
+      "firstCarrierContactSamples": 24,
+      "firstNonQBContactAfterTransferSamples": 24,
+      "meanYardsBeforeFirstCarrierContact": 0.04526499947784224,
+      "meanYardsAfterFirstCarrierContact": 1.0964016671888241,
+      "meanFirstContactTime": 3.2708333333333335,
+      "meanYardsAfterFirstContactAfterTransfer": 1.0964016671888241,
+      "lowerHeldSnaps": 24,
+      "lowerJointTicks": 359,
+      "lowerReachReleases": 0,
+      "missedAttempts": 0,
+      "brokenHolds": 3,
+      "timeouts": 0,
+      "finishCauses": {
+        "physical-down-by-contact": 22,
+        "forward-progress-stalled": 2
+      },
+      "carrierFallCauses": {
+        "contact": 7,
+        "legs": 16
+      }
+    },
+    {
+      "run": "counter",
+      "snaps": 24,
+      "meanYards": 2.4899999999999998,
+      "medianYards": 0.2,
+      "stuffs": 9,
+      "stuffRate": 0.375,
+      "explosives10": 2,
+      "explosive10Rate": 0.08333333333333333,
+      "firstCarrierContactSamples": 24,
+      "firstNonQBContactAfterTransferSamples": 24,
+      "meanYardsBeforeFirstCarrierContact": 0.19877594014472835,
+      "meanYardsAfterFirstCarrierContact": 2.2912240598552716,
+      "meanFirstContactTime": 3.4916666666666667,
+      "meanYardsAfterFirstContactAfterTransfer": 2.2912240598552716,
+      "lowerHeldSnaps": 24,
+      "lowerJointTicks": 353,
+      "lowerReachReleases": 0,
+      "missedAttempts": 5,
+      "brokenHolds": 5,
+      "timeouts": 0,
+      "finishCauses": {
+        "physical-down-by-contact": 22,
+        "forward-progress-stalled": 2
+      },
+      "carrierFallCauses": {
+        "legs": 17,
+        "contact": 7
+      }
+    },
+    {
+      "run": "trap",
+      "snaps": 24,
+      "meanYards": 1.5841666666666665,
+      "medianYards": 1.25,
+      "stuffs": 3,
+      "stuffRate": 0.125,
+      "explosives10": 0,
+      "explosive10Rate": 0,
+      "firstCarrierContactSamples": 24,
+      "firstNonQBContactAfterTransferSamples": 24,
+      "meanYardsBeforeFirstCarrierContact": 0.33772239617628347,
+      "meanYardsAfterFirstCarrierContact": 1.246444270490383,
+      "meanFirstContactTime": 2.889583333333333,
+      "meanYardsAfterFirstContactAfterTransfer": 1.246444270490383,
+      "lowerHeldSnaps": 24,
+      "lowerJointTicks": 347,
+      "lowerReachReleases": 0,
+      "missedAttempts": 4,
+      "brokenHolds": 0,
+      "timeouts": 0,
+      "finishCauses": {
+        "physical-down-by-contact": 22,
+        "forward-progress-stalled": 2
+      },
+      "carrierFallCauses": {
+        "contact": 8,
+        "legs": 15
+      }
+    }
+  ]
+}
