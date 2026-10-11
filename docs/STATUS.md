@@ -29,6 +29,13 @@ default. Complete check results and source pins are in the current receipts.
 
 ## What to investigate now
 
+The [full engine review](reviews/full-engine-review-2026-10-11.md) assesses the
+current subsystems and ranks catch/contact, shared hand laws, ordinary run
+coordination and pocket decisions. Fresh current-source checks reproduce the
+two-cohort outcome gaps and identify a concentrated heavy-jam step-refinement
+outlier. Production behavior is unchanged; detailed evidence and limits are in
+the review's receipt.
+
 The [NFL comparison](reviews/nfl-gap-review.md) adds two native eight-game
 roster cohorts and corrected actual-catcher/contact measurements, with unchanged
 engine behavior. Mean completion gain is 20.2 yd against 10.9; mean YAC is
