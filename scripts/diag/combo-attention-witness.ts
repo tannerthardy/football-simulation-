@@ -1,5 +1,5 @@
 /** Predeclared joined-combination witnesses, with a neutral observation tap.
- * node --import tsx scripts/diag/combo-attention-witness.ts OUTPUT.json.gz [--ordinary]
+ * node --import tsx scripts/diag/combo-attention-witness.ts OUTPUT.json.gz [--ordinary] [--contacts]
  * Default: six existing witnesses. --ordinary: eight IZ Over/Under inputs.
  * All pictures, decision boundaries and solves come from the unmodified run.
  */
@@ -26,11 +26,13 @@ import type { PlayResult } from '../../src/sim/types.js';
 import { sourceVersion } from '../source-version.js';
 
 const args = process.argv.slice(2);
-const usage = 'Usage: combo-attention-witness.ts OUTPUT.json.gz [--ordinary]';
-const unknown = args.find(arg => arg.startsWith('--') && arg !== '--ordinary');
+const usage = 'Usage: combo-attention-witness.ts OUTPUT.json.gz [--ordinary] [--contacts]';
+const unknown = args.find(arg => arg.startsWith('--') && arg !== '--ordinary' && arg !== '--contacts');
 if (unknown) throw new Error(`Unknown option ${unknown}. ${usage}`);
 if (args.filter(arg => arg === '--ordinary').length > 1) throw new Error(`Repeated --ordinary option. ${usage}`);
-const ordinary = args.includes('--ordinary'), outputs = args.filter(arg => arg !== '--ordinary');
+if (args.filter(arg => arg === '--contacts').length > 1) throw new Error(`Repeated --contacts option. ${usage}`);
+const ordinary = args.includes('--ordinary'), contacts = args.includes('--contacts');
+const outputs = args.filter(arg => arg !== '--ordinary' && arg !== '--contacts');
 const output = outputs[0];
 if (outputs.length !== 1 || !output?.endsWith('.json.gz')) throw new Error(usage);
 const sourceBefore = sourceVersion(), startedAt = new Date().toISOString();
@@ -233,6 +235,52 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
       liveHandsAfterPhysics: sim.world.joints.filter(j => j.kind === 'hands' && (j.a === a.body || j.b === a.body)).map(nativeJoint),
       fall: report.falls.includes(a.idx), down: report.downs.includes(a.idx)};
   });
+  // Observe the real solve boundary, not a second behavior/vision query.
+  // Record acquired but unloaded reps too: ownership does not prove force.
+  const contactObjects = new WeakMap<object, {rep: Engagement; actors: Agent[]}>();
+  const repIds = new WeakMap<Engagement, number>();
+  let nextRepId = 1;
+  const contactActor = (a: Agent) => ({...body(a),
+    runFit: a.runFit ? structuredClone(a.runFit) : null,
+    read: a.recog ? structuredClone(a.recog) : null});
+  const contactState = (e: Engagement, actors: Agent[]) => ({registered: sim.engagements.includes(e),
+    rep: engagement(e), actors: actors.map(contactActor)});
+  if (contacts) {
+    const worldStep = sim.world.step;
+    sim.world.step = function (intents, dt) {
+      const rows = activeTick ? sim.engagements.filter(e => e.type === 'run').map(e => {
+        if (!repIds.has(e)) repIds.set(e, nextRepId++);
+        const actors = [...new Set([e.blocker, ...e.helpers, e.defender])];
+        const row = {id: repIds.get(e)!, t: sim.t, worldTime: this.time, dt,
+          consumedImageEnd: activeTick.consumedImages.length,
+          before: contactState(e, actors),
+          executedIntents: actors.map(a => ({slot: a.slot, intent: structuredClone(intents[a.idx])})),
+          completedWorldTime: null as number | null, afterWorld: null as unknown,
+          solved: null as unknown, afterTick: null as unknown};
+        contactObjects.set(row, {rep: e, actors});
+        return row;
+      }) : [];
+      const report = worldStep.call(this, intents, dt);
+      for (const row of rows) {
+        const {rep, actors} = contactObjects.get(row)!;
+        row.completedWorldTime = this.time;
+        row.afterWorld = contactState(rep, actors);
+        row.solved = {substeps: report.substeps, work: structuredClone(report.work),
+          actors: loads(actors.map(a => a.slot), report).map((load, i) => ({...load,
+            groundWork: report.groundWork[actors[i].idx],
+            groundYawImpulse: report.groundYawImpulse[actors[i].idx],
+            groundYawWork: report.groundYawWork[actors[i].idx],
+            leanRelease: vec(report.leanRelease[actors[i].idx]),
+            rise: report.rises.includes(actors[i].idx)})),
+          contacts: report.contacts.filter(c => actors.some(a => a.idx === c.i || a.idx === c.j))
+            .map(c => ({...c, a: sim.agents[c.i].slot, b: sim.agents[c.j].slot})),
+          strikes: report.strikes.filter(c => actors.some(a => a.idx === c.i || a.idx === c.j))
+            .map(c => ({...c, a: sim.agents[c.i].slot, b: sim.agents[c.j].slot}))};
+      }
+      if (activeTick) activeTick.runContacts = rows;
+      return report;
+    };
+  }
   const tick = sim.tick;
   sim.tick = function () {
     discover();
@@ -243,6 +291,11 @@ function collect(input: PlaySetup, run: string, front: string, flip: boolean, se
     const report = this.lastStep !== previousReport ? this.lastStep : null;
     activeTick.completedAt = this.t;
     activeTick.afterCombinations = [...comboIds.keys()].map(combination);
+    for (const row of activeTick.runContacts ?? []) {
+      const {rep, actors} = contactObjects.get(row)!;
+      // Keep the same rep/body references even if a later tackle released it.
+      row.afterTick = contactState(rep, actors);
+    }
     for (const row of activeTick.climbs) {
       const c = row.beforeCombination ? [...comboIds.keys()].find(c => cid(c) === row.beforeCombination.id) : null;
       row.afterWholeTickCombination = c ? combination(c) : null;
@@ -319,6 +372,7 @@ const sourceAfter = sourceVersion();
 if (sourceBefore !== sourceAfter) throw new Error('Engine changed during witness collection');
 const report = {schema: 'combo-attention-native-witness-v1', sourceBefore, sourceAfter, startedAt, finishedAt: new Date().toISOString(),
   collectorSha256: createHash('sha256').update(readFileSync('scripts/diag/combo-attention-witness.ts')).digest('hex'),
+  contactsAvailable: contacts,
   moduleSha256: Object.fromEntries(['src/sim/behaviors/blocking.ts', 'src/sim/engagement.ts', 'src/physics/world.ts', 'src/players/physical.ts', 'src/sim/playsim.ts'].map(p => [p,
     createHash('sha256').update(readFileSync(p)).digest('hex')])), helperControlAvailable, cohort, plays,
   definitions: {driveAttempts: 'Every actual unengaged solo OL drive sim.engage attempt, with its latest original same-tick target picture. observedPhi and actualPhi share the drive frame. requested is the RunBlocker command; appliedIntent is the native post-contact command. Associated same-tick sheds do not prove every physical contact was useless.',
@@ -329,6 +383,7 @@ const report = {schema: 'combo-attention-native-witness-v1', sourceBefore, sourc
     departure: 'The existing proposal departure cue is copied as plain exit/flow/backer data; null means this source/proposal recorded none. No new perception or route choice is invoked.',
     decisionBoundary: 'beforeCombination is the current public prepass or RunBlocker command entry; eventBoundaryCombination is actual block_climb emission. A later command can legitimately acquire different work.',
     physics: 'CompletedAt, ownership and loads come from the actual completed native tick containing the release. Backer contacts require positive hand load or body impulse after that climb.',
+    runContacts: 'Optional --contacts tap captures all actual live run reps at World.step entry, exact executed intents and consumed-image end ordinal, returned impulses/work/budgets and same-rep/body state after the solve and whole tick. Acquired ownership alone is not a loaded contact. No additional observation, behavior, prediction or RNG call.',
     controls: 'Observed versus plain runs compare final physical bodies, intents, events, ownership, live joint state, extant personal read state and the next native RNG value.',
     units: 'Positions yd, time s, impulses kg·yd/s, force kg·yd/s², work kg·yd²/s². Joint IDs are local to each play/source.'}};
 mkdirSync(dirname(output), {recursive: true}); writeFileSync(output, gzipSync(JSON.stringify(report), {level: 9}));
