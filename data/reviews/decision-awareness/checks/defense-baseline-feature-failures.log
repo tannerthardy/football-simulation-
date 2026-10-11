@@ -1,0 +1,472 @@
+
+ RUN  v3.2.4 /tmp/shared-awareness-632fb02
+
+ ❯ test/defensive-awareness-contact.test.ts (18 tests | 16 failed) 132ms
+   × engaged defenders preserve known duties and delayed runner pictures > does not learn the offensive call from a unsure read 32ms
+     → expected { vel: { …(2) }, …(4) } to deeply equal { vel: { …(2) }, …(4) }
+   × engaged defenders preserve known duties and delayed runner pictures > does not learn the offensive call from a pass read 8ms
+     → expected { vel: { …(2) }, …(4) } to deeply equal { vel: { …(2) }, …(4) }
+   ✓ engaged defenders preserve known duties and delayed runner pictures > does not learn the offensive call from a run read 8ms
+   × engaged defenders preserve known duties and delayed runner pictures > does not follow an unseen change to the carrier position or release on its true location 6ms
+     → expected { vel: { …(2) }, …(4) } to deeply equal { vel: { x: +0, y: +0 }, …(1) }
+   × engaged defenders preserve known duties and delayed runner pictures > keeps different box and spill shoulders even when the runner is inside, side -1 6ms
+     → expected 1 to be -1 // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > keeps different box and spill shoulders even when the runner is inside, side 1 6ms
+     → expected -1 to be 1 // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > keeps an unsure interior fit but answers a personally recognised, declared runner 6ms
+     → expected -1 not to be -1 // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > holds a chosen shoulder through a decision beat then answers the changed visible cue 3ms
+     → expected -1 to be 1 // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > waits to shed when the physically close runner is still distant in the consumed picture 3ms
+     → expected 1.9197417612420393 to be +0 // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > can attempt a shed from a close declared picture and still respects shared loads 3ms
+     → expected false to be true // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > a penetrating run-reading defender can shed toward a close observed back deep behind the line 4ms
+     → expected false to be true // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > penetration does not grant knowledge of a physically close back absent from the consumed picture 3ms
+     → expected 1.9197417612420393 to be +0 // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > a physically and visibly close standing QB deep at the mesh is not a run shed target 2ms
+     → expected 1.9197417612420393 to be +0 // Object.is equality
+   × engaged defenders preserve known duties and delayed runner pictures > an advanced observed ball carrier remains a threat after an originally correct pass read 2ms
+     → expected -1 to be 1 // Object.is equality
+   × defensive recognition reads a known job without inventing tactile knowledge > a man defender uses his assigned receiver despite a closer conflicting receiver 10ms
+     → expected [ { read: 'run', …(2) }, …(15) ] to deeply equal [ { read: 'unsure', …(2) }, …(15) ]
+   × defensive recognition reads a known job without inventing tactile knowledge > a changed observed assigned receiver can change his interpretation 10ms
+     → expected 'pass' to be 'unsure' // Object.is equality
+   ✓ defensive recognition reads a known job without inventing tactile knowledge > zone players retain the existing local-key policy 7ms
+   × defensive recognition reads a known job without inventing tactile knowledge > unknown pad presentation conveys no run/pass category from the engagement label 11ms
+     → expected 0.2778742709136787 to be 0.844322972119955 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > does not learn the offensive call from a unsure read
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > does not learn the offensive call from a pass read
+AssertionError: expected { vel: { …(2) }, …(4) } to deeply equal { vel: { …(2) }, …(4) }
+
+- Expected
++ Received
+
+@@ -2,9 +2,9 @@
+    "cutSkill": 0.9701574742717601,
+    "facing": -2.9023610536261337,
+    "posture": 0.85,
+    "push": 1,
+    "vel": {
+-     "x": -1.499401813294028,
+-     "y": -0.3232813370345999,
++     "x": -1.8062807762005548,
++     "y": 0.3586719138687927,
+    },
+  }
+
+ ❯ test/defensive-awareness-contact.test.ts:30:24
+     28|     runnerPicture(a); runnerPicture(b);
+     29|     a.sim.isPass = false; b.sim.isPass = true;
+     30|     expect(command(a)).toEqual(command(b));
+       |                        ^
+     31|     expect(a.engagement.side).toBe(b.engagement.side);
+     32|     expect(a.sim.rng.nextU32()).toBe(b.sim.rng.nextU32());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > does not follow an unseen change to the carrier position or release on its true location
+AssertionError: expected { vel: { …(2) }, …(4) } to deeply equal { vel: { x: +0, y: +0 }, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "facing": 3.141592653589793,
++   "cutSkill": 0.9701574742717601,
++   "facing": -2.9023610536261337,
++   "posture": 0.85,
++   "push": 1,
+    "vel": {
+-     "x": 0,
+-     "y": 0,
++     "x": -0.9294837393247641,
++     "y": -1.589765945855186,
+    },
+  }
+
+ ❯ test/defensive-awareness-contact.test.ts:40:24
+     38|     a.sim.qb.body.pos = { x: 35, y: CENTER_Y - 8 };
+     39|     b.sim.qb.body.pos = { x: 50, y: CENTER_Y + 8 };
+     40|     expect(command(a)).toEqual(command(b));
+       |                        ^
+     41|     expect(a.defender.engagement).not.toBeNull();
+     42|     expect(b.defender.engagement).not.toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > keeps different box and spill shoulders even when the runner is inside, side -1
+AssertionError: expected 1 to be -1 // Object.is equality
+
+- Expected
++ Received
+
+- -1
++ 1
+
+ ❯ test/defensive-awareness-contact.test.ts:55:35
+     53|     command(box); command(spill);
+     54|     expect(box.engagement.side).toBe(-side);
+     55|     expect(spill.engagement.side).toBe(side);
+       |                                   ^
+     56|   });
+     57| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > keeps different box and spill shoulders even when the runner is inside, side 1
+AssertionError: expected -1 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ -1
+
+ ❯ test/defensive-awareness-contact.test.ts:55:35
+     53|     command(box); command(spill);
+     54|     expect(box.engagement.side).toBe(-side);
+     55|     expect(spill.engagement.side).toBe(side);
+       |                                   ^
+     56|   });
+     57| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > keeps an unsure interior fit but answers a personally recognised, declared runner
+AssertionError: expected -1 not to be -1 // Object.is equality
+ ❯ test/defensive-awareness-contact.test.ts:62:40
+     60|     for (const f of [unsure, run]) runnerPicture(f, { x: 39, y: CENTER…
+     61|     const u = command(unsure), r = command(run);
+     62|     expect(unsure.engagement.side).not.toBe(run.engagement.side);
+       |                                        ^
+     63|     expect(u.vel).not.toEqual(r.vel);
+     64|     expect(unsure.defender.profile).toEqual(run.defender.profile);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > holds a chosen shoulder through a decision beat then answers the changed visible cue
+AssertionError: expected -1 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ -1
+
+ ❯ test/defensive-awareness-contact.test.ts:81:31
+     79|     expect(f.engagement.side).toBe(firstSide);
+     80|     f.sim.t += f.defender.mind.decisionInterval + .01; command(f);
+     81|     expect(f.engagement.side).toBe(-firstSide);
+       |                               ^
+     82|   });
+     83| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > waits to shed when the physically close runner is still distant in the consumed picture
+AssertionError: expected 1.9197417612420393 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1.9197417612420393
+
+ ❯ test/defensive-awareness-contact.test.ts:91:37
+     89|     runnerPicture(f, { x: 35, y: CENTER_Y });
+     90|     command(f);
+     91|     expect(f.engagement.nextMoveAt).toBe(0);
+       |                                     ^
+     92|     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
+     93|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > can attempt a shed from a close declared picture and still respects shared loads
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/defensive-awareness-contact.test.ts:101:92
+     99|     runnerPicture(f, { x: 40, y: CENTER_Y });
+    100|     const intents = contactCommands(f);
+    101|     expect(f.engagement.nextMoveAt > f.sim.t || f.sim.events.some(e =>…
+       |                                                                                            ^
+    102|     const report = f.sim.world.step(intents, f.sim.dt);
+    103|     expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > a penetrating run-reading defender can shed toward a close observed back deep behind the line
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/defensive-awareness-contact.test.ts:117:92
+    115|     runnerPicture(f, { x: 35, y: CENTER_Y });
+    116|     command(f);
+    117|     expect(f.engagement.nextMoveAt > f.sim.t || f.sim.events.some(e =>…
+       |                                                                                            ^
+    118|   });
+    119| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > penetration does not grant knowledge of a physically close back absent from the consumed picture
+AssertionError: expected 1.9197417612420393 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1.9197417612420393
+
+ ❯ test/defensive-awareness-contact.test.ts:128:37
+    126|     runnerPicture(f, { x: 31, y: CENTER_Y + 5 });
+    127|     command(f);
+    128|     expect(f.engagement.nextMoveAt).toBe(0);
+       |                                     ^
+    129|     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
+    130|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > a physically and visibly close standing QB deep at the mesh is not a run shed target
+AssertionError: expected 1.9197417612420393 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1.9197417612420393
+
+ ❯ test/defensive-awareness-contact.test.ts:139:37
+    137|     runnerPicture(f, { x: 35, y: CENTER_Y });
+    138|     command(f);
+    139|     expect(f.engagement.nextMoveAt).toBe(0);
+       |                                     ^
+    140|     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
+    141|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > engaged defenders preserve known duties and delayed runner pictures > an advanced observed ball carrier remains a threat after an originally correct pass read
+AssertionError: expected -1 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ -1
+
+ ❯ test/defensive-awareness-contact.test.ts:148:31
+    146|     runnerPicture(f, { x: 43, y: CENTER_Y - 3 });
+    147|     expect(Number.isFinite(command(f).vel.y)).toBe(true);
+    148|     expect(f.engagement.side).toBe(1);
+       |                               ^
+    149|     expect(f.defender.recog!.read).toBe('pass');
+    150|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > defensive recognition reads a known job without inventing tactile knowledge > a man defender uses his assigned receiver despite a closer conflicting receiver
+AssertionError: expected [ { read: 'run', …(2) }, …(15) ] to deeply equal [ { read: 'unsure', …(2) }, …(15) ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "pPass": 0.6936810428151071,
+-     "read": "unsure",
+-     "readAt": -1,
++     "pPass": 0.29909293208684234,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.7921997289970163,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.20001855866334953,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.8412555662942529,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.1513297342852462,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.8671366565214388,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.12587147265137222,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.8815906377623048,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.11173535468494836,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.8900120657973334,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.10352914948213283,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.8950626106554453,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.0986190131994217,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.8981497452104931,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09562206708975211,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.9000601232818608,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09376920231936457,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.9012516656314975,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09261420261418128,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.9019986025719442,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09189043842398113,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.9024683306630527,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09143538850440895,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.9027643292523557,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09114868135172823,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.9029510921589723,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09096779771250967,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.9030690277291936,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09085358142451061,
++     "read": "run",
++     "readAt": 0.65,
+    },
+    {
+-     "pPass": 0.9031435390942133,
+-     "read": "pass",
+-     "readAt": 0.7000000000000001,
++     "pPass": 0.09078142256358167,
++     "read": "run",
++     "readAt": 0.65,
+    },
+  ]
+
+ ❯ test/defensive-awareness-contact.test.ts:181:35
+    179|   it('a man defender uses his assigned receiver despite a closer confl…
+    180|     const closeStalk = keyRecognition(0, 6), closeVertical = keyRecogn…
+    181|     expect(closeStalk.trajectory).toEqual(closeVertical.trajectory);
+       |                                   ^
+    182|     expect(closeStalk.a.recog!.read).toBe('pass');
+    183|     expect(closeStalk.targets).not.toContain('Y');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > defensive recognition reads a known job without inventing tactile knowledge > a changed observed assigned receiver can change his interpretation
+AssertionError: expected 'pass' to be 'unsure' // Object.is equality
+
+Expected: "unsure"
+Received: "pass"
+
+ ❯ test/defensive-awareness-contact.test.ts:190:33
+    188|     expect(release.a.recog!.read).toBe('pass');
+    189|     // Distant stationary movement is ambiguous, rather than proof of …
+    190|     expect(stalk.a.recog!.read).toBe('unsure');
+       |                                 ^
+    191|     expect(stalk.a.recog!.pPass()).toBeLessThan(release.a.recog!.pPass…
+    192|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/16]⎯
+
+ FAIL  test/defensive-awareness-contact.test.ts > defensive recognition reads a known job without inventing tactile knowledge > unknown pad presentation conveys no run/pass category from the engagement label
+AssertionError: expected 0.2778742709136787 to be 0.844322972119955 // Object.is equality
+
+- Expected
++ Received
+
+- 0.844322972119955
++ 0.2778742709136787
+
+ ❯ test/defensive-awareness-contact.test.ts:206:34
+    204|       return f.defender.recog.pPass();
+    205|     };
+    206|     expect(compare('run', null)).toBe(compare('pass', null));
+       |                                  ^
+    207|     expect(compare('run', 'low')).toBeLessThan(compare('run', null));
+    208|     expect(compare('pass', 'high')).toBeGreaterThan(compare('pass', nu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/16]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  16 failed | 2 passed (18)
+   Start at  12:33:41
+   Duration  1.02s (transform 542ms, setup 0ms, collect 715ms, tests 132ms, environment 0ms, prepare 48ms)
+

@@ -1,6 +1,15 @@
 # Shared NFL data
 
-Current review: [Run game: outcomes, contact and decisions](../docs/reviews/run-game-current-diagnosis.md).
+Current review: [Awareness and committed action](../docs/reviews/decision-awareness-and-commitment.md).
+The [evidence and reproduction commands](reviews/decision-awareness/README.md)
+retain source-pinned offensive, defensive and QB controls, 162 native runs,
+96 native passes, component isolation and all adverse outcomes. The
+[paired replay ZIP](../viewer/decision-awareness.zip) contains twenty clips.
+The local information contracts improve; the tiny full-game scoring/rushing
+guard worsens materially. Shared physical capacities stay unchanged. These
+are diagnostic calls and generated rosters, not NFL population estimates.
+
+Previous review: [Run game: outcomes, contact and decisions](../docs/reviews/run-game-current-diagnosis.md).
 The [engine packet and commands](reviews/run-game-current/engine/README.md) retain
 three isolated source phases, all 162 inputs per phase, adverse outcomes, 48
 loaded technique controls and nine consumed-pose witnesses. Physics/capacities

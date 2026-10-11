@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/run-contact-technique.test.ts (9 tests) 392ms
+ ✓ test/defensive-awareness-contact.test.ts (18 tests) 125ms
+
+ Test Files  2 passed (2)
+      Tests  27 passed (27)
+   Start at  12:32:57
+   Duration  1.66s (transform 547ms, setup 0ms, collect 801ms, tests 517ms, environment 1ms, prepare 109ms)
+

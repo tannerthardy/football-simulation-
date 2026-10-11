@@ -1,0 +1,6650 @@
+{
+  "schema": "pass-installation-panel-v1",
+  "sourceBefore": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+  "sourceAfter": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+  "node": "v22.23.3",
+  "scriptSha256": "f6527cc608a7836b07467c6c2cba3a83fe3712c6909c7247adfc00c945241ad5",
+  "sharedWorldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "cohort": {
+    "rosterSeedPairs": [
+      [
+        31,
+        32
+      ],
+      [
+        41,
+        42
+      ]
+    ],
+    "strength": 0.55,
+    "playSeed": 3,
+    "los": 40,
+    "ballY": 26.666666666666668,
+    "cases": [
+      {
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read"
+      },
+      {
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read"
+      },
+      {
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read"
+      },
+      {
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control"
+      },
+      {
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control"
+      },
+      {
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control"
+      }
+    ],
+    "flips": [
+      false,
+      true
+    ],
+    "declaration": "fixed before native outcomes"
+  },
+  "rostersSha256": "7149bb7a73676fbe2709428c25ac87e290135ab2f345c7c0676de0ea1d9f8578",
+  "definitions": {
+    "permanent": "Declared inline teBlock or back B with back:block. A check outlet remains receiving work.",
+    "onLine": "Engine declared depth<=.6; endpoint inventory, not skeletal NFL officiating.",
+    "ticks": "Public QB state points at a permanent protector during set, sampled before each native World step. Not an inferred eye gaze.",
+    "endpoints": "Native-whistle or engine physical timeout; field/offense yards are before game-level penalty enforcement.",
+    "controls": "Explicit identical Over nickel Cover3; tests production pass controllers, not automatic coordinator repair."
+  },
+  "summary": {
+    "censusPairs": 306,
+    "coveredPairs": 0,
+    "coveredRoutePairs": 0,
+    "firstReadPermanentPairs": 0,
+    "missingProgressionPairs": 177,
+    "nativeRows": 24,
+    "attempts": 18,
+    "completions": 14,
+    "sacks": 0,
+    "interceptions": 2,
+    "timeToThrowMean": 2.947222222222222,
+    "setWithPermanentReadTicks": 0,
+    "observerVerified": 6,
+    "physicalTimeouts": 0
+  },
+  "census": [
+    {
+      "formation": "gun_doubles_11",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_doubles_11",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_11",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trey_11",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_bunch_11",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "B"
+      ],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_empty_11",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": null,
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_11",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_11",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_trips_11",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_spread_10",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_trips_10",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y",
+        "H"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "ace_12",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y",
+        "H"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "gun_wing_12",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y",
+        "H"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "pistol_12",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y",
+        "H"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2",
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3",
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2",
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_pro_21",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2",
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3",
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2",
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_twins_21",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2",
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3",
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2",
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "offset_i_21",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y"
+      ],
+      "firstRead": "Z",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2",
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3",
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2",
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "W2"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y",
+        "H"
+      ],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "i_jumbo_22",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y",
+        "H"
+      ],
+      "firstRead": "X",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": "F"
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "slant_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "stick",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "quick_outs",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB"
+      ],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "hitches",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "smash",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "curl_flat",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "mesh",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "four_verts",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "dagger",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "drive",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "H",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "y_cross",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "levels",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "comebacks",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "pa_post_dig",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y",
+        "H"
+      ],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "pa_flood",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [],
+      "firstRead": "Y",
+      "firstReadPermanent": false,
+      "missingProgression": [
+        "S3"
+      ],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    },
+    {
+      "formation": "heavy_13",
+      "concept": "pa_shot",
+      "onLine": 7,
+      "coveredSkillSlots": [],
+      "coveredRouteSlots": [],
+      "permanentSlots": [
+        "RB",
+        "Y",
+        "H"
+      ],
+      "firstRead": "F",
+      "firstReadPermanent": false,
+      "missingProgression": [],
+      "backfieldRefs": {
+        "B": "RB",
+        "B2": null
+      }
+    }
+  ],
+  "rows": [
+    {
+      "id": "0:gun_doubles_11:pa_shot:false",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "gun_doubles_11",
+      "concept": "pa_shot",
+      "treatment": "protector-read",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y"
+        ],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+      "outcome": "tackle",
+      "duration": 6,
+      "fieldGainBeforePenalties": 17.11,
+      "offenseYardsBeforePenalties": 17.11,
+      "stats": {
+        "tacklers": [
+          "PDF-LB3"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 3.7,
+        "target": "POF-WR1",
+        "airYards": 15.39455044611509,
+        "separation": 3.1,
+        "receiver": "POF-WR1",
+        "yac": 1.8519853256976972
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "623741ff1cd984a9437abd0c63f375c74c9ddea9c57977d1bb361c1d8b30388d",
+      "observerVerified": true
+    },
+    {
+      "id": "0:gun_doubles_11:pa_shot:true",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "gun_doubles_11",
+      "concept": "pa_shot",
+      "treatment": "protector-read",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y"
+        ],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+      "outcome": "incomplete",
+      "duration": 5.35,
+      "fieldGainBeforePenalties": 0,
+      "offenseYardsBeforePenalties": 0,
+      "stats": {
+        "tacklers": [],
+        "completed": false,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 3.65,
+        "target": "POF-WR1",
+        "airYards": 15.411330679424758,
+        "separation": 2.6
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "6a34d6df028aec2d1d90c89c785b1f66159516580464b287c7fd582c699f814b",
+      "observerVerified": null
+    },
+    {
+      "id": "0:ace_12:pa_post_dig:false",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "ace_12",
+      "concept": "pa_post_dig",
+      "treatment": "formation-and-protector-read",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y",
+          "H"
+        ],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+      "outcome": "tackle",
+      "duration": 5.4,
+      "fieldGainBeforePenalties": 16.51,
+      "offenseYardsBeforePenalties": 16.51,
+      "stats": {
+        "tacklers": [
+          "PDF-CB3",
+          "PDF-S2"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 3.2,
+        "target": "POF-WR4",
+        "airYards": 13.954511005026909,
+        "separation": 1.3,
+        "receiver": "POF-WR4",
+        "yac": 1.8607614882189836
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "8de60e0815227277337bb90592e8d7164fd62d68f251c50b498c88f38c8792f7",
+      "observerVerified": null
+    },
+    {
+      "id": "0:ace_12:pa_post_dig:true",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "ace_12",
+      "concept": "pa_post_dig",
+      "treatment": "formation-and-protector-read",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y",
+          "H"
+        ],
+        "firstRead": "X",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+      "outcome": "tackle",
+      "duration": 5.95,
+      "fieldGainBeforePenalties": 20.56,
+      "offenseYardsBeforePenalties": 20.56,
+      "stats": {
+        "tacklers": [
+          "PDF-S2"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 3.2,
+        "target": "POF-WR3",
+        "airYards": 13.857455692586377,
+        "separation": 2.2,
+        "receiver": "POF-WR3",
+        "yac": 6.148536655230217
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "745f8b0a4d6f11c92cc88ceed783371a06728cf5338b32e941c850874c7ed596",
+      "observerVerified": null
+    },
+    {
+      "id": "0:pistol_12:pa_shot:false",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "pistol_12",
+      "concept": "pa_shot",
+      "treatment": "formation-and-protector-read",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y",
+          "H"
+        ],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+      "outcome": "slide",
+      "duration": 6.3,
+      "fieldGainBeforePenalties": 1.06,
+      "offenseYardsBeforePenalties": 1.06,
+      "stats": {
+        "tacklers": [],
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": true,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        }
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "6092aaf61a37a53351e228468aeba011bd1d68581221167e0202dcaffdef8fce",
+      "observerVerified": true
+    },
+    {
+      "id": "0:pistol_12:pa_shot:true",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "pistol_12",
+      "concept": "pa_shot",
+      "treatment": "formation-and-protector-read",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y",
+          "H"
+        ],
+        "firstRead": "X",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+      "outcome": "slide",
+      "duration": 6.3,
+      "fieldGainBeforePenalties": 1.24,
+      "offenseYardsBeforePenalties": 1.24,
+      "stats": {
+        "tacklers": [],
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": true,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        }
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "486b88baaa5e78f6ba6ee01c1fbe787af27019bcada68ff80ad0b6cd7511af88",
+      "observerVerified": null
+    },
+    {
+      "id": "0:gun_doubles_11:curl_flat:false",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "gun_doubles_11",
+      "concept": "curl_flat",
+      "treatment": "check-outlet-control",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+      "outcome": "tackle",
+      "duration": 5.1,
+      "fieldGainBeforePenalties": 4.68,
+      "offenseYardsBeforePenalties": 4.68,
+      "stats": {
+        "tacklers": [
+          "PDF-CB2",
+          "PDF-LB3"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 2.45,
+        "target": "POF-TE2",
+        "airYards": 0.36073951914983127,
+        "separation": 4.4,
+        "receiver": "POF-TE2",
+        "yac": 5.87322894524344
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "55605b24a5c8c90b5a1295a929d7499532c3881804ec8e4a715d86dcf9cd6ca9",
+      "observerVerified": true
+    },
+    {
+      "id": "0:gun_doubles_11:curl_flat:true",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "gun_doubles_11",
+      "concept": "curl_flat",
+      "treatment": "check-outlet-control",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+      "outcome": "tackle",
+      "duration": 4.35,
+      "fieldGainBeforePenalties": 2.51,
+      "offenseYardsBeforePenalties": 2.51,
+      "stats": {
+        "tacklers": [
+          "PDF-CB2"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 2.45,
+        "target": "POF-TE2",
+        "airYards": 3.0303820194626994,
+        "separation": 3.7,
+        "receiver": "POF-TE2",
+        "yac": 0.38901937358298966
+      },
+      "penalty": {
+        "kind": "holding",
+        "against": "O",
+        "playerId": "POF-OT2",
+        "yards": 10,
+        "autoFirst": false,
+        "spotX": 34.42944130067241
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "994b08ddfb1e04914a896de2fb11b684d3676d664ca3c17d1d60e2cfdf6543af",
+      "observerVerified": null
+    },
+    {
+      "id": "0:gun_trips_11:four_verts:false",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "gun_trips_11",
+      "concept": "four_verts",
+      "treatment": "vertical-control",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "H",
+        "firstReadPermanent": false,
+        "missingProgression": [
+          "W2"
+        ],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+      "outcome": "incomplete",
+      "duration": 4.5,
+      "fieldGainBeforePenalties": 0,
+      "offenseYardsBeforePenalties": 0,
+      "stats": {
+        "tacklers": [],
+        "completed": false,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 3.2,
+        "target": "POF-RB1",
+        "airYards": 4.7301146016925415,
+        "separation": 5.4
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "8bd6758d0c64caca92b6a3512d5675e1d6d4dfafc84052ce298c31fc76301845",
+      "observerVerified": null
+    },
+    {
+      "id": "0:gun_trips_11:four_verts:true",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "gun_trips_11",
+      "concept": "four_verts",
+      "treatment": "vertical-control",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "H",
+        "firstReadPermanent": false,
+        "missingProgression": [
+          "W2"
+        ],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+      "outcome": "tackle",
+      "duration": 7.7,
+      "fieldGainBeforePenalties": 18.77,
+      "offenseYardsBeforePenalties": 18.77,
+      "stats": {
+        "tacklers": [
+          "PDF-S2"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 1,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 3.2,
+        "target": "POF-RB1",
+        "airYards": 4.730131132815316,
+        "separation": 5.7,
+        "receiver": "POF-RB1",
+        "yac": 14.124096738494643
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "7debb4950e8f20ac194ad2e1acfcdf934586de41faade4c0c612bf63f4ad674c",
+      "observerVerified": null
+    },
+    {
+      "id": "0:gun_bunch_11:mesh:false",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "treatment": "degraded-install-control",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "Y",
+        "firstReadPermanent": false,
+        "missingProgression": [
+          "W2"
+        ],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+      "outcome": "tackle",
+      "duration": 4.25,
+      "fieldGainBeforePenalties": 7.28,
+      "offenseYardsBeforePenalties": 7.28,
+      "stats": {
+        "tacklers": [
+          "PDF-LB3",
+          "PDF-CB2"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 2,
+        "target": "POF-TE2",
+        "airYards": 3.813352034577271,
+        "separation": 4.7,
+        "receiver": "POF-TE2",
+        "yac": 3.744201716259333
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "b99568c37a326a398bfc606705b70acd87d362a11c02de6000db851e01dc6d65",
+      "observerVerified": null
+    },
+    {
+      "id": "0:gun_bunch_11:mesh:true",
+      "rosterSeedPair": [
+        31,
+        32
+      ],
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "treatment": "degraded-install-control",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "Y",
+        "firstReadPermanent": false,
+        "missingProgression": [
+          "W2"
+        ],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+      "outcome": "tackle",
+      "duration": 3.8,
+      "fieldGainBeforePenalties": 0,
+      "offenseYardsBeforePenalties": 0,
+      "stats": {
+        "tacklers": [
+          "POF-C1",
+          "POF-OG3"
+        ],
+        "completed": false,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB3",
+        "timeToThrow": 2,
+        "target": "POF-TE2",
+        "airYards": 3.358237754976834,
+        "passDefendedBy": "PDF-EDGE1",
+        "interceptedBy": "PDF-DT2",
+        "returnYards": 0.6093763182221181
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "4de709bd7f6fe4751108d5783f39ab0b3c8212b24c558ee6a93cd904dc8d80b7",
+      "observerVerified": null
+    },
+    {
+      "id": "1:gun_doubles_11:pa_shot:false",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "gun_doubles_11",
+      "concept": "pa_shot",
+      "treatment": "protector-read",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y"
+        ],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+      "outcome": "tackle",
+      "duration": 8.8,
+      "fieldGainBeforePenalties": 36.69,
+      "offenseYardsBeforePenalties": 36.69,
+      "stats": {
+        "tacklers": [
+          "PDF-CB1"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 1,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB2",
+        "timeToThrow": 3.55,
+        "target": "POF-WR3",
+        "airYards": 15.285710223248273,
+        "separation": 4.5,
+        "receiver": "POF-WR3",
+        "yac": 19.80509472193654
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "c1a36784aa80831425d09c5ef713a306c2cc0beb7c50e3695b35dbc065152763",
+      "observerVerified": true
+    },
+    {
+      "id": "1:gun_doubles_11:pa_shot:true",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "gun_doubles_11",
+      "concept": "pa_shot",
+      "treatment": "protector-read",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y"
+        ],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+      "outcome": "tackle",
+      "duration": 7.6,
+      "fieldGainBeforePenalties": 26.02,
+      "offenseYardsBeforePenalties": 26.02,
+      "stats": {
+        "tacklers": [
+          "PDF-CB3"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 1,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB2",
+        "timeToThrow": 3.55,
+        "target": "POF-WR3",
+        "airYards": 13.856222865513807,
+        "separation": 3,
+        "receiver": "POF-WR3",
+        "yac": 11.777345963013609
+      },
+      "penalty": {
+        "kind": "holding",
+        "against": "O",
+        "playerId": "POF-OT2",
+        "yards": 10,
+        "autoFirst": false,
+        "spotX": 34.47419522785759
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "e66ac8fd21c9e8d69ca23f3918cf347f079a15e31bcb03424612e32cff7d9036",
+      "observerVerified": null
+    },
+    {
+      "id": "1:ace_12:pa_post_dig:false",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "ace_12",
+      "concept": "pa_post_dig",
+      "treatment": "formation-and-protector-read",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y",
+          "H"
+        ],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+      "outcome": "touchdown",
+      "duration": 11.1,
+      "fieldGainBeforePenalties": 70,
+      "offenseYardsBeforePenalties": 70,
+      "stats": {
+        "tacklers": [],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 1,
+        "missedTackles": 1,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB2",
+        "timeToThrow": 3.2,
+        "target": "POF-WR1",
+        "airYards": 13.722833475955596,
+        "separation": 1.8,
+        "receiver": "POF-WR1",
+        "yac": 53.95063928166901
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "85fea6734bcde57e93fbc6202ae80fc576e926f4d4aa74901d1f971a6d88e5a4",
+      "observerVerified": null
+    },
+    {
+      "id": "1:ace_12:pa_post_dig:true",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "ace_12",
+      "concept": "pa_post_dig",
+      "treatment": "formation-and-protector-read",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y",
+          "H"
+        ],
+        "firstRead": "X",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+      "outcome": "tackle",
+      "duration": 7.5,
+      "fieldGainBeforePenalties": 39.08,
+      "offenseYardsBeforePenalties": 39.08,
+      "stats": {
+        "tacklers": [
+          "PDF-CB3"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 1,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB2",
+        "timeToThrow": 3.2,
+        "target": "POF-WR2",
+        "airYards": 13.939046776679838,
+        "separation": 1.4,
+        "receiver": "POF-WR2",
+        "yac": 21.18783837773688
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "a360cdef23d8268da8ad493c101d3ac0b58876c59fb9e8f6cdabf98f49553a0b",
+      "observerVerified": null
+    },
+    {
+      "id": "1:pistol_12:pa_shot:false",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "pistol_12",
+      "concept": "pa_shot",
+      "treatment": "formation-and-protector-read",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y",
+          "H"
+        ],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+      "outcome": "slide",
+      "duration": 8.15,
+      "fieldGainBeforePenalties": 1.17,
+      "offenseYardsBeforePenalties": 1.17,
+      "stats": {
+        "tacklers": [],
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": true,
+        "throwaway": false,
+        "pressured": true,
+        "brokenTackles": 1,
+        "missedTackles": 1,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "hurriedBy": "PDF-DT2",
+        "yardsBeforeContact": -2.0721917815254187
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "a66a2f7df6c07121bfee9eb0932714964c083e378151ca8a83229be05146837f",
+      "observerVerified": true
+    },
+    {
+      "id": "1:pistol_12:pa_shot:true",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "pistol_12",
+      "concept": "pa_shot",
+      "treatment": "formation-and-protector-read",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [
+          "RB",
+          "Y",
+          "H"
+        ],
+        "firstRead": "X",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+      "outcome": "slide",
+      "duration": 5.7,
+      "fieldGainBeforePenalties": 2.13,
+      "offenseYardsBeforePenalties": 2.13,
+      "stats": {
+        "tacklers": [],
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": true,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        }
+      },
+      "penalty": {
+        "kind": "holding",
+        "against": "O",
+        "playerId": "POF-OT2",
+        "yards": 10,
+        "autoFirst": false,
+        "spotX": 37.573898854000866
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "e9fa8dcf20c43918ed7854ad4ae47b8312cc8882b3c2fe2ead28cf5ab400feab",
+      "observerVerified": null
+    },
+    {
+      "id": "1:gun_doubles_11:curl_flat:false",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "gun_doubles_11",
+      "concept": "curl_flat",
+      "treatment": "check-outlet-control",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+      "outcome": "touchdown",
+      "duration": 12.25,
+      "fieldGainBeforePenalties": 70,
+      "offenseYardsBeforePenalties": 70,
+      "stats": {
+        "tacklers": [],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 1,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB2",
+        "timeToThrow": 3.8,
+        "target": "POF-WR3",
+        "airYards": 9.303759055193566,
+        "separation": 5.7,
+        "receiver": "POF-WR3",
+        "yac": 61.193928189570364
+      },
+      "penalty": {
+        "kind": "holding",
+        "against": "O",
+        "playerId": "POF-OG1",
+        "yards": 10,
+        "autoFirst": false,
+        "spotX": 37.398143859721884
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "f7151aa167733005a9a7df1eb733c40c0b6351e190d7090e767ecf95b859681e",
+      "observerVerified": true
+    },
+    {
+      "id": "1:gun_doubles_11:curl_flat:true",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "gun_doubles_11",
+      "concept": "curl_flat",
+      "treatment": "check-outlet-control",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "Z",
+        "firstReadPermanent": false,
+        "missingProgression": [],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+      "outcome": "tackle",
+      "duration": 5.55,
+      "fieldGainBeforePenalties": 0,
+      "offenseYardsBeforePenalties": 0,
+      "stats": {
+        "tacklers": [
+          "POF-TE2"
+        ],
+        "completed": false,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB2",
+        "timeToThrow": 2.85,
+        "target": "POF-TE2",
+        "airYards": 4.471686444007325,
+        "interceptedBy": "PDF-S4",
+        "returnYards": 8.049065108277773
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "78f6d87e017114b20e8a0f65d5c237f72ab40b55f867c7c4e623dd729aec35fb",
+      "observerVerified": null
+    },
+    {
+      "id": "1:gun_trips_11:four_verts:false",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "gun_trips_11",
+      "concept": "four_verts",
+      "treatment": "vertical-control",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "H",
+        "firstReadPermanent": false,
+        "missingProgression": [
+          "W2"
+        ],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+      "outcome": "slide",
+      "duration": 5.55,
+      "fieldGainBeforePenalties": 2.04,
+      "offenseYardsBeforePenalties": 2.04,
+      "stats": {
+        "tacklers": [],
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": true,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        }
+      },
+      "penalty": {
+        "kind": "holding",
+        "against": "O",
+        "playerId": "POF-OG2",
+        "yards": 10,
+        "autoFirst": false,
+        "spotX": 34.598447619640666
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "488d7b0e928ae938ae6e594982954c7fc0e512200ab5125df3598d79cd84767b",
+      "observerVerified": null
+    },
+    {
+      "id": "1:gun_trips_11:four_verts:true",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "gun_trips_11",
+      "concept": "four_verts",
+      "treatment": "vertical-control",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "H",
+        "firstReadPermanent": false,
+        "missingProgression": [
+          "W2"
+        ],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+      "outcome": "tackle",
+      "duration": 6.75,
+      "fieldGainBeforePenalties": 4.67,
+      "offenseYardsBeforePenalties": 4.67,
+      "stats": {
+        "tacklers": [
+          "PDF-LB1"
+        ],
+        "completed": false,
+        "attempted": false,
+        "sacked": false,
+        "scramble": true,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 1,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "yardsBeforeContact": 0.9526445456250201
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "115c9b3f739ac154f2f0e37f50bf239bbb3dbc5dd1c0124ab115f1e652e0c7ef",
+      "observerVerified": null
+    },
+    {
+      "id": "1:gun_bunch_11:mesh:false",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "treatment": "degraded-install-control",
+      "flip": false,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "Y",
+        "firstReadPermanent": false,
+        "missingProgression": [
+          "W2"
+        ],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+      "outcome": "tackle",
+      "duration": 4,
+      "fieldGainBeforePenalties": 4.59,
+      "offenseYardsBeforePenalties": 4.59,
+      "stats": {
+        "tacklers": [
+          "PDF-LB1",
+          "PDF-LB2"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB2",
+        "timeToThrow": 1.9,
+        "target": "POF-TE2",
+        "airYards": 4.355797457937506,
+        "separation": 4.7,
+        "receiver": "POF-TE2",
+        "yac": 0.6853558925562453
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "4a04ab3f48e3aeff989afeda7b8f0e019edc523591341e678f5aa8ec85272a7d",
+      "observerVerified": null
+    },
+    {
+      "id": "1:gun_bunch_11:mesh:true",
+      "rosterSeedPair": [
+        41,
+        42
+      ],
+      "formation": "gun_bunch_11",
+      "concept": "mesh",
+      "treatment": "degraded-install-control",
+      "flip": true,
+      "installed": {
+        "onLine": 7,
+        "coveredSkillSlots": [],
+        "coveredRouteSlots": [],
+        "permanentSlots": [],
+        "firstRead": "Y",
+        "firstReadPermanent": false,
+        "missingProgression": [
+          "W2"
+        ],
+        "backfieldRefs": {
+          "B": "RB",
+          "B2": null
+        }
+      },
+      "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+      "outcome": "tackle",
+      "duration": 3.5,
+      "fieldGainBeforePenalties": 7.95,
+      "offenseYardsBeforePenalties": 7.95,
+      "stats": {
+        "tacklers": [
+          "PDF-LB1"
+        ],
+        "completed": true,
+        "attempted": true,
+        "sacked": false,
+        "scramble": false,
+        "throwaway": false,
+        "pressured": false,
+        "brokenTackles": 0,
+        "missedTackles": 0,
+        "dropped": false,
+        "qbRead": {
+          "pre": "cover3",
+          "actual": "cover3",
+          "post": "cover3"
+        },
+        "passer": "POF-QB2",
+        "timeToThrow": 1.95,
+        "target": "POF-TE2",
+        "airYards": 4.317954346090453,
+        "separation": 4.8,
+        "receiver": "POF-TE2",
+        "yac": 3.3902572219011518
+      },
+      "setWithPermanentReadTicks": 0,
+      "executionSha256": "0c0548a31cca1831fd66d77cdce6f80593ae15fc636903540fcc66beffbcbc74",
+      "observerVerified": null
+    }
+  ]
+}

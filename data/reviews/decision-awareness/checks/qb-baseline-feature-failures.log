@@ -1,0 +1,244 @@
+
+ RUN  v3.2.4 /tmp/shared-awareness-632fb02
+
+ ❯ test/qb-memory-awareness.test.ts (14 tests | 9 failed) 65ms
+   × QB acquired memory and coverage confirmation > does not acquire a stale off-screen defender because only his hidden current position enters the cone 29ms
+     → expected { pos: { x: 47, …(1) }, …(2) } to deeply equal { pos: { x: 30, y: 46 }, …(2) }
+   × QB acquired memory and coverage confirmation > retains an in-cone delayed acquisition when the hidden current body has already left 6ms
+     → expected { pos: { x: 50, y: 26 }, …(2) } to deeply equal { pos: { x: 47, …(1) }, …(2) }
+   × QB acquired memory and coverage confirmation > does not let the coverage signature refresh a defender absent from the look 4ms
+     → expected [ 1.1958781212084413, …(2) ] to deeply equal [ 2.195848087473241, …(2) ]
+   × QB acquired memory and coverage confirmation > uses a real reacquisition to change the coverage picture, without consuming a random draw 2ms
+     → expected 2.195848087473241 to be greater than 2.9958480874732407
+   ✓ QB acquired memory and coverage confirmation > retains the older peripheral picture and its existing memory-age allowance 4ms
+   × QB acquired memory and coverage confirmation > uses pre-snap memory for a defender never reobserved rather than the live rotation 2ms
+     → expected [ 2.195850585517292, …(2) ] to deeply equal [ 1.2717087655385704, …(2) ]
+   ✓ QB acquired memory and coverage confirmation > keeps the coverage signature independent of the coverage expectation used to fill old throw estimates 2ms
+   ✓ QB acquired memory and coverage confirmation > caps memory coasting instead of extrapolating an unobserved moving defender forever 2ms
+   ✓ QB acquired memory and coverage confirmation > classifies a look acquired at the processing milestone, not an unrelated fresh scan 2ms
+   × QB acquired memory and coverage confirmation > does not strengthen a coverage belief across processing milestones without acquiring a new picture 2ms
+     → expected { cover0: 0.5136179535471893, …(7) } to deeply equal { cover0: 0.013264112118180866, …(7) }
+   × QB acquired memory and coverage confirmation > can process a real clear reacquisition after an earlier look supplied no new evidence 2ms
+     → expected false to be true // Object.is equality
+   × QB acquired memory and coverage confirmation > can process a real peripheral reacquisition after an earlier look supplied no new evidence 2ms
+     → expected false to be true // Object.is equality
+   × QB acquired memory and coverage confirmation > does not reclassify an already consumed new look when the next processing opportunity has no reacquisition 2ms
+     → expected { cover0: 0.8331945239269897, …(7) } to deeply equal { cover0: 0.009700739808123807, …(7) }
+   ✓ QB acquired memory and coverage confirmation > keeps standard memory estimates and the classifier read-only between deliberate looks 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > does not acquire a stale off-screen defender because only his hidden current position enters the cone
+AssertionError: expected { pos: { x: 47, …(1) }, …(2) } to deeply equal { pos: { x: 30, y: 46 }, …(2) }
+
+- Expected
++ Received
+
+@@ -1,10 +1,10 @@
+  {
+    "facing": 3.141592653589793,
+    "pos": {
+-     "x": 30,
+-     "y": 46,
++     "x": 47,
++     "y": 7.502868034611952,
+    },
+    "vel": {
+      "x": 0,
+      "y": 0,
+    },
+
+ ❯ test/qb-memory-awareness.test.ts:38:46
+     36|     expect(held.sim.see(held.sim.qb, held.d)).toEqual(hidden.sim.see(h…
+     37|     for (const f of [held, hidden]) f.sim.qbMind.observe(middle);
+     38|     expect(held.sim.qbMind.estimate(held.d)).toEqual(hidden.sim.qbMind…
+       |                                              ^
+     39|     expect(held.sim.qbMind.postFeaturesObserved()).toEqual(hidden.sim.…
+     40|     expect(held.sim.rng.next()).toBe(hidden.sim.rng.next());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > retains an in-cone delayed acquisition when the hidden current body has already left
+AssertionError: expected { pos: { x: 50, y: 26 }, …(2) } to deeply equal { pos: { x: 47, …(1) }, …(2) }
+
+- Expected
++ Received
+
+@@ -1,10 +1,10 @@
+  {
+    "facing": 3.141592653589793,
+    "pos": {
+-     "x": 47,
+-     "y": 7.502868034611952,
++     "x": 50,
++     "y": 26,
+    },
+    "vel": {
+      "x": 0,
+      "y": 0,
+    },
+
+ ❯ test/qb-memory-awareness.test.ts:48:46
+     46|     hidden.d.body.pos = { x: 30, y: 46 };
+     47|     for (const f of [held, hidden]) f.sim.qbMind.observe(middle);
+     48|     expect(held.sim.qbMind.estimate(held.d)).toEqual(hidden.sim.qbMind…
+       |                                              ^
+     49|     expect(hidden.sim.qbMind.estimate(hidden.d).pos).toEqual({ x: 50, …
+     50|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > does not let the coverage signature refresh a defender absent from the look
+AssertionError: expected [ 1.1958781212084413, …(2) ] to deeply equal [ 2.195848087473241, …(2) ]
+
+- Expected
++ Received
+
+  [
+-   2.195848087473241,
++   1.1958781212084413,
+    0.9704224868164105,
+    0,
+  ]
+
+ ❯ test/qb-memory-awareness.test.ts:57:55
+     55|     for (const f of [shallow, deep]) { f.sim.t = .2; f.sim.qbMind.obse…
+     56|     expect(shallow.sim.qbMind.estimate(shallow.d)).toEqual(deep.sim.qb…
+     57|     expect(shallow.sim.qbMind.postFeaturesObserved()).toEqual(deep.sim…
+       |                                                       ^
+     58|   });
+     59| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > uses a real reacquisition to change the coverage picture, without consuming a random draw
+AssertionError: expected 2.195848087473241 to be greater than 2.9958480874732407
+ ❯ test/qb-memory-awareness.test.ts:67:52
+     65|     const rng = { ...f.sim.rng };
+     66|     f.sim.t = .3; f.sim.qbMind.observe({ x: 58, y: 50 });
+     67|     expect(f.sim.qbMind.postFeaturesObserved()[0]).toBeGreaterThan(uns…
+       |                                                    ^
+     68|     expect({ ...f.sim.rng }).toEqual(rng);
+     69|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > uses pre-snap memory for a defender never reobserved rather than the live rotation
+AssertionError: expected [ 2.195850585517292, …(2) ] to deeply equal [ 1.2717087655385704, …(2) ]
+
+- Expected
++ Received
+
+  [
+-   1.2717087655385704,
++   2.195850585517292,
+    0.9704224868164105,
+    0,
+  ]
+
+ ❯ test/qb-memory-awareness.test.ts:91:49
+     89|     const preSnap = f.sim.qbMind.postFeaturesObserved();
+     90|     pictures(f, 75, 48, 5); f.sim.t = 1.5;
+     91|     expect(f.sim.qbMind.postFeaturesObserved()).toEqual(preSnap);
+       |                                                 ^
+     92|     expect(f.sim.qbMind.identified).toBe(false);
+     93|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > does not strengthen a coverage belief across processing milestones without acquiring a new picture
+AssertionError: expected { cover0: 0.5136179535471893, …(7) } to deeply equal { cover0: 0.013264112118180866, …(7) }
+
+- Expected
++ Received
+
+  {
+-   "cover0": 0.013264112118180866,
+-   "cover1": 0.000006141845686464725,
+-   "cover2": 0.033179395136670266,
+-   "cover2man": 0.01989412315311331,
+-   "cover3": 0.8374359818500053,
+-   "cover4": 0.049769092705005416,
+-   "cover6": 0.02654351610933622,
+-   "tampa2": 0.019907637082002157,
++   "cover0": 0.5136179535471893,
++   "cover1": 0.000021903819438457102,
++   "cover2": 0.07138910270672222,
++   "cover2man": 0.15030897358090048,
++   "cover3": 0.1812117122769346,
++   "cover4": 0.020703003244497243,
++   "cover6": 0.023988026056154004,
++   "tampa2": 0.038759324768163544,
+  }
+
+ ❯ test/qb-memory-awareness.test.ts:134:35
+    132|       f.sim.t = t; f.sim.qbMind.observe(middle);
+    133|       expect(f.sim.qbMind.postFeaturesObserved()).toEqual(held);
+    134|       expect(f.sim.qbMind.belief).toEqual(belief);
+       |                                   ^
+    135|       expect(f.sim.qbMind.report.post).toBeUndefined();
+    136|       expect(f.sim.qbMind.identified).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > can process a real clear reacquisition after an earlier look supplied no new evidence
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > can process a real peripheral reacquisition after an earlier look supplied no new evidence
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/qb-memory-awareness.test.ts:150:41
+    148|     f.sim.t += .2; f.sim.qbMind.observe(middle);
+    149|     expect(f.sim.qbMind.identified).toBe(true);
+    150|     expect(f.sim.qbMind.justIdentified).toBe(true);
+       |                                         ^
+    151|     expect(f.sim.qbMind.report.post).toBe(f.sim.qbMind.top());
+    152|     expect(f.sim.qbMind.belief).not.toEqual(before);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  test/qb-memory-awareness.test.ts > QB acquired memory and coverage confirmation > does not reclassify an already consumed new look when the next processing opportunity has no reacquisition
+AssertionError: expected { cover0: 0.8331945239269897, …(7) } to deeply equal { cover0: 0.009700739808123807, …(7) }
+
+- Expected
++ Received
+
+  {
+-   "cover0": 0.009700739808123807,
+-   "cover1": 0.000029460394972527672,
+-   "cover2": 0.027523164848444866,
+-   "cover2man": 0.015551391288204075,
+-   "cover3": 0.8944839445162396,
+-   "cover4": 0.018542652212071253,
+-   "cover6": 0.016701078241058917,
+-   "tampa2": 0.017467568690885078,
++   "cover0": 0.8331945239269897,
++   "cover1": 0.00006260568815351705,
++   "cover2": 0.047259840866413716,
++   "cover2man": 0.08570241287626128,
++   "cover3": 0.03237448881206975,
++   "cover4": 0.00002081139148556305,
++   "cover6": 0.0005443576544333794,
++   "tampa2": 0.0008409587841931309,
+  }
+
+ ❯ test/qb-memory-awareness.test.ts:164:33
+    162|     hideAll(f);
+    163|     f.sim.t = f.sim.qbMind.identifyAt + .5; f.sim.qbMind.observe(middl…
+    164|     expect(f.sim.qbMind.belief).toEqual(belief);
+       |                                 ^
+    165|     expect(f.sim.qbMind.report).toEqual(report);
+    166|     expect(f.sim.qbMind.justIdentified).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 5 passed (14)
+   Start at  12:37:04
+   Duration  1.01s (transform 599ms, setup 0ms, collect 776ms, tests 65ms, environment 0ms, prepare 55ms)
+

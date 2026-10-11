@@ -59,6 +59,11 @@ function fixture(side = 1, poorHelper = false, recognition?: [number, number]) {
   backer.body.pos = { x: 48, y: CENTER_Y + side };
   sim.qb.body.pos = { x: 36, y: CENTER_Y - side * 2 };
   sim.slot('RB')!.body.pos = { x: 34, y: CENTER_Y };
+  // This reduced solve stages an already recognised run contact. It disables
+  // normal behavior/recognition updates, so it must not rely on the offensive
+  // call secretly supplying the DL's belief. Physical support/hands are still
+  // acquired and loaded below; unsure/false keys have separate cue controls.
+  defender.recog!.read = 'run';
   primary.body.facing = helper.body.facing = 0; defender.body.facing = Math.PI;
   const combo: Combination = { members: [primary, helper], defender, backer, released: false,
     secureSince: -1, nextRead: 0, soloKind: 'drive' };
@@ -148,17 +153,29 @@ describe('a joined lineman reads for his own possible departure', () => {
   });
 
   it('a faster partner consumes his own due reads rather than borrowing the slower first member clock', () => {
-    const f = loaded(fixture(1, false, [35, 95]));
+    // These processing traits straddle native .05 s sampling. A smaller true
+    // interval difference can quantize to the same update ticks and does not
+    // imply borrowed cadence. Strength/hand/foot training remain unchanged.
+    const f = loaded(fixture(1, false, [5, 99]));
     expect(f.helper.mind.decisionInterval).toBeLessThan(f.primary.mind.decisionInterval);
-    const calls: Array<{ t: number; observer: Agent; target: Agent }> = [];
-    const original = f.sim.see.bind(f.sim);
-    vi.spyOn(f.sim, 'see').mockImplementation((observer, target) => {
-      calls.push({ t: f.sim.t, observer, target }); return original(observer, target);
-    });
-    batch(f);
+    const calls: Array<{ t: number; observer: Agent; nextRead: number }> = [];
+    const consume = () => {
+      for (const observer of f.combo.members) {
+        const index = f.combo.members.indexOf(observer), before = f.combo.reads?.[index]?.readAt;
+        read(f, observer);
+        const actual = f.combo.reads?.[index];
+        if (actual && actual.readAt !== before) {
+          expect(actual.readAt).toBe(f.sim.t);
+          expect(actual.nextRead).toBeCloseTo(f.sim.t + observer.mind.decisionInterval, 12);
+          calls.push({ t: actual.readAt, observer, nextRead: actual.nextRead });
+        }
+      }
+      resolve(f);
+    };
+    consume();
     const start = f.sim.t;
-    for (let k = 0; k < 12; k++) { step(f); batch(f); }
-    const times = (a: Agent) => [...new Set(calls.filter(c => c.observer === a && c.target === f.defender).map(c => c.t))];
+    for (let k = 0; k < 12; k++) { step(f); consume(); }
+    const times = (a: Agent) => calls.filter(c => c.observer === a).map(c => c.t);
     expect(times(f.primary).length).toBeGreaterThan(1);
     expect(times(f.helper).length).toBeGreaterThan(times(f.primary).length);
     expect(times(f.helper)[0]).toBe(start);

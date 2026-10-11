@@ -1,0 +1,101 @@
+{
+  "baselineSource": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+  "candidateSource": "8863cafc764390fb31f0675fb8eaf7756da8a53019dd0281a11d9482c26703f1",
+  "matchingCollector": true,
+  "baselineBeats": 153,
+  "candidateBeats": 97,
+  "candidateObserverAll": true,
+  "candidateNativeSchedulesMatchDeclared": true,
+  "candidateMinDeclared": 0.18479379931839762,
+  "candidateMaxDeclared": 0.20845461465970896,
+  "pairs": [
+    {
+      "run": "iz_strong",
+      "front": "over",
+      "flip": false,
+      "baselineYards": 2.27,
+      "candidateYards": 3.58,
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineBeats": 16,
+      "candidateBeats": 11
+    },
+    {
+      "run": "iz_strong",
+      "front": "over",
+      "flip": true,
+      "baselineYards": 3.06,
+      "candidateYards": 4.68,
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineBeats": 23,
+      "candidateBeats": 11
+    },
+    {
+      "run": "iz_strong",
+      "front": "under",
+      "flip": false,
+      "baselineYards": 4.8,
+      "candidateYards": 6.23,
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineBeats": 21,
+      "candidateBeats": 14
+    },
+    {
+      "run": "iz_strong",
+      "front": "under",
+      "flip": true,
+      "baselineYards": 1.09,
+      "candidateYards": 1.64,
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineBeats": 17,
+      "candidateBeats": 10
+    },
+    {
+      "run": "oz_strong",
+      "front": "over",
+      "flip": false,
+      "baselineYards": 1.91,
+      "candidateYards": -0.19,
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineBeats": 17,
+      "candidateBeats": 11
+    },
+    {
+      "run": "oz_strong",
+      "front": "over",
+      "flip": true,
+      "baselineYards": -1.67,
+      "candidateYards": 2.7,
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineBeats": 14,
+      "candidateBeats": 15
+    },
+    {
+      "run": "oz_strong",
+      "front": "under",
+      "flip": false,
+      "baselineYards": -0.23,
+      "candidateYards": 1.23,
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineBeats": 22,
+      "candidateBeats": 15
+    },
+    {
+      "run": "oz_strong",
+      "front": "under",
+      "flip": true,
+      "baselineYards": 2.28,
+      "candidateYards": -0.17,
+      "baselineOutcome": "tackle",
+      "candidateOutcome": "tackle",
+      "baselineBeats": 23,
+      "candidateBeats": 10
+    }
+  ]
+}

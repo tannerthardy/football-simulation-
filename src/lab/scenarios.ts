@@ -58,16 +58,18 @@ export interface Invariants {
 const idle = { kind: 'idle', update: (): MoveCommand => ({ vel: { x: 0, y: 0 } }) };
 
 function lab(o: LabOptions, run: boolean) {
+  const side = o.side ?? 1;
   const rng = new Rng(o.seed ?? 7);
   const off = generateTeam(rng, 'O', 'OFF', { strength: 0.55 });
   const def = generateTeam(rng, 'D', 'DEF', { strength: 0.55 });
   const sim = new PlaySim({ offense: pickOffense(off, '11'), defense: pickDefense(def, 'base43'),
-    offCall: run ? { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'lab' }
-      : { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'lab' },
+    // Mirror the installed formation and derived run-fit shoulders as well as
+    // the bodies placed below. A physical mirror cannot keep an unmirrored job.
+    offCall: run ? { formation: FORMATION_BY_ID.ace_11, flip: side < 0, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'lab' }
+      : { formation: FORMATION_BY_ID.gun_doubles_11, flip: side < 0, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'lab' },
     defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'lab' },
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed: rng.nextU32(), supportModel: o.supportModel, constraintWork: o.constraintWork, impactTiming: o.impactTiming, supportIntegration: o.supportIntegration });
   if (o.substeps) sim.world.substeps = o.substeps;
-  const side = o.side ?? 1;
   const park = (keep: Agent[]) => {
     for (const a of sim.agents) {
       if (keep.includes(a)) continue;

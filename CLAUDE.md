@@ -7,8 +7,22 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [awareness and committed action](docs/reviews/decision-awareness-and-commitment.md)
+first. Carriers now use their attention-dependent decision beat, engaged
+defenders keep their known fit and consume delayed runner cues, CB/S man keys
+follow their assignment, and QB classification uses acquired memory with a
+no-new-evidence guard. The [packet](data/reviews/decision-awareness/README.md)
+retains component phases, all adverse outcomes, 934 TS/66 Python passing tests
+and 20 paired clips. Shared physics/capacities stay unchanged. The two-game
+guard materially worsens (35.5→49.25 points/team, 3.83→8.46 rush yards/carry);
+this is bounded correctness progress, not a calibration win. Start next with
+the retained Split Zone Over/L/S11 free-safety wrap at 3.5s, observed quality
+0.00: trace approach, acquisition and recovery before changing grip strength.
+Protection still uses private rush/drop state; LB attention, component-fresh
+QB evidence and visible possession remain open work. Facing is not eyes.
+
 Read [current run-game diagnosis](docs/reviews/run-game-current-diagnosis.md)
-first. The balanced 160 baseline is cramped; mean 1.28→1.32 yd is not an overall
+for the preceding increment. The balanced 160 baseline is cramped; mean 1.28→1.32 yd is not an overall
 performance breakthrough. Run contact now uses run training for offensive
 hands/feet, and carrier recovery forecasts use consumed delayed pose rather
 than a negative scenario deadline. Physics/capacities are unchanged. Retain

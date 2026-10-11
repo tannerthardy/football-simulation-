@@ -280,7 +280,7 @@ export class Recognition {
     // (run, or play action's run look) or one sitting back in a pass set.
     if (this.group === 'DL' && a.engagement) {
       const st = a.engagement.blocker.stance;
-      add(st === 'low' ? -1.2 : st === 'high' ? 1.2 : a.engagement.type === 'pass' ? 1.2 : -1.2, 1.5);
+      if (st) add(st === 'low' ? -1.2 : 1.2, 1.5);
     }
 
     // The quarterback: dropping past the mesh depth is a pass; riding a mesh
@@ -307,9 +307,15 @@ export class Recognition {
 
     // Receivers: releasing hard is pass; closing down on a defender to block is run.
     if (w.wr > 0) {
-      let best: Agent | null = null;
+      // A man player keys the receiver he was assigned, including a back.
+      // Crossing/stacked receivers do not silently replace that known job.
+      // Zone players retain their existing local key; this is not a global
+      // attention budget or access to another defender's private read.
+      const man = a.behavior.kind === 'man'
+        ? (a.behavior as typeof a.behavior & { target?: Agent | null }).target : null;
+      let best: Agent | null = man?.team !== a.team && man !== sim.qb ? man ?? null : null;
       let bd = Infinity;
-      for (const o of sim.offense) {
+      if (!best) for (const o of sim.offense) {
         if (o === sim.qb || o === rbAgent || OL_SLOTS.includes(o.slot as (typeof OL_SLOTS)[number])) continue;
         const seen = sim.see(a, o);
         const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);

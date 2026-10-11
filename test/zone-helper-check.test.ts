@@ -313,19 +313,21 @@ describe('optional inside-zone help respects other concepts and real double team
   });
 });
 
-describe('an ordinary Split Zone Tite rep establishes the same check and climb', () => {
-  it('lets RT use the supported Y block without first inventing a second pair of hands', () => {
+describe('a predeclared native Split Zone Under rep earns a supported check and climb', () => {
+  it('lets RG use the supported RT block without first inventing a second pair of hands', () => {
+    // CT-R1-split_zone-under-R-S3 is an input in the declared native panel.
+    // Its earned check complements the old Tite witness's legitimate stay.
     const formation = FORMATION_BY_ID.gun_wing_12;
     const sim = new PlaySim({
-      offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base34'),
+      offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
       offCall: { formation, flip: false, kind: 'run', run: RUN_BY_ID.split_zone, label: 'Split Zone' },
-      defCall: { personnel: 'base34', front: FRONT_BY_ID.tite, coverage: COVERAGE_BY_ID.cover3,
-        pressure: null, label: 'Tite Cover 3' },
+      defCall: { personnel: 'base43', front: FRONT_BY_ID.under, coverage: COVERAGE_BY_ID.cover3,
+        pressure: null, label: 'Under Cover 3' },
       los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3,
     });
-    const helper = sim.slot('RT')!, behavior = helper.behavior as RunBlocker;
+    const helper = sim.slot('RG')!, behavior = helper.behavior as RunBlocker;
     const combo = behavior.plan.combination!;
-    expect(combo.members.map(a => a.slot)).toEqual(['Y', 'RT']);
+    expect(combo.members.map(a => a.slot)).toEqual(['RT', 'RG']);
     expect(combo.defender.slot).toBe('DE_S'); expect(combo.backer!.slot).toBe('LB_M');
     expect(combo.helpPolicy!.kind).toBe('check');
     const original = behavior.update;
@@ -340,7 +342,7 @@ describe('an ordinary Split Zone Tite rep establishes the same check and climb',
         sealTarget: before.sealTarget, holding: before.holding } : null;
       const command = original.call(this, a, s);
       if (before && hands && a.tags.has('combo-check-climb') && !transitions.length) {
-        expect(before.blocker.slot).toBe('Y'); expect(before.helpers).toEqual([]);
+        expect(before.blocker.slot).toBe('RT'); expect(before.helpers).toEqual([]);
         expect(hands.a).toBe(before.blocker.body); expect(hands.b).toBe(combo.defender.body);
         expect(s.world.joints).toContain(hands); expect(before.hands).toBe(hands);
         expect(hands.normalForce).toBeGreaterThan(0);
@@ -363,8 +365,82 @@ describe('an ordinary Split Zone Tite rep establishes the same check and climb',
     expect(transition.e.hands).toBe(transition.hands);
     expect(sim.world.joints).toContain(transition.hands);
     expect(transition.hands.normalForce).toBeGreaterThan(0);
-    expect(transition.e.blocker.slot).toBe('Y');
+    expect(transition.e.blocker.slot).toBe('RT');
     expect(sim.events.filter(e => e.type === 'block_climb' && e.a === helper.idx)).toHaveLength(1);
+  });
+});
+
+describe('the historic native Split Zone Tite witness retains unfinished first-level work', () => {
+  it('stays when the backer is not arriving, then collects the end after keeper leverage is lost', () => {
+    const formation = FORMATION_BY_ID.gun_wing_12;
+    const sim = new PlaySim({
+      offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base34'),
+      offCall: { formation, flip: false, kind: 'run', run: RUN_BY_ID.split_zone, label: 'Split Zone' },
+      defCall: { personnel: 'base34', front: FRONT_BY_ID.tite, coverage: COVERAGE_BY_ID.cover3,
+        pressure: null, label: 'Tite Cover 3' },
+      los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3,
+    });
+    const helper = sim.slot('RT')!, behavior = helper.behavior as RunBlocker;
+    const combo = behavior.plan.combination!, owner = sim.slot('Y')!;
+    expect(combo.members.map(a => a.slot)).toEqual(['Y', 'RT']);
+    expect(combo.helpPolicy!.kind).toBe('check');
+    // The installed defensive fit now persists during contact. The historical
+    // RT climb is therefore not a prerequisite guaranteed by this input.
+    // Observe the actual read beat and consumed pictures, not a replacement
+    // release time or a more favorable synthetic defender position.
+    const original = behavior.update, originalSee = sim.see;
+    let reading = false, backerPicture: ReturnType<typeof sim.see> | null = null;
+    let runnerPicture: ReturnType<typeof sim.see> | null = null;
+    let noArrivingWork = 0, lostKeeper = 0, collectedLoadedContact = false;
+    sim.see = function (a, b, delayScale = 1) {
+      const picture = originalSee.call(this, a, b, delayScale);
+      if (reading && a === helper) {
+        if (b === combo.backer) backerPicture = picture;
+        if (b === this.slot('RB')) runnerPicture = picture;
+      }
+      return picture;
+    };
+    behavior.update = function (a, s) {
+      const e = combo.defender.engagement;
+      const due = !combo.released && !a.engagement && s.t >= (combo.checkNextRead ?? 0);
+      const supported = e?.blocker === owner && e.hands && e.hands.normalForce! > 0;
+      const secure = supported && e.baseB > .60 && Math.abs(e.phi) < .55;
+      const heldLongEnough = s.t - (combo.checkSince ?? -1) >= .15;
+      backerPicture = runnerPicture = null;
+      reading = true;
+      let command;
+      try { command = original.call(this, a, s); } finally { reading = false; }
+      if (due && secure && heldLongEnough && backerPicture && runnerPicture) {
+        const backer = backerPicture as ReturnType<typeof s.see>;
+        const runner = runnerPicture as ReturnType<typeof s.see>;
+        const filling = Math.hypot(backer.pos.x - a.pos.x, backer.pos.y - a.pos.y) < 4.2;
+        const arriving = runner.pos.x > s.los - 2.8;
+        if (!filling && !arriving) {
+          expect(combo.released).toBe(false); expect(this.plan.kind).toBe('combo');
+          expect(e!.blocker).toBe(owner); expect(e!.helpers).toEqual([]);
+          expect(s.world.joints).toContain(e!.hands); expect(a.engagement).toBeNull();
+          noArrivingWork++;
+        }
+      }
+      if (due && supported && Math.abs(e.phi) >= .55) {
+        expect(combo.released).toBe(false); expect(combo.checkSince).toBe(-1);
+        expect(a.tags.has('combo-held')).toBe(true); lostKeeper++;
+      }
+      return command;
+    };
+    // This is explicitly a controller/contact inspection window, not a
+    // claimed final rushing result. The normal World and all behaviors run.
+    while (sim.t < 2 && sim.phase !== 'dead') {
+      sim.tick();
+      const e = helper.engagement;
+      if (e?.blocker === helper && e.defender === combo.defender
+        && e.hands && e.hands.normalForce! > 0 && sim.world.joints.includes(e.hands))
+        collectedLoadedContact = true;
+    }
+    expect(noArrivingWork).toBeGreaterThan(0); expect(lostKeeper).toBeGreaterThan(0);
+    expect(collectedLoadedContact).toBe(true); expect(combo.released).toBe(false);
+    expect(helper.tags.has('combo-check-climb')).toBe(false);
+    expect(sim.events.some(e => e.type === 'block_climb' && e.a === helper.idx)).toBe(false);
   });
 });
 
