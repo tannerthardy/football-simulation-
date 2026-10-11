@@ -1,0 +1,150 @@
+{
+  "schema": "scramble-carrier-recording-compatibility-v1",
+  "baselineSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+  "recordingSource": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "inputs": {
+    "data/reviews/alley-support-and-tail-audit/games/candidate-index.json.gz": "a32d928e4c60f367961a4d572baf5b605ba533924758a1946a0808f8d2a35e35",
+    "out/rushing-benchmark/validation/recording-games/index.json.gz": "6b3812952dd0d8f33d37c07e65c83b2c3a17ef77c4680319ba982e3335e9057f"
+  },
+  "toolSha256": "fd51dc56d62f91e3216cf58351a44b5a8e312e286c5ea38eaec4f117b496c1ff",
+  "games": [
+    {
+      "game": 1,
+      "score": {
+        "home": 49,
+        "away": 56
+      },
+      "nativeSnaps": 146,
+      "normalizedAllLogRowsExact": true
+    },
+    {
+      "game": 2,
+      "score": {
+        "home": 31,
+        "away": 43
+      },
+      "nativeSnaps": 145,
+      "normalizedAllLogRowsExact": true
+    },
+    {
+      "game": 3,
+      "score": {
+        "home": 44,
+        "away": 49
+      },
+      "nativeSnaps": 140,
+      "normalizedAllLogRowsExact": true
+    },
+    {
+      "game": 4,
+      "score": {
+        "home": 23,
+        "away": 0
+      },
+      "nativeSnaps": 127,
+      "normalizedAllLogRowsExact": true
+    },
+    {
+      "game": 5,
+      "score": {
+        "home": 79,
+        "away": 13
+      },
+      "nativeSnaps": 148,
+      "normalizedAllLogRowsExact": true
+    },
+    {
+      "game": 6,
+      "score": {
+        "home": 24,
+        "away": 77
+      },
+      "nativeSnaps": 151,
+      "normalizedAllLogRowsExact": true
+    },
+    {
+      "game": 7,
+      "score": {
+        "home": 24,
+        "away": 27
+      },
+      "nativeSnaps": 152,
+      "normalizedAllLogRowsExact": true
+    },
+    {
+      "game": 8,
+      "score": {
+        "home": 26,
+        "away": 42
+      },
+      "nativeSnaps": 140,
+      "normalizedAllLogRowsExact": true
+    }
+  ],
+  "allNativeSnaps": 1149,
+  "scrambleCarrierIdAdded": 54,
+  "changedIds": [
+    "G1-P001",
+    "G1-P029",
+    "G1-P081",
+    "G1-P142",
+    "G1-P164",
+    "G1-P178",
+    "G1-P183",
+    "G2-P030",
+    "G2-P042",
+    "G2-P047",
+    "G2-P058",
+    "G2-P102",
+    "G2-P164",
+    "G2-P165",
+    "G2-P170",
+    "G3-P005",
+    "G3-P016",
+    "G3-P024",
+    "G3-P039",
+    "G3-P047",
+    "G3-P057",
+    "G3-P094",
+    "G3-P110",
+    "G3-P115",
+    "G3-P178",
+    "G4-P014",
+    "G4-P036",
+    "G4-P057",
+    "G4-P066",
+    "G4-P075",
+    "G4-P078",
+    "G4-P110",
+    "G4-P114",
+    "G4-P121",
+    "G4-P127",
+    "G4-P132",
+    "G4-P140",
+    "G5-P021",
+    "G5-P046",
+    "G5-P056",
+    "G5-P158",
+    "G5-P161",
+    "G5-P183",
+    "G6-P121",
+    "G6-P160",
+    "G7-P104",
+    "G8-P047",
+    "G8-P071",
+    "G8-P083",
+    "G8-P109",
+    "G8-P120",
+    "G8-P147",
+    "G8-P166",
+    "G8-P167"
+  ],
+  "exactNormalizedNativeFinalStates": true,
+  "exactNativeInputsAndNextRng": true,
+  "exactScoresAndOutcomes": true,
+  "limits": [
+    "Normalization removes only stats.rusher on observed pass-call scrambles; physical state, support, minds, perception, controller state and next RNG remain in the final snapshot hash.",
+    "Derived source/collector/log/result hashes differ and are retained in the original inputs.",
+    "Snapshots cover enumerable runtime state, not external module WeakMaps; this is the existing native snapshot operator."
+  ]
+}

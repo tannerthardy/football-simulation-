@@ -1,0 +1,510 @@
+{
+  "schema": "rushing-benchmark-integrity-receipt-v1",
+  "priorReport": {
+    "path": "data/reviews/run-game-current/reference/pbp-report.json.gz",
+    "bytes": 294984,
+    "sha256": "0d6aa99d9a3b9a4d2364e8a83b059b24e918b6fc6694badc8e11b8655877b486"
+  },
+  "checks": [
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "allPriorYardDistributionFields",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "negative",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "zero",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "stuff",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "explosive10plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "explosive20plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "success4060100",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "gainDistanceConversion",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "gainDistanceWithoutLostFumble",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "recordedFirstOrTD",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "fumbleLost",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "touchdown",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "positiveEPA",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "fieldEligibleExplosive10plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "designedRun"
+      },
+      "operator": "fieldEligibleExplosive20plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "allPriorYardDistributionFields",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "negative",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "zero",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "stuff",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "explosive10plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "explosive20plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "success4060100",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "gainDistanceConversion",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "gainDistanceWithoutLostFumble",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "recordedFirstOrTD",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "fumbleLost",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "touchdown",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "positiveEPA",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "fieldEligibleExplosive10plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "kind": "scramble"
+      },
+      "operator": "fieldEligibleExplosive20plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "allPriorYardDistributionFields",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "negative",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "zero",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "stuff",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "explosive10plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "explosive20plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "success4060100",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "gainDistanceConversion",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "gainDistanceWithoutLostFumble",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "recordedFirstOrTD",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "fumbleLost",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "touchdown",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "positiveEPA",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "fieldEligibleExplosive10plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "designedRun"
+      },
+      "operator": "fieldEligibleExplosive20plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "allPriorYardDistributionFields",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "negative",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "zero",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "stuff",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "explosive10plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "explosive20plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "success4060100",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "gainDistanceConversion",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "gainDistanceWithoutLostFumble",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "recordedFirstOrTD",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "fumbleLost",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "touchdown",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "positiveEPA",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "fieldEligibleExplosive10plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "kind": "scramble"
+      },
+      "operator": "fieldEligibleExplosive20plus",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2022,
+        "cohort": "ordinaryRB_FB"
+      },
+      "operator": "exactPriorOrdinaryBackWitness",
+      "exact": true
+    },
+    {
+      "context": {
+        "season": 2023,
+        "cohort": "ordinaryRB_FB"
+      },
+      "operator": "exactPriorOrdinaryBackWitness",
+      "exact": true
+    }
+  ],
+  "passed": true,
+  "reportedCollectorBytesMatchCurrent": true,
+  "queryMatchesDeclaration": true,
+  "primaryPopulationCountsUnchangedAcrossMetadataRevisions": true
+}

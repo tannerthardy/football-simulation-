@@ -1,0 +1,48 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-/out/rushing-benchmark/spacing-diagnosis/test-prototype/baseline
+
+ ❯ test/spacing-quarter-gather.test.ts (6 tests | 2 failed) 81ms
+   × teammate gathers retain useful movement when the faster gather is unsafe > executes both native slower gathers with bounded, collision-free movement and physical mirrors 39ms
+     → expected 0.320226216828693 to be greater than 0.420226216828693
+   ✓ teammate gathers retain useful movement when the faster gather is unsafe > preserves the earlier native half gather exactly 6ms
+   ✓ teammate gathers retain useful movement when the faster gather is unsafe > uses each consumed teammate picture once, with no body mutation, hidden-peer retargeting or random draws 8ms
+   × teammate gathers retain useful movement when the faster gather is unsafe > restores the ordinary request when a fresh observed crossing moves out of its attainable path 4ms
+     → expected 0 to be greater than 0
+   ✓ teammate gathers retain useful movement when the faster gather is unsafe > rejects a smaller moving gather that would create a new trailing conflict 15ms
+   ✓ teammate gathers retain useful movement when the faster gather is unsafe > keeps constrained, loaded and non-free-motion states out of the empty-World gather forecast 7ms
+ ✓ test/traffic-control.test.ts (3 tests) 67ms
+ ✓ test/spacing-yield.test.ts (8 tests) 141ms
+ ✓ test/traffic-turning.test.ts (12 tests) 303ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/spacing-quarter-gather.test.ts > teammate gathers retain useful movement when the faster gather is unsafe > executes both native slower gathers with bounded, collision-free movement and physical mirrors
+AssertionError: expected 0.320226216828693 to be greater than 0.420226216828693
+ ❯ test/spacing-quarter-gather.test.ts:162:27
+    160|       const rr = heldPair(right, r), ll = heldPair(left, l);
+    161|       const stopped = heldPair(right, { ...r, vel: { x: 0, y: 0 } });
+    162|       expect(rr.progress).toBeGreaterThan(stopped.progress+.1);
+       |                           ^
+    163|       expect(speed).toBeGreaterThan(0);
+    164|       expect(speed).toBeLessThan(original*.5);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/spacing-quarter-gather.test.ts > teammate gathers retain useful movement when the faster gather is unsafe > restores the ordinary request when a fresh observed crossing moves out of its attainable path
+AssertionError: expected 0 to be greater than 0
+ ❯ test/spacing-quarter-gather.test.ts:205:56
+    203|     picture.vel = { x: -4, y: -5.35 };
+    204|     const clear = f.request().command;
+    205|     expect(Math.hypot(cautious.vel.x, cautious.vel.y)).toBeGreaterThan…
+       |                                                        ^
+    206|     expect(clear).toEqual(f.data.request);
+    207|     // No remembered freeze: the same consumed obstruction requests a …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 27 passed (29)
+   Start at  18:01:11
+   Duration  1.25s (transform 827ms, setup 0ms, collect 1.93s, tests 592ms, environment 1ms, prepare 297ms)
+

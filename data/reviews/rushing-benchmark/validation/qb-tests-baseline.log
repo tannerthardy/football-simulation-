@@ -1,0 +1,36 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-/out/rushing-benchmark/qb-recording/baseline
+
+ ❯ test/qb-rusher-recording.test.ts (3 tests | 1 failed) 1621ms
+   × recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness 1218ms
+     → expected undefined to be 'RO-QB2' // Object.is equality
+   ✓ recording the actual rushing player > does not label an ordinary native pass as a rush 185ms
+   ✓ recording the actual rushing player > keeps an actual handoff credited to the receiving back 215ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/qb-rusher-recording.test.ts > recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness
+AssertionError: expected undefined to be 'RO-QB2' // Object.is equality
+
+- Expected: 
+"RO-QB2"
+
++ Received: 
+undefined
+
+ ❯ test/qb-rusher-recording.test.ts:57:40
+     55|     expect(actual.result.stats.scramble).toBe(true);
+     56|     expect(actual.result.stats.attempted).toBe(false);
+     57|     expect(actual.result.stats.rusher).toBe(recorded.qb.player.id);
+       |                                        ^
+     58|     expect(actual.result.events.filter(e => e.type === 'scramble'))
+     59|       .toEqual([expect.objectContaining({ a: recorded.qb.idx })]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  18:12:40
+   Duration  2.63s (transform 541ms, setup 0ms, collect 744ms, tests 1.62s, environment 0ms, prepare 78ms)
+

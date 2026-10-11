@@ -7,8 +7,30 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [rushing benchmarks and next priorities](docs/reviews/rushing-benchmark-and-next-priorities.md)
+first. Four complete NFL seasons and all nine BDB concept weeks now provide
+conditional success, stuffs, distributions, tails, field eligibility, roster
+variation and clustered uncertainty. The [packet](data/reviews/rushing-benchmark/README.md)
+includes a verified native engine adapter and source-pinned reproduction.
+Current 302 clean back runs average 6.26 yd but only 31.8% succeed; matched NFL
+exposure expects 4.68 yd and 41.1% success. Thirteen 40-yard gains versus about
+1.90 expected expose a weak ordinary middle plus excessive far tail. Do not
+change force to fit the mean. A locally safe quarter-speed traffic gather is
+withheld after new Split Zone/PA touchdowns and worse eight-game scoring.
+The production source is now 8f8cf: it records the actual QB ID when he commits
+to scrambling. All 1,149 native snapshots across eight games are identical after
+removing that new output field, as are 96 passing controls. All 1,108 TS and 118
+Python tests pass; typecheck/build are clean. Native committed escapes can still
+remain rushes when tackled behind the line, unlike NFL sack/scramble labels;
+audit that classification before treating the QB comparison as a physical fault.
+No physical law or capability changed. Start
+with the current native tail witnesses and the withheld Split Zone's first
+movement/finish fork, preserving normal and mirrored controls. Unsupported
+NFL cells broaden explicitly; 2024/25 is temporal replication, not a blind
+holdout. Facing is not measured eyes; shared physics readiness is still pending.
+
 Read [alley support and native tail audit](docs/reviews/alley-support-and-native-tail-audit.md)
-first. A known back's man marker uses his installed alley cap after personal
+for the preceding increment. A known back's man marker uses his installed alley cap after personal
 run belief and acquired possession, then pursues the observed crease. The native
 86-yard untouched TD becomes a 31.34-yard physical tackle in an exact selected
 controller counterfactual. World/capacities remain unchanged. All four selected

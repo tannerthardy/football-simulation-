@@ -1,6 +1,20 @@
 # Shared NFL data
 
-Current review: [Run fits, Draw presentation and recovery](../docs/reviews/run-fit-and-recovery.md).
+Current review: [Rushing benchmarks and next priorities](../docs/reviews/rushing-benchmark-and-next-priorities.md).
+The [new packet and commands](reviews/rushing-benchmark/README.md) contain four
+complete NFL regular seasons (52,113 clean designed runs), all nine 2022 BDB
+concept weeks, explicit success/tail/field operators, game-cluster uncertainty,
+team-season variation, sparse-cell backoff and a pinned native engine adapter.
+Current 302 clean back runs show weak ordinary success despite excessive long
+gains. A locally safe quarter-speed movement experiment is withheld after
+adverse retained Split Zone/PA touchdowns and worse small-game scoring; current
+production spacing and physical capacities are unchanged. A tested recording
+fix now credits committed scrambles to the actual QB, preserving all native
+movement, RNG and outcomes. Its comparison includes an explicit native-versus-NFL
+sack/scramble classification caveat. Use situation-matched
+distributions to nominate native mechanism checks, not force fitting.
+
+Previous review: [Run fits, Draw presentation and recovery](../docs/reviews/run-fit-and-recovery.md).
 The [packet and commands](reviews/run-fit-and-recovery/README.md) retain a
 selected-snap Duo counterfactual (90.6-yard TD→6.0-yard physical tackle),
 isolated possession/Draw/recovery controls and all 24 predeclared targeted

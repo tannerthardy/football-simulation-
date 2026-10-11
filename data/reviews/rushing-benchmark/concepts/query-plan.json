@@ -1,0 +1,39 @@
+{
+  "query": {
+    "schema": "bdb-concept-situation-rushing-query-v1",
+    "inputs": {
+      "plays.csv": {
+        "bytes": 6892353,
+        "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+      },
+      "player_play.csv": {
+        "bytes": 52533762,
+        "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+      },
+      "players.csv": {
+        "bytes": 104749,
+        "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+      },
+      "games.csv": {
+        "bytes": 7128,
+        "sha256": "166456ed4fa84277f18242defcb523bd45ef20d50486ef55ada71c4b71024477"
+      }
+    },
+    "declarationScope": "A new extension after inspecting the existing descriptive 6223/6103 cohort and metadata field names. This is not an outcome-blind preregistration.",
+    "population": "2022 weeks 1-9; exact existing provider-defined selection: non-nullified, non-dropback, no kneel/spike, observed run location and finite main yards. Baseline counts must remain 6223 designed and 6103 non-sneak ordinary runs.",
+    "outcomes": "yardsGained main; prePenaltyYardsGained independently summarized. Stuff<=0, negative<0, success4060100 >= .4/.6/1 of positive yardsToGo by down. gainDistanceConversion is a yard threshold, not retained possession or recorded first down. Positive EPA is provider expectedPointsAdded>0, not an independent physical ground truth; the same provider EPA is retained alongside both yards operators, never recomputed from pre-penalty yards.",
+    "tails": "Inclusive gain thresholds 10,15,20,30,40; raw rate plus field-eligible rate requires known opponent-goal distance >= threshold. No TD is dropped. Linear pooled-play percentiles; never average cell percentiles.",
+    "labels": "Exact primary and raw semicolon secondary labels; token margins overlap and cannot be summed. MAN is not validated Duo, OUTSIDE ZONE is not validated Wide Zone or Toss. SPLIT is a modifier, not verification of slice technique. No named defensive front or box count exists in plays metadata.",
+    "contexts": "Down; distance1,2to3,4to6,7to10,11to19,20plus; field0to5,6to10,11to20,21to50,51to80,81to100; offense score trailing9plus/trailing1to8/tied/leading1to8/leading9plus; regulation remaining0to120/121to600/601to1800/1801plus, overtime separately. Home/away identity comes only from games.csv. Exact formations and receiver alignments remain separate from simulator terms.",
+    "personnel": "An observed listed-position count from exact offense player_play rows and players roster, requiring 11 distinct joined offense players. This is not a charted personnel package or alignment. Retain QB,RB,FB,TE,WR,OL and other positions; no 11-personnel name is assumed from a count.",
+    "motion": "Exact offense player flags; any TRUE is positive; negative only when all 11 offense rows are present and all 11 flags known FALSE. Otherwise unknownOrIncomplete; missing never becomes no motion. For each flag expose known and positive row counts.",
+    "tables": "All selected/ordinary/listed RB-FB/QB and sneaks; ordinary exact primary; raw secondary and overlapping tokens; primary-by-context, formation, alignment, listed-position composition, carrier, motion, RPO, coverage. Joint primary/down-distance/field and primary/formation/motion include every observed cell. Table frequencies use the 6103 ordinary-run universe; within-primary frequencies use that exact primary's ordinary count. Neither is league run-call frequency among all snaps. Thin cells retained with play/game/team/carrier exposure, no outcome-driven cell pruning. Neutral early-back witness matches the whole-season definition: listed RB/FB, first/second down, 8-10 to go, outside red zone, offense score within8, before final10 regulation minutes.",
+    "uncertainty": "Deterministic game-block percentile bootstrap for ordinary exact-primary groups only: sample whole source games with replacement, 1500 draws seed20221009 shared across concepts. Conditional means/rates recomputed each draw. Report intervals only when n>=100 and >=20 exposed games; retain all groups without an interval if unsupported. One season, nine selected weeks; does not include provider-label error, repeated-player/team dependence between games or unseen seasons. Team margins are observed variation, not independent strength intervals.",
+    "sensitivity": "Separate all-run and ordinary carrier cohorts, raw main/pre-penalty operator differences, known penalty field values, positive-sneak flag/primary disagreement, unknown context/labels/motion and exposures. Do not call non-nullified penalty-free.",
+    "inference": "Descriptions conditional on observed calls, team mix and game script. No causal scheme superiority, outcome tuning, or direct match of generated simulator rosters is claimed."
+  },
+  "querySha256": "56e48bd830ceb1c9edabea5ba6fbce0183b8a99de89c135360186711dc04459b",
+  "collectorSha256": "ceaf62dbf2eb2e132ecc1bffdf1f918e443edfcf22d07bc37cfd7877d406e8ae",
+  "dependencySha256": "c7350b591efc10f33988abb794998a9ac1889063841f984c5c5d097f16f4eab6",
+  "declaredAt": "2026-10-11T17:53:43.780065+00:00"
+}

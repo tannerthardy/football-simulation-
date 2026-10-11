@@ -3,7 +3,26 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
-[alley support and native tail audit](reviews/alley-support-and-native-tail-audit.md).
+[rushing benchmarks and next priorities](reviews/rushing-benchmark-and-next-priorities.md).
+Four complete NFL seasons and a separate nine-week concept sample support
+task-matched success, distributions and tails, rather than one target YPC.
+Current native clean back runs have weak ordinary consistency and excessive
+40-yard tails; do not strengthen blocking to fix the average. A quarter-speed
+traffic gather is locally feasible through the same World but withheld after
+adverse native Split Zone/PA finishes and worse small-game scoring. Production
+spacing and all physical laws/capacities remain unchanged. The production change
+only records the actual scrambling QB ID; full native snapshot compatibility
+and passing controls establish that movement, decisions and outcomes stay exact.
+Native committed escapes and NFL sack/scramble labels still require a separate
+classification audit before QB averages can diagnose physics. Trace installed
+responsibility, consumed cue, request, actual movement and contact before
+classifying a tail as a physical failure. The [packet](../data/reviews/rushing-benchmark/README.md)
+retains the failed hypothesis, exact sources and conditional engine comparison.
+Physics work remains appropriate for incoherent work/support/convergence;
+controller work is appropriate for a wrong achievable request. No universal
+physics OK or claim of 95% exhausted gains follows from this benchmark.
+
+Then read [alley support and native tail audit](reviews/alley-support-and-native-tail-audit.md).
 A personally acquired known-back possession activates the man safety's installed
 alley cap rather than continued receiver cushion. One untouched 86-yard TD
 becomes a 31.34-yard actual tackle with unchanged capacities; three ordinary

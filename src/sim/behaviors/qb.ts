@@ -543,6 +543,7 @@ export class QBPass implements Behavior {
   private scramble(a: Agent, sim: PlaySim): MoveCommand {
     sim.scrambled = true;
     sim.stats.scramble = true;
+    sim.stats.rusher = a.player.id;
     sim.event('scramble', a);
     a.behavior = new BallCarrier({ qb: true }, a);
     return a.behavior.update(a, sim);

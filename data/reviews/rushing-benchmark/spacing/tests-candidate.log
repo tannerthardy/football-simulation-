@@ -1,0 +1,13 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-/out/rushing-benchmark/spacing-diagnosis/test-prototype/candidate
+
+ ✓ test/spacing-quarter-gather.test.ts (6 tests) 113ms
+ ✓ test/traffic-control.test.ts (3 tests) 80ms
+ ✓ test/spacing-yield.test.ts (8 tests) 149ms
+ ✓ test/traffic-turning.test.ts (12 tests) 251ms
+
+ Test Files  4 passed (4)
+      Tests  29 passed (29)
+   Start at  18:01:04
+   Duration  1.21s (transform 764ms, setup 0ms, collect 1.86s, tests 594ms, environment 1ms, prepare 318ms)
+

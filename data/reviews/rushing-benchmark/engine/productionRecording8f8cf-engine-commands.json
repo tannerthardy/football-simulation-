@@ -1,0 +1,8 @@
+{
+  "schema": "engine-rushing-recording-commands-v1",
+  "sourceComparabilitySidecar": "out/rushing-benchmark/productionRecording8f8cf-comparability.json",
+  "declare": "python3 scripts/data/engine_rushing_benchmark.py --index out/rushing-benchmark/validation/recording-games/index.json.gz --nfl-report out/rushing-benchmark/nfl-benchmark.json.gz --expected-source 8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d --expected-collector 7aae5bb1bc756efef52ab6bd9abc380e564bf5a2d59596d74629ab1ca66edc35 --label productionRecording8f8cf --plan-only out/rushing-benchmark/productionRecording8f8cf-engine-query.json",
+  "execute": "python3 scripts/data/engine_rushing_benchmark.py --index out/rushing-benchmark/validation/recording-games/index.json.gz --nfl-report out/rushing-benchmark/nfl-benchmark.json.gz --expected-source 8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d --expected-collector 7aae5bb1bc756efef52ab6bd9abc380e564bf5a2d59596d74629ab1ca66edc35 --label productionRecording8f8cf --query-receipt out/rushing-benchmark/productionRecording8f8cf-engine-query.json --out out/rushing-benchmark/productionRecording8f8cf-engine-benchmark.json",
+  "tests": "python3 -m unittest discover -s test -p test_engine_rushing_benchmark.py -v",
+  "limits": "Inspect source-specific sidecar before interpreting QB scramble reference. Measurement operators/code/query remain fixed; new exact QB identity does not change action-classification policy."
+}
