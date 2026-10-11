@@ -1,1 +1,0 @@
-side: reps 40 YAC mean 60.00 median 60.00 time 6.55s  TD/escape 40  wraps/rep 0.00 missed/rep 0.00 broken/rep 0.00 falls/rep 0.00

@@ -1,9 +1,0 @@
-{"output":"/workspace/football-simulation-/out/run-carrier-audit/mechanism-baseline.json","sourceBefore":"11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85","sourceAfter":"11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85","toolSha256":"2dfdc33229d1d974f3fddbda1bb8f1b1ffe1aa24f3f6d88514aa77c9f7218524","checks":8,"passes":2,"failures":["stale-up-hidden-fall--1","stale-down-hidden-rise--1","unknown-pose-no-oracle--1","stale-up-hidden-fall-1","stale-down-hidden-rise-1","unknown-pose-no-oracle-1"],"allPicturesEqual":true}
-/workspace/football-simulation-/out/run-carrier-audit/recovery-mechanism-controls.ts:58
-if(requireFixed&&packet.failures.length)throw new Error('Mechanism-specific invariant failures: '+packet.failures.join(', '));
-                                              ^
-
-Error: Mechanism-specific invariant failures: stale-up-hidden-fall--1, stale-down-hidden-rise--1, unknown-pose-no-oracle--1, stale-up-hidden-fall-1, stale-down-hidden-rise-1, unknown-pose-no-oracle-1
-    at <anonymous> (/workspace/football-simulation-/out/run-carrier-audit/recovery-mechanism-controls.ts:58:47)
-
-Node.js v22.23.3

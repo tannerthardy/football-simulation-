@@ -1,6 +1,0 @@
-
-> gridiron-engine@0.1.0 typecheck
-> tsc -p tsconfig.json --noEmit
-
-scripts/export-alley-fit-film.ts(173,5): error TS2352: Conversion of type '{ id: string; concept: { name: any; id: string; family: string; }; fixtureId: any; fixtureSeed: any; sourceLabel: string; sourceSha256: string; filmSelection: string; comparisonCohort: any; metadataProvenance: string; ... 24 more ...; flags: { ...; }; } | { ...; }' to type '{ id: string; game: number; index: number; kind: "pass" | "run" | "two" | "punt" | "fg" | "xp" | "kickoff" | "kneel" | "penalty"; q: number; clk: number; off: string; down: number; dist: number; ... 13 more ...; flags: { ...; }; } | { ...; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
-  Object literal may only specify known properties, and 'fixtureId' does not exist in type '{ id: string; game: number; index: number; kind: "pass" | "run" | "two" | "punt" | "fg" | "xp" | "kickoff" | "kneel" | "penalty"; q: number; clk: number; off: string; down: number; dist: number; ... 13 more ...; flags: { ...; }; } | { ...; }'.

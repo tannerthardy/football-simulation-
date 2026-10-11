@@ -1,7 +1,0 @@
-Verified game 1
-Verified game 2
-Verified game 3
-Verified game 4
-Verified game 5
-Verified game 6
-Wrote 7 traces to out/owner-feedback-original.json

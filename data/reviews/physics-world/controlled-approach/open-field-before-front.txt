@@ -1,1 +1,0 @@
-front: reps 40 YAC mean 12.53 median 11.27 time 1.80s  TD/escape 1  wraps/rep 0.95 missed/rep 0.03 broken/rep 0.07 falls/rep 1.88

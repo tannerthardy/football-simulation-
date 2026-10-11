@@ -1,9 +1,0 @@
-{
-  "output": "/workspace/football-simulation-/out/job-exchange/witness-before.json.gz",
-  "sourceBefore": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
-  "sourceAfter": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
-  "clips": 4,
-  "observerControls": 4,
-  "naturalEnds": 4,
-  "exchanges": 2
-}

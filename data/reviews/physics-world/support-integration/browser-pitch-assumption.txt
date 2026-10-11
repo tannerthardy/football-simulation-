@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "/workspace/football-simulation-/scripts/check-replay-viewer.py", line 214, in <module>
-    main()
-  File "/workspace/football-simulation-/scripts/check-replay-viewer.py", line 163, in main
-    assert any(e[1] == 'pitch' for i in filmed for e in data['plays'][i]['ev'])
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError
