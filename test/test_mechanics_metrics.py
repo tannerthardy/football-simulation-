@@ -49,6 +49,26 @@ class MetricsTest(unittest.TestCase):
     def test_mirror_invariant(self):
         self.assertEqual(self.measure(run_play()), self.measure(run_play(flip=True)))
 
+    def test_labeled_block_pair_and_contact(self):
+        play = run_play()
+        m = self.measure(play)
+        # Contact at 3.0 s: the carrier is moving at 5 yd/s -> the "mid" bin.
+        self.assertAlmostEqual(m["contact.run.carrier_speed_at_contact"]["p50"], 5.0)
+        self.assertEqual(m["contact.run.yards_after_contact@mid"]["n"], 1)
+        self.assertAlmostEqual(m["contact.run.contact_to_whistle_s"]["p50"], 1.0)
+
+    def test_labeled_pass_block_pair(self):
+        play = run_play()
+        play.update(kind="pass", blocks=[[2, 3]], events={"pass_forward": 3.0, "end": 4.0})
+        m = self.measure(play)
+        self.assertAlmostEqual(m["block.pass.defender_depth_2s"]["p50"], -1.5)
+        self.assertEqual(m["block.pass.still_engaged_2s"]["mean"], 1.0)
+
+    def test_box_count_cell(self):
+        m = self.measure(run_play())
+        self.assertEqual(m["run.box_count"]["p50"], 1)
+        self.assertEqual(m["run.handoff_s@box6-"]["n"], 1)
+
     def test_speed_from_positions(self):
         p = Play(run_play())
         self.assertAlmostEqual(p.speed(1, 30), 5.0)

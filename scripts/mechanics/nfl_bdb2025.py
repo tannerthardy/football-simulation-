@@ -27,7 +27,7 @@ GROUP = {"QB": "QB", "RB": "RB", "FB": "RB", "WR": "WR", "TE": "TE", "T": "OL", 
          "CB": "DB", "SS": "DB", "FS": "DB", "DB": "DB"}
 END_EVENTS = {"tackle", "out_of_bounds", "touchdown", "qb_sack", "qb_strip_sack", "pass_outcome_incomplete",
               "pass_outcome_interception", "qb_slide", "safety"}
-KEEP_EVENTS = {"handoff", "pass_forward", "pass_arrived", "first_contact"}
+KEEP_EVENTS = {"handoff", "pass_forward", "pass_arrived", "first_contact", "pass_outcome_caught"}
 WIDTH = 160 / 3
 
 
@@ -54,7 +54,8 @@ def load_meta():
             continue
         plays[(r["gameId"], r["playId"])] = {"kind": kind, "yards": yards, "offense": r["possessionTeam"],
                                              "week": None, "concept": r["pff_runConceptPrimary"],
-                                             "coverage": r["pff_passCoverage"], "carrier": None, "target": None}
+                                             "coverage": r["pff_passCoverage"], "carrier": None, "target": None,
+                                             "blocks": []}
     for r in read_csv("player_play.csv"):
         meta = plays.get((r["gameId"], r["playId"]))
         if meta is None:
@@ -63,6 +64,9 @@ def load_meta():
             meta["carrier"] = r["nflId"]
         if r["wasTargettedReceiver"] == "1":
             meta["target"] = r["nflId"]
+        for column in ("blockedPlayerNFLId1", "blockedPlayerNFLId2", "blockedPlayerNFLId3"):
+            if r[column] not in ("NA", ""):
+                meta["blocks"].append((r["nflId"], r[column]))
     return position, plays
 
 
@@ -107,12 +111,15 @@ def convert(key, rows, meta, position):
             row += [round(point[0] - los, 2), round(point[1], 2)]
         xy.append(row)
     ev = {name: round((frame - snap) / 10, 2) for name, frame in events.items() if name in KEEP_EVENTS and frame >= snap}
+    if "pass_outcome_caught" in ev:
+        ev["catch"] = ev.pop("pass_outcome_caught")
     ends = [frame for name, frame in events.items() if name in END_EVENTS and frame >= snap]
     ev["end"] = round(((min(ends) if ends else last) - snap) / 10, 2)
     return {"id": f"{gid}-{pid}", "source": "nfl-bdb2025", "kind": meta["kind"], "yards": meta["yards"],
             "players": players, "dt": 0.1, "xy": xy, "ball_y": round(ball_y, 2), "events": ev,
             "carrier": ids.index(meta["carrier"]) if meta["carrier"] in ids else None,
             "target": ids.index(meta["target"]) if meta["target"] in ids else None,
+            "blocks": [[ids.index(b), ids.index(d)] for b, d in meta["blocks"] if b in ids and d in ids],
             "cell": {"concept": meta["concept"], "coverage": meta["coverage"]}}
 
 

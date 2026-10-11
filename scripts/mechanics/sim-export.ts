@@ -67,10 +67,22 @@ export function commonPlay(p: PlayLog, id: string) {
     const arrived = firstOf(e => ARRIVE.has(e.type) && e.t >= throwEv.t);
     if (arrived !== undefined) events.pass_arrived = r2(arrived);
   }
+  const caught = ev.find(e => e.type === 'catch');
+  if (caught) events.catch = r2(caught.t);
   if (carrier !== null) {
     const contact = firstOf(e => (e.type === 'carrier_contact' && (e.a === carrier || e.b === carrier))
       || ((e.type === 'tackle_wrap' || e.type === 'hit' || e.type === 'tackle') && e.b === carrier));
     if (contact !== undefined) events.first_contact = r2(contact);
+  }
+  const receiver = caught?.a ?? null;
+  if (receiver !== null && receiver !== undefined) {
+    const contact = firstOf(e => e.t >= caught!.t && ((e.type === 'carrier_contact' && (e.a === receiver || e.b === receiver))
+      || ((e.type === 'tackle_wrap' || e.type === 'hit' || e.type === 'tackle') && e.b === receiver)));
+    if (contact !== undefined) events.first_contact = r2(contact);
+  }
+  const pairs = new Map<string, [number, number]>();
+  for (const e of ev) {
+    if (e.type === 'block_contact' && e.a !== undefined && e.b !== undefined) pairs.set(`${e.a}:${e.b}`, [e.a, e.b]);
   }
   events.end = r2(firstOf(e => END.has(e.type)) ?? lastT);
   const ball = rp.frames[0].ball;
@@ -79,6 +91,7 @@ export function commonPlay(p: PlayLog, id: string) {
     players: rp.players.map(a => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER' })),
     dt: 0.1, xy, ball_y: r2(Y(ball[1])), events, carrier,
     target: throwEv?.b ?? null,
+    blocks: [...pairs.values()],
     cell: { concept: p.plan?.concept ?? null, coverage: p.plan?.coverage ?? null },
   };
 }

@@ -20,7 +20,7 @@
     "replay": "tsx scripts/export-replay.ts",
     "test:data": "python3 -m unittest discover -s test -p 'test_*.py'",
     "nfl:fetch": "python3 -I scripts/data/fetch_nfl_data.py",
-    "mech:nfl": "python3 -I scripts/mechanics/nfl_bdb2025.py --plays-out out/mechanics/nfl-plays.jsonl.gz",
+    "mech:nfl": "python3 -I scripts/mechanics/nfl_bdb2025.py --plays-out out/mechanics/nfl-plays.jsonl.gz && python3 -I scripts/mechanics/nfl_bdb2019.py && python3 -I scripts/mechanics/nfl_bdb2023.py && python3 -I scripts/mechanics/nfl_bdb2026.py",
     "mech:sim": "node --import tsx scripts/mechanics/sim-export.ts && python3 -I scripts/mechanics/measure.py out/mechanics/sim-plays.jsonl.gz out/mechanics/sim.json",
     "mech:report": "python3 -I scripts/mechanics/compare.py --guard data/reviews/mechanics/guard.json"
   },
