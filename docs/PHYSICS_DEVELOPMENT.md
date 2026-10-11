@@ -1,7 +1,21 @@
 # Physics development and testing
 
+Read [OL run technique and validation](reviews/ol-technique-implementation.md)
+first, alongside the [coaching review](reviews/offensive-line-run-technique.md).
+The shared reduced World remains the executor; the new repair keeps individual
+jobs coherent after earned doubles and actual new-work selection, bounds
+second-level approaches without stopping the strike, and recovers lost solo
+down shoulders. Read 160 fixed ordinary pairs, two separately labelled prior
+witnesses, all rejected candidates and 36 film clips. Rushing results remain
+mixed; 64 tackle controls are exact. The broad first-step rewrite and excessive
+arrival braking were rejected, not shipped. Next separate zone shoulder
+acquisition from stretch/seal intent, then install brief posts and achieved
+kick/log traffic. Preserve capability/traction/grip/work limits; no anatomy
+expansion, strength fitting or global resolution increase. Final universal
+physics OK remains pending.
+
 Read [OL retargeting and combination lifecycle](reviews/ol-retarget-and-combination-lifecycle.md)
-first. Actual new work ends obsolete live shared assignments, restores the
+for the previous increment. Actual new work ends obsolete live shared assignments, restores the
 helper's standalone technique and preserves real contact. The shared World,
 capabilities and resolution are unchanged. All 144 ordinary starts/observer
 controls match; stale combinations fall 16 snaps to zero, with almost identical

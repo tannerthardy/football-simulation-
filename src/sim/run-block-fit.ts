@@ -17,11 +17,11 @@ export function observedBlockLeverage(a: Agent, seen: Perceived, drive: Vec2): n
 
 export function chooseRunBlockFit(a: Agent, seen: Perceived, drive: Vec2,
   nominalAim: Vec2, placementError: number, contact: number, bodyContact: number,
-  original: Intent, now: number): Intent {
+  original: Intent, now: number, settle = false, through = 0): Intent {
   const axis = { x: -drive.x, y: -drive.y }, lat = { x: -axis.y, y: axis.x };
   const nominal = { x: nominalAim.x - seen.pos.x, y: nominalAim.y - seen.pos.y };
   const lost = Math.abs(observedBlockLeverage(a, seen, drive)) >= 1.1;
-  if (!lost && nominal.x * axis.x + nominal.y * axis.y > 0) return original;
+  if (!settle && !lost && nominal.x * axis.x + nominal.y * axis.y > 0) return original;
   const relative = { x: a.pos.x - seen.pos.x, y: a.pos.y - seen.pos.y };
   const distance = Math.hypot(relative.x, relative.y);
   if (distance > contact + (a.profile.vmax + Math.hypot(seen.vel.x, seen.vel.y)) * .4
@@ -51,6 +51,22 @@ export function chooseRunBlockFit(a: Agent, seen: Perceived, drive: Vec2,
     y: clamp(seen.pos.y + offset.y + placementError, .5, FIELD_WIDTH - .5) };
   const capacity = a.body.support
     ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
-  return { vel: movingArrivalVelocity(a.body, goal, seen.vel, a.profile.vmax, .1, 0, 1, capacity),
+  return { vel: movingArrivalVelocity(a.body, goal, seen.vel, a.profile.vmax, .1, through, 1, capacity),
     posture: .7, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) };
+}
+
+/** A linebacker fit is an arrival on a moving body, not a downhill sprint
+ * through its old center. Share shoulder clearance, torso navigation and
+ * physical braking with first-level fits. Lower only when nearing the strike;
+ * a long climb still runs with its ordinary posture. */
+export function secondLevelBlockApproach(a: Agent, seen: Perceived, drive: Vec2,
+  nominalAim: Vec2, placementError: number, contact: number, bodyContact: number,
+  original: Intent, now: number): Intent {
+  // Gather the approach without stopping the feet before the strike. This
+  // carries the existing run-contact 2.4 yd/s drive request into the approach;
+  // it changes neither force capacity nor the actual contact/reach checks.
+  const command = chooseRunBlockFit(a, seen, drive, nominalAim, placementError,
+    contact, bodyContact, original, now, true, 2.4);
+  const near = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= contact + bodyContact;
+  return { ...command, posture: near ? .7 : original.posture };
 }

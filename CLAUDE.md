@@ -2,8 +2,20 @@
 
 Start with these shared project references:
 
+- [OL run technique and validation](docs/reviews/ol-technique-implementation.md):
+  **latest increment.** Read the [coaching review](docs/reviews/offensive-line-run-technique.md)
+  for zone, gap, doubles, pullers and front-specific responsibilities. Earned
+  combo releases restore solo keeper work; actual newly selected threats use
+  their consumed observed depth; climbs/lead/wrap approaches gather with
+  continued strike intent. Lost solo down shoulders share bounded recovery.
+  Read all 160 fixed pairs, two separate witnesses and 36 film clips. Broad
+  first-step and stop-before-strike candidates were rejected. Rushing results
+  are mixed; shared physics/capabilities/resolution remain unchanged. Next:
+  separate zone outside-shoulder acquisition from stretch/seal intent, then
+  brief post/check/climb and achieved kick/log traffic. Do not add strength
+  bonuses or expand anatomy for controller errors; final physics OK is pending.
 - [OL retargeting and combination lifecycle](docs/reviews/ol-retarget-and-combination-lifecycle.md):
-  **latest increment.** Actual new work cancels the exact live shared job;
+  Previous controller increment. Actual new work cancels the exact live shared job;
   former helpers resume first-level technique without releasing real hands.
   Read the 144 matched ordinary snaps, 24 paired clips and mixed guards.
   Stale combinations fall 16 snaps to zero; gains remain almost identical.

@@ -1,0 +1,248 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 4300613..46f7ba2 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -19,7 +19,7 @@ import type { Intent } from '../../physics/world.js';
+ import type { RunConcept } from '../../playbook/types.js';
+ import type { Agent, Behavior } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
+-import { chooseRunBlockFit, observedBlockLeverage } from '../run-block-fit.js';
++import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
+ import { helperSupport, passSetDepth, traits } from '../engagement.js';
+ import { goTo, runThrough, stand, track } from './common.js';
+ 
+@@ -343,6 +343,8 @@ export interface Combination {
+   released: boolean;
+   secureSince: number;
+   nextRead: number;
++  /** Installed covered-player technique; either member may become keeper. */
++  soloKind?: RunBlockKind;
+ }
+ 
+ export interface RunBlockPlan {
+@@ -435,7 +437,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+   };
+   const up = (lat: number) => norm({ x: 1, y: lat });
+   const combo = (b: Agent, partner: Agent, target: Agent, backer: Agent | null, drive: Vec2) => {
+-    const combination: Combination = { members: [partner, b], defender: target, backer, released: false, secureSince: -1, nextRead: 0 };
++    const combination: Combination = { members: [partner, b], defender: target, backer, released: false, secureSince: -1, nextRead: 0,
++      soloKind: plans.get(partner)!.kind };
+     plans.get(partner)!.combination = combination;
+     plans.set(b, { kind: 'combo', target, climbTo: backer, drive, combination });
+   };
+@@ -613,7 +616,10 @@ export class RunBlocker implements Behavior {
+   private retarget = 0;
+   private homeY: number | null = null;
+   private firstStep: Vec2 | null = null;
++  private entryComplete = false;
+   private nextRuleRead = 0;
++  private soloKind: RunBlockKind | null = null;
++  private soloDrive: Vec2 | null = null;
+   constructor(public plan: RunBlockPlan) {}
+ 
+   get target(): Agent | null {
+@@ -624,7 +630,9 @@ export class RunBlocker implements Behavior {
+     const plan = this.plan;
+     const t = sim.t;
+     this.homeY ??= a.pos.y;
+-    this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
++    this.soloKind ??= plan.kind === 'combo' ? combinationSoloKind(plan.combination)
++      : plan.kind === 'climb' ? 'drive' : plan.kind;
++    this.soloDrive ??= { ...plan.drive };
+     // Draw blockers show pass first; everyone else fires out low.
+     a.stance = plan.kind === 'draw' && t < 1.0 ? 'high' : 'low';
+     if (t < a.mind.snapDelay) return stand();
+@@ -640,11 +648,21 @@ export class RunBlocker implements Behavior {
+     if (plan.kind === 'draw' && t < 1.0) {
+       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
+     }
+-    if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
+-      // Establish the first foot and pad angle before running through a
+-      // target. Zone gains lateral ground; Duo stays vertical. These are
+-      // technique landmarks, still subject to acceleration and collisions.
+-      return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
++    if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind)
++      && !this.entryComplete && t < .24+a.mind.snapDelay) {
++      // A short installed entry step, not the subsequent displacement axis:
++      // reach gains width/depth, down closes its angle, Duo is vertical with
++      // the helper closing inside. The existing startup interval bounds this
++      // first request; it is not a read, contact or combo-release trigger.
++      this.firstStep ??= this.entryStep(a, sim);
++      const d = plan.target;
++      const contact = d ? a.profile.radius + d.profile.radius + .1 + a.player.measurables.armIn / 36 * .45 : 0;
++      // A reached landmark or an actual nearby body ends the staging request;
++      // the startup bound never makes the player ignore available contact.
++      this.entryComplete = Math.hypot(this.firstStep.x-a.pos.x,this.firstStep.y-a.pos.y) < .08
++        || !!d && Math.hypot(d.pos.x-a.pos.x,d.pos.y-a.pos.y) < contact;
++      if (!this.entryComplete)
++        return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
+     }
+ 
+     let target = plan.target;
+@@ -658,6 +676,7 @@ export class RunBlocker implements Behavior {
+     if (!target || target.isDown(t) || (target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
+       if (t >= this.retarget) {
+         this.retarget = t + a.mind.decisionInterval;
++        const previous = target;
+         const replacement = this.findWork(a, sim);
+         const combination = plan.combination;
+         if (combination && !combination.released && replacement !== combination.defender) {
+@@ -666,6 +685,8 @@ export class RunBlocker implements Behavior {
+           if (replacement && replacement === combination.backer) plan.kind = 'climb';
+         }
+         plan.target = target = replacement;
++        if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
++          this.classifyWork(a, sim, replacement);
+       }
+     }
+     if (plan.kind === 'pull' && plan.pullPath && this.pullIdx < plan.pullPath.length) {
+@@ -733,7 +754,7 @@ export class RunBlocker implements Behavior {
+     // A run block starts with the strike, before torsos meet. Keep functional
+     // extension shorter than a pass-pro punch; long arms can catch a slant.
+     const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
+-    const fit = isOL(a) && (plan.kind === 'reach' || plan.kind === 'cutoff')
++    const fit = isOL(a) && (plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
+       && (!plan.combination || plan.combination.released)
+       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
+     // A clearly lost shoulder is a foot-recovery decision, not a fresh hold.
+@@ -750,7 +771,7 @@ export class RunBlocker implements Behavior {
+     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
+     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
+     else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
+-    else if (plan.kind === 'climb' || plan.kind === 'lead') {
++    else if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+       aim = a.mind.aim('block-fit', { x: seen.pos.x + seen.vel.x * 0.25, y: seen.pos.y + seen.vel.y * 0.25 }, sim.t);
+     }
+     const nominalAim = aim;
+@@ -764,9 +785,48 @@ export class RunBlocker implements Behavior {
+       const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
+       return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
+     }
++    if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
++      const command = track(a, aim, seen.vel, { speed: 1, gain: 3,
++        facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
++      return secondLevelBlockApproach(a, seen, plan.drive, nominalAim, placementError,
++        contact, a.profile.radius + target.profile.radius, command, sim.t);
++    }
+     const original = runThrough(a, aim, { speed: 1 });
+     return fit ? chooseRunBlockFit(a, seen, plan.drive, nominalAim, placementError,
+-      contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t) : original;
++      contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
++      plan.kind === 'down') : original;
++  }
++
++  private entryStep(a: Agent, sim: PlaySim): Vec2 {
++    const p = this.plan, seen = p.target ? sim.see(a, p.target) : null;
++    const kind = p.kind === 'combo' ? combinationSoloKind(p.combination) : p.kind;
++    const toward = seen ? seen.pos.y - a.pos.y : p.drive.y;
++    const side = Math.sign(p.drive.y);
++    if (kind === 'down') return { x: a.pos.x + .12, y: a.pos.y + clamp(toward * .65, -.4, .4) };
++    if (sim.offCall.run?.scheme === 'duo')
++      return { x: a.pos.x + .18, y: a.pos.y + clamp(toward * .4, -.3, .3) };
++    if (kind === 'reach') return { x: a.pos.x - .10, y: a.pos.y + side * .4 };
++    return { x: a.pos.x + .18, y: a.pos.y + side * .2 };
++  }
++
++  private classifyWork(a: Agent, sim: PlaySim, target: Agent): void {
++    const p = this.plan;
++    // Reserved kick/trap jobs and pass influence retain their installed
++    // responsibility. A wrap/lead already has a second-level approach.
++    if (p.kind === 'pull' || p.kind === 'lead' || p.kind === 'stalk' || p.kind === 'draw') return;
++    const seen = sim.see(a, target);
++    // Location in the consumed picture, not a linebacker roster label or the
++    // defender's unseen current depth, identifies a new second-level job.
++    if (seen.pos.x > sim.los + 2) {
++      p.kind = 'climb';
++      p.drive = { x: 1, y: 0 };
++    } else {
++      p.kind = this.soloKind ?? 'drive';
++      p.drive = { ...this.soloDrive! };
++      // An explicit planned-backer climb can encounter a backer who has
++      // already filled the surface. Use the ordinary solo collection there.
++      if (p.kind === 'combo' || p.kind === 'climb') p.kind = 'drive';
++    }
+   }
+ 
+   private readRules(a: Agent, sim: PlaySim): void {
+@@ -834,10 +894,7 @@ export class RunBlocker implements Behavior {
+  * another plan. Earned releases have their own contact/ownership transition. */
+ function abandonCombination(observer: Agent, sim: PlaySim, combo: Combination, reason: string): void {
+   if (combo.released) return;
+-  const owner = combo.members[0].behavior;
+-  const original = owner instanceof RunBlocker && owner.plan.combination === combo ? owner.plan.kind : null;
+-  const solo: RunBlockKind = original && ['drive', 'reach', 'down', 'cutoff', 'draw'].includes(original)
+-    ? original : 'drive';
++  const solo = combinationSoloKind(combo);
+   combo.released = true;
+   for (const member of combo.members) {
+     if (!(member.behavior instanceof RunBlocker)) continue;
+@@ -850,6 +907,12 @@ function abandonCombination(observer: Agent, sim: PlaySim, combo: Combination, r
+   sim.event('block_abandon', observer, combo.defender, reason);
+ }
+ 
++function combinationSoloKind(combo: Combination | undefined): RunBlockKind {
++  const owner = combo?.members[0].behavior;
++  const original = combo?.soloKind ?? (owner instanceof RunBlocker && owner.plan.combination === combo ? owner.plan.kind : null);
++  return original && ['drive', 'reach', 'down', 'cutoff', 'draw'].includes(original) ? original : 'drive';
++}
++
+ /** A double team releases from leverage and the filling backer, never a mesh timer. */
+ export function readCombination(observer: Agent, sim: PlaySim, combo: Combination): void {
+   if (combo.released || sim.t < combo.nextRead || !combo.backer || combo.backer.isDown(sim.t)) return;
+@@ -891,6 +954,7 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
+   if (!choice) return;
+   const { climber, keeper, phi } = choice;
+   if (!(climber.behavior instanceof RunBlocker)) return;
++  const solo = combinationSoloKind(combo);
+   e.blocker = keeper;
+   e.helpers = e.helpers.filter((b) => b !== climber && b !== keeper);
+   e.phi = phi;
+@@ -898,6 +962,13 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
+   climber.behavior.plan.kind = 'climb';
+   climber.behavior.plan.target = combo.backer;
+   combo.released = true;
++  for (const member of combo.members) {
++    if (!(member.behavior instanceof RunBlocker) || member.behavior.plan.combination !== combo) continue;
++    const p = member.behavior.plan;
++    p.combination = undefined;
++    p.climbTo = undefined;
++    if (member === keeper) p.kind = solo;
++  }
+   climber.tags.add('combo-climb');
+   keeper.tags.add('combo-stay');
+   sim.event('block_climb', climber, combo.backer, `secured ${combo.defender.slot}; ${keeper.slot} stays`);
+diff --git a/src/sim/run-block-fit.ts b/src/sim/run-block-fit.ts
+index 4990958..b131f3f 100644
+--- a/src/sim/run-block-fit.ts
++++ b/src/sim/run-block-fit.ts
+@@ -17,11 +17,11 @@ export function observedBlockLeverage(a: Agent, seen: Perceived, drive: Vec2): n
+ 
+ export function chooseRunBlockFit(a: Agent, seen: Perceived, drive: Vec2,
+   nominalAim: Vec2, placementError: number, contact: number, bodyContact: number,
+-  original: Intent, now: number): Intent {
++  original: Intent, now: number, settle = false): Intent {
+   const axis = { x: -drive.x, y: -drive.y }, lat = { x: -axis.y, y: axis.x };
+   const nominal = { x: nominalAim.x - seen.pos.x, y: nominalAim.y - seen.pos.y };
+   const lost = Math.abs(observedBlockLeverage(a, seen, drive)) >= 1.1;
+-  if (!lost && nominal.x * axis.x + nominal.y * axis.y > 0) return original;
++  if (!settle && !lost && nominal.x * axis.x + nominal.y * axis.y > 0) return original;
+   const relative = { x: a.pos.x - seen.pos.x, y: a.pos.y - seen.pos.y };
+   const distance = Math.hypot(relative.x, relative.y);
+   if (distance > contact + (a.profile.vmax + Math.hypot(seen.vel.x, seen.vel.y)) * .4
+@@ -54,3 +54,16 @@ export function chooseRunBlockFit(a: Agent, seen: Perceived, drive: Vec2,
+   return { vel: movingArrivalVelocity(a.body, goal, seen.vel, a.profile.vmax, .1, 0, 1, capacity),
+     posture: .7, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) };
+ }
++
++/** A linebacker fit is an arrival on a moving body, not a downhill sprint
++ * through its old center. Share shoulder clearance, torso navigation and
++ * physical braking with first-level fits. Lower only when nearing the strike;
++ * a long climb still runs with its ordinary posture. */
++export function secondLevelBlockApproach(a: Agent, seen: Perceived, drive: Vec2,
++  nominalAim: Vec2, placementError: number, contact: number, bodyContact: number,
++  original: Intent, now: number): Intent {
++  const command = chooseRunBlockFit(a, seen, drive, nominalAim, placementError,
++    contact, bodyContact, original, now, true);
++  const near = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= contact + bodyContact;
++  return { ...command, posture: near ? .7 : original.posture };
++}

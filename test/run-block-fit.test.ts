@@ -84,7 +84,7 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
     expect(execute(blocker.body, selected).moved).toEqual(execute(blocker.body, original).moved);
   });
 
-  it.each(['drive', 'down', 'pull', 'draw'] as RunBlockKind[])(
+  it.each(['drive', 'pull', 'draw'] as RunBlockKind[])(
     'leaves the ordinary %s controller outside corrected fit requests', kind => {
       const { sim, blocker, defender } = stage(kind);
       const fit = vi.spyOn(RunBlockFit, 'chooseRunBlockFit');
@@ -101,6 +101,19 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
       expect(command).toEqual(ordinary);
       expect(execute(blocker.body, command).moved).toEqual(execute(blocker.body, ordinary).moved);
     });
+
+  it('a square down block keeps its supported downhill strike', () => {
+    const { sim, blocker, defender, bodyContact } = stage('down');
+    const command = blocker.behavior.update(blocker, sim) as Intent;
+    const seen = sim.see(blocker, defender);
+    const before = { ...blocker.pos };
+    const moved = execute(blocker.body, command).moved;
+    expect(blocker.engagement).toBeNull();
+    expect(command.posture).toBe(.7);
+    expect(Math.hypot(command.vel.x,command.vel.y)).toBeCloseTo(blocker.profile.vmax);
+    expect(Math.hypot(moved.pos.x-seen.pos.x,moved.pos.y-seen.pos.y)).toBeGreaterThan(bodyContact);
+    expect(moved.support!.state).toBe('up');
+  });
 
   it('keeps a live planned double outside corrected fit requests', () => {
     const { sim, blocker, defender } = stage('reach'), partner = sim.slot('LG')!;

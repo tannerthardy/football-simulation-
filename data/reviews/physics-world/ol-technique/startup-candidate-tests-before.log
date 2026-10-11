@@ -1,0 +1,237 @@
+
+ RUN  v3.2.4 /tmp/football-ol-technique-tests.ftPmTL
+
+ ❯ test/run-technique.test.ts (22 tests | 15 failed) 97ms
+   × installed entry footwork follows the job and the observed shade > steps toward the observed down-block shade rather than along the displacement vector 19ms
+     → expected -1.6442243744817076 to be greater than 0
+   × installed entry footwork follows the job and the observed shade > closes a Duo helper inside while the covered owner gains vertical ground 9ms
+     → expected 0 to be less than 0
+   × installed entry footwork follows the job and the observed shade > mirrors a reach depth-and-width entry through the same World capabilities 4ms
+     → expected 0.7478698422897273 to be less than 0
+   × installed entry footwork follows the job and the observed shade > responds to real nearby contact during the entry rather than finishing a scripted foot path 3ms
+     → expected null not to be null
+   × installed entry footwork follows the job and the observed shade > leaves the entry after physically reaching its landmark before the startup bound 7ms
+     → expected 0.024245742074064935 to be greater than 1.7999999999999972
+   ✓ installed entry footwork follows the job and the observed shade > keeps the snap response before any entry request 3ms
+   × an earned double becomes two coherent individual blocking jobs > keeps actual hands while restoring the helper keeper to drive 7ms
+     → expected 'combo' to be 'drive' // Object.is equality
+   × an earned double becomes two coherent individual blocking jobs > keeps actual hands while restoring the helper keeper to reach 3ms
+     → expected 'combo' to be 'reach' // Object.is equality
+   × an earned double becomes two coherent individual blocking jobs > keeps actual hands while restoring the helper keeper to down 3ms
+     → expected 'combo' to be 'down' // Object.is equality
+   × an earned double becomes two coherent individual blocking jobs > keeps actual hands while restoring the helper keeper to cutoff 3ms
+     → expected 'combo' to be 'cutoff' // Object.is equality
+   × an earned double becomes two coherent individual blocking jobs > classifies each later new-work approach after a teammate cancelled the old double 4ms
+     → expected 'reach' to be 'climb' // Object.is equality
+   × new work uses the depth the blocker actually saw > reads DT_S at 43 yards, despite its current location at 41.5 3ms
+     → expected 'reach' to be 'climb' // Object.is equality
+   ✓ new work uses the depth the blocker actually saw > reads LB_W at 41.5 yards, despite its current location at 43 2ms
+   × new work uses the depth the blocker actually saw > returns from a climb to a first-level fit when newly selected work is a visible front threat 2ms
+     → expected 'climb' to be 'drive' // Object.is equality
+   ✓ new work uses the depth the blocker actually saw > preserves a puller's reserved kick job while finding replacement work 2ms
+   ✓ new work uses the depth the blocker actually saw > preserves a puller's reserved trap job while finding replacement work 2ms
+   × second-level footwork arrives under control through ordinary physics > brakes a climb approach before a stationary defender 6ms
+     → expected 41.408277716742404 to be less than 41.408277716742404
+   × second-level footwork arrives under control through ordinary physics > brakes a lead approach before a stationary defender 3ms
+     → expected 41.408277716742404 to be less than 41.408277716742404
+   × second-level footwork arrives under control through ordinary physics > brakes a wrap approach before a stationary defender 6ms
+     → expected 41.408277716742404 to be less than 41.408277716742404
+   ✓ second-level footwork arrives under control through ordinary physics > tracks an observed crossing backer to side -1 without snapping the body 2ms
+   ✓ second-level footwork arrives under control through ordinary physics > tracks an observed crossing backer to side 1 without snapping the body 2ms
+   ✓ second-level footwork arrives under control through ordinary physics > does not create hands when a delayed reachable image hides an actually remote defender 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/run-technique.test.ts > installed entry footwork follows the job and the observed shade > steps toward the observed down-block shade rather than along the displacement vector
+AssertionError: expected -1.6442243744817076 to be greater than 0
+ ❯ test/run-technique.test.ts:104:27
+    102|     const command = blocker.behavior.update(blocker, f.sim) as Intent;
+    103|     expect(command.vel.x).toBeGreaterThan(0);
+    104|     expect(command.vel.y).toBeGreaterThan(0);
+       |                           ^
+    105|     expect(command.posture).toBe(.7);
+    106|     const moved = move(blocker.body, command);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  test/run-technique.test.ts > installed entry footwork follows the job and the observed shade > closes a Duo helper inside while the covered owner gains vertical ground
+AssertionError: expected 0 to be less than 0
+ ❯ test/run-technique.test.ts:126:26
+    124|     expect(owner.vel.y).toBe(0);
+    125|     expect(helper.vel.x).toBeGreaterThan(0);
+    126|     expect(helper.vel.y).toBeLessThan(0);
+       |                          ^
+    127|     expect(f.combination.released).toBe(false);
+    128|     expect(move(f.helper.body, helper).pos.y).toBeLessThan(f.helper.po…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  test/run-technique.test.ts > installed entry footwork follows the job and the observed shade > mirrors a reach depth-and-width entry through the same World capabilities
+AssertionError: expected 0.7478698422897273 to be less than 0
+ ❯ reach test/run-technique.test.ts:141:29
+    139|       f.observe(); f.sim.t = blocker.mind.snapDelay + .01;
+    140|       const command = blocker.behavior.update(blocker, f.sim) as Inten…
+    141|       expect(command.vel.x).toBeLessThan(0);
+       |                             ^
+    142|       expect(command.vel.y * side).toBeGreaterThan(0);
+    143|       const body = move(blocker.body, command);
+ ❯ test/run-technique.test.ts:149:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  test/run-technique.test.ts > installed entry footwork follows the job and the observed shade > responds to real nearby contact during the entry rather than finishing a scripted foot path
+AssertionError: expected null not to be null
+ ❯ test/run-technique.test.ts:165:19
+    163|     const command = blocker.behavior.update(blocker, f.sim);
+    164|     const e = blocker.engagement!;
+    165|     expect(e).not.toBeNull();
+       |                   ^
+    166|     const hands = e.hands;
+    167|     expect(command.vel).toEqual({ x: 0, y: 0 });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  test/run-technique.test.ts > installed entry footwork follows the job and the observed shade > leaves the entry after physically reaching its landmark before the startup bound
+AssertionError: expected 0.024245742074064935 to be greater than 1.7999999999999972
+ ❯ test/run-technique.test.ts:195:24
+    193|     expect(f.sim.t).toBeLessThan(blocker.mind.snapDelay + .24);
+    194|     const next = blocker.behavior.update(blocker, f.sim) as Intent;
+    195|     expect(next.vel.x).toBeGreaterThan(entry.vel.x * 2);
+       |                        ^
+    196|     expect(blocker.body.support!.state).toBe('up');
+    197|     expect(blocker.engagement).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  test/run-technique.test.ts > an earned double becomes two coherent individual blocking jobs > keeps actual hands while restoring the helper keeper to drive
+AssertionError: expected 'combo' to be 'drive' // Object.is equality
+
+Expected: "drive"
+Received: "combo"
+
+ ❯ test/run-technique.test.ts:217:42
+    215|     'keeps actual hands while restoring the helper keeper to %s', kind…
+    216|       const f = shared(kind), { e, joints } = earnRelease(f);
+    217|       expect(f.helperBehavior.plan.kind).toBe(kind);
+       |                                          ^
+    218|       expect(f.helperBehavior.target).toBe(f.defender);
+    219|       expect(f.ownerBehavior.plan.kind).toBe('climb');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  test/run-technique.test.ts > an earned double becomes two coherent individual blocking jobs > keeps actual hands while restoring the helper keeper to reach
+AssertionError: expected 'combo' to be 'reach' // Object.is equality
+
+Expected: "reach"
+Received: "combo"
+
+ ❯ test/run-technique.test.ts:217:42
+    215|     'keeps actual hands while restoring the helper keeper to %s', kind…
+    216|       const f = shared(kind), { e, joints } = earnRelease(f);
+    217|       expect(f.helperBehavior.plan.kind).toBe(kind);
+       |                                          ^
+    218|       expect(f.helperBehavior.target).toBe(f.defender);
+    219|       expect(f.ownerBehavior.plan.kind).toBe('climb');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  test/run-technique.test.ts > an earned double becomes two coherent individual blocking jobs > keeps actual hands while restoring the helper keeper to down
+AssertionError: expected 'combo' to be 'down' // Object.is equality
+
+Expected: "down"
+Received: "combo"
+
+ ❯ test/run-technique.test.ts:217:42
+    215|     'keeps actual hands while restoring the helper keeper to %s', kind…
+    216|       const f = shared(kind), { e, joints } = earnRelease(f);
+    217|       expect(f.helperBehavior.plan.kind).toBe(kind);
+       |                                          ^
+    218|       expect(f.helperBehavior.target).toBe(f.defender);
+    219|       expect(f.ownerBehavior.plan.kind).toBe('climb');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  test/run-technique.test.ts > an earned double becomes two coherent individual blocking jobs > keeps actual hands while restoring the helper keeper to cutoff
+AssertionError: expected 'combo' to be 'cutoff' // Object.is equality
+
+Expected: "cutoff"
+Received: "combo"
+
+ ❯ test/run-technique.test.ts:217:42
+    215|     'keeps actual hands while restoring the helper keeper to %s', kind…
+    216|       const f = shared(kind), { e, joints } = earnRelease(f);
+    217|       expect(f.helperBehavior.plan.kind).toBe(kind);
+       |                                          ^
+    218|       expect(f.helperBehavior.target).toBe(f.defender);
+    219|       expect(f.ownerBehavior.plan.kind).toBe('climb');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ FAIL  test/run-technique.test.ts > an earned double becomes two coherent individual blocking jobs > classifies each later new-work approach after a teammate cancelled the old double
+AssertionError: expected 'reach' to be 'climb' // Object.is equality
+
+Expected: "climb"
+Received: "reach"
+
+ ❯ test/run-technique.test.ts:253:40
+    251|     f.helperBehavior.update(f.helper, f.sim);
+    252|     expect(f.helperBehavior.target).toBe(f.backer);
+    253|     expect(f.helperBehavior.plan.kind).toBe('climb');
+       |                                        ^
+    254|     expect(f.helperBehavior.plan.drive).toEqual({ x: 1, y: 0 });
+    255|     expect(f.sim.events.some(event => event.type === 'block_climb')).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/15]⎯
+
+ FAIL  test/run-technique.test.ts > new work uses the depth the blocker actually saw > reads DT_S at 43 yards, despite its current location at 41.5
+AssertionError: expected 'reach' to be 'climb' // Object.is equality
+
+Expected: "climb"
+Received: "reach"
+
+ ❯ test/run-technique.test.ts:279:56
+    277|     const command = blocker.behavior.update(blocker, f.sim) as Intent;
+    278|     expect((blocker.behavior as RunBlocker).target).toBe(next);
+    279|     expect((blocker.behavior as RunBlocker).plan.kind).toBe(kind);
+       |                                                        ^
+    280|     expect(blocker.engagement).toBeNull();
+    281|     expect(blocker.body).toEqual(originalBody);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/15]⎯
+
+ FAIL  test/run-technique.test.ts > new work uses the depth the blocker actually saw > returns from a climb to a first-level fit when newly selected work is a visible front threat
+AssertionError: expected 'climb' to be 'drive' // Object.is equality
+
+Expected: "drive"
+Received: "climb"
+
+ ❯ test/run-technique.test.ts:294:56
+    292|     blocker.behavior.update(blocker, f.sim);
+    293|     expect((blocker.behavior as RunBlocker).target).toBe(next);
+    294|     expect((blocker.behavior as RunBlocker).plan.kind).toBe('drive');
+       |                                                        ^
+    295|   });
+    296| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/15]⎯
+
+ FAIL  test/run-technique.test.ts > second-level footwork arrives under control through ordinary physics > brakes a climb approach before a stationary defender
+ FAIL  test/run-technique.test.ts > second-level footwork arrives under control through ordinary physics > brakes a lead approach before a stationary defender
+ FAIL  test/run-technique.test.ts > second-level footwork arrives under control through ordinary physics > brakes a wrap approach before a stationary defender
+AssertionError: expected 41.408277716742404 to be less than 41.408277716742404
+ ❯ test/run-technique.test.ts:335:29
+    333|     const sprint = runThrough(blocker, { x: seen.pos.x, y: seen.pos.y …
+    334|     const candidate = move(blocker.body, command), oldSprint = move(bl…
+    335|     expect(candidate.pos.x).toBeLessThan(oldSprint.pos.x);
+       |                             ^
+    336|     expect(Math.hypot(candidate.vel.x, candidate.vel.y)).toBeLessThan(…
+    337|     expect(candidate.support!.state).toBe('up');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/15]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed | 7 passed (22)
+   Start at  05:23:02
+   Duration  880ms (transform 490ms, setup 0ms, collect 618ms, tests 97ms, environment 0ms, prepare 57ms)
+

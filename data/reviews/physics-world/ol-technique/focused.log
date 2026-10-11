@@ -1,0 +1,14 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/run-technique.test.ts (19 tests) 91ms
+ ✓ test/run-base.test.ts (15 tests) 131ms
+ ✓ test/run-block-fit.test.ts (14 tests) 149ms
+ ✓ test/run-combo-retarget.test.ts (17 tests) 84ms
+ ✓ test/combination-ownership.test.ts (10 tests) 43ms
+
+ Test Files  5 passed (5)
+      Tests  75 passed (75)
+   Start at  05:28:04
+   Duration  2.33s (transform 567ms, setup 0ms, collect 1.06s, tests 499ms, environment 1ms, prepare 265ms)
+

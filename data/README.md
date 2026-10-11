@@ -1,6 +1,17 @@
 # Shared NFL data
 
-Current engine status: [OL retargeting and combination lifecycle](../docs/reviews/ol-retarget-and-combination-lifecycle.md).
+Current engine status: [OL run technique and validation](../docs/reviews/ol-technique-implementation.md),
+with a [zone/gap coaching review](../docs/reviews/offensive-line-run-technique.md).
+The [evidence and commands](reviews/physics-world/ol-technique/README.md) retain
+160 fixed ordinary pairs across eight concepts and five fronts, two separate
+prior witnesses, rejected startup/over-braking candidates and independent guards.
+Watch the [36 paired clips](../viewer/ol-technique.html) or [offline ZIP](../viewer/ol-technique.zip).
+Earned releases restore solo keeper technique; consumed new-work depth chooses
+the appropriate approach, and second-level fits keep strike intent. Rushing
+outcomes are mixed. This changes controllers within unchanged shared physics;
+it adds no NFL observations or fitted strength parameters.
+
+Previous controller status: [OL retargeting and combination lifecycle](../docs/reviews/ol-retarget-and-combination-lifecycle.md).
 The [evidence and commands](reviews/physics-world/ol-retarget/README.md) retain
 all 144 ordinary before/after snaps, actual requests/contact loads, tests and
 mixed game guards. Watch the [24 paired run clips](../viewer/ol-retarget.html)
