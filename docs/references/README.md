@@ -90,9 +90,9 @@ Preserving them does not install the whole proposed offense.
 Textbook SHA-256: `f06753393eced8c45ba640011f8eaf1dc8aaa5c0d2f4448d2e1a9c1a50e32311`.
 Glossary SHA-256: `25a9a9a0bc51ad6a4889d12ef282201f007e5bd05fccb7f981db82c373c05609`.
 
-The [offense](../reviews/offense-literature-applications.md),
-[coverage](../reviews/coverage-literature-applications.md) and
-[contact](../reviews/contact-literature-applications.md) reviews synthesize
+The [offense](../archive/reviews/offense-literature-applications.md),
+[coverage](../archive/reviews/coverage-literature-applications.md) and
+[contact](../archive/reviews/contact-literature-applications.md) reviews synthesize
 all these aids into a few concrete mechanics and diagnostic proposals. The
 new run-process and coverage-contract labs observe actual execution. They
 do not validate every teaching claim or install the whole described playbook.

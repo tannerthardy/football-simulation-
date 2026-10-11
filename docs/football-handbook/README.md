@@ -28,11 +28,9 @@ and proposed mechanisms are identified separately.
 For an OL problem, read the shared model, trenches and the relevant defensive
 fit. For a coverage problem, read defense, the WR/QB contracts and the data
 definitions. A coverage bust is not necessarily a bad physical turn; a good
-looking block is not necessarily transmitting load. Use the
-[current repair review](../reviews/schematics-and-physics-stress.md)
-and [previous movement repair](../reviews/traffic-turning-and-football-handbook.md)
-and [position audit](../reviews/position-technique-and-awareness.md) for actual
-engine status.
+looking block is not necessarily transmitting load. Use
+[current status](../STATUS.md) for live engine status and priorities. The
+archived reviews describe historical checkpoints.
 
 ## How to turn a teaching point into an engine change
 
@@ -56,7 +54,11 @@ inspected definition, not dataset completeness. A public article verifies a
 teaching example, not its frequency across NFL teams. Do not copy raw provider
 data or copyrighted coaching material into the repository as handbook content.
 
-## Development order
+## How to choose work
+
+Use the random review and validation in [current status](../STATUS.md), rather
+than the chapter order, to choose the next mechanism. The following are
+possible teaching studies, not a current implementation queue.
 
 1. Demonstrate narrow repairs using unchanged shared physical capabilities.
    The new teammate-turning repair is one example: compare achievable paths,
@@ -73,7 +75,7 @@ data or copyrighted coaching material into the repository as handbook content.
    those foundations hold. Keep player capacity separate from chosen effort.
 
 These are priorities, not a commitment to implement every chapter at once.
-The new [schematic audit and repair](../reviews/schematics-and-physics-stress.md)
+The new [schematic audit and repair](../archive/reviews/schematics-and-physics-stress.md)
 places coherent call installation and one complete Drive/protection/hot package
 ahead of a larger concept catalog. It provides actual native stress cases and
 an offline situational NFL reference alongside the position work above.

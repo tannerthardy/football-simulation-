@@ -86,7 +86,7 @@ Start with fixed menu membership and explicit technique/read variants. Player
 learning can later improve recognition, communication and consistency. Keep
 strength, traction and acceleration independent of knowing a concept.
 
-The retained [route-side study](../reviews/coverage-engine-and-playbook-depth.md)
+The retained [route-side study](../archive/reviews/coverage-engine-and-playbook-depth.md)
 reports approximately 4% matching route tuples on both sides in its 2022 BDB
 cohort. **Measured label reference:** this supports examining separately
 composed sides. It does not establish a universal mirroring penalty, exact

@@ -118,10 +118,10 @@ python3 -m unittest discover -s test -p 'test_orientation_motion_audit.py'
 Seven measurement tests cover circular invariance, gaps, missing angles,
 ambiguous clocks, low-speed endpoint rotation and athlete weighting. They
 validate the operator, not NFL semantics or the engine's football realism.
-The published [derived report](../../data/reviews/football-handbook/orientation/report.json.gz),
+The published [derived report](https://github.com/tannerthardy/football-simulation-/blob/663193dfe7fe362d4f59072ef136437f881f1086/data/reviews/football-handbook/orientation/report.json.gz),
 [manifest](../../data/reviews/football-handbook/orientation/manifest.json),
 [verification](../../data/reviews/football-handbook/orientation/verification.json),
-[collection log](../../data/reviews/football-handbook/orientation/collection.log)
-and [measurement test log](../../data/reviews/football-handbook/orientation/tests.log)
+[collection log](https://github.com/tannerthardy/football-simulation-/blob/663193dfe7fe362d4f59072ef136437f881f1086/data/reviews/football-handbook/orientation/collection.log)
+and [measurement test log](https://github.com/tannerthardy/football-simulation-/blob/663193dfe7fe362d4f59072ef136437f881f1086/data/reviews/football-handbook/orientation/tests.log)
 retain the exact frozen result. The manifest pins original source files without
 copying them into the evidence packet.

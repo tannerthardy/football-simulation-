@@ -10,9 +10,9 @@ universal algorithm.
 
 The source review began at `7ce3559` on 2026-10-11. The shipped OL cutoff repair
 does not change the defensive mechanisms discussed here. For current measured
-status, use [position technique and awareness](../reviews/position-technique-and-awareness.md),
-the [defensive audit](../reviews/defensive-awareness-technique-audit.md) and the
-[pursuit audit](../reviews/pursuit-and-tackle-technique-audit.md). Historical
+status, use [position technique and awareness](../archive/reviews/position-technique-and-awareness.md),
+the [defensive audit](../archive/reviews/defensive-awareness-technique-audit.md) and the
+[pursuit audit](../archive/reviews/pursuit-and-tackle-technique-audit.md). Historical
 witnesses retain their own source labels. The ideas below do not inherit their
 measurements automatically.
 
@@ -85,7 +85,7 @@ In a reduced simulation, observed velocity, credible deceleration, body facing,
 release position and received hand/body contact can represent a useful portion
 of these cues. We do not need an anatomical pelvis or an eyeball rig to begin.
 Calling body facing “eyes” would still be misleading. The rejected QB-direction
-experiments in the [current audit](../reviews/defensive-awareness-technique-audit.md#post-audit-promotion-decision-withhold-the-qb-proxy)
+experiments in the [current audit](../archive/reviews/defensive-awareness-technique-audit.md#post-audit-promotion-decision-withhold-the-qb-proxy)
 are a concrete warning: neutral torso direction biased empty zones, and the
 narrowed proxy still worsened native passing. Removing hidden information and
 inventing a replacement signal are two separate experiments.
@@ -195,7 +195,7 @@ contact, blocker/rusher relative motion, pocket displacement **while still
 engaged**, actual hand force and support, and recovery after contact ends.
 Pressure proximity, a PFF hurry and a block win are different outcomes. Do
 not fit a bull-rush force to sack totals. The 2021 protection labels described
-in the [BDB2023 review](../reviews/bdb2023-data-review.md#the-useful-addition-protection-labels)
+in the [BDB2023 review](../archive/reviews/bdb2023-data-review.md#the-useful-addition-protection-labels)
 can split assignment losses from attributed hits/hurries/sacks, but tracking
 ends shortly after release and proximity alone does not prove hand contact.
 
@@ -364,7 +364,7 @@ falling, turning away or being horizontally stretched may not sustain the roof
 through the next decision. Current nearby-help judgment projects its consumed
 moving picture for a short horizon, with a limited six-yard scope. Earlier
 far-help expansion did not establish extra ordinary physical benefit. Retain
-the [near-help evidence](../reviews/near-help-persistence-and-current-priorities.md)
+the [near-help evidence](../archive/reviews/near-help-persistence-and-current-priorities.md)
 rather than expanding the horizon because a diagram says a safety is available.
 
 Emergency help should preserve the owned vertical until there is admissible
@@ -479,7 +479,7 @@ already use the shared body envelope and short World previews. Current
 [tackle opportunity](../../src/sim/tackle-window.ts) previews the last executed
 command without another behavior decision. These are valuable mechanisms.
 
-The retained [pursuit audit](../reviews/pursuit-and-tackle-technique-audit.md)
+The retained [pursuit audit](../archive/reviews/pursuit-and-tackle-technique-audit.md)
 also establishes three narrower problems: a requested clear ray can hide a
 curved teammate collision; a tiny heading change crosses a discontinuous gather
 policy; and a pre-contact rear wrap can acquire the same initial quality without
@@ -596,7 +596,7 @@ pairs, rather than picking film only from explosives.
 ## 14. What NFL data can and cannot validate
 
 The [source catalog](../../data/sources.json) and
-[data guide](../../data/README.md#sources-and-useful-coverage) define actual
+[data guide](../../data/archive/catalog-2026-10-11.md#sources-and-useful-coverage) define actual
 seasons, selections and extraction scope. A competition year is not its game
 season. A large downloaded archive is not automatically an analyzed reference.
 
@@ -642,7 +642,7 @@ We do **not** currently have dependable true gaze, which guard a linebacker
 consciously keyed, route-call knowledge, communication acknowledgment, hand
 forces, contact posture at every frame, ground reactions or subjective fear.
 Those must remain unobserved states or explicit effective assumptions. The
-72-trial [movement audit](../reviews/movement-and-nfl-validation-audit.md)
+72-trial [movement audit](../archive/reviews/movement-and-nfl-validation-audit.md)
 demonstrates why numerical accounting and path-control evidence are useful but
 not an NFL calibration certificate.
 
@@ -691,7 +691,7 @@ sections 1–12, 15 and the motion/exchange/run-support laboratories; and
 [*The Second and Third Level*](../references/football_coverage_mechanics_textbook.pdf),
 sections 4 (printed pages 10–11), 6 (13–14) and 21 (37–38). PDFs were read
 through the existing `pdftotext -layout` extracts; diagrams were not measured.
-The [coverage literature review](../reviews/coverage-literature-applications.md)
+The [coverage literature review](../archive/reviews/coverage-literature-applications.md)
 gives further exact aid anchors and existing observational labs. These chapter
 references are teaching synthesis, not newly verified human measurements.
 

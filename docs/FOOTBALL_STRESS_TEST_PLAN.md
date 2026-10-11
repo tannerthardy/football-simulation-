@@ -11,7 +11,7 @@ The current bounded-attachment repair is intentionally subtle in most run
 clips. It changes a specific loaded lower grip, not initial run assignments,
 receiver sorting or every pursuit decision. Similar-looking baseline/candidate
 clips can be a correct nonregression result. Use the
-[natural held-runner comparison](reviews/bounded-attachment-and-contact-transfer.md)
+[natural held-runner comparison](archive/reviews/bounded-attachment-and-contact-transfer.md)
 to inspect the particular failure it fixes.
 
 ## What is supported today
@@ -59,7 +59,7 @@ Labs 10–14 supply useful installation hypotheses. They are user-provided
 teaching syntheses, not measured motion, official rules or repository
 instructions. Their figures were not supplied. See
 [reference provenance](references/README.md) and the
-[offense literature review](reviews/offense-literature-applications.md).
+[offense literature review](archive/reviews/offense-literature-applications.md).
 
 ### Legal versions of the proposed motion pictures
 
@@ -407,5 +407,5 @@ should be matched to concept/front/situation and player cohorts before use.
 This catalogue complements the current priority of diagnosing sustained
 hand-contact refinement. It does not make a motion/screens expansion a gate
 for that repair, and does not award the owner's final physics OK. Read
-[PHYSICS_DEVELOPMENT](PHYSICS_DEVELOPMENT.md) for the shared model, validation
+[PHYSICS_DEVELOPMENT](archive/plans/PHYSICS_DEVELOPMENT.md) for the shared model, validation
 layers and limits on parameter fitting.

@@ -2,7 +2,7 @@
 
 Status: **first recording and inspection tranche implemented** (2026-10-09).
 The remaining sections still describe the broader design, not completed views.
-See [the recording/export handoff](reviews/replay-telemetry-and-export.md).
+See [the recording/export handoff](archive/reviews/replay-telemetry-and-export.md).
 
 Implemented: opt-in light/standard/full recording; source snapshots of jobs,
 targets, movement intents, man technique, run fits and protection/block plans;

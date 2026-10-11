@@ -1,0 +1,1046 @@
+{
+  "schema": "random-coaching-review-v1",
+  "sourceCommit": "663193dfe7fe362d4f59072ef136437f881f1086",
+  "srcSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "selection": {
+    "seed": 20261011,
+    "sampleSize": 48,
+    "poolSize": 1015,
+    "sampleMethod": "Uniform sample without replacement from all non-nullified run/pass snaps with saved frames; no outcome filters or rerolls. Selected before inspecting these plays. Light recordings cannot establish hidden perception or forces.",
+    "ordering": "Game files lexical; log rows in saved order; Python random.Random(20261011).sample(pool,48).",
+    "poolFilter": "kind run/pass, recorded frames present, nullified false; no gain/result/concept filters",
+    "composition": {
+      "run": 12,
+      "pass": 36
+    },
+    "allRequestedIndicesVerified": true,
+    "reviewers": "Two engineering agents, 24 plays each, plus primary spot checks. Not an independent expert coach panel. Selection preceded reviewing outcomes; reviewers were not strictly outcome-blinded.",
+    "sourceFrames": [
+      {
+        "path": "out/rushing-benchmark/validation/recording-games/game-5.json.gz",
+        "sha256": "ebbf1618628e721322dd823eca464b1e5f22949122abdf6dcd6a0b327971e230",
+        "bytes": 1022464
+      },
+      {
+        "path": "out/rushing-benchmark/validation/recording-games/game-3.json.gz",
+        "sha256": "a82eee2fffaa3195b00f592b146ab883ae7d879b6d9c75756d062531de51b191",
+        "bytes": 966703
+      },
+      {
+        "path": "out/rushing-benchmark/validation/recording-games/game-1.json.gz",
+        "sha256": "2061fc5bbe417314d474f1700461045966fb01ba72bcb916eeec31775317fe93",
+        "bytes": 1058142
+      },
+      {
+        "path": "out/rushing-benchmark/validation/recording-games/game-4.json.gz",
+        "sha256": "cac18f28a69e624bb7e8e91379dc9122e5941266e3beee504ba38dffb8537e15",
+        "bytes": 852216
+      },
+      {
+        "path": "out/rushing-benchmark/validation/recording-games/game-6.json.gz",
+        "sha256": "443190f3534857b9cab3d1b3ab013b10c19942efcfb904d3bc4423a29a796607",
+        "bytes": 1133835
+      },
+      {
+        "path": "out/rushing-benchmark/validation/recording-games/game-7.json.gz",
+        "sha256": "ce307fe4ee4fc91eb2b49b8140d5145af47f5bee24edb043876d5061d74d6532",
+        "bytes": 1039085
+      },
+      {
+        "path": "out/rushing-benchmark/validation/recording-games/game-2.json.gz",
+        "sha256": "54a20da1c812b3b0a7d5a3284e6503989f139dd8cd7657bf71a2d5bf624617fa",
+        "bytes": 1025232
+      },
+      {
+        "path": "out/rushing-benchmark/validation/recording-games/game-8.json.gz",
+        "sha256": "0a1555fee8436a1f7f73db4e7e71e6f06ecc92af25079c9678a985bb2b9be234",
+        "bytes": 988257
+      }
+    ]
+  },
+  "rubric": "docs/VALIDATION.md: responsibility; available evidence; achievable approach; coherent contact; timely/legal next action. Light positions, facing, ball, calls and events only.",
+  "rankedDiagnosticPriorities": [
+    {
+      "rank": 1,
+      "category": "pocket_adjustment",
+      "observedConcerns": 11,
+      "eligible": 36,
+      "impact": "potentially high",
+      "confidence": "unconfirmed decision/physics cause; includes one very short reaction window",
+      "next": "Inspect perceived threat, block control, throw commitment and achievable movement in ordinary near-pressure witnesses and clean-pocket controls."
+    },
+    {
+      "rank": 2,
+      "category": "puller_runner_coordination",
+      "observedConcerns": 2,
+      "eligible": 12,
+      "impact": "potentially high",
+      "confidence": "tiny run sample; legitimate defensive squeeze can explain it",
+      "next": "Inspect puller request, keeper load, edge response and runner arrival together; expand random run review before generalizing."
+    },
+    {
+      "rank": 3,
+      "category": "early_edge_contact",
+      "observedConcerns": 2,
+      "eligible": 36,
+      "impact": "moderate potential",
+      "confidence": "ordinary jam or lost block plausible; not a confirmed flaw"
+    },
+    {
+      "rank": 4,
+      "category": "tackle_approach",
+      "observedConcerns": 2,
+      "eligible": 48,
+      "impact": "high if actually faulty",
+      "confidence": "observed misses are not proven faults; G2-P136 explicitly brakes and retains leverage"
+    },
+    {
+      "rank": 5,
+      "category": "deep_half_spacing",
+      "observedConcerns": 1,
+      "eligible": 36,
+      "impact": "high potential",
+      "confidence": "single positional concern, not an established recurring bust"
+    }
+  ],
+  "negativeFindings": {
+    "noClearWrongMechanism": 32,
+    "needsTrace": 16,
+    "confirmedPhysicsFaults": 0,
+    "confirmedDecisionFaults": 0,
+    "examples": "G7-P109 retreats before throwing; G3-P068 throws away near late proximity. G2-P136 brakes before a missed tackle. Do not count those as frozen/never-braking defects."
+  },
+  "limits": "These are descriptive concern counts, not bug rates or a league ranking. Hidden decisions, grip/ground loads and achieved support are absent. Denominators count reviewed eligible play types, not all tackle/pull opportunities. Limited generated rosters and small sample; do not claim physics readiness.",
+  "plays": [
+    {
+      "id": "G5-P010",
+      "kind": "pass",
+      "logIndex": 10,
+      "snapSeed": 2623120272,
+      "initialStateSha256": "010716130708c48cd0b6dd964e1dbcc6ec13d962be4ef256465e94e0fbaa2d27",
+      "actualOffCall": "Gun Empty \u2014 Y-Cross",
+      "actualDefCall": "Wide-9 Nickel Cover 3 Match (Rip/Liz) (match) + Mike A-Gap (shows Cover 2)",
+      "resolvedCoverage": "cover3_match",
+      "reviewStatus": "needs_trace",
+      "observations": "Edge rushers turn the tackles and close the pocket. Coverage tracks the outside releases; no obvious alignment hole.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.2,
+            2.4
+          ],
+          "observed": "QB positional change is ~0 yd during the last 0.2s before grasp.",
+          "limit": "Light frames do not reveal pressure perception, intended base adjustment, or whether an escape was available. Some hits are from the blind side."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G3-P147",
+      "kind": "pass",
+      "logIndex": 147,
+      "snapSeed": 4247862814,
+      "initialStateSha256": "7fea7ee9542ad7977b91ae9646d4e267c736cf2b1ff44a14acc12eadf5ab43bf",
+      "actualOffCall": "Gun Trips Open \u2014 Mesh",
+      "actualDefCall": "Wide-9 Nickel Cover 3 Match (Rip/Liz) (match) \u2192 Cover 3 Mable (vs trips)",
+      "resolvedCoverage": "cover3_mable",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Trips check is actually Cover 3 Mable, not plain Rip/Liz. Mesh crossers exchange underneath; post-throw corner movement is not evidence of abandoning man.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G5-P018",
+      "kind": "pass",
+      "logIndex": 18,
+      "snapSeed": 2025049678,
+      "initialStateSha256": "6e6fdaf255370d165efa6bd55b71fb637be83c9b17588aa1f450765c15b27338",
+      "actualOffCall": "Singleback Trips \u2014 PA Flood",
+      "actualDefCall": "4-3 Under Cover 3 Cloud (match)",
+      "resolvedCoverage": "cover3_cloud",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Cloud corner reroutes/collides with the releasing back and the safety stays above the outside route. Later tackle gets an assist; light recording cannot diagnose grip work.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G3-P136",
+      "kind": "pass",
+      "logIndex": 136,
+      "snapSeed": 3299536186,
+      "initialStateSha256": "a530ec12491be934a6e4a0490ca231689e60103922822ab25aa9cfce18a2e65f",
+      "actualOffCall": "Gun Empty \u2014 PA Shot",
+      "actualDefCall": "3-4 Tite Cover 1 (Man-Free)",
+      "resolvedCoverage": "cover1",
+      "reviewStatus": "needs_trace",
+      "observations": "Man markers stay near their releases in the red zone. Contact with the QB precedes the throw; end-zone geometry alone shows no boundary violation.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.3,
+            2.5
+          ],
+          "observed": "QB positional change is ~0.1 yd during the last 0.2s before grasp.",
+          "limit": "Light frames do not reveal pressure perception, intended base adjustment, or whether an escape was available. Some hits are from the blind side."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G3-P047",
+      "kind": "pass",
+      "logIndex": 47,
+      "snapSeed": 3654028394,
+      "initialStateSha256": "cd7bb59b26f2cfbaf9f5dedad533b3da1244df649deef23b69a7b88712004e8a",
+      "actualOffCall": "Gun Trips Open \u2014 Dagger",
+      "actualDefCall": "4-3 Over Quarters MEG (match) (Zeus \u2192 Quarters (MOD))",
+      "resolvedCoverage": "cover4",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Actual coverage is Quarters MOD after Zeus, not the displayed MEG. Short-route release and later scramble response are plausible; do not count a MEG assignment bust.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G1-P083",
+      "kind": "pass",
+      "logIndex": 83,
+      "snapSeed": 3637219515,
+      "initialStateSha256": "0a306c6752333cf55cfda76e46d666d6473bdd7ffef9e7a6c3bbf01e7b590642",
+      "actualOffCall": "Gun Trey (TE attached) \u2014 Stick",
+      "actualDefCall": "4-3 Over Cover 9 (weak rotation) (match)",
+      "resolvedCoverage": "cover9",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Underneath defender contests the stick throw. Secondary moves toward the pass after release; no proven assignment abandonment.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G1-P060",
+      "kind": "run",
+      "logIndex": 60,
+      "snapSeed": 2922212320,
+      "initialStateSha256": "8e6b7b7a7b955239a9a3f403454f5a7ccbcd9965dea64b8e938cdfb28ccb2b14",
+      "actualOffCall": "Singleback Twin TE \u2014 Trap",
+      "actualDefCall": "4-3 Under Cover 3 Seam (match) (shows Cover 2)",
+      "resolvedCoverage": "cover3_seam",
+      "reviewStatus": "needs_trace",
+      "observations": "Trap puller meets a squeezed edge late; the runner is already in contact when the log event is emitted. Handoff occurs with QB and back close together.",
+      "concerns": [
+        {
+          "category": "puller_runner_coordination",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.4,
+            2.45
+          ],
+          "observed": "Carrier is contacted before the puller emits its kick-to-log response. Edge has not been sealed at runner arrival.",
+          "limit": "Defensive squeeze, prior hand contact, or a believable lineman error can explain this. Cannot determine force/footwork failure from light frames."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G3-P164",
+      "kind": "pass",
+      "logIndex": 164,
+      "snapSeed": 1319874202,
+      "initialStateSha256": "f115920b5bb7de6c0e76bfc63d0d8d51a3372fbeb1f0950878d167e147ce77ae",
+      "actualOffCall": "Gun Trips \u2014 Levels",
+      "actualDefCall": "4-3 Over Cover 2 Match (match)",
+      "resolvedCoverage": "cover2_match",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Cover 2 Match has a corner and safety converge on the outside catch, then a tackle assist. No uncontrolled multi-body explosion visible.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G4-P146",
+      "kind": "pass",
+      "logIndex": 146,
+      "snapSeed": 2529013425,
+      "initialStateSha256": "ddf6b0a3e1e95f8b99a72f197ab856ce6f99e0f44b30cba2af1cb77baa3ebd75",
+      "actualOffCall": "Gun Bunch \u2014 Curl-Flat",
+      "actualDefCall": "4-3 Under Cover 3 (Sky) (match) (shows Cover 2)",
+      "resolvedCoverage": "cover3",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Bunch is covered with underneath overlap and deep help; several defenders assist after the catch. Crowd alone does not prove collision failure.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G1-P057",
+      "kind": "pass",
+      "logIndex": 57,
+      "snapSeed": 1018018475,
+      "initialStateSha256": "7de4f26399c4e9f913f5c0ebcadd46381e7672229ed67f82076b52fb78e29f88",
+      "actualOffCall": "Gun Trips Open \u2014 Four Verticals",
+      "actualDefCall": "Wide-9 Nickel Cover 1 Robber + Nickel Edge",
+      "resolvedCoverage": "cover1_robber",
+      "reviewStatus": "needs_trace",
+      "observations": "Man defenders remain with the vertical routes and the edge blitzer gets past the back. The quarterback stays near his set point before contact.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.6,
+            3.2
+          ],
+          "observed": "QB positional change is ~0.2 yd across the last 0.6s before grasp.",
+          "limit": "Light frames do not reveal pressure perception, intended base adjustment, or whether an escape was available. Some hits are from the blind side."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G6-P140",
+      "kind": "pass",
+      "logIndex": 140,
+      "snapSeed": 1993817271,
+      "initialStateSha256": "de30ce60acfc3736b7844b803544fc9ce93fa95af66545ae187a608b3d3c106b",
+      "actualOffCall": "Gun Bunch \u2014 Comebacks",
+      "actualDefCall": "Wide-9 Nickel 2-Man",
+      "resolvedCoverage": "cover2man",
+      "reviewStatus": "needs_trace",
+      "observations": "Two-man defenders match the bunch and deep safeties stay above the routes. Edge rush gets around the tackle; no evidence that coverage failed.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.3,
+            2.75
+          ],
+          "observed": "QB positional change is ~0.5 yd before grasp, including contact approach.",
+          "limit": "Light frames do not reveal pressure perception, intended base adjustment, or whether an escape was available. Some hits are from the blind side."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G1-P020",
+      "kind": "pass",
+      "logIndex": 20,
+      "snapSeed": 2076377091,
+      "initialStateSha256": "88071febe3547b7b4ce1f5f44ac59343ea5859cee70600d4a5ebce838e2cca22",
+      "actualOffCall": "I-Form Jumbo \u2014 Curl-Flat",
+      "actualDefCall": "4-3 Under Cover 9 (weak rotation) (match)",
+      "resolvedCoverage": "cover9",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Outside curl gets a catch with later pursuit and multiple assists. Receiver changes direction to gain inside space; a beaten corner alone is not an assignment bug.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G6-P165",
+      "kind": "pass",
+      "logIndex": 165,
+      "snapSeed": 905363533,
+      "initialStateSha256": "a52c3b49b22c7e14c37eba09f8655f5420bebc8336f8122425dae9be888b2885",
+      "actualOffCall": "Pistol Twin TE \u2014 Dagger",
+      "actualDefCall": "3-4 Tite Cover 8 (half strong, quarters weak) (match) (shows Cover 1 (Man-Free))",
+      "resolvedCoverage": "cover6_rev",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Split-field coverage keeps a defender over each outside route; throw is batted near the line. Ball height/contact internals are absent.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G7-P183",
+      "kind": "pass",
+      "logIndex": 183,
+      "snapSeed": 3456177263,
+      "initialStateSha256": "d4bb915d010bfc625414b115ffe1cc3ac0a221c997b4a400f0e151e5098df54e",
+      "actualOffCall": "Gun Doubles \u2014 Levels",
+      "actualDefCall": "Wide-9 Nickel Cover 2 Match (match)",
+      "resolvedCoverage": "cover2_match",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Corner and half safety converge on the outside catch and finish a short tackle. Edge rush pressure follows the throw.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G7-P044",
+      "kind": "pass",
+      "logIndex": 44,
+      "snapSeed": 2004318274,
+      "initialStateSha256": "a5cce4e6874357c8516a81fca4ae07bdbe8a80f9df71078af4c469c34ffab2c3",
+      "actualOffCall": "Singleback Ace \u2014 Four Verticals",
+      "actualDefCall": "4-3 Over Cover 2 (spot)",
+      "resolvedCoverage": "cover2",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Spot Cover 2 releases outside routes to deep help. Safety contests the seam; vacating the flat is not necessarily a bust.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G6-P116",
+      "kind": "pass",
+      "logIndex": 116,
+      "snapSeed": 1990630839,
+      "initialStateSha256": "ec22429586c04c6175fe5e0b6b0ccb0d0c3f8a0ff93879a23bbd86713c39ba42",
+      "actualOffCall": "Strong Offset I \u2014 Y-Cross",
+      "actualDefCall": "3-4 Tite Cover 1 (Man-Free)",
+      "resolvedCoverage": "cover1",
+      "reviewStatus": "needs_trace",
+      "observations": "Man markers track the outside routes and the crossing TE; interior pressure closes the pocket. No obvious pre-snap marking omission.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            3.0,
+            3.45
+          ],
+          "observed": "QB lateral variation before grasp is only ~0.1 yd; earlier motion is dropback.",
+          "limit": "Light frames do not reveal pressure perception, intended base adjustment, or whether an escape was available. Some hits are from the blind side."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G3-P145",
+      "kind": "pass",
+      "logIndex": 145,
+      "snapSeed": 873443470,
+      "initialStateSha256": "01fbcbeb81639b1440731355b851b5d96e8948620ca3aac183b534cbc8afe7f4",
+      "actualOffCall": "Gun Doubles \u2014 Smash",
+      "actualDefCall": "4-3 Over Quarters (MOD) (match)",
+      "resolvedCoverage": "cover4",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "MOD corners/safeties respond to the smash route geometry; pass falls incomplete. Late post-throw paths cannot prove a pre-throw coverage mistake.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G2-P136",
+      "kind": "run",
+      "logIndex": 136,
+      "snapSeed": 2102934230,
+      "initialStateSha256": "16d50e52fd0e2a51f34efc4ad847572f2fa01f207a5c4d046088d95ba749e604",
+      "actualOffCall": "Strong Offset I \u2014 Outside Zone (flipped)",
+      "actualDefCall": "4-3 Over Cover 1 Robber",
+      "resolvedCoverage": "cover1_robber",
+      "reviewStatus": "needs_trace",
+      "observations": "Zone combinations have visible climb/exchange events. The FS approaches with inside leverage and DOES brake before the miss; this is not proof of an acceleration/traction bug.",
+      "concerns": [
+        {
+          "category": "tackle_approach",
+          "classification": "execution miss, not confirmed bad mechanism",
+          "times": [
+            3.0,
+            3.6
+          ],
+          "observed": "FS closes from 3.49 yd at 3.0s to 0.82 yd at 3.4s, misses at 3.35s, and falls behind. Forward approach velocity brakes from about -5.5 to -1 yd/s; inside leverage is retained.",
+          "limit": "This contradicts the broad claim that he never brakes. Grip/attempt/body posture unknown; a plausible missed tackle."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G8-P115",
+      "kind": "run",
+      "logIndex": 115,
+      "snapSeed": 583147774,
+      "initialStateSha256": "547cdf772017f639c00534f5ed9e7f1120b95cabfffb16fd42e6469a7cdd632b",
+      "actualOffCall": "Pistol Twin TE \u2014 Power",
+      "actualDefCall": "4-3 Under Palms (2-Read) (match)",
+      "resolvedCoverage": "cover4_palms",
+      "reviewStatus": "needs_trace",
+      "observations": "Power creates interior contact and a pulling kick/log response, but runner reaches the edge before that response is established. Could be a legitimate squeeze or late execution.",
+      "concerns": [
+        {
+          "category": "puller_runner_coordination",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.95,
+            3.05
+          ],
+          "observed": "Carrier is contacted before the puller emits its kick-to-log response. Edge has not been sealed at runner arrival.",
+          "limit": "Defensive squeeze, prior hand contact, or a believable lineman error can explain this. Cannot determine force/footwork failure from light frames."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G6-P088",
+      "kind": "pass",
+      "logIndex": 88,
+      "snapSeed": 2778704589,
+      "initialStateSha256": "675267dc49dcd7b0dce650cb19524b50ac77faa5d1a9a2fa6f8cc110fc632cda",
+      "actualOffCall": "Gun Empty \u2014 Flood",
+      "actualDefCall": "4-3 Over Cover 1 Robber",
+      "resolvedCoverage": "cover1_robber",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Man defenders follow the initial flood releases. At 2.1s the pass is thrown; later convergence is a ball reaction, not clear assignment abandonment.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G6-P002",
+      "kind": "pass",
+      "logIndex": 2,
+      "snapSeed": 3145472048,
+      "initialStateSha256": "130db1c61e03e87838615c65aad41fa32c158822785e74790a65713eb9faddd4",
+      "actualOffCall": "Singleback Ace \u2014 Levels",
+      "actualDefCall": "3-4 Tite Cover 1 Robber",
+      "resolvedCoverage": "cover1_robber",
+      "reviewStatus": "needs_trace",
+      "observations": "Man defenders remain near their vertical/outside releases and contest the throw. QB is contacted immediately before release.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.1,
+            2.35
+          ],
+          "observed": "QB stays on the same lateral line as an edge arrives; very short response window.",
+          "limit": "Light frames do not reveal pressure perception, intended base adjustment, or whether an escape was available. Some hits are from the blind side."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G5-P070",
+      "kind": "run",
+      "logIndex": 70,
+      "snapSeed": 3929754478,
+      "initialStateSha256": "c7b3848543170ff6ea804aed694012ee8ca1a80028d33e4850625a210d450061",
+      "actualOffCall": "Singleback Ace \u2014 Toss",
+      "actualDefCall": "3-4 Tite Cover 3 Seam (match)",
+      "resolvedCoverage": "cover3_seam",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Toss has an airborne pitch and a catch, then the runner gets outside the initial tackle/TE line and turns upfield. Not the broken inside-only toss described in earlier selected clips.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G7-P175",
+      "kind": "pass",
+      "logIndex": 175,
+      "snapSeed": 1424270667,
+      "initialStateSha256": "66e5e76cb534176b9a6d34cac9b44b1aa0e90741aef8e59a15b0e2075156cde1",
+      "actualOffCall": "Pistol Doubles \u2014 Curl-Flat",
+      "actualDefCall": "Wide-9 Nickel Cover 2 Match (match)",
+      "resolvedCoverage": "cover2_match",
+      "reviewStatus": "needs_trace",
+      "observations": "Corner/safety split the curl-flat threats, safety closes after the catch, misses a dive and an opposite safety eventually wraps. Need perception/attempt state to distinguish poor approach from a plausible miss.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.2,
+            2.4
+          ],
+          "observed": "QB positional change is ~0.1 yd during the last 0.2s before grasp.",
+          "limit": "Light frames do not reveal pressure perception, intended base adjustment, or whether an escape was available. Some hits are from the blind side."
+        },
+        {
+          "category": "tackle_approach",
+          "classification": "execution miss, not confirmed bad mechanism",
+          "times": [
+            4.8,
+            5.3
+          ],
+          "observed": "Safety closes toward the inside-cutting receiver, dives at 5.25s and misses; next defender later wraps.",
+          "limit": "Cannot tell from positions whether attempt was physically unreachable or plausible. Do not increase grip strength based on this outcome."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G2-P001",
+      "kind": "pass",
+      "logIndex": 1,
+      "snapSeed": 2519731733,
+      "initialStateSha256": "8080a3ccfb31ca460e35251a9ea03779bbdcdf892217567e7031390097085a22",
+      "actualOffCall": "Gun Doubles \u2014 Stick",
+      "actualDefCall": "4-3 Under Cover 3 Buzz (match)",
+      "resolvedCoverage": "cover3_buzz",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Buzz rotation puts the deep safety toward the middle before the outside catch. He later turns toward the carrier but loses the chase. No proof that his original deep-middle position was wrong.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G4-P138",
+      "kind": "pass",
+      "logIndex": 138,
+      "snapSeed": 1358424160,
+      "initialStateSha256": "e5e98d49ccdb544512f7d59559179681a808073b8d915380f4f570ef9724fddc",
+      "actualOffCall": "Gun Spread \u2014 Drive",
+      "actualDefCall": "4-3 Over Cover 1 (Man-Free)",
+      "resolvedCoverage": "cover1",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Man defenders follow four releases; the checked RB becomes available underneath. Later pursuers close from multiple sides. A missed/slipped grasp at 3.65\u20134.00 is believable from these frames; its force law is not visible.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G8-P060",
+      "kind": "run",
+      "logIndex": 60,
+      "snapSeed": 3794925379,
+      "initialStateSha256": "600d9774c4a12e9cf37312ff47a6ae27161e28f4f0d44455b44360d01130913a",
+      "actualOffCall": "Pistol Twin TE \u2014 Draw",
+      "actualDefCall": "3-4 Odd Cover 1 (Man-Free)",
+      "resolvedCoverage": "cover1",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Draw mesh is physically close; the carrier presses into congested interior space then takes the available lateral opening. Line climb events at 2.35 and 2.90 correspond to visible bodies changing level. Pursuit converges rather than vacating the run.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G1-P040",
+      "kind": "pass",
+      "logIndex": 40,
+      "snapSeed": 1468620897,
+      "initialStateSha256": "ba5f3e2644d1b8ada9406c1c6a15e7a87c10e4eaa80c8d01ff206d11e946fad3",
+      "actualOffCall": "Gun Doubles \u2014 Four Verticals",
+      "actualDefCall": "4-3 Over Cover 9 (weak rotation) (match) + Mike A-Gap",
+      "resolvedCoverage": "cover9",
+      "reviewStatus": "needs_trace",
+      "observations": "Against actual Cover9, the four verticals remain accompanied by deep/outside defenders. Rushers work around protection toward the QB rather than freezing on first contact. A guard fall at 2.75 needs force/posture state to judge; no visible impossible movement.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.2,
+            2.3
+          ],
+          "observed": "Little late QB position adjustment while a defender is close to or approaching his body.",
+          "measuredDisplacementYd": {
+            "forward": 0.0,
+            "lateral": -0.1
+          },
+          "minimumDefenderDistanceYd": 2.35,
+          "limit": "Only about 0.15 s between close defender and throw; ordinary reaction/throw completion could explain it."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G1-P006",
+      "kind": "run",
+      "logIndex": 6,
+      "snapSeed": 4151700178,
+      "initialStateSha256": "0e146f67c91670159d118f6c1b0eff6f570d967d39851373ae00ffad21980989",
+      "actualOffCall": "Pistol Doubles \u2014 Duo",
+      "actualDefCall": "4-3 Over Cover 3 (Sky) (match) (shows Cover 6 / Stuff (quarters strong, half weak))",
+      "resolvedCoverage": "cover3",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Duo develops into a congested front with a visible tackle-to-linebacker climb; the runner works along the side of the interior contact. The defense later closes with multiple tacklers. This is not proof of ideal block assignment, but no clear repeated wrong action is visible.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G2-P157",
+      "kind": "pass",
+      "logIndex": 157,
+      "snapSeed": 3678471034,
+      "initialStateSha256": "76e843d72e6ca5a419014f51741356c96285f52954bda73a6130fb3e1897ebc1",
+      "actualOffCall": "Gun Spread \u2014 Speed Outs",
+      "actualDefCall": "4-3 Under Cover 3 Match (Rip/Liz) (match) + Mike A-Gap (shows 2-Man)",
+      "resolvedCoverage": "cover3_match",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Actual Cover3 Match follows the quick out/hitch geometry. The end gains the tackle\u2019s edge and approaches the throw lane. No clear coverage abandonment or collision anomaly.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G8-P152",
+      "kind": "pass",
+      "logIndex": 152,
+      "snapSeed": 2199195380,
+      "initialStateSha256": "592d100f144506c52c8a42c0c006049b30e2bd9a774a98be3a95215e988aef7f",
+      "actualOffCall": "Singleback Ace \u2014 Y-Cross",
+      "actualDefCall": "4-3 Over Cover 6 / Stuff (quarters strong, half weak) (match) (shows Cover 1 (Man-Free))",
+      "resolvedCoverage": "cover6",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Cover6 creates an outside/post and cross distribution. Outside receiver movement and safety positioning can be understood under that call; these frames do not establish a blown assignment.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G8-P027",
+      "kind": "pass",
+      "logIndex": 27,
+      "snapSeed": 3975396944,
+      "initialStateSha256": "3c32ce00d9b5d54afb766b5a2c549c0c65ef2a34b63964c43363624250462bb4",
+      "actualOffCall": "Gun Wing \u2014 Drive",
+      "actualDefCall": "4-3 Over Cover 2 (spot)",
+      "resolvedCoverage": "cover2",
+      "reviewStatus": "needs_trace",
+      "observations": "Actual Cover2: sole weak-side X remains at y48.0\u201348.2 and progresses from LOS+5.5 to +16.8 yd. Weak corner moves inward from y44.5 to 41.5 and half safety from y37.9 to 36.2. At 3.00 the safety is only 1.2 yd deeper than X but 12.0 yd inside. Flag narrowing away from the lone outside vertical for a coverage-read/landmark audit. Hidden assignment, perceived state and the reason for the movement are unavailable.",
+      "concerns": [
+        {
+          "category": "deep_half_spacing",
+          "classification": "geometry concern; assignment/read cause unconfirmed",
+          "times": [
+            1.5,
+            3.0
+          ],
+          "observed": "Actual Cover2: sole weak-side X remains at y48.0\u201348.2 and progresses from LOS+5.5 to +16.8 yd. Weak corner moves inward from y44.5 to 41.5 and half safety from y37.9 to 36.2. At 3.00 the safety is only 1.2 yd deeper than X but 12.0 yd inside. Flag narrowing away from the lone outside vertical for a coverage-read/landmark audit. Hidden assignment, perceived state and the reason for the movement are unavailable.",
+          "limit": "Cover 2 naturally has a sideline hole. The actual installed landmark and acquired threat must be inspected before asserting a faulty decision."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G8-P171",
+      "kind": "pass",
+      "logIndex": 171,
+      "snapSeed": 4264454833,
+      "initialStateSha256": "9234872ab67c48963c5c51e3dc3ddaafcbd6de4db53d3e096ea5d207d9efde6c",
+      "actualOffCall": "Gun Spread \u2014 Y-Cross",
+      "actualDefCall": "Wide-9 Nickel 2-Man",
+      "resolvedCoverage": "cover2man",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Actual 2-Man shows close underneath matches and two deep helpers. The cross is accompanied; observed rusher/body contact afterward is plausible. A guard fall at 2.30 cannot be resolved with positions alone.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G2-P177",
+      "kind": "pass",
+      "logIndex": 177,
+      "snapSeed": 3695995524,
+      "initialStateSha256": "d3fa5516dbbf06876e3f372289352bc9a74e8e2f936db6e3d0dddda78d2e2150",
+      "actualOffCall": "Gun Doubles \u2014 Smash",
+      "actualDefCall": "Wide-9 Nickel Cover 3 (Sky) (match) (shows Quarters (MOD))",
+      "resolvedCoverage": "cover3",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Actual Cover3, despite a presented quarters look, distributes the Smash hitch/corner with underneath defenders and deeper help. The final route break does not show a defender simply leaving a man.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G2-P037",
+      "kind": "pass",
+      "logIndex": 37,
+      "snapSeed": 527386631,
+      "initialStateSha256": "ef37530b52623e8bb31a272c07ae20dc52968f3876108303830e2af9705c3c53",
+      "actualOffCall": "Gun Wing \u2014 Comebacks",
+      "actualDefCall": "Wide-9 Nickel Cover 1 (Man-Free) (shows 2-Man)",
+      "resolvedCoverage": "cover1",
+      "reviewStatus": "needs_trace",
+      "observations": "H releases toward the wide edge\u2019s rush path: distance to DE_S shrinks 1.46\u21920.61 yd at 0.50\u21920.70, followed by a contact fall at 0.80 and stalled displacement through 1.50. Review whether the H release/controller recognized traffic; a legal early disruption or ordinary lost release is also plausible. Do not infer deficient strength or bad collision law from the fall.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.5,
+            2.8
+          ],
+          "observed": "Little late QB position adjustment while a defender is close to or approaching his body.",
+          "measuredDisplacementYd": {
+            "forward": 0.1,
+            "lateral": 0.0
+          },
+          "minimumDefenderDistanceYd": 1.36,
+          "limit": "May be controlled by a blocker; QB perception, throw commitment, posture, permitted escape options and risk are not recorded. Do not label staying still a defect in a clean pocket."
+        },
+        {
+          "category": "early_edge_contact",
+          "classification": "uncertain contact; ordinary failed engagement plausible",
+          "timeRange": "0.50\u20131.50",
+          "observed": "H releases toward the wide edge\u2019s rush path: distance to DE_S shrinks 1.46\u21920.61 yd at 0.50\u21920.70, followed by a contact fall at 0.80 and stalled displacement through 1.50. Review whether the H release/controller recognized traffic; a legal early disruption or ordinary lost release is also plausible. Do not infer deficient strength or bad collision law from the fall.",
+          "limit": "Light frames do not establish whether this contact was avoidable or whether the force/support law was wrong."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G2-P103",
+      "kind": "run",
+      "logIndex": 103,
+      "snapSeed": 2104063753,
+      "initialStateSha256": "6ad08e18a28de41d1e104005aa826d7f033988fa1fc74921d85f6ca20fd9ef47",
+      "actualOffCall": "Singleback Trips \u2014 Trap",
+      "actualDefCall": "4-3 Under Cover 9 (weak rotation) (match) + Nickel Edge",
+      "resolvedCoverage": "cover9",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Trap pull/contact occurs in a crowded interior while the runner presses the developing point. Defense penetrates and converges. A failed block here is not itself an incorrect technique/physics mechanism.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G4-P001",
+      "kind": "pass",
+      "logIndex": 1,
+      "snapSeed": 1203175768,
+      "initialStateSha256": "ea3849291643b684306936b1e8f7e732a88b6a1b08114b393326ba7ce1267d40",
+      "actualOffCall": "Gun Empty \u2014 Levels",
+      "actualDefCall": "4-3 Over Cover 1 Off",
+      "resolvedCoverage": "cover1_off",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Actual off-man stays associated with releases. A linebacker misses a dive near the crossing Y at 4.20; the route then runs through the vacated space and secondary players close. A miss is not sufficient evidence of excessive momentum or defective approach.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G8-P037",
+      "kind": "pass",
+      "logIndex": 37,
+      "snapSeed": 1442670273,
+      "initialStateSha256": "135b7362a8ba399c162a26e0827fd98aeac156d17dd559433e343f4b0bac0439",
+      "actualOffCall": "Gun Trips \u2014 Comebacks",
+      "actualDefCall": "4-3 Under Cover 1 Off + Will B-Gap (shows Cover 2)",
+      "resolvedCoverage": "cover1_off",
+      "reviewStatus": "needs_trace",
+      "observations": "Off-man corners accompany outside comebacks; interior defenders stay near the other routes. Rush traffic and later pursuit appear coherent. No clear lost assignment.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2.9,
+            3.2
+          ],
+          "observed": "Little late QB position adjustment while a defender is close to or approaching his body.",
+          "measuredDisplacementYd": {
+            "forward": 0.2,
+            "lateral": 0.0
+          },
+          "minimumDefenderDistanceYd": 2.12,
+          "limit": "May be controlled by a blocker; QB perception, throw commitment, posture, permitted escape options and risk are not recorded. Do not label staying still a defect in a clean pocket."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G7-P109",
+      "kind": "pass",
+      "logIndex": 109,
+      "snapSeed": 4036499674,
+      "initialStateSha256": "c579046d8bd2e3317bfd7f6205d6370a3f97a3bb397864787e110052edf7e2ab",
+      "actualOffCall": "I-Form Twins \u2014 Y-Cross",
+      "actualDefCall": "3-4 Odd Cover 3 Buzz (match)",
+      "resolvedCoverage": "cover3_buzz",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "QB contact and a subsequent fall occur while a throw has developed; this is a useful positive example of pressure/contact preceding receiver pursuit. Cover3 Buzz defenders subsequently gather around the cross. No impossible pocket/contact motion established.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G6-P176",
+      "kind": "pass",
+      "logIndex": 176,
+      "snapSeed": 1280616063,
+      "initialStateSha256": "816795055bb5e6ee7030ed027e1715ecc274edcd5d2f3d1d0904e454393000bb",
+      "actualOffCall": "Gun Empty \u2014 Speed Outs",
+      "actualDefCall": "Wide-9 Nickel Cover 3 Match (Rip/Liz) (match)",
+      "resolvedCoverage": "cover3_match",
+      "reviewStatus": "needs_trace",
+      "observations": "Empty formation RB contacts DE_S and falls at 0.70; center distance falls 1.02\u21920.58 yd at 0.50\u21920.70. The native pass explicitly calls back=block, so this must not be counted as a failed receiver release. Posture/support and collision forces are needed to distinguish an ordinary defeated blocker from an unstable contact response.",
+      "concerns": [
+        {
+          "category": "early_edge_contact",
+          "classification": "uncertain contact; ordinary failed engagement plausible",
+          "timeRange": "0.50\u20131.50",
+          "observed": "Empty formation RB contacts DE_S and falls at 0.70; center distance falls 1.02\u21920.58 yd at 0.50\u21920.70. The native pass explicitly calls back=block, so this must not be counted as a failed receiver release. Posture/support and collision forces are needed to distinguish an ordinary defeated blocker from an unstable contact response.",
+          "limit": "Light frames do not establish whether this contact was avoidable or whether the force/support law was wrong."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G4-P113",
+      "kind": "run",
+      "logIndex": 113,
+      "snapSeed": 3769614503,
+      "initialStateSha256": "b27115ee145355ce66178a5429360844901d18c49db83d11eaf34470ea568c48",
+      "actualOffCall": "Gun Bunch \u2014 Wide Zone",
+      "actualDefCall": "4-3 Under Cover 1 Off",
+      "resolvedCoverage": "cover1_off",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Wide zone is crowded on its intended side. The carrier and blockers move toward that side and defensive contact closes the opening; no obvious unsupported idle blocker or teleporting mesh. A defender falls at 2.20 before the carrier\u2019s later contact, but recovery validity is not visible.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G6-P008",
+      "kind": "run",
+      "logIndex": 8,
+      "snapSeed": 1383645467,
+      "initialStateSha256": "2b9e847bbeb2039849d4a8c53f2411d9dba62c74417a23d8029a31efa00df882",
+      "actualOffCall": "Pistol Doubles \u2014 Wide Zone Weak",
+      "actualDefCall": "4-3 Over Cover 1 Robber",
+      "resolvedCoverage": "cover1_robber",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Wide-zone mesh is close, runner follows a moving lane, and secondary pursuit closes from inside and outside. A FS hold slips at 4.10. Grip forces and support response are unavailable, so this is not a confirmed physics defect.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G3-P068",
+      "kind": "pass",
+      "logIndex": 68,
+      "snapSeed": 2396522540,
+      "initialStateSha256": "cee5591fbd534c439c18a31faa2a186bd8214760d3725970d92ec09c527610a4",
+      "actualOffCall": "Singleback Twin TE \u2014 PA Shot",
+      "actualDefCall": "Wide-9 Nickel Cover 8 (half strong, quarters weak) (match)",
+      "resolvedCoverage": "cover6_rev",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Actual reversed Cover6 distributes the PA Shot vertical threats across the field. The pocket compresses and bodies stay near the QB; the longer hold cannot be called a bad read without progression/perception state.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G1-P022",
+      "kind": "run",
+      "logIndex": 22,
+      "snapSeed": 554825282,
+      "initialStateSha256": "c6f73555b43740db50243ec4dcb9c70a8b7a12c020be268134d1fc5a64b16b0d",
+      "actualOffCall": "Singleback Twin TE \u2014 Duo",
+      "actualDefCall": "4-3 Over Cover 3 Match (Rip/Liz) (match) (shows Cover 2)",
+      "resolvedCoverage": "cover3_match",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Duo\u2019s carrier meets a congested interior and two linebackers converge. The QB/RB mesh is close and there is no obvious handoff anomaly or defender vacating an available tackling lane.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G2-P020",
+      "kind": "run",
+      "logIndex": 20,
+      "snapSeed": 2045763722,
+      "initialStateSha256": "0cf3821cc757761e4efd08ff86a16846337ff547440bef1d96162afa5cbb56cd",
+      "actualOffCall": "Gun Wing \u2014 Split Zone",
+      "actualDefCall": "Wide-9 Nickel Cover 6 / Stuff (quarters strong, half weak) (match)",
+      "resolvedCoverage": "cover6",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Split-zone movement crosses the front while the runner works toward the play side. Contact and pursuit concentrate around the point of attack. An interior tackle here is compatible with a failed block rather than proof of incorrect physics.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G3-P012",
+      "kind": "pass",
+      "logIndex": 12,
+      "snapSeed": 1737897398,
+      "initialStateSha256": "9dea1e77290ceaee94d9874a19fe17760746ecb3db7c4e73b3276f43a2b323e3",
+      "actualOffCall": "Gun Empty \u2014 Speed Outs",
+      "actualDefCall": "4-3 Under Cover 3 Cloud (match)",
+      "resolvedCoverage": "cover3_cloud",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Outside quick-route geometry and subsequent possession reversal produce a defender returning in the opposite direction. The carrier marker is CB_S, so this must not be misclassified as an offensive runner choosing to reverse field or go out of bounds. Other bodies reverse pursuit coherently.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G8-P170",
+      "kind": "run",
+      "logIndex": 170,
+      "snapSeed": 888274107,
+      "initialStateSha256": "2ee1d43e782b137e0dc7bc1c4e9947052f7841e39f9bd23099992a5bfa20f83e",
+      "actualOffCall": "Singleback Ace \u2014 Counter",
+      "actualDefCall": "Wide-9 Nickel Quarters (MOD) (match) (shows Cover 1 (Man-Free))",
+      "resolvedCoverage": "cover4",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Counter develops across the initial line contact; the runner follows the emerging side before secondary contact. A corner is knocked down while wrapping at 3.85, which cannot be resolved as a bad balance response without physical state.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G4-P060",
+      "kind": "pass",
+      "logIndex": 60,
+      "snapSeed": 1644017940,
+      "initialStateSha256": "c92daee3557bbe9d3d525c908ae2941b2bcc143f2998d823859d493ddb34be16",
+      "actualOffCall": "Pistol Doubles \u2014 Speed Outs",
+      "actualDefCall": "4-3 Over Cover 3 Buzz (match) + Will B-Gap (shows Cover 1 (Man-Free))",
+      "resolvedCoverage": "cover3_buzz",
+      "reviewStatus": "needs_trace",
+      "observations": "Cover3 Buzz follows outside quick routes and closes the target near the sideline after possession. The observed wrap and runner fall align with body proximity. No clear nonphysical handoff/catch or assignment break.",
+      "concerns": [
+        {
+          "category": "pocket_adjustment",
+          "classification": "coaching concern, mechanism unconfirmed",
+          "times": [
+            2,
+            2.4
+          ],
+          "observed": "Little late QB position adjustment while a defender is close to or approaching his body.",
+          "measuredDisplacementYd": {
+            "forward": -0.2,
+            "lateral": -0.1
+          },
+          "minimumDefenderDistanceYd": 1.92,
+          "limit": "May be controlled by a blocker; QB perception, throw commitment, posture, permitted escape options and risk are not recorded. Do not label staying still a defect in a clean pocket."
+        }
+      ],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    },
+    {
+      "id": "G6-P145",
+      "kind": "pass",
+      "logIndex": 145,
+      "snapSeed": 1929470310,
+      "initialStateSha256": "31deb432b026c6df02951aa791b91151ced8d5b924b1068d497acb573113289e",
+      "actualOffCall": "Gun Trey (TE attached) \u2014 Curl-Flat",
+      "actualDefCall": "4-3 Over Cover 1 (Man-Free)",
+      "resolvedCoverage": "cover1",
+      "reviewStatus": "no_clear_wrong_mechanism",
+      "observations": "Cover1 markers accompany curl/flat development and follow the breaks. The apparent field-edge route remains in bounds in the saved positions; no boundary breach was established.",
+      "concerns": [],
+      "confirmedPhysicalFault": false,
+      "confirmedDecisionFault": false
+    }
+  ]
+}

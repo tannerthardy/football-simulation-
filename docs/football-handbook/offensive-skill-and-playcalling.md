@@ -17,10 +17,10 @@ before changing strength, traction or anatomy.
 
 The production snapshot inspected here is commit `7ce3559` on
 `claude/engine-priorities`, dated 2026-10-11. Its current priorities and evidence
-are in [position technique and awareness](../reviews/position-technique-and-awareness.md).
+are in [position technique and awareness](../archive/reviews/position-technique-and-awareness.md).
 The installed OL cutoff repair is shipped. The QB torso-direction experiments
 and RB entry prototype are **withheld**, not current features. The
-[offensive-skill audit](../reviews/offensive-skill-technique-audit.md) describes
+[offensive-skill audit](../archive/reviews/offensive-skill-technique-audit.md) describes
 the preceding baseline; the source paths inspected again for this chapter are
 listed at the end.
 
@@ -157,7 +157,7 @@ useful ideas. The pass controller still predicts through the live
 prediction at release. Knowing the called route is reasonable; knowing a
 receiver's independently chosen conversion and exact future after contact is a
 stronger assumption. The
-[offensive audit](../reviews/offensive-skill-technique-audit.md) documents that
+[offensive audit](../archive/reviews/offensive-skill-technique-audit.md) documents that
 distinction. This chapter does not claim to have measured its causal effect.
 
 **Proposed narrow repair:** the QB predicts an installed route branch plus a
@@ -354,7 +354,7 @@ panel. Grade requests, support, forces and achieved motion before yards.
 
 ### 4.6 Boundary choice is a conflict of football values
 
-The [boundary review](../reviews/carrier-boundary-control.md) already separates
+The [boundary review](../archive/reviews/carrier-boundary-control.md) already separates
 an accidental exit despite an inward request from a deliberate exit to avoid a
 costly hit. Preserve that distinction. Contact avoidance can be believable,
 especially when protected yards are already secured, but a vague universal
@@ -566,7 +566,7 @@ and actual assistance to the carrier, not merely blocker collision count.
 ### 7.1 Compose distributions with compatible timing and protection
 
 **Local measured fact.** The retained 2022 BDB route study in
-[playbook-depth review](../reviews/coverage-engine-and-playbook-depth.md)
+[playbook-depth review](../archive/reviews/coverage-engine-and-playbook-depth.md)
 reports only about 4% of eligible studied plays with the same route tuple on
 both sides. This supports investigating separate side concepts, not a precise
 universal mirroring penalty. A route-label tuple does not reveal the team's
@@ -687,7 +687,7 @@ excused because a coach could have asked for a different block.
 ## 9. Use existing NFL data for the questions it can answer
 
 The [source catalog](../../data/sources.json) and
-[data guide](../../data/README.md) are the access/provenance authority. Reuse
+[data guide](../../data/archive/catalog-2026-10-11.md) are the access/provenance authority. Reuse
 their extractors and audited artifacts before collecting another broad dataset.
 This chapter introduces no newly fitted parameter or raw-data download.
 
@@ -758,7 +758,7 @@ Each candidate needs focused causal tests, observer/RNG neutrality and a
 source-pinned native football comparison with adverse pairs retained. Run the
 appropriate final suite after freezing source. One small game panel is a guard
 against unexpected coupling; it does not calibrate NFL realism. Use the existing
-[practical validation guide](../reviews/practical-validation-and-stable-physics.md)
+[practical validation guide](../archive/reviews/practical-validation-and-stable-physics.md)
 for baseline reuse and promotion discipline.
 
 ## References and provenance
@@ -807,16 +807,16 @@ match; the exact served URL and article prose identify the checked rule source.
 
 ### Existing engine research and inspected source
 
-- [Position technique and awareness](../reviews/position-technique-and-awareness.md),
-  [offensive-skill audit](../reviews/offensive-skill-technique-audit.md),
-  [offense literature applications](../reviews/offense-literature-applications.md)
-  and [carrier boundary control](../reviews/carrier-boundary-control.md).
+- [Position technique and awareness](../archive/reviews/position-technique-and-awareness.md),
+  [offensive-skill audit](../archive/reviews/offensive-skill-technique-audit.md),
+  [offense literature applications](../archive/reviews/offense-literature-applications.md)
+  and [carrier boundary control](../archive/reviews/carrier-boundary-control.md).
   Their historical cohorts/source pins retain their original scope.
 - [Football stress-test plan](../FOOTBALL_STRESS_TEST_PLAN.md), legality research
   and ST-01/ST-04/ST-05. Its public formation pages retain their original checked
   date/scope; today's official NFL rulebook receipt is listed separately above.
-- [Coverage engine and playbook depth](../reviews/coverage-engine-and-playbook-depth.md),
-  NFL route/rush/pocket aggregates; [BDB2027 movement transfer](../reviews/bdb2027-movement-transfer.md),
+- [Coverage engine and playbook depth](../archive/reviews/coverage-engine-and-playbook-depth.md),
+  NFL route/rush/pocket aggregates; [BDB2027 movement transfer](../archive/reviews/bdb2027-movement-transfer.md),
   cohort/operator limitations; [nflverse evidence README](../../data/reviews/nflverse/README.md),
   conditional outcome/charting definitions and attribution; and
   [source catalog](../../data/sources.json).

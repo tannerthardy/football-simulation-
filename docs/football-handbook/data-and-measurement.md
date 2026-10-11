@@ -56,8 +56,8 @@ movement panel used 888 paths/420 athletes and 3,552 trials at a historical sour
 The newer small movement audit uses 18 existing paths/72 trials at pinned source
 `246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469`.
 Neither automatically evaluates a later engine revision. Read
-[the movement audit](../reviews/movement-and-nfl-validation-audit.md) and
-[BDB2027 transfer review](../reviews/bdb2027-movement-transfer.md) before using
+[the movement audit](../archive/reviews/movement-and-nfl-validation-audit.md) and
+[BDB2027 transfer review](../archive/reviews/bdb2027-movement-transfer.md) before using
 their numbers. The older BDB2027 acquisition review still describes its original
 2023-only trajectory audit; the later transfer review records all-season use.
 

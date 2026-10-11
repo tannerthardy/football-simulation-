@@ -9,7 +9,7 @@ protection authority. An engine should represent those choices explicitly.
 
 The development baseline for the findings here is the position-technique review
 following `80e8151`; the promoted cutoff-only source is `dd4cbb75…`. Read
-[the current status](../reviews/position-technique-and-awareness.md#what-shipped-and-how-it-was-checked)
+[the current status](../archive/reviews/position-technique-and-awareness.md#what-shipped-and-how-it-was-checked)
 before using a historical report as a description of today's engine. The
 cutoff repair demonstrated actual containment with unchanged physical laws;
 it did not improve every run or earn an NFL realism claim. The QB torso-direction
@@ -44,8 +44,8 @@ The latest cutoff defect illustrates why these descriptions matter: the
 blocker could reach the installed shoulder while the engagement's displacement
 frame graded that same shoulder as a loss. The repair installs the contact
 surface separately and still grades actual arrival. See
-[“A coherent installed cutoff surface”](../reviews/position-technique-and-awareness.md#a-coherent-installed-cutoff-surface)
-and [the independent physical verification](../reviews/position-technique-repair-verification.md).
+[“A coherent installed cutoff surface”](../archive/reviews/position-technique-and-awareness.md#a-coherent-installed-cutoff-surface)
+and [the independent physical verification](../archive/reviews/position-technique-repair-verification.md).
 That narrow result does not authorize rewriting every reach/contact frame.
 
 ## 2. Feet, base and hands: the useful reduction
@@ -174,8 +174,8 @@ a motioning slicer meeting a squeezing edge with traffic, and a mirror; also
 retain an ordinary Draw presentation control. Record real presnap momentum,
 consumed edge motion, clearance, first loaded contact and possession transfer.
 A staged velocity lab is not validation of the full motion/check package.
-See [run-game coordination §7](../reviews/run-game-coordination.md#7-pre-snap-movement-is-physical-and-observable)
-and [current motion/mesh limits](../reviews/run-block-fit-and-current-priorities.md#review-across-systems).
+See [run-game coordination §7](../archive/reviews/run-game-coordination.md#7-pre-snap-movement-is-physical-and-observable)
+and [current motion/mesh limits](../archive/reviews/run-block-fit-and-current-priorities.md#review-across-systems).
 
 ## 4. Doubles: two contributors and a fallible transfer
 
@@ -205,7 +205,7 @@ transition, continuity of actual keeper hands/load and real subsequent backer
 contact when attainable. A release event alone passes none of those tests.
 
 This personal-read structure already exists for joined combinations; the
-[joined-combination review](../reviews/joined-combination-attention.md#one-installation-two-readers-shared-physical-ownership)
+[joined-combination review](../archive/reviews/joined-combination-attention.md#one-installation-two-readers-shared-physical-ownership)
 documents its bounds and adverse outcomes. “Secure” physical eligibility is not
 omniscient confidence in a teammate. The helper sees delayed body/contact
 evidence and may infer incorrectly despite an objectively admissible release.
@@ -317,7 +317,7 @@ The current `ProtectionCoordinator` provides ordered matching and live work
 redistribution; it is not a complete distributed slide/back/hot system.
 `isRusher` reads behavior participation, and some engagement geometry uses the
 live QB location. These are information shortcuts to diagnose separately from
-physics. See [protection anatomy](../reviews/error-budget-and-protection.md#protection-89-of-sacks-were-by-unblocked-rushers),
+physics. See [protection anatomy](../archive/reviews/error-budget-and-protection.md#protection-89-of-sacks-were-by-unblocked-rushers),
 [blocking.ts](../../src/sim/behaviors/blocking.ts) (`ProtectionCoordinator`,
 `PassProtector`) and [engagement.ts](../../src/sim/engagement.ts)
 (`axisOf`, `passSetDepth`, `stepPassRep`).
@@ -415,7 +415,7 @@ the called defense.
 These DL descriptions are coaching synthesis informed by the supplied
 [defensive aid, chapters 4–5](../references/football_defense_textbook.pdf),
 not independently measured universal NFL rules. The current
-[defensive-awareness audit](../reviews/defensive-awareness-technique-audit.md)
+[defensive-awareness audit](../archive/reviews/defensive-awareness-technique-audit.md)
 and [run-fit implementation](../../src/sim/run-fits.ts) should be checked before
 adding a duplicate key system.
 
@@ -514,7 +514,7 @@ The locally inspected [run reference](../../data/reviews/run-game-coordination/n
 contains 1,394 designed runs from BDB 2025 weeks 1–2, with exclusions, hashes and
 per-metric denominators. Its annotated handoff/contact observations and
 10 Hz all-player trajectories support conditional travel, arrival and
-displacement checks. The [run-data review](../reviews/run-game-coordination.md#what-the-nfl-data-can-actually-teach-us)
+displacement checks. The [run-data review](../archive/reviews/run-game-coordination.md#what-the-nfl-data-can-actually-teach-us)
 defines first sustained OL/opponent proximity as the same pair within one yard
 at two consecutive frames. That is a geometric proxy, not first hands, a secure
 double, a won block or a combo release. Only 251 of 136,905 designed-run player
@@ -531,7 +531,7 @@ use the explicitly different cohort for a pressure-to-scramble question.
 
 BDB 2027's athlete-matched combine/game paths can study capacity versus chosen
 football movement, including OL pull/fold drills. The
-[movement audit](../reviews/movement-and-nfl-validation-audit.md) identifies
+[movement audit](../archive/reviews/movement-and-nfl-validation-audit.md) identifies
 cohort/missing-position limits and why a known-path fitting exercise is not
 holdout validation. Use matching differentiation/filtering on engine and NFL
 paths, and retain `o` versus `dir` to distinguish turning the torso from
