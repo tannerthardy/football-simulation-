@@ -1,0 +1,8 @@
+/workspace/football-simulation-/out/coverage-continuation/selected-native.ts:79
+  for(const key of ['initialSha256','fullInitialSha256','priorLogSha256','resultSha256','finalSha256','fullFinalSha256','nextRng'])if(plain[key]!==observed[key])throw Error('Observer/plain mismatch '+target+' '+key);
+                                                                                                                                                                       ^
+
+Error: Observer/plain mismatch G4-P127 fullFinalSha256
+    at <anonymous> (/workspace/football-simulation-/out/coverage-continuation/selected-native.ts:79:168)
+
+Node.js v22.23.3

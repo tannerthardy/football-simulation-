@@ -1,0 +1,4049 @@
+{
+  "schema": "saved-cover2-controller-audit-v1",
+  "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "rawPayloadPath": "data/reviews/helper-fit-and-coverage/coverage/final.json.gz",
+  "rawPayloadSha256": "1e4729d68cf34ac3d741d2cca82ee999253e2c834189f717982f8d9060252cb1",
+  "limits": "Read-only selection from saved native bytes, no engine or observer rerun. Actual world-step intents are after spacing and contact-controller refinements, not pure coverage requests. Repeated recorded see calls are retained, not treated as distinct causal route reads.",
+  "rows": [
+    {
+      "id": "DA-R2-curl_flat-cover2-R",
+      "setup": {
+        "offCall": {
+          "formation": {
+            "id": "gun_doubles_11",
+            "name": "Gun Doubles",
+            "personnel": "11",
+            "qb": "gun",
+            "tags": [
+              "spread",
+              "2x2"
+            ],
+            "slots": {
+              "X": {
+                "side": "L",
+                "split": "wide",
+                "depth": 0.6
+              },
+              "H": {
+                "side": "L",
+                "split": "slot",
+                "depth": 1.2
+              },
+              "Z": {
+                "side": "R",
+                "split": "wide",
+                "depth": 1.2
+              },
+              "Y": {
+                "side": "R",
+                "split": "inline",
+                "depth": 0.6
+              },
+              "RB": {
+                "side": "L",
+                "split": 1.6,
+                "depth": 5.2
+              }
+            }
+          },
+          "flip": false,
+          "kind": "pass",
+          "pass": {
+            "id": "curl_flat",
+            "name": "Curl-Flat",
+            "family": "dropback",
+            "drop": "gun5",
+            "strong": {
+              "1": "curl",
+              "2": "flat",
+              "3": "hook"
+            },
+            "weak": {
+              "1": "curl",
+              "2": "flat"
+            },
+            "back": "check",
+            "progression": [
+              "S1",
+              "S2",
+              "W1",
+              "W2",
+              "B"
+            ],
+            "beats": [
+              "cover3",
+              "cover2"
+            ]
+          },
+          "label": "gun_doubles_11/curl_flat"
+        },
+        "defCall": {
+          "personnel": "nickel",
+          "front": {
+            "id": "over",
+            "name": "4-3 Over",
+            "personnel": [
+              "base43",
+              "nickel",
+              "dime"
+            ],
+            "slots": {
+              "DE_S": {
+                "tech": "6",
+                "side": "S",
+                "depth": 0.9
+              },
+              "DT_S": {
+                "tech": "3",
+                "side": "S",
+                "depth": 0.9
+              },
+              "DT_W": {
+                "tech": "1",
+                "side": "W",
+                "depth": 0.9
+              },
+              "DE_W": {
+                "tech": "5",
+                "side": "W",
+                "depth": 0.9
+              },
+              "LB_S": {
+                "tech": "7",
+                "side": "S",
+                "depth": 4.1
+              },
+              "LB_M": {
+                "tech": "1",
+                "side": "S",
+                "depth": 5
+              },
+              "LB_W": {
+                "tech": "3",
+                "side": "W",
+                "depth": 4.6
+              }
+            }
+          },
+          "coverage": {
+            "id": "cover2",
+            "name": "Cover 2",
+            "family": "cover2",
+            "shell": "two-high",
+            "man": false,
+            "press": false,
+            "note": "Squat corners reroute #1 and sit in the flats; two deep halves; three hooks.",
+            "roles": {
+              "CB_S": {
+                "kind": "zone",
+                "zone": "flat_s"
+              },
+              "CB_W": {
+                "kind": "zone",
+                "zone": "flat_w"
+              },
+              "SS": {
+                "kind": "zone",
+                "zone": "deep_half_s"
+              },
+              "FS": {
+                "kind": "zone",
+                "zone": "deep_half_w"
+              }
+            },
+            "underneath": [
+              "hook_s",
+              "hook_w",
+              "hook_mid",
+              "curl_flat_s",
+              "curl_flat_w"
+            ]
+          },
+          "pressure": null,
+          "zoneStyle": "match",
+          "label": "Over cover2"
+        },
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "seed": 3,
+        "down": 1,
+        "audibles": false,
+        "hurry": false,
+        "wind": {
+          "x": 0,
+          "y": 0
+        },
+        "record": true,
+        "recordLevel": "full",
+        "recordEvery": 1
+      },
+      "profilesSha256": "2aa3245b483a2b6ed6124c0b1bf00d034bd44483bf96768b310a6b32a7d70536",
+      "executionSha256": "6c30fa17a4d90416ddb62dbdaff892d2e8832956cc905f9e6fe77151e7ba9099",
+      "plainExecutionSha256": "6c30fa17a4d90416ddb62dbdaff892d2e8832956cc905f9e6fe77151e7ba9099",
+      "events": [
+        {
+          "t": 2.3,
+          "type": "fall",
+          "a": 3,
+          "pos": {
+            "x": 36.12,
+            "y": 26.85
+          },
+          "note": "contact"
+        },
+        {
+          "t": 2.55,
+          "type": "throw",
+          "a": 0,
+          "b": 9,
+          "pos": {
+            "x": 32.11,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 3.5,
+          "type": "catch",
+          "a": 9,
+          "pos": {
+            "x": 53.32,
+            "y": 10.3
+          }
+        },
+        {
+          "t": 10.85,
+          "type": "touchdown",
+          "a": 9,
+          "pos": {
+            "x": 110.03,
+            "y": 29.08
+          }
+        }
+      ],
+      "selectedNativeSteps": [
+        {
+          "t": 0.75,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 45.41651873344261,
+              "y": 9.631571574759516
+            },
+            "velocity": {
+              "x": -1.9186925846444267,
+              "y": 0.9469504447615014
+            },
+            "zone": "flat_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -5.545403033551868,
+              "y": 3.074374609286625
+            },
+            "facing": 2.1368033219808895
+          },
+          "strongSafety": {
+            "position": {
+              "x": 52.39218623957028,
+              "y": 17.191144848469868
+            },
+            "velocity": {
+              "x": 1.33544124909452,
+              "y": -1.8902067170825685
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 2.064317411346642,
+              "y": -4.333361159699874
+            },
+            "facing": 2.6523891863168503
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.06673197978723,
+                  "y": 22.131683828775365
+                },
+                "vel": {
+                  "x": 1.6197325319749787,
+                  "y": -1.542602411398567
+                },
+                "stance": null,
+                "facing": -0.8928548681521982,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.12539793799725,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 2.8367352996804276,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.06673197978723,
+                  "y": 22.131683828775365
+                },
+                "vel": {
+                  "x": 1.6197325319749787,
+                  "y": -1.542602411398567
+                },
+                "stance": null,
+                "facing": -0.8928548681521982,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.06673197978723,
+                  "y": 22.131683828775365
+                },
+                "vel": {
+                  "x": 1.6197325319749787,
+                  "y": -1.542602411398567
+                },
+                "stance": null,
+                "facing": -0.8928548681521982,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.12539793799725,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 2.8367352996804276,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 40.015992938055014,
+                "y": 22.06855829601613
+              },
+              "velocity": {
+                "x": 0.10061642188151748,
+                "y": -2.1889080289472056
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 40.21171509376455,
+                "y": 8.666666666666668
+              },
+              "velocity": {
+                "x": 3.6778956818653064,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 1.5,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 43.76721847280083,
+              "y": 10.960207258848422
+            },
+            "velocity": {
+              "x": -1.570355106002447,
+              "y": 1.822908301298233
+            },
+            "zone": "flat_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -0.41918865574459785,
+              "y": 1.5143350525091932
+            },
+            "facing": 2.1822409325675105
+          },
+          "strongSafety": {
+            "position": {
+              "x": 53.93339381409444,
+              "y": 15.319774149919404
+            },
+            "velocity": {
+              "x": 2.886807344531354,
+              "y": -3.014950741759175
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 5.851585965811812,
+              "y": -6.1552568725675565
+            },
+            "facing": 2.649717780741308
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.047555507746864,
+                  "y": 20.129785934581
+                },
+                "vel": {
+                  "x": -0.009113591391036052,
+                  "y": -2.591685164541034
+                },
+                "stance": null,
+                "facing": -0.008523238275990127,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.81437233080942,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 5.380427498005996,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.81437233080942,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 5.380427498005996,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.047555507746864,
+                  "y": 20.129785934581
+                },
+                "vel": {
+                  "x": -0.009113591391036052,
+                  "y": -2.591685164541034
+                },
+                "stance": null,
+                "facing": -0.008523238275990127,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.81437233080942,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 5.380427498005996,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 40.04188595890142,
+                "y": 20.13235769349314
+              },
+              "velocity": {
+                "x": 0.05135047245455708,
+                "y": -2.9148908610040762
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 43.86042037973943,
+                "y": 8.666666666666668
+              },
+              "velocity": {
+                "x": 5.829165935562512,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 1.95,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 43.676933980472526,
+              "y": 11.61507438996644
+            },
+            "velocity": {
+              "x": 1.1186583652599906,
+              "y": 1.0728709175079518
+            },
+            "zone": "flat_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 3.699113728615089,
+              "y": 0.46654764272036575
+            },
+            "facing": 2.2259761326019607
+          },
+          "strongSafety": {
+            "position": {
+              "x": 55.23799075887396,
+              "y": 13.744513871104125
+            },
+            "velocity": {
+              "x": 2.3117352744542607,
+              "y": -4.246700255033431
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 5.487788692823073,
+              "y": -6.481698908889484
+            },
+            "facing": 2.6320556165923765
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.466862164704445,
+                  "y": 18.567629751511827
+                },
+                "vel": {
+                  "x": 1.3247748838299271,
+                  "y": -3.644600848376634
+                },
+                "stance": null,
+                "facing": -1.5358003060521699,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 46.636572624879676,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.294033488979176,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 46.636572624879676,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.294033488979176,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.466862164704445,
+                  "y": 18.567629751511827
+                },
+                "vel": {
+                  "x": 1.3247748838299271,
+                  "y": -3.644600848376634
+                },
+                "stance": null,
+                "facing": -1.5358003060521699,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 46.636572624879676,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.294033488979176,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 40.50367869369459,
+                "y": 18.516306072811062
+              },
+              "velocity": {
+                "x": 1.5845980097372983,
+                "y": -4.179966484904522
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 46.66785734817802,
+                "y": 8.666666666666668
+              },
+              "velocity": {
+                "x": 6.591613326882699,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 2.5,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 44.1429759825149,
+              "y": 12.175798041232037
+            },
+            "velocity": {
+              "x": -0.4524040272666941,
+              "y": 1.2074071560524335
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -5.043927158970494,
+              "y": 1.0858591281228875
+            },
+            "facing": -1.1698215346593475
+          },
+          "strongSafety": {
+            "position": {
+              "x": 56.82825428019316,
+              "y": 11.354312789843004
+            },
+            "velocity": {
+              "x": 2.862397857225256,
+              "y": -4.725800971274856
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 0.1379098004425341,
+              "y": -4.088726743005915
+            },
+            "facing": 2.5869760603372587
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 41.501663412590176,
+                  "y": 15.935000489836332
+                },
+                "vel": {
+                  "x": 1.9025581216388558,
+                  "y": -4.919705132959298
+                },
+                "stance": null,
+                "facing": -1.1698215346593475,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.27846770497999,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.3893439460415635,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.27846770497999,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.3893439460415635,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 41.501663412590176,
+                  "y": 15.935000489836332
+                },
+                "vel": {
+                  "x": 1.9025581216388558,
+                  "y": -4.919705132959298
+                },
+                "stance": null,
+                "facing": -1.1698215346593475,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.27846770497999,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.3893439460415635,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 41.51491846435106,
+                "y": 15.900572832662746
+              },
+              "velocity": {
+                "x": 2.0317556411414373,
+                "y": -5.254605284024888
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 50.170230285701365,
+                "y": 8.666666666666668
+              },
+              "velocity": {
+                "x": 5.305452859708239,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 2.55,
+          "ball": "air",
+          "carrier": null,
+          "strongCorner": {
+            "position": {
+              "x": 44.11275077603339,
+              "y": 12.2359670773059
+            },
+            "velocity": {
+              "x": -0.7566042319937771,
+              "y": 1.1993542869020999
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -5.073228374433093,
+              "y": 0.7344674770642343
+            },
+            "facing": -1.180045700161333
+          },
+          "strongSafety": {
+            "position": {
+              "x": 56.96378417720051,
+              "y": 11.119797530028713
+            },
+            "velocity": {
+              "x": 2.5587980230688547,
+              "y": -4.654809421296777
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -0.42020633053005696,
+              "y": -3.6147619684473367
+            },
+            "facing": 2.582610155967685
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 41.60448353079577,
+                  "y": 15.668879110611824
+                },
+                "vel": {
+                  "x": 1.9367457310773268,
+                  "y": -5.009199011077261
+                },
+                "stance": null,
+                "facing": -1.180045700161333,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.53716962778483,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.119276059387169,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.53716962778483,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.119276059387169,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 41.60448353079577,
+                  "y": 15.668879110611824
+                },
+                "vel": {
+                  "x": 1.9367457310773268,
+                  "y": -5.009199011077261
+                },
+                "stance": null,
+                "facing": -1.180045700161333,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.53716962778483,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 6.119276059387169,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 41.61722932236885,
+                "y": 15.635972138539321
+              },
+              "velocity": {
+                "x": 2.060678679570099,
+                "y": -5.3294224809121395
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 50.42868764880696,
+                "y": 8.666666666666668
+              },
+              "velocity": {
+                "x": 5.032841664515486,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 2.7,
+          "ball": "air",
+          "carrier": null,
+          "strongCorner": {
+            "position": {
+              "x": 43.932701169919895,
+              "y": 12.40221321850958
+            },
+            "velocity": {
+              "x": -1.6220131221561545,
+              "y": 0.9502148156534129
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -5.015478218951436,
+              "y": -0.2429134316594097
+            },
+            "facing": -1.2060126908643656
+          },
+          "strongSafety": {
+            "position": {
+              "x": 57.28131343611089,
+              "y": 10.447555389174964
+            },
+            "velocity": {
+              "x": 1.683124706871082,
+              "y": -4.282867048894342
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -1.6649431800962216,
+              "y": -2.4188899307945757
+            },
+            "facing": 2.569200470074367
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 41.92126959257935,
+                  "y": 14.849651775857769
+                },
+                "vel": {
+                  "x": 2.0317556411414373,
+                  "y": -5.254605284024888
+                },
+                "stance": null,
+                "facing": -1.2060126908643658,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.23132085764301,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 5.305452859708239,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.23132085764301,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 5.305452859708239,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 41.92126959257935,
+                  "y": 14.849651775857769
+                },
+                "vel": {
+                  "x": 2.0317556411414373,
+                  "y": -5.254605284024888
+                },
+                "stance": null,
+                "facing": -1.2060126908643658,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.23132085764301,
+                  "y": 8.666666666666668
+                },
+                "vel": {
+                  "x": 5.305452859708239,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 41.90329949962758,
+                "y": 14.896124547353777
+              },
+              "velocity": {
+                "x": 1.8405515405776576,
+                "y": -4.760116292426404
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 51.12599572696791,
+                "y": 8.687887357186867
+              },
+              "velocity": {
+                "x": 4.2832389743119075,
+                "y": 0.4168257184333051
+              }
+            }
+          ]
+        },
+        {
+          "t": 3.5,
+          "ball": "air",
+          "carrier": null,
+          "strongCorner": {
+            "position": {
+              "x": 43.67818380042384,
+              "y": 12.685424402928218
+            },
+            "velocity": {
+              "x": 2.1518126693433173,
+              "y": -0.32238109153710237
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 9.783331690762845,
+              "y": -2.5122559677247076
+            }
+          },
+          "strongSafety": {
+            "position": {
+              "x": 56.94697559279117,
+              "y": 8.125966912592732
+            },
+            "velocity": {
+              "x": -2.2815177635116686,
+              "y": -1.257275728235257
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -6.072836058922558,
+              "y": 3.4437094425493946
+            }
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.37553580900736,
+                  "y": 11.088561495555366
+                },
+                "vel": {
+                  "x": 1.8401387011383366,
+                  "y": -4.75904858747202
+                },
+                "stance": null,
+                "facing": -1.20184167088194,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 53.30121969587063,
+                  "y": 10.26401613601971
+                },
+                "vel": {
+                  "x": 1.887635894984273,
+                  "y": 2.768255177807726
+                },
+                "stance": null,
+                "facing": 2.2658468097421496,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 53.30121969587063,
+                  "y": 10.26401613601971
+                },
+                "vel": {
+                  "x": 1.887635894984273,
+                  "y": 2.768255177807726
+                },
+                "stance": null,
+                "facing": 2.2658468097421496,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.37553580900736,
+                  "y": 11.088561495555366
+                },
+                "vel": {
+                  "x": 1.8401387011383366,
+                  "y": -4.75904858747202
+                },
+                "stance": null,
+                "facing": -1.20184167088194,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 53.30121969587063,
+                  "y": 10.26401613601971
+                },
+                "vel": {
+                  "x": 1.887635894984273,
+                  "y": 2.768255177807726
+                },
+                "stance": null,
+                "facing": 2.2658468097421496,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.37552144689498,
+                "y": 11.088598639489451
+              },
+              "velocity": {
+                "x": 1.839994594272849,
+                "y": -4.758675891884275
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 53.25970567127322,
+                "y": 10.204236151634456
+              },
+              "velocity": {
+                "x": 1.3383870903153077,
+                "y": 1.9678736680912947
+              }
+            }
+          ]
+        },
+        {
+          "t": 3.55,
+          "ball": "held",
+          "carrier": 9,
+          "strongCorner": {
+            "position": {
+              "x": 43.79289834986381,
+              "y": 12.667260948659003
+            },
+            "velocity": {
+              "x": 2.436769308255688,
+              "y": -0.40415707923152006
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 10.052451855616548,
+              "y": 0.9865194926429289
+            },
+            "effort": 1
+          },
+          "strongSafety": {
+            "position": {
+              "x": 56.828056018967224,
+              "y": 8.069108977610654
+            },
+            "velocity": {
+              "x": -2.475265189446043,
+              "y": -1.017041671047905
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -2.4029243703220913,
+              "y": 9.781138816221961
+            },
+            "effort": 1
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.467534704865905,
+                  "y": 10.850629857514278
+                },
+                "vel": {
+                  "x": 1.8401029713678263,
+                  "y": -4.758956181549746
+                },
+                "stance": null,
+                "facing": -1.2018416708819435,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 53.39488075835045,
+                  "y": 10.402988438148636
+                },
+                "vel": {
+                  "x": 1.8844326404536662,
+                  "y": 2.7707420366456788
+                },
+                "stance": null,
+                "facing": 2.403559006592342,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 53.39488075835045,
+                  "y": 10.402988438148636
+                },
+                "vel": {
+                  "x": 1.8844326404536662,
+                  "y": 2.7707420366456788
+                },
+                "stance": null,
+                "facing": 2.403559006592342,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 9,
+              "scale": 0.6720179204778792,
+              "cue": {
+                "pos": {
+                  "x": 53.363028032913746,
+                  "y": 10.356154349492671
+                },
+                "vel": {
+                  "x": 1.7024170665296525,
+                  "y": 2.5031186728972976
+                },
+                "stance": null,
+                "facing": 2.4633045546768053,
+                "age": 0.15000000000000002,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 9,
+              "scale": 0.6720179204778792,
+              "cue": {
+                "pos": {
+                  "x": 53.363028032913746,
+                  "y": 10.356154349492671
+                },
+                "vel": {
+                  "x": 1.7024170665296525,
+                  "y": 2.5031186728972976
+                },
+                "stance": null,
+                "facing": 2.4633045546768053,
+                "age": 0.15000000000000002,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1.586708978906104,
+              "cue": {
+                "pos": {
+                  "x": 53.4705864110652,
+                  "y": 10.341121143936993
+                },
+                "vel": {
+                  "x": 2.122032669428616,
+                  "y": 2.5770135828925222
+                },
+                "stance": null,
+                "facing": 2.344219641705933,
+                "age": 0.35000000000000003,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.46006868970411,
+                "y": 10.848458862003005
+              },
+              "velocity": {
+                "x": 1.5418951180923304,
+                "y": -4.846915207573582
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 53.32207466499502,
+                "y": 10.295939292929383
+              },
+              "velocity": {
+                "x": 1.1563726585568823,
+                "y": 1.700251983705784
+              }
+            }
+          ]
+        },
+        {
+          "t": 4.2,
+          "ball": "held",
+          "carrier": 9,
+          "strongCorner": {
+            "position": {
+              "x": 46.41562482580889,
+              "y": 12.41911264510607
+            },
+            "velocity": {
+              "x": 5.39369907616035,
+              "y": -0.11630552964698106
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 9.994924847628972,
+              "y": 1.4582476844150933
+            },
+            "effort": 1
+          },
+          "strongSafety": {
+            "position": {
+              "x": 55.210589014302954,
+              "y": 8.663818007495813
+            },
+            "velocity": {
+              "x": -1.628079278826798,
+              "y": 2.5595084983377823
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 1.570122223567497,
+            "cutSkill": 1.0428571428571427,
+            "posture": 0.5377551020408163
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 44.90546331307659,
+                  "y": 8.818734665110192
+                },
+                "vel": {
+                  "x": 2.549291344431677,
+                  "y": -2.3760204230616004
+                },
+                "stance": null,
+                "facing": 0.9994877407533453,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 55.11629467908034,
+                  "y": 11.130543304506471
+                },
+                "vel": {
+                  "x": 3.4376792840609585,
+                  "y": 1.2079142160495855
+                },
+                "stance": null,
+                "facing": -0.11315418478332001,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 55.11629467908034,
+                  "y": 11.130543304506471
+                },
+                "vel": {
+                  "x": 3.4376792840609585,
+                  "y": 1.2079142160495855
+                },
+                "stance": null,
+                "facing": -0.11315418478332001,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 9,
+              "scale": 0.6720179204778792,
+              "cue": {
+                "pos": {
+                  "x": 55.21225874304598,
+                  "y": 11.140780618324982
+                },
+                "vel": {
+                  "x": 3.916252687311332,
+                  "y": 1.2589661720874439
+                },
+                "stance": null,
+                "facing": -0.25063701720496034,
+                "age": 0.15000000000000002,
+                "pose": "up",
+                "carrying": true
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 44.9983695775904,
+                "y": 8.998979841910188
+              },
+              "velocity": {
+                "x": 3.3123743516435376,
+                "y": -0.9491879179954381
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 55.25891642605499,
+                "y": 11.15577976400489
+              },
+              "velocity": {
+                "x": 4.527880578219467,
+                "y": 1.4555875052954332
+              }
+            }
+          ]
+        },
+        {
+          "t": 4.25,
+          "ball": "held",
+          "carrier": 9,
+          "strongCorner": {
+            "position": {
+              "x": 46.68962023742978,
+              "y": 12.414774441125706
+            },
+            "velocity": {
+              "x": 5.566117388675136,
+              "y": -0.05722262956757509
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 9.986210997471986,
+              "y": 1.516772538260975
+            },
+            "effort": 1
+          },
+          "strongSafety": {
+            "position": {
+              "x": 55.133736205187255,
+              "y": 8.784638547755078
+            },
+            "velocity": {
+              "x": -1.4460330858012596,
+              "y": 2.273313112032841
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": 1.4434115466147746,
+            "cutSkill": 1.0428571428571427,
+            "posture": 0.5377551020408163
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 45.07230656002799,
+                  "y": 8.780343067917347
+                },
+                "vel": {
+                  "x": 2.6924865434492125,
+                  "y": -2.0836225177516563
+                },
+                "stance": null,
+                "facing": 1.2188771365817805,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 55.35535409446594,
+                  "y": 11.198106733624325
+                },
+                "vel": {
+                  "x": 3.6819536519975156,
+                  "y": 1.2339786462873157
+                },
+                "stance": null,
+                "facing": -0.2713904015870584,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 55.35535409446594,
+                  "y": 11.198106733624325
+                },
+                "vel": {
+                  "x": 3.6819536519975156,
+                  "y": 1.2339786462873157
+                },
+                "stance": null,
+                "facing": -0.2713904015870584,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 9,
+              "scale": 0.6720179204778792,
+              "cue": {
+                "pos": {
+                  "x": 55.44509352702278,
+                  "y": 11.215630516969627
+                },
+                "vel": {
+                  "x": 4.127807827946916,
+                  "y": 1.3269752580318572
+                },
+                "stance": null,
+                "facing": -0.049225385120992976,
+                "age": 0.15000000000000002,
+                "pose": "up",
+                "carrying": true
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 45.168153987123546,
+                "y": 8.95822293472393
+              },
+              "velocity": {
+                "x": 3.4790020296820834,
+                "y": -0.6810883694548745
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 55.49000547166636,
+                "y": 11.230068456383528
+              },
+              "velocity": {
+                "x": 4.715681246235276,
+                "y": 1.5159601898500783
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DA-R2-curl_flat-cover2-L",
+      "setup": {
+        "offCall": {
+          "formation": {
+            "id": "gun_doubles_11",
+            "name": "Gun Doubles",
+            "personnel": "11",
+            "qb": "gun",
+            "tags": [
+              "spread",
+              "2x2"
+            ],
+            "slots": {
+              "X": {
+                "side": "L",
+                "split": "wide",
+                "depth": 0.6
+              },
+              "H": {
+                "side": "L",
+                "split": "slot",
+                "depth": 1.2
+              },
+              "Z": {
+                "side": "R",
+                "split": "wide",
+                "depth": 1.2
+              },
+              "Y": {
+                "side": "R",
+                "split": "inline",
+                "depth": 0.6
+              },
+              "RB": {
+                "side": "L",
+                "split": 1.6,
+                "depth": 5.2
+              }
+            }
+          },
+          "flip": true,
+          "kind": "pass",
+          "pass": {
+            "id": "curl_flat",
+            "name": "Curl-Flat",
+            "family": "dropback",
+            "drop": "gun5",
+            "strong": {
+              "1": "curl",
+              "2": "flat",
+              "3": "hook"
+            },
+            "weak": {
+              "1": "curl",
+              "2": "flat"
+            },
+            "back": "check",
+            "progression": [
+              "S1",
+              "S2",
+              "W1",
+              "W2",
+              "B"
+            ],
+            "beats": [
+              "cover3",
+              "cover2"
+            ]
+          },
+          "label": "gun_doubles_11/curl_flat"
+        },
+        "defCall": {
+          "personnel": "nickel",
+          "front": {
+            "id": "over",
+            "name": "4-3 Over",
+            "personnel": [
+              "base43",
+              "nickel",
+              "dime"
+            ],
+            "slots": {
+              "DE_S": {
+                "tech": "6",
+                "side": "S",
+                "depth": 0.9
+              },
+              "DT_S": {
+                "tech": "3",
+                "side": "S",
+                "depth": 0.9
+              },
+              "DT_W": {
+                "tech": "1",
+                "side": "W",
+                "depth": 0.9
+              },
+              "DE_W": {
+                "tech": "5",
+                "side": "W",
+                "depth": 0.9
+              },
+              "LB_S": {
+                "tech": "7",
+                "side": "S",
+                "depth": 4.1
+              },
+              "LB_M": {
+                "tech": "1",
+                "side": "S",
+                "depth": 5
+              },
+              "LB_W": {
+                "tech": "3",
+                "side": "W",
+                "depth": 4.6
+              }
+            }
+          },
+          "coverage": {
+            "id": "cover2",
+            "name": "Cover 2",
+            "family": "cover2",
+            "shell": "two-high",
+            "man": false,
+            "press": false,
+            "note": "Squat corners reroute #1 and sit in the flats; two deep halves; three hooks.",
+            "roles": {
+              "CB_S": {
+                "kind": "zone",
+                "zone": "flat_s"
+              },
+              "CB_W": {
+                "kind": "zone",
+                "zone": "flat_w"
+              },
+              "SS": {
+                "kind": "zone",
+                "zone": "deep_half_s"
+              },
+              "FS": {
+                "kind": "zone",
+                "zone": "deep_half_w"
+              }
+            },
+            "underneath": [
+              "hook_s",
+              "hook_w",
+              "hook_mid",
+              "curl_flat_s",
+              "curl_flat_w"
+            ]
+          },
+          "pressure": null,
+          "zoneStyle": "match",
+          "label": "Over cover2"
+        },
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "seed": 3,
+        "down": 1,
+        "audibles": false,
+        "hurry": false,
+        "wind": {
+          "x": 0,
+          "y": 0
+        },
+        "record": true,
+        "recordLevel": "full",
+        "recordEvery": 1
+      },
+      "profilesSha256": "2aa3245b483a2b6ed6124c0b1bf00d034bd44483bf96768b310a6b32a7d70536",
+      "executionSha256": "fd73dd4e3a76e4124b3eadd36148d2ffefaf9bbb910cb1ced92ed94d46f12fc5",
+      "plainExecutionSha256": "fd73dd4e3a76e4124b3eadd36148d2ffefaf9bbb910cb1ced92ed94d46f12fc5",
+      "events": [
+        {
+          "t": 2.6,
+          "type": "throw",
+          "a": 0,
+          "b": 7,
+          "pos": {
+            "x": 32.11,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 2.85,
+          "type": "fall",
+          "a": 17,
+          "pos": {
+            "x": 42.72,
+            "y": 41.27
+          },
+          "note": "contact"
+        },
+        {
+          "t": 3.7,
+          "type": "catch",
+          "a": 7,
+          "pos": {
+            "x": 43.53,
+            "y": 44.84
+          }
+        },
+        {
+          "t": 5.25,
+          "type": "carrier_contact",
+          "a": 7,
+          "b": 21,
+          "pos": {
+            "x": 48.54,
+            "y": 51.92
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 5.25,
+          "type": "tackle_wrap",
+          "a": 21,
+          "b": 7,
+          "pos": {
+            "x": 48.39,
+            "y": 50.93
+          },
+          "note": "initial"
+        },
+        {
+          "t": 5.5,
+          "type": "fall",
+          "a": 7,
+          "pos": {
+            "x": 49.49,
+            "y": 52.79
+          },
+          "note": "legs"
+        }
+      ],
+      "selectedNativeSteps": [
+        {
+          "t": 0.75,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 45.40628500237876,
+              "y": 43.529841205302475
+            },
+            "velocity": {
+              "x": -1.921858117482483,
+              "y": -1.0295229740071061
+            },
+            "zone": "flat_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -5.597855936173884,
+              "y": -2.8629091027497546
+            },
+            "facing": -2.1409744946176126
+          },
+          "strongSafety": {
+            "position": {
+              "x": 52.40304199553276,
+              "y": 36.29534052180463
+            },
+            "velocity": {
+              "x": 1.3724655996116564,
+              "y": 1.8697928176178842
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 2.044777050614176,
+              "y": 4.057687482542738
+            },
+            "facing": -2.645963807489253
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.0667319797873,
+                  "y": 31.201649504557896
+                },
+                "vel": {
+                  "x": 1.6197325319752964,
+                  "y": 1.542602411398234
+                },
+                "stance": null,
+                "facing": 0.8928548681521982,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.12539793799725,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 2.8367352996804276,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.0667319797873,
+                  "y": 31.201649504557896
+                },
+                "vel": {
+                  "x": 1.6197325319752964,
+                  "y": 1.542602411398234
+                },
+                "stance": null,
+                "facing": 0.8928548681521982,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.0667319797873,
+                  "y": 31.201649504557896
+                },
+                "vel": {
+                  "x": 1.6197325319752964,
+                  "y": 1.542602411398234
+                },
+                "stance": null,
+                "facing": 0.8928548681521982,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 0.75,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 40.12539793799725,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 2.8367352996804276,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 40.08645510717932,
+                "y": 31.276099897802293
+              },
+              "velocity": {
+                "x": 0.5832578036943419,
+                "y": 2.6585228025002308
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 40.21171509376455,
+                "y": 44.66666666666667
+              },
+              "velocity": {
+                "x": 3.6778956818653064,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 1.5,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 43.70074465910332,
+              "y": 42.27053001633453
+            },
+            "velocity": {
+              "x": -1.6138652099896134,
+              "y": -1.6777631023084676
+            },
+            "zone": "flat_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -0.31283055382858826,
+              "y": -1.3501813594685814
+            },
+            "facing": -2.1824752127322906
+          },
+          "strongSafety": {
+            "position": {
+              "x": 53.383452969524576,
+              "y": 38.208049748577444
+            },
+            "velocity": {
+              "x": 1.3690916949741598,
+              "y": 2.4434410484659175
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 1.21722643290515,
+              "y": 2.4924980766769194
+            },
+            "facing": -2.631475794097624
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 41.774543600458,
+                  "y": 33.2986438931625
+                },
+                "vel": {
+                  "x": 3.038579343458147,
+                  "y": 2.463437434078922
+                },
+                "stance": null,
+                "facing": 0.05302388167669679,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.81437233080942,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 5.380427498005996,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.81437233080942,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 5.380427498005996,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 41.774543600458,
+                  "y": 33.2986438931625
+                },
+                "vel": {
+                  "x": 3.038579343458147,
+                  "y": 2.463437434078922
+                },
+                "stance": null,
+                "facing": 0.05302388167669679,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.81437233080942,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 5.380427498005996,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 41.74052790806656,
+                "y": 33.41513477899063
+              },
+              "velocity": {
+                "x": 2.6747525157952854,
+                "y": 3.6032264254187405
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 43.86042037973943,
+                "y": 44.66666666666667
+              },
+              "velocity": {
+                "x": 5.829165935562512,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 1.95,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 43.59694499658077,
+              "y": 41.67064888006299
+            },
+            "velocity": {
+              "x": 1.0981247802324563,
+              "y": -0.9687523375878166
+            },
+            "zone": "flat_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 3.827096102841904,
+              "y": -0.390371541434115
+            },
+            "facing": -2.2241546779093966
+          },
+          "strongSafety": {
+            "position": {
+              "x": 54.05000951801741,
+              "y": 39.37665078837614
+            },
+            "velocity": {
+              "x": 2.4792390284229233,
+              "y": 2.5563960500070007
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 5.921423495370327,
+              "y": 6.088102271730671
+            },
+            "facing": -2.6165056316005906
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 42.68042578078656,
+                  "y": 35.42401973664695
+                },
+                "vel": {
+                  "x": 1.836470034694611,
+                  "y": 4.775344692555879
+                },
+                "stance": null,
+                "facing": 1.9110170514045242,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 46.636572624879676,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.294033488979176,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 46.636572624879676,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.294033488979176,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 42.68042578078656,
+                  "y": 35.42401973664695
+                },
+                "vel": {
+                  "x": 1.836470034694611,
+                  "y": 4.775344692555879
+                },
+                "stance": null,
+                "facing": 1.9110170514045242,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.95,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 46.636572624879676,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.294033488979176,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 42.58994308965967,
+                "y": 35.495719310407914
+              },
+              "velocity": {
+                "x": 0.9023174714232921,
+                "y": 5.452897832578029
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 46.66785734817802,
+                "y": 44.66666666666667
+              },
+              "velocity": {
+                "x": 6.591613326882699,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 2.5,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 43.61748692737144,
+              "y": 41.04453918566684
+            },
+            "velocity": {
+              "x": -1.526876121812192,
+              "y": -0.997252044777842
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -4.763453094879736,
+              "y": 0.39038033283742024
+            },
+            "facing": 1.442640345354038
+          },
+          "strongSafety": {
+            "position": {
+              "x": 55.70159989545438,
+              "y": 40.982230623948
+            },
+            "velocity": {
+              "x": 3.3967825588954925,
+              "y": 3.3106327908445574
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 3.722030928001735,
+              "y": 6.175657529712326
+            },
+            "facing": -2.5961827541145492
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.00531323445807,
+                  "y": 38.712278349451275
+                },
+                "vel": {
+                  "x": 0.7707156019810772,
+                  "y": 6.00527301295782
+                },
+                "stance": null,
+                "facing": 1.4426403453540382,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.27846770497999,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.3893439460415635,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.27846770497999,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.3893439460415635,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.00531323445807,
+                  "y": 38.712278349451275
+                },
+                "vel": {
+                  "x": 0.7707156019810772,
+                  "y": 6.00527301295782
+                },
+                "stance": null,
+                "facing": 1.4426403453540382,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.27846770497999,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.3893439460415635,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.008353375594844,
+                "y": 38.73593949491854
+              },
+              "velocity": {
+                "x": 0.800282418640046,
+                "y": 6.235502341537718
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 50.170230285701365,
+                "y": 44.66666666666667
+              },
+              "velocity": {
+                "x": 5.305452859708239,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 2.55,
+          "ball": "held",
+          "carrier": 0,
+          "strongCorner": {
+            "position": {
+              "x": 43.53501642005779,
+              "y": 40.998996442846426
+            },
+            "velocity": {
+              "x": -1.7719441707339676,
+              "y": -0.8244576680387008
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -4.783860144929834,
+              "y": 0.7208551619142227
+            },
+            "facing": 1.4582381559621103
+          },
+          "strongSafety": {
+            "position": {
+              "x": 55.86805346770388,
+              "y": 41.15397912181178
+            },
+            "velocity": {
+              "x": 3.2613603310846733,
+              "y": 3.5593071237066094
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": 2.97613647840342,
+              "y": 5.949822867183603
+            },
+            "facing": -2.594009324175235
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.04562830922537,
+                  "y": 39.026366562453994
+                },
+                "vel": {
+                  "x": 0.778623578284359,
+                  "y": 6.066715512312602
+                },
+                "stance": null,
+                "facing": 1.45823815596211,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.53716962778483,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.119276059387169,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.53716962778483,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.119276059387169,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.04562830922537,
+                  "y": 39.026366562453994
+                },
+                "vel": {
+                  "x": 0.778623578284359,
+                  "y": 6.066715512312602
+                },
+                "stance": null,
+                "facing": 1.45823815596211,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 50.53716962778483,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 6.119276059387169,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.0485325739658,
+                "y": 39.049000829546564
+              },
+              "velocity": {
+                "x": 0.8068855161981692,
+                "y": 6.28695104358327
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 50.42868764880696,
+                "y": 44.66666666666667
+              },
+              "velocity": {
+                "x": 5.032841664515486,
+                "y": 0
+              }
+            }
+          ]
+        },
+        {
+          "t": 2.7,
+          "ball": "air",
+          "carrier": null,
+          "strongCorner": {
+            "position": {
+              "x": 43.225402857923974,
+              "y": 40.92549367948611
+            },
+            "velocity": {
+              "x": -2.3056122800502474,
+              "y": -0.11929903661916791
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": -2.7038830440231987,
+              "y": -0.11108630196037517
+            },
+            "facing": 1.4374297641946403
+          },
+          "strongSafety": {
+            "position": {
+              "x": 56.317295020776946,
+              "y": 41.738425040613166
+            },
+            "velocity": {
+              "x": 2.6853412814928372,
+              "y": 4.202175011611294
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -0.9221421341669123,
+              "y": 3.217556482343966
+            },
+            "facing": -2.5847124293927077
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.16840985932285,
+                  "y": 39.983039963226084
+                },
+                "vel": {
+                  "x": 0.800282418640046,
+                  "y": 6.235502341537718
+                },
+                "stance": null,
+                "facing": 1.4374297641946403,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.23132085764301,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 5.305452859708239,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.23132085764301,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 5.305452859708239,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.16840985932285,
+                  "y": 39.983039963226084
+                },
+                "vel": {
+                  "x": 0.800282418640046,
+                  "y": 6.235502341537718
+                },
+                "stance": null,
+                "facing": 1.4374297641946403,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.7,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.23132085764301,
+                  "y": 44.66666666666667
+                },
+                "vel": {
+                  "x": 5.305452859708239,
+                  "y": 0
+                },
+                "stance": null,
+                "facing": 0,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.17095260700102,
+                "y": 40.00285207775729
+              },
+              "velocity": {
+                "x": 0.8250238895439234,
+                "y": 6.428278507069285
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 51.12650207850671,
+                "y": 44.64590413591423
+              },
+              "velocity": {
+                "x": 4.293414841580616,
+                "y": -0.40793381880014
+              }
+            }
+          ]
+        },
+        {
+          "t": 3.5,
+          "ball": "air",
+          "carrier": null,
+          "strongCorner": {
+            "position": {
+              "x": 41.42814254636888,
+              "y": 42.93311234546365
+            },
+            "velocity": {
+              "x": -1.2337953131276806,
+              "y": 1.7903255312891322
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 4.06751947347021,
+              "y": 4.330540096461982
+            }
+          },
+          "strongSafety": {
+            "position": {
+              "x": 56.53917001863429,
+              "y": 44.641169541349086
+            },
+            "velocity": {
+              "x": -2.072950455853969,
+              "y": 2.9852502569965553
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -10.07020345284642,
+              "y": 0.18900923250422527
+            }
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.48705312600331,
+                  "y": 43.7193720651595
+                },
+                "vel": {
+                  "x": 0.1881644915039223,
+                  "y": 4.491586413469956
+                },
+                "stance": null,
+                "facing": 2.069024266676438,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 52.835035001965686,
+                  "y": 43.61960084692085
+                },
+                "vel": {
+                  "x": 0.7629260563315545,
+                  "y": -1.6028787371415907
+                },
+                "stance": null,
+                "facing": -2.694212276861305,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 52.835035001965686,
+                  "y": 43.61960084692085
+                },
+                "vel": {
+                  "x": 0.7629260563315545,
+                  "y": -1.6028787371415907
+                },
+                "stance": null,
+                "facing": -2.694212276861305,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.48705312600331,
+                  "y": 43.7193720651595
+                },
+                "vel": {
+                  "x": 0.1881644915039223,
+                  "y": 4.491586413469956
+                },
+                "stance": null,
+                "facing": 2.069024266676438,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.5,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 52.835035001965686,
+                  "y": 43.61960084692085
+                },
+                "vel": {
+                  "x": 0.7629260563315545,
+                  "y": -1.6028787371415907
+                },
+                "stance": null,
+                "facing": -2.694212276861305,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.48709386776291,
+                "y": 43.72034459270279
+              },
+              "velocity": {
+                "x": 0.18859272792569381,
+                "y": 4.5018086449634955
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 52.70857562479107,
+                "y": 43.620172724946215
+              },
+              "velocity": {
+                "x": -0.5004149259478039,
+                "y": -1.5625712770925344
+              }
+            }
+          ]
+        },
+        {
+          "t": 3.55,
+          "ball": "air",
+          "carrier": null,
+          "strongCorner": {
+            "position": {
+              "x": 41.3720983484785,
+              "y": 43.01443649809753
+            },
+            "velocity": {
+              "x": -1.0079726024875033,
+              "y": 1.4626405740662576
+            },
+            "zone": "flat_s",
+            "target": 7,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 4.210652440990293,
+              "y": 4.1695384512115234
+            }
+          },
+          "strongSafety": {
+            "position": {
+              "x": 56.42852443060686,
+              "y": 44.78798236021789
+            },
+            "velocity": {
+              "x": -2.3528730652429743,
+              "y": 2.887262497755648
+            },
+            "zone": "deep_half_s",
+            "target": 9,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -10.07167283306602,
+              "y": 0.07828419618064217
+            }
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.496482852834234,
+                  "y": 43.944464656215885
+                },
+                "vel": {
+                  "x": 0.18826005708495092,
+                  "y": 4.4938676151716725
+                },
+                "stance": null,
+                "facing": 2.5509665641128434,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 52.802018515519826,
+                  "y": 43.537110239230856
+                },
+                "vel": {
+                  "x": 0.44664699294293064,
+                  "y": -1.6133083852878765
+                },
+                "stance": null,
+                "facing": -2.718699305710426,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 52.802018515519826,
+                  "y": 43.537110239230856
+                },
+                "vel": {
+                  "x": 0.44664699294293064,
+                  "y": -1.6133083852878765
+                },
+                "stance": null,
+                "facing": -2.718699305710426,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 43.496482852834234,
+                  "y": 43.944464656215885
+                },
+                "vel": {
+                  "x": 0.18826005708495092,
+                  "y": 4.4938676151716725
+                },
+                "stance": null,
+                "facing": 2.5509665641128434,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 3.55,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 52.802018515519826,
+                  "y": 43.537110239230856
+                },
+                "vel": {
+                  "x": 0.44664699294293064,
+                  "y": -1.6133083852878765
+                },
+                "stance": null,
+                "facing": -2.718699305710426,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 43.496526881102746,
+                "y": 43.94551563438836
+              },
+              "velocity": {
+                "x": 0.18872780566793562,
+                "y": 4.505033022459234
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 52.675733395967065,
+                "y": 43.543203647356215
+              },
+              "velocity": {
+                "x": -0.8132742270122264,
+                "y": -1.5161918265074381
+              }
+            }
+          ]
+        },
+        {
+          "t": 4.2,
+          "ball": "held",
+          "carrier": 7,
+          "strongCorner": {
+            "position": {
+              "x": 41.25961976245795,
+              "y": 43.17765099740165
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 5.739344935790135,
+              "y": 8.311734399442344
+            },
+            "effort": 1
+          },
+          "strongSafety": {
+            "position": {
+              "x": 53.88478283614441,
+              "y": 46.420209152652504
+            },
+            "velocity": {
+              "x": -5.204771064246962,
+              "y": 2.5249043740375536
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -9.37187891907866,
+              "y": 3.689526744424108
+            },
+            "effort": 1
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 44.10419283393734,
+                  "y": 46.59723724555348
+                },
+                "vel": {
+                  "x": 1.681675239087186,
+                  "y": 3.792922387559106
+                },
+                "stance": null,
+                "facing": 2.2213495939131187,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.46118175993872,
+                  "y": 42.44037848584324
+                },
+                "vel": {
+                  "x": -2.20453923759666,
+                  "y": -2.114874199634518
+                },
+                "stance": null,
+                "facing": -1.893167786996277,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.46118175993872,
+                  "y": 42.44037848584324
+                },
+                "vel": {
+                  "x": -2.20453923759666,
+                  "y": -2.114874199634518
+                },
+                "stance": null,
+                "facing": -1.893167786996277,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 7,
+              "scale": 0.6720179204778792,
+              "cue": {
+                "pos": {
+                  "x": 44.15457348587058,
+                  "y": 46.597861605865575
+                },
+                "vel": {
+                  "x": 1.9695646787056844,
+                  "y": 3.7964901607711026
+                },
+                "stance": null,
+                "facing": 1.7267940383575633,
+                "age": 0.15000000000000002,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 7,
+              "scale": 0.6720179204778792,
+              "cue": {
+                "pos": {
+                  "x": 44.15457348587058,
+                  "y": 46.597861605865575
+                },
+                "vel": {
+                  "x": 1.9695646787056844,
+                  "y": 3.7964901607711026
+                },
+                "stance": null,
+                "facing": 1.7267940383575633,
+                "age": 0.15000000000000002,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.2,
+              "a": 21,
+              "b": 7,
+              "scale": 1.586708978906104,
+              "cue": {
+                "pos": {
+                  "x": 43.85670258004837,
+                  "y": 46.66050264293834
+                },
+                "vel": {
+                  "x": 0.7850425492254236,
+                  "y": 4.033715947446643
+                },
+                "stance": null,
+                "facing": 3.620664344483919,
+                "age": 0.35000000000000003,
+                "pose": "up",
+                "carrying": true
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 44.2079539425988,
+                "y": 46.6118008063136
+              },
+              "velocity": {
+                "x": 2.5802950866212675,
+                "y": 4.066131454131659
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 51.50925775622635,
+                "y": 42.45527856346499
+              },
+              "velocity": {
+                "x": -1.6292531355959299,
+                "y": -1.5648333840658153
+              }
+            }
+          ]
+        },
+        {
+          "t": 4.25,
+          "ball": "held",
+          "carrier": 7,
+          "strongCorner": {
+            "position": {
+              "x": 41.25961976245795,
+              "y": 43.17765099740165
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongCornerRequest": {
+            "vel": {
+              "x": 6.351017817775719,
+              "y": 7.854271557385087
+            },
+            "effort": 1
+          },
+          "strongSafety": {
+            "position": {
+              "x": 53.620705867444926,
+              "y": 46.54752582767905
+            },
+            "velocity": {
+              "x": -5.358307683732441,
+              "y": 2.567762627024445
+            },
+            "zone": null,
+            "target": null,
+            "read": "pass"
+          },
+          "strongSafetyRequest": {
+            "vel": {
+              "x": -9.321298589059918,
+              "y": 3.8155097543161043
+            },
+            "effort": 1
+          },
+          "consumedStrongSafetyZAndY": [
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 7,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 44.25305171980586,
+                  "y": 46.78768611390413
+                },
+                "vel": {
+                  "x": 1.9695646787056844,
+                  "y": 3.7964901607711026
+                },
+                "stance": null,
+                "facing": 1.7267940383575633,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.35966935557905,
+                  "y": 42.27685541577673
+                },
+                "vel": {
+                  "x": -2.1658078708403816,
+                  "y": -2.371671355566879
+                },
+                "stance": null,
+                "facing": -1.8955463353562376,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 9,
+              "scale": 1,
+              "cue": {
+                "pos": {
+                  "x": 51.35966935557905,
+                  "y": 42.27685541577673
+                },
+                "vel": {
+                  "x": -2.1658078708403816,
+                  "y": -2.371671355566879
+                },
+                "stance": null,
+                "facing": -1.8955463353562376,
+                "age": 0.2,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 7,
+              "scale": 0.6720179204778792,
+              "cue": {
+                "pos": {
+                  "x": 44.29850249837259,
+                  "y": 46.7955324381402
+                },
+                "vel": {
+                  "x": 2.2292834133727206,
+                  "y": 3.841326299262937
+                },
+                "stance": null,
+                "facing": 1.2322384828020079,
+                "age": 0.15000000000000002,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 7,
+              "scale": 0.6720179204778792,
+              "cue": {
+                "pos": {
+                  "x": 44.29850249837259,
+                  "y": 46.7955324381402
+                },
+                "vel": {
+                  "x": 2.2292834133727206,
+                  "y": 3.841326299262937
+                },
+                "stance": null,
+                "facing": 1.2322384828020079,
+                "age": 0.15000000000000002,
+                "pose": "up",
+                "carrying": true
+              }
+            },
+            {
+              "t": 4.25,
+              "a": 21,
+              "b": 7,
+              "scale": 1.586708978906104,
+              "cue": {
+                "pos": {
+                  "x": 44.01039335680683,
+                  "y": 46.83923790158446
+                },
+                "vel": {
+                  "x": 1.0902122806846086,
+                  "y": 3.9725145108433906
+                },
+                "stance": null,
+                "facing": 3.2055351085922763,
+                "age": 0.35000000000000003,
+                "pose": "up",
+                "carrying": true
+              }
+            }
+          ],
+          "actualReceivers": [
+            {
+              "idx": 7,
+              "slot": "Y",
+              "position": {
+                "x": 44.33951965409749,
+                "y": 46.81912727861663
+              },
+              "velocity": {
+                "x": 2.682333373326098,
+                "y": 4.226927437989262
+              }
+            },
+            {
+              "idx": 9,
+              "slot": "Z",
+              "position": {
+                "x": 51.43171814787585,
+                "y": 42.3840825923984
+              },
+              "velocity": {
+                "x": -1.4723311984241116,
+                "y": -1.2830054585977193
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

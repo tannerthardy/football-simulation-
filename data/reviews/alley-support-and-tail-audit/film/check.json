@@ -1,0 +1,75 @@
+{
+  "html": "/workspace/football-simulation-/out/coverage-continuation/alley-fit.html",
+  "htmlSha256": "38dedf1608fc2855e2d7d7eb354fe68a6f4867d5010c5c2ee18c8920ffd9bbf9",
+  "browserToolSha256": "6a0e05e4359ee1e818ecb1f3882b1075257d9820077f97be1dce21590941aaa5",
+  "scope": "Focused paired-film selection, playback, full inspection and WebM checks; does not replace all legacy viewer regression tests.",
+  "status": "passed",
+  "checks": [
+    "All four paired native witnesses retained; component method explicit and end-to-end game scoreboard hidden",
+    "Every grouping mode preserves all eight clips",
+    "Each clip decodes full real telemetry, native Game context and per-clip source; FS support inspection works and Toss motion starts at -0.8 s",
+    "Coverage filtering, watch selection, next/previous and exact clip-ID search preserve the intended pair/source",
+    "Recorded movement advances during playback with all four inspection layers enabled",
+    "Real 1.2-second WebM download decodes at 1280x840 with correct clip/source filename and restores replay position",
+    "Mobile viewport renders the selected clip and inspector"
+  ],
+  "clips": [
+    {
+      "id": "B-G4-P127",
+      "telemetryFrames": 122,
+      "firstRecordedTime": 0,
+      "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b"
+    },
+    {
+      "id": "A-G4-P127",
+      "telemetryFrames": 62,
+      "firstRecordedTime": 0,
+      "source": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f"
+    },
+    {
+      "id": "B-G3-P099",
+      "telemetryFrames": 29,
+      "firstRecordedTime": 0,
+      "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b"
+    },
+    {
+      "id": "A-G3-P099",
+      "telemetryFrames": 29,
+      "firstRecordedTime": 0,
+      "source": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f"
+    },
+    {
+      "id": "B-G4-P012",
+      "telemetryFrames": 34,
+      "firstRecordedTime": 0,
+      "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b"
+    },
+    {
+      "id": "A-G4-P012",
+      "telemetryFrames": 34,
+      "firstRecordedTime": 0,
+      "source": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f"
+    },
+    {
+      "id": "B-G2-P188",
+      "telemetryFrames": 44,
+      "firstRecordedTime": -0.8,
+      "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b"
+    },
+    {
+      "id": "A-G2-P188",
+      "telemetryFrames": 44,
+      "firstRecordedTime": -0.8,
+      "source": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f"
+    }
+  ],
+  "video": {
+    "codec_name": "vp9",
+    "width": 1280,
+    "height": 840,
+    "nb_read_frames": "43"
+  },
+  "videoBytes": 373400,
+  "browserErrors": [],
+  "wallSeconds": 5.842
+}

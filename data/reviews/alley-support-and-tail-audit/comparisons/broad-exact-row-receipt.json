@@ -1,0 +1,26 @@
+{
+  "runs": {
+    "baselineSha256": "31e94a2d0def121148e45dc289db6767cb5caccf536e826bb6ec9b8bde90f94d",
+    "candidateSha256": "7e1463472566525c09b68754af4c5553348d2f81a4d738db14fd3d5423b61412",
+    "collections": {
+      "trials": {
+        "n": 160,
+        "fullRawRowsEqual": 160
+      },
+      "supplementalTrials": {
+        "n": 2,
+        "fullRawRowsEqual": 2
+      }
+    }
+  },
+  "passing": {
+    "baselineSha256": "c639dd96cb553d5b1a6905f0916f64dfbaabb7fda47648a4b069bbfd08f07b72",
+    "candidateSha256": "d8ea67bdb809617f02a90e90e4d1948871482062e32ce7689db3f711aff7bf49",
+    "collections": {
+      "rows": {
+        "n": 96,
+        "fullRawRowsEqual": 96
+      }
+    }
+  }
+}

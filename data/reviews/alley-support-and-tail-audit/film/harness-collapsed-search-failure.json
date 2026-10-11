@@ -1,0 +1,13 @@
+{
+  "html": "/workspace/football-simulation-/out/coverage-continuation/alley-fit.html",
+  "scope": "Focused paired-film selection, playback, full inspection and WebM checks; does not replace all legacy viewer regression tests.",
+  "status": "failed",
+  "checks": [
+    "All four paired native witnesses retained; component method explicit and end-to-end game scoreboard hidden",
+    "Every grouping mode preserves all eight clips",
+    "Each clip decodes full real telemetry, native Game context and per-clip source; FS support inspection works and Toss motion starts at -0.8 s"
+  ],
+  "browserErrors": [],
+  "error": "Page.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#search\")\n    - locator resolved to <input id=\"search\" type=\"search\" placeholder=\"G2-P088, Mesh, player name\u2026\"/>\n    - fill(\"A-G4-P127\")\n  - attempting fill action\n    2 \u00d7 waiting for element to be visible, enabled and editable\n      - element is not visible\n    - retrying fill action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and editable\n      - element is not visible\n    - retrying fill action\n      - waiting 100ms\n    60 \u00d7 waiting for element to be visible, enabled and editable\n       - element is not visible\n     - retrying fill action\n       - waiting 500ms\n",
+  "wallSeconds": 33.486
+}

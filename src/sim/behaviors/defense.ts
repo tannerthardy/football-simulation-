@@ -212,17 +212,20 @@ export class ManCoverage implements Behavior {
     const R = this.target;
     if (sim.ball.kind === 'air') return playBall(a, sim, R);
     const receiverCue = sim.see(a, R);
-    // A back carrying the ball will not look like a stalk blocker. An inside
-    // man player who reads run and personally acquires that possession uses
-    // his installed insertion rather than retreating with receiver cushion.
+    // A back carrying the ball will not look like a stalk blocker. A man
+    // marker who reads run and personally acquires that possession uses his
+    // installed insertion or alley support, not receiver cushion. Alley
+    // support still preserves its cap through a deep mesh; it is not an
+    // extra interior fitter just because this defender marks the back.
     // Unknown/negative possession preserves ordinary man/PA responsibility.
     const backfieldBack = sim.offAlign.spots[R.slot]?.backfield
       && (R.player.position === 'RB' || R.player.position === 'FB');
-    if (a.runFit?.kind === 'insert' && backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
+    if ((a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley')
+      && backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
       if (!this.keyedFitRecorded) {
         this.keyedFitRecorded = true;
         if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-run-fit', chose: `keyed-fit:${R.slot}`,
-          cue: `${R.slot} carrying=true in consumed picture; run belief; installed insert`,
+          cue: `${R.slot} carrying=true in consumed picture; run belief; installed ${a.runFit.kind}`,
           options: [`man:${R.slot}`, `keyed-fit:${R.slot}`],
           detail: `Installed ${a.runFit.gap}-gap, side ${a.runFit.side}; known target ${R.slot}; picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s, depth ${(receiverCue.pos.x - sim.los).toFixed(2)} yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit.` });
       }

@@ -1,0 +1,34 @@
+{
+  "schema": "saved-native-game-summary-reproduction-v1",
+  "toolSha256": "daf66558303b1b0ab5f0ca9e18eef79d60f43587ff14e341669dd29f14ac701d",
+  "inputSha256": "d78296abd50cbae25eeea3f341115fa1aded0c767409c7b2f4e83b9df2a5a53a",
+  "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "noSimulations": true,
+  "summaryFiles": [
+    {
+      "path": "games/summary.json",
+      "fileSha256": "f922ae24c274958af12f2326b0fe8276c017f21e911c0452f4b499f3e3114073",
+      "reproduced": true
+    },
+    {
+      "path": "games/run-anatomy-summary.json",
+      "fileSha256": "36a1e9f7f43e986ce38ddae28d33897f6ed8de92e13c93652379b3fd3bceb5f6",
+      "reproduced": true
+    }
+  ],
+  "cleanCompletionYacDenominator": 401,
+  "definitions": {
+    "officialScrimmage": "kind run/pass and not nullified",
+    "calledRun": "official kind run; scrambles on pass calls excluded",
+    "stuff": "called-run gain <= 0",
+    "quantiles": "sorted observed gains at floor(p*(n-1)); median middle observed gain",
+    "cleanCompletionYac": "completed pass with no interceptedBy and explicit yac field",
+    "historicalNoContact": "yardsBeforeContact field absent; not proof of no actual physical contact",
+    "historicalNoAttempt": "YBC absent and zero missed/broken counters; not proof of no actual tackle attempt"
+  },
+  "limits": [
+    "Descriptive generated-call population; not NFL concept equivalence or source causal effects.",
+    "Selected full native witnesses separately establish actual contact/attempt anatomy.",
+    "Existing summaries reproduced with numerical tolerance 1e-12; no artifact overwritten."
+  ]
+}

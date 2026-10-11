@@ -7,8 +7,25 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [alley support and native tail audit](docs/reviews/alley-support-and-native-tail-audit.md)
+first. A known back's man marker uses his installed alley cap after personal
+run belief and acquired possession, then pursues the observed crease. The native
+86-yard untouched TD becomes a 31.34-yard physical tackle in an exact selected
+controller counterfactual. World/capacities remain unchanged. All four selected
+pairs, including changed ordinary Toss, are retained in the
+[packet](data/reviews/alley-support-and-tail-audit/README.md) and
+[eight-clip offline film](viewer/alley-support-and-tail-audit.zip).
+All 1,105 TS/66 Python tests pass; typecheck/build are clean. The 162 fixed runs
+and 96 passes remain execution-exact. Eight games improve 51.13→37.94
+points/team and 7.83→6.15 run YPC, with divergent later calls; readiness is
+not claimed. The air-arrival prototype is withheld after worsening a PA mirror.
+Start next with the proved spacing/refinement override of a moving safety's
+request, then speculative early airborne receiving windows. Preserve all six
+old passing tails and legitimate dump-off/deflection controls; do not strengthen
+grips or add anatomy to erase a bad instruction. Facing is not measured eyes.
+
 Read [helper footwork and curl-flat responsibility](docs/reviews/helper-fit-and-flat-responsibility.md)
-first. Unloaded run helpers replace bad feet through the existing movement
+for the preceding increment. Unloaded run helpers replace bad feet through the existing movement
 envelope; real hand load takes priority over a stale visual forecast. The native
 Power witness achieves earlier useful helper load (.68→3.07 yd), but the retained
 Draw helper still fails to recover before the owner sheds. Match curl-flat

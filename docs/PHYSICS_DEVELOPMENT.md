@@ -3,6 +3,18 @@
 ## Current direction
 
 Keep the reduced shared World and improve executed football. Start with
+[alley support and native tail audit](reviews/alley-support-and-native-tail-audit.md).
+A personally acquired known-back possession activates the man safety's installed
+alley cap rather than continued receiver cushion. One untouched 86-yard TD
+becomes a 31.34-yard actual tackle with unchanged capacities; three ordinary
+selected controls remain, including a changed midfield Toss. The 162 fixed runs
+and 96 passes stay execution-exact; eight fresh games improve but remain far
+from calibration. A separate air-arrival experiment is withheld after harming
+the ordinary PA mirror. Trace the demonstrated spacing/refinement override of
+a useful movement request, then ambiguous early airborne catch windows. Preserve
+legitimate receiving controls and native adverse cases before expanding a law.
+
+Then read
 [helper footwork and curl-flat responsibility](reviews/helper-fit-and-flat-responsibility.md).
 Actual hand load now preserves useful helper work when a delayed visual
 forecast disagrees; unloaded bad surfaces receive bounded foot replacement.

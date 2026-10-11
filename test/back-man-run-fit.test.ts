@@ -6,7 +6,7 @@ import { World } from '../src/physics/world.js';
 import { supportParams } from '../src/physics/support.js';
 import { gapY } from '../src/playbook/alignment.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
-import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Gap } from '../src/playbook/types.js';
 import { ManCoverage, playBall } from '../src/sim/behaviors/defense.js';
@@ -48,6 +48,39 @@ function stage(carrying: Perceived['carrying'] = true, side = 1, read: Read = 'r
   sim.see = (observer, target, delay) => target === r ? picture : originalSee(observer, target, delay);
   const behavior = new ManCoverage(a, sim, r, false, 'B', side);
   a.behavior = behavior;
+  return { sim, a, r, behavior, update: () => behavior.update(a, sim),
+    picture: () => picture, setPicture: (next: Perceived) => { picture = next; } };
+}
+
+/** G4-P127's first consumed positive-back picture, translated from LOS24
+ * to LOS40. The FS keeps the actual Cover0/Under installed man and alley jobs.
+ * As above, this controls interpreted cues rather than claiming natural cue
+ * acquisition; the separate native witness proves where those cues occurred. */
+function alleyStage(carrying: Perceived['carrying'] = true, side = 1, read: Read = 'run',
+  targetSlot: 'RB' | 'F' = 'RB', formationId = 'gun_trey_11', recordLevel?: ReplayLevel) {
+  const formation = FORMATION_BY_ID[formationId];
+  const sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'nickel'),
+    offCall: { formation, flip: side < 0, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'Alley coverage control' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.under, coverage: COVERAGE_BY_ID.cover0,
+      pressure: PRESSURE_BY_ID.zero_6, label: 'Under zero' },
+    manPrefs: targetSlot === 'F' || formationId === 'gun_empty_11' ? { overrides: { FS: targetSlot } } : undefined,
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3, record: !!recordLevel, recordLevel });
+  const a = sim.slot('FS')!, r = sim.slot(targetSlot)!;
+  expect(a.behavior).toBeInstanceOf(ManCoverage);
+  const behavior = a.behavior as ManCoverage;
+  expect(behavior.target).toBe(r);
+  sim.t = 1.3;
+  a.body.pos = { x: 45.14624, y: CENTER_Y + side * (27.15307 - CENTER_Y) };
+  a.body.vel = { x: -.19228, y: side * -.63923 };
+  a.body.facing = Math.PI;
+  r.body.pos = { x: 35.78665, y: CENTER_Y + side * (27.5608 - CENTER_Y) };
+  r.body.vel = { x: 1.06839, y: side * -.3623 };
+  a.recog!.read = read;
+  Object.defineProperty(a.mind, 'placementError', { get: () => side * .05 });
+  let picture: Perceived = { pos: { ...r.pos }, vel: { ...r.vel }, stance: null,
+    facing: 0, pose: 'up', age: .25, carrying };
+  const originalSee = sim.see.bind(sim);
+  sim.see = (observer, target, delay) => target === r ? picture : originalSee(observer, target, delay);
   return { sim, a, r, behavior, update: () => behavior.update(a, sim),
     picture: () => picture, setPicture: (next: Perceived) => { picture = next; } };
 }
@@ -151,8 +184,8 @@ describe('inside man players insert from their acquired back possession', () => 
     expect(f.update()).toEqual(unknown.update());
   });
 
-  it('keeps force/alley contracts outside the new inside-back insertion rule', () => {
-    for (const kind of ['force', 'alley', 'cutback'] as const) {
+  it('keeps force/cutback contracts outside the keyed back insertion/alley rule', () => {
+    for (const kind of ['force', 'cutback'] as const) {
       const f = stage(), unknown = stage(null);
       f.a.runFit!.kind = kind; unknown.a.runFit!.kind = kind;
       expect(f.update()).toEqual(unknown.update());
@@ -223,5 +256,138 @@ describe('inside man players insert from their acquired back possession', () => 
     const f = stage(false, 1, 'run', 'RB', 'gun_trey_11', 'full');
     f.update(); f.update();
     expect(f.sim.trace.data!.decisions.filter(d => d.kind === 'coverage-run-fit')).toHaveLength(0);
+  });
+});
+
+describe('back man markers preserve their installed alley support instead of receiver cushion', () => {
+  it('uses the native FS alley cap at the deep mesh, preserving the last defensive level', () => {
+    const fit = alleyStage(), man = alleyStage(null);
+    expect(fit.a.runFit!.kind).toBe('alley');
+    expect(fit.sim.offAlign.spots.RB.backfield).toBe(true);
+    expect(fit.behavior.recordedTechnique().initialCushion).toBeCloseTo(10.2, 10);
+    const command = fit.update(), ordinary = man.update(), direct = chase(fit.sim, fit.a, fit.r, 3.5);
+    // A known runner at a deep mesh is not permission to collapse this FS
+    // into the LB insertion or chase the ball directly into the backfield.
+    const start = fit.a.pos.x, world = new World([fit.a.body]);
+    for (let k = 0; k < 12; k++) {
+      const report = world.step([fit.update()], .05);
+      expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+      fit.sim.t += .05;
+    }
+    expect(fit.a.pos.x).toBeLessThan(start);
+    expect(fit.a.pos.x).toBeGreaterThan(fit.sim.los + 4);
+    expect(fit.a.body.support!.state).toBe('up');
+    expect(command.vel.x).toBeLessThan(0);
+    expect(ordinary.vel.x).toBeGreaterThan(0);
+    expect(command.vel.x).toBeGreaterThan(-1);
+    expect(command.vel).not.toEqual(direct.vel);
+  });
+
+  it('pursues a declared observed crease and brakes a retreat through the same mirrored World limits', () => {
+    const right = alleyStage(), left = alleyStage(true, -1);
+    for (const [f, side] of [[right, 1], [left, -1]] as const) {
+      f.setPicture({ ...f.picture(), pos: { x: 39.2, y: CENTER_Y + side * 6 },
+        vel: { x: 3.5, y: side * 1 } });
+      f.a.body.vel = { x: 3.5, y: side * .2 };
+    }
+    const r = right.update(), l = left.update();
+    expect(r.vel.x).toBeLessThan(0);
+    expect(r).toEqual(chase(right.sim, right.a, right.r, 3.5));
+    expect(r.vel.x).toBeCloseTo(l.vel.x, 10);
+    expect(r.vel.y).toBeCloseTo(-l.vel.y, 10);
+    for (const [f, command] of [[right, r], [left, l]] as const) {
+      const before = structuredClone(f.a.body), world = new World([f.a.body]);
+      const report = world.step([command], .05);
+      expect(f.a.vel.x).toBeGreaterThan(0);
+      expect(f.a.vel.x).toBeLessThan(before.vel.x);
+      expect(f.a.body.support!.state).toBe('up');
+      expect(Math.hypot(report.groundImpulse[0].x, report.groundImpulse[0].y))
+        .toBeLessThanOrEqual(supportParams(f.a.profile).traction * .05 + 1e-8);
+      expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+      expect(report.armImpulse[0]).toBe(0);
+    }
+    expect(right.a.pos.x).toBeCloseTo(left.a.pos.x, 10);
+    expect(right.a.pos.y + left.a.pos.y).toBeCloseTo(2 * CENTER_Y, 10);
+    expect(right.a.vel.y).toBeCloseTo(-left.a.vel.y, 10);
+    const past = alleyStage(), expected = alleyStage();
+    for (const f of [past, expected]) f.setPicture({ ...f.picture(), pos: { x: 42.5, y: CENTER_Y + 3 } });
+    expect(past.update()).toEqual(chase(expected.sim, expected.a, expected.r));
+  });
+
+  it('waits for personally consumed carrying rather than the hidden handoff or current runner position', () => {
+    const f = alleyStage(false), control = alleyStage(false);
+    f.sim.ball = { kind: 'held', carrier: f.r }; f.sim.handoffAt = 1.05;
+    f.sim.isPass = false; f.sim.scrambled = true;
+    f.r.body.pos = { x: 75, y: 3 }; f.r.body.vel = { x: 8, y: 0 };
+    expect(f.update()).toEqual(control.update());
+    expect(f.sim.rng.nextU32()).toBe(control.sim.rng.nextU32());
+    f.sim.t += .05;
+    f.setPicture({ ...f.picture(), carrying: true });
+    expect(f.update().vel.x).toBeLessThan(0);
+    expect(control.update().vel.x).toBeGreaterThan(0);
+  });
+
+  it('preserves man responsibility for pass/unsure reads, absent possession, play action, and a split-out back', () => {
+    for (const read of ['pass', 'unsure'] as const) {
+      const positive = alleyStage(true, 1, read), unknown = alleyStage(null, 1, read);
+      expect(positive.update()).toEqual(unknown.update());
+      expect(positive.a.recog!.read).toBe(read);
+    }
+    for (const carrying of [false, null, undefined]) {
+      const f = alleyStage(carrying), unknown = alleyStage(null);
+      if (carrying === undefined) { const { carrying: ignored, ...legacy } = f.picture(); f.setPicture(legacy); void ignored; }
+      f.sim.offCall.pass = PASS_BY_ID.pa_post_dig;
+      expect(f.update()).toEqual(unknown.update());
+      expect(f.update().vel.x).toBeGreaterThan(0);
+    }
+    const split = alleyStage(true, 1, 'run', 'RB', 'gun_empty_11');
+    const unknown = alleyStage(null, 1, 'run', 'RB', 'gun_empty_11');
+    // Hold the valid installed alley job constant so the originally split-out
+    // identity, rather than a separately excluded force job, is the control.
+    const nativeAlley = alleyStage().a.runFit!;
+    split.a.runFit = { ...nativeAlley }; unknown.a.runFit = { ...nativeAlley };
+    expect(split.sim.offAlign.spots.RB.backfield).toBe(false);
+    expect(split.update()).toEqual(unknown.update());
+  });
+
+  it('supports a known backfield FB without reading live possession, and lets an airborne ball retain ownership', () => {
+    const one = alleyStage(true, 1, 'run', 'F', 'i_pro_21'), two = alleyStage(true, 1, 'run', 'F', 'i_pro_21');
+    expect(one.r.player.position).toBe('FB');
+    expect(one.a.runFit!.kind).toBe('alley');
+    expect(one.sim.offAlign.spots.F.backfield).toBe(true);
+    one.sim.ball = { kind: 'held', carrier: one.r }; one.sim.handoffAt = 1.05; one.sim.isPass = false;
+    two.sim.ball = { kind: 'held', carrier: two.sim.qb }; two.sim.handoffAt = -1; two.sim.scrambled = true;
+    two.r.body.pos = { x: 75, y: 2 }; two.r.body.vel = { x: -8, y: 0 };
+    expect(one.update()).toEqual(two.update());
+    expect(one.sim.rng.nextU32()).toBe(two.sim.rng.nextU32());
+    const air = alleyStage(), expected = alleyStage();
+    for (const f of [air, expected]) {
+      f.sim.throwAt = 1.1;
+      f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
+        thrower: f.sim.qb, target: f.r, releaseT: 1.1, releaseX: 35,
+        intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
+      f.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
+    }
+    expect(air.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
+    expect(air.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
+  });
+
+  it('records the actual alley cue once without changing commands, body state, or the shared random stream', () => {
+    for (const level of ['standard', 'full'] as const) {
+      const recorded = alleyStage(true, 1, 'run', 'RB', 'gun_trey_11', level), plain = alleyStage();
+      const before = recorded.sim.agents.map(a => structuredClone(a.body));
+      expect(recorded.update()).toEqual(plain.update());
+      expect(recorded.update()).toEqual(plain.update());
+      expect(recorded.sim.agents.map(a => a.body)).toEqual(before);
+      const decisions = recorded.sim.trace.data!.decisions.filter(d => d.kind === 'coverage-run-fit');
+      expect(decisions).toHaveLength(1);
+      expect(decisions[0].cue).toContain('carrying=true in consumed picture');
+      expect(decisions[0].cue).toContain('installed alley');
+      expect(decisions[0].detail).toContain('picture age 0.25 s');
+      expect(recorded.sim.rng.nextU32()).toBe(plain.sim.rng.nextU32());
+      const unknown = alleyStage(null, 1, 'run', 'RB', 'gun_trey_11', level);
+      unknown.update();
+      expect(unknown.sim.trace.data!.decisions.filter(d => d.kind === 'coverage-run-fit')).toHaveLength(0);
+    }
   });
 });
