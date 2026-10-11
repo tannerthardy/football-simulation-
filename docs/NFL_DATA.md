@@ -40,8 +40,8 @@ The second table repeats the key run metrics per run concept family
 (inside zone, outside zone, gap/pull, man/duo, draw), because averages over
 all runs can hide opposite problems.
 
-`data/reviews/mechanics/report-baseline.md` is the report at the commit that
-added this system, so you can see what moved.
+`data/reviews/mechanics/report-baseline.md` (and `sim-baseline.json`) is the
+report at the commit that added this system, so you can see what moved.
 
 ## Rules
 
@@ -63,7 +63,7 @@ added this system, so you can see what moved.
    test in `test/test_mechanics_metrics.py`, re-run `mech:nfl` and commit the
    new aggregate JSON.
 
-## What the first report shows (two 8-game samples, seeds 101 and 202)
+## What the first report shows (three 8-game samples)
 
 Matching: handoff timing, yards before contact, top speeds of backs, tight ends
 and receivers, linebacker/QB/TE acceleration.
@@ -72,15 +72,16 @@ Biggest gaps, each a mechanism to investigate:
 
 | Area | NFL | Sim | Likely question |
 |---|---|---|---|
-| All runs: furthest engaged DL driven back at 3 s (90th pct) | 2.5 yd | 4.4 yd | Why don't defenders re-anchor once a blocker wins? (Inside zone median 1.6-3.1 yd vs 1.1.) |
-| Outside zone run yards (median / 90th pct) | 3 / 10 | 5.2-5.6 / 18-21 | What breaks on the edge? |
-| Gap/pull run yards and yards after contact (medians) | 3 / 2.5 | 0.4-0.7 / 0.9-1.2 | Why do power/counter/trap die at the line? |
+| All runs: furthest engaged DL driven back at 3 s (90th pct) | 2.5 yd | 4.1-4.4 yd | Why don't defenders re-anchor once a blocker wins? (Inside zone median 1.6-3.1 yd vs 1.1.) |
+| Outside zone run yards (median / 90th pct) | 3 / 10 | 4.4-5.6 / 15-21 | What breaks on the edge? |
+| Gap/pull run yards and yards after contact (medians) | 3 / 2.5 | 0.4-0.8 / 0.9-1.2 | Why do power/counter/trap die at the line? |
 | Engaged box defenders at 1 s (median, negative = penetrating) | -0.6 yd | -0.3 yd | Is DL get-off too passive? Rusher speed at 0.5 s is also low. |
 | Deceleration peaks (QB, OL, WR, RB), medians | 2.5-3.6 yd/s² | 3.7-5.6 yd/s² | Do players stop too abruptly (QB at the end of the drop, OL, cuts)? |
-| QB depth at throw (25th-75th pct) | 6.1-8.3 yd | 7.7-7.9 yd | Every QB drops to the same depth. |
-| Pressure within 2 yd before the throw | 30% | 20-27% | The rush rarely gets home. |
+| QB depth at throw (25th-75th pct) | 6.1-8.3 yd | 7.2-7.9 yd | Most QBs drop to the same depth. |
+| Pressure within 2 yd before the throw | 30% | 19-27% | The rush rarely gets home. |
 
-Ranges cover both seeds. Generated teams and small samples move medians
+Ranges cover seeds 101 and 202 at commit 0f90363 and seed 101 at the commit
+that added this guide. Generated teams and small samples move medians
 (the inside-zone drive median differs by 1.5 yd between seeds), so confirm a
 gap with a second seed before acting on it.
 
