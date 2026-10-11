@@ -410,17 +410,38 @@ export class TrackBall implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
     if (sim.t < this.reactAt) return this.fallback.update(a, sim);
-    const spot = catchSpot(a, sim);
+    const spot = strideCatchSpot(a, sim) ?? catchSpot(a, sim);
     if (!spot) return this.fallback.update(a, sim);
-    const target = { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
-    const dtArr = Math.max(0.05, spot.t - sim.t);
-    const dist = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
-    // Arrive on time, keep running through if the ball is leading him.
-    const need = dist / dtArr;
-    const facing = angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
-    if (dist < 0.5) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
-    return { ...runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) }), facing: dist < 3 ? facing : undefined };
+    // Keep running and steer by how far his current line misses the ball:
+    // a ball led into his stride needs no change, a short one makes him
+    // throttle down or come back. Waiting at the earliest reachable point
+    // instead slowed receivers through the flight (NFL keep their speed).
+    const tx = spot.p.x + this.err.x, ty = spot.p.y + this.err.y;
+    const left = Math.max(0.15, spot.t - sim.t);
+    let vx = a.vel.x + (tx - a.pos.x - a.vel.x * left) / left;
+    let vy = a.vel.y + (ty - a.pos.y - a.vel.y * left) / left;
+    const v = Math.hypot(vx, vy);
+    if (v > a.profile.vmax) { vx *= a.profile.vmax / v; vy *= a.profile.vmax / v; }
+    const near = Math.hypot(tx - a.pos.x, ty - a.pos.y) < 3;
+    return { vel: { x: vx, y: vy }, facing: near ? angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y }) : undefined };
   }
+}
+
+/** The reachable, catchable point on the flight closest to where his
+ * current running line puts him at that moment: the in-stride catch. */
+function strideCatchSpot(a: Agent, sim: PlaySim): { p: Vec2; t: number } | null {
+  let best: { p: Vec2; t: number; dev: number } | null = null;
+  for (const s of sim.ballPath) {
+    const left = s.t - sim.t;
+    if (left < 0 || s.z > a.profile.maxCatchHeight * 0.92) continue;
+    if (s.z < 0.25) break;
+    const p = { x: s.x, y: s.y };
+    const dev = Math.hypot(p.x - a.pos.x - a.vel.x * left, p.y - a.pos.y - a.vel.y * left);
+    if (best && dev >= best.dev) continue;
+    const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, p, a.profile.reach * 0.8);
+    if (tt <= left) best = { p, t: s.t, dev };
+  }
+  return best;
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */
