@@ -1,0 +1,538 @@
+{
+  "schema": "projected-help-film-integrity-v1",
+  "clips": 10,
+  "predeterminedClips": 8,
+  "retrospectiveWitnessClips": 2,
+  "sourceComparison": [
+    {
+      "label": "Baseline: spacing-only help",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "diagnosticScriptSha256": "d71f617d966235d8f88929bd6a06a32e1371b8fadda59b2bf437c03cff3eb97a",
+      "sourceVersionToolSha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+      "inputSha256": "f64ed0e21054ee5d97111a8f61d8f86f6f8f6b9c40b180eceb4ba648d657f80c",
+      "profilesSha256": "027216828b35be1c1be08151300090c380d61ffebe3a17b6d109ad46120e2ed2",
+      "rawReportSha256": "81b906d59040d6e8e63e25c006ed050678b6b1e33f8fd24c75ed2e942ebe777a",
+      "decodedReportSha256": "6961585a5de45b4f76e036c0d5a4b7630895c2f6a8af7559402719f6813ccb35",
+      "observerChecks": [
+        {
+          "id": "HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "c0f03cb9ec042b4a23869301e99d871ae88aa8ee40d5f3d90e739e47076e9b8b",
+          "plainInitialSignature": "c0f03cb9ec042b4a23869301e99d871ae88aa8ee40d5f3d90e739e47076e9b8b",
+          "observedSignature": "e4ef068cdfc78d85629ec246608ee46090e38494a0bd55b3e012e40342df3ef3",
+          "plainSignature": "e4ef068cdfc78d85629ec246608ee46090e38494a0bd55b3e012e40342df3ef3"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-dagger-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "2d1082001d3a16d66e5fe1e4bd704a52326b83fd75a8fbc2f2bfbe04bdf0f460",
+          "plainInitialSignature": "2d1082001d3a16d66e5fe1e4bd704a52326b83fd75a8fbc2f2bfbe04bdf0f460",
+          "observedSignature": "90bc0363346615ed6f64ba16e4a3383599cdbea90e8c31cce6aba7ffc749c4bf",
+          "plainSignature": "90bc0363346615ed6f64ba16e4a3383599cdbea90e8c31cce6aba7ffc749c4bf"
+        },
+        {
+          "id": "HELP-R1-gun_bunch_11-mesh-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "1e0ddb229ace971d3872e859ee9f4eb9db4504a667ebbdf273f1b053b629e1f8",
+          "plainInitialSignature": "1e0ddb229ace971d3872e859ee9f4eb9db4504a667ebbdf273f1b053b629e1f8",
+          "observedSignature": "c7f6fa7b72dcdd0ae740285d86904b28d9da0f2ca85b45d88320e3907816eba2",
+          "plainSignature": "c7f6fa7b72dcdd0ae740285d86904b28d9da0f2ca85b45d88320e3907816eba2"
+        },
+        {
+          "id": "HELP-R1-gun_trips_11-smash-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "01403089c093abfeb1859051c538c43cc9afd6ac760b1fffe20fdf32846c5531",
+          "plainInitialSignature": "01403089c093abfeb1859051c538c43cc9afd6ac760b1fffe20fdf32846c5531",
+          "observedSignature": "5f6c1631b65cc5c306ea8006b0174c9bd48807d696263f2444d9e0281495363b",
+          "plainSignature": "5f6c1631b65cc5c306ea8006b0174c9bd48807d696263f2444d9e0281495363b"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-four_verts-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "d7aa3864a7535dd6462fb038b2bad70d4b485d60bd6c2fbdbe2c28bee552a5f3",
+          "plainInitialSignature": "d7aa3864a7535dd6462fb038b2bad70d4b485d60bd6c2fbdbe2c28bee552a5f3",
+          "observedSignature": "146c7346a70c89c933d34982399a003f9e6a00a8089db444aa3dec6557764c28",
+          "plainSignature": "146c7346a70c89c933d34982399a003f9e6a00a8089db444aa3dec6557764c28"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-dagger-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "188af35e2f7c094d1f043c0791cb48e3dfc9cf3c79d9b25c5b731108639c2eff",
+          "plainInitialSignature": "188af35e2f7c094d1f043c0791cb48e3dfc9cf3c79d9b25c5b731108639c2eff",
+          "observedSignature": "bf27ab09ba79149069c7a7915ddb88436ca0aa607772613500d905c427714cc5",
+          "plainSignature": "bf27ab09ba79149069c7a7915ddb88436ca0aa607772613500d905c427714cc5"
+        },
+        {
+          "id": "HELP-R1-gun_bunch_11-mesh-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "148bbc9d07ef9c78af21af524b9b26c0768909b39477e3fbda109c61f104fa3f",
+          "plainInitialSignature": "148bbc9d07ef9c78af21af524b9b26c0768909b39477e3fbda109c61f104fa3f",
+          "observedSignature": "8fba8785b323cd4210839db2bbe9191599a5f688de83322f2b48fe6fd5cda77c",
+          "plainSignature": "8fba8785b323cd4210839db2bbe9191599a5f688de83322f2b48fe6fd5cda77c"
+        },
+        {
+          "id": "HELP-R1-gun_trips_11-smash-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "9bd78916254aa6610be900ac0be758b4547ed7f50c10dd5fd1d37ded1b11d973",
+          "plainInitialSignature": "9bd78916254aa6610be900ac0be758b4547ed7f50c10dd5fd1d37ded1b11d973",
+          "observedSignature": "98732bfc44a6c98c29865f0df7e52ed0be27f45ecb4e32cd32ea1fcb19aeef78",
+          "plainSignature": "98732bfc44a6c98c29865f0df7e52ed0be27f45ecb4e32cd32ea1fcb19aeef78"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-four_verts-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "6e63ccc9d33dd28e3aae9655e87a6fc49f26ee19a14fd8e7f1f4f1ba58634c6f",
+          "plainInitialSignature": "6e63ccc9d33dd28e3aae9655e87a6fc49f26ee19a14fd8e7f1f4f1ba58634c6f",
+          "observedSignature": "0613df7b7694494e219600e543b5e5c7ffe27b89ac8843c9dfb8841c023143e8",
+          "plainSignature": "0613df7b7694494e219600e543b5e5c7ffe27b89ac8843c9dfb8841c023143e8"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-dagger-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "c6a315313304f074d820c0418edb404986ed2a6b4472b67d7fc9d12c5b3c2ef4",
+          "plainInitialSignature": "c6a315313304f074d820c0418edb404986ed2a6b4472b67d7fc9d12c5b3c2ef4",
+          "observedSignature": "7a6bc565101c6c1a8fafad6100c5090a21dd2f7e28fb13a610215bd759e9229f",
+          "plainSignature": "7a6bc565101c6c1a8fafad6100c5090a21dd2f7e28fb13a610215bd759e9229f"
+        },
+        {
+          "id": "HELP-R1-gun_bunch_11-mesh-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "e953deee371f2e837452b414c7f5553f1c1bf6cd80456b2724ca7d1966812d25",
+          "plainInitialSignature": "e953deee371f2e837452b414c7f5553f1c1bf6cd80456b2724ca7d1966812d25",
+          "observedSignature": "d8a9129a7b594aae5e9c5866e3620727b9dc9949206d377f9d8e0ea7efd89b46",
+          "plainSignature": "d8a9129a7b594aae5e9c5866e3620727b9dc9949206d377f9d8e0ea7efd89b46"
+        },
+        {
+          "id": "HELP-R1-gun_trips_11-smash-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "2f951812c33f23ff967f707e451c593b35674f54afd9a2edebfbbaf811c68e75",
+          "plainInitialSignature": "2f951812c33f23ff967f707e451c593b35674f54afd9a2edebfbbaf811c68e75",
+          "observedSignature": "bc653eb9cb0f457ade3c669d92fe37e51bed408c18d3b274974099d73d59ff2b",
+          "plainSignature": "bc653eb9cb0f457ade3c669d92fe37e51bed408c18d3b274974099d73d59ff2b"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-four_verts-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "c801b71b48957eafc43edbb488a25d759df2760a11efd2423a21051c87da9a18",
+          "plainInitialSignature": "c801b71b48957eafc43edbb488a25d759df2760a11efd2423a21051c87da9a18",
+          "observedSignature": "b83f431f39c75f5898cb58b83db75e5ead28de51ab62e6f2276dffb32f0bf5d2",
+          "plainSignature": "b83f431f39c75f5898cb58b83db75e5ead28de51ab62e6f2276dffb32f0bf5d2"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-dagger-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "bb8fffe15e6cf40841886f9fe91d5e1fd45f3fb8f9b10e3f235c9a7d97eb88a8",
+          "plainInitialSignature": "bb8fffe15e6cf40841886f9fe91d5e1fd45f3fb8f9b10e3f235c9a7d97eb88a8",
+          "observedSignature": "c0b06af130a2a75c3c7a4afc819b99787c42e6fbd4b8fe20cb48aa8c2cd98cf9",
+          "plainSignature": "c0b06af130a2a75c3c7a4afc819b99787c42e6fbd4b8fe20cb48aa8c2cd98cf9"
+        },
+        {
+          "id": "HELP-R2-gun_bunch_11-mesh-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "2431d3ad071bad442c63bb2432da812a1a032227ab8e31d7ce9463fe660855a7",
+          "plainInitialSignature": "2431d3ad071bad442c63bb2432da812a1a032227ab8e31d7ce9463fe660855a7",
+          "observedSignature": "952e490f70bb04a19c58425dbae630516f712963832c6088b9db1d4064779cd6",
+          "plainSignature": "952e490f70bb04a19c58425dbae630516f712963832c6088b9db1d4064779cd6"
+        },
+        {
+          "id": "HELP-R2-gun_trips_11-smash-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "1eb2ef94fe26a2afd33552b649d6c6789b5c94439115936db15e8b1f862aa8aa",
+          "plainInitialSignature": "1eb2ef94fe26a2afd33552b649d6c6789b5c94439115936db15e8b1f862aa8aa",
+          "observedSignature": "f99d5780f74a4c4f33dbbadb8d2fb48b749d0cc0428278e1bc6feeb11a714415",
+          "plainSignature": "f99d5780f74a4c4f33dbbadb8d2fb48b749d0cc0428278e1bc6feeb11a714415"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-four_verts-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "6afa3ed1979ef7417db8576eceb911572b88ba32aa83f4b7cce384de1b7d8348",
+          "plainInitialSignature": "6afa3ed1979ef7417db8576eceb911572b88ba32aa83f4b7cce384de1b7d8348",
+          "observedSignature": "4b5be247da461e5aca797d70163bc9dc29bbe77444aa69d83ce14f01082f9dd5",
+          "plainSignature": "4b5be247da461e5aca797d70163bc9dc29bbe77444aa69d83ce14f01082f9dd5"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-dagger-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "e3ef1810e8c5ff92af7f1737af499454dd8dd976b4e755222aef182f65246e2b",
+          "plainInitialSignature": "e3ef1810e8c5ff92af7f1737af499454dd8dd976b4e755222aef182f65246e2b",
+          "observedSignature": "bfb07685713f5a7f9823a486ef345d31b3e4eaab4e7ee700f046c2b495596157",
+          "plainSignature": "bfb07685713f5a7f9823a486ef345d31b3e4eaab4e7ee700f046c2b495596157"
+        },
+        {
+          "id": "HELP-R2-gun_bunch_11-mesh-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "f42eae19cf7c6fbd317e113ccd02b0d1f6b69cf15cb9ce2da6468d94d5856d3f",
+          "plainInitialSignature": "f42eae19cf7c6fbd317e113ccd02b0d1f6b69cf15cb9ce2da6468d94d5856d3f",
+          "observedSignature": "ec067abca09054db281f19ce43c3f4d0e8d0128a6bb218ed783ea3a5e2335594",
+          "plainSignature": "ec067abca09054db281f19ce43c3f4d0e8d0128a6bb218ed783ea3a5e2335594"
+        },
+        {
+          "id": "HELP-R2-gun_trips_11-smash-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "47de8511db82273168362ba261e2cd7aeb40cffda818ae89a9fac685563641d5",
+          "plainInitialSignature": "47de8511db82273168362ba261e2cd7aeb40cffda818ae89a9fac685563641d5",
+          "observedSignature": "1f78764ac204aeedaea0c117857c4077f56689d78670ed3ea113a52dfcf3c4ab",
+          "plainSignature": "1f78764ac204aeedaea0c117857c4077f56689d78670ed3ea113a52dfcf3c4ab"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-four_verts-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "090233e3a17c3ed04648b22a1d6f9a15b8b0612afcc8935d09b793d58a04f29e",
+          "plainInitialSignature": "090233e3a17c3ed04648b22a1d6f9a15b8b0612afcc8935d09b793d58a04f29e",
+          "observedSignature": "3cf6a43a22edac83947a77f1cd1f45d43d5ae4257c595e93155257f8efc1069d",
+          "plainSignature": "3cf6a43a22edac83947a77f1cd1f45d43d5ae4257c595e93155257f8efc1069d"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-dagger-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "92c89c5e286f2be9adbca5a47f4ad420738bc5c8625a025a2ee1442cf00abc69",
+          "plainInitialSignature": "92c89c5e286f2be9adbca5a47f4ad420738bc5c8625a025a2ee1442cf00abc69",
+          "observedSignature": "8f50fba49ae70fd244a1e0dda581be5928560b98424c754c70074b97622a6968",
+          "plainSignature": "8f50fba49ae70fd244a1e0dda581be5928560b98424c754c70074b97622a6968"
+        },
+        {
+          "id": "HELP-R2-gun_bunch_11-mesh-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "6455ee069e7f15a018c94662d360ca9d43eb7902e3736e7438a6796c165a3846",
+          "plainInitialSignature": "6455ee069e7f15a018c94662d360ca9d43eb7902e3736e7438a6796c165a3846",
+          "observedSignature": "2cced030d2b3bfc2ecb9af31317ff9985b12b0ca7c6abb22400a5c007cccbaae",
+          "plainSignature": "2cced030d2b3bfc2ecb9af31317ff9985b12b0ca7c6abb22400a5c007cccbaae"
+        },
+        {
+          "id": "HELP-R2-gun_trips_11-smash-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "36d0c84ec2e6a3435e22d66de2fdf916534552b3516fd63ea1550e50f035f1d6",
+          "plainInitialSignature": "36d0c84ec2e6a3435e22d66de2fdf916534552b3516fd63ea1550e50f035f1d6",
+          "observedSignature": "3ec3bcf4957077947608921ca9b481023855d0d226aa7a4a393dd75488e6cc3f",
+          "plainSignature": "3ec3bcf4957077947608921ca9b481023855d0d226aa7a4a393dd75488e6cc3f"
+        }
+      ]
+    },
+    {
+      "label": "Candidate: persistent near help",
+      "sourceSha256": "704158f29be7a7e31b669fddfbf1cecb2fe2332d37a18eaa2db16a3f69e59c12",
+      "diagnosticScriptSha256": "d71f617d966235d8f88929bd6a06a32e1371b8fadda59b2bf437c03cff3eb97a",
+      "sourceVersionToolSha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+      "inputSha256": "f64ed0e21054ee5d97111a8f61d8f86f6f8f6b9c40b180eceb4ba648d657f80c",
+      "profilesSha256": "027216828b35be1c1be08151300090c380d61ffebe3a17b6d109ad46120e2ed2",
+      "rawReportSha256": "d1c96755c8ab0400df6ec55596308ee6db4b4d6100980f3f2cf180669041cff6",
+      "decodedReportSha256": "73f1159efd69fdd243f1f77e802331c4500c1a2161a2e9efc0e5059f6dc02f12",
+      "observerChecks": [
+        {
+          "id": "HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "c0f03cb9ec042b4a23869301e99d871ae88aa8ee40d5f3d90e739e47076e9b8b",
+          "plainInitialSignature": "c0f03cb9ec042b4a23869301e99d871ae88aa8ee40d5f3d90e739e47076e9b8b",
+          "observedSignature": "e4ef068cdfc78d85629ec246608ee46090e38494a0bd55b3e012e40342df3ef3",
+          "plainSignature": "e4ef068cdfc78d85629ec246608ee46090e38494a0bd55b3e012e40342df3ef3"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-dagger-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "2d1082001d3a16d66e5fe1e4bd704a52326b83fd75a8fbc2f2bfbe04bdf0f460",
+          "plainInitialSignature": "2d1082001d3a16d66e5fe1e4bd704a52326b83fd75a8fbc2f2bfbe04bdf0f460",
+          "observedSignature": "90bc0363346615ed6f64ba16e4a3383599cdbea90e8c31cce6aba7ffc749c4bf",
+          "plainSignature": "90bc0363346615ed6f64ba16e4a3383599cdbea90e8c31cce6aba7ffc749c4bf"
+        },
+        {
+          "id": "HELP-R1-gun_bunch_11-mesh-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "1e0ddb229ace971d3872e859ee9f4eb9db4504a667ebbdf273f1b053b629e1f8",
+          "plainInitialSignature": "1e0ddb229ace971d3872e859ee9f4eb9db4504a667ebbdf273f1b053b629e1f8",
+          "observedSignature": "c2e611aa824d8a93c6751142db05d5cc05f2928e74c503e5e96395441471c9c0",
+          "plainSignature": "c2e611aa824d8a93c6751142db05d5cc05f2928e74c503e5e96395441471c9c0"
+        },
+        {
+          "id": "HELP-R1-gun_trips_11-smash-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "01403089c093abfeb1859051c538c43cc9afd6ac760b1fffe20fdf32846c5531",
+          "plainInitialSignature": "01403089c093abfeb1859051c538c43cc9afd6ac760b1fffe20fdf32846c5531",
+          "observedSignature": "5f6c1631b65cc5c306ea8006b0174c9bd48807d696263f2444d9e0281495363b",
+          "plainSignature": "5f6c1631b65cc5c306ea8006b0174c9bd48807d696263f2444d9e0281495363b"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-four_verts-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "d7aa3864a7535dd6462fb038b2bad70d4b485d60bd6c2fbdbe2c28bee552a5f3",
+          "plainInitialSignature": "d7aa3864a7535dd6462fb038b2bad70d4b485d60bd6c2fbdbe2c28bee552a5f3",
+          "observedSignature": "146c7346a70c89c933d34982399a003f9e6a00a8089db444aa3dec6557764c28",
+          "plainSignature": "146c7346a70c89c933d34982399a003f9e6a00a8089db444aa3dec6557764c28"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-dagger-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "188af35e2f7c094d1f043c0791cb48e3dfc9cf3c79d9b25c5b731108639c2eff",
+          "plainInitialSignature": "188af35e2f7c094d1f043c0791cb48e3dfc9cf3c79d9b25c5b731108639c2eff",
+          "observedSignature": "bf27ab09ba79149069c7a7915ddb88436ca0aa607772613500d905c427714cc5",
+          "plainSignature": "bf27ab09ba79149069c7a7915ddb88436ca0aa607772613500d905c427714cc5"
+        },
+        {
+          "id": "HELP-R1-gun_bunch_11-mesh-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "148bbc9d07ef9c78af21af524b9b26c0768909b39477e3fbda109c61f104fa3f",
+          "plainInitialSignature": "148bbc9d07ef9c78af21af524b9b26c0768909b39477e3fbda109c61f104fa3f",
+          "observedSignature": "8fba8785b323cd4210839db2bbe9191599a5f688de83322f2b48fe6fd5cda77c",
+          "plainSignature": "8fba8785b323cd4210839db2bbe9191599a5f688de83322f2b48fe6fd5cda77c"
+        },
+        {
+          "id": "HELP-R1-gun_trips_11-smash-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "9bd78916254aa6610be900ac0be758b4547ed7f50c10dd5fd1d37ded1b11d973",
+          "plainInitialSignature": "9bd78916254aa6610be900ac0be758b4547ed7f50c10dd5fd1d37ded1b11d973",
+          "observedSignature": "98732bfc44a6c98c29865f0df7e52ed0be27f45ecb4e32cd32ea1fcb19aeef78",
+          "plainSignature": "98732bfc44a6c98c29865f0df7e52ed0be27f45ecb4e32cd32ea1fcb19aeef78"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-four_verts-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "6e63ccc9d33dd28e3aae9655e87a6fc49f26ee19a14fd8e7f1f4f1ba58634c6f",
+          "plainInitialSignature": "6e63ccc9d33dd28e3aae9655e87a6fc49f26ee19a14fd8e7f1f4f1ba58634c6f",
+          "observedSignature": "0613df7b7694494e219600e543b5e5c7ffe27b89ac8843c9dfb8841c023143e8",
+          "plainSignature": "0613df7b7694494e219600e543b5e5c7ffe27b89ac8843c9dfb8841c023143e8"
+        },
+        {
+          "id": "HELP-R1-gun_doubles_11-dagger-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "c6a315313304f074d820c0418edb404986ed2a6b4472b67d7fc9d12c5b3c2ef4",
+          "plainInitialSignature": "c6a315313304f074d820c0418edb404986ed2a6b4472b67d7fc9d12c5b3c2ef4",
+          "observedSignature": "7a6bc565101c6c1a8fafad6100c5090a21dd2f7e28fb13a610215bd759e9229f",
+          "plainSignature": "7a6bc565101c6c1a8fafad6100c5090a21dd2f7e28fb13a610215bd759e9229f"
+        },
+        {
+          "id": "HELP-R1-gun_bunch_11-mesh-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "e953deee371f2e837452b414c7f5553f1c1bf6cd80456b2724ca7d1966812d25",
+          "plainInitialSignature": "e953deee371f2e837452b414c7f5553f1c1bf6cd80456b2724ca7d1966812d25",
+          "observedSignature": "d8a9129a7b594aae5e9c5866e3620727b9dc9949206d377f9d8e0ea7efd89b46",
+          "plainSignature": "d8a9129a7b594aae5e9c5866e3620727b9dc9949206d377f9d8e0ea7efd89b46"
+        },
+        {
+          "id": "HELP-R1-gun_trips_11-smash-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "2f951812c33f23ff967f707e451c593b35674f54afd9a2edebfbbaf811c68e75",
+          "plainInitialSignature": "2f951812c33f23ff967f707e451c593b35674f54afd9a2edebfbbaf811c68e75",
+          "observedSignature": "bc653eb9cb0f457ade3c669d92fe37e51bed408c18d3b274974099d73d59ff2b",
+          "plainSignature": "bc653eb9cb0f457ade3c669d92fe37e51bed408c18d3b274974099d73d59ff2b"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-four_verts-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "c801b71b48957eafc43edbb488a25d759df2760a11efd2423a21051c87da9a18",
+          "plainInitialSignature": "c801b71b48957eafc43edbb488a25d759df2760a11efd2423a21051c87da9a18",
+          "observedSignature": "b83f431f39c75f5898cb58b83db75e5ead28de51ab62e6f2276dffb32f0bf5d2",
+          "plainSignature": "b83f431f39c75f5898cb58b83db75e5ead28de51ab62e6f2276dffb32f0bf5d2"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-dagger-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "bb8fffe15e6cf40841886f9fe91d5e1fd45f3fb8f9b10e3f235c9a7d97eb88a8",
+          "plainInitialSignature": "bb8fffe15e6cf40841886f9fe91d5e1fd45f3fb8f9b10e3f235c9a7d97eb88a8",
+          "observedSignature": "c0b06af130a2a75c3c7a4afc819b99787c42e6fbd4b8fe20cb48aa8c2cd98cf9",
+          "plainSignature": "c0b06af130a2a75c3c7a4afc819b99787c42e6fbd4b8fe20cb48aa8c2cd98cf9"
+        },
+        {
+          "id": "HELP-R2-gun_bunch_11-mesh-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "2431d3ad071bad442c63bb2432da812a1a032227ab8e31d7ce9463fe660855a7",
+          "plainInitialSignature": "2431d3ad071bad442c63bb2432da812a1a032227ab8e31d7ce9463fe660855a7",
+          "observedSignature": "fd91a94d3f5b64ab6e8fc90b8aa9c88a63a9dd0386b041a5e8736071dbadca3e",
+          "plainSignature": "fd91a94d3f5b64ab6e8fc90b8aa9c88a63a9dd0386b041a5e8736071dbadca3e"
+        },
+        {
+          "id": "HELP-R2-gun_trips_11-smash-cover4-S3",
+          "initial": true,
+          "final": true,
+          "recording": true,
+          "observedInitialSignature": "1eb2ef94fe26a2afd33552b649d6c6789b5c94439115936db15e8b1f862aa8aa",
+          "plainInitialSignature": "1eb2ef94fe26a2afd33552b649d6c6789b5c94439115936db15e8b1f862aa8aa",
+          "observedSignature": "c3023b750702b6a5f532022a3c751eef9a9e44e75e93e9e494fac58618698551",
+          "plainSignature": "c3023b750702b6a5f532022a3c751eef9a9e44e75e93e9e494fac58618698551"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-four_verts-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "6afa3ed1979ef7417db8576eceb911572b88ba32aa83f4b7cce384de1b7d8348",
+          "plainInitialSignature": "6afa3ed1979ef7417db8576eceb911572b88ba32aa83f4b7cce384de1b7d8348",
+          "observedSignature": "4b5be247da461e5aca797d70163bc9dc29bbe77444aa69d83ce14f01082f9dd5",
+          "plainSignature": "4b5be247da461e5aca797d70163bc9dc29bbe77444aa69d83ce14f01082f9dd5"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-dagger-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "e3ef1810e8c5ff92af7f1737af499454dd8dd976b4e755222aef182f65246e2b",
+          "plainInitialSignature": "e3ef1810e8c5ff92af7f1737af499454dd8dd976b4e755222aef182f65246e2b",
+          "observedSignature": "bfb07685713f5a7f9823a486ef345d31b3e4eaab4e7ee700f046c2b495596157",
+          "plainSignature": "bfb07685713f5a7f9823a486ef345d31b3e4eaab4e7ee700f046c2b495596157"
+        },
+        {
+          "id": "HELP-R2-gun_bunch_11-mesh-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "f42eae19cf7c6fbd317e113ccd02b0d1f6b69cf15cb9ce2da6468d94d5856d3f",
+          "plainInitialSignature": "f42eae19cf7c6fbd317e113ccd02b0d1f6b69cf15cb9ce2da6468d94d5856d3f",
+          "observedSignature": "ec067abca09054db281f19ce43c3f4d0e8d0128a6bb218ed783ea3a5e2335594",
+          "plainSignature": "ec067abca09054db281f19ce43c3f4d0e8d0128a6bb218ed783ea3a5e2335594"
+        },
+        {
+          "id": "HELP-R2-gun_trips_11-smash-cover3_match-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "47de8511db82273168362ba261e2cd7aeb40cffda818ae89a9fac685563641d5",
+          "plainInitialSignature": "47de8511db82273168362ba261e2cd7aeb40cffda818ae89a9fac685563641d5",
+          "observedSignature": "1f78764ac204aeedaea0c117857c4077f56689d78670ed3ea113a52dfcf3c4ab",
+          "plainSignature": "1f78764ac204aeedaea0c117857c4077f56689d78670ed3ea113a52dfcf3c4ab"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-four_verts-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "090233e3a17c3ed04648b22a1d6f9a15b8b0612afcc8935d09b793d58a04f29e",
+          "plainInitialSignature": "090233e3a17c3ed04648b22a1d6f9a15b8b0612afcc8935d09b793d58a04f29e",
+          "observedSignature": "3cf6a43a22edac83947a77f1cd1f45d43d5ae4257c595e93155257f8efc1069d",
+          "plainSignature": "3cf6a43a22edac83947a77f1cd1f45d43d5ae4257c595e93155257f8efc1069d"
+        },
+        {
+          "id": "HELP-R2-gun_doubles_11-dagger-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "92c89c5e286f2be9adbca5a47f4ad420738bc5c8625a025a2ee1442cf00abc69",
+          "plainInitialSignature": "92c89c5e286f2be9adbca5a47f4ad420738bc5c8625a025a2ee1442cf00abc69",
+          "observedSignature": "8f50fba49ae70fd244a1e0dda581be5928560b98424c754c70074b97622a6968",
+          "plainSignature": "8f50fba49ae70fd244a1e0dda581be5928560b98424c754c70074b97622a6968"
+        },
+        {
+          "id": "HELP-R2-gun_bunch_11-mesh-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "6455ee069e7f15a018c94662d360ca9d43eb7902e3736e7438a6796c165a3846",
+          "plainInitialSignature": "6455ee069e7f15a018c94662d360ca9d43eb7902e3736e7438a6796c165a3846",
+          "observedSignature": "2cced030d2b3bfc2ecb9af31317ff9985b12b0ca7c6abb22400a5c007cccbaae",
+          "plainSignature": "2cced030d2b3bfc2ecb9af31317ff9985b12b0ca7c6abb22400a5c007cccbaae"
+        },
+        {
+          "id": "HELP-R2-gun_trips_11-smash-cover1-S3",
+          "initial": true,
+          "final": true,
+          "recording": false,
+          "observedInitialSignature": "36d0c84ec2e6a3435e22d66de2fdf916534552b3516fd63ea1550e50f035f1d6",
+          "plainInitialSignature": "36d0c84ec2e6a3435e22d66de2fdf916534552b3516fd63ea1550e50f035f1d6",
+          "observedSignature": "3ec3bcf4957077947608921ca9b481023855d0d226aa7a4a393dd75488e6cc3f",
+          "plainSignature": "3ec3bcf4957077947608921ca9b481023855d0d226aa7a4a393dd75488e6cc3f"
+        }
+      ]
+    }
+  ],
+  "exactFullTelemetry": true,
+  "exactRawEventsActorsNotesTimes": true,
+  "exactInitialContextsProfilesRatingsWeights": true,
+  "crossSourceInitialFootballStateAndPlayersMatch": true,
+  "all24CrossSourceInitialContextsMatch": true,
+  "all24ObserverControlsPerPhaseNeutral": true,
+  "exactNaturalEndpointsAndLiveCensors": true,
+  "naturalFinishes": 9,
+  "liveInspectionCensors": 1,
+  "creditedYardsNotComputed": true,
+  "recordedFrameTimesAndPossession": true,
+  "visiblePoseEntries": [
+    199353,
+    187688
+  ],
+  "maxExistingPackingPositionFacingError": 0.050000000000000044,
+  "zipHtmlByteExact": true,
+  "htmlSha256": "4b3e7d2cbb58436b39bbb1ba24baac8f4289bbfc5e6da153a009233d2a47e3b8",
+  "zipSha256": "9efeae82ac498b02cb0ce3887c2f658d1148be03fdad39fd0f2570bca9b4f81c",
+  "checkerSha256": "e61b455ffad20493dd821bdb4e3d10f74eeba48e4a08d0824d12fb3950445b27",
+  "exportToolSha256": {
+    "scripts/export-visible-help.ts": "cf489dc562a8c5daeb2f49983554e90285356dca9dbd53c7f1506cc4d55cc0ee",
+    "scripts/replay-data.ts": "09fbee60a1fdc46f9ddc83ceb83c278f2df12b7a0d61a2bf9b373f110752f5b6",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "79e448ec2d6840689f345dcb1d78d70bd67e05afbd8da4631a89cb4954b72306"
+  }
+}

@@ -2,15 +2,24 @@
 
 Start with these shared project references:
 
+- [Nearby coverage help and current priorities](docs/reviews/near-help-persistence-and-current-priorities.md):
+  **latest increment.** A consumed moving picture must sustain nearby help
+  through the next read. Short persistence ships; the two-second far-help
+  forecast stays a separately pinned prototype. Read the fixed 24 pairs,
+  ten clips, observer controls and adverse game guards. Shared World,
+  capabilities and resolution are unchanged. Next: stale combo ownership
+  after actual OL retargeting, then pursuit in traffic. The six-yard maximum
+  remains unresolved; do not delete it alone. Keep the reduced physics model.
 - [Active grip force travel and current engine priorities](docs/reviews/active-grip-force-travel-and-current-priorities.md):
-  **latest increment and priorities.** Achieved active torso and lower-grip
+  Previous physical increment. Achieved active torso and lower-grip
   forces now carry midpoint body travel through the existing shared budgets.
   Both independent 48-trial oracles pass; actual lower support remains active.
   Read the unchanged-input football guards, adverse cases and 18 paired clips.
   Keep the reduced shared model. Next: observed coverage-help persistence,
   retained OL recovery/combo/work pickup and pursuit in traffic. The
   [coverage help audit](docs/reviews/coverage-roof-priority-audit.md) is a read-only
-  evidence and design review, not an implemented estimator. Do not delete the six-yard cap
+  evidence and design review; nearby persistence now has the newer increment
+  above, while far transfers remain unimplemented. Do not delete the six-yard cap
   alone, expand anatomy or increase global resolution. Final physics OK remains
   pending; physics-first permits diagnosed football controller improvements.
 - [Visible help and primary route discipline](docs/reviews/visible-help-and-primary-route-discipline.md):

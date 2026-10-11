@@ -1,5 +1,5 @@
-/** Offline comparison of four predetermined ordinary Cover4 pass recordings.
- * node --import tsx scripts/export-visible-help.ts before/raw.json.gz after/raw.json.gz output.html
+/** Offline comparison of four predetermined Cover4 recordings and an optional retained witness.
+ * node --import tsx scripts/export-visible-help.ts before/raw.json.gz after/raw.json.gz output.html [baselineLabel candidateLabel]
  * Does not simulate a play, resolve credited yards or select favorable outcomes.
  */
 import { createHash } from 'node:crypto';
@@ -12,9 +12,11 @@ import type { Frame, PlayEvent, ReplayTelemetry } from '../src/sim/types.js';
 import { packReplayPlay } from './replay-data.js';
 import { compactReplayPlays } from './replay-telemetry-packing.js';
 
-const [beforePath, afterPath, output] = process.argv.slice(2);
-if (!beforePath || !afterPath || !output || process.argv.length !== 5 || !output.endsWith('.html'))
-  throw new Error('Usage: export-visible-help.ts before/raw.json.gz after/raw.json.gz output.html');
+const args = process.argv.slice(2);
+const [beforePath, afterPath, output, baselineLabel, candidateLabel] = args;
+if (!beforePath || !afterPath || !output || ![3, 5].includes(args.length) || !output.endsWith('.html')
+  || (args.length === 5 && (!baselineLabel?.trim() || !candidateLabel?.trim())))
+  throw new Error('Usage: export-visible-help.ts before/raw.json.gz after/raw.json.gz output.html [baselineLabel candidateLabel]');
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const fileHash = (p: string) => createHash('sha256').update(readFileSync(p)).digest('hex');
 const isHash = (v: string) => /^[a-f0-9]{64}$/.test(v);
@@ -24,7 +26,8 @@ const fixtures = [
   { formation: 'gun_bunch_11', concept: 'mesh', name: 'Mesh', formationName: 'Gun Bunch' },
   { formation: 'gun_trips_11', concept: 'smash', name: 'Smash', formationName: 'Gun Trips' },
 ];
-const expectedIds = fixtures.map(c => `HELP-R1-${c.formation}-${c.concept}-cover4-S3`);
+const fixedIds = fixtures.map(c => `HELP-R1-${c.formation}-${c.concept}-cover4-S3`);
+const witnessId = 'HELP-R2-gun_trips_11-smash-cover4-S3';
 interface Player {
   idx: number; team: 'O' | 'D'; slot: string; profile: Record<string, number>;
   player: { firstName: string; lastName: string; jersey: number; position: string;
@@ -54,12 +57,16 @@ interface Report {
   inputSha256: string; profilesSha256: string; inputs: Input[]; inspectionSeconds: number;
   observerNeutrality: Check[]; rows: Row[];
 }
-const labels = ['Baseline: previous coverage', 'Candidate: visible help and early vertical read'];
+const labels = [baselineLabel ?? 'Baseline: previous coverage', candidateLabel ?? 'Candidate: visible help and early vertical read'];
 const inputs = [beforePath, afterPath].map(path => {
   const bytes = readFileSync(path), decoded = path.endsWith('.gz') ? gunzipSync(bytes) : bytes;
   return { rawSha256: createHash('sha256').update(bytes).digest('hex'),
     decodedSha256: createHash('sha256').update(decoded).digest('hex'), report: JSON.parse(decoded.toString()) as Report };
 });
+const expectedIds = inputs[0].report.rows.filter(r => r.recording).map(r => r.id);
+const includesWitness = expectedIds.length === 5;
+if (expectedIds.join('|') !== [...fixedIds, ...(includesWitness ? [witnessId] : [])].join('|'))
+  throw new Error('Expected four predetermined R1 Cover4 films, optionally followed by the retained R2 Smash witness');
 for (const { report } of inputs) {
   if (report.schema !== 'coverage-help-review-v1' || !isHash(report.sourceSha256)
     || !isHash(report.toolSha256) || !isHash(report.sourceVersionToolSha256)
@@ -68,20 +75,22 @@ for (const { report } of inputs) {
     || report.profilesSha256 !== hash(report.rows.map(r => ({ id: r.id, players: r.players }))))
     throw new Error('Expected pinned ordinary coverage-help panel');
   const recorded = report.rows.filter(r => r.recording);
-  if (recorded.map(r => r.id).join('|') !== expectedIds.join('|')) throw new Error('Expected four predetermined R1 Cover4 films');
+  if (recorded.map(r => r.id).join('|') !== expectedIds.join('|')) throw new Error('Expected matching recorded fixtures in both panels');
   for (const row of report.rows) {
+    const witness = includesWitness && row.id === witnessId;
     const check = report.observerNeutrality.find(c => c.id === row.id);
     if (!check?.initial || !check.final || check.observedSignature !== check.plainSignature
       || check.observedSignature !== row.signature || check.observedInitialSignature !== check.plainInitialSignature
       || check.observedInitialSignature !== row.initialSignature || check.recording !== !!row.recording
-      || row.selection !== 'fixed-before-outcomes' || hash(row.players) !== row.profileSha256
+      || row.selection !== (witness ? 'retained-retrospective-witness' : 'fixed-before-outcomes') || hash(row.players) !== row.profileSha256
       || hash(row.initialContext) !== row.initialSignature
       || hash({ agents: row.initialContext.agents, rng: row.initialContext.rng,
         ball: row.initialContext.ball, intents: row.initialContext.intents }) !== row.initialFootballSignature)
       throw new Error(`Invalid observer/state/profile pins: ${row.id}`);
     if (!row.recording) continue;
     const { frames, telemetry } = row.recording;
-    if (row.input.roster !== 1 || row.input.offenseSeed !== 7 || row.input.defenseSeed !== 19
+    if (row.input.roster !== (witness ? 2 : 1) || row.input.offenseSeed !== (witness ? 31 : 7)
+      || row.input.defenseSeed !== (witness ? 32 : 19)
       || row.input.playSeed !== 3 || row.input.coverage !== 'cover4' || row.players.length !== 22
       || !row.players.every((a, i) => a.idx === i && a.player.firstName && Number.isFinite(a.player.measurables.weightLb))
       || frames.length < 2 || frames[0].t !== 0 || telemetry.level !== 'full'
@@ -100,7 +109,7 @@ if (before.sourceSha256 === after.sourceSha256 || before.inputSha256 !== after.i
   || before.sourceVersionToolSha256 !== after.sourceVersionToolSha256)
   throw new Error('Paired panels must have distinct engines and identical inputs, profiles and tools');
 const recorded = inputs.map(({ report }) => report.rows.filter(r => r.recording));
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < expectedIds.length; i++) {
   const a = recorded[0][i], b = recorded[1][i];
   for (const key of ['id', 'input', 'players', 'profileSha256', 'initialFootballSignature'] as const)
     if (JSON.stringify(a[key]) !== JSON.stringify(b[key])) throw new Error(`Paired initial football state mismatch: ${a.id} ${key}`);
@@ -109,14 +118,15 @@ const endpointText = (r: Row) => r.end.censored
   ? `Live ${r.end.t.toFixed(2)}s inspection censor; no whistle, timeout or football outcome`
   : `Natural ${r.end.outcome ?? 'unlabelled finish'} at ${r.end.t.toFixed(2)}s${r.end.stats.interceptedBy ? ' after an interception' : r.end.stats.completed ? ' after a completion' : r.end.stats.scramble ? ' after a scramble' : ''}`;
 const plays = recorded.flatMap((rows, group) => rows.map((r, i) => {
-  const fixture = fixtures[i], recording = r.recording!, label = labels[group], endpoint = endpointText(r);
+  const fixture = fixtures[i === 4 ? 3 : i], recording = r.recording!, label = labels[group], endpoint = endpointText(r);
+  const witnessLabel = r.id === witnessId ? ' · Retrospective witness (roster 2)' : '';
   const replayPlayers = r.players.map(a => ({ team: a.team, slot: a.slot,
     name: `${a.player.firstName} ${a.player.lastName}`, jersey: a.player.jersey,
     pos: a.player.position, weightLb: a.player.measurables.weightLb }));
   const log: PlayLog = { index: i, quarter: 0, clock: 0, offense: 'OFF', down: 1, distance: 10,
     yardline: 30, score: { home: 0, away: 0 }, kind: 'pass', yards: 0,
-    call: `${label} · ${fixture.formationName} · ${fixture.name}`, defense: '4-3 Over · Quarters (MOD)',
-    text: `${label} · source ${inputs[group].report.sourceSha256.slice(0, 12)} · ${endpoint}. Inspect a defender for assignments and delayed perceived targets; credited yards are not computed for this diagnostic.`,
+    call: `${label} · ${fixture.formationName} · ${fixture.name}${witnessLabel}`, defense: '4-3 Over · Quarters (MOD)',
+    text: `${label}${witnessLabel} · source ${inputs[group].report.sourceSha256.slice(0, 12)} · ${endpoint}. Inspect a defender for assignments and delayed perceived targets; credited yards are not computed for this diagnostic.`,
     stats: r.end.stats, outcome: r.end.censored ? undefined : r.end.outcome ?? undefined,
     plan: { personnel: '11', formation: r.input.formation, qb: 'gun', concept: r.input.concept,
       playAction: false, audible: false, defPersonnel: 'nickel', front: 'over', coverage: 'cover4',
@@ -145,7 +155,9 @@ const comparison = inputs.map(({ report, rawSha256, decodedSha256 }, i) => ({ la
   observerChecks: report.observerNeutrality }));
 const data = { meta: { sourceSha256: after.sourceSha256, sourceComparison: comparison,
   seed: 3, telemetryLevel: 'full', filmSchema: 'visible-help-film-v1', inspectionSeconds: 8,
-  cohort: 'Eight clips pair four predetermined first-roster Cover4 calls, with identical players and initial football state; broader panel results are mixed. Natural endings and any live eight-second inspection censors are labelled; credited yards are not computed, and the second-roster witness remains in raw decision evidence outside this film set.',
+  cohort: includesWitness
+    ? 'Ten clips pair four predetermined first-roster Cover4 calls and one retained retrospective second-roster Smash witness. Players and initial football state match within each source pair; the witness was retained from earlier observations and is not a representative sample. Broader panel results are mixed. Natural endings and any live eight-second inspection censors are labelled; credited yards are not computed.'
+    : 'Eight clips pair four predetermined first-roster Cover4 calls, with identical players and initial football state; broader panel results are mixed. Natural endings and any live eight-second inspection censors are labelled; credited yards are not computed, and the second-roster witness remains in raw decision evidence outside this film set.',
   final: { home: 0, away: 0 }, quarters: [],
   home: { name: 'Controlled Offense', abbr: 'OFF', color: '#1d4f91', text: '#fff' },
   away: { name: 'Controlled Defense', abbr: 'DEF', color: '#a3302a', text: '#fff' } },
@@ -169,13 +181,19 @@ replace("inspectorStamp = '';\n    prepareTelemetry(p);", "$('inspect-player').v
 replace("${p.nullified?'Nullified (physical replay)':gain(p.yds)}", '${esc(p.endpointLabel)}');
 replace("jumps.push(['Finish', dur]);", "jumps.push(['Last recorded sample', dur]);");
 template = template.replaceAll('All games', 'Both recorded sources').replaceAll('Controlled setup · seed', 'Controlled coverage inspection · seed');
+// Copied references and video stamps must identify the selected engine version.
+template = template.replaceAll('meta.sourceSha256?.slice(0, 12)', '(p.sourceSha256 ?? meta.sourceSha256)?.slice(0, 12)')
+  .replaceAll('meta.sourceSha256?.slice(0,12)', '(p.sourceSha256 ?? meta.sourceSha256)?.slice(0,12)');
 const marker = '/*__REPLAY_DATA__*/null';
 if (!template.includes(marker)) throw new Error('Missing replay data marker');
 const html = '<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>\n'
   + template.replace(marker, () => JSON.stringify(data).replace(/<\//g, '<\\/')) + '\n</body></html>\n';
 mkdirSync(dirname(output), { recursive: true }); writeFileSync(output, html);
 writeFileSync(output + '.validation.json', JSON.stringify({ schema: 'visible-help-export-validation-v1',
-  sourceComparison: comparison, fixedFixtureIds: expectedIds, clips: plays.length,
+  sourceComparison: comparison, fixedFixtureIds: fixedIds, recordedFixtureIds: expectedIds,
+  retrospectiveFixtureIds: includesWitness ? [witnessId] : [], clips: plays.length,
   exporterSha256: fileHash(fileURLToPath(import.meta.url)), templateSha256: fileHash(templatePath), outputSha256: fileHash(output),
-  scope: 'Read-only saved-recording export; no simulation, outcome selection or credited yard calculation. Full telemetry, profiles, raw events, endpoints and initial contexts are retained. Cross-source initial football bodies/RNG/ball/intents match; full contexts differ legitimately with perception state. Existing position/facing packing quantizes to 0.1. Raw frame times retain the existing controller-start convention: the last sample precedes the endpoint by 0.05s. The second-roster decision witness is outside these four selected-before-outcomes films.' }, null, 2) + '\n');
+  scope: 'Read-only saved-recording export; no simulation, outcome selection or credited yard calculation. Full telemetry, profiles, raw events, endpoints and initial contexts are retained. Cross-source initial football bodies/RNG/ball/intents match; full contexts differ legitimately with perception state. Existing position/facing packing quantizes to 0.1. Raw frame times retain the existing controller-start convention: the last sample precedes the endpoint by 0.05s. '
+    + (includesWitness ? 'Four first-roster fixtures were selected before outcomes; the second-roster Smash pair is an explicitly retained retrospective witness.'
+      : 'The second-roster decision witness is outside these four selected-before-outcomes films.') }, null, 2) + '\n');
 console.log(`Wrote ${plays.length} paired visible-help inspection clips to ${output}; ${(html.length / 1024 / 1024).toFixed(2)}MB.`);

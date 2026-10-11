@@ -1,6 +1,15 @@
 # Shared NFL data
 
-Current engine status: [Active grip force travel and current priorities](../docs/reviews/active-grip-force-travel-and-current-priorities.md).
+Current engine status: [Nearby coverage help and current priorities](../docs/reviews/near-help-persistence-and-current-priorities.md).
+The [evidence and commands](reviews/physics-world/projected-help/README.md)
+retain 24 ordinary pairs, unchanged-input run/tackle guards, mixed games and
+the separately pinned unpromoted far-help prototype. Watch the
+[ten paired clips](../viewer/projected-help.html) or [offline ZIP](../viewer/projected-help.zip).
+The consumed moving picture must sustain nearby help through the next read.
+This changes a demonstrated controller request, with shared physics unchanged;
+it adds no NFL observations or league-average fitting.
+
+Previous physics status: [Active grip force travel and current priorities](../docs/reviews/active-grip-force-travel-and-current-priorities.md).
 The [evidence and commands](reviews/physics-world/grasp-reel/README.md) retain
 both 48-trial force/travel oracles, all 144 run and 64 tackle pairs, sustained
 contact guards, mixed games and the separate torso-only phase. Watch the
@@ -8,7 +17,8 @@ contact guards, mixed games and the separate torso-only phase. Watch the
 This fixes achieved force-to-body travel without changing capabilities or
 resolution. It is engine validation, not new NFL observations or force fitting.
 The [coverage help audit](../docs/reviews/coverage-roof-priority-audit.md) records
-the next unimplemented experiment and its falsifying controls.
+the underlying hypotheses and falsifying controls; its far-help portion remains
+unimplemented after the nearby-persistence increment above.
 
 Previous controller status: [Visible help and primary route discipline](../docs/reviews/visible-help-and-primary-route-discipline.md).
 The [evidence and commands](reviews/physics-world/visible-help/README.md) retain

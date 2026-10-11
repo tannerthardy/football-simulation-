@@ -1,0 +1,118 @@
+
+ RUN  v3.2.4 /tmp/football-cap-before
+
+ ❯ test/projected-cap.test.ts (21 tests | 6 failed) 77ms
+   ✓ projected visible roof evidence > keeps an ordinary close co-moving roof, mirrored -1 1ms
+   ✓ projected visible roof evidence > keeps an ordinary close co-moving roof, mirrored 1 0ms
+   × projected visible roof evidence > rejects a shallow wall whose cushion expires before the next read, mirrored -1 7ms
+     → expected true to be false // Object.is equality
+   × projected visible roof evidence > rejects a shallow wall whose cushion expires before the next read, mirrored 1 1ms
+     → expected true to be false // Object.is equality
+   × projected visible roof evidence > does not promise a near roof that visibly leaves the corridor, mirrored -1 1ms
+     → expected true to be false // Object.is equality
+   × projected visible roof evidence > does not promise a near roof that visibly leaves the corridor, mirrored 1 1ms
+     → expected true to be false // Object.is equality
+   ✓ projected visible roof evidence > keeps the coherent 8.245-yard Smash picture unestablished as far help, mirrored -1 0ms
+   ✓ projected visible roof evidence > keeps the coherent 8.245-yard Smash picture unestablished as far help, mirrored 1 0ms
+   ✓ projected visible roof evidence > rejects the departing 12.073-yard consumed Bunch picture, mirrored -1 0ms
+   ✓ projected visible roof evidence > rejects the departing 12.073-yard consumed Bunch picture, mirrored 1 0ms
+   ✓ projected visible roof evidence > can trust approaching close help without promoting the same distant motion, mirrored -1 0ms
+   ✓ projected visible roof evidence > can trust approaching close help without promoting the same distant motion, mirrored 1 0ms
+   ✓ projected visible roof evidence > does not turn remote, co-moving or separating far pictures into established help 0ms
+   × projected visible roof evidence > uses image age as a persistence reserve without reading another state 1ms
+     → expected true to be false // Object.is equality
+   ✓ projected visible roof evidence > rejects an observed down helper even with otherwise useful close motion 0ms
+   ✓ projected visible roof evidence > rejects an observed rising helper even with otherwise useful close motion 0ms
+   ✓ projected visible roof evidence > retains geometry when historical pose is unknown 0ms
+   × projected roofs with ordinary delayed decisions > retains a primary behind a disappearing shallow wall but can rescue behind co-moving help 29ms
+     → expected true to be false // Object.is equality
+   ✓ projected roofs with ordinary delayed decisions > retains its primary when a coherent far picture does not establish a handoff 14ms
+   ✓ projected roofs with ordinary delayed decisions > can trust stale upright help, then waits for its ordinary decision before recovering its primary 10ms
+   ✓ projected roofs with ordinary delayed decisions > requires observed recovery, preserving the stale-down and rising pictures 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/projected-cap.test.ts > projected visible roof evidence > rejects a shallow wall whose cushion expires before the next read, mirrored -1
+ FAIL  test/projected-cap.test.ts > projected visible roof evidence > rejects a shallow wall whose cushion expires before the next read, mirrored 1
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/projected-cap.test.ts:45:80
+     43|     // A somewhat larger initial cushion passes the previous 0.4-yard …
+     44|     // but still disappears during the ordinary decision interval.
+     45|     expect(capFromPicture({ depth: 0.5, receiverVx: 6, helperVx: 0 }, …
+       |                                                                                ^
+     46|   });
+     47| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/projected-cap.test.ts > projected visible roof evidence > does not promise a near roof that visibly leaves the corridor, mirrored -1
+ FAIL  test/projected-cap.test.ts > projected visible roof evidence > does not promise a near roof that visibly leaves the corridor, mirrored 1
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/projected-cap.test.ts:49:77
+     47| 
+     48|   it.each([-1, 1])('does not promise a near roof that visibly leaves t…
+     49|     expect(capFromPicture({ depth: 2, lateral: 1.4, helperVy: 4 }, mir…
+       |                                                                             ^
+     50|   });
+     51| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/projected-cap.test.ts > projected visible roof evidence > uses image age as a persistence reserve without reading another state
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/projected-cap.test.ts:81:51
+     79|     const same = { depth: 0.8, receiverVx: 6, helperVx: 4.5 };
+     80|     expect(capFromPicture({ ...same, age: 0.05 })).toBe(true);
+     81|     expect(capFromPicture({ ...same, age: 0.1 })).toBe(false);
+       |                                                   ^
+     82|   });
+     83| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/projected-cap.test.ts > projected roofs with ordinary delayed decisions > retains a primary behind a disappearing shallow wall but can rescue behind co-moving help
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/projected-cap.test.ts:151:71
+    149|     const disappearing = delayedSetup('up', false, { depth: 0.5, helpe…
+    150|     expect(hasVisibleCap(disappearing.a, disappearing.sim,
+    151|       disappearing.reader.read(disappearing.sim, disappearing.own)!)).…
+       |                                                                       ^
+    152|     expect(disappearing.choose()).toBe(disappearing.own);
+    153|     expect(disappearing.mind.reason).toBe('rule');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 15 passed (21)
+   Start at  04:13:57
+   Duration  1.01s (transform 579ms, setup 0ms, collect 733ms, tests 77ms, environment 0ms, prepare 59ms)
+

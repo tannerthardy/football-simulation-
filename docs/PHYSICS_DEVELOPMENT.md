@@ -1,13 +1,24 @@
 # Physics development and testing
 
+Read [Nearby coverage help and current priorities](reviews/near-help-persistence-and-current-priorities.md)
+first. Observed nearby help must keep its cushion/corridor through the next read.
+This fixes a demonstrated controller decision within the existing World; no
+physical capability, resolution or anatomical state changes. The longer far-help
+forecast stays a prototype because staged geometry has not earned an executed
+responsibility transfer. Read all 24 ordinary pairs, mixed guards and ten films.
+Next inspect stale OL combination ownership after actual retargeting and pursuit
+in traffic. Keep the six-yard maximum pending proper far-help evidence, and keep
+the reduced shared physics model. Final universal physics OK remains pending.
+
 Read [Active grip force travel and current engine priorities](reviews/active-grip-force-travel-and-current-priorities.md)
-first. Achieved active grip forces now use midpoint body travel for torso and
+for the previous physical increment. Achieved active grip forces now use midpoint body travel for torso and
 lower attachments, with unchanged force/support budgets and resolution. Both
 48-trial oracles pass; the lower test uses real moving support. Football guards
 retain mixed outcomes and small path changes. Keep the reduced shared model;
 next pursue observed coverage-help persistence, OL recovery/combo/work pickup
 and pursuit in traffic. The [coverage help audit](reviews/coverage-roof-priority-audit.md)
-is the next bounded design experiment, not shipped coverage logic. Do not
+is a hypothesis list; nearby persistence now ships above, while distant help
+remains unestablished. Do not
 delete its depth limit alone or expand anatomy for a controller mistake.
 Localized contact-onset/support-chart convergence remains separate numerical
 debt; final universal physics OK is pending.

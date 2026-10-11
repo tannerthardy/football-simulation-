@@ -1,0 +1,12 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/projected-cap.test.ts (21 tests) 55ms
+ ✓ test/visible-help.test.ts (13 tests) 109ms
+ ✓ test/coverage-judgment.test.ts (5 tests) 59ms
+
+ Test Files  3 passed (3)
+      Tests  39 passed (39)
+   Start at  04:14:01
+   Duration  1.48s (transform 503ms, setup 0ms, collect 803ms, tests 223ms, environment 0ms, prepare 148ms)
+

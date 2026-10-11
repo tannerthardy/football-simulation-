@@ -13,13 +13,22 @@ import { PASS_BY_ID } from '../../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
 import { Agent } from '../../src/sim/agent.js';
-import { CoverageJudgment } from '../../src/sim/coverage/judgment.js';
+import * as capJudgment from '../../src/sim/coverage/judgment.js';
+import type { ReceiverRead } from '../../src/sim/coverage/reads.js';
 import type { Perceived } from '../../src/sim/perception.js';
 import { PlaySim } from '../../src/sim/playsim.js';
 import { sourceVersion } from '../source-version.js';
 
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const fileHash = (p: string) => createHash('sha256').update(readFileSync(p)).digest('hex');
+const { CoverageJudgment } = capJudgment;
+// The same observer runs against the archived baseline, which has no projected
+// estimator. Its retained legacy predicate is exact for that source. Neither
+// branch requests an extra observation, judgment or route read.
+const projectedCap = (capJudgment as { hasProjectedCap?: (
+  rd: Pick<ReceiverRead, 'pos' | 'vel'>, seen: Perceived, interval: number, error: number
+) => boolean }).hasProjectedCap;
+const capModel = projectedCap ? 'projected-motion' : 'legacy-spacing';
 function snapshot(v: unknown): any {
   return JSON.parse(JSON.stringify(v, (_key, value) => {
     if (value instanceof Agent) return { idx: value.idx, slot: value.slot };
@@ -111,9 +120,16 @@ function trial(input: Input, observe: boolean, recording: boolean) {
         const seenPose = (seen as Perceived & { pose?: string | null }).pose ?? null;
         const historyBack = Math.round((seen.age ?? 0) / sim.dt);
         const sampled = histories.at(-1 - historyBack)?.[d.idx] ?? null;
-        const accepted = geometryMatches && seenPose !== 'down' && seenPose !== 'rising';
+        const interval = a.mind.decisionInterval, horizon = interval + Math.max(0, seen.age ?? 0);
+        const closing = rd.vel.x - seen.vel.x;
+        const accepted = projectedCap ? projectedCap(rd, seen, interval, query.error)
+          : geometryMatches && seenPose !== 'down' && seenPose !== 'rising';
         query.candidates.push({ target: d.idx, slot: d.slot, seen: snapshot(seen),
           depth, lateral, geometryMatches, accepted,
+          decisionInterval: interval, persistenceHorizon: horizon,
+          projectedDepth: depth - closing * horizon,
+          projectedLateral: Math.abs(seen.pos.y - rd.pos.y + (seen.vel.y - rd.vel.y) * horizon),
+          encounterLateral: closing > 0 ? Math.abs(seen.pos.y - rd.pos.y + (seen.vel.y - rd.vel.y) * depth / closing) : null,
           sampledVisiblePose: sampled?.visiblePose ?? null,
           sampledSupportState: sampled?.supportState ?? null,
           actualHidden: actual(d, sim.t),
@@ -124,7 +140,7 @@ function trial(input: Input, observe: boolean, recording: boolean) {
       return seen;
     });
     const originalDecide = CoverageJudgment.prototype.decide;
-    wrap(CoverageJudgment.prototype, 'decide', function(this: CoverageJudgment,
+    wrap(CoverageJudgment.prototype, 'decide', function(this: InstanceType<typeof CoverageJudgment>,
       ...args: Parameters<typeof originalDecide>) {
       const [a, s, reader, primary, deep] = args;
       if (s !== sim) return originalDecide.apply(this, args);
@@ -151,6 +167,8 @@ function trial(input: Input, observe: boolean, recording: boolean) {
         row.chosen = snapshot(chosen); row.reason = this.reason;
         row.cachedReceiverReads = snapshot(reader.recordedReads(sim.t));
         for (const q of row.queries) {
+          if (q.candidates.slice(0, -1).some((d: any) => d.accepted))
+            throw new Error('Reconstructed cap acceptance contradicts the real short-circuit query');
           q.accepted = q.candidates.some((d: any) => d.accepted);
           q.acceptedCandidate = q.candidates.find((d: any) => d.accepted)?.target ?? null;
         }
@@ -186,7 +204,9 @@ function trial(input: Input, observe: boolean, recording: boolean) {
     protectVerticalDecisions: decisions.filter(d => d.reason.startsWith('protect-vertical:')).length,
     squeezeBreakDecisions: decisions.filter(d => d.reason.startsWith('squeeze-break:')).length,
   };
-  return { id, input, selection: 'fixed-before-outcomes', players, profileSha256: hash(players),
+  const selection = input.roster === 2 && input.coverage === 'cover4' && input.concept === 'smash'
+    ? 'retained-retrospective-witness' : 'fixed-before-outcomes';
+  return { id, input, selection, players, profileSha256: hash(players),
     initialSignature, initialFootballSignature, initialContext, signature, endpointContext,
     end, summary, decisions, recording: recording ? { frames: sim.frames, telemetry: sim.trace.data,
       events: sim.events } : null };
@@ -197,7 +217,8 @@ if (process.argv.length > 3) throw new Error('Usage: coverage-help-review.ts [ou
 const sourceSha256 = sourceVersion(), toolSha256 = fileHash('scripts/diag/coverage-help-review.ts');
 const rows: any[] = [], observerNeutrality: any[] = [];
 for (const input of inputs) {
-  const recording = input.roster === 1 && input.coverage === 'cover4';
+  const recording = input.coverage === 'cover4' && (input.roster === 1
+    || (input.roster === 2 && input.concept === 'smash'));
   const row = trial(input, true, recording), plain = trial(input, false, false);
   const checks = { id: row.id, initial: row.initialSignature === plain.initialSignature,
     final: row.signature === plain.signature, recording,
@@ -211,7 +232,7 @@ if (sourceVersion() !== sourceSha256 || fileHash('scripts/diag/coverage-help-rev
   throw new Error('Engine source/tool changed during panel');
 const summary = Object.fromEntries(Object.keys(rows[0].summary).map(k => [k,
   rows.reduce((sum, row) => sum + row.summary[k], 0)]));
-const report = { schema: 'coverage-help-review-v1', sourceSha256, toolSha256,
+const report = { schema: 'coverage-help-review-v1', sourceSha256, toolSha256, capModel,
   sourceVersionToolSha256: fileHash('scripts/source-version.ts'), node: process.version,
   inputSha256: hash(inputs), profilesSha256: hash(rows.map(r => ({ id: r.id, players: r.players }))),
   inputs, inspectionSeconds, observerNeutrality, summary,
@@ -219,11 +240,12 @@ const report = { schema: 'coverage-help-review-v1', sourceSha256, toolSha256,
   limits: [
     'Sampled visible pose is reconstructed from copied actual support states at the existing perception-record calls. It is diagnostic evidence only, never injected into a decision. Missing initial/pre-snap history is null.',
     'Current actual support, downUntil, job and target are hidden diagnostics, distinct from sampled visible pose and consumed Perceived data.',
-    'Cap accepted/rejected is reconstructed from the exact consumed stable judgment error and seen geometry plus optional visible pose guard. No extra see, read or judgment call.',
+    'Cap accepted/rejected uses the source-provided pure projected predicate when present, otherwise the archived legacy geometry/pose predicate. It consumes the exact existing judgment error and visual query; no extra see, read or judgment call. Short-circuit consistency is checked.',
+    'Persistence adds teammate image age as a conservative reserve to the next ordinary decision interval; seen positions are already dead-reckoned. Far longitudinal encounter is a bounded kinematic guess, not assignment knowledge or a physical reachability proof.',
     'Repeated cap queries and candidates within a real decision are retained. They are not independent plays or bust-frequency estimates.',
     'Straight-line time until level uses consumed longitudinal motion only; it ignores turning, pursuit, lateral spacing and physical capabilities, and does not establish that an upright cap is incapable.',
     'No NFL target fitting. Any still-live eight-second endpoint is inspection-censored with no forced whistle, timeout or fabricated yards/result.',
-    'Four predetermined first-roster Cover4 films. Full physical/controller/RNG/perception state matches an unobserved, unrecorded execution for every panel input.',
+    'Four predetermined first-roster Cover4 films plus the separately labelled second-roster Smash retrospective decision witness. Recorded endpoint context matches an unobserved, unrecorded execution for every panel input.',
   ], rows };
 mkdirSync(output, { recursive: true });
 writeFileSync(join(output, 'raw.json.gz'), gzipSync(JSON.stringify(report)));
