@@ -69,7 +69,9 @@ describe('native schematic stress installation and measurement contracts', () =>
     expect(a.context).toEqual(b.context); expect(b.context).toMatchObject({ down: 3, distance: 27 });
     expect(a.profileSha256).toBe(b.profileSha256); expect(a.geometrySha256).toBe(b.geometrySha256);
     expect([a.rushCount, a.coverageCount]).toEqual([4, 7]); expect([b.rushCount, b.coverageCount]).toEqual([3, 8]);
-    expect(b.defenders.find(d => d.slot === 'DE_W')).toMatchObject({ role: { kind: 'zone', zone: 'curl_flat_w' }, behavior: 'zone', runFit: { kind: 'edge' } });
+    expect(b.defenders.find(d => d.slot === 'DE_W')).toMatchObject({ role: { kind: 'zone', zone: 'curl_flat_w' }, behavior: 'zone',
+      runFit: { kind: 'force', gap: 'D', side: -dropped.offAlign.strongSign,
+        inside: { kind: 'edge', gap: 'C', side: -dropped.offAlign.strongSign } } });
     dropped.tick(); expect(dropped.slot('DE_W')!.behavior.kind).toBe('zone');
     expect(dropped.defense.filter(d => d.behavior.kind === 'rush')).toHaveLength(3);
   });

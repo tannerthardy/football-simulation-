@@ -13,8 +13,10 @@ describe('actual long-yardage run stress fixture contracts', () => {
       const dropper = snap.defenders.find(d => d.slot === 'DE_W')!;
       expect(dropper.role).toMatchObject({ kind: 'zone', zone: 'curl_flat_w' });
       expect(dropper.behavior).toBe('zone');
-      // Dropping on a pass does not remove the edge's real run-fit responsibility.
-      expect(dropper.runFit.kind).toBe('edge'); expect(dropper.runFit.gap).toBe('C');
+      // The actual curl-flat dropper can supply outside support, while the
+      // same body retains its boxed C gap on inside flow. It is not a fourth rusher.
+      expect(dropper.runFit).toMatchObject({ kind: 'force', gap: 'D', side: -sim.offAlign.strongSign,
+        inside: { kind: 'edge', gap: 'C', side: -sim.offAlign.strongSign } });
       expect(dropper.initialRead).toBe('unsure');
       expect(sim.snapContext).toMatchObject({ down: 3, distance: 27, hurry: false });
       expect(snap.defenders.filter(d => ['FS', 'SS'].includes(d.slot)).map(d => d.depth)).toEqual([12, 12]);

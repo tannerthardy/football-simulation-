@@ -16,6 +16,8 @@ export interface RunFitJob {
   edge: 'box' | 'spill';
   pace: 'plug' | 'stack';
   partner?: string;
+  /** The same body's inside duty before an observed outside runner activates force. */
+  inside?: { gap: Gap; side: number; kind?: 'edge' };
 }
 
 /** A personally identified possible runner, separate from authoritative possession. */
@@ -32,24 +34,47 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   for (const d of sim.defense) {
     const spot = sim.defAlign.spots[d.slot as DefSlot]!;
     const override = sim.defCall.front.fits?.[d.slot as DefSlot];
-    const line = ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT'].includes(d.slot)
-      || (spot.pos.x < sim.los + 2 && spot.role.kind === 'rush');
+    const frontSlot = ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT'].includes(d.slot);
+    const dropper = frontSlot && spot.role.kind === 'zone' && !!sim.defCall.pressure?.droppers?.[d.slot as DefSlot];
+    // Preserve the existing front run contract (including man-converted ends).
+    // Only an explicitly installed pressure dropper gains this support option.
+    const line = (frontSlot && !dropper) || (spot.pos.x < sim.los + 2 && spot.role.kind === 'rush');
     const gap = spot.role.kind === 'blitz' ? spot.role.gap : spot.gap;
     const side = spot.role.kind === 'blitz' ? (spot.role.side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) : spot.gapSign;
-    const kind = line ? (gap === 'C' || gap === 'D' ? 'edge' : 'interior') : d.slot.startsWith('LB') ? 'insert' : 'alley';
+    const kind = line || dropper ? (gap === 'C' || gap === 'D' ? 'edge' : 'interior') : d.slot.startsWith('LB') ? 'insert' : 'alley';
     jobs.set(d, { gap, side, kind, technique: override?.technique ?? 'attack', edge: policy.edge, pace: policy.linebacker });
-    if (line || spot.role.kind === 'blitz') { first.add(d); claimed.add(`${side}:${gap}`); }
+    if (line || spot.role.kind === 'blitz') first.add(d);
+    // Dropping on passes changes support eligibility, not the front's run gap.
+    if (line || spot.role.kind === 'blitz' || dropper) claimed.add(`${side}:${gap}`);
+    if (dropper && kind === 'edge') jobs.get(d)!.inside = { gap, side, kind: 'edge' };
   }
-  // Flat/curl-flat coverage supplies force before a deep or man player. This
-  // keeps Cover 6 asymmetric and never counts both candidates as primary force.
+  // An explicit exchange already spends its backer on the vacated edge.
+  const exchange = sim.defCall.gapExchange;
+  const exchangeBacker = exchange && sim.slot(exchange.edge) ? sim.slot(exchange.backer) : undefined;
+  const available = (d: Agent) => !first.has(d) && d !== exchangeBacker && jobs.get(d)!.kind !== 'force';
+  const outsideSide = (d: Agent): number | null => {
+    const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
+    if (role.kind !== 'zone') return null;
+    if (role.zone === 'flat_s' || role.zone === 'curl_flat_s') return sim.offAlign.strongSign;
+    if (role.zone === 'flat_w' || role.zone === 'curl_flat_w') return -sim.offAlign.strongSign;
+    return null;
+  };
+  // Actual flat/curl-flat seats own support even when the shown alignment or
+  // a small placement error puts them inside the old lateral cutoff. Calls
+  // without that seat retain their geometric fallback. Do not steal the other
+  // side's installed support while filling a missing seat.
   for (const side of [-1, 1]) {
-    const candidates = sim.defense.filter((d) => !first.has(d) && (d.pos.y - sim.ballY) * side > 2);
-    const cost = (d: Agent) => {
+    const designated = sim.defense.filter(d => available(d) && outsideSide(d) === side);
+    const candidates = designated.length ? designated : sim.defense.filter(d => available(d)
+      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2);
+    const priority = (d: Agent) => {
       const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
-      const priority = role.kind === 'zone' ? role.zone.startsWith('flat') ? 0 : role.zone.startsWith('curl_flat') ? 1 : isDeepZone(role.zone) ? 6 : 3 : 7;
-      return priority * 4 + Math.abs(Math.abs(d.pos.y - sim.ballY) - 5.5);
+      return role.kind === 'zone' ? role.zone.startsWith('flat') ? 0 : role.zone.startsWith('curl_flat') ? 1 : isDeepZone(role.zone) ? 6 : 3 : 7;
     };
-    candidates.sort((a,b) => cost(a)-cost(b));
+    const cost = (d: Agent) => {
+      return priority(d) * 4 + Math.abs(Math.abs(d.pos.y - sim.ballY) - 5.5);
+    };
+    candidates.sort((a,b) => (designated.length ? priority(a)-priority(b) : 0) || cost(a)-cost(b));
     const force = candidates[0];
     if (force) { jobs.get(force)!.kind = 'force'; jobs.get(force)!.side = side; jobs.get(force)!.gap = 'D'; }
     for (const d of first) {
@@ -60,19 +85,28 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
       if (force) j.partner = force.slot;
     }
   }
-  // Fill the bubbles with available inside backers. An apex/coverage player is
-  // not an additional instantaneous interior hat just because he is a linebacker.
-  const backers = sim.defense.filter((d) => d.slot.startsWith('LB') && !first.has(d) && jobs.get(d)!.kind !== 'force'
+  // A box curl-flat backer still has his bubble on inside flow. An outside
+  // support title does not spend a second body or erase that obligation.
+  const backers = sim.defense.filter((d) => d.slot.startsWith('LB') && !first.has(d)
+    && (jobs.get(d)!.kind !== 'force' || outsideSide(d) !== null)
     && Math.abs(sim.defAlign.spots[d.slot as DefSlot]!.pos.y - sim.ballY) < 5.5)
-    .sort((a, b) => a.pos.y - b.pos.y);
+    // Primary insertion spends a body first. Conditional outside support can
+    // use a remaining bubble, but cannot take an insert's only gap and leave
+    // that player's default assignment duplicating it.
+    .sort((a, b) => Number(jobs.get(a)!.kind === 'force') - Number(jobs.get(b)!.kind === 'force') || a.pos.y - b.pos.y);
   const bubbles = [-1, 1].flatMap((side) => (['A', 'B', 'C'] as Gap[])
     .filter((gap) => !claimed.has(`${side}:${gap}`)).map((gap) => ({ side, gap })));
   for (const d of backers) {
-    bubbles.sort((a, b) => Math.abs(gapY(sim.offAlign, a.gap, a.side) - d.pos.y) - Math.abs(gapY(sim.offAlign, b.gap, b.side) - d.pos.y));
-    const bubble = bubbles.shift();
-    if (bubble) Object.assign(jobs.get(d)!, bubble);
+    const job = jobs.get(d)!;
+    const eligible = job.kind === 'force' ? bubbles.filter(b => b.side === job.side) : bubbles;
+    eligible.sort((a, b) => Math.abs(gapY(sim.offAlign, a.gap, a.side) - d.pos.y) - Math.abs(gapY(sim.offAlign, b.gap, b.side) - d.pos.y));
+    const bubble = eligible[0];
+    if (bubble) {
+      bubbles.splice(bubbles.indexOf(bubble), 1);
+      if (job.kind === 'force') job.inside = bubble;
+      else Object.assign(job, bubble);
+    }
   }
-  const exchange = sim.defCall.gapExchange;
   if (exchange) {
     const end = sim.slot(exchange.edge), backer = sim.slot(exchange.backer);
     if (end && backer && !first.has(backer) && jobs.get(backer)?.kind !== 'force') {
@@ -101,7 +135,7 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
 
 export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, keyed?: KeyedRunFit) {
   if (a.engagement) return stand();
-  const job = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
+  let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
   const c = keyed?.target ?? sim.carrier;
   const back = sim.slot('RB');
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
@@ -124,10 +158,20 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const aim=a.mind.aim('alley-fit',{x:sim.los+depth,y:seen.pos.y+job.side*1.2+a.mind.placementError},sim.t);
     return track(a,aim,{x:0,y:0},{speed:.65,gain:2,facing:Math.PI});
   }
-  const edge = job.kind === 'edge' || job.kind === 'force';
   const core = sim.offense.filter((o) => ['LT','LG','C','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
     .map((o) => ({ ...sim.see(a,o), radius:o.profile.radius }));
   const surface = job.side > 0 ? Math.max(...core.map((o) => o.pos.y + o.radius)) : Math.min(...core.map((o) => o.pos.y - o.radius));
+  if (job.kind === 'force' && job.inside && !(!premesh && seen.carrying === true
+    && job.side * seen.pos.y + c.profile.radius >= job.side * surface)) {
+    // Use this same consumed picture, not the live runner or offensive call.
+    // The installed outside shoulder remains available during later pursuit
+    // and contact; only the free fit landmark is conditional here.
+    job = { ...job, ...job.inside, kind: job.inside.kind ?? 'insert',
+      // A dropping end is his own outside support, so cannot spill to himself.
+      edge: job.inside.kind === 'edge' ? 'box' : job.edge };
+    gy = gapY(sim.offAlign, job.gap, job.side);
+  }
+  const edge = job.kind === 'edge' || job.kind === 'force';
   if (edge) {
     let kick: ReturnType<PlaySim['see']> | null = null;
     if (job.kind === 'edge') {
