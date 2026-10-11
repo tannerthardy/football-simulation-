@@ -1,0 +1,69 @@
+{
+  "schema": "native-rushing-film-artifacts-v1",
+  "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "parentCommit": "0f90363c42fa7b12b710891e2f0c6c257ce0a6e0",
+  "selectedPlays": 24,
+  "completeCleanRunLibrary": 302,
+  "artifacts": [
+    {
+      "path": "data/reviews/rushing-film/README.md",
+      "bytes": 4089,
+      "sha256": "76acc329f0c546a3ee33c41450883bbf0ad7e9800866fa2317e8f77185e15fa1"
+    },
+    {
+      "path": "data/reviews/rushing-film/browser-check.json",
+      "bytes": 2415,
+      "sha256": "4b5d98ac99c7be03f0237127e1612c96c2d4cb2ac13a9fec8c15be54263a4829"
+    },
+    {
+      "path": "data/reviews/rushing-film/check-summary.json",
+      "bytes": 513,
+      "sha256": "4abdb8fb0ea056f962d34026508bcd78deb417751b7341f5dff041007d41dfab"
+    },
+    {
+      "path": "data/reviews/rushing-film/export-receipt.json",
+      "bytes": 3859,
+      "sha256": "120069cec891043cfd4f7b9bed2f7a8fa4ebd8a042956f6eb9b3bf47572ca619"
+    },
+    {
+      "path": "data/reviews/rushing-film/offline-check.json",
+      "bytes": 741,
+      "sha256": "cac14d8242d922a177b7997378eec59783d20b78adca85cf98f922ee2f307e2b"
+    },
+    {
+      "path": "data/reviews/rushing-film/selection.json",
+      "bytes": 132659,
+      "sha256": "a28a654c9f4dd5108b2fa050e3b292a1dc2f29a5307ba8c54dcd441c9a888ba5"
+    },
+    {
+      "path": "data/reviews/rushing-film/tools/check-offline-film.py",
+      "bytes": 4558,
+      "sha256": "dcf5ca660b5b5f5facc8683d5d2fa9ed39455e39950b6de59d6f510ed6582dd1"
+    },
+    {
+      "path": "docs/reviews/rushing-film-review-guide.md",
+      "bytes": 7038,
+      "sha256": "80a5a58520e95d2480d22e3cd2bc0603806e0fa2cd8f79b4c207c24764f88d6e"
+    },
+    {
+      "path": "scripts/check-replay-viewer.py",
+      "bytes": 32855,
+      "sha256": "b0da5e2effa8ca1a720bfe713da912cf566f45df5f773a24f239dbf3480e1869"
+    },
+    {
+      "path": "scripts/export-rushing-benchmark-film.ts",
+      "bytes": 10433,
+      "sha256": "a8c0947a916daf9f931722e267863e1d0eeb9c50a90786d56633f5e7b0e79049"
+    },
+    {
+      "path": "viewer/rushing-benchmark-review.html",
+      "bytes": 710667,
+      "sha256": "9868abb8a3b5d382a5063948bbed4e7f6c01efed1962186988bd71aeb1e633ca"
+    },
+    {
+      "path": "viewer/rushing-benchmark-review.zip",
+      "bytes": 1712145,
+      "sha256": "f712197de2d41c7f5b2a72a63927b742337d16a7cf542446c6407e8214381195"
+    }
+  ]
+}

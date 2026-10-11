@@ -60,7 +60,7 @@ def main():
             if data['meta'].get('cohort'):
                 assert page.locator('#cohort-note').inner_text() == data['meta']['cohort']
                 assert page.locator('#teams').is_hidden() and page.locator('#linescore').is_hidden()
-                checks.append('Controlled inspection fixtures are explicitly labeled and do not imply a played-game score')
+                checks.append('Collection scope is explicitly labeled; native context or fixture context is retained without a misleading global scoreboard')
             filmed = [i for i, clip in enumerate(data['plays']) if 'frames' in clip]
             assert page.locator('.play').count() == len(filmed)
             assert page.locator('.clip-group').count() == len({data['plays'][i]['concept']['id'] for i in filmed})
@@ -71,7 +71,7 @@ def main():
                     page.locator(f'.play[data-i="{index}"]').click()
                     assert f"seed {clip.get('fixtureSeed', data['games'][clip['game']]['seed'])} ·" in page.locator('#clock').inner_text()
                     page.click('#playbtn')
-                checks.append('Controlled fixture clocks use each actual fixture seed')
+                checks.append('Collection clocks use each actual recorded snap seed')
 
             def current():
                 return int(page.locator('.play[aria-current="true"]').get_attribute('data-i'))
@@ -170,9 +170,10 @@ def main():
                 assert all(data['plays'][i]['game'] == 1 for i in indices())
                 assert data['plays'][current()]['game'] == 1
                 if data['meta'].get('cohort'):
-                    assert 'controlled inspection fixtures' in page.locator('#game-label').text_content()
+                    expected_label = 'native rushing review' if data['meta'].get('nativeGameFilm') else 'controlled inspection fixtures'
+                    assert expected_label in page.locator('#game-label').text_content()
                     assert page.locator('#teams').is_hidden() and page.locator('#linescore').is_hidden()
-                    checks.append('Source-group filters select the matching controlled fixtures and keep fictional scores hidden')
+                    checks.append('Game/source filters retain the declared native or fixture scope and hide the global role-color scoreboard')
                 else:
                     assert 'Game 2' in page.locator('#game-label').text_content()
                     assert f"{data['games'][1]['final']['home']}" == page.locator('#teams .pts').nth(1).inner_text()
