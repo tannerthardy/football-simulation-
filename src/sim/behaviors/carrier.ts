@@ -13,6 +13,7 @@
  */
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, type Vec2 } from '../../core/vec.js';
+import { DT } from '../../core/units.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { sprintTime, timeToReach } from '../../physics/reach.js';
 import { squeezeForGap } from '../../physics/bodyshape.js';
@@ -21,6 +22,7 @@ import type { PlaySim } from '../playsim.js';
 import type { RunScheme } from '../../playbook/types.js';
 import { RunBlocker } from './blocking.js';
 import { contactCost } from '../contact-choice.js';
+import type { Perceived } from '../perception.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -31,6 +33,18 @@ export interface CarrierOptions {
   /** Known lead/pull responsibilities on a designed run. */
   follow?: Agent[];
   run?: { scheme:RunScheme; side:number; readKey?:Agent; kick?:Agent };
+}
+
+/** Coarse threat inference from the consumed image, not the opponent's true
+ * recovery phase. A visible rise is treated as halfway through public get-up
+ * capability. The positive tick floor keeps old off-feet pictures uncertain;
+ * a fresh upright picture ends the allowance. This is not NFL calibration. */
+export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>, getUp: number | undefined, dt: number): number {
+  if (seen.pose !== 'down' && seen.pose !== 'rising') return 0;
+  const recovery = Number.isFinite(getUp) ? clamp(getUp!, 0.2, 2) : 0.9;
+  const tick = Number.isFinite(dt) && dt > 0 ? Math.min(dt, recovery) : Math.min(DT, recovery);
+  const age = Number.isFinite(seen.age) ? Math.max(0, seen.age!) : seen.age === Infinity ? recovery : 0;
+  return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
 }
 
 /** Read the current surface, rather than a two-second forecast through it.
@@ -216,8 +230,11 @@ export class BallCarrier implements Behavior {
       const behind = (d.pos.x - p.x) * dir < -1.5;
       if (behind && a.mind.focus < 0.35 + 0.5 * (1 - vision)) continue;
       const seen = sim.see(a, d, 0.7);
-      let extra = 0;
-      if (d.isDown(sim.t)) extra += d.downUntil - sim.t + 0.2;
+      // Explicit scenario parking keeps its scheduled absence. Physical falls
+      // leave downUntil=-1; infer their allowance only from the delayed pose,
+      // never hidden support state/since or an exact recovery deadline.
+      let extra = d.downUntil > sim.t ? d.downUntil - sim.t + 0.2
+        : observedRecoveryAllowance(seen, d.profile.getUp, sim.dt);
       if (d.engagement) extra += d.engagement.win > 0.6 ? 0.25 : 0.7;
       threats.push({ pos: seen.pos, vel: seen.vel, d, extra });
     }

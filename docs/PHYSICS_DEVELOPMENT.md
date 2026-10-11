@@ -43,6 +43,15 @@ work and pushes here. Do not push to main or push to/merge PR #1
 
 ## One physical body, different controls
 
+The [current run-game review](reviews/run-game-current-diagnosis.md) separates
+run-training and observed-recovery repairs from unchanged physical laws.
+Its native mean barely changes and adverse outcomes remain. The next useful
+experiments are a physically attainable crease approach and retaining a
+defender's gap/shoulder objective through contact. Conditional NFL outcomes
+and contact-coordinate differences guide diagnosis, not force tuning. Keep
+the same capabilities across every technique; correct trait context does not
+promise greater average yards for the current generated roster.
+
 World owns every player's motion and body-owned support/balance. Blocks and
 press use real hand contact; tackles use bounded grasps. Movement, impacts,
 contact height and effective posture/support are reduced representations,

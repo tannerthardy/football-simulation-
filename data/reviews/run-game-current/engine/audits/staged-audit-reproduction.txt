@@ -1,0 +1,40 @@
+Staged run-defense audit reproduction (separate from native football panels)
+
+Both retained original reports reproduce byte-for-byte under Node22.23.3 in a git
+archive of d087104. staged-audit-receipt.json records all source/tool/report SHA
+identities and the explicit original-fit-tool provenance limitation.
+
+Original report paths:
+  out/run-defense-current/pursuit-baseline.json
+  out/run-defense-current/fit-exchanges.json
+
+Original pursuit collector preserved exactly in pursuit-original-tool.txt.
+fit-exchanges-reconstructed-tool.txt is a newly reconstructed reproducer; the
+original inline inspection program was not retained. Do not call it original.
+source-version-original-tool.txt is the unchanged source-identity helper.
+
+To reconstruct an isolated archive from repo root (use a new destination):
+  mkdir -p out/run-defense-replay
+  git archive d087104 src scripts/source-version.ts package.json tsconfig.json | tar -x -C out/run-defense-replay
+  mkdir -p out/run-defense-replay/scripts/diag
+  cp out/run-defense-current/pursuit-original-tool.txt out/run-defense-replay/scripts/diag/pursuit-technique-probe.ts
+  cp out/run-defense-current/fit-exchanges-reconstructed-tool.txt out/run-defense-replay/scripts/diag/fit-exchanges-reconstructed.ts
+  ln -s /workspace/football-simulation-/node_modules out/run-defense-replay/node_modules
+
+Then run from the archive root, using Node22.23.3 on PATH:
+  node --import tsx scripts/diag/pursuit-technique-probe.ts --expected-source=11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85 --output=out/pursuit-reproduced.json
+  node --import tsx scripts/diag/fit-exchanges-reconstructed.ts out/fit-exchanges-reproduced.json
+
+Expected output SHA256:
+  pursuit-reproduced.json: 6cf0b26d207f6c20a54cc4ee4caf578e7e3b61d93266b9665840f33e55dfcbf9
+  fit-exchanges-reproduced.json: 426a8280574cfe6e7955e8148f49e18795e7cd322136a7cb4bd04a57d26a052b
+
+TRAFFIC SECTION EXCLUDED FROM PRODUCTION CONCLUSIONS. The original pursuit
+collector omits the production spacing context. Its preserved traffic rows
+exercise legacy/headway spacing, despite using the ordinary World executor.
+Use only cone/role/rear for the current staged controller audit. These still
+are not full native football, gaze measurements, rates or force calibration.
+
+The fit exchange is manually requested and not used by today's automatic
+caller. Its static gap ledger does not establish achieved spike/scrape paths.
+No prior published packet or production source was altered.

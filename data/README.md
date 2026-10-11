@@ -1,6 +1,20 @@
 # Shared NFL data
 
-Current review: [Schematics and physics stress](../docs/reviews/schematics-and-physics-stress.md).
+Current review: [Run game: outcomes, contact and decisions](../docs/reviews/run-game-current-diagnosis.md).
+The [engine packet and commands](reviews/run-game-current/engine/README.md) retain
+three isolated source phases, all 162 inputs per phase, adverse outcomes, 48
+loaded technique controls and nine consumed-pose witnesses. Physics/capacities
+stay unchanged. Watch [20 paired clips](../viewer/run-game-current.html) or use
+the [offline ZIP](../viewer/run-game-current.zip). The
+[NFL study](../docs/reviews/run-reference-current.md) and
+[reference packet](reviews/run-game-current/reference/README.md) add 2022/2023
+full-season conditional rushing distributions, nine-week 2022 BDB concept and
+secondary modifiers, and an exact contact-coordinate/operator audit. All nine
+BDB tracking weeks already exist locally in aid-1.zip; broader conditional
+tracking extraction is future work. Generated-roster variation and operator
+matching precede calibration; no force or outcome constants were fitted.
+
+Previous review: [Schematics and physics stress](../docs/reviews/schematics-and-physics-stress.md).
 The [engine evidence and commands](reviews/schematics/engine/README.md) preserve
 formation/receiving-work census, native pass controls, automatic defensive role
 audits, twenty full 11v11 stress plays and eight reduced momentum/contact cases.

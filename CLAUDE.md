@@ -7,8 +7,21 @@ on this branch. Do not push to main, or push to or merge PR #1
 (`codex/run-blocking-decision-dynamics`), without the owner's approval. That PR
 also changes tackling; reconcile its implementation before any eventual merge.
 
+Read [current run-game diagnosis](docs/reviews/run-game-current-diagnosis.md)
+first. The balanced 160 baseline is cramped; mean 1.28→1.32 yd is not an overall
+performance breakthrough. Run contact now uses run training for offensive
+hands/feet, and carrier recovery forecasts use consumed delayed pose rather
+than a negative scenario deadline. Physics/capacities are unchanged. Retain
+the isolated OL phase, increased stuffs, adverse Duo/Power and scramble cases,
+all paired outcomes and the tiny full-game scoring/YAC concern. The
+[NFL study](docs/reviews/run-reference-current.md) adds full-season conditional
+rushing outcomes, nine-week concept/modifier labels and the contact-coordinate
+audit. First trace one native crease approach or engaged gap/shoulder contract;
+do not change force to recover a target YPC. Healthy-target OL recovery remains
+a hypothesis. Recording/support/body facing is not eye tracking.
+
 Read [schematics and physics stress](docs/reviews/schematics-and-physics-stress.md)
-first. It connects the offensive/defensive audits to bounded legal-install and
+for the previous increment. It connects the offensive/defensive audits to bounded legal-install and
 receiving-work repairs, actual call-role matrices, and the new native stress
 panel. The first roof-only guard was withheld after exposing more missing
 underneath goal-line work. The promoted guard also requires explicitly named

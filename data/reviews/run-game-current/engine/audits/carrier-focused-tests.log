@@ -1,0 +1,14 @@
+
+ RUN  v3.2.4 /workspace/football-simulation-
+
+ ✓ test/snap-mesh-and-pull.test.ts (12 tests) 495ms
+ ✓ test/carrier-recovery-cue.test.ts (9 tests) 390ms
+   ✓ carrier recovery is a bounded visible-pose estimate > the retained native OL witness no longer closes every lane using a negative fall deadline  326ms
+ ✓ test/contact-choice.test.ts (6 tests) 184ms
+ ✓ test/carrier-boundary.test.ts (6 tests) 65ms
+
+ Test Files  4 passed (4)
+      Tests  33 passed (33)
+   Start at  11:50:21
+   Duration  3.23s (transform 730ms, setup 0ms, collect 1.34s, tests 1.13s, environment 1ms, prepare 282ms)
+

@@ -58,8 +58,28 @@ export interface TrenchTraits {
 }
 
 const cache = new WeakMap<Agent, TrenchTraits>();
+const runCache = new WeakMap<Agent, TrenchTraits>();
 
-export function traits(a: Agent): TrenchTraits {
+/** The body/drill traits are shared. Hands and feet use the technique of the
+ * actual rep; knowing a pass set is not the same skill as sustaining a run fit.
+ * The default remains the pass technique used by pre-contact protection.
+ */
+export function traits(a: Agent, type: 'pass' | 'run' = 'pass'): TrenchTraits {
+  const common = commonTraits(a);
+  if (type === 'pass' || a.team !== 'O') return common;
+  let run = runCache.get(a);
+  if (!run) {
+    const cone = clamp((8.0 - a.player.measurables.threeCone) / 1.3, 0, 1);
+    run = { ...common,
+      hands: 0.65 * a.r('handTechnique') + 0.35 * a.r('runBlock'),
+      feet: 0.6 * a.r('runBlock') + 0.2 * a.r('balance') + 0.2 * cone,
+    };
+    runCache.set(a, run);
+  }
+  return run;
+}
+
+function commonTraits(a: Agent): TrenchTraits {
   let t = cache.get(a);
   if (t) return t;
   const m = a.player.measurables;
@@ -146,8 +166,8 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   }
 
   const rng = sim.rng;
-  const tb = traits(blocker);
-  const td = traits(defender);
+  const tb = traits(blocker, type);
+  const td = traits(defender, type);
   const e: Engagement = {
     blocker,
     defender,
@@ -276,7 +296,7 @@ export function syncJoints(sim: PlaySim, e: Engagement): void {
 
 function setHands(sim: PlaySim, e: Engagement): void {
   const b = e.blocker, d = e.defender;
-  const tb = traits(b), td = traits(d);
+  const tb = traits(b, e.type), td = traits(d, e.type);
   const sep = b.profile.radius + d.profile.radius;
   const t = sim.t;
   const inMove = t < e.moveUntil && e.moveOk;
@@ -301,7 +321,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     const j = e.helperHands?.get(h);
     if (!j) continue;
     const support = helperSupport(sim, e, h);
-    j.extension = h.profile.radius + d.profile.radius + traits(h).arm / 36 * 0.2;
+    j.extension = h.profile.radius + d.profile.radius + traits(h, e.type).arm / 36 * 0.2;
     j.push = armForce(h) * 0.8 * support;
     j.steer = armForce(h) * 0.4 * support;
     j.hold = 0;
@@ -627,8 +647,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const rng = sim.rng;
   const b = e.blocker;
   const d = e.defender;
-  const tb = traits(b);
-  const td = traits(d);
+  const tb = traits(b, e.type);
+  const td = traits(d, e.type);
   const axis = axisOf(sim, e); // defender toward the intended contact surface
   const lat = latOf(axis);
   const c = sim.carrier;

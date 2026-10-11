@@ -1,5 +1,6 @@
 /** Saved ordinary-run comparison; never simulates or chooses clips by outcome.
  * node --import tsx scripts/export-combo-transfer.ts before-film.json.gz after-film.json.gz output.html
+ * Optional fourth argument: JSON {title, phaseLabels: [before, after], explanation}.
  * Companions use *-film -> * or film-* -> panel-* in the same directory.
  */
 import { createHash } from 'node:crypto';
@@ -43,13 +44,41 @@ interface Report { schema: string; sourceBefore: string; sourceAfter: string; co
   moduleSha256: Record<string, string>; cohort: unknown; filmIds: string[];
   summary: { snaps: number; observerVerifiedCount: number; naturalEnds: number; censors: number };
   trials: Trial[]; supplementalTrials: Trial[] }
-const args = process.argv.slice(2), [beforePath, afterPath, output] = args;
-if (args.length !== 3 || !beforePath.endsWith('.json.gz') || !afterPath.endsWith('.json.gz') || !output.endsWith('.html'))
-  throw new Error('Usage: export-combo-transfer.ts before-film.json.gz after-film.json.gz output.html');
+interface ComparisonMetadata { title: string; phaseLabels: [string, string]; explanation: string }
+const args = process.argv.slice(2), [beforePath, afterPath, output, metadataPath] = args;
+if (![3, 4].includes(args.length) || !beforePath?.endsWith('.json.gz') || !afterPath?.endsWith('.json.gz') || !output?.endsWith('.html'))
+  throw new Error('Usage: export-combo-transfer.ts before-film.json.gz after-film.json.gz output.html [metadata.json]');
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const fileHash = (p: string) => createHash('sha256').update(readFileSync(p)).digest('hex');
 function read<T>(p: string): T { return JSON.parse(gunzipSync(readFileSync(p)).toString()) as T; }
-const labels = ['Baseline: shared combo release', 'Candidate: keeper-based combo release'];
+function readMetadata(path: string): ComparisonMetadata {
+  let value: unknown;
+  try { value = JSON.parse(readFileSync(path, 'utf8')); }
+  catch (error) { throw new Error(`Invalid comparison metadata JSON: ${error instanceof Error ? error.message : String(error)}`); }
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('Invalid comparison metadata: expected an object with title, phaseLabels and explanation');
+  const fields = value as Record<string, unknown>;
+  if (Object.keys(fields).sort().join('|') !== ['explanation', 'phaseLabels', 'title'].join('|'))
+    throw new Error('Invalid comparison metadata: require exactly title, phaseLabels and explanation');
+  const text = (field: string, limit: number): string => {
+    const result = fields[field];
+    if (typeof result !== 'string' || !result.trim() || result.length > limit || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(result))
+      throw new Error(`Invalid comparison metadata: ${field} must be nonempty text of at most ${limit} characters`);
+    return result.trim();
+  };
+  if (!Array.isArray(fields.phaseLabels) || fields.phaseLabels.length !== 2
+    || fields.phaseLabels.some(label => typeof label !== 'string' || !label.trim() || label.length > 160 || /[\u0000-\u001f]/.test(label)))
+    throw new Error('Invalid comparison metadata: phaseLabels must contain exactly two nonempty text labels');
+  const phaseLabels = fields.phaseLabels.map(label => (label as string).trim()) as [string, string];
+  if (phaseLabels[0] === phaseLabels[1]) throw new Error('Invalid comparison metadata: phase labels must be distinct');
+  return { title: text('title', 160), phaseLabels, explanation: text('explanation', 4000) };
+}
+const metadata = metadataPath ? readMetadata(metadataPath) : null;
+const labels = metadata?.phaseLabels ?? ['Baseline: shared combo release', 'Candidate: keeper-based combo release'];
+const comparisonTitle = metadata?.title ?? 'controlled combo-transfer comparison';
+const inspectionNote = metadata
+  ? 'Inspect a lineman to compare his requested technique, consumed cues, actual target, real hand-joint identity and completed-step support/loads. A chosen job does not guarantee a successful block.'
+  : 'Inspect a combo member to compare his next job, the actual remaining blocker, real hand-joint identity and completed-step support/loads. A climb decision does not guarantee a successful block.';
 const fixed = [
   {run: 'iz_strong', front: 'over', seed: 3}, {run: 'power', front: 'under', seed: 3},
   {run: 'counter', front: 'odd', seed: 11}, {run: 'duo', front: 'odd', seed: 11},
@@ -124,7 +153,7 @@ const plays = phases.flatMap(({ film, report }, game) => film.plays.map((p, inde
   const log: PlayLog = { index, quarter: 0, clock: 0, offense: 'OFF', down: 1, distance: 10,
     yardline: p.los - 10, score: { home: 0, away: 0 }, kind: 'run', yards: result.offenseYards,
     call: `${labels[game]} · ${p.offCall}`, defense: p.defCall, stats: result.stats, outcome: result.outcome,
-    text: `${labels[game]} · ${p.id} · source ${film.sourceBefore.slice(0, 12)} · fixed input, selected before outcomes · natural ${result.outcome} at ${result.duration.toFixed(2)}s. Inspect a combo member to compare his next job, the actual remaining blocker, real hand-joint identity and completed-step support/loads. A climb decision does not guarantee a successful block. Same player capabilities and shared physics world in both versions.`,
+    text: `${labels[game]} · ${p.id} · source ${film.sourceBefore.slice(0, 12)} · fixed input, selected before outcomes · natural ${result.outcome} at ${result.duration.toFixed(2)}s. ${inspectionNote} Same player capabilities and shared physics world in both versions.${metadata ? ' ' + metadata.explanation : ''}`,
     plan: { personnel: row.formation === 'gun_wing_12' ? '12' : '11', formation: row.formation, qb: row.formation === 'gun_wing_12' ? 'gun' : 'under', concept: RUN_BY_ID[p.run].scheme,
       playAction: false, audible: false, defPersonnel: FRONT_BY_ID[p.front].personnel[0], front: p.front, coverage: 'cover3',
       called: 'cover3', family: 'cover3', shell: 'one-high', pressure: false },
@@ -148,7 +177,9 @@ const comparisons = phases.map(({ path, reportPath, film, report }, i) => ({ lab
     profileSha256: r.profileSha256, observedSignature: r.observedSignature, plainSignature: r.plainSignature })) }));
 const data = { meta: { sourceSha256: phases[1].film.sourceBefore, sourceComparison: comparisons,
   telemetryLevel: 'full', filmSchema: 'combo-transfer-comparison-v1', seed: 3,
-  cohort: '20 fixed ordinary run clips: IZ against Over, Duo against Odd, Split Zone against Tite, Power against Under and Counter against Odd, in both directions and paired across two controller versions. The full diagnostic panel has 160 balanced inputs plus two separately labelled prior witnesses. Clips were chosen before outcomes. Player profiles, initial positions and shared physical capabilities match. All 162 observed executions per version match plain controls; clips finish naturally. This is not an NFL sample. Native ownership, consumed visual images, real hand joints and delivered loads are recorded separately; a chosen climb does not prove success',
+  ...(metadata ? { comparisonTitle: metadata.title, comparisonExplanation: metadata.explanation,
+    comparisonMetadata: { path: metadataPath!, sha256: fileHash(metadataPath!) } } : {}),
+  cohort: '20 fixed ordinary run clips: IZ against Over, Duo against Odd, Split Zone against Tite, Power against Under and Counter against Odd, in both directions and paired across two controller versions. The full diagnostic panel has 160 balanced inputs plus two separately labelled prior witnesses. Clips were chosen before outcomes. Player profiles, initial positions and shared physical capabilities match. All 162 observed executions per version match plain controls; clips finish naturally. This is not an NFL sample. Native ownership, consumed visual images, real hand joints and delivered loads are recorded separately; a chosen climb does not prove success' + (metadata ? '. ' + metadata.explanation : ''),
   final: { home: 0, away: 0 }, quarters: [],
   home: { name: 'Controlled Offense', abbr: 'OFF', color: '#1d4f91', text: '#fff' },
   away: { name: 'Controlled Defense', abbr: 'DEF', color: '#a3302a', text: '#fff' } },
@@ -161,13 +192,19 @@ function replace(from: string, to: string) {
   if (!template.includes(from)) throw new Error(`Viewer marker changed: ${from.slice(0, 80)}`);
   template = template.replace(from, to);
 }
+if (metadata) {
+  const escapedTitle = metadata.title.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
+  replace('<title>Gridiron Film Room</title>', `<title>${escapedTitle}</title>`);
+  replace('<h1>Find your next set of plays</h1>', `<h1>${escapedTitle}</h1>`);
+}
 replace("key === 'game' ? `Game ${Number(value) + 1} · seed ${games[value].seed}`", "key === 'game' ? games[value].label");
 replace("${esc(p.id)} · ${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)}", '${esc(p.id)} · ${esc(p.sourceLabel)}');
 replace("$('dd').textContent = `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}`;",
-  "$('dd').textContent = `${ord[p.down]} & ${p.dist} · controlled combo-transfer comparison`;");
+  metadata ? "$('dd').textContent = `${ord[p.down]} & ${p.dist} · ` + " + JSON.stringify(comparisonTitle).replace(/</g, '\\u003c') + ';'
+    : "$('dd').textContent = `${ord[p.down]} & ${p.dist} · controlled combo-transfer comparison`;");
 replace("inspectorStamp = '';\n    prepareTelemetry(p);", "$('inspect-player').value = String(p.inspectedLineman);\n    inspectorStamp = '';\n    prepareTelemetry(p);");
 replace('<details class="inspector"><summary>Recorded event notes</summary>',
-  '<section class="inspector"><h2>Combo ownership, hands and support</h2><small class="status-note">Reads occur at tick start; actual movement and loads follow the completed 0.05s tick. A keeper or climb assignment is an intention. Hand-joint IDs are local to each play and source; actual transmitted loads show whether contact survives. Forces use kg·yd/s², impulses kg·yd/s, work kg·yd²/s². Completed body/load rows cover the five OL. Non-OL keepers appear in saved ownership snapshots when available; no absent row is treated as a lost block. Consumed images show recorded cues, not exhaustive eye tracking.</small><div id="ownership-state" class="detail-list"></div></section><details class="inspector"><summary>Recorded event notes</summary>');
+  '<section class="inspector"><h2>' + (metadata ? 'Run assignments, hands and support' : 'Combo ownership, hands and support') + '</h2><small class="status-note">Reads occur at tick start; actual movement and loads follow the completed 0.05s tick. A keeper or climb assignment is an intention. Hand-joint IDs are local to each play and source; actual transmitted loads show whether contact survives. Forces use kg·yd/s², impulses kg·yd/s, work kg·yd²/s². Completed body/load rows cover the five OL. Non-OL keepers appear in saved ownership snapshots when available; no absent row is treated as a lost block. Consumed images show recorded cues, not exhaustive eye tracking.</small><div id="ownership-state" class="detail-list"></div></section><details class="inspector"><summary>Recorded event notes</summary>');
 replace("if (stamp === inspectorStamp) return;", "if (stamp === inspectorStamp) return;\n    inspectOwnership(p, player, t);");
 replace('  function drawLayers(p, frame, positions, X, Y, sc, selected) {', `  function inspectOwnership(p, player, time) {
     const panel=$('ownership-state'); panel.dataset.fixture=p.id; panel.dataset.time=String(time); panel.dataset.slot=p.roster[player]?.[1]??'';

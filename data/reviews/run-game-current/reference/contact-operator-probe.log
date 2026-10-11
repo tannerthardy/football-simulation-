@@ -1,0 +1,1 @@
+{"out": "/workspace/football-simulation-/out/run-reference-current/contact-operator-audit.json", "matched": {"footballMetadataLos": {"n": 1142, "mean": 0.37169878704117365}, "footballSnapBallLos": {"n": 1142, "mean": 0.7458406321430309}, "runnerSnapBallLos": {"n": 1142, "mean": 0.9970840517568482}}, "broaderProbeN": 1303, "publishedN": 1310}

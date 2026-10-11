@@ -1,0 +1,182 @@
+{"id":"CT-R1-iz_strong-over-R-S3","yards":1.69,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-iz_strong-over-R-S11","yards":-0.63,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-over-L-S3","yards":0.15,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-over-L-S11","yards":-0.67,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-under-R-S3","yards":2.6,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-iz_strong-under-R-S11","yards":1.87,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-under-L-S3","yards":1.3,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-under-L-S11","yards":0.71,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-odd-R-S3","yards":0.2,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-odd-R-S11","yards":1.2,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-iz_strong-odd-L-S3","yards":-0.32,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-iz_strong-odd-L-S11","yards":-0.31,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-tite-R-S3","yards":3.92,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-tite-R-S11","yards":3.11,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-iz_strong-tite-L-S3","yards":1.39,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-iz_strong-tite-L-S11","yards":-1.06,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-iz_strong-bear-R-S3","yards":6.72,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-iz_strong-bear-R-S11","yards":0.02,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-iz_strong-bear-L-S3","yards":0.03,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-iz_strong-bear-L-S11","yards":0.02,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-over-R-S3","yards":2.58,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-oz_strong-over-R-S11","yards":0.64,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":5,"observerVerified":true}
+{"id":"CT-R1-oz_strong-over-L-S3","yards":0.32,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-over-L-S11","yards":1.72,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-under-R-S3","yards":-0.6,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-under-R-S11","yards":0.34,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-oz_strong-under-L-S3","yards":0.03,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-under-L-S11","yards":2.95,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-oz_strong-odd-R-S3","yards":6.94,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-odd-R-S11","yards":2.34,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-oz_strong-odd-L-S3","yards":3.56,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-oz_strong-odd-L-S11","yards":0.23,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-tite-R-S3","yards":2.43,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-oz_strong-tite-R-S11","yards":0.46,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":4,"observerVerified":true}
+{"id":"CT-R1-oz_strong-tite-L-S3","yards":3.52,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-tite-L-S11","yards":-0.2,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-oz_strong-bear-R-S3","yards":0.9,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-oz_strong-bear-R-S11","yards":-1.01,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-oz_strong-bear-L-S3","yards":2.16,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-oz_strong-bear-L-S11","yards":1.68,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-wz_strong-over-R-S3","yards":-0.92,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-wz_strong-over-R-S11","yards":0.37,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-wz_strong-over-L-S3","yards":-0.06,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-wz_strong-over-L-S11","yards":-1.73,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-wz_strong-under-R-S3","yards":-1.39,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-wz_strong-under-R-S11","yards":-0.13,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-wz_strong-under-L-S3","yards":0.91,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-wz_strong-under-L-S11","yards":3.61,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-wz_strong-odd-R-S3","yards":-0.19,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-wz_strong-odd-R-S11","yards":1.31,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-wz_strong-odd-L-S3","yards":3.17,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-wz_strong-odd-L-S11","yards":-1.33,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-wz_strong-tite-R-S3","yards":3.56,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-wz_strong-tite-R-S11","yards":1.01,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-wz_strong-tite-L-S3","yards":0.24,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-wz_strong-tite-L-S11","yards":3.43,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-wz_strong-bear-R-S3","yards":2.67,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-wz_strong-bear-R-S11","yards":1.02,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-wz_strong-bear-L-S3","yards":1.84,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-wz_strong-bear-L-S11","yards":3.15,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-power-over-R-S3","yards":1.14,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-over-R-S11","yards":1.14,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-over-L-S3","yards":0.9,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-power-over-L-S11","yards":-0.01,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-under-R-S3","yards":4.13,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-power-under-R-S11","yards":0.28,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-power-under-L-S3","yards":-1.14,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-under-L-S11","yards":-0.11,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-odd-R-S3","yards":-1.6,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":5,"observerVerified":true}
+{"id":"CT-R1-power-odd-R-S11","yards":-0.49,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":9,"observerVerified":true}
+{"id":"CT-R1-power-odd-L-S3","yards":0.49,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-odd-L-S11","yards":-1.34,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-power-tite-R-S3","yards":-0.81,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-power-tite-R-S11","yards":-0.37,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-tite-L-S3","yards":6.2,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-tite-L-S11","yards":1.57,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-power-bear-R-S3","yards":0.67,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":5,"observerVerified":true}
+{"id":"CT-R1-power-bear-R-S11","yards":0.02,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-bear-L-S3","yards":1.34,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-power-bear-L-S11","yards":3.01,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-counter-over-R-S3","yards":0.13,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-counter-over-R-S11","yards":0.61,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-counter-over-L-S3","yards":1.77,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":4,"observerVerified":true}
+{"id":"CT-R1-counter-over-L-S11","yards":-0.48,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-counter-under-R-S3","yards":0.76,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-counter-under-R-S11","yards":1.97,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":5,"observerVerified":true}
+{"id":"CT-R1-counter-under-L-S3","yards":-1.34,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":6,"observerVerified":true}
+{"id":"CT-R1-counter-under-L-S11","yards":0.77,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":8,"observerVerified":true}
+{"id":"CT-R1-counter-odd-R-S3","yards":0.01,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-counter-odd-R-S11","yards":-0.96,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-counter-odd-L-S3","yards":-0.54,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-counter-odd-L-S11","yards":0.55,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-counter-tite-R-S3","yards":0.23,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-counter-tite-R-S11","yards":7.24,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-counter-tite-L-S3","yards":-0.09,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-counter-tite-L-S11","yards":2.39,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-counter-bear-R-S3","yards":0.74,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-counter-bear-R-S11","yards":-0.2,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-counter-bear-L-S3","yards":0.41,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":4,"observerVerified":true}
+{"id":"CT-R1-counter-bear-L-S11","yards":1.02,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-trap-over-R-S3","yards":1.54,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-over-R-S11","yards":6.29,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-over-L-S3","yards":3.31,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-over-L-S11","yards":6.01,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-trap-under-R-S3","yards":1.47,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-trap-under-R-S11","yards":0.34,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-under-L-S3","yards":-0.12,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-under-L-S11","yards":1.62,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-trap-odd-R-S3","yards":1.21,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-odd-R-S11","yards":4.1,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-odd-L-S3","yards":-0.61,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-odd-L-S11","yards":2.05,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-trap-tite-R-S3","yards":-0.16,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-tite-R-S11","yards":0.36,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":8,"observerVerified":true}
+{"id":"CT-R1-trap-tite-L-S3","yards":-0.1,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-trap-tite-L-S11","yards":6.33,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-trap-bear-R-S3","yards":0.28,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-trap-bear-R-S11","yards":1.73,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-trap-bear-L-S3","yards":-0.23,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-trap-bear-L-S11","yards":2.66,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-duo-over-R-S3","yards":1.21,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-duo-over-R-S11","yards":0.86,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-duo-over-L-S3","yards":-0.74,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-duo-over-L-S11","yards":1.2,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-duo-under-R-S3","yards":-0.79,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-duo-under-R-S11","yards":0.13,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-duo-under-L-S3","yards":2.38,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-duo-under-L-S11","yards":0.89,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-duo-odd-R-S3","yards":1.24,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-duo-odd-R-S11","yards":0.73,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-duo-odd-L-S3","yards":7.44,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-duo-odd-L-S11","yards":11.61,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-duo-tite-R-S3","yards":0.77,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-duo-tite-R-S11","yards":2.39,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-duo-tite-L-S3","yards":1.18,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-duo-tite-L-S11","yards":2.7,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-duo-bear-R-S3","yards":0.66,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-duo-bear-R-S11","yards":0.16,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-duo-bear-L-S3","yards":2.56,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-duo-bear-L-S11","yards":0.93,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-split_zone-over-R-S3","yards":-0.42,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-split_zone-over-R-S11","yards":0.25,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-split_zone-over-L-S3","yards":0.24,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-split_zone-over-L-S11","yards":2.76,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-split_zone-under-R-S3","yards":0.05,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-split_zone-under-R-S11","yards":0.85,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-split_zone-under-L-S3","yards":0.62,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":6,"observerVerified":true}
+{"id":"CT-R1-split_zone-under-L-S11","yards":0.97,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-split_zone-odd-R-S3","yards":1.22,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-split_zone-odd-R-S11","yards":1.33,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":4,"observerVerified":true}
+{"id":"CT-R1-split_zone-odd-L-S3","yards":1.27,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-split_zone-odd-L-S11","yards":1.47,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-split_zone-tite-R-S3","yards":-0.27,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-split_zone-tite-R-S11","yards":2.6,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-split_zone-tite-L-S3","yards":1.14,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-split_zone-tite-L-S11","yards":4.89,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{"id":"CT-R1-split_zone-bear-R-S3","yards":-0.45,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R1-split_zone-bear-R-S11","yards":2.37,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":1,"observerVerified":true}
+{"id":"CT-R1-split_zone-bear-L-S3","yards":4.41,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":0,"observerVerified":true}
+{"id":"CT-R1-split_zone-bear-L-S11","yards":0.41,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R2-oz_strong-over-L-S11","yards":2.47,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":2,"observerVerified":true}
+{"id":"CT-R2-power-over-R-S3","yards":-0.24,"outcome":"tackle","staleMemberUpdates":0,"targetTransitions":3,"observerVerified":true}
+{
+  "output": "out/run-current-dive/baseline.json.gz",
+  "filmOutput": "out/run-current-dive/baseline-film.json.gz",
+  "sourceBefore": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "sourceAfter": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "summary": {
+    "snaps": 160,
+    "observerVerifiedCount": 160,
+    "staleSnaps": 0,
+    "staleMemberUpdates": 0,
+    "staleOLMemberUpdates": 0,
+    "staleTicks": 0,
+    "targetTransitions": 220,
+    "cancelledTransitions": 8,
+    "earnedClimbs": 5,
+    "meanYards": 1.279875,
+    "naturalEnds": 160,
+    "censors": 0
+  }
+}
