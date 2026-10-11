@@ -30,6 +30,42 @@ function stage() {
 }
 
 describe('pursuit from observed movement',()=>{
+  it('does not move the perceived intercept behind the runner merely because pursuit skill is lower',()=>{
+    const low=stage(),high=stage();
+    expect(low.d.profile).toEqual(high.d.profile);
+    expect(low.d.body).toEqual(high.d.body);
+    const points=[low,high].map(({sim,c,d},i)=>{
+      c.body.vel={x:6,y:0};
+      // A physically consistent straight-running history. Delayed perception
+      // dead-reckons it; the defender does not receive the live target state.
+      for(let k=0;k<24;k++){
+        const age=(23-k)*sim.dt;
+        sim.perception.record(sim.agents.map(a=>({pos:{x:a.pos.x-a.vel.x*age,y:a.pos.y-a.vel.y*age},
+          vel:a.vel,facing:a.facing,stance:a.stance,pose:a.pose})));
+      }
+      const rng=sim.rng.fork('zero-aim-error');
+      vi.spyOn(rng,'normal').mockReturnValue(0);
+      vi.spyOn(sim.rng,'fork').mockReturnValue(rng);
+      d.player.ratings.pursuit=i===0?10:90;
+      return pursuitPoint(sim,d,c);
+    });
+    expect(points[0]).toEqual(points[1]);
+    expect(points[0].x).toBeGreaterThan(low.c.pos.x);
+  });
+  it('keeps imperfect aiming on either side of the intercept without drawing a new error every tick',()=>{
+    const points=[-.1,0,.1].map(error=>{
+      const {sim,c,d}=stage();c.body.vel={x:6,y:0};observe(sim);
+      const rng=sim.rng.fork('aim-error');
+      const draw=vi.spyOn(rng,'normal').mockReturnValue(error);
+      vi.spyOn(sim.rng,'fork').mockReturnValue(rng);
+      const first=pursuitPoint(sim,d,c);
+      expect(pursuitPoint(sim,d,c)).toEqual(first);
+      expect(draw).toHaveBeenCalledTimes(1);
+      return first;
+    });
+    expect(points[0].x).toBeGreaterThan(points[1].x);
+    expect(points[2].x).toBeLessThan(points[1].x);
+  });
   it('does not project a stationary quarterback into a full-speed run',()=>{
     const sim=make(),qb=sim.qb,d=sim.slot('FS')!;
     qb.body.vel={x:0,y:0};observe(sim);
