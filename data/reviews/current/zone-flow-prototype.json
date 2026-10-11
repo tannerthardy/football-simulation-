@@ -42,244 +42,60 @@
         {
           "handContact": "center",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.044558720632654314
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": 0.044558720632654314,
+            "0.5": 0.14923151400068946,
+            "1": 0.3625058128826506,
+            "1.5": 0.5481766732998352,
+            "2": 0.7791840049057956
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.7791840049057956
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.14923151400068946
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.05654464541292192
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": 1.0510234633493898
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.3625058128826506
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.3158388223753068
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.5481766732998352
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.6518508325692061
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9731952552243612
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.7791840049057956
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 1.0510234633493898
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.7356579365103713
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.7356579365103713
             }
-          ]
+          }
         },
         {
           "handContact": "patch",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.044558720632654314
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": 0.044558720632654314,
+            "0.5": 0.14923151400068946,
+            "1": 0.31880780547414744,
+            "1.5": 0.531120383547858,
+            "2": 0.8299636910274852
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.8299636910274852
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.14923151400068946
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.05654464541292192
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": 0.7672525549451699
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.31880780547414744
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.28137087834908137
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.531120383547858
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.5468438102456101
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9731952552243612
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.8299636910274852
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.7672525549451699
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.7356579365103713
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.7356579365103713
             }
-          ]
+          }
         }
       ]
     },
@@ -289,244 +105,60 @@
         {
           "handContact": "center",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.04506299483186815
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": 0.04506299483186815,
+            "0.5": 0.15499848035799424,
+            "1": 0.38250225912470803,
+            "1.5": 0.5797079014698472,
+            "2": 0.736398676484443
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.736398676484443
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.15499848035799424
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.05654464541292192
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": 1.1944414946366813
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.38250225912470803
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.3228855506730035
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.5797079014698472
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.6805438227492377
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9731952552243612
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.736398676484443
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 1.1944414946366813
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.7657765283787832
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.7657765283787832
             }
-          ]
+          }
         },
         {
           "handContact": "patch",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.04506299483186815
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": 0.04506299483186815,
+            "0.5": 0.15499848035799424,
+            "1": 0.4040256019886872,
+            "1.5": 0.6697461526120687,
+            "2": 1.0565783344744126
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 1.0565783344744126
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.15499848035799424
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.05654464541292192
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": 0.8050057990062509
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.4040256019886872
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.28689705389888864
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.6697461526120687
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.5444421387883018
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9731952552243612
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 1.0565783344744126
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.8050057990062509
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.7657765283787832
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.7657765283787832
             }
-          ]
+          }
         }
       ]
     },
@@ -536,244 +168,60 @@
         {
           "handContact": "center",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.04089126202523019
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": 0.04089126202523019,
+            "0.5": 0.13769580617870325,
+            "1": 0.2951504878273692,
+            "1.5": 0.5060374132177774,
+            "2": 0.9138361925417975
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.9138361925417975
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.13769580617870325
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.05654464541292192
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": 0.9055736769090856
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.2951504878273692
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.26467602606723695
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.5060374132177774
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.5031525242316075
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9658467321857565
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.9138361925417975
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.9055736769090856
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.2387132781664292
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.2387132781664292
             }
-          ]
+          }
         },
         {
           "handContact": "patch",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.04089126202523019
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": 0.04089126202523019,
+            "0.5": 0.13769580617870325,
+            "1": 0.20196052547479404,
+            "1.5": 0.4126231115250505,
+            "2": 0.8644918187266022
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.8644918187266022
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.13769580617870325
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.05654464541292192
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": 0.7436743323653427
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.20196052547479404
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.22551276652580654
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.4126231115250505
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.5111101155330893
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9658467321857565
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": 0.8644918187266022
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.7436743323653427
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.2381103379872762
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.2381103379872762
             }
-          ]
+          }
         }
       ]
     },
@@ -783,244 +231,60 @@
         {
           "handContact": "center",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.043244605566089334
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": -0.043244605566089334,
+            "0.5": -0.0967657396732875,
+            "1": -0.17776519181972006,
+            "1.5": -0.32893708508746755,
+            "2": -0.46406231352163196
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": -0.46406231352163196
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.0967657396732875
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.052140276573274136
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": 0.14315593576969654
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.17776519181972006
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.1898262705395286
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.32893708508746755
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.09961313314895825
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9732778601183636
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.46406231352163196
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.14315593576969654
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.5653264456371012
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.5653264456371012
             }
-          ]
+          }
         },
         {
           "handContact": "patch",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.043244605566089334
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": -0.043244605566089334,
+            "0.5": -0.0967657396732875,
+            "1": -0.21221807243463253,
+            "1.5": -0.372043123217356,
+            "2": -0.43200190943757555
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": -0.43200190943757555
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.0967657396732875
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.05007008535555002
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": 0.25769842420242384
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.21221807243463253
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.17681533909208014
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.372043123217356
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.05496114082884063
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9732778601183636
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.43200190943757555
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0.25769842420242384
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.570604775797154
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.570604775797154
             }
-          ]
+          }
         }
       ]
     },
@@ -1030,244 +294,60 @@
         {
           "handContact": "center",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.043244605566089334
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": -0.043244605566089334,
+            "0.5": -0.1324574301773911,
+            "1": -0.19051069617359495,
+            "1.5": -0.49832612795893105,
+            "2": -1.0679367538556068
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": -1.0679367538556068
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.1324574301773911
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.04813241837674731
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": -0.7342121494832785
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.19051069617359495
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.26270212304840257
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.49832612795893105
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.5938766400979887
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9658467321857565
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -1.0679367538556068
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.7342121494832785
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.2265305059376796
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.2265305059376796
             }
-          ]
+          }
         },
         {
           "handContact": "patch",
           "inputs": 8,
-          "handoffTimes": [
-            1.5,
-            1.5,
-            1.5,
-            1.5,
+          "handoffRange": [
             1.45,
-            1.45,
-            1.45,
-            1.45
+            1.5
           ],
-          "displacement": [
-            {
-              "t": 0.25,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.043244605566089334
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": 0
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.028551528441843388
-                }
-              ]
+          "olTrajectoryYd": {
+            "0.25": -0.043244605566089334,
+            "0.5": -0.1324574301773911,
+            "1": -0.12846174104431896,
+            "1.5": -0.5177798370137019,
+            "2": -1.1557502686931915
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": -1.1557502686931915
             },
-            {
-              "t": 0.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.1324574301773911
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.04961746377997933
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.1350116964753294
-                }
-              ]
+            "DL": {
+              "n": 32,
+              "medianYd": -0.3701042715762295
             },
-            {
-              "t": 1,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.12846174104431896
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.3130042333194769
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.5149425375268937
-                }
-              ]
-            },
-            {
-              "t": 1.5,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -0.5177798370137019
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.39847306285338036
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 0.9658467321857565
-                }
-              ]
-            },
-            {
-              "t": 2,
-              "survivingPlays": 8,
-              "groups": [
-                {
-                  "group": "OL",
-                  "n": 40,
-                  "medianYd": -1.1557502686931915
-                },
-                {
-                  "group": "DL",
-                  "n": 32,
-                  "medianYd": -0.3701042715762295
-                },
-                {
-                  "group": "RB",
-                  "n": 8,
-                  "medianYd": 1.2231433377470378
-                }
-              ]
+            "RB": {
+              "n": 8,
+              "medianYd": 1.2231433377470378
             }
-          ]
+          }
         }
       ]
     }
@@ -1319,33 +399,34 @@
     "build": "passed",
     "testAll": {
       "files": 106,
-      "passed": 1235,
+      "passed": 1236,
       "failed": 0,
       "skipped": 0
     },
     "testData": {
-      "passed": 129,
+      "passed": 141,
       "failed": 0
     },
     "forcedPatchExistingWitnesses": {
       "passed": 42,
       "failed": 8,
       "filesFailed": 4,
-      "scope": "Test-only World.step wrapper selects patch for centered worlds; original fixture assertions are unmodified."
+      "scope": "Test-only World.step wrapper selects patch for centered worlds; original fixture assertions are unmodified.",
+      "reproduce": "node node_modules/vitest/vitest.mjs run --config scripts/diag/common-patch-vitest.config.ts --maxWorkers=1"
     }
   },
   "mechanismGuard": {
     "baseline": {
       "passed": 12,
-      "failed": 0,
-      "cohort": "8 games, seeds 101-108 at dc4bea6"
+      "failed": [],
+      "cohort": "8 games, seeds 101-108, production center hands; refreshed with merged measurement code."
     },
     "candidate": {
       "passed": 11,
       "failed": [
         "run.yards_before_contact"
       ],
-      "cohort": "8 games, seeds 101-108 using --common-patch"
+      "cohort": "8 games, seeds 101-108 with --common-patch; refreshed with merged measurement code."
     }
   },
   "promotionBlockers": [
@@ -1380,32 +461,57 @@
       "sha256": "290e69279a2d55cb2a54bd3987df974449e5d1ca7b3cc881f6de50f71035b79d"
     },
     {
-      "path": "out/zone-development/test-all-final.log",
-      "sha256": "a1b5f99d307fd681dcd860f5fd1d1670e8a2bad17534deac3131076e1725e1a4"
+      "path": "out/zone-development/test-all-merged.log",
+      "sha256": "e268e6adb4eb18e7ff4cfbb6879cd69e5e8ea82074c79929a8546542222897c5"
     },
     {
-      "path": "out/zone-development/test-data-final.log",
-      "sha256": "c4b985fb01a49ff4ae30d513910da7595dba26536c25468b02f7d1650b37040d"
+      "path": "out/zone-development/test-data-merged.log",
+      "sha256": "2c232cd5451984626182655e2d09f693cd633c67ebaa6f2afc80bdab148c13df"
     },
     {
-      "path": "out/zone-development/patch-regressions-final.log",
-      "sha256": "1d7f37a46665a667eddb09a1fad43e6bf4110971968b8edec479b4133bdafd31"
+      "path": "out/zone-development/patch-witnesses-published.log",
+      "sha256": "f5d554308ffd2103b7c8689c7ce9bef1ce33d20c0a0e5e7c077a937c36beebcd"
     },
     {
-      "path": "out/zone-development/patch-mechanics.json",
-      "sha256": "d4e4be5fa696d56b891835dd1640d31f78d5e00c47157952b4787a5095cae2e9"
+      "path": "out/zone-development/center-merged-mechanics.json",
+      "sha256": "9d65a73bef419f5c4dd506a998cf0b60a37b638f3ba5a3d9f4c517ad8e6d1703"
     },
     {
-      "path": "out/zone-development/patch-report.md",
-      "sha256": "dccabae582ac268b35665182bfcadd15942f13cd7e7670a501894253e3224d99"
+      "path": "out/zone-development/patch-merged-mechanics.json",
+      "sha256": "d104f74a9131d611009dfe07ad1ef8d0c4e09f5714fa3119bfa036cd3c64d7a7"
     },
     {
-      "path": "out/zone-development/force-patch.ts",
-      "sha256": "3828038c883885722258e0033f12610d5539801b9f1484db477fb07470f4df85"
+      "path": "out/zone-development/center-merged-report.md",
+      "sha256": "524cf3e67842b4b3601841a492c6024f515c53ff829d22554ffc1cf037a24bef"
     },
     {
-      "path": "out/zone-development/patch-vitest.config.ts",
-      "sha256": "eca92503e651d16b74fbd6e93fb4df94bf8616f7fc6eba00dc10db567f866841"
+      "path": "out/zone-development/patch-merged-report.md",
+      "sha256": "fb41b548a98026f13454e2f6e838eda40e2433e325ae13e8bb69048eb347aac4"
+    },
+    {
+      "path": "out/zone-development/center-merged-outcomes.json",
+      "sha256": "ba32c3bbcb23014e1319b0fc3db110dfd8040ea2bda412f1f38f975e9f542784"
+    },
+    {
+      "path": "out/zone-development/patch-merged-outcomes.json",
+      "sha256": "7470795b3532c3aee4eac4840dbd84683ea082befc29cc22547dd882620e2965"
+    },
+    {
+      "path": "scripts/diag/common-patch-test.setup.ts",
+      "sha256": "c280a89c1f27e592107d8b58c1ee5bb10e8651f4d01960f173ef6f7b6ae64f27"
+    },
+    {
+      "path": "scripts/diag/common-patch-vitest.config.ts",
+      "sha256": "924e733efed93dda5be06fa5fe7a27ef8c2d5d28544b2367f85723dfdd1d4fad"
+    },
+    {
+      "path": "scripts/mechanics/metrics.py",
+      "sha256": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0"
+    },
+    {
+      "path": "scripts/mechanics/sim-export.ts",
+      "sha256": "fd889f71e67c624298eb7b06c73bc0f85e4b7dc423328745e5ac0ebf01f5d39b"
     }
-  ]
+  ],
+  "integratedUpstreamCommit": "12ccf98623febd137267b29e6fa39b263082f329"
 }

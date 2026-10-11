@@ -115,8 +115,11 @@ node --import tsx scripts/diag/hand-angular-law.ts out/zone-flow/center-law.json
 node --import tsx scripts/diag/hand-angular-law.ts out/zone-flow/patch-law.json --common-patch --assert-law
 npm test -- test/hand-angular-transfer.test.ts
 
+# Unchanged promotion witnesses under patch hands (8 assertions currently fail).
+node node_modules/vitest/vitest.mjs run --config scripts/diag/common-patch-vitest.config.ts --maxWorkers=1
+
 # Candidate native-game measurement and guard (currently fails YBC guard).
-node --import tsx scripts/mechanics/sim-export.ts --common-patch --out out/zone-flow/patch-plays.jsonl.gz
+node --import tsx scripts/mechanics/sim-export.ts --common-patch --out out/zone-flow/patch-plays.jsonl.gz --review-out out/zone-flow/patch-outcomes.json
 python3 -I scripts/mechanics/measure.py out/zone-flow/patch-plays.jsonl.gz out/zone-flow/patch-mechanics.json
 python3 -I scripts/mechanics/compare.py --sim out/zone-flow/patch-mechanics.json --out out/zone-flow/patch-report.md --guard data/reviews/mechanics/guard.json
 
