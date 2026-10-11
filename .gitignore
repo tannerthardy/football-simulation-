@@ -30,6 +30,8 @@ data/reviews/**/*.txt
 !data/reviews/**/input-manifest*.json
 !data/reviews/**/source-manifest*.json
 !data/reviews/**/summary.json
+# Compact NFL/sim mechanism aggregates read by `npm run mech:report`.
+!data/reviews/mechanics/*.json
 
 # Keep these bounded aggregate references available to current diagnostics.
 !data/reviews/rushing-benchmark/reference/nfl-benchmark.json.gz
