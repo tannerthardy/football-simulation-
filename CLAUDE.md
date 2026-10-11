@@ -32,6 +32,11 @@ diagnosis. Keep the same bodies, input, seed and measurement operator for
 controlled comparisons; include ordinary, difficult, mirrored and unaffected
 cases. If two attempts do not repair the mechanism, stop and re-diagnose.
 
+For movement and contact mechanisms, `npm run mech:sim && npm run mech:report`
+compares the sim with 2022 NFL all-22 tracking using identical measurement
+code, per mechanism and per run concept (no raw data needed). A flag is a place
+to look, never a number to tune toward; see [NFL data](docs/NFL_DATA.md).
+
 Validate physics laws, movement, contacts and decisions before whole games.
 Keep shared capacities fixed during controller work. Never add strength or
 solver detail just to rescue a statistic. Old NFL benchmarks have been examined;
@@ -59,6 +64,8 @@ in ignored `out/`, not new giant files under `viewer/` or `data/reviews/`.
 
 - [Status](docs/STATUS.md): what is live, limits, random review and next work.
 - [Validation](docs/VALIDATION.md): layers, existing commands and stopping rules.
+- [NFL data](docs/NFL_DATA.md): the shared sim-vs-NFL mechanism report and
+  how to fetch the tracking archives.
 - [Data guide](data/README.md): NFL inputs, evidence retrieval and film access.
 - [Football handbook](docs/football-handbook/README.md): teaching and sources;
   proposals are not implemented features or measured NFL facts.

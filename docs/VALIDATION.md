@@ -118,6 +118,14 @@ node --import tsx scripts/diag/decision-awareness.ts out/checks/decisions.json.g
 node --import tsx scripts/diag/physics-cost.ts out/checks/cost.json 2 9
 ```
 
+Movement and contact mechanisms against 2022 NFL all-22 tracking, measured by
+the same code on both sides (no raw data needed; see [NFL data](NFL_DATA.md)):
+
+```sh
+npm run mech:sim      # record 8 games (seed 101) in the common play format
+npm run mech:report   # sim vs NFL table and guard -> out/mechanics/report.md
+```
+
 For movement, restore authorized fixtures or extract them with the existing
 numpy/pandas environment, then run the identical measurement operator:
 

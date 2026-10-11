@@ -1,0 +1,13 @@
+{
+ "about": "Mechanism metrics whose sim median and 90th percentile already sit within a quarter NFL interquartile range (8 games, seed 101). compare.py --guard fails if any of them becomes 'off'. Add a metric only once it matches for an understood reason; never add one to lock in a wrong value.",
+ "metrics": [
+  "move.max_accel.LB",
+  "move.max_accel.QB",
+  "move.max_accel.TE",
+  "move.max_speed.RB",
+  "move.max_speed.TE",
+  "move.max_speed.WR",
+  "run.handoff_s",
+  "run.yards_before_contact"
+ ]
+}

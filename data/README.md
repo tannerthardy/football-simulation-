@@ -1,5 +1,11 @@
 # NFL data, evidence and film
 
+**Start with [Using NFL tracking data to check the sim](../docs/NFL_DATA.md).**
+`npm run nfl:fetch` downloads, checksums and extracts the supplied archives;
+`npm run mech:sim && npm run mech:report` compares sim mechanisms with 2022
+all-22 tracking using one shared metric module. Aggregates are in
+[reviews/mechanics/](reviews/mechanics/).
+
 Use real data to test mechanisms in comparable situations. Outcome averages
 can reveal a concern; they cannot tell us which controller or physical law is
 wrong. [Validation](../docs/VALIDATION.md) explains the layers and reserved exam.

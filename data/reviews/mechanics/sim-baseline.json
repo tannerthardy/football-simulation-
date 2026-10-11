@@ -1,0 +1,962 @@
+{
+ "source": "sim 0f90363, seed 101, 8 games",
+ "plays": {
+  "run": 258,
+  "pass": 830
+ },
+ "metrics": {
+  "move.max_accel.DB": {
+   "n": 4706,
+   "mean": 4.797,
+   "p10": 3.641,
+   "p25": 4.135,
+   "p50": 4.724,
+   "p75": 5.406,
+   "p90": 6.149
+  },
+  "move.max_accel.DL": {
+   "n": 4315,
+   "mean": 4.506,
+   "p10": 3.062,
+   "p25": 3.794,
+   "p50": 4.419,
+   "p75": 5.273,
+   "p90": 6.155
+  },
+  "move.max_accel.LB": {
+   "n": 2906,
+   "mean": 4.479,
+   "p10": 3.255,
+   "p25": 3.778,
+   "p50": 4.375,
+   "p75": 5.039,
+   "p90": 5.876
+  },
+  "move.max_accel.OL": {
+   "n": 5425,
+   "mean": 3.482,
+   "p10": 2.292,
+   "p25": 2.795,
+   "p50": 3.484,
+   "p75": 4.102,
+   "p90": 4.664
+  },
+  "move.max_accel.QB": {
+   "n": 1088,
+   "mean": 4.036,
+   "p10": 2.918,
+   "p25": 3.125,
+   "p50": 3.75,
+   "p75": 4.715,
+   "p90": 5.352
+  },
+  "move.max_accel.RB": {
+   "n": 1207,
+   "mean": 4.569,
+   "p10": 3.125,
+   "p25": 3.649,
+   "p50": 4.414,
+   "p75": 5.363,
+   "p90": 6.363
+  },
+  "move.max_accel.TE": {
+   "n": 1208,
+   "mean": 4.782,
+   "p10": 3.362,
+   "p25": 4.375,
+   "p50": 4.884,
+   "p75": 5.585,
+   "p90": 6.149
+  },
+  "move.max_accel.WR": {
+   "n": 3025,
+   "mean": 5.486,
+   "p10": 4.488,
+   "p25": 5.0,
+   "p50": 5.625,
+   "p75": 6.25,
+   "p90": 6.276
+  },
+  "move.max_decel.DB": {
+   "n": 4706,
+   "mean": 4.101,
+   "p10": 1.392,
+   "p25": 2.652,
+   "p50": 4.135,
+   "p75": 5.608,
+   "p90": 6.641
+  },
+  "move.max_decel.DL": {
+   "n": 4315,
+   "mean": 3.769,
+   "p10": 1.889,
+   "p25": 2.714,
+   "p50": 3.715,
+   "p75": 4.738,
+   "p90": 5.656
+  },
+  "move.max_decel.LB": {
+   "n": 2906,
+   "mean": 4.04,
+   "p10": 1.656,
+   "p25": 2.782,
+   "p50": 4.102,
+   "p75": 5.274,
+   "p90": 6.276
+  },
+  "move.max_decel.OL": {
+   "n": 5425,
+   "mean": 3.636,
+   "p10": 1.903,
+   "p25": 2.741,
+   "p50": 3.75,
+   "p75": 4.532,
+   "p90": 5.246
+  },
+  "move.max_decel.QB": {
+   "n": 1088,
+   "mean": 4.586,
+   "p10": 1.351,
+   "p25": 3.75,
+   "p50": 5.625,
+   "p75": 5.625,
+   "p90": 6.25
+  },
+  "move.max_decel.RB": {
+   "n": 1207,
+   "mean": 4.929,
+   "p10": 2.562,
+   "p25": 3.187,
+   "p50": 4.75,
+   "p75": 6.481,
+   "p90": 7.254
+  },
+  "move.max_decel.TE": {
+   "n": 1208,
+   "mean": 4.483,
+   "p10": 2.5,
+   "p25": 3.491,
+   "p50": 4.546,
+   "p75": 5.625,
+   "p90": 6.25
+  },
+  "move.max_decel.WR": {
+   "n": 3025,
+   "mean": 4.962,
+   "p10": 2.577,
+   "p25": 4.051,
+   "p50": 5.185,
+   "p75": 6.167,
+   "p90": 6.854
+  },
+  "move.max_speed.DB": {
+   "n": 4706,
+   "mean": 6.463,
+   "p10": 4.0,
+   "p25": 5.154,
+   "p50": 6.519,
+   "p75": 7.826,
+   "p90": 8.86
+  },
+  "move.max_speed.DL": {
+   "n": 4315,
+   "mean": 4.326,
+   "p10": 2.0,
+   "p25": 2.926,
+   "p50": 4.07,
+   "p75": 5.799,
+   "p90": 6.824
+  },
+  "move.max_speed.LB": {
+   "n": 2906,
+   "mean": 5.483,
+   "p10": 2.85,
+   "p25": 3.905,
+   "p50": 5.523,
+   "p75": 6.964,
+   "p90": 8.062
+  },
+  "move.max_speed.OL": {
+   "n": 5425,
+   "mean": 3.376,
+   "p10": 1.768,
+   "p25": 2.358,
+   "p50": 3.25,
+   "p75": 4.1,
+   "p90": 5.315
+  },
+  "move.max_speed.QB": {
+   "n": 1088,
+   "mean": 4.094,
+   "p10": 2.75,
+   "p25": 3.01,
+   "p50": 3.536,
+   "p75": 4.743,
+   "p90": 6.519
+  },
+  "move.max_speed.RB": {
+   "n": 1207,
+   "mean": 5.319,
+   "p10": 3.041,
+   "p25": 4.257,
+   "p50": 5.344,
+   "p75": 6.325,
+   "p90": 7.387
+  },
+  "move.max_speed.TE": {
+   "n": 1208,
+   "mean": 5.302,
+   "p10": 2.574,
+   "p25": 3.808,
+   "p50": 5.506,
+   "p75": 6.75,
+   "p90": 7.504
+  },
+  "move.max_speed.WR": {
+   "n": 3025,
+   "mean": 6.625,
+   "p10": 4.5,
+   "p25": 5.006,
+   "p50": 7.0,
+   "p75": 7.754,
+   "p90": 8.75
+  },
+  "pass.box_rusher_depth_2s": {
+   "n": 2838,
+   "mean": 2.276,
+   "p10": 0.9,
+   "p25": 1.6,
+   "p50": 2.5,
+   "p75": 3.1,
+   "p90": 3.7
+  },
+  "pass.box_rusher_speed_0_5s": {
+   "n": 2846,
+   "mean": 1.451,
+   "p10": 1.031,
+   "p25": 1.25,
+   "p50": 1.458,
+   "p75": 1.677,
+   "p90": 1.904
+  },
+  "pass.nearest_defender_to_qb_at_throw": {
+   "n": 757,
+   "mean": 3.804,
+   "p10": 1.836,
+   "p25": 2.625,
+   "p50": 4.085,
+   "p75": 5.004,
+   "p90": 5.515
+  },
+  "pass.ol_depth_given_2s": {
+   "n": 829,
+   "mean": 2.515,
+   "p10": 1.54,
+   "p25": 2.08,
+   "p50": 2.72,
+   "p75": 2.98,
+   "p90": 3.2
+  },
+  "pass.pressure_2yd_before_throw": {
+   "n": 830,
+   "mean": 0.204,
+   "p10": 0.0,
+   "p25": 0.0,
+   "p50": 0.0,
+   "p75": 0.0,
+   "p90": 1.0
+  },
+  "pass.qb_depth_at_throw": {
+   "n": 757,
+   "mean": 7.754,
+   "p10": 6.9,
+   "p25": 7.7,
+   "p50": 7.9,
+   "p75": 7.9,
+   "p90": 8.2
+  },
+  "pass.separation_at_arrival": {
+   "n": 757,
+   "mean": 3.021,
+   "p10": 0.849,
+   "p25": 1.552,
+   "p50": 2.608,
+   "p75": 3.912,
+   "p90": 5.334
+  },
+  "pass.time_to_throw": {
+   "n": 757,
+   "mean": 2.487,
+   "p10": 1.8,
+   "p25": 2.05,
+   "p50": 2.35,
+   "p75": 2.85,
+   "p90": 3.3
+  },
+  "run.carrier_cross_los_s": {
+   "n": 137,
+   "mean": 2.703,
+   "p10": 2.3,
+   "p25": 2.4,
+   "p50": 2.7,
+   "p75": 2.9,
+   "p90": 3.2
+  },
+  "run.carrier_cross_los_s@draw": {
+   "n": 5,
+   "mean": 2.94,
+   "p10": 2.7,
+   "p25": 2.8,
+   "p50": 2.8,
+   "p75": 2.8,
+   "p90": 3.6
+  },
+  "run.carrier_cross_los_s@gap_pull": {
+   "n": 37,
+   "mean": 2.949,
+   "p10": 2.6,
+   "p25": 2.8,
+   "p50": 3.0,
+   "p75": 3.2,
+   "p90": 3.4
+  },
+  "run.carrier_cross_los_s@inside_zone": {
+   "n": 28,
+   "mean": 2.507,
+   "p10": 2.4,
+   "p25": 2.4,
+   "p50": 2.4,
+   "p75": 2.6,
+   "p90": 2.7
+  },
+  "run.carrier_cross_los_s@man_duo": {
+   "n": 17,
+   "mean": 2.676,
+   "p10": 2.4,
+   "p25": 2.4,
+   "p50": 2.7,
+   "p75": 2.7,
+   "p90": 3.1
+  },
+  "run.carrier_cross_los_s@outside_zone": {
+   "n": 42,
+   "mean": 2.55,
+   "p10": 2.3,
+   "p25": 2.4,
+   "p50": 2.5,
+   "p75": 2.8,
+   "p90": 2.8
+  },
+  "run.carrier_peak_speed_before_contact": {
+   "n": 258,
+   "mean": 5.231,
+   "p10": 3.363,
+   "p25": 3.953,
+   "p50": 4.962,
+   "p75": 6.175,
+   "p90": 7.517
+  },
+  "run.carrier_peak_speed_before_contact@draw": {
+   "n": 11,
+   "mean": 5.551,
+   "p10": 4.472,
+   "p25": 4.5,
+   "p50": 5.154,
+   "p75": 6.731,
+   "p90": 7.289
+  },
+  "run.carrier_peak_speed_before_contact@gap_pull": {
+   "n": 101,
+   "mean": 4.139,
+   "p10": 2.926,
+   "p25": 3.363,
+   "p50": 3.905,
+   "p75": 4.776,
+   "p90": 5.942
+  },
+  "run.carrier_peak_speed_before_contact@inside_zone": {
+   "n": 47,
+   "mean": 5.638,
+   "p10": 4.039,
+   "p25": 4.366,
+   "p50": 5.397,
+   "p75": 6.671,
+   "p90": 7.517
+  },
+  "run.carrier_peak_speed_before_contact@man_duo": {
+   "n": 28,
+   "mean": 5.348,
+   "p10": 4.528,
+   "p25": 4.697,
+   "p50": 5.056,
+   "p75": 5.831,
+   "p90": 6.731
+  },
+  "run.carrier_peak_speed_before_contact@outside_zone": {
+   "n": 62,
+   "mean": 6.444,
+   "p10": 4.507,
+   "p25": 5.154,
+   "p50": 6.175,
+   "p75": 7.718,
+   "p90": 8.807
+  },
+  "run.engaged_dl_driven_back_1s": {
+   "n": 756,
+   "mean": -0.415,
+   "p10": -1.1,
+   "p25": -0.6,
+   "p50": -0.3,
+   "p75": -0.1,
+   "p90": 0.0
+  },
+  "run.engaged_dl_driven_back_1s@draw": {
+   "n": 30,
+   "mean": -1.517,
+   "p10": -1.9,
+   "p25": -1.7,
+   "p50": -1.4,
+   "p75": -1.3,
+   "p90": -1.2
+  },
+  "run.engaged_dl_driven_back_1s@gap_pull": {
+   "n": 272,
+   "mean": -0.456,
+   "p10": -1.2,
+   "p25": -0.8,
+   "p50": -0.3,
+   "p75": -0.1,
+   "p90": 0.0
+  },
+  "run.engaged_dl_driven_back_1s@inside_zone": {
+   "n": 144,
+   "mean": -0.342,
+   "p10": -0.7,
+   "p25": -0.5,
+   "p50": -0.3,
+   "p75": -0.2,
+   "p90": 0.0
+  },
+  "run.engaged_dl_driven_back_1s@man_duo": {
+   "n": 91,
+   "mean": -0.179,
+   "p10": -0.6,
+   "p25": -0.3,
+   "p50": -0.1,
+   "p75": 0.0,
+   "p90": 0.1
+  },
+  "run.engaged_dl_driven_back_1s@outside_zone": {
+   "n": 190,
+   "mean": -0.372,
+   "p10": -0.7,
+   "p25": -0.6,
+   "p50": -0.4,
+   "p75": -0.1,
+   "p90": 0.0
+  },
+  "run.engaged_dl_driven_back_2s": {
+   "n": 727,
+   "mean": -0.163,
+   "p10": -1.6,
+   "p25": -0.9,
+   "p50": -0.3,
+   "p75": 0.7,
+   "p90": 1.5
+  },
+  "run.engaged_dl_driven_back_2s@draw": {
+   "n": 32,
+   "mean": -2.381,
+   "p10": -3.8,
+   "p25": -2.7,
+   "p50": -2.3,
+   "p75": -1.9,
+   "p90": -1.3
+  },
+  "run.engaged_dl_driven_back_2s@gap_pull": {
+   "n": 276,
+   "mean": -0.256,
+   "p10": -1.5,
+   "p25": -1.0,
+   "p50": -0.6,
+   "p75": 0.5,
+   "p90": 1.4
+  },
+  "run.engaged_dl_driven_back_2s@inside_zone": {
+   "n": 125,
+   "mean": 0.103,
+   "p10": -1.3,
+   "p25": -0.8,
+   "p50": -0.1,
+   "p75": 1.2,
+   "p90": 1.8
+  },
+  "run.engaged_dl_driven_back_2s@man_duo": {
+   "n": 81,
+   "mean": 0.454,
+   "p10": -1.0,
+   "p25": -0.7,
+   "p50": 0.7,
+   "p75": 1.2,
+   "p90": 1.5
+  },
+  "run.engaged_dl_driven_back_2s@outside_zone": {
+   "n": 185,
+   "mean": -0.071,
+   "p10": -1.3,
+   "p25": -0.8,
+   "p50": -0.2,
+   "p75": 0.7,
+   "p90": 1.4
+  },
+  "run.engaged_dl_driven_back_3s": {
+   "n": 610,
+   "mean": 0.274,
+   "p10": -1.5,
+   "p25": -0.9,
+   "p50": -0.3,
+   "p75": 1.3,
+   "p90": 3.0
+  },
+  "run.engaged_dl_driven_back_3s@draw": {
+   "n": 24,
+   "mean": -2.15,
+   "p10": -3.6,
+   "p25": -3.0,
+   "p50": -2.4,
+   "p75": -1.7,
+   "p90": 0.3
+  },
+  "run.engaged_dl_driven_back_3s@gap_pull": {
+   "n": 237,
+   "mean": 0.101,
+   "p10": -1.3,
+   "p25": -0.9,
+   "p50": -0.5,
+   "p75": 0.8,
+   "p90": 2.4
+  },
+  "run.engaged_dl_driven_back_3s@inside_zone": {
+   "n": 100,
+   "mean": 0.762,
+   "p10": -1.4,
+   "p25": -0.8,
+   "p50": 0.4,
+   "p75": 2.6,
+   "p90": 3.8
+  },
+  "run.engaged_dl_driven_back_3s@man_duo": {
+   "n": 58,
+   "mean": 1.331,
+   "p10": -0.6,
+   "p25": -0.3,
+   "p50": 1.5,
+   "p75": 2.3,
+   "p90": 3.2
+  },
+  "run.engaged_dl_driven_back_3s@outside_zone": {
+   "n": 166,
+   "mean": 0.317,
+   "p10": -1.3,
+   "p25": -0.9,
+   "p50": -0.2,
+   "p75": 1.3,
+   "p90": 2.9
+  },
+  "run.first_contact_s": {
+   "n": 253,
+   "mean": 2.853,
+   "p10": 2.15,
+   "p25": 2.45,
+   "p50": 2.8,
+   "p75": 3.25,
+   "p90": 3.65
+  },
+  "run.first_contact_s@draw": {
+   "n": 11,
+   "mean": 2.964,
+   "p10": 2.3,
+   "p25": 2.35,
+   "p50": 3,
+   "p75": 3.6,
+   "p90": 3.75
+  },
+  "run.first_contact_s@gap_pull": {
+   "n": 101,
+   "mean": 2.813,
+   "p10": 2,
+   "p25": 2.4,
+   "p50": 2.85,
+   "p75": 3.15,
+   "p90": 3.5
+  },
+  "run.first_contact_s@inside_zone": {
+   "n": 44,
+   "mean": 2.669,
+   "p10": 2.1,
+   "p25": 2.35,
+   "p50": 2.6,
+   "p75": 2.9,
+   "p90": 3.3
+  },
+  "run.first_contact_s@man_duo": {
+   "n": 28,
+   "mean": 2.821,
+   "p10": 2.2,
+   "p25": 2.45,
+   "p50": 2.75,
+   "p75": 3.2,
+   "p90": 3.4
+  },
+  "run.first_contact_s@outside_zone": {
+   "n": 60,
+   "mean": 2.972,
+   "p10": 2.3,
+   "p25": 2.6,
+   "p50": 2.8,
+   "p75": 3.35,
+   "p90": 3.75
+  },
+  "run.handoff_s": {
+   "n": 258,
+   "mean": 1.249,
+   "p10": 1,
+   "p25": 1.05,
+   "p50": 1.3,
+   "p75": 1.5,
+   "p90": 1.5
+  },
+  "run.handoff_s@draw": {
+   "n": 11,
+   "mean": 1.3,
+   "p10": 1.3,
+   "p25": 1.3,
+   "p50": 1.3,
+   "p75": 1.3,
+   "p90": 1.3
+  },
+  "run.handoff_s@gap_pull": {
+   "n": 101,
+   "mean": 1.311,
+   "p10": 0.9,
+   "p25": 1.2,
+   "p50": 1.3,
+   "p75": 1.5,
+   "p90": 1.5
+  },
+  "run.handoff_s@inside_zone": {
+   "n": 47,
+   "mean": 1.254,
+   "p10": 1.05,
+   "p25": 1.05,
+   "p50": 1.3,
+   "p75": 1.5,
+   "p90": 1.5
+  },
+  "run.handoff_s@man_duo": {
+   "n": 28,
+   "mean": 1.309,
+   "p10": 1.05,
+   "p25": 1.15,
+   "p50": 1.3,
+   "p75": 1.5,
+   "p90": 1.5
+  },
+  "run.handoff_s@outside_zone": {
+   "n": 62,
+   "mean": 1.192,
+   "p10": 1,
+   "p25": 1,
+   "p50": 1.05,
+   "p75": 1.3,
+   "p90": 1.5
+  },
+  "run.max_engaged_dl_driven_back_3s": {
+   "n": 213,
+   "mean": 1.871,
+   "p10": -0.3,
+   "p25": 0.6,
+   "p50": 1.9,
+   "p75": 3.1,
+   "p90": 4.4
+  },
+  "run.max_engaged_dl_driven_back_3s@draw": {
+   "n": 9,
+   "mean": -1.122,
+   "p10": -2.5,
+   "p25": -2.4,
+   "p50": -1.7,
+   "p75": 0.3,
+   "p90": 0.7
+  },
+  "run.max_engaged_dl_driven_back_3s@gap_pull": {
+   "n": 81,
+   "mean": 1.728,
+   "p10": -0.3,
+   "p25": 0.5,
+   "p50": 1.4,
+   "p75": 2.6,
+   "p90": 4.5
+  },
+  "run.max_engaged_dl_driven_back_3s@inside_zone": {
+   "n": 36,
+   "mean": 2.858,
+   "p10": 0.8,
+   "p25": 1.8,
+   "p50": 3.1,
+   "p75": 3.8,
+   "p90": 4.5
+  },
+  "run.max_engaged_dl_driven_back_3s@man_duo": {
+   "n": 21,
+   "mean": 2.7,
+   "p10": 1.5,
+   "p25": 1.9,
+   "p50": 2.7,
+   "p75": 3.2,
+   "p90": 4.0
+  },
+  "run.max_engaged_dl_driven_back_3s@outside_zone": {
+   "n": 57,
+   "mean": 1.867,
+   "p10": -0.1,
+   "p25": 0.4,
+   "p50": 1.9,
+   "p75": 3.0,
+   "p90": 4.2
+  },
+  "run.ol_forward_1s": {
+   "n": 258,
+   "mean": 0.512,
+   "p10": 0.2,
+   "p25": 0.34,
+   "p50": 0.56,
+   "p75": 0.74,
+   "p90": 0.86
+  },
+  "run.ol_forward_1s@draw": {
+   "n": 11,
+   "mean": -0.587,
+   "p10": -0.6,
+   "p25": -0.6,
+   "p50": -0.6,
+   "p75": -0.58,
+   "p90": -0.58
+  },
+  "run.ol_forward_1s@gap_pull": {
+   "n": 101,
+   "mean": 0.358,
+   "p10": 0.18,
+   "p25": 0.26,
+   "p50": 0.32,
+   "p75": 0.46,
+   "p90": 0.56
+  },
+  "run.ol_forward_1s@inside_zone": {
+   "n": 47,
+   "mean": 0.73,
+   "p10": 0.56,
+   "p25": 0.62,
+   "p50": 0.72,
+   "p75": 0.82,
+   "p90": 0.94
+  },
+  "run.ol_forward_1s@man_duo": {
+   "n": 28,
+   "mean": 0.881,
+   "p10": 0.82,
+   "p25": 0.84,
+   "p50": 0.88,
+   "p75": 0.9,
+   "p90": 0.94
+  },
+  "run.ol_forward_1s@outside_zone": {
+   "n": 62,
+   "mean": 0.613,
+   "p10": 0.42,
+   "p25": 0.5,
+   "p50": 0.6,
+   "p75": 0.74,
+   "p90": 0.82
+  },
+  "run.yards": {
+   "n": 258,
+   "mean": 5.571,
+   "p10": -0.86,
+   "p25": 0.04,
+   "p50": 1.7,
+   "p75": 5.39,
+   "p90": 12.11
+  },
+  "run.yards@draw": {
+   "n": 11,
+   "mean": 3.328,
+   "p10": -1.65,
+   "p25": -0.63,
+   "p50": 1.94,
+   "p75": 3.79,
+   "p90": 10.47
+  },
+  "run.yards@gap_pull": {
+   "n": 101,
+   "mean": 1.959,
+   "p10": -1.26,
+   "p25": -0.56,
+   "p50": 0.42,
+   "p75": 2.26,
+   "p90": 4.4
+  },
+  "run.yards@inside_zone": {
+   "n": 47,
+   "mean": 5.523,
+   "p10": -0.7,
+   "p25": 0.74,
+   "p50": 2.23,
+   "p75": 5.19,
+   "p90": 11.11
+  },
+  "run.yards@man_duo": {
+   "n": 28,
+   "mean": 2.812,
+   "p10": 0.42,
+   "p25": 1.03,
+   "p50": 1.74,
+   "p75": 4.8,
+   "p90": 6.35
+  },
+  "run.yards@outside_zone": {
+   "n": 62,
+   "mean": 10.372,
+   "p10": -0.49,
+   "p25": 1.49,
+   "p50": 5.57,
+   "p75": 12.22,
+   "p90": 18.46
+  },
+  "run.yards_after_contact": {
+   "n": 253,
+   "mean": 4.004,
+   "p10": 0.43,
+   "p25": 0.84,
+   "p50": 1.57,
+   "p75": 2.75,
+   "p90": 6.01
+  },
+  "run.yards_after_contact@draw": {
+   "n": 11,
+   "mean": 3.128,
+   "p10": 0.36,
+   "p25": 1.13,
+   "p50": 1.57,
+   "p75": 4.67,
+   "p90": 5.87
+  },
+  "run.yards_after_contact@gap_pull": {
+   "n": 101,
+   "mean": 2.247,
+   "p10": 0.23,
+   "p25": 0.56,
+   "p50": 0.91,
+   "p75": 1.65,
+   "p90": 2.95
+  },
+  "run.yards_after_contact@inside_zone": {
+   "n": 44,
+   "mean": 2.413,
+   "p10": 0.78,
+   "p25": 1.23,
+   "p50": 1.75,
+   "p75": 2.32,
+   "p90": 3.91
+  },
+  "run.yards_after_contact@man_duo": {
+   "n": 28,
+   "mean": 1.755,
+   "p10": 0.69,
+   "p25": 1.03,
+   "p50": 1.63,
+   "p75": 2.26,
+   "p90": 3.18
+  },
+  "run.yards_after_contact@outside_zone": {
+   "n": 60,
+   "mean": 6.665,
+   "p10": 1.0,
+   "p25": 1.74,
+   "p50": 3.13,
+   "p75": 5.56,
+   "p90": 11.39
+  },
+  "run.yards_before_contact": {
+   "n": 253,
+   "mean": 0.853,
+   "p10": -1.8,
+   "p25": -1.2,
+   "p50": 0.1,
+   "p75": 2.3,
+   "p90": 4.7
+  },
+  "run.yards_before_contact@draw": {
+   "n": 11,
+   "mean": 0.2,
+   "p10": -3.3,
+   "p25": -2,
+   "p50": -1.1,
+   "p75": 2.4,
+   "p90": 5.8
+  },
+  "run.yards_before_contact@gap_pull": {
+   "n": 101,
+   "mean": -0.288,
+   "p10": -2,
+   "p25": -1.4,
+   "p50": -0.5,
+   "p75": 0.7,
+   "p90": 2.1
+  },
+  "run.yards_before_contact@inside_zone": {
+   "n": 44,
+   "mean": 0.77,
+   "p10": -1.7,
+   "p25": -1,
+   "p50": 0.4,
+   "p75": 1.5,
+   "p90": 3.3
+  },
+  "run.yards_before_contact@man_duo": {
+   "n": 28,
+   "mean": 1.057,
+   "p10": -1.2,
+   "p25": -0.6,
+   "p50": 0.5,
+   "p75": 2.5,
+   "p90": 3.1
+  },
+  "run.yards_before_contact@outside_zone": {
+   "n": 60,
+   "mean": 2.568,
+   "p10": -1.3,
+   "p25": -0.8,
+   "p50": 2.2,
+   "p75": 4.5,
+   "p90": 8.5
+  }
+ },
+ "definitions": {
+  "run.*": "Designed handoffs to an RB (no QB runs, no scrambles). Times are seconds after the snap.",
+  "run.carrier_cross_los_s": "First frame the carrier is past the line, before first contact.",
+  "run.yards_before_contact": "Carrier's x at the first-contact event (negative = behind the line).",
+  "run.yards_after_contact": "Play yards minus yards before contact.",
+  "run.engaged_dl_driven_back_Ns": "Per box defender within 1.5 yd of an OL at N s: yards he has moved toward his own goal since the snap. Live plays only.",
+  "run.max_engaged_dl_driven_back_3s": "Per play, the furthest any engaged box defender has been driven back at 3 s.",
+  "run.ol_forward_1s": "Mean forward movement of the OL at 1 s.",
+  "pass.*": "Dropbacks. Throw = pass_forward event.",
+  "pass.pressure_2yd_before_throw": "Share of dropbacks with a defender within 2 yd of the QB between 0.5 s and the throw (or 4 s).",
+  "pass.ol_depth_given_2s": "Mean OL retreat toward the QB at 2 s (includes the normal pass set).",
+  "pass.box_rusher_speed_0_5s": "Speed of each box defender at 0.5 s (get-off).",
+  "pass.box_rusher_depth_2s": "How far each box defender is into the backfield at 2 s.",
+  "pass.separation_at_arrival": "Target receiver to nearest defender when the ball arrives.",
+  "run.*@family": "The same run metric within one concept family (inside_zone, outside_zone, gap_pull, man_duo, draw).",
+  "move.*": "Per player per play, from positions: top speed (yd/s), peak acceleration and deceleration (yd/s^2), players who reach at least 1 yd/s."
+ }
+}
