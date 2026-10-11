@@ -917,17 +917,21 @@ export class RunBlocker implements Behavior {
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
     const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
-    const fit = isOL(a) && (plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
+    const fitCandidate = isOL(a) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
       && (!plan.combination || plan.combination.released)
       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
-    const contactFit = fit && plan.kind === 'cutoff' && plan.contactFit?.target === target
+    const contactFit = fitCandidate && plan.kind === 'cutoff' && plan.contactFit?.target === target
       ? plan.contactFit : null;
     // A clearly lost shoulder is a foot-recovery decision, not a fresh hold.
     // Keep marginal reaches and actual collisions; use the same observed
     // leverage boundary as an established run block, without a time grace.
     const fitDrive = contactFit ? { x: -contactFit.axis.x, y: -contactFit.axis.y }
       : zone ? { x: 1, y: 0 } : plan.drive;
-    const lost = fit && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+    const lost = fitCandidate && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+    // A solo drive still strikes downhill from an ordinary fit. Once the
+    // personally observed shoulder is gone, replace the feet before reaching
+    // again, using the same bounded recovery as other first-level blocks.
+    const fit = fitCandidate && (plan.kind !== 'drive' || lost);
     if (!lost && dd < contact) {
       const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? undefined);
       if (e) {

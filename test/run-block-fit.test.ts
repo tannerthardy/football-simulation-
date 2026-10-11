@@ -102,6 +102,23 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
       expect(execute(blocker.body, command).moved).toEqual(execute(blocker.body, ordinary).moved);
     });
 
+  it.each([0, 1.099])('keeps a solo drive below the observed recovery boundary, phi %s', phi => {
+    const { sim, blocker, defender } = stage('drive');
+    (blocker.behavior as RunBlocker).plan.drive = { x: 1, y: 0 };
+    Object.defineProperty(blocker.mind, 'placementError', { get: () => 0 });
+    const seen = sim.see(blocker, defender), angle = phi * Math.PI / 2;
+    blocker.body.pos = { x: seen.pos.x - 1.8 * Math.cos(angle), y: seen.pos.y + 1.8 * Math.sin(angle) };
+    blocker.body.vel = { x: 0, y: 0 };
+    const original = { ...runThrough(blocker, seen.pos), posture: .7 };
+    const fit = vi.spyOn(RunBlockFit, 'chooseRunBlockFit');
+    const command = blocker.behavior.update(blocker, sim);
+    expect(Math.abs(observedBlockLeverage(blocker, seen, { x: 1, y: 0 }))).toBeCloseTo(phi, 12);
+    expect(fit).not.toHaveBeenCalled();
+    expect(blocker.engagement).toBeNull();
+    expect(command).toEqual(original);
+    expect(execute(blocker.body, command).moved).toEqual(execute(blocker.body, original).moved);
+  });
+
   it('a square down block keeps its supported downhill strike', () => {
     const { sim, blocker, defender, bodyContact } = stage('down');
     const command = blocker.behavior.update(blocker, sim) as Intent;
@@ -115,9 +132,14 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
     expect(moved.support!.state).toBe('up');
   });
 
-  it('keeps a live planned double outside corrected fit requests', () => {
-    const { sim, blocker, defender } = stage('reach'), partner = sim.slot('LG')!;
+  it.each(['reach', 'drive'] as RunBlockKind[])('keeps a live planned %s double outside corrected fit requests', kind => {
+    const { sim, blocker, defender } = stage(kind), partner = sim.slot('LG')!;
     const behavior = blocker.behavior as RunBlocker;
+    if (kind === 'drive') {
+      behavior.plan.drive = { x: 1, y: 0 };
+      blocker.body.pos = { x: defender.pos.x + 1.8, y: defender.pos.y + .3 };
+      expect(Math.abs(observedBlockLeverage(blocker, sim.see(blocker, defender), behavior.plan.drive))).toBeGreaterThan(1.1);
+    }
     const combination: Combination = { members: [blocker, partner], defender, backer: sim.slot('LB_W')!,
       released: false, secureSince: -1, nextRead: 10 };
     behavior.plan.combination = combination;
@@ -131,8 +153,13 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
     expect(moved.pos).not.toEqual(blocker.pos);
   });
 
-  it('keeps a body whose hands already belong to a contact constraint outside correction', () => {
-    const { sim, blocker, defender } = stage();
+  it.each(['cutoff', 'drive'] as RunBlockKind[])('keeps a jointed %s body outside correction', kind => {
+    const { sim, blocker, defender } = stage(kind);
+    if (kind === 'drive') {
+      (blocker.behavior as RunBlocker).plan.drive = { x: 1, y: 0 };
+      blocker.body.pos = { x: defender.pos.x + 1.8, y: defender.pos.y + .3 };
+      expect(Math.abs(observedBlockLeverage(blocker, sim.see(blocker, defender), { x: 1, y: 0 }))).toBeGreaterThan(1.1);
+    }
     sim.world.joints.push({ kind: 'hands', a: blocker.body, b: defender.body, extension: 1,
       push: 0, hold: 0, steer: 0 });
     const fit = vi.spyOn(RunBlockFit, 'chooseRunBlockFit');
@@ -140,8 +167,22 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
     expect(fit).not.toHaveBeenCalled();
   });
 
-  it('declines a visibly lost commitment even when the unseen actual shoulder is reachable', () => {
-    const { sim, blocker, defender } = stage();
+  it('keeps a solo drive with acquired hands in the existing engagement controller', () => {
+    const { sim, blocker, defender, bodyContact } = stage('drive');
+    (blocker.behavior as RunBlocker).plan.drive = { x: 1, y: 0 };
+    defender.body.pos = { x: blocker.pos.x + bodyContact + .1, y: blocker.pos.y };
+    const engagement = sim.engage(blocker, defender, 'run', { x: 1, y: 0 });
+    expect(engagement).not.toBeNull();
+    const fit = vi.spyOn(RunBlockFit, 'chooseRunBlockFit');
+    const command = blocker.behavior.update(blocker, sim);
+    expect(fit).not.toHaveBeenCalled();
+    expect(blocker.engagement).toBe(engagement);
+    expect(sim.world.joints).toContain(engagement!.hands);
+    expect(command.vel).toEqual({ x: 0, y: 0 });
+  });
+
+  it.each(['cutoff', 'drive'] as RunBlockKind[])('%s declines a visibly lost commitment even when the unseen actual shoulder is reachable', kind => {
+    const { sim, blocker, defender } = stage(kind);
     (blocker.behavior as RunBlocker).plan.drive = { x: 1, y: 0 };
     defender.body.pos = { x: 41, y: CENTER_Y };
     const seen: Perceived = { pos: { x: 39, y: CENTER_Y }, vel: { x: 0, y: 0 }, stance: null, facing: Math.PI, age: .3 };
@@ -153,8 +194,8 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
     expect(blocker.engagement).toBeNull();
   });
 
-  it('an unseen loss of leverage can still produce a reachable bounded first-contact swipe', () => {
-    const { sim, blocker, defender } = stage();
+  it.each(['cutoff', 'drive'] as RunBlockKind[])('an unseen %s loss of leverage can still produce a reachable bounded first-contact swipe', kind => {
+    const { sim, blocker, defender } = stage(kind);
     (blocker.behavior as RunBlocker).plan.drive = { x: 1, y: 0 };
     defender.body.pos = { x: 39, y: CENTER_Y };
     const seen: Perceived = { pos: { x: 41, y: CENTER_Y }, vel: { x: 0, y: 0 }, stance: null, facing: Math.PI, age: .3 };
@@ -199,6 +240,81 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
     const { moved } = execute(blocker.body, chosen);
     expect(Math.hypot(moved.pos.x - seen.pos.x, moved.pos.y - seen.pos.y)).toBeGreaterThanOrEqual(bodyContact);
     expect(Math.abs(observedBlockLeverage({ pos: moved.pos } as typeof blocker, seen, drive))).toBeGreaterThan(1.1);
+  });
+
+  it('a visibly lost solo drive requests the existing arc and executes mirrored bounded recovery', () => {
+    const trace = (side: number) => {
+      const s = stage('drive'), drive = { x: 1, y: 0 };
+      (s.blocker.behavior as RunBlocker).plan.drive = drive;
+      Object.defineProperty(s.blocker.mind, 'placementError', { get: () => 0 });
+      s.defender.body.facing = side * Math.PI;
+      const seen: Perceived = { pos: { ...s.defender.pos }, vel: { x: 0, y: 0 },
+        stance: null, facing: s.defender.facing, age: .3 };
+      s.blocker.body.pos = { x: seen.pos.x + s.bodyContact + .15, y: seen.pos.y + side * .3 };
+      s.blocker.body.vel = { x: 0, y: 0 };
+      s.blocker.body.facing = 0;
+      const ordinarySee = s.sim.see.bind(s.sim);
+      vi.spyOn(s.sim, 'see').mockImplementation((a, b, scale) => a === s.blocker && b === s.defender
+        ? seen : ordinarySee(a, b, scale));
+      const start = { ...s.blocker.pos }, startPhi = Math.abs(observedBlockLeverage(s.blocker, seen, drive));
+      const world = new World([s.blocker.body, s.defender.body]);
+      world.time = s.sim.t;
+      const requests: Intent[] = [], pictures: Perceived[] = [];
+      expect(startPhi).toBeGreaterThan(1.1);
+      for (let k = 0; k < 16; k++) {
+        seen.pos = { ...s.defender.pos }; seen.vel = { ...s.defender.vel };
+        seen.facing = s.defender.facing;
+        // End this recovery witness when the observed shoulder is no longer
+        // clearly lost; first contact is a separate actual-World contract.
+        if (Math.abs(observedBlockLeverage(s.blocker, seen, drive)) < 1.1) break;
+        const original = { ...runThrough(s.blocker, seen.pos), posture: .7 };
+        const expected = chooseRunBlockFit(s.blocker, seen, drive, seen.pos, 0,
+          s.contact, s.bodyContact, original, world.time);
+        const request = s.blocker.behavior.update(s.blocker, s.sim);
+        expect(request).toEqual(expected);
+        expect(s.blocker.engagement).toBeNull();
+        if (k === 0) expect(request.vel.y * side).toBeGreaterThan(0);
+        requests.push(structuredClone(request)); pictures.push(structuredClone(seen));
+        const report = world.step([request, { vel: { x: 0, y: 0 }, posture: .7 }], .05);
+        expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+        expect(report.armImpulse).toEqual([0, 0]);
+        expect(report.maxPenetration).toBeLessThan(.03);
+        for (const [i, body] of world.bodies.entries()) {
+          expect(Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y))
+            .toBeLessThanOrEqual(supportParams(body.profile).traction * .05 + 1e-8);
+        }
+        s.sim.t = world.time;
+      }
+      expect(requests.length).toBeGreaterThan(0);
+      expect((s.blocker.pos.y - start.y) * side).toBeGreaterThan(0);
+      expect(Math.abs(observedBlockLeverage(s.blocker, seen, drive))).toBeLessThan(startPhi);
+      expect(s.blocker.body.support!.state).toBe('up');
+      return { bodies: world.bodies, requests, pictures };
+    };
+    const right = trace(1), left = trace(-1);
+    expect(right.requests.length).toBe(left.requests.length);
+    for (const [k, request] of right.requests.entries()) {
+      expect(request.vel.x).toBeCloseTo(left.requests[k].vel.x, 10);
+      expect(request.vel.y).toBeCloseTo(-left.requests[k].vel.y, 10);
+      expect(request.facing).toBeCloseTo(-left.requests[k].facing!, 10);
+      expect(right.pictures[k].pos.x).toBeCloseTo(left.pictures[k].pos.x, 10);
+      expect(right.pictures[k].pos.y + left.pictures[k].pos.y).toBeCloseTo(2 * CENTER_Y, 10);
+      expect(right.pictures[k].vel.x).toBeCloseTo(left.pictures[k].vel.x, 10);
+      expect(right.pictures[k].vel.y).toBeCloseTo(-left.pictures[k].vel.y, 10);
+      expect(right.pictures[k].facing).toBeCloseTo(-left.pictures[k].facing, 10);
+    }
+    for (const [i, body] of right.bodies.entries()) {
+      const mirror = left.bodies[i];
+      expect(body.pos.x).toBeCloseTo(mirror.pos.x, 10);
+      expect(body.pos.y + mirror.pos.y).toBeCloseTo(2 * CENTER_Y, 10);
+      expect(body.vel.x).toBeCloseTo(mirror.vel.x, 10);
+      expect(body.vel.y).toBeCloseTo(-mirror.vel.y, 10);
+      expect(body.facing).toBeCloseTo(-mirror.facing, 10);
+      expect(body.spin ?? 0).toBeCloseTo(-(mirror.spin ?? 0), 10);
+      expect(body.support!.xi.x).toBeCloseTo(mirror.support!.xi.x, 10);
+      expect(body.support!.xi.y).toBeCloseTo(-mirror.support!.xi.y, 10);
+      expect(body.support!.state).toBe(mirror.support!.state);
+    }
   });
 
   it('requests an oblique recovery around the shoulder, with mirrored actual World movement', () => {
