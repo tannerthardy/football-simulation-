@@ -145,6 +145,15 @@ or the existing four-second hold whistle cannot substitute for a physical stop.
 Keep helper/transfer controls through the separate live-gap controller work.
 Neither this upper law repair nor six selected catches justify stronger tackles.
 
+The [engaged-zone audit](reviews/engaged-zone-physics.md) answers the live-gap
+physics questions. Hands do not drag pure co-motion; a native anchor reverses
+useful lateral requests, and release credits turning the loaded body has not
+achieved. Those controller fixes belong to Claude. Patch gait now plans from
+actual facing rather than borrowing a future turn, and signed angle arithmetic
+preserves reflected loads; default zone traces remain exact. At source
+`a6459b85`, all 1,472 TypeScript tests, 141 Python checks, typecheck and build
+pass. The angular patch still fails promotion at 42/50; capacities stay fixed.
+
 ## Other branch work
 
 The `claude/run-blocking` leverage/anchor package at `88bfc45` was reviewed

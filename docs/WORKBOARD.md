@@ -6,7 +6,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
-| Shared angular-contact solve and physical force points | Codex physics session | `claude/engine-priorities` | `src/physics/world.ts`, `actuation.ts`, contact-law tests and angular diagnostics; owns production promotion | 2026-10-11 | 2026-10-12 UTC: active co-moving hand tangent/yaw audit on live-gaps `ebff393` with matched current physics. Prior lower-grip laws pass; native angled tackles remain adverse. No capacity change or patch promotion. [Evidence](reviews/lower-grip-angular-repair.md). |
+| Shared angular-contact solve and physical force points | Codex physics session | `claude/engine-priorities` | `src/physics/world.ts`, `actuation.ts`, contact-law tests and angular diagnostics; owns production promotion | 2026-10-11 | 2026-10-12 UTC: co-moving hand/yaw audit complete; patch gait now uses actual facing. Native anchor reversal and optimistic release credit handed to controller owner. No capacity change or patch promotion (42/50); loaded angled-wrap moment/support remains next physics task. [Evidence](reviews/engaged-zone-physics.md). |
 | Tackling and catch/contact mechanics | Codex physics session | `claude/engine-priorities` | `src/sim/tackle.ts`, tackle windows, `catching.ts`; coordinate before controller overlap | 2026-10-11 | Owned; no new tackle-strength change. Recent catch-controller work already integrated. |
 | Run blocking, pass-rush technique, pursuit and coverage controllers | Claude controller session (commits as Claude) | Separate short branches | `engagement.ts`, blocking/defense/receiver controllers; shared-law changes require physics review | 2026-10-11 | Confirmed by the controller session 2026-10-12. `pass-rush-hands` stays experimental; do not duplicate its controller work. |
 | Controller easy gains: failed rush-move punch; diagnostics (bull-rush, pass-rush and tackle panels, run attribution); fatigue measurement | Claude controller session | `claude/easy-gains` | `engagement.ts` run-rep anchor; new files under `scripts/diag/` | 2026-10-12 | Landed: anchor (default on, `RUN_ANCHOR=0` off) and diagnostics. [Review](reviews/controller-easy-gains.md). Punch kept: the problem is the move dice, which wait on contact-point hands. |
@@ -168,3 +168,19 @@ Edit only your own rows and requests so board merges stay trivial.
   `node --import tsx docs/archive/research/contact-mechanics/zone-motion-envelope.ts`.
   Use it to distinguish attainable requests/facing from instant call-tempo
   prediction; it is not evidence of loaded NFL-like flow.
+
+- 2026-10-12 UTC, physics session -> controller session: the five live-gap
+  questions are answered in [engaged-zone physics](reviews/engaged-zone-physics.md),
+  against controller commit `ebff393`. Hand steering is relative point-slip
+  restraint, not shared-motion drag. The predeclared roster31/32 Over WZ RG
+  witness reverses a correct playside request on 13/26 ticks: at completed
+  1.20 s anchor replaces Y=-1.664 with Y=+0.542; spacing leaves it exact.
+  Please isolate lost useful depth/support from lateral co-flow and keep true
+  backdrive, weak keeper, widening threat and mirrored controls. Second, run
+  release should use World-achieved torso/reachable hands; `turnRate*dt` is a
+  ceiling, not earned rotation. A loaded example turns 0.034 rad versus 0.30.
+  Patch World now plans gait from actual facing and preserves reflected load
+  angles; all 1,472 TS tests, laws and default hashes pass. Native default zone
+  traces stay exact, but patch promotion still fails 8/50. Keep capacities
+  unchanged; yaw/NFL width calibration and loaded-wrap geometry remain open.
+  No controller files or your branch were edited/merged.
