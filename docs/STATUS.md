@@ -33,10 +33,10 @@ The [pursuit repair](reviews/pursuit-coverage.md) removes systematic underlead
 from acquired intercepts while retaining delayed cues and per-play aiming error.
 Its 128 paired encounters preserve ordinary contacts and faster escapes; the
 supplemental cut panel increases loaded grips 12→14 with adverse cases retained.
-The pursuit-only cohort has mean YAC10.5yd; its seed202 box-count guard fails
-while the other11 and all12 pooled guards pass. That threshold remains unchanged.
+The pursuit-only cohort has mean YAC 10.5 yd; its seed 202 box-count guard fails
+while the other 11 and all 12 pooled guards pass. That threshold remains unchanged.
 The held-facing probe was rejected. Both pursuit and the catch/contact repair
-below are now merged; their combined validation is recorded separately.
+below are now merged; their combined validation is recorded in the catch/contact receipt below.
 
 The [full engine review](reviews/full-engine-review-2026-10-11.md) assesses the
 current subsystems and ranks catch/contact, shared hand laws, ordinary run
@@ -51,19 +51,20 @@ The [catch/contact repair](reviews/catch-contact-repair.md) recognizes moving
 hand opportunities and carries an already nearby observed catcher instead of
 braking toward a fixed flight point. Downfield blockers now retain their fit
 movement when actual engagement is rejected. Capacities, physics and outcome
-probabilities are unchanged. Exact restored native contexts reduce `S108-P143`
+probabilities are unchanged. On the isolated catch/contact source, exact restored native contexts reduce `S108-P143`
 from a 37.54-YAC touchdown to a 10.88-YAC tackle; all four ordinary controls
 still end in tackles. `S107-P233` retains its 69.28-YAC escape. An offset-match
 trial broke an ordinary control and was backed out; no extra pursuit knobs
 remain. The [receipt](../data/reviews/current/catch-contact-repair.json) retains
 adverse trials, source/input pins and observer witnesses.
 
-Before this pursuit integration, all 1,244 TS assertions, 141 Python checks,
-typecheck and build pass. Two fresh
-eight-game cohorts each retain 12/12 guards, but their mean YAC is still
-11.92 yd, p90 37.26 yd; ordinary run success is 26.9%. Later calls/RNG differ,
-so this is not a paired broad causal improvement. The catch/contact tail and
-hand-patch promotion failures remain the leading investigations.
+The combined source passes all 1,246 TS assertions, 141 Python checks,
+typecheck and build. Two fresh eight-game cohorts each retain 12/12 guards.
+Mean YAC remains 11.69 yd, p90 36.79 yd; run success 28.8%. Mean YAC is higher than
+the pursuit-only report's 10.5 yd. Later calls/RNG differ, so broad improvement
+is not established. Three held-context ordinary controls still tackle; the
+fourth (`S207-P161`) is incomplete on both pursuit-only and combined engines.
+The catch/contact tail and hand-patch promotion failures remain leading work.
 
 The preceding [NFL comparison](reviews/nfl-gap-review.md) adds two native eight-game
 roster cohorts and corrected actual-catcher/contact measurements, with unchanged

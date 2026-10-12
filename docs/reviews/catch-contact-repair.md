@@ -9,7 +9,7 @@ sources, adverse trials, checks and local artifacts.
 
 Baseline commit: `36c294c` (engine identical to `b922353`). Engine source:
 `4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302`.
-Final source:
+Catch/contact-only source:
 `8eee2fb390e62f4a0552ecea372dfa7b44b8490c9a714b55d403535c235ef972`.
 
 ## Demonstrated mechanisms
@@ -99,7 +99,33 @@ support, run approaches and the experimental hand-patch regressions remain
 priorities. Production hands still use center mode and retain the known angular
 defect; patch mode has not been promoted.
 
-## Full validation and downstream guard
+## Integration with the pursuit repair
+
+Remote commit `cd25757` was merged through `ef2179f` after the isolated checks.
+The [pursuit repair](pursuit-coverage.md) removes systematic underlead; it keeps
+capabilities and delayed cues fixed. Combined engine source:
+`eda0633497f99277887112c93c7bd7c566dd39271cbc56acf1a3a2a26f88b7e1`.
+The receipt's integration section pins validation of that combined source.
+
+The combined source passes all 1,246 TS assertions in 108 files, 141 Python
+checks, typecheck and build. Fresh 101–108 and 202–209 cohorts each retain 12/12
+guards. Clean native mean YAC is 11.69 yd, p90 36.79 yd, completion gain 19.72 yd
+and run success 28.8%. Mean YAC exceeds the pursuit-only report's 10.5 yd;
+these downstream numbers do not establish broad improvement. Later calls and
+RNG histories diverge. The targeted mechanism evidence and adverse cases
+remain the basis for this bounded repair.
+
+The same held native contexts were also executed on pursuit-only and combined
+engines, each with six recorded/unrecorded witnesses. `S108-P143` remains a
+37.54-YAC TD on pursuit-only and becomes a 10.88-YAC tackle with both repairs.
+`S107-P233` remains a 69.28-YAC TD. Controls `S107-P214`, `S204-P41` and
+`S204-P60` remain tackles. `S207-P161` is incomplete on both pursuit-only and
+combined sources; that change already precedes the catch/contact addition.
+The table above preserves the isolated stage rather than silently relabelling
+it as combined evidence. Local `out/catch-contact/combined/paired-film.html`
+compares pursuit-only against the final combined engine.
+
+## Isolated validation and downstream guard
 
 - 1,244 TypeScript assertions pass in 108 files; no preserved assertions removed.
 - 141 Python checks, typecheck and build pass.
