@@ -7,7 +7,8 @@ import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import { blendApproach, chase, gatheringApproach, goTo, stand, track } from './behaviors/common.js';
 import { chooseApproach } from './approach-control.js';
-import { linePicture, liveGap, liveGapY } from './live-gaps.js';
+import { CF_FLOW } from './counterfactual.js';
+import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 
 export interface RunFitJob {
@@ -233,6 +234,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     }
     return fit;
   }
+  if (CF_FLOW) return counterfactualFit(a, sim, c, job, seen, premesh);
   if (job.technique === 'lag' && Math.abs(seen.vel.y) > .8) gy = liveGapY(sim,a,'A',-Math.sign(seen.vel.y));
   // Flow read: once the back's own track clearly declares a direction, a
   // backer flows to keep inside-out leverage on him (a yard inside his
@@ -294,4 +296,23 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const horizon = 2 * a.mind.decisionInterval;
   const vy = clamp(requestToCover(a.profile.tau, aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
   return { ...fit, vel: { x: fit.vel.x, y: vy } };
+}
+
+/** Counterfactual free fit (diagnostic): `hold` keeps the snap landmark with no
+ * flow reads; `over` sprints with the seen line flow, cutback duty included.
+ * Both still attack a runner who declares this player's lane. */
+function counterfactualFit(a: Agent, sim: PlaySim, c: Agent, job: RunFitJob, seen: Perceived, premesh: boolean) {
+  let gy = gapY(sim.offAlign, job.gap, job.side);
+  const declared = !premesh && seen.pos.x > sim.los - 1.6 && Math.abs(seen.pos.y - gy) < 2.5;
+  if (declared) return chase(sim, a, c, 2);
+  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  if (CF_FLOW === 'over') {
+    const f = lineFlow(linePicture(sim, a)), dir = Math.abs(f) > .5 ? Math.sign(f) : Math.abs(seen.vel.y) > 1 ? Math.sign(seen.vel.y) : 0;
+    if (dir) {
+      const fit = track(a, { x: sim.los + depth, y: a.pos.y + dir * 4 }, { x: 0, y: 0 }, { speed: 1, gain: 3, facing: Math.PI });
+      return { ...fit, vel: { x: fit.vel.x, y: dir * a.profile.vmax } };
+    }
+  }
+  const aim = a.mind.aim('run-fit', { x: sim.los + depth, y: gy + a.mind.placementError }, sim.t);
+  return track(a, aim, { x: 0, y: 0 }, { speed: .78 + .15 * a.mind.urgency, gain: 3, facing: Math.PI });
 }

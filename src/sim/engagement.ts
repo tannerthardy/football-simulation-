@@ -34,7 +34,8 @@ import { G } from '../core/units.js';
 import { fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
 import { availability, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
-import { liveGapY } from './live-gaps.js';
+import { CF_FLOW } from './counterfactual.js';
+import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
@@ -1010,8 +1011,17 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Working off: across the blocker's ball-side shoulder at full lateral
   // effort, pressing into him rather than backing out.
   const workOff = shedding ? { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
+  // Diagnostic counterfactual defenses (docs/reviews/counterfactual-defense.md).
+  let cf: Vec2 | null = null;
+  if (CF_FLOW && !read.declared) {
+    const home = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]?.pos.y ?? d.pos.y;
+    const f = lineFlow(linePicture(sim, d)), dir = Math.abs(f) > .5 ? Math.sign(f) : 0;
+    const y = CF_FLOW === 'over' && dir ? dir * td.lateral
+      : clamp(requestToCover(d.profile.tau, home - d.pos.y, horizon, d.vel.y), -td.lateral, td.lateral);
+    cf = { x: depth, y };
+  }
   intents[d.idx] = {
-    vel: workOff ?? (read.stack ? { x: depth, y: flow } : legacy),
+    vel: workOff ?? cf ?? (read.stack ? { x: depth, y: flow } : legacy),
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: 0.85,
