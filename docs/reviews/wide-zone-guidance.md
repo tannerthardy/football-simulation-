@@ -93,3 +93,8 @@ changing these controllers. In particular, the new `profile.turnRate*dt`
 release allowance is optimistic recovery credit: World also limits acceleration,
 balance and available torque. A body that could turn at its maximum rate is
 not a body that actually recovered its chest or hands.
+
+The bare-body check is preserved outside production and the default test run:
+`node --import tsx docs/archive/research/contact-mechanics/zone-motion-envelope.ts out/zone-motion.json`.
+It records unchanged profiles, request/facing, achieved motion, ground impulses
+and source/operator pins. It does not replace a loaded block or native film.

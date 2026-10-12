@@ -5,6 +5,10 @@ the existing `handContact: 'patch'` experiment. Production still uses `center`.
 This repairs a physical law, not a tackle-success or YAC target. No capacities,
 ratings, controller cues or global physics resolution changed.
 
+The later [lower-grip follow-up](lower-grip-angular-repair.md) repairs the
+lower-path law left open at this stage, and retains its native tackle regressions.
+The measurements below keep their original source.
+
 ## The wrong mechanism
 
 Previously, sideways grip resistance changed both centers' velocities without

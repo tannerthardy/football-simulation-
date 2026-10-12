@@ -134,8 +134,14 @@ The [upper-grip repair](reviews/upper-grip-angular-repair.md) now closes upper
 grasp yaw and mixed hand/grasp transport in patch mode, with unchanged capacities.
 Source `e901bb5b` passes all **1,388 TypeScript tests**, **141 Python checks**,
 typecheck and build; default hashes pass. Patch promotion remains **42/50**.
-**Next physics step:** combine lower-grip yaw and corrective-foot support in one
-bounded force/work solve; faster retained cases expose that still-open law.
+The [lower-grip follow-up](reviews/lower-grip-angular-repair.md) now combines
+yaw, material contact and the existing recovery motor in patch. All **1,449
+TypeScript tests**, **141 Python checks**, typecheck and build pass; default
+native tackle results remain exact. The old faster lower-transition law failures
+close, but native angled tackles regress (120 → 94 of 144 panel reps), so patch
+stays experimental. **Next:** explain the first loaded grip's moment, body
+rotation and support response, including real wrap geometry. Strength tuning
+or the existing four-second hold whistle cannot substitute for a physical stop.
 Keep helper/transfer controls through the separate live-gap controller work.
 Neither this upper law repair nor six selected catches justify stronger tackles.
 
