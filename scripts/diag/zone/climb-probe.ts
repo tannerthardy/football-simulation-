@@ -17,7 +17,8 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 const runs = (process.argv[2] ?? 'wz_strong,oz_strong').split(',');
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 type Row = { play: string; slot: string; backer: string; kind: string; freeAt: number | null; plans: number; attainable: number;
-  touchAt: number | null; loadAt: number | null; carrierContactAt: number | null; backerMadeContact: boolean };
+  touchAt: number | null; loadAt: number | null; carrierContactAt: number | null; backerMadeContact: boolean;
+  grade?: string };
 const rows: Row[] = [];
 for (const run of runs) for (const [o, d] of [[31, 32], [41, 42], [51, 52]]) for (const front of ['over', 'under']) for (const flip of [false, true]) {
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(o), 'O', 'O', { strength: .55 }), FORMATION_BY_ID.ace_11.personnel),
@@ -51,13 +52,29 @@ for (const run of runs) for (const [o, d] of [[31, 32], [41, 42], [51, 52]]) for
       }
     }
     for (const ev of sim.events) if (['hit', 'tackle_wrap', 'carrier_contact', 'missed_tackle'].includes(ev.type)) {
-      for (const r of track.values()) { r.carrierContactAt ??= ev.t; if (sim.agents[ev.a ?? -1]?.slot === r.backer && ev.t === r.carrierContactAt) r.backerMadeContact = true; }
+      for (const r of track.values()) {
+        const first = r.carrierContactAt === null;
+        r.carrierContactAt ??= ev.t;
+        if (first && sim.agents[ev.a ?? -1]?.slot === r.backer) {
+          r.backerMadeContact = true;
+          // Path protection at the stop: where was the blocker relative to
+          // the backer-to-runner line, and was he still on him?
+          const b = sim.slot(r.slot)!, lb = sim.slot(r.backer)!, c = sim.carrier;
+          const engagedBy = lb.engagement ? lb.engagement.blocker.slot : null;
+          if (!c) { r.grade = 'no carrier'; continue; }
+          const dx = c.pos.x - lb.pos.x, dy = c.pos.y - lb.pos.y, L = Math.hypot(dx, dy) || 1;
+          const along = ((b.pos.x - lb.pos.x) * dx + (b.pos.y - lb.pos.y) * dy) / (L * L);
+          const off = Math.abs((b.pos.x - lb.pos.x) * dy - (b.pos.y - lb.pos.y) * dx) / L;
+          const between = along > 0 && along < 1 && off < b.profile.radius + lb.profile.radius;
+          r.grade = `${engagedBy ? 'engaged by ' + engagedBy : 'free'}; blocker ${between ? 'BETWEEN' : 'not between'} (along ${along.toFixed(2)}, off ${off.toFixed(2)} yd, LB-RB ${L.toFixed(2)} yd)`;
+        }
+      }
     }
   }
   rows.push(...track.values());
 }
 const f = (x: number | null) => x === null ? '  -  ' : x.toFixed(2);
-for (const r of rows) console.log(`${r.play.padEnd(26)} ${r.slot.padEnd(3)}->${r.backer.padEnd(5)} ${r.kind.padEnd(6)} free ${f(r.freeAt)} plans ${String(r.plans).padStart(2)} attainable ${String(r.attainable).padStart(2)} touch ${f(r.touchAt)} load ${f(r.loadAt)} | runner contact ${f(r.carrierContactAt)}${r.backerMadeContact ? ' BY THIS BACKER' : ''}`);
+for (const r of rows) console.log(`${r.play.padEnd(26)} ${r.slot.padEnd(3)}->${r.backer.padEnd(5)} ${r.kind.padEnd(6)} free ${f(r.freeAt)} plans ${String(r.plans).padStart(2)} attainable ${String(r.attainable).padStart(2)} touch ${f(r.touchAt)} load ${f(r.loadAt)} | runner contact ${f(r.carrierContactAt)}${r.backerMadeContact ? ' BY THIS BACKER: ' + r.grade : ''}`);
 const n = rows.length, freed = rows.filter((r) => r.freeAt !== null), loaded = rows.filter((r) => r.loadAt !== null);
 console.log(`\n${n} backer assignments | free to climb ${freed.length} | loaded contact ${loaded.length} | first contact by an assigned backer ${rows.filter((r) => r.backerMadeContact).length}`);
 console.log(`combo never released ${rows.filter((r) => r.kind === 'combo' && r.freeAt === null).length} | freed but never touched ${freed.filter((r) => r.touchAt === null).length} (of which some plan attainable: ${freed.filter((r) => r.touchAt === null && r.attainable > 0).length})`);

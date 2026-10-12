@@ -676,6 +676,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   return plans;
 }
 
+/** Climb when the backer shows flow or will arrive shortly (FLOW_RELEASE=0: proximity only). */
+const FLOW_RELEASE = process.env.FLOW_RELEASE !== '0';
+
 /** Keeper eligibility from the achieved torso relation (KEEPER_TORSO=0: fixed frame). */
 const KEEPER_TORSO = process.env.KEEPER_TORSO !== '0';
 
@@ -1413,6 +1416,16 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   return { climber, keeper, engagement: e, hands: hands!, phi };
 }
 
+/** A backer "shows" when this player's own picture has him arriving within
+ * reach shortly (his seen motion carried half a second) or flowing toward
+ * the play side, where he must be cut off before he outruns the climb. */
+function backerShows(observer: Agent, sim: PlaySim, backer: Perceived): boolean {
+  const ahead = { x: backer.pos.x + backer.vel.x * .5, y: backer.pos.y + backer.vel.y * .5 };
+  if (Math.hypot(ahead.x - observer.pos.x, ahead.y - observer.pos.y) < 4.2) return true;
+  const run = sim.offCall.run;
+  return !!run && backer.vel.y * playSideSign(sim, run) > 1.5;
+}
+
 /** Angle between a blocker's chest and the man, in units of a right angle. */
 function chestOff(facing: number, from: Vec2, to: Vec2): number {
   const toMan = Math.atan2(to.y - from.y, to.x - from.x);
@@ -1453,7 +1466,8 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   if (read.secureSince < 0) read.secureSince = sim.t;
   if (sim.t - read.secureSince < .15) return;
   const backer = sim.see(observer, combo.backer!);
-  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
+  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
+    || (FLOW_RELEASE && backerShows(observer, sim, backer));
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
   if (!filling && !arriving) return;
