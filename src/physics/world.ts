@@ -35,7 +35,7 @@ import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
-import { ARM_SPEED, turnBody, workFraction } from './actuation.js';
+import { ARM_SPEED, turnBody, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
 import { integrateFilteredFollow } from './filtered-follow.js';
@@ -1364,7 +1364,9 @@ export class World {
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
-        const yaw = turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,Math.hypot(fx,fy));
+        const yaw: { impulse: number; work: number; peakTorque?: number } = this.handContact === 'patch'
+          ? turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy))
+          : turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,Math.hypot(fx,fy));
         // Strength limits drive+correction; traction also pays for yaw at
         // the physical support radius. Difference-of-squares keeps the
         // near-saturation subtraction well conditioned. Passive compliance
@@ -1374,7 +1376,11 @@ export class World {
         // can demand more than pushForce; that leaves zero corrective effort
         // rather than expanding strength to fund another simultaneous action.
         const total = sp.pushForce, force = Math.hypot(fx, fy);
-        const yawForce = yaw.impulse / (h * baseRadiusAt(sp, sup.posture));
+        // A variable motor torque may reverse inside the interval. Its net
+        // impulse cannot prove how much traction was left for recovery.
+        const yawForce = yaw.peakTorque === undefined
+          ? yaw.impulse / (h * baseRadiusAt(sp, sup.posture))
+          : yaw.peakTorque / baseRadiusAt(sp, sup.posture);
         const groundDemand = Math.hypot(force, yawForce);
         const reserve = Math.sqrt(Math.max(0, Math.min((total - force) * (total + force),
           (sp.traction - groundDemand) * (sp.traction + groundDemand))));

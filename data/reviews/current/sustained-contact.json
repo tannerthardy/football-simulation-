@@ -1,0 +1,568 @@
+{
+  "schema": "sustained-contact-v1",
+  "sourceSha256": "f2eb1e3aabe8805bf875f8b9618ffe4b2be38830e6fae9709952c81604b607f7",
+  "stages": {
+    "baseline": "97612098c8fdcbde2a47905e461a8592595759db1e2c0922c68cc31af5d2e1da",
+    "productionRiseRepair": "ec3eba1d545d9c148a5b8e8cef44a5d6c6e3ebfd376701424f8cce5b799ed49a",
+    "concurrentAnchorIntegration": "7ca8d79a069efd7eb685867bd84e7fda743066ae5fe1a3718bf350177e93fca1",
+    "optInMotor": "f2eb1e3aabe8805bf875f8b9618ffe4b2be38830e6fae9709952c81604b607f7"
+  },
+  "checks": {
+    "finalTypescript": {
+      "passed": 1337,
+      "files": 115,
+      "seconds": 134.35,
+      "scope": "all projects"
+    },
+    "pythonCombinedDefault": 141,
+    "typecheck": "pass",
+    "build": "pass",
+    "defaultHashes": "both preserved expectations pass",
+    "riseStageSmallGameGuard": {
+      "games": 4,
+      "seed": 101,
+      "passed": 12,
+      "total": 12,
+      "source": "ec3eba1d",
+      "limit": "preceded concurrent anchor integration; not experimental motor results"
+    }
+  },
+  "productionRepair": {
+    "mechanism": "rising completion erased attained spin before friction",
+    "beforeGroundBudgetRatio12": 3.356742618529264,
+    "beforeGroundBudgetRatio48": 13.426970474117056,
+    "change": "retain spin; ordinary bounded friction and foot torque remove it",
+    "newTests": 8
+  },
+  "motor": {
+    "selection": "existing handContact patch only",
+    "model": "critically damped fixed target error/spin response, existing tau.05, bounded existing acceleration/rate; finite overspeed braking",
+    "newTests": 30,
+    "recoveryAllocation": "peak attained torque, never net impulse interpreted as free traction",
+    "mathematicalAssumption": "not measured NFL motor physiology",
+    "compositionStress": {
+      "sourceSha256": "f2eb1e3aabe8805bf875f8b9618ffe4b2be38830e6fae9709952c81604b607f7",
+      "samples": 1000,
+      "seed": 501,
+      "maxStateCompositionError": 3.552713678800501e-15,
+      "maxPeakCompositionError": 3.552713678800501e-14,
+      "maxEvents": 4
+    }
+  },
+  "jams": {
+    "inputSha256": "b0571fcead7d7ad2ea01b5f2df2aeefacb4c5d41c1d3fa7fb3912b7d8153f41a",
+    "cohort": {
+      "task": "shared-capabilities jam",
+      "variants": {
+        "base": {},
+        "strong": {
+          "power": 130
+        },
+        "heavy": {
+          "massKg": 125
+        }
+      },
+      "base": {
+        "massKg": 100,
+        "radius": 0.3,
+        "reach": 1,
+        "heightYd": 2.05,
+        "vmax": 9,
+        "tau": 1.3,
+        "brake": 6,
+        "lateral": 6,
+        "turnRate": 8,
+        "backpedal": 0.6,
+        "shuffle": 0.55,
+        "maxCatchHeight": 3,
+        "reactReach": 2.6,
+        "reactionTime": 0.25,
+        "power": 100,
+        "balance": 0.5,
+        "bend": 0.5,
+        "stepSpeed": 3.4
+      },
+      "substeps": [
+        6,
+        12,
+        24,
+        48,
+        96
+      ],
+      "modes": [
+        "patch"
+      ],
+      "sides": [
+        -1,
+        1
+      ],
+      "ticks": 40,
+      "dt": 0.05,
+      "subject": {
+        "x": 0.9,
+        "y": 0,
+        "vx": 0,
+        "vy": 0,
+        "facing": "(PI-.05)*side"
+      },
+      "other": {
+        "x": 0,
+        "y": ".1*side",
+        "vx": 4,
+        "vy": 0,
+        "facing": ".05*side"
+      },
+      "controls": [
+        {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "push": 1,
+          "posture": 0.6
+        },
+        {
+          "vel": {
+            "x": 5,
+            "y": 0
+          },
+          "push": 1,
+          "posture": 0.2
+        }
+      ],
+      "hand": {
+        "extension": 0.95,
+        "push": "subject.armForce",
+        "hold": 0,
+        "steer": ".4*subject.armForce"
+      },
+      "declaration": "Fixed profile/geometry/control copies of retained mechanical jam;48/96 comparison resolutions, not exact truth."
+    },
+    "observerNeutral": true,
+    "baseline": [
+      {
+        "variant": "base",
+        "substeps": 6,
+        "finalPositionErrorsYd": [
+          0.1464315066716668,
+          0.19222344359649515
+        ],
+        "falls": []
+      },
+      {
+        "variant": "base",
+        "substeps": 12,
+        "finalPositionErrorsYd": [
+          0.007966477575811887,
+          0.025421329826859986
+        ],
+        "falls": []
+      },
+      {
+        "variant": "base",
+        "substeps": 24,
+        "finalPositionErrorsYd": [
+          0.002462060726984851,
+          0.006119920021213255
+        ],
+        "falls": []
+      },
+      {
+        "variant": "base",
+        "substeps": 48,
+        "finalPositionErrorsYd": [
+          0.0013268690824426487,
+          0.008412181768218917
+        ],
+        "falls": []
+      },
+      {
+        "variant": "base",
+        "substeps": 96,
+        "finalPositionErrorsYd": [
+          0.0,
+          0.0
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 6,
+        "finalPositionErrorsYd": [
+          0.16476719919952343,
+          0.06483108448805301
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 12,
+        "finalPositionErrorsYd": [
+          0.19681371487360544,
+          0.28967070347349605
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 24,
+        "finalPositionErrorsYd": [
+          0.01885295788082057,
+          0.08259876318083029
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 48,
+        "finalPositionErrorsYd": [
+          0.05216298924637431,
+          0.05139480941992504
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 96,
+        "finalPositionErrorsYd": [
+          0.0,
+          0.0
+        ],
+        "falls": []
+      },
+      {
+        "variant": "strong",
+        "substeps": 6,
+        "finalPositionErrorsYd": [
+          0.22447062769385173,
+          0.3202962746198952
+        ],
+        "falls": []
+      },
+      {
+        "variant": "strong",
+        "substeps": 12,
+        "finalPositionErrorsYd": [
+          0.055107733344245444,
+          0.07344995939954736
+        ],
+        "falls": [
+          0
+        ]
+      },
+      {
+        "variant": "strong",
+        "substeps": 24,
+        "finalPositionErrorsYd": [
+          0.2765557390636285,
+          0.1514764443910843
+        ],
+        "falls": []
+      },
+      {
+        "variant": "strong",
+        "substeps": 48,
+        "finalPositionErrorsYd": [
+          0.01803558177886984,
+          0.04277815105808456
+        ],
+        "falls": [
+          0
+        ]
+      },
+      {
+        "variant": "strong",
+        "substeps": 96,
+        "finalPositionErrorsYd": [
+          0.0,
+          0.0
+        ],
+        "falls": [
+          0
+        ]
+      }
+    ],
+    "boundedMotor": [
+      {
+        "variant": "base",
+        "substeps": 6,
+        "finalPositionErrorsYd": [
+          0.13536214185153575,
+          0.08832183207168677
+        ],
+        "falls": []
+      },
+      {
+        "variant": "base",
+        "substeps": 12,
+        "finalPositionErrorsYd": [
+          0.041749733405768354,
+          0.02306111962287665
+        ],
+        "falls": []
+      },
+      {
+        "variant": "base",
+        "substeps": 24,
+        "finalPositionErrorsYd": [
+          0.016976414050118575,
+          0.0033839542743510356
+        ],
+        "falls": []
+      },
+      {
+        "variant": "base",
+        "substeps": 48,
+        "finalPositionErrorsYd": [
+          0.0040604835526532965,
+          0.0013585564321302675
+        ],
+        "falls": []
+      },
+      {
+        "variant": "base",
+        "substeps": 96,
+        "finalPositionErrorsYd": [
+          0.0,
+          0.0
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 6,
+        "finalPositionErrorsYd": [
+          0.028293327976215202,
+          0.2770033517433501
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 12,
+        "finalPositionErrorsYd": [
+          0.008486493718605822,
+          0.05769444123524886
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 24,
+        "finalPositionErrorsYd": [
+          0.0021111749643193084,
+          0.0071052143457614484
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 48,
+        "finalPositionErrorsYd": [
+          0.0003838030864304748,
+          0.0005935632730400746
+        ],
+        "falls": []
+      },
+      {
+        "variant": "heavy",
+        "substeps": 96,
+        "finalPositionErrorsYd": [
+          0.0,
+          0.0
+        ],
+        "falls": []
+      },
+      {
+        "variant": "strong",
+        "substeps": 6,
+        "finalPositionErrorsYd": [
+          0.06523268708691493,
+          0.14818926035104155
+        ],
+        "falls": []
+      },
+      {
+        "variant": "strong",
+        "substeps": 12,
+        "finalPositionErrorsYd": [
+          0.04295542745590621,
+          0.03465932503333717
+        ],
+        "falls": []
+      },
+      {
+        "variant": "strong",
+        "substeps": 24,
+        "finalPositionErrorsYd": [
+          0.06764996072380691,
+          0.03126376545368962
+        ],
+        "falls": []
+      },
+      {
+        "variant": "strong",
+        "substeps": 48,
+        "finalPositionErrorsYd": [
+          0.010722232086832609,
+          0.007114973469682319
+        ],
+        "falls": []
+      },
+      {
+        "variant": "strong",
+        "substeps": 96,
+        "finalPositionErrorsYd": [
+          0.0,
+          0.0
+        ],
+        "falls": []
+      }
+    ],
+    "maxWorkResidual": 2.7035040872647187e-12,
+    "maxArmImpulseFraction": 1.0000000000000013,
+    "limit": "96 substeps numerical reference, not physical truth; ordinary error worsens, strong nonmonotonic refinement retained"
+  },
+  "handLaws": {
+    "cases": 144,
+    "passes": true,
+    "graphCases": 36,
+    "graphMaxAngularError": 5.115907697472721e-12
+  },
+  "redirectRefinement": {
+    "cohort": {
+      "seeds": [
+        3,
+        7,
+        11
+      ],
+      "rusherPowers": [
+        0.7,
+        1,
+        1.4
+      ],
+      "substeps": [
+        6,
+        12,
+        24,
+        48,
+        96,
+        192
+      ],
+      "referenceSteps": 192,
+      "controllerHz": 20,
+      "handContact": "patch"
+    },
+    "summary": [
+      {
+        "substeps": 6,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.030127323848127933,
+        "maxClosestErrorYd": 0.12027224003135872,
+        "meanCarriedPastErrorYd": 0.06842642628428822,
+        "maxCarriedPastErrorYd": 0.31280647072565415,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 2,
+        "maxMomentumResidualKgYdPerS": 5.117881046706176e-13,
+        "maxOverlapYd": 0.005382251287115558,
+        "allFinite": true
+      },
+      {
+        "substeps": 12,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.0090548188472378,
+        "maxClosestErrorYd": 0.03979775875858349,
+        "meanCarriedPastErrorYd": 0.007299928234273365,
+        "maxCarriedPastErrorYd": 0.014162764919028348,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 6.921526043732844e-13,
+        "maxOverlapYd": 0.009964914373998934,
+        "allFinite": true
+      },
+      {
+        "substeps": 24,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.00436689080713542,
+        "maxClosestErrorYd": 0.018719594228640113,
+        "meanCarriedPastErrorYd": 0.003418961606489369,
+        "maxCarriedPastErrorYd": 0.007775420696336965,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 1.3371094696465273e-12,
+        "maxOverlapYd": 0.004198602631303672,
+        "allFinite": true
+      },
+      {
+        "substeps": 48,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.002714594813308787,
+        "maxClosestErrorYd": 0.014804034162748225,
+        "meanCarriedPastErrorYd": 0.0017813927432525942,
+        "maxCarriedPastErrorYd": 0.005915006068420325,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 3.0020010143431423e-12,
+        "maxOverlapYd": 0.001265895499473424,
+        "allFinite": true
+      },
+      {
+        "substeps": 96,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.0011443005370934184,
+        "maxClosestErrorYd": 0.006710627056195628,
+        "meanCarriedPastErrorYd": 0.000644940428461243,
+        "maxCarriedPastErrorYd": 0.0026317095434222892,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 5.402701063310666e-12,
+        "maxOverlapYd": 0.0011993224037513128,
+        "allFinite": true
+      }
+    ]
+  },
+  "promotion": {
+    "passed": 42,
+    "total": 50,
+    "footballFailures": 6,
+    "historicalHashDifferences": 2,
+    "promoted": false,
+    "failedAssertions": [
+      "joined helpers replace unusable feet through bounded physical movement turns a wrong-side acquisition into actual useful contact, side -1",
+      "joined helpers replace unusable feet through bounded physical movement turns a wrong-side acquisition into actual useful contact, side 1",
+      "solo hand-fight execution with the preserved legacy policy is unchanged matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+      "solo hand-fight execution with the preserved legacy policy is unchanged matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG",
+      "optional inside-zone help respects other concepts and real double teams keeps an already joined genuine double on the ordinary earned-transfer path",
+      "a predeclared native Split Zone Under rep earns a supported check and climb lets RG use the supported RT block without first inventing a second pair of hands",
+      "the historic native Split Zone Tite witness retains unfinished first-level work stays when the backer is not arriving, then collects the end after keeper leverage is lost",
+      "optional checks preserve the later genuine double's decision phase keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help"
+    ]
+  },
+  "graspAudit": {
+    "implemented": false,
+    "upperGripAngularDebt": 12.857142857142858,
+    "mixedTransportDebt": 0.01562720349,
+    "scope": "free unslipped controls; no evidence these cause the selected69YAC miss; lower-foot support extension withheld"
+  },
+  "operators": {
+    "src/physics/world.ts": "2db6eeaf86e75d98d0a46cc4ccbfdfe19035f7e934230c2b35ac76c4d111e4a5",
+    "src/physics/actuation.ts": "54ff21e935cb21447dd32cd115da35156385d4efb11a83415967580703684cf8",
+    "src/physics/yaw-response.ts": "fe1aa7e4845f50d3c12869a969b19d3f08f6cbcc2b6eba0275b4a621f7d4c530",
+    "test/rise-yaw-budget.test.ts": "1bc22ba6b3a5b3ef8f0e0165537f654687bf719af7b017f1d4ba099886eb5a5a",
+    "test/yaw-response.test.ts": "c83de17263856caf77088765e2a2e3630dd923d5f2eb2c1664dfdd1a09bf3607",
+    "test/yaw-motor.test.ts": "16de2db34bffb12577a1f6a94d26c9e928568f7ee8f42927c108c6725aca1984",
+    "docs/archive/research/contact-mechanics/sustained-jam.ts": "61893e72230fbc4b2c5e7979af8a5a36ea00a6075c66fd0a5c08060812885585",
+    "scripts/diag/hand-convergence.ts": "d2a903c4085083d2d628b65fb025ec1e874a87b9a8f35e1c5c51e58f06267ea4"
+  },
+  "localArtifactHashes": {
+    "out/ground-yaw-current/rise-test-red.log": "b23b8b31f2e80427a6042577525bfcd180fa68b1599e2c57013778b3b6c5b25c",
+    "out/ground-yaw-current/rise-test-green.log": "53141af9c66cc3f880ca740c62a52ad75e7f2bb9e0be82a73f82235b0a184cc7",
+    "out/ground-yaw-current/rise-full-tests.log": "030cf568283460ab330c4cafcc88d20f2d35bbc411497feb6276b874de81c51e",
+    "out/ground-yaw-current/final-tests.log": "17e31f59e7acebab229a2b138cc186f104986d2f27abef6a25a6cedee4250e20",
+    "out/ground-yaw-current/published-jams/summary.json.gz": "b193c92434fa3ccaeec5d8c4aff55f0a432dfa6cfb2c7f5bfb0f7dee4e31d48c",
+    "out/ground-yaw-current/final-promotion.json": "9b1dd07978dd5658baee274e6dec29b1cd7cbe731bf0d92ff4935f31983e3334",
+    "out/angular-sustained/summary-976.json": "f8b0fd7eb050cb12b79b55a6b607c11a304bf90b1a17ee2a699a575a0b4eaa55",
+    "out/ground-yaw-current/servo-receipt.json": "2a04d14ccbb6d049c16da3e19660e4557b1faae339f9730c0729bf1244c622fa",
+    "out/contact-next/physics-tackle-review.md": "67cda724e3ed01083da5d24c93b36bd0e81ebe7d64005a5b5b8aee0e160f29e6"
+  }
+}

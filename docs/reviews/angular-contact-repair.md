@@ -5,6 +5,11 @@ Production still selects `handContact: 'center'`; the coherent `patch` option
 has not passed its unchanged football promotion controls. This is a mechanism
 repair, not a change selected to improve scoring or rushing averages.
 
+The later [sustained-contact review](sustained-contact.md) adds a production
+get-up torque-budget repair and an opt-in bounded yaw response. Its passing
+laws and failed promotion controls have separate source pins; numbers below
+remain measurements of this earlier hand-point stage.
+
 ## What was actually wrong
 
 The old hand constraint transfers sideways force between body centers without

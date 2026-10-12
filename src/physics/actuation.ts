@@ -6,6 +6,7 @@
 import { angleDiff, clamp } from '../core/vec.js';
 import type { Body } from './kinematics.js';
 import { baseRadiusAt, supportParams } from './support.js';
+import { integrateYaw } from './yaw-response.js';
 
 export const ARM_SPEED = 3;
 export const YAW_RESPONSE = .05;
@@ -35,4 +36,24 @@ export function turnBody(b: Body, target: number, remaining: number, dt: number,
   b.spin = after;
   b.facing += .5 * (before + after) * dt;
   return { impulse: sp.yawInertia * (after - before), work: .5 * sp.yawInertia * (after * after - before * before) };
+}
+
+/** Fixed-response angular motor for the common-point model. The same angle,
+ * spin and load request the same torque at every phase of a controller tick.
+ * Critical damping uses the existing response time, not new strength or gain
+ * ratings. Exact bounded flow avoids smearing a reached limit across dt. */
+export function turnBodyResponse(b: Body, target: number, dt: number,
+  turnRate: number, available: number, force: number): { impulse: number; work: number; peakTorque: number } {
+  const sp = supportParams(b.profile);
+  const radius = baseRadiusAt(sp, b.support?.posture ?? (.2-.2*(1-b.energy)));
+  const traction = sp.traction * available;
+  const torque = Math.sqrt(Math.max(0, traction * traction - force * force)) * radius;
+  const acceleration = Math.min(turnRate / YAW_RESPONSE * (.3 + .7 * available), torque / sp.yawInertia);
+  const before = b.spin ?? 0;
+  const result = integrateYaw(angleDiff(b.facing, target), before, dt, YAW_RESPONSE, acceleration, turnRate);
+  b.spin = result.spin;
+  b.facing += result.angleDelta;
+  return { impulse: sp.yawInertia * (result.spin - before),
+    work: .5 * sp.yawInertia * (result.spin * result.spin - before * before),
+    peakTorque: sp.yawInertia * result.maxAcceleration };
 }
