@@ -31,6 +31,7 @@
  */
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
+import { HANDS2, applyPair, chop, handCount, releasePair, setHandTechnique, spinIntent, startSpin, updatePair } from './hand-pair.js';
 import { fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
 import { gapY } from '../playbook/alignment.js';
 import { availability, supportParams } from '../physics/support.js';
@@ -403,7 +404,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // blocker off his line just as well.
   setContactHands(hands, b, d, e.type, e.control, e.holding);
   // A landed finesse move has the hands off for its window.
-  if (inMove && e.move !== 'bull' && e.move !== 'longarm') {
+  if (inMove && e.move !== 'bull' && e.move !== 'longarm' && !(HANDS2 && e.type === 'pass')) {
     hands.steer *= 0.1;
     if (e.move === 'spin' || e.move === 'swim') hands.push *= 0.2;
   }
@@ -438,6 +439,7 @@ function felt(e: Engagement, lat: Vec2): number {
 
 /** Remove a rep's joints from the world (disengage). */
 export function releaseJoints(sim: PlaySim, e: Engagement): void {
+  if (HANDS2) releasePair(sim, e);
   const gone = new Set<HandJoint>([...(e.hands ? [e.hands] : []), ...(e.helperHands?.values() ?? [])]);
   for (const joint of gone) runHands.delete(joint);
   sim.world.joints = sim.world.joints.filter((j) => !gone.has(j as HandJoint));
@@ -620,6 +622,11 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 
 // ------------------------------------------------------------ update
 
+setHandTechnique((b) => traits(b).hands);
+
+/** Test hook: a fixed move sequence for a rep (identical across arms). */
+export const rushScripts = new WeakMap<Engagement, RushMove[]>();
+
 export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents): void {
   const t = sim.t;
   for (const e of [...sim.engagements]) {
@@ -670,7 +677,9 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Leverage is where the bodies are, relative to the QB, every tick.
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
-  if (Math.abs(e.phi) >= 1) {
+  const pair = HANDS2 ? updatePair(sim, e) : null;
+  // One attached hand keeps a beaten blocker on the man (EXPERIMENT HANDS2).
+  if (Math.abs(e.phi) >= 1 && (!pair || handCount(pair) === 0)) {
     if (tryHold(sim, e)) return;
     beat(sim, e, axis, lat, false, 'turned the corner');
     return;
@@ -679,8 +688,26 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
 
   // ---- moves at decision points
   if (t >= e.nextMoveAt) {
-    e.move = t - e.start < 0.1 ? e.move : chooseMove(sim, e);
-    resolveMove(sim, e, axis);
+    const scripted = rushScripts.get(e);
+    e.move = scripted?.length ? scripted.shift()! : t - e.start < 0.1 ? e.move : chooseMove(sim, e);
+    if (pair && (e.move === 'club' || e.move === 'swim')) {
+      // A chop at the blocker hand on his working side: impulse against grip.
+      const work = { x: lat.x * e.side, y: lat.y * e.side };
+      const near = (name: 'inside' | 'outside') => {
+        const left = { x: Math.cos(b.facing + Math.PI / 2), y: Math.sin(b.facing + Math.PI / 2) };
+        const leftInside = left.y * (sim.ballY - b.pos.y) >= 0;
+        const sgn = (name === 'inside') === leftInside ? 1 : -1;
+        return (left.x * work.x + left.y * work.y) * sgn;
+      };
+      const target = near('outside') >= near('inside') ? 'outside' : 'inside';
+      e.moveOk = chop(sim, e, target, td.hands, tb.hands);
+      e.moveUntil = t + .3;
+      e.nextMoveAt = t + .45 + rng.range(0, .3);
+    } else if (pair && e.move === 'spin') {
+      startSpin(sim, e, pair);
+      e.moveOk = true; e.moveUntil = t + .3;
+      e.nextMoveAt = t + 1.2;
+    } else resolveMove(sim, e, axis);
   }
   const inMove = t < e.moveUntil && e.moveOk;
   const stalled = t < e.moveUntil && !e.moveOk;
@@ -688,6 +715,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Hand fight drifts toward the better hands; arm length keeps you off the body.
   e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
   setHands(sim, e);
+  if (pair) applyPair(sim, e, pair);
 
   const sep = b.profile.radius + d.profile.radius;
   const qb = sim.qb.pos;
@@ -706,6 +734,14 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
   };
+  const spinning = pair ? spinIntent(sim, e, pair) : null;
+  if (spinning) {
+    // A spin is a request to turn the body and come out inside; the World
+    // limits the yaw rate, charges traction for it and keeps his balance.
+    const speed = d.profile.vmax * .6;
+    intents[d.idx] = { vel: { x: Math.cos(spinning.heading) * speed, y: Math.sin(spinning.heading) * speed },
+      facing: spinning.facing, push: 0, posture: .8, cutSkill: 0.8 + 0.5 * td.bend };
+  }
 
   // ---- the blocker: stay between him and the QB, give ground to set depth,
   // then anchor. Mirror with the feet; the hands steer what they control.
