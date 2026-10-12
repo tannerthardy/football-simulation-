@@ -17,7 +17,7 @@ const out = arg('--out', 'out/phase-recovery');
 const steps = arg('--steps', '12,24,48,96,15,35').split(',').map(Number);
 const variants = arg('--variants', 'full,phase,phase-timing').split(',');
 if(steps.some(n=>!Number.isInteger(n)||n<=0))throw Error('Substeps must be positive integers');
-if(variants.some(v=>!['full','phase','phase-timing','phase-source'].includes(v)))throw Error('Unknown experiment');
+if(variants.some(v=>!['full','phase','phase-timing','phase-source','continued-recovery'].includes(v)))throw Error('Unknown experiment');
 mkdirSync(out, { recursive: true });
 const encode = (v: unknown) => JSON.stringify(v, (_k, x) => typeof x === 'number' && !Number.isFinite(x)
   ? { nonfinite: String(x) } : x);
@@ -41,7 +41,7 @@ const inputs = existsSync(inputPath)
 if (inputs.source !== source) throw Error('Frozen input source mismatch');
 if (!existsSync(join(out,'inputs.json.gz'))) save('inputs.json.gz', inputs);
 const receipt: any = { source, provenance: inputs.provenance, inputDigest: digest(inputs), steps, variants,
-  collectors: ['grip-refinement.ts', 'recovery-phase.ts', 'phase-refinement.ts'].map(file => ({ file,
+  collectors: ['grip-refinement.ts', 'recovery-phase.ts', 'phase-refinement.ts', 'continued-recovery.ts', 'continued-recovery-world.ts'].map(file => ({ file,
     sha256: createHash('sha256').update(readFileSync(join('scripts/diag/tackle', file))).digest('hex') })), runs: [] };
 for (const c of inputs.cases) for (const variant of variants) for (const n of steps) {
   let result;

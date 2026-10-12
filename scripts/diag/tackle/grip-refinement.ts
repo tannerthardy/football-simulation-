@@ -15,6 +15,7 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 import { sourceVersion } from '../../source-version.js';
 import { rep, type Cell } from './panel.js';
 import { advanceRecoveryPhase } from './recovery-phase.js';
+import {coupledRecoveryInterval,prepareContinuedRecovery,updateContinuedRecovery} from './continued-recovery-world.js';
 
 export const PIN = 'f14d849a51e031087a1971e5cc83db6146c4c5cebc17d4df2b6feb549e5106cb';
 export const STEPS = [12,24,48,96];
@@ -28,7 +29,7 @@ const pose=(b:Body)=>({pos:clone(b.pos),vel:clone(b.vel),spin:b.spin??0,facing:b
 function spec(j:GraspJoint,ids:number[],w:World){const {a,b,...p}=j;return {...clone(p),a:ids.indexOf(w.indexOf(a)),b:ids.indexOf(w.indexOf(b))};}
 interface Frame { t:number; dt:number; intents:Intent[]; bodies:Body[]; grips:Array<Record<string,any>>; rng:unknown; pending:Array<Record<string,any>> }
 export interface Capture { result:unknown; endpoint:string; frames:Frame[]; trace:any[]; decisions:string; profiles:string; }
-interface Scope { world:World|null; ids:number[]; trace:any[]; tick:number; bucket:any; rows:any[]; variant?:string; forced?:number; correcting?:boolean; deferred?:any[][]; }
+interface Scope { world:World|null; ids:number[]; trace:any[]; tick:number; bucket:any; rows:any[]; variant?:string; forced?:number; correcting?:boolean; deferred?:any[][]; solving?:boolean; }
 let scope:Scope|null=null;
 
 /** Snapshot at achieved substep boundaries; callbacks do not draw RNG or ask
@@ -66,6 +67,20 @@ function install(){
   const p=World.prototype as Private, saved=new Map<string,any>();
   const hook=(name:string,fn:(w:Private,original:any,args:any[])=>any)=>{const original=p[name];saved.set(name,original);p[name]=function(...args:any[]){return applicable(this)?fn(this,original,args):original.apply(this,args)};};
   hook('integrateSubstep',(w,f,args)=>{
+    if(scope!.variant==='continued-recovery'&&!scope!.solving){
+      const original=scope!.world;let finalBucket:any;
+      scope!.solving=true;
+      try{
+        const coupling=coupledRecoveryInterval(w,args,(trial,ta)=>{
+          scope!.world=trial;
+          const count=scope!.trace.length;
+          p.integrateSubstep.apply(trial,ta);
+          finalBucket=scope!.trace.length>count?scope!.trace.pop():undefined;
+        });
+        if(finalBucket){finalBucket.coupling=coupling;scope!.trace.push(finalBucket);}
+      }finally{scope!.world=original;scope!.solving=false;}
+      return;
+    }
     const [ids,,,h]=args;if(!ids.some((i:number)=>scope!.ids.includes(i)))return f.apply(w,args);
     const report=args[5],before=scope!.ids.map(i=>report.groundYawImpulse[i]);
     const bucket={t:w.time,h,tick:scope!.tick,start:snapshots(w),gripsStart:w.joints.filter((j:any)=>j.kind==='grasp').map((j:GraspJoint)=>gripSnapshot(w,j)),
@@ -73,6 +88,7 @@ function install(){
     scope!.bucket=bucket;scope!.rows=[];scope!.deferred=[];
     const r=f.apply(w,args);
     for(const deferred of scope!.deferred){
+      if(scope!.variant==='continued-recovery'&&deferred[0].state!=='up')continue;
       // The last launch interval has now physically completed. Use the
       // achieved boundary, not its start, for both state and timestamp.
       bucket.events.push({kind:'fall',t:w.time,i:deferred[4],cause:'dive',suppressed:false});
@@ -107,10 +123,15 @@ function install(){
   hook('solveContact',(w,f,args)=>{const c=args[0],ln=c.ln,lt=c.lt,r=f.apply(w,args);
     if(scope!.bucket){const v=scope!.bucket.torso,dn=c.ln-ln,dt=c.lt-lt;v.normal+=dn;v.tangent+=dt;
       v.angularA+=(c.ni??0)*dn-c.ri*dt;v.angularB+=(c.nj??0)*dn-c.rj*dt;}return r;});
-  hook('updateSupport',(w,f,args)=>{const [i,h]=args,b=w.bodies[i],before=pose(b),phase=recoveryInput(w,i,h,scope!.variant?.includes('phase'));
+  hook('prepareRecovery',(w,f,args)=>{
+    const speed=f.apply(w,args);
+    if(scope!.variant==='continued-recovery')prepareContinuedRecovery(w,args[0],args[1],speed,args[2]);
+    return speed;
+  });
+  hook('updateSupport',(w,f,args)=>{const [i,h]=args,b=w.bodies[i],before=pose(b),phase=recoveryInput(w,i,h,scope!.variant?.includes('phase')||scope!.variant==='continued-recovery');
     if(scope!.variant==='no-balance')return; // Explicit diagnostic ablation only.
     const peak=b.support.peak;
-    scope!.correcting=(scope!.variant==='achieved-support'||scope!.variant?.includes('phase'))&&!!phase;
+    scope!.correcting=(scope!.variant==='achieved-support'||scope!.variant?.includes('phase')||scope!.variant==='continued-recovery')&&!!phase;
     const r=f.apply(w,args);
     scope!.correcting=false;
     if(phase&&Math.hypot(b.support.xi.x-phase.predicted.x,b.support.xi.y-phase.predicted.y)>1e-11)throw Error('Recovery input reconstruction mismatch');
@@ -126,6 +147,14 @@ function install(){
         y:phase.predicted.y+n.y*(next.next-phase.result.next)-actualY*next.weight+oldY*phase.result.weight};
       const e=Math.hypot(b.support.xi.x,b.support.xi.y),crit=a.rb+w.sp[i].stepSpeed*w.fat[i]/a.w;
       b.support.out=e>a.rb?a.outsideFor+h:0;b.support.peak=Math.max(peak,e/crit);
+      if(e>crit&&e>a.rb+1e-6){const causes=b.support.causes;const cause=causes.legs>=causes.contact&&causes.legs>=causes.overspeed?'legs':causes.overspeed>causes.contact?'overspeed':'contact';
+        w.startFall(b.support,{x:b.support.xi.x/e,y:b.support.xi.y/e},cause,w.report,i);}
+    }
+    if(phase&&scope!.variant==='continued-recovery'){
+      const flow=updateContinuedRecovery(w,i,h,before,phase);
+      (phase as any).continued=flow;
+      const e=Math.hypot(b.support.xi.x,b.support.xi.y),a=phase.input,crit=a.rb+w.sp[i].stepSpeed*w.fat[i]/a.w;
+      b.support.peak=Math.max(peak,e/crit);
       if(e>crit&&e>a.rb+1e-6){const causes=b.support.causes;const cause=causes.legs>=causes.contact&&causes.legs>=causes.overspeed?'legs':causes.overspeed>causes.contact?'overspeed':'contact';
         w.startFall(b.support,{x:b.support.xi.x/e,y:b.support.xi.y/e},cause,w.report,i);}
     }
@@ -165,7 +194,7 @@ function install(){
     if(scope!.bucket&&scope!.ids.includes(i))scope!.bucket.supportUpdates.push({i,h,before,after:pose(b),recovery:w.recovery[i],phase,alpha:w.alpha[i],cut:w.cut[i],tip:{x:w.tipX[i]/h,y:w.tipY[i]/h},trip:{x:w.tripX[i],y:w.tripY[i]}});
     return r;});
   hook('startFall',(w,f,args)=>{
-    if(args[2]==='dive'&&(scope!.variant==='phase-timing'||scope!.variant==='phase-source')){
+    if(args[2]==='dive'&&(scope!.variant==='phase-timing'||scope!.variant==='phase-source'||scope!.variant==='continued-recovery')){
       scope!.deferred!.push([...args]);
       scope!.bucket?.events.push({kind:'dive-request',t:w.time,i:args[4],cause:'dive',suppressed:true});return;
     }

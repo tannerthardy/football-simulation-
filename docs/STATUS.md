@@ -33,10 +33,21 @@ preserves it as a permanent negative control. Local base-crossing and completed
 dive timing pass independent short-interval checks, but rear disagreement still
 reaches 2.218 yd at 12 versus 96 steps. Continuous-source integration exposes
 opposing responses at the base and is rejected, with all failed runs retained.
-World and capacities remain unchanged. Next: define the bounded response of
-already-reacted correction through a loaded base crossing in one body, then
-retest the pinned holds; keep all promotion failures. Complete checks have a
-native game-record timeout despite an isolated pass; see the new receipt.
+The next [one-body continued-recovery candidate](reviews/continued-recovery.md)
+now passes sustained/removed/increasing and weak-load checks, both crossings,
+mirrors and unequal partitions. It bounds the ankle target to the existing base
+and continues a begun step until the inner ankle request fits again. This changes
+unheld recovery in the outer half of the base and remains diagnostic only.
+Matched rear disagreement falls to 0.063 yd at 12 versus 96, but native rear
+holds still do not finish. Angled disagreement remains 3.453 yd; native coarse
+cases escape while finer ones are censored. All 24 ordinary endings remain,
+with adverse advance pairs retained. Candidate center controls are 48/50 (two
+historical hashes); patch stays 42/50. Next: trace the first loaded angled
+grip/yaw fork at 2.650000–2.654167 s and its later achieved fall transition,
+before another support adjustment. Production and capacities remain unchanged.
+This stage passes 1,312 core, 225 research and 141 Python checks, typecheck/build
+and 48 candidate law cases. Earlier native game-record timeouts despite an
+isolated pass remain recorded; no new full-suite pass is claimed.
 
 ## Prior validated repair stage
 
