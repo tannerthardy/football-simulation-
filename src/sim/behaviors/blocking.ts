@@ -646,18 +646,30 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   if (fb && sim.offAlign.spots.F?.backfield && !plans.has(fb)) {
     plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5), drive: up(0) });
   }
-  for (const a of sim.offense) {
-    if (plans.has(a) || a === sim.qb || a.slot === 'RB') continue;
-    if (a.slot === 'F' && sim.offAlign.spots.F?.backfield) continue;
+  const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
+    && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
+  const near = (a: Agent, d: Agent) => Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
+  const stalkTargets = new Map<Agent, Agent | null>();
+  if (STALK_CLAIM) {
+    // Receivers share one ledger: closest unclaimed pairs first, skipping
+    // backers a lineman or lead already owns. Only a receiver left with
+    // nobody unclaimed helps on the nearest man.
+    const open = [...db, ...lb.filter((l) => !claimedLB.has(l))];
+    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d) }))).sort((p, q) => p.dist - q.dist);
+    const taken = new Set<Agent>();
+    for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
+  }
+  for (const a of stalkers) {
     // Stalk the defensive back over him.
-    let best: Agent | null = null;
-    let bd = Infinity;
-    for (const d of [...db, ...lb]) {
-      const dd = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
-      const score = dd;
-      if (score < bd) {
-        bd = score;
-        best = d;
+    let best: Agent | null = stalkTargets.get(a) ?? null;
+    if (!best) {
+      let bd = Infinity;
+      for (const d of [...db, ...lb]) {
+        const dd = near(a, d);
+        if (dd < bd) {
+          bd = dd;
+          best = d;
+        }
       }
     }
     plans.set(a, { kind: 'stalk', target: best, drive: norm(sub(best?.pos ?? a.pos, { x: a.pos.x - 1, y: a.pos.y })) });
@@ -675,6 +687,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   }
   return plans;
 }
+
+/** Receivers claim distinct stalk targets (STALK_CLAIM=0: each takes his nearest). */
+const STALK_CLAIM = process.env.STALK_CLAIM !== '0';
 
 /** Climb when the backer shows flow or will arrive shortly (FLOW_RELEASE=0: proximity only). */
 const FLOW_RELEASE = process.env.FLOW_RELEASE !== '0';

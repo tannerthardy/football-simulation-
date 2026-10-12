@@ -54,10 +54,16 @@ const original = (PlaySim.prototype as any).tick as (this: PlaySim) => void;
   const t = this.t;
   for (const a of this.offense as any[]) {
     const plan = a.behavior?.plan;
-    if (!plan?.target) continue;
-    const m = tr.assigned.get(plan.target.idx) ?? new Map();
-    if (!m.has(a.idx)) m.set(a.idx, { t, kind: plan.kind, role: plan.pullRole });
-    tr.assigned.set(plan.target.idx, m);
+    if (!plan) continue;
+    // A double's backer is owned by the double from the snap, before release.
+    const owned: Array<[any, string]> = [];
+    if (plan.target) owned.push([plan.target, plan.kind]);
+    if (plan.combination?.backer && plan.combination.backer !== plan.target) owned.push([plan.combination.backer, 'combo-backer']);
+    for (const [target, kind] of owned) {
+      const m = tr.assigned.get(target.idx) ?? new Map();
+      if (!m.has(a.idx)) m.set(a.idx, { t, kind, role: plan.pullRole });
+      tr.assigned.set(target.idx, m);
+    }
   }
   for (const e of this.engagements as any[]) {
     const d = e.defender.idx;
@@ -118,6 +124,7 @@ for (let g = 0; g < games; g++) {
       let cls: string;
       if (tr.contact.engagedNow) cls = 'blocked at contact';
       else if (eng && eng.first <= tr.contact.t) cls = shedBefore ? 'shed before contact' : 'engaged, released before contact';
+      else if (assignedBefore.length && assignedBefore.every(([, v]) => v.kind === 'combo-backer')) cls = 'double backer, never engaged';
       else if (assignedBefore.length) cls = 'assigned, never engaged';
       else cls = 'never assigned';
       const firstOwner = assignedBefore.sort((p, q) => p[1].t - q[1].t)[0];

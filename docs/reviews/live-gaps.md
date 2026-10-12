@@ -299,3 +299,32 @@ What remains is the hand fight itself. `control` is still a ratings-driven
 random walk that sets the hand joint's push, steer and hold. Replacing it
 belongs with the contact-point hand forces (HANDS2), after the physics
 session's angular-contact work.
+
+**Assignment audit** (step 5). Two fixes, one in the measurement:
+
+- *Receiver stalks shared no ledger* (`STALK_CLAIM=0`: old). Each receiver
+  took his nearest defensive back or linebacker, so 106 of 602 game runs had
+  two or three receivers on one man (Y, Z and H all on SS) while a backer
+  had nobody. Receivers now share one ledger: closest unclaimed pairs first,
+  skipping backers a lineman or lead already owns; only a receiver with
+  nobody left helps. Duplicate-stalk plays 106 to 4; stuff rate 0.405 to
+  0.373, median 1.78 to 1.92 yd (cohort noise is similar in size); guards
+  hold. `test/stalk-ledger.test.ts` fails on the old rule.
+- *The run attribution called a double's backer "never assigned"* until the
+  double released (it read only `plan.target`). It now records the backer
+  from the snap ("double backer, never engaged").
+
+Corrected linebacker first contacts (577 runs, 16 games):
+
+| Class | Count |
+|---|---|
+| Double's backer, never engaged | 106 |
+| Assigned, never engaged | 36 |
+| Engaged, released before contact | 27 |
+| Never assigned | 23 |
+
+The 23 are mostly numbers: an extra box defender, or linemen blocking a
+nickel or corner walked onto the line. The large leak is doubles that do
+not release to their backer before the runner arrives, across inside zone,
+duo and stretch. That is the next controller mechanism; `FLOW_RELEASE`
+covers only part of it.
