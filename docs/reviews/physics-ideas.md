@@ -178,3 +178,65 @@ target of "an upright runner with one tackler on his thighs keeps stepping
 and drives for most of a second unless the tackler's own support and grip
 win", are offered for that work. The central collision is front-loaded but,
 on this evidence, secondary for yards after contact.
+
+## 7. Leg-hold bracing (`LEG_BRACE=1`, experimental, off by default)
+
+The only physics change from this investigation, in `World.addLoad` and
+`updateSupport`. A leg hold's pitching moment used to be entirely
+unbraceable ("a held foot cannot brace this moment"). With the flag:
+
+- The part of a hold above the knee (knee = 0.5 x COM height) acts on the
+  hips. The hips brace its moment up to their extension torque, 3.5 N·m per
+  kg of body mass (a sprint/strength-athlete figure, not fitted), times the
+  fatigue factor; only the excess pitches him.
+- The part below the knee acts on the base itself and trips him in full, as
+  before.
+- The force still loads his COM and his corrective step in full.
+
+Why: halving the hold's coupling to the corrective step changed nothing.
+The isolation showed falls come from the trip moment of the thigh-level share
+every tackle starts with (leg share about 0.55). Witness thigh holds produce
+about 270-420 moment units, below a 112 kg runner's ~470 hip capacity, so
+real hips can brace them.
+
+**1v1 witnesses** (fall time, s): head-on 0.35 to 0.50 (the cause becomes the
+collision, not the legs); 45 deg 0.40 to 1.2 (speed 3.4-3.5 yd/s, close to NFL
+side contacts); side, trailing hold 0.80 to 0.70 (by then the hold has slid to
+the ankle, the reference's "stumble after several steps"). Slow rear
+witnesses are unchanged.
+
+**Games** (8+8, `ab.sh`), against NFL tracking with the same operator:
+
+| | Off | On | NFL |
+|---|---|---|---|
+| Live 0.8 / 1.0 / 1.2 s after first contact | 0.35 / 0.21 / 0.14 | 0.62 / 0.45 / 0.33 | 0.83 / 0.71 / 0.59 |
+| Carrier speed 0.4 s after contact | 2.40 | 2.85 | 3.61 |
+| Yards after contact, median | 1.32 / 1.33 | 1.74 / 1.63 | 2.4 |
+| Run yards median; stuff rate | 2.0 / 2.2; 0.37 / 0.38 | 2.35 / 2.49; 0.31 / 0.35 | 3.0 |
+
+Guards: 12/12 on seed 101; `run.box_count` breaks on seed 202, a pre-snap
+alignment metric already noted as fragile on that seed.
+
+**Why it stays off.** The 1v1 panel (`scripts/diag/tackle/panel.ts`) shows the
+gap it exposes: in diagonal and side cells a lone tackler on the thighs can
+no longer finish. Holds go slack (mean grip force 70-160) and the runner drags
+him 8-18 yd for 3.5 s without the hold breaking (e.g. 45 deg / 6 yd/s with a
+cut: 3.1 to 16.4 yd after contact). The instant trip was the only way a
+single tackler finished. Real tacklers finish by rolling or twisting the
+runner down, by a second tackler, or the weak hold breaks and the runner
+escapes. Promoting this needs those mechanics first:
+
+1. A weak, slack hold on a runner who is pulling away should break (a
+   broken tackle), not persist at arm's length indefinitely.
+2. A secure thigh hold should be able to finish by rotation (thigh-and-roll)
+   or by the tackler's planted weight, through the World rather than through
+   an unbraceable moment.
+
+Reproduce:
+
+```sh
+LEG_BRACE=1 node --import tsx scripts/diag/physics/tackle-ledger.ts 45 5 3000 2
+LEG_BRACE=1 node --import tsx scripts/diag/tackle/panel.ts --seeds 6
+sh scripts/diag/runblock/ab.sh brace1 LEG_BRACE=1 && sh scripts/diag/runblock/ab.sh brace0
+python3 -I scripts/diag/physics/after-contact.py out/mechanics/nfl-plays.jsonl.gz out/rb/brace1-101.jsonl.gz out/rb/brace1-202.jsonl.gz
+```

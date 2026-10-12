@@ -230,6 +230,13 @@ const DOWN_FRICTION = 0.75;
 const FOLLOW_MARGIN = 1.1;
 /** Time constant of a slipping hold sliding down to the legs, s. */
 const LEG_SLIDE = 0.3;
+/** Experimental leg-hold bracing (LEG_BRACE=1); see addLoad. */
+const LEG_BRACE = process.env.LEG_BRACE === '1';
+/** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */
+const KNEE = 0.5;
+/** Peak hip-extension torque per kg of body mass, kg·yd²/s² per kg
+ * (about 3.5 N·m/kg in sprinting and strength athletes; 1 N·m = 1.196). */
+const HIP_TORQUE_PER_KG = 3.5 * 1.196;
 /** Extra hold distance of a holder stretched along the ground, yd. */
 export const GROUND_STRETCH = 0.9;
 /** Gait response time to body acceleration, s. */
@@ -371,6 +378,9 @@ export class World {
   private readonly impX: Float64Array;
   private readonly impY: Float64Array;
   private readonly tripX: Float64Array;
+  /** Pitch from holds above the knee, which the hips can brace (LEG_BRACE). */
+  private readonly thighX: Float64Array;
+  private readonly thighY: Float64Array;
   private readonly tripY: Float64Array;
   /** Translation used by position integration, before velocity relaxation. */
   private readonly travelVx: Float64Array;
@@ -429,7 +439,7 @@ export class World {
     this.mass = Float64Array.from(bodies, (b) => b.profile.massKg);
     this.inertia = Float64Array.from(this.sp, (s) => s.yawInertia);
     const f = () => new Float64Array(n);
-    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f();
+    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f(); this.thighX = f(); this.thighY = f();
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
@@ -971,7 +981,7 @@ export class World {
     this.syncHeldSupport();
     this.reels.clear();
     for (const i of ids) {
-      this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0;
+      this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0; this.thighX[i] = 0; this.thighY[i] = 0;
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
       this.travelAdjustX[i] = 0; this.travelAdjustY[i] = 0; this.facing0[i] = bs[i].facing;
       bs[i].support!.feetLock = 0;
@@ -1570,8 +1580,16 @@ export class World {
     // The actual low-contact impulse pitches him over the held base.
     // Corrective restraint is solved through the motor below, rather than
     // inferred from the mere presence of a grasp.
-    const legX = this.tripX[i] / w0;
-    const legY = this.tripY[i] / w0;
+    let legX = this.tripX[i] / w0;
+    let legY = this.tripY[i] / w0;
+    // Hips brace a thigh hold's moment up to their extension torque over
+    // this substep; the excess pitches him like any trip.
+    const thigh = Math.hypot(this.thighX[i], this.thighY[i]);
+    if (thigh > 0) {
+      const c = this.comHeight[i], moment = thigh * sp.pitchRadiusSq * this.mass[i] / Math.max(c, 1e-6);
+      const excess = Math.max(0, 1 - HIP_TORQUE_PER_KG * this.mass[i] * fat * h / Math.max(moment, 1e-12));
+      legX += this.thighX[i] * excess / w0; legY += this.thighY[i] * excess / w0;
+    }
     dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).
     const decay = Math.exp(-h / 0.3);
@@ -1646,7 +1664,14 @@ export class World {
     if (legHold) {
       // A held foot cannot actively brace this moment: it pitches the body
       // over the base, in addition to restricting the recovery step.
-      this.tripX[j] += fx * fj; this.tripY[j] += fy * fj;
+      // LEG_BRACE (experimental, off by default): a pull on the thighs acts
+      // on the hips, which brace its moment up to their torque capacity
+      // (support update); only the excess pitches him. A hold below the knee
+      // (about half the COM height) acts on the base itself and trips him in
+      // full. The force still loads his COM and his recovery step in full.
+      const w = LEG_BRACE ? clamp((KNEE * cj + .1 - z) / .1, 0, 1) : 1;
+      this.tripX[j] += fx * fj * w; this.tripY[j] += fy * fj * w;
+      this.thighX[j] += fx * fj * (1 - w); this.thighY[j] += fy * fj * (1 - w);
     } else {
       this.tipX[j] += fx * fj; this.tipY[j] += fy * fj;
     }
