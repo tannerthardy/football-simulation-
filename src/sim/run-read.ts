@@ -28,6 +28,7 @@ import type { RunScheme } from '../playbook/types.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
+import { observeRunRead, runReadObservers } from './run-read-observer.js';
 
 /** Press-and-read for zone runs. Experimental, off by default (RUN_READ=1 on):
  * see docs/reviews/run-read.md. */
@@ -182,9 +183,22 @@ export function runRead(a: Agent, sim: PlaySim, scheme: RunScheme, side: number,
   st.leverage = leverage;
   const e = entries(a, sim, f, key, st.key.profile.radius, blocker, st.blocker?.profile.radius ?? 0, keys.center, h);
   e.bend = bendEntry(a, sim, f, f.lat(e.bang) - 1) ?? e.bend;
-  if (st.answer) { st.entry = e[st.answer]; return st; }
+  // Capture the actual consumed picture, including the independently found
+  // current key. Diagnostic consumers copy these values synchronously.
+  const observed = (result: RunReadState): RunReadState => {
+    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'read', {
+      beat: st!.beat, canCommit, candidateKey: keys.key?.idx ?? null,
+      key: st!.key?.idx ?? null, blocker: st!.blocker?.idx ?? null,
+      fitter: st!.fitter?.idx ?? null, gone: !!gone, keySeen: key,
+      blockerSeen: blocker, horizon: h, noise, leverage, entries: e,
+      track, side, answer: result.answer, entry: result.entry,
+      committedAt: result.committedAt, why: result.why, risks: result.risks,
+    });
+    return result;
+  };
+  if (st.answer) { st.entry = e[st.answer]; return observed(st); }
   // Without the ball he reads but cannot cut yet.
-  if (!canCommit) return st;
+  if (!canCommit) return observed(st);
 
   const margin = .2 + .4 * (1 - .5 * vision - .5 * a.r('playRecognition'));
   const declared = Math.abs(leverage) > margin;
@@ -207,12 +221,12 @@ export function runRead(a: Agent, sim: PlaySim, scheme: RunScheme, side: number,
   // The read forms early, but the cut is made near the decision point:
   // turning early lets the second level fit it. A clear read lets him go a
   // step before the heels of his line.
-  if (declared && ok && ok === order[0] && depth > -2.2) return commit(st, a, sim, ok, e[ok], 'declared');
+  if (declared && ok && ok === order[0] && depth > -2.2) return observed(commit(st, a, sim, ok, e[ok], 'declared'));
   if (atDepth || unsafe) {
     const pick = ok ?? order.reduce((p, q) => (risks[q]! < risks[p]! ? q : p));
-    return commit(st, a, sim, pick, e[pick], unsafe && !atDepth ? 'unsafe' : 'decision depth');
+    return observed(commit(st, a, sim, pick, e[pick], unsafe && !atDepth ? 'unsafe' : 'decision depth'));
   }
-  return st;
+  return observed(st);
 }
 
 function commit(st: RunReadState, a: Agent, sim: PlaySim, answer: Answer, entry: Vec2, why: RunReadState['why']): RunReadState {
