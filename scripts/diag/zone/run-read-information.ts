@@ -1,7 +1,7 @@
 /** Measurement only. Run in separate processes because RUN_READ/CF_FLOW are
  * module-load switches. Detailed traces stay in out/. See review protocol. */
 import { createHash } from 'node:crypto';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { CENTER_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
@@ -14,9 +14,11 @@ import { Agent } from '../../../src/sim/agent.js';
 import { handoffReach } from '../../../src/sim/ball-transfer.js';
 import { BallCarrier } from '../../../src/sim/behaviors/carrier.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
-import { RUN_READ, runReads, type Answer } from '../../../src/sim/run-read.js';
+import { RUN_READ, RUN_READ_TURN, runReads, type Answer } from '../../../src/sim/run-read.js';
 import { runReadObservers, type RunReadObservation } from '../../../src/sim/run-read-observer.js';
 import type { MoveCommand } from '../../../src/physics/kinematics.js';
+import { previewFreeMovement } from '../../../src/physics/movement-preview.js';
+import { timeToReach } from '../../../src/physics/reach.js';
 
 type Input = { id: string; run: string; seed: number; o: number; d: number; front: string; flip: boolean };
 type Picture = RunReadObservation & { entries: Record<Answer, Vec2>; answer: Answer | null; entry: Vec2 | null;
@@ -24,11 +26,23 @@ type Picture = RunReadObservation & { entries: Record<Answer, Vec2>; answer: Ans
   committedAt: number | null; canCommit: boolean; why: string; risks: Partial<Record<Answer, number>> };
 type Branch = { entry: Vec2; at: number; prefix: string; limit?: number };
 type Decision = Picture & { prefix: string; pos: Vec2; vel: Vec2; initialBond: number[]; lastOpposingContacts: unknown[] };
+const prescribedBranches = process.env.READ_INFO_TARGETS
+  ? JSON.parse(readFileSync(process.env.READ_INFO_TARGETS, 'utf8')) as Record<string, Array<Branch & { name: string }>> : null;
 const distance = (a: Vec2, b: Vec2) => Math.hypot(a.x - b.x, a.y - b.y);
 const inputs: Input[] = [];
 for (const run of ['oz_strong', 'wz_strong', 'oz_weak', 'wz_weak']) for (const seed of [3, 7])
   for (const [o, d] of [[31, 32], [41, 42], [51, 52]]) for (const front of ['over', 'under']) for (const flip of [false, true])
     inputs.push({ id: `${run} s${seed} ${o}/${d} ${front}${flip ? ' flip' : ''}`, run, seed, o, d, front, flip });
+if (process.env.READ_INFO_INPUTS) {
+  const supplied = JSON.parse(readFileSync(process.env.READ_INFO_INPUTS, 'utf8')) as Input[];
+  inputs.splice(0, inputs.length, ...supplied);
+}
+if (process.env.READ_INFO_CASES) {
+  const selected = new Set(process.env.READ_INFO_CASES.split('|'));
+  const filtered = inputs.filter(i => selected.has(i.id));
+  if (filtered.length !== selected.size) throw new Error('Unknown diagnostic case');
+  inputs.splice(0, inputs.length, ...filtered);
+}
 
 function make(i: Input): PlaySim {
   return new PlaySim({
@@ -67,6 +81,7 @@ function execute(input: Input, observe: boolean, branch?: Branch) {
   const mesh = { nominalTime: Reflect.get(rb.behavior, 'meshTime') as number,
     point: Reflect.get(rb.behavior, 'mesh') as Vec2, reach: handoffReach(sim.qb, rb) };
   const observations: RunReadObservation[] = [], path: unknown[] = [], hashes: string[] = [];
+  const checkpoints: Record<string, string> = {};
   const state = { decision: null as Decision | null };
   let firstPhysicalKey: number | null = null, currentPhysicalKey: number | null = null;
   let firstReachableMesh: number | null = null, firstContact: { t: number; defender: number; pos: Vec2; blocked: boolean } | null = null;
@@ -75,6 +90,13 @@ function execute(input: Input, observe: boolean, branch?: Branch) {
   const limit = branch?.limit ?? 2.5;
   if (observe) runReadObservers.set(sim, event => {
     const copied = JSON.parse(json(event)) as RunReadObservation;
+    if (event.phase === 'entry-risk') {
+      const entry = event.entry as Vec2, D = distance(rb.pos, entry) || 1e-6;
+      copied.turnAwareSamples = (event.samples as Array<{ point: Vec2 }>).map(q => timeToReach(rb, q.point));
+      copied.unloadedMovement = previewFreeMovement(rb.body, { vel: { x: (entry.x - rb.pos.x) / D * rb.profile.vmax,
+        y: (entry.y - rb.pos.y) / D * rb.profile.vmax }, cutSkill: .85 + .35 * rb.r('elusiveness') }, sim.t, 30, sim.world.handContact);
+      copied.initiallyConstrained = !!sim.bond || !!rb.engagement;
+    }
     if (event.phase === 'read') {
       const p = event as Picture;
       const key = sim.agents[p.key], blocker = p.blocker === null ? null : sim.agents[p.blocker];
@@ -109,6 +131,7 @@ function execute(input: Input, observe: boolean, branch?: Branch) {
       const update = behavior.update.bind(behavior);
       behavior.update = (a, s) => {
         const cmd = update(a, s);
+        if (observe && process.env.READ_INFO_CHECKPOINTS === '1' && sim.carrier === rb) checkpoints[String(sim.t)] = fingerprint(sim);
         const st = runReads.get(rb);
         if (st?.answer && state.decision === null) {
           const p = [...observations].reverse().find(e => e.phase === 'read' && e.committedAt === st.committedAt) as Picture | undefined;
@@ -175,7 +198,7 @@ function execute(input: Input, observe: boolean, branch?: Branch) {
   const decision = state.decision;
   const selected = decision ? observations.find(e => e.phase === 'aim' && e.t >= decision.t) : undefined;
   return { input, gain: end.x - sim.los, censored: sim.phase === 'live', phase: sim.phase,
-    events: sim.events, outcome: sim.outcome,
+    events: sim.events, outcome: sim.outcome, checkpoints,
     players: sim.agents.map(a => ({ id: a.idx, slot: a.slot, team: a.team, player: a.player.id, radius: a.profile.radius })),
     handoffAt: sim.handoffAt, mesh, firstReachableMesh, decision, firstPhysicalKey, selected,
     firstContact, observations, path, hashes, branch: branch ? { ...branch, reached,
@@ -184,7 +207,7 @@ function execute(input: Input, observe: boolean, branch?: Branch) {
 }
 
 const output = process.argv[2] ?? 'out/run-read-information/panel.json';
-const count = Number(process.env.READ_INFO_LIMIT ?? 96);
+const count = Number(process.env.READ_INFO_LIMIT ?? inputs.length);
 const panel = [];
 for (const input of inputs.slice(0, count)) {
   const observed = execute(input, true);
@@ -192,6 +215,9 @@ for (const input of inputs.slice(0, count)) {
   // A no-sink run has no decision event; its state is still fingerprinted.
   if (json(observed.hashes) !== json(plain.hashes)) throw new Error(`Observer changed execution: ${input.id}`);
   const branches: Record<string, ReturnType<typeof execute>> = {};
+  if (prescribedBranches?.[input.id]) {
+    for (const { name, ...spec } of prescribedBranches[input.id]) branches[name] = execute(input, true, spec);
+  }
   if (RUN_READ && observed.decision && process.env.READ_INFO_BRANCHES === '1') {
     const d = observed.decision;
     const points: Record<string, Vec2> = { ...d.entries };
@@ -202,6 +228,6 @@ for (const input of inputs.slice(0, count)) {
   console.log(`${panel.length}/${count} ${input.id} gain=${observed.gain.toFixed(2)} read=${observed.decision?.answer ?? '-'} branches=${Object.keys(branches).length}`);
 }
 mkdirSync(dirname(output), { recursive: true });
-writeFileSync(output, json({ protocol: 'read-information-v1', read: RUN_READ, flow: process.env.CF_FLOW ?? 'current',
+writeFileSync(output, json({ protocol: 'read-information-v1', read: RUN_READ, chargeRedirect: RUN_READ_TURN, flow: process.env.CF_FLOW ?? 'current',
   branchHorizon: 2.5, arrivalRadius: .65, originalStop: 8, inputs: inputs.slice(0, count), panel }));
 console.log(`Saved ${output}`);
