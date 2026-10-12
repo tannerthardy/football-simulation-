@@ -515,8 +515,9 @@ export class World {
       report.armImpulseLimit[i] = this.armCap[i] * dt;
       report.armWorkLimit[i] = this.armCap[i] * ARM_SPEED * dt;
     }
-    // The gait plans at the controller rate, like stepBody: a free body
-    // moves exactly as the calibrated integrator, at any substep count.
+    // Hold gait effort at the controller rate; physics subdivisions do not
+    // become extra decisions. Center keeps stepBody's historical turn credit.
+    // Patch plans from attained facing, before the loaded turn is executed.
     const plans = bs.map((b, i) => this.plan(b, i, intents[i] ?? STAND, dt));
     for (let i = 0; i < n; i++) {
       const l = intents[i]?.lunge, sup = bs[i].support!;
@@ -874,6 +875,17 @@ export class World {
     return speed;
   }
 
+  /** Preserve sign when reducing a patch angle: adding then subtracting pi
+   * loses different low bits in mirrored lean/turn requests. Center retains
+   * its historical arithmetic. At an exact half turn, retain the input sign. */
+  private facingDelta(from: number, to: number): number {
+    if (this.handContact === 'center') return angleDiff(from, to);
+    let delta = (to - from) % (2 * Math.PI);
+    if (delta > Math.PI) delta -= 2 * Math.PI;
+    if (delta < -Math.PI) delta += 2 * Math.PI;
+    return delta;
+  }
+
   private plan(b: Body, i: number, intent: Intent, dt: number): Plan {
     const sup = b.support!;
     const none: Plan = { ax: 0, ay: 0, facing: b.facing, cut: 1, free: !!intent.free, dive: null, launch: 0 };
@@ -885,12 +897,14 @@ export class World {
     const a = availability(sup, this.sp[i], this.fat[i]);
     updateSqueeze(b, intent, dt);
     const tr = turnRateOf(b);
-    const facing = b.facing + clamp(angleDiff(b.facing, commandFacing(b, intent)), -tr * dt, tr * dt);
+    const facing = b.facing + clamp(this.facingDelta(b.facing, commandFacing(b, intent)), -tr * dt, tr * dt);
     // Pad level costs a little speed when he plays low.
     const low = 1 - 0.12 * Math.max(0, sup.posture - 0.3);
     const cmd = low < 1 ? { ...intent, effort: (intent.effort ?? 1) * low } : intent;
     const saved = b.facing;
-    b.facing = facing;
+    // A turn-rate ceiling is not an achieved pose. Contact and the shared
+    // traction budget can prevent that turn; it cannot grant gait speed yet.
+    if (this.handContact === 'center') b.facing = facing;
     const acc = locomotionAccel(b, cmd, dt, a);
     b.facing = saved;
     return { ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1, free: false, dive: null, launch: 0 };
@@ -1349,7 +1363,7 @@ export class World {
           if (ex > 0) {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
-            const dir = directionalSpeedFactor(p, angleDiff(b.facing, Math.atan2(uy, ux)));
+            const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
             const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, 1.2) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + PUSH_GROWTH), m * ex / h);
             tx = ux * mag; ty = uy * mag;
@@ -1404,7 +1418,7 @@ export class World {
         // Leg drive is directional: full straight ahead, a shuffle's or a
         // backpedal's share sideways or backward. Traction caps all of it.
         const tfx = lx + leanX, tfy = ly + leanY;
-        const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, angleDiff(b.facing, Math.atan2(tfy, tfx))) : 1;
+        const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
         const capacity = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), sp.traction * a);
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
