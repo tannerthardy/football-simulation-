@@ -15,7 +15,7 @@ import type { GraspJoint } from '../../../src/physics/world.js';
 import { chase } from '../../../src/sim/behaviors/common.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 
-const [angle = 0, speed = 6, seed = 3000, dSpeed = 4] = process.argv.slice(2).map(Number);
+const [angle = 0, speed = 6, seed = 3000, dSpeed = 4, horizon = 1.2, every = 1, cut = 0] = process.argv.slice(2).map(Number);
 const offense = generateTeam(new Rng(61), 'Panel O', 'PO', { strength: .55 });
 const defense = generateTeam(new Rng(62), 'Panel D', 'PD', { strength: .55 });
 const sim = new PlaySim({
@@ -37,7 +37,14 @@ c.body.pos = { x: 50, y: CENTER_Y }; c.body.vel = { x: speed, y: 0 }; c.body.fac
 d.body.pos = { x: 50 + 4 * Math.cos(th) + speed * .4, y: CENTER_Y + 4 * Math.sin(th) };
 d.body.facing = Math.atan2(c.pos.y - d.pos.y, c.pos.x - d.pos.x);
 d.body.vel = { x: Math.cos(d.body.facing) * dSpeed, y: Math.sin(d.body.facing) * dSpeed };
-c.behavior = { kind: 'idle', update: () => ({ vel: { x: speed, y: 0 } }) } as never;
+let cutAt: number | null = null;
+// As the tackle panel: an optional late cut away from the tackler at 2.2 yd.
+c.behavior = { kind: 'idle', update: () => {
+  const dd = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
+  if (cut && cutAt === null && dd < 2.2) cutAt = sim.t;
+  if (cutAt !== null) { const away = -Math.sign(d.pos.y - c.pos.y) || -1; return { vel: { x: speed * .7, y: away * speed * .7 } }; }
+  return { vel: { x: speed, y: 0 } };
+} } as never;
 d.behavior = { kind: 'idle', update: () => chase(sim, d, c) } as never;
 for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
 
@@ -73,10 +80,13 @@ while (sim.phase === 'live' && sim.t < 5) {
   const g = sim.world.joints.find((j) => j.kind === 'grasp' && j.b === c.body) as GraspJoint | undefined;
   const sup = c.body.support!;
   const cz = sup.causes ?? { contact: 0, legs: 0, overspeed: 0 };
+  const dd = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
+  const ri = sim.intents[d.idx]?.vel;
+  const tackler = ` | T ${d.body.support!.state} d ${dd.toFixed(2)} v (${d.vel.x.toFixed(1)},${d.vel.y.toFixed(1)}) req (${(ri?.x ?? 0).toFixed(1)},${(ri?.y ?? 0).toFixed(1)}) c (${c.vel.x.toFixed(1)},${c.vel.y.toFixed(1)}) in-bond ${sim.bond?.tacklers.includes(d) ? 'y' : 'n'}${g?.slipping ? ' slip' : ''}${g?.broken ? ' BROKE' : ''}`;
   const balance = ` xi ${Math.hypot(sup.xi.x, sup.xi.y).toFixed(2)} peak ${(sup.peak ?? 0).toFixed(2)} causes c/l ${cz.contact.toFixed(2)}/${cz.legs.toFixed(2)}`;
-  console.log(`${(sim.t - t0).toFixed(2).padStart(5)} ${Math.hypot(c.vel.x, c.vel.y).toFixed(2).padStart(6)} | ${legs.toFixed(2).padStart(5)} ${torso.toFixed(2).padStart(6)} ${strike.toFixed(2).padStart(6)} ${joints.toFixed(2).padStart(7)} | ${sup.state.padEnd(6)} ${Math.hypot(sup.lean.x, sup.lean.y).toFixed(0).padStart(5)} | `
+  if (Math.round((sim.t - t0) / sim.dt) % every === 0 || evs.length) console.log(`${(sim.t - t0).toFixed(2).padStart(5)} ${Math.hypot(c.vel.x, c.vel.y).toFixed(2).padStart(6)} | ${legs.toFixed(2).padStart(5)} ${torso.toFixed(2).padStart(6)} ${strike.toFixed(2).padStart(6)} ${joints.toFixed(2).padStart(7)} | ${sup.state.padEnd(6)} ${Math.hypot(sup.lean.x, sup.lean.y).toFixed(0).padStart(5)} | `
     + (g ? `${(g.legs ?? 0).toFixed(2)}, ${(g.force ?? 0).toFixed(0)}, ${(g.reach ?? 0).toFixed(2)}-${(g.hold ?? 0).toFixed(2)}` : '-'.padEnd(20))
-    + balance + ` | ${evs.map((e) => `${e.type}${e.note ? '(' + e.note + ')' : ''}`).join(' ')}`);
-  if (sim.t - t0 > 1.2) break;
+    + balance + tackler + ` | ${evs.map((e) => `${e.type}${e.note ? '(' + e.note + ')' : ''}`).join(' ')}`);
+  if (sim.t - t0 > horizon) break;
 }
 console.log(`ended: ${sim.phase}, ${sim.outcome ?? ''}`);

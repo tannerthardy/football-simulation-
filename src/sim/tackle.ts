@@ -56,6 +56,9 @@ const STALL = 0.8;
 /** Force a hold of quality q can sustain, kg·yd/s². Locked arms around a
  * body hold by geometry (the hands must come apart), several times what
  * fingertips on a jersey can; technique finishes the wrap. */
+/** Experimental tight-wrap finish (TACKLE_DRIVE=1, off by default); see updateBond. */
+const TACKLE_DRIVE = process.env.TACKLE_DRIVE === '1';
+
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
   return supportParams(d.profile).armForce * (0.3 + 2.5 * q * q) * (0.6 + 0.6 * d.r('tackling'));
@@ -381,7 +384,16 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // motion. Braking across an extended side hold would mostly swing the
       // holder around his arms, rather than establish useful rear leverage.
       const plant = Math.max(0, c.vel.x * tx + c.vel.y * ty) * quality * clamp(next, 0, 1);
-      intents[d.idx] = { vel: { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) }, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
+      let vel = { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
+      // TACKLE_DRIVE (experimental, off): once the wrap is tight against his
+      // body and the grip secure, he stops running with the carrier. He sits
+      // his weight down against the runner's travel and drives through the
+      // hip along the hold (thigh-and-drive from the side). An extended hold
+      // keeps the rule above. The World decides who wins.
+      const secure = clamp(next, 0, 1) * quality;
+      if (TACKLE_DRIVE && distance <= torso + .15 && secure >= .5)
+        vel = { x: c.vel.x * (1 - secure) + tx * 1.5 * secure, y: c.vel.y * (1 - secure) + ty * 1.5 * secure };
+      intents[d.idx] = { vel, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
         dive: own?.dive, lunge: own?.lunge };
     }
   }
