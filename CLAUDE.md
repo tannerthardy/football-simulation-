@@ -8,6 +8,8 @@ final exam, not the objective function.
 
 Work on `claude/engine-priorities`. Commit coherent steps and push that branch.
 Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
+Read [work ownership](docs/WORKBOARD.md) before selecting work; claim it there
+and coordinate before editing another session's subsystem.
 
 ## Model rules
 
