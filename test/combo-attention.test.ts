@@ -323,7 +323,9 @@ describe('joined pair proposals resolve before ordinary movement', () => {
       const mid = (lo + hi) / 2;
       if (differenceAt(mid) < 0) lo = mid; else hi = mid;
     }
-    const equalRouteY = (lo + hi) / 2;
+    // Adjacent representable positions bracket the tie; use the closer one.
+    // Their midpoint rounds to one end and need not be the better of the two.
+    const equalRouteY = Math.abs(differenceAt(lo)) <= Math.abs(differenceAt(hi)) ? lo : hi;
     const run = (reverse: boolean) => {
       const f = prime(fixture());
       const y = equalRouteY + shift;

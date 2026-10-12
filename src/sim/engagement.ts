@@ -32,8 +32,9 @@
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
-import { gapY } from '../playbook/alignment.js';
 import { availability, supportParams } from '../physics/support.js';
+import { gapY } from '../playbook/alignment.js';
+import { liveGapY } from './live-gaps.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -791,7 +792,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       const sep = b.profile.radius + d.profile.radius;
       stack = { owner: b, fit, depth: stack?.depth ?? d.pos.x,
         shoulder: edge ? job.side * (job.edge === 'spill' ? -.45 : .65)
-          : clamp(gapY(sim.offAlign, job.gap, job.side) - local.y, -sep * .65, sep * .65),
+          : clamp(liveGapY(sim, d, job.gap, job.side) - local.y, -sep * .65, sep * .65),
         nextRead: -Infinity, flow: 0, runner: false, contacted: stack?.contacted ?? false };
       runStacks.set(e, stack);
     }

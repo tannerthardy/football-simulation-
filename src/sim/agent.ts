@@ -24,6 +24,9 @@ export interface Behavior {
    * This is a job contract, not current openness or readiness to catch. */
   readonly passOption?: boolean;
   update(a: Agent, sim: PlaySim): MoveCommand;
+  /** Motion his teammates know from the call itself (a rehearsed track on the
+   * snap count), not his private live decision; null when there is none. */
+  calledMotion?(): Vec2 | null;
 }
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';

@@ -7,6 +7,7 @@ import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import { blendApproach, chase, gatheringApproach, goTo, stand, track } from './behaviors/common.js';
 import { chooseApproach } from './approach-control.js';
+import { linePicture, liveGapY } from './live-gaps.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -118,6 +119,19 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   return jobs;
 }
 
+/** Pull reads (PULL_READ=0 restores the single nearest-shift read, for A/B). */
+const PULL_READ = process.env.PULL_READ !== '0';
+/** How far ahead a puller's seen path is carried (about one decision beat), the
+ * leverage kept on his arrival, and how far a fit will flow to it. */
+const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
+
+/** Linemen this player sees pulling: off the surface, behind the line, moving
+ * across. Every one counts; nothing reads the offensive call. */
+export function pullers(sim: PlaySim, a: Agent): Perceived[] {
+  return linePicture(sim, a).departed.map((b) => b.seen)
+    .filter((s) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
+}
+
 /** Only visible pull/slice motion changes a fit; no offensive scheme lookup. */
 export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind: 'pull' | 'slice'; pos: Vec2 } | null {
   for (const o of sim.offense) {
@@ -143,11 +157,11 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // choose another target or prematurely declare this observed crease.
   const premesh = keyed ? keyed.cue.pos.x <= sim.los - 1.6
     : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
-  if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: gapY(sim.offAlign, job.gap, job.side) }, { speed: .7 });
+  if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
   const seen = keyed?.cue ?? sim.see(a, premesh ? back! : c);
   if (!premesh && seen.pos.x > sim.los + (keyed ? 0 : 2)) return chase(sim, a, c);
   const indicator = blockingIndicator(a, sim);
-  let gy = gapY(sim.offAlign, job.gap, job.side);
+  let gy = liveGapY(sim, a, job.gap, job.side);
   if (job.kind === 'alley') {
     // The remaining secondary support is the cap on the fit. Bringing every
     // safety to linebacker depth before the back declares removes the final
@@ -169,7 +183,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     job = { ...job, ...job.inside, kind: job.inside.kind ?? 'insert',
       // A dropping end is his own outside support, so cannot spill to himself.
       edge: job.inside.kind === 'edge' ? 'box' : job.edge };
-    gy = gapY(sim.offAlign, job.gap, job.side);
+    gy = liveGapY(sim, a, job.gap, job.side);
   }
   const edge = job.kind === 'edge' || job.kind === 'force';
   if (edge) {
@@ -208,9 +222,19 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     }
     return fit;
   }
-  if (job.technique === 'lag' && Math.abs(seen.vel.y) > .8) gy = gapY(sim.offAlign,'A',-Math.sign(seen.vel.y));
+  if (job.technique === 'lag' && Math.abs(seen.vel.y) > .8) gy = liveGapY(sim,a,'A',-Math.sign(seen.vel.y));
   const flow = clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
-  if (indicator?.kind === 'pull' && job.kind !== 'interior') {
+  if (PULL_READ) {
+    // Read the guards: every puller this player sees crossing behind the line
+    // shows where an extra blocker will turn up. Flow with him to keep the
+    // installed leverage on his arrival (box outside him, spill inside him);
+    // never flow against the pull.
+    if (job.kind !== 'interior') for (const p of pullers(sim, a)) {
+      const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
+      const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
+      if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) { gy = target; a.tags.add('fit-pull-read'); }
+    }
+  } else if (indicator?.kind === 'pull' && job.kind !== 'interior') {
     gy += indicator.side * Math.min(1.5,Math.abs(indicator.pos.y-gy)*.35);
     a.tags.add('fit-pull-read');
   }

@@ -673,6 +673,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   return plans;
 }
 
+/** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
+const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
+
 export class RunBlocker implements Behavior {
   readonly kind = 'run-block';
   private pullIdx = 0;
@@ -691,7 +694,11 @@ export class RunBlocker implements Behavior {
   private presentationThreat: Agent | null = null;
   /** Native technique read, retained between the player's ordinary decisions. */
   zoneRead: ZoneReachRead | null = null;
+  /** The called track he is running this tick (known to teammates). */
+  private track: Vec2 | null = null;
   constructor(public plan: RunBlockPlan) {}
+
+  calledMotion(): Vec2 | null { return this.track; }
 
   get target(): Agent | null {
     return this.plan.target;
@@ -700,6 +707,7 @@ export class RunBlocker implements Behavior {
   update(a: Agent, sim: PlaySim): Intent {
     const plan = this.plan;
     const t = sim.t;
+    this.track = null;
     if (plan.contactFit && (plan.kind !== 'cutoff' || plan.target !== plan.contactFit.target
       || (plan.combination && !plan.combination.released))) delete plan.contactFit;
     this.homeY ??= a.pos.y;
@@ -731,6 +739,16 @@ export class RunBlocker implements Behavior {
         }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
+    }
+    // Before contact every zone lineman runs the track. On stretch plays the
+    // doubles do too: the pair steps play side together and each works to his
+    // half of the man. Inside/split-zone doubles press with their own
+    // coordination (checks, help, climb), as do all doubles once joined.
+    const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
+    const coordinated = !!plan.combination && !plan.combination.released && !stretch;
+    if (ZONE_FLOW && isOL(a) && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
+      const flow = this.zoneFlow(a, sim);
+      if (flow) return this.withBase(a, flow);
     }
     if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
       // Establish the first foot and pad angle before running through a
@@ -804,6 +822,58 @@ export class RunBlocker implements Behavior {
       return goTo(a, fit, { speed: 0.85, through: 1 });
     }
     return this.withBase(a, this.attack(a, sim, target));
+  }
+
+  /** A zone lineman runs the track toward the play side from the snap and
+   * meets his defender's playside shoulder while moving, instead of stepping
+   * and then attacking a stationary picture. Outside/wide zone run the track;
+   * inside/split zone press it. Speed is the body's own: World caps it by
+   * facing, acceleration and traction. NFL zone lines are 0.6 yd wide by
+   * 0.5 s and their fronts flow with them; a stalled line never stretches. */
+  private zoneFlow(a: Agent, sim: PlaySim): MoveCommand | null {
+    const run = sim.offCall.run;
+    if (!run || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)) return null;
+    const target = this.availableTarget(a, sim);
+    if (!target) return null;
+    const seen = sim.see(a, target);
+    const dir = sim.attackDir(a.team);
+    if ((seen.pos.x - sim.los) * dir > 1.5) return null; // second level: ordinary climb
+    const ps = playSideSign(sim, run);
+    const contact = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+    const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+    // Within reach the ordinary fit/engage owns contact, except during the
+    // first step, which never strikes: it is where the lateral start is won.
+    const firstStep = sim.t < .24 + a.mind.snapDelay;
+    if (d < contact + .25 && !firstStep) return null;
+    const press = run.scheme === 'insideZone' || run.scheme === 'splitZone' ? .55 : 1;
+    // Lateral intent: what it takes to be on his playside shoulder when we
+    // meet, from his seen motion over our time to contact; never less than
+    // the play's track tempo. The body's own limits decide what is achieved.
+    const bodyContact = a.profile.radius + target.profile.radius;
+    const closing = Math.max(1, (a.vel.x - seen.vel.x) * dir + 1.5);
+    const meet = clamp(Math.max(0, (seen.pos.x - a.pos.x) * dir - bodyContact) / closing, .15, .6);
+    // A double's two players take the halves of the man nearest each, the
+    // same split as their combo aim; a solo reach takes the playside number.
+    const combo = this.plan.combination && !this.plan.combination.released ? this.plan.combination : null;
+    const partner = combo?.members.find((b) => b !== a);
+    const half = partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
+    const shoulder = seen.pos.y + seen.vel.y * meet + half;
+    // Ask for the speed that gets there in time under his own acceleration
+    // law (speed approaches the wanted speed with time constant tau): an
+    // early, short distance needs an explosive first step, not a jog.
+    const lag = a.profile.tau * (1 - Math.exp(-meet / a.profile.tau));
+    const needed = (Math.max(0, (shoulder - a.pos.y) * ps) - a.vel.y * ps * lag) / Math.max(1e-3, meet - lag);
+    const lateral = ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
+    // The call's track tempo is what his teammates expect from him.
+    this.track = { x: 0, y: ps * a.profile.vmax * .45 * press };
+    // Depth: close to the defender's near surface without overrunning it.
+    const fitX = seen.pos.x - dir * bodyContact;
+    const forward = clamp((fitX - a.pos.x) * 2.5, -1, 2.5);
+    // Open the hips toward the track (a bucket step) while the eyes stay on
+    // the target: halfway between travel and the target's bearing.
+    const travel = Math.atan2(lateral, forward), bearing = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
+    const facing = bearing + Math.atan2(Math.sin(travel - bearing), Math.cos(travel - bearing)) / 2;
+    return { vel: { x: forward, y: lateral }, facing, cutSkill: .8 + .3 * a.r('runBlock') };
   }
 
   private availableTarget(a: Agent, sim: PlaySim): Agent | null {
