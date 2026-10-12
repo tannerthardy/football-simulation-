@@ -18,7 +18,10 @@ The fixed offset is removed. The same delayed observations, acceleration
 forecast, reach estimate, force leverage, gathering, random stream and cached
 per-play error remain. Error can put a player ahead or behind the estimated
 intercept, with its spread still tied to pursuit skill. Physics capabilities
-and the contact solver are unchanged.
+and the contact solver are unchanged by the angle repair. The later shared-branch
+merge preserves the other session's opt-in hand patch; default hands remain
+`center`. Its promotion failures remain documented in the
+[zone prototype review](zone-flow-prototype.md).
 
 Perception already extrapolates old position using old velocity. Constant
 straight movement therefore is not simply position-lagged. An unseen cut still
@@ -95,10 +98,21 @@ All 32 fixed native/encounter starting states are unchanged. The guard and its
 thresholds are preserved; this is a flagged full-game mix change, not a passing
 guard or evidence of an alignment repair.
 
-All 1,232 TypeScript tests, including integration and preserved research,
-and 141 Python tests pass; typecheck and build pass. The isolated known
+At the angle-only source, all 1,232 TypeScript tests, including integration
+and preserved research, and 141 Python tests pass; typecheck and build pass. The isolated known
 hand/contact angular-law failure remains open. A green test suite does not
 certify finished football or contact physics.
+
+The later merge of the other session's `36c294c` was rechecked at source
+`0398418c`. All 1,238 TypeScript tests and 141 Python tests, typecheck and
+build pass. Both eight-game exporters reproduce the angle-stage tracking
+files byte-for-byte; native rosters, games and play outcomes also match exactly.
+The outcome/guard comparisons above therefore still apply to this default.
+All 128 controlled encounters retain their initial/profile pins, ending,
+events, contact/grip/load timing and RNG. Tiny internal floating-point differences
+remain (maximum body position difference 5.19e−11 yd); do not claim exact
+physical-state identity across the merge. Observation controls pass on both.
+The common hand patch stays opt-in, with its native promotion failures retained.
 
 ## What the supplied research establishes
 

@@ -50,6 +50,12 @@ the other 11 and all 12 pooled guards pass. Fixed starting states are unchanged;
 the calling mix shifted. The threshold is preserved and the failure reported.
 A proposed held-facing change produced mixed results and was rejected.
 
+The integrated source `0398418c` passes all 1,238 TypeScript tests, 141 Python
+checks, typecheck and build. Both eight-game tracking exports and native
+outcomes reproduce the angle-stage results exactly. Controlled endings/cues
+retain their behavior with tiny internal floating-point drift; observer checks
+pass. The other session's common hand patch remains opt-in.
+
 Next, trace actual failed acquisitions/loaded grips that break and pre-throw
 coverage alignment. The supplied in-stride catch branch remains experimental;
 outside/wide-zone work belongs to the other session. Early route separation is
