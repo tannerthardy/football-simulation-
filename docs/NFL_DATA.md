@@ -123,7 +123,10 @@ licensing and provenance.
 1. **Tackling labels.** Big Data Bowl 2024 (Kaggle `nfl-big-data-bowl-2024`)
    labels tackles and missed tackles for the same 2022 games: real missed-
    tackle rates by approach angle, instead of the broken-contact proxy.
-   Needs `KAGGLE_API_TOKEN` in a new session.
+   **Blocked by source withdrawal:** authenticated listing on 2026-10-12 returns
+   only a README saying the host removed the dataset. The supplied public
+   notebook sources still work; no tracking or labels were downloaded. See the
+   [research checks](reviews/loaded-grip-refinement.md#research-supplied-during-this-diagnosis).
 2. **Matched situations.** Split by down and distance and field position, as
    the rushing benchmark does for outcomes.
 3. **Route breaks.** Speed lost and time to re-accelerate at a route break,

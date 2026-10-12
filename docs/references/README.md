@@ -99,6 +99,20 @@ Preserving them does not install the whole proposed offense.
 Textbook SHA-256: `f06753393eced8c45ba640011f8eaf1dc8aaa5c0d2f4448d2e1a9c1a50e32311`.
 Glossary SHA-256: `25a9a9a0bc51ad6a4889d12ef282201f007e5bd05fccb7f981db82c373c05609`.
 
+[tackling_mechanics_and_physics.md](tackling_mechanics_and_physics.md) is the
+user's tackling reference, retained byte-for-byte for collaborators. Its useful
+distinction is between arriving, establishing contact, obtaining a wrap and
+actually transmitting a stopping or turning load through usable footing.
+It supports testing momentum, contact geometry, shared force limits and assisted
+tackles. It is reference material, not repository instructions or verified NFL
+force calibration. Its equations are illustrative, and rugby/youth studies
+cannot establish NFL grip or hit capacities. Citations require independent
+checking before using their numbers. The
+[tackle finish review](../reviews/tackle-finish.md) records the narrow application
+and the rejected geometry experiment.
+
+SHA-256: `53b3ab156127f30b0374652af1ae6298e063042d3b00815af7f38501a3c58bb6`.
+
 The [offense](../archive/reviews/offense-literature-applications.md),
 [coverage](../archive/reviews/coverage-literature-applications.md) and
 [contact](../archive/reviews/contact-literature-applications.md) reviews synthesize

@@ -373,11 +373,15 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // staying tight to the hold.
       intents[d.idx] = { vel: { x: -dir * 2.5 + tx * close, y: ty * close }, facing: Math.atan2(ty, tx), push: 1, posture: 0.7, dive: own?.dive, lunge: own?.lunge };
     } else {
-      // Beside or behind him: run the feet into the hip while the arms close.
-      // A secure grip does not require abandoning cleat support. Ground and
-      // grip loads decide whether he can stay upright or gets dragged down;
-      // preserve a dive/lunge already committed by the approach technique.
-      intents[d.idx] = { vel: { x: c.vel.x + tx * close, y: c.vel.y + ty * close }, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
+      // Stay with an extended reach to close it. As actual body proximity and
+      // the acquired grip permit a wrap, plant rather than keep matching the
+      // runner's speed forever. This is a requested finish, not a stop impulse:
+      // ground traction, grip load and balance decide whether it is achieved.
+      // Brake along the loaded hold, retaining the runner's perpendicular
+      // motion. Braking across an extended side hold would mostly swing the
+      // holder around his arms, rather than establish useful rear leverage.
+      const plant = Math.max(0, c.vel.x * tx + c.vel.y * ty) * quality * clamp(next, 0, 1);
+      intents[d.idx] = { vel: { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) }, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
         dive: own?.dive, lunge: own?.lunge };
     }
   }
@@ -390,7 +394,9 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   const held = t - bond.start;
   const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
   const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => (grip.get(d) ?? 0) >= 0.6);
-  if (inGrasp || held > 4 || (bond.stalled ?? 0) >= STALL) whistleDown(sim, bond);
+  // A running carrier is not down merely because the arms held for seconds.
+  // Upright tackles require stopped progress; physical falls are checked below.
+  if (inGrasp || (bond.stalled ?? 0) >= STALL) whistleDown(sim, bond);
 }
 
 /** After the physics step: forward progress, and down by contact. */

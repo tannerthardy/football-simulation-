@@ -15,6 +15,40 @@ Physics accounting and controlled interactions are useful foundations, not proof
 of finished football, measured NFL contact capacities or universal convergence.
 Some controllers still use private state. Body facing is not measured gaze.
 
+The latest [tackle finish repair](reviews/tackle-finish.md) requests a plant
+along a secured hold instead of following the runner forever. Existing physics
+executes it with unchanged capacities; a moving runner is no longer ruled down
+by a four-second hold timer. In the matched 144-rep panel, production physical
+falls rise 106→122; patch falls rise 62→92, with unfinished adverse reps retained.
+That repair's source `f14d849a51` passed its **1,486 TypeScript tests**, **141 Python checks**,
+typecheck and build. The two-game smoke check holds 12/12 existing guards.
+Patch promotion stays **42/50**. The diagnostic-only
+[loaded-grip investigation](reviews/loaded-grip-refinement.md) now compares both
+pinned witnesses and mirrors at 12/24/48/96 steps with frozen decisions. It finds
+an early dive transition and grip/support recovery disagreement. The achieved-foot
+proposal is now rejected: a live grip can change recovery at zero force, and a
+finite error persists as nonzero transmitted force vanishes. The
+[reconstructed phase continuation](reviews/recovery-phase-reconstruction.md)
+preserves it as a permanent negative control. Local base-crossing and completed
+dive timing pass independent short-interval checks, but rear disagreement still
+reaches 2.218 yd at 12 versus 96 steps. Continuous-source integration exposes
+opposing responses at the base and is rejected, with all failed runs retained.
+The next [one-body continued-recovery candidate](reviews/continued-recovery.md)
+now passes sustained/removed/increasing and weak-load checks, both crossings,
+mirrors and unequal partitions. It bounds the ankle target to the existing base
+and continues a begun step until the inner ankle request fits again. This changes
+unheld recovery in the outer half of the base and remains diagnostic only.
+Matched rear disagreement falls to 0.063 yd at 12 versus 96, but native rear
+holds still do not finish. Angled disagreement remains 3.453 yd; native coarse
+cases escape while finer ones are censored. All 24 ordinary endings remain,
+with adverse advance pairs retained. Candidate center controls are 48/50 (two
+historical hashes); patch stays 42/50. Next: trace the first loaded angled
+grip/yaw fork at 2.650000–2.654167 s and its later achieved fall transition,
+before another support adjustment. Production and capacities remain unchanged.
+This stage passes 1,312 core, 225 research and 141 Python checks, typecheck/build
+and 48 candidate law cases. Earlier native game-record timeouts despite an
+isolated pass remain recorded; no new full-suite pass is claimed.
+
 ## Prior validated repair stage
 
 The [pursuit review](reviews/pursuit-coverage.md) and
