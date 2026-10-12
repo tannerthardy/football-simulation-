@@ -130,12 +130,14 @@ The controller owner's [anchor and diagnostic work](reviews/controller-easy-gain
 is integrated. Get-up-stage four-game guards pass 12/12; these are not measurements
 of the later combined stage. Live-gap controller work is claimed separately.
 
-**Next shared-physics milestone:** preserve these laws while controllers repair
-attained-load interpretation and seal geometry. Keep unchanged helper/transfer
-controls through live-gap changes. Grasp yaw and mixed hand/grasp transport have
-confirmed free-body law defects; investigate them before expanding lower-foot
-support. No broad tackle-strength failure is established by the six selected
-current catch contexts. Avoid anatomy or global solver resolution as a shortcut.
+The [upper-grip repair](reviews/upper-grip-angular-repair.md) now closes upper
+grasp yaw and mixed hand/grasp transport in patch mode, with unchanged capacities.
+Source `e901bb5b` passes all **1,388 TypeScript tests**, **141 Python checks**,
+typecheck and build; default hashes pass. Patch promotion remains **42/50**.
+**Next physics step:** combine lower-grip yaw and corrective-foot support in one
+bounded force/work solve; faster retained cases expose that still-open law.
+Keep helper/transfer controls through the separate live-gap controller work.
+Neither this upper law repair nor six selected catches justify stronger tackles.
 
 ## Other branch work
 
