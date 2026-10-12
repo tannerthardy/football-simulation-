@@ -67,8 +67,12 @@ export interface HandJoint {
   actor?: Body;
   /** Owner of a tensile hold (default a), distinct from who controls a shove. */
   holder?: Body;
-  /** Center distance the extended arms hold. */
+  /** Center distance, or (with contact) the other center's distance to that point. */
   extension: number;
+  /** Persistent material point on a torso, in that body's local frame. A
+   * release/re-grab creates a new contact; never move it to follow a shoulder.
+   * Requires handContact: 'patch'. Omission uses the reduced shared patch. */
+  readonly contact?: { readonly on: 'a' | 'b'; readonly local: Readonly<Vec2> };
   /** Max compressive arm force, kg·yd/s². */
   push: number;
   /** Max tension (a grab of cloth), kg·yd/s². */
@@ -80,6 +84,11 @@ export interface HandJoint {
   /** Last step's mean force on b from a: normal (+ pushes apart) and tangential. */
   normalForce?: number;
   tangentForce?: number;
+  /** Patch mode: attained mean world force on b and yaw moments on each body.
+   * Use these for felt load; scalar components cannot recover a changing frame. */
+  forceOnB?: Vec2;
+  momentOnA?: number;
+  momentOnB?: number;
 }
 
 /** A hold by `a` (holder) on `b` (held): a tackle grasp. */
@@ -276,6 +285,9 @@ interface JointRow {
   /** Lever arms to one common hand patch, along the frozen contact normal. */
   ri?: number;
   rj?: number;
+  /** Normal impulse moments at the same physical point as steering. */
+  ni?: number;
+  nj?: number;
   /** Normal regime: +1 compressive (hands), −1 tension, 0 inactive. */
   mode: number;
   c: number;
@@ -293,6 +305,8 @@ interface JointRow {
   reel: number;
   /** Identical numerical copies share one physical compliant attachment. */
   members?: GraspJoint[];
+  /** Coincident hands share one compliant row and divide its achieved load. */
+  handMembers?: HandJoint[];
   /** Corrections can recover only this channel's earlier numerical work
    * within the same physical substep, never another channel or interval. */
   normalWork?: { net: number };
@@ -474,7 +488,10 @@ export class World {
       && (j.kind!=='hands'||(this.indexOf(j.actor??j.a)>=0&&this.indexOf(j.holder??j.a)>=0)));
     this.syncHeldSupport();
     for (const j of this.joints) {
-      if (j.kind === 'hands') { j.normalForce = 0; j.tangentForce = 0; }
+      if (j.kind === 'hands') {
+        j.normalForce = 0; j.tangentForce = 0;
+        if (this.handContact === 'patch') { j.forceOnB = { x: 0, y: 0 }; j.momentOnA = j.momentOnB = 0; }
+      }
       else j.force = 0;
     }
     for (let i = 0; i < n; i++) {
@@ -542,7 +559,13 @@ export class World {
     report.contacts = [...pairs.values()];
     this.pending = [];
     for (const j of this.joints) {
-      if (j.kind === 'hands') { j.normalForce = (j.normalForce ?? 0) / dt; j.tangentForce = (j.tangentForce ?? 0) / dt; }
+      if (j.kind === 'hands') {
+        j.normalForce = (j.normalForce ?? 0) / dt; j.tangentForce = (j.tangentForce ?? 0) / dt;
+        if (this.handContact === 'patch') {
+          j.forceOnB!.x /= dt; j.forceOnB!.y /= dt;
+          j.momentOnA = (j.momentOnA ?? 0) / dt; j.momentOnB = (j.momentOnB ?? 0) / dt;
+        }
+      }
       else j.force = (j.force ?? 0) / dt;
     }
     report.work.after = this.kineticEnergy();
@@ -1011,11 +1034,22 @@ export class World {
     if (contact) {
       const soft = softness(CONTACT_HZ, CONTACT_ZETA, h);
       contacts = this.detect(ids, h, soft, report, swept);
+      // Torso impacts occur at the interval start; hands act as finite forces
+      // across it. Freeze the hand midpoint only after the achieved impact.
+      // Interleaving them used a pre-impact hand point but post-impact travel,
+      // leaving an unbalanced angular cross term even with correct row laws.
+      if (this.handContact === 'patch') {
+        const spin = ids.map(i => bs[i].spin ?? 0);
+        for (let it = 0; it < ITERATIONS; it++) for (const c of contacts) this.solveContact(c, soft);
+        // Translation carries a start impact for the whole remaining interval;
+        // acquired yaw must have the same timing. Endpoint RELAX has none.
+        for (let k = 0; k < ids.length; k++) bs[ids[k]].facing += h * ((bs[ids[k]].spin ?? 0) - spin[k]);
+      }
       const rows = this.jointRows(h);
       const handSoft = softness(HANDS_HZ, HANDS_ZETA, h);
       const graspSoft = softness(GRASP_HZ, GRASP_ZETA, h);
       for (let it = 0; it < ITERATIONS; it++) {
-        for (const c of contacts) this.solveContact(c, soft);
+        if (this.handContact === 'center') for (const c of contacts) this.solveContact(c, soft);
         for (const r of rows) {
           if (r.joint.kind === 'hands') this.solveHands(r, handSoft);
           else this.solveGrasp(r, graspSoft, h);
@@ -1034,8 +1068,8 @@ export class World {
           // defer all newly transmitted hand rotation to the next substep.
           if (this.handContact === 'patch') {
             const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
-            this.bodies[r.i].facing -= yawTime * (r.ri ?? 0) * r.lt / this.inertia[r.i];
-            this.bodies[r.j].facing -= yawTime * (r.rj ?? 0) * r.lt / this.inertia[r.j];
+            this.bodies[r.i].facing += yawTime * ((r.ni ?? 0) * r.ln - (r.ri ?? 0) * r.lt) / this.inertia[r.i];
+            this.bodies[r.j].facing += yawTime * ((r.nj ?? 0) * r.ln - (r.rj ?? 0) * r.lt) / this.inertia[r.j];
           }
           if (this.handIntegration === 'centered') {
             // These are achieved finite-force impulses, accumulated over h,
@@ -1053,8 +1087,26 @@ export class World {
           }
           if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(r.ln,r.lt);
           else { report.armImpulse[r.actor]+=Math.abs(r.ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
-          jt.normalForce = (jt.normalForce ?? 0) + r.ln;
-          jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
+          if (!r.handMembers) {
+            jt.normalForce = (jt.normalForce ?? 0) + r.ln;
+            jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
+          }
+          for (const member of r.handMembers ?? []) {
+            const owner = this.indexOf(member.actor ?? member.a);
+            const holder = this.indexOf(member.holder ?? member.a);
+            const cap = r.mode > 0 ? Math.max(0, member.push) * this.armScale[owner]
+              : Math.max(0, member.hold) * this.armScale[holder];
+            const normalLimit = r.mode > 0 ? r.pushLim : r.holdLim;
+            const normalShare = normalLimit > 0 ? cap * h / normalLimit : 0;
+            const tangentShare = r.steerLim > 0 ? Math.max(0, member.steer) * this.armScale[owner] * h / r.steerLim : 0;
+            member.normalForce = (member.normalForce ?? 0) + r.ln * normalShare;
+            member.tangentForce = (member.tangentForce ?? 0) + r.lt * tangentShare;
+            const ln = r.ln * normalShare, lt = r.lt * tangentShare;
+            member.forceOnB!.x += r.nx * ln - r.ny * lt;
+            member.forceOnB!.y += r.ny * ln + r.nx * lt;
+            member.momentOnA = (member.momentOnA ?? 0) + (r.ni ?? 0) * ln - (r.ri ?? 0) * lt;
+            member.momentOnB = (member.momentOnB ?? 0) + (r.nj ?? 0) * ln - (r.rj ?? 0) * lt;
+          }
         } else {
           const used = Math.hypot(r.ln-r.reel, r.lt);
           if (!r.members) {
@@ -1642,6 +1694,7 @@ export class World {
       // All rows read the pre-solve velocities; solver corrections cannot
       // manufacture another patch or rotate the frame during this interval.
       let dx = point.x - a.pos.x, dy = point.y - a.pos.y;
+      let px = 0, py = 0; // Material offset from the body's force-midpoint center.
       if (jt.kind === 'hands' && this.handContact === 'patch' && this.handIntegration === 'centered') {
         // Ground, strikes and reels are finite forces over this interval.
         // Use their achieved mean travel, as position integration does,
@@ -1650,6 +1703,22 @@ export class World {
           - a.vel.x + .5 * this.amx[i] * h - this.travelAdjustX[i]);
         dy += .5 * h * (b.vel.y - .5 * this.amy[j] * h + this.travelAdjustY[j]
           - a.vel.y + .5 * this.amy[i] * h - this.travelAdjustY[i]);
+      }
+      if (jt.kind === 'hands' && jt.contact) {
+        if (this.handContact !== 'patch') throw new RangeError('Material hand contacts require the common patch solve');
+        if (jt.contact.on !== 'a' && jt.contact.on !== 'b') throw new RangeError('Hand contact must name one of its bodies');
+        const target = jt.contact.on === 'a' ? a : b;
+        const local = jt.contact.local;
+        if (!Number.isFinite(local.x) || !Number.isFinite(local.y)
+          || Math.hypot(local.x, local.y) > target.profile.radius + 1e-10)
+          throw new RangeError('Hand contact must be a finite point within the target torso');
+        // The point remains on the body. Its force-midpoint orientation is a
+        // second-order approximation; it is not teleported by the controller.
+        const theta = target.facing - .5 * h * (target.spin ?? 0);
+        px = Math.cos(theta) * local.x - Math.sin(theta) * local.y;
+        py = Math.sin(theta) * local.x + Math.cos(theta) * local.y;
+        const sign = jt.contact.on === 'b' ? 1 : -1;
+        dx += sign * px; dy += sign * py;
       }
       const dist = Math.hypot(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
@@ -1661,8 +1730,16 @@ export class World {
         // extended hands use the same single reduced patch, not two joints.
         if (this.handContact === 'patch') {
           const radius = a.profile.radius + b.profile.radius;
-          row.ri = dist * a.profile.radius / radius;
-          row.rj = dist * b.profile.radius / radius;
+          let rax = dx * a.profile.radius / radius, ray = dy * a.profile.radius / radius;
+          let rbx = -dx * b.profile.radius / radius, rby = -dy * b.profile.radius / radius;
+          if (jt.contact?.on === 'b') { rax = dx; ray = dy; rbx = px; rby = py; }
+          if (jt.contact?.on === 'a') { rax = px; ray = py; rbx = -dx; rby = -dy; }
+          row.ni = -(rax * ny - ray * nx);
+          row.nj = rbx * ny - rby * nx;
+          row.ri = rax * nx + ray * ny;
+          row.rj = -(rbx * nx + rby * ny);
+          row.mn = 1 / (1 / this.mass[i] + 1 / this.mass[j]
+            + row.ni * row.ni / this.inertia[i] + row.nj * row.nj / this.inertia[j]);
           row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j]
             + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
         }
@@ -1674,6 +1751,23 @@ export class World {
         const c = dist - jt.extension;
         if (c < 0) { row.mode = 1; row.c = c; }
         else if (c > HANDS_SLACK) { row.mode = -1; row.c = c - HANDS_SLACK;row.actor=holder; }
+        if (this.handContact === 'patch') {
+          // Splitting one connection into two half-cap hands must not double
+          // its spring stiffness. Separate material points remain separate.
+          const same = rows.find(r => {
+            const old = r.joint;
+            return old.kind === 'hands' && old.a === a && old.b === b
+              && (old.actor ?? a) === (jt.actor ?? a) && (old.holder ?? a) === (jt.holder ?? a)
+              && old.extension === jt.extension && old.height === jt.height
+              && old.contact?.on === jt.contact?.on
+              && old.contact?.local.x === jt.contact?.local.x && old.contact?.local.y === jt.contact?.local.y;
+          });
+          if (same) {
+            same.pushLim += row.pushLim; same.holdLim += row.holdLim; same.steerLim += row.steerLim;
+            same.handMembers!.push(jt); continue;
+          }
+          row.handMembers = [jt];
+        }
       } else {
         // The arms hold where they are; a holder off his feet keeps most of
         // his grip (he hangs on).
@@ -1717,12 +1811,14 @@ export class World {
     const a = this.bodies[r.i], b = this.bodies[r.j];
     const ima = 1 / this.mass[r.i], imb = 1 / this.mass[r.j];
     if (r.mode !== 0) {
-      const vn = (b.vel.x - a.vel.x) * r.nx + (b.vel.y - a.vel.y) * r.ny;
+      const vn = (b.vel.x - a.vel.x) * r.nx + (b.vel.y - a.vel.y) * r.ny
+        + (r.ni ?? 0) * (a.spin ?? 0) + (r.nj ?? 0) * (b.spin ?? 0);
       const bias = r.mode > 0 ? Math.max(soft.biasRate * r.c, -MAX_PUSHOUT) : Math.min(soft.biasRate * r.c, MAX_PUSHOUT);
       const imp = -r.mn * soft.massScale * (vn + bias) - soft.impulseScale * r.ln;
       const ln = r.mode > 0 ? clamp(r.ln + imp, 0, r.pushLim) : clamp(r.ln + imp, -r.holdLim, 0);
       const dn = ln - r.ln;
-      const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'hands',true,r.normalWork??={net:0});
+      const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'hands',true,r.normalWork??={net:0},
+        (r.ni ?? 0) * dn, (r.nj ?? 0) * dn);
       r.ln+=dn*fraction;
     }
     if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);
