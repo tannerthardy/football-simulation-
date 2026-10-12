@@ -15,6 +15,16 @@ Physics accounting and controlled interactions are useful foundations, not proof
 of finished football, measured NFL contact capacities or universal convergence.
 Some controllers still use private state. Body facing is not measured gaze.
 
+The latest [tackle finish repair](reviews/tackle-finish.md) requests a plant
+along a secured hold instead of following the runner forever. Existing physics
+executes it with unchanged capacities; a moving runner is no longer ruled down
+by a four-second hold timer. In the matched 144-rep panel, production physical
+falls rise 106→122; patch falls rise 62→92, with unfinished adverse reps retained.
+Source `f14d849a51` passes all **1,486 TypeScript tests**, **141 Python checks**,
+typecheck and build. The two-game smoke check holds 12/12 existing guards.
+Patch promotion stays **42/50**. Next physics question: first divergence in
+loaded angled holds at 12/48 steps, not a universal tackle-strength increase.
+
 ## Prior validated repair stage
 
 The [pursuit review](reviews/pursuit-coverage.md) and

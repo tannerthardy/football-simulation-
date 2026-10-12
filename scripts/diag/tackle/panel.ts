@@ -9,10 +9,13 @@
  * duration and break are measured. Plays end tackled, escaped (carrier clear
  * and separating with no live grip), or censored (time limit, sideline, goal).
  *
- * node --import tsx scripts/diag/tackle/panel.ts [--seeds 12] [--out out/tackle/panel.json]
+ * node --import tsx scripts/diag/tackle/panel.ts [--seeds 12] [--common-patch]
+ *   [--substeps 12] [--out out/tackle/panel.json]
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
+import { sourceVersion } from '../../source-version.js';
 import { CENTER_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
 import type { GraspJoint } from '../../../src/physics/world.js';
@@ -26,6 +29,8 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 const arg = (n: string, f: string) => { const i = process.argv.indexOf(n); return i >= 0 ? process.argv[i + 1] : f; };
 const seeds = Number(arg('--seeds', '12'));
 const out = arg('--out', 'out/tackle/panel.json');
+const handContact = process.argv.includes('--common-patch') ? 'patch' : 'center';
+const substeps = process.argv.includes('--substeps') ? Number(arg('--substeps', '12')) : undefined;
 
 /** Bearing of the tackler from the carrier's path: 0 head-on, 180 from behind. */
 export interface Cell { angle: number; speed: number; cut: boolean; difficulty: 'ordinary' | 'difficult' }
@@ -43,12 +48,14 @@ const defense = generateTeam(new Rng(62), 'Panel D', 'PD', { strength: .55 });
 interface Attempt { t: number; kind: 'rolled miss' | 'rolled dive miss' | 'grip' | 'dive grip'; origin?: string;
   capacity?: number; legs?: number; peakForce?: number; meanForce?: number; heldFor?: number; broke?: boolean }
 
-export function rep(cell: Cell, side: 1 | -1, seed: number) {
+export function rep(cell: Cell, side: 1 | -1, seed: number,
+  physics: { handContact?: 'center' | 'patch'; substeps?: number } = {}) {
   const sim = new PlaySim({
     offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'base43'),
     offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'panel' },
     defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'panel' },
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed,
+    ...physics,
   });
   const c = sim.slot('RB')!, d = sim.defense.find((a) => a.slot === 'MLB' || a.slot.startsWith('LB'))!;
   for (const a of sim.agents) {
@@ -78,6 +85,7 @@ export function rep(cell: Cell, side: 1 | -1, seed: number) {
   const attempts: Attempt[] = [];
   const seen = new Map<GraspJoint, Attempt & { sum: number; n: number }>();
   let firstContact: { t: number; x: number } | null = null, contactImpulse = 0, peakClosing = 0;
+  let firstGrip: { t: number; x: number } | null = null;
   let ending: 'tackled' | 'escaped' | 'censored' = 'censored', endWhy = 'time limit';
   const tick = sim as unknown as { tick(): void };
   let ev = 0;
@@ -94,6 +102,7 @@ export function rep(cell: Cell, side: 1 | -1, seed: number) {
       if (!a) {
         a = { t: sim.t, kind: j.origin === 'dive' ? 'dive grip' : 'grip', origin: j.origin, capacity: j.capacity, legs: j.legs, peakForce: 0, heldFor: 0, broke: false, sum: 0, n: 0 };
         seen.set(j, a); attempts.push(a);
+        if (!firstGrip) firstGrip = { t: sim.t, x: c.pos.x };
       }
       if (!j.broken) { a.heldFor! += sim.dt; a.sum += j.force ?? 0; a.n++; a.peakForce = Math.max(a.peakForce!, j.force ?? 0); }
       a.broke = a.broke || !!j.broken;
@@ -115,14 +124,26 @@ export function rep(cell: Cell, side: 1 | -1, seed: number) {
   return { ...cell, side, seed, ending, endWhy, attempts,
     afterContact: firstContact ? (sim.endSpot?.x ?? c.pos.x) - firstContact.x : null,
     contactToEnd: firstContact ? sim.t - firstContact.t : null,
-    contactImpulse, peakClosing, tacklerDown: d.isDown(sim.t) };
+    contactImpulse, peakClosing, tacklerDown: d.isDown(sim.t),
+    // Keep observed acquired holds separate from the legacy first-attempt marker
+    // above, which includes misses. Neither distance is a measured NFL YAC.
+    firstGrip,
+    advanceAfterGrip: firstGrip ? (sim.endSpot?.x ?? c.pos.x)-firstGrip.x : null,
+    finish: ending === 'tackled' ? c.body.support?.state === 'down' ? 'physical fall'
+      : (sim.bond?.stalled ?? 0) >= .8 ? 'stopped progress' : 'other whistle' : ending,
+    carrierState: c.body.support?.state };
 }
 
 function main() {
+  const sourceBefore = sourceVersion();
   const rows: ReturnType<typeof rep>[] = [];
-  for (const cell of CELLS) for (const side of [1, -1] as const) for (let s = 0; s < seeds; s++) rows.push(rep(cell, side, 3000 + s));
+  for (const cell of CELLS) for (const side of [1, -1] as const) for (let s = 0; s < seeds; s++) rows.push(rep(cell, side, 3000 + s, { handContact, substeps }));
+  const sourceAfter = sourceVersion();
+  if (sourceBefore !== sourceAfter) throw new Error('Engine changed during tackle collection');
   mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, JSON.stringify({ seeds, rows }));
+  const collectorSha256 = createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex');
+  writeFileSync(out, JSON.stringify({ seeds, handContact, substeps: substeps ?? 'adaptive',
+    sourceBefore, sourceAfter, collectorSha256, rows }));
   const share = (v: boolean[]) => v.length ? (v.filter(Boolean).length / v.length).toFixed(2) : '-';
   console.log('angle speed cut  tackled escaped censored | attempts/rep rolled-miss share | grips: broke, mean held s, mean/peak force | yd after contact (median) | mirror: tackled L/R');
   for (const cell of CELLS) {
@@ -138,6 +159,7 @@ function main() {
     const decidingMisses = rs.filter((r) => r.ending !== 'tackled' && r.attempts.length && r.attempts.every((a) => a.kind.startsWith('rolled'))).length;
     console.log(`${diff}: ${rs.length} reps, tackled ${share(rs.map((r) => r.ending === 'tackled'))}, attempts decided by a roll ${share(att.map((a) => a.kind.startsWith('rolled')))}, untackled reps whose every attempt was a rolled miss ${decidingMisses}`);
   }
+  console.log('Finish reasons:', rows.reduce<Record<string,number>>((n,r) => { n[r.finish]=(n[r.finish]??0)+1; return n; },{}));
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) main();
