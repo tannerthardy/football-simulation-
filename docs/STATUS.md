@@ -29,19 +29,28 @@ check results and source pins are in the current receipt below.
 
 ## What to investigate now
 
-The [NFL comparison](reviews/nfl-gap-review.md) adds two native eight-game
-roster cohorts and corrected actual-catcher/contact measurements, with unchanged
-engine behavior. Mean completion gain is 20.2 yd against 10.9; mean YAC is
-12.3 against 5.2. Early route separation is already small. Trace catch-window selection,
-arrival momentum, post-catch pursuit and first effective contact before globally
-changing coverage or strength. Light film has nominated cases, not proved a cause.
-The quoted one-yard `playBall` stand-off is already gone.
+The [pursuit review](reviews/pursuit-coverage.md) records the latest repair:
+remove systematic underlead from the acquired intercept, retaining delayed cues,
+per-play aiming error and shared physical limits. In 128 paired encounters,
+ordinary contacts and faster-runner escapes remain; supplemental free-cut grips
+increase 12→14 with adverse cases retained. Across two eight-game roster cohorts,
+mean YAC falls 12.3→10.5 yd and points per team-game 55.9→47.5. These are
+diagnostic outcomes, not tuning targets. Source/inputs and tradeoffs are in the
+[receipt](../data/reviews/current/pursuit-control.json).
 
-Next are run-tackle approaches and ordinary gap/pull failures; the run mean hides
-poor success and rare escapes. Match pocket pressure by release time, QB depth
-and protection. The current [receipt](../data/reviews/current/nfl-gap-review.json)
-includes a random 48-completion review that supplements the all-snap review below.
-Historical catch summaries without actual-recipient sidecars remain legacy.
+The seed202 box-count guard fails (median seven→six, mean change −0.04);
+the other 11 and all 12 pooled guards pass. Fixed starting states are unchanged;
+the calling mix shifted. The threshold is preserved and the failure reported.
+A proposed held-facing change produced mixed results and was rejected.
+
+Next, trace actual failed acquisitions/loaded grips that break and pre-throw
+coverage alignment. The supplied in-stride catch branch remains experimental;
+outside/wide-zone work belongs to the other session. Early route separation is
+already small. Avoid blanket coverage/strength changes. Ordinary gap/pull runs
+remain weak; match pocket pressure by release time, QB depth and protection.
+The [prior NFL review](reviews/nfl-gap-review.md) pins baseline comparisons and
+the random 48-completion audit. Historical catch summaries without actual
+recipient sidecars remain legacy. The old one-yard `playBall` stand-off is gone.
 
 ## Latest run-game work
 
@@ -98,12 +107,10 @@ The [displacement pilot](../data/reviews/current/run-displacement.json) motivate
 these checks; it does not justify stronger anchors or a travel cap.
 Outside-zone lateral technique is being investigated separately.
 
-Both current cohorts preserve all twelve guarded mechanisms. Their scoring is
-67.4 and 44.4 points per team-game; corrected tracking YAC p90 is 47.6 and
-31.6 yd. These native-game checks have diverging calls/RNG, not matched-play
-explanations or readiness proof. The drive proxy's p90 is 2.6 and 3.2 yd;
-those numbers did not select the controller. Contact and coverage still need
-substantial work; see the current review and [NFL data](NFL_DATA.md).
+The pre-pursuit trench cohorts at source `b1164289` are historical. Their
+drive proxy p90 is 2.6/3.2 yd; that number did not select the controller.
+Current pursuit/game evidence is linked above, with diverging calls/RNG and
+remaining contact/coverage gaps; it is not readiness proof.
 
 ## Random film review: choose the next investigation
 

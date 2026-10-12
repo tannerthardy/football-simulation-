@@ -75,7 +75,10 @@ report at the commit that added this system, so you can see what moved.
 
 ## Current findings
 
-Read the [current comparison](reviews/nfl-gap-review.md) and its
+Read the [latest pursuit work](reviews/pursuit-coverage.md) first. It adopts the
+acquired-intercept repair, reports matched transfer and full-game tradeoffs,
+and keeps the failed seed202 box-count guard visible. The
+[baseline comparison](reviews/nfl-gap-review.md) and its
 [compact receipt](../data/reviews/current/nfl-gap-review.json). They replace the
 older two-cohort table here and distinguish native outcomes from tracking
 proxies. Catch-to-pursuit and first effective contact are the strongest leads;
@@ -91,7 +94,8 @@ Without that sidecar, legacy catch measurements remain limited. NFL adapters
 keep their official receiver fallback and integer-frame admission; the current
 repair does not require pretending those aggregates were reprocessed.
 
-All twelve existing guards still pass on both current cohorts and pooled.
+The baseline passed all twelve guards. The latest pursuit cohort's box-count
+exception is reported above; thresholds remain unchanged.
 Passing a guard does not prove a good decision, actual grip or correct force.
 Generated teams, call mix and sparse subgroups still need matched comparisons.
 
