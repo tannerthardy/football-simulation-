@@ -250,6 +250,9 @@ interface Contact {
   R: number;
   ri: number;
   rj: number;
+  /** Normal impulse moments at a common patch; zero for legacy contacts. */
+  ni: number;
+  nj: number;
   mn: number;
   mt: number;
   guard: boolean;
@@ -1096,6 +1099,9 @@ export class World {
     // a hit transfers the same momentum at any substep.
     if (contacts.length) {
       for (const c of contacts) c.touched = c.ln > 0;
+      // Relaxation acts after position integration. Use the actual current
+      // common point for these impulses, not the pre-travel lever arms.
+      if (this.handContact === 'patch') for (const c of contacts) this.contactPatch(c);
       for (let it = 0; it < RELAX_ITERATIONS; it++) {
         for (const c of contacts) {
           // A pair the correction left apart may still close that gap within
@@ -1566,24 +1572,49 @@ export class World {
         const ri = R * ra / rsum;
         const rj = R - ri;
         const vn = rvx * nx + rvy * ny;
-        out.push({ i, j, nx, ny, R, ri, rj, mn: 1 / (1 / ma + 1 / mb), mt: 1 / (1 / ma + 1 / mb + ri * ri / this.inertia[i] + rj * rj / this.inertia[j]),
-          guard, bias: guard ? (s + GUARD_DEPTH) / h : Math.max(soft.biasRate * s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0 });
+        const row: Contact = { i, j, nx, ny, R, ri, rj, ni: 0, nj: 0,
+          mn: 1 / (1 / ma + 1 / mb), mt: 1 / (1 / ma + 1 / mb + ri * ri / this.inertia[i] + rj * rj / this.inertia[j]),
+          guard, bias: guard ? (s + GUARD_DEPTH) / h : Math.max(soft.biasRate * s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0 };
+        if (this.handContact === 'patch') this.contactPatch(row);
+        out.push(row);
       }
     }
     return out;
+  }
+
+  /** One point between the bodies, weighted by their torso radii. Nominal
+   * surface radii alone describe two different points during overlap. The
+   * frozen collision normal may also be oblique to current centers after a
+   * sweep or travel; normal impulses then have real moments as well. */
+  private contactPatch(c: Contact): void {
+    const a = this.bodies[c.i], b = this.bodies[c.j];
+    const dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y;
+    const share = a.profile.radius / (a.profile.radius + b.profile.radius);
+    const normalArm = -dx * c.ny + dy * c.nx;
+    const tangentArm = dx * c.nx + dy * c.ny;
+    c.ni = share * normalArm; c.nj = (1 - share) * normalArm;
+    c.ri = share * tangentArm; c.rj = (1 - share) * tangentArm;
+    const inverseMass = 1 / this.mass[c.i] + 1 / this.mass[c.j];
+    c.mn = 1 / (inverseMass + c.ni * c.ni / this.inertia[c.i] + c.nj * c.nj / this.inertia[c.j]);
+    c.mt = 1 / (inverseMass + c.ri * c.ri / this.inertia[c.i] + c.rj * c.rj / this.inertia[c.j]);
   }
 
   private solveContact(c: Contact, soft: Softness, relax = false): void {
     const a = this.bodies[c.i], b = this.bodies[c.j];
     const ima = 1 / this.mass[c.i], imb = 1 / this.mass[c.j];
     const av = a.vel, bv = b.vel;
-    const vn = (bv.x - av.x) * c.nx + (bv.y - av.y) * c.ny;
+    let vn = (bv.x - av.x) * c.nx + (bv.y - av.y) * c.ny;
+    if (this.handContact === 'patch') vn += (a.spin ?? 0) * c.ni + (b.spin ?? 0) * c.nj;
     const imp = relax || c.guard ? -c.mn * (vn + c.bias) : -c.mn * soft.massScale * (vn + c.bias) - soft.impulseScale * c.ln;
     const ln = Math.max(0, c.ln + imp);
     const dn = ln - c.ln;
     c.ln = ln;
     av.x -= c.nx * dn * ima; av.y -= c.ny * dn * ima;
     bv.x += c.nx * dn * imb; bv.y += c.ny * dn * imb;
+    if (this.handContact === 'patch') {
+      a.spin = (a.spin ?? 0) + c.ni * dn / this.inertia[c.i];
+      b.spin = (b.spin ?? 0) + c.nj * dn / this.inertia[c.j];
+    }
     // Coulomb friction at the contact point; off-center friction turns bodies.
     const tx = -c.ny, ty = c.nx;
     const vt = (bv.x - av.x) * tx + (bv.y - av.y) * ty - (b.spin ?? 0) * c.rj - (a.spin ?? 0) * c.ri;
@@ -1612,8 +1643,13 @@ export class World {
       // manufacture another patch or rotate the frame during this interval.
       let dx = point.x - a.pos.x, dy = point.y - a.pos.y;
       if (jt.kind === 'hands' && this.handContact === 'patch' && this.handIntegration === 'centered') {
-        dx += .5 * h * (b.vel.x - a.vel.x);
-        dy += .5 * h * (b.vel.y - a.vel.y);
+        // Ground, strikes and reels are finite forces over this interval.
+        // Use their achieved mean travel, as position integration does,
+        // rather than locating the patch with their full end velocity.
+        dx += .5 * h * (b.vel.x - .5 * this.amx[j] * h + this.travelAdjustX[j]
+          - a.vel.x + .5 * this.amx[i] * h - this.travelAdjustX[i]);
+        dy += .5 * h * (b.vel.y - .5 * this.amy[j] * h + this.travelAdjustY[j]
+          - a.vel.y + .5 * this.amy[i] * h - this.travelAdjustY[i]);
       }
       const dist = Math.hypot(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;

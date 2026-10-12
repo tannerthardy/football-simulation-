@@ -39,6 +39,35 @@ function check(bs: Body[], before: ReturnType<typeof totals>, report: ReturnType
 }
 
 describe('one effective hand patch transfers planar angular momentum', () => {
+  it.each([-1, 1])('uses achieved ground travel for the force interval midpoint, side %s', side => {
+    const a = body(100, 0), b = body(80, .9), bs = [a, b], dt = .05;
+    b.vel.y = side * 2;
+    const initial = bs.map(q => ({ pos: { ...q.pos }, vel: { ...q.vel } }));
+    const w = new World(bs, { substeps: 1, handContact: 'patch' });
+    const joint: HandJoint = { kind: 'hands', a, b, extension: .9, push: 0, hold: 0, steer: 20 };
+    w.joints.push(joint);
+    const report = w.step(bs.map(() => ({ vel: { x: .7, y: 0 }, facing: 0 })), dt);
+    expect(report.contacts).toHaveLength(0);
+    // Infer the achieved pre-hand transport from ground impulse and the
+    // incoming velocity. A bounded force acts across the interval, so its
+    // mean travel includes half its velocity change, not its final velocity.
+    const mean = bs.map((q, i) => ({
+      x: initial[i].vel.x + .5 * report.groundImpulse[i].x / q.profile.massKg,
+      y: initial[i].vel.y + .5 * report.groundImpulse[i].y / q.profile.massKg,
+    }));
+    const dx = initial[1].pos.x - initial[0].pos.x + .5 * dt * (mean[1].x - mean[0].x);
+    const dy = initial[1].pos.y - initial[0].pos.y + .5 * dt * (mean[1].y - mean[0].y);
+    const length = Math.hypot(dx, dy);
+    const impulse = {
+      x: b.profile.massKg * (b.vel.x - initial[1].vel.x) - report.groundImpulse[1].x,
+      y: b.profile.massKg * (b.vel.y - initial[1].vel.y) - report.groundImpulse[1].y,
+    };
+    expect(Math.abs(joint.tangentForce!)).toBeCloseTo(20, 10);
+    expect(impulse.x * dx / length + impulse.y * dy / length).toBeCloseTo(0, 10);
+    expect(Math.hypot(impulse.x, impulse.y)).toBeCloseTo(20 * dt, 10);
+    expect(Math.abs(report.work.residual)).toBeLessThan(1e-9);
+  });
+
   it('rejects the incompatible historical end-impulse travel rule', () => {
     expect(() => new World([body(100, 0), body(80, .9)], { handContact: 'patch', handIntegration: 'end' }))
       .toThrow('Common hand patches require centered force integration');
