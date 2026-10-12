@@ -84,10 +84,9 @@ export function angleTo(from: Vec2, to: Vec2): number {
  *    (0.12–0.24 s by awareness), not the full recognition reaction time.
  *  - Forecast from observed heading and recent acceleration. A stationary
  *    QB or a back pressing slowly does not become an imaginary sprinter.
- *  - Angle quality: each pursuer carries a per-play angle error (pursuit
- *    rating); poor pursuers aim at where the carrier will be a beat early
- *    (flat angle, end up trailing), great ones lead him and keep inside-out
- *    leverage.
+ *  - Angle quality: each pursuer carries a per-play error around the
+ *    perceived intercept. Lower pursuit ratings widen that error; they do
+ *    not require every poorer pursuer to take a flat, trailing angle.
  */
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3): Vec2 {
   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
@@ -109,7 +108,10 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
   const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, path, { horizon, step: 0.1, radius: reach });
   let bias = angleBias.get(a);
   if (bias === undefined) {
-    bias = (1 - a.r('pursuit')) * 0.3 + sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
+    // The intercept already forecasts from acquired motion. Delayed cues
+    // can miss a cut, but straight motion is dead-reckoned forward. Do not
+    // subtract another skill-based time offset from every interception.
+    bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
   const p = path(clamp(ip.t - bias, 0, horizon));

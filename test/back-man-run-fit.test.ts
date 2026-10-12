@@ -308,7 +308,9 @@ describe('back man markers preserve their installed alley support instead of rec
       f.a.body.vel = { x: 3.5, y: side * .2 };
     }
     const r = right.update(), l = left.update();
-    expect(r.vel.x).toBeLessThan(0);
+    // Request braking from the actual retreat velocity. A positive request
+    // can still brake; the World checks below prove achieved deceleration.
+    expect(r.vel.x).toBeLessThan(right.a.vel.x);
     expect(r).toEqual(chase(right.sim, right.a, right.r, 3.5));
     expect(r.vel.x).toBeCloseTo(l.vel.x, 10);
     expect(r.vel.y).toBeCloseTo(-l.vel.y, 10);

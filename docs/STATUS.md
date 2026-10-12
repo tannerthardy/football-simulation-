@@ -29,6 +29,15 @@ default. Complete check results and source pins are in the current receipts.
 
 ## What to investigate now
 
+The [pursuit repair](reviews/pursuit-coverage.md) removes systematic underlead
+from acquired intercepts while retaining delayed cues and per-play aiming error.
+Its 128 paired encounters preserve ordinary contacts and faster escapes; the
+supplemental cut panel increases loaded grips 12→14 with adverse cases retained.
+The pursuit-only cohort has mean YAC10.5yd; its seed202 box-count guard fails
+while the other11 and all12 pooled guards pass. That threshold remains unchanged.
+The held-facing probe was rejected. Both pursuit and the catch/contact repair
+below are now merged; their combined validation is recorded separately.
+
 The [full engine review](reviews/full-engine-review-2026-10-11.md) assesses the
 current subsystems and ranks catch/contact, shared hand laws, ordinary run
 coordination and pocket decisions. Fresh current-source checks reproduce the
@@ -49,7 +58,8 @@ trial broke an ordinary control and was backed out; no extra pursuit knobs
 remain. The [receipt](../data/reviews/current/catch-contact-repair.json) retains
 adverse trials, source/input pins and observer witnesses.
 
-All 1,244 TS assertions, 141 Python checks, typecheck and build pass. Two fresh
+Before this pursuit integration, all 1,244 TS assertions, 141 Python checks,
+typecheck and build pass. Two fresh
 eight-game cohorts each retain 12/12 guards, but their mean YAC is still
 11.92 yd, p90 37.26 yd; ordinary run success is 26.9%. Later calls/RNG differ,
 so this is not a paired broad causal improvement. The catch/contact tail and
