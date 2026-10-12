@@ -45,12 +45,69 @@ function hold(side: number, location: 'rear' | 'side' | 'front' = 'rear', weak =
 }
 
 describe('a secured tackle preserves achievable foot support', () => {
+  it.each(['center', 'patch'] as const)('a rear finish transmits braking load through %s physics', handContact => {
+    const run = (plant: boolean, side: number, substeps: number) => {
+      const f = hold(side);
+      Reflect.set(f.sim.world, 'handContact', handContact);
+      f.sim.world.substeps = substeps;
+      f.intents[f.carrier.idx] = { vel: { x: 6, y: 0 } };
+      let load = 0;
+      const rng = { ...f.sim.rng };
+      for (let k = 0; k < 6; k++) {
+        f.request();
+        if (!plant) {
+          // Negative control: the previous co-moving finish request. The
+          // initial bodies, grip, physical capabilities and carrier match.
+          const dx = f.carrier.pos.x-f.defender.pos.x, dy = f.carrier.pos.y-f.defender.pos.y;
+          const d = Math.hypot(dx,dy), close = Math.min(1.5, Math.max(0,d-f.carrier.profile.radius-f.defender.profile.radius)*3);
+          f.intents[f.defender.idx].vel = { x: f.carrier.vel.x+dx/d*close, y: f.carrier.vel.y+dy/d*close };
+        }
+        const r = f.sim.world.step(f.intents, f.sim.dt);
+        expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
+        expect(r.passiveGraspWork).toBeLessThanOrEqual(1e-8);
+        for (const a of [f.carrier, f.defender]) {
+          expect(r.armImpulse[a.idx]).toBeLessThanOrEqual(r.armImpulseLimit[a.idx]+1e-8);
+          expect(r.armWork[a.idx]).toBeLessThanOrEqual(r.armWorkLimit[a.idx]+1e-8);
+          expect(r.supportMotorWork[a.idx]).toBeLessThanOrEqual(r.supportMotorWorkLimit[a.idx]+1e-8);
+        }
+        load += f.joint.force ?? 0;
+        f.sim.t += f.sim.dt;
+      }
+      expect({ ...f.sim.rng }).toEqual(rng);
+      return { load, speed: f.carrier.vel.x, state: f.carrier.body.support!.state };
+    };
+    const results = [-1,1].map(side => [12,48].map(substeps => {
+      const before = run(false,side,substeps), after = run(true,side,substeps);
+      expect(after.load).toBeGreaterThan(before.load);
+      expect(after.speed).toBeLessThan(before.speed);
+      return after;
+    }));
+    for (let k = 0; k < 2; k++) {
+      expect(results[0][k].load).toBeCloseTo(results[1][k].load,6);
+      expect(results[0][k].speed).toBeCloseTo(results[1][k].speed,8);
+      expect(results[0][k].state).toBe(results[1][k].state);
+    }
+    for (const side of results) {
+      expect(Math.abs(side[0].speed-side[1].speed)).toBeLessThan(.1);
+      expect(side[0].state).toBe(side[1].state);
+    }
+  });
+
   it.each([[-1, 'rear'], [1, 'rear'], [-1, 'side'], [1, 'side']] as const)(
-    'keeps working the feet into a secured %s/%s hold instead of forcing a dive', (side, location) => {
+    'requests a planted finish from a secured %s/%s hold without forcing a dive', (side, location) => {
       const f = hold(side, location), commanded = f.request();
       expect(f.sim.bond!.grip!.get(f.defender)).toBeGreaterThan(.55);
       expect(commanded.dive).toBeUndefined();
-      expect(commanded.vel.x).toBeGreaterThanOrEqual(f.carrier.vel.x);
+      // The previous assertion required following at carrier speed forever,
+      // even inside a secured wrap. Preserve support while requesting braking.
+      expect(commanded.vel.x).toBeGreaterThan(0);
+      if (location === 'rear') expect(commanded.vel.x).toBeLessThan(f.carrier.vel.x);
+      else {
+        // A side hold has not earned rear braking leverage. Carry the
+        // runner's forward motion while closing across his hip.
+        expect(commanded.vel.x).toBe(f.carrier.vel.x);
+        expect(commanded.vel.y * side).toBeLessThan(0);
+      }
       const beforeRng = { ...f.sim.rng };
       const report = f.sim.world.step(f.intents, f.sim.dt);
       // Contact is allowed to knock either player down; the controller must
@@ -82,6 +139,7 @@ describe('a secured tackle preserves achievable foot support', () => {
     expect(f.sim.bond!.grip!.get(f.defender)).toBeLessThan(.55);
     expect(commanded.dive).toBeUndefined();
     expect(f.joint.capacity).toBe(gripForce(f.defender, f.sim.bond!.grip!.get(f.defender)!));
+    expect(commanded.vel.x).toBeGreaterThanOrEqual(f.carrier.vel.x);
   });
 
   it.each([-1, 1])('does not restore standing support to a grounded extended holder, mirror=%s', side => {
@@ -105,5 +163,22 @@ describe('a secured tackle preserves achievable foot support', () => {
     const f = hold(side, 'front'), commanded = f.request();
     expect(commanded.vel.x).toBeLessThan(0);
     expect(commanded.dive).toBeUndefined();
+  });
+
+  it('does not whistle a held carrier whose forward progress continues after four seconds', () => {
+    const f = hold(1);
+    f.sim.t = f.sim.world.time = 6.1;
+    f.sim.bond!.stalled = 0;
+    f.request();
+    expect(f.sim.phase).toBe('live');
+    expect(f.sim.bond!.down).toBe(false);
+  });
+
+  it('still whistles genuinely stopped upright forward progress', () => {
+    const f = hold(1);
+    f.sim.bond!.stalled = 1;
+    f.request();
+    expect(f.sim.phase).not.toBe('live');
+    expect(f.sim.bond!.down).toBe(true);
   });
 });
