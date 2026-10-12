@@ -1430,7 +1430,9 @@ export class World {
       sup.state = 'rising'; sup.since = t;
     } else if (sup.state === 'rising' && t - sup.since >= sp.getUp) {
       sup.state = 'up'; sup.since = t; sup.xi = { x: 0, y: 0 }; sup.lean = { x: 0, y: 0 };
-      sup.posture = 0.45; sup.peak = 0; b.spin = 0; report.rises.push(i);
+      // Getting upright does not supply an unbounded angular impulse. Keep
+      // attained spin; ordinary ground friction and foot torque brake it.
+      sup.posture = 0.45; sup.peak = 0; report.rises.push(i);
       // Standing up cannot teleport a lower point that is still held.
       if (sup.foot && this.supportModel === 'virtual-foot') sup.foot = newVirtualFoot(b.pos);
       sup.out = 0;
