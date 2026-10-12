@@ -77,3 +77,7 @@ come late. The next step is a measurement, not another rule:
 3. **The stretch mesh is late.** The probe's under-center stretch handoff
    comes at about 1.65 s; NFL outside zone is 1.3 s median (p90 1.5). A late,
    deep mesh leaves little time to read before the decision depth.
+
+## Follow-up measurement
+
+The [read-information audit](run-read-information.md) measures the same 96 inputs, controller handoffs, actual paths and responding-defender entry branches. It supersedes the tentative mechanism diagnosis above; the experimental read remains default-off.

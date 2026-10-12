@@ -26,6 +26,7 @@ import { RunBlocker } from './blocking.js';
 import { contactCost } from '../contact-choice.js';
 import type { Perceived } from '../perception.js';
 import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
+import { observeRunRead, runReadObservers } from '../run-read-observer.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -88,6 +89,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   }
   for(const end of [surface[0],surface.at(-1)!]) candidates.push({x:Math.max(sim.los+.5,end.pos.x+.5),y:end.pos.y+Math.sign(end.pos.y-sim.ballY)*(end.radius+a.profile.radius+.4)});
   let best:Vec2|null=null,cost=Infinity;
+  const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
   for(const p of candidates) {
     let risk=0;
     for(const d of sim.opponents(a)) {
@@ -101,8 +103,10 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       risk+=Math.max(0,arrive-reach)*3;
     }
     const score=Math.abs(p.y-preferred)*.65+Math.abs(p.y-a.pos.y)*.12+risk;
+    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
     if(score<cost) {cost=score;best=p;}
   }
+  if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface });
   return best;
 }
 
@@ -130,6 +134,7 @@ export class BallCarrier implements Behavior {
     const cutSkill = 0.85 + 0.35 * a.r('elusiveness');
     const designed = !!this.opts.aim && this.opts.aimUntil !== undefined
       && sim.t < this.opts.aimUntil && (a.pos.x - sim.los) * dir < -0.8;
+    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'carrier-start', { designed, aim: this.opts.aim, aimUntil: this.opts.aimUntil });
     // Zone runs: press the track and read the key relationship; commit on
     // what it shows, at decision depth, or when pressing is unsafe.
     const zoneRead = RUN_READ && this.opts.run && READ_SCHEMES.has(this.opts.run.scheme) && this.opts.aim
@@ -230,6 +235,7 @@ export class BallCarrier implements Behavior {
     this.opts.aim = st.entry!;
     this.opts.aimGap = undefined;
     this.opts.aimUntil = sim.t;
+    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'press-handoff', { answer: st.answer, entry: st.entry, track });
     if ((a.pos.x - sim.los) * dir > -.3) { this.readDone = true; a.eyes = null; }
     return null;
   }
@@ -262,6 +268,7 @@ export class BallCarrier implements Behavior {
         vel.y = inward * Math.max(1, outward);
       }
     }
+    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'command', { heading: h, speed, vel, cutSkill, squeeze });
     return { vel, cutSkill, squeeze };
   }
 
