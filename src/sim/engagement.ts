@@ -621,6 +621,12 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 
 // ------------------------------------------------------------ update
 
+/** Stretch reaches stay connected rather than drive (STRETCH_REACH=0 off). */
+const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
+
+/** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
+const LEVER_FACING = process.env.LEVER_FACING !== '0';
+
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
 
@@ -877,7 +883,16 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       e.nextMoveAt = t + 0.4 + rng.range(0, 0.3);
     }
   }
-  if (b.body.support?.state !== 'up' || Math.abs(e.phi) >= 1.1) {
+  // A blocker's hands and chest work in front of him: he loses the man when
+  // the defender is behind his shoulders relative to where his torso actually
+  // faces (World limits how fast he can turn). Running alongside a reached
+  // defender is not a lost block. LEVER_FACING=0 restores the fixed frame.
+  // He can still bring his chest back to the man within this step, at his
+  // own turn rate; only an angle beyond that is a lost block.
+  const toD = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
+  const off = Math.abs(Math.atan2(Math.sin(toD - b.facing), Math.cos(toD - b.facing)));
+  const behind = LEVER_FACING ? Math.max(0, off - b.profile.turnRate * dt) / (Math.PI / 2) : Math.abs(e.phi);
+  if (b.body.support?.state !== 'up' || behind >= 1.1) {
     if (!tryHold(sim, e)) beat(sim, e, axis, lat, true, b.body.support?.state !== 'up' ? 'blocker off his feet' : 'leverage');
     return;
   }
@@ -898,7 +913,24 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Anchor: a blocker who feels himself driven back stops spending traction
   // on lateral drive and pushes straight against the load he feels.
   // Locomotion and lean share one traction budget in the World.
-  let blockVel = { x: drive.x * 2.4 + lat.x * seal, y: drive.y * 2.4 + lat.y * seal };
+  // On a stretch play the reach is a race for the playside shoulder, not a
+  // vertical drive: forward work only keeps him connected (matches the
+  // defender's own forward motion and closes separation), leaving the shared
+  // traction budget to the lateral race. Drive blocks keep their downhill drive.
+  const run = sim.offCall.run;
+  const stretch = STRETCH_REACH && !!e.surfaceAxis && (run?.scheme === 'outsideZone' || run?.scheme === 'wideZone');
+  const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
+  const dist = Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y);
+  const forward = stretch ? clamp(along(d.vel) + (dist - sep) * 3, -1, 2.4) : 2.4;
+  // A stretch never fights the flow: ahead of the man, he does not step back
+  // to a fixed seal offset; he at least matches the defender's play-side
+  // speed (beat him to the shoulder, or run him past the hole).
+  let lateral = seal;
+  if (stretch && run) {
+    const toPlay = lat.y * (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign);
+    if (Math.abs(toPlay) > .5) lateral = Math.max(seal * toPlay, dLat * toPlay) * toPlay;
+  }
+  let blockVel = { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
   const feltLoad = b.body.support?.felt;
   if (ANCHOR && feltLoad) {
     const load = Math.hypot(feltLoad.x, feltLoad.y);
