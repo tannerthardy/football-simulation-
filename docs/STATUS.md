@@ -1,6 +1,6 @@
 # Current status
 
-Updated 2026-10-11 (America/Phoenix). Work on `claude/engine-priorities`; main and PR #1 are
+Updated 2026-10-12 UTC. Work on `claude/engine-priorities`; main and PR #1 are
 outside this work. NFL figures diagnose mechanisms, not values to fit.
 
 ## What is live
@@ -117,12 +117,25 @@ motion; removing that cue or changing material-point geometry does not repair
 the sustained keeper. [Work ownership](WORKBOARD.md) now assigns that controller
 diagnosis to the confirmed controller session. Both default hash witnesses pass.
 
-**Next shared-physics milestone:** preserve these point laws while the controller
-owner repairs attained-load interpretation and maintained seal geometry. Retest
-the five failed controls and the separate heavy-jam refinement witness before
-default promotion. The nine redirect fixtures have no fall disagreements against
-192 steps in this stage, but that does not establish heavy-jam convergence or
-football readiness. Avoid more anatomy or global solver resolution as a shortcut.
+The [sustained-contact follow-up](reviews/sustained-contact.md) fixes an unbounded
+spin reset when getting up in production. Patch mode adds fixed-response bounded
+turning, using existing torque/rate limits and peak torque for recovery allocation.
+At source `f2eb1e3a`, all **1,337 TypeScript tests in 115 files**, typecheck and build
+pass. The combined default also passes **141 Python checks**. No new grasp law,
+leg anatomy or force bonus is added. Patch promotion is **42/50**, with six football
+failures and two preserved historical hash differences. Ordinary jam refinement
+worsens; heavy refinement improves. Keep both results and the opt-in boundary.
+
+The controller owner's [anchor and diagnostic work](reviews/controller-easy-gains.md)
+is integrated. Get-up-stage four-game guards pass 12/12; these are not measurements
+of the later combined stage. Live-gap controller work is claimed separately.
+
+**Next shared-physics milestone:** preserve these laws while controllers repair
+attained-load interpretation and seal geometry. Keep unchanged helper/transfer
+controls through live-gap changes. Grasp yaw and mixed hand/grasp transport have
+confirmed free-body law defects; investigate them before expanding lower-foot
+support. No broad tackle-strength failure is established by the six selected
+current catch contexts. Avoid anatomy or global solver resolution as a shortcut.
 
 ## Other branch work
 
