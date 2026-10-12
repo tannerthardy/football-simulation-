@@ -7,7 +7,7 @@ import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import { blendApproach, chase, gatheringApproach, goTo, stand, track } from './behaviors/common.js';
 import { chooseApproach } from './approach-control.js';
-import { linePicture, liveGapY } from './live-gaps.js';
+import { linePicture, liveGap, liveGapY } from './live-gaps.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -119,6 +119,10 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   return jobs;
 }
 
+/** Free fits may scrape with the gap's motion (SCRAPE=1, off: mixed in games) and read the back's
+ * threatened crossing rather than his position (THREAT_READ=0). */
+const SCRAPE = process.env.SCRAPE === '1', THREAT_READ = process.env.THREAT_READ !== '0';
+
 /** Pull reads (PULL_READ=0 restores the single nearest-shift read, for A/B). */
 const PULL_READ = process.env.PULL_READ !== '0';
 /** How far ahead a puller's seen path is carried (about one decision beat), the
@@ -223,7 +227,13 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     return fit;
   }
   if (job.technique === 'lag' && Math.abs(seen.vel.y) > .8) gy = liveGapY(sim,a,'A',-Math.sign(seen.vel.y));
-  const flow = clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
+  // Scrape with the gap: carry the landmark forward at the speed of the
+  // bodies that bound it over one read (a stack backer more than a plug).
+  // The back no longer pulls the landmark; he decides when to attack it.
+  // SCRAPE=0 restores the old lean toward the back's lateral position.
+  const gap = liveGap(sim, a, job.gap, job.side);
+  const flow = SCRAPE ? clamp(gap.vel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
+    : clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
   if (PULL_READ) {
     // Read the guards: every puller this player sees crossing behind the line
     // shows where an extra blocker will turn up. Flow with him to keep the
@@ -240,7 +250,20 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   }
   // Insert to the surface, then attack a declared crease. The back's being
   // near our lateral landmark at a deep mesh is not permission to chase him.
-  const declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
+  // THREAT_READ: the back threatens this gap when his seen path crosses the
+  // line within reach of it (not merely where he stands now); he has
+  // declared it when he is also at the surface. A back pressing wide still
+  // threatens to bend back, so a disciplined fit holds until he commits.
+  let declared: boolean;
+  if (THREAT_READ && !premesh) {
+    const dirX = sim.attackDir(c.team), toLos = Math.max(0, (sim.los - seen.pos.x) * dirX);
+    const reachLos = clamp(toLos / Math.max(.5, seen.vel.x * dirX), 0, 1);
+    const crossing = seen.pos.y + seen.vel.y * reachLos;
+    const half = Number.isFinite(gap.width) ? Math.max(.6, gap.width / 2) : 1.2;
+    const threat = Math.abs(crossing - gy) < half + 1;
+    declared = threat && seen.pos.x > sim.los - 1.6;
+    if (threat && !declared) a.tags.add('fit-threat-read');
+  } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
   const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);

@@ -35,6 +35,7 @@ import { fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
 import { availability, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { liveGapY } from './live-gaps.js';
+import { requestToCover } from './motion-plan.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -624,6 +625,9 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 /** Stretch reaches stay connected rather than drive (STRETCH_REACH=0 off). */
 const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
 
+/** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
+const DL_FLOW = process.env.DL_FLOW !== '0';
+
 /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
 const LEVER_FACING = process.env.LEVER_FACING !== '0';
 
@@ -957,7 +961,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
-  const flow = clamp((read.declared ? 0 : read.stack?.flow ?? 0) + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
+  // Keep the shoulder where it will need to be: the held flow cue carries it
+  // forward over a short horizon, and the request is planned with his own
+  // acceleration (the law the zone blockers plan with), so a lineman who is
+  // being reached works laterally to keep his gap instead of lagging it.
+  // DL_FLOW=0 restores the proportional follow.
+  const held = read.declared ? 0 : read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
+  const flow = clamp(DL_FLOW
+    ? requestToCover(d.profile.tau, read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
+    : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
   intents[d.idx] = {
     vel: read.stack ? { x: depth, y: flow } : legacy,
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),

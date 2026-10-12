@@ -6,7 +6,7 @@ import { gapY } from '../src/playbook/alignment.js';
 import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { linePicture, liveGapY } from '../src/sim/live-gaps.js';
+import { linePicture, liveGap, liveGapY } from '../src/sim/live-gaps.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(1), 'O', 'O'), defense = generateTeam(new Rng(2), 'D', 'D');
@@ -80,5 +80,23 @@ describe('live gaps move with the offensive bodies that form them', () => {
     for (const o of sim.offense) o.body.pos = { x: o.pos.x, y: o.pos.y + 3 };
     sim.t += .05; // not yet perceived
     expect(liveGapY(sim, observer, 'B', 1)).toBeCloseTo(gapY(sim.offAlign, 'B', 1), 6);
+  });
+
+  it('describe a gap by its opening and its motion, from the bodies that bound it', () => {
+    const { sim, observer, settle } = setup();
+    const c = sim.slot('C')!, g = ['LG', 'RG'].map((k) => sim.slot(k)!).find((a) => Math.sign(a.pos.y - CENTER_Y) === 1)!;
+    settle();
+    const open = liveGap(sim, observer, 'A', 1);
+    expect(open.width).toBeCloseTo(1.3 - c.profile.radius - g.profile.radius, 6);
+    expect(open.vel).toBeCloseTo(0, 6);
+    // The guard steps toward the center: the opening narrows.
+    g.body.pos = { x: g.pos.x, y: g.pos.y - .4 };
+    settle();
+    expect(liveGap(sim, observer, 'A', 1).width).toBeCloseTo(open.width - .4, 6);
+    // Both drift play side: the gap moves at its bounding bodies' mean speed.
+    g.body.vel = { x: 0, y: 2 }; c.body.vel = { x: 0, y: 1 };
+    settle();
+    expect(liveGap(sim, observer, 'A', 1).vel).toBeCloseTo(1.5, 6);
+    expect(liveGap(sim, observer, 'D', 1).width).toBe(Infinity);
   });
 });

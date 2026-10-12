@@ -6,7 +6,7 @@ import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY } from '../playbook/alignment.js';
 import { getRoute } from '../playbook/routes.js';
-import type { RunConcept } from '../playbook/types.js';
+import type { Gap, RunConcept } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
@@ -261,7 +261,12 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
   const follow = leads.length ? leads : pullers;
   const key=sim.defense.filter((d)=>d.pos.x>sim.los+2 && d.pos.x<sim.los+7 && Math.abs(d.pos.y-sim.ballY)<4)
     .sort((p,q)=>Math.abs(p.pos.y-sim.ballY)-Math.abs(q.pos.y-sim.ballY))[0];
-  to.behavior = new BallCarrier({ aim, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow,
+  const run = sim.offCall.run, meshAim = to.behavior instanceof RunnerToMesh;
+  const aimGap = run && meshAim ? (() => {
+    const side = playSideSign(sim, run), gap: Gap = run.aim === 'edge' ? 'D' : run.aim;
+    return { gap, side, offset: aim.y - gapY(sim.offAlign, gap, side) };
+  })() : undefined;
+  to.behavior = new BallCarrier({ aim, aimGap, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow,
     run:sim.offCall.run ? {scheme:sim.offCall.run.scheme,side:playSideSign(sim,sim.offCall.run),readKey:key,
       kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'))} : undefined }, to);
 }

@@ -20,7 +20,8 @@ import { sprintTime, timeToReach } from '../../physics/reach.js';
 import { squeezeForGap } from '../../physics/bodyshape.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
-import type { RunScheme } from '../../playbook/types.js';
+import type { Gap, RunScheme } from '../../playbook/types.js';
+import { liveGapY } from '../live-gaps.js';
 import { RunBlocker } from './blocking.js';
 import { contactCost } from '../contact-choice.js';
 import type { Perceived } from '../perception.js';
@@ -34,6 +35,16 @@ export interface CarrierOptions {
   /** Known lead/pull responsibilities on a designed run. */
   follow?: Agent[];
   run?: { scheme:RunScheme; side:number; readKey?:Agent; kick?:Agent };
+  /** The designed aim as a gap on the line (with the play's offset from that
+   * gap's landmark), so it moves with the bodies that form it. */
+  aimGap?: { gap: Gap; side: number; offset: number };
+}
+
+/** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
+export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
+  if (!opts.aim || !opts.aimGap || process.env.LIVE_AIM === '0') return opts.aim;
+  const g = opts.aimGap;
+  return { x: opts.aim.x, y: liveGapY(sim, a, g.gap, g.side) + g.offset };
 }
 
 /** Coarse threat inference from the consumed image, not the opponent's true
@@ -56,7 +67,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   const surface=sim.offense.filter((b)=>['LT','LG','C','RG','RT'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)
     .map((b)=>({...sim.see(a,b),radius:b.profile.radius})).sort((p,q)=>p.pos.y-q.pos.y);
   if (surface.length<5) return null;
-  let preferred=opts.aim.y;
+  let preferred=liveAim(a,sim,opts)!.y;
   if (opts.run.scheme === 'duo' && opts.run.readKey) {
     const key=sim.see(a,opts.run.readKey);
     // Press the inside double. A declaring MIKE closes his insertion side;
@@ -127,7 +138,7 @@ export class BallCarrier implements Behavior {
 
     // Designed phase: press the aiming point.
     if (designed) {
-      const aim = this.opts.aim!;
+      const aim = liveAim(a, sim, this.opts)!;
       const h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y });
       this.heading = h;
       // Only abandon the design early if the aiming point is clearly closed.

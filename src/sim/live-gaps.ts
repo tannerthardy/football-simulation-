@@ -33,11 +33,14 @@ export interface SurfaceBody {
   home: number;
 }
 
-export interface OutwardBody { y: number; vel: number; vacancy: boolean }
+export interface OutwardBody { y: number; vel: number; vacancy: boolean; radius: number }
 
 export interface LinePicture {
   /** Perceived center (or the ball's spot when he is not on the surface). */
   center: number;
+  /** The center's lateral velocity and radius in this picture. */
+  centerVel: number;
+  centerRadius: number;
   /** Per side (+1 / -1): lateral positions outward from the center, with
    * vacancies where a departed body's stance lay between present ones. */
   outward: Record<'1' | '-1', OutwardBody[]>;
@@ -76,7 +79,7 @@ export function linePicture(sim: PlaySim, observer: Agent): LinePicture {
   const key = (side: number) => (side > 0 ? '1' : '-1') as '1' | '-1';
   for (const b of surface) {
     if (b === centerBody) continue;
-    outward[key(b.seen.pos.y - center)].push({ y: b.seen.pos.y, vel: b.seen.vel.y, vacancy: false });
+    outward[key(b.seen.pos.y - center)].push({ y: b.seen.pos.y, vel: b.seen.vel.y, vacancy: false, radius: b.agent.profile.radius });
   }
   // A departed body whose stance lay between two present bodies leaves a
   // vacancy at the same fraction of the space between them now.
@@ -90,10 +93,12 @@ export function linePicture(sim: PlaySim, observer: Agent): LinePicture {
     if (!outer) continue; // beyond the end man: the surface simply ends sooner
     const innerHome = inner?.home ?? homeCenter, innerY = inner ? inner.seen.pos.y : center;
     const w = (g.home - innerHome) / ((outer.home - innerHome) || 1);
-    outward[key(side)].push({ y: innerY + (outer.seen.pos.y - innerY) * w, vel: 0, vacancy: true });
+    const innerVel = inner ? inner.seen.vel.y : centerBody?.seen.vel.y ?? 0;
+    outward[key(side)].push({ y: innerY + (outer.seen.pos.y - innerY) * w, vel: innerVel + (outer.seen.vel.y - innerVel) * w, vacancy: true, radius: 0 });
   }
   for (const side of [1, -1]) outward[key(side)].sort((p, q) => (p.y - q.y) * side);
-  const picture = { center, outward, surface, departed: gone };
+  const picture = { center, centerVel: centerBody?.seen.vel.y ?? 0, centerRadius: centerBody?.agent.profile.radius ?? 0,
+    outward, surface, departed: gone };
   cache.set(observer, { t: sim.t, sim, picture });
   return picture;
 }
@@ -113,6 +118,29 @@ export function gapIn(p: LinePicture, gap: Gap, side: number): number {
     case 'D': off = n >= 3 ? o[2] + .7 : n === 2 ? o[1] + 1.6 : n === 1 ? o[0] + 2.9 : 4.2; break;
   }
   return c + s * off;
+}
+
+/** A gap as a space between bodies: where it is, how wide the opening
+ * between its bounding bodies is (radii removed; an outside gap with no
+ * outer body is open), and how fast it moves (its bounding bodies' mean
+ * lateral velocity). Derived geometry only; it moves nobody. */
+export interface GapSurface { y: number; width: number; vel: number }
+
+export function gapSurfaceIn(p: LinePicture, gap: Gap, side: number): GapSurface {
+  const s = side >= 0 ? 1 : -1, o = p.outward[s > 0 ? '1' : '-1'];
+  const c: OutwardBody = { y: p.center, vel: p.centerVel, vacancy: false, radius: p.centerRadius };
+  const pair = (a: OutwardBody | undefined, b: OutwardBody | undefined) => a && b
+    ? { width: Math.abs(b.y - a.y) - a.radius - b.radius, vel: (a.vel + b.vel) / 2 }
+    : { width: Infinity, vel: (a ?? b ?? c).vel };
+  const bounds = gap === 'A' ? pair(c, o[0]) : gap === 'B' ? pair(o[0], o[1])
+    : gap === 'C' ? pair(o[1], o[2]) : pair(o[o.length - 1], undefined);
+  return { y: gapIn(p, gap, s), ...bounds };
+}
+
+/** The assigned gap as `observer` sees it now (LIVE_GAPS=0: snap landmark, still). */
+export function liveGap(sim: PlaySim, observer: Agent, gap: Gap, side: number): GapSurface {
+  if (!LIVE_GAPS) return { y: gapY(sim.offAlign, gap, side), width: Infinity, vel: 0 };
+  return gapSurfaceIn(linePicture(sim, observer), gap, side);
 }
 
 /** Where `observer` sees an assigned gap now (absolute y). */
