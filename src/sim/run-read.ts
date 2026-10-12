@@ -34,6 +34,10 @@ import { observeRunRead, runReadObservers } from './run-read-observer.js';
  * see docs/reviews/run-read.md. */
 export const RUN_READ = process.env.RUN_READ === '1';
 
+/** Diagnostic candidate, parked after fresh controls lost clean arrivals.
+ * Changes only the RB arrival model; see docs/reviews/run-read-approach.md. */
+export const RUN_READ_TURN = process.env.RUN_READ_TURN === '1';
+
 /** Keys seen focally, the rest peripherally (READ_EYES=0: no peripheral delay). */
 const READ_EYES = process.env.READ_EYES !== '0';
 
@@ -105,25 +109,36 @@ export function readKeys(a: Agent, sim: PlaySim, scheme: RunScheme, side: number
 /** Can perceived defenders get to his path to this entry before he does?
  * Sampled along the approach, with his own acceleration from his current
  * velocity along it (0 = clean); the worst point counts. */
-export function entryRisk(a: Agent, sim: PlaySim, entry: Vec2): number {
+export function entryRisk(a: Agent, sim: PlaySim, entry: Vec2, chargeRedirect = RUN_READ_TURN): number {
   const D = Math.hypot(entry.x - a.pos.x, entry.y - a.pos.y) || 1e-6;
   const ux = (entry.x - a.pos.x) / D, uy = (entry.y - a.pos.y) / D;
   const s0 = Math.max(0, a.vel.x * ux + a.vel.y * uy);
   const seen = sim.opponents(a).filter((d) => !d.isDown(sim.t)).map((d) => ({ d, s: sim.see(a, d) }));
+  const trace = runReadObservers.has(sim) && process.env.READ_RISK_TRACE === '1';
+  const samples: unknown[] = [];
   let worst = 0;
   for (const u of [.35, .7, 1]) {
     const q = { x: a.pos.x + ux * D * u, y: a.pos.y + uy * D * u };
-    const arrive = sprintTime(D * u, s0, a.profile.vmax, a.profile.tau);
+    // Candidate: pay for redirecting existing velocity just as defenders do.
+    // The legacy straight sprint erases sideways/away momentum. Keep that
+    // default until the candidate's fresh protected-route regressions resolve.
+    const arrive = chargeRedirect ? timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile }, q)
+      : sprintTime(D * u, s0, a.profile.vmax, a.profile.tau);
     let risk = 0;
+    const threats: unknown[] = [];
     for (const { d, s } of seen) {
       if (Math.hypot(s.pos.x - q.x, s.pos.y - q.y) > 8) continue;
       // Bodies locked in a block are slower to come off it; not a known outcome.
       const tied = d.engagement ? .35 : 0;
       const reach = timeToReach({ ...s, profile: d.profile, speedScale: d.speedScale }, q, d.profile.radius + a.profile.radius) + tied;
       risk += Math.max(0, arrive - reach) * 3;
+      if (trace) threats.push({ defender: d.idx, seen: s, tied, reach, uncontainedReach: reach - tied,
+        actual: { pos: d.pos, vel: d.vel }, contribution: Math.max(0, arrive - reach) * 3 });
     }
     worst = Math.max(worst, risk);
+    if (trace) samples.push({ u, point: q, arrive, risk, threats });
   }
+  if (trace) observeRunRead(sim, a, 'entry-risk', { entry, pos: a.pos, vel: a.vel, samples, risk: worst });
   return worst;
 }
 

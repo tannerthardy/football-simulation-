@@ -1,5 +1,7 @@
 # Run-read information measurement
 
+Follow-up: [false clean approach diagnosis and parked turning-cost candidate](run-read-approach.md). It reuses this evidence, reports the fresh adverse controls, and investigates the five retained-key takeovers.
+
 Measurement protocol declared before collecting the observer panel (2026-10-12, America/Phoenix). Source baseline: `f3b764d2792c8eba8769e7ec94880c05f68c270e`. No capacities, mesh policy or read heuristics change. `RUN_READ` remains opt-in.
 
 Use the original counterfactual-probe's ordered 96 inputs: four OZ/WZ calls, seeds 3/7, roster pairs 31/32, 41/42, 51/52, Over/Under, both flips; Ace 11 versus Base 43 Cover 3, LOS 40, strength .55, default World. Keep the original eight-second observation bound and distinguish censored plays. Run read off/on separately, and repeat hold/overflow as context.
