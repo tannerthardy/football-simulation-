@@ -1,5 +1,7 @@
 # Run game: movement intentions, angled contact and useful protection
 
+Follow-up: [first positioning cause of the cross-pair loss](run-game-positioning.md) isolates RG's experimental footwork, preserves the native defensive response and tests the keeper's reach/runoff transition. No defaults were promoted.
+
 **Contact can discard a still-active reach intention before hands transmit any load. A narrow correction restores that request, but does not reliably improve protection. It stays default-off. The clearest late regression is a cross-pair collision that drops the keeper, not a premature release timer.**
 
 Checkout was clean at `b143f1b`, `codex/defensive-flow`. Work continues on `codex/run-game-contact`. The workboard records the user's assignment of both offensive blocking and defensive reactions to this session. Primary physics was reviewed at `41103cb`; its loaded-recovery/tackle work was not merged. World, support/recovery, capacities, grip, tackling, RB reads and mesh are unchanged. Existing anchor split, torso release, keeper eligibility, zone technique and climb fixes are retained.
