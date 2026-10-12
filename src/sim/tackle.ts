@@ -88,10 +88,11 @@ export function tryTackles(sim: PlaySim): void {
       // passing or pulling away). While he is still closing on a better
       // shot he keeps his feet running; an assist takes whatever it gets.
       const closing = -((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
-      // Beyond standing reach he only lays out when the carrier is pulling
-      // away from him; otherwise he keeps running his feet. No opportunity
-      // forecast is needed when this attempt is already disallowed.
-      if (dd > arms && closing > -1.5) continue;
+      // A crossing hip can already be passing without rapidly separating.
+      // Outside standing reach, retain the ordinary escape exception or
+      // require acquired evidence that this is the last attainable reach.
+      const needsLastReach = dd > arms && closing > -1.5;
+      let lastReach = false;
       // Waiting needs affirmative evidence from the picture and the command
       // actually held. A joint, recent contact or recovering support makes a
       // one-body forecast unavailable; ideal current-state motion cannot
@@ -116,14 +117,19 @@ export function tryTackles(sim: PlaySim): void {
           // Compare two estimates from the same observation. Actual reach and
           // the resulting grip still use current physical geometry below.
           waitForBetter = window.futureQuality > window.currentQuality + .1;
+          lastReach = observed.carrying === true && window.closestAt === 0
+            && window.closest > arms && window.closest <= range;
+          const keepFeet = waitForBetter || (needsLastReach && !lastReach);
           if (sim.trace.data) sim.trace.decide({ t: sim.t, a: d.idx,
             kind: 'tackle-opportunity',
-            chose: waitForBetter ? 'keep feet moving' : 'attempt current opportunity',
+            chose: keepFeet ? 'keep feet moving'
+              : needsLastReach ? 'take last reach' : 'attempt current opportunity',
             cue: 'delayed carrier motion and attainable movement',
-            options: ['keep feet moving', 'attempt current opportunity'],
-            detail: `Observed wrap quality ${window.currentQuality.toFixed(2)}; best attainable decision sample ${window.futureQuality.toFixed(2)} at ${window.closestAt.toFixed(2)} s. Held movement command; future cuts and contacts are unknown.` });
+            options: ['keep feet moving', 'attempt current opportunity', 'take last reach'],
+            detail: `Observed possession ${observed.carrying === true ? 'held' : 'unconfirmed'}; wrap quality ${window.currentQuality.toFixed(2)}; best attainable decision sample ${window.futureQuality.toFixed(2)} at ${window.closestAt.toFixed(2)} s. Held movement command; future cuts and contacts are unknown.` });
         }
       }
+      if (needsLastReach && !lastReach) continue;
       if (waitForBetter) continue;
       attempt(sim, d, c, q, engaged, dd > arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;

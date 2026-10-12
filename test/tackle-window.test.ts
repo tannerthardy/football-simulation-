@@ -15,12 +15,12 @@ import { PlaySim } from '../src/sim/playsim.js';
 import { tryTackles } from '../src/sim/tackle.js';
 import { previewTackleWindow } from '../src/sim/tackle-window.js';
 
-function stage(side = 1) {
+function stage(side = 1, record = false) {
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(19), 'O', 'OFF'), '11'),
     defense: pickDefense(generateTeam(new Rng(20), 'D', 'DEF'), 'nickel'),
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'lab' },
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'lab' },
-    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 83 });
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 83, record, recordLevel: 'full' });
   const c = sim.slot('Z')!, d = sim.slot('FS')!;
   c.body.pos = { x: 51.2, y: CENTER_Y - side * .6 }; c.body.vel = { x: 6, y: 0 }; c.body.facing = 0;
   d.body.pos = { x: 50, y: CENTER_Y }; d.body.vel = { x: 7, y: -side * 3 }; d.body.facing = side * -.4;
@@ -29,6 +29,28 @@ function stage(side = 1) {
   const command: Intent = { vel: { x: 6, y: side * 1 }, facing: .15 * side, cutSkill: .9, posture: .5 };
   const body = c.profile.radius + d.profile.radius, arms = body + d.profile.reach;
   return { sim, c, d, seen, command, body, arms };
+}
+
+function passingStage(side = 1, carrying?: boolean, record = false) {
+  const setup = stage(side, record), { sim, c, d, arms } = setup;
+  for (const a of sim.agents) if (a !== c && a !== d) {
+    a.downUntil = 99; a.body.pos = { x: 5, y: a.idx * 2 };
+  }
+  const scale = (arms + .1) / Math.hypot(1.2, 1);
+  c.body.pos = { x: d.pos.x + 1.2 * scale, y: d.pos.y - side * scale };
+  d.body.vel = { x: 3.5, y: -side * 3 }; c.body.vel = { x: 6.5, y: -side * .5 };
+  d.body.facing = Math.atan2(d.vel.y, d.vel.x);
+  setup.command = { vel: { ...d.vel }, facing: d.facing };
+  sim.intents[d.idx] = setup.command;
+  sim.ball = { kind: 'held', carrier: c }; sim.catchAt = 0;
+  for (let k = 0; k < 24; k++) {
+    const lag = (23 - k) * sim.dt;
+    sim.perception.record(sim.agents.map(a => ({ pos: {
+      x: a.pos.x - a.vel.x * lag, y: a.pos.y - a.vel.y * lag },
+      vel: a.vel, facing: a.facing, pose: a.pose })),
+    carrying === true ? c.idx : carrying === false ? null : undefined);
+  }
+  return setup;
 }
 
 // Independent ordinary World execution is the contract. No separate turning,
@@ -53,6 +75,47 @@ function ordinaryWindow(setup: ReturnType<typeof stage>, now = 2) {
 }
 
 describe('attainable tackle opportunity', () => {
+  it.each([-1, 1])('takes a passing last reach without promising a standing wrap, side %s', side => {
+    const { sim, c, d, body, arms, command } = passingStage(side, true, true);
+    const seen = sim.see(d, c);
+    const window = previewTackleWindow(d, seen, command, body, arms, sim.world.time)!;
+    expect(window.closestAt).toBe(0);
+    expect(window.closest).toBeGreaterThan(arms);
+    expect(window.closest).toBeLessThan(arms + .45);
+    const dive = vi.spyOn(sim, 'diveAt');
+    const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(false);
+    try {
+      tryTackles(sim);
+      expect(dive).toHaveBeenCalledOnce();
+      expect(sim.bond?.tacklers).toContain(d);
+      const hold = sim.bond!.holds!.get(d)!;
+      expect(hold.origin).toContain('lunge');
+      expect(hold.capacity).toBeGreaterThan(0);
+      expect(hold.capacity).toBeLessThan(supportParams(d.profile).armForce);
+      // Acquisition does not claim a successful tackle or a body impact.
+      expect(hold.force ?? 0).toBe(0);
+      expect(sim.outcome).toBeNull();
+      expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
+    } finally { dive.mockRestore(); rolls.mockRestore(); }
+  });
+
+  it.each([false, undefined])('does not upgrade a last reach before acquiring possession: %s', carrying => {
+    // Passing geometry is identical; the physical selector knows the actual
+    // carrier, but the new decision must not borrow that hidden possession.
+    const { sim, c, d } = passingStage(1, carrying, true);
+    expect(sim.see(d, c).carrying).toBe(carrying ?? null);
+    const dive = vi.spyOn(sim, 'diveAt'), draw = vi.spyOn(sim.rng, 'chance');
+    try {
+      tryTackles(sim);
+      expect(dive).not.toHaveBeenCalled();
+      expect(draw).not.toHaveBeenCalled();
+      expect(sim.bond).toBeNull();
+      const choice = sim.trace.data!.decisions.find(row => row.a === d.idx)!;
+      expect(choice.chose).toBe('keep feet moving');
+      expect(choice.detail).toContain('possession unconfirmed');
+    } finally { dive.mockRestore(); draw.mockRestore(); }
+  });
+
   it.each(['ordinary', 'fatigued', 'recovering'] as const)('matches ordinary World decision samples for %s movement', (state) => {
     const setup = stage(), s = setup.d.body.support!;
     if (state === 'fatigued') { setup.d.body.energy = .2; setup.d.body.sprintLoad = 7; }
