@@ -6,6 +6,10 @@ the production contact default remains center-based hands. The small
 [receipt](../../data/reviews/current/zone-flow-prototype.json) records source
 hashes, paired measurements, and passing versus failed checks.
 
+The later [angular-contact repair](angular-contact-repair.md) adds coherent
+mixed torso/hand timing, persistent torso force points and actual force/moment
+outputs. Its source-pinned laws pass; the five football promotion failures remain.
+
 ## Contact-law follow-up: corrected geometry, promotion still blocked
 
 The [new contact receipt](../../data/reviews/current/contact-coupling.json)

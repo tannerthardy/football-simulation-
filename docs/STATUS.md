@@ -1,6 +1,6 @@
 # Current status
 
-Updated 2026-10-12. Work on `claude/engine-priorities`; main and PR #1 are
+Updated 2026-10-11 (America/Phoenix). Work on `claude/engine-priorities`; main and PR #1 are
 outside this work. NFL figures diagnose mechanisms, not values to fit.
 
 ## What is live
@@ -101,10 +101,28 @@ heavy-jam refinement is nonmonotonic, and strong-jam falls disagree at 6 versus
 another; it was rejected. Conservation is improved; convergence and football
 readiness remain unproved.
 
-**Next shared-physics milestone:** explain the first diverging helper/keeper
-request or achieved contact/support response while preserving the corrected
-point laws. Contact onset/release and sustained constraints deserve attention
-before more shoulder anatomy or global solver resolution.
+The [angular-contact follow-up](reviews/angular-contact-repair.md) fixes a
+second defect: mixing torso impacts with finite hand forces used inconsistent
+transport timing. Start impacts now precede hand-point construction and acquired
+yaw advances in the same interval. An optional persistent local torso point
+delivers normal and steering torque, using the same work/force limits. Coincident
+half-cap hands share compliance. Actual force vectors and moments are available
+to controllers. All changes remain behind the existing `patch` option.
+
+At source `97612098`, **1,298 TypeScript tests in 111 files** and **141 Python
+checks** pass; typecheck and build pass. The 144-case hand oracle and 36 shared-body
+material-contact law cases pass. Unchanged patch promotion is still **43/50**.
+The blocker sometimes interprets force opposing its own yaw as lateral opponent
+motion; removing that cue or changing material-point geometry does not repair
+the sustained keeper. [Work ownership](WORKBOARD.md) now assigns that controller
+diagnosis to the confirmed controller session. Both default hash witnesses pass.
+
+**Next shared-physics milestone:** preserve these point laws while the controller
+owner repairs attained-load interpretation and maintained seal geometry. Retest
+the five failed controls and the separate heavy-jam refinement witness before
+default promotion. The nine redirect fixtures have no fall disagreements against
+192 steps in this stage, but that does not establish heavy-jam convergence or
+football readiness. Avoid more anatomy or global solver resolution as a shortcut.
 
 ## Other branch work
 

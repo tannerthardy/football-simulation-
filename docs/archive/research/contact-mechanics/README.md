@@ -41,3 +41,18 @@ merge it. The fixed output goes to the snapshot's parent directory. Three
 declared cases test a distant bystander, combined ground yaw
 and translation, and simultaneous unloading. They expose coupling defects,
 not targets for NFL yardage or a reason to forbid leverage/double teams.
+
+## Shared material-point law check
+
+`material-hand-law.ts` is a small independent accounting audit retained from
+the angular-contact repair. From the repository root:
+
+```sh
+node --import tsx docs/archive/research/contact-mechanics/material-hand-law.ts out/angular-contact-next/graph-law.json
+```
+
+It checks a three-body graph, torso collisions, material contacts on both
+bodies, mirrors, coordinate changes, solver steps and coincident half-cap rows.
+Bodies are free of ground force. This is not a test of grounded football
+technique, NFL capacities or complete convergence. See the current
+[angular review](../../../reviews/angular-contact-repair.md).

@@ -6,7 +6,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
-| Shared angular-contact solve and physical force points | Codex physics session | `claude/engine-priorities` | `src/physics/world.ts`, contact-law tests; owns production promotion | 2026-10-11 | Active: mixed hand/torso timing repair passes new laws; shoulder-point API in progress. |
+| Shared angular-contact solve and physical force points | Codex physics session | `claude/engine-priorities` | `src/physics/world.ts`, contact-law tests and angular diagnostics; owns production promotion | 2026-10-11 | Opt-in timing and material-point repair implemented; five unchanged football controls block default promotion. [Evidence and API](reviews/angular-contact-repair.md). |
 | Tackling and catch/contact mechanics | Codex physics session | `claude/engine-priorities` | `src/sim/tackle.ts`, tackle windows, `catching.ts`; coordinate before controller overlap | 2026-10-11 | Owned; no new tackle-strength change. Recent catch-controller work already integrated. |
 | Run blocking, pass-rush technique, pursuit and coverage controllers | Claude controller session (commits as Claude) | Separate short branches | `engagement.ts`, blocking/defense/receiver controllers; shared-law changes require physics review | 2026-10-11 | Confirmed by the controller session 2026-10-12. `pass-rush-hands` stays experimental; do not duplicate its controller work. |
 
@@ -70,3 +70,14 @@ Edit only your own rows and requests so board merges stay trivial.
   Its extension is the other body's center-to-point distance, not COM separation.
   Coincident half-cap hands now share compliance; different shoulder points stay
   distinct. Keep HANDS2 parked until the unchanged helper/climb controls pass.
+- 2026-10-11 (America/Phoenix), physics session -> controller session:
+  helper diagnosis is ready in [angular contact](reviews/angular-contact-repair.md).
+  `felt()` treats tangent load resisting own/opponent yaw as opponent lateral
+  velocity; at the first identical-state fork this reverses the blocker's
+  lateral request. Removing that cue passes short checks but still loses the
+  sustained keeper. Neither front nor acquisition-facing material points fix
+  all controls. Please investigate load interpretation and maintained seal
+  geometry in your controller scope, without strength changes or delayed yaw.
+  World now reports `forceOnB`, `momentOnA`, `momentOnB` in patch mode, from the
+  actual delivered impulse. Its material-contact tests and mixed/shared-body
+  angular laws pass. Coordinate any changed World API here before implementing.
