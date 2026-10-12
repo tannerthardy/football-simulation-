@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
+import { angleDiff } from '../src/core/vec.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
@@ -11,7 +12,7 @@ import { newVirtualFoot } from '../src/physics/virtual-foot.js';
 import { World, type Intent } from '../src/physics/world.js';
 import { chooseApproach } from '../src/sim/approach-control.js';
 import type { Engagement } from '../src/sim/agent.js';
-import { chase, pursuitPoint, runThrough } from '../src/sim/behaviors/common.js';
+import { blendApproach, chase, pursuitPoint, runThrough } from '../src/sim/behaviors/common.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
@@ -34,6 +35,34 @@ function stage(side = 1) {
   const original: MoveCommand = { vel: { x: 4.5, y: -side * 8.6 }, effort: 1 };
   return { sim, c, d, world, seen, contact, original };
 }
+
+describe('gathering opens the body toward the acquired near hip', () => {
+  it.each([-1, 1])('turns toward the hip through the partial gather, side %s', side => {
+    const far: MoveCommand = { vel: { x: 6, y: 0 }, facing: 0 };
+    const near: MoveCommand = { vel: { x: 3, y: side * 2 }, facing: side * Math.PI / 3 };
+    const command = blendApproach(far, near, .5);
+    expect(angleDiff(far.facing!, command.facing!)).toBeCloseTo(side * Math.PI / 6, 12);
+    expect(Math.abs(angleDiff(command.facing!, near.facing!)))
+      .toBeLessThan(Math.abs(angleDiff(far.facing!, near.facing!)));
+    // Body response stays force-limited; the controller cannot teleport a turn.
+    const { d, c, world } = stage(side);
+    d.body.facing = 0; d.body.vel = { x: 6, y: 0 };
+    const report = world.step([{ vel: { ...c.vel }, facing: 0 }, command], .05);
+    expect(d.body.facing * side).toBeGreaterThan(0);
+    expect(Math.abs(d.body.facing)).toBeLessThan(Math.abs(command.facing!));
+    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+    expect(report.contacts).toHaveLength(0);
+  });
+
+  it('takes the short turn across the angle boundary and reaches the near-facing endpoint', () => {
+    const far: MoveCommand = { vel: { x: -6, y: .2 }, facing: Math.PI - .2 };
+    const near: MoveCommand = { vel: { x: -3, y: -.2 }, facing: -Math.PI + .2 };
+    const halfway = blendApproach(far, near, .5);
+    expect(angleDiff(far.facing!, halfway.facing!)).toBeCloseTo(.2, 12);
+    expect(angleDiff(blendApproach(far, near, 1).facing!, near.facing!)).toBeCloseTo(0, 12);
+    expect(blendApproach(far, near, 0)).toBe(far);
+  });
+});
 
 describe('physics-limited approach shortlist', () => {
   it('keeps an ordinary sprint when a faster carrier is pulling away', () => {

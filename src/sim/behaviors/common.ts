@@ -194,7 +194,7 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
   const travel = far.facing ?? angleOf(far.vel);
   return { ...near, vel: { x: far.vel.x + (near.vel.x - far.vel.x) * gather,
     y: far.vel.y + (near.vel.y - far.vel.y) * gather },
-    facing: travel + angleDiff(near.facing!, travel) * gather };
+    facing: travel + angleDiff(travel, near.facing!) * gather };
 }
 
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
