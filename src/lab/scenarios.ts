@@ -27,6 +27,7 @@ import type { Agent } from '../sim/agent.js';
 import { chase } from '../sim/behaviors/common.js';
 import { RouteRunner } from '../sim/behaviors/receiver.js';
 import { createEngagement } from '../sim/engagement.js';
+import { PassProtector, ProtectionCoordinator } from '../sim/behaviors/blocking.js';
 import { PlaySim } from '../sim/playsim.js';
 
 export interface LabOptions {
@@ -41,6 +42,7 @@ export interface LabOptions {
   constraintWork?: 'per-update' | 'per-solve';
   impactTiming?: 'speculative' | 'local-sweep';
   supportIntegration?: 'mean' | 'integrated';
+  handContact?: 'center' | 'patch';
 }
 
 /** Physical bookkeeping over a scenario. */
@@ -68,7 +70,7 @@ function lab(o: LabOptions, run: boolean) {
     offCall: run ? { formation: FORMATION_BY_ID.ace_11, flip: side < 0, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'lab' }
       : { formation: FORMATION_BY_ID.gun_doubles_11, flip: side < 0, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'lab' },
     defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'lab' },
-    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: rng.nextU32(), supportModel: o.supportModel, constraintWork: o.constraintWork, impactTiming: o.impactTiming, supportIntegration: o.supportIntegration });
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: rng.nextU32(), supportModel: o.supportModel, constraintWork: o.constraintWork, impactTiming: o.impactTiming, supportIntegration: o.supportIntegration, handContact: o.handContact });
   if (o.substeps) sim.world.substeps = o.substeps;
   const park = (keep: Agent[]) => {
     for (const a of sim.agents) {
@@ -221,23 +223,48 @@ export interface RedirectResult extends Invariants {
   /** Largest hand forces the joint carried, kg·yd/s². */
   peakNormal: number;
   peakTangent: number;
+  /** Installed home and actual free-protection requests after the original shed. */
+  protectionHomeY: number;
+  postShedProtection: Array<{ t: number; target: string | null; request: MoveCommand }>;
 }
 
 /** A tackle in his set takes on a speed rusher already in his hands outside him. */
 export function redirect(o: LabOptions & { rusherPower?: number; maxT?: number }): RedirectResult {
-  const { sim, park, place, observe } = lab(o, false);
+  const { sim, park, place, observe, side } = lab(o, false);
   const b = sim.slot('RT')!, d = sim.slot('DE_S')!, qb = sim.qb;
   park([b, d, qb]);
   place(qb, 33, 0, 0, 0, 0);
   qb.behavior = { kind: 'qb-hold', update: () => ({ vel: { x: 0, y: 0 }, facing: 0 }) } as never;
   place(b, 37.8, -3.0, -1.5, 0, 0);
   place(d, 37.8 + 0.25, -3.0 - (b.profile.radius + d.profile.radius + 0.15), -3, 0, Math.PI);
+  // Formation flips do not swap the named OL slots. This synthetic mirror
+  // moves the same RT, so install his reflected home as well as his body.
+  // The original right-side home and production assignment law are retained.
+  const protection = new ProtectionCoordinator();
+  protection.add(b);
+  const home = sim.offAlign.spots[b.slot].pos.y;
+  const protectionHomeY = CENTER_Y + side * (home - CENTER_Y);
+  protection.homeY.set(b, protectionHomeY);
+  const protector = new PassProtector(protection);
+  b.behavior = protector;
   if (o.rusherPower) d.profile.power *= o.rusherPower;
   sim.t = 0.8;
   observe();
   const e = createEngagement(sim, b, d, 'pass', null);
   if (!e) throw new Error('redirect: no engagement formed');
   e.move = 'speed'; e.nextMoveAt = Infinity;
+  const postShedProtection: RedirectResult['postShedProtection'] = [];
+  const update = protector.update;
+  protector.update = function (actor, world) {
+    const request = update.call(this, actor, world);
+    if (!actor.engagement && world.events.some(event => event.type === 'shed'
+      && event.a === d.idx && event.b === b.idx && event.note === 'pass: turned the corner')) {
+      const target = this.recordedTarget(actor);
+      postShedProtection.push({ t: world.t, target: target === null ? null : world.agents[target].slot,
+        request: structuredClone(request) });
+    }
+    return request;
+  };
   let closest = Infinity, carriedPast = -Infinity, peakN = 0, peakT = 0;
   const inv = runTicks(sim, [b, d, qb], () => {
     closest = Math.min(closest, Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y));
@@ -246,7 +273,8 @@ export function redirect(o: LabOptions & { rusherPower?: number; maxT?: number }
     return !sim.engagements.includes(e) && Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y) > 6;
   }, o.maxT ?? 2.5);
   const shed = sim.events.some((x) => x.type === 'shed' && x.note === 'pass: turned the corner');
-  return { ...inv, closest, carriedPast, cornerTurned: shed, peakNormal: peakN, peakTangent: peakT };
+  return { ...inv, closest, carriedPast, cornerTurned: shed, peakNormal: peakN, peakTangent: peakT,
+    protectionHomeY, postShedProtection };
 }
 
 // ---------------------------------------------------------------- seal
