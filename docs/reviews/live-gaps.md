@@ -155,3 +155,51 @@ and gains only 1.1 yd laterally by 1.5 s (NFL 3.6): his press point is the
 line (`los + 0.6`), so his path is diagonal, while NFL backs stay deep and
 flat. Next: the back's stretch track and press/bounce/cut read, then
 defensive gap exchanges.
+
+## Stage 3: the other half of the width (stretch mesh, linebackers)
+
+`scripts/diag/zone/stretch-gaps.py` compares the whole outside-zone play with
+NFL tracking (same operator). Before this stage, ranked:
+
+| | NFL | Sim |
+|---|---|---|
+| QB alignment for OZ: under / gun / pistol | 77 / 16 / 7 % | 33 / 57 / 10 % |
+| Under-center handoff: time, width, depth | 1.4 s, 2.9 yd, -5.1 | 1.45 s, 1.0 yd, -4.3 |
+| Back's speed at 1.0 / 1.5 s | 4.3 / 5.7 | 2.0 / 3.0 (braked into the mesh) |
+| Back turns upfield | 1.8 s at 4.2 yd wide | 1.3 s at 1.0 yd |
+| Backers sideways at 1.0 / 1.5 / 2.0 s | 1.3 / 3.05 / 4.9 | 0.05 / 0.35 / 0.70 |
+| Center / play-side guard sideways at 2.0 s | 5.2 / 4.7 | 1.6 / 1.3 |
+| Box DL sideways at 2.0 s | 4.5 | 1.1 |
+
+Changes (switchable):
+
+1. **Stretch mesh on the back's track** (`STRETCH_MESH=0`): from under center
+   the QB opens and gets depth to hand off outside the tackle's stance; the
+   back arrives running and rides his track; the QB follows him for the last
+   moment. Back's speed 3.6 / 4.3 yd/s at 1.0 / 1.5 s, lateral 2.6-3.1 at
+   1.5 s, turns up at 1.6-1.7 s 3.4 yd wide, first contact 2.75 s (NFL 2.8).
+   Outcomes unchanged (OZ median 3.1).
+2. **Backers** recognise run by 0.5 s (92%) but asked for a proportional
+   drift the lag law made late. Now: lateral work toward a *moving* landmark
+   is planned with the body (`LB_PLAN=0`); the gap's motion (the line's
+   flow, the earliest zone key) carries the landmark (`SCRAPE=0`); and once
+   the back's track declares a direction a backer keeps inside-out leverage
+   on him (`FLOW_READ=0`). Backers sideways at 1.5 / 2.0 s: 0.35 / 0.70 to
+   1.0 / 2.0 (NFL 3.05 / 4.9).
+3. **Climbs intercept** (`CLIMB_INTERCEPT=0`): climb and lead blocks aim at
+   the backer's intercept point under the climber's own reach law. Neutral.
+
+With realistic backer flow, **OZ outcomes fall** (median 3.1 to 1.7 yd,
+stuffs 0.33 to 0.39). Backers now make 36 of 112 OZ first contacts; 16 were
+assigned to a climber who never engaged them and 14 had no blocker. The
+defence is closer to the NFL; the offence lacks its real counters. Per the
+project rule this is kept: the next work is on the offence.
+
+Next:
+- Why climbers never reach flowing backers (combo release timing, traffic,
+  path) and who should own unassigned backers.
+- The back's cutback read behind over-flowing backers (press, then bounce /
+  up / back).
+- Interior line width (center/guard 1.5-1.9 vs NFL 4.7-5.2; DL 1.2 vs 4.5):
+  engaged-pair lateral speed, see the physics question on the workboard.
+- OZ formation mix (77% under center in the NFL, 33% here) is play-calling.

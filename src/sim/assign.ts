@@ -123,7 +123,7 @@ export function assignBehaviors(sim: PlaySim): void {
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
     qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch);
-    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim);
+    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride);
   }
   for (const a of sim.offense) {
     if (a.behavior.kind === 'idle') a.behavior = new DownfieldBlocker();
@@ -136,7 +136,12 @@ interface Mesh {
   aim: Vec2;
   time: number;
   pitch: number;
+  /** A stretch back takes the ball on the move, riding his track. */
+  ride: boolean;
 }
+
+/** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, back stops). */
+const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
 
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
@@ -175,6 +180,12 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   } else if (concept.scheme === 'draw') {
     qb = { x: qbType === 'under' ? los - 5.5 : los - 6, y: by };
     rb = { x: qb.x + 0.6, y: by + ps * 0.8 };
+  } else if (qbType === 'under' && STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone')) {
+    // Stretch from under center: the QB opens and gets depth to put the ball
+    // on the back's track outside the tackle's stance, so the back takes it
+    // already running wide (STRETCH_MESH=0 restores the inside mesh).
+    qb = { x: los - 4.4, y: by + ps * 2.1 };
+    rb = { x: los - 5.0, y: by + ps * 2.8 };
   } else if (qbType === 'under') {
     // Reverse pivot and a couple of steps back: the mesh is ~3.5–4 yd deep.
     qb = { x: los - 3.5, y: by + ps * 0.5 };
@@ -186,7 +197,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     qb = { x: los - 5.0, y: by };
     rb = { x: los - 4.4, y: by + ps * 0.9 };
   }
-  return { qb, rb, aim, time, pitch };
+  return { qb, rb, aim, time, pitch, ride: STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') };
 }
 
 /**
@@ -220,7 +231,9 @@ export class RunnerToMesh implements Behavior {
     readonly mesh: Vec2,
     readonly meshTime: number,
     readonly aim: Vec2,
+    readonly ride = false,
   ) {}
+  private passed = false;
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.ball.kind === 'pitch' && sim.ball.target === a) {
       return goTo(a, sim.ball.intended, { speed: 0.8, facing: Math.atan2(sim.qb.pos.y-a.pos.y, sim.qb.pos.x-a.pos.x) });
@@ -234,6 +247,13 @@ export class RunnerToMesh implements Behavior {
     // The deadline is a cadence cue, not possession. Brake into the mesh
     // until the QB actually gives him the ball; onHandoff installs the run.
     // Running through an expired landmark used to strand him yards away.
+    if (this.ride) {
+      // A stretch back takes the ball on the move: arrive running, then keep
+      // riding the track toward the aiming point until the QB puts it in.
+      if (d < .7) this.passed = true;
+      if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });
+      return goTo(a, this.mesh, { speed, through: a.profile.vmax * .55 });
+    }
     return goTo(a, this.mesh, { speed, through: 0 });
   }
 }

@@ -629,7 +629,12 @@ export class QBHandoff implements Behavior {
       }
     }
     if (sim.t < 0.05) return stand();
-    // Quick reverse pivot / step to the mesh.
+    // Quick reverse pivot / step to the mesh. Once the back is already on it
+    // and riding past, ride with him: put the ball where he is going.
+    if (rb && sim.t >= this.meshTime - 0.3 && Math.hypot(rb.pos.x - this.mesh.x, rb.pos.y - this.mesh.y) < 1.2) {
+      const seen = sim.see(a, rb), lead = { x: seen.pos.x + seen.vel.x * .2, y: seen.pos.y + seen.vel.y * .2 };
+      return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through: 0 });
+    }
     const facing = angleTo(a.pos, this.mesh);
     return goTo(a, this.mesh, { speed: 1, facing, through: 0 });
   }

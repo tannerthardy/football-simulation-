@@ -8,6 +8,7 @@ import type { PlaySim } from './playsim.js';
 import { blendApproach, chase, gatheringApproach, goTo, stand, track } from './behaviors/common.js';
 import { chooseApproach } from './approach-control.js';
 import { linePicture, liveGap, liveGapY } from './live-gaps.js';
+import { requestToCover } from './motion-plan.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -119,9 +120,15 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   return jobs;
 }
 
-/** Free fits may scrape with the gap's motion (SCRAPE=1, off: mixed in games) and read the back's
+/** Free fits scrape with the gap's motion, the earliest zone key (SCRAPE=0) and read the back's
  * threatened crossing rather than his position (THREAT_READ=0). */
-const SCRAPE = process.env.SCRAPE === '1', THREAT_READ = process.env.THREAT_READ !== '0';
+const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ !== '0';
+
+/** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
+const LB_PLAN = process.env.LB_PLAN !== '0';
+
+/** Backers flow inside-out on a declared track (FLOW_READ=0 off); yards inside the ball. */
+const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
 
 /** Pull reads (PULL_READ=0 restores the single nearest-shift read, for A/B). */
 const PULL_READ = process.env.PULL_READ !== '0';
@@ -227,6 +234,16 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     return fit;
   }
   if (job.technique === 'lag' && Math.abs(seen.vel.y) > .8) gy = liveGapY(sim,a,'A',-Math.sign(seen.vel.y));
+  // Flow read: once the back's own track clearly declares a direction, a
+  // backer flows to keep inside-out leverage on him (a yard inside his
+  // projected position), never against his own gap. Backside cutback and
+  // lag duties stay home. FLOW_READ=0 restores the landmark-only fit.
+  let flowing = false;
+  if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && Math.abs(seen.vel.y) > 1.5) {
+    const f = Math.sign(seen.vel.y);
+    const onBall = seen.pos.y + seen.vel.y * 2 * a.mind.decisionInterval - f * FLOW_INSIDE;
+    if ((onBall - gy) * f > 0) { gy = onBall; flowing = true; a.tags.add('fit-flow-read'); }
+  }
   // Scrape with the gap: carry the landmark forward at the speed of the
   // bodies that bound it over one read (a stack backer more than a plug).
   // The back no longer pulls the landmark; he decides when to attack it.
@@ -267,5 +284,14 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
   const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
-  return track(a,aim,{x:0,y:0},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
+  const fit = track(a,aim,{x:0,y:0},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
+  // A moving landmark (the line flowing, or the back's declared track) is
+  // chased with lateral work planned with his own body (the law every
+  // position plans with): the speed that puts him there within two reads,
+  // rather than a proportional drift the acceleration lag turns into a late
+  // arrival. A still landmark keeps the ordinary proportional fit.
+  if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1)) return fit;
+  const horizon = 2 * a.mind.decisionInterval;
+  const vy = clamp(requestToCover(a.profile.tau, aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
+  return { ...fit, vel: { x: fit.vel.x, y: vy } };
 }

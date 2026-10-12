@@ -24,6 +24,7 @@ import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { axisOf, contactControl, helperSupport, passSetDepth, promoteContact, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
+import { interceptPoint } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 
@@ -674,6 +675,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   return plans;
 }
 
+/** Climbs and leads intercept flowing backers (CLIMB_INTERCEPT=0: short lead). */
+const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';
+
 /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
 const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
 
@@ -1025,7 +1029,15 @@ export class RunBlocker implements Behavior {
     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
     else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
     else if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
-      aim = a.mind.aim('block-fit', { x: seen.pos.x + seen.vel.x * 0.25, y: seen.pos.y + seen.vel.y * 0.25 }, sim.t);
+      // Climbs and leads intercept: aim where the backer will be when this
+      // body can get there (his seen motion carried forward, our own reach
+      // law), not a quarter second ahead of a flowing backer. CLIMB_INTERCEPT=0
+      // restores the short lead.
+      const lead = CLIMB_INTERCEPT ? interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
+        (tt) => ({ x: seen.pos.x + seen.vel.x * tt, y: seen.pos.y + seen.vel.y * tt }),
+        { horizon: 1.5, step: .05, radius: a.profile.radius + target.profile.radius }).point
+        : { x: seen.pos.x + seen.vel.x * 0.25, y: seen.pos.y + seen.vel.y * 0.25 };
+      aim = a.mind.aim('block-fit', lead, sim.t);
     }
     const nominalAim = aim;
     const placementError = a.mind.placementError * (1 - 0.5 * a.r('runBlock'));
