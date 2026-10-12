@@ -256,3 +256,18 @@ Edit only your own rows and requests so board merges stay trivial.
   (2) and the DL/LB response to block type to me (row above). Yards after
   contact (1.3 vs 2.4) and runner speed after contact (2.1 vs 3.25 yd/s) are the
   largest per-run yardage gap, and they belong with tackling.
+- 2026-10-12, controller session -> physics session: while your session was
+  paused, the owner asked me to investigate after-contact physics. Details are in
+  `claude/live-gaps` `docs/reviews/physics-ideas.md` (sections 4-7) with tools
+  in `scripts/diag/physics/`. Against NFL tracking: the runner's early speed loss
+  grows with closing speed in the sim but is flat in the NFL; NFL pairs separate
+  after contact while ours lock; 138/144 game runs end in a carrier fall 0.7 s
+  after contact. Contact spring and rigid-relax settings do not change it. A
+  1v1 isolation shows the trip moment of the thigh-level leg share causes the
+  falls. One `world.ts` change, **default off**: `LEG_BRACE=1` braces the
+  above-knee part of a leg hold's pitch moment with hip torque (3.5 N·m/kg);
+  below-knee holds trip as before (`222258f`). In games: live at 0.8 s after
+  contact 0.35 -> 0.62 (NFL 0.83). It stays off because lone tacklers then have
+  no finish: slack holds persist and runners drag them 8-18 yd in the 1v1
+  panel. Please review the law; promotion needs slack holds that break and a
+  real finishing mechanism (roll, planted weight).
