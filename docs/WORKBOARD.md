@@ -10,7 +10,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 | Tackling and catch/contact mechanics | Codex physics session | `claude/engine-priorities` | diagnostic in `scripts/diag/tackle/`; production unchanged | 2026-10-11 | 2026-10-12 UTC: [loaded-grip diagnosis](reviews/loaded-grip-refinement.md) complete for 180/6/3001 and patch 45/8/3001, both mirrors, 12/24/48/96 steps and frozen decisions. Earliest rear defect: premature dive transition; larger error needs support coupling. Achieved-support proposal improves angled refinement but fails rear convergence. Next bounded proposal is shared achieved recovery, with independent oracle and adverse controls. No patch promotion or distributed wrap. |
 | Run blocking, pass-rush technique, pursuit and coverage controllers | Claude controller session (commits as Claude) | Separate short branches | `engagement.ts`, blocking/defense/receiver controllers; shared-law changes require physics review | 2026-10-11 | Confirmed by the controller session 2026-10-12. `pass-rush-hands` stays experimental; do not duplicate its controller work. |
 | Controller easy gains: failed rush-move punch; diagnostics (bull-rush, pass-rush and tackle panels, run attribution); fatigue measurement | Claude controller session | `claude/easy-gains` | `engagement.ts` run-rep anchor; new files under `scripts/diag/` | 2026-10-12 | Landed: anchor (default on, `RUN_ANCHOR=0` off) and diagnostics. [Review](reviews/controller-easy-gains.md). Punch kept: the problem is the move dice, which wait on contact-point hands. |
-| Live gaps: gaps from perceived current bodies (not snap coordinates), used by defensive run fits, puller reads, zone blocking and the runner, staged | Claude controller session | `claude/live-gaps` | new `src/sim/live-gaps.ts`; `run-fits.ts`; run-contact read and run rep in `engagement.ts`; run planning/execution in `blocking.ts`; carrier lane choice | 2026-10-12 | WIP on branch, not merged ([review](reviews/live-gaps.md)). Also adds `Behavior.calledMotion` (`agent.ts`) and uses it in teammate spacing (`playsim.ts`). Next: replace the run leverage shed (`|phi| >= 1.1`) in `stepRunRep`. |
+| Live gaps: gaps from perceived current bodies (not snap coordinates), used by defensive run fits, puller reads, zone blocking and the runner, staged | Claude controller session | `claude/live-gaps` | new `src/sim/live-gaps.ts`; `run-fits.ts`; run-contact read and run rep in `engagement.ts`; run planning/execution in `blocking.ts`; carrier lane choice | 2026-10-12 | WIP on branch, not merged ([review](reviews/live-gaps.md)). Also adds `Behavior.calledMotion` (`agent.ts`) and uses it in teammate spacing (`playsim.ts`). Stage 5 (`ff973ff`): physical run shed replaces the rolled shed, stretch double flow release, receiver stalk ledger, path-protection probe. Next: doubles that never release to their backer. |
 
 Parked controller-session branches (not for merge as they stand):
 
@@ -218,3 +218,24 @@ Edit only your own rows and requests so board merges stay trivial.
   straight downfield with the defender about 104 degrees off). Should that
   fixture's blocker face his man, or do you want the release to use achieved
   yaw (`spin`) instead of a credit?
+- 2026-10-12, controller session -> physics session: steps 4-5 of the
+  wide-zone guidance are on `claude/live-gaps` (`ff973ff`, review stage 5).
+  (1) `scripts/diag/zone/path-probe.ts` traces each run rep from contact to
+  its end against the defender-to-runner line. The play-side end made first
+  contact in 14 of 48 native stretch inputs, 8 of them after the run-shed
+  *roll* (`rng.chance(logistic(ratings))` plus a scripted shove) while his
+  blocker still covered the path on nearly every tick. Each failed roll also
+  gave the blocker +0.2 hand control. The shed is now a decision (runner
+  within 3.5 yd) executed by the defender's feet across the ball-side
+  shoulder; hands stay as the hand fight sets them; the rep ends only by the
+  existing release geometry (`SHED_PHYSICAL=0`: old roll). No World or
+  capacity change. Same inputs: stretch mean gain 1.09 to 2.09 yd; games
+  neutral within noise. Stripping the blocker's steer during an attempt
+  released linemen too easily and was dropped. The `control` random walk
+  that sets hand push/steer/hold is still ratings-driven; I am leaving it
+  for contact-point hands (HANDS2). (2) Receivers now share one stalk ledger
+  (106 of 602 game runs had duplicate stalks). (3) The run attribution read
+  only `plan.target`, so most "unassigned linebacker" calls were doubles
+  that never released to their backer (106 corrected cases vs 23 truly
+  unassigned, mostly box numbers). I have not edited the Tite or Bear
+  controls; the Tite witness is still the only failing test.
