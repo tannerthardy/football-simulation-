@@ -85,7 +85,7 @@ function step(f: Fixture) {
     expect(report.armWork[i]).toBeLessThanOrEqual(report.armWorkLimit[i] + 1e-8);
     expect(report.supportMotorWork[i]).toBeLessThanOrEqual(report.supportMotorWorkLimit[i] + 1e-8);
     expect(Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y))
-      .toBeLessThanOrEqual(supportParams(a.profile).traction * f.sim.dt + 1e-8);
+      .toBeLessThanOrEqual(report.tractionImpulse[i] + 1e-8);
   }
   f.sim.t += f.sim.dt;
   f.sim.perception.record(f.sim.agents);
@@ -262,7 +262,10 @@ describe('run helpers earn contact and retain it through ownership', () => {
 });
 
 describe('solo hand-fight execution with the preserved legacy policy is unchanged', () => {
-  it.each(['run', 'pass'] as const)('matches frozen 923dbe0 legacy %s commands, bodies, loads and RNG', type => {
+  // Re-frozen on claude/run-blocking: contact now loads along the pad line
+  // (load-dependent traction, reported as tractionImpulse), linemen have a
+  // contact pad-level capability, and a driven run blocker anchors.
+  it.each(['run', 'pass'] as const)('matches frozen legacy %s commands, bodies, loads and RNG', type => {
     const f = fixture(1, 10, 90, type, true, type === 'run'), trace: unknown[] = [];
     for (let k = 0; k < 6; k++) {
       const { intents, report } = step(f);
@@ -271,8 +274,8 @@ describe('solo hand-fight execution with the preserved legacy policy is unchange
     }
     const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng: f.sim.rng.nextU32() })).digest('hex');
     const baseline = type === 'run'
-      ? '1d242a5a613c06473f32afd65b32a5cd87b9f31d487a990e1e537332355c2ecd'
-      : 'd3f9cf19cf7b9fceecc192c3b093699a0038d7ee108697cdd6c76724e5d55edc';
+      ? '712ecf42a37609546be544ad842fc7353edcad6cea42587179801067be8f7238'
+      : '047e1973d544103414053dfb9011401003835b28f5356779d84f3210bfa07d33';
     expect(actual).toBe(baseline);
   });
 });

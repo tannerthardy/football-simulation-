@@ -34,7 +34,7 @@ import { G } from '../core/units.js';
 import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
-import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
+import { TURF_MU, advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBody, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
@@ -139,6 +139,9 @@ export interface StepReport {
   substeps: number;
   /** External (ground/gravity) impulse on each body, kg·yd/s. */
   groundImpulse: Vec2[];
+  /** Traction impulse available to each body this step: friction times the
+   * actual load on his feet, which contact can raise or lower. */
+  tractionImpulse: number[];
   /** Work of those external forces on each body, kg·yd²/s². */
   groundWork: number[];
   groundYawImpulse: number[];
@@ -209,6 +212,7 @@ const GRASP_HZ = 6;
 const GRASP_ZETA = 0.8;
 /** A lean can grow past the felt load by this fraction (force development). */
 const PUSH_GROWTH = 0.25;
+const b0Power = (b: Body): number => b.profile.power;
 /** Time constant of the sensed load, s. */
 const FEEL = 0.04;
 const LEAN_RISE = 0.04;
@@ -355,6 +359,12 @@ export class World {
   private readonly braceY: Float64Array;
   private readonly comHeight: Float64Array;
   private readonly padHeight: Float64Array;
+  /** Vertical contact impulse this substep, and the resulting vertical force
+   * on each body from the previous substep (up +). Pad-line loading. */
+  private vAcc!: Float64Array;
+  private vLoad!: Float64Array;
+  private vH = 0;
+  private curH = 0;
   private readonly v0x: Float64Array;
   private readonly v0y: Float64Array;
   private readonly amx: Float64Array;
@@ -396,7 +406,7 @@ export class World {
     this.mass = Float64Array.from(bodies, (b) => b.profile.massKg);
     this.inertia = Float64Array.from(this.sp, (s) => s.yawInertia);
     const f = () => new Float64Array(n);
-    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f();
+    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f(); this.vAcc = f(); this.vLoad = f();
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
@@ -448,7 +458,7 @@ export class World {
         b.support!.feetLock = 0;
       }
     }
-    const report: StepReport = { substeps: 1, groundImpulse: bs.map(() => ({ x: 0, y: 0 })),
+    const report: StepReport = { substeps: 1, groundImpulse: bs.map(() => ({ x: 0, y: 0 })), tractionImpulse: new Array(n).fill(0),
       groundWork: new Array(n).fill(0), groundYawImpulse: new Array(n).fill(0), groundYawWork: new Array(n).fill(0),
       armWork: new Array(n).fill(0), armWorkLimit: new Array(n).fill(0), armImpulse: new Array(n).fill(0), armImpulseLimit: new Array(n).fill(0),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
@@ -909,6 +919,11 @@ export class World {
     // capacity. The reduced body model does not simulate individual held feet.
 
     // ---- 1. ground forces
+    this.curH = h;
+    {
+      for (const i of ids) { this.vLoad[i] = this.vH > 0 ? this.vAcc[i] / this.vH : 0; this.vAcc[i] = 0; }
+      this.vH = h;
+    }
     for (const i of ids) this.feet(i, intents[i] ?? STAND, plans[i], h, remaining, report);
     for (const i of ids) {
       this.comHeight[i] = comHeightAt(this.sp[i], bs[i].support!.posture);
@@ -1008,7 +1023,7 @@ export class World {
         const height = jt.height ?? (jt.kind === 'grasp'
           ? this.comHeight[r.j] * (1 - 0.55 * clamp(jt.legs, 0, 1))
           : undefined);
-        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
+        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0, jt.kind === 'hands');
         if (jt.kind === 'hands') {
           if (this.handIntegration === 'centered') {
             // These are achieved finite-force impulses, accumulated over h,
@@ -1083,7 +1098,7 @@ export class World {
         }
       }
       for (const c of contacts) {
-        this.addLoad(c.i, c.j, c.nx, c.ny, c.ln, c.lt);
+        this.addLoad(c.i, c.j, c.nx, c.ny, c.ln, c.lt, undefined, false, true);
         if (c.ln > 0 || c.touched) {
           const key = c.i * 1024 + c.j;
           const rec = pairs.get(key);
@@ -1159,9 +1174,16 @@ export class World {
     const b = this.bodies[i];
     const sup = b.support!;
     const p = b.profile;
-    const sp = this.sp[i];
+    const sp0 = this.sp[i];
     const m = this.mass[i];
+    // Traction is friction times the actual load on the feet: weight less
+    // any lift through contact (lifted = lighter feet), bounded for a body
+    // that is still standing on them.
+    const traction = clamp(sp0.traction - TURF_MU * this.vLoad[i], .2 * sp0.traction, 2 * sp0.traction);
+    const sp = traction === sp0.traction ? sp0 : { ...sp0, traction,
+      pushForce: Math.min(b0Power(this.bodies[i]) * G, traction) };
     this.recovery[i] = 0;
+    report.tractionImpulse[i] += sp.traction * h;
     const spinBefore=b.spin??0;
     this.v0x[i] = b.vel.x; this.v0y[i] = b.vel.y;
     let fx = 0, fy = 0;
@@ -1471,8 +1493,22 @@ export class World {
     }
   }
 
-  private addLoad(i: number, j: number, nx: number, ny: number, ln: number, lt: number, height?: number, legHold = false): void {
+  private addLoad(i: number, j: number, nx: number, ny: number, ln: number, lt: number, height?: number, legHold = false, padLine = false): void {
     const fx = nx * ln - ny * lt, fy = ny * ln + nx * lt;
+    if (padLine) {
+      // The force between two players acts along the line joining their
+      // pads. Pushing from lower pads lifts the higher player: it unloads his
+      // feet and loads the pusher's by the same amount (internal, equal and
+      // opposite; planar momentum and work are unchanged).
+      const bi = this.bodies[i].pos, bj = this.bodies[j].pos;
+      const dx = bj.x - bi.x, dy = bj.y - bi.y, d = Math.max(.3, Math.hypot(dx, dy));
+      const along = (fx * dx + fy * dy) / d; // + : j pushed away from i
+      // A contact can unload at most most of the lighter body's weight; the
+      // bound is shared, so the transfer stays equal and opposite.
+      const cap = .8 * Math.min(this.mass[i], this.mass[j]) * G * this.curH;
+      const vz = clamp(along * clamp((this.padHeight[j] - this.padHeight[i]) / d, -.6, .6), -cap, cap);
+      this.vAcc[j] += vz; this.vAcc[i] -= vz;
+    }
     // The impulse on j is +(n·ln + t·lt); on i its opposite.
     this.impX[j] += fx; this.impY[j] += fy;
     this.impX[i] -= fx; this.impY[i] -= fy;

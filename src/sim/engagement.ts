@@ -30,6 +30,7 @@
  * past — never a jump in leverage or a prescribed speed.
  */
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
+import { G } from '../core/units.js';
 import { fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
 import { gapY } from '../playbook/alignment.js';
 import { availability, supportParams } from '../physics/support.js';
@@ -886,8 +887,21 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const seal = clamp(dLat + felt(e, lat) * (0.6 + 0.6 * tb.feet) + (wantOffset - offset) * (3 + 3 * tb.feet), -mirror, mirror);
+  // A blocker who feels himself being driven back stops
+  // spending traction on lateral drive and pushes straight back against the
+  // felt load. Locomotion and lean share one traction budget in the World.
+  let blockVel = { x: drive.x * 2.4 + lat.x * seal, y: drive.y * 2.4 + lat.y * seal };
+  const feltLoad = b.body.support?.felt;
+  if (feltLoad) {
+    const load = Math.hypot(feltLoad.x, feltLoad.y);
+    const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;
+    if (load > .25 * b.profile.massKg * G && driven > .15) {
+      const ux = -feltLoad.x / load, uy = -feltLoad.y / load;
+      blockVel = { x: ux * 2.4 + lat.x * seal * .3, y: uy * 2.4 + lat.y * seal * .3 };
+    }
+  }
   intents[b.idx] = {
-    vel: { x: drive.x * 2.4 + lat.x * seal, y: drive.y * 2.4 + lat.y * seal },
+    vel: blockVel,
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     posture: 0.85,

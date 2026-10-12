@@ -22,6 +22,12 @@ Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
   access to another player's private assignment.
 - Use the simplest coherent model that generalizes. Anatomical feet and sole
   models are paused research, not production requirements.
+- **Never ban what works too well.** If an action is far more effective than
+  in real football, do not forbid it, cap it or steer players away from it.
+  That is evidence the model is wrong. Ask why it fails in real life (physics,
+  cost, fatigue, information, the opponent's response), find what the engine
+  lacks, and fix that. A player should still be free to choose it, and it
+  should fail as often as it does in real football.
 
 ## Pick and prove the next change
 

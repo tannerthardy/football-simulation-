@@ -90,6 +90,8 @@ export interface SupportParams {
   traction: number;
   /** Leg drive at zero speed (strength, traction-capped), kg·yd/s². */
   pushForce: number;
+  /** Contact pad-level capability, if profiled: how low he plays under load. */
+  padBend?: number;
   /** Arm push/hold capacity, kg·yd/s². */
   armForce: number;
 }
@@ -107,6 +109,7 @@ export function supportParams(p: PhysicalProfile): SupportParams {
     baseRadius: 0.11 + 0.05 * balance + 0.04 * clamp((p.massKg - 90) / 60, 0, 1),
     stepSpeed: p.stepSpeed ?? 3.2,
     bend: p.bend ?? 0.5,
+    padBend: p.padBend,
     getUp: p.getUp ?? 0.9,
     yawInertia: p.massKg * (0.5 * p.radius) ** 2,
     pitchRadiusSq: (0.3 * p.heightYd) ** 2,
@@ -127,10 +130,12 @@ export function comHeightAt(s: SupportParams, posture: number): number {
 }
 
 /** Upper-torso contact height. Distinct from COM: a crouch lowers the pads
- * more than the COM. This anthropometric proxy still needs contact data;
- * it does not add vertical forces or claim that the lower player always wins. */
+ * more than the COM. This anthropometric proxy still needs contact data.
+ * World loads contact along the line between two players' pads; the lower
+ * player can lift the higher one and take traction from him. */
 export function padHeightAt(s: SupportParams, posture: number): number {
-  return s.comHeight * (0.67 / 0.55) * (1 - 0.4 * clamp(posture, 0, 1) * (0.4 + 0.6 * s.bend));
+  const bend = s.padBend ?? s.bend;
+  return s.comHeight * (0.67 / 0.55) * (1 - 0.4 * clamp(posture, 0, 1) * (0.4 + 0.6 * bend));
 }
 
 /** Pendulum rate ω0 = √(g/h), 1/s. */

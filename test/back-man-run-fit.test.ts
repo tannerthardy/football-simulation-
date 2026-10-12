@@ -124,7 +124,7 @@ describe('inside man players insert from their acquired back possession', () => 
     expect(f.a.body.support!.state).toBe('up');
     expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
     expect(Math.hypot(report.groundImpulse[0].x, report.groundImpulse[0].y))
-      .toBeLessThanOrEqual(supportParams(f.a.profile).traction * .05 + 1e-8);
+      .toBeLessThanOrEqual(report.tractionImpulse[0] + 1e-8);
     expect(report.armImpulse[0]).toBe(0);
   });
 
@@ -319,7 +319,7 @@ describe('back man markers preserve their installed alley support instead of rec
       expect(f.a.vel.x).toBeLessThan(before.vel.x);
       expect(f.a.body.support!.state).toBe('up');
       expect(Math.hypot(report.groundImpulse[0].x, report.groundImpulse[0].y))
-        .toBeLessThanOrEqual(supportParams(f.a.profile).traction * .05 + 1e-8);
+        .toBeLessThanOrEqual(report.tractionImpulse[0] + 1e-8);
       expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
       expect(report.armImpulse[0]).toBe(0);
     }

@@ -48,6 +48,8 @@ export interface PhysicalProfile {
   balance?: number;
   /** 0–1 ability to play low (ankle/hip flexibility from agility drills). */
   bend?: number;
+  /** How low the pads stay in contact under load (strength, balance, technique). */
+  padBend?: number;
   /** Recovery stepping speed, yd/s: how fast the feet can be re-placed under a displaced body. */
   stepSpeed?: number;
   /** Seconds to get up once on the ground and stopped. */
@@ -164,6 +166,12 @@ export function derivePhysical(p: Player): PhysicalProfile {
   // mappings, not measured recovery times.
   const agility = clamp(0.5 * coneScore + 0.5 * shuttleScore, 0, 1);
   const bend = clamp(0.5 * coneScore + 0.3 * shuttleScore + 0.2 * balance - (m.heightIn - 74) * 0.02, 0, 1);
+  // Holding a low pad level under load is lower-body strength, balance and
+  // contact technique; change-of-direction drills measure something else.
+  const contactTechnique = isOL ? r01(0.5 * r.runBlock + 0.5 * r.passBlock)
+    : r01(Math.max(r.blockShedding, r.tackling));
+  const padBend = clamp(0.35 * strength + 0.25 * balance + 0.25 * contactTechnique + 0.15 * bend
+    - (m.heightIn - 74) * 0.02, 0, 1);
   const stepSpeed = clamp(2.6 + 1.4 * agility + 0.6 * balance - 0.004 * (m.weightLb - 200), 2.3, 4.8);
   const getUp = clamp(0.75 + 0.35 * (1 - agility) + 0.0015 * (m.weightLb - 200), 0.6, 1.4);
 
@@ -185,6 +193,7 @@ export function derivePhysical(p: Player): PhysicalProfile {
     power,
     balance,
     bend,
+    padBend,
     stepSpeed,
     getUp,
   };

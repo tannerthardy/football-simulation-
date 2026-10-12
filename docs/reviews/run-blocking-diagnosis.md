@@ -59,15 +59,81 @@ match. A diagonal first waypoint barely helped, so the delay is in the start.
   up the backfield picture and improved outcomes, but it bans a behavior
   instead of asking why driving through a set blocker works. Not kept.
 
-## Next: why does driving through a blocker work?
+## What the bull-rush panel taught us
 
-Engaged DL end 0.7-0.8 yd in the backfield at 3 s (NFL +0.2 pushed back).
-Before any controller rule, run a controlled 1v1 panel: an average DL drives
-straight through a set blocker for 2 s across mass, strength, fatigue and
-blocker bracing. Candidate physics causes, each testable:
+The project rule (see `CLAUDE.md`): if something works far better than in real
+football, do not ban it; find why it fails in real life and put that in the
+engine. Defenders driving blockers into the backfield prompted this panel
+(`scripts/diag/runblock/bullrush-panel.ts`): one engaged OL and DL, real
+hands, a straight 2-second bull rush, varying bodies, posture, fatigue and the
+blocker's response.
 
-1. No anchor advantage: yielding resistance costs the same force as driving.
-2. The blocker's feet push along a fixed drive line, not against the load.
-3. Effort is nearly free: two seconds of maximum isometric push costs about
-   0.07 energy, under 1% force loss; recovery between plays is fast.
-4. Push force saturates at strength about 73 (trench deep dive).
+**Findings before the change**
+
+- Pushing was capped by traction = friction x body weight. Above strength
+  about 0.73 both players sat at that cap, so **mass decided everything**: a 15%
+  heavier DL drove an equal OL 1.3 yd in 2 s. Pad level, strength and fatigue
+  changed nothing.
+- Pad height was computed, but only for tipping. Contact added no vertical
+  force, so "the low man wins" could not happen.
+- Identical bodies at equal effort drifted 0.4 yd from the first push and
+  never stopped: the "yielding is stronger" factor sat under the traction cap.
+- The game's own run-block request was driven 1.0 yd versus 0.4 when bracing:
+  locomotion and lean share one traction budget, and the blocker kept spending
+  it on lateral drive while being driven.
+- Fatigue was nearly free: a full 2 s bull rush costs about 5% energy, a 0.25%
+  force loss, and 35 s between snaps restores most of it.
+- `bend` (pad level) came from 3-cone/shuttle agility, so every OL had
+  0.06-0.20 against 0.3-0.8 for DL.
+
+**Changes on this branch**
+
+1. **Pad-line loading** (`src/physics/world.ts`). Contact between two players
+   acts along the line between their pads. Pushing from lower pads lifts the
+   higher player: his feet carry less load and the pusher's more, equal and
+   opposite, bounded so the lighter player keeps 20% of his weight on his
+   feet. Traction is friction x actual load. Planar momentum and work are
+   unchanged. Body collisions and hand joints only; tackle grasps and strikes
+   are not yet included. `StepReport.tractionImpulse` reports the actual limit.
+2. **Contact pad level** (`padBend` in `src/players/physical.ts`): strength,
+   balance and contact technique, a little agility, minus height. Movement
+   and center-of-mass height keep the agility-based `bend`.
+3. **Anchoring** (`src/sim/engagement.ts`): a run blocker who feels himself
+   driven back pushes straight against the felt load instead of continuing
+   his lateral drive.
+
+Panel with all three (identical bodies unless noted; yd driven in 2 s):
+
+| Arm | Before | After |
+|---|---|---|
+| Equal pad level, full brace | 0.40 | 0.40 |
+| Blocker stands up | 0.43 | 2.2-2.7 |
+| Rusher stands up | 0.40 | about 0 (rush stalls) |
+| 15% heavier rusher who stands up | 1.32 | 0.2 |
+| Tired blocker (energy 0.3) | 0.42 | 1.1-1.6 |
+| Game's own run-block request | 1.01 | 0.6 |
+
+Fatigue now costs leverage, through the posture rise the engine already had.
+Tests: `test/pad-line-load.test.ts` (conservation, mirror, leverage, fatigue,
+anchoring). The ground-impulse budget checks in 15 test files now compare with
+`tractionImpulse`. The frozen solo hand-fight hashes in
+`test/run-hand-control.test.ts` were re-frozen for these changes.
+
+**In games** the package is about neutral: runs of 1 yd or less 0.36-0.39
+(was 0.39-0.42); median 1.5-1.8; 90th percentile about 10 (NFL 10). Engaged DL
+more than 1 yd deep at 3 s: 14-18% (NFL 12%). All 12 guards hold. So the 1v1
+physics is now honest, but it is not what makes runs fail in games.
+
+## Next
+
+- **Fatigue is still almost free.** Repeated maximum efforts should cost
+  force across a drive (no-huddle, rotation value). That needs both the cost of
+  isometric effort and the fatigue curve, checked against movement data.
+- **Equal-leverage drift.** Balanced forces never bleed off the first push's
+  momentum; the eccentric advantage needs to act below the traction cap.
+- **Strength saturates** at 0.73; it should matter through force at speed and
+  holding pad level under load.
+- **Tackle grasps** should get the same pad-line loading (lifting a carrier).
+- **Engaged DL still end 0.7-0.8 yd deep at 3 s** (NFL +0.2). With honest 1v1
+  physics, trace the request side: OL drive lines, DL depth requests toward
+  the runner and the circling leverage sheds.
