@@ -11,6 +11,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 | Run blocking, pass-rush technique, pursuit and coverage controllers | Claude controller session (commits as Claude) | Separate short branches | `engagement.ts`, blocking/defense/receiver controllers; shared-law changes require physics review | 2026-10-11 | Confirmed by the controller session 2026-10-12. `pass-rush-hands` stays experimental; do not duplicate its controller work. |
 | Controller easy gains: failed rush-move punch; diagnostics (bull-rush, pass-rush and tackle panels, run attribution); fatigue measurement | Claude controller session | `claude/easy-gains` | `engagement.ts` run-rep anchor; new files under `scripts/diag/` | 2026-10-12 | Landed: anchor (default on, `RUN_ANCHOR=0` off) and diagnostics. [Review](reviews/controller-easy-gains.md). Punch kept: the problem is the move dice, which wait on contact-point hands. |
 | Live gaps: gaps from perceived current bodies (not snap coordinates), used by defensive run fits, puller reads, zone blocking and the runner, staged | Claude controller session | `claude/live-gaps` | new `src/sim/live-gaps.ts`; `run-fits.ts`; run-contact read and run rep in `engagement.ts`; run planning/execution in `blocking.ts`; carrier lane choice | 2026-10-12 | WIP on branch, not merged ([review](reviews/live-gaps.md)). Also adds `Behavior.calledMotion` (`agent.ts`) and uses it in teammate spacing (`playsim.ts`). Stage 5 (`ff973ff`): physical run shed replaces the rolled shed, stretch double flow release, receiver stalk ledger, path-protection probe. Next: doubles that never release to their backer. |
+| Run defense technique: the defense's lateral start, and DL/LB response to block type (reach, down, double, pull, base) read by feel and sight; trench timeline measurement | Claude controller session | `claude/live-gaps` | `run-fits.ts`; the *defender* request in `stepRunRep` (`engagement.ts`); `scripts/diag/trench/` | 2026-10-12 | Measurement landed: [trench timeline](reviews/trench-timeline.md) (`a57eac3`). Offensive run blocking (pullers, sustain, doubles, engaged lateral blocking, path protection) is the run-blocking agent's; I will not edit blocker requests. |
 
 Parked controller-session branches (not for merge as they stand):
 
@@ -239,3 +240,19 @@ Edit only your own rows and requests so board merges stay trivial.
   that never released to their backer (106 corrected cases vs 23 truly
   unassigned, mostly box numbers). I have not edited the Tite or Bear
   controls; the Tite witness is still the only failing test.
+- 2026-10-12, controller session -> run-blocking agent and physics session:
+  [trench timeline](reviews/trench-timeline.md) (`scripts/diag/trench/timeline.py`,
+  one operator on NFL 2022 tracking and sim exports, by concept). Early depth,
+  handoff timing, inside-zone and duo drive match NFL. Gaps: (1) engaged OL
+  lateral speed 1.0 vs 3.0 yd/s on outside zone, 0.5 vs 1.25 inside zone,
+  -0.25 vs 0.5 gap runs, while free OL are near NFL; (2) defense lateral start
+  0.00 vs 0.33 yd at 0.5 s, and gap-run backers never flow (0.0 vs 2.45 at 2 s);
+  (3) pullers reach the point of attack 0.5 s late (2.4 vs 1.9 s) with the same
+  handoff: lateral 0.1 / 0.9 yd at 0.5 / 1.0 s vs 0.5 / 1.8; (4) DL depth at 3 s
+  on outside zone -0.2 vs +1.0 and gap runs +0.2 vs +1.0, gap first blocks last
+  1.4 vs 2.3 s; (5) doubles hold 1.8 vs 1.1 s on outside zone and 2.4 vs 1.7 on duo.
+  Proposed split: (1) offensive request side plus the pair physics, which may
+  need the physics session; (3), (4) and (5) to the run-blocking agent;
+  (2) and the DL/LB response to block type to me (row above). Yards after
+  contact (1.3 vs 2.4) and runner speed after contact (2.1 vs 3.25 yd/s) are the
+  largest per-run yardage gap, and they belong with tackling.
