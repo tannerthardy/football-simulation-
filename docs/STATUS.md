@@ -22,8 +22,13 @@ by a four-second hold timer. In the matched 144-rep panel, production physical
 falls rise 106→122; patch falls rise 62→92, with unfinished adverse reps retained.
 Source `f14d849a51` passes all **1,486 TypeScript tests**, **141 Python checks**,
 typecheck and build. The two-game smoke check holds 12/12 existing guards.
-Patch promotion stays **42/50**. Next physics question: first divergence in
-loaded angled holds at 12/48 steps, not a universal tackle-strength increase.
+Patch promotion stays **42/50**. The diagnostic-only
+[loaded-grip investigation](reviews/loaded-grip-refinement.md) now compares both
+pinned witnesses and mirrors at 12/24/48/96 steps with frozen decisions. It finds
+an early dive transition and grip/support recovery disagreement. An achieved-foot
+proposal reduces angled path error but leaves the rear hold unresolved; World
+and capacities are unchanged. Next: repair that small support coupling with an
+independent achieved-motion oracle, retaining the rear case and promotion failures.
 
 ## Prior validated repair stage
 

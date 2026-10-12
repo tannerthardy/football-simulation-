@@ -6,7 +6,7 @@
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { gzipSync } from 'node:zlib';
+import { gunzipSync, gzipSync } from 'node:zlib';
 import { followAccel, type Body } from '../../../src/physics/kinematics.js';
 import { advanceRecovery, baseRadiusAt, omega0, supportParams } from '../../../src/physics/support.js';
 import { integrateFilteredFollow } from '../../../src/physics/filtered-follow.js';
@@ -27,7 +27,7 @@ const pose=(b:Body)=>({pos:clone(b.pos),vel:clone(b.vel),spin:b.spin??0,facing:b
 function spec(j:GraspJoint,ids:number[],w:World){const {a,b,...p}=j;return {...clone(p),a:ids.indexOf(w.indexOf(a)),b:ids.indexOf(w.indexOf(b))};}
 interface Frame { t:number; dt:number; intents:Intent[]; bodies:Body[]; grips:Array<Record<string,any>>; rng:unknown; pending:Array<Record<string,any>> }
 export interface Capture { result:unknown; endpoint:string; frames:Frame[]; trace:any[]; decisions:string; profiles:string; }
-interface Scope { world:World|null; ids:number[]; trace:any[]; tick:number; bucket:any; rows:any[]; variant?:string; forced?:number; }
+interface Scope { world:World|null; ids:number[]; trace:any[]; tick:number; bucket:any; rows:any[]; variant?:string; forced?:number; correcting?:boolean; }
 let scope:Scope|null=null;
 
 /** Snapshot at achieved substep boundaries; callbacks do not draw RNG or ask
@@ -58,7 +58,7 @@ function recoveryInput(w:Private,i:number,h:number){
   const result=advanceRecovery(input.e,input.rb,input.w,input.speed,input.outsideFor,input.latency,h,input.loadVelocity);
   let xx=e>1e-12?x*result.next/e:nx*result.next,yy=e>1e-12?y*result.next/e:ny*result.next;
   xx-=(vx-input.loadVelocity*nx)*result.weight;yy-=(vy-input.loadVelocity*ny)*result.weight;
-  return {input,result,predicted:{x:xx+.5*dx,y:yy+.5*dy}};
+  return {input,result,predicted:{x:xx+.5*dx,y:yy+.5*dy},normal:{x:nx,y:ny},deficit:{x:vx,y:vy},achieved:clone(foot.achieved)};
 }
 function install(){
   const p=World.prototype as Private, saved=new Map<string,any>();
@@ -101,13 +101,31 @@ function install(){
       v.angularA+=(c.ni??0)*dn-c.ri*dt;v.angularB+=(c.nj??0)*dn-c.rj*dt;}return r;});
   hook('updateSupport',(w,f,args)=>{const [i,h]=args,b=w.bodies[i],before=pose(b),phase=recoveryInput(w,i,h);
     if(scope!.variant==='no-balance')return; // Explicit diagnostic ablation only.
+    const peak=b.support.peak;
+    scope!.correcting=scope!.variant==='achieved-support'&&!!phase;
     const r=f.apply(w,args);
+    scope!.correcting=false;
     if(phase&&Math.hypot(b.support.xi.x-phase.predicted.x,b.support.xi.y-phase.predicted.y)>1e-11)throw Error('Recovery input reconstruction mismatch');
+    if(phase&&scope!.variant==='achieved-support'){
+      // Diagnostic-only proposal. Balance uses the same physically achieved
+      // corrective velocity as the held material point, rather than an
+      // independent free recovery plus only the grip-induced difference.
+      const a=phase.input,n=phase.normal,u=phase.achieved,radial=u.x*n.x+u.y*n.y;
+      const next=advanceRecovery(a.e,a.rb,a.w,0,a.outsideFor,a.latency,h,radial);
+      const actualX=u.x-radial*n.x,actualY=u.y-radial*n.y;
+      const oldX=phase.deficit.x-a.loadVelocity*n.x,oldY=phase.deficit.y-a.loadVelocity*n.y;
+      b.support.xi={x:phase.predicted.x+n.x*(next.next-phase.result.next)-actualX*next.weight+oldX*phase.result.weight,
+        y:phase.predicted.y+n.y*(next.next-phase.result.next)-actualY*next.weight+oldY*phase.result.weight};
+      const e=Math.hypot(b.support.xi.x,b.support.xi.y),crit=a.rb+w.sp[i].stepSpeed*w.fat[i]/a.w;
+      b.support.out=e>a.rb?a.outsideFor+h:0;b.support.peak=Math.max(peak,e/crit);
+      if(e>crit&&e>a.rb+1e-6){const causes=b.support.causes;const cause=causes.legs>=causes.contact&&causes.legs>=causes.overspeed?'legs':causes.overspeed>causes.contact?'overspeed':'contact';
+        w.startFall(b.support,{x:b.support.xi.x/e,y:b.support.xi.y/e},cause,w.report,i);}
+    }
     if(scope!.bucket&&scope!.ids.includes(i))scope!.bucket.supportUpdates.push({i,h,before,after:pose(b),recovery:w.recovery[i],phase,alpha:w.alpha[i],cut:w.cut[i],tip:{x:w.tipX[i]/h,y:w.tipY[i]/h},trip:{x:w.tripX[i],y:w.tripY[i]}});
     return r;});
   hook('startFall',(w,f,args)=>{
-    scope!.bucket?.events.push({kind:'fall',t:w.time,i:args[4],cause:args[2],suppressed:scope!.variant==='support-no-fall'&&args[2]!=='dive'});
-    if(scope!.variant==='support-no-fall'&&args[2]!=='dive')return;
+    scope!.bucket?.events.push({kind:'fall',t:w.time,i:args[4],cause:args[2],suppressed:(scope!.variant==='support-no-fall'||scope!.correcting)&&args[2]!=='dive'});
+    if((scope!.variant==='support-no-fall'||scope!.correcting)&&args[2]!=='dive')return;
     return f.apply(w,args);
   });
   hook('solveGrasp',(w,f,args)=>{const result=f.apply(w,args);if(scope!.variant==='extra-iterations')for(let k=0;k<3;k++)f.apply(w,args);return result;});
@@ -177,6 +195,20 @@ function main(){
   const manifest:any={source,collector:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),native:[],replays:[]};
   const save=(name:string,data:any)=>{const path=join(out,name+'.gz'),json=JSON.stringify(data,(_k,x)=>typeof x==='number'&&!Number.isFinite(x)?{nonfinite:String(x)}:x);
     const bytes=gzipSync(json,{level:1});writeFileSync(path,bytes);return {path,sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length};};
+  const proposal=process.argv.indexOf('--proposal-from');
+  if(proposal>=0){
+    const root=process.argv[proposal+1];
+    const read=(path:string)=>JSON.parse(gunzipSync(readFileSync(path)).toString(),(_k,v)=>v?.nonfinite?Number(v.nonfinite):v);
+    if(read(join(root,'manifest.json.gz')).source!==source)throw Error('Proposal input source mismatch');
+    for(const c of CASES)for(const side of [1,-1] as const){
+      const capture=read(join(root,`native-${c.mode}-${side}-96.json.gz`));
+      for(const n of STEPS){const result=replay(capture.frames,c.mode,n,'achieved-support',true);
+        const file=save(`proposal-${c.mode}-${side}-${n}.json`,result);
+        manifest.replays.push({...c,side,n,variant:'achieved-support',file,initial:result.initial,decisions:result.decisions});}
+    }
+    if(sourceVersion()!==source)throw Error('Source changed');save('manifest.json',manifest);
+    console.log(JSON.stringify({source,replays:manifest.replays.length,out,diagnosticOnly:true}));return;
+  }
   for(const c of CASES)for(const side of [1,-1] as const){
     const cell={angle:c.angle,speed:c.speed,cut:false,difficulty:'difficult' as const};const captures=new Map<number,Capture>();
     for(const n of STEPS){const observed=native(cell,c.mode,side,n),control=native(cell,c.mode,side,n,false);
