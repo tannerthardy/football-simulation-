@@ -27,6 +27,9 @@ export interface Behavior {
   /** Motion his teammates know from the call itself (a rehearsed track on the
    * snap count), not his private live decision; null when there is none. */
   calledMotion?(): Vec2 | null;
+  /** Current held contact technique's movement intention, separate from the
+   * free track advertised to teammates. No achieved motion is implied. */
+  contactMotion?(a: Agent): Vec2 | null;
 }
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';
