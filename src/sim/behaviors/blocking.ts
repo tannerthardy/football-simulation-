@@ -14,7 +14,8 @@
  */
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { cornerSpeed, fatigueFactor, type MoveCommand } from '../../physics/kinematics.js';
+import { cornerSpeed, fatigueFactor, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
+import { previewFreeMovement } from '../../physics/movement-preview.js';
 import { requestToCover } from '../motion-plan.js';
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint, Intent } from '../../physics/world.js';
@@ -675,6 +676,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   return plans;
 }
 
+/** Keeper eligibility from the achieved torso relation (KEEPER_TORSO=0: fixed frame). */
+const KEEPER_TORSO = process.env.KEEPER_TORSO !== '0';
+
+/** Climbs planned with previewed own movement (CLIMB_PLAN=0 off). */
+const CLIMB_PLAN = process.env.CLIMB_PLAN !== '0';
+
 /** Climbs and leads intercept flowing backers (CLIMB_INTERCEPT=0: short lead). */
 const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';
 
@@ -699,6 +706,8 @@ export class RunBlocker implements Behavior {
   private presentationThreat: Agent | null = null;
   /** Native technique read, retained between the player's ordinary decisions. */
   zoneRead: ZoneReachRead | null = null;
+  /** Held climb plan from one acquired picture of the backer. */
+  private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
   constructor(public plan: RunBlockPlan) {}
@@ -827,6 +836,49 @@ export class RunBlocker implements Behavior {
       return goTo(a, fit, { speed: 0.85, through: 1 });
     }
     return this.withBase(a, this.attack(a, sim, target));
+  }
+
+  /** The climb, planned on the read cadence from one acquired picture of the
+   * backer: candidate meeting points on his predicted path (at his play-side
+   * shoulder) are each previewed with this body's own free movement (facing,
+   * support, braking); the earliest one that is actually inside strike range
+   * when he gets there is held until the next read. If none is attainable he
+   * takes the closest approach and the plan says so. Empty-space forecast
+   * only: grips, traffic and the backer's future cuts are unknown. */
+  private plannedClimb(a: Agent, sim: PlaySim, target: Agent, strike: number): Intent | null {
+    const read = this.climbRead;
+    if (!read || read.target !== target || sim.t >= read.nextRead) {
+      const seen = sim.see(a, target), run = sim.offCall.run!;
+      const side = playSideSign(sim, run) * .5;
+      const capacity = a.body.support
+        ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+      let best: { meet: Vec2; vel: Vec2; t: number; gap: number } | null = null;
+      for (const lead of [.2, .4, .6, .8, 1.0, 1.3]) {
+        const meet = { x: seen.pos.x + seen.vel.x * lead, y: clamp(seen.pos.y + seen.vel.y * lead + side, .5, FIELD_WIDTH - .5) };
+        const vel = movingArrivalVelocity(a.body, meet, seen.vel, a.profile.vmax, .1, Math.hypot(seen.vel.x, seen.vel.y), 1, capacity);
+        const facing = Math.atan2(meet.y - a.pos.y, meet.x - a.pos.x);
+        const path = previewFreeMovement(a.body, { vel, facing }, sim.t, 26, sim.world.handContact);
+        for (const s of path) {
+          const bx = seen.pos.x + seen.vel.x * s.t, by = seen.pos.y + seen.vel.y * s.t;
+          const gap = Math.hypot(s.pos.x - bx, s.pos.y - by) - strike;
+          if (!best || (gap <= 0 && (best.gap > 0 || s.t < best.t)) || (best.gap > 0 && gap < best.gap))
+            best = { meet, vel, t: s.t, gap };
+          if (gap <= 0) break;
+        }
+      }
+      this.climbRead = { target, nextRead: sim.t + a.mind.decisionInterval, meet: best!.meet,
+        through: Math.hypot(seen.vel.x, seen.vel.y), attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
+      if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
+        chose: this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
+        cue: 'one acquired picture of the backer, previewed with own free movement',
+        options: ['attainable meeting point', 'closest approach (no attainable fit)'],
+        detail: `meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd` });
+    }
+    const r = this.climbRead!;
+    const capacity = a.body.support
+      ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+    return { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
+      facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
   }
 
   /** A zone lineman runs the track toward the play side from the snap and
@@ -1049,6 +1101,10 @@ export class RunBlocker implements Behavior {
       const side = Math.sign(plan.drive.y) || 1;
       const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
       return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
+    }
+    if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
+      const fit = this.plannedClimb(a, sim, target, contact);
+      if (fit) return fit;
     }
     if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
       const command = track(a, aim, seen.vel, { speed: 1, gain: 3,
@@ -1334,6 +1390,9 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   const axis = e.drive || e.surfaceAxis ? axisOf(sim, e) : { x: -1, y: 0 };
   const lat = { x: -axis.y, y: axis.x }, bd = norm(sub(keeper.pos, combo.defender.pos));
   const phi = Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
+  // The keeper's achieved torso relation: the defender in front of the chest
+  // he actually has (no credited turn), on the same scale as phi.
+  const off = chestOff(keeper.facing, keeper.pos, combo.defender.pos);
   const hands = keeper === e.blocker ? e.hands : e.helperHands?.get(keeper);
   const base = keeper.body.support
     ? availability(keeper.body.support, supportParams(keeper.profile), fatigueFactor(keeper.body.energy)) : 1;
@@ -1349,9 +1408,15 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
     || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
   const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
   const control = contactControl(e, keeper);
-  if (Math.abs(phi) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
+  if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
     || control <= -.12 + .12 * (.5 - climber.mind.urgency)) return null;
   return { climber, keeper, engagement: e, hands: hands!, phi };
+}
+
+/** Angle between a blocker's chest and the man, in units of a right angle. */
+function chestOff(facing: number, from: Vec2, to: Vec2): number {
+  const toMan = Math.atan2(to.y - from.y, to.x - from.x);
+  return Math.abs(Math.atan2(Math.sin(toMan - facing), Math.cos(toMan - facing))) / (Math.PI / 2);
 }
 
 /** The reader's own delayed evidence that his partner can carry the surface. */
@@ -1361,7 +1426,10 @@ function readJoinedSurface(observer: Agent, sim: PlaySim, keeper: Agent, e: Enga
   const lat = { x: -axis.y, y: axis.x }, bd = norm(sub(covered.pos, down.pos));
   const phi = Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
   const reach = keeper.profile.radius + e.defender.profile.radius + keeper.player.measurables.armIn / 36;
-  return covered.pose === 'up' && down.pose === 'up' && Math.abs(phi) < .55
+  // The reader's own picture of his partner's chest on the man (facing is
+  // sampled with position), not a fixed-frame angle.
+  const relation = KEEPER_TORSO ? chestOff(covered.facing, covered.pos, down.pos) : Math.abs(phi);
+  return covered.pose === 'up' && down.pose === 'up' && relation < .55
     && Math.hypot(covered.pos.x - down.pos.x, covered.pos.y - down.pos.y) <= reach ? { covered, down } : null;
 }
 

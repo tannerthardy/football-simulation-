@@ -622,6 +622,9 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 
 // ------------------------------------------------------------ update
 
+/** Anchor braces along the drive line and keeps lateral work (ANCHOR_SPLIT=0 off). */
+const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
+
 /** Stretch reaches stay connected rather than drive (STRETCH_REACH=0 off). */
 const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
 
@@ -935,13 +938,28 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     if (Math.abs(toPlay) > .5) lateral = Math.max(seal * toPlay, dLat * toPlay) * toPlay;
   }
   let blockVel = { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  // Anchor against the normal threat only (lost depth), and keep the
+  // lateral work otherwise (a
+  // defender's flow is not a reason to stop working sideways). ANCHOR_SPLIT=0
+  // restores bracing along the whole felt load with the seal cut to 30%.
   const feltLoad = b.body.support?.felt;
   if (ANCHOR && feltLoad) {
     const load = Math.hypot(feltLoad.x, feltLoad.y);
-    const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;
-    if (load > 0.25 * b.profile.massKg * G && driven > 0.15) {
-      const ux = -feltLoad.x / load, uy = -feltLoad.y / load;
-      blockVel = { x: ux * 2.4 + lat.x * seal * 0.3, y: uy * 2.4 + lat.y * seal * 0.3 };
+    if (ANCHOR_SPLIT) {
+      // The normal threat is lost depth: load and motion toward his own
+      // backfield. Then he braces upfield and spends little on lateral work
+      // (one traction budget). Load from a defender flowing across him, with
+      // no depth lost, is lateral co-flow: he keeps working sideways.
+      const up = sim.attackDir(b.team);
+      const backLoad = -feltLoad.x * up, drivenBack = -b.vel.x * up;
+      if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15)
+        blockVel = { x: up * 2.4 + lat.x * lateral * 0.3, y: lat.y * lateral * 0.3 };
+    } else {
+      const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;
+      if (load > 0.25 * b.profile.massKg * G && driven > 0.15) {
+        const ux = -feltLoad.x / load, uy = -feltLoad.y / load;
+        blockVel = { x: ux * 2.4 + lat.x * seal * 0.3, y: uy * 2.4 + lat.y * seal * 0.3 };
+      }
     }
   }
   intents[b.idx] = {

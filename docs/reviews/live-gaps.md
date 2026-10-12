@@ -203,3 +203,43 @@ Next:
 - Interior line width (center/guard 1.5-1.9 vs NFL 4.7-5.2; DL 1.2 vs 4.5):
   engaged-pair lateral speed, see the physics question on the workboard.
 - OZ formation mix (77% under center in the NFL, 33% here) is play-calling.
+
+## Stage 4: following the physics session's guidance (steps 1-3)
+
+[Guidance](wide-zone-guidance.md), in its order:
+
+1. **Anchor on lost depth only** (`ANCHOR_SPLIT=0` off). The anchor braced
+   against the whole felt load, which includes a flowing defender's lateral
+   push, so it reversed play-side requests (13/26 ticks on RG-DT_S). It now
+   triggers on load and motion toward the blocker's own backfield, braces
+   upfield and then spends little on lateral work (one traction budget);
+   lateral co-flow under load keeps the lateral request. Bull-rush native
+   request driven 0.48 yd (old anchor 0.60, none 1.01); zone play-side
+   blockers keep about 1.3 yd/s instead of sagging to 0.95.
+   (Bracing along the drive line or the body line was tried first: neither
+   held the bull rush.)
+2. **Keeper eligibility from the achieved torso** (`KEEPER_TORSO=0` off).
+   `keeperCandidate` and the climber's `readJoinedSurface` both used the
+   fixed-frame angle; both now use the angle between the keeper's actual
+   chest and the man (the reader uses his own delayed picture of the
+   keeper's facing). No credited turn. The split-zone Bear control passes
+   again.
+3. **Planned climbs** (`CLIMB_PLAN=0` off). One acquired picture per read;
+   candidate meeting points on the backer's predicted path at his play-side
+   shoulder, each previewed with `previewFreeMovement` (own facing, support,
+   braking); the earliest attainable one is held until the next read,
+   otherwise the closest approach (traced as unattainable).
+
+`scripts/diag/zone/climb-probe.ts` (24 native OZ/WZ inputs): 60 backer
+assignments; 28 climbers became free, 19 reached loaded contact; 10 freed
+climbers never touched the backer (6 with an attainable plan at some read);
+many doubles never release anyone before the runner arrives. The leak is
+now the release decision, not the climb path.
+
+Games are within cohort noise (OZ median 1.7 to 2.1; IZ medians swing 2.4 to
+4.3 across arms of the same code family at about 120 runs per arm, so single
+arms do not rank changes). All guards hold. Only the Tite witness diverges.
+
+Open with physics: the run release still credits `turnRate * dt`; the
+guidance asks not to, but without it the diagonal inside-hip contact control
+(a blocker facing straight downfield, defender 104 degrees off) is lost.
