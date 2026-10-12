@@ -83,3 +83,64 @@ not finishing. Candidates to separate, in this order:
 
 The physics session owns tackling. This is offered as evidence and
 hypotheses, not a proposed patch.
+
+## 5. Contact anatomy (follow-up, still diagnostics only)
+
+New tools: `scripts/diag/physics/contact-anatomy.ts` (games),
+`tackle-ledger.ts` (1v1 momentum ledger), `collision-exchange.py` and
+`contact-distance.py` (NFL vs sim, same operator).
+
+**Every play ends with a fall.** In 4 games, 138 of 144 designed runs with a
+first contact end with the carrier down, a median 0.70 s after contact, usually
+with one tackler; 101 of those falls are leg holds locking his stepping. NFL
+runners are still live at 0.8 s on 83% of runs (sim 35%).
+
+**The early stop scales with closing speed in the sim, not in the NFL.**
+Carrier speed change 0.2 s after first contact, by relative closing speed:
+
+| Closing, yd/s | NFL | Sim |
+|---|---|---|
+| 0-2 | -0.48 | -0.64 |
+| 2-3.5 | -0.53 | -1.09 |
+| 3.5-5 | -0.53 | -1.58 |
+| 5-9 | -0.47 | -1.46 |
+
+The NFL loss is flat, like a force-limited drag. The sim's grows with impact
+speed, like a momentum exchange between whole bodies.
+
+**The sim pair sticks; the NFL pair separates.** Center distance and closing
+speed after first contact: both get about as close (median 0.6-0.8 yd at
++0.2 s), but NFL pairs then separate (closing -0.36 / -0.95 / -1.12 yd/s at
++0.2 / +0.3 / +0.4 s) while sim pairs stay locked (+0.47 / 0.00 / 0.00).
+The NFL defender's velocity barely changes in the first 0.2 s (+0.21 yd/s
+head-on, sim +1.02). NFL tacklers also arrive moving with the runner (+0.66
+yd/s head-on, +1.89 from the side); sim tacklers arrive planted (-0.03, +0.55).
+
+**Ledger (head-on, 4.5 yd/s runner, 112 vs 102 kg).** The torso collision
+removes about 3.1 yd/s in one tick, about what a whole-body inelastic merge
+predicts; grip forces are near zero then. The runner's balance goes about 0.3 s
+later, and he is down by about 0.7 s.
+
+**The contact law's settings do not matter.** Local experiments (reverted):
+torso contact spring 9 / 4 / 2 Hz, with and without the rigid post-integration
+relax pass. The exchange spreads over at most 0.1-0.15 s, but by +0.2 s the
+runner has the same ~1.5 yd/s. Two single-mass bodies that stay in contact
+must share momentum. Solver tuning is not the fix.
+
+### What this points to
+
+1. **Contacts that stay central and stuck.** Real first contacts are usually
+   oblique, partial (shoulder and arms), and the bodies slide past or apart.
+   Ours meet centrally and stay together. That involves the tackler's aim
+   (strike and drive at the carrier's center, "drive through" when in
+   front), the immediate grasp, and the single-mass body. The candidate
+   physics change is a body whose contact segment (shoulders and arms, about
+   half the mass) couples to the rest compliantly over 0.1-0.3 s, with leg
+   forces acting in between. That is a large World change for the physics
+   owner. First test the cheaper controller side: a tackler who arrives
+   moving with the runner and strikes the near hip off-center, against the
+   NFL exchange and separation curves above.
+2. **Leg holds topple runners too fast.** Find what in the leg-lock law takes
+   an upright carrier with one tackler on his legs to a fall in about 0.3 s;
+   NFL runners usually stay up and drive for more than a second.
+3. Braking capacity and abrupt stop requests (section 3).

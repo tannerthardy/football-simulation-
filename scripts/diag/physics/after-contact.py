@@ -2,7 +2,7 @@
 operator: speed at contact + 0.0..1.2 s, forward yards gained since contact,
 share of plays already whistled. Designed runs only.
 python3 -I scripts/diag/physics/after-contact.py NFL.jsonl.gz SIM.jsonl.gz [SIM2 ...]"""
-import gzip, json, sys
+import gzip, json, math, sys
 sys.path.insert(0, 'scripts/mechanics')
 from metrics import Play
 
@@ -25,7 +25,17 @@ def measure(paths):
             x0 = p.pos(c, k0)[0]
             if x0 is None or p.speed(c, k0) < 2.0:
                 continue  # moving runners only
-            row = []
+            # Approach angle of the nearest defender at contact, same rule on both:
+            # 0 = straight ahead of the carrier's travel, 180 = from behind.
+            vx, vy = p.velocity(c, k0)
+            cx, cy = p.pos(c, k0)
+            near = min((d for d in p.who('D') if p.pos(d, k0)[0] is not None), key=lambda d: p.dist(c, d, k0), default=None)
+            ang = None
+            if near is not None and math.hypot(vx, vy) > .5:
+                dx, dy = p.pos(near, k0)[0] - cx, p.pos(near, k0)[1] - cy
+                L = math.hypot(dx, dy) or 1
+                ang = math.degrees(math.acos(max(-1, min(1, (vx * dx + vy * dy) / (math.hypot(vx, vy) * L)))))
+            row = [ang]
             for dt in OFFS:
                 t = t0 + dt
                 if t > p.end:
@@ -44,9 +54,14 @@ def med(v):
 
 
 nfl, sim = measure([sys.argv[1]]), measure(sys.argv[2:])
-print(f'runs with a moving carrier at first contact: NFL {len(nfl)}, sim {len(sim)}')
-print('  +s   live share NFL / sim   speed median NFL / sim   yards since contact NFL / sim')
-for j, dt in enumerate(OFFS):
-    la = [r[j] for r in nfl if r[j]]; lb = [r[j] for r in sim if r[j]]
-    print(f'  {dt:.1f}    {len(la)/len(nfl):.2f} / {len(lb)/len(sim):.2f}            {med([s for s, _ in la]):.2f} / {med([s for s, _ in lb]):.2f}               '
-          f'{med([x for _, x in la if x is not None]):+.2f} / {med([x for _, x in lb if x is not None]):+.2f}')
+for label, lo, hi in (('all', -1, 181), ('head-on (<45)', -1, 45), ('side (45-135)', 45, 135), ('from behind (>135)', 135, 181)):
+    a = [r[1:] for r in nfl if r[0] is not None and lo <= r[0] < hi]
+    b = [r[1:] for r in sim if r[0] is not None and lo <= r[0] < hi]
+    if not a or not b:
+        continue
+    print(f'\n{label}: NFL {len(a)} runs, sim {len(b)}')
+    print('  +s   live share NFL / sim   speed median NFL / sim   yards since contact NFL / sim')
+    for j, dt in enumerate(OFFS):
+        la = [r[j] for r in a if r[j]]; lb = [r[j] for r in b if r[j]]
+        print(f'  {dt:.1f}    {len(la)/len(a):.2f} / {len(lb)/len(b):.2f}            {med([s for s, _ in la]):.2f} / {med([s for s, _ in lb]):.2f}               '
+              f'{med([x for _, x in la if x is not None]):+.2f} / {med([x for _, x in lb if x is not None]):+.2f}')
