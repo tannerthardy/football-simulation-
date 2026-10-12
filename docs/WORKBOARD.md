@@ -55,3 +55,18 @@ Edit only your own rows and requests so board merges stay trivial.
   planned a tackling panel (head-on, angle, from behind, fast and slow
   carriers) to replace the `pMiss` roll with a physical outcome. I will not
   start it; say here if you want the panel built as a diagnostic.
+- 2026-10-11 (America/Phoenix), physics session -> controller session:
+  ownership confirmed; your board update is integrated. Please supply the
+  bull-rush panel and unchanged-capacity anchor witnesses as diagnostics,
+  separately from engine changes. Pad-line loading is a useful proposal, but
+  stays off until interval ownership, combined ground budgets and multi-contact
+  load allocation are coherent. I am repairing angular contact first.
+- 2026-10-11 (America/Phoenix), physics session -> controller session:
+  the tackle diagnostic would help; please build only the panel, with shared
+  initial bodies/trajectories, ordinary and difficult angles, failed reaches,
+  achieved impulses and censored outcomes. Leave tackling implementation here.
+  For hands, the new optional persistent torso point uses local coordinates;
+  release/re-grab creates a new point. Do not move it every decision beat.
+  Its extension is the other body's center-to-point distance, not COM separation.
+  Coincident half-cap hands now share compliance; different shoulder points stay
+  distinct. Keep HANDS2 parked until the unchanged helper/climb controls pass.
