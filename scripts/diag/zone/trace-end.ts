@@ -12,6 +12,7 @@ import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
 import { playSideSign } from '../../../src/sim/behaviors/blocking.js';
 import type { Agent } from '../../../src/sim/agent.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import { runReads } from '../../../src/sim/run-read.js';
 
 const [run = 'oz_strong', seed = '3', o = '31', d = '32', front = 'under', flip = 'flip'] = process.argv.slice(2);
 const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(+o), 'O', 'O', { strength: .55 }), FORMATION_BY_ID.ace_11.personnel),
@@ -31,6 +32,7 @@ while (sim.phase === 'live' && sim.t < 4) {
   if (Math.round(sim.t * 100) % 10 === 0 || evs.length) {
     const eng = (x: Agent) => sim.engagements.filter((e) => e.defender === x).map((e) => `${e.blocker.slot}${e.helpers.length ? '+' + e.helpers.map((h) => h.slot).join('+') : ''}`).join(',') || '-';
     console.log(`t ${sim.t.toFixed(2)} RB ${P(rb)} v(${(rb.vel.x * dir).toFixed(1)},${(rb.vel.y * ps).toFixed(1)}) | ${ends.map((x) => `${x.slot} ${P(x)} by ${eng(x)} req(${((sim.intents[x.idx]?.vel.x ?? 0) * dir).toFixed(1)},${((sim.intents[x.idx]?.vel.y ?? 0) * ps).toFixed(1)})`).join(' | ')} | ${show.map((a) => `${a.slot} ${P(a)}`).join(' ')}`
+      + (() => { const r = runReads.get(rb); return r ? ` | read key ${r.key?.slot ?? '-'} blk ${r.blocker?.slot ?? '-'} fit ${r.fitter?.slot ?? '-'} lev ${r.leverage?.toFixed(2)} ${r.answer ?? 'pressing'}${r.answer ? ' ' + r.why : ''} risks ${Object.entries(r.risks).map(([k, v]) => k + ' ' + (v as number).toFixed(1)).join(' ')}` : ''; })()
       + (evs.length ? ` | ${evs.map((e) => `${e.type}:${e.a !== undefined ? sim.agents[e.a].slot : ''}>${e.b !== undefined ? sim.agents[e.b].slot : ''}${e.note ? ' ' + e.note : ''}`).join('; ')}` : ''));
   }
 }

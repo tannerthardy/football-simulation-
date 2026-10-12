@@ -82,3 +82,7 @@ Both failures are the same missing piece, **the back's read**:
 A second, smaller item: a reaching blocker keeps working outside a
 defender who does not widen, and does nothing about vertical penetration
 inside him (`STRETCH_REACH`).
+
+A first back read (`RUN_READ=1`, off by default) punishes overflow somewhat
+more (2.2-2.95 vs 2.02) but lowers ordinary-play gains (2.0-2.45 vs 2.67).
+See [run read](run-read.md).

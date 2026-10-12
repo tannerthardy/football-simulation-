@@ -2,6 +2,7 @@
  * Assignment of behaviors at the snap, and behavior transitions on play
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
+import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY } from '../playbook/alignment.js';
@@ -238,6 +239,10 @@ export class RunnerToMesh implements Behavior {
     if (sim.ball.kind === 'pitch' && sim.ball.target === a) {
       return goTo(a, sim.ball.intended, { speed: 0.8, facing: Math.atan2(sim.qb.pos.y-a.pos.y, sim.qb.pos.x-a.pos.x) });
     }
+    // Eyes on the key from the snap: the read builds through the mesh, but
+    // he cannot cut until he has the ball.
+    const run = sim.offCall.run;
+    if (RUN_READ && run && READ_SCHEMES.has(run.scheme)) runRead(a, sim, run.scheme, playSideSign(sim, run), this.aim, false);
     const dt = this.meshTime - sim.t;
     const d = Math.hypot(this.mesh.x - a.pos.x, this.mesh.y - a.pos.y);
     // Leave on the snap and get to the mesh on time: budget for the

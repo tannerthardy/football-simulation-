@@ -330,6 +330,8 @@ export class PlaySim {
     // Attention follows the observer's belief, regardless of the hidden call.
     const line = ['LT', 'LG', 'C', 'RG', 'RT'];
     if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)) delay += 0.15;
+    // Eyes on keys: everything else is peripheral.
+    if (observer.eyes && !observer.eyes.keys.includes(target)) delay += observer.eyes.peripheral;
     const seen = this.perception.perceive(target.idx, delay);
     this.trace.observe(observer, target, seen, this.t);
     return seen;

@@ -126,6 +126,9 @@ export class Agent {
   missedTackles = 0;
   /** Free-form per-play annotations used by stats / replay. */
   tags = new Set<string>();
+  /** Where his eyes are: opponents he keys are seen with his ordinary delay;
+   * the rest only peripherally, `peripheral` seconds staler. Null: no keys. */
+  eyes: { keys: Agent[]; peripheral: number } | null = null;
 
   constructor(
     readonly idx: number,

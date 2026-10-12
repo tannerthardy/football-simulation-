@@ -15,6 +15,7 @@ import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
 import { playSideSign } from '../../../src/sim/behaviors/blocking.js';
 import type { Agent } from '../../../src/sim/agent.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import { runReads } from '../../../src/sim/run-read.js';
 
 const args = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const runs = (args[0] ?? 'oz_strong,wz_strong,oz_weak,wz_weak').split(',');
@@ -22,7 +23,7 @@ const seeds = (args[1] ?? '3,7').split(',').map(Number);
 const showPlays = process.argv.includes('--plays');
 const arm = process.env.CF_FLOW ?? 'current';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
-type Play = { name: string; stopper: string; gain: number; cross: string; crossY: number | null; reachWon: number; reaches: number;
+type Play = { name: string; stopper: string; read: string; gain: number; cross: string; crossY: number | null; reachWon: number; reaches: number;
   edgeFree: number; backFree: number; flow: Record<string, number> };
 const plays: Play[] = [];
 for (const run of runs) for (const seed of seeds) for (const [o, d] of [[31, 32], [41, 42], [51, 52]])
@@ -75,13 +76,15 @@ for (const run of runs) for (const seed of seeds) for (const [o, d] of [[31, 32]
       }
     }
     const end = sim.endSpot ?? sim.carrier?.pos ?? { x: sim.los, y: 0 };
+    const rs = runReads.get(sim.slot('RB')!);
+    const read = rs?.answer ? `${rs.answer} (${rs.why}, key ${rs.key?.slot}, lev ${rs.leverage?.toFixed(2)}, at ${rs.committedAt?.toFixed(2)})` : rs ? `none (key ${rs.key?.slot ?? '-'})` : 'off';
     const mean = (v: number[]) => v.reduce((p, q) => p + q, 0) / Math.max(1, v.length);
-    plays.push({ stopper, name: `${run} s${seed} ${o}/${d} ${front}${flip ? ' flip' : ''}`, gain: (end.x - sim.los) * dir,
+    plays.push({ stopper, read, name: `${run} s${seed} ${o}/${d} ${front}${flip ? ' flip' : ''}`, gain: (end.x - sim.los) * dir,
       cross: cross ?? 'behind', crossY, reachWon: [...reachSeen.values()].filter(Boolean).length, reaches: reachSeen.size,
       edgeFree, backFree, flow: { OL: mean(flow.OL), DL: mean(flow.DL), LB: mean(flow.LB) } });
   }
 const f = (x: number, n = 2) => x.toFixed(n);
-if (showPlays) for (const p of plays) console.log(`${p.name.padEnd(30)} gain ${f(p.gain, 1).padStart(5)} cross ${p.cross.padEnd(8)} reach ${p.reachWon}/${p.reaches} edge free ${p.edgeFree} back free ${p.backFree} first contact ${p.stopper}`);
+if (showPlays) for (const p of plays) console.log(`${p.name.padEnd(30)} gain ${f(p.gain, 1).padStart(5)} cross ${p.cross.padEnd(8)} reach ${p.reachWon}/${p.reaches} edge free ${p.edgeFree} back free ${p.backFree} first contact ${p.stopper} | read ${p.read}`);
 const n = plays.length, sum = (k: (p: Play) => number) => plays.reduce((a, p) => a + k(p), 0);
 const gains = plays.map((p) => p.gain).sort((a, b) => a - b);
 console.log(`arm ${arm}: ${n} plays | gain mean ${f(sum((p) => p.gain) / n)} median ${f(gains[n >> 1])} | 5+ yd ${f(plays.filter((p) => p.gain >= 5).length / n)}`);
@@ -92,3 +95,6 @@ for (const k of ['outside end', 'C/D gap', 'inside', 'backside', 'behind']) {
 console.log(`  play-side reach got outside its man by 1.2 s: ${sum((p) => p.reachWon)}/${sum((p) => p.reaches)} (${f(sum((p) => p.reachWon) / Math.max(1, sum((p) => p.reaches)))})`);
 console.log(`  unblocked within 4 yd at 1.5 s: edge ${f(sum((p) => p.edgeFree) / n)} per play, backside ${f(sum((p) => p.backFree) / n)} per play`);
 console.log(`  lateral at 1.5 s: OL ${f(sum((p) => p.flow.OL) / n)} DL ${f(sum((p) => p.flow.DL) / n)} LB ${f(sum((p) => p.flow.LB) / n)}`);
+const answers = new Map<string, Play[]>();
+for (const p of plays) { const k = p.read.split(' (')[0] + ' ' + (p.read.match(/\((\w+ ?\w*),/)?.[1] ?? ''); answers.set(k, [...(answers.get(k) ?? []), p]); }
+for (const [k, ps] of [...answers].sort()) console.log(`  read ${k.padEnd(26)} n ${String(ps.length).padStart(3)} mean gain ${f(ps.reduce((a, p) => a + p.gain, 0) / ps.length)}`);

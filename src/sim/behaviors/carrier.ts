@@ -25,6 +25,7 @@ import { liveGapY } from '../live-gaps.js';
 import { RunBlocker } from './blocking.js';
 import { contactCost } from '../contact-choice.js';
 import type { Perceived } from '../perception.js';
+import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -115,6 +116,7 @@ export class BallCarrier implements Behavior {
   private visionNoise: number;
   private plannedExit = false;
   private boundaryRecovery = false;
+  private readDone = false;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -128,6 +130,14 @@ export class BallCarrier implements Behavior {
     const cutSkill = 0.85 + 0.35 * a.r('elusiveness');
     const designed = !!this.opts.aim && this.opts.aimUntil !== undefined
       && sim.t < this.opts.aimUntil && (a.pos.x - sim.los) * dir < -0.8;
+    // Zone runs: press the track and read the key relationship; commit on
+    // what it shows, at decision depth, or when pressing is unsafe.
+    const zoneRead = RUN_READ && this.opts.run && READ_SCHEMES.has(this.opts.run.scheme) && this.opts.aim
+      && !this.readDone && (a.pos.x - sim.los) * dir < .3;
+    if (zoneRead) {
+      const cmd = this.pressAndRead(a, sim, dir, cutSkill);
+      if (cmd) return cmd;
+    }
     if (designed !== this.wasDesigned) {
       // The installed press phase ending is a different responsibility, not
       // a reason to carry its previous beat into open-lane selection. A fresh
@@ -202,6 +212,26 @@ export class BallCarrier implements Behavior {
     }
     const h = this.heading!;
     return this.command(a, sim, h, a.profile.vmax, cutSkill);
+  }
+
+  /** Press the live track until the read commits, then attack the entry. */
+  private pressAndRead(a: Agent, sim: PlaySim, dir: number, cutSkill: number): MoveCommand | null {
+    const run = this.opts.run!, track = liveAim(a, sim, this.opts)!;
+    const st = runRead(a, sim, run.scheme, run.side, track);
+    if (!st.key && !st.answer) return null; // nothing to read: the ordinary design
+    if (!st.answer) {
+      const h = angleOf({ x: track.x - a.pos.x, y: track.y - a.pos.y });
+      this.heading = h;
+      return this.command(a, sim, h, a.profile.vmax * (0.62 + 0.18 * (1 - a.r('patience'))), cutSkill);
+    }
+    // Committed: the read's entry becomes his aiming point; the ordinary lane
+    // planner gets him there around the bodies. The entry moves with the
+    // block it is read from until he reaches the line.
+    this.opts.aim = st.entry!;
+    this.opts.aimGap = undefined;
+    this.opts.aimUntil = sim.t;
+    if ((a.pos.x - sim.los) * dir > -.3) { this.readDone = true; a.eyes = null; }
+    return null;
   }
 
   private command(a: Agent, sim: PlaySim, h: number, speed: number, cutSkill: number): MoveCommand {
