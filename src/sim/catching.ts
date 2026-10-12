@@ -12,6 +12,8 @@ import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+/** Extra hand extension available while tracking a visible ball. */
+export const TRACKING_REACH_BONUS = .3;
 
 interface Opp {
   a: Agent;
@@ -53,7 +55,7 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3): 
     const dh = Math.hypot(a.pos.x - px, a.pos.y - py);
     const z = prev.z + (cur.z - prev.z) * s;
     const tracking = a === ball.target || a.tags.has('onBall');
-    const reach = a.profile.reach + (tracking ? 0.3 : 0);
+    const reach = a.profile.reach + (tracking ? TRACKING_REACH_BONUS : 0);
     // Receivers tracking the ball time a full leap; defenders playing it get a
     // partial leap; everyone else only gets hands up.
     const p = a.profile;

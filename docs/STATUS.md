@@ -15,7 +15,7 @@ Physics accounting and controlled interactions are useful foundations, not proof
 of finished football, measured NFL contact capacities or universal convergence.
 Some controllers still use private state. Body facing is not measured gaze.
 
-## Latest repairs and their limits
+## Prior validated repair stage
 
 The [pursuit review](reviews/pursuit-coverage.md) and
 [contact receipt](../data/reviews/current/contact-coupling.json) record two
@@ -42,7 +42,7 @@ tackling-success claim. Jump/landing is still an unachieved transition: one
 ordinary catch exceeds the modeled partial-leap reach. Its frequency and causal
 effect need matched high/low catches before adding a new mechanism.
 
-Sixteen current games retain all 12 existing mechanism guards in each roster
+Sixteen games at our pre-integration source retain all 12 existing mechanism guards in each roster
 cohort and pooled. **They do not show a broad outcome improvement:** mean clean
 YAC is 10.51→10.53 yd, YAC p90 28.02→30.63 yd, and points per team-game
 47.5→48.8. One cohort scores more and the other less. Run success stays about
@@ -50,10 +50,24 @@ YAC is 10.51→10.53 yd, YAC p90 28.02→30.63 yd, and points per team-game
 these are diagnostic cohorts, not paired plays. Keep the visible mechanism
 repairs; investigate ordinary current failures rather than tuning these averages.
 
-All **1,251 TypeScript tests**, including integration and preserved research,
+At that source, all **1,251 TypeScript tests**, including integration and preserved research,
 and **141 Python checks** pass; typecheck and build pass. Full-suite time with
 concurrent game exports was 182 s; the preceding identical physical stage ran
 in 129 s. These are full-suite timings, not a claim about fast `npm test`.
+
+## Concurrent catch-phase integration
+
+Remote `fb08bd6` is now integrated, preserving its
+[moving-catch and rejected-contact repair](reviews/catch-contact-repair.md) and
+[receipt](../data/reviews/current/catch-contact-repair.json). It lets nearby
+running defenders carry an observed catcher instead of braking toward a fixed
+ball point, estimates moving-hand reach, and keeps a downfield blocker moving
+when the real engagement guard rejects contact. Actual catch reach and shared
+physics capacities are unchanged. This is separate from full in-stride catches.
+
+The earlier tables above and in both receipts retain their original source
+pins; they are not measurements of this combined engine. Combined-source
+checks and held-input comparisons are being recorded before publication.
 
 ## Shared-contact prototype: not promoted
 

@@ -14,6 +14,8 @@ import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/al
 import type { Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
+import type { Perceived } from '../perception.js';
+import { TRACKING_REACH_BONUS } from '../catching.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track } from './common.js';
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
@@ -750,6 +752,20 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
   if (nearPath && !a.tags.has('looking') && sim.rng.chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
+  // A defender already carrying the visible catcher must not brake out of
+  // phase toward a stationary point on the flight. Keep his feet with the
+  // receiver unless he can play the ball before that receiver's window.
+  const earlierBall = spot && window && spot.t < window.t
+    && timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, spot.p, a.profile.reach)
+      <= spot.t - sim.t + .05;
+  if (window && !earlierBall && Math.hypot(window.seen.vel.x, window.seen.vel.y) > .5
+    && Math.hypot(window.seen.pos.x - a.pos.x, window.seen.pos.y - a.pos.y)
+      <= a.profile.radius + window.receiver.profile.radius + a.profile.reach) {
+    if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-approach',
+      chose: 'carry observed receiver', cue: 'nearby running catcher and visible ball window',
+      detail: `${window.receiver.slot} at ${window.t.toFixed(2)} s; no earlier reachable ball opportunity.` });
+    return track(a, window.seen.pos, window.seen.vel);
+  }
   if (spot) {
     const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, spot.p, a.profile.reach);
     // A reachable ball is an arrival problem. Sprinting *through* the spot
@@ -784,7 +800,7 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
 /** First plausible receiver catch from the defender's delayed picture and
  * the visible flight. Does not inspect the intended target or called route.
  * This is a possibility estimate; a receiver can still drop or miss it. */
-function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number } | null {
+function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
   const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
     .map(r => ({ r, seen: sim.see(a, r) }));
   for (const s of sim.ballPath) {
@@ -793,9 +809,17 @@ function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number } | n
     for (const { r, seen } of receivers) {
       if (s.z > r.profile.maxCatchHeight * 0.92) continue;
       const p = { x: s.x, y: s.y };
-      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + r.profile.reach) continue;
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile }, p, r.profile.reach * 0.8);
-      if (tt <= remaining) return { p, t: s.t };
+      const reach = r.profile.reach + TRACKING_REACH_BONUS;
+      if (Math.hypot(p.x - seen.pos.x, p.y - seen.pos.y) > r.profile.vmax * remaining + reach) continue;
+      // Catching does not require stopping at the ball point. A receiver's
+      // observed path can carry his hands through it even when a point-arrival
+      // estimate charges for braking/redirecting. Use the same maximum hand
+      // envelope as a tracking catch, without consulting his hidden target,
+      // route or eventual possession. He may still miss or drop the pass.
+      const passing = Math.hypot(p.x - seen.pos.x - seen.vel.x * remaining,
+        p.y - seen.pos.y - seen.vel.y * remaining) <= reach;
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile }, p, reach);
+      if (passing || tt <= remaining) return { p, t: s.t, receiver: r, seen };
     }
   }
   return null;
