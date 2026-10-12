@@ -144,3 +144,37 @@ must share momentum. Solver tuning is not the fix.
    an upright carrier with one tackler on his legs to a fall in about 0.3 s;
    NFL runners usually stay up and drive for more than a second.
 3. Braking capacity and abrupt stop requests (section 3).
+
+## 6. What topples the runner (experiments, nothing kept)
+
+`tackle-ledger.ts` now prints the runner's capture-point excursion (`xi`,
+`peak`, fall at 1.0) and the accumulated contact/legs causes each tick.
+Witnesses: 112 kg runner, 102 kg tackler, seed 3000; (angle, runner speed,
+tackler speed) = (0, 4.5, 1), (45, 5, 2), (90, 5, 3).
+
+| Fall time, s | head-on | 45 deg | side |
+|---|---|---|---|
+| Production | 0.35 | 0.40 | 0.80 |
+| Grip purchase falls toward the ankles (`GRIP_PURCHASE`, ankle .5 / .7) | 0.35 | 0.40 | 0.95 / 0.90 |
+| Grip starts as a hand and closes at the existing build rate (`GRIP_CLOSE`) | 0.40 | 0.45 | 0.85 |
+| Hold forced to the torso (leg share 0), local only | **no fall in 1.2 s** | 0.60 | 0.75 |
+
+Neither flagged attempt repaired the mechanism, so both were removed. The
+isolation is the finding: **the leg share of the hold topples the runner.**
+With a torso-only hold the head-on runner drives the tackler back at 2.3 yd/s
+at +0.8 s and stays up; NFL head-on runners keep 2.15 yd/s and are 87% live at
++0.8 s. Every tackle starts with a leg share of about 0.5-0.6
+(`0.1 + 0.55 x tackling x q + 0.25 from behind`), and the leg share couples
+the grip's tension to the runner's corrective support (virtual foot). The foot
+then cannot place recovery steps: `xi` climbs about 0.15-0.2 per tick until the
+fall, labelled `legs`, even when the runner is still at full speed (side
+witness: 4.9 yd/s at the fall).
+
+The tackling reference says a thigh-level clamp stops a runner "if support
+and grip endure". Here it works within a few tenths of a second on every
+tackle. The leg-hold/support coupling is the law the physics session was
+redesigning ("lower-grip support coupling"). These three witnesses, with a
+target of "an upright runner with one tackler on his thighs keeps stepping
+and drives for most of a second unless the tackler's own support and grip
+win", are offered for that work. The central collision is front-loaded but,
+on this evidence, secondary for yards after contact.

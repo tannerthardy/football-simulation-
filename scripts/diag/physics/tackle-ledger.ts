@@ -72,9 +72,11 @@ while (sim.phase === 'live' && sim.t < 5) {
   const joints = total - legs - torso - strike;
   const g = sim.world.joints.find((j) => j.kind === 'grasp' && j.b === c.body) as GraspJoint | undefined;
   const sup = c.body.support!;
+  const cz = sup.causes ?? { contact: 0, legs: 0, overspeed: 0 };
+  const balance = ` xi ${Math.hypot(sup.xi.x, sup.xi.y).toFixed(2)} peak ${(sup.peak ?? 0).toFixed(2)} causes c/l ${cz.contact.toFixed(2)}/${cz.legs.toFixed(2)}`;
   console.log(`${(sim.t - t0).toFixed(2).padStart(5)} ${Math.hypot(c.vel.x, c.vel.y).toFixed(2).padStart(6)} | ${legs.toFixed(2).padStart(5)} ${torso.toFixed(2).padStart(6)} ${strike.toFixed(2).padStart(6)} ${joints.toFixed(2).padStart(7)} | ${sup.state.padEnd(6)} ${Math.hypot(sup.lean.x, sup.lean.y).toFixed(0).padStart(5)} | `
     + (g ? `${(g.legs ?? 0).toFixed(2)}, ${(g.force ?? 0).toFixed(0)}, ${(g.reach ?? 0).toFixed(2)}-${(g.hold ?? 0).toFixed(2)}` : '-'.padEnd(20))
-    + ` | ${evs.map((e) => `${e.type}${e.note ? '(' + e.note + ')' : ''}`).join(' ')}`);
+    + balance + ` | ${evs.map((e) => `${e.type}${e.note ? '(' + e.note + ')' : ''}`).join(' ')}`);
   if (sim.t - t0 > 1.2) break;
 }
 console.log(`ended: ${sim.phase}, ${sim.outcome ?? ''}`);
