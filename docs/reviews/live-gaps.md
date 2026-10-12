@@ -243,3 +243,59 @@ arms do not rank changes). All guards hold. Only the Tite witness diverges.
 Open with physics: the run release still credits `turnRate * dt`; the
 guidance asks not to, but without it the diagonal inside-hip contact control
 (a blocker facing straight downfield, defender 104 degrees off) is lost.
+
+## Stage 5: double release, path protection, and the run shed roll
+
+**Double release** (`FLOW_RELEASE=0` off). A stretch double released only when
+the backer came within 4.2 yd. On stretch the backer flows before he fills,
+so the release came late. A combination blocker now also releases on a
+backer whose seen motion brings him within reach in half a second, or who
+is seen flowing play side faster than 1.5 yd/s.
+`scripts/diag/zone/combo-probe.ts` (30 doubles): mean release 1.69 to 1.58 s.
+
+**Path protection after contact** (step 4, `scripts/diag/zone/path-probe.ts`:
+48 native OZ/WZ inputs, 3 rosters x 2 fronts x 2 flips x 2 seeds). It traces
+every run rep from contact to its end: where the blocker stands on the line
+from the defender to the runner, chest angle, peak hand load and how the
+rep ends. A first-contact ledger then names the defender, his planned
+blockers and their reps. It found:
+
+- Linebacker blocks mostly hold: 60 of 105 are still on at the stop,
+  covering the path on 78% of ticks. Only 3 of those backers make first
+  contact.
+- First contact by defender role: play-side end 14, middle linebacker 13,
+  tackles 11. The end typically hits 0.9 yd behind the line.
+- 8 of the end's 14 got off through **the shed roll**, often with the
+  blocker covering the path on nearly every tick (34 of 35, 28 of 30). The
+  roll was `rng.chance(logistic(ratings))` followed by a scripted shove on
+  the blocker. It awarded a block win from ratings. Each failed roll also
+  gave the blocker +0.2 hand control he had not earned.
+
+**Physical run shed** (`SHED_PHYSICAL=0`: the old roll). The decision is
+unchanged: a defender whose runner is within 3.5 yd tries to get off toward
+the ball side for two decision intervals (tag `shed-attempt`). The outcome is
+physical. He works across the blocker's ball-side shoulder at full lateral
+effort while pressing into him. The hand fight sets the hands as before
+(the defender acts on the joint when he controls the hands). The rep ends
+only by the existing geometry: lost leverage against the blocker's torso,
+separation beyond arm reach, runner past, or a fall.
+A first version that also stripped the blocker's steering grip during an
+attempt released linemen too easily (DL-released stuffs 141 to 171); it
+was dropped.
+
+| Same inputs (path probe) | Roll | Physical |
+|---|---|---|
+| OZ/WZ gain, mean / median, yd | 1.09 / 0.5 | 2.09 / 0.9 |
+| Play-side end first contact depth, yd | -0.9 | -0.7 |
+| IZ / power / counter / duo mean gain, yd | 2.56 / 0.64 / 1.85 / 2.65 | 2.23 / 1.41 / 1.51 / 2.77 |
+
+Games (`ab.sh`, 8+8 games): median 1.88/2.40 (roll) vs 2.00/2.02; stuff
+rate 0.36/0.38 vs 0.39/0.42 (about one standard error); points 55/47 vs
+60/47. All guards hold. This is neutral within cohort noise. It is kept
+because the roll violated the model rules, not for a statistic.
+`test/run-shed.test.ts` fails under the roll.
+
+What remains is the hand fight itself. `control` is still a ratings-driven
+random walk that sets the hand joint's push, steer and hold. Replacing it
+belongs with the contact-point hand forces (HANDS2), after the physics
+session's angular-contact work.

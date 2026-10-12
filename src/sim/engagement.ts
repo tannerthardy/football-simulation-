@@ -634,6 +634,13 @@ const DL_FLOW = process.env.DL_FLOW !== '0';
 /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
 const LEVER_FACING = process.env.LEVER_FACING !== '0';
 
+/** A run shed is a decision executed by the body (SHED_PHYSICAL=0: rolled outcome). */
+const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
+
+/** A defender working off a run block: until when, and toward which side of
+ * the surface frame (the ball side when he decided). */
+const runSheds = new WeakMap<Engagement, { until: number; side: number }>();
+
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
 
@@ -878,18 +885,30 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
-      const sealed = -e.phi * ballSide; // >0: blocker is between you and the ball laterally
-      const skill = 0.6 * d.r('blockShedding') + 0.4 * d.r('strength');
-      const sustain = 0.5 * b.r('runBlock') + 0.3 * tb.hands + 0.2 * b.r('strength');
-      const p = logistic(-2.0 + 3.4 * (skill - sustain) - 1.2 * e.control - 1.3 * sealed + (d.profile.massKg - b.profile.massKg) / 120 - (e.helpers.length ? 1.2 : 0) + (1 - e.baseB) * 1.5);
-      if (rng.chance(p)) {
-        if (!tryHold(sim, e)) beat(sim, e, axis, lat, true, 'shed');
-        return;
+      if (SHED_PHYSICAL) {
+        // He decides to get off the block toward the ball he sees. Whether he
+        // does is physical: the hand fight (who controls the hands), his feet
+        // and the blocker's body decide it through the release geometry
+        // below, not a roll.
+        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side });
+        e.nextMoveAt = t + d.mind.decisionInterval * 2;
+        d.tags.add('shed-attempt');
+      } else {
+        const sealed = -e.phi * ballSide; // >0: blocker is between you and the ball laterally
+        const skill = 0.6 * d.r('blockShedding') + 0.4 * d.r('strength');
+        const sustain = 0.5 * b.r('runBlock') + 0.3 * tb.hands + 0.2 * b.r('strength');
+        const p = logistic(-2.0 + 3.4 * (skill - sustain) - 1.2 * e.control - 1.3 * sealed + (d.profile.massKg - b.profile.massKg) / 120 - (e.helpers.length ? 1.2 : 0) + (1 - e.baseB) * 1.5);
+        if (rng.chance(p)) {
+          if (!tryHold(sim, e)) beat(sim, e, axis, lat, true, 'shed');
+          return;
+        }
+        e.control = Math.min(1, e.control + 0.2);
+        e.nextMoveAt = t + 0.4 + rng.range(0, 0.3);
       }
-      e.control = Math.min(1, e.control + 0.2);
-      e.nextMoveAt = t + 0.4 + rng.range(0, 0.3);
     }
   }
+  const shed = runSheds.get(e);
+  const shedding = !!shed && t < shed.until;
   // A blocker's hands and chest work in front of him: he loses the man when
   // the defender is behind his shoulders relative to where his torso actually
   // faces (World limits how fast he can turn). Running alongside a reached
@@ -988,8 +1007,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const flow = clamp(DL_FLOW
     ? requestToCover(d.profile.tau, read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
     : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
+  // Working off: across the blocker's ball-side shoulder at full lateral
+  // effort, pressing into him rather than backing out.
+  const workOff = shedding ? { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
   intents[d.idx] = {
-    vel: read.stack ? { x: depth, y: flow } : legacy,
+    vel: workOff ?? (read.stack ? { x: depth, y: flow } : legacy),
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: 0.85,
