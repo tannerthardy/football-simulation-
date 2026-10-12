@@ -19,8 +19,9 @@ const COMMAND: Intent = { vel: { x: 3, y: 5 }, facing: 1.2, effort: .85, cutSkil
 // cache/reset path. The same held command is used, with no contacts or future
 // controller decisions, so this is a movement-law contract rather than a
 // promise that an opponent can be intercepted.
-function independent(source: Body, intent: Intent, now: number, steps = 8): MovementSample[] {
-  const predicted = structuredClone(source), world = new World([predicted]);
+function independent(source: Body, intent: Intent, now: number, steps = 8,
+  handContact: World['handContact'] = 'center'): MovementSample[] {
+  const predicted = structuredClone(source), world = new World([predicted], { handContact });
   world.time = now;
   const samples: MovementSample[] = [];
   for (let k = 0; k < steps; k++) {
@@ -138,5 +139,76 @@ describe('free-movement controller previews', () => {
       expect(b[k].vel.x).toBeCloseTo(a[k].vel.x, 10); expect(b[k].vel.y).toBeCloseTo(-a[k].vel.y, 10);
       expect(b[k].support).toBe(a[k].support); expect(b[k].t).toBe(a[k].t);
     }
+  });
+
+  it.each(['directional boundary', 'attained yaw', 'tired recovery'].flatMap(kind =>
+    [-1, 1].map(side => ({ kind, side }))))
+    ('matches independently selected patch physics: $kind, side $side', ({ kind, side }) => {
+      let source = body(), command = structuredClone(COMMAND);
+      if (kind === 'directional boundary') {
+        source.support = newSupport(.2); source.facing = 0; source.spin = 0;
+        source.vel = { x: 0, y: source.profile.vmax * source.profile.shuffle };
+        command = { vel: { x: 0, y: .9 * source.profile.vmax }, facing: Math.PI / 2, posture: .2 };
+      } else {
+        source.spin = .8;
+        if (kind === 'tired recovery') {
+          source.energy = .2; source.sprintLoad = 6;
+          source.support!.xi = { x: .2, y: -.09 }; source.support!.out = .07;
+          source.support!.accel = { x: -.7, y: .5 };
+        }
+      }
+      if (side === -1) {
+        source = reflected(source); command.vel.y *= -1; command.facing! *= -1;
+      }
+      const before = structuredClone(source), commandBefore = structuredClone(command);
+      const expected = independent(source, command, 9.2, 8, 'patch');
+      expect(previewFreeMovement(source, command, 9.2, 8, 'patch')).toEqual(expected);
+      expect(source).toEqual(before); expect(command).toEqual(commandBefore);
+      // This checks a real mode difference, rather than an equality between
+      // two fixtures in which the selected physics happen to be inactive.
+      expect(expected).not.toEqual(independent(source, command, 9.2));
+    });
+
+  it.each(['center', 'patch'] as const)('isolates scratch models regardless of caller order, starting %s', firstMode => {
+    const source = body(); source.spin = .8;
+    source.energy = .45; source.support!.xi = { x: .18, y: -.04 };
+    const brake: Intent = { vel: { x: 0, y: 0 }, facing: -.7, posture: .7 };
+    const secondMode = firstMode === 'center' ? 'patch' : 'center';
+    for (const mode of [firstMode, secondMode, firstMode, secondMode] as const) {
+      expect(previewFreeMovement(source, COMMAND, 3.7, 8, mode)).toEqual(independent(source, COMMAND, 3.7, 8, mode));
+      expect(previewFreeMovement(source, brake, 12.4, 3, mode)).toEqual(independent(source, brake, 12.4, 3, mode));
+    }
+    expect(previewFreeMovement(source, COMMAND, 3.7)).toEqual(independent(source, COMMAND, 3.7));
+    expect(previewFreeMovement(source, COMMAND, 3.7, 8, 'center')).toEqual(previewFreeMovement(source, COMMAND, 3.7));
+  });
+
+  it('keeps both mode caches and their returned samples independent of frozen inputs and result mutation', () => {
+    const source = body(); source.spin = .8;
+    const frozen = freeze(source), before = structuredClone(source), command = freeze(structuredClone(COMMAND));
+    const expectedCenter = independent(source, command, 5), expectedPatch = independent(source, command, 5, 8, 'patch');
+    const center = previewFreeMovement(frozen, command, 5, 8, 'center');
+    const patch = previewFreeMovement(frozen, command, 5, 8, 'patch');
+    expect(center).toEqual(expectedCenter); expect(patch).toEqual(expectedPatch);
+    expect(center).not.toBe(patch); expect(center[0].pos).not.toBe(patch[0].pos);
+    expect(center[0].pos).not.toBe(source.pos); expect(patch[0].vel).not.toBe(source.vel);
+    center[0].pos.x += 100; patch[0].vel.y -= 100;
+    expect(previewFreeMovement(frozen, command, 5, 8, 'center')).toEqual(expectedCenter);
+    expect(previewFreeMovement(frozen, command, 5, 8, 'patch')).toEqual(expectedPatch);
+    expect(source).toEqual(before); expect(command).toEqual(COMMAND);
+  });
+
+  it('resets absent optional gait/support fields in each selected model', () => {
+    const source = body();
+    source.spin = 2; source.sprintLoad = 8; source.squeeze = .8; source.squeezeHeading = 1.8;
+    source.support!.tipAccel = { x: 1, y: 2 }; source.support!.strike = { x: .2, y: -.1 };
+    for (const mode of ['center', 'patch'] as const) previewFreeMovement(source, COMMAND, 4, 8, mode);
+    delete source.spin; delete source.sprintLoad; delete source.squeeze; delete source.squeezeHeading;
+    source.support = newSupport();
+    for (const mode of ['patch', 'center'] as const)
+      expect(previewFreeMovement(source, COMMAND, 4, 8, mode)).toEqual(independent(source, COMMAND, 4, 8, mode));
+    delete source.support;
+    for (const mode of ['center', 'patch'] as const)
+      expect(previewFreeMovement(source, COMMAND, 4, 8, mode)).toEqual(independent(source, COMMAND, 4, 8, mode));
+    expect(source.support).toBeUndefined();
   });
 });

@@ -130,12 +130,40 @@ The controller owner's [anchor and diagnostic work](reviews/controller-easy-gain
 is integrated. Get-up-stage four-game guards pass 12/12; these are not measurements
 of the later combined stage. Live-gap controller work is claimed separately.
 
-**Next shared-physics milestone:** preserve these laws while controllers repair
-attained-load interpretation and seal geometry. Keep unchanged helper/transfer
-controls through live-gap changes. Grasp yaw and mixed hand/grasp transport have
-confirmed free-body law defects; investigate them before expanding lower-foot
-support. No broad tackle-strength failure is established by the six selected
-current catch contexts. Avoid anatomy or global solver resolution as a shortcut.
+The [upper-grip repair](reviews/upper-grip-angular-repair.md) now closes upper
+grasp yaw and mixed hand/grasp transport in patch mode, with unchanged capacities.
+Source `e901bb5b` passes all **1,388 TypeScript tests**, **141 Python checks**,
+typecheck and build; default hashes pass. Patch promotion remains **42/50**.
+The [lower-grip follow-up](reviews/lower-grip-angular-repair.md) now combines
+yaw, material contact and the existing recovery motor in patch. All **1,449
+TypeScript tests**, **141 Python checks**, typecheck and build pass; default
+native tackle results remain exact. The old faster lower-transition law failures
+close, but native angled tackles regress (120 → 94 of 144 panel reps), so patch
+stays experimental. **Next:** explain the first loaded grip's moment, body
+rotation and support response, including real wrap geometry. Strength tuning
+or the existing four-second hold whistle cannot substitute for a physical stop.
+Keep helper/transfer controls through the separate live-gap controller work.
+Neither this upper law repair nor six selected catches justify stronger tackles.
+
+The [engaged-zone audit](reviews/engaged-zone-physics.md) answers the live-gap
+physics questions. Hands do not drag pure co-motion; a native anchor reverses
+useful lateral requests, and release credits turning the loaded body has not
+achieved. Those controller fixes belong to Claude. Patch gait now plans from
+actual facing rather than borrowing a future turn, and signed angle arithmetic
+preserves reflected loads; default zone traces remain exact. At source
+`a6459b85`, all 1,472 TypeScript tests, 141 Python checks, typecheck and build
+pass. The angular patch still fails promotion at 42/50; capacities stay fixed.
+
+The [interior flow/climb follow-up](reviews/wide-zone-guidance.md) finds no new
+universal pair-speed barrier. Requests often reverse useful flow, and combined
+turning/translation saturates during individual plants. Climbs split into
+fixed-frame keeper vetoes, legitimately unsafe takeovers, missed approaches
+and acquired blocks protecting the wrong path. Selected calls account for all
+backers through the full installation; historical unassigned calls need their
+original ledgers. The free-movement preview now accepts the actual hand-contact
+model, with isolated scratch state and unchanged default callers. Source
+`621ad936` passes all 1,482 TypeScript tests, 141 Python checks, typecheck and
+build. The native audit retains its separate older combined source pin.
 
 ## Other branch work
 

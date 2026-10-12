@@ -14,21 +14,30 @@ export interface MovementSample {
   support: SupportStateKind;
 }
 
-const previews = new WeakMap<Body, { body: Body; world: World }>();
+type MovementModel = World['handContact'];
+const previews = new WeakMap<Body, Partial<Record<MovementModel, { body: Body; world: World }>>>();
 
 /** No mutation of the real body, observations or RNG. Each candidate starts
  * from the complete same body/support state; scratch World storage is reused.
  * The 50 ms sampling interval is the ordinary decision interval, rather than
  * a finer simulation that would change the controller's movement law.
+ * Pass the caller's handContact model when testing experimental movement;
+ * it also selects that World's gait and yaw. Each model has separate scratch
+ * state. This remains an unloaded forecast, never a prediction of held contact.
  */
 export function previewFreeMovement(source: Body, intent: Intent, now: number,
-  steps = 8): MovementSample[] {
-  let preview = previews.get(source);
+  steps = 8, handContact: MovementModel = 'center'): MovementSample[] {
+  let models = previews.get(source);
+  if (!models) {
+    models = {};
+    previews.set(source, models);
+  }
+  let preview = models[handContact];
   if (!preview) {
     const body: Body = { ...source, pos: { ...source.pos }, vel: { ...source.vel },
       support: source.support ? structuredClone(source.support) : undefined };
-    preview = { body, world: new World([body]) };
-    previews.set(source, preview);
+    preview = { body, world: new World([body], { handContact }) };
+    models[handContact] = preview;
   }
   const { body, world } = preview;
   // Optional gait fields must also be reset if absent in the current body.

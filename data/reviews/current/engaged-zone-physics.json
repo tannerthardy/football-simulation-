@@ -1,0 +1,460 @@
+{
+  "schema": "engaged-zone-physics-v1",
+  "scope": "Designed8plays from live-gaps ebff393 controllers plus declared root physics. Not merged sources, random sample, NFL yaw calibration or a football payoff claim. Controls preserve capacities and native plain endpoint checks.",
+  "sources": {
+    "controllerCommit": "ebff3938494b0e343df4aa00c9b8c492b60e881f",
+    "rootBefore": "27b43749f5e25302c8ed195a393257b6925b26112321c312b73ab6858633a04b",
+    "rootGaitRepair": "c6ab19829f8d57feb401180e0a38d772c24ab83ba614acad1e2d51b9b79419ea",
+    "nativeBefore": "4806bebaf712ad63f7a364328607a685425f1f8b48458df01dc7ebc3fcfc5ea4",
+    "nativeGaitRepair": "496eb6122c8056c6137ad9f7818113136a2d0e55236ebc15c26c8dffbd1fcfc6",
+    "rootFinal": "a6459b85d12a9fc60652904a3d12125f90f1aebb9a0a97df076da35a2aea0f19",
+    "nativeFinal": "036b15a95676343740643f27f2e2f6dffee0882a557e19a34d941bb3a00ee38d",
+    "physicsCommit": "8a2682c"
+  },
+  "native": {
+    "inputSha256": "7c59205b252c71dcaa553a731eda9391134d10b1a9176c930ba60bea14232684",
+    "operatorSha256": "fdf5a1e2bfbbf27408f1b78c52e9f25c731026e4caa16cb87e19d3452d54456f",
+    "inputs": {
+      "rosterSeeds": [
+        [
+          31,
+          32
+        ],
+        [
+          41,
+          42
+        ]
+      ],
+      "fronts": [
+        "over",
+        "under"
+      ],
+      "flips": [
+        false,
+        true
+      ],
+      "seed": 3,
+      "run": "wz_strong",
+      "limit": 1.8
+    },
+    "centerBefore": {
+      "plays": 8,
+      "pairTicks": 608,
+      "latePairTicks": 366,
+      "meanAbsTangent": 348.56609394266457,
+      "meanAbsNormal": 553.0872320916792,
+      "meanPlaySideSpeedA": 1.018990981461391,
+      "meanAbsComSlip": 0.6970665966694456,
+      "meanAbsPointSlip": 0.6970665966694456,
+      "capFraction": 0.9072320861379142,
+      "meanNetTraction": 0.6815069621365071,
+      "meanAvailableTranslation": 0.6816766317447266,
+      "meanCombinedGround": 0.7933698379318563,
+      "optimisticYawTicks": 358
+    },
+    "patchBefore": {
+      "plays": 8,
+      "pairTicks": 600,
+      "latePairTicks": 367,
+      "meanAbsTangent": 191.81357168513148,
+      "meanAbsNormal": 509.5917689044338,
+      "meanPlaySideSpeedA": 0.9892757526665229,
+      "meanAbsComSlip": 1.0239010257877448,
+      "meanAbsPointSlip": 0.2294358291212191,
+      "capFraction": 0.5167796312751933,
+      "meanNetTraction": 0.6894111239529931,
+      "meanAvailableTranslation": 0.6895403957438542,
+      "meanCombinedGround": 0.8241767902744777,
+      "optimisticYawTicks": 367
+    },
+    "patchAfterGait": {
+      "plays": 8,
+      "pairTicks": 603,
+      "latePairTicks": 366,
+      "meanAbsTangent": 185.49787249678457,
+      "meanAbsNormal": 509.3757214454329,
+      "meanPlaySideSpeedA": 1.000697257653878,
+      "meanAbsComSlip": 1.094790799662268,
+      "meanAbsPointSlip": 0.24729060486837123,
+      "capFraction": 0.5609629098318235,
+      "meanNetTraction": 0.6659330817909986,
+      "meanAvailableTranslation": 0.6662452152423365,
+      "meanCombinedGround": 0.7894840687849903,
+      "optimisticYawTicks": 366
+    },
+    "all8CenterTracesExact": true,
+    "observer": "Plain first-play endpoint checked per mode at each stage; no extra perception or RNG calls.",
+    "limits": "Point slip sampled before solve, forces signed in trace; utilization uses interval mean translation and yaw, not certified peak.",
+    "patchFinal": {
+      "plays": 8,
+      "pairTicks": 603,
+      "latePairTicks": 366,
+      "meanAbsTangent": 185.49787249678226,
+      "meanAbsNormal": 509.37572144543276,
+      "meanPlaySideSpeedA": 1.0006972576538748,
+      "meanAbsComSlip": 1.0947907996622785,
+      "meanAbsPointSlip": 0.2472906048683716,
+      "capFraction": 0.560962909831817,
+      "meanNetTraction": 0.6659330817910011,
+      "meanAvailableTranslation": 0.6662452152423389,
+      "meanCombinedGround": 0.7894840687849918,
+      "optimisticYawTicks": 366
+    },
+    "all8FinalCenterTracesExact": true
+  },
+  "anchor": {
+    "source": "4806bebaf712ad63f7a364328607a685425f1f8b48458df01dc7ebc3fcfc5ea4",
+    "operatorSha256": "fe6a60de4d420bc9f987e4d8acf8b508968910a35d305bd0e937a06ec1015fc1",
+    "input": {
+      "rosters": [
+        31,
+        32
+      ],
+      "formation": "ace_11",
+      "run": "wz_strong",
+      "front": "over",
+      "flip": false,
+      "seed": 3,
+      "limit": 1.8,
+      "side": -1
+    },
+    "initial": "7d627b63f3c0ab8737ffeb2a41bfb06a0cbbff16b900250310fcd7221eb54024",
+    "final": "a002d80bb165a09e3b925e1950eb6243f265fb0d4771f0245800214be8f8c215",
+    "plainEndpointParity": true,
+    "ticks": 26,
+    "reversalsWithoutLaterCommandChange": 13,
+    "firstCompletedAt": 1,
+    "selected": [
+      {
+        "tickStart": 0.95,
+        "completedAt": 1,
+        "blocker": "RG",
+        "defender": "DT_S",
+        "preAnchor": {
+          "x": -0.5839346607662731,
+          "y": -2.11625198138819
+        },
+        "postAnchor": {
+          "x": 2.087681363397952,
+          "y": 0.5490106015166102
+        },
+        "applied": {
+          "vel": {
+            "x": 2.087681363397952,
+            "y": 0.5490106015166102
+          },
+          "facing": 0.5437940778468081,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.948945054945055
+        },
+        "anchor": {
+          "load": {
+            "x": -1146.98326767724,
+            "y": -650.4333857534394
+          },
+          "loadMag": 1318.5727911777346,
+          "threshold": 400.1161721950745,
+          "driven": 1.0335998507704869,
+          "active": true
+        }
+      },
+      {
+        "tickStart": 1.15,
+        "completedAt": 1.2,
+        "blocker": "RG",
+        "defender": "DT_S",
+        "preAnchor": {
+          "x": -0.2650003857408885,
+          "y": -1.6640891278379453
+        },
+        "postAnchor": {
+          "x": 2.1622080684896945,
+          "y": 0.5423375988635883
+        },
+        "applied": {
+          "vel": {
+            "x": 2.1622080684896945,
+            "y": 0.5423375988635883
+          },
+          "facing": 0.5986263304677607,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.948945054945055
+        },
+        "anchor": {
+          "load": {
+            "x": -1258.067292987936,
+            "y": -606.0277201296823
+          },
+          "loadMag": 1396.4250467717823,
+          "threshold": 400.1161721950745,
+          "driven": 0.4707846064867028,
+          "active": true
+        }
+      }
+    ],
+    "interpretation": "Within this fixed native pair,13 applied counterflow requests are exact anchor reversals of playside seal/stretch requests. This is a mechanism witness, not a population rate. Other early requests differ after later layers. No changed-controller run or NFL claim."
+  },
+  "yaw": {
+    "worldSha256": "d52e75f8bcc2524af692a90a27ac726b6487e81f67c96f6f349b80dde571a8f0",
+    "primitiveZeroSpin": [
+      {
+        "kernel": "response",
+        "forceFraction": 0,
+        "initialSpin": 0,
+        "profileCredit": 0.30000000000000004,
+        "actualAngleDelta": 0.07905473740678648,
+        "attainedSpin": 3.1621894962714627,
+        "meanGroundTorque": 379.46273955257556,
+        "groundBudgetRatio": 1
+      },
+      {
+        "kernel": "response",
+        "forceFraction": 0.5,
+        "initialSpin": 0,
+        "profileCredit": 0.30000000000000004,
+        "actualAngleDelta": 0.06846341088378516,
+        "attainedSpin": 2.7385364353514037,
+        "meanGroundTorque": 328.6243722421685,
+        "groundBudgetRatio": 1
+      },
+      {
+        "kernel": "response",
+        "forceFraction": 0.9,
+        "initialSpin": 0,
+        "profileCredit": 0.30000000000000004,
+        "actualAngleDelta": 0.03445916113643266,
+        "attainedSpin": 1.378366445457309,
+        "meanGroundTorque": 165.4039734548771,
+        "groundBudgetRatio": 1
+      },
+      {
+        "kernel": "response",
+        "forceFraction": 1,
+        "initialSpin": 0,
+        "profileCredit": 0.30000000000000004,
+        "actualAngleDelta": 0,
+        "attainedSpin": 0,
+        "meanGroundTorque": 0,
+        "groundBudgetRatio": 1
+      }
+    ],
+    "native12Patch": [
+      {
+        "mode": "patch",
+        "substeps": 12,
+        "side": 1,
+        "loaded": false,
+        "profileCredit": 0.30000000000000004,
+        "actualAngleDelta": 0.06757007635202392,
+        "attainedSpin": 2.164002981889178,
+        "ownMeanGroundForce": 412.5,
+        "ownMeanGroundYaw": 259.6803578267014,
+        "handNormalForce": 0,
+        "handTangentForce": 0,
+        "handMomentOnA": 0,
+        "groundBudgetRatio": 0.7229494697145541,
+        "workResidual": 0,
+        "contacts": 0,
+        "falls": 0
+      },
+      {
+        "mode": "patch",
+        "substeps": 12,
+        "side": 1,
+        "loaded": true,
+        "profileCredit": 0.30000000000000004,
+        "actualAngleDelta": 0.03418784327376709,
+        "attainedSpin": 1.187360216003617,
+        "ownMeanGroundForce": 570.8256074136026,
+        "ownMeanGroundYaw": 357.42277783994075,
+        "handNormalForce": 633.6194983862237,
+        "handTangentForce": 397.7688278215597,
+        "handMomentOnA": -214.9395519195067,
+        "groundBudgetRatio": 0.9956235204642182,
+        "workResidual": -2.220446049250313e-15,
+        "contacts": 0,
+        "falls": 0
+      }
+    ],
+    "scope": "Controlled capacity probes, no NFL torso yaw reference and no assurance physical profile inertia/response constants are calibrated."
+  },
+  "gait": {
+    "testSha256": "1313f6c4ff3779fa761edd0967841b29877dbdb5ab9662e8530cd24bfac276ad",
+    "baseline": {
+      "commit": "7cd5b27afcaffa869b2feb92026e5667f0bdad18",
+      "source": "27b43749f5e25302c8ed195a393257b6925b26112321c312b73ab6858633a04b",
+      "cases": 12,
+      "failed": 7,
+      "passed": 5,
+      "visibleMechanism": "At actual side-shuffle desired-speed cap, future-facing plan still supplies +/-0.8884188959382183 yd/s^2 upright and +/-0.8297832488062954 at low posture, while the actual-entry command permits zero positive propulsion."
+    },
+    "candidate": {
+      "sourceBeforeAfter": "c6ab19829f8d57feb401180e0a38d772c24ab83ba614acad1e2d51b9b79419ea",
+      "worldSha256": "f29d844dc7763d551199d1567241ff7592b5b56934d91e641c17dd6500948f3f",
+      "cases": 12,
+      "passed": 12,
+      "testMs": 94,
+      "totalMs": 686,
+      "log": "out/engaged-zone/gait-current-test.log",
+      "logSha256": "59a7bdc9dbf3105133b93756cb4261f26c55bf272c4b80e48a8872d0ff24e8bc"
+    },
+    "scope": "Held 20 Hz gait uses actual tick-entry facing in patch mode. This is a motor-request contract, not continuous substep gait replanning or NFL calibration.",
+    "nativeCapActivation": {
+      "sourceBefore": "4806bebaf712ad63f7a364328607a685425f1f8b48458df01dc7ebc3fcfc5ea4",
+      "maxPlanReconstructionError": 0,
+      "summary": {
+        "commands": 1200,
+        "capActive": 13,
+        "capActiveAndClipChanged": 13,
+        "capActiveAndAccelChanged": 13,
+        "borrowedLargerCap": 13,
+        "turnAwaySmallerCap": 0
+      },
+      "lateSummary": {
+        "commands": 734,
+        "capActive": 9,
+        "capActiveAndClipChanged": 9,
+        "capActiveAndAccelChanged": 9,
+        "borrowedLargerCap": 9,
+        "turnAwaySmallerCap": 0
+      },
+      "byRole": {
+        "OL": {
+          "commands": 600,
+          "capActive": 1,
+          "capActiveAndClipChanged": 1,
+          "capActiveAndAccelChanged": 1,
+          "borrowedLargerCap": 1,
+          "turnAwaySmallerCap": 0
+        },
+        "DL": {
+          "commands": 600,
+          "capActive": 12,
+          "capActiveAndClipChanged": 12,
+          "capActiveAndAccelChanged": 12,
+          "borrowedLargerCap": 12,
+          "turnAwaySmallerCap": 0
+        }
+      }
+    },
+    "all8ActivationEndpointsMatched": true
+  },
+  "laws": {
+    "newComovingContracts": 11,
+    "newGaitContracts": 12,
+    "focusedExistingAndComoving": 172,
+    "materialGraph": {
+      "sourceBefore": "a6459b85d12a9fc60652904a3d12125f90f1aebb9a0a97df076da35a2aea0f19",
+      "sourceAfter": "a6459b85d12a9fc60652904a3d12125f90f1aebb9a0a97df076da35a2aea0f19",
+      "toolSha256": "327101547ca3dbfa4ebbfead15bf229d98ce7f851cbed09705e52e19a97935fe",
+      "caseCount": 36,
+      "maxAngularChange": 5.115907697472721e-12,
+      "maxMomentumError": 3.011226127173514e-13,
+      "maxWorkResidual": 3.552713678800501e-13
+    },
+    "independentHandOracle": {
+      "sourceBefore": "a6459b85d12a9fc60652904a3d12125f90f1aebb9a0a97df076da35a2aea0f19",
+      "toolBefore": "7065eacc9aafe3a130410031da05821341f0b10098570392c09a1ea2aebbe85a",
+      "lawConserved": true,
+      "summary": {
+        "normal": {
+          "cases": 72,
+          "lawConserved": true,
+          "absAngularChangeRange": [
+            0,
+            6.139089236967266e-11
+          ],
+          "maxMomentumError": 6.821210263296962e-12,
+          "maxEnergyResidual": 3.035349749325178e-13,
+          "handWorkRange": [
+            0.17999999999996377,
+            0.18000000000004993
+          ],
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxNormalOracleError": 7.105427357601002e-14
+        },
+        "tangent": {
+          "cases": 72,
+          "lawConserved": true,
+          "absAngularChangeRange": [
+            0,
+            4.092726157978177e-12
+          ],
+          "maxMomentumError": 2.2914314707516465e-13,
+          "maxEnergyResidual": 1.8912649224489542e-13,
+          "handWorkRange": [
+            -5.86475998415777,
+            -5.864649288182879
+          ],
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxNormalOracleError": 0
+        }
+      },
+      "maxParityError": 6.139089236967266e-11
+    }
+  },
+  "promotion": {
+    "passed": 42,
+    "total": 50,
+    "expectedFailures": "Wrong-side helper both mirrors; joined-double transfer; Under/Tite/Bear controls; two historic center hashes. Unchanged assertions; patch remains off."
+  },
+  "artifactHashes": {
+    "out/engaged-zone/controller-layer-receipt.json": "ea918e8bd245e0ed50d1c88df2dd809c098bd6f1443fd6de5bd7deeffb80592e",
+    "out/engaged-zone/native-cap-activation.json": "3bcf09078e740a12861083d70c9dbba612b7943fdc355b64245d9cf4e2e8651d",
+    "out/engaged-zone/prospective-gait-before.json": "f9dfaa207727f4b02e2ca6b069b636e703247399e37ade9ae4037b7c48029334",
+    "out/engaged-zone/prospective-gait-probe.json": "1d55eba1ac02538a4c708f103c1e92205539a468bed70a3042a0472601e51ced",
+    "out/engaged-zone/patch-promotion-after.log": "d2be619180884d41948d4ef4fc607423a8e5a30364363d974920c548b82eaa5d",
+    "out/engaged-zone/gait-baseline-test.log": "bf8b83da75daed1e3392d180afa6c0b48253ed83b286a0db7c08652747c33976",
+    "out/engaged-zone/patch-promotion-final.log": "12335bd81f6ff6b2856b6e93123903143564e90835297b04af2bccfa55c314b4"
+  },
+  "verification": {
+    "stage": "finalAngleStability",
+    "python": 141,
+    "typecheck": "pass",
+    "build": "pass",
+    "gaitOnlyStage": {
+      "passed": 1471,
+      "failed": 1,
+      "files": 119,
+      "seconds": 149.008,
+      "failure": "Experimental patch six-second redirect mirror x-request difference1.061331467e-9 exceeds unchanged5e-10 tolerance; first numerical divergence under investigation."
+    },
+    "focusedFinal": {
+      "passed": 39,
+      "files": 4,
+      "unchangedTests": [
+        "redirect-protection",
+        "run-hand-control"
+      ],
+      "newTests": [
+        "hand-comoving",
+        "gait-facing-contract"
+      ]
+    },
+    "allTS": {
+      "passed": 1472,
+      "failed": 0,
+      "files": 119,
+      "seconds": 159.207,
+      "log": "out/engaged-zone/test-all-final.log",
+      "logSha256": "71542438015976e7bf647765241823f8122ad235493bf9e5d439e1f463bdd199"
+    },
+    "pythonScope": "141 checks at first gait stage; later patch-only signed angle reduction changes no data/extraction code."
+  },
+  "recommendation": "Claude owns anchor preserving useful co-flow and release from actual torso/hand geometry. Physics retains capacities, repairs attained-pose execution narrowly, and next diagnoses loaded wrap moment/support before patch promotion.",
+  "angleStability": {
+    "reason": "First mirrored lean fork precedes plan divergence; +pi/-pi angle wrapping loses different low bits. Signed full-turn reduction only in patch World removes that fork without rounding or changing tolerances. Exact half-turn retains input sign.",
+    "firstFailedRequestXError": 1.0613314671559237e-09,
+    "unchangedRequestTolerance": 5e-10,
+    "worldOnlyMaxRequestErrorX": 1.1976197811236489e-10,
+    "worldOnlyMaxRequestErrorY": 1.5730305946703993e-10,
+    "postShedRequestCount": 35,
+    "noChangedTargetSequence": true,
+    "experimentArtifact": "out/engaged-zone/redirect-mirror-world-stable-fork.json",
+    "experimentSourceSha": "ebf33b1911f539bde997d4e8409ed3ec1a438b6930597a294774bb6399a78dd4"
+  }
+}

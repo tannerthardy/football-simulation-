@@ -1,0 +1,435 @@
+{
+  "schema": "upper-grip-angular-repair-v1",
+  "date": "2026-10-12 UTC",
+  "implementationCommit": "d4141e23910e9a6b0841f14163f4de0d8e6d4903",
+  "baseline": {
+    "commit": "ea68ed3",
+    "sourceVersion": "f2eb1e3aabe8805bf875f8b9618ffe4b2be38830e6fae9709952c81604b607f7",
+    "lawSummary": {
+      "cases": 48,
+      "maxAngularError": 0.10285714285919312,
+      "maxMomentumError": 1.207922682680469e-13,
+      "maxWorkResidual": 2.348121697082206e-14,
+      "lawPasses": 0,
+      "lowerTransitions": 0
+    },
+    "permanentTests": {
+      "total": 51,
+      "failed": 38,
+      "passed": 13,
+      "log": {
+        "path": "out/grasp-repair/final-baseline-test.log",
+        "bytes": 52096,
+        "sha256": "8bf71dd616d81496ad581e236466e443b9f91ed2f747d4fff081d88e7c6789c8"
+      }
+    }
+  },
+  "candidate": {
+    "sourceVersion": "e901bb5b04bf7150709a3319f0db14f6d9fcc3e743b75fbd802091214ae75b24",
+    "world": {
+      "path": "src/physics/world.ts",
+      "bytes": 101863,
+      "sha256": "f6552749f2e20d59f19df84379daa7eea66bd721c71a51be36294480cfc8a993"
+    },
+    "lawSummary": {
+      "cases": 48,
+      "maxAngularError": 4.547473508864641e-13,
+      "maxMomentumError": 3.623071274882353e-14,
+      "maxWorkResidual": 8.326672684688674e-15,
+      "lawPasses": 48,
+      "lowerTransitions": 0
+    },
+    "permanentTests": {
+      "total": 51,
+      "passed": 51,
+      "testMilliseconds": 450,
+      "wallMilliseconds": 879,
+      "log": {
+        "path": "out/grasp-repair/final-test.log",
+        "bytes": 297,
+        "sha256": "d73421ba0976b77f5292d03ba8b4a5deb49d55bd8f7f28bd5c0ee2c9a9ae9c67"
+      }
+    }
+  },
+  "permanentTest": {
+    "path": "test/grasp-angular-transfer.test.ts",
+    "bytes": 11399,
+    "sha256": "c06e3a9b3c85a3fe382330a768d7dafe1b696a20e5a7f3c0dfd3dcb116630841"
+  },
+  "collector": {
+    "path": "docs/archive/research/contact-mechanics/grasp-law.ts",
+    "bytes": 6246,
+    "sha256": "fad940ffb6d2b82257ab8b117fe106c7ea7eb20ccfdff6bd61afc8b186afec4b"
+  },
+  "units": {
+    "angular": "kg yd\u00b2/s",
+    "momentum": "kg yd/s",
+    "work": "kg yd\u00b2/s\u00b2"
+  },
+  "geometry": "Existing radius-weighted common point between achieved pre-row force-midpoint COMs, same yaw coefficients for point velocity/mass/moments/work. All rows frozen before upper reel; total ln-reel and tangent carry centered translation and yaw. Only legs<=0 in patch mode.",
+  "unchanged": [
+    "default center contact",
+    "all physical/profile capacities",
+    "controller requests",
+    "lower-foot attachment/support law",
+    "global subdivision limits",
+    "both default historic hash assertions"
+  ],
+  "laws": {
+    "sharedUpperReelMaterialHands": {
+      "operator": {
+        "path": "out/grasp-repair/upper-graph-law.ts",
+        "bytes": 5397,
+        "sha256": "67695d48316868ef717a922734c3cc0e41b36826f09bbb958fd5c347f06581f8"
+      },
+      "inputSha256": "91f271020334cdfc3ced17ed215e0949d1faaf7fb1e2b92e8d3bd5d674bf0866",
+      "summary": {
+        "cases": 64,
+        "observersExact": true,
+        "maxAngularChange": 2.2737367544323206e-12,
+        "maxMomentumChange": 2.6433717775004015e-13,
+        "maxWorkResidual": 6.750155989720952e-14,
+        "maxPassiveGraspWork": -5.4515759317199275e-05,
+        "minReel": 38.02105979485971,
+        "falls": 0,
+        "contacts": 0,
+        "slipping": 0,
+        "lowerTransitions": 0
+      }
+    },
+    "fullCapDuplicates": {
+      "operator": {
+        "path": "out/grasp-repair/upper-duplicates.ts",
+        "bytes": 3381,
+        "sha256": "76018a55de81e63251c83e4002317ddd4cf788cc4b3f0dc17ae2da60cc5539fb"
+      },
+      "inputSha256": "25dec45e72e4e630907549d5d9101914928fc4f1e8299811523d8faf9d50d1f2",
+      "summary": {
+        "cases": 18,
+        "maxBodyDifference": 3.3306690738754696e-16,
+        "maxArmDifference": 0,
+        "maxWorkDifference": 1.1102230246251565e-15,
+        "armImpulses": [
+          {
+            "substeps": 1,
+            "support": "legacy",
+            "copies": 1,
+            "arm": 10,
+            "foot": false
+          },
+          {
+            "substeps": 1,
+            "support": "legacy",
+            "copies": 2,
+            "arm": 10,
+            "foot": false
+          },
+          {
+            "substeps": 1,
+            "support": "legacy",
+            "copies": 3,
+            "arm": 10,
+            "foot": false
+          },
+          {
+            "substeps": 1,
+            "support": "virtual-foot",
+            "copies": 1,
+            "arm": 10,
+            "foot": true
+          },
+          {
+            "substeps": 1,
+            "support": "virtual-foot",
+            "copies": 2,
+            "arm": 10,
+            "foot": true
+          },
+          {
+            "substeps": 1,
+            "support": "virtual-foot",
+            "copies": 3,
+            "arm": 10,
+            "foot": true
+          },
+          {
+            "substeps": 12,
+            "support": "legacy",
+            "copies": 1,
+            "arm": 10,
+            "foot": false
+          },
+          {
+            "substeps": 12,
+            "support": "legacy",
+            "copies": 2,
+            "arm": 10,
+            "foot": false
+          },
+          {
+            "substeps": 12,
+            "support": "legacy",
+            "copies": 3,
+            "arm": 10,
+            "foot": false
+          },
+          {
+            "substeps": 12,
+            "support": "virtual-foot",
+            "copies": 1,
+            "arm": 10,
+            "foot": true
+          },
+          {
+            "substeps": 12,
+            "support": "virtual-foot",
+            "copies": 2,
+            "arm": 10,
+            "foot": true
+          },
+          {
+            "substeps": 12,
+            "support": "virtual-foot",
+            "copies": 3,
+            "arm": 10,
+            "foot": true
+          },
+          {
+            "substeps": 48,
+            "support": "legacy",
+            "copies": 1,
+            "arm": 10.000000000000002,
+            "foot": false
+          },
+          {
+            "substeps": 48,
+            "support": "legacy",
+            "copies": 2,
+            "arm": 10.000000000000002,
+            "foot": false
+          },
+          {
+            "substeps": 48,
+            "support": "legacy",
+            "copies": 3,
+            "arm": 10.000000000000002,
+            "foot": false
+          },
+          {
+            "substeps": 48,
+            "support": "virtual-foot",
+            "copies": 1,
+            "arm": 10.000000000000002,
+            "foot": true
+          },
+          {
+            "substeps": 48,
+            "support": "virtual-foot",
+            "copies": 2,
+            "arm": 10.000000000000002,
+            "foot": true
+          },
+          {
+            "substeps": 48,
+            "support": "virtual-foot",
+            "copies": 3,
+            "arm": 10.000000000000002,
+            "foot": true
+          }
+        ]
+      }
+    },
+    "existingHands": {
+      "cases": 144,
+      "lawConserved": true,
+      "operatorSha256": "7065eacc9aafe3a130410031da05821341f0b10098570392c09a1ea2aebbe85a",
+      "summary": {
+        "normal": {
+          "cases": 72,
+          "lawConserved": true,
+          "absAngularChangeRange": [
+            0,
+            6.139089236967266e-11
+          ],
+          "maxMomentumError": 6.821210263296962e-12,
+          "maxEnergyResidual": 3.035349749325178e-13,
+          "handWorkRange": [
+            0.17999999999996377,
+            0.18000000000004993
+          ],
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxNormalOracleError": 7.105427357601002e-14
+        },
+        "tangent": {
+          "cases": 72,
+          "lawConserved": true,
+          "absAngularChangeRange": [
+            0,
+            4.092726157978177e-12
+          ],
+          "maxMomentumError": 2.2914314707516465e-13,
+          "maxEnergyResidual": 1.8912649224489542e-13,
+          "handWorkRange": [
+            -5.86475998415777,
+            -5.864649288182879
+          ],
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxNormalOracleError": 0
+        }
+      }
+    },
+    "existingMaterialHandsTorso": {
+      "cases": 36,
+      "operatorSha256": "327101547ca3dbfa4ebbfead15bf229d98ce7f851cbed09705e52e19a97935fe",
+      "maxAngularError": 5.115907697472721e-12,
+      "maxMomentumError": 3.011226127173514e-13
+    }
+  },
+  "retainedAdverse": {
+    "lowerTransitionCollector": {
+      "cases": 48,
+      "maxAngularError": 12.176974412757659,
+      "maxMomentumError": 1.464821375527116e-13,
+      "maxWorkResidual": 2.4868995751603507e-14,
+      "lawPasses": 32,
+      "lowerTransitions": 16
+    },
+    "interpretation": "All sixteen angular-law failures enter unchanged positive-leg coupling. Current upper repair does not certify lower grips, acquired torso persistence, tackles or YAC."
+  },
+  "promotion": {
+    "passed": 42,
+    "total": 50,
+    "footballFailures": 6,
+    "preservedHistoricHashDifferences": 2,
+    "failures": [
+      "test/helper-fit.test.ts > joined helpers replace unusable feet through bounded physical movement > turns a wrong-side acquisition into actual useful contact, side -1",
+      "test/helper-fit.test.ts > joined helpers replace unusable feet through bounded physical movement > turns a wrong-side acquisition into actual useful contact, side 1",
+      "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+      "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG",
+      "test/zone-helper-check.test.ts > optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path",
+      "test/zone-helper-check.test.ts > a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands",
+      "test/zone-helper-check.test.ts > the historic native Split Zone Tite witness retains unfinished first-level work > stays when the backer is not arriving, then collects the end after keeper leverage is lost",
+      "test/zone-helper-check.test.ts > optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help"
+    ],
+    "log": {
+      "path": "out/grasp-repair/promotion.log",
+      "bytes": 27080,
+      "sha256": "b4fa76c3ff7f7b017eb28d3f43de1f7e13b916a7e957f39de87310887ad2b3de"
+    }
+  },
+  "checks": {
+    "typescript": {
+      "command": "npm run test:all",
+      "passed": 1388,
+      "files": 116,
+      "durationSeconds": 146.62,
+      "log": {
+        "path": "out/grasp-repair/all-tests.log",
+        "bytes": 9716,
+        "sha256": "2957455ffea87ef7deddf7d88eb9c4a87cc6efb8a0d0c9e19cb84964380274d7"
+      }
+    },
+    "python": {
+      "command": "npm run test:data",
+      "passed": 141,
+      "durationSeconds": 0.401,
+      "log": {
+        "path": "out/grasp-repair/data-tests.log",
+        "bytes": 331,
+        "sha256": "b9d52b19851ce506b28fcf7794afcf47febc0de67f9e7b2e2c01c7331242049f"
+      }
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "passed": true
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true,
+      "log": {
+        "path": "out/grasp-repair/build.log",
+        "bytes": 55,
+        "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+      }
+    }
+  },
+  "reproduce": [
+    "npm test -- test/grasp-angular-transfer.test.ts",
+    "node --import tsx docs/archive/research/contact-mechanics/grasp-law.ts out/grasp-law.json . --assert-law",
+    "node --import tsx docs/archive/research/contact-mechanics/grasp-law.ts out/grasp-lower.json . --stress-lower",
+    "node node_modules/vitest/vitest.mjs run --config scripts/diag/common-patch-vitest.config.ts --maxWorkers=1"
+  ],
+  "scope": "Law assertions include no-ground/no-collision/no-fall/no-slip guards; refined upper inputs avoid spontaneous lower coupling. Default and native football promotion remain distinct. Large traces are ignored; law collector plus source archive reproduces the paired comparison.",
+  "nativeRegression": {
+    "inputs": {
+      "seeds": [
+        3000,
+        3001,
+        3002
+      ],
+      "rosterSeeds": [
+        61,
+        62
+      ],
+      "strength": 0.55,
+      "nativeCellCount": 24,
+      "sides": [
+        1,
+        -1
+      ],
+      "repsPerArm": 144,
+      "arms": 4
+    },
+    "inputSha256": "867ad1bdf3091c0dd4d7fb92fa39310d418e72803320599ecc86484041083456",
+    "collectorSha256": "cfec23971b679bc5aae87feed5866a51edd8bc0142755e8556a91c1449ca908f",
+    "operatorSha256": "bf63ce55697ba6c0fa77d95e2124de85b79a49f5e7db83394840268774174244",
+    "sources": {
+      "baseline": "f2eb1e3aabe8805bf875f8b9618ffe4b2be38830e6fae9709952c81604b607f7",
+      "current": "e901bb5b04bf7150709a3319f0db14f6d9fcc3e743b75fbd802091214ae75b24"
+    },
+    "comparisons": {
+      "center": {
+        "count": 144,
+        "exactRows": 144,
+        "exactNativeExecutions": 144,
+        "upperSolveRepsBefore": 0,
+        "upperSolveRepsAfter": 0,
+        "minimumInitialRecordedLegFraction": 0.14185607311504567,
+        "adverse": [],
+        "serializedRowsByteExact": true,
+        "serializedRowsSha256": "acb49b515835828489124fa958bdd2dac0e097602f4f69b80b23f96a65189d31"
+      },
+      "patch": {
+        "count": 144,
+        "exactRows": 144,
+        "exactNativeExecutions": 144,
+        "upperSolveRepsBefore": 0,
+        "upperSolveRepsAfter": 0,
+        "minimumInitialRecordedLegFraction": 0.14185607311504567,
+        "adverse": [],
+        "serializedRowsByteExact": true,
+        "serializedRowsSha256": "a75f51e319387fe18d25191e9cb61af4e788651376dfc076444978ab32465657"
+      }
+    },
+    "endingsPerArm": {
+      "tackled": 120,
+      "escaped": 20,
+      "censored": 4
+    },
+    "modeOverrideSanity": {
+      "baselineCenterPatchExecutionDifferences": 134,
+      "baselineCenterPatchResultDifferences": 116,
+      "meaning": "Opt-in mode changes are actually exercised; this is not a before/after repair comparison."
+    },
+    "receiptSha256": "784cf341a1533aaac16f5e7c36a9f4fe4f14fe25f2b156deef32e0248e2ae699",
+    "limitations": [
+      "Every before/after row, full native endpoint signature and profile agrees in both modes; this panel has no upper-grasp row and cannot validate native impact of its new law.",
+      "Read-only scope observer does not call another behavior/perception/RNG or write bodies. No extra unobserved144-rep arm was run; observer neutrality is structural, not independently demonstrated by a fifth arm.",
+      "The original panel firstContact includes missed attempts; afterContact is operator carry advance, not physical contact YAC or NFL YAC.",
+      "One roster pair and3 fixed seeds with predetermined geometry; no NFL frequency, broad YAC or production patch-promotion claim.",
+      "Existing initial repeated moving perception pictures, carrier/cut request, miss rolls and ending/censor criteria were kept unchanged."
+    ]
+  }
+}
