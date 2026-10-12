@@ -108,6 +108,8 @@ export interface GameResult {
 
 export interface GameOptions {
   seed?: number;
+  /** Explicit contact-law experiment; omitted uses production center hands. */
+  handContact?: 'center' | 'patch';
   /** Record replay frames for every scrimmage play. */
   record?: boolean;
   /** Opt-in replay inspection detail; has no effect when record is false. */
@@ -547,6 +549,7 @@ export class Game {
       ballY: s.ballY,
       firstDownX,
       seed: this.snaps.nextU32(),
+      handContact: this.opts.handContact,
       record: this.opts.record,
       recordLevel: this.opts.recordLevel,
       energy: this.energy,
@@ -882,7 +885,7 @@ export class Game {
     const offPlayers = pickOffense(this.off, offCall.formation.personnel, { energy: this.energy });
     const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers);
     const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
-    const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall, los: 108, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(), energy: this.energy, manPrefs: prefs });
+    const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall, los: 108, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(), energy: this.energy, manPrefs: prefs, handContact: this.opts.handContact });
     const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
     const good = r.score?.kind === 'TD' && r.score.team === 'O';
     this.log.push(this.entry('two', `two-point try (${offCall.label}): ${good ? 'GOOD' : 'FAILED'}`, 0, offCall.label, defCall.label));

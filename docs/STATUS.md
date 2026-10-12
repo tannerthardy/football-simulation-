@@ -22,10 +22,10 @@ The new isolated angular-law audit also finds a concrete gap: tangential hand
 restraint changes total planar angular momentum without a corresponding spin
 or ground reaction. Existing linear momentum/work checks do not catch it.
 
-The cleanup preserved the engine at `663193d`. Subsequent run work improves
-controllers and how acquired hands use the existing contact law. All 24
-`src/physics` files and the physical-profile mapping remain unchanged. Complete
-check results and source pins are in the current receipt below.
+The cleanup preserved the engine at `663193d`. The promoted run-controller work
+left all 24 `src/physics` files and the physical-profile mapping unchanged.
+The opt-in contact prototype below extends World without changing its production
+default. Complete check results and source pins are in the current receipts.
 
 ## What to investigate now
 
@@ -37,6 +37,13 @@ increase 12→14 with adverse cases retained. Across two eight-game roster cohor
 mean YAC falls 12.3→10.5 yd and points per team-game 55.9→47.5. These are
 diagnostic outcomes, not tuning targets. Source/inputs and tradeoffs are in the
 [receipt](../data/reviews/current/pursuit-control.json).
+
+The [full engine review](reviews/full-engine-review-2026-10-11.md) preserves
+the preceding subsystem assessment and its heavy-jam step-refinement outlier.
+Its two game cohorts predate this pursuit repair; use the pursuit receipt for
+the latest outcomes. The shared contact-law and ordinary run/pocket priorities
+remain relevant.
+
 
 The seed202 box-count guard fails (median seven→six, mean change −0.04);
 the other 11 and all 12 pooled guards pass. Fixed starting states are unchanged;
@@ -107,10 +114,21 @@ The [displacement pilot](../data/reviews/current/run-displacement.json) motivate
 these checks; it does not justify stronger anchors or a travel cap.
 Outside-zone lateral technique is being investigated separately.
 
+The [zone-flow prototype](reviews/zone-flow-prototype.md) and
+[receipt](../data/reviews/current/zone-flow-prototype.json) preserve two rejected
+early-footwork attempts and an opt-in common hand patch. `handContact: 'patch'`
+couples patch velocity, rotational effective mass, moments and work; its isolated
+144-case angular audit passes. Production still uses center hands and retains
+the known defect: the candidate fails six native helper/mirror controls, two
+historic source-equivalence assertions, and the eight-game YBC mechanism guard.
+Trace those first divergences before promotion. No controller, capacity or
+assertion was changed to rescue these outcomes.
+
 The pre-pursuit trench cohorts at source `b1164289` are historical. Their
 drive proxy p90 is 2.6/3.2 yd; that number did not select the controller.
 Current pursuit/game evidence is linked above, with diverging calls/RNG and
 remaining contact/coverage gaps; it is not readiness proof.
+
 
 ## Random film review: choose the next investigation
 

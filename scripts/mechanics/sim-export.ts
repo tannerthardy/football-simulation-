@@ -104,6 +104,7 @@ export function commonPlay(p: PlayLog, id: string) {
 async function main() {
   const seed = Number(arg('--seed', '101'));
   const games = Number(arg('--games', '8'));
+  const handContact = process.argv.includes('--common-patch') ? 'patch' : 'center';
   const out = arg('--out', 'out/mechanics/sim-plays.jsonl.gz');
   const reviewOut = arg('--review-out', '');
   if (process.argv.includes('--review-out') && !reviewOut) throw new Error('--review-out requires a path');
@@ -119,7 +120,7 @@ async function main() {
   const rosterSha256 = createHash('sha256').update(JSON.stringify([home, away])).digest('hex');
   let count = 0;
   for (let g = 0; g < games; g++) {
-    const result = simulateGame(home, away, { seed: seed + g, record: true });
+    const result = simulateGame(home, away, { seed: seed + g, record: true, handContact });
     if (reviewOut) reviewGames.push({ seed: seed + g, score: result.score,
       home: home.abbr, away: away.abbr, plays: result.log.length });
     for (const p of result.log) {
@@ -146,7 +147,7 @@ async function main() {
     mkdirSync(dirname(reviewOut), { recursive: true });
     writeFileSync(reviewOut, JSON.stringify({ schema: 'native-game-outcome-review-v1', sourceBefore, sourceAfter,
       collectorSha256: createHash('sha256').update(readFileSync('scripts/mechanics/sim-export.ts')).digest('hex'),
-      cohort: { seed, games, strength: .55, rosterSha256 },
+      cohort: { seed, games, strength: .55, rosterSha256, handContact },
       rosters: [home, away].map(t => ({ abbr: t.abbr, players: t.roster.map(p => ({ id: p.id,
         position: p.position, ratings: p.ratings, measurables: p.measurables })) })),
       games: reviewGames, plays: reviewPlays,

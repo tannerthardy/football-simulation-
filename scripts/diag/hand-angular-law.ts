@@ -1,5 +1,5 @@
 /** Independent angular-law audit of production hands, distinct from numerical convergence.
- * node --import tsx scripts/diag/hand-angular-law.ts [output.json] [--assert-law]
+ * node --import tsx scripts/diag/hand-angular-law.ts [output.json] [--assert-law] [--common-patch]
  * Measurement succeeds when its independent controls pass. --assert-law also
  * requires tangential hands to conserve total planar angular momentum.
  */
@@ -15,11 +15,12 @@ import { World, type HandJoint, type Intent } from '../../src/physics/world.js';
 import { sourceVersion } from '../source-version.js';
 
 const args = process.argv.slice(2), positional = args.filter(arg => !arg.startsWith('--'));
-if (positional.length > 1 || args.some(arg => arg.startsWith('--') && arg !== '--assert-law')
-  || args.filter(arg => arg === '--assert-law').length > 1)
-  throw new Error('Usage: hand-angular-law.ts [output.json] [--assert-law]');
+if (positional.length > 1 || args.some(arg => arg.startsWith('--') && arg !== '--assert-law' && arg !== '--common-patch')
+  || ['--assert-law', '--common-patch'].some(flag => args.filter(arg => arg === flag).length > 1))
+  throw new Error('Usage: hand-angular-law.ts [output.json] [--assert-law] [--common-patch]');
 const output = positional[0] ?? 'out/ol-interactions/hand-angular-law.json';
 const assertLaw = args.includes('--assert-law'), tolerance = 1e-8, force = 20, duration = .2;
+const handContact = args.includes('--common-patch') ? 'patch' : 'center';
 const free: Intent = { vel: { x: 0, y: 0 }, free: true };
 const self = fileURLToPath(import.meta.url);
 const fileHash = (path: string) => createHash('sha256').update(readFileSync(path)).digest('hex');
@@ -64,7 +65,7 @@ function run(channel: 'normal' | 'tangent', geometry: typeof geometries[number],
     q.pos = rotate(q.pos); q.pos.x += geometry.offset.x; q.pos.y += geometry.offset.y;
     q.vel = rotate(q.vel); q.facing = geometry.angle;
   }
-  const world = new World(bs, { substeps, handIntegration: 'centered' });
+  const world = new World(bs, { substeps, handIntegration: 'centered', handContact });
   const joint: HandJoint = { kind: 'hands', a, b, extension: channel === 'normal' ? 1.5 : .9,
     push: channel === 'normal' ? force : 0, hold: 0, steer: channel === 'tangent' ? force : 0 };
   world.joints.push(joint);
@@ -151,7 +152,7 @@ const summary = Object.fromEntries((['normal', 'tangent'] as const).map(channel 
 const lawConserved = cases.every(q => q.lawConserved), status = lawConserved ? 'PASS' : 'KNOWN FAILURE';
 const sourceAfter = sourceVersion(), toolAfter = fileHash(self);
 assert(sourceBefore === sourceAfter && toolBefore === toolAfter, 'Source/tool changed during measurement');
-const result = { sourceBefore, sourceAfter, toolBefore, toolAfter, node: process.version, tolerance,
+const result = { sourceBefore, sourceAfter, toolBefore, toolAfter, node: process.version, tolerance, handContact,
   status, lawConserved, caseCount: cases.length, maxParityError,
   scope: 'Actual World; separated up bodies with free:true; bounded hands only, no ground, torso contact, controllers or RNG. Normal F=ma controls always assert. Tangential angular conservation is measured against a physical law, not a finer timestep.',
   evidenceLimit: 'Does not establish ordinary-film frequency, football outcomes, NFL force magnitudes or a need for two anatomical hands.',
