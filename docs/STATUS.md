@@ -154,6 +154,17 @@ preserves reflected loads; default zone traces remain exact. At source
 `a6459b85`, all 1,472 TypeScript tests, 141 Python checks, typecheck and build
 pass. The angular patch still fails promotion at 42/50; capacities stay fixed.
 
+The [interior flow/climb follow-up](reviews/wide-zone-guidance.md) finds no new
+universal pair-speed barrier. Requests often reverse useful flow, and combined
+turning/translation saturates during individual plants. Climbs split into
+fixed-frame keeper vetoes, legitimately unsafe takeovers, missed approaches
+and acquired blocks protecting the wrong path. Selected calls account for all
+backers through the full installation; historical unassigned calls need their
+original ledgers. The free-movement preview now accepts the actual hand-contact
+model, with isolated scratch state and unchanged default callers. Source
+`621ad936` passes all 1,482 TypeScript tests, 141 Python checks, typecheck and
+build. The native audit retains its separate older combined source pin.
+
 ## Other branch work
 
 The `claude/run-blocking` leverage/anchor package at `88bfc45` was reviewed

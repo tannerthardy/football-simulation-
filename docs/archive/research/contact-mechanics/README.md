@@ -56,3 +56,38 @@ bodies, mirrors, coordinate changes, solver steps and coincident half-cap rows.
 Bodies are free of ground force. This is not a test of grounded football
 technique, NFL capacities or complete convergence. See the current
 [angular review](../../../reviews/angular-contact-repair.md).
+
+## Interior flow and climb follow-up
+
+`zone-climb-observer.ts`, `reduce-zone-climb.py` and `zone-lateral-audit.ts`
+are preserved manual probes for immutable source `036b15a9`, not production
+controllers or default tests. They reconstruct the original keeper rules;
+do not reuse their gate labels on a changed controller without a fresh audit.
+The observer makes no extra perception/RNG calls. Extended OZ neutrality was
+not separately certified. See the [current plan](../../../reviews/wide-zone-guidance.md).
+
+From the repository root, with Node 22 and the two commits available, repeat
+in a fresh ignored folder. Large results stay there:
+
+```sh
+mkdir -p out/zone-repeat/out/engaged-zone/final out/zone-repeat/out/zone-climb
+git archive ebff3938494b0e343df4aa00c9b8c492b60e881f src | tar -x -C out/zone-repeat/out/engaged-zone/final
+git archive 8a2682c src/physics | tar -x -C out/zone-repeat/out/engaged-zone/final
+cp docs/archive/research/contact-mechanics/engaged-zone.ts out/zone-repeat/engaged-zone.ts
+cp docs/archive/research/contact-mechanics/zone-climb-observer.ts out/zone-repeat/out/zone-climb/native-climb-observer.ts
+cp docs/archive/research/contact-mechanics/reduce-zone-climb.py out/zone-repeat/out/zone-climb/reduce-climb.py
+cp docs/archive/research/contact-mechanics/zone-lateral-audit.ts out/zone-repeat/out/zone-climb/physics-audit.ts
+(
+  set -e
+  cd out/zone-repeat
+  node --import tsx engaged-zone.ts out/engaged-zone/final out/engaged-zone/final-center.json center
+  node --import tsx engaged-zone.ts out/engaged-zone/final out/engaged-zone/final-patch.json patch
+  node --import tsx out/zone-climb/native-climb-observer.ts
+  python3 -I out/zone-climb/reduce-climb.py
+  node --import tsx out/zone-climb/physics-audit.ts
+)
+```
+
+The source guard and prior endpoint checks are deliberate. These repeat the
+historical measurement stage, including its adverse cells; they do not measure
+the current branch or its new explicit-model free-preview helper.
