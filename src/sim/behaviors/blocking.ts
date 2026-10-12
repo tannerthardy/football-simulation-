@@ -732,6 +732,11 @@ export class RunBlocker implements Behavior {
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
     }
+    // Doubles and checks keep their own coordination.
+    if (isOL(a) && ['drive', 'reach', 'cutoff'].includes(plan.kind) && (!plan.combination || plan.combination.released)) {
+      const flow = this.zoneFlow(a, sim);
+      if (flow) return this.withBase(a, flow);
+    }
     if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
       // Establish the first foot and pad angle before running through a
       // target. Zone gains lateral ground; Duo stays vertical. These are
@@ -804,6 +809,34 @@ export class RunBlocker implements Behavior {
       return goTo(a, fit, { speed: 0.85, through: 1 });
     }
     return this.withBase(a, this.attack(a, sim, target));
+  }
+
+  /** A zone lineman runs the track toward the play side from the snap and
+   * meets his defender's playside shoulder while moving, instead of stepping
+   * and then attacking a stationary picture. Outside/wide zone run the track;
+   * inside/split zone press it. Speed is the body's own: World caps it by
+   * facing, acceleration and traction. NFL zone lines are 0.6 yd wide by
+   * 0.5 s and their fronts flow with them; a stalled line never stretches. */
+  private zoneFlow(a: Agent, sim: PlaySim): MoveCommand | null {
+    const run = sim.offCall.run;
+    if (!run || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)) return null;
+    const target = this.availableTarget(a, sim);
+    if (!target) return null;
+    const seen = sim.see(a, target);
+    const dir = sim.attackDir(a.team);
+    if ((seen.pos.x - sim.los) * dir > 1.5) return null; // second level: ordinary climb
+    const ps = playSideSign(sim, run);
+    const contact = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+    const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+    if (d < contact + .25) return null; // within reach: the ordinary fit/engage owns contact
+    const press = run.scheme === 'insideZone' || run.scheme === 'splitZone' ? .55 : 1;
+    // Lateral: run the track, and more if still behind the playside shoulder.
+    const behind = Math.max(0, (seen.pos.y + ps * .6 - a.pos.y) * ps);
+    const lateral = ps * Math.min(a.profile.vmax, a.profile.vmax * .45 * press + seen.vel.y * ps * .8 + behind * 3);
+    // Depth: close to the defender's near surface without overrunning it.
+    const fitX = seen.pos.x - dir * (a.profile.radius + target.profile.radius);
+    const forward = clamp((fitX - a.pos.x) * 2.5, -1, 2.5);
+    return { vel: { x: forward, y: lateral }, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x), cutSkill: .8 + .3 * a.r('runBlock') };
   }
 
   private availableTarget(a: Agent, sim: PlaySim): Agent | null {
