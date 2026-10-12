@@ -17,7 +17,7 @@ python3 -I scripts/diag/trench/timeline.py NFL.jsonl.gz SIM.jsonl.gz [SIM2 ...]
 import gzip, json, math, sys
 from collections import defaultdict
 sys.path.insert(0, 'scripts/mechanics')
-from metrics import CONCEPT_FAMILY, ENGAGED_YD, Play
+from metrics import CONCEPT_FAMILY, ENGAGED_YD, SPEED_HALF, Play
 
 TIMES = (0.5, 1.0, 1.5, 2.0, 2.5, 3.0)
 FAMILIES = ('outside_zone', 'inside_zone', 'gap_pull', 'man_duo')
@@ -32,8 +32,9 @@ def play_side(p):
     c = p.raw.get('carrier')
     if c is None:
         return None
-    k_end = p.k(2.5)
-    for k in range(p.frames):
+    end = min(p.frames - 1, max(0, math.floor(p.end / p.dt + 1e-9)))
+    k_end = min(end, p.k(2.5))
+    for k in range(end + 1):
         x, _ = p.pos(c, k)
         if x is not None and x > 0:
             k_end = k
@@ -48,6 +49,15 @@ def tracked(p, ids, k):
     return [i for i in ids if p.pos(i, k)[0] is not None and p.pos(i, 0)[0] is not None]
 
 
+def live_velocity(p, i, k, end):
+    """Same centered velocity operator, bounded by the last live sample."""
+    a, b = max(0, k - SPEED_HALF), min(end, k + SPEED_HALF)
+    (x0, y0), (x1, y1) = p.pos(i, a), p.pos(i, b)
+    if a == b or x0 is None or x1 is None:
+        return 0.0, 0.0
+    return (x1 - x0) / ((b - a) * p.dt), (y1 - y0) / ((b - a) * p.dt)
+
+
 def measure(path, out):
     for line in gzip.open(path, 'rt'):
         raw = json.loads(line)
@@ -58,18 +68,20 @@ def measure(path, out):
             continue
         p = Play(raw)
         s = play_side(p)
-        if s is None or p.frames < 16:
+        if s is None or p.frames < 2:
             continue
         o = out[fam]
         o['plays'].append(1)
         ol, dl, lb = p.who('O', 'OL'), p.box_defenders(), second_level(p)
         if len(ol) < 5 or not dl:
             continue
-        end = p.k(p.end)
+        end = min(p.frames - 1, max(0, math.floor(p.end / p.dt + 1e-9)))
         for t in TIMES:
-            k = p.k(t)
-            if k > end:
+            # k() clamps: comparing two clamped indices admits ended plays.
+            if not p.live(t):
                 continue
+            k = p.k(t)
+            o[f'live samples {t:.1f}'].append(1)
             for name, ids in (('OL', ol), ('DL', dl), ('LB', lb)):
                 ids = tracked(p, ids, k)
                 if ids:
@@ -80,7 +92,7 @@ def measure(path, out):
         # Engaged vs free OL lateral speed toward the play side, 0.5-2.0 s.
         for k in range(p.k(.5), min(p.k(2.0), end) + 1):
             for b in tracked(p, ol, k):
-                v = p.velocity(b, k)[1] * s
+                v = live_velocity(p, b, k, end)[1] * s
                 engaged = any(p.dist(b, d, k) <= ENGAGED_YD for d in dl + lb)
                 o['OL lat speed engaged' if engaged else 'OL lat speed free'].append(v)
         # First contact episode per OL starting by 1.0 s, and doubles.
@@ -96,7 +108,9 @@ def measure(path, out):
             k = start
             while k <= end and p.dist(b, partner, k) <= ENGAGED_YD:
                 k += 1
-            o['first block duration s'].append((k - start) * p.dt)
+            censored = k > end
+            o['first block duration s'].append((min(k, end) - start) * p.dt)
+            o['first block right censored'].append(int(censored))
         doubled = 0
         for d in dl:
             ks = [k for k in range(0, min(p.k(3.0), end) + 1) if sum(1 for b in ol if p.dist(b, d, k) <= ENGAGED_YD) >= 2]
@@ -114,6 +128,9 @@ def measure(path, out):
         if 'handoff' in p.events:
             o['handoff s'].append(p.events['handoff'])
         if fam == 'gap_pull':
+            if not (p.live(1.0) and p.live(2.0)):
+                continue
+            o['puller observable plays'].append(1)
             k1, k2 = p.k(1.0), p.k(2.0)
             poa = max((p.pos(b, 0)[1] - p.raw['ball_y']) * s for b in ol) + 1.0
             for b in ol:
@@ -124,7 +141,7 @@ def measure(path, out):
                 o['pullers per play'].append(1)
                 for t in (0.5, 1.0, 1.5, 2.0):
                     o[f'puller lat {t:.1f}'].append((p.pos(b, p.k(t))[1] - p.pos(b, 0)[1]) * s)
-                o['puller peak lateral speed'].append(max(p.velocity(b, k)[1] * s for k in range(0, min(p.k(2.0), end) + 1)))
+                o['puller peak lateral speed'].append(max(live_velocity(p, b, k, end)[1] * s for k in range(0, min(p.k(2.0), end) + 1)))
                 for k in range(0, end + 1):
                     y = p.pos(b, k)[1]
                     if y is not None and (y - p.raw['ball_y']) * s >= poa:
@@ -151,13 +168,17 @@ def main():
             if k == 'plays':
                 continue
             na, nb = a[fam][k], b[fam][k]
+            if k.startswith('live samples') or k == 'puller observable plays':
+                print(f'  {k:34s} NFL {len(na):18d} | sim {len(nb):18d}')
+                continue
             if k.endswith('per play'):
-                fa = f'{sum(na) / max(1, len(a[fam]["plays"])):.2f}'
-                fb = f'{sum(nb) / max(1, len(b[fam]["plays"])):.2f}'
+                denominator = 'puller observable plays' if k == 'pullers per play' else 'plays'
+                fa = f'{sum(na) / len(a[fam][denominator]):.2f}' if a[fam][denominator] else '-'
+                fb = f'{sum(nb) / len(b[fam][denominator]):.2f}' if b[fam][denominator] else '-'
                 print(f'  {k:34s} NFL {fa:>18s} | sim {fb:>18s}')
                 continue
             fmt = lambda v: f'{q(v, .5):+.2f} [{q(v, .25):+.2f},{q(v, .75):+.2f}]' if v else '-'
-            print(f'  {k:34s} NFL {fmt(na):>18s} | sim {fmt(nb):>18s}')
+            print(f'  {k:34s} NFL {fmt(na):>18s} n={len(na)} | sim {fmt(nb):>18s} n={len(nb)}')
 
 
 if __name__ == '__main__':

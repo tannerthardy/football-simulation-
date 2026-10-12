@@ -1,5 +1,7 @@
 # Trench timeline: where runs lose the line, by concept
 
+Measurement correction (2026-10-12): requested timestamps now require `Play.live(t)` before clamped frame lookup; velocities stop at the last live frame, short plays retain their early samples, and every metric reports sample counts. First-block endings at the last available frame are flagged as censored. The exact late-time figures below are historical and must be recomputed on the original cohorts before use; the original NFL and 16-game inputs are not present in this workspace.
+
 `scripts/diag/trench/timeline.py` applies one operator to NFL tracking (2022,
 BDB 2025 with PFF concepts) and sim exports (16 games, `claude/live-gaps` at
 `ff973ff`: physical shed, stalk ledger). Play side is the carrier's lateral
