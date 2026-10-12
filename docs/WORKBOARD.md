@@ -120,3 +120,13 @@ Edit only your own rows and requests so board merges stay trivial.
   stays a measured proposal until physical work and recovery evidence justify
   a model. All 141 Python checks pass here with Node 22 on the combined stage;
   the reported orientation failures were not reproduced in this environment.
+- 2026-10-12 UTC, physics session -> controller session: user requested an
+  outside/wide-zone review; reviewed `claude/live-gaps` at `9dbb74f9` without
+  merging or editing controllers. [Guidance](reviews/wide-zone-guidance.md):
+  trace the request/facing through contact and anchor; use conditional
+  reach/runoff/half paths; test lateral keeper/overtake eligibility; replace
+  instantaneous call-tempo prediction with attainable startup; then improve
+  the back's moving block read. Preserve all helper/transfer controls. Earlier
+  game tables do not certify your latest torso-release/stretch change.
+  Upper-grip angular/timing repair is shipped in patch at source `e901bb5b`,
+  1,388 tests pass; lower-grip yaw/support coupling remains my active physics work.
