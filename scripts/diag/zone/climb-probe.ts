@@ -39,7 +39,7 @@ for (const run of runs) for (const [o, d] of [[31, 32], [41, 42], [51, 52]]) for
     (sim as unknown as { tick(): void }).tick();
     for (const a of sim.offense) {
       const r = track.get(a.slot); if (!r) continue;
-      const beh = a.behavior as RunBlocker & { climbRead?: { attainable: boolean; nextRead: number } | null };
+      const beh = a.behavior as unknown as { plan: RunBlocker['plan']; climbRead?: { attainable: boolean; nextRead: number } | null };
       const p = beh.plan;
       if (r.freeAt === null && p.kind === 'climb' && !a.engagement) r.freeAt = sim.t;
       const cr = beh.climbRead;
