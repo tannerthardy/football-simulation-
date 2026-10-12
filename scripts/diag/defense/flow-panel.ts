@@ -1,8 +1,9 @@
 /** Shared native defense/blocking witnesses. Observation only; all cues are
  * actual calls to see(), not additional perceptions. */
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { CENTER_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
@@ -24,6 +25,17 @@ for (const concept of ['draw', 'pa_flood', 'pa_post_dig', 'oz_strong']) for (con
 const inputs: Input[] = process.env.FLOW_INPUTS ? JSON.parse(readFileSync(process.env.FLOW_INPUTS, 'utf8')).inputs : defaults;
 const output = process.argv[2] ?? 'out/defensive-flow/baseline.json';
 const allCues = process.env.FLOW_TRACE !== '0';
+if (process.env.RUN_READ === '1' || process.env.RUN_READ_TURN === '1') throw new Error('Shared flow panel requires RB experiments off');
+function sourceFiles(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? sourceFiles(join(dir, e.name))
+    : e.name.endsWith('.ts') ? [join(dir, e.name)] : []).sort();
+}
+const sourceHash = createHash('sha256');
+for (const file of sourceFiles('src')) sourceHash.update(file).update('\0').update(readFileSync(file)).update('\0');
+const provenance = { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+  sourceSha256: sourceHash.digest('hex'), probeSha256: createHash('sha256').update(readFileSync('scripts/diag/defense/flow-panel.ts')).digest('hex'),
+  flags: Object.fromEntries(['PULL_PLAN', 'LB_PLAN', 'PULL_READ', 'FLOW_READ', 'SCRAPE', 'LIVE_GAPS', 'CF_FLOW',
+    'RUN_READ', 'RUN_READ_TURN'].map(k => [k, process.env[k] ?? null])) };
 const copy = <T>(v: T): T => structuredClone(v);
 const serialize = (v: unknown) => JSON.stringify(v, (_k, x: unknown) => x instanceof Agent ? { agent: x.idx }
   : x instanceof PlaySim ? { sim: true } : x instanceof Map ? [...x] : x instanceof Set ? [...x] : x instanceof Float64Array ? [...x] : x);
@@ -41,7 +53,7 @@ function execute(i: Input, trace: boolean) {
   });
   const side = i.kind === 'run' ? playSideSign(sim, RUN_BY_ID[i.concept]) : sim.offAlign.strongSign;
   const initial = sim.agents.map(a => copy(a.pos));
-  const frames: unknown[] = [], hashes: string[] = [], cues: unknown[] = [];
+  const frames: unknown[] = [], hashes: string[] = [], cues: unknown[] = [], aims: unknown[] = [];
   let stage = 'tick';
   if (trace) {
     const see = sim.see.bind(sim);
@@ -55,6 +67,15 @@ function execute(i: Input, trace: boolean) {
       const update = a.recog.update.bind(a.recog);
       a.recog.update = (actor, s) => { stage = 'recognition'; update(actor, s); stage = 'tick'; };
     }
+    for (const a of sim.defense) {
+      const aim = a.mind.aim.bind(a.mind);
+      a.mind.aim = (job, desired, t) => {
+        const held = aim(job, desired, t);
+        aims.push({ defender: a.idx, t, job, desired: copy(desired), held: copy(held),
+          interval: a.mind.decisionInterval });
+        return held;
+      };
+    }
   }
   const wrapped = new WeakSet<object>();
   while (sim.phase === 'live' && sim.t < 3.5) {
@@ -63,12 +84,12 @@ function execute(i: Input, trace: boolean) {
       const update = a.behavior.update.bind(a.behavior);
       a.behavior.update = (actor, s) => { stage = 'behavior'; const command = update(actor, s); stage = 'tick'; return command; };
     }
-    const before = sim.t, cueStart = cues.length;
+    const before = sim.t, cueStart = cues.length, aimStart = aims.length;
     sim.tick();
     hashes.push(createHash('sha256').update(serialize({ t: sim.t, rng: sim.rng, events: sim.events, perception: sim.perception,
       agents: sim.agents.map(a => ({ body: a.body, mind: a.mind, recog: a.recog, behavior: a.behavior, tags: a.tags })),
       engagements: sim.engagements, joints: sim.world.joints, intents: sim.intents, cmds: Reflect.get(sim, 'cmds') })).digest('hex'));
-    if (trace) frames.push({ t: before, after: sim.t, cues: cues.slice(cueStart),
+    if (trace) frames.push({ t: before, after: sim.t, cues: cues.slice(cueStart), aims: aims.slice(aimStart),
       agents: sim.agents.map(a => ({ id: a.idx, slot: a.slot, team: a.team, pos: copy(a.pos), vel: copy(a.vel),
         facing: a.facing, support: copy(a.body.support), fit: copy(a.runFit), read: a.recog?.read,
         readAt: a.recog?.readAt, logOdds: a.recog?.logOdds, evidence: a.recog ? Reflect.get(a.recog, 'evidence') : undefined,
@@ -92,7 +113,7 @@ for (const i of inputs) {
   console.log(`${panel.length}/${inputs.length} ${i.id} observed through ${recorded.endTime}`);
 }
 mkdirSync(dirname(output), { recursive: true });
-writeFileSync(output, JSON.stringify({ protocol: 'defensive-flow-v1', stop: 3.5, inputs, panel }));
+writeFileSync(output, JSON.stringify({ protocol: 'defensive-flow-v1', provenance, stop: 3.5, inputs, panel }));
 writeFileSync(`${dirname(output)}/input-manifest.json`, JSON.stringify({ protocol: 'defensive-flow-v1', inputs,
   config: { strength: .55, los: 40, ballY: CENTER_Y, firstDownX: 50, coverage: 'cover3', personnel: 'base43',
     runRead: 'off', runReadTurn: 'off', handContact: 'default center', stop: 3.5 } }, null, 2));

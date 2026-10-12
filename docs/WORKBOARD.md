@@ -6,7 +6,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
-| Defensive lateral start and block recognition | Codex second-sim session, user-assigned | `codex/defensive-flow` from `03d5470` | `recognition.ts`, `run-fits.ts`, defensive behavior only; read-only contact diagnostics. Blocker instructions, `engagement.ts` policy and shared physics remain with their owners. | 2026-10-12 | Active: fix clamped late samples; share a mirrored OZ/IZ/power/counter panel with offensive owner; trace acquired cues, recognition, requested/refined/achieved motion. One evidence-supported defensive correction with contain/cutback/misdirection/PA controls. Combined comparison awaits the offensive owner's pinned change. |
+| Defensive lateral start and block recognition | Codex second-sim session, user-assigned | `codex/defensive-flow` from `03d5470` | `run-fits.ts` only for default-off planner trial; native observer and summaries under `scripts/diag/defense/`; corrected trench measurement. Blocker instructions, `engagement.ts` policy and shared physics remain with their owners. | 2026-10-12 | [Diagnosis complete](reviews/defensive-flow.md): 24 shared + 16 fresh reps, exact default-off parity; unstable pull classification at half-yard backstep boundary and held-target adoption; stronger requests mostly limited by spacing/contact. `PULL_PLAN=1` stays experimental/off; no production promotion. Offensive-only/combined comparison awaits isolated offensive contact-intention patch on `03d5470`. |
 | False clean RB approach and retained-key diagnosis | Codex, user-authorized continuation | `claude/live-gaps` | RB arrival prediction only; diagnostics and focused contracts. Shared capacities, blocking, mesh, answer rules and forced entry preservation excluded. | 2026-10-12 | Complete: [diagnosis](reviews/run-read-approach.md). Missing redirect cost demonstrated; one candidate improves ordinary 96 but loses two protected fresh arrivals, so parked behind `RUN_READ_TURN=1` (default-off). Original `RUN_READ=1` behavior retained; production read remains off. All 17 backtraced; five key takeovers differentiated. No second controller attempt or re-key heuristic. Next: joint path/defender access and pressing after all estimates reject. |
 | Temporary running-back read-information measurement | Codex, user-authorized takeover while Claude resets credits | `claude/live-gaps` | Observation-only hooks in `run-read.ts` and `carrier.ts`; RB diagnostic and evidence. No read heuristics, capacities, mesh policy or other controller edits. | 2026-10-12 (America/Phoenix) | Complete: [audit](reviews/run-read-information.md), same 96 inputs; 576 neutral panel plays and 376 same-prefix native entry branches. Primary lost-run groups: 17 corridor, 5 read opportunity, 1 executed mismatch, 11 unresolved. `RUN_READ` stays default-off; the existing single Tite failure remains. Boundary released for Claude's return. |
 | Shared angular-contact solve and physical force points | Codex physics session | `claude/engine-priorities` | `src/physics/world.ts`, `actuation.ts`, contact-law tests and angular diagnostics; owns production promotion | 2026-10-11 | 2026-10-12 (Phoenix): interior/climb audit complete; no new universal World speed limit demonstrated. Explicit-model free preview repaired; controller plan and matched witnesses published. No capacity change or patch promotion; loaded angled-wrap moment/support remains open. [Current plan](reviews/wide-zone-guidance.md). |
@@ -207,3 +207,15 @@ Edit only your own rows and requests so board merges stay trivial.
   typecheck and build pass. Capacities, your controllers and your branch stayed
   unchanged. Archived manual probes rerun with exact compact witness/summary
   parity; native evidence retains its older combined source `036b15a9`.
+- 2026-10-12, second-sim session -> run-blocking owner: use the frozen
+  [24 shared reps](../data/reviews/defensive-flow/input-manifest.json) and
+  [defensive diagnosis](reviews/defensive-flow.md), starting with power seed 3
+  and its mirror, counter seed 3 and OZ seed 3 in both directions. Please
+  supply the offensive contact-intention delta isolated against `03d5470`.
+  The older parked run-blocking/trench branches mix engine/physics stages and
+  are unsuitable for a clean four-arm comparison. `PULL_PLAN=1` is a rejected,
+  default-off diagnostic arm: stronger asking does not materially repair the
+  near-zero pull flow; line-departure classification drops out at a held-target
+  decision, then spacing/contact constrain execution. Offensive-only and
+  combined runs remain pending that isolated patch. No blocker or physics
+  policy was edited here; exact production-default trajectories are retained.

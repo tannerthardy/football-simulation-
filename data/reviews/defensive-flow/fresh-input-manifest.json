@@ -1,0 +1,193 @@
+{
+  "protocol": "defensive-flow-v1",
+  "inputs": [
+    {
+      "id": "oz_strong-s11-fresh",
+      "concept": "oz_strong",
+      "kind": "run",
+      "seed": 11,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "oz_strong-s11-mirror-fresh",
+      "concept": "oz_strong",
+      "kind": "run",
+      "seed": 11,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "iz_strong-s11-fresh",
+      "concept": "iz_strong",
+      "kind": "run",
+      "seed": 11,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "iz_strong-s11-mirror-fresh",
+      "concept": "iz_strong",
+      "kind": "run",
+      "seed": 11,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s11-fresh",
+      "concept": "power",
+      "kind": "run",
+      "seed": 11,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s11-mirror-fresh",
+      "concept": "power",
+      "kind": "run",
+      "seed": 11,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "counter-s11-fresh",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 11,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "counter-s11-mirror-fresh",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 11,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "oz_strong-s19-fresh",
+      "concept": "oz_strong",
+      "kind": "run",
+      "seed": 19,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "oz_strong-s19-mirror-fresh",
+      "concept": "oz_strong",
+      "kind": "run",
+      "seed": 19,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "iz_strong-s19-fresh",
+      "concept": "iz_strong",
+      "kind": "run",
+      "seed": 19,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "iz_strong-s19-mirror-fresh",
+      "concept": "iz_strong",
+      "kind": "run",
+      "seed": 19,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s19-fresh",
+      "concept": "power",
+      "kind": "run",
+      "seed": 19,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s19-mirror-fresh",
+      "concept": "power",
+      "kind": "run",
+      "seed": 19,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "counter-s19-fresh",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 19,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "counter-s19-mirror-fresh",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 19,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    }
+  ],
+  "config": {
+    "strength": 0.55,
+    "los": 40,
+    "ballY": 26.666666666666668,
+    "firstDownX": 50,
+    "coverage": "cover3",
+    "personnel": "base43",
+    "runRead": "off",
+    "runReadTurn": "off",
+    "handContact": "default center",
+    "stop": 3.5
+  }
+}

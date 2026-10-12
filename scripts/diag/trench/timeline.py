@@ -90,7 +90,9 @@ def measure(path, out):
             if eng:
                 o[f'engaged DL depth {t:.1f}'].append(sum(p.pos(d, k)[0] for d in eng) / len(eng))
         # Engaged vs free OL lateral speed toward the play side, 0.5-2.0 s.
-        for k in range(p.k(.5), min(p.k(2.0), end) + 1):
+        speed_start = max(0, math.ceil(.5 / p.dt - 1e-9))
+        speed_end = min(math.floor(2.0 / p.dt + 1e-9), end)
+        for k in range(speed_start, speed_end + 1):
             for b in tracked(p, ol, k):
                 v = live_velocity(p, b, k, end)[1] * s
                 engaged = any(p.dist(b, d, k) <= ENGAGED_YD for d in dl + lb)

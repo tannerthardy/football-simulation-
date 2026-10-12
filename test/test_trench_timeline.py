@@ -58,6 +58,12 @@ class TrenchTimelineTests(unittest.TestCase):
         end = 10
         self.assertAlmostEqual(timeline.live_velocity(p, 0, 10, end)[1], 1)
 
+    def test_speed_window_does_not_clamp_its_start_to_an_earlier_ended_frame(self):
+        out = measure(play(.3, 4))
+        self.assertEqual(out['plays'], [1])
+        self.assertFalse(out['OL lat speed engaged'])
+        self.assertFalse(out['OL lat speed free'])
+
 
 if __name__ == '__main__':
     unittest.main()
