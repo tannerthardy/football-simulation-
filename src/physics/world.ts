@@ -282,7 +282,7 @@ interface JointRow {
   mn: number;
   /** An anisotropic lower attachment has a different tangent mobility. */
   mt?: number;
-  /** Lever arms to one common hand patch, along the frozen contact normal. */
+  /** Lever arms to one common hand/upper-grasp patch, along the frozen normal. */
   ri?: number;
   rj?: number;
   /** Normal impulse moments at the same physical point as steering. */
@@ -301,7 +301,7 @@ interface JointRow {
   steerLim: number;
   actor: number;
   steerActor: number;
-  /** Active reel already transmitted through this grip in the substep. */
+  /** Active reel transmitted through this grip in the substep. */
   reel: number;
   /** Identical numerical copies share one physical compliant attachment. */
   members?: GraspJoint[];
@@ -330,11 +330,12 @@ export class World {
   /** Production uses analytic recovery except during a lower hold. The
    * global averaged-motor mode remains a research comparison. */
   readonly supportModel: 'legacy' | 'virtual-foot';
-  /** Sustained bounded hand force acts over the interval, unlike an impact.
+  /** Sustained bounded hand (and patch upper-grip) force acts over the interval.
    * The end rule is retained for source-matched numerical comparisons. */
   readonly handIntegration: 'end' | 'centered';
-  /** Experimental common-patch angular transfer. Center retains production
-   * behavior until native helper and mirrored-controller regressions resolve. */
+  /** Experimental common-patch angular transfer for torsos, hands and upper
+   * grips. Lower corrective-foot grips are not repaired by this option.
+   * Center retains production until native helper/controller controls pass. */
   readonly handContact: 'center' | 'patch';
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
@@ -993,6 +994,9 @@ export class World {
     // force; the passive joint never invents work to shorten its landmark.
     if (contact) for (const jt of this.joints) {
       if (jt.kind !== 'grasp' || jt.broken || !(jt.pull! > 0)) continue;
+      // Upper patch grips share the hands' frozen force frame. Applying a
+      // reel here would change transport before that common frame is acquired.
+      if (this.handContact === 'patch' && jt.legs <= 0) continue;
       const i=this.indexOf(jt.a), j=this.indexOf(jt.b);
       const point=this.graspPoint(jt);
       const dx=point.x-jt.a.pos.x,dy=point.y-jt.a.pos.y,d=Math.hypot(dx,dy);
@@ -1046,6 +1050,11 @@ export class World {
         for (let k = 0; k < ids.length; k++) bs[ids[k]].facing += h * ((bs[ids[k]].spin ?? 0) - spin[k]);
       }
       const rows = this.jointRows(h);
+      // Freeze every finite-force point before delivering any upper reel.
+      // This matters when one body participates in several different holds.
+      if (this.handContact === 'patch') for (const r of rows) {
+        if (r.joint.kind === 'grasp' && r.joint.legs <= 0) this.reelUpperGrasp(r, h);
+      }
       const handSoft = softness(HANDS_HZ, HANDS_ZETA, h);
       const graspSoft = softness(GRASP_HZ, GRASP_ZETA, h);
       for (let it = 0; it < ITERATIONS; it++) {
@@ -1062,29 +1071,27 @@ export class World {
           ? this.comHeight[r.j] * (1 - 0.55 * clamp(jt.legs, 0, 1))
           : undefined);
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
-        if (jt.kind === 'hands') {
-          // Facing carries the same interval-centered angular impulse as
-          // translation. feet() already advanced the pre-hand yaw; do not
-          // defer all newly transmitted hand rotation to the next substep.
+        // Hands and upper grips are bounded forces acting across h. Use one
+        // timing rule for their attained impulse AND spin, including the reel.
+        // Lower corrective-foot grasps retain their separate historical solve.
+        const upperPatch = jt.kind === 'grasp' && jt.legs <= 0 && this.handContact === 'patch';
+        if (jt.kind === 'hands' || upperPatch) {
+          const normal = r.ln - (upperPatch ? r.reel : 0);
           if (this.handContact === 'patch') {
             const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
-            this.bodies[r.i].facing += yawTime * ((r.ni ?? 0) * r.ln - (r.ri ?? 0) * r.lt) / this.inertia[r.i];
-            this.bodies[r.j].facing += yawTime * ((r.nj ?? 0) * r.ln - (r.rj ?? 0) * r.lt) / this.inertia[r.j];
+            this.bodies[r.i].facing += yawTime * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i];
+            this.bodies[r.j].facing += yawTime * ((r.nj ?? 0) * normal - (r.rj ?? 0) * r.lt) / this.inertia[r.j];
           }
           if (this.handIntegration === 'centered') {
-            // These are achieved finite-force impulses, accumulated over h,
-            // rather than instantaneous torso impacts. Carry their midpoint
-            // velocity over the interval: the old end velocity adds a
-            // spurious half-impulse of travel on every solver substep. Use the
-            // final net row, including work-limited corrections and tangent
-            // steering, so iterations/duplicate constraints add no travel.
-            const x = r.nx * r.ln - r.ny * r.lt;
-            const y = r.ny * r.ln + r.nx * r.lt;
+            const x = r.nx * normal - r.ny * r.lt;
+            const y = r.ny * normal + r.nx * r.lt;
             this.travelAdjustX[r.i] += .5 * x / this.mass[r.i];
             this.travelAdjustY[r.i] += .5 * y / this.mass[r.i];
             this.travelAdjustX[r.j] -= .5 * x / this.mass[r.j];
             this.travelAdjustY[r.j] -= .5 * y / this.mass[r.j];
           }
+        }
+        if (jt.kind === 'hands') {
           if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(r.ln,r.lt);
           else { report.armImpulse[r.actor]+=Math.abs(r.ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
           if (!r.handMembers) {
@@ -1696,14 +1703,15 @@ export class World {
       const i = this.indexOf(jt.a), j = this.indexOf(jt.b);
       const a = jt.a, b = jt.b;
       const point = jt.kind === 'grasp' ? this.graspPoint(jt) : b.pos;
-      // Sustained hands act at the midpoint of their force interval. Freeze
-      // the frame at the same centered transport used for achieved hand
+      // Sustained hands and upper grips act at their force midpoint. Freeze
+      // the frame at the same centered transport used for achieved joint
       // travel, rather than applying a sideways force at two different COMs.
       // All rows read the pre-solve velocities; solver corrections cannot
       // manufacture another patch or rotate the frame during this interval.
       let dx = point.x - a.pos.x, dy = point.y - a.pos.y;
       let px = 0, py = 0; // Material offset from the body's force-midpoint center.
-      if (jt.kind === 'hands' && this.handContact === 'patch' && this.handIntegration === 'centered') {
+      const upperPatch = jt.kind === 'grasp' && jt.legs <= 0 && this.handContact === 'patch';
+      if ((jt.kind === 'hands' || upperPatch) && this.handContact === 'patch' && this.handIntegration === 'centered') {
         // Ground, strikes and reels are finite forces over this interval.
         // Use their achieved mean travel, as position integration does,
         // rather than locating the patch with their full end velocity.
@@ -1732,7 +1740,7 @@ export class World {
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
       const row: JointRow = { joint: jt, i, j, nx, ny, mn: 1 / (1 / this.mass[i] + 1 / this.mass[j]),
         mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0,actor: i,steerActor: i,reel: 0 };
-      if (jt.kind === 'hands') {
+      if (jt.kind === 'hands' || upperPatch) {
         // The effective patch lies between the bodies, weighted by their
         // torso radii. At touching distance these are the pad-surface arms;
         // extended hands use the same single reduced patch, not two joints.
@@ -1740,8 +1748,8 @@ export class World {
           const radius = a.profile.radius + b.profile.radius;
           let rax = dx * a.profile.radius / radius, ray = dy * a.profile.radius / radius;
           let rbx = -dx * b.profile.radius / radius, rby = -dy * b.profile.radius / radius;
-          if (jt.contact?.on === 'b') { rax = dx; ray = dy; rbx = px; rby = py; }
-          if (jt.contact?.on === 'a') { rax = px; ray = py; rbx = -dx; rby = -dy; }
+          if (jt.kind === 'hands' && jt.contact?.on === 'b') { rax = dx; ray = dy; rbx = px; rby = py; }
+          if (jt.kind === 'hands' && jt.contact?.on === 'a') { rax = px; ray = py; rbx = -dx; rby = -dy; }
           row.ni = -(rax * ny - ray * nx);
           row.nj = rbx * ny - rby * nx;
           row.ri = rax * nx + ray * ny;
@@ -1751,6 +1759,8 @@ export class World {
           row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j]
             + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
         }
+      }
+      if (jt.kind === 'hands') {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
         row.pushLim = Math.max(0, jt.push) * h * scale;
@@ -1792,7 +1802,7 @@ export class World {
           row.mn = 1 / (inverseBodyMass + this.attachmentMobility(jt,nx,ny) / h);
           row.mt = 1 / (inverseBodyMass + this.attachmentMobility(jt,-ny,nx) / h);
         }
-        if (foot) {
+        if (foot || upperPatch) {
           // Duplicating the same physical attachment must not create another
           // spring, motor or grip capacity. Distinct locations stay distinct.
           const same = rows.find(r => {
@@ -1832,11 +1842,34 @@ export class World {
     if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);
   }
 
+  /** Upper reel and passive grip share a frozen force point and one budget.
+   * Deliver active work separately, but transport their total attained load
+   * together. No second arm strength or motor is introduced. */
+  private reelUpperGrasp(r: JointRow, h: number): void {
+    const jt = r.joint as GraspJoint;
+    if (!(jt.pull! > 0) || jt.a.support!.state !== 'up') return;
+    const distance = Math.hypot(jt.b.pos.x - jt.a.pos.x, jt.b.pos.y - jt.a.pos.y);
+    if (distance <= CONTACT_SCALE * (jt.a.profile.radius + jt.b.profile.radius) || distance > jt.reach) return;
+    const vn = (jt.b.vel.x - jt.a.vel.x) * r.nx + (jt.b.vel.y - jt.a.vel.y) * r.ny
+      + (r.ni ?? 0) * (jt.a.spin ?? 0) + (r.nj ?? 0) * (jt.b.spin ?? 0);
+    const wanted = Math.max(0, vn + Math.min(ARM_SPEED, jt.pull!)) * r.mn / this.tickDt;
+    // Arm allocation saw each numerical member. Recombine that allocation
+    // once for the physical row, as we do its grip cap and compliance.
+    const armCapacity = this.armCap[r.i] * this.armScale[r.i] * (r.members?.length ?? 1);
+    const impulse = Math.min(wanted, armCapacity, r.limit / h) * h;
+    const fraction = this.pairImpulse(r.i, r.j, -r.nx * impulse, -r.ny * impulse, r.i, 'grasps', true, undefined,
+      -(r.ni ?? 0) * impulse, -(r.nj ?? 0) * impulse);
+    r.reel = impulse * fraction;
+    this.report.armImpulse[r.i] += r.reel;
+    this.addLoad(r.i, r.j, r.nx, r.ny, -r.reel, 0, jt.height ?? this.comHeight[r.j]);
+  }
+
   private solveGrasp(r: JointRow, soft: Softness, h: number): void {
     const a = this.bodies[r.i], b = this.bodies[r.j];
     const ima = 1 / this.mass[r.i], imb = 1 / this.mass[r.j];
     const jt = r.joint as GraspJoint, rv = this.graspVelocity(jt);
-    const vn = rv.x * r.nx + rv.y * r.ny;
+    const vn = rv.x * r.nx + rv.y * r.ny
+      + (r.ni ?? 0) * (a.spin ?? 0) + (r.nj ?? 0) * (b.spin ?? 0);
     if (b.support!.foot && jt.legs > 0) {
       // Preserve the spring/damper's body-derived physical stiffness. Merely
       // replacing mass while retaining its Hz softness makes the grasp's
@@ -1856,7 +1889,8 @@ export class World {
     const coupled = !!b.support!.foot && jt.legs > 0;
     const channel=r.normalWork??={net:0};
     const fraction=coupled?this.supportImpulse(jt,r.nx*dn,r.ny*dn,h,false,channel)
-      :this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false,channel);
+      :this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false,channel,
+        (r.ni ?? 0) * dn, (r.nj ?? 0) * dn);
     r.ln+=dn*fraction;
     const tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
     if (coupled) {
