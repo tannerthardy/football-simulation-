@@ -465,8 +465,7 @@ export class DownfieldBlocker implements Behavior {
     const dd = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
     if (dd < a.profile.radius + d.profile.radius + 0.25) {
       const drive = norm(sub(d.pos, c.pos));
-      sim.engage(a, d, 'run', drive);
-      return stand();
+      if (sim.engage(a, d, 'run', drive)) return stand();
     }
     // Jog until the block is close; then close hard.
     return runThrough(a, fit, { speed: dd > 5 ? 0.7 : 0.95 });

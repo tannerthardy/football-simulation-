@@ -1,6 +1,6 @@
 # Current status
 
-Updated 2026-10-11. This is the current handoff; older reviews are historical.
+Updated 2026-10-12. This is the current handoff; older reviews are historical.
 Work on `claude/engine-priorities`. Main and PR #1 are outside this work.
 
 ## What is live
@@ -34,9 +34,28 @@ current subsystems and ranks catch/contact, shared hand laws, ordinary run
 coordination and pocket decisions. Fresh current-source checks reproduce the
 two-cohort outcome gaps and identify a concentrated heavy-jam step-refinement
 outlier. Production behavior is unchanged; detailed evidence and limits are in
-the review's receipt.
+the review's receipt. The controller repair below supersedes its engine source.
 
-The [NFL comparison](reviews/nfl-gap-review.md) adds two native eight-game
+## Latest catch/contact repair
+
+The [catch/contact repair](reviews/catch-contact-repair.md) recognizes moving
+hand opportunities and carries an already nearby observed catcher instead of
+braking toward a fixed flight point. Downfield blockers now retain their fit
+movement when actual engagement is rejected. Capacities, physics and outcome
+probabilities are unchanged. Exact restored native contexts reduce `S108-P143`
+from a 37.54-YAC touchdown to a 10.88-YAC tackle; all four ordinary controls
+still end in tackles. `S107-P233` retains its 69.28-YAC escape. An offset-match
+trial broke an ordinary control and was backed out; no extra pursuit knobs
+remain. The [receipt](../data/reviews/current/catch-contact-repair.json) retains
+adverse trials, source/input pins and observer witnesses.
+
+All 1,244 TS assertions, 141 Python checks, typecheck and build pass. Two fresh
+eight-game cohorts each retain 12/12 guards, but their mean YAC is still
+11.92 yd, p90 37.26 yd; ordinary run success is 26.9%. Later calls/RNG differ,
+so this is not a paired broad causal improvement. The catch/contact tail and
+hand-patch promotion failures remain the leading investigations.
+
+The preceding [NFL comparison](reviews/nfl-gap-review.md) adds two native eight-game
 roster cohorts and corrected actual-catcher/contact measurements, with unchanged
 engine behavior. Mean completion gain is 20.2 yd against 10.9; mean YAC is
 12.3 against 5.2. Early route separation is already small. Trace catch-window selection,
@@ -115,7 +134,7 @@ historic source-equivalence assertions, and the eight-game YBC mechanism guard.
 Trace those first divergences before promotion. No controller, capacity or
 assertion was changed to rescue these outcomes.
 
-Both current cohorts preserve all twelve guarded mechanisms. Their scoring is
+Both preceding baseline cohorts preserve all twelve guarded mechanisms. Their scoring is
 67.4 and 44.4 points per team-game; corrected tracking YAC p90 is 47.6 and
 31.6 yd. These native-game checks have diverging calls/RNG, not matched-play
 explanations or readiness proof. The drive proxy's p90 is 2.6 and 3.2 yd;
