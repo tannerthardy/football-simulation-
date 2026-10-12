@@ -22,6 +22,11 @@ Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
   access to another player's private assignment.
 - Use the simplest coherent model that generalizes. Anatomical feet and sole
   models are paused research, not production requirements.
+- **Never ban what works too well.** Do not forbid a technique, cap its
+  outcome or steer players away because it is too effective. Find why it
+  fails in real football: physical limits, cost, fatigue, information or
+  the opponent's response. Repair the missing mechanism and leave the
+  player free to choose the technique.
 
 ## Pick and prove the next change
 

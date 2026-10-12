@@ -1,9 +1,103 @@
 # Pursuit control and the next contact investigation
 
-Updated 2026-10-11. The pursuit-angle change from `claude/pursuit-coverage`
+Updated 2026-10-12. The pursuit-angle change from `claude/pursuit-coverage`
 (`576581b`) is now applied narrowly to `claude/engine-priorities`. The in-stride
 receiver change is still experimental; it needs its own coverage/ordinary-catch
 controls before installation. Outside/wide-zone technique remains separate work.
+
+## Catch/contact follow-up: two controller repairs
+
+The [contact receipt](../../data/reviews/current/contact-coupling.json) separates
+this investigation from the earlier angle repair and its game results below.
+We drew 24 clean completions uniformly from 913 in the frozen sixteen-game
+cohort, seed `20261012`, before inspecting their outcomes. The supplied
+69-YAC escape, original **S105-P159**, is a separate nominated witness.
+Thirteen original game prefixes reproduced the selected plays, then observers
+logged only existing perceptions, raw requests, applied intents, body impulses,
+support, grips and their solved loads. Observed and plain executions agree.
+
+The repeated wrong mechanism was **partial-gather facing**, not weak hands.
+In 22/24 ordinary plays, the partial tackle gather turned away from the acquired
+hip: `angleDiff` returns the second angle minus the first, but its arguments
+were reversed. We confirmed 236 raw and applied facing requests; 15 plays
+include errors of at least 30 degrees. Their first affected actors are free,
+without their own body contact or grasp. The corrected interpolation turns
+toward the hip along the short arc, within the unchanged movement limits.
+This repairs a request; it does not award contact or remove aiming uncertainty.
+
+Twenty ordinary plays acquire grips, and all 30 grips carry positive solved
+load. Four loaded grips break, but all four plays are subsequently tackled.
+The four no-contact touchdowns include one catch already beyond the goal line
+and two with less than three YAC. The nominated 69-YAC escape has **no grip and
+no opposing body impact**. Calling it a grip failure would select the wrong fix.
+Raw velocity is refined before World in 51 affected commands; facing alone
+does not establish the achieved speed or causal effect on the eventual gain.
+
+The gather fix alone leaves the nominated touchdown. Its next wrong mechanism
+is the **outside-arm reach gate**: the defender declines a passing hip because
+the runner is not yet separating at 1.5 yd/s. He never reaches or wraps.
+The repaired controller permits the existing marginal lunge when its delayed
+picture confirms possession and the production movement preview says the
+closest attainable hip is now, outside standing reach but inside lunge reach.
+It still waits for a better standing wrap, respects occlusion, and does not
+invent a forecast through an existing joint, recent contact or fallen support.
+The preview holds the actual applied command; it cannot know future cuts.
+
+At 4.00 s in the original input, SS has first acquired possession, with a
+0.15-second-old cue. His predicted closest distance is 1.833 yd, now. Actual
+distance is 1.707 yd, outside his 1.538-yd standing reach. The ordinary lunge
+creates a weak leg hold, which carries positive load on the following step.
+The tackler goes off his feet; the carrier loses support later. The unchanged
+grip and World then produce a tackle at 4.70 s: **69.45 → 4.75 YAC**.
+No tackling rating, force capacity, miss roll or solver resolution increased.
+
+Four original preplay setups were restored with actual coordinator returns,
+personnel, snap RNG, fatigue and learned scouting. The native baseline must
+reproduce exactly before a candidate result counts. Three ordinary controls
+retain identical final bodies, intents, minds and RNG relative to the gather-only
+repair; the nominated fourth changes through the new reach. The final recording
+wording also distinguishes waiting from taking a last reach; it has no physical
+effect. These are source-only pairs, not later game IDs after calls diverge.
+
+This sample does not certify all tackles. An acquisition is not a body impact;
+capacity saturation is not proof of outward grip slip; support failure and an
+intentional dive must remain distinct. Separate approach/load traces and all
+adverse panel cases are retained in the receipt. Missing assistance was not
+established as the repeated cause in this sample.
+
+In the retained 128-encounter and 32-approach panels, all endings, censoring and
+initial/profile pins remain. The facing change adds carrier advance in 24 and
+7 cells respectively (largest absolute changes 0.79 and 0.32 yd); they are
+retained tradeoffs, not ignored bad outcomes. The last-reach increment leaves
+all 128 encounter rows exactly unchanged relative to facing alone and changes
+only decision records in 16 approach rows. Genuine faster-runner escapes remain.
+
+The final sixteen-game default-center check is mixed: clean mean YAC 10.51→10.53
+yd, p90 28.02→30.63, and points per team-game 47.5→48.8. Cohort 101 scores
+52.6→57.4, while cohort 202 scores 42.4→40.3. Designed-run success remains
+29.9%, but runs of 20+ yd rise from 3.2% to 5.0%. Both cohort guards and the
+pooled guard pass 12/12 at their unchanged thresholds. The receipt distinguishes
+all-play cohort tracking guards from the clean pooled outcome operator.
+This is not a broad YAC/scoring improvement; calls, situations and RNG diverge
+after changed results. Re-sample current ordinary mechanisms before another
+controller change. The correct angle and visible last-reach rule were not
+selected or retuned to improve an average.
+
+### Jump and landing remain an evidence gap
+
+An independent reconstruction uses the exact ball segment consumed at catch,
+not rounded replay height. One of the 24 ordinary catches is 0.262 yd above
+`reactReach`; the nominated catch is 0.273 yd above it. `reactReach` already
+includes some leap capacity, so these are not counts of every airborne catch.
+All are within `maxCatchHeight`. Possession currently leaves achieved body and
+support state unchanged: the model lacks a real jump/landing transition.
+That gap merits high-versus-low matched catches before implementation. It does
+not establish that jumping caused the nominated escape or justify slowing all
+receivers after catches.
+
+The frozen probes and their input preparation are preserved in
+[the research archive](../archive/research/catch-contact/README.md), outside
+production and default tests. Large recordings stay in ignored `out/`.
 
 ## What changed, and why
 
@@ -68,7 +162,7 @@ separate consumed cues, raw commands, applied intents, actual body contacts,
 grip acquisition and first positive solved load. The private error-shifted
 chosen aim is not recorded; the reconstructed unbiased estimate is labelled.
 
-## Native-game effects: diagnostic evidence
+## Earlier angle-repair game effects: diagnostic evidence
 
 The same two roster pairs played eight games each before and after the angle
 repair. After the first changed outcome, later calls and RNG histories diverge;
@@ -141,10 +235,13 @@ on its pinned source; it is outside production and the default test run.
 
 ## Next work
 
-Trace current native failed acquisitions and positively loaded holds that
-actually break. Record the consumed cue, commitment, applied movement, achieved
-support, body impulse, radial/transverse motion, load and release reason. Fix
-the first wrong request or response, preserving ordinary and adverse controls.
+Re-sample current ordinary catch approaches before selecting another change.
+Use the consumed cue, commitment, applied movement, achieved support, body
+impulse, radial/transverse motion, load and release reason to distinguish a
+missed acquisition from a positively loaded hold that actually breaks.
+The repaired witness no longer supports a grip-strength diagnosis. Continue
+the hand-contact promotion investigation alongside this review; its independent
+law correction is not yet a safe production default.
 Do not strengthen a grip to compensate for a missed or unattainable approach.
 
 For coverage, collect actual pre-release technique/request traces before

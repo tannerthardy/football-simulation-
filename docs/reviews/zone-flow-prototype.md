@@ -1,9 +1,106 @@
 # Zone flow: common hand-patch prototype
 
-Investigated from `dc4bea6` on 2026-10-11. This is an **experimental candidate**;
-production movement and center-based hands remain unchanged. The small
+Updated 2026-10-12; initially investigated from `dc4bea6` on 2026-10-11.
+This is an **experimental candidate**;
+the production contact default remains center-based hands. The small
 [receipt](../../data/reviews/current/zone-flow-prototype.json) records source
 hashes, paired measurements, and passing versus failed checks.
+
+## Contact-law follow-up: corrected geometry, promotion still blocked
+
+The [new contact receipt](../../data/reviews/current/contact-coupling.json)
+records the current continuation. The older movement/game tables below retain
+their original source pins; they are not results of the new patch.
+
+Two actual physical defects are repaired **only in patch mode**:
+
+- The hand frame used full post-ground velocity to estimate its midpoint,
+  although achieved travel uses the mean velocity of finite ground, strike and
+  reel forces. It now uses that same mean travel. A mirrored independent ground
+  impulse/mean-travel oracle fails before the repair and passes afterward.
+- During overlap or swept contact, torso surface radii described two different
+  contact points. After travel, even the frozen normal can be oblique to the
+  centers, so normal impulses also need moments. Patch torso impulses now use
+  one radius-weighted point, its normal and tangent moments, rotational effective
+  mass and work. Relaxation refreshes these arms after actual position travel.
+  Six existing mirrored overlap/sweep controls now close full-step angular
+  momentum to 7.11e-15 kg·yd²/s with no ground reaction. Fixed-position torso
+  impulse debt in prolonged jams is at most 1.14e-13.
+
+The isolated hand oracle still passes all 144 cases. This contact repair does
+not alter capacities, profiles, controllers or global resolution; the separate
+pursuit-controller repairs are recorded in the pursuit review. Center remains the
+production default and retains its known angular defect. This is a reduced
+common point, not anatomical limb or measured NFL hand geometry.
+
+One failed mirror control was a **lab installation error**. Its synthetic left
+RT body was reflected but its free-protection home stayed on the right. The
+same named OL slot does not swap under a formation flip. The redirect lab now
+reflects that installed home and records existing post-shed targets/requests.
+Extended six-second controls expose the post-shed phase under both center and
+patch hands; targets, requests and results mirror at the original tolerance.
+This does not alter production protection assignments.
+
+Current unchanged promotion assertions: **43/50 pass**. Five football controls
+still fail: wrong-side helper contact, recovered keeper confirmation, native
+Under check/climb, Tite unfinished work and Bear release. Two additional frozen
+legacy hashes differ, as expected for changed physics; they remain preserved
+historical assertions. We did not relax any assertion or make the prototype
+the default. The current prototype has not repeated the old eight-game trial.
+
+Conservation does not establish convergence. Against the same 96-step reference,
+heavy-jam trajectory error improves from 0.1014 to 0.0637 yd at 12 steps but
+worsens from 0.0719 to 0.0894 yd at 48. Base 12-step error also grows slightly.
+Strong-jam falls still disagree at 6 versus 48 steps in both mirrors. These
+are comparison resolutions, not ground truth. All 120 shared-capability reps
+are finite and mirrored; that is narrower than football readiness.
+
+A bounded passive tangential damping trial was rejected. It reused the existing
+normal-hand rate and unchanged budgets, restored one keeper control, but broke
+another helper control; the same 43/50 assertions passed. Duplicate rows also
+acted as parallel dampers. It remains ignored research, with no tracked policy
+or constant change. Do not stack more damping constants to rescue outcomes.
+
+The next promotion milestone is the first wrong request or support/contact
+response in the helper and recovered-keeper controls. Preserve the corrected
+point laws and ordinary/mirrored controls while diagnosing those transitions.
+Additional shoulder anatomy, stronger hands and global resolution are not
+supported fixes.
+
+### Separate run-blocking branch: retain the ideas, repair load coupling first
+
+We reviewed `claude/run-blocking` at `88bfc45` without merging it. Lower-pad
+leverage, a separate contact-posture ability and anchoring against felt load are
+worth pursuing. The small bull-rush outcome panel does not yet establish a
+coherent shared normal-load model. Three source-pinned executable witnesses in
+the new contact receipt disprove that claim:
+
+1. A distant idle body changes the active pair's inferred load by a factor of
+   twelve. Per-body vertical impulses are divided by a global last-step duration
+   overwritten when the unrelated body is advanced. Interval ownership must be
+   local to the body/contact state.
+2. Feet use inferred contact load, but turning uses nominal weight. On the
+   unloaded player, combined translation/yaw demand is 1.980 times the actual
+   traction allowance. Both channels must spend one achieved support budget.
+3. Two individually bounded low contacts unload a defender by 1.386 times his
+   weight. A per-pair 80% cap is not a shared body cap; later clipping hides the
+   support loss. Allocate aggregate normal reactions and state what happens
+   when support is unavailable.
+
+The appended vertical component also needs an explicit declaration of whether
+arm capacity is planar or resultant force. No vertical movement/work is solved,
+so a zero planar residual cannot prove lift work. Those are model-scope gaps,
+not a proved violation of a currently promised three-dimensional force budget.
+No extra anatomical foot solver is needed to repair interval ownership or a
+shared load budget.
+
+Evaluate the anchoring controller separately with fixed capabilities. Its
+current trigger can also fire when useful lateral zone flow carries a blocker
+with the load; include that adverse control, glancing contact, helpers and
+mirrors. Then test the contact-posture profile hypothesis independently. A
+successful technique remains available; its physical limits, costs and opponent
+responses must explain its failures. Do not import the package or re-freeze
+historical controls merely to make the bull-rush panel pass.
 
 ## What was implemented
 
@@ -19,7 +116,8 @@ The patch is a reduced geometry assumption, not an empirically measured NFL
 contact location. Production still defaults to `handContact: 'center'`.
 `PlaySim` and `GameOptions` accept the explicit experimental option. The patch
 rejects historical `handIntegration: 'end'`: it requires centered force travel.
-Grasps, strikes, torso-contact laws, and support capacities retain their policies.
+Grasps, strikes and support capacities retain their policies. The later patch-only
+torso law correction is described above.
 
 The independent angular audit now accepts `--common-patch`. Default mode still
 reproduces the production defect. New tests check spin-to-translation transfer,
@@ -71,7 +169,7 @@ concepts too. DL medians decrease on both stretch-zone concepts; RB travel is
 unchanged there. The candidate does not resolve the line-wide stretch or mesh
 problem, and these medians did not select physical constants.
 
-## Promotion is blocked by observed regressions
+## Original promotion trial (historical)
 
 The common-patch isolated audit passes all 144 cases, including 72 tangential
 cases that fail under production center hands. Maximum tangential angular defect
@@ -115,10 +213,10 @@ node --import tsx scripts/diag/hand-angular-law.ts out/zone-flow/center-law.json
 node --import tsx scripts/diag/hand-angular-law.ts out/zone-flow/patch-law.json --common-patch --assert-law
 npm test -- test/hand-angular-transfer.test.ts
 
-# Unchanged promotion witnesses under patch hands (8 assertions currently fail).
+# Unchanged promotion witnesses under patch hands (7 assertions currently fail).
 node node_modules/vitest/vitest.mjs run --config scripts/diag/common-patch-vitest.config.ts --maxWorkers=1
 
-# Candidate native-game measurement and guard (currently fails YBC guard).
+# Optional new native-game measurement (the original trial failed the YBC guard).
 node --import tsx scripts/mechanics/sim-export.ts --common-patch --out out/zone-flow/patch-plays.jsonl.gz --review-out out/zone-flow/patch-outcomes.json
 python3 -I scripts/mechanics/measure.py out/zone-flow/patch-plays.jsonl.gz out/zone-flow/patch-mechanics.json
 python3 -I scripts/mechanics/compare.py --sim out/zone-flow/patch-mechanics.json --out out/zone-flow/patch-report.md --guard data/reviews/mechanics/guard.json
