@@ -14,8 +14,9 @@ import { World, type GraspJoint, type Intent } from '../../../src/physics/world.
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { sourceVersion } from '../../source-version.js';
 import { rep, type Cell } from './panel.js';
+import { advanceRecoveryPhase } from './recovery-phase.js';
 
-const PIN = 'f14d849a51e031087a1971e5cc83db6146c4c5cebc17d4df2b6feb549e5106cb';
+export const PIN = 'f14d849a51e031087a1971e5cc83db6146c4c5cebc17d4df2b6feb549e5106cb';
 export const STEPS = [12,24,48,96];
 export const CASES = [{ angle:180, speed:6, mode:'center' as const }, { angle:45, speed:8, mode:'patch' as const }];
 type Private = any; // Inspection of existing private scratch; never a production API.
@@ -27,7 +28,7 @@ const pose=(b:Body)=>({pos:clone(b.pos),vel:clone(b.vel),spin:b.spin??0,facing:b
 function spec(j:GraspJoint,ids:number[],w:World){const {a,b,...p}=j;return {...clone(p),a:ids.indexOf(w.indexOf(a)),b:ids.indexOf(w.indexOf(b))};}
 interface Frame { t:number; dt:number; intents:Intent[]; bodies:Body[]; grips:Array<Record<string,any>>; rng:unknown; pending:Array<Record<string,any>> }
 export interface Capture { result:unknown; endpoint:string; frames:Frame[]; trace:any[]; decisions:string; profiles:string; }
-interface Scope { world:World|null; ids:number[]; trace:any[]; tick:number; bucket:any; rows:any[]; variant?:string; forced?:number; correcting?:boolean; }
+interface Scope { world:World|null; ids:number[]; trace:any[]; tick:number; bucket:any; rows:any[]; variant?:string; forced?:number; correcting?:boolean; deferred?:any[][]; }
 let scope:Scope|null=null;
 
 /** Snapshot at achieved substep boundaries; callbacks do not draw RNG or ask
@@ -40,8 +41,8 @@ function gripSnapshot(w:Private,j:GraspJoint){
     slipping:!!j.slipping,broken:!!j.broken};
 }
 function applicable(w:World){return scope?.world===w;}
-function recoveryInput(w:Private,i:number,h:number){
-  const b=w.bodies[i],sup=b.support,sp=w.sp[i],foot=sup.foot;if(!foot)return null;
+function recoveryInput(w:Private,i:number,h:number,unheld=false){
+  const b=w.bodies[i],sup=b.support,sp=w.sp[i],foot=sup.foot;if(!foot&&!unheld)return null;
   const rate=omega0(sp,sup.posture),kg=1-Math.exp(-h/.04),mean=.04/h*kg,acc=sup.accel??{x:0,y:0};
   const ux=(b.vel.x-w.v0x[i])/h,uy=(b.vel.y-w.v0y[i])/h;
   const mx=ux+(acc.x-ux)*mean,my=uy+(acc.y-uy)*mean;
@@ -53,12 +54,13 @@ function recoveryInput(w:Private,i:number,h:number){
   const speed=Math.hypot(b.vel.x,b.vel.y),cap=b.profile.vmax*w.fat[i]*1.05;
   if(speed>cap){dx+=b.vel.x/speed*(speed-cap)*h;dy+=b.vel.y/speed*(speed-cap)*h;}
   const x=sup.xi.x+.5*dx,y=sup.xi.y+.5*dy,e=Math.hypot(x,y),nx=e>1e-12?x/e:1,ny=e>1e-12?y/e:0;
-  const vx=foot.achieved.x-foot.desired.x,vy=foot.achieved.y-foot.desired.y;
+  const vx=foot?foot.achieved.x-foot.desired.x:0,vy=foot?foot.achieved.y-foot.desired.y:0;
   const input={e,rb:baseRadiusAt(sp,sup.posture),w:rate,speed:w.recovery[i],outsideFor:sup.out,latency:.12,h,loadVelocity:vx*nx+vy*ny};
   const result=advanceRecovery(input.e,input.rb,input.w,input.speed,input.outsideFor,input.latency,h,input.loadVelocity);
   let xx=e>1e-12?x*result.next/e:nx*result.next,yy=e>1e-12?y*result.next/e:ny*result.next;
   xx-=(vx-input.loadVelocity*nx)*result.weight;yy-=(vy-input.loadVelocity*ny)*result.weight;
-  return {input,result,predicted:{x:xx+.5*dx,y:yy+.5*dy},normal:{x:nx,y:ny},deficit:{x:vx,y:vy},achieved:clone(foot.achieved)};
+  return {input,result,predicted:{x:xx+.5*dx,y:yy+.5*dy},normal:{x:nx,y:ny},deficit:{x:vx,y:vy},
+    achieved:foot?clone(foot.achieved):null,requested:foot?clone(foot.desired):null,delta:{x:dx,y:dy}};
 }
 function install(){
   const p=World.prototype as Private, saved=new Map<string,any>();
@@ -68,8 +70,14 @@ function install(){
     const report=args[5],before=scope!.ids.map(i=>report.groundYawImpulse[i]);
     const bucket={t:w.time,h,tick:scope!.tick,start:snapshots(w),gripsStart:w.joints.filter((j:any)=>j.kind==='grasp').map((j:GraspJoint)=>gripSnapshot(w,j)),
       reel:{x:0,y:0,angularA:0,angularB:0,work:0,armWork:0},passive:{x:0,y:0,angularA:0,angularB:0,work:0},torso:{normal:0,tangent:0,angularA:0,angularB:0},rows:[] as any[],supportUpdates:[] as any[],events:[] as any[]};
-    scope!.bucket=bucket;scope!.rows=[];
+    scope!.bucket=bucket;scope!.rows=[];scope!.deferred=[];
     const r=f.apply(w,args);
+    for(const deferred of scope!.deferred){
+      // The last launch interval has now physically completed. Use the
+      // achieved boundary, not its start, for both state and timestamp.
+      bucket.events.push({kind:'fall',t:w.time,i:deferred[4],cause:'dive',suppressed:false});
+      saved.get('startFall').apply(w,deferred);
+    }
     bucket.rows=scope!.rows.map(({row,atRow})=>({normal:row.ln,tangent:row.lt,reel:row.reel,limit:row.limit,nx:row.nx,ny:row.ny,
       normalMomentA:row.ni??0,normalMomentB:row.nj??0,tangentArmA:row.ri??0,tangentArmB:row.rj??0,
       deliveredAngularA:(row.ni??0)*(row.ln-row.reel)-(row.ri??0)*row.lt,
@@ -99,10 +107,10 @@ function install(){
   hook('solveContact',(w,f,args)=>{const c=args[0],ln=c.ln,lt=c.lt,r=f.apply(w,args);
     if(scope!.bucket){const v=scope!.bucket.torso,dn=c.ln-ln,dt=c.lt-lt;v.normal+=dn;v.tangent+=dt;
       v.angularA+=(c.ni??0)*dn-c.ri*dt;v.angularB+=(c.nj??0)*dn-c.rj*dt;}return r;});
-  hook('updateSupport',(w,f,args)=>{const [i,h]=args,b=w.bodies[i],before=pose(b),phase=recoveryInput(w,i,h);
+  hook('updateSupport',(w,f,args)=>{const [i,h]=args,b=w.bodies[i],before=pose(b),phase=recoveryInput(w,i,h,scope!.variant?.includes('phase'));
     if(scope!.variant==='no-balance')return; // Explicit diagnostic ablation only.
     const peak=b.support.peak;
-    scope!.correcting=scope!.variant==='achieved-support'&&!!phase;
+    scope!.correcting=(scope!.variant==='achieved-support'||scope!.variant?.includes('phase'))&&!!phase;
     const r=f.apply(w,args);
     scope!.correcting=false;
     if(phase&&Math.hypot(b.support.xi.x-phase.predicted.x,b.support.xi.y-phase.predicted.y)>1e-11)throw Error('Recovery input reconstruction mismatch');
@@ -121,9 +129,46 @@ function install(){
       if(e>crit&&e>a.rb+1e-6){const causes=b.support.causes;const cause=causes.legs>=causes.contact&&causes.legs>=causes.overspeed?'legs':causes.overspeed>causes.contact?'overspeed':'contact';
         w.startFall(b.support,{x:b.support.xi.x/e,y:b.support.xi.y/e},cause,w.report,i);}
     }
+    if(phase&&scope!.variant?.includes('phase')){
+      const a=phase.input;
+      let n=phase.normal,load=a.loadVelocity,initial=a.e;
+      let vx=phase.deficit.x,vy=phase.deficit.y;
+      const continuous=scope!.variant==='phase-source';
+      if(continuous){
+        // Frozen continuous source, rather than two half-interval kicks.
+        // This removes a crossing introduced before the event solver starts.
+        // It retains free recovery plus force-induced deficit at zero load.
+        const xi=before.support!.xi;initial=Math.hypot(xi.x,xi.y);
+        n=initial>1e-12?{x:xi.x/initial,y:xi.y/initial}:phase.normal;
+        vx-=phase.delta.x/h;vy-=phase.delta.y/h;load=vx*n.x+vy*n.y;
+      }
+      const candidateInput={...a,e:initial,loadVelocity:load};
+      let next;
+      try{next=advanceRecoveryPhase(candidateInput);}catch(error){
+        throw new Error(JSON.stringify({time:w.time,body:i,variant:scope!.variant,candidateInput,
+          before:before.support,phase,message:String(error)}));
+      }
+      const tx=vx-load*n.x,ty=vy-load*n.y;
+      if(continuous)b.support.xi={x:n.x*next.next-tx*next.weight,y:n.y*next.next-ty*next.weight};
+      else if(next.events.some(event=>event.kind==='exit-base'))b.support.xi=
+        {x:phase.predicted.x+n.x*(next.next-phase.result.next)-tx*(next.weight-phase.result.weight),
+          y:phase.predicted.y+n.y*(next.next-phase.result.next)-ty*(next.weight-phase.result.weight)};
+      // Existing inward/ramp integration is already correct. Preserve its
+      // exact arithmetic whenever no new outward crossing needs correction.
+      const e=Math.hypot(b.support.xi.x,b.support.xi.y),crit=a.rb+w.sp[i].stepSpeed*w.fat[i]/a.w;
+      b.support.out=Math.hypot(next.next*n.x-tx*next.weight,next.next*n.y-ty*next.weight)>a.rb?next.outsideFor:0;
+      b.support.peak=Math.max(peak,e/crit);
+      (phase as any).candidate={...next,initial,loadVelocity:load,normal:n,continuous};
+      if(e>crit&&e>a.rb+1e-6){const causes=b.support.causes;const cause=causes.legs>=causes.contact&&causes.legs>=causes.overspeed?'legs':causes.overspeed>causes.contact?'overspeed':'contact';
+        w.startFall(b.support,{x:b.support.xi.x/e,y:b.support.xi.y/e},cause,w.report,i);}
+    }
     if(scope!.bucket&&scope!.ids.includes(i))scope!.bucket.supportUpdates.push({i,h,before,after:pose(b),recovery:w.recovery[i],phase,alpha:w.alpha[i],cut:w.cut[i],tip:{x:w.tipX[i]/h,y:w.tipY[i]/h},trip:{x:w.tripX[i],y:w.tripY[i]}});
     return r;});
   hook('startFall',(w,f,args)=>{
+    if(args[2]==='dive'&&(scope!.variant==='phase-timing'||scope!.variant==='phase-source')){
+      scope!.deferred!.push([...args]);
+      scope!.bucket?.events.push({kind:'dive-request',t:w.time,i:args[4],cause:'dive',suppressed:true});return;
+    }
     scope!.bucket?.events.push({kind:'fall',t:w.time,i:args[4],cause:args[2],suppressed:(scope!.variant==='support-no-fall'||scope!.correcting)&&args[2]!=='dive'});
     if((scope!.variant==='support-no-fall'||scope!.correcting)&&args[2]!=='dive')return;
     return f.apply(w,args);
@@ -137,13 +182,22 @@ function install(){
   return ()=>{for(const [name,f]of saved)p[name]=f;scope=null;};
 }
 
-export function native(cell:Cell,mode:'center'|'patch',side:1|-1,n:number,observe=true):Capture{
+/** Scoped lab adapter for independent controls. Always restore World hooks;
+ * nesting is unsupported because observers must never leak into production. */
+export function withRecoveryExperiment<T>(world:World,variant:string,action:()=>T){
+  if(scope)throw Error('Recovery experiments cannot nest');
+  const trace:any[]=[],restore=install();
+  scope={world,ids:world.bodies.map((_b,i)=>i),trace,tick:0,bucket:null,rows:[],variant};
+  try{return {result:action(),trace};}finally{restore();}
+}
+
+export function native(cell:Cell,mode:'center'|'patch',side:1|-1,n:number,observe=true,variant='full'):Capture{
   const restore=install(),tick=(PlaySim.prototype as Private).tick,step=World.prototype.step;
   const frames:Frame[]=[],trace:any[]=[];let sim:Private;
   (PlaySim.prototype as Private).tick=function(){sim=this;return tick.call(this)};
   World.prototype.step=function(intents,dt){if(this===sim?.world){
     const c=sim.slot('RB'),d=sim.defense.find((a:Private)=>a.slot==='MLB'||a.slot.startsWith('LB')),ids=[d.idx,c.idx];
-    scope={world:observe?this:null,ids,trace,tick:frames.length,bucket:null,rows:[]};
+    scope={world:observe?this:null,ids,trace,tick:frames.length,bucket:null,rows:[],variant};
     frames.push({t:this.time,dt,intents:clone(ids.map(i=>intents[i]!)),bodies:clone(ids.map(i=>this.bodies[i])),
       grips:this.joints.filter(j=>j.kind==='grasp').map(j=>spec(j as GraspJoint,ids,this)),rng:clone(sim.rng),
       pending:(this as Private).pending.map((p:Private)=>({a:ids.indexOf(this.indexOf(p.a)),b:ids.indexOf(this.indexOf(p.b)),x:p.x,y:p.y,height:p.height}))});
@@ -186,6 +240,10 @@ export function replay(tape:Frame[],mode:'center'|'patch',n:number,variant='full
     const r=w.step(intents,frame.dt);reports.push({t:w.time,poses:bodies.map(pose),work:clone(r.work),armWork:clone(r.armWork),armLimit:clone(r.armWorkLimit),supportWork:clone(r.supportMotorWork),supportLimit:clone(r.supportMotorWorkLimit),passive:r.passiveGraspWork,falls:clone(r.falls),downs:clone(r.downs)});
   }
   return {trace,reports,initial:digest(frames[0].bodies),decisions:digest(frames.map(({bodies,...f})=>f)),profiles:digest(bodies.map(b=>b.profile)),start:frames[0].t,variant,n};
+  }catch(error){
+    Object.assign(error as object,{diagnostic:{trace,reports,initial:digest(frames[0].bodies),
+      decisions:digest(frames.map(({bodies,...f})=>f)),profiles:digest(bodies.map(b=>b.profile)),start:frames[0].t,variant,n}});
+    throw error;
   }finally{restore();}
 }
 

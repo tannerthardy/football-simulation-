@@ -1,5 +1,10 @@
 # Loaded grip refinement: support coupling, not stronger hands
 
+Continuation: [reconstructed phase experiment](recovery-phase-reconstruction.md).
+The achieved-support proposal below is now a **permanent negative control**:
+a live grip transmitting zero force can change recovery. Its force/work audit
+and improved angled path are insufficient. Do not restore it into production.
+
 **Production physics is unchanged.** Engine source remains `f14d849a51` from
 `db9c74d`. The angular patch stays experimental; its existing promotion result
 is still 42/50. No ratings, strengths, raw grip capacities, inertia or global

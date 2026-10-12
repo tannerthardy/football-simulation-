@@ -20,15 +20,23 @@ along a secured hold instead of following the runner forever. Existing physics
 executes it with unchanged capacities; a moving runner is no longer ruled down
 by a four-second hold timer. In the matched 144-rep panel, production physical
 falls rise 106→122; patch falls rise 62→92, with unfinished adverse reps retained.
-Source `f14d849a51` passes all **1,486 TypeScript tests**, **141 Python checks**,
+That repair's source `f14d849a51` passed its **1,486 TypeScript tests**, **141 Python checks**,
 typecheck and build. The two-game smoke check holds 12/12 existing guards.
 Patch promotion stays **42/50**. The diagnostic-only
 [loaded-grip investigation](reviews/loaded-grip-refinement.md) now compares both
 pinned witnesses and mirrors at 12/24/48/96 steps with frozen decisions. It finds
-an early dive transition and grip/support recovery disagreement. An achieved-foot
-proposal reduces angled path error but leaves the rear hold unresolved; World
-and capacities are unchanged. Next: repair that small support coupling with an
-independent achieved-motion oracle, retaining the rear case and promotion failures.
+an early dive transition and grip/support recovery disagreement. The achieved-foot
+proposal is now rejected: a live grip can change recovery at zero force, and a
+finite error persists as nonzero transmitted force vanishes. The
+[reconstructed phase continuation](reviews/recovery-phase-reconstruction.md)
+preserves it as a permanent negative control. Local base-crossing and completed
+dive timing pass independent short-interval checks, but rear disagreement still
+reaches 2.218 yd at 12 versus 96 steps. Continuous-source integration exposes
+opposing responses at the base and is rejected, with all failed runs retained.
+World and capacities remain unchanged. Next: define the bounded response of
+already-reacted correction through a loaded base crossing in one body, then
+retest the pinned holds; keep all promotion failures. Complete checks have a
+native game-record timeout despite an isolated pass; see the new receipt.
 
 ## Prior validated repair stage
 
