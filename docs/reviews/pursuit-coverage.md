@@ -7,6 +7,11 @@ controls before installation. Outside/wide-zone technique remains separate work.
 
 ## Catch/contact follow-up: two controller repairs
 
+The later concurrent integration is recorded in the receipt's `integration`
+section and [status](../STATUS.md). The counts and causal stages below preserve
+their original source. The same repaired S105-P159 still ends at 4.75 YAC on
+the combined source; the ordinary controls now have different paths/gains.
+
 The [contact receipt](../../data/reviews/current/contact-coupling.json) separates
 this investigation from the earlier angle repair and its game results below.
 We drew 24 clean completions uniformly from 913 in the frozen sixteen-game

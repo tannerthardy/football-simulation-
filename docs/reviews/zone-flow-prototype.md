@@ -48,6 +48,11 @@ legacy hashes differ, as expected for changed physics; they remain preserved
 historical assertions. We did not relax any assertion or make the prototype
 the default. The current prototype has not repeated the old eight-game trial.
 
+After integrating the concurrent moving-catch controller at source `929fbda8`,
+the same promotion run remains 43/50 with those same failures, and the hand
+oracle still passes 144 cases. World is unchanged by that integration. Its
+new default-center game checks do not promote experimental patch physics.
+
 Conservation does not establish convergence. Against the same 96-step reference,
 heavy-jam trajectory error improves from 0.1014 to 0.0637 yd at 12 steps but
 worsens from 0.0719 to 0.0894 yd at 48. Base 12-step error also grows slightly.

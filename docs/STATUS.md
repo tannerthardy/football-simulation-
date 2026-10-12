@@ -66,8 +66,21 @@ when the real engagement guard rejects contact. Actual catch reach and shared
 physics capacities are unchanged. This is separate from full in-stride catches.
 
 The earlier tables above and in both receipts retain their original source
-pins; they are not measurements of this combined engine. Combined-source
-checks and held-input comparisons are being recorded before publication.
+pins; they are not measurements of this combined engine. At source `929fbda8`,
+all **1,259 TypeScript tests** in 110 files and **141 Python checks** pass;
+typecheck and build pass. Both eight-game cohort guards and the clean pooled
+guard pass 12/12. Mean clean YAC is 10.78 yd, p90 33.01, points per team-game
+48.1 and designed-run success 28.3%. Broad YAC/scoring problems remain.
+
+The original S105-P159 retains its exact repaired endpoint and RNG. The three
+ordinary controls remain tackles, with changed paths/gains. Six independently
+recollected incoming contexts reproduce their original baseline outcomes;
+all 18 source/recording checks pass. S108-P143 changes from a 37.54-YAC TD to
+a 10.88-YAC tackle. S107-P233 remains an unresolved 69.28-YAC TD, and an
+ordinary wrap permits more YAC. These tradeoffs remain in the contact receipt.
+The recollected context bytes differ from the unavailable old artifact; we do
+not claim historical byte identity. The patch hand oracle still passes 144
+cases and promotion remains 43/50, with the same five football failures.
 
 ## Shared-contact prototype: not promoted
 
