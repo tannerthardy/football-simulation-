@@ -1,0 +1,4105 @@
+{
+  "protocol": "reach-transition-review-v1",
+  "parentCommit": "d4ec81c",
+  "firstAttemptCommit": "39823e9",
+  "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+  "flag": "TACKLE_TOUCH=1",
+  "default": "off",
+  "promoted": false,
+  "boundary": "Only acquisition and cached movement intent; World, capacities, grip depth and RB defaults unchanged.",
+  "measurement": {
+    "contact": "Actual positive grip or torso load; acquisition and proximity alone are not contact.",
+    "samples": "Actual live 20 Hz boundaries; own-load and paired control-load clocks are separate.",
+    "censoring": "Time-limit holds remain censored; only physical fall or existing progress whistle earns a finish.",
+    "advance": "Compare completed field end spots, not different-time relative-to-acquisition clocks.",
+    "probes": "Recorded control movement/grip substitutions are diagnostic only; final policy uses its own cached command and felt queued/ongoing strike."
+  },
+  "parity": {
+    "default": {
+      "rows": 144,
+      "exactResultsAndFrames": true,
+      "previousSource": "8209ff6d8b70073c6c344983e3b397df25580b0ac4af74d84a6a4ea9605b6b18"
+    },
+    "finish": {
+      "rows": 144,
+      "exactResultsAndFrames": true,
+      "previousSource": "8209ff6d8b70073c6c344983e3b397df25580b0ac4af74d84a6a4ea9605b6b18"
+    }
+  },
+  "panels": {
+    "default": {
+      "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+      "flags": {
+        "TACKLE_TOUCH": "0",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "0",
+        "TACKLE_ROLL": "0",
+        "WRAP_BIND": "0"
+      },
+      "collector": "19e1c3ee1d8cc845771ca32288df0ed3d7815238be0bff191db4058f08eec2d9",
+      "n": 144,
+      "finishes": {
+        "physical fall": 122,
+        "escaped": 20,
+        "censored": 2
+      },
+      "curves": {
+        "0.2": {
+          "samples": 126,
+          "medianSpeedChange": -1.2472298335482428
+        },
+        "0.4": {
+          "samples": 126,
+          "medianSpeedChange": -1.657604300180977
+        },
+        "0.8": {
+          "samples": 70,
+          "medianSpeedChange": -1.2938466184039306
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 5.826572708799658e-13
+    },
+    "finish": {
+      "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+      "flags": {
+        "TACKLE_TOUCH": "0",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "19e1c3ee1d8cc845771ca32288df0ed3d7815238be0bff191db4058f08eec2d9",
+      "n": 144,
+      "finishes": {
+        "physical fall": 100,
+        "censored": 20,
+        "stopped progress": 4,
+        "escaped": 20
+      },
+      "curves": {
+        "0.2": {
+          "samples": 126,
+          "medianSpeedChange": -1.0038572563766173
+        },
+        "0.4": {
+          "samples": 126,
+          "medianSpeedChange": -1.375051480799474
+        },
+        "0.8": {
+          "samples": 100,
+          "medianSpeedChange": -1.3684964683526575
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 5.770726973039175e-13
+    },
+    "touch": {
+      "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+      "flags": {
+        "TACKLE_TOUCH": "1",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "19e1c3ee1d8cc845771ca32288df0ed3d7815238be0bff191db4058f08eec2d9",
+      "n": 144,
+      "finishes": {
+        "physical fall": 96,
+        "censored": 24,
+        "escaped": 20,
+        "stopped progress": 4
+      },
+      "curves": {
+        "0.2": {
+          "samples": 126,
+          "medianSpeedChange": -0.6649209630715314
+        },
+        "0.4": {
+          "samples": 126,
+          "medianSpeedChange": -1.204413767757341
+        },
+        "0.8": {
+          "samples": 96,
+          "medianSpeedChange": -1.0750746036526277
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 5.955162205969367e-13
+    },
+    "touch-alone": {
+      "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+      "flags": {
+        "TACKLE_TOUCH": "1",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "0",
+        "TACKLE_ROLL": "0",
+        "WRAP_BIND": "0"
+      },
+      "collector": "19e1c3ee1d8cc845771ca32288df0ed3d7815238be0bff191db4058f08eec2d9",
+      "n": 144,
+      "finishes": {
+        "physical fall": 118,
+        "censored": 6,
+        "escaped": 20
+      },
+      "curves": {
+        "0.2": {
+          "samples": 126,
+          "medianSpeedChange": -0.8161836541032885
+        },
+        "0.4": {
+          "samples": 126,
+          "medianSpeedChange": -1.3284135429333879
+        },
+        "0.8": {
+          "samples": 88,
+          "medianSpeedChange": -0.8848322365026622
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 5.861977570020827e-13
+    },
+    "fresh-finish": {
+      "source": "a5a38a3cbe9afe3a8d8728141f20da0a4487b7cd9db16f513e3895fddf26ef01",
+      "flags": {
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "3502cf4fa55179ff2a0b53e09f3ca247865ea7092db0a29f8e16bb5c02a01b11",
+      "n": 96,
+      "finishes": {
+        "physical fall": 74,
+        "escaped": 22
+      },
+      "curves": {
+        "0.2": {
+          "samples": 82,
+          "medianSpeedChange": -1.0304113142009086
+        },
+        "0.4": {
+          "samples": 82,
+          "medianSpeedChange": -1.2570083345581184
+        },
+        "0.8": {
+          "samples": 60,
+          "medianSpeedChange": -1.2132491608946219
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 4.586441905689138e-13
+    },
+    "fresh-touch": {
+      "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+      "flags": {
+        "TACKLE_TOUCH": "1",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "19e1c3ee1d8cc845771ca32288df0ed3d7815238be0bff191db4058f08eec2d9",
+      "n": 96,
+      "finishes": {
+        "stopped progress": 4,
+        "physical fall": 70,
+        "escaped": 22
+      },
+      "curves": {
+        "0.2": {
+          "samples": 82,
+          "medianSpeedChange": -0.8995488974829744
+        },
+        "0.4": {
+          "samples": 82,
+          "medianSpeedChange": -1.644124723126236
+        },
+        "0.8": {
+          "samples": 52,
+          "medianSpeedChange": -0.9042979244807334
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 5.223244306992117e-13
+    },
+    "extra-control": {
+      "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+      "flags": {
+        "TACKLE_TOUCH": "0",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "a64366aed329f41cdadb3fe203b37de2575d4f890792ea7def58e55cc72e0f63",
+      "n": 48,
+      "finishes": {
+        "physical fall": 34,
+        "escaped": 12,
+        "censored": 2
+      },
+      "curves": {
+        "0.2": {
+          "samples": 38,
+          "medianSpeedChange": -1.030116603287151
+        },
+        "0.4": {
+          "samples": 38,
+          "medianSpeedChange": -1.4103818638610983
+        },
+        "0.8": {
+          "samples": 26,
+          "medianSpeedChange": -1.0060474391325336
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 6.381248275205533e-13
+    },
+    "extra-touch": {
+      "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+      "flags": {
+        "TACKLE_TOUCH": "1",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "a64366aed329f41cdadb3fe203b37de2575d4f890792ea7def58e55cc72e0f63",
+      "n": 48,
+      "finishes": {
+        "physical fall": 34,
+        "escaped": 14
+      },
+      "curves": {
+        "0.2": {
+          "samples": 38,
+          "medianSpeedChange": -0.9754333085278523
+        },
+        "0.4": {
+          "samples": 38,
+          "medianSpeedChange": -1.4091956670349894
+        },
+        "0.8": {
+          "samples": 20,
+          "medianSpeedChange": -1.1095334744158558
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 6.28539212249071e-13
+    },
+    "first-touch": {
+      "source": "6662aeaf1bebfc2a6a22d813a8aacc06161dbab1bd52c4b747bb7c73dbd4920f",
+      "flags": {
+        "TACKLE_TOUCH": "1",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "19e1c3ee1d8cc845771ca32288df0ed3d7815238be0bff191db4058f08eec2d9",
+      "n": 144,
+      "finishes": {
+        "physical fall": 82,
+        "censored": 36,
+        "stopped progress": 6,
+        "escaped": 20
+      },
+      "curves": {
+        "0.2": {
+          "samples": 126,
+          "medianSpeedChange": -0.5929141814114951
+        },
+        "0.4": {
+          "samples": 126,
+          "medianSpeedChange": -1.202127260871188
+        },
+        "0.8": {
+          "samples": 98,
+          "medianSpeedChange": -1.3467347932141198
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 5.770726973039175e-13
+    },
+    "first-fresh-touch": {
+      "source": "6662aeaf1bebfc2a6a22d813a8aacc06161dbab1bd52c4b747bb7c73dbd4920f",
+      "flags": {
+        "TACKLE_TOUCH": "1",
+        "REACH_CONTACT": "0",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "19e1c3ee1d8cc845771ca32288df0ed3d7815238be0bff191db4058f08eec2d9",
+      "n": 96,
+      "finishes": {
+        "stopped progress": 4,
+        "physical fall": 70,
+        "escaped": 22
+      },
+      "curves": {
+        "0.2": {
+          "samples": 82,
+          "medianSpeedChange": -0.5503201728261775
+        },
+        "0.4": {
+          "samples": 82,
+          "medianSpeedChange": -1.9455646817216135
+        },
+        "0.8": {
+          "samples": 56,
+          "medianSpeedChange": -1.6187727275638886
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": 4.586441905689138e-13
+    },
+    "old-early": {
+      "source": "a5a38a3cbe9afe3a8d8728141f20da0a4487b7cd9db16f513e3895fddf26ef01",
+      "flags": {
+        "REACH_CONTACT": "1",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "160b0255bce7897c6e69bd6cf3436079c0662ff25db9349b382d42c514060266",
+      "n": 144,
+      "finishes": {
+        "physical fall": 100,
+        "censored": 24,
+        "escaped": 20
+      },
+      "curves": {
+        "0.2": {
+          "samples": 126,
+          "medianSpeedChange": -0.5805792588571466
+        },
+        "0.4": {
+          "samples": 126,
+          "medianSpeedChange": -1.3429371585978096
+        },
+        "0.8": {
+          "samples": 98,
+          "medianSpeedChange": -1.3653701927145585
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": null
+    },
+    "old-fresh-early": {
+      "source": "a5a38a3cbe9afe3a8d8728141f20da0a4487b7cd9db16f513e3895fddf26ef01",
+      "flags": {
+        "REACH_CONTACT": "1",
+        "LEG_BRACE": "1",
+        "TACKLE_ROLL": "1",
+        "WRAP_BIND": "1"
+      },
+      "collector": "160b0255bce7897c6e69bd6cf3436079c0662ff25db9349b382d42c514060266",
+      "n": 96,
+      "finishes": {
+        "stopped progress": 4,
+        "physical fall": 68,
+        "escaped": 22,
+        "censored": 2
+      },
+      "curves": {
+        "0.2": {
+          "samples": 82,
+          "medianSpeedChange": -0.5503201728261775
+        },
+        "0.4": {
+          "samples": 82,
+          "medianSpeedChange": -1.7964185850930647
+        },
+        "0.8": {
+          "samples": 56,
+          "medianSpeedChange": -1.180136640812705
+        }
+      },
+      "observerNeutral": true,
+      "maxCarrierMomentumResidual": null
+    }
+  },
+  "comparisons": {
+    "finish_to_touch": {
+      "lost": 14,
+      "gained": 10,
+      "changedFinishes": [
+        {
+          "input": [
+            61,
+            62,
+            0,
+            3,
+            false,
+            1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            3,
+            false,
+            -1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            1,
+            3000
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            1,
+            3001
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            1,
+            3002
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            -1,
+            3000
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            -1,
+            3001
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            -1,
+            3002
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            1,
+            3001
+          ],
+          "before": "stopped progress",
+          "after": "physical fall",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "before": "stopped progress",
+          "after": "physical fall",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            -1,
+            3000
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            -1,
+            3001
+          ],
+          "before": "stopped progress",
+          "after": "physical fall",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "before": "stopped progress",
+          "after": "physical fall",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            -1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            1,
+            3001
+          ],
+          "before": "censored",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            -1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            -1,
+            3001
+          ],
+          "before": "censored",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            -1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            -1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        }
+      ],
+      "adverseCompletedFieldAdvances": [
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 57.30289320534135,
+          "afterEndX": 58.19536276551476
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 57.30289320534135,
+          "afterEndX": 58.19536276551476
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            1,
+            3000
+          ],
+          "beforeEndX": 61.60970007869935,
+          "afterEndX": 61.76381088414953
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            1,
+            3001
+          ],
+          "beforeEndX": 63.02660568444272,
+          "afterEndX": 64.7312548791458
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            1,
+            3002
+          ],
+          "beforeEndX": 62.26582463895978,
+          "afterEndX": 67.56734377989788
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            -1,
+            3000
+          ],
+          "beforeEndX": 61.60970007862014,
+          "afterEndX": 61.76381088414953
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            -1,
+            3001
+          ],
+          "beforeEndX": 63.026605696192945,
+          "afterEndX": 64.73125487914578
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            -1,
+            3002
+          ],
+          "beforeEndX": 62.26582463895978,
+          "afterEndX": 67.5673437798979
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 56.82961104904471,
+          "afterEndX": 57.29957597741342
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 56.82961104904471,
+          "afterEndX": 57.29957597741342
+        }
+      ],
+      "commonControlLoadPlus02": {
+        "samples": 126,
+        "medianCandidateMinusControlSpeed": 0.0
+      }
+    },
+    "default_to_touch-alone": {
+      "lost": 4,
+      "gained": 0,
+      "changedFinishes": [
+        {
+          "input": [
+            61,
+            62,
+            0,
+            3,
+            false,
+            1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            3,
+            false,
+            -1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            false,
+            1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            false,
+            -1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        }
+      ],
+      "adverseCompletedFieldAdvances": [
+        {
+          "input": [
+            61,
+            62,
+            0,
+            8,
+            false,
+            1,
+            3001
+          ],
+          "beforeEndX": 56.92514862504599,
+          "afterEndX": 57.98975451928845
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            8,
+            false,
+            -1,
+            3001
+          ],
+          "beforeEndX": 56.92514862504599,
+          "afterEndX": 57.98975451928845
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 56.6505608673471,
+          "afterEndX": 57.5542900689296
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 56.6505608673471,
+          "afterEndX": 57.5542900689296
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 60.42002585497189,
+          "afterEndX": 61.03809638585431
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 60.42002585497189,
+          "afterEndX": 61.03809638585431
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            1,
+            3000
+          ],
+          "beforeEndX": 60.37477442843797,
+          "afterEndX": 60.73622091467899
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            -1,
+            3000
+          ],
+          "beforeEndX": 60.37477442843797,
+          "afterEndX": 60.73622091467899
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            1,
+            3000
+          ],
+          "beforeEndX": 53.583876352050225,
+          "afterEndX": 54.5866567288692
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            1,
+            3001
+          ],
+          "beforeEndX": 53.576937355074456,
+          "afterEndX": 54.74226290732252
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            1,
+            3002
+          ],
+          "beforeEndX": 53.558852964925194,
+          "afterEndX": 54.26718846073781
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            -1,
+            3000
+          ],
+          "beforeEndX": 53.583876352050225,
+          "afterEndX": 54.5866567288692
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            -1,
+            3001
+          ],
+          "beforeEndX": 53.57693735507841,
+          "afterEndX": 54.74226290732248
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            -1,
+            3002
+          ],
+          "beforeEndX": 53.558852964925194,
+          "afterEndX": 54.26718846073781
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 55.65877107226289,
+          "afterEndX": 55.83202705401626
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 55.65877107226289,
+          "afterEndX": 55.83202705401626
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            1,
+            3002
+          ],
+          "beforeEndX": 71.3758609475094,
+          "afterEndX": 72.53673090749172
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            -1,
+            3002
+          ],
+          "beforeEndX": 71.3758609475094,
+          "afterEndX": 72.53673090749204
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 55.548668414094614,
+          "afterEndX": 55.94624294735201
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "beforeEndX": 55.613024872273584,
+          "afterEndX": 55.914597299992884
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 55.548668414094614,
+          "afterEndX": 55.94624294735201
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "beforeEndX": 55.613024872273584,
+          "afterEndX": 55.914597299992884
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 55.69760256605551,
+          "afterEndX": 56.780268085753306
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            1,
+            3001
+          ],
+          "beforeEndX": 56.71291705572681,
+          "afterEndX": 56.91768281039166
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            1,
+            3002
+          ],
+          "beforeEndX": 55.27417211893819,
+          "afterEndX": 56.85416368299223
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 55.69760256605551,
+          "afterEndX": 56.780268085753306
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            -1,
+            3001
+          ],
+          "beforeEndX": 56.71291705572681,
+          "afterEndX": 56.91768281039166
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            -1,
+            3002
+          ],
+          "beforeEndX": 55.27417211893819,
+          "afterEndX": 56.85416368299223
+        }
+      ],
+      "commonControlLoadPlus02": {
+        "samples": 126,
+        "medianCandidateMinusControlSpeed": 0.018160597333713113
+      }
+    },
+    "fresh-finish_to_fresh-touch": {
+      "lost": 0,
+      "gained": 0,
+      "changedFinishes": [
+        {
+          "input": [
+            71,
+            72,
+            0,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            71,
+            72,
+            0,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            81,
+            82,
+            0,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            81,
+            82,
+            0,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        }
+      ],
+      "adverseCompletedFieldAdvances": [
+        {
+          "input": [
+            71,
+            72,
+            0,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 52.4630395792619,
+          "afterEndX": 52.59392347569666
+        },
+        {
+          "input": [
+            71,
+            72,
+            0,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 52.4630395792619,
+          "afterEndX": 52.59392347569666
+        },
+        {
+          "input": [
+            71,
+            72,
+            45,
+            8,
+            true,
+            1,
+            4001
+          ],
+          "beforeEndX": 61.3012943035177,
+          "afterEndX": 68.07580469111295
+        },
+        {
+          "input": [
+            71,
+            72,
+            45,
+            8,
+            true,
+            -1,
+            4001
+          ],
+          "beforeEndX": 61.3012943035177,
+          "afterEndX": 68.07580469480139
+        },
+        {
+          "input": [
+            71,
+            72,
+            180,
+            8,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 68.19915389305476,
+          "afterEndX": 72.70965369829125
+        },
+        {
+          "input": [
+            71,
+            72,
+            180,
+            8,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 68.19915389305476,
+          "afterEndX": 72.70965369829125
+        },
+        {
+          "input": [
+            81,
+            82,
+            180,
+            8,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 57.80462546475097,
+          "afterEndX": 58.31411941421329
+        },
+        {
+          "input": [
+            81,
+            82,
+            180,
+            8,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 57.80462546475097,
+          "afterEndX": 58.31411941421329
+        }
+      ],
+      "commonControlLoadPlus02": {
+        "samples": 82,
+        "medianCandidateMinusControlSpeed": -0.00019831994733365832
+      }
+    },
+    "extra-control_to_extra-touch": {
+      "lost": 0,
+      "gained": 0,
+      "changedFinishes": [
+        {
+          "input": [
+            91,
+            92,
+            45,
+            8,
+            true,
+            1,
+            5001
+          ],
+          "before": "censored",
+          "after": "escaped",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "time limit",
+          "afterWhy": "beat the tackler"
+        },
+        {
+          "input": [
+            91,
+            92,
+            45,
+            8,
+            true,
+            -1,
+            5001
+          ],
+          "before": "censored",
+          "after": "escaped",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "time limit",
+          "afterWhy": "beat the tackler"
+        }
+      ],
+      "adverseCompletedFieldAdvances": [],
+      "commonControlLoadPlus02": {
+        "samples": 38,
+        "medianCandidateMinusControlSpeed": -0.03850123723326426
+      }
+    },
+    "old-early_to_touch": {
+      "lost": 2,
+      "gained": 2,
+      "changedFinishes": [
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            -1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            1,
+            3002
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            -1,
+            3002
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        }
+      ],
+      "adverseCompletedFieldAdvances": [
+        {
+          "input": [
+            61,
+            62,
+            0,
+            8,
+            true,
+            1,
+            3000
+          ],
+          "beforeEndX": 56.42313656980243,
+          "afterEndX": 56.545766874268715
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            8,
+            true,
+            1,
+            3001
+          ],
+          "beforeEndX": 56.41579192433645,
+          "afterEndX": 56.53921753187032
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            8,
+            true,
+            1,
+            3002
+          ],
+          "beforeEndX": 56.4206941327331,
+          "afterEndX": 56.54496157543891
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            8,
+            true,
+            -1,
+            3000
+          ],
+          "beforeEndX": 56.42313656980243,
+          "afterEndX": 56.545766874268715
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            8,
+            true,
+            -1,
+            3001
+          ],
+          "beforeEndX": 56.41579192433954,
+          "afterEndX": 56.53921753187032
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            8,
+            true,
+            -1,
+            3002
+          ],
+          "beforeEndX": 56.42069413273238,
+          "afterEndX": 56.54496157543953
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            1,
+            3000
+          ],
+          "beforeEndX": 53.28464812880259,
+          "afterEndX": 53.56003220780207
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            1,
+            3002
+          ],
+          "beforeEndX": 53.35621639905783,
+          "afterEndX": 53.4919518719143
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            -1,
+            3000
+          ],
+          "beforeEndX": 53.28464812880283,
+          "afterEndX": 53.560032207806515
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            -1,
+            3002
+          ],
+          "beforeEndX": 53.35621639905783,
+          "afterEndX": 53.4919518719143
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            1,
+            3000
+          ],
+          "beforeEndX": 61.20714945643655,
+          "afterEndX": 61.76381088414953
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            1,
+            3002
+          ],
+          "beforeEndX": 62.35950995327621,
+          "afterEndX": 67.56734377989788
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            -1,
+            3000
+          ],
+          "beforeEndX": 61.20714945643655,
+          "afterEndX": 61.76381088414953
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            -1,
+            3002
+          ],
+          "beforeEndX": 62.35950995327621,
+          "afterEndX": 67.5673437798979
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 56.82961104904471,
+          "afterEndX": 57.29957597741342
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            8,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 56.82961104904471,
+          "afterEndX": 57.29957597741342
+        }
+      ],
+      "commonControlLoadPlus02": {
+        "samples": 126,
+        "medianCandidateMinusControlSpeed": 0.0
+      }
+    },
+    "old-fresh-early_to_fresh-touch": {
+      "lost": 0,
+      "gained": 2,
+      "changedFinishes": [
+        {
+          "input": [
+            71,
+            72,
+            135,
+            6,
+            false,
+            1,
+            4001
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            71,
+            72,
+            135,
+            6,
+            false,
+            -1,
+            4001
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        }
+      ],
+      "adverseCompletedFieldAdvances": [
+        {
+          "input": [
+            71,
+            72,
+            45,
+            8,
+            true,
+            1,
+            4001
+          ],
+          "beforeEndX": 61.649440379608144,
+          "afterEndX": 68.07580469111295
+        },
+        {
+          "input": [
+            71,
+            72,
+            45,
+            8,
+            true,
+            -1,
+            4001
+          ],
+          "beforeEndX": 61.64944038063328,
+          "afterEndX": 68.07580469480139
+        },
+        {
+          "input": [
+            71,
+            72,
+            180,
+            8,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 68.19915389305476,
+          "afterEndX": 72.70965369829125
+        },
+        {
+          "input": [
+            71,
+            72,
+            180,
+            8,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 68.19915389305476,
+          "afterEndX": 72.70965369829125
+        },
+        {
+          "input": [
+            81,
+            82,
+            180,
+            8,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 57.80462546475097,
+          "afterEndX": 58.31411941421329
+        },
+        {
+          "input": [
+            81,
+            82,
+            180,
+            8,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 57.80462546475097,
+          "afterEndX": 58.31411941421329
+        }
+      ],
+      "commonControlLoadPlus02": {
+        "samples": 82,
+        "medianCandidateMinusControlSpeed": 0.0
+      }
+    },
+    "finish_to_first-touch": {
+      "lost": 22,
+      "gained": 6,
+      "changedFinishes": [
+        {
+          "input": [
+            61,
+            62,
+            0,
+            3,
+            false,
+            1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            0,
+            3,
+            false,
+            -1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            1,
+            3000
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            1,
+            3001
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            1,
+            3002
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            -1,
+            3000
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            -1,
+            3001
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            3,
+            true,
+            -1,
+            3002
+          ],
+          "before": "censored",
+          "after": "physical fall",
+          "lost": false,
+          "gained": true,
+          "beforeWhy": "time limit",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            true,
+            1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            true,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            true,
+            -1,
+            3001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            true,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            false,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            false,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            1,
+            3001
+          ],
+          "before": "stopped progress",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            -1,
+            3001
+          ],
+          "before": "stopped progress",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            -1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            true,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            -1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            -1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            135,
+            6,
+            false,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            -1,
+            3000
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        },
+        {
+          "input": [
+            61,
+            62,
+            180,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "before": "physical fall",
+          "after": "censored",
+          "lost": true,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "time limit"
+        }
+      ],
+      "adverseCompletedFieldAdvances": [
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 57.30289320534135,
+          "afterEndX": 73.56834708006025
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            false,
+            1,
+            3002
+          ],
+          "beforeEndX": 57.463499933740984,
+          "afterEndX": 57.614649844155075
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 57.30289320534135,
+          "afterEndX": 73.56834708006025
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            6,
+            false,
+            -1,
+            3002
+          ],
+          "beforeEndX": 57.463499933740984,
+          "afterEndX": 57.614649844155075
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            false,
+            1,
+            3000
+          ],
+          "beforeEndX": 61.82869037065712,
+          "afterEndX": 84.33349451626576
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            false,
+            -1,
+            3000
+          ],
+          "beforeEndX": 61.82869037065712,
+          "afterEndX": 84.33349451626576
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            1,
+            3000
+          ],
+          "beforeEndX": 61.60970007869935,
+          "afterEndX": 71.71248515594588
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            1,
+            3002
+          ],
+          "beforeEndX": 62.26582463895978,
+          "afterEndX": 62.47137441776342
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            -1,
+            3000
+          ],
+          "beforeEndX": 61.60970007862014,
+          "afterEndX": 71.71248515594549
+        },
+        {
+          "input": [
+            61,
+            62,
+            45,
+            8,
+            true,
+            -1,
+            3002
+          ],
+          "beforeEndX": 62.26582463895978,
+          "afterEndX": 62.47137441776342
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            1,
+            3002
+          ],
+          "beforeEndX": 56.982843989577894,
+          "afterEndX": 57.37322872445956
+        },
+        {
+          "input": [
+            61,
+            62,
+            90,
+            3,
+            false,
+            -1,
+            3002
+          ],
+          "beforeEndX": 56.982843989577894,
+          "afterEndX": 57.37322872445956
+        }
+      ],
+      "commonControlLoadPlus02": {
+        "samples": 126,
+        "medianCandidateMinusControlSpeed": -0.08652777225947794
+      }
+    },
+    "fresh-finish_to_first-fresh-touch": {
+      "lost": 0,
+      "gained": 0,
+      "changedFinishes": [
+        {
+          "input": [
+            71,
+            72,
+            0,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            71,
+            72,
+            0,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            81,
+            82,
+            0,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        },
+        {
+          "input": [
+            81,
+            82,
+            0,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "before": "physical fall",
+          "after": "stopped progress",
+          "lost": false,
+          "gained": false,
+          "beforeWhy": "down",
+          "afterWhy": "down"
+        }
+      ],
+      "adverseCompletedFieldAdvances": [
+        {
+          "input": [
+            71,
+            72,
+            0,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 52.4630395792619,
+          "afterEndX": 52.59392347569666
+        },
+        {
+          "input": [
+            71,
+            72,
+            0,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 52.4630395792619,
+          "afterEndX": 52.59392347569666
+        },
+        {
+          "input": [
+            71,
+            72,
+            90,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 56.36908713388317,
+          "afterEndX": 56.49477882964489
+        },
+        {
+          "input": [
+            71,
+            72,
+            90,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 56.36908713388317,
+          "afterEndX": 56.49477882964489
+        },
+        {
+          "input": [
+            71,
+            72,
+            90,
+            3,
+            true,
+            1,
+            4001
+          ],
+          "beforeEndX": 55.11268454316172,
+          "afterEndX": 55.526812317063
+        },
+        {
+          "input": [
+            71,
+            72,
+            90,
+            3,
+            true,
+            -1,
+            4001
+          ],
+          "beforeEndX": 55.11268454315907,
+          "afterEndX": 55.526812317063
+        },
+        {
+          "input": [
+            71,
+            72,
+            180,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 57.40453052973641,
+          "afterEndX": 57.82553903952749
+        },
+        {
+          "input": [
+            71,
+            72,
+            180,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 57.40453052973641,
+          "afterEndX": 57.82553903952749
+        },
+        {
+          "input": [
+            81,
+            82,
+            135,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 56.03851782225679,
+          "afterEndX": 56.995831511559295
+        },
+        {
+          "input": [
+            81,
+            82,
+            135,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 56.03851782225679,
+          "afterEndX": 56.995831511559295
+        },
+        {
+          "input": [
+            81,
+            82,
+            180,
+            3,
+            false,
+            1,
+            4001
+          ],
+          "beforeEndX": 56.35854275002797,
+          "afterEndX": 57.12567705133525
+        },
+        {
+          "input": [
+            81,
+            82,
+            180,
+            3,
+            false,
+            -1,
+            4001
+          ],
+          "beforeEndX": 56.35854275002797,
+          "afterEndX": 57.12567705133525
+        }
+      ],
+      "commonControlLoadPlus02": {
+        "samples": 82,
+        "medianCandidateMinusControlSpeed": -0.2261718356016562
+      }
+    }
+  },
+  "causalProbes": {
+    "current": {
+      "source": "8209ff6d8b70073c6c344983e3b397df25580b0ac4af74d84a6a4ea9605b6b18",
+      "collectorSha256": "623727cc9cc8ca74021ee516286b606d16d180d34689e48d3ee4f5f66c9280d9",
+      "result": {
+        "angle": 135,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 4001,
+        "ending": "censored",
+        "endWhy": "time limit",
+        "attempts": [
+          {
+            "t": 4.3,
+            "kind": "grip",
+            "origin": "reach+behind",
+            "capacity": 532.0011167476332,
+            "legs": 0.1786515530643507,
+            "peakForce": 889.057166083825,
+            "heldFor": 2.7499999999999982,
+            "broke": false,
+            "meanForce": 500.2382017008107
+          }
+        ],
+        "afterContact": 13.9587666450836,
+        "contactToEnd": 2.75,
+        "contactImpulse": 132.484275377998,
+        "peakClosing": 2.3740374648495064,
+        "tacklerDown": false,
+        "firstGrip": {
+          "t": 4.3,
+          "x": 63.79999999999987
+        },
+        "advanceAfterGrip": 13.9587666450836,
+        "finish": "censored",
+        "carrierState": "up"
+      },
+      "intervals": [
+        {
+          "t": 4.3,
+          "behavior": {
+            "vel": {
+              "x": 9.287249325573647,
+              "y": 1.6817222619436665
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 7.2607860205690296,
+              "y": 0.5689084156240698
+            },
+            "facing": 0.42387892029546786,
+            "push": 1,
+            "posture": 0.6,
+            "lunge": {
+              "x": 2.138284614090734,
+              "y": 0.770171775957237
+            }
+          },
+          "actualSpeedAfter": 8.637468807053171,
+          "strikeAfter": {
+            "x": 1.3406054268735,
+            "y": 0.48286203607751416
+          },
+          "grip": 0.324957645073854,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.35,
+          "behavior": {
+            "vel": {
+              "x": 9.243959700838339,
+              "y": 1.9053605566825973
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 6.9132415558151585,
+              "y": 0.5149343242818065
+            },
+            "facing": 0.42007779400384804,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 9.220064420986796,
+          "strikeAfter": {
+            "x": 0.4648268101813469,
+            "y": 0.16742228211848068
+          },
+          "grip": 0.34979240095624087,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.4,
+          "behavior": {
+            "vel": {
+              "x": 8.871858566990298,
+              "y": 3.220452665232937
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 6.452375523645488,
+              "y": 0.17179668141702237
+            },
+            "facing": 0.4191009860853291,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 9.378978113589106,
+          "strikeAfter": null,
+          "grip": 0.4012111652484732,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.45,
+          "behavior": {
+            "vel": {
+              "x": 8.904035917666466,
+              "y": 3.1303888222696155
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 5.639297945294903,
+              "y": -0.1971401661870985
+            },
+            "facing": 0.41778995332989116,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 9.073188814382888,
+          "strikeAfter": null,
+          "grip": 0.4797320209618164,
+          "execution": 1.0624251309188244
+        }
+      ],
+      "allObserverNeutral": true
+    },
+    "prefix-movement": {
+      "source": "8209ff6d8b70073c6c344983e3b397df25580b0ac4af74d84a6a4ea9605b6b18",
+      "collectorSha256": "623727cc9cc8ca74021ee516286b606d16d180d34689e48d3ee4f5f66c9280d9",
+      "result": {
+        "angle": 135,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 4001,
+        "ending": "tackled",
+        "endWhy": "down",
+        "attempts": [
+          {
+            "t": 4.3,
+            "kind": "grip",
+            "origin": "reach+behind",
+            "capacity": 532.0011167476332,
+            "legs": 0.1786515530643507,
+            "peakForce": 890.9908620755575,
+            "heldFor": 2.3,
+            "broke": false,
+            "meanForce": 553.998553382513
+          }
+        ],
+        "afterContact": 11.866103318957258,
+        "contactToEnd": 2.3,
+        "contactImpulse": 624.8857367921896,
+        "peakClosing": 3.3327057642273594,
+        "tacklerDown": false,
+        "firstGrip": {
+          "t": 4.3,
+          "x": 63.79999999999987
+        },
+        "advanceAfterGrip": 11.866103318957258,
+        "finish": "physical fall",
+        "carrierState": "down"
+      },
+      "intervals": [
+        {
+          "t": 4.3,
+          "behavior": {
+            "vel": {
+              "x": 9.287249325573647,
+              "y": 1.6817222619436665
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 9.11795170956775,
+              "y": 1.40692309253394
+            },
+            "facing": 0.4238789202954659,
+            "cutSkill": 1.157142857142857,
+            "push": 1,
+            "posture": 0.6193877551020408,
+            "lunge": {
+              "x": 2.138284614090734,
+              "y": 0.770171775957237
+            }
+          },
+          "actualSpeedAfter": 8.64437719591337,
+          "strikeAfter": {
+            "x": 1.6091389262595421,
+            "y": 0.5795829874248187
+          },
+          "grip": 0.324957645073854,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.35,
+          "behavior": {
+            "vel": {
+              "x": 9.244630058548953,
+              "y": 1.9021053814808015
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 8.914686754646214,
+              "y": 1.2702554962548827
+            },
+            "facing": 0.41099275999219137,
+            "cutSkill": 1.157142857142857,
+            "push": 1,
+            "posture": 0.6193877551020408
+          },
+          "actualSpeedAfter": 9.237204853728567,
+          "strikeAfter": {
+            "x": 1.059476119583055,
+            "y": 0.38160430058116634
+          },
+          "grip": 0.3498687558237411,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.4,
+          "behavior": {
+            "vel": {
+              "x": 8.874549213091276,
+              "y": 3.2130306668480553
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 8.687505742304952,
+              "y": 1.1354682238582252
+            },
+            "facing": 0.3997502886152371,
+            "cutSkill": 1.157142857142857,
+            "push": 1,
+            "posture": 0.6193877551020408
+          },
+          "actualSpeedAfter": 9.788839655668605,
+          "strikeAfter": {
+            "x": 0.22379836978770337,
+            "y": 0.08060815982114912
+          },
+          "grip": 0.40151822826964223,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.45,
+          "behavior": {
+            "vel": {
+              "x": 8.901923233069535,
+              "y": 3.1363916455413996
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 8.538280737733698,
+              "y": 1.0447945744407185
+            },
+            "facing": 0.3904790840472839,
+            "cutSkill": 1.157142857142857,
+            "push": 1,
+            "posture": 0.6193877551020408
+          },
+          "actualSpeedAfter": 9.718011271826713,
+          "strikeAfter": null,
+          "grip": 0.48124502444311246,
+          "execution": 1.0624251309188244
+        }
+      ],
+      "allObserverNeutral": true
+    },
+    "no-launch": {
+      "source": "8209ff6d8b70073c6c344983e3b397df25580b0ac4af74d84a6a4ea9605b6b18",
+      "collectorSha256": "623727cc9cc8ca74021ee516286b606d16d180d34689e48d3ee4f5f66c9280d9",
+      "result": {
+        "angle": 135,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 4001,
+        "ending": "tackled",
+        "endWhy": "down",
+        "attempts": [
+          {
+            "t": 4.3,
+            "kind": "grip",
+            "origin": "reach+behind",
+            "capacity": 532.0011167476332,
+            "legs": 0.1786515530643507,
+            "peakForce": 937.4368390395719,
+            "heldFor": 1.7500000000000009,
+            "broke": false,
+            "meanForce": 657.0436843179687
+          }
+        ],
+        "afterContact": 9.410043001948424,
+        "contactToEnd": 1.75,
+        "contactImpulse": 635.7509580175097,
+        "peakClosing": 0.9052850981932634,
+        "tacklerDown": false,
+        "firstGrip": {
+          "t": 4.3,
+          "x": 63.79999999999987
+        },
+        "advanceAfterGrip": 9.410043001948424,
+        "finish": "physical fall",
+        "carrierState": "down"
+      },
+      "intervals": [
+        {
+          "t": 4.3,
+          "behavior": {
+            "vel": {
+              "x": 9.287249325573647,
+              "y": 1.6817222619436665
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 7.2607860205690296,
+              "y": 0.5689084156240698
+            },
+            "facing": 0.42387892029546786,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 7.857855621222598,
+          "strikeAfter": null,
+          "grip": 0.324957645073854,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.35,
+          "behavior": {
+            "vel": {
+              "x": 9.305282347582548,
+              "y": 1.578895257277594
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 6.915626646874323,
+              "y": 0.5451856003661575
+            },
+            "facing": 0.41962714778475685,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 7.644664426618507,
+          "strikeAfter": null,
+          "grip": 0.345980287024572,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.4,
+          "behavior": {
+            "vel": {
+              "x": 8.866699682055588,
+              "y": 3.2346292754998096
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 6.590319449080801,
+              "y": 0.2666352139717707
+            },
+            "facing": 0.41807319104527624,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 7.476859829305175,
+          "strikeAfter": null,
+          "grip": 0.3830697986271819,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.45,
+          "behavior": {
+            "vel": {
+              "x": 8.884174455924837,
+              "y": 3.186319826755885
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 6.225629666822742,
+              "y": 0.09616686890598618
+            },
+            "facing": 0.4165610959227896,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 7.328703957176846,
+          "strikeAfter": null,
+          "grip": 0.43216923578372546,
+          "execution": 1.0624251309188244
+        }
+      ],
+      "allObserverNeutral": true
+    },
+    "prefix-grip": {
+      "source": "8209ff6d8b70073c6c344983e3b397df25580b0ac4af74d84a6a4ea9605b6b18",
+      "collectorSha256": "623727cc9cc8ca74021ee516286b606d16d180d34689e48d3ee4f5f66c9280d9",
+      "result": {
+        "angle": 135,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 4001,
+        "ending": "censored",
+        "endWhy": "time limit",
+        "attempts": [
+          {
+            "t": 4.3,
+            "kind": "grip",
+            "origin": "reach+behind",
+            "capacity": 532.0011167476332,
+            "legs": 0.1786515530643507,
+            "peakForce": 1000.2253008540984,
+            "heldFor": 2.7499999999999982,
+            "broke": false,
+            "meanForce": 527.3034164800624
+          }
+        ],
+        "afterContact": 13.564036318347434,
+        "contactToEnd": 2.75,
+        "contactImpulse": 124.49330430868869,
+        "peakClosing": 2.3740723132055166,
+        "tacklerDown": false,
+        "firstGrip": {
+          "t": 4.3,
+          "x": 63.79999999999987
+        },
+        "advanceAfterGrip": 13.564036318347434,
+        "finish": "censored",
+        "carrierState": "up"
+      },
+      "intervals": [
+        {
+          "t": 4.3,
+          "behavior": {
+            "vel": {
+              "x": 9.287249325573647,
+              "y": 1.6817222619436665
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 7.2607860205690296,
+              "y": 0.5689084156240698
+            },
+            "facing": 0.42387892029546786,
+            "push": 1,
+            "posture": 0.6,
+            "lunge": {
+              "x": 2.138284614090734,
+              "y": 0.770171775957237
+            }
+          },
+          "actualSpeedAfter": 8.637468807053171,
+          "strikeAfter": {
+            "x": 1.3406054268735,
+            "y": 0.48286203607751416
+          },
+          "grip": 0.324957645073854,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.35,
+          "behavior": {
+            "vel": {
+              "x": 9.243959700838339,
+              "y": 1.9053605566825973
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 6.9132415558151585,
+              "y": 0.5149343242818065
+            },
+            "facing": 0.42007779400384804,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 9.220064420986796,
+          "strikeAfter": {
+            "x": 0.4648268101813469,
+            "y": 0.16742228211848068
+          },
+          "grip": 0.34979240095624087,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.4,
+          "behavior": {
+            "vel": {
+              "x": 8.871858566990298,
+              "y": 3.220452665232937
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 6.452375523645488,
+              "y": 0.17179668141702237
+            },
+            "facing": 0.4191009860853291,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 9.378978113589106,
+          "strikeAfter": null,
+          "grip": 0.4012111652484732,
+          "execution": 1.0624251309188244
+        },
+        {
+          "t": 4.45,
+          "behavior": {
+            "vel": {
+              "x": 8.904035917666466,
+              "y": 3.1303888222696155
+            },
+            "effort": 1
+          },
+          "request": {
+            "vel": {
+              "x": 5.639297945294903,
+              "y": -0.1971401661870985
+            },
+            "facing": 0.41778995332989116,
+            "push": 1,
+            "posture": 0.6
+          },
+          "actualSpeedAfter": 9.073188814382888,
+          "strikeAfter": null,
+          "grip": 0.4797320209618164,
+          "execution": 1.0624251309188244
+        }
+      ],
+      "allObserverNeutral": true
+    }
+  },
+  "selectedRefinement": {
+    "source": "b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88",
+    "inputs": [
+      {
+        "path": "out/reach-transition/fresh-final.json",
+        "sha256": "7574492d8a6449cc9adf64154547e8f475bee2c80dd7279a6723ee468ab526f3"
+      },
+      {
+        "path": "out/reach-transition/small-final.json",
+        "sha256": "81f17210d026ca50cc94b924a732d4772edeadadc5bd3e51e669a65d6116af41"
+      },
+      {
+        "path": "out/reach-transition/rear-loss-final.json",
+        "sha256": "d16c278fd4fe7a9d482a7d08ed12bd0d1642c46cba4c83b79b4078e0f091d368"
+      }
+    ],
+    "cases": [
+      {
+        "input": [
+          71,
+          72,
+          135,
+          6,
+          false,
+          1,
+          4001
+        ],
+        "nativeFinish": "physical fall",
+        "observerNeutral": true,
+        "initialSha256": "c64640ac03c5c04a91bc4154f5aef95fc413c97282e8cc98db68bf8a0fc82356",
+        "decisionSha256": "f249073878834c0f1050f018c3483b4971bfbebc21b488ad51f1e19a7842cc2a",
+        "runs": [
+          {
+            "steps": 12,
+            "firstFall": 5,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 1.8480125509901147e-11,
+            "maxPositionVs96": 0.011795923118510541
+          },
+          {
+            "steps": 24,
+            "firstFall": 5,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.007359030165938247,
+            "maxPositionVs96": 0.0071117638830578336
+          },
+          {
+            "steps": 48,
+            "firstFall": 5,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.00974597967222419,
+            "maxPositionVs96": 0.0020904760985052825
+          },
+          {
+            "steps": 96,
+            "firstFall": 5,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.011795923127128962,
+            "maxPositionVs96": 0
+          }
+        ]
+      },
+      {
+        "input": [
+          71,
+          72,
+          135,
+          6,
+          false,
+          -1,
+          4001
+        ],
+        "nativeFinish": "physical fall",
+        "observerNeutral": true,
+        "initialSha256": "cf236374bb8fc85a38d4d6a649972368ed5c0a76827d6a1364e63b1aa1015db5",
+        "decisionSha256": "abafc431f267ea37ee00d5bc6ede118c0456a730a3eb651c8e9bcb2210cf7106",
+        "runs": [
+          {
+            "steps": 12,
+            "firstFall": 5,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0,
+            "maxPositionVs96": 0.011795923126426175
+          },
+          {
+            "steps": 24,
+            "firstFall": 5,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.0073590301736830835,
+            "maxPositionVs96": 0.007111763876919059
+          },
+          {
+            "steps": 48,
+            "firstFall": 5,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.009745979649516198,
+            "maxPositionVs96": 0.002090476125400711
+          },
+          {
+            "steps": 96,
+            "firstFall": 5,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.011795923126426175,
+            "maxPositionVs96": 0
+          }
+        ]
+      },
+      {
+        "input": [
+          61,
+          62,
+          90,
+          6,
+          false,
+          1,
+          3001
+        ],
+        "nativeFinish": "physical fall",
+        "observerNeutral": true,
+        "initialSha256": "5e439a047cf48bcf4bdc8238e7fc4223cf88e8d900ef44b9dcba54f143cd819e",
+        "decisionSha256": "b860f4aac21d2517ac8423d9e3e36ac0cff1ec4dcdad026e0338a33270455dc2",
+        "runs": [
+          {
+            "steps": 12,
+            "firstFall": 3.0999999999999996,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0,
+            "maxPositionVs96": 0.014339271277468554
+          },
+          {
+            "steps": 24,
+            "firstFall": 3.0999999999999996,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.007951619375320115,
+            "maxPositionVs96": 0.006444613140336586
+          },
+          {
+            "steps": 48,
+            "firstFall": 3.0999999999999996,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.012068972403203992,
+            "maxPositionVs96": 0.002923307680539475
+          },
+          {
+            "steps": 96,
+            "firstFall": 3.0999999999999996,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.014339271277468554,
+            "maxPositionVs96": 0
+          }
+        ]
+      },
+      {
+        "input": [
+          61,
+          62,
+          90,
+          6,
+          false,
+          -1,
+          3001
+        ],
+        "nativeFinish": "physical fall",
+        "observerNeutral": true,
+        "initialSha256": "e14d455339eb232e1abb6b3a4490f11bb15afe155b02e67e71ac5157ca86f870",
+        "decisionSha256": "4860279b554b09e23a8213808abd6fe234db529a6576f51fbb564d5dfd96d64e",
+        "runs": [
+          {
+            "steps": 12,
+            "firstFall": 3.0999999999999996,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0,
+            "maxPositionVs96": 0.014339271277468554
+          },
+          {
+            "steps": 24,
+            "firstFall": 3.0999999999999996,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.007951619375320115,
+            "maxPositionVs96": 0.006444613140336586
+          },
+          {
+            "steps": 48,
+            "firstFall": 3.0999999999999996,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.012068972403203992,
+            "maxPositionVs96": 0.002923307680539475
+          },
+          {
+            "steps": 96,
+            "firstFall": 3.0999999999999996,
+            "carrierEnd": "down",
+            "maxPositionVsNative": 0.014339271277468554,
+            "maxPositionVs96": 0
+          }
+        ]
+      },
+      {
+        "input": [
+          61,
+          62,
+          180,
+          3,
+          false,
+          1,
+          3002
+        ],
+        "nativeFinish": "censored",
+        "observerNeutral": true,
+        "initialSha256": "23e6a563abf1c98f8da315b7a61658a27f4f8c3ec40201e239c92b64356358c6",
+        "decisionSha256": "d9599b62928b57baea25b2d58688fa8df9ffa93d9e87830291e479fb6bc4b1f4",
+        "runs": [
+          {
+            "steps": 12,
+            "firstFall": null,
+            "carrierEnd": "up",
+            "maxPositionVsNative": 0,
+            "maxPositionVs96": 0.025481349508069684
+          },
+          {
+            "steps": 24,
+            "firstFall": null,
+            "carrierEnd": "up",
+            "maxPositionVsNative": 0.01272127401306733,
+            "maxPositionVs96": 0.01421862685355535
+          },
+          {
+            "steps": 48,
+            "firstFall": null,
+            "carrierEnd": "up",
+            "maxPositionVsNative": 0.02363029911906267,
+            "maxPositionVs96": 0.002126039515800926
+          },
+          {
+            "steps": 96,
+            "firstFall": null,
+            "carrierEnd": "up",
+            "maxPositionVsNative": 0.025481349508069684,
+            "maxPositionVs96": 0
+          }
+        ]
+      },
+      {
+        "input": [
+          61,
+          62,
+          180,
+          3,
+          false,
+          -1,
+          3002
+        ],
+        "nativeFinish": "censored",
+        "observerNeutral": true,
+        "initialSha256": "23e6a563abf1c98f8da315b7a61658a27f4f8c3ec40201e239c92b64356358c6",
+        "decisionSha256": "d9599b62928b57baea25b2d58688fa8df9ffa93d9e87830291e479fb6bc4b1f4",
+        "runs": [
+          {
+            "steps": 12,
+            "firstFall": null,
+            "carrierEnd": "up",
+            "maxPositionVsNative": 0,
+            "maxPositionVs96": 0.025481349508069684
+          },
+          {
+            "steps": 24,
+            "firstFall": null,
+            "carrierEnd": "up",
+            "maxPositionVsNative": 0.01272127401306733,
+            "maxPositionVs96": 0.01421862685355535
+          },
+          {
+            "steps": 48,
+            "firstFall": null,
+            "carrierEnd": "up",
+            "maxPositionVsNative": 0.02363029911906267,
+            "maxPositionVs96": 0.002126039515800926
+          },
+          {
+            "steps": 96,
+            "firstFall": null,
+            "carrierEnd": "up",
+            "maxPositionVsNative": 0.025481349508069684,
+            "maxPositionVs96": 0
+          }
+        ]
+      }
+    ]
+  },
+  "validation": {
+    "focused": {
+      "path": "out/reach-transition/focused.log",
+      "sha256": "a614f57902bd04249ff177ebf464b9addad208c2148c46f6af8bfb1929d7fb67"
+    },
+    "test-all": {
+      "path": "out/reach-transition/test-all.log",
+      "sha256": "98c7c9050303867232fe4f9a080ef86b856b6732426a7a8f42afd6a64a812d28"
+    },
+    "enabled-controls": {
+      "path": "out/reach-transition/enabled-controls.log",
+      "sha256": "f08157045b56928bfe4257a39d4d2ba6984f375d32a21f3fe8d80f9bf8724895"
+    },
+    "test-data": {
+      "path": "out/reach-transition/test-data.log",
+      "sha256": "38dc359a5e46def1fc88f41cadc9a569f4af935b2406de20a1aa3d97b3ac830f"
+    },
+    "typecheck": {
+      "path": "out/reach-transition/typecheck.log",
+      "sha256": "d1fe520f03f53c08ee8077e089e609bf4a39e5a102909c81f5ef4e74d9fdf3e6"
+    },
+    "build": {
+      "path": "out/reach-transition/build.log",
+      "sha256": "fd29aac771af30772580101569f39e8291dcd1f0ad4cc6aa9a3b14a700155d3a"
+    }
+  },
+  "operators": {
+    "scripts/diag/physics/reach-transition.ts": "02f37dc015ee77a84d84b47728b2ebfb0bcfbbd6dc5a46ab65ab8b034774dfaa",
+    "scripts/diag/physics/reach-transition-refinement.ts": "b19f6e48e2c62810b79000542eeeb052c99a08e2a81fa30b423041062177b27a",
+    "scripts/diag/physics/reach-transition-report.py": "393ee58243bc54f38309ee537df7e1c74ce69ef6a91edd3c00a6f74354c1f0c3",
+    "scripts/diag/physics/reach-contact-panel.ts": "a64366aed329f41cdadb3fe203b37de2575d4f890792ea7def58e55cc72e0f63",
+    "test/tackle-touch.test.ts": "95a8dc66cf12098966761354219e780585af1696fe02370733fc80baf6191595"
+  },
+  "rawFiles": {
+    "out/reach-transition/default.json": "81fe18ec136f3a1484bc47c2c182b4772298e9d0852e770a86b8ee1cab35c270",
+    "out/reach-transition/finish.json": "c99bff2ff232f2a1fac7d4a4ca423384db34cc1a66b5a791cd327c8196eba90d",
+    "out/reach-transition/touch.json": "c0ac0141434771ae3bdc9642143e4107229536c7ac7c8a2b804c501544ff68cf",
+    "out/reach-transition/touch-alone.json": "c55e022bab2aec172876d0516a6d7000a4fcae4a64439f749dbf7613aa935687",
+    "out/reach-contact/fresh-finish.json": "c3fe69339fd6f61effd5756f79d42e8984bc984640e530c5e9c9f1cde0315ff2",
+    "out/reach-transition/fresh-touch.json": "0b89549581fd422a63c0a1e1c79f588ec25acb17805358689d4a1eca74479d48",
+    "out/reach-transition/extra-control.json": "70e84b4c902c76dc452532416603ae5c0953f8f9d0c85f68d98873b48a653451",
+    "out/reach-transition/extra-touch.json": "7f3286ef186015463cc3d071a080cfd9934c6747c96e86d8c32caaef4475df1b",
+    "out/reach-transition/first-touch.json": "173c6c47e9b69f647caaef3cc418aebe5649c5e383ca6712d04438d8136ebf79",
+    "out/reach-transition/first-fresh-touch.json": "71b79f624cad3399ac63765290933cf2d0f4d143e99fdccc71b6ac7962920dab",
+    "out/reach-closure/full-early-reel.json": "660a7ba0954d00ff9ff1e3bea85481f76c4455b20490edac9717495fce99d88e",
+    "out/reach-closure/fresh-early-reel.json": "e6ca6ae983d07f5aa1db9789302eaffc53f537dff445c086033a7b9f2adc4d8e",
+    "out/reach-closure/default.json": "172dc3bd9b554fcd171c1ce25ec38297741f9d8ed4a189298a3a6bb0c4786068",
+    "out/reach-closure/finish.json": "21f25ee87f310884946ce2a76fe96a3252b5eae66f4d690a292bfbd1159416cc",
+    "out/reach-transition/fresh-current.json": "4dccc97024053a62f92c11b294153331e3e1726fd5d9f05b22b25c89a78e40dd",
+    "out/reach-transition/fresh-prefix-movement.json": "9c27f757d745fe4f58e129382bad405ea736b45fa22ceb58b5a3d201bd215edf",
+    "out/reach-transition/fresh-no-launch.json": "1988f19c38b3961a14f4e66653617b2082674dd33bd18425b8bbac0887ad7bb0",
+    "out/reach-transition/fresh-prefix-grip.json": "a51430d3013b1bc4b06c2cd1f61ecac0acf575d6582ade155daf5c200bc75870",
+    "out/reach-transition/selected-refinement.json": "00ac8e0cca69e0b8c9b1fc1c3c02a177911ee4ccd83ae1218ebe3b452df2fbf5",
+    "out/reach-transition/focused.log": "a614f57902bd04249ff177ebf464b9addad208c2148c46f6af8bfb1929d7fb67",
+    "out/reach-transition/test-all.log": "98c7c9050303867232fe4f9a080ef86b856b6732426a7a8f42afd6a64a812d28",
+    "out/reach-transition/enabled-controls.log": "f08157045b56928bfe4257a39d4d2ba6984f375d32a21f3fe8d80f9bf8724895",
+    "out/reach-transition/test-data.log": "38dc359a5e46def1fc88f41cadc9a569f4af935b2406de20a1aa3d97b3ac830f",
+    "out/reach-transition/typecheck.log": "d1fe520f03f53c08ee8077e089e609bf4a39e5a102909c81f5ef4e74d9fdf3e6",
+    "out/reach-transition/build.log": "fd29aac771af30772580101569f39e8291dcd1f0ad4cc6aa9a3b14a700155d3a"
+  }
+}

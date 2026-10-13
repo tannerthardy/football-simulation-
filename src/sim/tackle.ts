@@ -64,8 +64,8 @@ const WRAP_BIND = process.env.WRAP_BIND === '1';
 /** Experimental contact acquired at standing reach with finite arm bracing.
  * Approach requests and real torso collisions remain physical. Default-off. */
 const REACH_CONTACT = process.env.REACH_CONTACT === '1';
-/** Experimental early hand acquisition while the supported read still favors
- * gathering. Ordinary grip; a touch does not launch the body strike. */
+/** Experimental early hand acquisition with coherent approach footwork through
+ * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
 
 export function gripForce(d: Agent, quality: number): number {
@@ -144,7 +144,7 @@ export function tryTackles(sim: PlaySim): void {
       }
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
-      attempt(sim, d, c, q, engaged, dd > arms, TACKLE_TOUCH && waitForBetter && acquireAtReach);
+      attempt(sim, d, c, q, engaged, dd > arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
     }
@@ -188,7 +188,7 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
   return false;
 }
 
-function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean, touchOnly = false): void {
+function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean): void {
   const t = sim.t;
   const rng = sim.rng;
   // Arms reach and recoil: one attempt per beat, not per physics tick.
@@ -256,7 +256,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // strikes: the last step drives his body into the carrier's near hip, so
   // the wrap follows a collision instead of a reach at a passing runner.
   if (lunged) sim.diveAt(d, { x: dx, y: dy });
-  else if (!engaged && !touchOnly) strike(sim, d, c, d.r('tackling'));
+  else if (!engaged) strike(sim, d, c, d.r('tackling'));
   grasp(sim, d, c, quality, legs, dd, execution, lunged, `${lunged ? 'lunge' : engaged ? 'block' : q > 0.6 ? 'form' : 'reach'}${alreadyWrapped ? '+assist' : ''}${fromBehind ? '+behind' : ''}`);
   sim.event('tackle_wrap', d, c, alreadyWrapped ? 'assist' : 'initial');
   if (closing > 4) sim.event('hit', d, c);
@@ -410,6 +410,15 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       let vel = { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
       intents[d.idx] = { vel, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
         dive: own?.dive, lunge: own?.lunge };
+    }
+    if (TACKLE_TOUCH && (own?.lunge || d.body.support?.strike)
+      && c.body.support?.state === 'up' && d.body.support?.state === 'up'
+      && distance > torso + .15) {
+      // An acquired hand must not replace approach footwork with pile braking
+      // while the committed strike is still driving the body. Keep the actual
+      // cached command; contacts and ground limits determine what it achieves.
+      intents[d.idx] = { ...intents[d.idx], vel: { ...own.vel },
+        cutSkill: own.cutSkill, effort: own.effort };
     }
   }
   // TACKLE_ROLL (experimental, off by default): a tight, secure wrap on an
