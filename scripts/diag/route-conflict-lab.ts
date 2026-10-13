@@ -18,19 +18,19 @@ import {sourceVersion} from '../source-version.js';
 
 export const designs:Array<{call:PassConcept;formation:string;attack:string;control:string;conflict:string}>=[
  {call:{id:'lab_mills',name:'Mills with shallow outlet',family:'dropback',drop:'gun5',
-   strong:{1:'post',2:'dig',3:'shallow'},weak:{1:'go',2:'hook'},back:'check',progression:['S1','S2','S3','B'],beats:[]},
+   strong:{1:'post',2:'dig',3:'shallow'},weak:{1:'go'},back:'check',progression:['S1','S2','S3','B'],beats:[]},
   formation:'gun_trips_11',attack:'cover4',control:'cover2man',
   conflict:'Post over dig stresses quarters safety #2 responsibility and post roof; 2-Man tests whether individual trails plus two roofs handle the same stems.'},
  {call:{id:'lab_yankee',name:'Yankee post-over',family:'dropback',drop:'five',
-   strong:{1:'post',2:'cross',3:'flat'},weak:{1:'go',2:'hook'},back:'block',progression:['S1','S2','S3','W2'],beats:[]},
+   strong:{1:'post',2:'cross',3:'flat'},weak:{1:'go'},back:'block',progression:['S1','S2','S3','W1'],beats:[]},
   formation:'gun_trips_11',attack:'cover3',control:'cover4_poach',
   conflict:'Post draws middle-third attention while deep over crosses underneath; trips poach supplies an alternative inside roof. No invented play-action or extra run fake.'},
- {call:{id:'lab_mesh_rail',name:'Mesh rail with slant clear',family:'dropback',drop:'gun5',
-   strong:{1:'slant',2:'wheel',3:'shallow'},weak:{1:'go',2:'shallow_high'},back:'block',progression:['S2','S3','W2','S1','W1'],beats:[]},
-  formation:'gun_trips_11',attack:'cover1',control:'cover4_palms',
-  conflict:'Outside-first wheel threatens a late vertical while opposed unders stress man traffic; Palms is an adverse rule test, not a guaranteed wheel stop. No scripted pick/contact.'},
+ {call:{id:'lab_mesh_rail',name:'Mesh rail with vertical clears',family:'dropback',drop:'gun5',
+   strong:{1:'go',2:'shallow'},weak:{1:'go',2:'shallow_high'},back:'wheel',progression:['S2','W2','B','S1','W1'],beats:[]},
+  formation:'gun_doubles_11',attack:'cover1',control:'cover4_palms',
+  conflict:'RB wheel threatens a late vertical while opposing #2 unders stress man traffic; Palms is an adverse distribution test, not a guaranteed wheel stop. No scripted pick/contact.'},
  {call:{id:'lab_texas_seam',name:'Texas beneath seam and dig',family:'dropback',drop:'gun5',
-   strong:{1:'go',2:'seam',3:'hook'},weak:{1:'dig',2:'flat'},back:'angle',progression:['S2','B','W1','S3'],beats:[]},
+   strong:{1:'go',2:'seam'},weak:{1:'dig',2:'flat'},back:'angle',progression:['S2','B','W1','W2'],beats:[]},
   formation:'gun_doubles_11',attack:'tampa2',control:'cover1_robber',
   conflict:'Seam takes Mike deep while back breaks inside and dig arrives behind underneath help; robber is deliberately hostile to the interior throwing window.'},
 ];
@@ -52,7 +52,10 @@ for(const roster of [8081,9092]){
    offCall:{formation:form,flip,kind:'pass' as const,pass:d.call,label:id},
    defCall:{personnel:'nickel' as const,front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID[d[arm]],zoneStyle:'match' as const,pressure:null,label:id},
    los:40,ballY:CENTER_Y,firstDownX:50,seed,audibles:false};
-  const sim=new PlaySim(structuredClone(setup)),result=sim.run();
+  const sim=new PlaySim(structuredClone(setup));
+  const refs=[...Object.keys(d.call.strong).map(k=>`S${k}`),...Object.keys(d.call.weak).map(k=>`W${k}`),...d.call.progression];
+  for(const ref of refs)if(ref!=='B'&&!Reflect.get(sim.offAlign.numbering,ref))throw Error(`Uninstalled receiver reference ${id}:${ref}`);
+  const result=sim.run();
   const signature=hash({result:{...result,frames:undefined,telemetry:undefined},bodies:sim.agents.map(a=>a.body),intents:sim.intents,rng:sim.rng,perception:sim.perception});
   clips.push({id,input:{...input,effectiveCoverage:sim.defCall.coverage.id},setup,signature,result});
  }
