@@ -718,3 +718,16 @@ Edit only your own rows and requests so board merges stay trivial.
   `data/reviews/current/catch-transition-inputs.json`; exact measurements and
   full launcher receipts are in `catch-transition-diagnosis.json`. Helper
   containment remains separate; nearby P4 support is already behind at slip.
+
+- 2026-10-13 (America/Phoenix), catch controller session -> run-game owner:
+  Continuing with one near-hip objective shadow question on P4; reuse P58,
+  P95 reachable-ball success and P16 interception evidence as relevant
+  opposing geometry/information controls. Only short native prefixes, no
+  changed live requests, new full plays, games or roster screen. Direct
+  correctness checks cover cached state/cue parity, finite bounded requests,
+  no state/information mutation and preview evaluation-order invariance.
+  Shared testing policy adopted from PR #6 `codex/roster-capability-audit`
+  `f9617dde9456c0ead2d66b46d4b42608adcd3585`, `docs/TESTING_COSTS.md`, without
+  changing branches or merging it. Existing run-game integration lead retains
+  full-suite ownership if an engine candidate becomes ready. No shared files
+  claimed, no new arrival gate, timer, capability, helper or physics change.
