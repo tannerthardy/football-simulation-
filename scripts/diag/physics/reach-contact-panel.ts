@@ -16,7 +16,8 @@ import { sourceVersion } from '../../source-version.js';
 
 const out = process.argv[2] ?? 'out/reach-contact/panel.json';
 const extraFresh = process.argv.includes('--extra-fresh');
-const fresh = process.argv.includes('--fresh') || extraFresh;
+const newFresh = process.argv.includes('--new-fresh'); // Declared roster 101/102, seed 6001.
+const fresh = process.argv.includes('--fresh') || extraFresh || newFresh;
 const noBrace = process.argv.includes('--no-brace');
 const patch = process.argv.includes('--patch');
 const source = sourceVersion();
@@ -86,11 +87,11 @@ function execute(cell: Cell, side: 1 | -1, seed: number, teams?: Parameters<type
   } finally { World.prototype.step = step; PlaySim.prototype.tick = tick;
     for (const name of methods) proto[name] = originals[name]; }
 }
-const sets = extraFresh ? [[91, 92]] : fresh ? [[71, 72], [81, 82]] : [[61, 62]];
+const sets = newFresh ? [[101, 102]] : extraFresh ? [[91, 92]] : fresh ? [[71, 72], [81, 82]] : [[61, 62]];
 for (const [o, d] of sets) {
   const teams = fresh ? { offense: generateTeam(new Rng(o), 'Fresh O', 'FO', { strength: .55 }),
     defense: generateTeam(new Rng(d), 'Fresh D', 'FD', { strength: .55 }) } : undefined;
-  for (const cell of CELLS) for (const side of [1, -1] as const) for (const seed of extraFresh ? [5001] : fresh ? [4001] : [3000, 3001, 3002]) {
+  for (const cell of CELLS) for (const side of [1, -1] as const) for (const seed of newFresh ? [6001] : extraFresh ? [5001] : fresh ? [4001] : [3000, 3001, 3002]) {
     const observed = execute(cell, side, seed, teams), plain = execute(cell, side, seed, teams, false);
     assert(observed.endpoint === plain.endpoint);
     rows.push({ o, d, ...observed, observerNeutral: true });
@@ -100,6 +101,6 @@ assert(sourceVersion() === source);
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, JSON.stringify({ source, protocol: 'native-reach-contact-ledger-v1',
   collector: createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),
-  flags: Object.fromEntries(['TACKLE_TOUCH', 'REACH_CONTACT', 'LEG_BRACE', 'TACKLE_ROLL', 'WRAP_BIND'].map(k => [k, process.env[k] ?? '0'])),
-  noBrace, fresh, extraFresh, patch, rows }));
+  flags: Object.fromEntries(['TACKLE_TOUCH', 'REACH_CONTACT', 'LEG_BRACE', 'TACKLE_ROLL', 'WRAP_BIND', 'GAIT_STEP'].map(k => [k, process.env[k] ?? '0'])),
+  noBrace, fresh, extraFresh, newFresh, patch, rows }));
 console.log(out, rows.length, 'observer-neutral plays');

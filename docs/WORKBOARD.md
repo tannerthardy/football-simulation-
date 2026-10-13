@@ -6,6 +6,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
+| Reach-wrap force-point split | Codex second sim, user authorized continuation | `codex/wrap-force-point` from `23de24f` | Saved slow-rear witness and shallow/repaired controls; diagnostic-only final tree. Shared engine, capacities and defaults unchanged. | 2026-10-13 UTC | [Bounded investigation complete](reviews/wrap-force-point.md): height, rather than stronger recovery binding, explains the depth-probe rescue. Paid retry acquires a lower grip but worsens good controls; no policy installed. Isolated gait law coarse gains 104→114 / 74→76, but only one new matched mirrored finish persists at both 48/96; early touch adds 16 losses/8 gains. Primary's unchanged continued-recovery candidate removes the unstable fast-rear finish and makes live 12/96 paths agree within 0.01243 yd, with unchanged hold depth. Compact prefix witness supplied; 97 gait-focused checks, type/build pass. Next: broader native recovery validation, then a real finishing mechanism. |
 | Slow-rear contact regression | Codex second sim, user authorized continued contact work | `codex/slow-rear-contact` from `182f01c` | First acquisition/queued-strike divergence on 180°/3 seed 3002; repaired 135°/6 and dive controls. Diagnostic handoff only in final tree; World/capacities, hold depth and production/RB defaults unchanged. | 2026-10-12 (America/Phoenix) | [Bounded diagnosis complete](reviews/slow-rear-contact.md): actual acquired picture computes 6.545 yd/s, but joining the bond returns full pursuit 9.359. Reuse trial retained at `6dabd20`, rejected (100→94 matched, no gains; selected slow rear still censored; 42 worse completed fresh spots) and reverted. Harder rear impact boosts runner to 5.339 vs 4.290; both later plant. A diagnostic-only depth substitution at achieved tight wrap repairs the selected pair at every resolution and keeps controls. Engine exactly restored to `182f01c`; 97 focused checks, type/build pass. Primary handoff: 24 KB two-body witness; separate force-point height from recovery coupling before an earned re-grab model. |
 | Hand-to-wrap movement/quality transition | Codex second sim, user approved next contact investigation | `codex/reach-wrap-transition` from `d4ec81c` | Mirrored fresh 135°/6 reach loss, slow front and dive controls. Controller/diagnostic boundary only; shared World, capacities, hold depth and RB/production defaults unchanged. | 2026-10-13 UTC | [Bounded work complete](reviews/reach-transition.md): queued strike and pile braking conflict is demonstrated. First suppression attempt failed matched controls (88/104), retained at `39823e9`. Final `TACKLE_TOUCH=1` preserves cached footwork through an extended committed strike. Repairs the selected rear pair; 96 fresh and 48 new inputs lose no finishes, but matched stays 100/104 and trades one slow-rear pair for another. Default-off; 1,622 pass + existing Tite, 141 Python. Six native replay cases converge and reproduce 12-step boundaries within 2e−11 yd. No promotion or third rule. Next: first queued-strike/geometry divergence on new 180°/3 seed-3002 regression, with repaired rear and slow-front depth controls. |
 | Reach-contact closure and alternative selection | Codex second sim, user asks to build/test and quickly compare better approaches | `codex/reach-contact-closure` from `fda39f7` | Saved mirrored failing grip/control tapes first; compare original compression, acquisition with existing reel, and absorption-to-wrap transition. No capacities, support integrator, OL or default changes. | 2026-10-13 UTC | [Bounded comparison complete](reviews/reach-closure.md): fix prototype's whole-vector cap—compression keeps allocated arm limit, passive shear keeps original structural grip limit. Gains 12 matched / 14 fresh finishes over the brace with no lost finishes versus that stage, but still behind finish controls (80/104 and 62/74). Same-clock speed comparison removes the apparent large gain. Ordinary early acquisition/reel is closer (100/104, 72/74); no promotion. Default-off; 1,614 pass + existing Tite, 141 Python. Park brace expansion. Next: first movement/quality transition on mirrored fresh 135°/6 reach; depth substitution fixes slow-front loss but not this rear case. |
@@ -381,3 +382,22 @@ Edit only your own rows and requests so board merges stay trivial.
   falls at every resolution. Please separate force-point height/pitch from
   corrective-support coupling, then determine whether a deeper hold can be
   physically earned and at what cost. No shared-law edit or new policy here.
+
+- 2026-10-13 UTC, second sim -> primary physics/controller owners:
+  [Force-point split](reviews/wrap-force-point.md) separates height from
+  corrective coupling. The lower force point enters the existing knee trip
+  transition; binding alone cannot repair the slow rear. A paid ordinary retry
+  can reacquire lower but costs successful controls, so no re-grab rule lands.
+  Existing `839bf3b` gait law tested alone in an isolated kernel: coarse matched
+  104→114 and fresh 74→76 with no lost coarse finishes, but native 48/96 checks
+  invalidate several added finishes. Do not promote that count. Early contact
+  loses sixteen/gains eight matched versus gait alone. On 180°/8, seed 3001,
+  your unchanged continued-recovery candidate keeps the runner upright at both
+  12 and 96; maximum path disagreement 0.01243 yd, advance 30.534728/30.534706,
+  no physical depth slide or capacity increase. Arm/support/passive-work guards
+  and observed/plain identity pass. The [compact prefix witness](../data/reviews/current/loaded-wrap-prefix-witness.json)
+  reconstructs acquired attachment history; the same-prefix fork demonstrates
+  that the legacy jump itself persists at every resolution, while earlier
+  continuation history changes the outcome. Please validate native additional
+  gained inputs and retained angled/patch cases before finishing or promotion.
+  This leaves Claude's hanging-weight prototype and all production files alone.

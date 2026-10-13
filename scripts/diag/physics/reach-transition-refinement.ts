@@ -15,13 +15,15 @@ const tape = (flag: string, fallback: string) => {
   return i < 0 ? fallback : process.argv[i + 1];
 };
 const source = sourceVersion(), cases = [], inputs = [];
-for (const [path, angle, roster] of [[tape('--fresh-tape', 'out/reach-transition/fresh-final.json'), 135, 71],
+const allTape = process.argv.includes('--cases-tape') ? tape('--cases-tape', '') : null;
+const specs = allTape ? [[allTape, null, null]] as const : [[tape('--fresh-tape', 'out/reach-transition/fresh-final.json'), 135, 71],
   [tape('--control-tape', 'out/reach-transition/small-final.json'), 90, 61],
-  [tape('--rear-tape', 'out/reach-transition/rear-loss-final.json'), 180, 61]] as const) {
+  [tape('--rear-tape', 'out/reach-transition/rear-loss-final.json'), 180, 61]] as const;
+for (const [path, angle, roster] of specs) {
   const raw = readFileSync(path), panel = JSON.parse(raw.toString());
   assert(panel.source === source);
   inputs.push({ path, sha256: createHash('sha256').update(raw).digest('hex') });
-  for (const row of panel.rows.filter((r: any) => r.o === roster && r.result.angle === angle)) {
+  for (const row of panel.rows.filter((r: any) => (roster === null || r.o === roster) && (angle === null || r.result.angle === angle))) {
     const frames = row.frames.slice(row.frames.findIndex((f: any) => f.before.joint));
     assert(frames.length);
     const initial = [frames[0].before.d, frames[0].before.c];
@@ -74,5 +76,6 @@ for (const [path, angle, roster] of [[tape('--fresh-tape', 'out/reach-transition
 }
 assert(sourceVersion() === source);
 mkdirSync(dirname(out), { recursive: true });
-writeFileSync(out, JSON.stringify({ source, inputs, cases }, null, 2));
+writeFileSync(out, JSON.stringify({ source, inputs,
+  collectorSha256: createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'), cases }, null, 2));
 console.log(out, JSON.stringify(cases));
