@@ -26,7 +26,7 @@ export const designs:Array<{call:PassConcept;formation:string;attack:string;cont
   formation:'gun_trips_11',attack:'cover3',control:'cover4_poach',
   conflict:'Post draws middle-third attention while deep over crosses underneath; trips poach supplies an alternative inside roof. No invented play-action or extra run fake.'},
  {call:{id:'lab_mesh_rail',name:'Mesh rail with slant clear',family:'dropback',drop:'gun5',
-   strong:{1:'slant',2:'wheel',3:'hook'},weak:{1:'shallow',2:'shallow_high'},back:'block',progression:['S2','W2','W1','S1','S3'],beats:[]},
+   strong:{1:'slant',2:'wheel',3:'shallow'},weak:{1:'go',2:'shallow_high'},back:'block',progression:['S2','S3','W2','S1','W1'],beats:[]},
   formation:'gun_trips_11',attack:'cover1',control:'cover4_palms',
   conflict:'Outside-first wheel threatens a late vertical while opposed unders stress man traffic; Palms is an adverse rule test, not a guaranteed wheel stop. No scripted pick/contact.'},
  {call:{id:'lab_texas_seam',name:'Texas beneath seam and dig',family:'dropback',drop:'gun5',
