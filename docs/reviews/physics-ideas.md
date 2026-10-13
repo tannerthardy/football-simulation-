@@ -327,3 +327,56 @@ horizontally. In games a second tackler usually finishes these.
 set: the brace alone leaves lone tacklers no finish). The physics session owns
 promotion and should review the brace law and the roll; the vertical
 weight-transfer finish is the next physics item.
+
+## 10. How the tackler arrives (measurement; nothing changed)
+
+With all three flags the biggest after-contact gap left in games is the first
+0.2 s: carrier speed 3.54 vs NFL 4.19 yd/s, and the loss still grows with
+closing speed (`collision-exchange.py`: -0.55 / -0.90 / -1.20 / -1.03 yd/s for
+closing 0-2 / 2-3.5 / 3.5-5 / 5-9; NFL flat at about -0.5). New tools, same
+operator on NFL and sim: `approach-profile.py` (exports) and
+`approach-trace.ts` (requested vs achieved approach in games).
+
+Nearest defender before first contact (NFL / sim, all angles):
+
+| s before contact | 0.6 | 0.4 | 0.2 | 0 |
+|---|---|---|---|---|
+| Defender speed | 3.04 / 2.02 | 3.05 / 1.95 | 3.04 / 1.95 | 3.01 / 1.68 |
+| His velocity along the carrier's travel | +0.85 / -0.53 | +1.12 / -0.42 | +1.45 / -0.32 | +1.79 / +0.28 |
+| Closing on the line of centers | 4.77 / 4.60 | 4.45 / 4.91 | 3.68 / 5.00 | 1.98 / 3.04 |
+| Center distance | 3.20 / 3.86 | 2.26 / 2.91 | 1.42 / 1.90 | 0.85 / 0.95 |
+| Path miss distance | 0.72 / 0.78 | 0.63 / 0.64 | 0.57 / 0.53 | 0.53 / 0.50 |
+
+The same pattern holds for DL, LB and DB separately. NFL defenders turn
+and run *with* the carrier in the last half second, and the closing speed
+falls from about 4.5 to 2 yd/s, mostly inside arm's length (1.4 yd at -0.2 s).
+Sim defenders keep coming against the runner's travel at about 5 yd/s until
+the torsos meet.
+
+What it is not:
+
+- **Not an aim at his center.** The projected miss distance of the two paths
+  is the same (about 0.5 yd at contact).
+- **Not the front tackler's minimum drive** in `gatheringApproach`. Disabling
+  it (local, reverted) moved head-on velocity along travel by +0.3 yd/s and
+  left closing at -0.2 s at 4.6.
+- **Not execution.** The requests themselves ask for about 6 yd/s closing at
+  1.9 yd (`approach-trace.ts`, requested vs achieved).
+
+After contact the pairs differ too (`contact-distance.py`): NFL centers close
+to 0.72 yd at +0.2 s, then separate (closing -0.95 yd/s at +0.3 s). Sim pairs
+lock torso to torso (p25 0.51 yd, the two radii) and stay there (closing 0.0).
+NFL tacklers seem to absorb the closing through their arms from about 1.4 yd
+and hang on at arm's length; ours pull in to the torso, which makes every first
+contact a whole-body merge. Candidate mechanisms, in order:
+
+1. **Arm-length contact.** A grasp that forms at reach and holds the bodies
+   apart at arm's length (the hold's reel draws them to the torso now), so
+   the exchange is force-limited by the arms and grip, not a collision.
+   World/tackle law: the physics session's.
+2. **The approach request.** The gather plans braking to a fixed "through"
+   closing speed (2.5-4.5) at torso contact; NFL tacklers start matching the
+   runner's travel earlier. This is a controller choice, but under the current
+   physics a hard arrival is rewarded with a bigger exchange. Changing it first
+   would remove a technique because the physics overpays it. Repair the
+   contact law first, then see whether the controller still charges.
