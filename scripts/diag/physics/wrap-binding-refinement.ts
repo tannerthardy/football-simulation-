@@ -120,7 +120,7 @@ for (const c of cases) for (const side of [1, -1] as const) {
 assert(sourceVersion() === source);
 writeFileSync(`${out}/summary.json`, JSON.stringify({ source,
   collectorSha256: createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),
-  flags: Object.fromEntries(['WRAP_BIND', 'LEG_BRACE', 'TACKLE_ROLL', 'REACH_CONTACT'].map(k => [k, process.env[k] ?? '0'])),
+  flags: Object.fromEntries(['WRAP_BIND', 'LEG_BRACE', 'TACKLE_ROLL', 'REACH_CONTACT', 'TACKLE_TOUCH'].map(k => [k, process.env[k] ?? '0'])),
   cases: summaries,
   limits: ['96 steps is a numerical comparator, not ground truth.',
     'Same tape within each refinement; native tapes between arms may diverge after physics changes.',

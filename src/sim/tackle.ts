@@ -64,6 +64,9 @@ const WRAP_BIND = process.env.WRAP_BIND === '1';
 /** Experimental contact acquired at standing reach with finite arm bracing.
  * Approach requests and real torso collisions remain physical. Default-off. */
 const REACH_CONTACT = process.env.REACH_CONTACT === '1';
+/** Experimental early hand acquisition while the supported read still favors
+ * gathering. Ordinary grip; a touch does not launch the body strike. */
+const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -92,7 +95,7 @@ export function tryTackles(sim: PlaySim): void {
     if (dd <= range && !occluded(sim, d, c)) {
       // Contact quality: 1 = body to body (form tackle), 0 = fingertips / lunge.
       const q = contactQuality(dd, body, arms);
-      const acquireAtReach = REACH_CONTACT && dd <= arms && !engaged;
+      const acquireAtReach = (REACH_CONTACT || TACKLE_TOUCH) && dd <= arms && !engaged;
       // A tackler reaches when he is in position to wrap, or when this is
       // the best shot the visible relative trajectory offers (a runner
       // passing or pulling away). While he is still closing on a better
@@ -141,7 +144,7 @@ export function tryTackles(sim: PlaySim): void {
       }
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
-      attempt(sim, d, c, q, engaged, dd > arms);
+      attempt(sim, d, c, q, engaged, dd > arms, TACKLE_TOUCH && waitForBetter && acquireAtReach);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
     }
@@ -185,7 +188,7 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
   return false;
 }
 
-function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean): void {
+function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean, touchOnly = false): void {
   const t = sim.t;
   const rng = sim.rng;
   // Arms reach and recoil: one attempt per beat, not per physics tick.
@@ -253,7 +256,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // strikes: the last step drives his body into the carrier's near hip, so
   // the wrap follows a collision instead of a reach at a passing runner.
   if (lunged) sim.diveAt(d, { x: dx, y: dy });
-  else if (!engaged) strike(sim, d, c, d.r('tackling'));
+  else if (!engaged && !touchOnly) strike(sim, d, c, d.r('tackling'));
   grasp(sim, d, c, quality, legs, dd, execution, lunged, `${lunged ? 'lunge' : engaged ? 'block' : q > 0.6 ? 'form' : 'reach'}${alreadyWrapped ? '+assist' : ''}${fromBehind ? '+behind' : ''}`);
   sim.event('tackle_wrap', d, c, alreadyWrapped ? 'assist' : 'initial');
   if (closing > 4) sim.event('hit', d, c);

@@ -99,6 +99,6 @@ assert(sourceVersion() === source);
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, JSON.stringify({ source, protocol: 'native-reach-contact-ledger-v1',
   collector: createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),
-  flags: Object.fromEntries(['REACH_CONTACT', 'LEG_BRACE', 'TACKLE_ROLL', 'WRAP_BIND'].map(k => [k, process.env[k] ?? '0'])),
+  flags: Object.fromEntries(['TACKLE_TOUCH', 'REACH_CONTACT', 'LEG_BRACE', 'TACKLE_ROLL', 'WRAP_BIND'].map(k => [k, process.env[k] ?? '0'])),
   noBrace, fresh, patch, rows }));
 console.log(out, rows.length, 'observer-neutral plays');
