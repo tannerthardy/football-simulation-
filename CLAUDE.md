@@ -6,7 +6,17 @@ their bodies and make decisions. **We are not tuning toward NFL numbers.** Many
 wrong mechanisms can produce 4.4 yards per carry. NFL game statistics are the
 final exam, not the objective function.
 
-Work on `claude/engine-priorities`. Commit coherent steps and push that branch.
+The shared development baseline is `codex/run-game-integration`, described in
+[BASELINE.md](docs/BASELINE.md) and `config/baseline.json`. Fetch it and record
+the exact commit before comparing results; use `npm run baseline:run` so ambient
+flags cannot change the experiment. Start new work from this baseline. Existing
+feature branches must reconcile it before claiming comparable results.
+
+`claude/engine-priorities` remains the primary physics owner's branch and PR #2's
+target; it is not the current combined test baseline. Commit coherent steps on
+the assigned feature branch and push only that branch. Keep PR #2 draft and do
+not merge it until explicitly instructed. Experimental code can be preserved
+with its flag off; promotion requires its law and football controls.
 Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
 Read [work ownership](docs/WORKBOARD.md) before selecting work; claim it there
 and coordinate before editing another session's subsystem.
@@ -52,6 +62,10 @@ they are not blind holdouts. The reserved final exam is described in validation.
 ## Run checks
 
 Requires Node 22. Run `npm ci` once, then:
+
+For a shared baseline report, use `npm run baseline:verify`; it applies the
+recorded profile and runs all checks in sequence. Direct commands below are
+available for focused work, with their feature settings recorded explicitly.
 
 ```sh
 npm test                 # fast production contracts

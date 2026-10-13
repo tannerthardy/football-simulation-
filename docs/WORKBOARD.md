@@ -1,5 +1,10 @@
 # Current work ownership
 
+Shared comparisons start from `codex/run-game-integration`; read
+[the baseline](BASELINE.md) and run `npm run baseline:info` before collecting.
+Report the exact commit, source hash, flag profile and inputs. Historical rows
+below describe their pinned stages; they do not change the current baseline.
+
 Read this before choosing work. Add or update one row before editing a shared
 subsystem. Claim a bounded task, not every future idea. Date uses the owner's
 local calendar; evidence receipts retain their explicit measurement timestamps.

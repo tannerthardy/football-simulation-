@@ -1,5 +1,9 @@
 # Gridiron Engine
 
+Shared development baseline: [`codex/run-game-integration`](docs/BASELINE.md).
+Use Node 22.23.3 and `npm run baseline:info` / `npm run baseline:verify` to
+record the exact source and feature settings before comparing results.
+
 A football simulation intended to support a future management game. Twenty-two
 players make fallible decisions and move through one shared physics world;
 blocking, tackling and running lanes should emerge from those interactions.
@@ -44,4 +48,5 @@ owns profiles; `src/game` owns the game; `scripts` contains labs and exporters.
 experiments. `npm test` keeps production contracts in the normal development
 loop; `npm run test:all` retains every TypeScript assertion.
 
-Work and pushes belong on `claude/engine-priorities`. Do not touch main or PR #1.
+Start assigned feature work from the shared baseline and push its feature
+branch. Primary retains physics promotion ownership. Do not touch main or PR #1.

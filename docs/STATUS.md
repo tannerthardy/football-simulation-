@@ -1,6 +1,8 @@
 # Current status
 
-Updated 2026-10-12 UTC. Work on `claude/engine-priorities`; main and PR #1 are
+Current shared baseline: [BASELINE.md](BASELINE.md), `codex/run-game-integration`.
+Its profile and validation receipt supersede the branch/count guidance below;
+the dated sections retain their historical source pins. Main and PR #1 remain
 outside this work. NFL figures diagnose mechanisms, not values to fit.
 
 ## What is live
