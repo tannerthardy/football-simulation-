@@ -38,6 +38,7 @@ import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, new
 import { ARM_SPEED, turnBody, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { resolveGripInterval, type GripTimingReport } from './grip-timing.js';
+import { resolveFastGripInterval, commitGripTrial } from './grip-fast.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
 import { integrateFilteredFollow } from './filtered-follow.js';
 
@@ -373,7 +374,7 @@ export class World {
    * Center retains production until native helper/controller controls pass. */
   readonly handContact: 'center' | 'patch';
   /** Experimental grip-driven local integration; production retains midpoint. */
-  readonly gripTiming: 'midpoint' | 'resolved';
+  readonly gripTiming: 'midpoint' | 'resolved' | 'fast';
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -441,7 +442,7 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
@@ -605,7 +606,7 @@ export class World {
       if (plan.free || plan.dive || b.support!.state !== 'up') continue;
       const steps = near[i] ? report.substeps : 1;
       const divisor = this.impactTiming === 'local-sweep'
-        || this.handContact === 'patch' && this.gripTiming === 'resolved' ? dt : steps;
+        || this.handContact === 'patch' && this.gripTiming !== 'midpoint' ? dt : steps;
       const lx = this.leanX[i] / divisor, ly = this.leanY[i] / divisor;
       spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), dt);
     }
@@ -1016,13 +1017,22 @@ export class World {
 
   private integrateSubstep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
     report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean, swept = true): void {
-    if (this.gripTiming === 'resolved' && this.handContact === 'patch' && contact
+    if (this.gripTiming !== 'midpoint' && this.handContact === 'patch' && contact
       && this.joints.some(j => j.kind === 'grasp' && !j.broken && this.gripCapacity(j) > 0)) {
-      const r = resolveGripInterval(this, [ids, intents, plans, h, remaining, report, pairs, contact, swept],
-        (world, args) => world.integrateInterval(...args));
+      const args = [ids, intents, plans, h, remaining, report, pairs, contact, swept];
+      const execute = (world: any, a: any[]) => world.integrateInterval(...a);
+      // Custom/observed worlds retain live execution of accepted intervals.
+      // Plain World can import the same physical trial without solving again.
+      const canCommit = Object.getPrototypeOf(this) === World.prototype
+        && !Object.values(this).some(v => typeof v === 'function');
+      const r = this.gripTiming === 'fast' ? resolveFastGripInterval(this,args,execute,
+        canCommit ? (trial,a) => commitGripTrial(this,args,trial,a) : undefined)
+        : resolveGripInterval(this,args,execute);
       const total = report.gripTiming ??= { trials: 0, intervals: 0, limited: 0, maxAcceptedError: 0 };
       total.trials += r.trials; total.intervals += r.intervals; total.limited += r.limited;
       total.maxAcceptedError = Math.max(total.maxAcceptedError, r.maxAcceptedError);
+      if(this.gripTiming === 'fast') for(const key of ['commits','fallbacks','eventSplits'] as const)
+        total[key]=(total[key]??0)+(r[key]??0);
       return;
     }
     this.integrateInterval(ids, intents, plans, h, remaining, report, pairs, contact, swept);
@@ -1515,7 +1525,7 @@ export class World {
         // Its fatigue input is the time integral of achieved lean, paired
         // with the tick-duration divisor above. Legacy paths keep their order.
         const leanWeight = this.impactTiming === 'local-sweep'
-          || this.handContact === 'patch' && this.gripTiming === 'resolved' ? h : 1;
+          || this.handContact === 'patch' && this.gripTiming !== 'midpoint' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
         const yaw: { impulse: number; work: number; peakTorque?: number } = this.handContact === 'patch'
           ? turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy))

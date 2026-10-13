@@ -66,7 +66,7 @@ export function captureFirstGrip(cell: Cell, mode: 'center' | 'patch', side: 1 |
 }
 
 export function frozenInterval(saved: ReturnType<typeof packet>, partitions: number,
-  variant: 'full' | 'ground-only' | 'grip-only', duration: number, timing: 'midpoint' | 'resolved' = 'midpoint') {
+  variant: 'full' | 'ground-only' | 'grip-only', duration: number, timing: 'midpoint' | 'resolved' | 'fast' = 'midpoint') {
   if (!Number.isInteger(partitions) || partitions < 1 || !Number.isFinite(duration)
     || duration <= 0 || duration > saved.args[4]) throw new RangeError('Invalid frozen interval');
   const { w, args } = restore(saved), ids: number[] = args[0], report = args[5];

@@ -3,6 +3,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { resolveGripInterval } from '../src/physics/grip-timing.js';
+import { resolveFastGripInterval } from '../src/physics/grip-fast.js';
 import { passiveSlipReference } from '../scripts/diag/physics/passive-slip-reference.js';
 
 class Channel {
@@ -37,11 +38,12 @@ class Channel {
 }
 
 describe('resolved impulse, temporal moment, attachment and work against a separate force reference', () => {
-  it.each([0, .0001, .002])('matches the exact bounded response with mobility %s', mobility => {
+  it.each([0, .0001, .002].flatMap(mobility => ['resolved','fast'].map(mode=>({mobility,mode}))))('matches the exact bounded response with $mode, mobility $mobility', ({mobility,mode}) => {
     const w = new Channel(mobility), dt = .01, K = .52, cap = 2000;
     const j = w.joints[0], bodies = w.bodies, attachments = w.attachments;
     const args = [[0, 1], [], [], dt, dt, w.report, new Map(), true];
-    const r = resolveGripInterval(w, args, (trial, a) => trial.advance(a[3]));
+    const solve=mode==='fast'?resolveFastGripInterval:resolveGripInterval;
+    const r = solve(w, args, (trial, a) => trial.advance(a[3]));
     const ref = passiveSlipReference(4, K, mobility, cap, dt), J = -w.joints[0].force;
     expect(J).toBeCloseTo(ref.impulse, 2);
     expect(w.bodies[0].facing).toBeCloseTo(-ref.transport / 2, 5);

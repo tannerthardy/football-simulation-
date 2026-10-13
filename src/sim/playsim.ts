@@ -72,7 +72,7 @@ export interface PlaySetup {
   supportIntegration?: 'mean' | 'integrated';
   /** Experimental angular hand patch; default center keeps production law. */
   handContact?: 'center' | 'patch';
-  gripTiming?: 'midpoint' | 'resolved';
+  gripTiming?: 'midpoint' | 'resolved' | 'fast';
 }
 
 const MAX_PLAY_TIME = 25;

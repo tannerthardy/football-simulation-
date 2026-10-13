@@ -49,7 +49,7 @@ interface Attempt { t: number; kind: 'rolled miss' | 'rolled dive miss' | 'grip'
   capacity?: number; legs?: number; peakForce?: number; meanForce?: number; heldFor?: number; broke?: boolean }
 
 export function rep(cell: Cell, side: 1 | -1, seed: number,
-  physics: { handContact?: 'center' | 'patch'; substeps?: number; gripTiming?: 'midpoint' | 'resolved' } = {},
+  physics: { handContact?: 'center' | 'patch'; substeps?: number; gripTiming?: 'midpoint' | 'resolved' | 'fast' } = {},
   teams = { offense, defense }) {
   const sim = new PlaySim({
     offense: pickOffense(teams.offense, '11'), defense: pickDefense(teams.defense, 'base43'),

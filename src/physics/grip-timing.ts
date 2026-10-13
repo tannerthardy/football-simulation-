@@ -6,7 +6,8 @@
  */
 type Private = any;
 type Packet = { fields: Private; args: any[]; attachments: any[] };
-export interface GripTimingReport { trials: number; intervals: number; limited: number; maxAcceptedError: number; }
+export interface GripTimingReport { trials: number; intervals: number; limited: number; maxAcceptedError: number;
+  commits?: number; fallbacks?: number; eventSplits?: number; }
 const MAX_PARTITIONS = 16384;
 // Engineering local error tolerances, in yd, yd/s, rad, rad/s and kg*yd²/s².
 // These bound numerical comparison, never body capacities or football outcomes.
@@ -105,3 +106,7 @@ export function resolveGripInterval(w: Private, args: any[], execute: (w: Privat
   report.intervals = partitions;
   return report;
 }
+
+// Numerical scratch utilities shared with the separate fast candidate. The
+// corrected uniform reference above retains its algorithm and tolerances.
+export { snapshot, restore, advance, difference };
