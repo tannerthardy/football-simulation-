@@ -14,7 +14,7 @@
  */
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { cornerSpeed, fatigueFactor, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
+import { gaitLag, cornerSpeed, fatigueFactor, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { previewFreeMovement } from '../../physics/movement-preview.js';
 import { requestToCover } from '../motion-plan.js';
 import { availability, supportParams } from '../../physics/support.js';
@@ -29,6 +29,8 @@ import { interceptPoint } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 
+/** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
+const PULL_STEP = process.env.PULL_STEP === '1';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 export const isOL = (a: Agent): boolean => OL.has(a.slot);
 
@@ -611,8 +613,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
     const fb = sim.slot('F');
     const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
+    // PULL_STEP (experimental, off): the pull step opens to the play side and
+    // gains depth on the way, rather than dropping straight back first.
+    const pullStep = PULL_STEP ? ps * 0.9 : 0;
     const pullPath = (b: Agent): Vec2[] => [
-      { x: sim.los - 1.25, y: b.pos.y },
+      { x: sim.los - 1.25, y: b.pos.y + pullStep },
       { x: sim.los - 1.15, y: hole - ps * 0.5 },
       { x: sim.los + 0.5, y: hole },
     ];
@@ -624,7 +629,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
-        { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y },
+        { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
         { x: sim.los - (role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
       ] : pullPath(p);
@@ -731,6 +736,16 @@ export class RunBlocker implements Behavior {
   constructor(public plan: RunBlockPlan) {}
 
   calledMotion(): Vec2 | null { return this.track; }
+
+  contactMotion(a: Agent): Vec2 | null {
+    const e = a.engagement, read = this.zoneRead;
+    if (!e || e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach'
+      || !read || read.target !== e.defender.idx || read.phase !== 'reach'
+      || (this.plan.combination && !this.plan.combination.released)) return null;
+    // The same track tempo as the free stretch step, until the acquired
+    // shoulder picture changes the technique. Seal/runoff have their own fit.
+    return { x: 0, y: read.side * a.profile.vmax * .45 };
+  }
 
   get target(): Agent | null {
     return this.plan.target;
@@ -839,7 +854,9 @@ export class RunBlocker implements Behavior {
         }
         const next = plan.pullPath[this.pullIdx+1];
         const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
-        return goTo(a, path, { speed: 0.95, through });
+        // The pull step opens the hips to the play side: he does not turn to
+        // face his own backfield while he gains depth (PULL_STEP).
+        return goTo(a, path, { speed: 0.95, through, facing: PULL_STEP && this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined });
       }
     }
     if (!target) {
@@ -936,7 +953,7 @@ export class RunBlocker implements Behavior {
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.
-    const needed = requestToCover(a.profile.tau, Math.max(0, (shoulder - a.pos.y) * ps), meet, a.vel.y * ps);
+    const needed = requestToCover(gaitLag(a.profile), Math.max(0, (shoulder - a.pos.y) * ps), meet, a.vel.y * ps);
     const lateral = ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
     // The call's track tempo is what his teammates expect from him.
     this.track = { x: 0, y: ps * a.profile.vmax * .45 * press };

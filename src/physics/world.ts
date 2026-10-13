@@ -81,6 +81,12 @@ export interface HandJoint {
   steer: number;
   /** Height of the hand contact, yd; defaults to the lower player's pads. */
   height?: number;
+  /** HAND_MOTOR (experimental, off): wanted velocity of b past a along the
+   * hands' tangent, yd/s; the arms work toward it within steer and arm budgets. */
+  drive?: number;
+  /** HAND_MOTOR: wanted separating speed while the hands are on, yd/s (a punch
+   * or shove), within push and arm budgets. */
+  shove?: number;
   /** Last step's mean force on b from a: normal (+ pushes apart) and tangential. */
   normalForce?: number;
   tangentForce?: number;
@@ -240,6 +246,8 @@ const DOWN_FRICTION = 0.75;
 const FOLLOW_MARGIN = 1.1;
 /** Time constant of a slipping hold sliding down to the legs, s. */
 const LEG_SLIDE = 0.3;
+/** Experimental active hand motor (HAND_MOTOR=1): HandJoint.drive and .shove. */
+const HAND_MOTOR = process.env.HAND_MOTOR === '1';
 /** Experimental leg-hold bracing (LEG_BRACE=1); see addLoad. */
 const LEG_BRACE = process.env.LEG_BRACE === '1';
 /** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */
@@ -314,6 +322,9 @@ interface JointRow {
   lt: number;
   /** Grip budget (grasp) for this substep, kg·yd/s. */
   limit: number;
+  /** HAND_MOTOR targets for this row: tangential drive and separating shove, yd/s. */
+  drive?: number;
+  shove?: number;
   /** Hand limits for this substep (push, hold, steer), kg·yd/s. */
   pushLim: number;
   holdLim: number;
@@ -1890,6 +1901,14 @@ export class World {
         const c = dist - jt.extension;
         if (c < 0) { row.mode = 1; row.c = c; }
         else if (c > HANDS_SLACK) { row.mode = -1; row.c = c - HANDS_SLACK;row.actor=holder; }
+        if (HAND_MOTOR) {
+          // Arms move no faster than they can; a motor needs the hands on.
+          if (jt.drive && row.steerLim > 0) row.drive = clamp(jt.drive, -ARM_SPEED, ARM_SPEED);
+          if (jt.shove && jt.shove > 0 && c <= HANDS_SLACK && row.pushLim > 0) {
+            row.shove = Math.min(jt.shove, ARM_SPEED);
+            if (row.mode !== 1) { row.mode = 1; row.c = Math.min(0, c); row.actor = this.indexOf(jt.actor ?? jt.a); }
+          }
+        }
         if (this.handContact === 'patch') {
           // Splitting one connection into two half-cap hands must not double
           // its spring stiffness. Separate material points remain separate.
@@ -1963,7 +1982,10 @@ export class World {
       const vn = (b.vel.x - a.vel.x) * r.nx + (b.vel.y - a.vel.y) * r.ny
         + (r.ni ?? 0) * (a.spin ?? 0) + (r.nj ?? 0) * (b.spin ?? 0);
       const bias = r.mode > 0 ? Math.max(soft.biasRate * r.c, -MAX_PUSHOUT) : Math.min(soft.biasRate * r.c, MAX_PUSHOUT);
-      const imp = -r.mn * soft.massScale * (vn + bias) - soft.impulseScale * r.ln;
+      // A shove asks the compressive arms for a separating speed, not just
+      // for the bodies not to close inside the lockout.
+      const error = r.mode > 0 && r.shove ? Math.min(vn + bias, vn - r.shove) : vn + bias;
+      const imp = -r.mn * soft.massScale * error - soft.impulseScale * r.ln;
       const ln = r.mode > 0 ? clamp(r.ln + imp, 0, r.pushLim) : clamp(r.ln + imp, -r.holdLim, 0);
       const dn = ln - r.ln;
       const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'hands',true,r.normalWork??={net:0},
@@ -2048,9 +2070,12 @@ export class World {
     const ri = r.ri ?? 0, rj = r.rj ?? 0;
     let vt = (b.vel.x - a.vel.x) * tx + (b.vel.y - a.vel.y) * ty;
     if (ri || rj) vt -= ri * (a.spin ?? 0) + rj * (b.spin ?? 0);
-    const lt = clamp(r.lt - (r.mt ?? r.mn) * vt, -lim, lim);
+    // HAND_MOTOR: steering hands may drive toward a wanted tangential speed
+    // (active arm work) rather than only braking slip (passive).
+    const drive = r.joint.kind === 'hands' ? r.drive ?? 0 : 0;
+    const lt = clamp(r.lt - (r.mt ?? r.mn) * (vt - drive), -lim, lim);
     const dt = lt - r.lt;
-    const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,r.actor,r.joint.kind==='hands'?'hands':'grasps',false,r.tangentWork??={net:0},
+    const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,drive ? r.steerActor : r.actor,r.joint.kind==='hands'?'hands':'grasps',!!drive,r.tangentWork??={net:0},
       -ri * dt, -rj * dt);
     r.lt+=dt*fraction;
   }

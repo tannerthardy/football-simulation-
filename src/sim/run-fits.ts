@@ -1,4 +1,5 @@
 /** A support contract derived from the called front AND coverage, not the run call. */
+import { gaitLag } from '../physics/kinematics.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { gapY, isDeepZone } from '../playbook/alignment.js';
 import type { DefSlot, Gap } from '../playbook/types.js';
@@ -127,6 +128,9 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
+/** Experimental activation of the same planner for an observed pull-adjusted
+ * insertion. Default off while matched containment/misdirection controls run. */
+const PULL_PLAN = process.env.PULL_PLAN === '1';
 
 /** Backers flow inside-out on a declared track (FLOW_READ=0 off); yards inside the ball. */
 const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
@@ -253,6 +257,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const gap = liveGap(sim, a, job.gap, job.side);
   const flow = SCRAPE ? clamp(gap.vel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
     : clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
+  let pullSide = 0;
   if (PULL_READ) {
     // Read the guards: every puller this player sees crossing behind the line
     // shows where an extra blocker will turn up. Flow with him to keep the
@@ -261,7 +266,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (job.kind !== 'interior') for (const p of pullers(sim, a)) {
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
-      if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) { gy = target; a.tags.add('fit-pull-read'); }
+      if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) {
+        gy = target; pullSide = dir; a.tags.add('fit-pull-read');
+      }
     }
   } else if (indicator?.kind === 'pull' && job.kind !== 'interior') {
     gy += indicator.side * Math.min(1.5,Math.abs(indicator.pos.y-gy)*.35);
@@ -292,9 +299,13 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // position plans with): the speed that puts him there within two reads,
   // rather than a proportional drift the acceleration lag turns into a late
   // arrival. A still landmark keeps the ordinary proportional fit.
-  if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1)) return fit;
+  // A newly seen pull can precede adoption of its target on the next decision
+  // beat. Do not amplify the still-held action away from that observed pull.
+  const planPull = PULL_PLAN && job.kind === 'insert' && job.technique !== 'lag'
+    && (aim.y - a.pos.y) * pullSide > 0;
+  if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1 || planPull)) return fit;
   const horizon = 2 * a.mind.decisionInterval;
-  const vy = clamp(requestToCover(a.profile.tau, aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
+  const vy = clamp(requestToCover(gaitLag(a.profile), aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
   return { ...fit, vel: { x: fit.vel.x, y: vy } };
 }
 

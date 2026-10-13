@@ -2,6 +2,7 @@
  * Assignment of behaviors at the snap, and behavior transitions on play
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
+import { gaitLag } from '../physics/kinematics.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
@@ -247,7 +248,7 @@ export class RunnerToMesh implements Behavior {
     const d = Math.hypot(this.mesh.x - a.pos.x, this.mesh.y - a.pos.y);
     // Leave on the snap and get to the mesh on time: budget for the
     // acceleration it takes to get going, not just the distance.
-    const tAcc = a.profile.tau * 0.9;
+    const tAcc = gaitLag(a.profile) * 0.9;
     const speed = clamp(d / Math.max(0.2, dt - tAcc) / a.profile.vmax, 0.3, 1);
     // The deadline is a cadence cue, not possession. Brake into the mesh
     // until the QB actually gives him the ball; onHandoff installs the run.
