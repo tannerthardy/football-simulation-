@@ -1,5 +1,15 @@
 # Passive grip impulse and timing: bounded candidate, not promotion
 
+Follow-up in progress: adding capture-point displacement to the convergence
+estimator passes the early mirrored check but worsens the held-control path
+gap at 0.8 s (.0583→.0779 yd maximum) and introduces two cap hits. This
+unsuccessful attempt is retained in history, not adopted. Its next trace
+exposes an accounting error: refined lean samples are summed per piece but
+fatigue is divided by the original outer-step count. At 0.1 s the same held
+runner has energy .7783 at 12 versus .9805 at 96. The next bounded correction
+will integrate lean over actual physical time, without changing the fatigue
+or recovery laws. Original results below describe the earlier candidate.
+
 PR #3 continues from `3255be5`, with **`4ded6b6` kept as the comparison
 baseline**. The [original investigation](contact-foundations.md) identified
 the first angular error before active recovery placement. Its 98% reference

@@ -36,6 +36,11 @@ function difference(a: Private, b: Private, ids: number[]) {
     error = Math.max(error, Math.hypot(x.pos.x - y.pos.x, x.pos.y - y.pos.y) / POSITION,
       Math.hypot(x.vel.x - y.vel.x, x.vel.y - y.vel.y) / VELOCITY,
       Math.abs(x.facing - y.facing) / ANGLE, Math.abs((x.spin ?? 0) - (y.spin ?? 0)) / SPIN);
+    // Balance is continuous physical state: an apparently converged pose can
+    // still leave a different capture point for the next held interval.
+    // Use the same displacement tolerance; the recovery law stays untouched.
+    if (x.support.xi && y.support.xi) error = Math.max(error,
+      Math.hypot(x.support.xi.x-y.support.xi.x, x.support.xi.y-y.support.xi.y) / POSITION);
     if (x.support.state !== y.support.state) error = Math.max(error, 2);
     error = Math.max(error, Math.abs((a.report.supportMotorWork?.[i] ?? 0)
       - (b.report.supportMotorWork?.[i] ?? 0)) / WORK);

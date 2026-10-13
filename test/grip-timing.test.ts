@@ -39,6 +39,21 @@ const grip = (a: Body, b: Body, capacity = 900, legs = .6): GraspJoint =>
   ({ kind: 'grasp', a, b, capacity, reach: 1.6, hold: 1, legs, pull: 0 });
 
 describe('resolved passive grip force and temporal moment', () => {
+  it.each([1, -1] as const)('resolves acquired balance as well as body travel across outer partitions, side %s', side => {
+    const c = captureFirstGrip({ angle: 45, speed: 8, cut: false, difficulty: 'difficult' }, 'patch', side);
+    const coarse = frozenInterval(c.saved, 12, 'full', .05, 'resolved');
+    const fine = frozenInterval(c.saved, 96, 'full', .05, 'resolved');
+    const reference = frozenInterval(c.saved, 4096, 'full', .05);
+    const distance = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(a.x-b.x,a.y-b.y);
+    for (let i = 0; i < coarse.end.length; i++) {
+      expect(distance(coarse.end[i].xi, fine.end[i].xi)).toBeLessThan(5e-6);
+      expect(distance(fine.end[i].xi, reference.end[i].xi)).toBeLessThan(3e-6);
+      expect(distance(coarse.end[i].pos, fine.end[i].pos)).toBeLessThan(5e-6);
+    }
+    expect(coarse.integration!.limited).toBe(0); expect(fine.integration!.limited).toBe(0);
+    expect(Math.abs(coarse.energyError)).toBeLessThan(1e-8); expect(Math.abs(fine.energyError)).toBeLessThan(1e-8);
+  });
+
   it.each([1, -1] as const)('repairs acquired travel and yaw before active recovery, side %s', side => {
     const c = captureFirstGrip({ angle: 45, speed: 8, cut: false, difficulty: 'difficult' }, 'patch', side), h = .05 / 12;
     for (const variant of ['grip-only', 'full'] as const) {
