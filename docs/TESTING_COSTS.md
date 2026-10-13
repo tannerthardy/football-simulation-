@@ -95,6 +95,16 @@ than exact yardage. Screen completion means execution without its declared hard
 failures. Review changed cases before integrating; no outcome threshold or
 automatic promotion was added.
 
+Use the shared [improvement and regression procedure](BEHAVIOR_REVIEW.md) to
+make that review explicit: declare a mechanism contract, trace the first
+relevant divergence, check feasible/informed football responses and opposing
+controls, then record improvement, valid outcome change, regression, tradeoff
+or uncertainty. Apply the same standard to favorable and adverse yardage.
+Material unexplained changes do not pass by looking more like NFL averages.
+The saved-result worksheet runs zero simulations; request new traces only when
+they can settle an unresolved mechanism. These verdicts do not add a roster
+matrix, per-edit screen or automatic full-game job.
+
 To regenerate an incompatible baseline, use the pinned runtime, review why it
 changed, then `npm run screen:roster -- --baseline`. Review and commit its result;
 preserve historical receipts. The fixture builder performs no simulations and

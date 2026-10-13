@@ -52,6 +52,14 @@ fresh profile-only checks for generator/selection changes. Broad audits require
 explicit counts/reasons. `baseline:verify -- --candidate --fail-fast` retains
 skipped phases after a failure instead of paying for the expensive tail.
 
+Judge changed behavior with [the shared review procedure](docs/BEHAVIOR_REVIEW.md).
+Declare the mechanism contract and falsifier before results; record the first
+relevant divergence, causal evidence, opposing controls and a verdict. More
+tackles or less yardage is not improvement; worse yardage can follow better
+football. Unexplained material changes and broken supported contracts block
+promotion. Generate a worksheet from saved screen reports without simulating
+again; do not add a testing matrix to perform this review.
+
 Read [current status](docs/STATUS.md) and [validation](docs/VALIDATION.md).
 Choose repeated visible mechanisms from random ordinary film, ranked by
 frequency and consequence. A bad average or one spectacular failure is not a

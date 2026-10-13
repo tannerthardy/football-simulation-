@@ -63,6 +63,13 @@ missing state only for the selected mechanism. Preserve unsuccessful examples.
 
 ## Change and stopping rules
 
+Use [BEHAVIOR_REVIEW.md](BEHAVIOR_REVIEW.md) for shared definitions of improvement
+and regression and the case-by-case decision procedure. Declare the behavioral
+contract before candidate results; distinguish a repaired mechanism from an
+explained outcome change, a violated contract, a tradeoff and missing evidence.
+Apply that standard even when yardage moves in a favorable direction. The
+saved-result review worksheet adds no simulations or new roster matrix.
+
 Write a short explanation before coding: first wrong request or physical
 response, evidence, proposed cause, and the check that would prove it wrong.
 Bad decisions belong in controllers; incoherent execution belongs in physics.
@@ -77,7 +84,9 @@ pair. Changing whole games changes later calls and RNG histories; do not claim
 their later plays are still paired counterfactuals.
 
 If **two attempts** fail to repair the visible mechanism, or a repair breaks an
-ordinary control, stop stacking adjustments. Inspect the first divergence,
+ordinary control's supported mechanism contract, stop stacking adjustments.
+A changed ordinary outcome alone needs adjudication, not automatic rejection.
+Inspect the first divergence,
 reconsider the cause and reduce the experiment. Do not add strength, traction,
 timers or global solver resolution to rescue a football statistic. Extend the
 model only when the simpler shared mechanism cannot represent the observed need.
