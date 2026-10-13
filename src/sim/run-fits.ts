@@ -1,4 +1,5 @@
 /** A support contract derived from the called front AND coverage, not the run call. */
+import { gaitLag } from '../physics/kinematics.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { gapY, isDeepZone } from '../playbook/alignment.js';
 import type { DefSlot, Gap } from '../playbook/types.js';
@@ -304,7 +305,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     && (aim.y - a.pos.y) * pullSide > 0;
   if (!LB_PLAN || !(flowing || Math.abs(gap.vel) > 1 || planPull)) return fit;
   const horizon = 2 * a.mind.decisionInterval;
-  const vy = clamp(requestToCover(a.profile.tau, aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
+  const vy = clamp(requestToCover(gaitLag(a.profile), aim.y - a.pos.y, horizon, a.vel.y), -a.profile.vmax, a.profile.vmax);
   return { ...fit, vel: { x: fit.vel.x, y: vy } };
 }
 

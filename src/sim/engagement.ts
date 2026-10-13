@@ -31,7 +31,7 @@
  */
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
-import { fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
+import { gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
 import { availability, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
@@ -1035,7 +1035,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // DL_FLOW=0 restores the proportional follow.
   const held = read.declared ? 0 : read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
   const flow = clamp(DL_FLOW
-    ? requestToCover(d.profile.tau, read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
+    ? requestToCover(gaitLag(d.profile), read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
     : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
   // Working off: across the blocker's ball-side shoulder at full lateral
   // effort, pressing into him rather than backing out.
@@ -1046,7 +1046,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const home = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]?.pos.y ?? d.pos.y;
     const f = lineFlow(linePicture(sim, d)), dir = Math.abs(f) > .5 ? Math.sign(f) : 0;
     const y = CF_FLOW === 'over' && dir ? dir * td.lateral
-      : clamp(requestToCover(d.profile.tau, home - d.pos.y, horizon, d.vel.y), -td.lateral, td.lateral);
+      : clamp(requestToCover(gaitLag(d.profile), home - d.pos.y, horizon, d.vel.y), -td.lateral, td.lateral);
     cf = { x: depth, y };
   }
   intents[d.idx] = {

@@ -14,7 +14,7 @@
  */
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { cornerSpeed, fatigueFactor, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
+import { gaitLag, cornerSpeed, fatigueFactor, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { previewFreeMovement } from '../../physics/movement-preview.js';
 import { requestToCover } from '../motion-plan.js';
 import { availability, supportParams } from '../../physics/support.js';
@@ -946,7 +946,7 @@ export class RunBlocker implements Behavior {
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.
-    const needed = requestToCover(a.profile.tau, Math.max(0, (shoulder - a.pos.y) * ps), meet, a.vel.y * ps);
+    const needed = requestToCover(gaitLag(a.profile), Math.max(0, (shoulder - a.pos.y) * ps), meet, a.vel.y * ps);
     const lateral = ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
     // The call's track tempo is what his teammates expect from him.
     this.track = { x: 0, y: ps * a.profile.vmax * .45 * press };

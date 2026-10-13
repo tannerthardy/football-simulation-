@@ -89,6 +89,16 @@ export function enduranceFactor(body: Body): number {
   return 1 - 0.1 * clamp(((body.sprintLoad ?? 0) - 3.5) / 5, 0, 1);
 }
 
+/** Experimental (GAIT_STEP=seconds, off by default): time over which a player
+ * levels off at a wanted speed below his top speed. */
+const GAIT_STEP = Number(process.env.GAIT_STEP ?? 0);
+
+/** The lag a controller should expect when it asks for a speed below his
+ * top speed: the sprint time constant, or the leveling time under GAIT_STEP. */
+export function gaitLag(profile: PhysicalProfile): number {
+  return GAIT_STEP || profile.tau;
+}
+
 /** Propulsive acceleration available at speed `speed` toward a cap `cap`. */
 export function driveAccel(profile: PhysicalProfile, speed: number, cap: number): number {
   return Math.max(0, (cap - speed) / profile.tau);
@@ -152,9 +162,9 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   if (speed < 0.35) {
     // Near standstill: isotropic, limited by initial drive.
     const cap = len(desired);
-    const amax = Math.max(driveAccel(p, speed, Math.max(cap, 0.5)) * fat, p.brake * 0.5) * capacity;
-    ax = dvx / dt;
-    ay = dvy / dt;
+    const amax = Math.max(driveAccel(p, speed, GAIT_STEP ? p.vmax * fat : Math.max(cap, 0.5)) * fat, p.brake * 0.5) * capacity;
+    ax = dvx / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
+    ay = dvy / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     const a = Math.hypot(ax, ay);
     if (a > amax) {
       ax *= amax / a;
@@ -183,7 +193,12 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // Speeding up follows the sprint curve toward the wanted speed: a
     // player who wants three-quarter speed pushes with about three-quarter
     // effort. The share of the envelope that leaves free goes to the cut.
-    const ease = driveAccel(p, speed, Math.max(cap, speed)) * fat * capacity;
+    // GAIT_STEP (experimental, off by default): he pushes as hard as the
+    // force-velocity curve allows and levels off over about two steps,
+    // instead of approaching every wanted speed on the sprint time constant.
+    const ease = GAIT_STEP
+      ? Math.min(driveAccel(p, speed, p.vmax * fat) * fat, Math.max(0, cap - speed) / GAIT_STEP) * capacity
+      : driveAccel(p, speed, Math.max(cap, speed)) * fat * capacity;
     if (at > ease) {
       at = ease;
       const room = An * Math.sqrt(Math.max(0, 1 - (at / Math.max(At, 1e-9)) ** 2));
