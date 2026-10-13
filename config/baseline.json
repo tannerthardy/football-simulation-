@@ -39,6 +39,7 @@
     "RUN_CONTACT_TRACK": "0",
     "RUN_CONTACT_COMPONENTS": "0",
     "RUN_HANDS": "0",
+    "RUN_HAND_COHERENCE": "0",
     "RUN_READ": "0",
     "RUN_READ_TURN": "0",
     "SCRAPE": "1",

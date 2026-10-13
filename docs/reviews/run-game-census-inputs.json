@@ -1,0 +1,14 @@
+{
+  "protocol": "ordinary-native-run-census-inputs-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "rosterSeed": 71,
+  "strength": 0.55,
+  "gameSeeds": [
+    73,
+    79
+  ],
+  "selectionSeed": 707,
+  "sampleProbability": 0.35,
+  "selection": "Independent sample draw at each called run entry before its outcome; all eligible run denominators retained; nullified runs labelled separately",
+  "candidateFlags": "No experimental additions; explicit baseline launcher profile"
+}

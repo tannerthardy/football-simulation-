@@ -36,6 +36,7 @@ import { availability, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { contactMotion } from './contact-motion.js';
+import { coherentRunHandDrive } from './run-hand-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { runContactObservers } from './run-contact-observer.js';
@@ -639,6 +640,8 @@ const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS === '1';
 const DL_FLOW = process.env.DL_FLOW !== '0';
 /** Experimental (RUN_HANDS=1, off): run blockers drive committed defenders off their body. */
 const RUN_HANDS = process.env.RUN_HANDS === '1';
+/** Off: coordinate an active offensive redirect with its own foot/surface goal. */
+const RUN_HAND_COHERENCE = process.env.RUN_HAND_COHERENCE === '1';
 /** Experimental (DL_HANDS=1, off): a shedding defender in control of the hands works past with them. */
 const DL_HANDS = process.env.DL_HANDS === '1';
 /** Experimental (PASS_SINK=1, off): pass blockers sink their hips under a heavy load. */
@@ -1116,10 +1119,19 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: 0.85,
     cutSkill: 0.8 + 0.3 * tb.feet,
   };
+  let handCoherence: { requested: number; retained: number } | undefined;
+  if (RUN_HAND_COHERENCE && RUN_HANDS && e.hands?.actor === b.body && e.hands.drive) {
+    const j = e.hands, dx = j.b.pos.x - j.a.pos.x, dy = j.b.pos.y - j.a.pos.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const requested = j.drive!;
+    j.drive = coherentRunHandDrive(requested, { x: -dy / length, y: dx / length }, lat,
+      j.b === d.body, blockVel, d.vel);
+    handCoherence = { requested, retained: j.drive };
+  }
   runContactObservers.get(sim)?.(e, 'movement', { axis, lat, drive, stretch, forward,
     dLat, feltCue, feedback, correction, mirror, offset, wantOffset, seal,
     sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, lateral, preAnchor,
-    anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
+    anchored, command: intents[b.idx], handCoherence, blockerPos: b.pos, defenderPos: d.pos,
     blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
     defensiveAim: read.aim, reading: read.reading, declared: read.declared,
     heldFlow: read.stack?.flow, fit: d.runFit });
