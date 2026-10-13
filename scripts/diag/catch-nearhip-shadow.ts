@@ -56,21 +56,21 @@ mkdirSync(destination,{recursive:true});
 for(const item of tapes){
  const caseStart=performance.now(),sim=restore(item.f),a=sim.agents[item.f.defender],last=item.declaration.times.at(-1)!,
   wrapped=new WeakSet<object>(),seen=sim.see.bind(sim),step=sim.world.step.bind(sim.world),rows:any[]=[];
- let inside=false,cues:Consumed[]=[],raw:any=null,decision:any=null,shadow:any=null,target:number|null=null,world:any=null,verified=0;
+ let inside=false,selectedNow=false,cues:Consumed[]=[],raw:any=null,decision:any=null,shadow:any=null,target:number|null=null,world:any=null,verified=0;
  sim.see=(d,c,delay)=>{const picture=seen(d,c,delay);if(inside&&d===a)cues.push({target:c.idx,delay,seen:copy(picture)});return picture;};
  sim.world.step=(intents,dt)=>{const before=sim.agents.map(lean),applied=copy(intents),report=step(intents,dt);
   world={before,applied,after:sim.agents.map(lean)};return report;};
  try{
   while(sim.phase==='live'&&sim.t<=last+1e-8){
    if(performance.now()-started>30000||performance.now()-caseStart>5000)throw Error('Declared prefix wall budget exhausted');
-   const t=sim.t,selected=item.declaration.times.some(x=>Math.abs(x-t)<1e-8),b=a.behavior;
+   const t=sim.t,b=a.behavior;selectedNow=item.declaration.times.some(x=>Math.abs(x-t)<1e-8);
    cues=[];raw=null;decision=null;world=null;shadow=null;
    if(!wrapped.has(b)){wrapped.add(b);const update=b.update.bind(b);
     b.update=(actor,s)=>{inside=true;let original;try{original=update(actor,s);}finally{inside=false;}
      const choice=arrivalChoice(actor,s,original,cues),command=item.geometry==='arrival'?choice.command:original;
      raw=copy(original);decision=copy(choice);
      if(choice.reason==='moving-window-arrival')target=choice.window!.receiver;
-     if(selected){
+     if(selectedNow){
       // Reuse existing eligibility. Only a previously acquired window target
       // can be tracked across the boundary, and only from consumed pictures.
       // Actual catcher/interceptor IDs are never used to choose this target.
@@ -95,10 +95,10 @@ for(const item of tapes){
     ||(world&&hash(world)!==hash({before:cached.world.before,applied:cached.world.applied,after:cached.world.after})))
     throw Error(`Native prefix/cues/command differ at ${t}`);
    verified++;
-   if(selected)rows.push({t,behavior:b.kind,phaseBefore:cached.phaseBefore,carrierAfter:cached.carrier,
+   if(selectedNow)rows.push({t,behavior:b.kind,phaseBefore:cached.phaseBefore,carrierAfter:cached.carrier,
     raw,decision,cues:copy(cues),shadow,bodyAtDecision:world?.before[a.idx]??null,prefixVerified:true});
   }
-  if(rows.length!==item.declaration.times.length)throw Error('Selected prefix ended before all measurements');
+  if(rows.length!==item.declaration.times.length||rows.some(r=>r.shadow===null))throw Error('Selected prefix lacks a declared measurement');
   cases.push({id:item.f.id,geometry:item.geometry,role:item.declaration.role,selectedDefender:{idx:a.idx,id:a.player.id,slot:a.slot},
    ticksReplayed:verified,stopAt:sim.t,censored:true,wallMs:performance.now()-caseStart,
    cachedCompletedOutcome:{outcome:item.cached.outcome,possession:item.cached.possession,yac:item.cached.yac,
