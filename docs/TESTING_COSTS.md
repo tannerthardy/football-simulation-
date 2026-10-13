@@ -193,9 +193,10 @@ the same machine without competing collectors before claiming speed gains.
 ## One owner for shared integration checks
 
 Record the integration owner in [WORKBOARD.md](WORKBOARD.md) before the combined
-run. The existing lead for `codex/run-game-integration` is the shared integration
-role; local agents hand off their focused receipts, limitations and candidate
-commits. This policy does not dispatch another suite or change another owner's work.
+run. The current #6-only assignment is the Codex integration owner in this chat,
+as recorded in [INTEGRATION.md](INTEGRATION.md). Local agents hand off compatible
+focused receipts, limitations and candidate commits; they do not repeat the
+shared suite. Historical integration-lead rows describe their original stage.
 
 The owner freezes the combined candidate and settings, runs the preserved full
 code checks once, and publishes one receipt linked by all contributors. Record

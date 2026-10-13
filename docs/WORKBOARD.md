@@ -5,6 +5,10 @@ Shared comparisons start from `codex/run-game-integration`; read
 Report the exact commit, source hash, flag profile and inputs. Historical rows
 below describe their pinned stages; they do not change the current baseline.
 
+Current #6-only verification belongs to the Codex integration owner in this chat;
+see [the exact scope and contributor handoff](INTEGRATION.md). Contributors
+supply compatible focused receipts rather than repeating the shared suite.
+
 Read this before choosing work. Add or update one row before editing a shared
 subsystem. Claim a bounded task, not every future idea. Date uses the owner's
 local calendar; evidence receipts retain their explicit measurement timestamps.

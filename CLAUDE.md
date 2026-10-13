@@ -21,6 +21,12 @@ Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
 Read [work ownership](docs/WORKBOARD.md) before selecting work; claim it there
 and coordinate before editing another session's subsystem.
 
+For the current #6-only pass, the user assigned the Codex integration owner in
+this chat to run the exact combined verification. Follow
+[current integration scope and handoff](docs/INTEGRATION.md); contributors supply
+compatible focused receipts and do not repeat the shared suite. `4ded6b6` stays
+the historical comparison baseline. #3/#4/#5/#7 remain separate.
+
 ## Model rules
 
 - One physics world moves every body and resolves its contacts. Strength, mass,

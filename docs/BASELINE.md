@@ -7,6 +7,11 @@ default-on controllers and preserves experimental implementations with their
 flags off. This designation does not promote the experimental contact law or
 declare that the remaining football mechanisms are finished.
 
+`4ded6b6` remains the historical comparison. The current **#6-only** candidate
+and explicitly assigned verification owner are described in
+[INTEGRATION.md](INTEGRATION.md). Its receipt is a separate combined-tooling
+verification; the engine and all 43 profile flags remain unchanged.
+
 Complete checks passed: **1,652 TypeScript tests, 145 Python checks,
 typecheck and build**, with no test or worker errors. The
 [validation receipt](baseline-validation.json) pins the tested commit, all
