@@ -638,6 +638,8 @@ const DL_FLOW = process.env.DL_FLOW !== '0';
 const RUN_HANDS = process.env.RUN_HANDS === '1';
 /** Experimental (DL_HANDS=1, off): a shedding defender in control of the hands works past with them. */
 const DL_HANDS = process.env.DL_HANDS === '1';
+/** Experimental (PASS_SINK=1, off): pass blockers sink their hips under a heavy load. */
+const PASS_SINK = process.env.PASS_SINK === '1';
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 
@@ -764,11 +766,17 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const depth = sim.los - b.pos.x;
   const setDepth = b.passSet?.depth ?? passSetDepth(sim, b);
   const kick = depth < setDepth ? Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), (setDepth - depth) / 0.55) : 0;
+  // PASS_SINK (experimental, off): under a heavy load he sinks his hips
+  // rather than leaning his chest over his feet: a lower centre of mass
+  // carries the same push with less forward lean (more balance margin), at
+  // the gait's cost of a lower pad level.
+  const feltLoad = b.body.support?.felt;
+  const heavy = !!feltLoad && Math.hypot(feltLoad.x, feltLoad.y) > 0.3 * b.profile.massKg * G;
   intents[b.idx] = {
     vel: { x: lat.x * vLat - kick, y: lat.y * vLat },
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
-    posture: 0.6,
+    posture: PASS_SINK && heavy ? 0.95 : 0.6,
     cutSkill: 0.85 + 0.3 * tb.feet,
   };
   helperIntents(sim, e, intents, axis);
