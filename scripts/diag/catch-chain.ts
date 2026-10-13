@@ -134,6 +134,10 @@ function lab(f:any,input:LabInput,observe:boolean){
  sim.world.joints=sim.world.joints.filter(j=>active.has(sim.agents[sim.world.indexOf(j.a)])&&active.has(sim.agents[sim.world.indexOf(j.b)]));
  Reflect.set(sim.world,'pending',(Reflect.get(sim.world,'pending') as any[]).filter(p=>active.has(sim.agents[sim.world.indexOf(p.a)])&&active.has(sim.agents[sim.world.indexOf(p.b)])));
  Reflect.set(sim,'los',sim.los+dx);Reflect.set(sim,'firstDownX',sim.firstDownX+dx);
+ Reflect.set(sim,'ballY',sim.ballY+dy);sim.catchX+=dx;
+ for(const segment of sim.segments){segment.startX+=dx;segment.endX+=dx;}
+ if(sim.bond)sim.bond.progressX+=dx;
+ if(sim.firstContactX!==null)sim.firstContactX+=dx;
  if(input.stream==='fresh-9001')Reflect.set(sim,'rng',new Rng(`${f.setup.seed}:catch-chain:9001`));
  if(input.runner!=='native'){
   const original={...c.vel},speed=c.profile.vmax,cutSkill=.8+.45*c.r('elusiveness'),sign=input.runner==='bend-left'?-1:1;
@@ -162,8 +166,11 @@ function lab(f:any,input:LabInput,observe:boolean){
   sim.tick();
  }
  const result=sim.buildResult(),sig=signature(sim,result);
+ const segment=result.segments.find(g=>g.carrier===c.player.id&&g.how==='catch');
  return {input,prefixSha256,initialSha256:hash(initial),initial,signature:sig,startT:start,censored:sim.phase==='live',
-  outcome:sim.phase==='live'?null:sim.outcome,duration:sim.t-start,gain:c.pos.x-45,runnerAtEnd:copy(c.body),
+  result:{...result,frames:undefined,telemetry:undefined},
+  outcome:sim.phase==='live'?null:sim.outcome,duration:sim.t-start,
+  gain:sim.phase==='live'?c.pos.x-45:(segment?.endX??c.pos.x)-45,runnerAtEnd:copy(c.body),
   events:sim.events.slice(eventStart),holds,rows};
 }
 const [mode,path,out]=process.argv.slice(2);let report:any,destination=path;

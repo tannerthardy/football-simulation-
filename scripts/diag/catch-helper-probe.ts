@@ -68,5 +68,5 @@ const cases=declared.map((def:any)=>{const f=packet.clips.find((f:any)=>f.id===d
 if(sourceVersion()!==provenance.sourceSha256)throw Error('Runtime changed');
 writeFileSync(process.argv[2],JSON.stringify({schema:'catch-helper-native-probe-v1',provenance,declared,
  interpretation:'Full original 22-body prefix and complete native endings. Diagnostic-only override of one helper after the catch; additional delayed teammate/runner pictures are actual inputs to the proposed rule, not observer reads. Original first tackler, coverage, capability and physics preserved. Not calibrated; no shared controller patch installed.',cases}));
-console.log(JSON.stringify(cases.map(c=>({id:c.id,changedDecisions:c.probe.decisions.length,
+console.log(JSON.stringify(cases.map((c:any)=>({id:c.id,changedDecisions:c.probe.decisions.length,
  baseline:[c.baseline.result.outcome,c.baseline.result.stats.yac],probe:[c.probe.result.outcome,c.probe.result.stats.yac]}))));
