@@ -37,6 +37,7 @@ import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
+import { runContactObservers } from './run-contact-observer.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -628,6 +629,8 @@ const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 
 /** Stretch reaches stay connected rather than drive (STRETCH_REACH=0 off). */
 const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
+/** Trial: retain the held solo reach's track intention through contact. */
+const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
@@ -654,6 +657,7 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
     const b = e.blocker;
     const d = e.defender;
     if (b.isDown(t) || d.isDown(t)) {
+      if (e.type === 'run') runContactObservers.get(sim)?.(e, 'end', { reason: 'body down' });
       sim.disengage(e);
       continue;
     }
@@ -667,6 +671,7 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
     if (e.type === 'run' && c && c.team !== d.team) {
       const past = (sim.see(d, c).pos.x - d.pos.x) * sim.attackDir(c.team);
       if (past > 2.5 && t - e.start > 0.4) {
+        runContactObservers.get(sim)?.(e, 'end', { reason: 'runner passed defender', past });
         sim.disengage(e);
         continue;
       }
@@ -674,6 +679,7 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
     // Contact that has come apart (a bump, a spin away) ends the rep.
     const apart = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - (b.profile.radius + d.profile.radius);
     if (apart > Math.max(traits(b).arm, traits(d).arm) / 36 + 0.35) {
+      if (e.type === 'run') runContactObservers.get(sim)?.(e, 'end', { reason: 'separation', apart });
       sim.disengage(e);
       continue;
     }
@@ -919,6 +925,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const toD = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
   const off = Math.abs(Math.atan2(Math.sin(toD - b.facing), Math.cos(toD - b.facing)));
   const behind = LEVER_FACING ? Math.max(0, off - b.profile.turnRate * dt) / (Math.PI / 2) : Math.abs(e.phi);
+  runContactObservers.get(sim)?.(e, 'geometry', { axis, lat, drive: e.drive, phi: e.phi,
+    off, behind, support: b.body.support, facing: b.facing, toD, baseB: e.baseB, baseD: e.baseD });
   if (b.body.support?.state !== 'up' || behind >= 1.1) {
     if (!tryHold(sim, e)) beat(sim, e, axis, lat, true, b.body.support?.state !== 'up' ? 'blocker off his feet' : 'leverage');
     return;
@@ -936,7 +944,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const offset = (b.pos.x - d.pos.x - d.vel.x * lead) * lat.x + (b.pos.y - d.pos.y - d.vel.y * lead) * lat.y;
   const wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
-  const seal = clamp(dLat + felt(e, lat) * (0.6 + 0.6 * tb.feet) + (wantOffset - offset) * (3 + 3 * tb.feet), -mirror, mirror);
+  const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
+  const correction = (wantOffset - offset) * (3 + 3 * tb.feet);
+  const seal = clamp(dLat + feedback + correction, -mirror, mirror);
   // Anchor: a blocker who feels himself driven back stops spending traction
   // on lateral drive and pushes straight against the load he feels.
   // Locomotion and lean share one traction budget in the World.
@@ -953,11 +963,20 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).
   let lateral = seal;
+  const contactTrack = RUN_CONTACT_TRACK && stretch ? b.behavior.contactMotion?.(b) : null;
   if (stretch && run) {
     const toPlay = lat.y * (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign);
-    if (Math.abs(toPlay) > .5) lateral = Math.max(seal * toPlay, dLat * toPlay) * toPlay;
+    if (Math.abs(toPlay) > .5) {
+      lateral = Math.max(seal * toPlay, dLat * toPlay) * toPlay;
+      if (contactTrack) {
+        const track = contactTrack.x * lat.x + contactTrack.y * lat.y;
+        lateral = Math.max(lateral * toPlay, Math.min(mirror, track * toPlay)) * toPlay;
+      }
+    }
   }
   let blockVel = { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  const preAnchor = blockVel;
+  let anchored = false;
   // Anchor against the normal threat only (lost depth), and keep the
   // lateral work otherwise (a
   // defender's flow is not a reason to stop working sideways). ANCHOR_SPLIT=0
@@ -972,11 +991,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       // no depth lost, is lateral co-flow: he keeps working sideways.
       const up = sim.attackDir(b.team);
       const backLoad = -feltLoad.x * up, drivenBack = -b.vel.x * up;
-      if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15)
+      if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15) {
+        anchored = true;
         blockVel = { x: up * 2.4 + lat.x * lateral * 0.3, y: lat.y * lateral * 0.3 };
+      }
     } else {
       const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;
       if (load > 0.25 * b.profile.massKg * G && driven > 0.15) {
+        anchored = true;
         const ux = -feltLoad.x / load, uy = -feltLoad.y / load;
         blockVel = { x: ux * 2.4 + lat.x * seal * 0.3, y: uy * 2.4 + lat.y * seal * 0.3 };
       }
@@ -989,6 +1011,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: 0.85,
     cutSkill: 0.8 + 0.3 * tb.feet,
   };
+  runContactObservers.get(sim)?.(e, 'movement', { axis, lat, drive, stretch, forward,
+    dLat, feltCue, feedback, correction, mirror, offset, wantOffset, seal,
+    sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, lateral, preAnchor,
+    anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
+    blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
+    defensiveAim: read.aim, reading: read.reading, declared: read.declared,
+    heldFlow: read.stack?.flow, fit: d.runFit });
   // Follow acquired flow while preserving the chosen shoulder. Control/lag
   // replace feet toward their remembered contact depth; attack retains useful
   // forward intent. These are finite requests, not stronger ground support.
@@ -1152,6 +1181,7 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
 function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false, why = ''): void {
   const d = e.defender;
   const b = e.blocker;
+  if (run) runContactObservers.get(sim)?.(e, 'end', { reason: why });
   sim.disengage(e);
   // Hands need a moment to refit before he can grab the same man again.
   b.shedBy.set(d, sim.t + 0.6);

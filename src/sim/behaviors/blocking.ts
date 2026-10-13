@@ -732,6 +732,16 @@ export class RunBlocker implements Behavior {
 
   calledMotion(): Vec2 | null { return this.track; }
 
+  contactMotion(a: Agent): Vec2 | null {
+    const e = a.engagement, read = this.zoneRead;
+    if (!e || e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach'
+      || !read || read.target !== e.defender.idx || read.phase !== 'reach'
+      || (this.plan.combination && !this.plan.combination.released)) return null;
+    // The same track tempo as the free stretch step, until the acquired
+    // shoulder picture changes the technique. Seal/runoff have their own fit.
+    return { x: 0, y: read.side * a.profile.vmax * .45 };
+  }
+
   get target(): Agent | null {
     return this.plan.target;
   }
