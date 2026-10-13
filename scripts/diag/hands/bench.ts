@@ -16,6 +16,10 @@
  * node --import tsx scripts/diag/hands/bench.ts [--patch-only|--center-only]
  */
 import { CENTER_Y } from '../../../src/core/field.js';
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { Rng } from '../../../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
 import { supportParams } from '../../../src/physics/support.js';
@@ -24,6 +28,13 @@ import { RUN_BY_ID } from '../../../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import { withRecoveryExperiment } from '../tackle/grip-refinement.js';
+import { sourceVersion } from '../../source-version.js';
+
+const continued = process.argv.includes('--continued-recovery');
+const outAt = process.argv.indexOf('--out');
+const output = outAt < 0 ? undefined : process.argv[outAt + 1];
+const source = sourceVersion();
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
@@ -60,7 +71,8 @@ type Drill = {
   measure: (r: Run, side: number) => Record<string, number>;
 };
 type Run = { B0: any; D0: any; B: any; D: any; peakXiB: number; peakXiD: number; fellB: boolean; fellD: boolean;
-  dVelD02: number; dVelB02: number; maxResidual: number; armExcess: number; momentumGap: number };
+  dVelD02: number; dVelB02: number; maxResidual: number; armExcess: number; armWorkExcess: number;
+  supportWorkExcess: number; momentumGap: number };
 
 function run(drill: Drill, mode: Mode, side: number): Run {
   const { sim, B, D, joint, arm } = fixture(mode, side, drill.owner, drill.gap, drill.dy);
@@ -68,7 +80,8 @@ function run(drill: Drill, mode: Mode, side: number): Run {
   for (let k = 0; k < 24; k++) sim.perception.record(sim.agents);
   const snap = (a: any) => ({ x: a.pos.x, y: a.pos.y, vx: a.vel.x, vy: a.vel.y, f: a.facing });
   const B0 = snap(B), D0 = snap(D);
-  let peakXiB = 0, peakXiD = 0, maxResidual = 0, armExcess = 0, momentumGap = 0, dVelD02 = 0, dVelB02 = 0, contactAt = -1;
+  let peakXiB = 0, peakXiD = 0, maxResidual = 0, armExcess = 0, armWorkExcess = 0,
+    supportWorkExcess = 0, momentumGap = 0, dVelD02 = 0, dVelB02 = 0, contactAt = -1;
   const steps = Math.round(drill.seconds / sim.dt);
   for (let k = 0; k < steps; k++) {
     const t = k * sim.dt;
@@ -80,13 +93,18 @@ function run(drill: Drill, mode: Mode, side: number): Run {
     const f = drill.feet(B, D, side, t);
     intents[B.idx] = f.b; intents[D.idx] = f.d;
     const p0 = { x: B.profile.massKg * B.vel.x + D.profile.massKg * D.vel.x, y: B.profile.massKg * B.vel.y + D.profile.massKg * D.vel.y };
-    const report = sim.world.step(intents, sim.dt);
+    const execute = () => sim.world.step(intents, sim.dt);
+    const report = continued ? withRecoveryExperiment(sim.world, 'continued-recovery', execute).result : execute();
     sim.t += sim.dt; sim.world.time = sim.t; sim.perception.record(sim.agents);
     const p1 = { x: B.profile.massKg * B.vel.x + D.profile.massKg * D.vel.x, y: B.profile.massKg * B.vel.y + D.profile.massKg * D.vel.y };
     const g = { x: report.groundImpulse[B.idx].x + report.groundImpulse[D.idx].x, y: report.groundImpulse[B.idx].y + report.groundImpulse[D.idx].y };
     momentumGap = Math.max(momentumGap, Math.hypot(p1.x - p0.x - g.x, p1.y - p0.y - g.y));
     maxResidual = Math.max(maxResidual, Math.abs(report.work.residual));
-    for (const a of [B, D]) armExcess = Math.max(armExcess, report.armImpulse[a.idx] - report.armImpulseLimit[a.idx]);
+    for (const a of [B, D]) {
+      armExcess = Math.max(armExcess, report.armImpulse[a.idx] - report.armImpulseLimit[a.idx]);
+      armWorkExcess = Math.max(armWorkExcess, report.armWork[a.idx] - report.armWorkLimit[a.idx]);
+      supportWorkExcess = Math.max(supportWorkExcess, report.supportMotorWork[a.idx] - report.supportMotorWorkLimit[a.idx]);
+    }
     const xi = (a: any) => { const s = a.body.support; return s?.state === 'up' ? Math.hypot(s.xi.x, s.xi.y) : 9; };
     peakXiB = Math.max(peakXiB, xi(B)); peakXiD = Math.max(peakXiD, xi(D));
     if (contactAt < 0 && Math.hypot(B.pos.x - D.pos.x, B.pos.y - D.pos.y) <= joint.extension + 1e-6) contactAt = sim.t;
@@ -95,7 +113,7 @@ function run(drill: Drill, mode: Mode, side: number): Run {
     }
   }
   return { B0, D0, B: snap(B), D: snap(D), peakXiB, peakXiD, fellB: B.body.support?.state !== 'up', fellD: D.body.support?.state !== 'up',
-    dVelD02, dVelB02, maxResidual, armExcess, momentumGap };
+    dVelD02, dVelB02, maxResidual, armExcess, armWorkExcess, supportWorkExcess, momentumGap };
 }
 
 const stand = (facing: number, push = 1): Intent => ({ vel: { x: 0, y: 0 }, facing, push, posture: .85 });
@@ -156,13 +174,28 @@ const DRILLS: Drill[] = [
 
 const modes: Mode[] = process.argv.includes('--patch-only') ? ['patch'] : process.argv.includes('--center-only') ? ['center'] : ['center', 'patch'];
 const f = (x: number) => (x >= 0 ? '+' : '') + x.toFixed(2);
+const rows = [];
 for (const mode of modes) {
   console.log(`\n== hand contact: ${mode}`);
   for (const drill of DRILLS) {
     const a = run(drill, mode, 1), b = run(drill, mode, -1);
     const ma = drill.measure(a, 1), mb = drill.measure(b, -1);
     const mirror = Math.max(...Object.keys(ma).map((k) => Math.abs(ma[k] - mb[k])));
+    for (const r of [a, b]) {
+      assert(r.maxResidual < 1e-8 && r.armExcess < 1e-8 && r.armWorkExcess < 1e-8
+        && r.supportWorkExcess < 1e-8 && r.momentumGap < 1e-7);
+    }
+    rows.push({ mode, drill: drill.name, mirror, positive: a, negative: b, measurements: [ma, mb] });
     console.log(`  ${drill.name.padEnd(68)} ${Object.entries(ma).map(([k, v]) => `${k} ${f(v)}`).join(' | ')}`
       + ` || mirror ${mirror < 1e-6 ? 'exact' : mirror.toExponential(1)} audit: work ${Math.max(a.maxResidual, b.maxResidual).toExponential(0)} arm ${Math.max(a.armExcess, b.armExcess) > 1e-6 ? 'OVER' : 'ok'} momentum ${Math.max(a.momentumGap, b.momentumGap).toExponential(0)}`);
   }
+}
+assert(sourceVersion() === source);
+if (output) {
+  mkdirSync(dirname(output), { recursive: true });
+  writeFileSync(output, JSON.stringify({ source, collector: createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),
+    recoveryExperiment: continued ? 'continued-recovery' : null,
+    recoverySourcesSha256: continued ? Object.fromEntries(['grip-refinement.ts', 'continued-recovery.ts', 'continued-recovery-world.ts']
+      .map(p => [p, createHash('sha256').update(readFileSync(`scripts/diag/tackle/${p}`)).digest('hex')])) : null,
+    flags: Object.fromEntries(['HAND_MOTOR', 'GAIT_STEP', 'LEG_BRACE'].map(k => [k, process.env[k] ?? '0'])), rows }));
 }

@@ -137,6 +137,9 @@ const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
 
 /** Pull reads (PULL_READ=0 restores the single nearest-shift read, for A/B). */
 const PULL_READ = process.env.PULL_READ !== '0';
+/** Diagnostic pull acquisition from observed departure, independent of an
+ * opponent's current engagement. Default off pending matched controls. */
+const PULL_CUE = process.env.PULL_CUE === '1';
 /** How far ahead a puller's seen path is carried (about one decision beat), the
  * leverage kept on his arrival, and how far a fit will flow to it. */
 const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
@@ -144,7 +147,13 @@ const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
 export function pullers(sim: PlaySim, a: Agent): Perceived[] {
-  return linePicture(sim, a).departed.map((b) => b.seen)
+  const picture = linePicture(sim, a);
+  const candidates = PULL_CUE ? [...picture.surface, ...picture.departed].filter(b => {
+    const home = sim.offAlign.spots[b.agent.slot]!.pos;
+    const depth = (b.seen.pos.x - home.x) * sim.attackDir(b.agent.team);
+    return depth < -1.5 || depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1;
+  }) : picture.departed;
+  return candidates.map((b) => b.seen)
     .filter((s) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
 }
 

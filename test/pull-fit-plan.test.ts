@@ -8,6 +8,7 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { RunFitJob } from '../src/sim/run-fits.js';
+import type { Engagement } from '../src/sim/agent.js';
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
@@ -36,7 +37,7 @@ function stage(side: number, pulling = true, kind: RunFitJob['kind'] = 'insert',
   }));
   const see = sim.see.bind(sim);
   sim.see = (observer, target, delay) => picture.get(target) ?? see(observer, target, delay);
-  return { sim, a };
+  return { sim, a, guard, picture };
 }
 
 async function controller(enabled: boolean) {
@@ -83,5 +84,27 @@ describe('observed pull activates existing insertion planner', () => {
       expect((await controller(true))(on.a, on.sim, 'A', 1))
         .toEqual((await controller(false))(off.a, off.sim, 'A', 1));
     }
+  });
+});
+
+describe('observed pull cue does not reveal the guard’s hidden engagement', () => {
+  it.each([-1, 1])('retains the same acquired pull after contact, side=%s', async side => {
+    vi.stubEnv('PULL_CUE', '1'); vi.resetModules();
+    const { pullers } = await import('../src/sim/run-fits.js');
+    const free = stage(side), engaged = stage(side);
+    engaged.guard.engagement = { blocker: engaged.guard, defender: engaged.sim.slot('DE_S')! } as Engagement;
+    const before = structuredClone(engaged.a.body);
+    expect(pullers(engaged.sim, engaged.a)).toEqual(pullers(free.sim, free.a));
+    expect(pullers(engaged.sim, engaged.a)).toContainEqual(engaged.picture.get(engaged.guard));
+    expect(engaged.a.body).toEqual(before);
+  });
+
+  it.each([-1, 1])('does not invent a pull from a still surface or a stopped guard, side=%s', async side => {
+    vi.stubEnv('PULL_CUE', '1'); vi.resetModules();
+    const { pullers } = await import('../src/sim/run-fits.js');
+    const surface = stage(side, false), stopped = stage(side);
+    stopped.picture.get(stopped.guard)!.vel.y = 0;
+    expect(pullers(surface.sim, surface.a)).toEqual([]);
+    expect(pullers(stopped.sim, stopped.a)).toEqual([]);
   });
 });
