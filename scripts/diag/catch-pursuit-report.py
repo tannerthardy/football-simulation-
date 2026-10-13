@@ -66,6 +66,7 @@ def summarize_clip(c):
             d = g['b'] if g['a'] == ri else g['a']
             info = {'tickEnd': round(r['t'] + .05, 2), 'kind': 'loaded-grasp', 'defender': label(c, d),
                     'forceAtBoundary': g['force'], 'armImpulseOverStep': w['armImpulse'][d],
+                    'carrierXAtBoundary': w['after'][ri]['pos']['x'],
                     'origin': g.get('origin'), 'slipping': g.get('slipping'),
                     'support': w['after'][d]['support']['state']}
             physical.append(info)
@@ -106,7 +107,7 @@ def summarize_clip(c):
                              if rd['target'] == ri and rd['release'] != 'none']
     return {'id': c['id'], 'completed': True, 'setupSha256': c['setupSha256'],
             'observerVerified': c['observerVerified'], 'signature': c['signature'],
-            'catchAtNativeLabel': t, 'catcher': label(c, ri), 'intendedReceiverId': result['stats'].get('target'),
+            'catchAtNativeLabel': t, 'catchX': st[ri]['pos']['x'], 'catcher': label(c, ri), 'intendedReceiverId': result['stats'].get('target'),
             'actualReceiverId': result['stats'].get('receiver'), 'nearestAtCatch': label(c, nearest),
             'nearestSeparation': distance(st[nearest]['pos'], st[ri]['pos']),
             'approachingDefender': label(c, approach), 'approachSelectedBy': 'first recorded tackle attempt on actual catcher; nearest at catch only if none',
@@ -114,6 +115,8 @@ def summarize_clip(c):
             'firstRecordedDeclaration': declarations[0] if declarations else None,
             'lastFlightCommand': chosen, 'firstAttempt': attempts[0] if attempts else None,
             'firstPhysicalContact': first_contact, 'firstLoadedGrasp': first_load,
+            'gainAtFirstLoadedBoundary': first_load['carrierXAtBoundary'] - st[ri]['pos']['x'] if first_load else None,
+            'remainingYacAfterLoadedBoundary': result['stats']['yac'] - (first_load['carrierXAtBoundary'] - st[ri]['pos']['x']) if first_load else None,
             'nearestCatchVelocity': st[nearest]['vel'], 'catchVelocity': st[ri]['vel'],
             'earlyPursuitCommands': len(early), 'earlyAllPossessionFalse': sum(x['allPossessionPicturesFalse'] for x in early),
             'firstApproacherPursuit': next((x for x in early if x['defender']['index'] == approach), None),
@@ -157,6 +160,25 @@ def main():
         p = read(ROOT / f'trace{n}.json.gz')
         rows += [summarize_clip(c) for c in p['clips']]
     labs = {name: panel_rows(read(ROOT / f'{name}.json')) for name in ('panel', 'custom')}
+    explosive = [r for r in rows if not r['flagged'] and not r['censored'] and r['yac'] >= 20]
+    ordinary = [r for r in rows if not r['censored'] and r['yac'] < 20]
+    def group_stats(rs):
+        loaded = [r for r in rs if r['firstLoadedGrasp']]
+        return {'plays': len(rs), 'flagged': sum(r['flagged'] for r in rs), 'loadedGraspPlays': len(loaded),
+                'rearOrigins': sum('behind' in (r['firstLoadedGrasp']['origin'] or '') for r in loaded),
+                'reachOrLungeOrigins': sum(any(k in (r['firstLoadedGrasp']['origin'] or '') for k in ('reach', 'lunge')) for r in loaded),
+                'playsWithRecordedBreak': sum(any(e['type'] == 'broken_tackle' for e in r['eventsAfterCatch']) for r in rs),
+                'medianCatchToLoadedBoundary': statistics.median(r['firstLoadedGrasp']['tickEnd'] - r['catchAtNativeLabel'] for r in loaded) if loaded else None,
+                'medianNearestSeparationAtCatch': statistics.median(r['nearestSeparation'] for r in rs) if rs else None}
+    loaded_explosive = [r for r in explosive if r['firstLoadedGrasp']]
+    explosive_summary = {'selection': 'All clean 20+ native YAC within the same 32 predeclared uniform completion draws; no resampling.',
+                         'explosive': group_stats(explosive), 'ordinaryIncludingFlagged': group_stats(ordinary),
+                         'ordinaryClean': group_stats([r for r in ordinary if not r['flagged']]),
+                         'sumYacLoadedExplosives': sum(r['yac'] for r in loaded_explosive),
+                         'sumGainAtFirstLoadedBoundary': sum(r['gainAtFirstLoadedBoundary'] for r in loaded_explosive),
+                         'sumRemainingYacAfterLoadedBoundary': sum(r['remainingYacAfterLoadedBoundary'] for r in loaded_explosive),
+                         'interpretation': 'Step-end displacement split, not exact contact onset or causal shares. Approach establishes grip geometry; yards after load cannot be assigned solely to physics. Successful rear grasps remain controls.',
+                         'cases': [{k: r[k] for k in ('id', 'catcher', 'yac', 'outcome', 'firstLoadedGrasp', 'gainAtFirstLoadedBoundary', 'remainingYacAfterLoadedBoundary')} for r in explosive]}
     acquisition = read(ROOT / 'acquisition.json')
     causal = []
     for c in acquisition['cases']:
@@ -195,7 +217,7 @@ def main():
                                 'remoteTurnedAwayNoOnBallCommands': sum(len(r['remoteTurnedAwayNoOnBall']) for r in rows),
                                 'loadedGraspPlays': sum(r['firstLoadedGrasp'] is not None for r in rows),
                                 'observerVerified': all(r['observerVerified'] for r in rows)},
-              'nativeCases': rows, 'routePanels': labs, 'causalIdentityProbe': causal,
+              'nativeCases': rows, 'explosiveYacFollowup': explosive_summary, 'routePanels': labs, 'causalIdentityProbe': causal,
               'customObservedCases': [summarize_clip(c) for c in read(ROOT / 'custom-trace.json.gz')['clips']],
               'receipts': receipts,
               'artifacts': {p.name: {'bytes': p.stat().st_size, 'sha256': file_hash(p)}

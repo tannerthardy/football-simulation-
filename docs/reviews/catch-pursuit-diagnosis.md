@@ -1,5 +1,11 @@
 # Catch-to-pursuit diagnosis — 2026-10-13
 
+**Current priority:** the user has asked to note and park the defensive
+catch-awareness finding. No acquisition controller change is planned now.
+The acquisition experiment below remains a recorded idea, not the active next
+task. Current diagnosis concerns explosive YAC: arrival geometry, first loaded
+contact, loss of control and subsequent pursuit on the unchanged baseline.
+
 Diagnosis-first work on `codex/catch-pursuit-diagnosis`, based on the agreed
 integration pin `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`. The attached
 handbook supplies hypotheses and historical evidence; the user's requested
@@ -207,7 +213,64 @@ These small panels are not NFL rankings. A completion can be a good defensive
 play, a void can be a legitimate overload, and fewer completions can coexist
 with severe escapes. No final YAC value or `beats` tag proves the mechanism.
 
-## Smallest next experiment and integration decision
+## Explosive YAC: the current working diagnosis
+
+The strongest current football pattern is **marginal arrival followed by failed
+containment**. A nearby defender does not necessarily have the angle, matched
+motion or support to control a running receiver. In the explosive cases the
+first loaded tackle is usually a reach/lunge from behind, and a brief real
+hold often breaks. Recovery is too late to prevent the gain becoming explosive.
+The awareness finding is parked and has not been shown to cause this pattern.
+
+This follow-up reuses the same unchanged-source recordings and original uniform
+32-catch draw; there is no new simulation, resampling or candidate. All eight
+20+ YAC catches are clean and have natural endings. The compact receipt's
+`explosiveYacFollowup` pins the operator, identities and individual splits.
+
+| Observation | Eight 20+ YAC catches | Other 24 catches, including the one flagged control |
+| --- | ---: | ---: |
+| First positively loaded grasp recorded | 7 | 22 |
+| Rear origin among those first grasps | 7/7 | 11/22 |
+| Reach/lunge origin among those first grasps | 6/7 | 5/22 |
+| Plays with a recorded broken tackle | 5/8 | 0/24 |
+| Median catch to first loaded boundary | 1.70 s | 0.78 s |
+| Median nearest-defender distance at catch | 3.84 yd | 2.04 yd |
+
+Among the seven loaded explosives, approximately **83% of their combined
+recorded YAC remains after the first loaded-grasp boundary** (257.9 of 312.1 yd).
+This is a 20 Hz displacement split, not a causal percentage: the approach
+establishes the poor grip geometry, and later controller choices, support,
+contact execution and other players can all affect subsequent yards. It does
+not mean physics is responsible for 83% of the problem.
+
+| Native explosive | YAC | Estimated gain at first loaded boundary | Remaining recorded YAC |
+| --- | ---: | ---: | ---: |
+| R3101-S1001-P173 | 76.2 | 1.8 | 74.5 |
+| R3101-S1001-P58 | 38.6 | 1.9 | 36.7 |
+| R3101-S1001-P143 | 22.4 | 10.8 | 11.7 |
+| R3101-S1001-P87 | 34.0 | 4.1 | 29.9 |
+| R3101-S1001-P111 | 65.5 | 4.5 | 60.9 |
+| R4202-S2001-P121 | 27.3 | 20.6 | 6.7 |
+| R4202-S2001-P156 | 48.0 | 10.5 | 37.5 |
+| R4202-S2001-P86 | 50.5 | No loaded grasp | No loaded grasp |
+
+P173/P58 are particularly consequential: the first loaded grasp occurs within
+about two yards of the catch, slips, and leaves most of the eventual gain ahead.
+P121 demonstrates a different path: about 21 of its 27 yards occur before the
+first loaded grip. P86 receives no recorded loaded grasp. Thus both arrival
+and contact survival matter; an aggregate YAC figure cannot choose a repair.
+
+Ordinary controls also contain successful rear tackles. Do not forbid rear
+approaches, force every receiver to slow, increase grip strength or award a
+tackle for proximity. The remaining causal question is **why the first approach
+becomes marginal, and why that real loaded contact fails to contain the runner**.
+The initial arrival request, achieved approach and first loaded interval must
+be isolated against successful same-geometry controls before choosing a
+controller correction or sending a contact-law correction to the physics owner.
+The sample identifies the recurring football failure; it does not yet identify
+one code defect explaining the engine-wide explosive rate.
+
+## Recorded acquisition experiment — parked by the user
 
 Coordinate one acquisition-boundary experiment with the run-game owner before
 editing `assign.ts`/shared pursuit. Keep both native recipient mismatches,
