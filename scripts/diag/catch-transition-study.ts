@@ -14,6 +14,10 @@ import {ScoutingReport} from '../../src/sim/recognition.js';
 import {CoverageScouting} from '../../src/sim/qbmind.js';
 import {gripForce} from '../../src/sim/tackle.js';
 import {contactQuality} from '../../src/sim/tackle-window.js';
+import {previewFreeMovement} from '../../src/physics/movement-preview.js';
+import {interceptPoint} from '../../src/physics/reach.js';
+import {FIELD_WIDTH} from '../../src/core/field.js';
+import {gatheringApproach,leverage} from '../../src/sim/behaviors/common.js';
 import {arrivalChoice,type Consumed} from './catch-arrival-model.js';
 import {sourceVersion} from '../source-version.js';
 
@@ -41,11 +45,16 @@ function pair(c:Agent,d:Agent){const dx=c.pos.x-d.pos.x,dy=c.pos.y-d.pos.y,dist=
  headingDifference:Math.atan2(Math.sin(Math.atan2(d.vel.y,d.vel.x)-Math.atan2(c.vel.y,c.vel.x)),Math.cos(Math.atan2(d.vel.y,d.vel.x)-Math.atan2(c.vel.y,c.vel.x))),
  defenderSpeed:d.speed,runnerSpeed:c.speed,defender:lean(d),runner:lean(c)};}
 type Geometry='baseline'|'arrival';
-function trial(f:any,geometry:Geometry,execution:number|null,observe:boolean,destination:string,label:string){
- const sim=restore(f,observe),a=sim.agents[f.defender],ci=sim.offense.find(a=>a.player.id===f.nativeResult.stats.receiver)!.idx;
+export function trial(f:any,geometry:Geometry,execution:number|null,observe:boolean,destination:string,label:string,audit=false){
+ const sim=restore(f,observe),a=sim.agents[f.defender],ci=sim.offense.find(a=>a.player.id===(f.nativeResult.stats.receiver??f.nativeResult.stats.target))?.idx??sim.slot('X')!.idx;
  const wrapped=new WeakSet<object>(),rows:any[]=[],holds:any[]=[],ids=new WeakMap<object,number>();
  const seen=sim.see.bind(sim),step=sim.world.step.bind(sim.world),tick=sim.tick.bind(sim),event=sim.event.bind(sim);
- let inside=false,cues:Consumed[]=[],decision:any=null,raw:any=null,world:any=null,acquisition:any=null,changedCalls=0;
+ let inside=false,cues:Consumed[]=[],decision:any=null,raw:any=null,world:any=null,acquisition:any=null,changedCalls=0,forecast:any=null;
+ const randomCalls:any[]=[];
+ if(audit&&observe){for(const name of ['nextU32','normal'] as const){const native=sim.rng[name].bind(sim.rng);
+  Reflect.set(sim.rng,name,(...args:any[])=>{const value=Reflect.apply(native,sim.rng,args);
+   const caller=new Error().stack?.split('\n').filter(line=>line.includes('/src/')&&!line.includes('/core/rng.ts')).slice(0,2);
+   randomCalls.push({t:sim.t,name,args,value,caller});return value;});}}
  sim.see=(d,c,delay)=>{const picture=seen(d,c,delay);if(inside&&d===a)cues.push({target:c.idx,delay,seen:copy(picture)});return picture;};
  // Both original RNG calls (execution and placement) have already occurred.
  // At this event acquisition is complete, but no grasp load has been solved.
@@ -80,22 +89,40 @@ function trial(f:any,geometry:Geometry,execution:number|null,observe:boolean,des
   world={before,applied,after:sim.agents.map(lean),grasps,report:copy(report)};return report;
  };
  sim.tick=()=>{
-  const t=sim.t;cues=[];raw=null;decision=null;world=null;
+  const t=sim.t,rngBefore=audit?hash(sim.rng):null;cues=[];raw=null;decision=null;world=null;forecast=null;
   const b=a.behavior;if(!wrapped.has(b)){wrapped.add(b);const update=b.update.bind(b);
    b.update=(actor,s)=>{inside=true;let original;try{original=update(actor,s);}finally{inside=false;}
     const choice=arrivalChoice(actor,s,original,cues);raw=copy(original);decision=copy(choice);
     const command=geometry==='arrival'?choice.command:original;if(hash(command)!==hash(original))changedCalls++;
+    if(audit&&observe){
+     const cue=choice.window?{target:choice.window.receiver,seen:choice.window.seen}:cues.find(c=>c.target===ci),sup=a.body.support;
+     if(cue&&sup?.state==='up'&&!a.engagement&&!sup.foot&&!sup.strike&&Math.hypot(sup.lean.x,sup.lean.y)<1e-6
+      &&Math.hypot(sup.load.x,sup.load.y)<1e-6&&!sim.world.joints.some(j=>j.a===a.body||j.b===a.body)){
+      const target=sim.agents[cue.target],picture=cue.seen,contact=a.profile.radius+target.profile.radius+a.profile.reach*.65,
+       distance=Math.hypot(picture.pos.x-a.pos.x,picture.pos.y-a.pos.y),force=a.runFit?.kind==='force'||(a.runFit?.kind==='edge'&&a.runFit.edge==='box'),
+       offset=(force?Math.abs(leverage(a,picture.pos.y))*a.runFit!.side:leverage(a,picture.pos.y))*clamp((distance-contact)/6,0,1),
+       gather=gatheringApproach(a,picture,contact,offset),path=(t:number)=>({x:picture.pos.x+picture.vel.x*t,y:clamp(picture.pos.y+picture.vel.y*t,0,FIELD_WIDTH)}),
+       intercept=interceptPoint({pos:a.pos,vel:a.vel,profile:a.profile,speedScale:a.speedScale},path,{horizon:3,step:.1,radius:contact}),
+       samples=previewFreeMovement(a.body,command,s.t,12),scored=samples.map(p=>{const target=path(p.t),dx=target.x-p.pos.x,dy=target.y-p.pos.y,dist=Math.hypot(dx,dy),
+        vx=p.vel.x-picture.vel.x,vy=p.vel.y-picture.vel.y;
+        return {...p,distance:dist,closing:(vx*dx+vy*dy)/Math.max(1e-9,dist),transverse:Math.abs(vx*dy-vy*dx)/Math.max(1e-9,dist)};}),
+       closest=scored.reduce((best,p)=>p.distance<best.distance?p:best,scored[0]);
+      forecast={target:cue.target,picture:copy(picture),contact,offset,gather:copy(gather),intercept,closest,
+       samples:scored,assumption:'Held actual controller command, free World and constant observed runner velocity; no future cut, contact, throw tip or loaded recovery prediction.'};
+     }
+    }
     return command;};}
-  tick();if(observe)rows.push({t,ball:sim.ball.kind,carrier:sim.carrier?.idx??null,cues:copy(cues),raw,decision,world});
+  const phaseBefore=sim.ball.kind;tick();if(observe)rows.push({t,phaseBefore,ball:sim.ball.kind,carrier:sim.carrier?.idx??null,cues:copy(cues),raw,decision,forecast,world,rngBefore,rngAfter:audit?hash(sim.rng):null});
  };
  const result=sim.run(),sig=signature(sim,result),file=join(destination,`${label}.json.gz`);
  const record={id:f.id,geometry,execution,setupSha256:hash(f.setup),signature:sig,acquisition,
   selectedDefender:{idx:a.idx,id:a.player.id,slot:a.slot,profile:a.profile},actualReceiverId:result.stats.receiver??null,
   result:{...result,frames:undefined,telemetry:undefined},censored:result.outcome==='timeout',changedCalls,holds,rows,
-  frames:observe?result.frames:undefined,telemetry:observe?result.telemetry:undefined};
+  randomCalls,frames:observe?result.frames:undefined,telemetry:observe?result.telemetry:undefined};
  if(observe)writeFileSync(file,gzipSync(JSON.stringify(record)));
- return {...record,rows:undefined,frames:undefined,telemetry:undefined,artifact:observe?{path:file,sha256:fileHash(file)}:null};
+ return {...record,rows:undefined,randomCalls:undefined,frames:undefined,telemetry:undefined,artifact:observe?{path:file,sha256:fileHash(file)}:null};
 }
+if(process.argv[1]===import.meta.filename){
 const destination=process.argv[2];if(!destination)throw Error('OUTDIR required');mkdirSync(destination,{recursive:true});
 const packetPath='out/catch-arrival/fresh-guarded-inputs.json',packet=JSON.parse(readFileSync(packetPath,'utf8')),
  f=packet.clips.find((f:any)=>f.id==='R6103-S3001-P4');
@@ -120,3 +147,4 @@ if(sourceVersion()!==provenance.sourceSha256)throw Error('Runtime changed');
 writeFileSync(join(destination,'summary.json'),JSON.stringify({schema:'p4-geometry-execution-v1',provenance:{...provenance,finishedAt:new Date().toISOString()},
  input:{path:packetPath,sha256:fileHash(packetPath),id:f.id,setupSha256:hash(f.setup)},witnesses,cases,
  interpretation:'Full 22-body native plays. Each geometry retains its actual command history, native acquisition/placement draws, queued strike and RNG consumption. Only execution for the first selected hold is crossed through existing quality/capacity laws before its first load; later decisions and physical feedback run normally. This is a diagnostic intervention, not a capability or physics fix. Geometry rows include their own native leg placement; outcomes are not a population estimate.'})+'\n');
+}
