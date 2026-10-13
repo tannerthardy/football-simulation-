@@ -3,7 +3,7 @@ import json,gzip,hashlib,sys
 from pathlib import Path
 root=Path(sys.argv[1] if len(sys.argv)>1 else 'out/run-hand-coherence')
 manifest=json.loads(Path('docs/reviews/run-hand-coherence-inputs.json').read_text())
-arms=['baseline','default','hands','coherent-hands','components-hands','components-coherent-hands','combined-hands','combined-coherent-hands']
+arms=['baseline','default','hands','coherent-hands','seal-hands','components-hands','components-seal-hands','combined-hands','combined-seal-hands']
 present=[name for name in arms if (root/f'{name}-index.json').exists()]
 def load(path):return json.loads(gzip.decompress(Path(path).read_bytes()))
 def metrics(p):
@@ -44,7 +44,7 @@ for shard in range(6):
     lim['workResidual']=max(lim['workResidual'],abs(q['work']['residual']))
    arm['rows'].append(metrics(p))
   print(name,shard,len(d['panel']),flush=True)
-for old,new in [('hands','coherent-hands'),('components-hands','components-coherent-hands'),('combined-hands','combined-coherent-hands')]:
+for old,new in [('hands','coherent-hands'),('hands','seal-hands'),('components-hands','components-seal-hands'),('combined-hands','combined-seal-hands')]:
  if old not in present or new not in present:continue
  before={r['id']:r for r in summary['arms'][old]['rows']};pairs=[]
  for r in summary['arms'][new]['rows']:

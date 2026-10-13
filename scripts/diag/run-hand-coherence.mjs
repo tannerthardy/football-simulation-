@@ -11,11 +11,11 @@ const arms=[
  ['baseline',[],false],
  ['default',[],true],
  ['hands',['HAND_MOTOR=1','RUN_HANDS=1'],true],
- ['coherent-hands',['HAND_MOTOR=1','RUN_HANDS=1','RUN_HAND_COHERENCE=1'],true],
+ ['seal-hands',['HAND_MOTOR=1','RUN_HANDS=1','RUN_HAND_COHERENCE=1'],true],
  ['components-hands',['RUN_CONTACT_COMPONENTS=1','HAND_MOTOR=1','RUN_HANDS=1'],true],
- ['components-coherent-hands',['RUN_CONTACT_COMPONENTS=1','HAND_MOTOR=1','RUN_HANDS=1','RUN_HAND_COHERENCE=1'],true],
+ ['components-seal-hands',['RUN_CONTACT_COMPONENTS=1','HAND_MOTOR=1','RUN_HANDS=1','RUN_HAND_COHERENCE=1'],true],
  ['combined-hands',['RUN_CONTACT_COMPONENTS=1','PULL_HANDOVER=1','HAND_MOTOR=1','RUN_HANDS=1','DL_HANDS=1'],true],
- ['combined-coherent-hands',['RUN_CONTACT_COMPONENTS=1','PULL_HANDOVER=1','HAND_MOTOR=1','RUN_HANDS=1','DL_HANDS=1','RUN_HAND_COHERENCE=1'],true],
+ ['combined-seal-hands',['RUN_CONTACT_COMPONENTS=1','PULL_HANDOVER=1','HAND_MOTOR=1','RUN_HANDS=1','DL_HANDS=1','RUN_HAND_COHERENCE=1'],true],
 ];
 if(!process.argv.includes('--arm')||!arms.some(a=>a[0]===chosen))throw Error('Choose an explicit --arm');
 mkdirSync(directory,{recursive:true});

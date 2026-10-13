@@ -1125,7 +1125,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const length = Math.hypot(dx, dy) || 1;
     const requested = j.drive!;
     j.drive = coherentRunHandDrive(requested, { x: -dy / length, y: dx / length }, lat,
-      j.b === d.body, blockVel, d.vel);
+      j.b === d.body, wantOffset);
     handCoherence = { requested, retained: j.drive };
   }
   runContactObservers.get(sim)?.(e, 'movement', { axis, lat, drive, stretch, forward,
