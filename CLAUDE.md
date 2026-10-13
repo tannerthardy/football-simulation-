@@ -43,34 +43,40 @@ and coordinate before editing another session's subsystem.
 ## Pick and prove the next change
 
 Testing has a marginal-cost budget. Follow [selective testing](docs/TESTING_COSTS.md):
-tiny failing/opposing controls per edit; an opt-in 2/8/16/32-snap roster screen
-only after a candidate works; full code checks once before integration;
-multi-roster games at declared checkpoints. Do not multiply existing tests by
-rosters or run games for a local solver diagnosis. `npm run screen:roster` only
-plans; its committed baseline and per-case cache avoid baseline reruns. Use
-fresh profile-only checks for generator/selection changes. Broad audits require
-explicit counts/reasons. `baseline:verify -- --candidate --fail-fast` retains
-skipped phases after a failure instead of paying for the expensive tail.
+state one question, then use the smallest reproducer, one relevant opposing
+control and directly affected correctness tests. Before adding tests, name the
+decision their results could change; otherwise skip them. Reuse fixtures and
+compatible receipts. A transfer screen is optional for a specific open risk;
+do not climb automatically through 2/8/16/32 snaps. A material adverse result
+gets one targeted diagnostic first. One integration owner checks the exact
+combined candidate; everyone else supplies focused evidence. Additional games
+need an interaction question. `npm run screen:roster` only plans; its committed
+baseline/cache avoid baseline reruns. Broad audits require counts/reasons.
 
 Judge changed behavior with [the shared review procedure](docs/BEHAVIOR_REVIEW.md).
-Declare the mechanism contract and falsifier before results; record the first
-relevant divergence, causal evidence, opposing controls and a verdict. More
+The categories interpret existing tests; they are not separate required suites
+or mandatory worksheet fields. State what would answer the question before
+results; inspect the first relevant divergence when needed. More
 tackles or less yardage is not improvement; worse yardage can follow better
 football. Unexplained material changes and broken supported contracts block
-promotion. Generate a worksheet from saved screen reports without simulating
-again; do not add a testing matrix to perform this review.
+promotion. The saved-result worksheet is optional. Report only what changed,
+evidence for/against, unresolved risk, runtime and next decision; link receipts.
 
 Read [current status](docs/STATUS.md) and [validation](docs/VALIDATION.md).
 Choose repeated visible mechanisms from random ordinary film, ranked by
 frequency and consequence. A bad average or one spectacular failure is not a
 diagnosis. Keep the same bodies, input, seed and measurement operator for
-controlled comparisons; include ordinary, difficult, mirrored and unaffected
-cases. If two attempts do not repair the mechanism, stop and re-diagnose.
+controlled comparisons. Add difficult, mirrored or unaffected cases only for
+distinct unresolved risks. If two attempts do not repair the mechanism, stop
+and re-diagnose.
 
-For movement and contact mechanisms, `npm run mech:sim && npm run mech:report`
+When a matched football-transfer question needs games,
+`npm run mech:sim && npm run mech:report`
 compares the sim with 2022 NFL all-22 tracking using identical measurement
 code, per mechanism and per run concept (no raw data needed). A flag is a place
-to look, never a number to tune toward; see [NFL data](docs/NFL_DATA.md).
+to look, never a number to tune toward; see [NFL data](docs/NFL_DATA.md). This
+collector runs eight games; reuse compatible reports and do not run it as a
+routine movement/contact check.
 
 Validate physics laws, movement, contacts and decisions before whole games.
 Keep shared capacities fixed during controller work. Never add strength or
@@ -81,9 +87,10 @@ they are not blind holdouts. The reserved final exam is described in validation.
 
 Requires Node 22. Run `npm ci` once, then:
 
-For a shared baseline report, use `npm run baseline:verify`; it applies the
-recorded profile and runs all checks in sequence. Direct commands below are
-available for focused work, with their feature settings recorded explicitly.
+The integration owner uses `npm run baseline:verify` for the combined report;
+it applies the recorded profile and runs all checks in sequence. Local work uses
+`npm run baseline:run -- --candidate -- <focused command>`. Commands below are
+available checks, not a per-agent checklist; record feature settings explicitly.
 
 ```sh
 npm test                 # fast production contracts
@@ -95,8 +102,9 @@ npm run typecheck
 npm run build
 ```
 
-Use focused tests while iterating; run complete checks once before publishing
-an engine change. Docs or film changes do not need new games. Output belongs
+Use focused tests while iterating; the designated integration owner runs complete
+checks once on the exact combined engine candidate. Other agents link their
+focused evidence. Docs or film changes do not need new games. Output belongs
 in ignored `out/`, not new giant files under `viewer/` or `data/reviews/`.
 
 ## What to read

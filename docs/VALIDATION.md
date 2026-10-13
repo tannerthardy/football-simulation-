@@ -63,12 +63,15 @@ missing state only for the selected mechanism. Preserve unsuccessful examples.
 
 ## Change and stopping rules
 
-Use [BEHAVIOR_REVIEW.md](BEHAVIOR_REVIEW.md) for shared definitions of improvement
-and regression and the case-by-case decision procedure. Declare the behavioral
-contract before candidate results; distinguish a repaired mechanism from an
-explained outcome change, a violated contract, a tradeoff and missing evidence.
-Apply that standard even when yardage moves in a favorable direction. The
-saved-result review worksheet adds no simulations or new roster matrix.
+Use the [tiny default loop](TESTING_COSTS.md#default-loop-one-question-tiny-evidence):
+one question, smallest reproducer, one relevant opposing control and directly
+affected correctness tests. Before adding checks, name the decision their results
+could change. [BEHAVIOR_REVIEW.md](BEHAVIOR_REVIEW.md) supplies interpretation
+categories when needed, not mandatory suites or a worksheet. A material adverse
+result gets one targeted diagnostic before a larger batch; distinguish a defect,
+a football tradeoff and changed randomness. Apply the same standard to favorable
+yardage. Report what changed, evidence for/against, unresolved risk, runtime and
+next decision; link compatible evidence instead of rerunning it.
 
 Write a short explanation before coding: first wrong request or physical
 response, evidence, proposed cause, and the check that would prove it wrong.
@@ -94,7 +97,7 @@ model only when the simpler shared mechanism cannot represent the observed need.
 ## Checks already available
 
 Run from the repository root with Node 22. Output belongs in ignored `out/`.
-Focused checks during iteration precede the complete checks before publication.
+Focused checks during iteration precede shared checks on the combined candidate.
 
 ```sh
 npm test
@@ -107,8 +110,11 @@ npm run test:data
 
 `npm test` covers the production contracts. Integration keeps the existing slow
 game/ensemble checks; research keeps the paused anatomical/sole experiments.
-Before publishing an engine change, `npm run test:all` runs all three projects
-without omitting any preserved assertion. Docs-only work needs no new games.
+At integration, one designated owner runs `npm run test:all` on the exact combined
+engine candidate, without omitting any preserved assertion, alongside the other
+required full checks. Local agents supply focused receipts and link the shared
+result rather than each launching the suite. Reuse only compatible tested code,
+inputs and settings. Docs-only work needs no new games.
 Complete and integration runs use one worker to avoid the worker RPC timeout
 observed in the old parallel full suite; the fast default remains parallel.
 The native game tests yield between synchronous games so worker reports can
@@ -180,9 +186,11 @@ source verification is expected to reject a different later engine.
 ## Testing cost and selective roster diversity
 
 Follow [TESTING_COSTS.md](TESTING_COSTS.md). Tests are not multiplied by rosters.
-Use tiny mechanism/opposing controls per edit, an affected opt-in subset of the
-frozen 32-snap screen after a candidate works, full checks once before integration,
-and independent games at declared checkpoints. `npm run screen:roster` runs
+Use the tiny default loop. Choose an affected subset of the frozen 32-snap screen
+only if a specific transfer question remains; never automatically step through
+2/8/16/32 snaps. One owner runs full checks on the combined candidate at integration.
+Additional games require an interaction question that needs games.
+`npm run screen:roster` runs
 zero simulations without an explicit collection/comparison request. Compatible
 committed baseline evidence supports candidate-only execution and per-case
 caching. Generator/selector changes need fresh profile checks too: frozen

@@ -5,17 +5,56 @@ Shared policy requested 2026-10-13. This adds a marginal-cost constraint to the
 Choose the smallest check that answers the remaining question. **Do not multiply
 the code suite by rosters, screen every edit, or run games for a local solver error.**
 
+## Default loop: one question, tiny evidence
+
+This is the everyday workflow. The behavior-review categories interpret results;
+they are not separate mandatory test suites or a requirement to collect more evidence.
+
+1. State the **one question** the change should answer.
+2. Run the smallest reproducer, one relevant opposing control and directly
+   affected correctness tests. Reuse existing fixtures and compatible receipts.
+3. If they support the change, run the smallest relevant transfer screen **only
+   when transfer remains an open question**. Choose a subset once; do not
+   automatically climb through 2, 8, 16 and 32 snaps. Zero transfer snaps is valid.
+4. If a material adverse result appears, use **one targeted diagnostic** to
+   distinguish a defect, a football tradeoff or changed randomness. Start with
+   saved evidence; do not immediately launch a larger batch. If it cannot settle
+   the cause, report the uncertainty and decide the next discriminating question.
+5. Run the full code suite at integration under one owner for the exact combined
+   candidate. Reserve additional games for changes whose interactions require games.
+
+**Before adding a test or batch, name the decision its result could change. If
+it would not change what we do next, skip it.** A bigger affected subsystem is a
+reason to identify risks, not an automatic order to run every available panel.
+
+Report only **what changed; evidence for/against; unresolved risk; runtime; next
+decision**. Link existing receipts and traces instead of rerunning or copying them.
+This compact report is enough for local work; the detailed behavior worksheet is
+optional when a difficult result needs interpretation.
+
+For the current work, start here rather than opening another roster audit:
+
+| Work | First question/evidence | Opposing control / next spend |
+| --- | --- | --- |
+| Arrival | The small P4 matched-execution experiment identified in the arrival chat. | Reuse its relevant control; no new roster sweep to answer this question. |
+| Blocking | The specific release/collection encounter. | A control where leaving early would harm useful work. Diagnose the encounter before broad screening. |
+| Physics | The failing mechanical replay. | One opposing mechanical control; broader checks after a coherent correction and an identified transfer risk. |
+
 ## When to spend more
+
+These are available scopes, **not a staircase or a checklist**. Additional
+coverage is triggered by a specific unresolved risk, not by another policy category.
 
 | Stage | Trigger | Work and initial budget | Evidence |
 | --- | --- | --- | --- |
-| Local iteration | Every relevant edit | Failing witness, successful opposing control and relevant existing mechanical checks. Mirrors/edges only for distinct claims. Usually zero new full snaps. | Mechanism works and immediate control holds. |
-| Transfer screen | Candidate mechanism works; capabilities might affect transfer | Four frozen matchups; choose affected calls. One call: 8 snaps. One call/one matchup: 2. Entire panel: at most 32. Reuse recorded baseline. | Transfer across relevant capabilities; not league certification. |
-| Integration | Coherent engine candidate ready to integrate | Typecheck/build and preserved full code suite once, plus relevant shared football contracts. Broaden more for generation, fatigue, movement/contact than a narrow controller. | Required contracts preserved; candidate reviewable. |
-| Major checkpoint | Integrated group of individually tested changes, or possible game-wide interaction | Explicitly budgeted independent roster pairs/games, declared schemes/seeds, ordinary film and tails, some untouched inputs. No default game count. | Fatigue, packages, calling, rules and interacting mechanisms together. |
+| Local iteration | A specific change/question | Smallest reproducer, one opposing control and directly affected correctness tests. Mirrors/edges only when they change the decision. Usually zero new full snaps. | Question answered and immediate control holds. |
+| Transfer screen | Local evidence supports the change; a named capability/role transfer risk remains | Select only relevant frozen cases, once: 2, 8, 16 or at most 32. Reuse recorded baseline. No screen if the question is already answered. | Transfer across relevant capabilities; not league certification. |
+| Integration | Exact combined engine candidate ready | One owner runs typecheck/build and the preserved full code suite once, with relevant shared football contracts. Other agents supply focused evidence. | Combined candidate's required contracts preserved. |
+| Game evaluation | A named interaction cannot be resolved without games | Explicitly budgeted pairs/games, declared schemes/seeds and relevant fatigue/packages/calling/interaction measurements. Some untouched inputs for checkpoint transfer. No automatic checkpoint game count. | The specific game-wide risk resolved or bounded. |
 
 Escalate when affected scope grows, evidence conflicts, or the cheaper stage
-cannot answer the remaining question. Better averages do not trigger automatic
+cannot answer the remaining question. An adverse result first gets a targeted
+diagnostic, not an automatic larger batch. Better averages do not trigger automatic
 escalation or promotion. Physics laws and short contact tapes precede football
 transfer. Known conservation/accounting failures remain failures.
 
@@ -27,9 +66,10 @@ and **simulates zero snaps**. Use .nvmrc Node 22.23.3 and `npm ci` once.
 
 ```sh
 npm run screen:roster
-# Typical controller candidate: one affected call, 8 snaps.
+# Only if transfer across the four matchups is still an open question: 8 snaps.
 npm run screen:roster -- --compare data/reviews/current/roster-screen-baseline.json --calls slant_flat
-# Pass or run subset: 16. Omit --calls for all 32.
+# Alternative subsets for a named risk, not the next steps in a sequence.
+# Pass or run subset: 16. Omit --calls for all 32 only if needed.
 npm run screen:roster -- --compare data/reviews/current/roster-screen-baseline.json --calls slant_flat,mesh
 npm run screen:roster -- --compare data/reviews/current/roster-screen-baseline.json --calls iz_strong,oz_strong
 # Narrow pair/call: two snaps.
@@ -101,6 +141,8 @@ relevant divergence, check feasible/informed football responses and opposing
 controls, then record improvement, valid outcome change, regression, tradeoff
 or uncertainty. Apply the same standard to favorable and adverse yardage.
 Material unexplained changes do not pass by looking more like NFL averages.
+Use these categories only when helpful to the decision; filling a worksheet or
+collecting a new trace for every changed signature is not mandatory.
 The saved-result worksheet runs zero simulations; request new traces only when
 they can settle an unresolved mechanism. These verdicts do not add a roster
 matrix, per-edit screen or automatic full-game job.
@@ -113,7 +155,8 @@ is a maintainer tool, not a per-edit command.
 ## Cheap profiles, explicit broad checkpoints
 
 Frozen-body screens bypass a changed generator/selector. Start those changes
-with focused schema/selection tests and a small fresh profile audit, not games:
+with existing relevant schema/selection evidence. Use a small fresh profile
+audit when the question needs newly generated/selected players, not games:
 
 ```sh
 # 3 strengths × 8 teams: 1,272 profiles; zero games.
@@ -131,31 +174,50 @@ Fresh rosters/holdouts belong at separate checkpoints, not repeated development.
 
 ## Fail cheap before paying for expensive checks
 
-Run targeted failing/opposing controls first; chain successful checks with `&&`
-before a screen. Full checks occur once before integrating an engine candidate:
+Run targeted failing/opposing controls first. A screen follows only if a transfer
+question remains. Full checks belong to the integration owner, not every agent:
 
 ```sh
 npm run baseline:run -- --candidate -- npx vitest run --project core test/the-affected-mechanism.test.ts
-# After the mechanism works, run only the relevant screen subset.
+# Integration owner only, for the exact combined candidate:
 npm run baseline:verify -- --candidate --fail-fast
 ```
 
 The opt-in `--fail-fast` preserves skipped command evidence and cannot issue a
 passing receipt when phases are skipped. Failed typecheck/build avoids paying
 for later suites. Existing assertions and default verifier behavior remain.
-Fix a failure before retrying. Full games remain a separate checkpoint.
+Fix a failure before retrying. Additional games need an interaction question.
 Record runtime by group; test count is not a cost estimate. Compare timings on
 the same machine without competing collectors before claiming speed gains.
+
+## One owner for shared integration checks
+
+Record the integration owner in [WORKBOARD.md](WORKBOARD.md) before the combined
+run. The existing lead for `codex/run-game-integration` is the shared integration
+role; local agents hand off their focused receipts, limitations and candidate
+commits. This policy does not dispatch another suite or change another owner's work.
+
+The owner freezes the combined candidate and settings, runs the preserved full
+code checks once, and publishes one receipt linked by all contributors. Record
+the tested source/test/input/measurement versions, flags and environment. Reuse
+results only while those remain compatible; a changed combined engine or test
+contract is not covered by an old all-suite pass. Local evidence from a different
+branch does not prove the combined candidate. Rerun because a material input
+changed or a check failed, not because another agent is preparing its handoff.
+
+Additional simulation games need a named interaction question and budget. Existing
+game assertions inside the preserved full suite remain part of that suite; this
+policy does not remove them or multiply their rosters.
 
 ## Applying the roster recommendations
 
 | Recommendation | Shared support now / next bounded candidate | Gate before broader spend |
 | --- | --- | --- |
-| Trait/missing-measurement semantics | Audit documents balance/TE/QB-bench concerns; cheap candidate profile mode now works on edited engines. Numerical changes stay separate. | Explain semantics, schema/physical checks and profile/same-latent checks, then relevant small screen. Do not choose means from desired tackle rates. |
+| Trait/missing-measurement semantics | Audit documents balance/TE/QB-bench concerns; cheap candidate profile mode now works on edited engines. Numerical changes stay separate. | Answer the trait question with relevant existing schema/profile checks. Use a small screen only for unresolved execution transfer. Do not choose means from desired tackle rates. |
 | Consistent familiarity/lineup selection | Frozen inputs expose actual listed positions/jobs; fresh profile audit exercises packages/depth. Refactor/assignment changes stay separate. | Eligibility, familiarity, unique players and feasible complete assignments, plus composition. Frozen screen alone bypasses selection. |
 | Diverse execution coverage | Four capability-selected fixtures, affected 2/8/16/32-case subsets and reusable baseline implemented. | Candidate mechanism first; opposing control and allowed offensive success retained. |
-| League transfer | Broad cost previews, explicit checkpoint reasons and exact cache reuse implemented. | Integrated tested changes or demonstrated game-wide interaction, then independently generated pairs and game seeds with untouched inputs. |
+| League transfer | Broad cost previews, explicit checkpoint reasons and exact cache reuse implemented. | A named unresolved league/interaction question needing games, then budgeted independent pairs/seeds with untouched inputs. Integration alone does not trigger games. |
 
 This pass installs shared workflow/evidence tools first. It does not alter live
 ratings, familiarity behavior or capacities to fit outcomes. Their bounded
-follow-up candidates now have explicit evidence gates and a smaller testing bill.
+follow-up candidates now have bounded evidence choices driven by the next decision.

@@ -34,11 +34,14 @@ git fetch origin
 git switch codex/run-game-integration
 git pull --ff-only origin codex/run-game-integration
 npm run baseline:info
-npm run baseline:verify
 ```
 
 Use the existing checkout; preserve local work before switching or pulling.
 Pin the printed full commit when another session must repeat the comparison.
+Reuse the compatible published receipt; joining the baseline does not require
+rerunning its full suite. Local agents use `baseline:run` for focused checks.
+At integration, the designated owner runs `npm run baseline:verify -- --candidate`
+once on the exact combined candidate and shares its receipt.
 In this cloud environment activate the retained Node binary first:
 
 ```sh
@@ -150,10 +153,14 @@ old measurements as results for the latest source.
 
 ## Selective testing cost
 
-Follow [TESTING_COSTS.md](TESTING_COSTS.md): focused mechanism controls while
-iterating, an optional relevant subset of the frozen roster screen after a
-candidate works, full code checks once before integration, and budgeted games
-at major checkpoints. `baseline:verify -- --candidate --fail-fast` retains the
+Follow [TESTING_COSTS.md](TESTING_COSTS.md): one question, smallest reproducer,
+one relevant opposing control and directly affected correctness tests. Add a
+transfer subset only for an unresolved risk, not a 2/8/16/32-snap staircase.
+One integration owner checks the exact combined candidate; other agents supply
+focused evidence. Reuse only compatible code, inputs and settings. Additional
+games need a specific interaction question. The behavior categories interpret
+results and do not prescribe more tests.
+`baseline:verify -- --candidate --fail-fast` retains the
 skipped tail after a failure and reports failure. It does not relax assertions
 or change the default complete verifier. The launcher now fingerprints all
 configuration inputs, including the frozen roster fixture.
