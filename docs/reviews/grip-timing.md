@@ -77,6 +77,15 @@ shared normal/tangent budgets, multiple contacts, achieved material rotation,
 zero/tiny loads, object identities, mirrors and unequal partitions. Existing
 production assertions and the physics capacities are unchanged.
 
+Complete candidate-source verification at `9e9fd3d` passes **1,671 TypeScript
+tests in 140 files, 145 Python checks, typecheck and build**, with no worker
+errors and unchanged inputs during the run. The
+[validation receipt](../../data/reviews/current/grip-timing-validation.json)
+pins code, harness and defaults. This complete run uses production defaults;
+the candidate's explicit physics option is covered by its targeted contracts
+and separate native/gate comparisons. The retained experimental gate is not
+reported as green.
+
 ## Native controls and adverse evidence
 
 Seven inputs, both mirrors, are run at 12 and 96 outer substeps with identical
@@ -136,6 +145,13 @@ not a controlled game-performance benchmark, but the cost is plainly too
 large for production adoption. The current flat contact island can also cause
 unrelated near bodies to be refined when a grasp is live. No claim of isolated
 football-wide speed or outcome improvement is made.
+
+No support interface or law changed: `support.ts`, `virtual-foot.ts` and
+actuation are byte-identical to the baseline. The helper preserves the existing
+attachment graph and reads the existing grip-point and motor-work interfaces.
+The validated configuration is legacy support, bounded attachments, mean
+support integration and speculative impact timing. External diagnostic
+recovery adapters and Claude's support/tackle variants were not combined.
 
 The single best next step is to use these acquired packets and unchanged
 reference contracts to implement an efficient force-event integration,

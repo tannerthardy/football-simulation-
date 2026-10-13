@@ -1,5 +1,9 @@
 # Contact foundations: a force can have the right dose and the wrong timing
 
+The subsequent [bounded grip-timing candidate](grip-timing.md) implements and
+tests the next correction. This document and its receipt retain the original
+diagnostic stage; its unchanged-runtime statements refer to that stage.
+
 The reduced body is sufficient to test the next uncertainty. More joints or
 larger physical capacities would not fix either defect below. This pass adds
 independent mechanical references and an acquired-state replay; it changes no
