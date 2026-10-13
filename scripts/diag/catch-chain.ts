@@ -101,7 +101,7 @@ function contact(f:any,tape:any){
   duration:.3,interpretation:'Frozen command tape, original World rebuilt by native prefix, original first-step queued strikes. Later controller/bond updates and later queued strikes excluded in BOTH arms. Removing one joint is a causal mechanical ablation, not a controller candidate or completed play.',outcomes};
 }
 type LabInput={id:string;field:'left'|'middle'|'right';helpers:0|1;runner:'native'|'bend-left'|'bend-right';stream:'original'|'fresh-9001'};
-function labInputs(){return inputs.clips.flatMap((f:any)=>(['left','middle','right'] as const).flatMap(field=>
+function labInputs(extra=false){return inputs.clips.filter((f:any)=>extra?!!f.supplement:!f.supplement).flatMap((f:any)=>(['left','middle','right'] as const).flatMap(field=>
  ([0,1] as const).flatMap(helpers=>(['native','bend-left','bend-right'] as const).flatMap(runner=>
  (['original','fresh-9001'] as const).map(stream=>({id:f.id,field,helpers,runner,stream}))))));}
 function shift(sim:PlaySim,a:Agent,dx:number,dy:number){
@@ -170,8 +170,8 @@ else if(mode==='contact'){
  const tape=JSON.parse(gunzipSync(readFileSync(path)).toString());destination=out;
  report={schema:'catch-chain-loaded-ablation-v1',tapeSha256:createHash('sha256').update(readFileSync(path)).digest('hex'),
   cases:inputs.clips.map((f:any)=>contact(f,tape.clips.find((c:any)=>c.id===f.id)))};
-}else if(mode==='lab'){
- const manifest=labInputs();report={schema:'catch-chain-reduced-encounter-v1',manifest,inputSha256:hash(manifest),
+}else if(mode==='lab'||mode==='lab-extra'){
+ const manifest=labInputs(mode==='lab-extra');report={schema:'catch-chain-reduced-encounter-v1',manifest,inputSha256:hash(manifest),
   limitations:'Reduced native-prefix approach forks, starting 0.45 s before first native loaded boundary or first post-catch tick, whichever is later. Same actual runner/first loaded defender, native support, velocities, eyes, histories and capabilities. All bystanders parked and block joints removed. Helper is the named actual athlete deliberately repositioned to a viable opposite lane; NOT original coverage formation. Carrier center y=6/26.67/47.33, x=45; positions/history/support anchors translated together. Original stream versus independent post-prefix execution stream 9001. Native runner versus bends requested after 0.6 s. Ten-second live endpoints censored; no forced whistle, force scaling or solver experiment.',
   cases:manifest.map((input:LabInput)=>{const f=inputs.clips.find((f:any)=>f.id===input.id),observed=lab(f,input,true),plain=lab(f,input,false);
    if(observed.signature!==plain.signature||observed.initialSha256!==plain.initialSha256)throw Error(`Lab observer changes ${JSON.stringify(input)}`);
