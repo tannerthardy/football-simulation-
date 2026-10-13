@@ -28,6 +28,7 @@ for (const concept of ['draw', 'pa_flood', 'pa_post_dig', 'oz_strong']) for (con
 const inputs: Input[] = process.env.FLOW_INPUTS ? JSON.parse(readFileSync(process.env.FLOW_INPUTS, 'utf8')).inputs : defaults;
 const output = process.argv[2] ?? 'out/defensive-flow/baseline.json';
 const allCues = process.env.FLOW_TRACE !== '0';
+const peerCues = process.env.FLOW_PEERS === '1';
 const contactTrace = process.env.CONTACT_TRACE === '1';
 const stop = Number(process.env.FLOW_STOP ?? 25);
 const remove = process.env.HAND_REMOVE ?? '', keep = process.env.HAND_KEEP ?? '';
@@ -90,7 +91,8 @@ function execute(i: Input, trace: boolean) {
     const see = sim.see.bind(sim);
     sim.see = (a, b, scale) => {
       const seen = see(a, b, scale);
-      if ((a.team === 'D' && b.team === 'O') || (contactTrace && a.team === 'O' && b.team === 'D')) cues.push({ t: sim.t, stage, defender: a.idx, opponent: b.idx,
+      if ((a.team === 'D' && b.team === 'O') || (contactTrace && a.team === 'O' && b.team === 'D')
+        || (peerCues && a.team === b.team)) cues.push({ t: sim.t, stage, defender: a.idx, opponent: b.idx,
         slot: b.slot, seen: copy(seen), actual: { pos: copy(b.pos), vel: copy(b.vel), stance: b.stance } });
       return seen;
     };

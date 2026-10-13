@@ -15,6 +15,9 @@ import { sourceVersion } from '../source-version.js';
 
 const output=process.argv[2]??'out/combination-collection/release-ablations.json';
 const includeTrial=process.argv.includes('--trial');
+const nativeOnly=process.argv.includes('--native-only');
+if(includeTrial)assert.equal(sourceVersion(),'2da6243f85f0b48663f07eb9e273e98a223eeb3db2f55d648bd48fcea205828c',
+  'Use archived trial 4074038; final runtime has withdrawn this rejected policy');
 const encode=(v:unknown)=>JSON.stringify(v,(_k,x)=>x instanceof Agent?{agent:x.idx}:x instanceof PlaySim?{sim:true}
   :x instanceof Map?[...x]:x instanceof Set?[...x]:x instanceof Float64Array?[...x]:x);
 const copy=(v:unknown)=>JSON.parse(encode(v));
@@ -36,7 +39,7 @@ function clone<T>(v:T,memo=new Map<any,any>()):T {
   return out;
 }
 type Arm={id:string;release?:number;spacing?:boolean;candidate?:boolean};
-const arms:Arm[]=[{id:'native'},...[.3,1.05,1.3,1.55,1.8].map(release=>({id:`forced-${release}`,release})),
+const arms:Arm[]=nativeOnly?[{id:'native'}]:[{id:'native'},...[.3,1.05,1.3,1.55,1.8].map(release=>({id:`forced-${release}`,release})),
   {id:'native-no-helper-spacing',spacing:true},...(includeTrial?[{id:'stretch-check',candidate:true}]:[])];
 const input={rosterSeed:71,strength:.55,gameSeed:73,nativePlayIndex:48,playSeed:2986046475,
   concept:'oz_weak',arms,expectedNativeHistory:'eca2500ca390f40e70b5997544d8d18a85aa69a802cfe5a6075cedd0af8c8259'};

@@ -1,0 +1,61 @@
+{
+  "protocol": "combination-interception-capability-controls-v1",
+  "input": "docs/reviews/combination-interception-witness.json",
+  "label": "Own consumed picture and body; truth path is offline diagnosis only. Alternate generated profiles and mirrors are empty-space capability contrasts, not native football interventions.",
+  "rows": [
+    {
+      "profile": "RT",
+      "mirror": false,
+      "strike": 1.2043181818181818,
+      "predictedFirstReach": 0.15000000000000002,
+      "predictedMarginAtRunner": -0.031591842659282277,
+      "truthMarginAtRunner": 0.2760930986235761,
+      "truthFirstReach": null
+    },
+    {
+      "profile": "RT",
+      "mirror": true,
+      "strike": 1.2043181818181818,
+      "predictedFirstReach": 0.15000000000000002,
+      "predictedMarginAtRunner": -0.031591842659282277,
+      "truthMarginAtRunner": 0.2760930986235761,
+      "truthFirstReach": null
+    },
+    {
+      "profile": "LG",
+      "mirror": false,
+      "strike": 1.1770454545454545,
+      "predictedFirstReach": 0.15000000000000002,
+      "predictedMarginAtRunner": -0.009475949686906793,
+      "truthMarginAtRunner": 0.2982760298423617,
+      "truthFirstReach": null
+    },
+    {
+      "profile": "LG",
+      "mirror": true,
+      "strike": 1.1770454545454545,
+      "predictedFirstReach": 0.15000000000000002,
+      "predictedMarginAtRunner": -0.009475949686906793,
+      "truthMarginAtRunner": 0.2982760298423617,
+      "truthFirstReach": null
+    },
+    {
+      "profile": "RG",
+      "mirror": false,
+      "strike": 1.1961363636363636,
+      "predictedFirstReach": 0.15000000000000002,
+      "predictedMarginAtRunner": -0.02475751696837425,
+      "truthMarginAtRunner": 0.2829517952546581,
+      "truthFirstReach": null
+    },
+    {
+      "profile": "RG",
+      "mirror": true,
+      "strike": 1.1961363636363636,
+      "predictedFirstReach": 0.15000000000000002,
+      "predictedMarginAtRunner": -0.02475751696837425,
+      "truthMarginAtRunner": 0.2829517952546581,
+      "truthFirstReach": null
+    }
+  ]
+}

@@ -1,0 +1,1936 @@
+{
+  "protocol": "combination-collection-bounded-results-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "trialCommit": "4074038",
+  "trialSourceSha256": "2da6243f85f0b48663f07eb9e273e98a223eeb3db2f55d648bd48fcea205828c",
+  "finalRuntimeSourceSha256": "09c65f70ff3835dba17fb08487582d65f49eaea827f4e6e48f396f93210b773c",
+  "disposition": "Withdrawn: loses first-level protection in one preserved WZ control; no expansion or promotion.",
+  "manifest": {
+    "protocol": "combination-collection-controls-v1",
+    "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "selection": "Eight already-recorded OZ/WZ inputs with successful second-level blocking plus two unchanged Duo controls; selected before candidate outcomes. No new census.",
+    "inputs": [
+      {
+        "id": "wz_strong-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "wz_strong-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "wz_strong-s7",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 7,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "wz_strong-s7-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 7,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "oz_strong-s19-fresh",
+        "concept": "oz_strong",
+        "kind": "run",
+        "seed": 19,
+        "flip": false,
+        "o": 41,
+        "d": 42,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "oz_strong-s19-mirror-fresh",
+        "concept": "oz_strong",
+        "kind": "run",
+        "seed": 19,
+        "flip": true,
+        "o": 41,
+        "d": 42,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "new-wz_strong-s23",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 23,
+        "flip": false,
+        "o": 111,
+        "d": 112,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "new-wz_strong-s23-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 23,
+        "flip": true,
+        "o": 111,
+        "d": 112,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "coherence-duo-over-s29",
+        "concept": "duo",
+        "kind": "run",
+        "seed": 29,
+        "flip": false,
+        "o": 211,
+        "d": 212,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      {
+        "id": "coherence-duo-over-s29-mirror",
+        "concept": "duo",
+        "kind": "run",
+        "seed": 29,
+        "flip": true,
+        "o": 211,
+        "d": 212,
+        "front": "over",
+        "formation": "ace_11"
+      }
+    ]
+  },
+  "candidateProvenance": {
+    "commit": "3fac00bd16f5c1df2207a54e5bad763f2bac243c",
+    "sourceSha256": "2da6243f85f0b48663f07eb9e273e98a223eeb3db2f55d648bd48fcea205828c",
+    "probeSha256": "89a6f91d27c6cb9a3e7838a13bf4638ba82cb712ecf800cb50ad4ae0b53ff190",
+    "intervention": {
+      "remove": "",
+      "keep": ""
+    },
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "STRETCH_HELPER_CHECK": "1",
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_HANDOVER": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_CONTACT_COMPONENTS": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    }
+  },
+  "launcher": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/run-hand-coherence",
+    "commit": "3fac00bd16f5c1df2207a54e5bad763f2bac243c",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "2da6243f85f0b48663f07eb9e273e98a223eeb3db2f55d648bd48fcea205828c",
+    "validationSha256": "f7f428209d2341c6f102c5c034a857eb2588080d9483177252bff6d598f7a3a6",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "STRETCH_HELPER_CHECK": "1",
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_HANDOVER": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_CONTACT_COMPONENTS": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [
+      "config/baseline.json",
+      "docs/WORKBOARD.md",
+      "src/sim/behaviors/blocking.ts",
+      "test/zone-helper-check.test.ts"
+    ],
+    "startedAt": "2026-10-13T23:22:09.811Z",
+    "commands": [
+      {
+        "command": [
+          "env",
+          "FLOW_INPUTS=docs/reviews/combination-collection-inputs.json",
+          "CONTACT_TRACE=1",
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/defense/hand-action-panel.ts",
+          "out/combination-collection/controls-on.json.gz"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 16.960513814
+      }
+    ],
+    "finishedAt": "2026-10-13T23:22:26.773Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "nativeInput": {
+    "rosterSeed": 71,
+    "strength": 0.55,
+    "gameSeed": 73,
+    "nativePlayIndex": 48,
+    "playSeed": 2986046475,
+    "concept": "oz_weak",
+    "arms": [
+      {
+        "id": "native"
+      },
+      {
+        "id": "forced-0.3",
+        "release": 0.3
+      },
+      {
+        "id": "forced-1.05",
+        "release": 1.05
+      },
+      {
+        "id": "forced-1.3",
+        "release": 1.3
+      },
+      {
+        "id": "forced-1.55",
+        "release": 1.55
+      },
+      {
+        "id": "forced-1.8",
+        "release": 1.8
+      },
+      {
+        "id": "native-no-helper-spacing",
+        "spacing": true
+      },
+      {
+        "id": "stretch-check",
+        "candidate": true
+      }
+    ],
+    "expectedNativeHistory": "eca2500ca390f40e70b5997544d8d18a85aa69a802cfe5a6075cedd0af8c8259"
+  },
+  "nativeSourceSha256": "2da6243f85f0b48663f07eb9e273e98a223eeb3db2f55d648bd48fcea205828c",
+  "nativeMethod": "One reconstructed game prefix; graph clones must reproduce saved complete history; each arm observed/plain exact. Candidate installed only on named snap; prefix uses default flags.",
+  "nativeArms": [
+    {
+      "id": "native",
+      "historySha256": "eca2500ca390f40e70b5997544d8d18a85aa69a802cfe5a6075cedd0af8c8259",
+      "gain": -0.26,
+      "outcome": "tackle",
+      "endTime": 2.9,
+      "censored": false,
+      "helperFirstBackerLoad": null,
+      "events": [
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 72.29,
+            "y": 22.44
+          },
+          "note": "secured DT_W; C stays"
+        },
+        {
+          "t": 2.15,
+          "type": "block_climb",
+          "a": 5,
+          "b": 16,
+          "pos": {
+            "x": 72.28,
+            "y": 18.39
+          },
+          "note": "secured DE_W; RT stays"
+        },
+        {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 71.72,
+            "y": 19.05
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.45,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 72,
+            "y": 18.57
+          },
+          "note": "legs"
+        }
+      ]
+    },
+    {
+      "id": "forced-0.3",
+      "historySha256": "904d76eb30173c86a15cd8e305dd95e98182f2ac02c090bddb40736eeaab9de3",
+      "gain": 1.3,
+      "outcome": "tackle",
+      "endTime": 3.1,
+      "censored": false,
+      "helperFirstBackerLoad": 1.45,
+      "events": [
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 72.3,
+            "y": 22.44
+          },
+          "note": "secured DT_W; C stays"
+        },
+        {
+          "t": 2.25,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 71.76,
+            "y": 19.63
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.5,
+          "type": "fall",
+          "a": 16,
+          "pos": {
+            "x": 73.02,
+            "y": 19.38
+          },
+          "note": "contact"
+        },
+        {
+          "t": 2.7,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 73.3,
+            "y": 18.53
+          },
+          "note": "legs"
+        }
+      ]
+    },
+    {
+      "id": "forced-1.05",
+      "historySha256": "e4d1d2d8e79104e173098999f39716a2dc51385afe217364c5fe444544016cb9",
+      "gain": 1.67,
+      "outcome": "tackle",
+      "endTime": 3.9,
+      "censored": false,
+      "helperFirstBackerLoad": 1.75,
+      "events": [
+        {
+          "t": 1.9,
+          "type": "fall",
+          "a": 16,
+          "pos": {
+            "x": 74.33,
+            "y": 19.89
+          },
+          "note": "contact"
+        },
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 72.29,
+            "y": 22.44
+          },
+          "note": "secured DT_W; C stays"
+        },
+        {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 73.15,
+            "y": 20.18
+          },
+          "note": "body collision"
+        },
+        {
+          "t": 3.65,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 74.16,
+            "y": 18.65
+          },
+          "note": "legs"
+        },
+        {
+          "t": 3.7,
+          "type": "fall",
+          "a": 17,
+          "pos": {
+            "x": 74.39,
+            "y": 19.06
+          },
+          "note": "contact"
+        }
+      ]
+    },
+    {
+      "id": "forced-1.3",
+      "historySha256": "b4356a69533be02b6e5736922772dadb95dc70ee3e8c56dc06f9ffcf989f1b24",
+      "gain": 1.96,
+      "outcome": "tackle",
+      "endTime": 3.75,
+      "censored": false,
+      "helperFirstBackerLoad": 2.05,
+      "events": [
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 72.29,
+            "y": 22.44
+          },
+          "note": "secured DT_W; C stays"
+        },
+        {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 72.9,
+            "y": 19.48
+          },
+          "note": "body collision"
+        },
+        {
+          "t": 3.35,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 73.88,
+            "y": 19.24
+          },
+          "note": "legs"
+        },
+        {
+          "t": 3.65,
+          "type": "fall",
+          "a": 16,
+          "pos": {
+            "x": 74.46,
+            "y": 18.59
+          },
+          "note": "contact"
+        },
+        {
+          "t": 3.7,
+          "type": "fall",
+          "a": 15,
+          "pos": {
+            "x": 73.7,
+            "y": 19.22
+          },
+          "note": "contact"
+        }
+      ]
+    },
+    {
+      "id": "forced-1.55",
+      "historySha256": "c9f91112aac6d8f6b61ecbb76e612acb2145d134a198fd6313a545f1409ade25",
+      "gain": -0.6,
+      "outcome": "tackle",
+      "endTime": 2.95,
+      "censored": false,
+      "helperFirstBackerLoad": 2.1,
+      "events": [
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 72.29,
+            "y": 22.44
+          },
+          "note": "secured DT_W; C stays"
+        },
+        {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 71.72,
+            "y": 19.42
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.5,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 71.89,
+            "y": 19.13
+          },
+          "note": "contact"
+        }
+      ]
+    },
+    {
+      "id": "forced-1.8",
+      "historySha256": "b451b3654a8afd55a68ab9775161d710e7a64d2c8896256b3b6bbf89b12a6856",
+      "gain": -0.53,
+      "outcome": "tackle",
+      "endTime": 2.9,
+      "censored": false,
+      "helperFirstBackerLoad": null,
+      "events": [
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 72.29,
+            "y": 22.44
+          },
+          "note": "secured DT_W; C stays"
+        },
+        {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 71.72,
+            "y": 19.17
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.45,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 71.91,
+            "y": 18.82
+          },
+          "note": "legs"
+        },
+        {
+          "t": 2.5,
+          "type": "fall",
+          "a": 16,
+          "pos": {
+            "x": 72.33,
+            "y": 19
+          },
+          "note": "contact"
+        }
+      ]
+    },
+    {
+      "id": "native-no-helper-spacing",
+      "historySha256": "ac9156fe671efd2a4d4bbb40a4c61bf082ee2dca864fe7a81f03d8998da924d6",
+      "gain": -0.46,
+      "outcome": "tackle",
+      "endTime": 2.9,
+      "censored": false,
+      "helperFirstBackerLoad": null,
+      "events": [
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 72.29,
+            "y": 22.44
+          },
+          "note": "secured DT_W; C stays"
+        },
+        {
+          "t": 2.15,
+          "type": "block_climb",
+          "a": 5,
+          "b": 16,
+          "pos": {
+            "x": 72.28,
+            "y": 18.39
+          },
+          "note": "secured DE_W; RT stays"
+        },
+        {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 71.72,
+            "y": 19.06
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.45,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 71.97,
+            "y": 18.62
+          },
+          "note": "legs"
+        }
+      ]
+    },
+    {
+      "id": "stretch-check",
+      "historySha256": "a4df5640007ac94d9bc9dd97be4bc1d9255739bc8d3d88ba214e2e00a5f79903",
+      "gain": 0.23,
+      "outcome": "tackle",
+      "endTime": 3.65,
+      "censored": false,
+      "helperFirstBackerLoad": 2.05,
+      "events": [
+        {
+          "t": 1.3,
+          "type": "block_climb",
+          "a": 5,
+          "b": 16,
+          "pos": {
+            "x": 72.29,
+            "y": 21.15
+          },
+          "note": "check DE_W; RT stays"
+        },
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 72.29,
+            "y": 22.44
+          },
+          "note": "secured DT_W; C stays"
+        },
+        {
+          "t": 2.85,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 72.65,
+            "y": 19.27
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 3.2,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 72.66,
+            "y": 19.36
+          },
+          "note": "legs"
+        },
+        {
+          "t": 3.5,
+          "type": "fall",
+          "a": 16,
+          "pos": {
+            "x": 73.92,
+            "y": 18.8
+          },
+          "note": "contact"
+        }
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "input": {
+        "id": "wz_strong-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 1.0760138706970395,
+        "endTime": 4.35,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 2.95,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.1,
+            "y": 21.25
+          },
+          "note": "body collision"
+        },
+        "crossing": 3,
+        "loadedBackersBeforeRunner": {
+          "LB_S": 2.1,
+          "LB_M": 2.4
+        },
+        "climbs": [
+          {
+            "t": 1.15,
+            "climber": "C",
+            "backer": "LB_M",
+            "note": "secured DT_W; LG stays"
+          },
+          {
+            "t": 1.65,
+            "climber": "Y",
+            "backer": "LB_S",
+            "note": "secured DE_S; RT stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 1.0760138706970395,
+        "endTime": 4.35,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 2.95,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.1,
+            "y": 21.25
+          },
+          "note": "body collision"
+        },
+        "crossing": 3,
+        "loadedBackersBeforeRunner": {
+          "LB_S": 2.1,
+          "LB_M": 2.4
+        },
+        "climbs": [
+          {
+            "t": 1.15,
+            "climber": "C",
+            "backer": "LB_M",
+            "note": "secured DT_W; LG stays"
+          },
+          {
+            "t": 1.65,
+            "climber": "Y",
+            "backer": "LB_S",
+            "note": "secured DE_S; RT stays"
+          }
+        ]
+      },
+      "fullHistoryExact": false,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "aa1a63f645688785805b0fb9f8e8aa5b94f76959d8981ea0ced06756098b7da0",
+      "afterHistorySha256": "1994ccf16f780cd09e7b425e741680f1460d8444c58988fb157a07218b47f693"
+    },
+    {
+      "input": {
+        "id": "wz_strong-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 0.6767448203069009,
+        "endTime": 3.4,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 2.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 13,
+          "pos": {
+            "x": 40.31,
+            "y": 29.84
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.6,
+        "loadedBackersBeforeRunner": {
+          "LB_S": 1.4,
+          "LB_M": 1.45
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "climber": "LT",
+            "backer": "LB_S",
+            "note": "secured DT_S; LG stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 0.6767448203069009,
+        "endTime": 3.4,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 2.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 13,
+          "pos": {
+            "x": 40.31,
+            "y": 29.84
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.6,
+        "loadedBackersBeforeRunner": {
+          "LB_S": 1.4,
+          "LB_M": 1.45
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "climber": "LT",
+            "backer": "LB_S",
+            "note": "secured DT_S; LG stays"
+          }
+        ]
+      },
+      "fullHistoryExact": false,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "cf3410f4c01c46cba692509eee82974193d83eb98d180f9a48208e3c60bef339",
+      "afterHistorySha256": "0c2c2cdfc2c0eeac53680ae58bcb584a94b9b99b33b2323c940e3e71e68d1234"
+    },
+    {
+      "input": {
+        "id": "wz_strong-s7",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 7,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 3.773614375763138,
+        "endTime": 3.8,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.15,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 41.77,
+            "y": 16.44
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.8,
+        "loadedBackersBeforeRunner": {
+          "LB_S": 2.55
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "climber": "RT",
+            "backer": "LB_S",
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.9,
+            "climber": "C",
+            "backer": "LB_M",
+            "note": "secured DT_W; LG stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 3.773614375763138,
+        "endTime": 3.8,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.15,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 41.77,
+            "y": 16.44
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.8,
+        "loadedBackersBeforeRunner": {
+          "LB_S": 2.55
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "climber": "RT",
+            "backer": "LB_S",
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 2.9,
+            "climber": "C",
+            "backer": "LB_M",
+            "note": "secured DT_W; LG stays"
+          }
+        ]
+      },
+      "fullHistoryExact": false,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "116642358517936612596735533b09b726f89b4ed0f3f0a870a3b40d94bde292",
+      "afterHistorySha256": "6cac1ed56126e14d7c467f98482753d70673f85f5adad7d6935124959375a2e6"
+    },
+    {
+      "input": {
+        "id": "wz_strong-s7-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 7,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 0.28075368382056354,
+        "endTime": 3.9,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.15,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 14,
+          "pos": {
+            "x": 40.17,
+            "y": 30.71
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.95,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 1.4,
+          "LB_W": 2.75
+        },
+        "climbs": [
+          {
+            "t": 1.8,
+            "climber": "LT",
+            "backer": "LB_S",
+            "note": "secured DT_S; LG stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 0.28075368382056354,
+        "endTime": 3.9,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.15,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 14,
+          "pos": {
+            "x": 40.17,
+            "y": 30.71
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.95,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 1.4,
+          "LB_W": 2.75
+        },
+        "climbs": [
+          {
+            "t": 1.8,
+            "climber": "LT",
+            "backer": "LB_S",
+            "note": "secured DT_S; LG stays"
+          }
+        ]
+      },
+      "fullHistoryExact": false,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "38823f1a4719df2bf779825777f6c5f6dc3c99d83a069b749eb13e8914ff9659",
+      "afterHistorySha256": "203eee1ad8db8746f2c41ae071e01075fcbbd914dd20fa13947fbb1e1a55603f"
+    },
+    {
+      "input": {
+        "id": "oz_strong-s19-fresh",
+        "concept": "oz_strong",
+        "kind": "run",
+        "seed": 19,
+        "flip": false,
+        "o": 41,
+        "d": 42,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 0.7994974216404529,
+        "endTime": 4.2,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 40.59,
+            "y": 23.14
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.95,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 1.4,
+          "LB_W": 2.8,
+          "LB_S": 3.15
+        },
+        "climbs": [
+          {
+            "t": 1.9,
+            "climber": "RG",
+            "backer": "LB_S",
+            "note": "secured DT_S; RT stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 0.7994974216404529,
+        "endTime": 4.2,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 40.59,
+            "y": 23.14
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.95,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 1.4,
+          "LB_W": 2.8,
+          "LB_S": 3.15
+        },
+        "climbs": [
+          {
+            "t": 1.9,
+            "climber": "RG",
+            "backer": "LB_S",
+            "note": "secured DT_S; RT stays"
+          }
+        ]
+      },
+      "fullHistoryExact": false,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "86a1cae4a2866c29e63d32e70b8921fc51ee5083a8af7e8978cf0b66099e0535",
+      "afterHistorySha256": "b408f5ffc179cb1e067a646464c38bf83ab25fb7aea3dd7364b11cc87b996670"
+    },
+    {
+      "input": {
+        "id": "oz_strong-s19-mirror-fresh",
+        "concept": "oz_strong",
+        "kind": "run",
+        "seed": 19,
+        "flip": true,
+        "o": 41,
+        "d": 42,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 0.686863223142339,
+        "endTime": 4.1,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.42,
+            "y": 33.04
+          },
+          "note": "body collision"
+        },
+        "crossing": 2.9,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 2.45
+        },
+        "climbs": [
+          {
+            "t": 1.15,
+            "climber": "C",
+            "backer": "LB_M",
+            "note": "secured DT_W; RG stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 0.686863223142339,
+        "endTime": 4.1,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 40.42,
+            "y": 33.04
+          },
+          "note": "body collision"
+        },
+        "crossing": 2.9,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 2.45
+        },
+        "climbs": [
+          {
+            "t": 1.15,
+            "climber": "C",
+            "backer": "LB_M",
+            "note": "secured DT_W; RG stays"
+          }
+        ]
+      },
+      "fullHistoryExact": false,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "ec963d5349bad27eb1735031dd7cc76af8154d8ba7dbf1bb47f8ae9a4c7b4c5e",
+      "afterHistorySha256": "5c8220f414ae90adced17faecf5f85b60629cff8c7a180ab3ae8616de0f0f657"
+    },
+    {
+      "input": {
+        "id": "new-wz_strong-s23",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 23,
+        "flip": false,
+        "o": 111,
+        "d": 112,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 1.4466048431248169,
+        "endTime": 4.45,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 40.82,
+            "y": 16.57
+          },
+          "note": "grasp"
+        },
+        "crossing": 3.4,
+        "loadedBackersBeforeRunner": {
+          "LB_S": 2.65
+        },
+        "climbs": [
+          {
+            "t": 1.65,
+            "climber": "RT",
+            "backer": "LB_S",
+            "note": "secured DE_S; Y stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": -0.7217290175609321,
+        "endTime": 3.3,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 39.14,
+            "y": 20.77
+          },
+          "note": "grasp"
+        },
+        "crossing": null,
+        "loadedBackersBeforeRunner": {},
+        "climbs": [
+          {
+            "t": 1.2,
+            "climber": "RT",
+            "backer": "LB_S",
+            "note": "check DE_S; Y stays"
+          }
+        ]
+      },
+      "fullHistoryExact": false,
+      "worldHistoryExact": false,
+      "gainDifference": -2.168333860685749,
+      "beforeHistorySha256": "873c187c218c69a5840f112855011b9a9fec799dea5184f88efaeda167b414ce",
+      "afterHistorySha256": "702964d711ea81ad120da5c1c21fb108ae6c532e399f5935b87a1478f84d6468"
+    },
+    {
+      "input": {
+        "id": "new-wz_strong-s23-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 23,
+        "flip": true,
+        "o": 111,
+        "d": 112,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 1.8074714956965465,
+        "endTime": 4.05,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.35,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 41.41,
+            "y": 28.17
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.8,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 1.35,
+          "LB_S": 1.4,
+          "LB_W": 2.05
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "climber": "LT",
+            "backer": "LB_S",
+            "note": "secured DT_S; LG stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 1.8074714956965465,
+        "endTime": 4.05,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.35,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 41.41,
+            "y": 28.17
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.8,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 1.35,
+          "LB_S": 1.4,
+          "LB_W": 2.05
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "climber": "LT",
+            "backer": "LB_S",
+            "note": "secured DT_S; LG stays"
+          }
+        ]
+      },
+      "fullHistoryExact": false,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "72f3f2f8b05d0d33cf643b14e51a955eedcbbcc988a71d5255b072c25f3f0d7f",
+      "afterHistorySha256": "da6e790100bb7d597e6963d0654e26ef738ccb3bdb0363872ece3ecf87be1b92"
+    },
+    {
+      "input": {
+        "id": "coherence-duo-over-s29",
+        "concept": "duo",
+        "kind": "run",
+        "seed": 29,
+        "flip": false,
+        "o": 211,
+        "d": 212,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 1.3356767924091244,
+        "endTime": 3.15,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 2.55,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 40.64,
+            "y": 24.08
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.5,
+        "loadedBackersBeforeRunner": {},
+        "climbs": [
+          {
+            "t": 0.85,
+            "climber": "C",
+            "backer": "LB_W",
+            "note": "secured DT_W; LG stays"
+          },
+          {
+            "t": 1.55,
+            "climber": "RG",
+            "backer": "LB_M",
+            "note": "secured DT_S; RT stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 1.3356767924091244,
+        "endTime": 3.15,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 2.55,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 40.64,
+            "y": 24.08
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.5,
+        "loadedBackersBeforeRunner": {},
+        "climbs": [
+          {
+            "t": 0.85,
+            "climber": "C",
+            "backer": "LB_W",
+            "note": "secured DT_W; LG stays"
+          },
+          {
+            "t": 1.55,
+            "climber": "RG",
+            "backer": "LB_M",
+            "note": "secured DT_S; RT stays"
+          }
+        ]
+      },
+      "fullHistoryExact": true,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "8089597f34d45a66f07c5474730c5cc08dc8e2d199427e85402026131110ca64",
+      "afterHistorySha256": "8089597f34d45a66f07c5474730c5cc08dc8e2d199427e85402026131110ca64"
+    },
+    {
+      "input": {
+        "id": "coherence-duo-over-s29-mirror",
+        "concept": "duo",
+        "kind": "run",
+        "seed": 29,
+        "flip": true,
+        "o": 211,
+        "d": 212,
+        "front": "over",
+        "formation": "ace_11"
+      },
+      "before": {
+        "gain": 1.0526637662091929,
+        "endTime": 4.5,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 40.94,
+            "y": 25.83
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.65,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 1.85
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "climber": "LG",
+            "backer": "LB_M",
+            "note": "secured DT_S; LT stays"
+          },
+          {
+            "t": 2.65,
+            "climber": "C",
+            "backer": "LB_W",
+            "note": "secured DT_W; RG stays"
+          }
+        ]
+      },
+      "after": {
+        "gain": 1.0526637662091929,
+        "endTime": 4.5,
+        "censored": false,
+        "outcome": "tackle",
+        "firstContact": {
+          "t": 3.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 40.94,
+            "y": 25.83
+          },
+          "note": "grasp"
+        },
+        "crossing": 2.65,
+        "loadedBackersBeforeRunner": {
+          "LB_M": 1.85
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "climber": "LG",
+            "backer": "LB_M",
+            "note": "secured DT_S; LT stays"
+          },
+          {
+            "t": 2.65,
+            "climber": "C",
+            "backer": "LB_W",
+            "note": "secured DT_W; RG stays"
+          }
+        ]
+      },
+      "fullHistoryExact": true,
+      "worldHistoryExact": true,
+      "gainDifference": 0.0,
+      "beforeHistorySha256": "d60fe23b3f7c3a5e8017207c2bddc0a05552f3e9495a81fc95fa6ba03445b446",
+      "afterHistorySha256": "d60fe23b3f7c3a5e8017207c2bddc0a05552f3e9495a81fc95fa6ba03445b446"
+    }
+  ],
+  "observedPlainPairs": 18,
+  "keeperLawWitness": "combination-keeper-world-witness.json",
+  "peerCueProvenance": {
+    "commit": "4074038c4cd966e1c213e204ca47d528e7260968",
+    "sourceSha256": "2da6243f85f0b48663f07eb9e273e98a223eeb3db2f55d648bd48fcea205828c",
+    "probeSha256": "b11c043b564ff81a36a9241636a487cebb142d4eec202d90075f7690cd87f78a",
+    "intervention": {
+      "remove": "",
+      "keep": ""
+    },
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "STRETCH_HELPER_CHECK": "1",
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_HANDOVER": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_CONTACT_COMPONENTS": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    }
+  },
+  "peerCueLauncher": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "",
+    "commit": "4074038c4cd966e1c213e204ca47d528e7260968",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "2da6243f85f0b48663f07eb9e273e98a223eeb3db2f55d648bd48fcea205828c",
+    "validationSha256": "0a72e94f05ada1e480618c97a3be708e65a3a6695186f86d4f55bc8324ca4e44",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "STRETCH_HELPER_CHECK": "1",
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_HANDOVER": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_CONTACT_COMPONENTS": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [
+      "scripts/diag/defense/hand-action-panel.ts"
+    ],
+    "startedAt": "2026-10-13T23:33:00.675Z",
+    "commands": [
+      {
+        "command": [
+          "env",
+          "FLOW_INPUTS=/workspace/football-simulation-/docs/reviews/combination-keeper-input.json",
+          "CONTACT_TRACE=1",
+          "FLOW_PEERS=1",
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/defense/hand-action-panel.ts",
+          "/workspace/football-simulation-/out/combination-collection/keeper-peer.json.gz"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 2.100596337
+      }
+    ],
+    "finishedAt": "2026-10-13T23:33:02.778Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "keeperReplay": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/run-hand-coherence",
+    "commit": "4074038c4cd966e1c213e204ca47d528e7260968",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "09c65f70ff3835dba17fb08487582d65f49eaea827f4e6e48f396f93210b773c",
+    "validationSha256": "f1d499792080001031ed9a89923e9a4e9bfe28fc2e9ac275d5a92d528aca1b0a",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_HANDOVER": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_CONTACT_COMPONENTS": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [
+      "config/baseline.json",
+      "scripts/diag/combination-release-ablation.ts",
+      "src/sim/behaviors/blocking.ts",
+      "test/zone-helper-check.test.ts"
+    ],
+    "startedAt": "2026-10-13T23:27:05.769Z",
+    "commands": [
+      {
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/hand-action-world-replay.ts",
+          "--witness",
+          "docs/reviews/combination-keeper-world-witness.json",
+          "out/combination-collection/keeper-replayed.json"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.15974312
+      }
+    ],
+    "finishedAt": "2026-10-13T23:27:05.931Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "nativePin": {
+    "input": {
+      "rosterSeed": 71,
+      "strength": 0.55,
+      "gameSeed": 73,
+      "nativePlayIndex": 48,
+      "playSeed": 2986046475,
+      "concept": "oz_weak",
+      "arms": [
+        {
+          "id": "native"
+        }
+      ],
+      "expectedNativeHistory": "eca2500ca390f40e70b5997544d8d18a85aa69a802cfe5a6075cedd0af8c8259"
+    },
+    "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+    "historySha256": "eca2500ca390f40e70b5997544d8d18a85aa69a802cfe5a6075cedd0af8c8259",
+    "launcher": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "",
+      "commit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "mode": "baseline",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "validationSha256": "0b52722dcc9c05b88b6eaa16b8cee4ebc94d2b2c93942247db0bf0b590857224",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-13T23:34:09.426Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/combination-release-ablation.ts",
+            "/workspace/football-simulation-/out/combination-collection/native-pin.json",
+            "--native-only"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 7.037890673
+        }
+      ],
+      "finishedAt": "2026-10-13T23:34:16.466Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  }
+}

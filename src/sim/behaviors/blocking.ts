@@ -31,9 +31,6 @@ import { goTo, runThrough, stand, track } from './common.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
-/** Experimental: a stretch helper may check a real keeper without first
- * joining his hands. Confirmation and near-level responsibility still apply. */
-const STRETCH_HELPER_CHECK = process.env.STRETCH_HELPER_CHECK === '1';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 export const isOL = (a: Agent): boolean => OL.has(a.slot);
 
@@ -494,8 +491,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const combo = (b: Agent, partner: Agent, target: Agent, backer: Agent | null, drive: Vec2) => {
     const combination: Combination = { members: [partner, b], defender: target, backer, released: false, secureSince: -1, nextRead: 0,
       soloKind: plans.get(partner)!.kind };
-    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone'
-      || (STRETCH_HELPER_CHECK && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone')))
+    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone')
       combination.helpPolicy = { kind: 'check', homeY: b.pos.y, side: Math.sign(b.pos.y - partner.pos.y) };
     plans.get(partner)!.combination = combination;
     plans.set(b, { kind: 'combo', target, climbTo: backer, drive, combination });
@@ -1332,11 +1328,7 @@ function readCheckSurface(helper: Agent, sim: PlaySim, combo: Combination): Perc
   // A full measured arm is a visible contact envelope, not a demand to
   // reacquire extended existing hands at the shorter fresh-strike range.
   const reach = owner.profile.radius + combo.defender.profile.radius + owner.player.measurables.armIn / 36;
-  const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
-  // A stretch keeper turns with the runoff. The helper reads that acquired
-  // chest relation, as a joined helper does, rather than the old drive axis.
-  const relation = stretch ? chestOff(covered.facing, covered.pos, down.pos) : Math.abs(phi);
-  if (covered.pose !== 'up' || down.pose !== 'up' || relation >= .55
+  if (covered.pose !== 'up' || down.pose !== 'up' || Math.abs(phi) >= .55
     || Math.hypot(covered.pos.x - down.pos.x, covered.pos.y - down.pos.y) > reach
     || policy.side * (down.pos.y - covered.pos.y) >= 0) return null;
 
@@ -1629,9 +1621,7 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
     combo.checkSince = -1;
     return;
   }
-  const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
-  const secure = stretch ? !!keeperCandidate(observer, sim, combo, e)
-    : e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
+  const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
   if (!secure) {
     combo.checkSince = -1;
     observer.tags.add('combo-held');

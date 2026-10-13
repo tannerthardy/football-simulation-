@@ -1,0 +1,18 @@
+{
+  "protocol": "combination-collection-controls-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "selection": "Single failed control, exact acquired peer cues after trial rejection; no new play selection.",
+  "inputs": [
+    {
+      "id": "new-wz_strong-s23",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 23,
+      "flip": false,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    }
+  ]
+}
