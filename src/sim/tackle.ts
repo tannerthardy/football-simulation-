@@ -58,6 +58,9 @@ const STALL = 0.8;
  * fingertips on a jersey can; technique finishes the wrap. */
 /** Experimental tight-wrap finish (TACKLE_ROLL=1, off by default); see updateBond. */
 const TACKLE_ROLL = process.env.TACKLE_ROLL === '1';
+/** Experimental secure lower-wrap coupling; all transmitted loads still use
+ * World's existing grip, arm and recovery budgets. Default-off. */
+const WRAP_BIND = process.env.WRAP_BIND === '1';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -362,6 +365,14 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const next = g < available ? g + (available - g) * Math.min(1, dt * (1 + 2.5 * d.r('tackling'))) : available;
     grip.set(d, clamp(next, 0.05, 1));
     joint.capacity = gripForce(d, clamp(next, 0.05, 1));
+    if (WRAP_BIND && joint.legs > 0) {
+      // Use the same acquired grip and actual closing quality as the roll.
+      // Height/pitch stay on `legs`; a tighter wrap increases only the
+      // contact's coupling to attempted corrective placement. A slack or
+      // weak grip must actually transmit force to impede that placement.
+      const secure = clamp(next, 0, 1) * quality;
+      joint.recoveryCoupling = joint.legs + (1 - joint.legs) * secure;
+    }
     const tx = (c.pos.x - d.pos.x) / (distance || 1), ty = (c.pos.y - d.pos.y) / (distance || 1);
     const close = Math.min(1.5, Math.max(0, distance - torso) * 3);
     const own = intents[d.idx];

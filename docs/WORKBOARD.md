@@ -6,6 +6,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
+| Secure-wrap recovery coupling | Codex second sim, user redirected from offensive line to recent physics | `codex/wrap-binding-physics` from `5a18887` | Bound task: separate hold height from force-transmitted recovery coupling; law and native tackle controls. No offensive-line changes, shared recovery integrator changes, capacity tuning or experimental default promotion. Primary retains the angled-grip/yaw investigation. | 2026-10-12 (America/Phoenix) | [Bounded experiment complete](reviews/wrap-binding.md): optional force-transmitted recovery coupling, `WRAP_BIND=1` default-off. 288 matched cases: brace/roll censored 90→36; fresh 96: 24→0. Real fall/work/force controls pass; two mirrored side-cut escapes, rear/fast-patch refinement and the pre-existing enabled roll mirror failure retained. Default arms reproduce exactly; 1,596 tests pass + existing Tite; 141 Python pass. Six fresh games are diagnostic, not promotion. Next: roll mirror direction before another recovery/binding adjustment. |
 | False clean RB approach and retained-key diagnosis | Codex, user-authorized continuation | `claude/live-gaps` | RB arrival prediction only; diagnostics and focused contracts. Shared capacities, blocking, mesh, answer rules and forced entry preservation excluded. | 2026-10-12 | Complete: [diagnosis](reviews/run-read-approach.md). Missing redirect cost demonstrated; one candidate improves ordinary 96 but loses two protected fresh arrivals, so parked behind `RUN_READ_TURN=1` (default-off). Original `RUN_READ=1` behavior retained; production read remains off. All 17 backtraced; five key takeovers differentiated. No second controller attempt or re-key heuristic. Next: joint path/defender access and pressing after all estimates reject. |
 | Temporary running-back read-information measurement | Codex, user-authorized takeover while Claude resets credits | `claude/live-gaps` | Observation-only hooks in `run-read.ts` and `carrier.ts`; RB diagnostic and evidence. No read heuristics, capacities, mesh policy or other controller edits. | 2026-10-12 (America/Phoenix) | Complete: [audit](reviews/run-read-information.md), same 96 inputs; 576 neutral panel plays and 376 same-prefix native entry branches. Primary lost-run groups: 17 corridor, 5 read opportunity, 1 executed mismatch, 11 unresolved. `RUN_READ` stays default-off; the existing single Tite failure remains. Boundary released for Claude's return. |
 | Shared angular-contact solve and physical force points | Codex physics session | `claude/engine-priorities` | `src/physics/world.ts`, `actuation.ts`, contact-law tests and angular diagnostics; owns production promotion | 2026-10-11 | 2026-10-12 UTC: World unchanged in the [tackle finish repair](reviews/tackle-finish.md); projection along the hold preserves the ordinary patch side control. Native loaded-grip refinement remains open; patch stays 42/50. Interior/climb controller recommendations remain in [wide-zone guidance](reviews/wide-zone-guidance.md). |
@@ -273,3 +274,28 @@ Edit only your own rows and requests so board merges stay trivial.
   no finish: slack holds persist and runners drag them 8-18 yd in the 1v1
   panel. Please review the law; promotion needs slack holds that break and a
   real finishing mechanism (roll, planted weight).
+
+- 2026-10-12 (America/Phoenix), second sim -> primary physics/controller sessions:
+  User parked offensive-line work and redirected this session to build on recent
+  physics. Starting a bounded secure-wrap recovery-coupling investigation on
+  `codex/wrap-binding-physics` from `claude/live-gaps` `5a18887`, which includes
+  `7646bb4` and the continued-recovery diagnostic. I will separate hold height
+  from the actually force-transmitting recovery Jacobian; no metadata-only step
+  freeze, capacity change, World integration rewrite or production promotion.
+  Your first angled-grip/yaw interval and existing controls remain with you.
+  Prior offensive-line work stays parked on `codex/run-game-contact` `e478826`.
+
+- 2026-10-12 (America/Phoenix), second sim -> primary physics/controller sessions:
+  [Secure-wrap coupling](reviews/wrap-binding.md) is on `codex/wrap-binding-physics`.
+  `GraspJoint.recoveryCoupling` separates the corrective-motion Jacobian from
+  hold height; force/velocity/mobility/work all use that same derivative.
+  `WRAP_BIND=1` uses existing acquired grip and actual closing quality; no
+  capacities/inertia/recovery integrator or default flags changed. The selected
+  center 45°/6 yd/s hold now physically falls at every frozen-tape resolution;
+  rear dragging and fast patch refinement remain adverse controls. The old
+  recovery-phase observer rejects `LEG_BRACE` because its source reconstruction
+  assumes unbraced pitch; its assertion is intact, and the separate boundary
+  collector verifies native neutrality. Current patch controls are 43/50 off,
+  42/50 combined; roll already fails square-tackle mirror without binding.
+  Please retain the existing first angled-grip/yaw/recovery investigation and
+  review this optional Jacobian against that work before any promotion.

@@ -103,8 +103,12 @@ export interface GraspJoint {
   ground?: number;
   /** Grip force limit, kg·yd/s². */
   capacity: number;
-  /** 0–1: share of the hold around his legs (locks his stepping). */
+  /** 0–1: lower-body share, which determines the default hold height. */
   legs: number;
+  /** Optional 0–1 coupling of an acquired lower hold to corrective placement.
+   * Omission retains `legs`. This is a point-motion Jacobian, not a free
+   * feet-lock multiplier: the same derivative transmits force and work. */
+  recoveryCoupling?: number;
   /** Height of the hold, yd; otherwise interpolates from torso to lower legs. */
   height?: number;
   /** Rate the holder's arms reel the two bodies together, yd/s (bounded by the grip). */
@@ -122,6 +126,8 @@ export interface GraspJoint {
 }
 
 export type Joint = HandJoint | GraspJoint;
+
+const recoveryShare = (j: GraspJoint): number => j.legs > 0 ? clamp(j.recoveryCoupling ?? j.legs, 0, 1) : 0;
 
 export interface ContactRecord {
   i: number;
@@ -668,7 +674,7 @@ export class World {
    * Body-only reach paired with foot-point velocity would be inconsistent. */
   private boundedGeometry(jt: GraspJoint): BoundedAttachment {
     const attachment = this.attachments.get(jt)!;
-    const share = clamp(jt.legs, 0, 1), foot = jt.b.support!.foot!;
+    const share = recoveryShare(jt), foot = jt.b.support!.foot!;
     const x = attachment.material?.x ?? share * foot.offset.x + attachment.reference.x;
     const y = attachment.material?.y ?? share * foot.offset.y + attachment.reference.y;
     const angle = attachment.material ? jt.b.facing : undefined;
@@ -689,8 +695,8 @@ export class World {
   }
 
   private graspPoint(jt: GraspJoint): Vec2 {
-    const foot = jt.b.support!.foot, share = foot ? clamp(jt.legs, 0, 1) : 0;
-    const attachment = foot && share > 0 ? this.attachments.get(jt) : undefined;
+    const foot = jt.b.support!.foot, share = foot ? recoveryShare(jt) : 0;
+    const attachment = foot ? this.attachments.get(jt) : undefined;
     const reference = attachment?.reference;
     if (attachment?.bounded) {
       const r = this.boundedGeometry(jt).offset;
@@ -707,7 +713,7 @@ export class World {
   /** Same derivative owns point velocity, generalized load and directional
    * mobility. The corrective coordinate stays fixed throughout each solve. */
   private graspJacobian(jt: GraspJoint): { xx: number; xy: number; yy: number } {
-    const foot = jt.b.support!.foot, share = foot ? clamp(jt.legs, 0, 1) : 0;
+    const foot = jt.b.support!.foot, share = foot ? recoveryShare(jt) : 0;
     const attachment = this.attachments.get(jt);
     if (!foot || !attachment?.bounded) return { xx: share, xy: 0, yy: share };
     const d = this.boundedGeometry(jt).derivative;
@@ -751,7 +757,7 @@ export class World {
       const excursion = Math.hypot(foot.offset.x, foot.offset.y);
       this.report.maxHeldRecoveryExcursion = Math.max(this.report.maxHeldRecoveryExcursion, excursion);
       for (const jt of holds) {
-        const share = clamp(jt.legs, 0, 1), old = this.attachments.get(jt);
+        const share = recoveryShare(jt), old = this.attachments.get(jt);
         if (!old || old.foot !== foot) this.attachments.set(jt, { share,
           reference: this.supportModel === 'legacy' ? { x: -share * foot.offset.x, y: -share * foot.offset.y } : { x: 0, y: 0 }, foot,
           bounded: old?.material ? old.bounded : this.boundedAttachment, material: old?.material });
@@ -808,7 +814,7 @@ export class World {
   }
 
   private graspVelocity(jt: GraspJoint): Vec2 {
-    const foot = jt.b.support!.foot, share = foot ? clamp(jt.legs, 0, 1) : 0;
+    const foot = jt.b.support!.foot, share = foot ? recoveryShare(jt) : 0;
     const u = foot ? supportVelocity(foot, foot.force) : { x: 0, y: 0 };
     if (this.attachments.get(jt)?.bounded) {
       const j = this.graspJacobian(jt);
@@ -824,7 +830,7 @@ export class World {
    * in aggregate foot impulse; they do not refill/spend a motor budget. */
   private supportImpulse(jt: GraspJoint, x: number, y: number, h: number, active = false, channel?: { net: number }, angularA = 0, angularB = 0): number {
     const i = this.indexOf(jt.a), j = this.indexOf(jt.b), a = jt.a, b = jt.b;
-    const foot = b.support!.foot!, share = clamp(jt.legs, 0, 1);
+    const foot = b.support!.foot!, share = recoveryShare(jt);
     let bodyLinear = (b.vel.x - a.vel.x) * x + (b.vel.y - a.vel.y) * y;
     let bodyQuadratic = .5 * (x * x + y * y) * (1 / this.mass[i] + 1 / this.mass[j]);
     if (angularA || angularB) {
@@ -1066,7 +1072,7 @@ export class World {
       const nx=dx/d,ny=dy/d;
       const rv=this.graspVelocity(jt);
       const vn=rv.x*nx+rv.y*ny;
-      const foot=jt.b.support!.foot, share=foot?clamp(jt.legs,0,1):0;
+      const foot=jt.b.support!.foot, share=foot?recoveryShare(jt):0;
       const demandMobility = (1 / this.mass[i] + 1 / this.mass[j]) * this.tickDt
         + (this.attachments.get(jt)?.bounded ? this.attachmentMobility(jt,nx,ny) : share * share * (foot?.mobility ?? 0));
       // Preserve the production operation order: tiny rounding changes can
@@ -1887,7 +1893,7 @@ export class World {
         row.limit = this.gripCapacity(jt)*h;
         row.reel = this.reels.get(jt)??0;
         const foot = b.support!.foot;
-        if (foot && !lowerPatch) row.mn = 1 / supportInverseMass(1 / this.mass[i] + 1 / this.mass[j], foot, clamp(jt.legs, 0, 1), h);
+        if (foot && !lowerPatch) row.mn = 1 / supportInverseMass(1 / this.mass[i] + 1 / this.mass[j], foot, recoveryShare(jt), h);
         if (foot && this.attachments.get(jt)?.bounded) {
           const inverseBodyMass = 1 / this.mass[i] + 1 / this.mass[j];
           row.mn = 1 / ((row.bodyInverseMass ?? inverseBodyMass) + this.attachmentMobility(jt,nx,ny) / h);
@@ -1903,7 +1909,7 @@ export class World {
           const same = rows.find(r => {
             const old = r.joint;
             return old.kind === 'grasp' && old.a === jt.a && old.b === jt.b
-              && old.legs === jt.legs && old.height === jt.height && old.reach === jt.reach
+              && old.legs === jt.legs && recoveryShare(old) === recoveryShare(jt) && old.height === jt.height && old.reach === jt.reach
               && old.ground === jt.ground && old.hold === jt.hold && old.pull === jt.pull
               && Math.hypot(this.graspPoint(old).x - point.x, this.graspPoint(old).y - point.y) < 1e-10
               && (!this.boundedAttachment || this.sameAttachmentJacobian(old,jt));
