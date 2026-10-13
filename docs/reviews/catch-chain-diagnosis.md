@@ -1,5 +1,10 @@
 # Coverage, first contact and remaining containment
 
+**Follow-up:** the authorized [moving-arrival and support-sensitivity experiment](moving-arrival-diagnosis.md)
+is complete. It repairs P58 and fresh escapes, but two versions fail protected
+fresh controls. No candidate is promoted; that report now defines the next
+diagnostic and retains this study as its unchanged source evidence.
+
 The most useful diagnosis is **a moving receiver meets an out-of-phase first
 tackler, the short-lived hold fails, and the remaining defense lacks an earned
 second angle**. The two main witnesses are not evidence that rear grips should
