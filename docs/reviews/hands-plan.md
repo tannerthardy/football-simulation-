@@ -108,19 +108,24 @@ Hand skill sets the re-fit rate.
 
 Early control now favors blockers; by 2 s about 40% of reps are the
 defender's. Reach panel: anchor, flow and drive unchanged or better for the
-blocker, but a penetrator with a running start gets 4.6 yd (was 3.1). Games
-(8+8, with `GAIT_STEP`): DL depth at 3 s -0.6 / -1.0 to -0.9 / -0.9 (NFL
-+0.2); OZ engaged DL depth -0.15 to -0.30, gap runs -0.13 to -0.38; yards
-unchanged. Off.
+blocker, but a penetrator with a running start gets 4.6 yd (was 3.1): a
+blocker driven back loses balance margin, so the hands, so more ground, while
+the defender leaning into him reads as balanced because the blocker carries
+his lean.
 
-Diagnosis: a feedback loop. A blocker driven back loses balance margin, so
-the hands, so more ground. The defender leaning into him reads as perfectly
-balanced because his lean is carried by the blocker. Balance margin ignores
-how much of a player's support depends on the man in front of him; in football
-that commitment is the weakness (step aside or re-anchor and he falls
-forward). Next attempt: count the lean a player's support owes to the contact
-as leverage he cannot spend in the hand fight, then re-test against the same
-panel and games.
+Games (8+8, with `GAIT_STEP`): engaged DL depth at 1.0 / 1.5 s is unchanged
+(OZ 0.47 / 0.30 to 0.50 / 0.25, IZ 0.63 / 0.67 to 0.65 / 0.80, gap 0.40 / 0.30
+to 0.40 / 0.23; NFL 0.27 / 0.13, 0.47 / 0.45, 0.32 / 0.13), and yards are
+unchanged. Later depth (2-3 s) is worse, but it is confounded: NFL plays still
+live then are mostly runs past the line, with DL turning to pursue downfield,
+so it measures the play more than the block. On the clean early window the
+physical hand fight is neutral while removing the ratings walk. Off for now.
+
+Open: the panel's penetrator loop. Balance margin ignores how much of a
+player's support depends on the man in front of him; in football that
+commitment is the weakness (step aside or re-anchor and he falls forward).
+Count the lean a player's support owes to the contact as leverage he cannot
+spend in the hand fight, then re-test the same panel and games.
 
 ## Phase 2, next
 
