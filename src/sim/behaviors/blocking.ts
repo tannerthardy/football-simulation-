@@ -29,6 +29,8 @@ import { interceptPoint } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 
+/** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
+const PULL_STEP = process.env.PULL_STEP === '1';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 export const isOL = (a: Agent): boolean => OL.has(a.slot);
 
@@ -611,8 +613,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const hole = by + ps * (concept.aim === 'A' ? 0.65 : concept.aim === 'B' ? 1.95 : 3.6);
     const fb = sim.slot('F');
     const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
+    // PULL_STEP (experimental, off): the pull step opens to the play side and
+    // gains depth on the way, rather than dropping straight back first.
+    const pullStep = PULL_STEP ? ps * 0.9 : 0;
     const pullPath = (b: Agent): Vec2[] => [
-      { x: sim.los - 1.25, y: b.pos.y },
+      { x: sim.los - 1.25, y: b.pos.y + pullStep },
       { x: sim.los - 1.15, y: hole - ps * 0.5 },
       { x: sim.los + 0.5, y: hole },
     ];
@@ -624,7 +629,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
-        { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y },
+        { x: sim.los - (role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
         { x: sim.los - (role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
       ] : pullPath(p);
@@ -849,7 +854,9 @@ export class RunBlocker implements Behavior {
         }
         const next = plan.pullPath[this.pullIdx+1];
         const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
-        return goTo(a, path, { speed: 0.95, through });
+        // The pull step opens the hips to the play side: he does not turn to
+        // face his own backfield while he gains depth (PULL_STEP).
+        return goTo(a, path, { speed: 0.95, through, facing: PULL_STEP && this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined });
       }
     }
     if (!target) {

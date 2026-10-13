@@ -634,6 +634,8 @@ const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
+/** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
+const DL_FIGHT = process.env.DL_FIGHT === '1';
 
 /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
 const LEVER_FACING = process.env.LEVER_FACING !== '0';
@@ -784,6 +786,8 @@ interface RunStackRead {
   aim?: Vec2;
   runner: boolean;
   contacted: boolean;
+  /** DL_FIGHT: the lateral point he holds while driven sideways, and until when. */
+  hold?: { y: number; until: number };
 }
 const runStacks = new WeakMap<Engagement, RunStackRead>();
 
@@ -1037,6 +1041,35 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const flow = clamp(DL_FLOW
     ? requestToCover(gaitLag(d.profile), read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
     : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
+  // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
+  // who feels himself driven sideways holds the point where the push began
+  // and leans into it, instead of following the blocker's flow off his gap.
+  // The lateral twin of the blocker's lost-depth anchor; the decision is held
+  // for a decision beat, then renewed while the push lasts.
+  let lateralFlow = flow;
+  if (DL_FIGHT && read.stack && !read.declared) {
+    const st = read.stack, push = d.body.support?.felt?.y ?? 0;
+    // A push toward where he sees the ball heading (a reach running him
+    // wide) costs him nothing; one driving him away from it (a down block,
+    // a seal) washes him out of the play. He reads the back he can see.
+    const carrier = sim.carrier && sim.carrier.team !== d.team ? sim.carrier : null;
+    const back = sim.slot('RB');
+    const ball = carrier && carrier === sim.qb && sim.handoffAt < 0 && back ? back : carrier;
+    const cue = ball ? sim.see(d, ball) : null;
+    const toBall = cue ? cue.pos.y + cue.vel.y * d.mind.decisionInterval - d.pos.y : 0;
+    const away = Math.abs(toBall) > .5 && push * toBall < 0;
+    if (away && Math.abs(push) > 0.25 * d.profile.massKg * G && push * d.vel.y > 0 && Math.abs(d.vel.y) > 0.15) {
+      st.hold = { y: st.hold && t < st.hold.until ? st.hold.y : d.pos.y, until: t + d.mind.decisionInterval };
+    }
+    // Only when his ordinary request would go with the push: working across
+    // a reach to keep leverage already fights it.
+    if (st.hold && t < st.hold.until) {
+      if (flow * push > 0) {
+        lateralFlow = clamp(requestToCover(gaitLag(d.profile), st.hold.y - d.pos.y, horizon, d.vel.y), -td.lateral, td.lateral);
+        d.tags.add('fight-pressure');
+      }
+    } else delete st.hold;
+  }
   // Working off: across the blocker's ball-side shoulder at full lateral
   // effort, pressing into him rather than backing out.
   const workOff = shedding ? { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
@@ -1050,7 +1083,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     cf = { x: depth, y };
   }
   intents[d.idx] = {
-    vel: workOff ?? cf ?? (read.stack ? { x: depth, y: flow } : legacy),
+    vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: 0.85,

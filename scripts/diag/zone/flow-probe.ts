@@ -33,13 +33,15 @@ for (const run of runs) for (const seed of seeds) for (const [o, d] of [[31, 32]
     while (sim.phase === 'live' && sim.t < 2.5) {
       (sim as unknown as { tick(): void }).tick();
       const w = W.find((x) => sim.t <= x + 1e-9); if (w === undefined) break;
-      const key = `${run} <=${w.toFixed(1)}s`, a = get(key);
       for (const e of sim.engagements) {
         if (e.type !== 'run' || !dl.includes(e.defender)) continue;
+        const kind = process.env.BY_KIND ? ` ${(e.blocker.behavior as any).plan?.kind ?? '?'}${e.helpers.length ? '+help' : ''}` : '';
+        const a = get(`${run} <=${w.toFixed(1)}s${kind}`);
         const bi = (sim as any).intents[e.blocker.idx]?.vel, di = (sim as any).intents[e.defender.idx]?.vel;
         if (!bi || !di) continue;
         a.n++; a.bReq += bi.y * side; a.bAch += e.blocker.vel.y * side; a.dReq += di.y * side; a.dAch += e.defender.vel.y * side;
       }
+      const a = get(`${run} <=${w.toFixed(1)}s free`);
       for (const x of dl) if (!x.engagement && !x.isDown(sim.t)) {
         const di = (sim as any).intents[x.idx]?.vel; if (!di) continue;
         a.fn++; a.freeReq += di.y * side; a.freeAch += x.vel.y * side;
@@ -48,4 +50,4 @@ for (const run of runs) for (const seed of seeds) for (const [o, d] of [[31, 32]
   }
 const f = (x: number) => (x >= 0 ? '+' : '') + x.toFixed(2);
 console.log('play-side velocity, yd/s: requested / achieved (mean over engaged DL reps and ticks)');
-for (const [k, a] of acc) console.log(`${k.padEnd(18)} engaged n ${String(a.n).padStart(4)} | blocker ${f(a.bReq / a.n)} / ${f(a.bAch / a.n)} | DL ${f(a.dReq / a.n)} / ${f(a.dAch / a.n)} | unblocked DL n ${a.fn} ${f(a.freeReq / Math.max(1, a.fn))} / ${f(a.freeAch / Math.max(1, a.fn))}`);
+for (const [k, a] of [...acc].sort((p, q) => p[0].localeCompare(q[0]))) if (a.n || a.fn) console.log(`${k.padEnd(18)} engaged n ${String(a.n).padStart(4)} | blocker ${f(a.bReq / a.n)} / ${f(a.bAch / a.n)} | DL ${f(a.dReq / a.n)} / ${f(a.dAch / a.n)} | unblocked DL n ${a.fn} ${f(a.freeReq / Math.max(1, a.fn))} / ${f(a.freeAch / Math.max(1, a.fn))}`);
