@@ -1,0 +1,134 @@
+{
+  "baseline": "run-game-2026-10-13",
+  "branch": "codex/grip-fast-integration",
+  "commit": "f658941bd62bfba3db32fa590d20beb4641766a3",
+  "mode": "candidate",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceSha256": "7a4283fcd382b3c598b72f3845b37b49e1cb3d3cf3c06fdad15c16a1794b4c5b",
+  "validationSha256": "76e2a239ab8a1f9ce6bf042beea29c9b469022a12c141fbd5d62870dd1818d92",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "trackedChanges": [],
+  "startedAt": "2026-10-13T23:46:14.546Z",
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 13.714658857
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 15.043622459999998
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:all"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 221.30941119399998
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:data"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.8316123770000122
+    }
+  ],
+  "finishedAt": "2026-10-13T23:50:25.449Z",
+  "inputsUnchanged": true,
+  "exitCode": 0,
+  "testSummary": {
+    "typescript": 1687,
+    "typescriptFiles": 142,
+    "python": 145,
+    "testOrWorkerErrors": 0
+  },
+  "explicitCandidateEvidence": {
+    "receipt": "data/reviews/current/grip-fast.json",
+    "focusedContracts": 26,
+    "experimentalGate": {
+      "passed": 43,
+      "failed": 9,
+      "total": 52,
+      "retainedFailures": true,
+      "failedFixturesTimingInvocations": 0
+    },
+    "freshCoarseLimitedMirrors": 2,
+    "dryOnsetSlowReferenceLimited": true,
+    "candidateApi": {
+      "handContact": "patch",
+      "gripTiming": "fast"
+    },
+    "defaultGripTiming": "midpoint",
+    "promoted": false
+  }
+}

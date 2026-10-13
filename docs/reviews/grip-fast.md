@@ -197,6 +197,20 @@ refining the entire World, carrying impulse, temporal moment, attachment
 motion and shared work/budgets together. Give the separately pinned late
 support-history trace to Claude; do not adjust recovery strength here.
 
+## Complete validation
+
+At code/harness commit `f658941bd62bfba3db32fa590d20beb4641766a3`, the full
+default-profile run passes **1,687 TypeScript assertions in 142 files,
+145 Python checks, typecheck and build**, with no test/worker errors.
+Runtime and harness are unchanged throughout the run. The
+[validation receipt](../../data/reviews/current/grip-fast-validation.json)
+pins runtime `7a4283fc…`, validation sources `76e2a239…`, Node 22.23.3 and
+the exact flags. This full run uses ordinary center/midpoint defaults;
+26 explicit effort/timing contracts, the matched/fresh panels and the retained
+43/52 patch gate cover the candidate separately. Publication changes only
+documentation and the validation receipt. PR #3 remains at the corrected
+reference `8e36cce`; this candidate uses a separate draft branch.
+
 ## Reproduce
 
 Use Node 22.23.3. Original packets/receipts must first be regenerated with
@@ -214,6 +228,7 @@ npm run baseline:run -- --candidate -- node --import tsx scripts/diag/physics/gr
 npm run baseline:run -- --candidate -- node --import tsx scripts/diag/physics/grip-fast-evidence.ts --long
 npm run baseline:run -- --candidate -- node --import tsx scripts/diag/physics/grip-late-repro.ts
 npm run baseline:run -- --candidate -- node --import tsx scripts/diag/physics/grip-fast-benchmark.ts --model=fast
+npm run baseline:verify -- --candidate --receipt out/grip-fast/full-validation.json
 ```
 
 For fresh baseline/slow panels, copy the same evidence collector into each
