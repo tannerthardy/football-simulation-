@@ -35,6 +35,7 @@ import { gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinema
 import { availability, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
+import { contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { runContactObservers } from './run-contact-observer.js';
@@ -631,6 +632,8 @@ const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
 /** Trial: retain the held solo reach's track intention through contact. */
 const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
+/** Trial: shoulder speed is a complete component, not added twice by a diagonal drive. */
+const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS === '1';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
@@ -1075,7 +1078,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       }
     }
   }
-  let blockVel = { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  let blockVel = RUN_CONTACT_COMPONENTS && stretch ? contactMotion(drive, lat, forward, lateral)
+    : { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
   const preAnchor = blockVel;
   let anchored = false;
   // Anchor against the normal threat only (lost depth), and keep the

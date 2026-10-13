@@ -1,0 +1,401 @@
+{
+  "protocol": "coupled-run-contact-summary-v1",
+  "baselineCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "candidateSourceSha256": "09c65f70ff3835dba17fb08487582d65f49eaea827f4e6e48f396f93210b773c",
+  "collectorSha256": "cc898dd14316043c89a11d22bd866a9ca0aec3e45caf4ed800573c0a62757463",
+  "reducerSha256": "732947dda8a4fceaa378c1b70c6e446dc35a4f3429ca22a7d1954a3a8f7b2172",
+  "inputs": "2019447b4773a23444b94e774e2533589ba887defe7c74d861288f7839747270",
+  "defaultHistoryParity": "60/60 exact through 3.5 s",
+  "limitations": [
+    "Previously inspected generated controls, not a blind NFL holdout.",
+    "Live rows are right-censored; their gain is a window spot, not a completed outcome.",
+    "Contact frame crossing is tick-bounded; same-step contact/crossing remains uncertain.",
+    "Center hand angular defect and patch promotion failures remain; capacities unchanged."
+  ],
+  "profileFlags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_HANDOVER": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_CONTACT_COMPONENTS": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "arms": [
+    {
+      "name": "default",
+      "unchanged": 60,
+      "ended": 19,
+      "live": 41,
+      "stretchNonanchorRequests": 1710,
+      "meanShoulderComponentError": 0.4093286246654791,
+      "maxShoulderComponentError": 2.2480333687457192,
+      "explicitOverrides": [],
+      "lostCleanApproaches": [],
+      "exactPaControls": 8
+    },
+    {
+      "name": "offense",
+      "unchanged": 40,
+      "ended": 18,
+      "live": 42,
+      "stretchNonanchorRequests": 1774,
+      "meanShoulderComponentError": 1.6938547378848162e-16,
+      "maxShoulderComponentError": 1.5543122344752192e-15,
+      "explicitOverrides": [
+        "RUN_CONTACT_COMPONENTS=1"
+      ],
+      "lostCleanApproaches": [],
+      "exactPaControls": 8
+    },
+    {
+      "name": "defense",
+      "unchanged": 43,
+      "ended": 19,
+      "live": 41,
+      "stretchNonanchorRequests": 1711,
+      "meanShoulderComponentError": 0.4090893911034303,
+      "maxShoulderComponentError": 2.2480333687457192,
+      "explicitOverrides": [
+        "PULL_HANDOVER=1"
+      ],
+      "lostCleanApproaches": [],
+      "exactPaControls": 8
+    },
+    {
+      "name": "combined",
+      "unchanged": 25,
+      "ended": 18,
+      "live": 42,
+      "stretchNonanchorRequests": 1775,
+      "meanShoulderComponentError": 1.6929004535254443e-16,
+      "maxShoulderComponentError": 1.5543122344752192e-15,
+      "explicitOverrides": [
+        "RUN_CONTACT_COMPONENTS=1",
+        "PULL_HANDOVER=1"
+      ],
+      "lostCleanApproaches": [],
+      "exactPaControls": 8
+    },
+    {
+      "name": "motor",
+      "unchanged": 60,
+      "ended": 19,
+      "live": 41,
+      "stretchNonanchorRequests": 1710,
+      "meanShoulderComponentError": 0.4093286246654791,
+      "maxShoulderComponentError": 2.2480333687457192,
+      "explicitOverrides": [
+        "HAND_MOTOR=1"
+      ],
+      "lostCleanApproaches": [],
+      "exactPaControls": 8
+    },
+    {
+      "name": "offense-hands",
+      "unchanged": 8,
+      "ended": 16,
+      "live": 44,
+      "stretchNonanchorRequests": 1775,
+      "meanShoulderComponentError": 1.611666834808765e-16,
+      "maxShoulderComponentError": 1.3322676295501878e-15,
+      "explicitOverrides": [
+        "RUN_CONTACT_COMPONENTS=1",
+        "HAND_MOTOR=1",
+        "RUN_HANDS=1"
+      ],
+      "lostCleanApproaches": [
+        {
+          "id": "new-wz_strong-s23",
+          "kind": "run",
+          "sameHistory": false,
+          "firstChangedBoundary": 0.45,
+          "baselineLive": true,
+          "candidateLive": false,
+          "baselineSpotOrGain": 0.17178815189093655,
+          "candidateSpotOrGain": -0.2607747465526771,
+          "completedGainDelta": null,
+          "baselineApproach": {
+            "crossingBoundary": 3.4,
+            "firstActualContact": null,
+            "state": "clean"
+          },
+          "candidateApproach": {
+            "crossingBoundary": null,
+            "firstActualContact": 2.35,
+            "state": "ended-unreached"
+          },
+          "handoverCueSeats": []
+        }
+      ],
+      "exactPaControls": 8
+    },
+    {
+      "name": "defense-hands",
+      "unchanged": 8,
+      "ended": 20,
+      "live": 40,
+      "stretchNonanchorRequests": 1709,
+      "meanShoulderComponentError": 0.4148838987121418,
+      "maxShoulderComponentError": 2.2480333687457192,
+      "explicitOverrides": [
+        "PULL_HANDOVER=1",
+        "HAND_MOTOR=1",
+        "DL_HANDS=1"
+      ],
+      "lostCleanApproaches": [
+        {
+          "id": "wz_strong-s3-mirror",
+          "kind": "run",
+          "sameHistory": false,
+          "firstChangedBoundary": 0.45,
+          "baselineLive": false,
+          "candidateLive": false,
+          "baselineSpotOrGain": 0.6767448203069009,
+          "candidateSpotOrGain": 0.5207461889301186,
+          "completedGainDelta": -0.15599863137678227,
+          "baselineApproach": {
+            "crossingBoundary": 2.6,
+            "firstActualContact": 2.65,
+            "state": "clean"
+          },
+          "candidateApproach": {
+            "crossingBoundary": 2.6,
+            "firstActualContact": 2.5,
+            "state": "interrupted"
+          },
+          "handoverCueSeats": []
+        },
+        {
+          "id": "oz_strong-s19-mirror-fresh",
+          "kind": "run",
+          "sameHistory": false,
+          "firstChangedBoundary": 0.45,
+          "baselineLive": true,
+          "candidateLive": false,
+          "baselineSpotOrGain": 0.6778903764318613,
+          "candidateSpotOrGain": -0.13144684728882083,
+          "completedGainDelta": null,
+          "baselineApproach": {
+            "crossingBoundary": 2.9,
+            "firstActualContact": 3,
+            "state": "clean"
+          },
+          "candidateApproach": {
+            "crossingBoundary": null,
+            "firstActualContact": 2.7,
+            "state": "ended-unreached"
+          },
+          "handoverCueSeats": []
+        }
+      ],
+      "exactPaControls": 8
+    },
+    {
+      "name": "combined-hands",
+      "unchanged": 8,
+      "ended": 16,
+      "live": 44,
+      "stretchNonanchorRequests": 1739,
+      "meanShoulderComponentError": 1.5981813362485954e-16,
+      "maxShoulderComponentError": 1.3322676295501878e-15,
+      "explicitOverrides": [
+        "RUN_CONTACT_COMPONENTS=1",
+        "PULL_HANDOVER=1",
+        "HAND_MOTOR=1",
+        "RUN_HANDS=1",
+        "DL_HANDS=1"
+      ],
+      "lostCleanApproaches": [
+        {
+          "id": "wz_strong-s3-mirror",
+          "kind": "run",
+          "sameHistory": false,
+          "firstChangedBoundary": 0.45,
+          "baselineLive": false,
+          "candidateLive": true,
+          "baselineSpotOrGain": 0.6767448203069009,
+          "candidateSpotOrGain": -0.1255984523551703,
+          "completedGainDelta": null,
+          "baselineApproach": {
+            "crossingBoundary": 2.6,
+            "firstActualContact": 2.65,
+            "state": "clean"
+          },
+          "candidateApproach": {
+            "crossingBoundary": 2.65,
+            "firstActualContact": 2.45,
+            "state": "interrupted"
+          },
+          "handoverCueSeats": []
+        },
+        {
+          "id": "wz_strong-s7-mirror",
+          "kind": "run",
+          "sameHistory": false,
+          "firstChangedBoundary": 0.45,
+          "baselineLive": true,
+          "candidateLive": false,
+          "baselineSpotOrGain": 0.16179618644231653,
+          "candidateSpotOrGain": -0.019856917537062202,
+          "completedGainDelta": null,
+          "baselineApproach": {
+            "crossingBoundary": 2.95,
+            "firstActualContact": 3.15,
+            "state": "clean"
+          },
+          "candidateApproach": {
+            "crossingBoundary": null,
+            "firstActualContact": 2.7,
+            "state": "ended-unreached"
+          },
+          "handoverCueSeats": []
+        },
+        {
+          "id": "oz_strong-s19-mirror-fresh",
+          "kind": "run",
+          "sameHistory": false,
+          "firstChangedBoundary": 0.45,
+          "baselineLive": true,
+          "candidateLive": false,
+          "baselineSpotOrGain": 0.6778903764318613,
+          "candidateSpotOrGain": -0.13144684728882083,
+          "completedGainDelta": null,
+          "baselineApproach": {
+            "crossingBoundary": 2.9,
+            "firstActualContact": 3,
+            "state": "clean"
+          },
+          "candidateApproach": {
+            "crossingBoundary": null,
+            "firstActualContact": 2.7,
+            "state": "ended-unreached"
+          },
+          "handoverCueSeats": []
+        },
+        {
+          "id": "new-wz_strong-s23",
+          "kind": "run",
+          "sameHistory": false,
+          "firstChangedBoundary": 0.45,
+          "baselineLive": true,
+          "candidateLive": false,
+          "baselineSpotOrGain": 0.17178815189093655,
+          "candidateSpotOrGain": -0.2619494173177799,
+          "completedGainDelta": null,
+          "baselineApproach": {
+            "crossingBoundary": 3.4,
+            "firstActualContact": null,
+            "state": "clean"
+          },
+          "candidateApproach": {
+            "crossingBoundary": null,
+            "firstActualContact": 2.35,
+            "state": "ended-unreached"
+          },
+          "handoverCueSeats": []
+        }
+      ],
+      "exactPaControls": 8
+    }
+  ],
+  "nativeObservedPlainPairs": 480,
+  "handBench": {
+    "mirroredRowsPerSetting": 22,
+    "settings": [
+      "HAND_MOTOR=0",
+      "HAND_MOTOR=1"
+    ],
+    "maximumMotorMirrorError": 3.694822225952521e-13,
+    "existingLinearMomentumForceWorkAssertions": "passed",
+    "angularLimitation": "center defect and adverse patch turn remain"
+  },
+  "checks": {
+    "untouchedBaseline": {
+      "typescriptPassed": 1652,
+      "pythonPassed": 145,
+      "typecheck": 0,
+      "build": 0
+    },
+    "enabledCombinedFocusedPassed": 117,
+    "fullCandidate": "pending"
+  },
+  "mechanismCohorts": [
+    {
+      "arm": "default",
+      "seed": 101,
+      "games": 8,
+      "plays": {
+        "run": 303,
+        "pass": 788,
+        "air": 0
+      },
+      "guardsPassed": 12,
+      "guardsTotal": 12,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    {
+      "arm": "combined",
+      "seed": 101,
+      "games": 8,
+      "plays": {
+        "run": 284,
+        "pass": 818,
+        "air": 0
+      },
+      "guardsPassed": 12,
+      "guardsTotal": 12,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    }
+  ],
+  "crossPairTrackWitness": {
+    "input": "wz_strong-s3-mirror",
+    "RUN_CONTACT_TRACK": 1,
+    "priorKeeperFall": 2.25,
+    "componentKeeperFall": 2.3,
+    "firstRunnerContactBoth": 2.4,
+    "losCrossingBoundaryBoth": 2.6,
+    "bothApproaches": "interrupted",
+    "componentArmLiveAtCutoff": true
+  }
+}

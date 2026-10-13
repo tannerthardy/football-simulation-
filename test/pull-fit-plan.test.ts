@@ -108,3 +108,82 @@ describe('observed pull cue does not reveal the guard’s hidden engagement', ()
     expect(pullers(stopped.sim, stopped.a)).toEqual([]);
   });
 });
+
+describe('acquired pull hands insertion to an observed carrying runner', () => {
+  async function handover(enabled: boolean) {
+    vi.stubEnv('PULL_HANDOVER', enabled ? '1' : '0');
+    vi.stubEnv('PULL_PLAN', '0'); vi.stubEnv('PULL_READ', '1'); vi.stubEnv('PULL_CUE', '1');
+    vi.resetModules();
+    return (await import('../src/sim/run-fits.js')).executeRunFit;
+  }
+
+  function runnerCue(f: ReturnType<typeof stage>, side: number, carrying: boolean | null = true) {
+    const back = f.sim.slot('RB')!;
+    f.sim.ball = { kind: 'held', carrier: back }; f.sim.handoffAt = .9;
+    Object.assign(f.picture.get(back)!, { pos: { x: 37.3, y: CENTER_Y + side * 3.2 },
+      vel: { x: 3, y: side * .4 }, carrying });
+    // The guard has moved beyond the old reach gate. No current pull can
+    // supply the target, while the personally acquired earlier read remains.
+    f.picture.get(f.guard)!.pos.y = CENTER_Y + side * 9;
+  }
+
+  it.each([-1, 1])('keeps the slow runner target instead of falling back to the down-block gap, side=%s', async side => {
+    const on = stage(side), off = stage(side);
+    const next = await handover(true), old = await handover(false);
+    expect(next(on.a, on.sim, 'A', side)).toEqual(old(off.a, off.sim, 'A', side));
+    runnerCue(on, side); runnerCue(off, side);
+    on.sim.t += .01; off.sim.t += .01;
+    // A new cue cannot replace the action already being executed.
+    expect(next(on.a, on.sim, 'A', side)).toEqual(old(off.a, off.sim, 'A', side));
+    on.sim.t += on.a.mind.decisionInterval + .01; off.sim.t = on.sim.t;
+    const before = structuredClone(on.sim.agents.map(a => a.body));
+    const rngBefore = structuredClone(on.sim.rng);
+    const aim = vi.spyOn(on.a.mind, 'aim');
+    const candidate = next(on.a, on.sim, 'A', side), baseline = old(off.a, off.sim, 'A', side);
+    const seen = on.picture.get(on.sim.slot('RB')!)!;
+    expect(aim.mock.calls.at(-1)![1].y).toBeCloseTo(seen.pos.y + seen.vel.y * 2 * on.a.mind.decisionInterval - side, 12);
+    expect(candidate.vel.y * side).toBeGreaterThan(baseline.vel.y * side);
+    // A wider target shares the existing speed bound with insertion; the
+    // depth landmark stays at the surface, rather than chasing the deep back.
+    expect(aim.mock.calls.at(-1)![1].x).toBe(on.sim.los + 1.5);
+    expect(candidate.vel.x).toBeLessThan(0);
+    expect(Math.hypot(candidate.vel.x, candidate.vel.y)).toBeLessThanOrEqual(on.a.profile.vmax);
+    expect(on.a.tags.has('fit-pull-runner-cue')).toBe(true);
+    expect(on.sim.agents.map(a => a.body)).toEqual(before);
+    expect(on.sim.rng).toEqual(rngBefore);
+  });
+
+  it.each(['edge', 'force', 'cutback'] as const)('preserves the %s responsibility', async kind => {
+    const on = stage(1, true, kind), off = stage(1, true, kind);
+    const next = await handover(true), old = await handover(false);
+    next(on.a, on.sim, 'A', 1); old(off.a, off.sim, 'A', 1);
+    runnerCue(on, 1); runnerCue(off, 1);
+    on.sim.t += 1; off.sim.t += 1;
+    expect(next(on.a, on.sim, 'A', 1)).toEqual(old(off.a, off.sim, 'A', 1));
+  });
+
+  it('preserves lag, deep keyed mesh, unobserved possession and a runner without a preceding pull', async () => {
+    for (const mode of ['lag', 'deep-mesh', 'no-possession', 'no-pull'] as const) {
+      const on = stage(1, mode !== 'no-pull', 'insert', mode === 'lag' ? 'lag' : 'attack');
+      const off = stage(1, mode !== 'no-pull', 'insert', mode === 'lag' ? 'lag' : 'attack');
+      const next = await handover(true), old = await handover(false);
+      next(on.a, on.sim, 'A', 1); old(off.a, off.sim, 'A', 1);
+      runnerCue(on, 1, mode === 'no-possession' ? null : true);
+      runnerCue(off, 1, mode === 'no-possession' ? null : true);
+      on.sim.t += 1; off.sim.t += 1;
+      const key = (f: typeof on) => mode === 'deep-mesh'
+        ? { target: f.sim.slot('RB')!, cue: f.picture.get(f.sim.slot('RB')!)! } : undefined;
+      expect(next(on.a, on.sim, 'A', 1, key(on))).toEqual(old(off.a, off.sim, 'A', 1, key(off)));
+      expect(on.a.tags.has('fit-pull-runner-cue')).toBe(false);
+    }
+  });
+
+  it('uses the same acquired picture despite hidden runner motion', async () => {
+    const next = await handover(true), a = stage(1), b = stage(1);
+    next(a.a, a.sim, 'A', 1); next(b.a, b.sim, 'A', 1);
+    runnerCue(a, 1); runnerCue(b, 1);
+    b.sim.slot('RB')!.body.pos.y += 10; b.sim.slot('RB')!.body.vel.y = -8;
+    a.sim.t += 1; b.sim.t += 1;
+    expect(next(a.a, a.sim, 'A', 1)).toEqual(next(b.a, b.sim, 'A', 1));
+  });
+});

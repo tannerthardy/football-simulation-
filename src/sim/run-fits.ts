@@ -140,6 +140,12 @@ const PULL_READ = process.env.PULL_READ !== '0';
 /** Diagnostic pull acquisition from observed departure, independent of an
  * opponent's current engagement. Default off pending matched controls. */
 const PULL_CUE = process.env.PULL_CUE === '1';
+/** Trial: after an acquired pull, hand the insertion landmark to a visibly
+ * carrying back. A slow lateral runner must not erase the guard read and
+ * return the backer to a moving down-block gap. No pursuit before the
+ * ordinary surface declaration; edge, lag and cutback duties stay intact. */
+const PULL_HANDOVER = process.env.PULL_HANDOVER === '1';
+const acquiredPullSide = new WeakMap<Agent, number>();
 /** How far ahead a puller's seen path is carried (about one decision beat), the
  * leverage kept on his arrival, and how far a fit will flow to it. */
 const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
@@ -264,7 +270,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // The back no longer pulls the landmark; he decides when to attack it.
   // SCRAPE=0 restores the old lean toward the back's lateral position.
   const gap = liveGap(sim, a, job.gap, job.side);
-  const flow = SCRAPE ? clamp(gap.vel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
+  let flow = SCRAPE ? clamp(gap.vel * a.mind.decisionInterval * (job.pace === 'stack' ? 2 : 1), -2, 2)
     : clamp(seen.pos.y-gy,-2,2) * (job.pace === 'stack' ? .5 : .2);
   let pullSide = 0;
   if (PULL_READ) {
@@ -282,6 +288,18 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   } else if (indicator?.kind === 'pull' && job.kind !== 'interior') {
     gy += indicator.side * Math.min(1.5,Math.abs(indicator.pos.y-gy)*.35);
     a.tags.add('fit-pull-read');
+  }
+  if (PULL_HANDOVER && PULL_READ && job.kind === 'insert' && job.technique !== 'lag') {
+    if (pullSide) acquiredPullSide.set(a, pullSide);
+    const side = acquiredPullSide.get(a);
+    if (side && !premesh && seen.carrying === true) {
+      // Carry the same observed track over the existing two-read horizon,
+      // preserving inside leverage on the learned pull side. The held aim
+      // below adopts this cue only at the ordinary decision boundary.
+      gy = seen.pos.y + seen.vel.y * 2 * a.mind.decisionInterval - side * FLOW_INSIDE;
+      flow = 0;
+      a.tags.add('fit-pull-runner-cue');
+    }
   }
   // Insert to the surface, then attack a declared crease. The back's being
   // near our lateral landmark at a deep mesh is not permission to chase him.

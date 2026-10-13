@@ -37,7 +37,7 @@ const sourceHash = createHash('sha256');
 for (const file of sourceFiles('src')) sourceHash.update(file).update('\0').update(readFileSync(file)).update('\0');
 const provenance = { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
   sourceSha256: sourceHash.digest('hex'), probeSha256: createHash('sha256').update(readFileSync('scripts/diag/defense/flow-panel.ts')).digest('hex'),
-  flags: Object.fromEntries(['PULL_PLAN', 'PULL_CUE', 'LB_PLAN', 'PULL_READ', 'FLOW_READ', 'SCRAPE', 'LIVE_GAPS', 'CF_FLOW',
+  flags: Object.fromEntries(['PULL_PLAN', 'PULL_CUE', 'PULL_HANDOVER', 'RUN_CONTACT_COMPONENTS', 'LB_PLAN', 'PULL_READ', 'FLOW_READ', 'SCRAPE', 'LIVE_GAPS', 'CF_FLOW',
     'RUN_READ', 'RUN_READ_TURN', 'RUN_CONTACT_TRACK', 'GAIT_STEP', 'DL_FIGHT', 'PULL_STEP',
     'HAND_MOTOR', 'RUN_HANDS', 'DL_HANDS', 'HAND_FIGHT', 'LEG_BRACE', 'TACKLE_ROLL',
     'WRAP_BIND', 'TACKLE_TOUCH', 'REACH_CONTACT'].map(k => [k, process.env[k] ?? null])) };

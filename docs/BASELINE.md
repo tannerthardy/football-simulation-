@@ -147,3 +147,9 @@ New research starts from this baseline. Register any new flag before running
 comparisons; update the profile/runtime pin only as a named, validated new
 baseline. Preserve prior receipts and known failures rather than re-labelling
 old measurements as results for the latest source.
+
+This feature branch additionally registers `RUN_CONTACT_COMPONENTS=0` and
+`PULL_HANDOVER=0` for the [coupled controller trials](reviews/coupled-run-contact.md).
+Its flag inventory has 45 entries so the launcher resets both additions.
+The original 43-flag publication receipt and runtime pin are unchanged; use
+`--candidate` for this modified runtime. Neither trial is promoted.
