@@ -56,7 +56,56 @@ the turn drill rotates the defender 83 deg in a second (part of it is his own
 re-facing toward a blocker who moved 0.74 yd); the slingshot drill should score
 displacement away from the runner's lane, not depth.
 
-## Phase 2 (next): controllers ask for it
+## Phase 2, first controllers (`RUN_HANDS=1`, `DL_HANDS=1`, both off; need `HAND_MOTOR=1`)
+
+**Run blocker (`RUN_HANDS`).** A blocker who controls the hand fight pushes a
+defender further the way he has committed, when that way takes him off the
+blocker's body: a wide flow is dragged past the hole, an inside duck is slung
+further inside. Three guards came from the reach panel, one per failure seen:
+
+1. A man working across the blocker's face is only braked (helping him would
+   hand him the edge).
+2. A man coming straight through is fought with feet and chest, judged by his
+   own motion, not the blocker's step (the first version slid a penetrator
+   past the shoulder: 3.1 to 5.1 yd).
+3. A blocker who feels himself driven back keeps his arms on stopping the man:
+   arms share one strength budget, and arms spent sideways released the anchor
+   (penetrator 3.6 yd until this guard).
+
+Reach panel with the guards: flow defender carried to 5.42 yd with the blocker
+1.2 yd inside him (the cutback lane); anchor, slant and penetrator exactly at
+baseline; mirrors exact.
+
+**Shedding defender (`DL_HANDS`).** A defender who controls the hands while
+getting off toward the ball drives himself past the blocker's ball-side
+shoulder with them (rip, push-pull), not only his feet.
+
+8+8 games, all with `GAIT_STEP=0.3`:
+
+| | Base | + `RUN_HANDS` | + `RUN_HANDS` + `DL_HANDS` |
+|---|---|---|---|
+| Run yards median | 1.41 / 1.60 | 2.22 / 1.63 | 1.83 / 1.52 |
+| Stuff rate | 0.45 / 0.44 | 0.39 / 0.41 | 0.43 / 0.48 |
+| Runs of 10+ yd | 0.07 / 0.10 | 0.13 / 0.12 | 0.08 / 0.10 |
+| OZ engaged DL depth at 3 s (NFL +1.03) | -0.15 | +0.20 | +0.05 |
+| Guards | ok | ok | ok |
+
+The blocker's hands help the offense a little and the defender's give some of
+it back; both are within 8-game noise. That is the expected shape when both
+sides get the same new physical tool. Who controls the hands is still the
+ratings-driven `control` walk; the hands now act, but who gets inside hands is
+not yet physical.
+
+## Phase 2, next
+
+- Who controls the hands: replace the `control` random walk with the hand
+  fight itself (inside position, punch timing and arm length decide where the
+  hands land), using `HANDS2`'s two-hand geometry.
+- Pass rush: rush moves as hand actions instead of success rolls.
+- Slingshot when a penetrator has already beaten the cutoff (blocker behind
+  his shoulder), scored by displacement away from the runner's lane.
+
+## Phase 2 (original plan)
 
 - Run blocking: drag hand when a reached defender flows and the blocker
   cannot get across; redirect a slanting or penetrating man away from the
