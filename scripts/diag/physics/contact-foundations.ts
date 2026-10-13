@@ -66,10 +66,11 @@ export function captureFirstGrip(cell: Cell, mode: 'center' | 'patch', side: 1 |
 }
 
 export function frozenInterval(saved: ReturnType<typeof packet>, partitions: number,
-  variant: 'full' | 'ground-only' | 'grip-only', duration: number) {
+  variant: 'full' | 'ground-only' | 'grip-only', duration: number, timing: 'midpoint' | 'resolved' = 'midpoint') {
   if (!Number.isInteger(partitions) || partitions < 1 || !Number.isFinite(duration)
     || duration <= 0 || duration > saved.args[4]) throw new RangeError('Invalid frozen interval');
   const { w, args } = restore(saved), ids: number[] = args[0], report = args[5];
+  w.gripTiming = timing;
   if (variant === 'ground-only') w.joints = [];
   if (variant === 'grip-only') for (const i of ids) {
     args[2][i].free = true; args[2][i].dive = null;
@@ -117,7 +118,8 @@ export function frozenInterval(saved: ReturnType<typeof packet>, partitions: num
   const ledger = w.bodies.reduce((v: number, _b: any, i: number) => v + report.groundWork[i] + report.groundYawWork[i], 0)
     + report.work.hands + report.work.grasps + report.work.strikes + report.work.contacts
     - beforeLedger.hands - beforeLedger.grasps - beforeLedger.strikes - beforeLedger.contacts - beforeGroundWork;
-  const result = { partitions, variant, duration, start, end: pose(w, ids),
+  const result = { partitions, variant, duration, timing, integration: report.gripTiming,
+    start, end: pose(w, ids),
     momentumError: Math.hypot(finalMomentum.x - initialMomentum.x - groundImpulse.x,
       finalMomentum.y - initialMomentum.y - groundImpulse.y),
     energyError: w.kineticEnergy() - beforeEnergy - ledger,

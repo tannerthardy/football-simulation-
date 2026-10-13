@@ -37,6 +37,7 @@ import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, loco
 import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBody, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
+import { resolveGripInterval, type GripTimingReport } from './grip-timing.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
 import { integrateFilteredFollow } from './filtered-follow.js';
 
@@ -160,6 +161,8 @@ export interface StrikeRecord {
 }
 
 export interface StepReport {
+  /** Experimental grip integration only; absent from unchanged default reports. */
+  gripTiming?: GripTimingReport;
   /** Substeps used by the contact island (1 when nobody was near contact). */
   substeps: number;
   /** External (ground/gravity) impulse on each body, kg·yd/s. */
@@ -369,6 +372,8 @@ export class World {
    * Lower grips use material contact plus the existing recovery motor.
    * Center retains production until native helper/controller controls pass. */
   readonly handContact: 'center' | 'patch';
+  /** Experimental grip-driven local integration; production retains midpoint. */
+  readonly gripTiming: 'midpoint' | 'resolved';
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -436,11 +441,12 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch' } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
     this.handContact = opts.handContact ?? 'center';
+    this.gripTiming = opts.gripTiming ?? 'midpoint';
     if (this.handContact === 'patch' && this.handIntegration !== 'centered')
       throw new RangeError('Common hand patches require centered force integration');
     this.supportModel = opts.supportModel ?? 'legacy';
@@ -1008,6 +1014,20 @@ export class World {
   }
 
   private integrateSubstep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
+    report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean, swept = true): void {
+    if (this.gripTiming === 'resolved' && this.handContact === 'patch' && contact
+      && this.joints.some(j => j.kind === 'grasp' && !j.broken && this.gripCapacity(j) > 0)) {
+      const r = resolveGripInterval(this, [ids, intents, plans, h, remaining, report, pairs, contact, swept],
+        (world, args) => world.integrateInterval(...args));
+      const total = report.gripTiming ??= { trials: 0, intervals: 0, limited: 0, maxAcceptedError: 0 };
+      total.trials += r.trials; total.intervals += r.intervals; total.limited += r.limited;
+      total.maxAcceptedError = Math.max(total.maxAcceptedError, r.maxAcceptedError);
+      return;
+    }
+    this.integrateInterval(ids, intents, plans, h, remaining, report, pairs, contact, swept);
+  }
+
+  private integrateInterval(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
     report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean, swept = true): void {
     const bs = this.bodies;
     this.syncHeldSupport();
