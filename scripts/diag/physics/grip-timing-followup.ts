@@ -68,7 +68,7 @@ if (!process.argv.includes('--frozen-only')) {
     if (process.argv.includes('--audit')) {
       const substep = w.integrateSubstep;
       w.integrateSubstep = function (...args: Private[]) {
-        if (this.joints.some((j: Private) => j.kind === 'grasp' && !j.broken) && audit.filter(a => a.n === n).length < 400) {
+        if (args[7] && this.joints.some((j: Private) => j.kind === 'grasp' && !j.broken) && audit.filter(a => a.n === n).length < 400) {
           const f = { ...this }; delete f.attachments;
           for (const k of Object.keys(f)) if (typeof f[k] === 'function') delete f[k];
           const start = structuredClone({ fields: f, args,
@@ -94,7 +94,7 @@ if (!process.argv.includes('--frozen-only')) {
           const dose = (q: Private) => q.joints.reduce((s: number,j: Private) => s+(j.kind==='grasp' ? j.force??0 : 0),0)
             - start.fields.joints.reduce((s: number,j: Private) => s+(j.kind==='grasp' ? j.force??0 : 0),0);
           const d = Math.max(dose(a),dose(b));
-          if (d < 1e-10 || bodyError <= 1 && xiError > 5e-7) {
+          if (d < 1e-10 && (bodyError > 0 || xiError > 0) || bodyError <= 1 && xiError > 5e-7) {
             const row = { n, time: this.time, h: args[3], dose: d, bodyError, xiError, accelError,
               start: pose(this,args[0]), coarse: pose(a,args[0]), fine: pose(b,args[0]) };
             audit.push(row);
@@ -118,10 +118,10 @@ if (!process.argv.includes('--frozen-only')) {
       console.log(JSON.stringify({ tape: id, n, time: w.time, bodies: rows.at(-1)!.bodies.map((b: Private) =>
         ({ i: b.i, pos: b.pos, xi: b.support.xi, state: b.support.state })), integration: report.gripTiming }));
     }
-    writeFileSync(`${root}/${id}-${n}.json`, JSON.stringify({ source, flags, id, checksum, n,
+    writeFileSync(`${root}/${id}-${n}.json`, JSON.stringify({ source, flags, id, checksum, n, tapeSource: tape.source,
       seconds: (performance.now() - start) / 1000, tapeChecksum: createHash('sha256').update(readFileSync(tapeFile)).digest('hex'), rows }, null, 2));
   }
   if (audit.length) writeFileSync(`${root}/${id}-audit.json`, JSON.stringify({ source, flags, checksum, audit },null,2));
 }
-writeFileSync(`${root}/${id}-frozen.json`, JSON.stringify({ source, flags, id, checksum, frozen }, null, 2));
+if (frozen.length) writeFileSync(`${root}/${id}-frozen.json`, JSON.stringify({ source, flags, id, checksum, frozen }, null, 2));
 if (sourceVersion() !== source) throw Error('Source changed');

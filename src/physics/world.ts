@@ -604,7 +604,8 @@ export class World {
       const b = bs[i], plan = plans[i];
       if (plan.free || plan.dive || b.support!.state !== 'up') continue;
       const steps = near[i] ? report.substeps : 1;
-      const divisor = this.impactTiming === 'local-sweep' ? dt : steps;
+      const divisor = this.impactTiming === 'local-sweep'
+        || this.handContact === 'patch' && this.gripTiming === 'resolved' ? dt : steps;
       const lx = this.leanX[i] / divisor, ly = this.leanY[i] / divisor;
       spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), dt);
     }
@@ -1510,7 +1511,11 @@ export class World {
         }
         fx += lx + px; fy += ly + py;
         this.braceX[i] = px; this.braceY[i] = py;
-        const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
+        // Refining a live grip adds physical pieces, not additional effort.
+        // Its fatigue input is the time integral of achieved lean, paired
+        // with the tick-duration divisor above. Legacy paths keep their order.
+        const leanWeight = this.impactTiming === 'local-sweep'
+          || this.handContact === 'patch' && this.gripTiming === 'resolved' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
         const yaw: { impulse: number; work: number; peakTorque?: number } = this.handContact === 'patch'
           ? turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy))
