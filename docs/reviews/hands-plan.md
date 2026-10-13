@@ -96,6 +96,32 @@ sides get the same new physical tool. Who controls the hands is still the
 ratings-driven `control` walk; the hands now act, but who gets inside hands is
 not yet physical.
 
+## Who controls the hands (`HAND_FIGHT=1`, off): attempt 1
+
+`control` (who supplies the hand forces, and how strongly: 35-100% of arm
+force) was a ratings walk toward the better hand-technique rating. With the
+flag, first hands land by timing (reach against the closing gap, punch speed
+and spread from hand skill, the blocker's snap-count edge), and control then
+relaxes toward each side's share of upper-body leverage: balance margin
+(support availability), squareness, pad level, arm strength after fatigue.
+Hand skill sets the re-fit rate.
+
+Early control now favors blockers; by 2 s about 40% of reps are the
+defender's. Reach panel: anchor, flow and drive unchanged or better for the
+blocker, but a penetrator with a running start gets 4.6 yd (was 3.1). Games
+(8+8, with `GAIT_STEP`): DL depth at 3 s -0.6 / -1.0 to -0.9 / -0.9 (NFL
++0.2); OZ engaged DL depth -0.15 to -0.30, gap runs -0.13 to -0.38; yards
+unchanged. Off.
+
+Diagnosis: a feedback loop. A blocker driven back loses balance margin, so
+the hands, so more ground. The defender leaning into him reads as perfectly
+balanced because his lean is carried by the blocker. Balance margin ignores
+how much of a player's support depends on the man in front of him; in football
+that commitment is the weakness (step aside or re-anchor and he falls
+forward). Next attempt: count the lean a player's support owes to the contact
+as leverage he cannot spend in the hand fight, then re-test against the same
+panel and games.
+
 ## Phase 2, next
 
 - Who controls the hands: replace the `control` random walk with the hand
