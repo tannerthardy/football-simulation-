@@ -6,6 +6,11 @@ The acquisition experiment below remains a recorded idea, not the active next
 task. Current diagnosis concerns explosive YAC: arrival geometry, first loaded
 contact, loss of control and subsequent pursuit on the unchanged baseline.
 
+The focused follow-up is now in [coverage/contact/containment diagnosis](catch-chain-diagnosis.md):
+nine exact native witnesses, 324 completed field/helper comparisons, loaded-joint
+contrasts and a full-native helper request probe. Its report supersedes the
+earlier broad next-step suggestion; no production candidate is promoted.
+
 Diagnosis-first work on `codex/catch-pursuit-diagnosis`, based on the agreed
 integration pin `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`. The attached
 handbook supplies hypotheses and historical evidence; the user's requested
