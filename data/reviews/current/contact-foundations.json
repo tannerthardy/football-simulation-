@@ -1,0 +1,995 @@
+{
+  "source": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+  "commit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "node": "v22.23.3",
+  "toolHash": "e65f860e96bbfa5db01e6e7c8c780ce2ae6a7d10657343177df7cea1a471d0e7",
+  "profile": "run-game-2026-10-13",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldOptions": {
+    "nativeSubsteps": 96,
+    "duration": 0.004166666666666667,
+    "intervalPartitions": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      64,
+      256
+    ],
+    "handContact": "explicit per case; patch experimental"
+  },
+  "note": "Unchanged runtime. Frozen-frame reference tests force timing; it is not a repaired native World or an NFL capacity validation.",
+  "angular": {
+    "center": {
+      "caseCount": 144,
+      "lawConserved": false,
+      "summary": {
+        "normal": {
+          "cases": 72,
+          "lawConserved": true,
+          "absAngularChangeRange": [
+            0,
+            6.139089236967266e-11
+          ],
+          "maxMomentumError": 6.821210263296962e-12,
+          "maxEnergyResidual": 3.035349749325178e-13,
+          "handWorkRange": [
+            0.17999999999996374,
+            0.18000000000004993
+          ],
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxNormalOracleError": 7.105427357601002e-14
+        },
+        "tangent": {
+          "cases": 72,
+          "lawConserved": false,
+          "absAngularChangeRange": [
+            3.7124773258256027,
+            3.712757620082357
+          ],
+          "maxMomentumError": 1.4836567898030567e-13,
+          "maxEnergyResidual": 2.156053113822054e-13,
+          "handWorkRange": [
+            -7.601341607703635,
+            -7.58815415312843
+          ],
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxNormalOracleError": 0
+        }
+      }
+    },
+    "patch": {
+      "caseCount": 144,
+      "lawConserved": true,
+      "summary": {
+        "normal": {
+          "cases": 72,
+          "lawConserved": true,
+          "absAngularChangeRange": [
+            0,
+            6.139089236967266e-11
+          ],
+          "maxMomentumError": 6.821210263296962e-12,
+          "maxEnergyResidual": 3.035349749325178e-13,
+          "handWorkRange": [
+            0.17999999999996377,
+            0.18000000000004993
+          ],
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxNormalOracleError": 7.105427357601002e-14
+        },
+        "tangent": {
+          "cases": 72,
+          "lawConserved": true,
+          "absAngularChangeRange": [
+            0,
+            4.092726157978177e-12
+          ],
+          "maxMomentumError": 2.2914314707516465e-13,
+          "maxEnergyResidual": 1.8912649224489542e-13,
+          "handWorkRange": [
+            -5.86475998415777,
+            -5.864649288182879
+          ],
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxNormalOracleError": 0
+        }
+      }
+    }
+  },
+  "patchGate": {
+    "total": 52,
+    "passed": 43,
+    "failed": 9,
+    "failures": [
+      "joined helpers replace unusable feet through bounded physical movement turns a wrong-side acquisition into actual useful contact, side -1",
+      "joined helpers replace unusable feet through bounded physical movement turns a wrong-side acquisition into actual useful contact, side 1",
+      "solo hand-fight execution with the preserved legacy policy is unchanged matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+      "solo hand-fight execution with the preserved legacy policy is unchanged matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG",
+      "the original inside-zone helper may check a supported owner before climbing an unjoined helper who loses his footing must confirm the owner again after recovering",
+      "a check does not bypass a physical or near-level responsibility collects a genuinely lost loaded contact instead of climbing, side -1",
+      "a check does not bypass a physical or near-level responsibility collects a genuinely lost loaded contact instead of climbing, side 1",
+      "a predeclared native Split Zone Under rep earns a supported check and climb lets RG use the supported RT block without first inventing a second pair of hands",
+      "the native Split Zone Tite helper reads useful first-level work waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands"
+    ]
+  },
+  "nativeCount": 10,
+  "nativeCompleted": 8,
+  "nativeCensored": 2,
+  "mirrorMaxMotionDifference": 0.0,
+  "native": [
+    {
+      "name": "angled witness",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "mode": "patch",
+      "side": 1,
+      "seed": 3001,
+      "time": 2.65,
+      "checkpoint": "7dd424e4cb40afd737208ebe7c54b3458155d0e947a3f0d779664e829d118a85",
+      "endpoint": "81f2035d28cf74ede00b88298a897aeeca71346393b006fab118aaa004e5e8d7",
+      "observerParity": true,
+      "native": {
+        "ending": "censored",
+        "endWhy": "time limit",
+        "finish": "censored",
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "afterContact": 22.274863595064915,
+        "contactToEnd": 4.4,
+        "carrierState": "up"
+      }
+    },
+    {
+      "name": "angled witness",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "mode": "patch",
+      "side": -1,
+      "seed": 3001,
+      "time": 2.65,
+      "checkpoint": "5ecb28ef2c81d3e3205faba04b5232b4be179af9f8a5bf70038a3c36d8e410e9",
+      "endpoint": "dcc864ce81be7f2c2253c9590b90e4028cec6523d4f6b18231a62ed78eed0cb6",
+      "observerParity": true,
+      "native": {
+        "ending": "censored",
+        "endWhy": "time limit",
+        "finish": "censored",
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "afterContact": 22.2748635950649,
+        "contactToEnd": 4.4,
+        "carrierState": "up"
+      }
+    },
+    {
+      "name": "rear witness",
+      "cell": {
+        "angle": 180,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "mode": "center",
+      "side": 1,
+      "seed": 3001,
+      "time": 2.05,
+      "checkpoint": "d1cf6eece8a54ff1aae18306caea1db60dc91122f21f0008b7a471437ccb8773",
+      "endpoint": "e6d5aaee54f00f6736a8c864dfe6795ae4a894c263d16ae51979225ffb4894a6",
+      "observerParity": true,
+      "native": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "firstGrip": {
+          "t": 2.05,
+          "x": 50.3
+        },
+        "afterContact": 15.201405434550082,
+        "contactToEnd": 3.5999999999999996,
+        "carrierState": "down"
+      }
+    },
+    {
+      "name": "rear witness",
+      "cell": {
+        "angle": 180,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "mode": "center",
+      "side": -1,
+      "seed": 3001,
+      "time": 2.05,
+      "checkpoint": "d1cf6eece8a54ff1aae18306caea1db60dc91122f21f0008b7a471437ccb8773",
+      "endpoint": "e6d5aaee54f00f6736a8c864dfe6795ae4a894c263d16ae51979225ffb4894a6",
+      "observerParity": true,
+      "native": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "firstGrip": {
+          "t": 2.05,
+          "x": 50.3
+        },
+        "afterContact": 15.201405434550082,
+        "contactToEnd": 3.5999999999999996,
+        "carrierState": "down"
+      }
+    },
+    {
+      "name": "frontal finish control",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "mode": "center",
+      "side": 1,
+      "seed": 3001,
+      "time": 2.7,
+      "checkpoint": "3b80c8d39b54e452f8eca38efb67fb4d1dfe062f3d2994c5a57f8374951a125e",
+      "endpoint": "90c0ca65976551792730d8a960c6d41bbfe0e8b5287ddb7f97944b360b775d7b",
+      "observerParity": true,
+      "native": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "firstGrip": {
+          "t": 2.7,
+          "x": 52.09999999999998
+        },
+        "afterContact": 0.44923206273633554,
+        "contactToEnd": 0.8500000000000001,
+        "carrierState": "down"
+      }
+    },
+    {
+      "name": "frontal finish control",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "mode": "center",
+      "side": -1,
+      "seed": 3001,
+      "time": 2.7,
+      "checkpoint": "3b80c8d39b54e452f8eca38efb67fb4d1dfe062f3d2994c5a57f8374951a125e",
+      "endpoint": "90c0ca65976551792730d8a960c6d41bbfe0e8b5287ddb7f97944b360b775d7b",
+      "observerParity": true,
+      "native": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "firstGrip": {
+          "t": 2.7,
+          "x": 52.09999999999998
+        },
+        "afterContact": 0.44923206273633554,
+        "contactToEnd": 0.8500000000000001,
+        "carrierState": "down"
+      }
+    },
+    {
+      "name": "frontal finish control",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "mode": "patch",
+      "side": 1,
+      "seed": 3001,
+      "time": 2.7,
+      "checkpoint": "ca0581ce258a881be0229eb4cd01e6b5ace46f7a8d128b238bad697a814cc803",
+      "endpoint": "cf2b4bb399a130a4a1e7fa4155db5889524077de6ba4deecd5cc3b02f4ebc34e",
+      "observerParity": true,
+      "native": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "firstGrip": {
+          "t": 2.7,
+          "x": 52.09999999999998
+        },
+        "afterContact": 0.4489734517965971,
+        "contactToEnd": 0.8500000000000001,
+        "carrierState": "down"
+      }
+    },
+    {
+      "name": "frontal finish control",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "mode": "patch",
+      "side": -1,
+      "seed": 3001,
+      "time": 2.7,
+      "checkpoint": "ca0581ce258a881be0229eb4cd01e6b5ace46f7a8d128b238bad697a814cc803",
+      "endpoint": "cf2b4bb399a130a4a1e7fa4155db5889524077de6ba4deecd5cc3b02f4ebc34e",
+      "observerParity": true,
+      "native": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "firstGrip": {
+          "t": 2.7,
+          "x": 52.09999999999998
+        },
+        "afterContact": 0.4489734517965971,
+        "contactToEnd": 0.8500000000000001,
+        "carrierState": "down"
+      }
+    },
+    {
+      "name": "fresh angled",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "mode": "patch",
+      "side": 1,
+      "seed": 4001,
+      "time": 2.65,
+      "checkpoint": "68f6eb0e887b0b632e54b1e451c645819451ec37cf703af03b56e723ef6af1df",
+      "endpoint": "736c6536a9a10069d9bdba00a0bc9edc0b89665de3967f668c4bcc79a54067f0",
+      "observerParity": true,
+      "native": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "afterContact": 13.319271331219483,
+        "contactToEnd": 2.0500000000000003,
+        "carrierState": "down"
+      }
+    },
+    {
+      "name": "fresh angled",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "mode": "patch",
+      "side": -1,
+      "seed": 4001,
+      "time": 2.65,
+      "checkpoint": "59e0074ea92f078bec27a3a9d9d65fc79b86903d4324c78ecda32b1e5dd75828",
+      "endpoint": "4cace76e0250fdf26869349a812806f966138eeeda247d5aa2011429375b3777",
+      "observerParity": true,
+      "native": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "afterContact": 13.319271331219483,
+        "contactToEnd": 2.0500000000000003,
+        "carrierState": "down"
+      }
+    }
+  ],
+  "intervals": [
+    {
+      "name": "angled witness",
+      "mode": "patch",
+      "seed": 3001,
+      "time": 2.65,
+      "variants": [
+        {
+          "variant": "full",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0.1390663623415378,
+              "facingError": 0.003026880944969612,
+              "positionError": 5.110437805056054e-05,
+              "momentumError": 5.894272741988107e-14,
+              "energyError": -5.773159728050814e-13
+            },
+            {
+              "partitions": 8,
+              "spinError": 0.006557247291717694,
+              "facingError": 9.636564915638246e-05,
+              "positionError": 1.6318337539081533e-06,
+              "momentumError": 1.6262398915146074e-13,
+              "energyError": 4.2366110619695974e-13
+            },
+            {
+              "partitions": 256,
+              "spinError": 0.0,
+              "facingError": 0.0,
+              "positionError": 0.0,
+              "momentumError": 1.3641727342394311e-12,
+              "energyError": 6.796341267545358e-12
+            }
+          ],
+          "reference": {
+            "forceCapExit": 0.002292144512236845,
+            "impulse": -5.482948396362553,
+            "transport": -0.016197002243517885,
+            "forceTransportFraction": 0.7089763130039954,
+            "initialSlip": 3.767771141557901,
+            "finalSlip": 7.177379001196552e-08,
+            "coarseSpin": 6.102808278437881,
+            "finestSpin": 6.241874640779419,
+            "coarseFacing": -2.017026350851667,
+            "finestFacing": -2.013999469906697,
+            "referenceFacingError": 6.614781677782844e-05,
+            "referenceSpinError": 0.04551267374059442
+          }
+        },
+        {
+          "variant": "ground-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 4.529709940470639e-14,
+              "positionError": 4.831690603168681e-13,
+              "momentumError": 5.894272741988107e-14,
+              "energyError": -5.684341886080802e-14
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 4.618527782440651e-14,
+              "positionError": 5.115907697472721e-13,
+              "momentumError": 7.557041517105461e-14,
+              "energyError": -5.639932965095795e-14
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 1.7183768808027744e-12,
+              "energyError": -5.078604203845316e-12
+            }
+          ],
+          "reference": null
+        },
+        {
+          "variant": "grip-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0.04807406973294448,
+              "facingError": 0.0028201910662493113,
+              "positionError": 4.759377886763627e-05,
+              "momentumError": 5.684341886080802e-14,
+              "energyError": -4.511946372076636e-13
+            },
+            {
+              "partitions": 8,
+              "spinError": 0.005762563616032779,
+              "facingError": 4.6859157222023384e-05,
+              "positionError": 7.918818677946884e-07,
+              "momentumError": 5.684341886080802e-14,
+              "energyError": 1.9539925233402755e-14
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 2.2737367544323206e-13,
+              "energyError": -1.284305994886381e-12
+            }
+          ],
+          "reference": {
+            "forceCapExit": 0.0024501769875700666,
+            "impulse": -5.554562821647417,
+            "transport": -0.01633918075605786,
+            "forceTransportFraction": 0.705978761491592,
+            "initialSlip": 3.816993821754214,
+            "finalSlip": 0,
+            "coarseSpin": 6.237854964390886,
+            "finestSpin": 6.28592903412383,
+            "coarseFacing": -2.0167450035892647,
+            "finestFacing": -2.0139248125230154,
+            "referenceFacingError": 5.8423302563781476e-05,
+            "referenceSpinError": 0.04807406973294448
+          }
+        }
+      ]
+    },
+    {
+      "name": "rear witness",
+      "mode": "center",
+      "seed": 3001,
+      "time": 2.05,
+      "variants": [
+        {
+          "variant": "full",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 4.352763482984301e-08,
+              "momentumError": 1.092459456231154e-13,
+              "energyError": -1.6697754290362354e-13
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.071392360558093e-10,
+              "momentumError": 1.6964207816272392e-13,
+              "energyError": 8.917311333789257e-13
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 5.945466341472638e-12,
+              "energyError": 4.6988191115815425e-11
+            }
+          ],
+          "reference": null
+        },
+        {
+          "variant": "ground-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 3.623767952376511e-13,
+              "momentumError": 1.092459456231154e-13,
+              "energyError": -1.1368683772161603e-13
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 3.410605131648481e-13,
+              "momentumError": 1.1812772982011666e-13,
+              "energyError": 3.410605131648481e-13
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 1.5010215292932116e-12,
+              "energyError": 6.675549002466141e-12
+            }
+          ],
+          "reference": null
+        },
+        {
+          "variant": "grip-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.105427357601002e-15,
+              "momentumError": 0,
+              "energyError": 1.425526363618701e-13
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 1.4210854715202004e-14,
+              "momentumError": 0,
+              "energyError": 1.0529355165544985e-12
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 4.092726157978177e-12,
+              "energyError": 3.808553472595122e-11
+            }
+          ],
+          "reference": null
+        }
+      ]
+    },
+    {
+      "name": "frontal finish control",
+      "mode": "center",
+      "seed": 3001,
+      "time": 2.7,
+      "variants": [
+        {
+          "variant": "full",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.247535904753022e-13,
+              "momentumError": 3.0753177782116836e-14,
+              "energyError": -8.881784197001252e-14
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.389644451905042e-13,
+              "momentumError": 5.917488721252084e-14,
+              "energyError": -2.0250467969162855e-13
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 2.2175594693862877e-12,
+              "energyError": -4.515721130360362e-12
+            }
+          ],
+          "reference": null
+        },
+        {
+          "variant": "ground-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.247535904753022e-13,
+              "momentumError": 3.0753177782116836e-14,
+              "energyError": -8.881784197001252e-14
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.389644451905042e-13,
+              "momentumError": 5.917488721252084e-14,
+              "energyError": -2.0250467969162855e-13
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 2.2175594693862877e-12,
+              "energyError": -4.515721130360362e-12
+            }
+          ],
+          "reference": null
+        },
+        {
+          "variant": "grip-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.460698725481052e-13,
+              "momentumError": 0,
+              "energyError": 0
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.389644451905042e-13,
+              "momentumError": 0,
+              "energyError": 0
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 0,
+              "energyError": 0
+            }
+          ],
+          "reference": null
+        }
+      ]
+    },
+    {
+      "name": "frontal finish control",
+      "mode": "patch",
+      "seed": 3001,
+      "time": 2.7,
+      "variants": [
+        {
+          "variant": "full",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.247535904753022e-13,
+              "momentumError": 3.0753177782116836e-14,
+              "energyError": -8.881784197001252e-14
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.389644451905042e-13,
+              "momentumError": 5.917488721252084e-14,
+              "energyError": -2.0250467969162855e-13
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 2.2175594693862877e-12,
+              "energyError": -4.515721130360362e-12
+            }
+          ],
+          "reference": null
+        },
+        {
+          "variant": "ground-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.247535904753022e-13,
+              "momentumError": 3.0753177782116836e-14,
+              "energyError": -8.881784197001252e-14
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.389644451905042e-13,
+              "momentumError": 5.917488721252084e-14,
+              "energyError": -2.0250467969162855e-13
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 2.2175594693862877e-12,
+              "energyError": -4.515721130360362e-12
+            }
+          ],
+          "reference": null
+        },
+        {
+          "variant": "grip-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.460698725481052e-13,
+              "momentumError": 0,
+              "energyError": 0
+            },
+            {
+              "partitions": 8,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 7.389644451905042e-13,
+              "momentumError": 0,
+              "energyError": 0
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 0,
+              "energyError": 0
+            }
+          ],
+          "reference": null
+        }
+      ]
+    },
+    {
+      "name": "fresh angled",
+      "mode": "patch",
+      "seed": 4001,
+      "time": 2.65,
+      "variants": [
+        {
+          "variant": "full",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0.09572755011375111,
+              "facingError": 0.0004757602390452753,
+              "positionError": 7.933131833047563e-06,
+              "momentumError": 7.513380489341374e-14,
+              "energyError": -1.5987211554602254e-14
+            },
+            {
+              "partitions": 8,
+              "spinError": 0.03957004772502959,
+              "facingError": 3.1777764488705174e-05,
+              "positionError": 5.39062953132168e-07,
+              "momentumError": 1.0483098296292182e-13,
+              "energyError": -1.099564883588755e-12
+            },
+            {
+              "partitions": 256,
+              "spinError": 0.0,
+              "facingError": 0.0,
+              "positionError": 0.0,
+              "momentumError": 2.344406640260416e-12,
+              "energyError": 8.119727112898545e-12
+            }
+          ],
+          "reference": {
+            "forceCapExit": 0.0038754328620152385,
+            "impulse": -5.481201280430639,
+            "transport": -0.012020169927252172,
+            "forceTransportFraction": 0.5263154252043576,
+            "initialSlip": 3.767779041838143,
+            "finalSlip": 0.0012099297183992106,
+            "coarseSpin": 6.142355817858989,
+            "finestSpin": 6.23808336797274,
+            "coarseFacing": -2.0169439601445394,
+            "finestFacing": -2.016468199905494,
+            "referenceFacingError": 1.7180180348574936e-05,
+            "referenceSpinError": 0.04273415216406917
+          }
+        },
+        {
+          "variant": "ground-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 3.874255138924809e-09,
+              "facingError": 8.824940778140444e-12,
+              "positionError": 4.831690603168681e-13,
+              "momentumError": 4.007643700517774e-14,
+              "energyError": -2.184918912462308e-13
+            },
+            {
+              "partitions": 8,
+              "spinError": 1.0271206107859143e-10,
+              "facingError": 1.5782930518071225e-12,
+              "positionError": 5.115907697472721e-13,
+              "momentumError": 7.516037683576527e-14,
+              "energyError": 1.509903313490213e-14
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 2.707358663989332e-12,
+              "energyError": 6.562306253954375e-12
+            }
+          ],
+          "reference": null
+        },
+        {
+          "variant": "grip-only",
+          "refinement": [
+            {
+              "partitions": 1,
+              "spinError": 0.048052247880741916,
+              "facingError": 0.0002857106342801785,
+              "positionError": 4.716317082109209e-06,
+              "momentumError": 5.684341886080802e-14,
+              "energyError": -4.511946372076636e-13
+            },
+            {
+              "partitions": 8,
+              "spinError": 0.005759495773259182,
+              "facingError": 1.9419836116085776e-05,
+              "positionError": 3.284399488765295e-07,
+              "momentumError": 5.684341886080802e-14,
+              "energyError": -1.6697754290362354e-13
+            },
+            {
+              "partitions": 256,
+              "spinError": 0,
+              "facingError": 0,
+              "positionError": 0.0,
+              "momentumError": 5.362597410144533e-13,
+              "energyError": 2.6929569685307797e-12
+            }
+          ],
+          "reference": {
+            "forceCapExit": 0.003999059825648985,
+            "impulse": -5.554562821647417,
+            "transport": -0.01203749724231741,
+            "forceTransportFraction": 0.5201128209221217,
+            "initialSlip": 3.816993821754214,
+            "finalSlip": 0,
+            "coarseSpin": 6.237854964390886,
+            "finestSpin": 6.285907212271628,
+            "coarseFacing": -2.0167450035892647,
+            "finestFacing": -2.0164592929549845,
+            "referenceFacingError": 1.603748906253699e-05,
+            "referenceSpinError": 0.048052247880741916
+          }
+        }
+      ]
+    }
+  ]
+}
