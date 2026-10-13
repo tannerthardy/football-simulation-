@@ -242,6 +242,8 @@ const DOWN_FRICTION = 0.75;
 const FOLLOW_MARGIN = 1.1;
 /** Time constant of a slipping hold sliding down to the legs, s. */
 const LEG_SLIDE = 0.3;
+/** Experimental (HOLD_SUBSTEPS=n, off): minimum substeps while a grasp is live. */
+const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 /** Experimental active hand motor (HAND_MOTOR=1): HandJoint.drive and .shove. */
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
 /** Experimental leg-hold bracing (LEG_BRACE=1); see addLoad. */
@@ -575,7 +577,12 @@ export class World {
     const t0 = this.time;
     if (alone.length) this.substep(alone, intents, plans, dt, dt, report, pairs, false);
     if (island.length) {
-      const steps = this.substeps ?? clamp(Math.ceil(fastest * dt / SUBSTEP_TRAVEL), MIN_SUBSTEPS, MAX_SUBSTEPS);
+      let steps = this.substeps ?? clamp(Math.ceil(fastest * dt / SUBSTEP_TRAVEL), MIN_SUBSTEPS, MAX_SUBSTEPS);
+      // HOLD_SUBSTEPS (experimental, off): a held body's balance is gravity-
+      // unstable outside its base and integration error grows ~e^(w t), so an
+      // island carrying a live grasp is resolved finer.
+      if (HOLD_SUBSTEPS && !this.substeps && this.joints.some(j => j.kind === 'grasp' && !j.broken))
+        steps = Math.max(steps, HOLD_SUBSTEPS);
       report.substeps = steps;
       const h = dt / steps;
       this.time = t0;
