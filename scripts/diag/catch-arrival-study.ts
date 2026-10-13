@@ -110,7 +110,7 @@ function selectFresh(roster:number,seed:number){
 function generatorAudit(){return [3101,4202,6103,7204].flatMap(roster=>{
  const rng=new Rng(roster),teams=[generateTeam(rng,'Ironmen',`I${roster}`,{strength:.55}),generateTeam(rng,'Comets',`C${roster}`,{strength:.55})];
  return teams.flatMap(t=>t.roster.map(p=>{const profile=derivePhysical(p);return {roster,id:p.id,position:p.position,
-  generatedBalance:p.ratings.balance,quality:p.potential,profile:{balance:profile.balance,stepSpeed:profile.stepSpeed,bend:profile.bend,getUp:profile.getUp},support:supportParams(profile)};}));
+  generatedBalance:p.ratings.balance,profile:{balance:profile.balance,stepSpeed:profile.stepSpeed,bend:profile.bend,getUp:profile.getUp},support:supportParams(profile)};}));
 });}
 function trial(f:any,arm:Arm,observe:boolean,destination:string){
  const sim=restore(f,observe),a=sim.agents[f.defender],ci=sim.offense.find(a=>a.player.id===(f.nativeResult.stats.receiver??f.nativeResult.stats.target))?.idx??sim.slot('X')!.idx;
