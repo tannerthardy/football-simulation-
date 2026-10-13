@@ -182,6 +182,29 @@ describe('the original inside-zone helper may check a supported owner before cli
 });
 
 describe('a check does not bypass a physical or near-level responsibility', () => {
+  it.each([-1, 1])('collects a genuinely lost loaded contact instead of climbing, side %s', side => {
+    const f = loaded(side), hands = f.engagement.hands!;
+    // Controlled loss geometry on an already loaded pair: the defender is
+    // behind the achieved torso, not merely past a fixed drive-frame angle.
+    // Leave every position, capability and movement request unchanged.
+    f.owner.body.facing = Math.atan2(f.defender.pos.y - f.owner.pos.y,
+      f.defender.pos.x - f.owner.pos.x) + Math.PI;
+    step(f);
+    expect(f.owner.engagement).toBeNull(); expect(f.defender.engagement).toBeNull();
+    expect(f.sim.world.joints).not.toContain(hands);
+    expect(f.sim.events.some(e => e.type === 'shed' && e.b === f.owner.idx)).toBe(true);
+    step(f, true);
+    expect(f.combination.checkSince).toBe(-1);
+    for (let k = 0; k < 40 && !f.helper.engagement; k++) step(f, true);
+    const collected = f.helper.engagement;
+    expect(collected?.blocker).toBe(f.helper); expect(collected?.defender).toBe(f.defender);
+    for (let k = 0; k < 4; k++) step(f, true);
+    expect(f.sim.world.joints).toContain(collected!.hands);
+    expect(collected!.hands!.normalForce).toBeGreaterThan(0);
+    expect(f.combination.released).toBe(false); expect(checked(f)).toBe(false);
+    expect(f.sim.events.some(e => e.type === 'block_climb')).toBe(false);
+  });
+
   it.each(['down', 'unbalanced', 'missing-hands', 'foreign-hands'] as const)('rejects %s despite the owner\'s stale visible up pose', reason => {
     const f = prime(loaded()), hands = f.engagement.hands!;
     f.observe();
@@ -370,8 +393,8 @@ describe('a predeclared native Split Zone Under rep earns a supported check and 
   });
 });
 
-describe('the historic native Split Zone Tite witness retains unfinished first-level work', () => {
-  it('stays when the backer is not arriving, then collects the end after keeper leverage is lost', () => {
+describe('the native Split Zone Tite helper reads useful first-level work', () => {
+  it('waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands', () => {
     const formation = FORMATION_BY_ID.gun_wing_12;
     const sim = new PlaySim({
       offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base34'),
@@ -384,14 +407,13 @@ describe('the historic native Split Zone Tite witness retains unfinished first-l
     const combo = behavior.plan.combination!, owner = sim.slot('Y')!;
     expect(combo.members.map(a => a.slot)).toEqual(['Y', 'RT']);
     expect(combo.helpPolicy!.kind).toBe('check');
-    // The installed defensive fit now persists during contact. The historical
-    // RT climb is therefore not a prerequisite guaranteed by this input.
-    // Observe the actual read beat and consumed pictures, not a replacement
-    // release time or a more favorable synthetic defender position.
+    // The old fixed-frame shed ended Y's useful reach despite his achieved
+    // torso still facing the end. Inspect the consumed read and actual hands;
+    // neither an obligatory shed nor a replacement release time is a contract.
     const original = behavior.update, originalSee = sim.see;
     let reading = false, backerPicture: ReturnType<typeof sim.see> | null = null;
     let runnerPicture: ReturnType<typeof sim.see> | null = null;
-    let noArrivingWork = 0, lostKeeper = 0, collectedLoadedContact = false;
+    let noArrivingWork = 0, earnedClimbs = 0, retainedReach = 0;
     sim.see = function (a, b, delayScale = 1) {
       const picture = originalSee.call(this, a, b, delayScale);
       if (reading && a === helper) {
@@ -406,6 +428,8 @@ describe('the historic native Split Zone Tite witness retains unfinished first-l
       const supported = e?.blocker === owner && e.hands && e.hands.normalForce! > 0;
       const secure = supported && e.baseB > .60 && Math.abs(e.phi) < .55;
       const heldLongEnough = s.t - (combo.checkSince ?? -1) >= .15;
+      const hands = e?.hands;
+      const bodies = due && secure && heldLongEnough ? s.agents.map(p => structuredClone(p.body)) : [];
       backerPicture = runnerPicture = null;
       reading = true;
       let command;
@@ -421,10 +445,15 @@ describe('the historic native Split Zone Tite witness retains unfinished first-l
           expect(s.world.joints).toContain(e!.hands); expect(a.engagement).toBeNull();
           noArrivingWork++;
         }
-      }
-      if (due && supported && Math.abs(e.phi) >= .55) {
-        expect(combo.released).toBe(false); expect(combo.checkSince).toBe(-1);
-        expect(a.tags.has('combo-held')).toBe(true); lostKeeper++;
+        if (combo.released) {
+          expect(filling || arriving).toBe(true);
+          expect(e!.blocker).toBe(owner); expect(e!.helpers).toEqual([]);
+          expect(e!.hands).toBe(hands); expect(s.world.joints).toContain(hands);
+          expect(s.agents.map(p => p.body)).toEqual(bodies);
+          expect(a.engagement).toBeNull(); expect(this.plan.kind).toBe('climb');
+          expect(this.target).toBe(combo.backer); expect(this.plan.drive).toEqual({ x: 1, y: 0 });
+          earnedClimbs++;
+        }
       }
       return command;
     };
@@ -432,15 +461,21 @@ describe('the historic native Split Zone Tite witness retains unfinished first-l
     // claimed final rushing result. The normal World and all behaviors run.
     while (sim.t < 2 && sim.phase !== 'dead') {
       sim.tick();
-      const e = helper.engagement;
-      if (e?.blocker === helper && e.defender === combo.defender
-        && e.hands && e.hands.normalForce! > 0 && sim.world.joints.includes(e.hands))
-        collectedLoadedContact = true;
+      const e = combo.defender.engagement;
+      if (e?.blocker === owner && Math.abs(e.phi) >= 1.1) {
+        const toD = Math.atan2(e.defender.pos.y - owner.pos.y, e.defender.pos.x - owner.pos.x);
+        const off = Math.abs(Math.atan2(Math.sin(toD - owner.facing), Math.cos(toD - owner.facing)));
+        // No future turn credit: the currently achieved torso is sufficient.
+        expect(off / (Math.PI / 2)).toBeLessThan(1.1);
+        expect(owner.body.support!.state).toBe('up');
+        expect(sim.world.joints).toContain(e.hands); expect(e.hands!.normalForce).toBeGreaterThan(0);
+        expect(e.helpers).toEqual([]); retainedReach++;
+      }
     }
-    expect(noArrivingWork).toBeGreaterThan(0); expect(lostKeeper).toBeGreaterThan(0);
-    expect(collectedLoadedContact).toBe(true); expect(combo.released).toBe(false);
-    expect(helper.tags.has('combo-check-climb')).toBe(false);
-    expect(sim.events.some(e => e.type === 'block_climb' && e.a === helper.idx)).toBe(false);
+    expect(noArrivingWork).toBeGreaterThan(0); expect(retainedReach).toBeGreaterThan(0);
+    expect(earnedClimbs).toBe(1); expect(combo.released).toBe(true);
+    expect(helper.tags.has('combo-check-climb')).toBe(true);
+    expect(sim.events.filter(e => e.type === 'block_climb' && e.a === helper.idx)).toHaveLength(1);
   });
 });
 
