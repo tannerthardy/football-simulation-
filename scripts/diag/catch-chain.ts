@@ -94,6 +94,7 @@ function contact(f:any,tape:any){
    rows.push({t:r.t+.05,before,after,armImpulse:report.armImpulse[c.idx],groundImpulse:report.groundImpulse[c.idx],
     falls:report.falls,joint:remove?null:copy({...joint,a:d.idx,b:c.idx}),nativeFirstStepError:nativeError});}
   outcomes.push({arm:remove?'remove-only-selected-joint':'original-selected-joint',prefixSha256:hash(prefix),
+   entryCheckpoint:prefix,
    initial,quality,execution,rows,censored:true});
  }
  if(outcomes[0].prefixSha256!==outcomes[1].prefixSha256)throw Error('Contact prefix mismatch');
@@ -125,6 +126,7 @@ function lab(f:any,input:LabInput,observe:boolean){
  // Helper intervention is explicit: same actual athlete/support/velocity,
  // new position five yards ahead, opposite the first defender, two yards wide.
  if(input.helpers)shift(sim,h,c.pos.x+5-h.pos.x,c.pos.y-(Math.sign(d.pos.y-c.pos.y)||1)*2-h.pos.y);
+ for(const a of active)if(a.pos.y<0||a.pos.y>FIELD_WIDTH)throw Error('Active encounter starts outside field');
  for(const a of sim.agents){a.engagement=null;if(active.has(a))continue;
   shift(sim,a,-200-a.idx*4-a.pos.x,CENTER_Y-a.pos.y);a.body.vel={x:0,y:0};a.downUntil=99;
   a.behavior={kind:'lab-parked',update:()=>({vel:{x:0,y:0}})};}
