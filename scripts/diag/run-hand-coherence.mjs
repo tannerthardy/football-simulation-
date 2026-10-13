@@ -20,6 +20,9 @@ const arms=[
 if(!process.argv.includes('--arm')||!arms.some(a=>a[0]===chosen))throw Error('Choose an explicit --arm');
 mkdirSync(directory,{recursive:true});
 const [name,flags,candidate]=arms.find(a=>a[0]===chosen);
+const profile=JSON.parse(readFileSync('config/baseline.json','utf8'));
+if(flags.some(f=>f.startsWith('RUN_HAND_COHERENCE='))&&!Object.hasOwn(profile.flags,'RUN_HAND_COHERENCE'))
+ throw Error('Trial is archived: checkout 814c8e0 for seal-* arms, or e02ad7e for the earlier foot-goal trial; final runtime is restored.');
 const index={protocol:'run-hand-coherence-shards-v1',comparisonCommit:manifest.comparisonCommit,
  manifestSha256:createHash('sha256').update(readFileSync(manifestPath)).digest('hex'),arm:name,flags,shards:[]};
 for(let start=0;start<manifest.inputs.length;start+=10){

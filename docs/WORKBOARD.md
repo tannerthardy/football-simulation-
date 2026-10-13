@@ -11,7 +11,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
-| General run-hand/feet coherence and ordinary run protection | Codex run-game, user requested own conclusions and continued run-game repair | `codex/run-hand-coherence` from PR #4 `b64910e`; comparison `4ded6b6` | Controller request contracts, observational ordinary-game census and bounded default-off hand candidate only if native request conflict is demonstrated. Shared solver remains with physics owner. | 2026-10-13 UTC | In progress: distinguish a valid defensive intention from certified execution; test whether offensive hands reinforce the acquired seal/feet goal rather than merely move a defender off the torso. Preserve all old controls, record new inputs before candidate results, and send shared-law failures through the existing workboard handoff. |
+| General run-hand/feet coherence and ordinary run protection | Codex run-game, user requested own conclusions and continued run-game repair | `codex/run-hand-coherence` from PR #4 `b64910e`; comparison `4ded6b6` | Diagnostic contracts/census and two archived hand trials. Final runtime, tests, solver, defaults and capacities exactly restored to PR #4. | 2026-10-13 UTC | [Bounded pass complete](reviews/run-protection-principles.md): 540 neutral main-panel pairs, 60/60 disabled full histories exact to actual pin, all end by 13.3 s. Two hand policies each retain adverse controls and are withdrawn; foot/side scalars do not establish timed path protection. Two native games: 89 called runs, 17 preselected clips, 43/81 first-RB stoppers never received blocking load. The 48-row free-law matrix shows persistent center angular defects and clean patch conservation, with contaminated rows retained. Late checkdown reveals a new experimental-hand loss after 5.75-s catch; first changed LT pair is not necessary/sufficient for it. Next work ranked below; no third heuristic, solver change or baseline promotion. |
 | Native hand-action protection diagnosis and existing pull handover assessment | Codex run-game, continuing PR #4 at user request | `codex/coupled-run-contact`, comparison `4ded6b6` | Diagnostic traces, single-joint request ablations, ending/censoring and minimal physical witnesses. No reimplementation of components/handover, no shared solver or default changes. | 2026-10-13 UTC | [Diagnosis complete; physics handoff pending](reviews/hand-action-protection.md): 236 neutral native pairs, all end by 5.85 s, 20/20 complete disabled histories exact to actual pin. Responsible pairs: LG/DT_S, RG/DT_W, Y/DE_S, offensive RG/DT_S; earlier changed Y is not a universal cause. Held cues/ownership support the defensive intentions; center angular law remains defective despite force/work compliance. Four small native witnesses sent below. Handover alone has eight lower/four higher completed gap-run gains, no promotion. `RUN_CONTACT_TRACK` collision stays separate. |
 | Coupled run contact components and pull-to-runner handover | Codex, user explicitly assigned blocking, defense and necessary hand mechanics together | `codex/coupled-run-contact` from `4ded6b6` | Bounded controller changes in `engagement.ts` and `run-fits.ts`, focused contracts and matched offensive/defensive/combined diagnostics. Reuse existing hand motor; no World, support, recovery, capacity or baseline promotion changes. | 2026-10-13 (America/Phoenix) | [Bounded trials complete](reviews/coupled-run-contact.md): complete contact-frame shoulder component and acquired runner handover. 60/60 disabled native histories exact; 480 neutral observed/plain pairs; 117 enabled combined contracts; all 1,673 TS/145 Python, typecheck/build pass at `d02c5e3`. Two eight-game cohorts retain 12/12 guards each. Parked `RUN_CONTACT_TRACK=1` adjacent-pair fall only delayed .05 s; combined hands lose four prior clean approaches. All adverse/censored pairs retained; both new trials and hands stay off. [Ending/causal follow-up complete](reviews/hand-action-protection.md), preserving capacities. |
 | Shared reproducible integration baseline | Codex run-game lead, user requested consolidation before further research | `codex/run-game-integration`, baseline `run-game-2026-10-13`, verified code/harness `1f1f1c8` | Branch reconciliation, explicit feature profile, test harness, baseline receipts and shared instructions; no feature promotion or capacity changes | 2026-10-13 UTC | [Shared baseline complete](BASELINE.md): latest primary `862258c`, live-gaps `448313e` and all included codex tips preserved. All 43 runtime flags recorded; experiments off. 32/32 native state/RNG histories unchanged through 3.5 s (12 ended/20 live). Same four game inputs/assertions now use separate existing per-game deadlines. Complete profile run: 1,652 TS, 145 Python, typecheck/build pass, no worker errors. [Pinned receipt](baseline-validation.json). PR #2 remains draft; physical/football failures and parked branches retained. |
@@ -619,3 +619,47 @@ Edit only your own rows and requests so board merges stay trivial.
   collision is parked evidence, not a new default-baseline failure. All four
   combined losses end before any handover activation. Existing handover alone
   remains off after 12 actual gap endings (eight lower/four higher gains).
+
+- 2026-10-13 UTC, run-game `codex/run-hand-coherence` -> single physics owner
+  and existing blocking/controller owner: [general conclusions and ranked tests](reviews/run-protection-principles.md)
+  retain comparison `4ded6b6`. Final runtime/defaults/solver/capacities are
+  exactly PR #4 `b64910e`; two withdrawn controller trials are preserved at
+  `e02ad7e` and `814c8e0`. Their local successes do not establish a general
+  protection rule. Do not simply forbid a winning defender or add a third
+  sign/angle/timer exception. A useful block controls access to the observed
+  runner's route until arrival or an achievable exchange, rather than keeping
+  a fixed offset or maximizing distance from the blocker's chest.
+  Physics owner: [48 native-derived free law rows](reviews/run-hand-law-matrix.json)
+  keep both active/passive defects. Center angular residuals in clean OZ/WZ
+  controls persist through 96 substeps; clean existing patch rows stay below
+  2.19e-11. WZ-7 contaminated refinements are labelled, not erased. Clear the
+  existing football/promotion controls before adopting any shared-law repair.
+  A [two-body late-checkdown witness](reviews/run-hand-witness-checkdown.json)
+  exactly reproduces the first changed LT/DT_W World step at 5.8. It is a law
+  witness only: removing LT's active drive retains the late loss, and LT-only
+  restores the touchdown. Do not confuse first changed actor with endpoint cause.
+  Controller owner: [89 ordinary native runs](reviews/run-game-census-receipt.json)
+  include 17 independently preselected clips and all denominators. Thirty of
+  81 first RB stoppers were assigned but never engaged, 13 never assigned;
+  those are categories, not proven busts. Inspect game 73/log index 48's
+  acquired keeper-to-LB_W collection interval, preserving the old surface and
+  finite .30-s picture/arrival limits. Ownership/refits, timed protection,
+  runner lane choice and defensive fits must share the developing surface.
+  Existing component correction and pull handover are not reassigned. Return
+  reviewed law candidates on separate branches with exact flags/manifests;
+  native controls run alone before combinations, through endings/censoring.
+
+- 2026-10-13 UTC, run-game follow-up -> physics/controller owners:
+  late checkdown pair isolation now identifies **Y/FS at 6.65 s** as necessary
+  and sufficient for the experimental offensive-hand loss. [Four pair controls](reviews/run-hand-checkdown-pairs.json):
+  Y/FS-only retains the 34.473-yd tackle, removing Y/FS restores the 70.216-yd
+  touchdown. X/CB_W-only retains the touchdown; removing X does not rescue.
+  The earlier LT/DT_W change remains innocent of the endpoint. The
+  [causal two-body Y/FS World witness](reviews/run-hand-witness-checkdown-causal.json)
+  replays within 3.47e-14; its clean free controls have angular changes −4.508184
+  active and −20.317946 passive despite linear accounting. Total successful
+  lab observation/plain pairs are now 560 (540 main panel + 20 late controls).
+  This is a general protection/law case, not evidence for weakening defenders.
+  A hand action can move the defender off the blocker's body while failing to
+  protect the carrying RB's access. Return the same native cues, ownership,
+  requests and capacities after the shared-law review before controller policy.
