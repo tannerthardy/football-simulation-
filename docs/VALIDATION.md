@@ -168,6 +168,20 @@ preserve execution and RNG; use the existing observer controls, not extra
 perception calls. Follow the data guide to restore archived packets. Historical
 source verification is expected to reject a different later engine.
 
+## Testing cost and selective roster diversity
+
+Follow [TESTING_COSTS.md](TESTING_COSTS.md). Tests are not multiplied by rosters.
+Use tiny mechanism/opposing controls per edit, an affected opt-in subset of the
+frozen 32-snap screen after a candidate works, full checks once before integration,
+and independent games at declared checkpoints. `npm run screen:roster` runs
+zero simulations without an explicit collection/comparison request. Compatible
+committed baseline evidence supports candidate-only execution and per-case
+caching. Generator/selector changes need fresh profile checks too: frozen
+bodies bypass them. Budgets, failures, skipped cases and timings are recorded;
+partial/favorable-prefix evidence does not pass a planned screen. Optional
+`npm run baseline:verify -- --candidate --fail-fast` stops failed cheap phases
+and records the omitted tail without weakening assertions.
+
 ## Keep an honest final exam
 
 All 2022–2025 outcome benchmarks have been inspected. They are descriptive

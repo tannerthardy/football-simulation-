@@ -147,3 +147,13 @@ New research starts from this baseline. Register any new flag before running
 comparisons; update the profile/runtime pin only as a named, validated new
 baseline. Preserve prior receipts and known failures rather than re-labelling
 old measurements as results for the latest source.
+
+## Selective testing cost
+
+Follow [TESTING_COSTS.md](TESTING_COSTS.md): focused mechanism controls while
+iterating, an optional relevant subset of the frozen roster screen after a
+candidate works, full code checks once before integration, and budgeted games
+at major checkpoints. `baseline:verify -- --candidate --fail-fast` retains the
+skipped tail after a failure and reports failure. It does not relax assertions
+or change the default complete verifier. The launcher now fingerprints all
+configuration inputs, including the frozen roster fixture.

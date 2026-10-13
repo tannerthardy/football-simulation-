@@ -100,7 +100,13 @@ export function setupFor(seed: number, pair: number, playSeed: number, concept =
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, label: coverage },
     los: 35, ballY: CENTER_Y, firstDownX: 45, seed: playSeed, audibles: false };
 }
-interface Options { out: string; seed: number; teams: number; pairs: number; reps: number; input?: string }
+interface Options { out: string; seed: number; teams: number; pairs: number; reps: number; input?: string; checkpoint?: string; candidate?: boolean }
+export function auditBudget(mode: string, opts: Pick<Options, 'teams' | 'pairs' | 'reps'>) {
+  return { profiles: mode === 'profiles' ? opts.teams * 3 * 53 : mode === 'quality' ? opts.teams * 3 * ALL_POSITIONS.length : 0,
+    snaps: mode === 'encounters' ? opts.pairs * opts.reps * 3 * 2 * 2 * ARMS.length
+      : mode === 'contexts' ? opts.pairs * opts.reps * 4 * 3 : 0,
+    games: mode === 'games' ? opts.pairs * opts.reps : 0 };
+}
 function profiles(opts: Options) {
   const selectionFailures: unknown[] = [];
   const all: Array<{ strength: number; seed: string; team: Team }> = [], exposures: Array<{
@@ -406,16 +412,28 @@ function quality(opts: Options) {
 async function main() {
   const args = process.argv.slice(2), mode = args.shift();
   const opts: Options = { out: 'out/roster-audit', seed: 90210, teams: 64, pairs: 12, reps: 8 };
+  let plan = false;
+  const supplied = new Set<string>();
   while (args.length) {
-    const key = args.shift()!.replace(/^--/, ''), value = args.shift();
-    if (!['out', 'seed', 'teams', 'pairs', 'reps', 'input'].includes(key) || !value) throw new Error(`Unknown or incomplete option ${key}`);
-    if (['out', 'input'].includes(key)) Reflect.set(opts, key, value);
+    const key = args.shift()!.replace(/^--/, '');
+    if (key === 'plan') { plan = true; continue; }
+    if (key === 'candidate') { opts.candidate = true; continue; }
+    const value = args.shift(); supplied.add(key);
+    if (!['out', 'seed', 'teams', 'pairs', 'reps', 'input', 'checkpoint'].includes(key) || !value) throw new Error(`Unknown or incomplete option ${key}`);
+    if (['out', 'input', 'checkpoint'].includes(key)) Reflect.set(opts, key, value);
     else { const n = Number(value); if (!Number.isSafeInteger(n) || n < 0 || (key !== 'seed' && !n)) throw new Error(`Invalid ${key}`); Reflect.set(opts, key, n); }
   }
   const runners = { profiles, encounters, contexts, games, native, quality };
   if (!mode || !(mode in runners)) throw new Error('Mode must be profiles, encounters, contexts, games, native or quality');
+  if (opts.candidate && !['profiles', 'quality'].includes(mode)) throw new Error('--candidate is for cheap profiles/quality; use roster-screen for candidate snaps');
+  const budget = auditBudget(mode, opts);
+  if (plan) { console.log(JSON.stringify({ mode, options: opts, budget, simulations: 0 }, null, 2)); return; }
+  if (['encounters', 'contexts', 'games'].includes(mode) && (!supplied.has('pairs') || !supplied.has('reps')))
+    throw new Error('Specify --pairs and --reps; use --plan to inspect cost without simulation');
+  if ((budget.snaps > 32 || budget.games > 0 || mode === 'native') && !opts.checkpoint?.trim())
+    throw new Error('Broad audit requires --checkpoint "reason"; use the bounded roster-screen for candidate screening');
   const source = sourceVersion(), baseline = JSON.parse(readFileSync('config/baseline.json', 'utf8'));
-  if (process.versions.node !== baseline.nodeVersion || source !== baseline.sourceSha256)
+  if (process.versions.node !== baseline.nodeVersion || (source !== baseline.sourceSha256 && !opts.candidate))
     throw new Error('Use pinned Node and runtime via scripts/baseline.mjs');
   for (const [k, v] of Object.entries(baseline.flags)) if ((process.env[k] ?? null) !== v)
     throw new Error(`Flag mismatch: ${k}; run through scripts/baseline.mjs`);

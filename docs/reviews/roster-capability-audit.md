@@ -190,7 +190,7 @@ Compare the current greedy assignment with a constrained maximum-weight assignme
 2. **Execution panels:** independently generated and selected roster pairs crossed with play seeds and fixed calls. Add empirical position-specific body references, matched on role and relevant body dimensions, and keep inferred techniques uncertain. Publish unit matchup vectors—speed/entry acceleration, braking/step/base, arm capacity, OL/DL mass/power/technique—rather than a claim of equal strength. A balanced diagnostic fixture and a naturally unequal generated league serve different purposes.
 3. **League evaluation:** frozen independent teams with varied, declared schemes and talent composition. Separate generator, lineup/policy, and play streams. Keep untouched leagues for final evaluation; use cluster-aware intervals and official statistics. A league generator can model coherent strengths and weaknesses without homogenizing teams or rejecting rosters because their simulated outcomes are inconvenient.
 
-Start with at least a 16–32-pair development panel if affordable, then increase samples based on roster-cluster uncertainty. This is an engineering starting point, not a statistical guarantee. More plays on two teams cannot replace more independent teams.
+Apply the [selective testing cost policy](../TESTING_COSTS.md): use tiny mechanism controls per edit, and the affected subset of four frozen matchups only after a candidate works. Larger independent-roster panels belong at explicit checkpoints, with a sample budget chosen from the unresolved uncertainty. The earlier suggestion of 16–32 development pairs is not a routine per-edit requirement. More plays on two teams cannot replace independent teams when the question is league transfer.
 
 ### D. Trace why a rating change helps before promoting it
 
@@ -205,10 +205,10 @@ Use `.nvmrc` Node 22.23.3, `npm ci`, and the shared baseline launcher. This audi
 ```sh
 npm run baseline:run -- --receipt out/roster-audit/profiles-receipt.json -- node --import tsx scripts/roster-audit.ts profiles
 npm run baseline:run -- --receipt out/roster-audit/quality-receipt.json -- node --import tsx scripts/roster-audit.ts quality --teams 128
-npm run baseline:run -- --receipt out/roster-audit/encounters-receipt.json -- node --import tsx scripts/roster-audit.ts encounters --pairs 12 --reps 8
-npm run baseline:run -- --receipt out/roster-audit/contexts-receipt.json -- node --import tsx scripts/roster-audit.ts contexts --pairs 12 --reps 16
-npm run baseline:run -- --receipt out/roster-audit/games-receipt.json -- node --import tsx scripts/roster-audit.ts games --pairs 8 --reps 2
-npm run baseline:run -- --receipt out/roster-audit/native-receipt.json -- node --import tsx scripts/roster-audit.ts native --input out/roster-audit/native-contexts.json
+npm run baseline:run -- --receipt out/roster-audit/encounters-receipt.json -- node --import tsx scripts/roster-audit.ts encounters --pairs 12 --reps 8 --checkpoint "Reproduce the broad roster audit"
+npm run baseline:run -- --receipt out/roster-audit/contexts-receipt.json -- node --import tsx scripts/roster-audit.ts contexts --pairs 12 --reps 16 --checkpoint "Reproduce the broad roster audit"
+npm run baseline:run -- --receipt out/roster-audit/games-receipt.json -- node --import tsx scripts/roster-audit.ts games --pairs 8 --reps 2 --checkpoint "Reproduce the broad roster audit"
+npm run baseline:run -- --receipt out/roster-audit/native-receipt.json -- node --import tsx scripts/roster-audit.ts native --input out/roster-audit/native-contexts.json --checkpoint "Reproduce the broad roster audit"
 python3 scripts/roster-audit-report.py
 # Optional figure, with matplotlib installed:
 MPLCONFIGDIR=/tmp/roster-matplotlib python3 scripts/roster-audit-report.py --plot

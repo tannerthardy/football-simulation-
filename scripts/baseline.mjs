@@ -46,16 +46,27 @@ export function checkFlags(names) {
   if (missing.length || stale.length) throw new Error(`Baseline flag inventory differs: missing [${missing}], stale [${stale}]`);
 }
 
+/** Default preserves all checks; opt-in early exit retains skipped evidence. */
+export async function runCommands(commands, run, failFast = false) {
+  const results = [], skipped = [];
+  for (let i = 0; i < commands.length; i++) {
+    const result = await run(commands[i]); results.push(result);
+    if (failFast && result.exitCode !== 0) { skipped.push(...commands.slice(i + 1)); break; }
+  }
+  return { commands: results, skippedCommands: skipped };
+}
+
 async function main() {
   if (process.versions.node !== profile.nodeVersion) throw new Error(`Use Node ${profile.nodeVersion} from .nvmrc; current Node is ${process.versions.node}`);
   const args = process.argv.slice(2), overrides = [];
-  let info = false, candidate = false, verify = false, receipt, command = [];
+  let info = false, candidate = false, verify = false, failFast = false, receipt, command = [];
   while (args.length) {
     const arg = args.shift();
     if (arg === '--') { command = args.splice(0); break; }
     if (arg === '--info') info = true;
     else if (arg === '--candidate') candidate = true;
     else if (arg === '--verify') verify = true;
+    else if (arg === '--fail-fast') failFast = true;
     else if (arg === '--flag' && args.length) overrides.push(args.shift());
     else if (arg === '--receipt' && args.length) receipt = args.shift();
     else throw new Error(`Unknown argument: ${arg}`);
@@ -72,10 +83,10 @@ async function main() {
   // Include actual test/diagnostic sources, including new untracked files,
   // while excluding ignored Python caches and generated build/report output.
   const validationFiles = () => git(['ls-files', '-z', '--cached', '--others', '--exclude-standard', '--',
-    'test', 'scripts', 'config/baseline.json', 'vitest.config.ts', 'package.json', 'package-lock.json', '.nvmrc'])
+    'test', 'scripts', 'config', 'vitest.config.ts', 'package.json', 'package-lock.json', '.nvmrc'])
     .split('\0').filter(Boolean);
   const metadata = { baseline: profile.id, branch: git(['branch', '--show-current']), commit: git(['rev-parse', 'HEAD']),
-    mode: candidate ? 'candidate' : overrides.length ? 'experiment' : 'baseline', node: process.version,
+    mode: candidate ? 'candidate' : overrides.length ? 'experiment' : 'baseline', node: process.version, failFast,
     platform: process.platform, arch: process.arch, sourceSha256: source, validationSha256: digest(validationFiles()),
     flags: Object.fromEntries(Object.keys(profile.flags).map(key => [key, env[key] ?? null])),
     worldDefaults: profile.worldDefaults, trackedChanges: git(['diff', '--name-only', 'HEAD']).split('\n').filter(Boolean) };
@@ -85,9 +96,9 @@ async function main() {
   const commands = verify ? [['npm', 'run', 'typecheck'], ['npm', 'run', 'build'],
     ['npm', 'run', 'test:all'], ['npm', 'run', 'test:data']] : [command];
   receipt ??= `out/baseline/${verify ? 'verify' : 'run'}-${Date.now()}-${process.pid}.json`;
-  const result = { ...metadata, startedAt: new Date().toISOString(), commands: [] };
+  const result = { ...metadata, startedAt: new Date().toISOString(), commands: [], skippedCommands: [] };
   console.log(`Profile ${metadata.mode}: ${profile.id}, commit ${metadata.commit}, source ${source}`);
-  for (const [executable, ...args] of commands) {
+  Object.assign(result, await runCommands(commands, async ([executable, ...args]) => {
     console.log(`Running ${executable} ${args.join(' ')}`);
     const start = performance.now();
     const exitCode = await new Promise(resolve => {
@@ -95,12 +106,12 @@ async function main() {
       child.on('error', error => { console.error(error.message); resolve(1); });
       child.on('exit', (code, signal) => resolve(code ?? (signal ? 1 : 0)));
     });
-    result.commands.push({ command: [executable, ...args], exitCode, elapsedSeconds: (performance.now() - start) / 1000 });
-  }
+    return { command: [executable, ...args], exitCode, elapsedSeconds: (performance.now() - start) / 1000 };
+  }, failFast));
   result.finishedAt = new Date().toISOString();
   result.inputsUnchanged = source === digest(files('src')) && metadata.validationSha256 === digest(validationFiles())
     && metadata.commit === git(['rev-parse', 'HEAD']);
-  result.exitCode = result.inputsUnchanged && result.commands.every(row => row.exitCode === 0) ? 0 : 1;
+  result.exitCode = result.inputsUnchanged && !result.skippedCommands.length && result.commands.every(row => row.exitCode === 0) ? 0 : 1;
   const destination = join(root, receipt);
   mkdirSync(dirname(destination), { recursive: true });
   writeFileSync(destination, JSON.stringify(result, null, 2) + '\n');

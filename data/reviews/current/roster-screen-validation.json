@@ -1,0 +1,97 @@
+{
+  "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+  "node": "v22.23.3",
+  "screenBaselineSha256": "f2fdb1419a085aaad70f4604bbdec59d709267d301bb8c7c375adb09135f0649",
+  "baselineSnaps": 32,
+  "baselineWallMs": 4148.601799,
+  "unchangedComparison": {
+    "planned": 32,
+    "executed": 0,
+    "cached": 32,
+    "changed": 0
+  },
+  "defaultInvocationSimulations": 0,
+  "focusedTestsPassed": 16,
+  "checks": {
+    "final-tests": {
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "node": "v22.23.3",
+      "validationSha256": "9bc80e41c2ef641d807a9251f0a061ea18369eb382467e2389d7d3ccd61c61ff",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/roster-screen.test.ts",
+            "test/baseline-runner.test.ts",
+            "test/roster-audit.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.893287126
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "final-typecheck": {
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "node": "v22.23.3",
+      "validationSha256": "9bc80e41c2ef641d807a9251f0a061ea18369eb382467e2389d7d3ccd61c61ff",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.462913664
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "final-build": {
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "node": "v22.23.3",
+      "validationSha256": "9bc80e41c2ef641d807a9251f0a061ea18369eb382467e2389d7d3ccd61c61ff",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.109524727
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "baseline": {
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "node": "v22.23.3",
+      "validationSha256": "64015bee2f17c1518d5c83f093e583deae0e8e8d57998986d8e04b1b34ddaadc",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/roster-screen.ts",
+            "--baseline"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.39776101
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "scope": "Diagnostic tooling and testing policy only; no engine changes, no full-game rerun, no fresh full-suite claim."
+}

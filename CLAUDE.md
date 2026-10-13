@@ -42,6 +42,16 @@ and coordinate before editing another session's subsystem.
 
 ## Pick and prove the next change
 
+Testing has a marginal-cost budget. Follow [selective testing](docs/TESTING_COSTS.md):
+tiny failing/opposing controls per edit; an opt-in 2/8/16/32-snap roster screen
+only after a candidate works; full code checks once before integration;
+multi-roster games at declared checkpoints. Do not multiply existing tests by
+rosters or run games for a local solver diagnosis. `npm run screen:roster` only
+plans; its committed baseline and per-case cache avoid baseline reruns. Use
+fresh profile-only checks for generator/selection changes. Broad audits require
+explicit counts/reasons. `baseline:verify -- --candidate --fail-fast` retains
+skipped phases after a failure instead of paying for the expensive tail.
+
 Read [current status](docs/STATUS.md) and [validation](docs/VALIDATION.md).
 Choose repeated visible mechanisms from random ordinary film, ranked by
 frequency and consequence. A bad average or one spectacular failure is not a
@@ -85,6 +95,7 @@ in ignored `out/`, not new giant files under `viewer/` or `data/reviews/`.
 
 - [Status](docs/STATUS.md): what is live, limits, random review and next work.
 - [Validation](docs/VALIDATION.md): layers, existing commands and stopping rules.
+- [Testing costs](docs/TESTING_COSTS.md): escalation, bounded screens and cached evidence.
 - [NFL data](docs/NFL_DATA.md): the shared sim-vs-NFL mechanism report and
   how to fetch the tracking archives.
 - [Data guide](data/README.md): NFL inputs, evidence retrieval and film access.
