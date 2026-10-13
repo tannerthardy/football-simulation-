@@ -132,6 +132,16 @@ The retained patch gate is 43/52 with precisely the same nine failures. Every
 failing fixture still has zero timing invocations. Full-patch promotion remains
 blocked by those separate controls; this pass neither hides nor repairs them.
 
+Complete default-profile verification at `2571b79` passes **1,673 TypeScript
+tests in 140 files, 145 Python checks, typecheck and build**, with no test or
+worker errors. Source and harness were unchanged throughout the run. The
+[validation receipt](../../data/reviews/current/grip-timing-effort-validation.json)
+pins the complete commit, runtime `a4bfc671…`, harness `90dcc40a…`, Node 22.23.3
+and actual flag profile. This full run uses production center/midpoint;
+resolved-patch behavior is covered by the explicit contracts, matched/fresh
+native panel and retained failing experimental gate described above. The
+publication follow-up changes only documentation and this receipt.
+
 The next integration implementation must preserve the independent impulse,
 temporal-moment, material-motion, work and now effort contracts at practical
 cost. Use event-aware force integration rather than adding a football rule or

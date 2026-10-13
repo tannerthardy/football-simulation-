@@ -1,0 +1,123 @@
+{
+  "baseline": "run-game-2026-10-13",
+  "branch": "codex/contact-foundations",
+  "commit": "2571b7921f0b7aede5a13bcc1c4ae32de1087824",
+  "mode": "candidate",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceSha256": "a4bfc67148f4b8228acb419e6ab744c2d5195776233f231fe6e7765745a3ceb0",
+  "validationSha256": "90dcc40a8f9dd945fd118d1d334d392d1f84c7c83bd1f66e2e1b8ebf2c5fbe7f",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "trackedChanges": [],
+  "startedAt": "2026-10-13T21:48:00.368Z",
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 12.994311697
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 14.266934951
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:all"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 207.53735634100002
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:data"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.0719417839999952
+    }
+  ],
+  "finishedAt": "2026-10-13T21:51:56.242Z",
+  "inputsUnchanged": true,
+  "exitCode": 0,
+  "comparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "counts": {
+    "typescript": 1673,
+    "files": 140,
+    "python": 145
+  },
+  "scope": "Complete check uses production center/midpoint defaults; explicit resolved-patch contracts and native/fresh comparisons are recorded separately.",
+  "experimentalGate": {
+    "passed": 43,
+    "failed": 9,
+    "total": 52,
+    "changedFailures": 0,
+    "timingInvocationsInFailedFixtures": 0
+  }
+}
