@@ -85,7 +85,7 @@ while (sim.phase === 'live' && sim.t < 5) {
   const tackler = ` | T ${d.body.support!.state} d ${dd.toFixed(2)} v (${d.vel.x.toFixed(1)},${d.vel.y.toFixed(1)}) req (${(ri?.x ?? 0).toFixed(1)},${(ri?.y ?? 0).toFixed(1)}) c (${c.vel.x.toFixed(1)},${c.vel.y.toFixed(1)}) in-bond ${sim.bond?.tacklers.includes(d) ? 'y' : 'n'}${g?.slipping ? ' slip' : ''}${g?.broken ? ' BROKE' : ''}`;
   const balance = ` xi ${Math.hypot(sup.xi.x, sup.xi.y).toFixed(2)} peak ${(sup.peak ?? 0).toFixed(2)} causes c/l ${cz.contact.toFixed(2)}/${cz.legs.toFixed(2)}`;
   if (Math.round((sim.t - t0) / sim.dt) % every === 0 || evs.length) console.log(`${(sim.t - t0).toFixed(2).padStart(5)} ${Math.hypot(c.vel.x, c.vel.y).toFixed(2).padStart(6)} | ${legs.toFixed(2).padStart(5)} ${torso.toFixed(2).padStart(6)} ${strike.toFixed(2).padStart(6)} ${joints.toFixed(2).padStart(7)} | ${sup.state.padEnd(6)} ${Math.hypot(sup.lean.x, sup.lean.y).toFixed(0).padStart(5)} | `
-    + (g ? `${(g.legs ?? 0).toFixed(2)}, ${(g.force ?? 0).toFixed(0)}, ${(g.reach ?? 0).toFixed(2)}-${(g.hold ?? 0).toFixed(2)}` : '-'.padEnd(20))
+    + (g ? `${(g.legs ?? 0).toFixed(2)}/${(g.recoveryCoupling ?? g.legs ?? 0).toFixed(2)}, ${(g.force ?? 0).toFixed(0)}/${(g.capacity ?? 0).toFixed(0)}, ${(g.reach ?? 0).toFixed(2)}-${(g.hold ?? 0).toFixed(2)}${g.slipping ? ' slip' : ''}` : '-'.padEnd(20))
     + balance + tackler + ` | ${evs.map((e) => `${e.type}${e.note ? '(' + e.note + ')' : ''}`).join(' ')}`);
   if (sim.t - t0 > horizon) break;
 }

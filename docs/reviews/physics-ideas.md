@@ -281,3 +281,49 @@ wrap's security and height: the coupling to the corrective step grows with
 grip quality for holds at or below the hips, up to full binding for a locked
 wrap. Then evaluate `LEG_BRACE` plus `TACKLE_ROLL` on the panel and in games
 against the after-contact curves. Promote only if both improve.
+
+## 9. Brace + roll + binding together (`LEG_BRACE=1 TACKLE_ROLL=1 WRAP_BIND=1`)
+
+Built on the second session's secure-wrap coupling (`WRAP_BIND`,
+[wrap binding](wrap-binding.md)). Its first named blocker was this
+session's roll: a square holder picked a fixed world side (`sign(0) || 1`), so
+mirrored approach tackles diverged. The roll's sideways part now grows with
+the holder's actual lateral offset (none when square, full beyond 0.15 yd);
+no tie-break (`f418e26`). The scenario pack, wrap-binding, continued-recovery,
+recovery-phase and tackle-support controls pass with all three (79/79). Full
+suite with all three: the known Tite failure, plus the loaded-grip research
+observer, which rejects `LEG_BRACE` by design ("Recovery input
+reconstruction mismatch"; it reconstructs unbraced pitch). Default suite:
+Tite only.
+
+**Games** (8+8, rosters 101/202, `ab.sh fin0` vs `fin3`), same operator as NFL:
+
+| | Off | All three | NFL |
+|---|---|---|---|
+| Live 0.6 / 0.8 / 1.0 / 1.2 s after first contact | 0.74 / 0.40 / 0.24 / 0.18 | 0.90 / 0.67 / 0.45 / 0.30 | 0.92 / 0.83 / 0.71 / 0.59 |
+| Carrier speed +0.2 / +0.4 s | 3.05 / 2.46 | 3.54 / 2.92 | 4.19 / 3.61 |
+| Yards since contact +0.8 / +1.0 s | 2.0 / 3.0 | 2.2 / 2.6 | 2.0 / 2.3 |
+| Yards after contact, median | 1.18 / 1.44 | 1.69 / 1.98 | 2.4 |
+| Run yards p25 / median | -0.08 / 1.56, 0.31 / 2.09 | 0.45 / 2.75, 0.51 / 2.83 | 1.0 / 3.0 |
+| Runs of 10+ yd | 0.14 / 0.10 | 0.11 / 0.10 | |
+| Stuff rate | 0.42 / 0.37 | 0.32 / 0.32 | |
+| Guards | 12/12, 12/12 | 12/12, 12/12 | |
+
+Every after-contact measure moves toward NFL tracking; the bottom of the run
+distribution improves without inflating long runs.
+
+**1v1 panel** (288 reps): off 234 tackled / 52 escaped / 2 unfinished; all
+three 192 / 54 / 42. The unfinished family is slow runners (3 yd/s) held from
+the side or behind (45 deg with a cut, 90, 135, 180). Traced at 90 deg: the
+wrap is secure (recovery coupling 0.92, grip about 800 of 1,600), and the holder
+asks to sit down and roll, but the runner drags him at 3 yd/s. The runner's leg
+drive at that speed (~750-800) balances the holder's braking and grip (~800),
+and he stays balanced (capture deviation 0.27 yd, inside his base), so binding
+never engages. Missing physics: a holder who sits down hangs his **weight** on
+the runner, a vertical load his legs must carry. The 2D model can only pull
+horizontally. In games a second tackler usually finishes these.
+
+**Recommendation.** Promote the three together (they are coherent only as a
+set: the brace alone leaves lone tacklers no finish). The physics session owns
+promotion and should review the brace law and the roll; the vertical
+weight-transfer finish is the next physics item.
