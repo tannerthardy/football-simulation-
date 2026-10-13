@@ -6,6 +6,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
+| Reach-contact closure and alternative selection | Codex second sim, user asks to build/test and quickly compare better approaches | `codex/reach-contact-closure` from `fda39f7` | Saved mirrored failing grip/control tapes first; compare original compression, acquisition with existing reel, and absorption-to-wrap transition. No capacities, support integrator, OL or default changes. | 2026-10-13 UTC | [Bounded comparison complete](reviews/reach-closure.md): fix prototype's whole-vector cap—compression keeps allocated arm limit, passive shear keeps original structural grip limit. Gains 12 matched / 14 fresh finishes over the brace with no lost finishes versus that stage, but still behind finish controls (80/104 and 62/74). Same-clock speed comparison removes the apparent large gain. Ordinary early acquisition/reel is closer (100/104, 72/74); no promotion. Default-off; 1,614 pass + existing Tite, 141 Python. Park brace expansion. Next: first movement/quality transition on mirrored fresh 135°/6 reach; depth substitution fixes slow-front loss but not this rear case. |
 | Arm’s-length tackle contact | Codex second sim, user-authorized physics continuation | `codex/reach-contact-physics` from `1ac7165` | One default-off reach-acquired finite compressive brace, using existing arm/grip/work budgets and real torso collision. No approach-speed, body-capacity, support-integrator or production-default changes. | 2026-10-12 (America/Phoenix) | [Bounded experiment complete](reviews/reach-contact.md): `REACH_CONTACT=1` default-off. Early loaded speed loss improves, but matched finishes 104→68 and fresh 74→48; censored 20→56 / 0→26. Both span trials and acquisition/no-reel ablation retained. Sixteen law tests pass; defaults 1,612 pass + existing Tite; 141 Python pass. No promotion. Primary handoff: mirrored 45°/6 closure tapes, diving and overpowering controls; diagnose finite-work shortening and compression versus grip slip before another arrival change. |
 | Secure-wrap recovery coupling | Codex second sim, user redirected from offensive line to recent physics | `codex/wrap-binding-physics` from `5a18887` | Bound task: separate hold height from force-transmitted recovery coupling; law and native tackle controls. No offensive-line changes, shared recovery integrator changes, capacity tuning or experimental default promotion. Primary retains the angled-grip/yaw investigation. | 2026-10-12 (America/Phoenix) | [Bounded experiment complete](reviews/wrap-binding.md): optional force-transmitted recovery coupling, `WRAP_BIND=1` default-off. 288 matched cases: brace/roll censored 90→36; fresh 96: 24→0. Real fall/work/force controls pass; two mirrored side-cut escapes, rear/fast-patch refinement and the pre-existing enabled roll mirror failure retained. Default arms reproduce exactly; 1,596 tests pass + existing Tite; 141 Python pass. Six fresh games are diagnostic, not promotion. Next: roll mirror direction before another recovery/binding adjustment. |
 | False clean RB approach and retained-key diagnosis | Codex, user-authorized continuation | `claude/live-gaps` | RB arrival prediction only; diagnostics and focused contracts. Shared capacities, blocking, mesh, answer rules and forced entry preservation excluded. | 2026-10-12 | Complete: [diagnosis](reviews/run-read-approach.md). Missing redirect cost demonstrated; one candidate improves ordinary 96 but loses two protected fresh arrivals, so parked behind `RUN_READ_TURN=1` (default-off). Original `RUN_READ=1` behavior retained; production read remains off. All 17 backtraced; five key takeovers differentiated. No second controller attempt or re-key heuristic. Next: joint path/defender access and pressing after all estimates reject. |
@@ -325,3 +326,21 @@ Edit only your own rows and requests so board merges stay trivial.
   arm shortening into a wrap before changing approach speed or shared recovery.
   Default panels reproduce exactly; enabled approach-finish and changed waiting
   assertions remain failing and intact. Primary retains law review and promotion.
+
+- 2026-10-13 UTC, second sim -> primary physics/controller owners:
+  [Closure alternative comparison](reviews/reach-closure.md) repairs the optional
+  brace's accidental whole-vector muscle cap, retaining existing structural
+  passive shear and allocated compressive force. No support-integrator change.
+  Two new independent law fixtures expose the old cap; all 109 focused laws
+  pass. Corrected brace gains 12 matched and 14 fresh finishes over the original
+  brace, without losing one of that stage's finishes; it still loses 24/12 net
+  finishes against controls. Restoring the reel after absorption does worse.
+  Ordinary earlier acquisition with the original grip/reel comes closer, but
+  retains 14 matched losses/10 gains and one fresh mirrored rear loss.
+  At the same baseline-contact +0.2 s boundary, none of the candidates has a
+  positive median runner-speed gain: do not tune the old early-speed headline.
+  A causal hold-depth substitution fixes the slow front witness but does not
+  fix fresh 135°/6. It grants geometry, so it is deliberately diagnostic only.
+  Park further brace expansion; isolate that rear reach's premature pile/quality
+  transition before writing a rule. Production/RB defaults and existing failures
+  are retained. Primary continues to own shared-law review and promotion.

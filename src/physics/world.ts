@@ -1192,16 +1192,22 @@ export class World {
         } else {
           const used = Math.hypot(r.ln-r.reel, r.lt);
           const compression = jt.brace !== undefined && r.mode > 0;
-          if (compression) report.armImpulse[r.i] += used;
+          // Passive cloth/arm restraint keeps the existing structural grip
+          // allowance; only muscular compression consumes the arm request.
+          if (compression) report.armImpulse[r.i] += Math.abs(r.ln);
+          const shearLimit = Math.sqrt(Math.max(0, r.limit * r.limit - r.ln * r.ln));
+          const slipping = compression
+            ? Math.abs(r.lt) > 1e-10 && Math.abs(r.lt) >= .98 * shearLimit
+            : used >= .98 * r.limit && r.limit > 0;
           if (!r.members) {
             jt.force = (jt.force ?? 0) + used;
-            jt.slipping = !compression && used >= 0.98 * r.limit && r.limit > 0;
+            jt.slipping = slipping;
           }
           for (const member of r.members ?? []) {
-            const cap = compression ? Math.min(this.gripCapacity(member), this.armCap[r.i]) * this.armScale[r.i] : this.gripCapacity(member);
+            const cap = this.gripCapacity(member);
             const share = r.limit > 0 ? cap * h / r.limit : 0;
             member.force = (member.force ?? 0) + used * share;
-            member.slipping = !compression && used >= 0.98 * r.limit && r.limit > 0;
+            member.slipping = slipping;
           }
         }
       }
@@ -1912,7 +1918,7 @@ export class World {
         if (jt.brace !== undefined && dist <= jt.brace) {
           row.mode = 1;
           row.c = dist - jt.brace;
-          row.limit = Math.min(this.gripCapacity(jt), this.armCap[i]) * this.armScale[i] * h;
+          row.pushLim = Math.min(this.gripCapacity(jt), this.armCap[i]) * this.armScale[i] * h;
         }
         row.reel = this.reels.get(jt)??0;
         const foot = b.support!.foot;
@@ -1939,7 +1945,7 @@ export class World {
               && (!this.boundedAttachment || this.sameAttachmentJacobian(old,jt));
           });
           if (same) {
-            same.limit += row.limit; same.reel += row.reel;
+            same.limit += row.limit; same.reel += row.reel; same.pushLim += row.pushLim;
             same.members!.push(jt); continue;
           }
           row.members = [jt];
@@ -2017,7 +2023,7 @@ export class World {
     // Shared grip budget with the sliding (tangential) resistance.
     const lim = r.limit;
     const passiveNormal=Math.max(0,Math.sqrt(Math.max(0,lim*lim-r.lt*r.lt))-r.reel);
-    ln=compression ? Math.min(ln,passiveNormal) : Math.max(ln,-passiveNormal);
+    ln=compression ? Math.min(ln,passiveNormal,r.pushLim) : Math.max(ln,-passiveNormal);
     const dn = ln - r.ln;
     const coupled = !!b.support!.foot && jt.legs > 0;
     const channel=r.normalWork??={net:0};

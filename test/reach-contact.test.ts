@@ -54,6 +54,25 @@ function run(mode: 'center' | 'patch', brace: boolean, closing: number,
 }
 
 describe('acquired reach contact uses finite compressive arms', () => {
+  it.each(['center', 'patch'] as const)('compression does not erase structural sideways grip in %s', mode => {
+    const bs: Body[] = [0, 1.2].map(x => ({ pos: { x, y: 0 },
+      vel: { x: x === 0 ? .5 : -.5, y: x === 0 ? 2 : -2 },
+      facing: x === 0 ? 0 : Math.PI, spin: 0, energy: 1, profile: { ...profile } }));
+    const w = new World(bs, { handContact: mode });
+    const j: GraspJoint = { kind: 'grasp', a: bs[0], b: bs[1], reach: 1.6,
+      hold: 1.2, brace: 1.2, capacity: 1500, legs: 0, pull: 0 };
+    w.joints.push(j);
+    const r = w.step(bs.map(() => ({ vel: { x: 0, y: 0 }, free: true })), .02);
+    expect(bs[0].vel.y - bs[1].vel.y).toBeLessThan(4);
+    // Bracing is muscular compression; shear is the existing passive hold.
+    // Both still fit one structural grip vector, rather than a second grip.
+    expect(j.force! * .02).toBeGreaterThan(r.armImpulse[0] + 1e-6);
+    expect(j.force!).toBeLessThanOrEqual(j.capacity + 1e-8);
+    expect(r.armImpulse[0]).toBeLessThanOrEqual(r.armImpulseLimit[0] + 1e-8);
+    expect(r.passiveGraspWork).toBeLessThanOrEqual(1e-8);
+    expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
+  });
+
   it.each(['center', 'patch'] as const)('can absorb a modest arrival before torso collision in %s', mode => {
     const ordinary = run(mode, false, 2), braced = run(mode, true, 2);
     expect(ordinary.contactImpulse).toBeGreaterThan(0);
