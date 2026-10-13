@@ -246,6 +246,8 @@ const DOWN_FRICTION = 0.75;
 const FOLLOW_MARGIN = 1.1;
 /** Time constant of a slipping hold sliding down to the legs, s. */
 const LEG_SLIDE = 0.3;
+/** Experimental (HOLD_BALANCE=m, off): sub-cycle a held body's balance update m times. */
+const HOLD_BALANCE = Number(process.env.HOLD_BALANCE ?? 0);
 /** Experimental (HOLD_SUBSTEPS=n, off): minimum substeps while a grasp is live. */
 const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 /** Experimental active hand motor (HAND_MOTOR=1): HandJoint.drive and .shove. */
@@ -1346,7 +1348,10 @@ export class World {
     }
     // ---- 4. support
     for (const i of ids) {
-      if (bs[i].support!.state === 'up') this.updateSupport(i, h, report);
+      if (bs[i].support!.state === 'up') {
+        if (HOLD_BALANCE > 1 && this.inLiveGrasp(bs[i])) this.subcycleHeldSupport(i, h, report, HOLD_BALANCE);
+        else this.updateSupport(i, h, report);
+      }
       else {
         // Perception of motion continues while down. Freezing these filters
         // would deliver the old hit again when he eventually gets up.
@@ -1581,6 +1586,29 @@ export class World {
     sup.lean = { x: 0, y: 0 };
     sup.strike = undefined;
     report.falls.push(i);
+  }
+
+  /** Either end of a live grasp: the holder's balance is as loaded as the held body's. */
+  private inLiveGrasp(b: Body): boolean {
+    return this.joints.some(j => j.kind === 'grasp' && !j.broken && (j.a === b || j.b === b));
+  }
+
+  /** HOLD_BALANCE (experimental, off): the capture-point update of a body at
+   * either end of a live grasp is re-integrated in m equal pieces of the substep, with that substep's
+   * inputs held fixed (mean body acceleration, trip/thigh/tip moments, the
+   * prepared recovery speed and foot correction). Contact, grip and gait
+   * solves are unchanged, so nothing outside a hold is affected. */
+  private subcycleHeldSupport(i: number, h: number, report: StepReport, m: number): void {
+    const b = this.bodies[i];
+    const inputs = [this.tripX, this.tripY, this.thighX, this.thighY, this.tipX, this.tipY];
+    const saved = inputs.map(a => a[i]), v0x = this.v0x[i], v0y = this.v0y[i];
+    for (const a of inputs) a[i] /= m;
+    // Same mean acceleration in each piece: the velocity change per piece is 1/m.
+    this.v0x[i] = b.vel.x - (b.vel.x - v0x) / m;
+    this.v0y[i] = b.vel.y - (b.vel.y - v0y) / m;
+    for (let k = 0; k < m && b.support!.state === 'up'; k++) this.updateSupport(i, h / m, report);
+    inputs.forEach((a, n) => { a[i] = saved[n]; });
+    this.v0x[i] = v0x; this.v0y[i] = v0y;
   }
 
   private updateSupport(i: number, h: number, report: StepReport): void {

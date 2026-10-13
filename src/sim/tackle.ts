@@ -58,6 +58,7 @@ const STALL = 0.8;
  * fingertips on a jersey can; technique finishes the wrap. */
 /** Experimental tight-wrap finish (TACKLE_ROLL=1, off by default); see updateBond. */
 const TACKLE_ROLL = process.env.TACKLE_ROLL === '1';
+const TACKLE_DROP = process.env.TACKLE_DROP === '1';
 /** Experimental secure lower-wrap coupling; all transmitted loads still use
  * World's existing grip, arm and recovery budgets. Default-off. */
 const WRAP_BIND = process.env.WRAP_BIND === '1';
@@ -443,6 +444,14 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const roll = Math.sign(lateral) * clamp(Math.abs(lateral) / .15, 0, 1) * 1.5 * secure;
     const own = intents[d.idx];
     intents[d.idx] = { ...own, vel: { x: c.vel.x * (1 - secure) - uy * roll, y: c.vel.y * (1 - secure) + ux * roll }, push: 1 };
+    // TACKLE_DROP (experimental, off): a secure holder drops his weight by
+    // going to the ground into the runner (the existing dive), so the runner
+    // must drag a downed body on its ground friction, with his legs bound.
+    // It costs him: on the ground he is out of the play if the hold breaks.
+    if (TACKLE_DROP && secure >= .8) {
+      const tx = c.pos.x - d.pos.x, ty = c.pos.y - d.pos.y, L = Math.hypot(tx, ty) || 1;
+      intents[d.idx] = { ...intents[d.idx], dive: { x: tx / L * .2, y: ty / L * .2 } };
+    }
   }
   // The carrier keeps his legs driving where his vision takes him.
   const own = intents[c.idx];
