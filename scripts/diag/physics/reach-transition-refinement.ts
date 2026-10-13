@@ -1,5 +1,6 @@
 /** Replay one native decision tape at finer World resolutions. No new
- * controller decisions and no imposed native compression/slips/falls. */
+ * controller decisions and no imposed physics compression/slips/falls.
+ * Explicit diagnostic depth substitutions replay once at their recorded time. */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -9,9 +10,14 @@ import { World, type GraspJoint } from '../../../src/physics/world.js';
 import { sourceVersion } from '../../source-version.js';
 
 const out = process.argv[2] ?? 'out/reach-transition/selected-refinement.json';
+const tape = (flag: string, fallback: string) => {
+  const i = process.argv.indexOf(flag);
+  return i < 0 ? fallback : process.argv[i + 1];
+};
 const source = sourceVersion(), cases = [], inputs = [];
-for (const [path, angle, roster] of [['out/reach-transition/fresh-final.json', 135, 71],
-  ['out/reach-transition/small-final.json', 90, 61], ['out/reach-transition/rear-loss-final.json', 180, 61]] as const) {
+for (const [path, angle, roster] of [[tape('--fresh-tape', 'out/reach-transition/fresh-final.json'), 135, 71],
+  [tape('--control-tape', 'out/reach-transition/small-final.json'), 90, 61],
+  [tape('--rear-tape', 'out/reach-transition/rear-loss-final.json'), 180, 61]] as const) {
   const raw = readFileSync(path), panel = JSON.parse(raw.toString());
   assert(panel.source === source);
   inputs.push({ path, sha256: createHash('sha256').update(raw).digest('hex') });
@@ -31,6 +37,10 @@ for (const [path, angle, roster] of [['out/reach-transition/fresh-final.json', 1
         if (!g && present) { w.joints = []; j = null; }
         present = !!g;
         if (g && j) { j.capacity = g.capacity; if (g.recoveryCoupling !== undefined) j.recoveryCoupling = g.recoveryCoupling; }
+        for (const p of row.interventions ?? []) if (Math.abs(p.t - f.t) < 1e-8
+          && p.kind === 'recorded control depth at first tight wrap') {
+          assert(j); j.legs = p.after;
+        }
         w.time = f.t;
         const r = w.step(structuredClone([f.requests[1], f.requests[0]]), f.dt);
         assert(Math.abs(r.work.residual) < 1e-8 && r.passiveGraspWork <= 1e-8);
@@ -52,9 +62,11 @@ for (const [path, angle, roster] of [['out/reach-transition/fresh-final.json', 1
     const fine = runs.at(-1)!;
     cases.push({ input: [row.o, row.d, row.result.angle, row.result.speed, row.result.cut, row.result.side, row.result.seed],
       nativeFinish: row.result.finish, observerNeutral: row.observerNeutral,
+      interventions: row.interventions ?? [],
       initialSha256: createHash('sha256').update(JSON.stringify(initial)).digest('hex'),
-      decisionSha256: createHash('sha256').update(JSON.stringify(frames.map((f: any) => ({ requests: f.requests,
-        capacity: f.before.joint?.capacity, coupling: f.before.joint?.recoveryCoupling })))).digest('hex'),
+      decisionSha256: createHash('sha256').update(JSON.stringify({ interventions: row.interventions ?? [],
+        decisions: frames.map((f: any) => ({ requests: f.requests,
+          capacity: f.before.joint?.capacity, coupling: f.before.joint?.recoveryCoupling })) })).digest('hex'),
       runs: runs.map(r => ({ steps: r.steps, firstFall: r.firstFall, carrierEnd: r.carrierEnd, maxPositionVsNative: r.maxPositionVsNative,
         maxPositionVs96: Math.max(...r.positions.flatMap((p: any, t: number) => p.map((x: any, i: number) =>
           Math.hypot(x.x - fine.positions[t][i].x, x.y - fine.positions[t][i].y)))) })) });

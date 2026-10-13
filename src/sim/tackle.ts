@@ -66,7 +66,7 @@ const WRAP_BIND = process.env.WRAP_BIND === '1';
 const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
-export const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
+const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);

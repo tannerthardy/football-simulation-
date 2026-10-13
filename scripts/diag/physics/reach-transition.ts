@@ -3,22 +3,24 @@
  * matched control tapes, deliberately unavailable to a real player.
  * REACH_CONTACT=1 LEG_BRACE=1 TACKLE_ROLL=1 WRAP_BIND=1 node --import tsx
  * scripts/diag/physics/reach-transition.ts MODE OUTPUT [--fresh] [--full]
- * MODE: current, prefix-movement, no-launch, prefix-grip, strike-movement.
+ * MODE: current, prefix-movement, no-launch, prefix-grip, strike-movement, tight-depth.
  */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { Rng } from '../../../src/core/rng.js';
+import { clamp } from '../../../src/core/vec.js';
 import { generateTeam } from '../../../src/league/team.js';
 import { supportParams } from '../../../src/physics/support.js';
 import { World, type GraspJoint } from '../../../src/physics/world.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import { gatheringApproach, leverage } from '../../../src/sim/behaviors/common.js';
 import { CELLS, rep, type Cell } from '../tackle/panel.js';
 import { sourceVersion } from '../../source-version.js';
 
 const mode = process.argv[2] ?? 'current', out = process.argv[3] ?? 'out/reach-transition/current.json';
-assert(['current', 'prefix-movement', 'no-launch', 'prefix-grip', 'strike-movement'].includes(mode));
+assert(['current', 'prefix-movement', 'no-launch', 'prefix-grip', 'strike-movement', 'tight-depth'].includes(mode));
 const fresh = process.argv.includes('--fresh'), full = process.argv.includes('--full');
 const source = sourceVersion(), hash = (x: unknown) => createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const controlPath = fresh ? 'out/reach-contact/fresh-finish.json' : 'out/reach-closure/finish.json';
@@ -27,8 +29,9 @@ const rearLoss = process.argv.includes('--rear-loss');
 const selected = rearLoss ? [[180, 3, false]] : [[0, 3, false], [135, 6, false], [90, 6, false], [45, 6, false], [45, 6, true]];
 const cells = full ? CELLS : selected.map(([a, s, cut]) => CELLS.find(c => c.angle === a && c.speed === s && c.cut === cut)!);
 function execute(cell: Cell, side: 1 | -1, seed: number, teams: Parameters<typeof rep>[4], control: any, observe: boolean) {
-  const tick = PlaySim.prototype.tick, step = World.prototype.step;
+  const tick = PlaySim.prototype.tick, step = World.prototype.step, see = PlaySim.prototype.see;
   let sim: PlaySim | undefined, tickBefore: any, initial: string | undefined, profiles: string | undefined;
+  let reading = false, approachRead: any, depthChanged = false;
   const frames: any[] = [], interventions: any[] = [];
   const snapshot = () => {
     const c = sim!.slot('RB')!, d = sim!.defense.find(a => a.slot.startsWith('LB'))!;
@@ -37,9 +40,36 @@ function execute(cell: Cell, side: 1 | -1, seed: number, teams: Parameters<typeo
     return { c: body(c), d: body(d), grip: bond?.grip?.get(d), execution: bond?.execution?.get(d),
       joint: joint ? (() => { const { a, b, ...j } = joint; return structuredClone(j); })() : null };
   };
-  PlaySim.prototype.tick = function () { sim = this; if (observe) tickBefore = snapshot(); return tick.call(this); };
+  PlaySim.prototype.tick = function () {
+    sim = this; reading = false; approachRead = undefined;
+    if (observe) tickBefore = snapshot();
+    const behavior = this.defense.find(d => d.slot.startsWith('LB'))!.behavior;
+    const update = behavior.update;
+    behavior.update = function (a, world) {
+      reading = true;
+      try { return update.call(this, a, world); } finally { reading = false; }
+    };
+    try { return tick.call(this); } finally { reading = false; behavior.update = update; }
+  };
+  PlaySim.prototype.see = function (a, target, delay = 1) {
+    const seen = see.call(this, a, target, delay);
+    if (observe && reading && !approachRead && this === sim && target === this.slot('RB')
+      && a === this.defense.find(d => d.slot.startsWith('LB'))) {
+      // Consume only the already returned picture. These pure steering helpers
+      // neither observe again nor forecast a free body through its constraint.
+      const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
+      const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+      const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
+      const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
+        * clamp((dist - contact) / 6, 0, 1);
+      approachRead = structuredClone({ seen, delay, contact, offset,
+        held: this.bond?.tacklers.includes(a) ?? false, ...gatheringApproach(a, seen, contact, offset) });
+    }
+    return seen;
+  };
   World.prototype.step = function (intents, dt) {
     if (sim?.world !== this) return step.call(this, intents, dt);
+    reading = false;
     const commands = sim.intents;
     assert(intents === commands); // Mutate the fixture's controller-owned array.
     const c = sim.slot('RB')!, d = sim.defense.find(a => a.slot.startsWith('LB'))!;
@@ -50,6 +80,17 @@ function execute(cell: Cell, side: 1 | -1, seed: number, teams: Parameters<typeo
     }
     const current = sim.bond?.holds?.get(d);
     const recorded = control.frames.find((f: any) => Math.abs(f.t - this.time) < 1e-8);
+    if (current && mode === 'tight-depth' && !depthChanged
+      && Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y) <= c.profile.radius + d.profile.radius + .15) {
+      const depth = control.frames.find((f: any) => f.acquired.length)?.acquired[0].legs;
+      assert(depth !== undefined);
+      interventions.push({ t: this.time, kind: 'recorded control depth at first tight wrap',
+        before: current.legs, after: depth });
+      current.legs = depth; depthChanged = true;
+      // Deliberately no free strength, changed capacity or imposed fall. The
+      // next native controller update derives coupling from this depth normally.
+      // This substitutes an unearned re-grab solely to diagnose the mechanism.
+    }
     if (current && mode === 'prefix-movement' && this.time < (control.result.firstGrip?.t ?? -Infinity) && recorded) {
       const actual = commands[d.idx], command = recorded.requests[1];
       commands[d.idx] = { ...structuredClone(command), dive: actual.dive, lunge: actual.lunge };
@@ -84,7 +125,7 @@ function execute(cell: Cell, side: 1 | -1, seed: number, teams: Parameters<typeo
         assert(r.armWork[i] <= r.armWorkLimit[i] + 1e-8);
         assert(r.supportMotorWork[i] <= r.supportMotorWorkLimit[i] + 1e-8);
       }
-      frames.push({ t, dt, after: this.time, tickBefore, before, end: snapshot(), requests, behavior,
+      frames.push({ t, dt, after: this.time, tickBefore, before, end: snapshot(), requests, behavior, approachRead,
         bodyImpulse: r.contacts.filter(h => h.i === c.idx && h.j === d.idx || h.i === d.idx && h.j === c.idx).reduce((s, h) => s + h.impulse, 0),
         positiveGrasp: this.joints.some(j => j.kind === 'grasp' && j.b === c.body && (j.force ?? 0) > 0),
         workResidual: r.work.residual });
@@ -97,7 +138,7 @@ function execute(cell: Cell, side: 1 | -1, seed: number, teams: Parameters<typeo
     const endpoint = hash({ result, bodies: sim.agents.map(a => a.body), intents: sim.intents,
       minds: sim.agents.map(a => a.mind), rng: sim.rng, events: sim.events });
     return { result, initial, profiles, endpoint, frames, interventions };
-  } finally { PlaySim.prototype.tick = tick; World.prototype.step = step; }
+  } finally { PlaySim.prototype.tick = tick; World.prototype.step = step; PlaySim.prototype.see = see; }
 }
 const rows = [];
 for (const [o, d] of fresh ? [[71, 72], [81, 82]] : [[61, 62]]) {

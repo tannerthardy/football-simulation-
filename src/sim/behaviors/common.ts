@@ -7,7 +7,6 @@ import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import type { PlaySim } from '../playsim.js';
-import { TACKLE_TOUCH } from '../tackle.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
 
@@ -214,9 +213,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
   const original = { ...runThrough(a, p, { speed: effort }), effort };
   // A new grip may exist before its first solved load reaches body support.
-  // Keep free-body previews excluded, but do not discard the gathered request
-  // that the experimental contact transition preserves through its strike.
-  if (sim.bond?.tacklers.includes(a)) return TACKLE_TOUCH ? blendApproach(original, near, gather) : original;
+  if (sim.bond?.tacklers.includes(a)) return original;
   const far = chooseApproach(a, seen, contact, offset, original, sim.t);
   return blendApproach(far, near, gather);
 }
