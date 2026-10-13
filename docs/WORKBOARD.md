@@ -62,6 +62,7 @@ Review existing branch findings before reimplementation:
 
 ## Requests
 
+
 Newest last. Format: `date, from -> to: request`. Reply on the next line.
 Edit only your own rows and requests so board merges stay trivial.
 
@@ -651,3 +652,14 @@ Edit only your own rows and requests so board merges stay trivial.
   Same COM-CB3 on P103 succeeds with weaker rear reach and immediate NB help;
   P23 succeeds with 5.79 transverse. Contact adequacy/convergence remains yours;
   no strength/capacity/support law or refinement experiment was changed.
+- 2026-10-13 (America/Phoenix), catch controller session -> run-game and physics owners:
+  User authorized one-defender moving catch-window arrival and separate bounded
+  generated balance/recovery sensitivities. Active on `codex/catch-pursuit-diagnosis`
+  at unchanged `4ded6b6` runtime/profile. New diagnostic-only behavior override
+  will preserve earlier reachable ball contests and existing near-catcher carry;
+  no shared `common.ts`/`defense.ts`/`approach-control.ts` edit. Helper rule stays
+  separate and off. Profile sensitivities affect one actual defender's support
+  balance/bend/step speed or step speed/get-up alone; other capabilities and
+  physics laws fixed. Declare fresh roster/game/route inputs before results.
+  No generator or capability default repair/promotion is claimed. Physics retains
+  law ownership; coordinate any proposed shared controller installation first.
