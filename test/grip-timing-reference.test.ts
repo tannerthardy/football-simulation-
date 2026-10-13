@@ -38,6 +38,14 @@ class Channel {
 }
 
 describe('resolved impulse, temporal moment, attachment and work against a separate force reference', () => {
+  it('falls back to the corrected reference when the fast search budget is exhausted',()=>{
+    const a=new Channel(.002),b=new Channel(.002), args=(w:Channel)=>[[0,1],[],[],.01,.01,w.report,new Map(),true];
+    const r=resolveFastGripInterval(a,args(a),(w,x)=>w.advance(x[3]),undefined,2);
+    resolveGripInterval(b,args(b),(w,x)=>w.advance(x[3]));
+    expect(a.bodies).toEqual(b.bodies);expect(a.report).toEqual(b.report);
+    expect(a.attachments.get(a.joints[0])).toEqual(b.attachments.get(b.joints[0]));
+    expect(r.fallbacks).toBe(1);expect(r.limited).toBe(0);
+  });
   it.each([0, .0001, .002].flatMap(mobility => ['resolved','fast'].map(mode=>({mobility,mode}))))('matches the exact bounded response with $mode, mobility $mobility', ({mobility,mode}) => {
     const w = new Channel(mobility), dt = .01, K = .52, cap = 2000;
     const j = w.joints[0], bodies = w.bodies, attachments = w.attachments;

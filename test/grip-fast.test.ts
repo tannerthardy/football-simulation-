@@ -7,9 +7,10 @@ const profile={massKg:100,radius:.3,reach:1.6,heightYd:2.05,vmax:9,tau:1.3,brake
   backpedal:.6,shuffle:.55,maxCatchHeight:3,reactReach:2.6,reactionTime:.25,power:100,balance:.5,bend:.5,stepSpeed:3.4,getUp:.9};
 const body=(x: number,y=0): Body=>({pos:{x,y},vel:{x:.2,y:0},facing:0,spin:0,energy:1,profile:{...profile},support:newSupport()});
 const hold=(a: Body,b: Body): GraspJoint=>({kind:'grasp',a,b,capacity:500,reach:1.6,hold:1,legs:.6,pull:0});
-function graph(observed: boolean) {
+function graph(observed: boolean,side=1) {
   const bodies=[body(0),body(1,.1),body(2,-.1)], w:any=new World(bodies,{handContact:'patch',gripTiming:'fast',substeps:12});
   bodies[0].vel={x:.4,y:.2}; bodies[1].vel={x:.3,y:-.1}; bodies[2].vel={x:.1,y:.1};
+  bodies.forEach(b=>{b.pos.y*=side;b.vel.y*=side;});
   const j=[hold(bodies[0],bodies[1]),hold(bodies[2],bodies[1])];
   w.joints.push(...j,{kind:'hands',a:bodies[0],b:bodies[1],extension:1.2,push:20,hold:10,steer:20});
   if(observed) { const original=w.integrateInterval; w.integrateInterval=function(...args:any[]) { return original.apply(this,args); }; }
@@ -28,8 +29,8 @@ describe('separate efficient grip candidate',()=>{
       expect(Math.abs(fast.energyError)).toBeLessThan(1e-8);expect(fast.integration!.limited).toBe(0);
     }
   });
-  it('imports accepted multiple-contact trials with identical motion, work and shared attachment identities',()=>{
-    const a=graph(false),b=graph(true), profiles=a.bodies.map(x=>x.profile);
+  it.each([1,-1])('imports accepted multiple-contact trials with identical motion, work and shared attachment identities, mirror %s',side=>{
+    const a=graph(false,side),b=graph(true,side), profiles=a.bodies.map(x=>x.profile);
     for(let k=0;k<4;k++) {
       const intents=a.bodies.map(()=>({vel:{x:.4,y:0},push:.1,posture:.2}));
       const x=a.w.step(intents,.05),y=b.w.step(intents,.05);
@@ -61,7 +62,7 @@ describe('separate efficient grip candidate',()=>{
       w.joints.push({...hold(bs[0],bs[1]),legs:0});
       const r=w.step(bs.map(()=>({vel:{x:0,y:0},free:true})),.025);return {bs,r};
     };
-    const fast=run('fast',1),slow=run('resolved',1),ref=run('midpoint',4096);
+    const fast=run('fast',1),slow=run('resolved',1),ref=run('midpoint',65536);
     expect(fast.r.gripTiming!.eventSplits).toBeGreaterThan(0);
     for(let i=0;i<2;i++) {
       expect(Math.hypot(fast.bs[i].pos.x-ref.bs[i].pos.x,fast.bs[i].pos.y-ref.bs[i].pos.y)).toBeLessThan(1e-6);
@@ -69,6 +70,9 @@ describe('separate efficient grip candidate',()=>{
       expect(Math.abs(fast.bs[i].spin!-ref.bs[i].spin!)).toBeLessThan(.003);
     }
     expect(Math.abs(fast.r.work.residual)).toBeLessThan(1e-8);
-    expect(fast.r.gripTiming!.limited).toBe(0);expect(slow.r.gripTiming!.limited).toBe(0);
+    expect(fast.r.gripTiming!.limited).toBe(0);
+    // The preserved slow reference exhausts its limit at this topology onset;
+    // retain that adverse evidence instead of declaring it converged.
+    expect(slow.r.gripTiming!.limited).toBe(1);
   });
 });

@@ -59,11 +59,22 @@ function capEvent(w: Private, row: Private, h: number): number | null {
   const M=w.attachments.get(j)?.bounded ? w.attachmentMobility(j,-row.ny,row.nx) : 0;
   const speed=Math.abs(-rv.x*row.ny+rv.y*row.nx-(row.ri??0)*(a.spin??0)-(row.rj??0)*(b.spin??0));
   const C=row.limit/h, t=C>0?(speed-M*C)/(K*C):0;
+  // Dry resistance is initially saturated for any nonzero slip. The existing
+  // law starts sliding the grip down immediately, creating lower support on
+  // the next solve. Resolve that zero-time topology onset with a dose below
+  // 1/32 of the unchanged velocity/spin budgets; do not average it over h.
+  if(j.legs===0 && speed>0 && C>0) {
+    const arm=Math.hypot(b.pos.x-a.pos.x,b.pos.y-a.pos.y)+b.profile.radius;
+    const quiet=Math.min(...[row.i,row.j].flatMap((i: number)=>[
+      2.5e-5*w.mass[i]/C,2.5e-4*w.inertia[i]/(C*arm)]))/32;
+    return Math.min(h/2,quiet);
+  }
   return t>h*1e-4 && t<h*(1-1e-4) ? t : null;
 }
 
 export function resolveFastGripInterval(w: Private, args: any[], execute: (w: Private,args: any[])=>void,
-  commit?: (trial: Private,trialArgs: any[])=>void): FastGripReport {
+  commit?: (trial: Private,trialArgs: any[])=>void, searchLimit=MAX): FastGripReport {
+  if(searchLimit<2 || searchLimit>MAX || !Number.isInteger(Math.log2(searchLimit))) throw new RangeError('Invalid fast search bound');
   const report: FastGripReport={trials:0,intervals:0,limited:0,maxAcceptedError:0,commits:0,fallbacks:0,eventSplits:0};
   let bound=0;
   for(const j of w.joints) {
@@ -108,10 +119,10 @@ export function resolveFastGripInterval(w: Private, args: any[], execute: (w: Pr
   const results=new Map<number,ReturnType<typeof restore>>();
   if(grid.length===1) { results.set(1,one); results.set(2,two); }
   const get=(n: number)=>{ if(!results.has(n)) results.set(n,solve(n,grid)); return results.get(n)!; };
-  let n=Math.max(2,Math.min(MAX/grid.length,hints.get(w)??2));
+  let n=Math.max(2,Math.min(searchLimit/grid.length,hints.get(w)??2));
   // Cached resolution is only a starting guess. Every accepted interval is
   // still compared with its coarser replay; low effort searches downward.
-  while(n*grid.length<=MAX) {
+  while(n*grid.length<=searchLimit) {
     const coarse=get(n/2),fine=get(n), error=difference(coarse.w,fine.w,ids);
     if(error<=1) {
       if(n>2 && difference(get(n/4).w,coarse.w,ids)<=1) { n/=2; continue; }
