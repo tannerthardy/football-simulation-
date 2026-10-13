@@ -636,6 +636,8 @@ const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
 const DL_FLOW = process.env.DL_FLOW !== '0';
 /** Experimental (RUN_HANDS=1, off): run blockers drive committed defenders off their body. */
 const RUN_HANDS = process.env.RUN_HANDS === '1';
+/** Experimental (DL_HANDS=1, off): a shedding defender in control of the hands works past with them. */
+const DL_HANDS = process.env.DL_HANDS === '1';
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 
@@ -974,7 +976,19 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     return;
   }
   setHands(sim, e);
+  if (e.hands && (RUN_HANDS || DL_HANDS)) e.hands.drive = 0;
   if (RUN_HANDS) runHandDrive(sim, e);
+  // DL_HANDS (experimental, off; needs HAND_MOTOR=1): a defender who controls
+  // the hands while getting off toward the ball works himself past the
+  // blocker's ball-side shoulder with them (rip, push-pull), not only his feet.
+  if (DL_HANDS && shedding && e.hands && e.control < 0 && e.hands.actor === d.body) {
+    const j = e.hands, self = j.a === b.body ? b : d, other = self === b ? d : b;
+    const L = Math.hypot(other.pos.x - self.pos.x, other.pos.y - self.pos.y) || 1;
+    const tx = -(other.pos.y - self.pos.y) / L, ty = (other.pos.x - self.pos.x) / L;
+    // Wanted motion of the defender toward the ball side, as motion of b past a.
+    const want = (lat.x * tx + lat.y * ty) * shed!.side * (other === d ? 1 : -1);
+    j.drive = Math.sign(want) * 2;
+  }
   // Feet request displacement along the drive line; contact geometry and the
   // lateral fit use the surface frame. These can differ in a stretch-zone rep.
   // Actual hand normal, ground traction and work remain physical constraints.
