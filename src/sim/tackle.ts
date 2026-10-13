@@ -59,6 +59,12 @@ const STALL = 0.8;
 /** Experimental tight-wrap finish (TACKLE_ROLL=1, off by default); see updateBond. */
 const TACKLE_ROLL = process.env.TACKLE_ROLL === '1';
 const TACKLE_DROP = process.env.TACKLE_DROP === '1';
+/** Experimental ground finish (GROUND_HOLD=1, off): a downed holder stays down
+ * on his hold; see updateBond. Needs the proposed World `stayDown` hook. */
+const GROUND_HOLD = process.env.GROUND_HOLD === '1';
+/** Proposed World intent field (not yet in `Intent`; the physics owner
+ * implements it): while set, a downed body does not start rising. */
+type GroundIntent = Intent & { stayDown?: boolean };
 /** Experimental secure lower-wrap coupling; all transmitted loads still use
  * World's existing grip, arm and recovery budgets. Default-off. */
 const WRAP_BIND = process.env.WRAP_BIND === '1';
@@ -452,6 +458,15 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       const tx = c.pos.x - d.pos.x, ty = c.pos.y - d.pos.y, L = Math.hypot(tx, ty) || 1;
       intents[d.idx] = { ...intents[d.idx], dive: { x: tx / L * .2, y: ty / L * .2 } };
     }
+  }
+  // GROUND_HOLD (experimental, off): a holder on the ground with a live grip
+  // on an upright carrier is performing the finish, so he stays down on it
+  // rather than standing up through his own hold. The request lasts only as
+  // long as the action: a broken grip removes him from the bond above, and
+  // once the carrier is down the ordinary rule applies. Ground friction, grip
+  // and the carrier's balance still decide whether it works.
+  if (GROUND_HOLD && c.body.support?.state === 'up') for (const d of bond.tacklers) {
+    if (d.body.support?.state === 'down') intents[d.idx] = { ...intents[d.idx], stayDown: true } as GroundIntent;
   }
   // The carrier keeps his legs driving where his vision takes him.
   const own = intents[c.idx];

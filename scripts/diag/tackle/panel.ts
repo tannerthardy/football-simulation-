@@ -9,7 +9,7 @@
  * duration and break are measured. Plays end tackled, escaped (carrier clear
  * and separating with no live grip), or censored (time limit, sideline, goal).
  *
- * node --import tsx scripts/diag/tackle/panel.ts [--seeds 12] [--common-patch]
+ * node --import tsx scripts/diag/tackle/panel.ts [--seeds 12] [--seed0 3000] [--common-patch] [--stay-down-hook]
  *   [--substeps 12] [--out out/tackle/panel.json]
  */
 import { createHash } from 'node:crypto';
@@ -30,6 +30,9 @@ const arg = (n: string, f: string) => { const i = process.argv.indexOf(n); retur
 const seeds = Number(arg('--seeds', '12'));
 const out = arg('--out', 'out/tackle/panel.json');
 const handContact = process.argv.includes('--common-patch') ? 'patch' : 'center';
+// Diagnostic emulation of the proposed World stayDown hook (see stay-down-hook.ts).
+if (process.argv.includes('--stay-down-hook')) await import('./stay-down-hook.js');
+const seed0 = Number(arg('--seed0', '3000'));
 const substeps = process.argv.includes('--substeps') ? Number(arg('--substeps', '12')) : undefined;
 
 /** Bearing of the tackler from the carrier's path: 0 head-on, 180 from behind. */
@@ -138,12 +141,17 @@ export function rep(cell: Cell, side: 1 | -1, seed: number,
 function main() {
   const sourceBefore = sourceVersion();
   const rows: ReturnType<typeof rep>[] = [];
-  for (const cell of CELLS) for (const side of [1, -1] as const) for (let s = 0; s < seeds; s++) rows.push(rep(cell, side, 3000 + s, { handContact, substeps }));
+  for (const cell of CELLS) for (const side of [1, -1] as const) for (let s = 0; s < seeds; s++) rows.push(rep(cell, side, seed0 + s, { handContact, substeps }));
   const sourceAfter = sourceVersion();
   if (sourceBefore !== sourceAfter) throw new Error('Engine changed during tackle collection');
   mkdirSync(dirname(out), { recursive: true });
   const collectorSha256 = createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex');
-  writeFileSync(out, JSON.stringify({ seeds, handContact, substeps: substeps ?? 'adaptive',
+  // Input manifest: seeds, resolution, hand mode, the hook emulation and the
+  // tackle flags actually set (the baseline launcher also records all flags).
+  const flags = Object.fromEntries(['LEG_BRACE', 'TACKLE_ROLL', 'WRAP_BIND', 'TACKLE_DROP', 'GROUND_HOLD', 'HOLD_BALANCE', 'HOLD_SUBSTEPS', 'TACKLE_TOUCH', 'REACH_CONTACT']
+    .map((k) => [k, process.env[k] ?? null]));
+  writeFileSync(out, JSON.stringify({ seeds, seed0, handContact, substeps: substeps ?? 'adaptive',
+    stayDownHook: process.argv.includes('--stay-down-hook'), flags, cells: CELLS.length,
     sourceBefore, sourceAfter, collectorSha256, rows }));
   const share = (v: boolean[]) => v.length ? (v.filter(Boolean).length / v.length).toFixed(2) : '-';
   console.log('angle speed cut  tackled escaped censored | attempts/rep rolled-miss share | grips: broke, mean held s, mean/peak force | yd after contact (median) | mirror: tackled L/R');
