@@ -414,11 +414,14 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     if (d.body.support?.state !== 'up' || distance > torso + .15 || secure < .5) continue;
     const cs = Math.hypot(c.vel.x, c.vel.y);
     const ux = cs > .3 ? c.vel.x / cs : dir, uy = cs > .3 ? c.vel.y / cs : 0;
-    // Across his travel, toward the holder's own side (stable when square).
-    const side = Math.sign((d.pos.x - c.pos.x) * -uy + (d.pos.y - c.pos.y) * ux) || 1;
-    const nx = -uy * side, ny = ux * side;
+    // Across his travel, toward the holder's own side. A square-on holder has
+    // no side to roll him over: the sideways part grows with the holder's
+    // actual lateral offset, so a square wrap only sits down (and mirrored
+    // plays stay mirrored, with no tie-break).
+    const lateral = (d.pos.x - c.pos.x) * -uy + (d.pos.y - c.pos.y) * ux;
+    const roll = Math.sign(lateral) * clamp(Math.abs(lateral) / .15, 0, 1) * 1.5 * secure;
     const own = intents[d.idx];
-    intents[d.idx] = { ...own, vel: { x: c.vel.x * (1 - secure) + nx * 1.5 * secure, y: c.vel.y * (1 - secure) + ny * 1.5 * secure }, push: 1 };
+    intents[d.idx] = { ...own, vel: { x: c.vel.x * (1 - secure) - uy * roll, y: c.vel.y * (1 - secure) + ux * roll }, push: 1 };
   }
   // The carrier keeps his legs driving where his vision takes him.
   const own = intents[c.idx];
