@@ -4,6 +4,7 @@
 import {FIELD_WIDTH} from '../../src/core/field.js';
 import {clamp} from '../../src/core/vec.js';
 import {fatigueFactor,movingArrivalVelocity,type MoveCommand} from '../../src/physics/kinematics.js';
+import {previewFreeMovement} from '../../src/physics/movement-preview.js';
 import {timeToReach} from '../../src/physics/reach.js';
 import {availability,supportParams} from '../../src/physics/support.js';
 import type {Agent} from '../../src/sim/agent.js';
@@ -57,8 +58,25 @@ export function arrivalChoice(a:Agent,sim:PlaySim,original:MoveCommand,cues:Cons
  // visible ball window at t. Subtract its remaining travel, rather than
  // double-leading a point which is already in the future.
  const goal={x:p.x-seen.vel.x*(t-sim.t),y:clamp(p.y-seen.vel.y*(t-sim.t),.3,FIELD_WIDTH-.3)};
+ // The speed-sum distance gate alone accepts runners travelling alongside
+ // us ten yards away. Gather only if the original achievable free trajectory
+ // actually enters the near-hip region in the same 0.6-s forecast. This is
+ // the baseline approach planner's physical gate, not knowledge of a later
+ // catch/deflection. The lost P16 interception followed an unforeseen tip.
+ const support=a.body.support;
+ if(support&&(support.strike||Math.hypot(support.lean.x,support.lean.y)>1e-6||support.state!=='up'))
+  return {command:original,reason:'preserve-constrained-arrival',window:detail};
+ let closest=Math.hypot(a.pos.x-goal.x,a.pos.y-goal.y),previous={x:a.pos.x-goal.x,y:a.pos.y-goal.y};
+ for(const sample of previewFreeMovement(a.body,original,sim.t,12)){
+  if(sample.support!=='up')return {command:original,reason:'preserve-unattainable-arrival',window:detail};
+  const target={x:goal.x+seen.vel.x*sample.t,y:clamp(goal.y+seen.vel.y*sample.t,.3,FIELD_WIDTH-.3)},
+   relative={x:sample.pos.x-target.x,y:sample.pos.y-target.y},ex=relative.x-previous.x,ey=relative.y-previous.y,
+   along=clamp(-(previous.x*ex+previous.y*ey)/Math.max(1e-12,ex*ex+ey*ey),0,1);
+  closest=Math.min(closest,Math.hypot(previous.x+ex*along,previous.y+ey*along));previous=relative;
+ }
+ if(closest>contact+2.5)return {command:original,reason:'preserve-outside-achieved-approach',window:detail,closest};
  const capacity=a.body.support?availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy)):1;
  const vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,contact,
   2.5+2*(1-a.r('tackling')),1,capacity);
- return {command:{...original,vel},reason:'moving-window-arrival',window:detail,goal};
+ return {command:{...original,vel},reason:'moving-window-arrival',window:detail,goal,closest};
 }

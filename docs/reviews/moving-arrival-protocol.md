@@ -32,6 +32,24 @@ Use the existing approach contact/through-speed budgets. Change velocity only:
 no new effort, posture, cut skill, facing, physical boost or post-catch timer.
 One declared prototype; if it breaks controls, diagnose rather than stacking fixes.
 
+### One bounded revision after the interception guard
+
+The first prototype lost fresh R7204-S4001-P16's interception on a later tipped
+ball. At the first changed request, 3.30 s, its earlier hypothetical receiver
+window was about ten yards away and only .35 s ahead. The coarse speed-sum gate
+incorrectly admitted a gather while both bodies mostly travelled alongside.
+The eventual tip is not information the defender could have used then.
+
+Revision two preserves the original command unless its existing production-World
+free-movement preview actually enters the near-hip region (contact + 2.5 yd) over
+.6 s against the consumed moving-window lane. This reuses the baseline approach
+planner's physical gate and sample rate; it adds no observation, RNG draw, capability
+or knowledge of the later tip. Preserve loaded/striking/leaning or predicted-falling
+actors too. Recheck all nine native witnesses and all 51 fresh inputs, including
+four actual interceptions. Original prototype and its lost interception remain
+recorded. Stop after this second attempt if the repair loses its mechanism or
+protected controls; no third gate or capability combination will be stacked.
+
 ## Separate support sensitivities
 
 At the common first post-throw boundary, vary only the actual selected defender.
