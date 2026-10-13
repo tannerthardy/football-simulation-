@@ -8,7 +8,7 @@ and `TACKLE_DROP` are registered in `config/baseline.json`, both off.
 |---|---|---|---|
 | C1 | Why do held falls depend on the timestep? | Name the injecting operation and show it | **done** |
 | C2 | Validate the selected correction | Panel agreement with 96 substeps on the reps it targets; name what remains | **done**: valid, narrow, stays off |
-| C3 | Why do slow holds drag? | Test the hanging-weight hypothesis with a traced ledger; a flagged mechanism or a refutation | **answered**; ordinary-tackle check pending |
+| C3 | Why do slow holds drag? | Test the hanging-weight hypothesis with a traced ledger; a flagged mechanism or a refutation | **done**: refuted; `TACKLE_DROP` flagged, off |
 
 ## C1: the timestep-dependent fall is two different things
 
@@ -110,3 +110,47 @@ after contact median 3.9 -> 3.8, p90 11.9 -> 4.5. The hanging-weight hypothesis
 is not needed: existing ground friction plus the leg binding finish the hold
 once the holder commits his weight. The cost is real: on the ground he is out
 of the play if the hold breaks.
+
+**Full panel** (288 reps, 6 seeds, center hands, production resolution;
+"flags" = `LEG_BRACE TACKLE_ROLL WRAP_BIND`):
+
+| group | production | flags | flags + `TACKLE_DROP` |
+|---|---|---|---|
+| ordinary (72): tackled / censored | 66 / 0 | 62 / 4 | 66 / 0 |
+| ordinary after contact, median / p90 | 2.0 / 4.2 | 2.4 / 4.9 | 2.2 / 4.3 |
+| difficult (216): tackled / escaped / censored | 168 / 46 / 2 | 130 / 48 / 38 | 156 / 48 / 12 |
+| difficult after contact, median / p90 | 3.3 / 6.5 | 4.5 / 12.2 | 3.9 / 8.9 |
+| 3 yd/s (96): tackled / censored | 96 / 0 | 64 / 32 | 90 / 6 |
+
+Against flags alone, `TACKLE_DROP` changes exactly 30 endings, all
+censored -> tackled. No tackle becomes an escape, and ordinary tackles
+return to the production count. It also agrees with its own 96-substep panel
+on 284/288 reps (flags alone: 282).
+
+**What remains** (12 censored, 6 mirrored pairs). Traced 45/3 cut seed 3003:
+the holder drops at 3.65 s and nearly stops the runner (0.6 yd/s by
+5.65 s). Then, because he has stopped sliding, the passive support rule
+(`world.ts` `passive`: down, slower than 0.3 yd/s for 0.3 s -> rising)
+stands him up *while he still holds*. He is upright by 6.65 s and the runner
+walks on. Getting up is automatic for every downed body; nothing lets a
+holder choose to stay down on a runner. That is the next bounded question.
+Endpoint: show whether a downed holder with a live grasp should keep the
+"down" state (support owner: primary physics session), and repeat this panel.
+
+## Commands
+
+```sh
+# C1 / C2
+node --import tsx scripts/diag/physics/loaded-subcycle.ts
+node --import tsx scripts/diag/physics/hold-sensitivity.ts 180 6 192 center [cut] [seed]
+node --import tsx scripts/diag/physics/hold-substep-sweep.ts 180 6 0 3005
+node --import tsx scripts/diag/physics/hold-trace.ts 180 6 0 3005 12 48   # flags via env
+node --import tsx scripts/diag/tackle/panel.ts --seeds 6 [--substeps 96] [--common-patch] --out out/c2/X.json
+python3 -I scripts/diag/physics/hold-refinement-compare.py REF.json OTHER.json
+# C3
+node --import tsx scripts/diag/physics/tackle-ledger.ts 90 3
+```
+
+Run through `npm run baseline:run -- --flag NAME=VALUE -- <command>` for a
+recorded receipt; the panels above were run directly on the pinned source.
+
