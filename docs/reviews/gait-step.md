@@ -70,3 +70,50 @@ session owns the World and `kinematics.ts`; promotion is theirs.
    (`scripts/diag/zone/compose-probe.ts`, `flow-probe.ts`).
 3. The drive/surface frame leak named in [run-game positioning](run-game-positioning.md)
    is small on free ticks (0.1-0.2 yd/s mean).
+
+## Follow-up: gap and pull runs (`DL_FIGHT=1`, `PULL_STEP=1`, both off)
+
+Probes: `scripts/diag/zone/flow-probe.ts` (`BY_KIND=1`: engaged DL by block
+kind), `scripts/diag/defense/lb-flow-probe.ts`, `scripts/diag/runblock/puller-start.ts`.
+
+**Down-blocked linemen rode the block.** On power/counter most engaged DL are
+down-blocked. The blocker drove them backside at 1-1.9 yd/s and the DL asked to
+go *with* him: his target is a shoulder offset relative to the blocker plus the
+blocker's observed flow, so a down block carries the target along.
+`DL_FIGHT=1` gives the defender the lateral twin of the blocker's lost-depth
+anchor. When he feels himself driven sideways, away from where he sees the ball
+heading, he holds the point where the push began for a decision beat instead of
+following. A reach that runs him toward the ball is left alone (a first version
+that resisted every push cut outside-zone flow by a quarter; the ball test
+fixed it). Washed speed at 2 s: power 0.85 to 0.17 yd/s, counter 1.32 to 0.63;
+outside-zone reach unchanged.
+
+**The puller dropped straight back first.** The first pull waypoint was 1.25 yd
+behind the line at his own width, so for 0.2 s he asked for 2.7 yd/s backward
+and nothing lateral, and turned his body to face his own backfield (facing swung
+past -140 deg) before running. `PULL_STEP=1` opens the first leg 0.9 yd to the
+play side and keeps the hips toward the play side on it.
+
+**Backers read the pull late** because it started late, and until then their
+scrape followed live gaps that slide backside with the down blocks. With the
+open step the pull read starts by 1.0 s instead of 1.5.
+
+8+8 games, all with `GAIT_STEP=0.3` (gait + planners as the base):
+
+| | Base | + fight + pull step | NFL |
+|---|---|---|---|
+| Puller lateral 0.5 / 1.0 s, yd | 0.20 / 1.40 | 0.50 / 1.80 | 0.50 / 1.80 |
+| Puller time to point of attack, s | 2.2 | 2.0 | 1.9 |
+| Engaged DL depth at 3 s: OZ / IZ / gap | -0.15 / 0.90 / -0.13 | -0.10 / 1.20 / 0.40 | 1.03 / 1.37 / 1.00 |
+| Gap-run DL / LB lateral at 3 s | -1.17 / 0.60 | -0.45 / 0.60 | 2.24 / 4.35 |
+| Run yards median | 1.41 / 1.60 | 1.27 / 1.68 | 3.0 |
+| Guards | ok / ok | ok / ok | |
+
+Puller timing now matches NFL tracking. Run yards stay within noise.
+
+**Still open on gap runs.** By 3 s NFL DL and backers have moved 2-4 yd to the
+play side (shed and pursue); ours stay near their alignment. Engaged DL do not
+get off blocks to pursue a runner going away, and backers still scrape backside
+with down blocks in the first second before the pull read. Next: what an
+engaged lineman does when the ball is past or away from him (pursuit release),
+then the backers' first-second key.
