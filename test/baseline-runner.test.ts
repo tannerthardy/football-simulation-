@@ -10,6 +10,14 @@ const info = (extra: string[] = [], env: NodeJS.ProcessEnv = {}) => JSON.parse(e
   [launcher, '--info', '--candidate', ...extra], { encoding: 'utf8', env: { ...process.env, ...env } }));
 
 describe('shared baseline runs are explicit and cannot inherit experiments', () => {
+  it('stops opted-in verification after failure and explicitly retains the skipped commands', () => {
+    const code = `import { runCommands } from ${JSON.stringify(pathToFileURL(launcher).href)};
+      const commands = [['cheap'], ['expensive']], run = async command => ({ command, exitCode: 1 });
+      console.log(JSON.stringify([await runCommands(commands, run, true), await runCommands(commands, run)]));`;
+    const [early, complete] = JSON.parse(execFileSync(process.execPath, ['--input-type=module', '--eval', code], { encoding: 'utf8' }));
+    expect(early.commands).toHaveLength(1); expect(early.skippedCommands).toEqual([['expensive']]);
+    expect(complete.commands).toHaveLength(2); expect(complete.skippedCommands).toEqual([]);
+  });
   it('resets ambient experiments, ablations and counterfactual defenses', () => {
     const result = info([], { LEG_BRACE: '1', HOLD_SUBSTEPS: '48', LEVER_FACING: '0', CF_FLOW: 'over' });
     expect(result.flags).toEqual(profile.flags);

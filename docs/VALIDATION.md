@@ -63,6 +63,16 @@ missing state only for the selected mechanism. Preserve unsuccessful examples.
 
 ## Change and stopping rules
 
+Use the [tiny default loop](TESTING_COSTS.md#default-loop-one-question-tiny-evidence):
+one question, smallest reproducer, one relevant opposing control and directly
+affected correctness tests. Before adding checks, name the decision their results
+could change. [BEHAVIOR_REVIEW.md](BEHAVIOR_REVIEW.md) supplies interpretation
+categories when needed, not mandatory suites or a worksheet. A material adverse
+result gets one targeted diagnostic before a larger batch; distinguish a defect,
+a football tradeoff and changed randomness. Apply the same standard to favorable
+yardage. Report what changed, evidence for/against, unresolved risk, runtime and
+next decision; link compatible evidence instead of rerunning it.
+
 Write a short explanation before coding: first wrong request or physical
 response, evidence, proposed cause, and the check that would prove it wrong.
 Bad decisions belong in controllers; incoherent execution belongs in physics.
@@ -77,7 +87,9 @@ pair. Changing whole games changes later calls and RNG histories; do not claim
 their later plays are still paired counterfactuals.
 
 If **two attempts** fail to repair the visible mechanism, or a repair breaks an
-ordinary control, stop stacking adjustments. Inspect the first divergence,
+ordinary control's supported mechanism contract, stop stacking adjustments.
+A changed ordinary outcome alone needs adjudication, not automatic rejection.
+Inspect the first divergence,
 reconsider the cause and reduce the experiment. Do not add strength, traction,
 timers or global solver resolution to rescue a football statistic. Extend the
 model only when the simpler shared mechanism cannot represent the observed need.
@@ -85,7 +97,7 @@ model only when the simpler shared mechanism cannot represent the observed need.
 ## Checks already available
 
 Run from the repository root with Node 22. Output belongs in ignored `out/`.
-Focused checks during iteration precede the complete checks before publication.
+Focused checks during iteration precede shared checks on the combined candidate.
 
 ```sh
 npm test
@@ -98,8 +110,11 @@ npm run test:data
 
 `npm test` covers the production contracts. Integration keeps the existing slow
 game/ensemble checks; research keeps the paused anatomical/sole experiments.
-Before publishing an engine change, `npm run test:all` runs all three projects
-without omitting any preserved assertion. Docs-only work needs no new games.
+At integration, one designated owner runs `npm run test:all` on the exact combined
+engine candidate, without omitting any preserved assertion, alongside the other
+required full checks. Local agents supply focused receipts and link the shared
+result rather than each launching the suite. Reuse only compatible tested code,
+inputs and settings. Docs-only work needs no new games.
 Complete and integration runs use one worker to avoid the worker RPC timeout
 observed in the old parallel full suite; the fast default remains parallel.
 The native game tests yield between synchronous games so worker reports can
@@ -167,6 +182,22 @@ input/profile hashes and measurement definitions. A recording observer must
 preserve execution and RNG; use the existing observer controls, not extra
 perception calls. Follow the data guide to restore archived packets. Historical
 source verification is expected to reject a different later engine.
+
+## Testing cost and selective roster diversity
+
+Follow [TESTING_COSTS.md](TESTING_COSTS.md). Tests are not multiplied by rosters.
+Use the tiny default loop. Choose an affected subset of the frozen 32-snap screen
+only if a specific transfer question remains; never automatically step through
+2/8/16/32 snaps. One owner runs full checks on the combined candidate at integration.
+Additional games require an interaction question that needs games.
+`npm run screen:roster` runs
+zero simulations without an explicit collection/comparison request. Compatible
+committed baseline evidence supports candidate-only execution and per-case
+caching. Generator/selector changes need fresh profile checks too: frozen
+bodies bypass them. Budgets, failures, skipped cases and timings are recorded;
+partial/favorable-prefix evidence does not pass a planned screen. Optional
+`npm run baseline:verify -- --candidate --fail-fast` stops failed cheap phases
+and records the omitted tail without weakening assertions.
 
 ## Keep an honest final exam
 

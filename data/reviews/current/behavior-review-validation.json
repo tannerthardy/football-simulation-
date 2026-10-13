@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "scope": "Shared behavior judgment and saved-result worksheet only; engine/collectors/fixtures unchanged",
+  "files": {
+    "scripts/roster-review.ts": "d379b804013592fa875f70ce0baf10ee42847fb72566327c4ff12f725e23e295",
+    "test/roster-review.test.ts": "d1a860c8470a6ee857fcfe5efbc1e0854fd5fc5c8feace685855657a0348f331",
+    "docs/BEHAVIOR_REVIEW.md": "5608c782ff1df1b53903f73aa093c5bc961c45524e0a98248df8368e78d73754"
+  },
+  "checks": {
+    "tests": {
+      "exitCode": 0,
+      "node": "v22.23.3",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/roster-review.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.389127063
+        }
+      ],
+      "startedAt": "2026-10-13T23:31:38.796Z",
+      "finishedAt": "2026-10-13T23:31:41.188Z"
+    },
+    "types": {
+      "exitCode": 0,
+      "node": "v22.23.3",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.13732403
+        }
+      ],
+      "startedAt": "2026-10-13T23:31:38.794Z",
+      "finishedAt": "2026-10-13T23:31:49.935Z"
+    },
+    "build": {
+      "exitCode": 0,
+      "node": "v22.23.3",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.145344888
+        }
+      ],
+      "startedAt": "2026-10-13T23:31:38.799Z",
+      "finishedAt": "2026-10-13T23:31:51.948Z"
+    }
+  },
+  "focusedTests": 5,
+  "simulations": 0,
+  "fullGames": 0,
+  "savedWorksheet": {
+    "cases": 32,
+    "newSimulations": 0,
+    "wallSeconds": 0.032791587,
+    "meaning": "Identical saved baseline compared to itself demonstrates worksheet execution, not football improvement"
+  },
+  "fullSuite": "Not rerun for documentation and saved-result tooling; no engine change",
+  "preservedEvidence": {
+    "baselineSha256": "f2fdb1419a085aaad70f4604bbdec59d709267d301bb8c7c375adb09135f0649",
+    "fixtureSha256": "80d5f4e834cb27ac09d204d6acda44f35965de04b3878af04544e41d059c8787",
+    "collectorSha256": "79af58b00062891c300ccbce0e6e01bea969cf36dba61418f6a2cc7c57ac1828"
+  }
+}
