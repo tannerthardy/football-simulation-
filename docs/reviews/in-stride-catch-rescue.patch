@@ -5,7 +5,7 @@ index fafc071..89f1fbb 100644
 @@ -383,6 +383,9 @@ function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
    return (pos.x - wp.x) * sx + (pos.y - wp.y) * sy > 0 && Math.hypot(pos.x - wp.x, pos.y - wp.y) < 2;
  }
- 
+
 +/** Rescued from 83e514a. Coverage/scoring controls are required for promotion. */
 +const IN_STRIDE_CATCH = process.env.IN_STRIDE_CATCH === '1';
 +
@@ -35,7 +35,7 @@ index fafc071..89f1fbb 100644
 @@ -423,6 +439,23 @@ export class TrackBall implements Behavior {
    }
  }
- 
+
 +/** The reachable catchable point nearest the current running line. This
 + * requests movement only; ordinary physical catch resolution is unchanged. */
 +function strideCatchSpot(a: Agent, sim: PlaySim): { p: Vec2; t: number } | null {
