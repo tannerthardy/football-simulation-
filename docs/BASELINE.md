@@ -7,6 +7,12 @@ default-on controllers and preserves experimental implementations with their
 flags off. This designation does not promote the experimental contact law or
 declare that the remaining football mechanisms are finished.
 
+Complete checks passed: **1,652 TypeScript tests, 145 Python checks,
+typecheck and build**, with no test or worker errors. The
+[validation receipt](baseline-validation.json) pins the tested commit, all
+43 flag values, source and harness hashes, and known failures. The published
+baseline commit is pinned in [PR #2](https://github.com/tannerthardy/football-simulation-/pull/2).
+
 ## Revisions and reproduction
 
 The runtime is frozen at `5db48d58747767bc62f2ebb061ceb19a637ee0a8`, SHA-256
@@ -17,6 +23,9 @@ commits do not change this runtime. The launcher records the actual checkout
 commit and a separate fingerprint of all tests, the launcher, profile,
 package manifests and Vitest configuration. Results always describe those
 recorded revisions, never just a moving branch name.
+The tested code/harness commit is `1f1f1c82b8c030c96e0122ec189d1962be2e51b1`;
+the publication follow-up only adds documentation and the receipt. Compare
+both fingerprints when repeating results from the published snapshot.
 
 Use Node **22.23.3** (`.nvmrc`), install with `npm ci`, then:
 
@@ -41,6 +50,9 @@ sequentially and writes a receipt under ignored `out/baseline/`. Each phase's
 status is retained; a failed phase or source/test change during validation
 makes the aggregate command fail. It never filters tests or automatically
 enables a feature. Raw outputs remain in `out/`.
+The latest retained additions match all 32 prior native state/RNG histories
+through the same 3.5-s window (12 ended, 20 still live). This preserves tested
+default trajectories; it is not a new full-play outcome or NFL-accuracy claim.
 
 ## Enabled behavior
 
@@ -84,6 +96,8 @@ npm run baseline:run -- --candidate -- node --import tsx scripts/sim-play.ts oz_
 The first is a baseline run; the second an experiment. The third permits
 modified runtime source and labels it a candidate. An unregistered runtime
 flag, wrong Node version, or an unacknowledged source change is rejected.
+Hand-drive trials require explicit `HAND_MOTOR` plus their controller flags;
+the launcher does not infer or enable dependencies.
 Use identical input manifests, rosters, seeds and measurement operators for
 each arm. CLI API options such as `handContact: 'patch'` and fixed substeps
 remain explicit input changes; the environment launcher cannot infer them.
@@ -109,9 +123,9 @@ does not merge the PR, rewrite branch history or delete historical branches.
 The historical Tite endpoint is replaced by consumed-cue, supported-keeper and
 real-contact takeover contracts; see [its diagnosis](reviews/tite-helper-contract.md).
 The full-game harness now gives each of the original four games its own
-existing 60-second deadline, preserving inputs, order and assertions. The
-isolated file passes; complete baseline validation is recorded in the
-subsequent validation receipt.
+existing 60-second deadline, preserving inputs, order and assertions. Both
+the isolated file and complete baseline pass. Earlier full-suite and isolated
+timeout failures remain recorded in the receipt and historical Tite report.
 
 Known physical/football issues remain even when functional tests pass:
 
@@ -121,6 +135,8 @@ Known physical/football issues remain even when functional tests pass:
 - Loaded recovery remains resolution-sensitive, and finer stepping does not
   supply a missing tackle finish. [Loaded recovery](reviews/loaded-recovery.md)
   and [continued recovery](reviews/continued-recovery.md) retain adverse cases.
+  `HOLD_SUBSTEPS` affects the shared group of nearby/contact bodies whenever
+  any grasp is live, so it can also refine unrelated blocks. It stays off.
 - Default-off hand work has large patch turns and unresolved fight feedback;
   [hands evidence](reviews/hands-plan.md) remains required for promotion.
 - Gap-run flow, loaded zone movement, approach safety and contact survival

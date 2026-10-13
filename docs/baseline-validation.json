@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "baseline": "run-game-2026-10-13",
+  "verifiedCommit": "1f1f1c82b8c030c96e0122ec189d1962be2e51b1",
+  "branch": "codex/run-game-integration",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+  "validationSha256": "bd67406a296d1d60370e555c0cd8388ee59ec28e423bd458b1f163285e11fe6d",
+  "featureProfile": "config/baseline.json",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "startedAt": "2026-10-13T18:03:24.661Z",
+  "finishedAt": "2026-10-13T18:08:43.449Z",
+  "inputsUnchanged": true,
+  "checks": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 21.624182167
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 20.295735295
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:all"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 275.32693688700004
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:data"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.5362584020000067
+    }
+  ],
+  "typescript": {
+    "filesPassed": 136,
+    "passed": 1652,
+    "failed": 0,
+    "errors": 0
+  },
+  "python": {
+    "passed": 145,
+    "failed": 0
+  },
+  "defaultParity": {
+    "oldRuntimeCommitVerified": "fa3f3e44a0bbb7bb7f015d0934f4175126422644",
+    "oldRawRepositoryCommit": "b212f066c3744807e33d20d4ca6630497c70a6a5",
+    "oldSourceSha256": "888b3fb78f6bbe33026121110a895b7f07c9009e19fd755f7d4d1563e601987c",
+    "newCommit": "1f1f1c82b8c030c96e0122ec189d1962be2e51b1",
+    "newSourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+    "inputsSha256": "0d22b075e7fed8ecab9b2e1c2a38af0889f21b9e8d1c03ad1f542425e3e9930c",
+    "cases": 32,
+    "identicalStateAndRngHistories": 32,
+    "observationWindowSeconds": 3.5,
+    "endedInWindow": 12,
+    "stillLiveAtWindow": 20,
+    "oldArtifactSha256": "530a60ff36e46099c3e6ab3645ecdd4e647ca7bf14fa95713b202a4881e5cb8a",
+    "newArtifactSha256": "6ca2b707c8b48afb675ce99b6d50ec756466b83eca11c93900d3caa168e2b88b",
+    "note": "Old artifact repository HEAD predates staged source; its runtime digest is verified against fa3f3e4. This is window parity, not full-play outcome validation."
+  },
+  "oldGameRecordFailure": {
+    "twoGamesPerTestBudgetSeconds": 60,
+    "failedTests": 2,
+    "workerErrors": 1,
+    "logs": [
+      "out/tite-failure/all-tests.log",
+      "out/tite-failure/game-record-isolated.log"
+    ]
+  },
+  "gameRecordRepair": {
+    "sameSeeds": [
+      21,
+      22,
+      33
+    ],
+    "seed33Runs": [
+      "plain",
+      "recorded"
+    ],
+    "sameGameOrder": true,
+    "deadlinePerGameSeconds": 60,
+    "assertionsPreserved": true,
+    "isolatedPassed": 3,
+    "fullSuitePassed": 3,
+    "engineChangeForHarness": false
+  },
+  "rawValidationLogSha256": "9641376521e16307aa9f5861743c2e6960d8bd2509274efcd34ce35073cdbcfb",
+  "knownFailures": [
+    {
+      "kind": "physical-law",
+      "issue": "Production center-hand tangential angular accounting defect; patch promotion football controls remain failed",
+      "evidence": "docs/STATUS.md"
+    },
+    {
+      "kind": "experimental-physics",
+      "issue": "Loaded recovery refinement and unfinished holds; HOLD_SUBSTEPS is off and refines the shared contact group",
+      "evidence": "docs/reviews/loaded-recovery.md"
+    },
+    {
+      "kind": "experimental-physics",
+      "issue": "Patch hand turns and hand-fight feedback regressions; all hand experiments off",
+      "evidence": "docs/reviews/hands-plan.md"
+    },
+    {
+      "kind": "football-mechanism",
+      "issue": "Gap flow, loaded zone movement, safe approaches and tackle survival remain unfinished",
+      "evidence": "docs/reviews/run-game-integration.md"
+    }
+  ],
+  "note": "The publication follow-up adds docs/receipt only. Source and validation fingerprints identify the tested runtime and harness; physics readiness is not inferred from functional test success."
+}
