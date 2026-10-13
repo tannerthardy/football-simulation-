@@ -118,6 +118,22 @@ The present trace establishes the mismatch and failed collection, not that a
 particular replacement job would preserve all first-level work. Do not silently
 reassign F or delay the runner to make RG's late climb look successful.
 
+Independent source review at `f61de42` clarifies this risk without rerunning
+the scene. `planRunBlocking` reserves backers for combinations before assigning
+the backfield F, and its `lbNear` skips every previously claimed backer. G73's
+RG/RT combination owns LB_W, C/LG owns LB_M, and F receives the remaining LB_S.
+F's requested pursuit follows that installation; there is no demonstrated
+wrong-side command against his assigned job. A backside pursuit block can be
+useful, so the residual assignment is a priority risk, not yet a proved bust.
+Among the 17 previously selected clips, this is the only backfield-F lead
+clip; there is no recorded successful opposing F case in that film. The next
+discriminating question is whether the installed lead should instead protect
+the playside entry while preserving responsibility for the backside scraper.
+That needs an explicit job/coverage contract and one useful-backside-work
+control before an assignment change. Existing source/flags, input and native
+history pins above remain applicable. This review adds zero simulations or
+tests; release/contact changes dependent on the proved law failure stay paused.
+
 LB_W's fast flow through an open route is information-consistent: he reads run
 at .30 and later sees carrying RB. He never wins an offensive hand fight in the
 original play. The loss is therefore not explained by a universally superior

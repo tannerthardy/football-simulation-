@@ -5,6 +5,12 @@ Shared comparisons start from `codex/run-game-integration`; read
 Report the exact commit, source hash, flag profile and inputs. Historical rows
 below describe their pinned stages; they do not change the current baseline.
 
+Run-game work follows the [PR #6 selective-testing policy](https://github.com/tannerthardy/football-simulation-/blob/codex/roster-capability-audit/docs/TESTING_COSTS.md)
+(reviewed blob `df371a89c4d3918822bf15f7b2d0b42f8d8279da`). Local workers reuse
+compatible evidence and supply focused receipts; the existing integration lead
+freezes the combined candidate and owns its preserved full suite. Adoption does
+not schedule tests or an integration run.
+
 Latest run-game handoff: [bounded combination/collection diagnosis](reviews/combination-collection.md),
 comparison **4ded6b6**, trial **4074038** withdrawn. Sole physics owner: replay
 the [two-body Y/DE_S witness](reviews/combination-keeper-world-witness.json),
