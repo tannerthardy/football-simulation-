@@ -356,7 +356,56 @@
       "build": 0
     },
     "enabledCombinedFocusedPassed": 117,
-    "fullCandidate": "pending"
+    "fullCandidate": {
+      "commit": "d02c5e38f40e49e537deafff268ddd00640ec5b6",
+      "sourceSha256": "09c65f70ff3835dba17fb08487582d65f49eaea827f4e6e48f396f93210b773c",
+      "validationSha256": "6216fc3391978e20941213467a965717f45313b13c75179fcddadb7572d9aef4",
+      "typescriptPassed": 1673,
+      "typescriptFilesPassed": 137,
+      "pythonPassed": 145,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.154126672
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.760413039
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:all"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 155.71194407599998
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:data"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.6603025650000199
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-13T19:12:19.814Z",
+      "finishedAt": "2026-10-13T19:15:16.103Z"
+    }
   },
   "mechanismCohorts": [
     {

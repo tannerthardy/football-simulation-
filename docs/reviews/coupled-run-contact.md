@@ -115,12 +115,40 @@ profiles, neutral observation and default/motor parity before writing every
 paired result to `summary.json`. Fixed-time samples require real live frames;
 same-tick contact/crossing remains uncertain.
 
+The committed [baseline history digests](coupled-run-contact-baseline.json)
+let a fresh run check parity without restoring the original large traces.
+The [compact receipt](coupled-run-contact-receipt.json) retains all adverse
+approach pairs, exact settings and validation fingerprints. The full paired
+results stay in ignored `out/`.
+
+Repeat the known neighboring-pair control with the five declared positioning
+inputs; then repeat with `--flag RUN_CONTACT_COMPONENTS=1` added:
+
+```sh
+FLOW_INPUTS=data/reviews/run-game-contact/input-manifest-positioning.json \
+FLOW_STOP=3.5 FLOW_TRACE=1 CONTACT_TRACE=1 \
+npm run baseline:run -- --candidate --flag RUN_CONTACT_TRACK=1 -- \
+  node --import tsx scripts/diag/defense/flow-panel.ts out/coupled-run-contact/track.json
+npm run baseline:run -- --candidate --flag HAND_MOTOR=1 -- \
+  node --import tsx scripts/diag/hands/bench.ts --out out/coupled-run-contact/hands-on.json
+```
+
 The untouched baseline passed 1,652 TypeScript and 145 Python checks, typecheck
 and build. The enabled combined controllers/hands pass 117 focused checks,
 including shared arm budgets, co-motion, contact ownership, helper transfers,
 retained hand parameters, genuine backdrive and acquired-cue boundaries.
-Complete candidate validation and the eight-game mechanism comparisons are
-recorded in the accompanying receipt after their completion.
+Complete candidate validation at `d02c5e3` passes **1,673 TypeScript assertions
+in 137 files, 145 Python checks, typecheck and build**, with no worker errors.
+The runtime and validation inputs stayed unchanged throughout the run. The
+later receipt/docs update changes no runtime, tests, profile or collector.
+
+Eight-game seed-101 cohorts, using the same generated rosters, retain **12/12
+mechanism guards** in both default and combined-controller modes. The clean
+common-play samples contain 303 runs/788 passes and 284 runs/818 passes,
+respectively. Later calls/situations/RNG diverge: these are whole-game diagnostic
+cohorts, not matched individual snaps. The hand controllers are off in both.
+No yardage or scoring target was fitted, and the remaining 43 mechanism flags
+marked off in each report are not repaired by passing the 12 existing guards.
 
 The next bounded work is the native adjacent-pair approach/contact sequence and
 the first changed defensive fit after the runner handover. These trials supply
