@@ -1,5 +1,12 @@
 # Moving arrival and actual-defender recovery sensitivity — 2026-10-13
 
+Follow-up: [P4 geometry × actual execution](catch-transition-diagnosis.md)
+shows both P4 geometries tackle with its stronger draw and concede TD with
+its weaker draw. Acquisition shifts one tick and changes the assigned shared
+RNG values; a harmful catch-to-pursuit transition is not established. The
+original outcome-only rejection is not a causal football judgment. The
+diagnostic remains unpromoted; no new gate or capability change is installed.
+
 **Both moving-arrival prototypes are rejected for integration.** They establish
 a useful controller mechanism on P58 and fresh explosive plays, but do not retain
 all required controls. The first version loses a fresh interception. The second
