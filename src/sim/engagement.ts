@@ -634,6 +634,8 @@ const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
+/** Experimental (RUN_HANDS=1, off): run blockers drive committed defenders off their body. */
+const RUN_HANDS = process.env.RUN_HANDS === '1';
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 
@@ -866,6 +868,42 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   return { aim, reading, threat, declared: stack?.runner ?? false, stack };
 }
 
+/** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
+ * controls the hands pushes a defender further the way he has committed when
+ * that way takes him off the blocker's body: running wide of him (drag hand)
+ * or ducking inside him (slingshot). A man working across the blocker's face
+ * is only braked (passive steer). Felt through the hands: relative motion at
+ * the contact, not a picture of the play. */
+function runHandDrive(sim: PlaySim, e: Engagement): void {
+  const j = e.hands;
+  if (!j) return;
+  j.drive = 0;
+  if (e.control < 0 || j.actor !== e.blocker.body) return;
+  const b = e.blocker, d = e.defender;
+  // Arms spent sideways are not holding a man out of the backfield: while
+  // he feels himself driven back he keeps them on stopping him.
+  const felt = b.body.support?.felt, up = sim.attackDir(b.team);
+  if (felt && -felt.x * up > 0.25 * b.profile.massKg * G) return;
+  const other = j.b === d.body ? d : b, self = other === d ? b : d;
+  const dx = other.pos.x - self.pos.x, dy = other.pos.y - self.pos.y, L = Math.hypot(dx, dy) || 1;
+  const tx = -dy / L, ty = dx / L;
+  const vt = (other.vel.x - self.vel.x) * tx + (other.vel.y - self.vel.y) * ty;
+  if (Math.abs(vt) < 0.5) return;
+  // Which side of the blocker's chest the defender is on, and whether his
+  // relative motion takes him further to that side.
+  const right = { x: Math.sin(b.facing), y: -Math.cos(b.facing) };
+  const off = (d.pos.x - b.pos.x) * right.x + (d.pos.y - b.pos.y) * right.y;
+  const dTan = other === d ? vt : -vt;
+  const moving = dTan * (tx * right.x + ty * right.y);
+  if (Math.abs(off) < 0.05 || off * moving <= 0) return;
+  // Only a man committed across the blocker: one driving straight through
+  // him is fought with the feet and chest, not helped past a shoulder.
+  // His own motion decides it, not the blocker's step.
+  const along = d.vel.x * Math.cos(b.facing) + d.vel.y * Math.sin(b.facing);
+  if (Math.abs(along) > Math.abs(d.vel.x * right.x + d.vel.y * right.y)) return;
+  j.drive = Math.sign(vt) * Math.min(3, Math.abs(vt) + 1);
+}
+
 function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const t = sim.t;
   const dt = sim.dt;
@@ -936,6 +974,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     return;
   }
   setHands(sim, e);
+  if (RUN_HANDS) runHandDrive(sim, e);
   // Feet request displacement along the drive line; contact geometry and the
   // lateral fit use the surface frame. These can differ in a stretch-zone rep.
   // Actual hand normal, ground traction and work remain physical constraints.
