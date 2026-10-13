@@ -71,7 +71,7 @@ function native(f:any){
 /** Reach the actual World boundary after controllers, tackle refinement and
  * teammate spacing; do not attempt to reconstruct private solver history. */
 function atWorld(f:any,t:number){
- const sim=restore(f),stop={},step=sim.world.step.bind(sim.world);let held:Intent[]|undefined;
+ const sim=restore(f),stop={},step=sim.world.step.bind(sim.world);let held:Parameters<PlaySim['world']['step']>[0]|undefined;
  sim.world.step=(intents,dt)=>{if(Math.abs(sim.t-t)<1e-8){held=copy(intents);throw stop;}return step(intents,dt);};
  try{while(sim.phase==='live'&&sim.t<=t+1e-8)sim.tick();}catch(e){if(e!==stop)throw e;}
  sim.world.step=step;if(!held)throw Error(`Missing native World boundary ${f.id}/${t}`);
@@ -112,11 +112,13 @@ function shift(sim:PlaySim,a:Agent,dx:number,dy:number){
 }
 function lab(f:any,input:LabInput,observe:boolean){
  const sim=restore(f,observe),catchT=f.nativeResult.events.find((e:any)=>e.type==='catch').t;
- // Preserve the real prefix through catch; the fork begins before its next tick.
- while(sim.phase==='live'&&sim.t<catchT+.05-1e-8)sim.tick();
+ // Preserve the native approach until 0.45 s before its first loaded boundary,
+ // or the first post-catch tick for the two immediate-wrap controls.
+ const forkAt=Math.max(catchT+.05,f.firstLoaded.tickEnd-.45);
+ while(sim.phase==='live'&&sim.t<forkAt-1e-8)sim.tick();
  const c=sim.carrier!,d=sim.agents[f.defender],h=sim.agents[f.helper],start=sim.t;
  if(!c||sim.phase!=='live')throw Error(`Invalid catch fork ${f.id}`);
- const prefixSha256=hash(snapshot(sim)),dx=45-c.pos.x,dy=(input.field==='left'?4:input.field==='right'?FIELD_WIDTH-4:CENTER_Y)-c.pos.y;
+ const prefixSha256=hash(snapshot(sim)),dx=45-c.pos.x,dy=(input.field==='left'?6:input.field==='right'?FIELD_WIDTH-6:CENTER_Y)-c.pos.y;
  const active=new Set([c,d,...input.helpers?[h]:[]]),startJoint=sim.world.joints.find(j=>j.kind==='grasp'&&j.a===d.body&&j.b===c.body);
  if(startJoint&&(startJoint as GraspJoint).force)throw Error('Translate only before first native grip load');
  for(const a of active)shift(sim,a,dx,dy);
@@ -129,7 +131,7 @@ function lab(f:any,input:LabInput,observe:boolean){
  sim.engagements.length=0;
  sim.world.joints=sim.world.joints.filter(j=>active.has(sim.agents[sim.world.indexOf(j.a)])&&active.has(sim.agents[sim.world.indexOf(j.b)]));
  Reflect.set(sim.world,'pending',(Reflect.get(sim.world,'pending') as any[]).filter(p=>active.has(sim.agents[sim.world.indexOf(p.a)])&&active.has(sim.agents[sim.world.indexOf(p.b)])));
- sim.los+=dx;sim.firstDownX+=dx;
+ Reflect.set(sim,'los',sim.los+dx);Reflect.set(sim,'firstDownX',sim.firstDownX+dx);
  if(input.stream==='fresh-9001')Reflect.set(sim,'rng',new Rng(`${f.setup.seed}:catch-chain:9001`));
  if(input.runner!=='native'){
   const original={...c.vel},speed=c.profile.vmax,cutSkill=.8+.45*c.r('elusiveness'),sign=input.runner==='bend-left'?-1:1;
@@ -143,7 +145,7 @@ function lab(f:any,input:LabInput,observe:boolean){
  if(observe)sim.world.step=(intents,dt)=>{const before=[geometry(c,d),...input.helpers?[geometry(c,h)]:[]],applied=activeArray().map(a=>({idx:a.idx,intent:copy(intents[a.idx])}));
   const report=step(intents,dt);const grips=sim.world.joints.filter(j=>j.kind==='grasp'&&j.b===c.body).map(j=>{
    const g=j as GraspJoint;let id=holdIndex.get(g);if(id===undefined){id=holds.length;holdIndex.set(g,id);
-    holds.push({id,defender:sim.world.indexOf(g.a),acquiredBefore:start+rows.length*.05,firstLoaded:null,brokenAt:null,origin:g.origin,initialCapacity:g.capacity,legs:g.legs});}
+    holds.push({id,defender:sim.world.indexOf(g.a),firstObservedStepEnd:sim.t+dt,firstLoaded:null,brokenAt:null,origin:g.origin,initialCapacity:g.capacity,legs:g.legs});}
    const hold=holds[id];if((g.force??0)>1e-8&&hold.firstLoaded===null)hold.firstLoaded=sim.t+dt;
    if(g.broken&&hold.brokenAt===null)hold.brokenAt=sim.t+dt;
    return {...copy({...g,a:undefined,b:undefined}),a:sim.world.indexOf(g.a),b:c.idx,holdId:id};});
@@ -170,8 +172,8 @@ else if(mode==='contact'){
   cases:inputs.clips.map((f:any)=>contact(f,tape.clips.find((c:any)=>c.id===f.id)))};
 }else if(mode==='lab'){
  const manifest=labInputs();report={schema:'catch-chain-reduced-encounter-v1',manifest,inputSha256:hash(manifest),
-  limitations:'Reduced native-prefix catch forks. Same actual runner/first loaded defender, native support, velocities, eyes, histories and capabilities. All bystanders parked and block joints removed. Helper is the named actual athlete deliberately repositioned to a viable opposite lane; NOT original coverage formation. Carrier center y=4/26.67/49.33, x=45; positions/history/support anchors translated together. Original stream versus independent post-prefix execution stream 9001. Native runner versus bends requested after 0.6 s. Ten-second live endpoints censored; no forced whistle, force scaling or solver experiment.',
-  cases:manifest.map(input=>{const f=inputs.clips.find((f:any)=>f.id===input.id),observed=lab(f,input,true),plain=lab(f,input,false);
+  limitations:'Reduced native-prefix approach forks, starting 0.45 s before first native loaded boundary or first post-catch tick, whichever is later. Same actual runner/first loaded defender, native support, velocities, eyes, histories and capabilities. All bystanders parked and block joints removed. Helper is the named actual athlete deliberately repositioned to a viable opposite lane; NOT original coverage formation. Carrier center y=6/26.67/47.33, x=45; positions/history/support anchors translated together. Original stream versus independent post-prefix execution stream 9001. Native runner versus bends requested after 0.6 s. Ten-second live endpoints censored; no forced whistle, force scaling or solver experiment.',
+  cases:manifest.map((input:LabInput)=>{const f=inputs.clips.find((f:any)=>f.id===input.id),observed=lab(f,input,true),plain=lab(f,input,false);
    if(observed.signature!==plain.signature||observed.initialSha256!==plain.initialSha256)throw Error(`Lab observer changes ${JSON.stringify(input)}`);
    console.log(JSON.stringify({input,outcome:observed.outcome,censored:observed.censored,gain:observed.gain}));
    return {...observed,observerVerified:true};})};
