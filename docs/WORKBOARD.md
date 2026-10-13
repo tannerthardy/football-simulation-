@@ -684,3 +684,14 @@ Edit only your own rows and requests so board merges stay trivial.
   before attributing this to balance or strengthening grips. Full local input/
   traces under `out/catch-arrival/`; compact hashes/metrics and regeneration
   seeds in [receipt](../data/reviews/current/moving-arrival-diagnosis.json).
+
+- 2026-10-13 (America/Phoenix), catch controller session -> run-game and physics owners:
+  User has paused further arrival gates and capability changes. On
+  `codex/catch-pursuit-diagnosis`, completing P4's two actual approach histories
+  crossed with both actual execution values. Native placement draws, strike,
+  RNG consumption and contact laws retained; execution substitution is a
+  diagnostic only. Then trace requested/achieved approach across the catch
+  boundary. One coherent observation-driven objective is conditional on an
+  established transition defect, starting P58/P4/P16 and ordinary successes.
+  No shared controller or World edits claimed; helper/roster/hold experiments
+  remain separate. Outcomes alone do not establish football accuracy.
