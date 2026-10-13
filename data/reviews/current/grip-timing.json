@@ -1,0 +1,1180 @@
+{
+  "source": "c89092946f520d67ebcaeb45e2435d7f52cc0075bde009d0d34a819fbb08824c",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "inputs": [
+    {
+      "name": "front center",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "seed": 3001,
+      "mode": "center",
+      "side": 1,
+      "id": "center-0-3-0-3001-1"
+    },
+    {
+      "name": "front center",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "seed": 3001,
+      "mode": "center",
+      "side": -1,
+      "id": "center-0-3-0-3001--1"
+    },
+    {
+      "name": "front patch",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-0-3-0-3001-1"
+    },
+    {
+      "name": "front patch",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": -1,
+      "id": "patch-0-3-0-3001--1"
+    },
+    {
+      "name": "angled acquired",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-45-8-0-3001-1"
+    },
+    {
+      "name": "angled acquired",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": -1,
+      "id": "patch-45-8-0-3001--1"
+    },
+    {
+      "name": "rear center adverse",
+      "cell": {
+        "angle": 180,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "center",
+      "side": 1,
+      "id": "center-180-6-0-3001-1"
+    },
+    {
+      "name": "rear center adverse",
+      "cell": {
+        "angle": 180,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "center",
+      "side": -1,
+      "id": "center-180-6-0-3001--1"
+    },
+    {
+      "name": "rear patch",
+      "cell": {
+        "angle": 135,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-135-6-0-3001-1"
+    },
+    {
+      "name": "rear patch",
+      "cell": {
+        "angle": 135,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": -1,
+      "id": "patch-135-6-0-3001--1"
+    },
+    {
+      "name": "side-cut adverse",
+      "cell": {
+        "angle": 90,
+        "speed": 3,
+        "cut": true,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-90-3-1-3001-1"
+    },
+    {
+      "name": "side-cut adverse",
+      "cell": {
+        "angle": 90,
+        "speed": 3,
+        "cut": true,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": -1,
+      "id": "patch-90-3-1-3001--1"
+    },
+    {
+      "name": "fresh angled",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 4001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-45-8-0-4001-1"
+    },
+    {
+      "name": "fresh angled",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 4001,
+      "mode": "patch",
+      "side": -1,
+      "id": "patch-45-8-0-4001--1"
+    }
+  ],
+  "inputManifest": "9841072451904f1b8e713782fdd4c7e9ebcc06ef2ce24bde9223a675077954a1",
+  "candidate": {
+    "handContact": "per input; patch remains experimental",
+    "gripTiming": "resolved",
+    "capacities": "unchanged",
+    "recovery": "unchanged",
+    "supportAndTackleExperiments": "off"
+  },
+  "frozenReferencePartitions": 4096,
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "baselineSource": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+  "checkpoints": [
+    {
+      "id": "center-0-3-0-3001-1",
+      "checksum": "2e7b35ac5c63ec2fe8a3ffc6c4e3490842240b234e7d5b79183039133550aaf6",
+      "checkpoint": "3b80c8d39b54e452f8eca38efb67fb4d1dfe062f3d2994c5a57f8374951a125e",
+      "endpoint": "90c0ca65976551792730d8a960c6d41bbfe0e8b5287ddb7f97944b360b775d7b",
+      "observerParity": true
+    },
+    {
+      "id": "center-0-3-0-3001--1",
+      "checksum": "b91cf5b7123dca68cc578f2065dc929f5aeb5db97b138b1d75e427a3b94a9a1d",
+      "checkpoint": "3b80c8d39b54e452f8eca38efb67fb4d1dfe062f3d2994c5a57f8374951a125e",
+      "endpoint": "90c0ca65976551792730d8a960c6d41bbfe0e8b5287ddb7f97944b360b775d7b",
+      "observerParity": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1",
+      "checksum": "ccf3c23363fda87c9fcb181b50e547d7b7343b030d99b784364708f187fb984b",
+      "checkpoint": "ca0581ce258a881be0229eb4cd01e6b5ace46f7a8d128b238bad697a814cc803",
+      "endpoint": "cf2b4bb399a130a4a1e7fa4155db5889524077de6ba4deecd5cc3b02f4ebc34e",
+      "observerParity": true
+    },
+    {
+      "id": "patch-0-3-0-3001--1",
+      "checksum": "ccf3c23363fda87c9fcb181b50e547d7b7343b030d99b784364708f187fb984b",
+      "checkpoint": "ca0581ce258a881be0229eb4cd01e6b5ace46f7a8d128b238bad697a814cc803",
+      "endpoint": "cf2b4bb399a130a4a1e7fa4155db5889524077de6ba4deecd5cc3b02f4ebc34e",
+      "observerParity": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1",
+      "checksum": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "checkpoint": "7dd424e4cb40afd737208ebe7c54b3458155d0e947a3f0d779664e829d118a85",
+      "endpoint": "81f2035d28cf74ede00b88298a897aeeca71346393b006fab118aaa004e5e8d7",
+      "observerParity": true
+    },
+    {
+      "id": "patch-45-8-0-3001--1",
+      "checksum": "18072e0f7396aa58e9fed6630fdb154a582388b6a8c7c27524157a24fd13a7d5",
+      "checkpoint": "5ecb28ef2c81d3e3205faba04b5232b4be179af9f8a5bf70038a3c36d8e410e9",
+      "endpoint": "dcc864ce81be7f2c2253c9590b90e4028cec6523d4f6b18231a62ed78eed0cb6",
+      "observerParity": true
+    },
+    {
+      "id": "center-180-6-0-3001-1",
+      "checksum": "4ff5a135173d0f890b2094469599e483ff9070d92fcb78519e1156085e3ec9e0",
+      "checkpoint": "d1cf6eece8a54ff1aae18306caea1db60dc91122f21f0008b7a471437ccb8773",
+      "endpoint": "e6d5aaee54f00f6736a8c864dfe6795ae4a894c263d16ae51979225ffb4894a6",
+      "observerParity": true
+    },
+    {
+      "id": "center-180-6-0-3001--1",
+      "checksum": "4ff5a135173d0f890b2094469599e483ff9070d92fcb78519e1156085e3ec9e0",
+      "checkpoint": "d1cf6eece8a54ff1aae18306caea1db60dc91122f21f0008b7a471437ccb8773",
+      "endpoint": "e6d5aaee54f00f6736a8c864dfe6795ae4a894c263d16ae51979225ffb4894a6",
+      "observerParity": true
+    },
+    {
+      "id": "patch-135-6-0-3001-1",
+      "checksum": "d0ba21ac8da4918435b90c14eb62155f7b3bc87f625aeb85b897bbc3319910c6",
+      "checkpoint": "6d193d469b028e9372fb9bcfca68608c221059479ad5061c9ec319a90e46d428",
+      "endpoint": "cc516b5418bc4a9c3dd04e7854c2c04a473ed4404613af100d2c1d5f03d16726",
+      "observerParity": true
+    },
+    {
+      "id": "patch-135-6-0-3001--1",
+      "checksum": "0d63c09c2ff93274ac21a9f78ce94746b0c41221b012cd220ab3dbf7283d6b9a",
+      "checkpoint": "f635a2fa2f67be5649b292324897269d60b985f84093d783fbe3aaec9a4e338c",
+      "endpoint": "53a406fb18dd4cacb49f3d530f727d19690754f3e4682edc181a14a93ef2e130",
+      "observerParity": true
+    },
+    {
+      "id": "patch-90-3-1-3001-1",
+      "checksum": "3efcbd49cfd652b6ef9e6748c56f03193552687edc15e554aeee7bf68819e561",
+      "checkpoint": "372c586f8ef7f34a63b6eb2773023e53118d49b26310bd68fa11f264528b8bf4",
+      "endpoint": "76bd7f45291ee970b42c811a28c5748d979ce7b0cbe6d3d93e076c06130e0814",
+      "observerParity": true
+    },
+    {
+      "id": "patch-90-3-1-3001--1",
+      "checksum": "56125d6c2e8799b35c2c8b401d67422331aeae7efdcc70c1443f65c3f401543f",
+      "checkpoint": "0d6641ca8aff2c1062ecafca1e5b61bb25cfc0b82b5dafd82afcb162b4d49d7a",
+      "endpoint": "0c434e5a09ef8729b6b4ab9a9ea38653b5d117fb3ead95bfad8e2a5330890d07",
+      "observerParity": true
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "checksum": "da3708553b3c7e85929f00636bf65d735743b1e03594cb9d59dea58869186187",
+      "checkpoint": "68f6eb0e887b0b632e54b1e451c645819451ec37cf703af03b56e723ef6af1df",
+      "endpoint": "736c6536a9a10069d9bdba00a0bc9edc0b89665de3967f668c4bcc79a54067f0",
+      "observerParity": true
+    },
+    {
+      "id": "patch-45-8-0-4001--1",
+      "checksum": "2ae83744069a9278ea4f19fe445b30b2090cecf283951157429121cd5d852ccc",
+      "checkpoint": "59e0074ea92f078bec27a3a9d9d65fc79b86903d4324c78ecda32b1e5dd75828",
+      "endpoint": "4cace76e0250fdf26869349a812806f966138eeeda247d5aa2011429375b3777",
+      "observerParity": true
+    }
+  ],
+  "note": "API option only, default midpoint. No capacity/recovery-law change or patch promotion. Native gain is advance after the acquired grip, not actual-contact or NFL YAC.",
+  "frozen": [
+    {
+      "id": "patch-45-8-0-3001-1",
+      "variant": "full",
+      "before": {
+        "position": 5.113251105744676e-05,
+        "spin": 0.13924011767200906,
+        "facing": 0.003028539698553878
+      },
+      "candidate": {
+        "position": 2.8133728260424877e-08,
+        "spin": 0.00017375533047125913,
+        "facing": 1.6587535842660373e-06
+      },
+      "integration": {
+        "trials": 511,
+        "intervals": 256,
+        "limited": 0,
+        "maxAcceptedError": 0.7657850950693045
+      },
+      "momentumError": 1.3641727342394311e-12,
+      "workError": 6.796341267545358e-12
+    },
+    {
+      "id": "patch-45-8-0-3001-1",
+      "variant": "grip-only",
+      "before": {
+        "position": 4.759954029341528e-05,
+        "spin": 0.048247972949322815,
+        "facing": 0.0028205303089579026
+      },
+      "candidate": {
+        "position": 5.762768670374226e-09,
+        "spin": 0.00017390321637833495,
+        "facing": 3.392427085913141e-07
+      },
+      "integration": {
+        "trials": 511,
+        "intervals": 256,
+        "limited": 0,
+        "maxAcceptedError": 0.7420828559112636
+      },
+      "momentumError": 2.2737367544323206e-13,
+      "workError": -1.284305994886381e-12
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "variant": "full",
+      "before": {
+        "position": 7.940766686324779e-06,
+        "spin": 0.09685807603063079,
+        "facing": 0.00047620934341496834
+      },
+      "candidate": {
+        "position": 4.927314318655501e-10,
+        "spin": 7.390547981778184e-05,
+        "facing": 2.8896293802205264e-08
+      },
+      "integration": {
+        "trials": 4095,
+        "intervals": 2048,
+        "limited": 0,
+        "maxAcceptedError": 0.5951174500324896
+      },
+      "momentumError": 2.1938585940330718e-11,
+      "workError": -6.337685931612214e-11
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "variant": "grip-only",
+      "before": {
+        "position": 4.716858762921567e-06,
+        "spin": 0.04822606509430827,
+        "facing": 0.0002857427384843625
+      },
+      "candidate": {
+        "position": 5.449392612526449e-10,
+        "spin": 0.00017381721356635182,
+        "facing": 3.21042041839803e-08
+      },
+      "integration": {
+        "trials": 511,
+        "intervals": 256,
+        "limited": 0,
+        "maxAcceptedError": 0.7417139370353709
+      },
+      "momentumError": 5.362597410144533e-13,
+      "workError": 2.6929569685307797e-12
+    }
+  ],
+  "nativePositive": [
+    {
+      "name": "front center",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "seed": 3001,
+      "mode": "center",
+      "side": 1,
+      "id": "center-0-3-0-3001-1",
+      "runs": [
+        {
+          "n": 12,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.7,
+              "x": 52.09999999999998
+            },
+            "advanceAfterGrip": 0.45577828462963765,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.7,
+              "x": 52.09999999999998
+            },
+            "advanceAfterGrip": 0.45577828462963765,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.065379236,
+            "candidate": 0.060761662
+          },
+          "accounting": {
+            "trials": 0,
+            "intervals": 0,
+            "limited": 0,
+            "maxAcceptedError": 0,
+            "workError": 4.156675004196586e-13,
+            "passiveWork": 1.3309647144194427e-15,
+            "armExcess": 0,
+            "supportExcess": 0
+          }
+        },
+        {
+          "n": 96,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.7,
+              "x": 52.09999999999998
+            },
+            "advanceAfterGrip": 0.44923206273633554,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.7,
+              "x": 52.09999999999998
+            },
+            "advanceAfterGrip": 0.44923206273633554,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.12965846299999997,
+            "candidate": 0.11681475399999999
+          },
+          "accounting": {
+            "trials": 0,
+            "intervals": 0,
+            "limited": 0,
+            "maxAcceptedError": 0,
+            "workError": 2.9558577807620168e-12,
+            "passiveWork": 5.516925188231741e-17,
+            "armExcess": 9.947598300641403e-14,
+            "supportExcess": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "front patch",
+      "cell": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-0-3-0-3001-1",
+      "runs": [
+        {
+          "n": 12,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.7,
+              "x": 52.09999999999998
+            },
+            "advanceAfterGrip": 0.45730726352186934,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.7,
+              "x": 52.09999999999998
+            },
+            "advanceAfterGrip": 0.4406135144385743,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.028573740000000042,
+            "candidate": 13.847049626
+          },
+          "accounting": {
+            "trials": 144808,
+            "intervals": 72474,
+            "limited": 0,
+            "maxAcceptedError": 0.9996408607548801,
+            "workError": 3.641733442583117e-11,
+            "passiveWork": 6.724762686758615e-17,
+            "armExcess": 4.902744876744691e-12,
+            "supportExcess": 0
+          }
+        },
+        {
+          "n": 96,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.7,
+              "x": 52.09999999999998
+            },
+            "advanceAfterGrip": 0.4489734517965971,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.7,
+              "x": 52.09999999999998
+            },
+            "advanceAfterGrip": 0.4415956894341022,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.09412515599999983,
+            "candidate": 4.985350859
+          },
+          "accounting": {
+            "trials": 21824,
+            "intervals": 11473,
+            "limited": 0,
+            "maxAcceptedError": 0.9996325900374359,
+            "workError": 3.524291969370097e-12,
+            "passiveWork": 7.916938127985002e-17,
+            "armExcess": 8.526512829121202e-13,
+            "supportExcess": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "angled acquired",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-45-8-0-3001-1",
+      "runs": [
+        {
+          "n": 12,
+          "before": {
+            "ending": "escaped",
+            "endWhy": "tackler on the ground",
+            "finish": "escaped",
+            "firstGrip": {
+              "t": 2.65,
+              "x": 55.19999999999996
+            },
+            "advanceAfterGrip": 21.49652848153923,
+            "carrierState": "up"
+          },
+          "candidate": {
+            "ending": "censored",
+            "endWhy": "time limit",
+            "finish": "censored",
+            "firstGrip": {
+              "t": 2.65,
+              "x": 55.19999999999996
+            },
+            "advanceAfterGrip": 20.711448535775403,
+            "carrierState": "up"
+          },
+          "seconds": {
+            "before": 0.13365844799999968,
+            "candidate": 76.024406562
+          },
+          "accounting": {
+            "trials": 951548,
+            "intervals": 476296,
+            "limited": 0,
+            "maxAcceptedError": 0.9997281049214379,
+            "workError": 2.1185719845107087e-10,
+            "passiveWork": 3.929387928007487e-16,
+            "armExcess": 4.767741756950272e-12,
+            "supportExcess": 0
+          }
+        },
+        {
+          "n": 96,
+          "before": {
+            "ending": "censored",
+            "endWhy": "time limit",
+            "finish": "censored",
+            "firstGrip": {
+              "t": 2.65,
+              "x": 55.2000000000003
+            },
+            "advanceAfterGrip": 22.274863595064915,
+            "carrierState": "up"
+          },
+          "candidate": {
+            "ending": "censored",
+            "endWhy": "time limit",
+            "finish": "censored",
+            "firstGrip": {
+              "t": 2.65,
+              "x": 55.2000000000003
+            },
+            "advanceAfterGrip": 22.354929780057475,
+            "carrierState": "up"
+          },
+          "seconds": {
+            "before": 0.44183369500000025,
+            "candidate": 46.400164049999994
+          },
+          "accounting": {
+            "trials": 213684,
+            "intervals": 111018,
+            "limited": 0,
+            "maxAcceptedError": 0.9999157999299373,
+            "workError": 1.2853451636374302e-10,
+            "passiveWork": 3.063399900951865e-16,
+            "armExcess": 2.4868995751603507e-13,
+            "supportExcess": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "rear center adverse",
+      "cell": {
+        "angle": 180,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "center",
+      "side": 1,
+      "id": "center-180-6-0-3001-1",
+      "runs": [
+        {
+          "n": 12,
+          "before": {
+            "ending": "censored",
+            "endWhy": "time limit",
+            "finish": "censored",
+            "firstGrip": {
+              "t": 2.05,
+              "x": 50.3
+            },
+            "advanceAfterGrip": 22.556729004913606,
+            "carrierState": "up"
+          },
+          "candidate": {
+            "ending": "censored",
+            "endWhy": "time limit",
+            "finish": "censored",
+            "firstGrip": {
+              "t": 2.05,
+              "x": 50.3
+            },
+            "advanceAfterGrip": 22.556729004913606,
+            "carrierState": "up"
+          },
+          "seconds": {
+            "before": 0.06010886600000049,
+            "candidate": 0.15377165700000478
+          },
+          "accounting": {
+            "trials": 0,
+            "intervals": 0,
+            "limited": 0,
+            "maxAcceptedError": 0,
+            "workError": 3.9541703245049575e-12,
+            "passiveWork": 2.616721141417842e-17,
+            "armExcess": 0,
+            "supportExcess": 0
+          }
+        },
+        {
+          "n": 96,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.05,
+              "x": 50.3
+            },
+            "advanceAfterGrip": 15.201405434550082,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.05,
+              "x": 50.3
+            },
+            "advanceAfterGrip": 15.201405434550082,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.21165713500000038,
+            "candidate": 0.2860932239999529
+          },
+          "accounting": {
+            "trials": 0,
+            "intervals": 0,
+            "limited": 0,
+            "maxAcceptedError": 0,
+            "workError": 2.6552982035354944e-11,
+            "passiveWork": 9.525525151650932e-16,
+            "armExcess": 0,
+            "supportExcess": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "rear patch",
+      "cell": {
+        "angle": 135,
+        "speed": 6,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-135-6-0-3001-1",
+      "runs": [
+        {
+          "n": 12,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 4.4,
+              "x": 64.39999999999993
+            },
+            "advanceAfterGrip": 6.505689731646754,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 4.4,
+              "x": 64.39999999999993
+            },
+            "advanceAfterGrip": 6.7840917951297826,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.046491293000000045,
+            "candidate": 8.30341632399999
+          },
+          "accounting": {
+            "trials": 69216,
+            "intervals": 34752,
+            "limited": 0,
+            "maxAcceptedError": 0.9983085197851743,
+            "workError": 4.748521575947962e-10,
+            "passiveWork": 0,
+            "armExcess": 3.431921413721284e-12,
+            "supportExcess": 0
+          }
+        },
+        {
+          "n": 96,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 4.4,
+              "x": 64.3999999999996
+            },
+            "advanceAfterGrip": 6.766660722264973,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 4.4,
+              "x": 64.3999999999996
+            },
+            "advanceAfterGrip": 6.771738026869528,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.11600793599999998,
+            "candidate": 5.688658594999986
+          },
+          "accounting": {
+            "trials": 9336,
+            "intervals": 5820,
+            "limited": 0,
+            "maxAcceptedError": 0.999164598485165,
+            "workError": 4.830802424748981e-11,
+            "passiveWork": 0,
+            "armExcess": 7.105427357601002e-14,
+            "supportExcess": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "side-cut adverse",
+      "cell": {
+        "angle": 90,
+        "speed": 3,
+        "cut": true,
+        "difficulty": "difficult"
+      },
+      "seed": 3001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-90-3-1-3001-1",
+      "runs": [
+        {
+          "n": 12,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.8,
+              "x": 52.250349038568224
+            },
+            "advanceAfterGrip": 2.088288910505206,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.8,
+              "x": 52.250349038568224
+            },
+            "advanceAfterGrip": 2.0814336019211623,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.036868883000000095,
+            "candidate": 11.271412436999963
+          },
+          "accounting": {
+            "trials": 108876,
+            "intervals": 54576,
+            "limited": 0,
+            "maxAcceptedError": 0.996226589104107,
+            "workError": 1.511040181867429e-10,
+            "passiveWork": 0,
+            "armExcess": 1.5631940186722204e-12,
+            "supportExcess": 0
+          }
+        },
+        {
+          "n": 96,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.8,
+              "x": 52.25034903856822
+            },
+            "advanceAfterGrip": 2.0830569217980752,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.8,
+              "x": 52.25034903856822
+            },
+            "advanceAfterGrip": 2.0820006773742747,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.1062423000000008,
+            "candidate": 8.758950530000032
+          },
+          "accounting": {
+            "trials": 31096,
+            "intervals": 16652,
+            "limited": 0,
+            "maxAcceptedError": 0.9992549606490692,
+            "workError": 5.678129754577155e-11,
+            "passiveWork": 0,
+            "armExcess": 1.7550405573274475e-12,
+            "supportExcess": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "fresh angled",
+      "cell": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      "seed": 4001,
+      "mode": "patch",
+      "side": 1,
+      "id": "patch-45-8-0-4001-1",
+      "runs": [
+        {
+          "n": 12,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.65,
+              "x": 55.19999999999996
+            },
+            "advanceAfterGrip": 13.688951048668969,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.65,
+              "x": 55.19999999999996
+            },
+            "advanceAfterGrip": 12.663037210889826,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.04704081100000076,
+            "candidate": 19.255650263999996
+          },
+          "accounting": {
+            "trials": 200367,
+            "intervals": 100369,
+            "limited": 0,
+            "maxAcceptedError": 0.9991737965498868,
+            "workError": 1.9396004802274547e-09,
+            "passiveWork": 0,
+            "armExcess": 1.3500311979441904e-12,
+            "supportExcess": 0
+          }
+        },
+        {
+          "n": 96,
+          "before": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.65,
+              "x": 55.2000000000003
+            },
+            "advanceAfterGrip": 13.319271331219483,
+            "carrierState": "down"
+          },
+          "candidate": {
+            "ending": "tackled",
+            "endWhy": "down",
+            "finish": "physical fall",
+            "firstGrip": {
+              "t": 2.65,
+              "x": 55.2000000000003
+            },
+            "advanceAfterGrip": 13.289825601715052,
+            "carrierState": "down"
+          },
+          "seconds": {
+            "before": 0.1486434879999997,
+            "candidate": 10.399779473999981
+          },
+          "accounting": {
+            "trials": 42299,
+            "intervals": 22685,
+            "limited": 0,
+            "maxAcceptedError": 0.9999373014485496,
+            "workError": 4.4158809942018706e-10,
+            "passiveWork": 0,
+            "armExcess": 8.597567102697212e-13,
+            "supportExcess": 0
+          }
+        }
+      ]
+    }
+  ],
+  "mirrorEndingsEqual": true,
+  "mirrorMaxAdvanceDifference": 1.142268502007937e-10,
+  "counts": {
+    "12": {
+      "before": {
+        "tackled": 10,
+        "escaped": 2,
+        "censored": 2
+      },
+      "candidate": {
+        "tackled": 10,
+        "escaped": 0,
+        "censored": 4
+      }
+    },
+    "96": {
+      "before": {
+        "tackled": 12,
+        "escaped": 0,
+        "censored": 2
+      },
+      "candidate": {
+        "tackled": 12,
+        "escaped": 0,
+        "censored": 2
+      }
+    }
+  },
+  "defaultResultParity": 14,
+  "gate": {
+    "total": 52,
+    "passed": 43,
+    "failed": 9,
+    "retained": [
+      {
+        "name": "joined helpers replace unusable feet through bounded physical movement turns a wrong-side acquisition into actual useful contact, side -1",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      },
+      {
+        "name": "joined helpers replace unusable feet through bounded physical movement turns a wrong-side acquisition into actual useful contact, side 1",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      },
+      {
+        "name": "solo hand-fight execution with the preserved legacy policy is unchanged matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      },
+      {
+        "name": "solo hand-fight execution with the preserved legacy policy is unchanged matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      },
+      {
+        "name": "the original inside-zone helper may check a supported owner before climbing an unjoined helper who loses his footing must confirm the owner again after recovering",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      },
+      {
+        "name": "a check does not bypass a physical or near-level responsibility collects a genuinely lost loaded contact instead of climbing, side -1",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      },
+      {
+        "name": "a check does not bypass a physical or near-level responsibility collects a genuinely lost loaded contact instead of climbing, side 1",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      },
+      {
+        "name": "a predeclared native Split Zone Under rep earns a supported check and climb lets RG use the supported RT block without first inventing a second pair of hands",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      },
+      {
+        "name": "the native Split Zone Tite helper reads useful first-level work waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands",
+        "trials": 0,
+        "intervals": 0,
+        "limited": 0
+      }
+    ],
+    "added": [],
+    "removed": []
+  }
+}

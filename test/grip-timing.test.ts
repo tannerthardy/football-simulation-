@@ -44,7 +44,7 @@ describe('resolved passive grip force and temporal moment', () => {
     for (const variant of ['grip-only', 'full'] as const) {
       const old = frozenInterval(c.saved, 1, variant, h);
       const r = frozenInterval(c.saved, 1, variant, h, 'resolved');
-      const ref = frozenInterval(c.saved, 256, variant, h);
+      const ref = frozenInterval(c.saved, 4096, variant, h);
       const oldAngle = Math.max(...old.end.map((b, i) => Math.abs(b.facing - ref.end[i].facing)));
       const angle = Math.max(...r.end.map((b, i) => Math.abs(b.facing - ref.end[i].facing)));
       expect(angle).toBeLessThan(oldAngle / 100);

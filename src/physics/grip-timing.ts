@@ -7,10 +7,10 @@
 type Private = any;
 type Packet = { fields: Private; args: any[]; attachments: any[] };
 export interface GripTimingReport { trials: number; intervals: number; limited: number; maxAcceptedError: number; }
-const MAX_DEPTH = 10;
+const MAX_PARTITIONS = 16384;
 // Engineering local error tolerances, in yd, yd/s, rad, rad/s and kg*yd²/s².
 // These bound numerical comparison, never body capacities or football outcomes.
-const POSITION = 2.5e-7, VELOCITY = 2.5e-5, ANGLE = 2.5e-6, SPIN = 2.5e-4, WORK = 2.5e-3;
+const POSITION = 5e-7, VELOCITY = 2.5e-5, ANGLE = 2.5e-6, SPIN = 2.5e-4, WORK = 1e-2;
 
 function snapshot(w: Private, args: any[]): Packet {
   const fields = { ...w }; delete fields.attachments;
@@ -76,33 +76,32 @@ export function resolveGripInterval(w: Private, args: any[], execute: (w: Privat
   if (bound < 1 / 32) {
     execute(w, args); report.intervals = 1; return report;
   }
-  const visit = (state: Packet, h: number, remaining: number, depth: number): { end: Packet; lengths: number[] } => {
-    const full = restore(state, prototype), half = restore(state, prototype);
-    advance(full.w, full.args, h, remaining, execute);
-    advance(half.w, half.args, h / 2, remaining, execute);
-    advance(half.w, half.args, h / 2, remaining - h / 2, execute);
-    report.trials += 3;
-    const initialDose = state.fields.joints.reduce((v: number, j: Private) => v + (j.kind === 'grasp' ? j.force ?? 0 : 0), 0);
-    const dose = (q: Private) => q.joints.reduce((v: number, j: Private) => v + (j.kind === 'grasp' ? j.force ?? 0 : 0), 0) - initialDose;
-    // No transmitted grip load means there is no grip timing to repair. This
-    // also keeps the zero/vanishing-grip limit on the unchanged outer solve.
-    if (Math.max(dose(full.w), dose(half.w)) < 1e-10) return { end: snapshot(full.w, full.args), lengths: [h] };
-    const error = difference(full.w, half.w, ids);
-    if (error <= 1 || depth >= MAX_DEPTH) {
-      if (error > 1) report.limited++;
-      report.maxAcceptedError = Math.max(report.maxAcceptedError, error);
-      return { end: snapshot(half.w, half.args), lengths: [h / 2, h / 2] };
-    }
-    const first = visit(state, h / 2, remaining, depth + 1);
-    const second = visit(first.end, h / 2, remaining - h / 2, depth + 1);
-    return { end: second.end, lengths: [...first.lengths, ...second.lengths] };
+  const initial = snapshot(w, args);
+  const solve = (n: number) => {
+    const trial = restore(initial, prototype), h = duration / n;
+    for (let k = 0; k < n; k++) advance(trial.w, trial.args, h, args[4] - k * h, execute);
+    report.trials += n;
+    return trial.w;
   };
-  const selected = visit(snapshot(w, args), duration, args[4], 0);
-  let elapsed = 0;
-  for (const h of selected.lengths) {
-    advance(w, args, h, args[4] - elapsed, execute);
-    elapsed += h;
+  const initialDose = initial.fields.joints.reduce((v: number, j: Private) => v + (j.kind === 'grasp' ? j.force ?? 0 : 0), 0);
+  const dose = (q: Private) => q.joints.reduce((v: number, j: Private) => v + (j.kind === 'grasp' ? j.force ?? 0 : 0), 0) - initialDose;
+  let coarse = solve(1), partitions = 1;
+  // A whole-interval estimate includes accumulated impulse/time-moment/work
+  // error. Independently acceptable local pieces cannot establish that.
+  while (partitions < MAX_PARTITIONS) {
+    const n = partitions * 2, fine = solve(n);
+    if (Math.max(dose(coarse), dose(fine)) < 1e-10) break;
+    const error = difference(coarse, fine, ids);
+    partitions = n;
+    if (error <= 1 || n === MAX_PARTITIONS) {
+      report.maxAcceptedError = error;
+      if (error > 1) report.limited++;
+      break;
+    }
+    coarse = fine;
   }
-  report.intervals = selected.lengths.length;
+  const h = duration / partitions;
+  for (let k = 0; k < partitions; k++) advance(w, args, h, args[4] - k * h, execute);
+  report.intervals = partitions;
   return report;
 }

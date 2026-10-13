@@ -29,6 +29,7 @@ const sha = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).diges
 const profile = JSON.parse(readFileSync('config/baseline.json', 'utf8'));
 const flags = Object.fromEntries(Object.keys(profile.flags).map(k => [k, process.env[k] ?? null]));
 const root = process.argv[2] ?? 'out/grip-timing', baseline = process.argv.includes('--baseline');
+const frozenOnly = process.argv.includes('--frozen-only');
 mkdirSync(root, { recursive: true });
 const source = sourceVersion(), native: any[] = [], frozen: any[] = [], checkpoints: any[] = [];
 const step = World.prototype.step;
@@ -70,23 +71,31 @@ if (baseline) {
   const b = JSON.parse(readFileSync(join(root, 'baseline.json'), 'utf8'));
   if (b.baseline !== BASE || b.source !== SOURCE || b.inputManifest !== sha(inputs) || sha(b.flags) !== sha(flags))
     throw Error('Baseline/input/flag manifest mismatch');
+  if (frozenOnly) {
+    const existing = JSON.parse(readFileSync(join(root, 'candidate.json'), 'utf8'));
+    if (existing.source !== source || existing.inputManifest !== sha(inputs)) throw Error('Native candidate version changed');
+    native.push(...existing.native);
+  }
   for (const input of inputs) {
     const bytes = readFileSync(join(root, `${input.id}.bin`)), expected = b.checkpoints.find((c: any) => c.id === input.id);
     if (createHash('sha256').update(bytes).digest('hex') !== expected.checksum) throw Error('Acquired packet changed');
     const saved = deserialize(bytes);
     // Verify candidate-off execution against the original baseline at 12.
-    const off = run(input, 12, 'midpoint'), old = b.native.find((r: any) => r.id === input.id && r.n === 12);
-    if (sha(off.result) !== sha(old.result)) throw Error(`Default drift on ${input.id}`);
-    native.push(off);
+    if (!frozenOnly) {
+      const off = run(input, 12, 'midpoint'), old = b.native.find((r: any) => r.id === input.id && r.n === 12);
+      if (sha(off.result) !== sha(old.result)) throw Error(`Default drift on ${input.id}`);
+      native.push(off);
+    }
     if (input.name === 'angled acquired' || input.name === 'fresh angled') for (const variant of ['full', 'grip-only'] as const) {
       frozen.push({ id: input.id, variant, before: frozenInterval(saved, 1, variant, .05 / 12),
         candidate: frozenInterval(saved, 1, variant, .05 / 12, 'resolved'),
-        reference: frozenInterval(saved, 256, variant, .05 / 12) });
+        reference: frozenInterval(saved, 4096, variant, .05 / 12) });
     }
-    for (const n of [12, 96]) native.push(run(input, n, 'resolved'));
+    if (!frozenOnly) for (const n of [12, 96]) native.push(run(input, n, 'resolved'));
   }
   writeFileSync(join(root, 'candidate.json'), JSON.stringify({ baseline: BASE, source, node: process.version, flags,
-    inputs, inputManifest: sha(inputs), candidate: { handContact: 'per input; patch remains experimental', gripTiming: 'resolved',
+    inputs, inputManifest: sha(inputs), frozenReferencePartitions: 4096,
+    candidate: { handContact: 'per input; patch remains experimental', gripTiming: 'resolved',
       capacities: 'unchanged', recovery: 'unchanged', supportAndTackleExperiments: 'off' }, native, frozen }, null, 2) + '\n');
 }
 if (sourceVersion() !== source) throw Error('Source changed during collection');
