@@ -245,7 +245,7 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
   } else {
     // Run: get-off and first hands. Offensive linemen know the snap count.
     const strike = 0.5 * td.hands + 0.5 * defender.r('strength') - 0.12 * armEdge + rng.normal(0, 0.18);
-    e.control = clamp(punchB - strike + 0.1, -0.8, 0.8);
+    e.control = HAND_FIGHT ? firstHands(blocker, defender, tb, td, rng) : clamp(punchB - strike + 0.1, -0.8, 0.8);
     e.move = 'shed';
     // Reach blocks want the defender sealed on the backside.
     if (drive && !surface) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
@@ -906,6 +906,41 @@ function runHandDrive(sim: PlaySim, e: Engagement): void {
   j.drive = Math.sign(vt) * Math.min(3, Math.abs(vt) + 1);
 }
 
+/** Experimental (HAND_FIGHT=1, off): the run hand fight from bodies, not a ratings walk. */
+const HAND_FIGHT = process.env.HAND_FIGHT === '1';
+
+/** Upper-body leverage a player brings to the hand fight now: his balance
+ * margin (support availability), how square he is to the man, his pad level
+ * and his arm strength after fatigue. Ratings enter only through the body. */
+function handLeverage(a: Agent, other: Agent): number {
+  const sup = a.body.support;
+  if (!sup || sup.state !== 'up') return 0;
+  const sp = supportParams(a.profile), fat = fatigueFactor(a.body.energy);
+  const toO = Math.atan2(other.pos.y - a.pos.y, other.pos.x - a.pos.x);
+  const off = Math.abs(Math.atan2(Math.sin(toO - a.facing), Math.cos(toO - a.facing)));
+  return availability(sup, sp, fat) * Math.max(0, Math.cos(off)) * (0.75 + 0.5 * sup.posture) * sp.armForce * fat;
+}
+
+/** Who lands hands first: arm reach against the closing gap, then a punch
+ * whose speed and timing spread come from hand skill. Blockers know the count. */
+function firstHands(b: Agent, d: Agent, tb: TrenchTraits, td: TrenchTraits, rng: PlaySim['rng']): number {
+  const sep = b.profile.radius + d.profile.radius;
+  const dx = d.pos.x - b.pos.x, dy = d.pos.y - b.pos.y, dist = Math.hypot(dx, dy) || 1;
+  const closing = Math.max(0.5, ((b.vel.x - d.vel.x) * dx + (b.vel.y - d.vel.y) * dy) / dist);
+  const land = (t: TrenchTraits) => (dist - (sep + t.arm / 36 * 0.3)) / closing
+    + 0.1 / (0.7 + 0.6 * t.hands) + rng.normal(0, 0.03 * (1.2 - t.hands));
+  return clamp((land(td) - (land(tb) - 0.02)) / 0.08, -0.8, 0.8);
+}
+
+/** Control relaxes toward the share of upper-body leverage each side has now,
+ * at a rate set by the gaining player's hand skill (how fast he re-fits). */
+function handFight(e: Engagement, tb: TrenchTraits, td: TrenchTraits, dt: number, rng: PlaySim['rng']): number {
+  const lb = handLeverage(e.blocker, e.defender), ld = handLeverage(e.defender, e.blocker);
+  const target = lb + ld > 1e-9 ? (lb - ld) / (lb + ld) : 0;
+  const tau = 0.25 + 0.5 * (1 - (target > e.control ? tb.hands : td.hands));
+  return clamp(e.control + (target - e.control) * (1 - Math.exp(-dt / tau)) + rng.normal(0, 0.25) * dt, -1, 1);
+}
+
 function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const t = sim.t;
   const dt = sim.dt;
@@ -925,7 +960,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const toAim = sub(read.aim, d.pos);
   const preferred = toAim.x * lat.x + toAim.y * lat.y;
   if (Math.abs(preferred) > .1) e.side = Math.sign(preferred);
-  e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
+  e.control = HAND_FIGHT ? handFight(e, tb, td, dt, rng)
+    : clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
   advanceRunHelperHands(sim, e);
 
   // Shed attempts once the ball carrier threatens his area — not the QB
