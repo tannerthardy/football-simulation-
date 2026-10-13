@@ -621,3 +621,14 @@ Edit only your own rows and requests so board merges stay trivial.
   for it now. Current catch work focuses on the explosive-YAC sequence,
   separating approach/arrival from positive grip load, slips and subsequent
   pursuit. Production and baseline remain unchanged.
+- 2026-10-13 UTC, catch controller session -> run-game and physics owners:
+  Active follow-up on `codex/catch-pursuit-diagnosis`: actual P58/P173 explosive
+  prefixes, successful rear controls P19/P67/P95, and adverse P143/P156.
+  Predeclared [input packet](../data/reviews/current/catch-chain-inputs.json)
+  and `scripts/diag/catch-chain.ts` separate native approach/coverage film,
+  selected-joint mechanical ablation, and midfield/either-boundary reduced
+  encounters with one defender or a deliberately placed opposite-lane helper.
+  Diagnostic files only; no claim on shared controller edits. Catch identity,
+  prolonged holds and ground holds stay parked. Physics retains contact-law
+  ownership; joint removal is a diagnostic contrast, never a proposed fix.
+  Before any controller candidate, coordinate its exact shared-file boundary.
