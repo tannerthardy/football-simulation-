@@ -6,7 +6,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
-import {gzipSync,gunzipSync} from 'node:zlib';
+import {gzipSync} from 'node:zlib';
 import {clamp} from '../../src/core/vec.js';
 import type {Agent} from '../../src/sim/agent.js';
 import {PlaySim,type PlaySetup} from '../../src/sim/playsim.js';
@@ -24,7 +24,6 @@ import {sourceVersion} from '../source-version.js';
 const copy=<T>(x:T):T=>structuredClone(x);
 const hash=(x:unknown)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const fileHash=(p:string)=>createHash('sha256').update(readFileSync(p)).digest('hex');
-const readTrace=(p:string)=>JSON.parse(gunzipSync(readFileSync(p)).toString());
 const profile=JSON.parse(readFileSync('config/baseline.json','utf8'));
 const provenance={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourceSha256:sourceVersion(),
  collectorSha256:fileHash(import.meta.filename),modelSha256:fileHash('scripts/diag/catch-arrival-model.ts'),
@@ -124,10 +123,10 @@ export function trial(f:any,geometry:Geometry,execution:number|null,observe:bool
 }
 if(process.argv[1]===import.meta.filename){
 const destination=process.argv[2];if(!destination)throw Error('OUTDIR required');mkdirSync(destination,{recursive:true});
-const packetPath='out/catch-arrival/fresh-guarded-inputs.json',packet=JSON.parse(readFileSync(packetPath,'utf8')),
+const packetPath=process.argv[3]??'data/reviews/current/catch-transition-inputs.json',packet=JSON.parse(readFileSync(packetPath,'utf8')),
  f=packet.clips.find((f:any)=>f.id==='R6103-S3001-P4');
-const witnesses=(['baseline','arrival'] as const).map(geometry=>{const path=`out/catch-arrival/revised-fresh/${f.id}-${geometry}.json.gz`,record=readTrace(path);
- return {geometry,path,sha256:fileHash(path),signature:record.signature,execution:record.holds.find((h:any)=>h.defender===f.defender).execution};});
+const witnesses=(['baseline','arrival'] as const).map(geometry=>{const w=f.executionWitnesses.find((w:any)=>w.geometry===geometry);
+ if(!w||!Number.isFinite(w.execution))throw Error('Actual execution witness missing');return w;});
 const cases=[];
 for(const geometry of ['baseline','arrival'] as const)for(const draw of [null,...witnesses]){
  const execution=draw?.execution??null,label=`${geometry}-${draw?.geometry??'natural'}-execution`,
