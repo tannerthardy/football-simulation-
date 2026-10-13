@@ -111,6 +111,70 @@ function prime(f: Fixture) {
 
 function checked(f: Fixture) { return f.helper.tags.has('combo-check-climb'); }
 
+/** Same generated bodies and loaded contact; the installed stretch job uses
+ * achieved/acquired torso orientation when checking its original keeper. */
+function stretch(side = 1) {
+  const f = loaded(side);
+  f.sim.offCall = { ...f.sim.offCall, run: RUN_BY_ID.oz_strong };
+  f.combination.soloKind = 'reach';
+  f.primary.plan.kind = 'reach';
+  return f;
+}
+
+describe('an unjoined stretch helper checks protection before collecting', () => {
+  it.each([-1, 1])('keeps the real loaded keeper and earns a clear departure, side %s', side => {
+    const f = prime(stretch(side)), hands = f.engagement.hands!;
+    const bodies = f.sim.agents.map(a => structuredClone(a.body));
+    readCombination(f.helper, f.sim, f.combination);
+    expect(checked(f)).toBe(true);
+    expect(f.engagement.blocker).toBe(f.owner);
+    expect(f.engagement.hands).toBe(hands);
+    expect(f.sim.world.joints).toContain(hands);
+    expect(f.sim.agents.map(a => a.body)).toEqual(bodies);
+    const start = { ...f.helper.pos };
+    for (let k = 0; k < 6; k++) step(f, true);
+    expect(f.helper.pos.x).toBeGreaterThan(start.x);
+    expect(f.helper.body.support!.state).toBe('up');
+    expect(f.engagement.hands).toBe(hands);
+    expect(Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0)).toBeGreaterThan(0);
+  });
+
+  it.each(['down', 'unbalanced', 'missing-hands', 'separated'] as const)('rejects unsafe %s despite an old secure picture', failure => {
+    const f = prime(stretch()), hands = f.engagement.hands!;
+    if (failure === 'down') f.owner.body.support!.state = 'down';
+    if (failure === 'unbalanced') {
+      const sp = supportParams(f.owner.profile), sup = f.owner.body.support!;
+      sup.xi = { x: criticalDeviation(sp, sup.posture, 0, fatigueFactor(f.owner.body.energy)), y: 0 };
+    }
+    if (failure === 'missing-hands') f.sim.world.joints.splice(f.sim.world.joints.indexOf(hands), 1);
+    if (failure === 'separated') f.defender.body.pos.x += 2;
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(false);
+    expect(checked(f)).toBe(false);
+    expect(f.combination.checkSince).toBe(-1);
+  });
+
+  it.each([-1, 1])('retains the helper against an unaccounted first-level threat, side %s', side => {
+    const f = prime(stretch(side)), threat = f.sim.slot('DT_S')!;
+    threat.body.pos = { x: f.sim.los + .2, y: f.combination.helpPolicy!.homeY };
+    threat.body.vel = { x: -1, y: 0 }; f.observe();
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(false);
+    expect(f.sim.events.some(e => e.type === 'block_climb')).toBe(false);
+  });
+
+  it('does not borrow the keeper\'s current facing when its own picture faces away', () => {
+    const f = prime(stretch()), see = f.sim.see.bind(f.sim);
+    vi.spyOn(f.sim, 'see').mockImplementation((a,b,scale) => {
+      const seen = see(a,b,scale);
+      return a === f.helper && b === f.owner ? { ...seen, facing: Math.PI } : seen;
+    });
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(false);
+    vi.restoreAllMocks();
+  });
+});
+
 describe('the original inside-zone helper may check a supported owner before climbing', () => {
   it.each([-1, 1])('uses no fictitious double or primary departure, side %s', side => {
     const f = loaded(side), hands = f.engagement.hands!, ownerBody = f.owner.body;

@@ -1,0 +1,117 @@
+{
+  "protocol": "combination-collection-controls-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "selection": "Eight already-recorded OZ/WZ inputs with successful second-level blocking plus two unchanged Duo controls; selected before candidate outcomes. No new census.",
+  "inputs": [
+    {
+      "id": "wz_strong-s3",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "wz_strong-s3-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "wz_strong-s7",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 7,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "wz_strong-s7-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 7,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "oz_strong-s19-fresh",
+      "concept": "oz_strong",
+      "kind": "run",
+      "seed": 19,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "oz_strong-s19-mirror-fresh",
+      "concept": "oz_strong",
+      "kind": "run",
+      "seed": 19,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "new-wz_strong-s23",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 23,
+      "flip": false,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "new-wz_strong-s23-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 23,
+      "flip": true,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "coherence-duo-over-s29",
+      "concept": "duo",
+      "kind": "run",
+      "seed": 29,
+      "flip": false,
+      "o": 211,
+      "d": 212,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "coherence-duo-over-s29-mirror",
+      "concept": "duo",
+      "kind": "run",
+      "seed": 29,
+      "flip": true,
+      "o": 211,
+      "d": 212,
+      "front": "over",
+      "formation": "ace_11"
+    }
+  ]
+}
