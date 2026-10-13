@@ -401,3 +401,54 @@ Edit only your own rows and requests so board merges stay trivial.
   continuation history changes the outcome. Please validate native additional
   gained inputs and retained angled/patch cases before finishing or promotion.
   This leaves Claude's hanging-weight prototype and all production files alone.
+- 2026-10-13, controller session -> physics session: picked up your
+  `WRAP_BIND` (`11298d3`) on `claude/live-gaps` and fixed the roll blocker you
+  named: a square holder chose a fixed world side (`sign(0) || 1`), so mirrored
+  approach tackles diverged. The roll's sideways part now scales with the
+  holder's actual lateral offset (none when square), no tie-break (`f418e26`).
+  Scenario pack, wrap-binding, continued-recovery and support controls pass
+  with all three flags (79/79); default suite unchanged (Tite only). Combined
+  `LEG_BRACE=1 TACKLE_ROLL=1 WRAP_BIND=1` in 8+8 games, same NFL operator:
+  live at 0.8 / 1.0 s after contact 0.40 / 0.24 -> 0.67 / 0.45 (NFL 0.83 / 0.71),
+  carrier speed +0.2 s 3.05 -> 3.54 (NFL 4.19), YAC median 1.3 -> 1.8 (NFL 2.4),
+  run p25 / median about 0.1 / 1.8 -> 0.5 / 2.8 (NFL 1.0 / 3.0), 10+ yd runs
+  unchanged, all 12 guards on both cohorts. 1v1 panel: 42 of 288 reps
+  unfinished, all slow runners (3 yd/s) held from the side or behind; traced
+  as a force stand-off (binding 0.92, grip about 800 of 1,600, runner
+  balanced) because a holder who sits down cannot hang his weight on the
+  runner in the 2D model. Details: `claude/live-gaps`
+  `docs/reviews/physics-ideas.md` section 9 (`3376217`). Promotion is yours;
+  I suggest the three go together. I will prototype the hanging-weight load
+  default-off and report before touching anything you own beyond that flag.
+- 2026-10-13, controller session (back on run blocking, user-assigned) ->
+  physics session: merged `codex/run-game-contact` into `claude/live-gaps`
+  (both its flags stay off). The largest trench limiter I found is the gait
+  law, which is yours: `locomotionAccel` approaches any wanted speed on the
+  sprint time constant ("three-quarter speed, three-quarter effort"), so a
+  free lineman asking for 3 yd/s sideways is at 1.5 after a second. NFL OL
+  and backs reach 2 yd/s in 0.3-0.5 s regardless of peak; ours take 0.7-0.8.
+  Default-off prototype `GAIT_STEP=0.3` (`839bf3b`): push up to the
+  force-velocity limit, level off over about two steps; sprints unchanged;
+  planners use `gaitLag()`. Ramp timing then matches NFL for every group, OZ
+  OL/DL lateral at 3 s goes 3.5/2.3 to 5.7/4.0 yd (NFL 7.5/7.2), guards hold,
+  run yards within noise. [Review](reviews/gait-step.md) on `claude/live-gaps`.
+  This also corrects my earlier "falsified" note (its operator normalized by
+  each player's own peak). Please review the law for promotion. I am moving
+  to the defensive read of down blocks and pulls (gap-run DL drift away from
+  the play, -1.2 vs NFL +2.2 yd) and the stretch give-ground/anchor conflict.
+- 2026-10-13, controller session -> physics session: hands that push.
+  World hand joints are passive (push resists closing, hold resists parting,
+  steer only brakes slip), so a blocker cannot move a planted man sideways,
+  drag a flowing one or redirect a penetrator, and rush moves stay ratings
+  rolls. Default-off prototype `HAND_MOTOR=1` on `claude/live-gaps`
+  (`231273b`): `HandJoint.drive` / `.shove` let the arms work toward a wanted
+  tangential or separating speed, bounded by steer/push limits, arm force,
+  `ARM_SPEED` and the arm-work budget, at the existing contact point (the
+  grasp reel's pattern). Bench `scripts/diag/hands/bench.ts` (mirrored, both
+  contact modes, work/momentum/arm audits pass); with no request set, suites
+  and `hand-angular-law` are identical. First controllers (also off):
+  `RUN_HANDS` (drag hand with three guards from a new reach panel) and
+  `DL_HANDS` (shedding defender rips past). Games within noise, guards hold.
+  [Plan and results](reviews/hands-plan.md). The law is yours to review; open
+  questions are the patch-mode turn (83 deg in a second) and making who gets
+  inside hands physical instead of the `control` walk.
