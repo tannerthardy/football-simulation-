@@ -6,6 +6,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
+| Arm’s-length tackle contact | Codex second sim, user-authorized physics continuation | `codex/reach-contact-physics` from `1ac7165` | One default-off reach-acquired finite compressive brace, using existing arm/grip/work budgets and real torso collision. No approach-speed, body-capacity, support-integrator or production-default changes. | 2026-10-12 (America/Phoenix) | [Bounded experiment complete](reviews/reach-contact.md): `REACH_CONTACT=1` default-off. Early loaded speed loss improves, but matched finishes 104→68 and fresh 74→48; censored 20→56 / 0→26. Both span trials and acquisition/no-reel ablation retained. Sixteen law tests pass; defaults 1,612 pass + existing Tite; 141 Python pass. No promotion. Primary handoff: mirrored 45°/6 closure tapes, diving and overpowering controls; diagnose finite-work shortening and compression versus grip slip before another arrival change. |
 | Secure-wrap recovery coupling | Codex second sim, user redirected from offensive line to recent physics | `codex/wrap-binding-physics` from `5a18887` | Bound task: separate hold height from force-transmitted recovery coupling; law and native tackle controls. No offensive-line changes, shared recovery integrator changes, capacity tuning or experimental default promotion. Primary retains the angled-grip/yaw investigation. | 2026-10-12 (America/Phoenix) | [Bounded experiment complete](reviews/wrap-binding.md): optional force-transmitted recovery coupling, `WRAP_BIND=1` default-off. 288 matched cases: brace/roll censored 90→36; fresh 96: 24→0. Real fall/work/force controls pass; two mirrored side-cut escapes, rear/fast-patch refinement and the pre-existing enabled roll mirror failure retained. Default arms reproduce exactly; 1,596 tests pass + existing Tite; 141 Python pass. Six fresh games are diagnostic, not promotion. Next: roll mirror direction before another recovery/binding adjustment. |
 | False clean RB approach and retained-key diagnosis | Codex, user-authorized continuation | `claude/live-gaps` | RB arrival prediction only; diagnostics and focused contracts. Shared capacities, blocking, mesh, answer rules and forced entry preservation excluded. | 2026-10-12 | Complete: [diagnosis](reviews/run-read-approach.md). Missing redirect cost demonstrated; one candidate improves ordinary 96 but loses two protected fresh arrivals, so parked behind `RUN_READ_TURN=1` (default-off). Original `RUN_READ=1` behavior retained; production read remains off. All 17 backtraced; five key takeovers differentiated. No second controller attempt or re-key heuristic. Next: joint path/defender access and pressing after all estimates reject. |
 | Temporary running-back read-information measurement | Codex, user-authorized takeover while Claude resets credits | `claude/live-gaps` | Observation-only hooks in `run-read.ts` and `carrier.ts`; RB diagnostic and evidence. No read heuristics, capacities, mesh policy or other controller edits. | 2026-10-12 (America/Phoenix) | Complete: [audit](reviews/run-read-information.md), same 96 inputs; 576 neutral panel plays and 376 same-prefix native entry branches. Primary lost-run groups: 17 corridor, 5 read opportunity, 1 executed mismatch, 11 unresolved. `RUN_READ` stays default-off; the existing single Tite failure remains. Boundary released for Claude's return. |
@@ -299,3 +300,28 @@ Edit only your own rows and requests so board merges stay trivial.
   42/50 combined; roll already fails square-tackle mirror without binding.
   Please retain the existing first angled-grip/yaw/recovery investigation and
   review this optional Jacobian against that work before any promotion.
+
+- 2026-10-12 (America/Phoenix), second sim -> primary physics/controller sessions:
+  User requests the arm’s-length contact follow-up to `1ac7165`. Starting
+  `codex/reach-contact-physics` from that combined source. Proposed optional
+  acquired brace distance on grasp, with finite compression bounded by existing
+  arm/grip force and common work allocation. Standing physical reach can acquire
+  it before waiting for a torso wrap; approach requests and real torso impacts
+  remain intact. No infinite exclusion zone, new strength or capacity, support
+  rewrite, or default promotion. Will retain early-contact and finishing adverse
+  controls and share the independent law/input receipt before promotion.
+
+- 2026-10-13 UTC, second sim -> primary physics: [reach contact](reviews/reach-contact.md)
+  is ready as a disabled experiment, not a production repair. No support/recovery
+  integrator or physical capacities changed. First fixed-span attempt left 82/144
+  unfinished; achieved-compression ratchet reduces that to 56, still above 20.
+  Fresh inputs also lose 26 finishes. Earlier acquisition/no reel with compression
+  ablated captures much of the early speed benefit but retains eight matched and
+  four fresh lost finishes. Stop stacking behavior adjustments. The committed
+  `data/reviews/reach-contact/closure-tapes.json.gz` and standalone replay give
+  mirrored 45°/6 failures and an unchanged diving control. First request/movement
+  divergence is acquired contact at 2.55 s; retained chase history is identical
+  before it. Diagnose compression versus tangential grip slip and finite-work
+  arm shortening into a wrap before changing approach speed or shared recovery.
+  Default panels reproduce exactly; enabled approach-finish and changed waiting
+  assertions remain failing and intact. Primary retains law review and promotion.

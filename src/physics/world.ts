@@ -109,6 +109,10 @@ export interface GraspJoint {
    * Omission retains `legs`. This is a point-motion Jacobian, not a free
    * feet-lock multiplier: the same derivative transmits force and work. */
   recoveryCoupling?: number;
+  /** Optional acquired arm span, yd. Inside this distance the arms can
+   * resist compression through existing arm/grip budgets; never a rigid
+   * body exclusion or promised separation. Omission remains tension-only. */
+  brace?: number;
   /** Height of the hold, yd; otherwise interpolates from torso to lower legs. */
   height?: number;
   /** Rate the holder's arms reel the two bodies together, yd/s (bounded by the grip). */
@@ -620,7 +624,11 @@ export class World {
         this.active[actor]+=Math.hypot(Math.max(0,jt.push,actor===holder?jt.hold:0),Math.max(0,jt.steer));
         if(actor!==holder)this.active[holder]+=Math.max(0,jt.hold);
       }
-      else if (!jt.broken && jt.pull!>0) this.active[this.indexOf(jt.a)]+=this.armCap[this.indexOf(jt.a)];
+      else if (!jt.broken) {
+        const holder = this.indexOf(jt.a);
+        if (jt.brace !== undefined) this.active[holder] += Math.min(this.gripCapacity(jt), this.armCap[holder]);
+        else if (jt.pull! > 0) this.active[holder] += this.armCap[holder];
+      }
     }
     for (const p of this.pending) if(this.canStrike(p.a,p.b)) this.active[this.indexOf(p.a)]+=Math.hypot(p.x,p.y)/this.tickDt;
     for(let i=0;i<this.n;i++) this.armScale[i]=this.active[i]>0?Math.min(1,this.armCap[i]/this.active[i]):1;
@@ -1060,7 +1068,7 @@ export class World {
     // Active reeling is distinct from passive grip. Arms apply a finite
     // force; the passive joint never invents work to shorten its landmark.
     if (contact) for (const jt of this.joints) {
-      if (jt.kind !== 'grasp' || jt.broken || !(jt.pull! > 0)) continue;
+      if (jt.kind !== 'grasp' || jt.broken || jt.brace !== undefined || !(jt.pull! > 0)) continue;
       // Patch grips share the hands' frozen force frame. Applying a
       // reel here would change transport before that common frame is acquired.
       if (this.handContact === 'patch') continue;
@@ -1140,9 +1148,9 @@ export class World {
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
         // Hands and patch grips are bounded forces acting across h. Use one
         // timing rule for their attained impulse AND spin, including the reel.
-        // Center-mode grasps retain the historical transport rule.
+        // Unbraced center-mode grasps retain the historical transport rule.
         const gripPatch = jt.kind === 'grasp' && this.handContact === 'patch';
-        if (jt.kind === 'hands' || gripPatch) {
+        if (jt.kind === 'hands' || gripPatch || (jt.kind === 'grasp' && jt.brace !== undefined)) {
           const normal = r.ln - (gripPatch ? r.reel : 0);
           if (this.handContact === 'patch') {
             const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
@@ -1183,14 +1191,17 @@ export class World {
           }
         } else {
           const used = Math.hypot(r.ln-r.reel, r.lt);
+          const compression = jt.brace !== undefined && r.mode > 0;
+          if (compression) report.armImpulse[r.i] += used;
           if (!r.members) {
             jt.force = (jt.force ?? 0) + used;
-            jt.slipping = used >= 0.98 * r.limit && r.limit > 0;
+            jt.slipping = !compression && used >= 0.98 * r.limit && r.limit > 0;
           }
           for (const member of r.members ?? []) {
-            const share = r.limit > 0 ? this.gripCapacity(member) * h / r.limit : 0;
+            const cap = compression ? Math.min(this.gripCapacity(member), this.armCap[r.i]) * this.armScale[r.i] : this.gripCapacity(member);
+            const share = r.limit > 0 ? cap * h / r.limit : 0;
             member.force = (member.force ?? 0) + used * share;
-            member.slipping = used >= 0.98 * r.limit && r.limit > 0;
+            member.slipping = !compression && used >= 0.98 * r.limit && r.limit > 0;
           }
         }
       }
@@ -1294,7 +1305,14 @@ export class World {
       // A secure grip reels in: the arms shorten toward a wrap at their own
       // rate; the tension that does it is bounded by the same grip budget.
       const held = j.slipping ? Math.max(j.hold ?? d, d) : Math.min(j.hold ?? d, Math.max(d, touch));
-      j.hold = held;
+      if (j.brace !== undefined) {
+        // Arms yield through actually achieved compression. Keeping their
+        // original span would push a caught runner away while the holder
+        // tries to close his wrap. This plastic rest change stores no spring
+        // energy and cannot restore separation or create an impulse.
+        j.brace = Math.min(j.brace, Math.max(d, touch));
+        j.hold = Math.max(j.brace, held);
+      } else j.hold = held;
       // Arms dragged along a running body slide down it, to the thighs and
       // ankles: a slipping hold becomes a hold on his legs.
       if (j.slipping) j.legs += (1 - j.legs) * (1 - Math.exp(-h / LEG_SLIDE));
@@ -1891,6 +1909,11 @@ export class World {
         row.mode = -1;
         row.c = Math.max(0, dist - hold);
         row.limit = this.gripCapacity(jt)*h;
+        if (jt.brace !== undefined && dist <= jt.brace) {
+          row.mode = 1;
+          row.c = dist - jt.brace;
+          row.limit = Math.min(this.gripCapacity(jt), this.armCap[i]) * this.armScale[i] * h;
+        }
         row.reel = this.reels.get(jt)??0;
         const foot = b.support!.foot;
         if (foot && !lowerPatch) row.mn = 1 / supportInverseMass(1 / this.mass[i] + 1 / this.mass[j], foot, recoveryShare(jt), h);
@@ -1903,13 +1926,14 @@ export class World {
           row.mn = 1 / (row.bodyInverseMass! + this.attachmentMobility(jt,nx,ny) / h);
           row.mt = 1 / (1/row.mt! + this.attachmentMobility(jt,-ny,nx) / h);
         }
-        if (foot || upperPatch) {
+        if (foot || upperPatch || jt.brace !== undefined) {
           // Duplicating the same physical attachment must not create another
           // spring, motor or grip capacity. Distinct locations stay distinct.
           const same = rows.find(r => {
             const old = r.joint;
             return old.kind === 'grasp' && old.a === jt.a && old.b === jt.b
               && old.legs === jt.legs && recoveryShare(old) === recoveryShare(jt) && old.height === jt.height && old.reach === jt.reach
+              && old.brace === jt.brace
               && old.ground === jt.ground && old.hold === jt.hold && old.pull === jt.pull
               && Math.hypot(this.graspPoint(old).x - point.x, this.graspPoint(old).y - point.y) < 1e-10
               && (!this.boundedAttachment || this.sameAttachmentJacobian(old,jt));
@@ -1948,7 +1972,7 @@ export class World {
    * together. No second arm strength or motor is introduced. */
   private reelPatchGrasp(r: JointRow, h: number): void {
     const jt = r.joint as GraspJoint;
-    if (!(jt.pull! > 0) || jt.a.support!.state !== 'up') return;
+    if (jt.brace !== undefined || !(jt.pull! > 0) || jt.a.support!.state !== 'up') return;
     const point = this.graspPoint(jt);
     const distance = Math.hypot(point.x - jt.a.pos.x, point.y - jt.a.pos.y);
     if (distance <= CONTACT_SCALE * (jt.a.profile.radius + jt.b.profile.radius) || distance > jt.reach) return;
@@ -1985,13 +2009,15 @@ export class World {
       const a2 = (1 - soft.impulseScale) / soft.impulseScale * ratio;
       soft = { ...soft, massScale: a2 / (1 + a2), impulseScale: 1 / (1 + a2) };
     }
-    // Tension only: the arms resist separation beyond their hold, never push.
+    // Ordinary grasps are tension-only. An explicitly acquired brace can
+    // resist compression at finite arm force; it cannot exclude body impact.
     const imp = -r.mn * soft.massScale * (vn + soft.biasRate * r.c) - soft.impulseScale * r.ln;
-    let ln = Math.min(0, r.ln + imp);
+    const compression = jt.brace !== undefined && r.mode > 0;
+    let ln = compression ? Math.max(0, r.ln + imp) : Math.min(0, r.ln + imp);
     // Shared grip budget with the sliding (tangential) resistance.
     const lim = r.limit;
     const passiveNormal=Math.max(0,Math.sqrt(Math.max(0,lim*lim-r.lt*r.lt))-r.reel);
-    ln=Math.max(ln,-passiveNormal);
+    ln=compression ? Math.min(ln,passiveNormal) : Math.max(ln,-passiveNormal);
     const dn = ln - r.ln;
     const coupled = !!b.support!.foot && jt.legs > 0;
     const channel=r.normalWork??={net:0};

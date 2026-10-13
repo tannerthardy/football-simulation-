@@ -61,6 +61,9 @@ const TACKLE_ROLL = process.env.TACKLE_ROLL === '1';
 /** Experimental secure lower-wrap coupling; all transmitted loads still use
  * World's existing grip, arm and recovery budgets. Default-off. */
 const WRAP_BIND = process.env.WRAP_BIND === '1';
+/** Experimental contact acquired at standing reach with finite arm bracing.
+ * Approach requests and real torso collisions remain physical. Default-off. */
+const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -89,6 +92,7 @@ export function tryTackles(sim: PlaySim): void {
     if (dd <= range && !occluded(sim, d, c)) {
       // Contact quality: 1 = body to body (form tackle), 0 = fingertips / lunge.
       const q = contactQuality(dd, body, arms);
+      const acquireAtReach = REACH_CONTACT && dd <= arms && !engaged;
       // A tackler reaches when he is in position to wrap, or when this is
       // the best shot the visible relative trajectory offers (a runner
       // passing or pulling away). While he is still closing on a better
@@ -125,7 +129,7 @@ export function tryTackles(sim: PlaySim): void {
           waitForBetter = window.futureQuality > window.currentQuality + .1;
           lastReach = observed.carrying === true && window.closestAt === 0
             && window.closest > arms && window.closest <= range;
-          const keepFeet = waitForBetter || (needsLastReach && !lastReach);
+          const keepFeet = (waitForBetter && !acquireAtReach) || (needsLastReach && !lastReach);
           if (sim.trace.data) sim.trace.decide({ t: sim.t, a: d.idx,
             kind: 'tackle-opportunity',
             chose: keepFeet ? 'keep feet moving'
@@ -136,7 +140,7 @@ export function tryTackles(sim: PlaySim): void {
         }
       }
       if (needsLastReach && !lastReach) continue;
-      if (waitForBetter) continue;
+      if (waitForBetter && !acquireAtReach) continue;
       attempt(sim, d, c, q, engaged, dd > arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
@@ -283,6 +287,7 @@ function commitLunge(d: Agent, nx: number, ny: number, q: number): void {
 /** Create a tackler's hold on the carrier and join (or start) the bond.
  * `extended`: he caught him at full stretch on a dive, holding from the ground. */
 function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, dd: number, execution: number, extended = false, origin = ''): void {
+  const wasEngaged = !!d.engagement;
   if (sim.firstContactX === null) {
     sim.firstContactX = c.pos.x;
     sim.event('carrier_contact', c, d, 'grasp');
@@ -303,6 +308,10 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   const pull = extended ? 0.6 : 1.2 + 1.2 * d.r('tackling');
   const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: gripForce(d, quality), legs, pull, hold: dd, origin,
     ground: extended ? Math.max(reach, dd + 0.15) : undefined };
+  if (REACH_CONTACT && !extended && !wasEngaged && dd > c.profile.radius + d.profile.radius) {
+    joint.brace = dd;
+    joint.pull = 0;
+  }
   (bond.grip ??= new Map()).set(d, quality);
   (bond.holds ??= new Map()).set(d, joint);
   (bond.execution ??= new Map()).set(d, execution);
