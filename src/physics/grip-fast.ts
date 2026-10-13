@@ -4,7 +4,6 @@
 import { snapshot, restore, advance, difference, resolveGripInterval, type GripTimingReport } from './grip-timing.js';
 type Private = any;
 const MAX = 16384;
-const hints = new WeakMap<object, number>();
 export interface FastGripReport extends GripTimingReport { commits: number; fallbacks: number; eventSplits: number; }
 
 /** Import an accepted physical trial while retaining the caller's bodies,
@@ -119,20 +118,20 @@ export function resolveFastGripInterval(w: Private, args: any[], execute: (w: Pr
   const results=new Map<number,ReturnType<typeof restore>>();
   if(grid.length===1) { results.set(1,one); results.set(2,two); }
   const get=(n: number)=>{ if(!results.has(n)) results.set(n,solve(n,grid)); return results.get(n)!; };
-  let n=Math.max(2,Math.min(searchLimit/grid.length,hints.get(w)??2));
-  // Cached resolution is only a starting guess. Every accepted interval is
-  // still compared with its coarser replay; low effort searches downward.
+  let n=2;
+  // Keep the reference's ascending search order. Cached guesses selected a
+  // different passing basin in a nonmonotone support response and increased
+  // frontal work. Reuse accepted solves without changing that decision.
   while(n*grid.length<=searchLimit) {
     const coarse=get(n/2),fine=get(n), error=difference(coarse.w,fine.w,ids);
     if(error<=1) {
-      if(n>2 && difference(get(n/4).w,coarse.w,ids)<=1) { n/=2; continue; }
-      report.maxAcceptedError=error; hints.set(w,n); return finish(fine,n,grid);
+      report.maxAcceptedError=error; return finish(fine,n,grid);
     }
     n*=2;
   }
   // No trial has changed the real world. Bound search work and fall back to
   // the corrected slow reference with its original accounting and limits.
-  const fallback=resolveGripInterval(w,args,execute); hints.delete(w);
+  const fallback=resolveGripInterval(w,args,execute);
   Object.assign(report,{intervals:fallback.intervals,limited:fallback.limited,maxAcceptedError:fallback.maxAcceptedError});
   report.trials+=fallback.trials; report.fallbacks++; return report;
 }
