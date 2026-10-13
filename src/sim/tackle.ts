@@ -56,8 +56,8 @@ const STALL = 0.8;
 /** Force a hold of quality q can sustain, kg·yd/s². Locked arms around a
  * body hold by geometry (the hands must come apart), several times what
  * fingertips on a jersey can; technique finishes the wrap. */
-/** Experimental tight-wrap finish (TACKLE_DRIVE=1, off by default); see updateBond. */
-const TACKLE_DRIVE = process.env.TACKLE_DRIVE === '1';
+/** Experimental tight-wrap finish (TACKLE_ROLL=1, off by default); see updateBond. */
+const TACKLE_ROLL = process.env.TACKLE_ROLL === '1';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -385,17 +385,29 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // holder around his arms, rather than establish useful rear leverage.
       const plant = Math.max(0, c.vel.x * tx + c.vel.y * ty) * quality * clamp(next, 0, 1);
       let vel = { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
-      // TACKLE_DRIVE (experimental, off): once the wrap is tight against his
-      // body and the grip secure, he stops running with the carrier. He sits
-      // his weight down against the runner's travel and drives through the
-      // hip along the hold (thigh-and-drive from the side). An extended hold
-      // keeps the rule above. The World decides who wins.
-      const secure = clamp(next, 0, 1) * quality;
-      if (TACKLE_DRIVE && distance <= torso + .15 && secure >= .5)
-        vel = { x: c.vel.x * (1 - secure) + tx * 1.5 * secure, y: c.vel.y * (1 - secure) + ty * 1.5 * secure };
       intents[d.idx] = { vel, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
         dive: own?.dive, lunge: own?.lunge };
     }
+  }
+  // TACKLE_ROLL (experimental, off by default): a tight, secure wrap on an
+  // upright carrier finishes by rolling him, not by matching or out-pushing
+  // him. The holder sits his weight down against the carrier's travel and
+  // turns away across it, so the wrap pulls the carrier's hips sideways while
+  // his held legs limit the step that would catch him. Ground, grip and
+  // balance decide whether he goes down; a loose or extended hold is unchanged.
+  if (TACKLE_ROLL && c.body.support?.state === 'up') for (const d of bond.tacklers) {
+    const distance = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
+    const torso = c.profile.radius + d.profile.radius;
+    const quality = clamp(1 - (distance - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
+    const secure = clamp(grip.get(d) ?? 0, 0, 1) * quality;
+    if (d.body.support?.state !== 'up' || distance > torso + .15 || secure < .5) continue;
+    const cs = Math.hypot(c.vel.x, c.vel.y);
+    const ux = cs > .3 ? c.vel.x / cs : dir, uy = cs > .3 ? c.vel.y / cs : 0;
+    // Across his travel, toward the holder's own side (stable when square).
+    const side = Math.sign((d.pos.x - c.pos.x) * -uy + (d.pos.y - c.pos.y) * ux) || 1;
+    const nx = -uy * side, ny = ux * side;
+    const own = intents[d.idx];
+    intents[d.idx] = { ...own, vel: { x: c.vel.x * (1 - secure) + nx * 1.5 * secure, y: c.vel.y * (1 - secure) + ny * 1.5 * secure }, push: 1 };
   }
   // The carrier keeps his legs driving where his vision takes him.
   const own = intents[c.idx];

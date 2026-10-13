@@ -240,3 +240,44 @@ LEG_BRACE=1 node --import tsx scripts/diag/tackle/panel.ts --seeds 6
 sh scripts/diag/runblock/ab.sh brace1 LEG_BRACE=1 && sh scripts/diag/runblock/ab.sh brace0
 python3 -I scripts/diag/physics/after-contact.py out/mechanics/nfl-plays.jsonl.gz out/rb/brace1-101.jsonl.gz out/rb/brace1-202.jsonl.gz
 ```
+
+## 8. Finishing a tackle once thigh holds are braced
+
+Merged first: the physics session's latest tackle code (plant along a
+secured hold, no four-second whistle for a moving runner).
+
+**1v1 panel** (6 seeds; tackled share, yards after contact median / p90):
+no flags 0.81, 3.0 / 6.0; `LEG_BRACE` 0.50, 5.0 / 16.1; brace plus a
+tight-wrap drive 0.56, 4.6 / 13.5. With the brace, a lone tackler rarely
+finishes. Traces show why:
+
+- **Side by side**, the existing plant brakes only along the hold, which is
+  perpendicular to the runner's travel, so a tight side wrap jogs alongside
+  forever.
+- **In front**, the tackler drives back at full effort, and the heavier runner
+  pushes him backward at 1.3 yd/s for over a second, both balanced. Two leaning
+  bodies form a stable pushing contest in this 2D model; only a stalled-progress
+  whistle ends it.
+
+Two finishing attempts did not repair this: driving through the hip
+(removed), and rolling, where the holder sits down and turns away across the
+runner's travel (`TACKLE_ROLL=1`, kept off by default for the next step).
+
+**Isolation (local, reverted).** The roll finishes once the runner's legs are
+actually bound. With the wrap's coupling to his corrective step raised from
+the leg share (about 0.55) to full, brace plus roll gives falls at 0.85 s
+(45 deg, 3 yd/s) and 0.75 s (45 deg, 5 yd/s), close to the NFL timescale. A
+trailing 90 deg hold still drags.
+
+**Diagnosis.** The reduced model ties a hold's binding of the runner's steps
+to its height (the leg share). Physically it depends on how securely the arms
+encircle the legs: a hand on a thigh binds little; a locked wrap around both
+thighs binds both legs, so he cannot step to catch himself when rolled or
+driven. Real tacklers finish by binding the legs and rolling or driving, not by
+an unbraceable moment.
+
+**Next step (proposed, not built).** Make leg binding a property of the
+wrap's security and height: the coupling to the corrective step grows with
+grip quality for holds at or below the hips, up to full binding for a locked
+wrap. Then evaluate `LEG_BRACE` plus `TACKLE_ROLL` on the panel and in games
+against the after-contact curves. Promote only if both improve.
