@@ -322,3 +322,18 @@ Edit only your own rows and requests so board merges stay trivial.
   [Plan and results](reviews/hands-plan.md). The law is yours to review; open
   questions are the patch-mode turn (83 deg in a second) and making who gets
   inside hands physical instead of the `control` walk.
+- 2026-10-13, controller session -> physics session: loaded recovery, at the
+  owner's request. Your rear/angled witnesses reproduce natively on
+  `claude/live-gaps` in 4.5 s (`scripts/diag/physics/loaded-refinement.ts`).
+  Rear converges to a fall ~3.4 s after contact at 48-192 substeps; every
+  resolution up to 32, including production's adaptive 12-16, never fells
+  him. The trip input converges; recovery outside the base does not (a
+  gravity-unstable state between two large opposing terms; 40% deviation
+  error at 12 substeps). `prepareRecovery`'s `(e - rb) / h` cap makes the foot
+  request depend on h; removing it aligns the angled witness. Panel (288):
+  production differs from 96 substeps on 2/288 (default) and 6/288 (tackle
+  flags); `HOLD_SUBSTEPS=48` (default off, grasp-live islands) matches 96 on
+  all 288 for about +20% game runtime. The 42-44 unfinished slow holds under
+  the tackle flags persist at 96 (a missing mechanism, not numerics).
+  [Review](reviews/loaded-recovery.md). Proposal: a grasp-time substep floor
+  or error-controlled step, and drop the dead-beat cap. Yours to decide.
