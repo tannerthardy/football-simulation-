@@ -2,9 +2,16 @@
 
 Two bounded controller trials now have explicit contracts and matched offensive,
 defensive and combined controls. Both remain **off**. The shoulder-component
-repair fixes a request construction error; it does not repair the known WZ
-cross-pair fall. The combined hand trial loses four previously clean approaches.
+repair fixes a request construction error; it does not repair the parked
+`RUN_CONTACT_TRACK=1` WZ cross-pair fall. That witness is not a newly discovered
+default-baseline failure. The combined hand trial loses four previously clean approaches.
 No shared force, traction, support, recovery or contact law changed.
+
+The [native hand-action follow-up](hand-action-protection.md) identifies the
+responsible pairs with independent/combined requests and single-joint ablations,
+extends relevant plays through actual endings, and assesses the existing
+handover. It sends small angular-law witnesses to the physics owner without
+another controller implementation or any default/solver change.
 
 ## Source and hypotheses
 

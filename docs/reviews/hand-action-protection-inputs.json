@@ -1,0 +1,254 @@
+{
+  "protocol": "hand-action-protection-inputs-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "candidateStartCommit": "09f01132b873f3c0ee626ca5705e7d6ab4ad0e74",
+  "windowSeconds": 25,
+  "handCases": [
+    "wz_strong-s3-mirror",
+    "wz_strong-s7-mirror",
+    "oz_strong-s19-mirror-fresh",
+    "new-wz_strong-s23"
+  ],
+  "oppositeSideControls": [
+    "wz_strong-s3",
+    "wz_strong-s7",
+    "oz_strong-s19-fresh",
+    "new-wz_strong-s23-mirror"
+  ],
+  "gapCases": [
+    "power-s3",
+    "power-s3-mirror",
+    "counter-s3",
+    "counter-s3-mirror",
+    "power-s7",
+    "power-s7-mirror",
+    "counter-s7",
+    "counter-s7-mirror",
+    "new-power-s23",
+    "new-power-s23-mirror",
+    "new-counter-s23",
+    "new-counter-s23-mirror"
+  ],
+  "inputs": [
+    {
+      "id": "wz_strong-s3",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "wz_strong-s3-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "wz_strong-s7",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 7,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "wz_strong-s7-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 7,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "oz_strong-s19-fresh",
+      "concept": "oz_strong",
+      "kind": "run",
+      "seed": 19,
+      "flip": false,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "oz_strong-s19-mirror-fresh",
+      "concept": "oz_strong",
+      "kind": "run",
+      "seed": 19,
+      "flip": true,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "new-wz_strong-s23",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 23,
+      "flip": false,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "new-wz_strong-s23-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 23,
+      "flip": true,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s3",
+      "concept": "power",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s3-mirror",
+      "concept": "power",
+      "kind": "run",
+      "seed": 3,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "counter-s3",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "counter-s3-mirror",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 3,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s7",
+      "concept": "power",
+      "kind": "run",
+      "seed": 7,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "power-s7-mirror",
+      "concept": "power",
+      "kind": "run",
+      "seed": 7,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "counter-s7",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 7,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "counter-s7-mirror",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 7,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "new-power-s23",
+      "concept": "power",
+      "kind": "run",
+      "seed": 23,
+      "flip": false,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "new-power-s23-mirror",
+      "concept": "power",
+      "kind": "run",
+      "seed": 23,
+      "flip": true,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "new-counter-s23",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 23,
+      "flip": false,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    },
+    {
+      "id": "new-counter-s23-mirror",
+      "concept": "counter",
+      "kind": "run",
+      "seed": 23,
+      "flip": true,
+      "o": 111,
+      "d": 112,
+      "front": "over",
+      "formation": "ace_11"
+    }
+  ]
+}
