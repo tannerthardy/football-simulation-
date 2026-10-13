@@ -102,10 +102,11 @@ function selectFresh(roster:number,seed:number){
  const sample=new Rng(`${freshDeclaration.sampleKey}:${roster}`),draw=(pool:any[],n:number)=>{const order=[...pool];
   for(let i=order.length-1;i>0;i--){const j=sample.int(0,i);[order[i],order[j]]=[order[j],order[i]];}return order.slice(0,n);};
  const completed=contexts.filter(c=>c.nativeResult.stats.completed),other=contexts.filter(c=>!c.nativeResult.stats.completed);
- const uniform=[...draw(completed,16),...draw(other,8)],guards=contexts.filter(c=>c.nativeResult.outcome==='interception').slice(0,2);
+ const uniform=[...draw(completed,16),...draw(other,8)],guards=contexts.filter(c=>!!c.nativeResult.stats.interceptedBy).slice(0,2);
  for(const f of uniform)f.sampling='uniform-stratum';
  for(const f of guards)if(!uniform.some(c=>c.id===f.id)){f.sampling='first-two-native-interception-guard';uniform.push(f);}
- return {roster,seed,population,clips:uniform,counts:{completed:completed.length,other:other.length,uniform:24,supplement:uniform.length-24}};
+ return {roster,seed,population,clips:uniform,counts:{completed:completed.length,other:other.length,uniform:24,supplement:uniform.length-24,
+  interceptions:contexts.filter(c=>!!c.nativeResult.stats.interceptedBy).length}};
 }
 function generatorAudit(){return [3101,4202,6103,7204].flatMap(roster=>{
  const rng=new Rng(roster),teams=[generateTeam(rng,'Ironmen',`I${roster}`,{strength:.55}),generateTeam(rng,'Comets',`C${roster}`,{strength:.55})];
