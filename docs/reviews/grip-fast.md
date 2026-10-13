@@ -110,6 +110,26 @@ fixture has zero grip-timing trials or accepted intervals. Those failures,
 the dry-onset slow-reference limitation and the fresh coarse cap hits are
 reported separately.
 
+## Keeper/contact-law boundary
+
+The keeper angular-law witness is a separate investigation from this grip
+timing optimization. Its historical contact/keeper evidence lives in
+[angular-contact-repair.md](angular-contact-repair.md); the independent law
+operator is [hand-angular-law.ts](../../scripts/diag/hand-angular-law.ts).
+Keep its pinned law, geometry and controller-response claims distinct from
+the acquired grasp's impulse/time-moment reference.
+
+All nine current promotion failures record zero timing trials and accepted
+intervals. Refinement of an uninvoked grip solver cannot repair those fixtures.
+They retain their own assertions and need separate hand/contact, keeper
+positioning or controller diagnosis. Zero invocation does not prove that all
+nine share one angular-law cause. In particular, a lawful delivered tangent
+force can still expose a controller that interprets resistance to turning as
+opponent flow; delaying yaw or choosing a refinement level to preserve a
+keeper outcome would conceal that distinction. No keeper-law change or
+promotion is included here, and resolving timing cost alone cannot clear the
+full patch's football gate.
+
 ## Remaining .24 yd discrepancy
 
 The slow native 12/96 selected run still differs by .2422 yd after a 4.4 s
