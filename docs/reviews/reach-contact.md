@@ -10,7 +10,7 @@ unchanged. No offensive-line changes are included.
 Base: `1ac71650b6dc41812e782656792f884a669d696b`, after the roll mirror correction,
 combined brace/roll/binding review and arrival diagnostics. Final runtime hash:
 `a5a38a3cbe9afe3a8d8728141f20da0a4487b7cd9db16f513e3895fddf26ef01`.
-The [receipt](../../data/reviews/current/reach-contact.json) records full input,
+The [receipt](https://github.com/tannerthardy/football-simulation-/blob/67301d24ef56a72b4a205185fb6c76b6dd845c7b/data/reviews/current/reach-contact.json) records full input,
 source, observer, operator and raw-output identifiers. The quoted NFL arrival
 finding motivated this test; this panel is not a fresh NFL measurement or a
 calibration to the reported 3.5/4.2 yd/s difference.

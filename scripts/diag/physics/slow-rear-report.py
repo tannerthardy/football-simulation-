@@ -166,5 +166,6 @@ for path in ['scripts/diag/physics/reach-transition.ts', 'scripts/diag/physics/r
              'scripts/diag/physics/slow-rear-replay.ts', 'scripts/diag/physics/slow-rear-report.py']:
     files[path] = hashlib.sha256(Path(path).read_bytes()).hexdigest()
 report['filesSha256'] = files
-Path('data/reviews/current/slow-rear-contact.json').write_text(json.dumps(report, indent=2) + '\n')
-print('data/reviews/current/slow-rear-contact.json; ' + str(fixture_path))
+Path('out/slow-rear-contact/receipt.json').parent.mkdir(parents=True, exist_ok=True)
+Path('out/slow-rear-contact/receipt.json').write_text(json.dumps(report, indent=2) + '\n')
+print('out/slow-rear-contact/receipt.json; ' + str(fixture_path))

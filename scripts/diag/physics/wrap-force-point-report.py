@@ -161,5 +161,6 @@ for path in ['src/physics/kinematics.ts', 'src/physics/world.ts', 'scripts/diag/
              'scripts/diag/tackle/continued-recovery.ts', 'scripts/diag/tackle/continued-recovery-world.ts']:
     files[path] = hashlib.sha256(Path(path).read_bytes()).hexdigest()
 report['filesSha256'] = files
-Path('data/reviews/current/wrap-force-point.json').write_text(json.dumps(report, indent=2) + '\n')
-print('data/reviews/current/wrap-force-point.json')
+Path('out/wrap-force-point/receipt.json').parent.mkdir(parents=True, exist_ok=True)
+Path('out/wrap-force-point/receipt.json').write_text(json.dumps(report, indent=2) + '\n')
+print('out/wrap-force-point/receipt.json')

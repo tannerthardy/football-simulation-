@@ -9,7 +9,7 @@ movement and an earned wrap, on the retained rear-angle acquisition loss.
 
 Branch `codex/reach-contact-closure` starts at `fda39f7`. Runtime source:
 `8209ff6d8b70073c6c344983e3b397df25580b0ac4af74d84a6a4ea9605b6b18`.
-[Receipt](../../data/reviews/current/reach-closure.json) includes stage/tool/input
+[Receipt](https://github.com/tannerthardy/football-simulation-/blob/67301d24ef56a72b4a205185fb6c76b6dd845c7b/data/reviews/current/reach-closure.json) includes stage/tool/input
 pins, every changed finishing pair, actual live sample counts and failures.
 The [previous brace experiment](reach-contact.md) remains its own source-pinned
 stage. `REACH_CONTACT` stays default-off; no OL/RB or other default changes.

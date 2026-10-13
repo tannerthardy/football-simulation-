@@ -13,7 +13,7 @@ a new slow-rear regression. No third controller adjustment was stacked on it.
 
 Branch starts at `d4ec81c`. Final runtime source is
 `b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88`.
-[Receipt](../../data/reviews/current/reach-transition.json) pins the stages,
+[Receipt](https://github.com/tannerthardy/football-simulation-/blob/67301d24ef56a72b4a205185fb6c76b6dd845c7b/data/reviews/current/reach-transition.json) pins the stages,
 input states, tools, force-bearing samples, changed finishes and adverse advances.
 World, strength, traction, grip capacities, hold depth, recovery integrator,
 RB-read and production defaults are unchanged. Primary retains shared-law

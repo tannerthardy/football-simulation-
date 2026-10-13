@@ -7,7 +7,7 @@ the selected slow rear. It is retained at `6dabd20` and **reverted** on
 `TACKLE_TOUCH`, all companion physics experiments and RB-read features retain
 their defaults. No capacity or shared physics change is installed.
 
-[Receipt](../../data/reviews/current/slow-rear-contact.json) pins the trial,
+[Receipt](https://github.com/tannerthardy/football-simulation-/blob/67301d24ef56a72b4a205185fb6c76b6dd845c7b/data/reviews/current/slow-rear-contact.json) pins the trial,
 adverse outcomes, actual acquired picture, diagnostic interventions and tools.
 Runtime source after restoration is
 `b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88`.

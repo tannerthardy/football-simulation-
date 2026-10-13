@@ -16,7 +16,7 @@ Started from `codex/slow-rear-contact` `23de24f`, clean. Read primary
 hanging-weight work. Final production engine is unchanged, source
 `b74545da8e72fd35321ef4e16bbdb54153262711eb40deb361a1d10b6de63e88`.
 Experimental/RB defaults remain as before.
-[Receipt](../../data/reviews/current/wrap-force-point.json) retains every
+[Receipt](https://github.com/tannerthardy/football-simulation-/blob/67301d24ef56a72b4a205185fb6c76b6dd845c7b/data/reviews/current/wrap-force-point.json) retains every
 changed finish, worse completed spot, censor, source and diagnostic intervention.
 
 ## Isolate the two effects of the depth substitution

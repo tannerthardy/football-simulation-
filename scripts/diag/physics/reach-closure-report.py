@@ -9,7 +9,7 @@ from pathlib import Path
 import statistics
 import sys
 
-output = Path(sys.argv[1] if len(sys.argv) > 1 else 'data/reviews/current/reach-closure.json')
+output = Path(sys.argv[1] if len(sys.argv) > 1 else 'out/reach-closure/receipt.json')
 files = {}
 
 
@@ -129,6 +129,7 @@ receipt = {'protocol': 'reach-closure-review-v1', 'parentCommit': 'fda39f7', 'so
         'scripts/diag/physics/reach-closure-compare.ts', 'scripts/diag/physics/reach-closure-report.py',
         'scripts/diag/physics/reach-contact-panel.ts', 'scripts/diag/physics/wrap-binding-refinement.ts', 'test/reach-contact.test.ts'])},
     'rawFiles': files}
+output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(json.dumps(receipt, indent=2) + '\n')
 for a, p in receipt['arms'].items():
     print(a, p['finishes'], p['curves']['0.2'])
