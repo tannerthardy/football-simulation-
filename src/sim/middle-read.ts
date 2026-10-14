@@ -10,7 +10,7 @@ export type MiddleBranch='seam'|'post';
 export type MiddleInstall=RouteInstall;
 export interface MiddleRead {
   branch:MiddleBranch;
-  reason:'middle-occupied'|'split-roof'|'unresolved-roof';
+  reason:'middle-occupied'|'pole-carry'|'split-roof'|'unresolved-roof';
   key:number|null;
   keyPicture:OptionPicture|null;
   flanks:number[];
@@ -28,9 +28,14 @@ export function readMiddle(p:MiddleInstall,pictures:readonly OptionPicture[]):Mi
   const center=FIELD_WIDTH/2;
   const roof=pictures.filter(d=>d.pose!=='down'&&d.pose!=='rising'
     &&d.pos.x>=p.los+10&&d.pos.x<=p.los+30);
-  const middle=roof.filter(d=>Math.abs(d.pos.y-center)<=4)
+  const middle=pictures.filter(d=>d.pose!=='down'&&d.pose!=='rising'&&d.pos.x<=p.los+30
+    &&Math.abs(d.pos.y-center)<=4&&(d.pos.x>=p.los+10
+      ||(d.pos.x>=p.los+p.route.middleRead!.decisionDepth&&d.vel.x>1)))
     .sort((a,b)=>Math.hypot(a.pos.x-p.los-18,a.pos.y-center)-Math.hypot(b.pos.x-p.los-18,b.pos.y-center))[0];
-  if(middle)return {branch:'seam',reason:'middle-occupied',key:middle.i,keyPicture:middle,flanks:[]};
+  // A visible central carry is already closing the post lane before it
+  // reaches the nominal roof depth. Do not discard its achieved motion.
+  if(middle)return {branch:'seam',reason:middle.pos.x<p.los+10?'pole-carry':'middle-occupied',
+    key:middle.i,keyPicture:middle,flanks:[]};
   const left=roof.find(d=>d.pos.y>center+4),right=roof.find(d=>d.pos.y<center-4);
   return {branch:left&&right?'post':'seam',reason:left&&right?'split-roof':'unresolved-roof',
     key:null,keyPicture:null,flanks:[left?.i,right?.i].filter((i):i is number=>i!==undefined)};

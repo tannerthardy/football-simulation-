@@ -51,6 +51,15 @@ describe('observed seam/post installation',()=>{
     pictures.find(d=>d.i===f.sim.slot('LB_M')!.idx)!.pose='down';
     expect(readMiddle(f.p,pictures).branch).toBe('post');
   });
+  it('recognizes an observed central carry before roof depth while preserving a shallow hold and lateral release',()=>{
+    const f=fixture(),pole=f.sim.slot('LB_M')!.idx;
+    const split=f.sim.defense.map(d=>({i:d.idx,...roof(f,false)(d)}));
+    const read=(vx:number,y=FIELD_WIDTH/2)=>readMiddle(f.p,
+      [...split.filter(d=>d.i!==pole),{i:pole,...pic(49,y,vx)}]);
+    expect(read(4)).toMatchObject({branch:'seam',reason:'pole-carry',key:pole});
+    expect(read(0).branch).toBe('post');
+    expect(read(4,FIELD_WIDTH/2+7).branch).toBe('post');
+  });
   it('mirrors the taught branch without reading a coverage flag',()=>{
     const f=fixture(),pictures=f.sim.defense.map(d=>({i:d.idx,...roof(f,false)(d)}));
     const mirrored={...f.p,outside:-f.p.outside,origin:{x:f.p.origin.x,y:FIELD_WIDTH-f.p.origin.y}};
