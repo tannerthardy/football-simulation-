@@ -18,7 +18,22 @@ from incorporated milestones and archived/rejected research. Older completed
 rows below preserve ownership/evidence at their stage, not proof that the
 branch is still an active development target.
 
+## Current integration and repository work
+
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
+| --- | --- | --- | --- | --- | --- |
+| Preservation-first repository cleanup | Codex integration owner, explicitly authorized by user | `codex/shared-candidate-verification` | README/workboard/branch navigation; only eight manifest refs eligible for archive/leased retirement after affected-owner confirmation. No runtime, tests, fixtures, dependency files or committed receipts changed. | 2026-10-13 (America/Phoenix) | Navigation/checks complete; all eight retirements individually held for affected-owner and other-environment preservation confirmation. No tags/deletions. Adoption of #8, runtime promotion, GitHub default and legacy PR closure remain separate decisions. See [execution record](BRANCHES.md#bounded-cleanup-execution). |
+
+## Completed work and historical ownership snapshots
+
+These original rows preserve their content, evidence and subsystem boundaries.
+Completed stages are historical; older WIP/next-step claims are dated snapshots,
+not proof that their branch name is still in use. Consult the [branch map](BRANCHES.md)
+and the affected owner for live location and intent. The separate #9 extraction
+is now [draft #10](https://github.com/tannerthardy/football-simulation-/pull/10),
+with its own exact combined receipt; it is not part of #8's runtime.
+
+| Recorded item / stage | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
 | GitHub branch and PR cleanup audit | Codex integration owner, user requested branch audit and concrete cleanup plan | `codex/shared-candidate-verification` | GitHub inventory, ancestry/runtime/evidence checks and shared branch guide only; no branch deletion, feature merge or simulation campaign | 2026-10-13 (America/Phoenix) | [Audit complete](BRANCHES.md): 31 branches/nine open draft PRs, old GitHub default 250 commits behind historical reference, 14 tips preserved in 4ded6b6. Exact eight-ref first retirement batch; separate owner/citation/unique-history decisions. [Pinned inventory](../data/reviews/current/github-branch-audit.json). No new work branch, deleted refs, settings changes or simulation/code-suite run. Production code and #8 receipt unchanged. |
 | Exact combined verification and testing-policy integration | Codex integration owner, explicitly assigned by user in this chat | `codex/shared-candidate-verification`, tested `c3080e8` | PR #6 plus ownership/flag documentation only; no feature promotion | 2026-10-13 (America/Phoenix) | [Verified once](INTEGRATION.md#published-verification-evidence): 1,669 TS tests/139 files, 145 Python, typecheck/build pass in 186.804 s; no skips/worker errors or changed inputs. [Exact receipt](../data/reviews/current/shared-integration-verification.json). All 43 flags/runtime/lock identical to historical 4ded6b6. #3/#4/#5 stay separate; #7 excluded. Contributors supply compatible focused evidence, not duplicate shared suites. Publication adds docs/evidence only. |
@@ -58,7 +73,8 @@ Parked controller-session branches (not for merge as they stand):
 Before crossing a boundary, state the proposed change and coordinate through
 this file and any available session messages. This board does not claim that
 separate chat sessions have a direct messaging tool. Each owner updates its
-row and links evidence when work lands; remove completed rows after handoff.
+row and links evidence when work lands; mark completed rows historical after
+handoff and preserve their content and evidence links.
 
 Land small diagnostics/docs separately when useful. Experimental engine work
 may land with a default-off option; flipping the default requires law and

@@ -1,4 +1,98 @@
-# GitHub branch audit and cleanup plan
+# GitHub branch map and preservation record
+
+## Bounded cleanup execution
+
+The user authorized only the eight milestone names in the original manifest,
+plus navigation improvements. Mutable refs were rechecked on 2026-10-14 UTC
+(2026-10-13 America/Phoenix). **No retirement completed in this pass:** affected-owner
+confirmation of unused names and other-environment preservation is outstanding.
+Archive tags are still proposed, not published or verified. These are individual
+preservation holds, not a reason to delay active research.
+
+- **33 remote branches / 11 open draft PRs** at recheck, rather than the original
+  31 / nine. #10's `codex/contact-components-extracted` and #11's
+  `codex/under-center-zone` are independent additions and remain untouched.
+- All eight remote tips exactly match the manifest and are ancestors of
+  `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`. No current open PR uses any as head
+  or base. No branch-name URL dependency was found in Markdown/JSON/text/YAML
+  across 33 fetched heads or in the 11 open PR descriptions. External links
+  and other environments are outside that check.
+- All four accessible worktrees were inspected: the original engine, roster
+  audit, shared candidate and clean component extraction. None checks out an
+  eligible milestone name; all tracked/untracked statuses were clean before
+  navigation edits, and all four local branch tips have zero commits absent
+  from remote-head history. Ignored evidence/build/dependency files exist and
+  were retained. Nothing was cleaned, uploaded wholesale or removed.
+- The chat directory did not return, and no direct chat-send capability was
+  available. Affected-owner requests are durable on GitHub:
+  [run-game/defensive-flow owner request on #9](https://github.com/tannerthardy/football-simulation-/pull/9#issuecomment-6158603114)
+  and [second-sim owner request on #8](https://github.com/tannerthardy/football-simulation-/pull/8#issuecomment-6158603806).
+  Neither had received confirmation at publication. Completed workboard rows
+  alone do not establish preservation of another environment's local files.
+
+| Branch | Outcome / remaining check |
+| --- | --- |
+| `codex/defensive-flow` | Skipped: run-game owner must confirm the handed-off name is unused and other-environment local work/evidence is preserved. |
+| `codex/reach-contact-closure` | Skipped: second-sim owner/name and other-environment preservation confirmation absent. |
+| `codex/reach-contact-physics` | Skipped: second-sim owner/name and other-environment preservation confirmation absent. |
+| `codex/reach-wrap-transition` | Skipped: second-sim owner/name and other-environment preservation confirmation absent. |
+| `codex/run-game-contact` | Skipped: run-game owner/name and other-environment preservation confirmation absent. |
+| `codex/slow-rear-contact` | Skipped: second-sim owner/name and other-environment preservation confirmation absent. |
+| `codex/wrap-binding-physics` | Skipped: second-sim owner/name and other-environment preservation confirmation absent. |
+| `codex/wrap-force-point` | Skipped: second-sim owner/name and other-environment preservation confirmation absent. |
+
+Original full SHAs and exact proposed tag names remain in the
+[eight-row table below](#first-retirement-batch-eight-fully-preserved-milestones)
+and the unchanged [inventory receipt](../data/reviews/current/github-branch-audit.json).
+History remains reachable on GitHub through the original branches and the
+historical comparison. No branch count target overrides a preservation hold;
+33 would become 25 if all eight subsequently qualify, not 23.
+
+After an affected owner's confirmation, recheck that branch's SHA, PR/link
+dependencies and local preservation again. Create the manifest tag only if
+absent, publish it without force, and verify its remote peeled commit equals
+the expected SHA. Never overwrite a tag. Record the verified tag/SHA and owner
+confirmation here on GitHub **before** deleting the branch with:
+
+```sh
+git push --force-with-lease=refs/heads/BRANCH:EXPECTED_FULL_SHA origin :refs/heads/BRANCH
+```
+
+Use the exact manifest name/SHA; a moved ref must fail the lease and be skipped.
+This explicit deletion lease is authorized only for the eight listed refs.
+
+Recovery after a verified retirement, from an appropriate clean checkout:
+
+```sh
+git fetch origin tag archive/2026-10-13/codex/BRANCH_SUFFIX
+git switch -c recovery/BRANCH_SUFFIX archive/2026-10-13/codex/BRANCH_SUFFIX
+```
+
+Replace the suffix with the exact table entry. To recreate the original remote
+name, first verify it is absent, then use an absence lease so a concurrently
+recreated branch cannot be overwritten:
+
+```sh
+git push --force-with-lease=refs/heads/codex/BRANCH_SUFFIX: origin HEAD:refs/heads/codex/BRANCH_SUFFIX
+```
+
+No recovery is currently necessary because the original refs remain.
+
+Navigation changes: README links implemented sources, historical comparison,
+pending #8 adoption, separate #10 runtime candidate, ownership/testing policy,
+branch recovery and current/archived evidence. Workboard rows and evidence links
+are retained under completed/historical stages; older WIP claims remain dated
+snapshots. Larger directory reorganization is deferred: decide evidence-link
+and retrieval compatibility before proposing any moves.
+
+Validation is Git/ref, ancestry, local preservation and documentation-link
+checks only. Ref/local checks took 1.51 s and citation scanning 2.44 s; navigation
+links resolve locally and whitespace checks pass. Zero simulations/shared suites
+were run. Production source, tests, fixtures, dependencies, flags and committed
+receipts are unchanged. Default settings, historical pin, PR states/targets,
+active branches/worktrees and rejected/original research were preserved.
+
+## Original audit snapshot (preserved)
 
 Snapshot: 2026-10-13 (America/Phoenix), UTC 2026-10-14T00:19:29.131324+00:00.
 Repository: [tannerthardy/football-simulation-](https://github.com/tannerthardy/football-simulation-).
@@ -14,7 +108,7 @@ Repository: [tannerthardy/football-simulation-](https://github.com/tannerthardy/
 - The branch API reports `protected=false` for all 31 heads; automatic branch deletion after merge is off. Repository-wide rulesets were not audited. These observations do not authorize changing protection or repository settings.
 - Completed workboard rows still sit under “Active item”; older rows are historical stages, not a reliable live branch directory. Use this map for branch disposition and the workboard for bounded ownership.
 
-## Current review graph
+## Historical review graph at the original snapshot
 
 Arrows below describe PR bases/stacks, not permission to merge. #8 contains #6; #3/#4/#5/#7 remain separate as requested; the new #9 is also a separate candidate.
 
@@ -53,7 +147,7 @@ This batch reduces the branch list **31 → 23**, without removing any commit fr
 
 Before executing: confirm no owner is continuing on the old name, recheck each remote tip against the manifest, preserve and verify its archive tag on GitHub, then delete only those eight refs. Stop if a tip moved, a new PR depends on it or a citation/owner dependency appears. Keep the baseline/reference refs and every other branch. Do not bulk-delete every “merged” branch.
 
-## All 31 branches
+## Historical snapshot: all 31 branches
 
 Ahead/behind counts are commit-set differences versus **historical 4ded6b6**. “Exclusive” counts commits reachable from that tip and no other current remote head; zero does not mean disposable. Exact source equality and citation locations are in the JSON receipt.
 
@@ -110,7 +204,37 @@ Aim for roughly **8–12 meaningful branch refs**, depending on how many researc
 
 ## One obvious entry point
 
-Recommended decision: **adopt #8 as the shared development reference**, supported by the existing exact receipt, and give ongoing work one stable branch such as `develop`. Make that stable branch GitHub’s default only after adoption/owner coordination. Preserve `4ded6b6` under an immutable historical baseline tag and retain its exact comparison configuration/receipt. Do not rewrite it as a result for today’s code.
+**Outstanding decision: Should #8 become the current shared development
+reference, with `4ded6b6` retained for historical comparisons?** Recommend a
+stable `develop` branch, after approval, at the explicitly reviewed #8 tree
+[`c98c2fa0e8de760c980ad3852e0ec85abcfadc8f`](https://github.com/tannerthardy/football-simulation-/commit/c98c2fa0e8de760c980ad3852e0ec85abcfadc8f).
+Its existing receipt supports the runtime/tooling decision; later #8 navigation
+commits need documentation review, not another simulation campaign. Any newer
+commit chosen for `develop` must be named explicitly in its approval. No such
+branch or new baseline was created in this cleanup.
+
+Setup/CI/targeting inspection: README, CLAUDE.md, BASELINE.md and the launcher
+profile currently name `codex/run-game-integration`; `config/baseline.json`
+must continue identifying its historical profile. No tracked `.github`
+configuration exists in the 33 inspected heads, including the current GitHub
+default. External CI/settings assumptions remain unverified (the connector
+does not expose the workflow collection endpoint), so a default switch still
+needs that check and explicit approval. New independent PRs can target an
+approved `develop`; existing genuine stacks must retain their parents unless
+their owners arrange a clean retarget. Workers adopt the reference at clean
+checkpoints, without forced rebases.
+
+Current stacks include #3 → #7, #4 → #5/#9, #5 → #11, and #8 → #10.
+#10's clean component-only extraction from `c98c2fa` has its separate exact
+enabled verification and is pending runtime review. It imports neither #4 nor
+#9 ancestry. Reference adoption must not silently promote that correction or
+other experiments. Keep all those parents, #1/#2 disposition, #6 closure and
+unique research originals for their documented decisions.
+
+Recommend GitHub's default change only after reference adoption, setup/external
+CI checks and owner coordination. Preserve full `4ded6b6`, its profile/receipt
+and historical/PR-stack refs. An immutable historical tag is a separate future
+preservation decision, not a tag issued by this pass.
 
 The current entry point remains historical `codex/run-game-integration` until that decision. Adopting a reference, changing GitHub’s default, closing legacy PRs and deleting refs are separate actions; none happened during this audit. A default-name switch does not require another simulation campaign. Any independently ready runtime correction still needs its own dependencies/settings/focused evidence assessment.
 
