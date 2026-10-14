@@ -89,6 +89,41 @@
         "path": "out/catch-team-arrival/scope/R3101-S1001-P173-team-window.json.gz",
         "sha256": "3174c87336e6c36e98fe88f8008eace7aa0b6cc26c6777d5baeced1b0c2583f9"
       }
+    },
+    {
+      "id": "H10831-C2-S51002",
+      "signature": "8e6b1cf094d6b592344af9348f9d35c3a59c66924ac99132ce04f497454a303d",
+      "artifact": null,
+      "baselineSignature": "8e6b1cf094d6b592344af9348f9d35c3a59c66924ac99132ce04f497454a303d",
+      "baselineStateUnchanged": true,
+      "note": "Full baseline state unchanged"
+    },
+    {
+      "id": "H11842-C2-S52002",
+      "signature": "04035e99b6c6227f49d2e377673fd1bbaa941166cc6a1ece46e15028de0db919",
+      "artifact": null,
+      "baselineSignature": "04035e99b6c6227f49d2e377673fd1bbaa941166cc6a1ece46e15028de0db919",
+      "baselineStateUnchanged": true,
+      "note": "Full baseline state unchanged"
+    },
+    {
+      "id": "H11842-C3-S52003",
+      "signature": "69147170ca55a348ff3aba9940577c93e4c5e8084c46cbb2c03f32747e9ec417",
+      "artifact": null,
+      "baselineSignature": "69147170ca55a348ff3aba9940577c93e4c5e8084c46cbb2c03f32747e9ec417",
+      "baselineStateUnchanged": true,
+      "note": "Full baseline state unchanged"
+    },
+    {
+      "id": "H11842-C1-S52001",
+      "signature": "d264e725ed2fcfb723c8a24cf5fde944c341b4fec7bb4d91759512a9d2db44a7",
+      "artifact": {
+        "path": "out/catch-production/incomplete-inspection/H11842-C1-S52001-production.json.gz",
+        "sha256": "345cc079ca2049f7220c5b2b89f02c76d003f0aaff71d8f5868ee76d20590e73"
+      },
+      "baselineSignature": "87eba054904229b129b6440a1f9d1c68631fce50be4bb9c2a37ac46c5a7f2646",
+      "baselineStateUnchanged": false,
+      "note": "Same complete football result, ball/carrier frames unchanged; eligible safety path differs. Failed baseline-state-equality assumption retained in remaining-fresh receipt; actual-source observed/plain inspection reproduces candidate fingerprint."
     }
   ]
 }

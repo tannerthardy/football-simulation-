@@ -1,5 +1,9 @@
 # P4 approach geometry, execution and containment
 
+Follow-up: [moving-catch improvement](moving-catch-improvement.md) tests the
+remaining flight-approach hypothesis and installs a minimal controller
+candidate. Measurements and conclusions below retain their original source.
+
 P4's touchdown does **not establish a harmful catch-to-pursuit transition**.
 Both achieved approach histories finish with its stronger actual execution
 value, and both concede the touchdown with its weaker actual value. The

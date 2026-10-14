@@ -1,5 +1,9 @@
 # One near-hip objective: bounded shadow result
 
+Follow-up: [moving-catch improvement](moving-catch-improvement.md) tests the
+remaining flight-approach hypothesis and installs a minimal controller
+candidate. Measurements and conclusions below retain their original source.
+
 The same observed near-hip request does **not supply a general repair across
 the catch boundary**. It already equals the pursuit request at several
 post-catch ticks. Remaining differences have tradeoffs: reducing predicted

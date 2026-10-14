@@ -15,11 +15,14 @@ const inputPaths=['data/reviews/current/catch-transition-inputs.json','data/revi
  prototypePaths=['data/reviews/current/moving-catch-prototype-signatures.json'],
  inputs=inputPaths.flatMap(p=>JSON.parse(readFileSync(p,'utf8')).clips),
  expected=prototypePaths.flatMap(p=>JSON.parse(readFileSync(p,'utf8')).cases),
- unique=process.argv[3]?.split(',').map(id=>expected.find(c=>c.id===id)??{
+ selected=process.argv[3]&&process.argv[3]!=='all'?process.argv[3].split(',').map(id=>expected.find(c=>c.id===id)??{
   id,signature:inputs.find((f:any)=>f.id===id)?.nativeSignature,artifact:null
- })??[...new Map(expected.map(c=>[c.id,c])).values()],profile=JSON.parse(readFileSync('config/baseline.json','utf8')),
+ }):[...new Map(expected.map(c=>[c.id,c])).values()],
+ unique=process.argv[4]==='baseline'?selected.map(c=>({...c,signature:inputs.find((f:any)=>f.id===c.id)?.nativeSignature,artifact:null})):selected,
+ profile=JSON.parse(readFileSync('config/baseline.json','utf8')),
  provenance={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourceSha256:sourceVersion(),collectorSha256:fileHash(import.meta.filename),
-  controllerSha256:fileHash('src/sim/catch-approach.ts'),inputs:inputPaths.map(path=>({path,sha256:fileHash(path)})),
+  expectedBasis:process.argv[4]==='baseline'?'frozen unchanged baseline':'completed candidate references',
+  inputs:inputPaths.map(path=>({path,sha256:fileHash(path)})),
   prototypes:prototypePaths.map(path=>({path,sha256:fileHash(path)})),
   flags:Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),worldDefaults:profile.worldDefaults,
   node:process.version,platform:process.platform,arch:process.arch,lockSha256:fileHash('package-lock.json'),startedAt:new Date().toISOString()},

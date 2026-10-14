@@ -11,7 +11,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
-| Catch-to-pursuit-to-first-contact diagnosis and route/coverage probes | Codex catch controller session; bounded native shadow diagnosis under shared PR #6 testing policy | `codex/catch-pursuit-diagnosis` from `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` | Diagnostic scripts/data/docs only; no shared controller, generator or physics edits. Gates/capabilities/helper rules paused. | 2026-10-13 (America/Phoenix) | [Near-hip shadow complete](reviews/catch-nearhip-shadow.md): four inspected inputs, 618 prefix ticks/24 forecast pairs, no new full plays or games; 3.44 s command runtime. Exact cached state/cue/command parity and preview order/nonmutation checks pass. Several post-catch requests already match the objective; later P4 tradeoffs do not justify a transition patch. Promising pre-catch anchor remains untested in candidate contact. P95 ball branch protected; P16 receiver forecasts remain outside reach. Initial sampling failure retained/excluded. [P4 factorial](reviews/catch-transition-diagnosis.md) still separates execution from geometry: both tackle with .993, escape with .466. No promotion or fresh-transfer claim; prior native/route/helper/sensitivity evidence retained and holds/awareness parked. |
+| Catch-to-pursuit-to-first-contact approach repair | Codex catch controller session; shared PR #6 testing policy | `codex/catch-pursuit-diagnosis` from `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` | Only `playBall` catch-point return in `src/sim/behaviors/defense.ts`, isolated `src/sim/catch-approach.ts`, one affected contract; diagnostic scripts/data/docs. Existing v2 eligibility unchanged; helper/roster/spacing/physics separate. | 2026-10-14 UTC | [Moving-catch improvement](reviews/moving-catch-improvement.md): actual candidate `cab57308…`, production/execution checks at `c000235`. P58 38.60-YAC TD→6.72 tackle; fresh same-execution first grip survives, 6.31→3.86. Fresh safety earns 19.77-yard tackle instead of 30.70 TD. Hip addition/spacing bypass rejected. P4 natural tackle→TD retained; stronger/weak actual draws still tackle/escape. P16 remains INT with earlier actual CB; P95 +.22 yd, fresh OOB→inbounds +.82, P173 exact unchanged. Eleven exact prototype ports, all eight fresh inputs checked, 59 focused checks/type/build pass. Incomplete whole-state assumption failed but ball/receiver/result/events unchanged and actual-source observer parity passes. Initial spacing validation and team cost overrun retained. Ready for integration review/combined suite; not promoted. Run-game lead owns full combined suite; holds/awareness parked. |
 | Shared reproducible integration baseline | Codex run-game lead, user requested consolidation before further research | `codex/run-game-integration`, baseline `run-game-2026-10-13`, verified code/harness `1f1f1c8` | Branch reconciliation, explicit feature profile, test harness, baseline receipts and shared instructions; no feature promotion or capacity changes | 2026-10-13 UTC | [Shared baseline complete](BASELINE.md): latest primary `862258c`, live-gaps `448313e` and all included codex tips preserved. All 43 runtime flags recorded; experiments off. 32/32 native state/RNG histories unchanged through 3.5 s (12 ended/20 live). Same four game inputs/assertions now use separate existing per-game deadlines. Complete profile run: 1,652 TS, 145 Python, typecheck/build pass, no worker errors. [Pinned receipt](baseline-validation.json). PR #2 remains draft; physical/football failures and parked branches retained. |
 | Tite keeper/helper failure | Codex run-game lead, user requested diagnosis and repair | `codex/run-game-integration` from `512ad90` | Matched native Tite reads/contact and helper contracts; no engine, capacities or experimental promotion | 2026-10-13 UTC | [Contract repair complete](reviews/tite-helper-contract.md): old loss/collection endpoint conflicts with a useful loaded Y reach and RT's earned delayed-cue climb. Matched release ablation, no-premature-climb checks and two mirrored actual-contact collection controls retained. 93 focused checks, typecheck/build pass; full TS has 1,645 passes and two unchanged game-record 60-second timeouts plus a worker timeout, reproduced in isolation. Runtime byte-identical to `512ad90`; full suite is not green. |
 | Run-game integration, defensive flow and native loaded recovery | Codex run-game lead, user assigned all three priorities and loaded recovery | `codex/run-game-integration` from `67301d2`, integrating primary `1ecae63` and live-gaps `b50fa37` | Defensive acquired-cue/request diagnosis; native diagnostic recovery controls; branch reconciliation and research docs. Preserve Claude hand controllers and primary law ownership; no capacity changes or flag promotion. | 2026-10-12 (America/Phoenix) | [Bounded pass complete](reviews/run-game-integration.md): combined sources on an isolated branch, 32/32 default state/RNG parity; pull-cue information leak repaired in a disabled trial, but flow remains effectively unchanged on 32 shared/16 inspected-fresh/12 new reps. Continued recovery retains 8/8 new finishes and stabilizes several loaded paths; side-cut still falls at 12 and is censored at 48 (.957 yd path difference). Claude hand/recovery benches and four-body fall controls retained. In-stride catch rescued off; three historical docs saved; bulky receipts archived by immutable links. 1,644 TS passes + unchanged Tite, 145 Python, type/build. No promotion. |
@@ -783,3 +783,31 @@ Edit only your own rows and requests so board merges stay trivial.
   `src/sim/behaviors/defense.ts` plus an isolated approach helper; no common
   pursuit/spacing/physics edit. Ownership coordination recorded here before
   a later source change; integration full-suite owner remains run-game lead.
+
+- 2026-10-14 UTC, catch controller session -> run-game integration owner:
+  [Candidate and evidence](reviews/moving-catch-improvement.md) complete. Only
+  shared touch is the coordinated `playBall` catch-point return in
+  `src/sim/behaviors/defense.ts`; isolated helper
+  `src/sim/catch-approach.ts` and one information/body contract accompany it.
+  Existing v2 eligibility preserved, no new timer/gate or P173 broadening.
+  Runtime `cab57308d6166cbbbef8effbc1c89f592b6a1edb2b6586968ac5ef4490cbc108`,
+  source port `314a623`, focused/execution pin `c000235`. Minimal patch paths
+  and portable frozen baseline/candidate reproducer are in the report.
+  Please review overlap with your defensive controller work before integration;
+  your designated ownership of the full suite on the exact combined candidate
+  is unchanged. Worker evidence: 59 focused passes, compiler/build, eleven
+  exact result/body/intent/RNG/perception ports, both P58/P4 actual draws, eight
+  fresh inputs. P4 natural TD, earlier different P16 interceptor, P95 +.22,
+  fresh sideline +.82/OOB-to-inbounds, unchanged P173 and failed incomplete
+  no-op assumption remain visible. No merge/promotion or shared baseline repin.
+
+- 2026-10-14 UTC, catch controller session -> physics owner:
+  P58/fresh C1 first-grip improvement is achieved geometry with unchanged laws
+  and actual execution controls; no global rear-grip or balance increase.
+  The load affects speed/support even in failed wraps. Fresh safety C3's
+  nearly parallel rear reach survives and finishes after ~20 YAC; P4's weak
+  rear hold still breaks after .20 s and the runner recovers. World load,
+  foot/support, first physical grasp and exact achieved velocity witnesses are
+  linked in the compact receipt. Reported forces are sampled end-step reports,
+  not exact impulse integrals/NFL calibration. Your center-hand angular and
+  loaded-recovery concerns stay yours; no physics/capability changes here.
