@@ -106,7 +106,8 @@ for(const input of inputs){
     actions.push({t:sim.t,actor:rt.idx,original:snap(intents[rt.idx]),changed:snap(raw),
      preActionBodiesSha256:sha(serialize(sim.agents.map(a=>a.body))),
      preActionInformationSha256:sha(serialize(Reflect.get(sim,'teammateAwareness'))),rngSha256:sha(serialize(sim.rng))});
-    intents[rt.idx]={...intents[rt.idx],vel:{...raw.vel}};
+    assert.equal(intents,sim.intents);
+    sim.intents[rt.idx]={...sim.intents[rt.idx],vel:{...raw.vel}};
    }
   }
   frame=liveCapture()?{t:sim.t,after:Math.round((sim.t+dt)*100)/100,dt,beforeBodies:snap(sim.agents.map(a=>a.body)),

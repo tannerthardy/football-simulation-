@@ -1,11 +1,14 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import assert from 'node:assert/strict';
-import { previewFreeMovement } from '../../src/physics/movement-preview.ts';
-import { World } from '../../src/physics/world.ts';
-import { followAccel, fatigueFactor } from '../../src/physics/kinematics.ts';
-import { availability, supportParams } from '../../src/physics/support.ts';
-const packet=JSON.parse(gunzipSync(readFileSync(process.argv[2] ?? 'out/wide-zone-opening/awareness.json.gz')).toString());
+import { previewFreeMovement } from '../../src/physics/movement-preview.js';
+import { World } from '../../src/physics/world.js';
+import { followAccel, fatigueFactor } from '../../src/physics/kinematics.js';
+import { availability, supportParams } from '../../src/physics/support.js';
+const packet=JSON.parse(gunzipSync(readFileSync(process.argv[2] ?? 'docs/reviews/wide-zone-opening/first-breakdown.json.gz')).toString());
+// The portable witness retains only the actual first-action frames/queries.
+packet.panel ??= packet.cases.map((c:any)=>({input:c.input,frames:[c.frame],cues:c.consumed}));
+packet.sourceSha256 ??= packet.runtime;
 let steps=0;const step=World.prototype.step;World.prototype.step=function(...args:any[]){steps++;return step.apply(this,args as any)};
 const start=performance.now();
 function swept(source:any,samples:any[],peer:any,touch:number){let px=source.pos.x-peer.pos.x,py=source.pos.y-peer.pos.y,minimum=Math.hypot(px,py)-touch;let at=0;for(const sample of samples){const rx=sample.pos.x-peer.pos.x-peer.vel.x*sample.t,ry=sample.pos.y-peer.pos.y-peer.vel.y*sample.t,ex=rx-px,ey=ry-py,along=Math.max(0,Math.min(1,-(px*ex+py*ey)/Math.max(1e-12,ex*ex+ey*ey))),clear=Math.hypot(px+along*ex,py+along*ey)-touch;if(clear<minimum){minimum=clear;at=sample.t-.05+along*.05}px=rx;py=ry}return {minimum,at};}
