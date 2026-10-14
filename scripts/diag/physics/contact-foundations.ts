@@ -84,8 +84,9 @@ export function frozenInterval(saved: ReturnType<typeof packet>, partitions: num
       const a = w.bodies[r.i], b = w.bodies[r.j], rv = w.graspVelocity(r.joint);
       const inverseBody = 1 / w.mass[r.i] + 1 / w.mass[r.j]
         + (r.ri ?? 0) ** 2 / w.inertia[r.i] + (r.rj ?? 0) ** 2 / w.inertia[r.j];
-      const mobility = w.attachments.get(r.joint)?.bounded
-        ? w.attachmentMobility(r.joint, -r.ny, r.nx) : 0;
+      // Linear material attachments also have support mobility. Use the
+      // actual Jacobian rather than equating unbounded geometry with zero.
+      const mobility = w.attachmentMobility(r.joint, -r.ny, r.nx);
       rows.push({ t: w.time, h, tangentSpeed: -rv.x * r.ny + rv.y * r.nx
           - (r.ri ?? 0) * (a.spin ?? 0) - (r.rj ?? 0) * (b.spin ?? 0),
         inverseBody, mobility, capacity: r.limit / h, normal: { x: r.nx, y: r.ny },
