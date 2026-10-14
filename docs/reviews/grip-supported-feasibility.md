@@ -69,6 +69,28 @@ zero mobility. It now queries the actual Jacobian for both attachment types.
 The historical selected acquired checkpoint is bounded, so this reporting
 repair does not alter its earlier frozen-row finding or stored evidence.
 
+At code/harness `0afa982`, 17 focused checks and typecheck pass. The cost and
+accuracy collection ran at `cc06e8a`; the intervening commit only adds static
+fixture typing to the test. Exact kernel/collector/World/input hashes match,
+so the benchmark is reused. The failed first typecheck remains in the receipt.
+Final test bodies took 122 ms (2.24 s command); typecheck 12.90 s. Four-case
+reference refinement took about 15.4 s; serial benchmark command 5.48 s.
+
+Largest candidate differences against the refined World reference:
+
+| Quantity | Difference |
+| --- | ---: |
+| Body position / velocity | 2.15e-10 yd / 7.27e-8 yd/s |
+| Facing / spin | 1.26e-8 rad / 4.28e-6 rad/s |
+| Material attachment point | 2.22e-8 yd |
+| Vector impulse / temporal moment | 7.39e-6 / 2.17e-8 |
+| Angular impulse / temporal moment | 8.53e-6 / 2.51e-8 |
+| Body / motor / passive work | .0000103 / .0000432 / .0000330 |
+| Represented-energy / angular-momentum residual | 9.29e-9 / 3.64e-11 |
+
+The energy residual is close to the unchanged 1e-8 acceptance bound. It is
+reported rather than replaced by energy-derived work or a larger tolerance.
+
 ## Decision boundary
 
 Accuracy, cost, exact tested revision, settings and input hashes are recorded
@@ -78,6 +100,25 @@ scratch/live intervals receive the same prescribed motor boundary. The
 midpoint comparator is the unchanged primitive on this branch, not a new
 whole-baseline validation. Median, p95 and observed maximum describe seven
 same-machine repetitions of each isolated interval, not game runtime.
+
+| 4.167 ms mechanical interval | Midpoint median / p95 / max | Corrected slow median / p95 / max | Kernel median / p95 / max |
+| --- | ---: | ---: | ---: |
+| Mobile tangent | .413 / 1.098 / 1.098 ms | 381.75 / 402.25 / 402.25 ms | 1.612 / 2.512 / 2.512 ms |
+| Mixed normal/tangent | .097 / .828 / .828 ms | 200.28 / 212.98 / 212.98 ms | .196 / .364 / .364 ms |
+
+Both midpoint results fail the declared accuracy while closing their physical
+ledgers. The corrected slow solver passes with 8192/4096 accepted pieces and
+zero limit hits. The kernel accepts 64/8 pieces and 504/56 derivative
+evaluations: roughly 237/1020 times cheaper than that scoped slow comparison.
+Seven samples make p95 equal the observed maximum; neither is a universal
+worst-case guarantee. The unsupported slip-phase case costs 3.108 ms median,
+8.387 ms maximum, returning no accepted result. This search/fallback overhead
+must be included in a future integration decision.
+
+A provisional feasibility budget is accepted-interval median <=2 ms,
+p95 <=5 ms, and observed refusal maximum <=10 ms on these inputs/machine.
+This experiment meets that screen. The prior full-tick 5/10/50 ms proposal
+remains unproved, as does aggregate cost with many contacts.
 
 This supports continued feasibility work. Actual bounded/anisotropic
 attachments, partial/changing leg share, hold-phase changes, active reeling,
