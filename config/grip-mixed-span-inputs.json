@@ -1,0 +1,565 @@
+{
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "selector": "Loaded checkpoint from PR38; declared before moving comparisons. No capacity, stiffness, damping or recovery change.",
+  "cases": [
+    {
+      "id": "loaded-mixed",
+      "selector": {
+        "id": "loaded-mixed",
+        "tangent": 0.08,
+        "curved": 0,
+        "zero": false
+      },
+      "packetId": "patch-45-8-0-3001-1",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.20001563049892,
+            "y": 26.66647170276743
+          },
+          "vel": {
+            "x": 0.07974413561012118,
+            "y": 0.006393186669776115
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0
+        },
+        "material": {
+          "x": -3.384392344391256e-06,
+          "y": 4.221454119975565e-05
+        },
+        "footOffset": {
+          "x": -1.9835250915366744e-05,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.158464711270983,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "unchanged loaded acquired point",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0.08,
+        "aVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "spins": {
+          "holder": 0,
+          "held": 0
+        },
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "No rest reset",
+        "curvedFraction": 0,
+        "heldSpin": 0,
+        "duration": 0.0002,
+        "bVelocity": {
+          "x": 0.07974413561012118,
+          "y": 0.006393186669776115
+        }
+      }
+    },
+    {
+      "id": "curved-mixed",
+      "selector": {
+        "id": "curved-mixed",
+        "tangent": 0.08,
+        "curved": 0.25,
+        "zero": false
+      },
+      "packetId": "patch-45-8-0-3001-1",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.47216301566217,
+            "y": 26.530438532530813
+          },
+          "vel": {
+            "x": 0.07974413561012118,
+            "y": 0.006393186669776115
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.2792013888888889,
+          "y": 0.13960069444444445
+        },
+        "footOffset": {
+          "x": -1.9835250915366744e-05,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.158464711270983,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "declared local curved point; held COM translated to preserve the original world grip point and stored extension",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0.08,
+        "aVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "spins": {
+          "holder": 0,
+          "held": 0
+        },
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "No rest reset",
+        "curvedFraction": 0.25,
+        "heldSpin": 0,
+        "duration": 0.0002,
+        "bVelocity": {
+          "x": 0.07974413561012118,
+          "y": 0.006393186669776115
+        }
+      }
+    },
+    {
+      "id": "curved-return",
+      "selector": {
+        "id": "curved-return",
+        "tangent": -0.02,
+        "curved": 0.25,
+        "zero": false
+      },
+      "packetId": "patch-45-8-0-3001-1",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.47216301566217,
+            "y": 26.530438532530813
+          },
+          "vel": {
+            "x": -0.019936033902530296,
+            "y": -0.0015982966674440288
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.2792013888888889,
+          "y": 0.13960069444444445
+        },
+        "footOffset": {
+          "x": -1.9835250915366744e-05,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.158464711270983,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "declared local curved point; held COM translated to preserve the original world grip point and stored extension",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": -0.02,
+        "aVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "spins": {
+          "holder": 0,
+          "held": 0
+        },
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "No rest reset",
+        "curvedFraction": 0.25,
+        "heldSpin": 0,
+        "duration": 0.0002,
+        "bVelocity": {
+          "x": -0.019936033902530296,
+          "y": -0.0015982966674440288
+        }
+      }
+    },
+    {
+      "id": "radial-control",
+      "selector": {
+        "id": "radial-control",
+        "tangent": 0,
+        "curved": 0,
+        "zero": false
+      },
+      "packetId": "patch-45-8-0-3001-1",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.20001563049892,
+            "y": 26.66647170276743
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0
+        },
+        "material": {
+          "x": -3.384392344391256e-06,
+          "y": 4.221454119975565e-05
+        },
+        "footOffset": {
+          "x": -1.9835250915366744e-05,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.158464711270983,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "unchanged loaded acquired point",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0,
+        "aVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "spins": {
+          "holder": 0,
+          "held": 0
+        },
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "No rest reset",
+        "curvedFraction": 0,
+        "heldSpin": 0,
+        "duration": 0.0002,
+        "bVelocity": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "zero-span-control",
+      "selector": {
+        "id": "zero-span-control",
+        "tangent": 0,
+        "curved": 0,
+        "zero": true
+      },
+      "packetId": "patch-45-8-0-3001-1",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.20001563049892,
+            "y": 26.66647170276743
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0
+        },
+        "material": {
+          "x": -3.384392344391256e-06,
+          "y": 4.221454119975565e-05
+        },
+        "footOffset": {
+          "x": -1.9835250915366744e-05,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.1586131070108552,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "unchanged loaded acquired point",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0,
+        "aVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "spins": {
+          "holder": 0,
+          "held": 0
+        },
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "Plastic reset of hold to current distance (energy removed)",
+        "curvedFraction": 0,
+        "heldSpin": 0,
+        "duration": 0.0002,
+        "bVelocity": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "fresh-curved",
+      "selector": {
+        "id": "fresh-curved",
+        "tangent": 0.06,
+        "curved": 0.2,
+        "zero": false,
+        "spin": 0.025
+      },
+      "packetId": "patch-45-8-0-3001-1",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.41972364885864,
+            "y": 26.556658215932575
+          },
+          "vel": {
+            "x": 0.05980810170759089,
+            "y": 0.004794890002332086
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0.025
+        },
+        "material": {
+          "x": -0.22336111111111112,
+          "y": 0.11168055555555556
+        },
+        "footOffset": {
+          "x": -1.9835250915366744e-05,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.158464711270983,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "declared local curved point; held COM translated to preserve the original world grip point and stored extension",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0.06,
+        "aVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "spins": {
+          "holder": 0,
+          "held": 0.025
+        },
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "No rest reset",
+        "curvedFraction": 0.2,
+        "heldSpin": 0.025,
+        "duration": 0.0002,
+        "bVelocity": {
+          "x": 0.05980810170759089,
+          "y": 0.004794890002332086
+        }
+      }
+    }
+  ]
+}
