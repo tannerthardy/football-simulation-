@@ -14,6 +14,7 @@ import {previewFreeMovement,type MovementSample} from '../physics/movement-previ
 import {availability,supportParams} from '../physics/support.js';
 import type { Agent } from './agent.js';
 import type {Perceived} from './perception.js';
+import type {TeammateForecast} from './teammate-information.js';
 
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
@@ -37,6 +38,79 @@ interface PeerPicture {
   pos: {x:number;y:number};
   vel: {x:number;y:number};
   touch: number;
+  forecast?: TeammateForecast;
+}
+
+function peerAt(peer:PeerPicture,t:number):{x:number;y:number} {
+  const route=peer.forecast?.samples;
+  if(route&&route.length>1){
+    const k=route.findIndex(s=>s.t>=t-1e-9),hi=route[k<0?route.length-1:k],lo=route[Math.max(0,(k<0?route.length-1:k)-1)];
+    const u=hi.t>lo.t?Math.max(0,Math.min(1,(t-lo.t)/(hi.t-lo.t))):0;
+    return {x:lo.pos.x+(hi.pos.x-lo.pos.x)*u,y:lo.pos.y+(hi.pos.y-lo.pos.y)*u};
+  }
+  return {x:peer.pos.x+peer.vel.x*t,y:peer.pos.y+peer.vel.y*t};
+}
+
+/** All known routes are tested together. A called route stops making claims
+ * at its installed deadline; it is neither extended nor treated as stopped. */
+function routeClearance(a:Agent,samples:readonly MovementSample[],peer:PeerPicture):number {
+  let previous={t:0,pos:a.pos},px=a.pos.x-peer.pos.x,py=a.pos.y-peer.pos.y;
+  let minimum=Math.hypot(px,py)-peer.touch;
+  for(const sample of samples){
+    const t=Math.min(sample.t,peer.forecast?.validFor??Infinity);
+    if(t<=previous.t+1e-9)break;
+    const u=(t-previous.t)/(sample.t-previous.t),p=peerAt(peer,t);
+    const rx=previous.pos.x+(sample.pos.x-previous.pos.x)*u-p.x;
+    const ry=previous.pos.y+(sample.pos.y-previous.pos.y)*u-p.y;
+    const dx=rx-px,dy=ry-py,q=Math.max(0,Math.min(1,-(px*dx+py*dy)/Math.max(1e-12,dx*dx+dy*dy)));
+    minimum=Math.min(minimum,Math.hypot(px+q*dx,py+q*dy)-peer.touch);
+    px=rx;py=ry;previous=sample;
+    if(t<sample.t-1e-9)break;
+  }
+  return minimum;
+}
+
+/** A free actor tests his actual movement, including an ordinary stop after
+ * the existing .30 s closure horizon. No other actor's body/request is read.
+ * Loaded/squeezed actors retain their constraint-aware radial controller.
+ */
+function freeTraffic(a:Agent,original:Intent,peers:readonly PeerPicture[],context?:SpacingContext):Intent|null {
+  const s=a.body.support;
+  if(!context||!Number.isFinite(context.now)||a.isDown(context.now)||a.engagement||context.constrained?.has(a.body)
+    ||original.free||original.dive||original.lunge||(original.push??0)>1e-6
+    ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike
+    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return null;
+  const speed=Math.hypot(a.vel.x,a.vel.y);
+  if(!peers.length||(speed<=Number.EPSILON&&Math.hypot(original.vel.x,original.vel.y)<=Number.EPSILON))return original;
+  // Brake time is estimated only to size scratch storage. The World forecast
+  // itself must verify the final stop, support and all peer clearances.
+  const steps=Math.max(TURN_STEPS,6+Math.ceil((speed+a.profile.vmax*CLOSE_HORIZON/a.profile.tau)
+    /Math.max(.1,a.profile.brake)*20)+2),horizon=steps*.05;
+  const ownReach=speed*horizon+.5*supportParams(a.profile).traction/a.profile.massKg*horizon*horizon;
+  const near=peers.filter(p=>{
+    const duration=Math.min(horizon,p.forecast?.validFor??horizon);
+    const reach=p.forecast?.samples.length?Math.max(...p.forecast.samples.map(s=>Math.hypot(s.pos.x-p.pos.x,s.pos.y-p.pos.y)))
+      :Math.hypot(p.vel.x,p.vel.y)*duration;
+    return Math.hypot(p.pos.x-a.pos.x,p.pos.y-a.pos.y)<=p.touch+ownReach+reach;
+  });
+  if(!near.length)return original;
+  const evaluate=(command:Intent)=>{
+    const samples=previewFreeMovement(a.body,command,context.now,steps,'center',6);
+    return {command,gaps:near.map(p=>routeClearance(a,samples,p)),
+      stable:samples.every(s=>s.support==='up')&&Math.hypot(samples.at(-1)!.vel.x,samples.at(-1)!.vel.y)<.05};
+  };
+  const raw=evaluate(original);
+  if(raw.stable&&raw.gaps.every(g=>g>=0))return original;
+  const half=evaluate({...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}});
+  if(half.stable&&half.gaps.every(g=>g>=0))return half.command;
+  const stop=evaluate({...original,vel:{x:0,y:0}});
+  if(stop.stable&&stop.gaps.every(g=>g>=0))return stop.command;
+  // If no route is clear, do not cure one neighbor by hitting another. Keep
+  // the existing request unless braking demonstrably improves the worst gap.
+  const worst=Math.min(...raw.gaps);
+  for(const candidate of [half,stop])if(candidate.stable
+    &&candidate.gaps.every((g,k)=>raw.gaps[k]<0||g>=0)&&Math.min(...candidate.gaps)>worst+TURN_MARGIN)return candidate.command;
+  return original;
 }
 
 function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPicture):number {
@@ -100,13 +174,22 @@ function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], c
 }
 
 export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
-  observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> | null = ()=>null,
+  observe: (a:Agent,b:Agent)=> (Pick<Perceived,'pos'|'vel'> & {forecast?:TeammateForecast}) | null = ()=>null,
   context?:SpacingContext): void {
   const n = agents.length;
   for (let i = 0; i < n; i++) {
     const a = agents[i];
     const ia = intents[i];
     if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') continue;
+    // Acquire each picture once. Planning candidates cannot query more truth
+    // or make a sequential one-neighbor correction invalidate an earlier one.
+    const pictures=agents.filter(b=>b!==a&&b.team===a.team).flatMap(b=>{
+      const seen=observe(a,b);
+      return seen?[{target:b,picture:{pos:seen.pos,vel:seen.vel,forecast:seen.forecast,
+        touch:TOUCH*(a.profile.radius+b.profile.radius)}}]:[];
+    });
+    const planned=freeTraffic(a,ia,pictures.map(p=>p.picture),context);
+    if(planned){intents[i]=planned;continue;}
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
@@ -114,7 +197,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       if (j === i) continue;
       const b = agents[j];
       if (b.team !== a.team) continue;
-      const seen=observe(a,b);
+      const seen=pictures.find(p=>p.target===b)?.picture;
       if (!seen) continue; // Unavailable information is not a live-body fallback.
       const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
       const d = Math.hypot(dx, dy);

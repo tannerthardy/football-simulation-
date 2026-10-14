@@ -25,6 +25,15 @@ export interface InstalledTeammateExpectation {
   startsAt: number;
   until: number;
   label: string;
+  /** Achieved nominal motion, sampled once from the public install. The
+   * velocity above remains the called request, not instantaneous COM speed. */
+  trajectory?: readonly { at: number; pos: Vec2; vel: Vec2 }[];
+}
+
+export interface TeammateForecast {
+  /** Relative times from this query; no route is asserted beyond validity. */
+  validFor: number;
+  samples: readonly { t: number; pos: Vec2; vel: Vec2 }[];
 }
 
 export type TeammatePicture = {
@@ -36,6 +45,7 @@ export type TeammatePicture = {
   age: number;
   predictedFor: number;
   label?: string;
+  forecast?: TeammateForecast;
 } | { source: 'unavailable' };
 
 interface Sighting {
@@ -60,7 +70,8 @@ export class TeammateInformation {
       const installed = new Map<number, InstalledTeammateExpectation>();
       for (const b of agents) if (b !== a && b.team === a.team) {
         const call = calls.get(b.idx);
-        if (call) installed.set(b.idx, { ...call, origin: { ...call.origin }, velocity: { ...call.velocity } });
+        if (call) installed.set(b.idx, { ...call, origin: { ...call.origin }, velocity: { ...call.velocity },
+          ...(call.trajectory ? { trajectory: call.trajectory.map(s => ({ ...s, pos: { ...s.pos }, vel: { ...s.vel } })) } : {}) });
       }
       this.observers.set(a.idx, { seen: new Map(), pending: new Map(), touch: new Map(), calls: installed });
     }
@@ -125,9 +136,23 @@ export class TeammateInformation {
     const call = state.calls.get(target);
     if (call && now + 1e-9 >= call.startsAt && now <= call.until + 1e-9) {
       const elapsed = Math.max(0, Math.min(now, call.until) - call.startsAt);
-      return { source: 'called', pos: { x: call.origin.x + call.velocity.x * elapsed,
-        y: call.origin.y + call.velocity.y * elapsed }, vel: { ...call.velocity },
-        sampledAt: call.startsAt, availableAt: call.startsAt, age: elapsed, predictedFor: elapsed, label: call.label };
+      let pos = { x: call.origin.x + call.velocity.x * elapsed, y: call.origin.y + call.velocity.y * elapsed };
+      let vel = { ...call.velocity };
+      if (call.trajectory?.length) {
+        const end = call.trajectory.findIndex(s => s.at >= now - 1e-9);
+        const hi = call.trajectory[end < 0 ? call.trajectory.length - 1 : end];
+        const lo = call.trajectory[Math.max(0, (end < 0 ? call.trajectory.length - 1 : end) - 1)];
+        const u = hi.at > lo.at ? Math.max(0, Math.min(1, (now - lo.at) / (hi.at - lo.at))) : 0;
+        pos = { x: lo.pos.x + u * (hi.pos.x - lo.pos.x), y: lo.pos.y + u * (hi.pos.y - lo.pos.y) };
+        vel = { x: lo.vel.x + u * (hi.vel.x - lo.vel.x), y: lo.vel.y + u * (hi.vel.y - lo.vel.y) };
+      }
+      return { source: 'called', pos, vel, sampledAt: call.startsAt, availableAt: call.startsAt,
+        age: elapsed, predictedFor: elapsed, label: call.label,
+        forecast: { validFor: Math.max(0, call.until - now), samples: [
+          { t: 0, pos: { ...pos }, vel: { ...vel } },
+          ...(call.trajectory?.filter(s => s.at > now + 1e-9)
+            .map(s => ({ t: s.at - now, pos: { ...s.pos }, vel: { ...s.vel } })) ?? []),
+        ] } };
     }
     return { source: 'unavailable' };
   }

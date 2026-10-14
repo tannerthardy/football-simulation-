@@ -26,7 +26,7 @@ const previews = new WeakMap<Body, Partial<Record<MovementModel, { body: Body; w
  * state. This remains an unloaded forecast, never a prediction of held contact.
  */
 export function previewFreeMovement(source: Body, intent: Intent, now: number,
-  steps = 8, handContact: MovementModel = 'center'): MovementSample[] {
+  steps = 8, handContact: MovementModel = 'center', driveSteps = steps): MovementSample[] {
   let models = previews.get(source);
   if (!models) {
     models = {};
@@ -51,7 +51,9 @@ export function previewFreeMovement(source: Body, intent: Intent, now: number,
   world.time = now;
   const samples: MovementSample[] = [];
   for (let k = 0; k < steps; k++) {
-    world.step([intent], .05);
+    // A controller can verify a held prefix followed by ordinary braking.
+    // This changes the forecast command, never the movement/contact law.
+    world.step([k < driveSteps ? intent : { ...intent, vel: { x: 0, y: 0 } }], .05);
     samples.push({ t: (k + 1) * .05, pos: { ...body.pos }, vel: { ...body.vel },
       support: body.support!.state });
   }

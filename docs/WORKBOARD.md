@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Wide-zone execution correction, 2026-10-14 (America/Phoenix)
+
+The user assigns Codex in this chat end-to-end ownership of useful OL lateral
+wide-zone execution, starting from PR #42 `f2dd561`. Active branch:
+`codex/wide-zone-execution`. Root owns `spacing.ts`, installed teammate-motion
+prediction/information integration and any demonstrated blocker-request fix.
+The prior gather-release owner is coordinated and will not edit or duplicate
+this work. Physics, capabilities and contact laws remain unchanged. Parallel
+helpers provide read-only prediction review and new diagnostic scripts only.
+Test the first forecast inconsistency, a real obstruction, the three saved Ace
+openings and—after mechanism success—the frozen fresh Under front. Judge lateral
+progress, useful position and transmitted blocking load; no yardage target,
+hidden intentions, traffic bypass or force bonus. Root retains the result
+through a tested correction or the first demonstrated blocker and next fix.
+
 ## Wide-zone opening execution, 2026-10-14
 
 Run-game owns `codex/wide-zone-opening` from Awareness's completed PR #36
