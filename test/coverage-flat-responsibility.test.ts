@@ -48,8 +48,9 @@ function conflict(flip = false, style: 'match' | 'spot' = 'match') {
  * that precondition, leaving the original native positive conflict intact. */
 function ordinaryCurl(f: ReturnType<typeof conflict>) {
   f.sim.qbEyes = null;
+  const landmark = f.b.recordedLandmark();
   f.pictures.set(f.one.idx, { ...f.pictures.get(f.one.idx)!,
-    pos: { x: 49, y: f.y(44) }, vel: { x: 0, y: 0 } });
+    pos: { x: landmark.x, y: landmark.y + f.sign }, vel: { x: 0, y: 0 } });
   return f;
 }
 
