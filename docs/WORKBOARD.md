@@ -33,8 +33,24 @@ Audit/integration owner: exact PR #9 `7a04ad6` tested alone on the new three
 inputs. Contact/crossing/ending boundaries and approach categories retained;
 small adverse gains and off-ball changes remain visible. This adds focused
 evidence without changing that candidate or certifying the angular law.
-Next football question: keeper runoff and runner response using acquired
-information. PR #11 changes diagnostics/docs only, retaining PR #4 source
+Completed keeper/RB follow-up: diagnostic PR #11 **`45a35bbe1b09554e874370604c83df47fca809f6`**
+([diagnosis and reproduction](https://github.com/tannerthardy/football-simulation-/blob/45a35bbe1b09554e874370604c83df47fca809f6/docs/reviews/under-center-zone-runner.md),
+[27 KB read witness](https://github.com/tannerthardy/football-simulation-/blob/45a35bbe1b09554e874370604c83df47fca809f6/docs/reviews/under-center-zone-runner-read-witness.json),
+[exact settings/revisions/costs](https://github.com/tannerthardy/football-simulation-/blob/45a35bbe1b09554e874370604c83df47fca809f6/docs/reviews/under-center-zone-runner-validation.json)).
+The default RB presses the live aim but evaluates early abandonment against
+the snap aim (1.433 yd mismatch at failed rightward 2.20 s). All three controls
+reproduce that assessment mismatch; benefit of a correction is untested. The
+helper occupies the failed rightward near bang lane, and an instantaneous
+inside cut is not feasible. Keeper x sign changes during pre-World spacing;
+that is not a demonstrated movement bug. No shared movement file changed;
+coordinate future changes with YAC owner. Six new diagnostic replay pairs keep
+all three saved/actual-pin complete histories exact; typecheck passes; 35.75
+recorded command-seconds; no new inputs/games/full suite. No new release timer,
+grip or blocking heuristic while the angular-law witness remains unresolved.
+The sole solver owner has the [PR #2 handoff](https://github.com/tannerthardy/football-simulation-/pull/2#issuecomment-6159265851).
+Integration evidence was sent on [PR #9](https://github.com/tannerthardy/football-simulation-/pull/9#issuecomment-6159266104)
+and [PR #10 extraction](https://github.com/tannerthardy/football-simulation-/pull/10#issuecomment-6159266455).
+Keep PR #11 diagnostic, not a production feature to merge. PR #11 retains PR #4 source
 `09c65f70...` and reference experiments off. No solver, capacity, roster,
 movement-file, default or baseline changes. Withdrawn early-release control
 and parked reach-track collision remain separate and preserved.
