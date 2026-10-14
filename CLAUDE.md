@@ -116,6 +116,9 @@ in ignored `out/`, not new giant files under `viewer/` or `data/reviews/`.
 ## What to read
 
 - [Status](docs/STATUS.md): what is live, limits, random review and next work.
+- [Branch map and cleanup plan](docs/BRANCHES.md): current references, PR stacks,
+  preserved milestones and exact proposed retirement tips; historical ownership
+  rows are not a live branch directory.
 - [Validation](docs/VALIDATION.md): layers, existing commands and stopping rules.
 - [Testing costs](docs/TESTING_COSTS.md): escalation, bounded screens and cached evidence.
 - [NFL data](docs/NFL_DATA.md): the shared sim-vs-NFL mechanism report and

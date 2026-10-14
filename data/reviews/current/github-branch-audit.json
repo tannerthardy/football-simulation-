@@ -1,0 +1,1587 @@
+{
+  "schemaVersion": 1,
+  "repository": "tannerthardy/football-simulation-",
+  "snapshotUtc": "2026-10-14T00:19:29.131324+00:00",
+  "displayDate": "2026-10-13 (America/Phoenix)",
+  "githubDefault": "claude/football-sim-engine",
+  "deleteBranchOnMerge": false,
+  "roots": {
+    "historical": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "candidate": "c98c2fa0e8de760c980ad3852e0ec85abcfadc8f",
+    "githubDefault": "3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f"
+  },
+  "counts": {
+    "remoteBranches": 31,
+    "openPrs": 9,
+    "draftPrs": 9,
+    "mergedPrs": 0,
+    "tipsContainedInHistorical": 14,
+    "firstRetirementBatch": 8
+  },
+  "branches": [
+    {
+      "name": "claude/contact-stability",
+      "sha": "916f3c6b3fa61224b54a193c37c2b7107a520472",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T19:26:08Z",
+      "subject": "Document C3 full panel and claim contact-stability on the workboard",
+      "sourceTree": "1f70ef1be78d63a408f8c177375e5ada75610c97",
+      "rootRelations": {
+        "historical": {
+          "ahead": 5,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 5,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 255,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/ground-finish"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Keep research / owner disposition",
+      "recommendation": "Five commits past historical base, also contained in ground-finish. HOLD_BALANCE/TACKLE_DROP research; no PR."
+    },
+    {
+      "name": "claude/easy-gains",
+      "sha": "10f00a569992c948cea8d2e4a5814e927940618f",
+      "protected": false,
+      "commitDateUtc": "2026-10-12T04:59:33Z",
+      "subject": "Merge remote-tracking branch 'origin/claude/engine-priorities' into claude/easy-gains",
+      "sourceTree": "834f7e6696a658965a908d286aae35d03ee18665",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 112,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 121,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 138,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/engine-priorities",
+        "claude/ground-finish",
+        "claude/live-gaps",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/defensive-flow",
+        "codex/grip-fast-integration",
+        "codex/reach-contact-closure",
+        "codex/reach-contact-physics",
+        "codex/reach-wrap-transition",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-contact",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/slow-rear-contact",
+        "codex/stretch-helper-check-trial",
+        "codex/wrap-binding-physics",
+        "codex/wrap-force-point"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Coordinate retirement",
+      "recommendation": "Fully in 4ded6b6, no PR/branch-link dependency found. Confirm controller owner has moved on."
+    },
+    {
+      "name": "claude/engine-priorities",
+      "sha": "862258c5b41f3cf6e7475e8ae24adf076c3e3e60",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T16:01:52Z",
+      "subject": "Workboard: loaded recovery resolution findings for physics review",
+      "sourceTree": "c579593b231eb0d34caca3127333e57d0c5192dd",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 74,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 83,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 176,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [
+        2
+      ],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/stretch-helper-check-trial"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Structural / primary owner",
+      "recommendation": "PR #2 base; primary physics ownership. Keep pending owner/reference disposition."
+    },
+    {
+      "name": "claude/football-sim-engine",
+      "sha": "3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f",
+      "protected": false,
+      "commitDateUtc": "2026-10-08T18:09:17Z",
+      "subject": "Add 2023\u20132025 league context to the evaluation plan",
+      "sourceTree": "cd51d2df711d142c49af12e0389359796bca9ce1",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 250,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 259,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 0,
+          "behind": 0,
+          "tipContained": true,
+          "sameSourceTree": true
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [
+        1
+      ],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/easy-gains",
+        "claude/engine-priorities",
+        "claude/ground-finish",
+        "claude/in-stride-catch",
+        "claude/live-gaps",
+        "claude/pass-rush-hands",
+        "claude/physics-world-wip",
+        "claude/pursuit-coverage",
+        "claude/run-blocking",
+        "claude/trench-investigation",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/defensive-flow",
+        "codex/grip-fast-integration",
+        "codex/reach-contact-closure",
+        "codex/reach-contact-physics",
+        "codex/reach-wrap-transition",
+        "codex/roster-capability-audit",
+        "codex/run-blocking-decision-dynamics",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-contact",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/slow-rear-contact",
+        "codex/stretch-helper-check-trial",
+        "codex/wrap-binding-physics",
+        "codex/wrap-force-point"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Structural / legacy default",
+      "recommendation": "GitHub default; PR #1 base. Keep until reference/default and legacy-PR decisions."
+    },
+    {
+      "name": "claude/ground-finish",
+      "sha": "6c87169bbddac8dcdce949c10b33086f83cc9633",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T20:03:39Z",
+      "subject": "Ground finish: replay, proposed stayDown hook, GROUND_HOLD request (off)",
+      "sourceTree": "43d1f2c14ad1bb1bab74475ccde689ea8ee55fef",
+      "rootRelations": {
+        "historical": {
+          "ahead": 6,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 6,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 256,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 1,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [],
+      "category": "Keep research / owner disposition",
+      "recommendation": "Child of contact-stability, six commits past base; GROUND_HOLD experiment remains off; no PR."
+    },
+    {
+      "name": "claude/in-stride-catch",
+      "sha": "83e514ab399b8fdac0928a8f207ec2a3350b7231",
+      "protected": false,
+      "commitDateUtc": "2026-10-11T23:26:57Z",
+      "subject": "Catch passes in stride instead of waiting at the earliest point",
+      "sourceTree": "29c4f340f79681dd784c4bc66a135e85a24e9b4d",
+      "rootRelations": {
+        "historical": {
+          "ahead": 2,
+          "behind": 144,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 2,
+          "behind": 153,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 108,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 1,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [],
+      "category": "Parked / archive original",
+      "recommendation": "Unique original commit; controller rescue exists behind IN_STRIDE_CATCH in shared history. Preserve original tip before retiring."
+    },
+    {
+      "name": "claude/live-gaps",
+      "sha": "448313e82e6c8d6a1d19e4abe20b3029a5d592fa",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T16:01:50Z",
+      "subject": "Document the loaded-recovery resolution findings and the hold substep floor",
+      "sourceTree": "2189738d4caff2c7df062f47f57598efdeabf27a",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 24,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 33,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 226,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/stretch-helper-check-trial"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Coordinate retirement",
+      "recommendation": "Fully in 4ded6b6, no PR/branch-link dependency found. Old workboard still reads as live work; confirm owner."
+    },
+    {
+      "name": "claude/pass-rush-hands",
+      "sha": "724a94cf4cf821d22dd30d3ed8cf2bfeadc737b9",
+      "protected": false,
+      "commitDateUtc": "2026-10-12T01:42:08Z",
+      "subject": "Experiment: independent blocker hands, physical spins and partial recovery (HANDS2, off)",
+      "sourceTree": "42df744562f02aacae70245f125461652a86df9b",
+      "rootRelations": {
+        "historical": {
+          "ahead": 4,
+          "behind": 140,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 4,
+          "behind": 149,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 114,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 1,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [
+        "claude/contact-stability:docs/reviews/hands-plan.md",
+        "claude/ground-finish:docs/reviews/hands-plan.md",
+        "claude/live-gaps:docs/reviews/hands-plan.md",
+        "codex/catch-pursuit-diagnosis:docs/reviews/hands-plan.md",
+        "codex/contact-foundations:docs/reviews/hands-plan.md",
+        "codex/coupled-run-contact:docs/reviews/hands-plan.md",
+        "codex/grip-fast-integration:docs/reviews/hands-plan.md",
+        "codex/roster-capability-audit:docs/reviews/hands-plan.md",
+        "codex/run-contact-components-candidate:docs/reviews/hands-plan.md",
+        "codex/run-game-integration:docs/reviews/hands-plan.md",
+        "codex/run-hand-coherence:docs/reviews/hands-plan.md",
+        "codex/shared-candidate-verification:docs/reviews/hands-plan.md",
+        "codex/stretch-helper-check-trial:docs/reviews/hands-plan.md"
+      ],
+      "category": "Parked / evidence-link hold",
+      "recommendation": "Unique HANDS2 research, not accepted. Branch-name links in hands-plan across 12 heads; preserve ref until citation solution."
+    },
+    {
+      "name": "claude/physics-world-wip",
+      "sha": "e8d6b0220c3220eacd0d661d10658b3df58fd0b1",
+      "protected": false,
+      "commitDateUtc": "2026-10-09T16:08:20Z",
+      "subject": "WIP backup: world physics integration (not for merge)",
+      "sourceTree": "3ba57572a4ef80033629cb1b5f82526f079481f6",
+      "rootRelations": {
+        "historical": {
+          "ahead": 1,
+          "behind": 229,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 1,
+          "behind": 238,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 22,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 1,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [],
+      "category": "Parked / archive original",
+      "recommendation": "Unique WIP backup commit, explicitly not for merge. Preserve the exact tip before retiring."
+    },
+    {
+      "name": "claude/pursuit-coverage",
+      "sha": "576581b41158c8dbeff05cd7d0da0cc19b1799f2",
+      "protected": false,
+      "commitDateUtc": "2026-10-11T23:26:57Z",
+      "subject": "Aim pursuit at the observed intercept; add pursuit and coverage diagnostics",
+      "sourceTree": "c20becf79d949443a249fea2aeab043da62a064a",
+      "rootRelations": {
+        "historical": {
+          "ahead": 1,
+          "behind": 144,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 1,
+          "behind": 153,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 107,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/in-stride-catch"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Parked / superseded original",
+      "recommendation": "Tip retained in in-stride-catch; current workboard marks pursuit superseded. Commit ancestry differs from shared rescue; archive original."
+    },
+    {
+      "name": "claude/run-blocking",
+      "sha": "88bfc45147f58f670444f3d1159c288bafff1521",
+      "protected": false,
+      "commitDateUtc": "2026-10-12T01:25:20Z",
+      "subject": "Load contact along the pad line; give linemen a contact pad level; anchor driven blockers",
+      "sourceTree": "d42e6f6b025dddf3390295cc83acb9d0b0904cb1",
+      "rootRelations": {
+        "historical": {
+          "ahead": 3,
+          "behind": 140,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 3,
+          "behind": 149,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 113,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/pass-rush-hands"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Parked / archive original",
+      "recommendation": "Tip retained in pass-rush-hands; pad-line package remains parked. Preserve original rather than merge it."
+    },
+    {
+      "name": "claude/trench-investigation",
+      "sha": "b6a48f1dafa1ed747290edc22111ef99abeb508a",
+      "protected": false,
+      "commitDateUtc": "2026-10-11T22:02:52Z",
+      "subject": "Trench deep dive: diagnostics, flagged experiments and findings (local only)",
+      "sourceTree": "db0961d7920ec4b24f0a0a880c527ac82e89251d",
+      "rootRelations": {
+        "historical": {
+          "ahead": 1,
+          "behind": 156,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 1,
+          "behind": 165,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 95,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 1,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [],
+      "category": "Parked / archive original",
+      "recommendation": "Unique historical experiment/doc commit; existing baseline guidance says retain for evidence. Preserve/reconcile that guidance before retiring."
+    },
+    {
+      "name": "codex/catch-pursuit-diagnosis",
+      "sha": "4782057319cf68939665b6c50298ad39199c5d3f",
+      "protected": false,
+      "commitDateUtc": "2026-10-14T00:01:15Z",
+      "subject": "Record bounded near-hip shadow tradeoffs and next question",
+      "sourceTree": "10ca55d45b574c524e8eb74a9a42879843e5be7a",
+      "rootRelations": {
+        "historical": {
+          "ahead": 26,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": true
+        },
+        "candidate": {
+          "ahead": 26,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": true
+        },
+        "githubDefault": {
+          "ahead": 276,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 26,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [],
+      "category": "Keep research / owner disposition",
+      "recommendation": "26 unique diagnostic commits; exact historical src tree. Latest near-hip/P4 evidence; no PR."
+    },
+    {
+      "name": "codex/contact-foundations",
+      "sha": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T21:54:13Z",
+      "subject": "Publish verified grip effort correction evidence",
+      "sourceTree": "94dae1738b5183f5ad708efeaf9c3b3c802a2540",
+      "rootRelations": {
+        "historical": {
+          "ahead": 7,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 7,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 257,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [
+        3
+      ],
+      "openPrBases": [
+        7
+      ],
+      "containedInOtherHeads": [
+        "codex/grip-fast-integration"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Structural / active PR stack",
+      "recommendation": "PR #3 head / #7 base. Preserve separately; do not merge to tidy refs."
+    },
+    {
+      "name": "codex/coupled-run-contact",
+      "sha": "b64910ee7975e679beca2590369714ff33994aa0",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T21:08:47Z",
+      "subject": "Diagnose native hand-action protection and hand off physical witnesses",
+      "sourceTree": "eaacbafa5079c45cac0d4cb14298a2685134c99c",
+      "rootRelations": {
+        "historical": {
+          "ahead": 3,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 3,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 253,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [
+        4
+      ],
+      "openPrBases": [
+        9,
+        5
+      ],
+      "containedInOtherHeads": [
+        "codex/run-contact-components-candidate",
+        "codex/run-hand-coherence",
+        "codex/stretch-helper-check-trial"
+      ],
+      "branchNameLinkLocations": [
+        "PR #4 body"
+      ],
+      "category": "Structural / active PR stack",
+      "recommendation": "PR #4 head / #5 and #9 base. Preserve separately."
+    },
+    {
+      "name": "codex/defensive-flow",
+      "sha": "b143f1ba63460f0de0de82b8eecefcd563e052c1",
+      "protected": false,
+      "commitDateUtc": "2026-10-12T21:07:37Z",
+      "subject": "Diagnose defensive pull cue instability and park matched planner trial",
+      "sourceTree": "35daf54f97e8e9095fd1d66a24cfa2581366d0db",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 68,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 77,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 182,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "claude/live-gaps",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-contact",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/stretch-helper-check-trial"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "First retirement batch",
+      "recommendation": "Whole tip retained in 4ded6b6; no open PR head/base or branch-name citation found. Tag/preserve, then delete only after cleanup approval."
+    },
+    {
+      "name": "codex/grip-fast-integration",
+      "sha": "504c749f5fdf88ed2c2da01a6502b4cabc793d51",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T23:53:16Z",
+      "subject": "Separate keeper contact-law promotion from grip timing optimization",
+      "sourceTree": "dea4fce9dccabddaaa69d818523fae92ceb1e130",
+      "rootRelations": {
+        "historical": {
+          "ahead": 12,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 12,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 262,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 5,
+      "openPrHeads": [
+        7
+      ],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [
+        "PR #7 body"
+      ],
+      "category": "Structural / not-ready PR",
+      "recommendation": "PR #7; explicitly not ready. Keep separate."
+    },
+    {
+      "name": "codex/reach-contact-closure",
+      "sha": "d4ec81c5e8738e118dfce5cac3b3324975509a45",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T02:57:33Z",
+      "subject": "Preserve structural shear in reach contact and compare alternatives",
+      "sourceTree": "9d0dfa5c49664658fb74d958a6f1cc42296fa0b7",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 44,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 53,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 206,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/reach-wrap-transition",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/slow-rear-contact",
+        "codex/stretch-helper-check-trial",
+        "codex/wrap-force-point"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "First retirement batch",
+      "recommendation": "Whole tip retained in 4ded6b6; no open PR head/base or branch-name citation found. Tag/preserve, then delete only after cleanup approval."
+    },
+    {
+      "name": "codex/reach-contact-physics",
+      "sha": "fda39f724b8abc957e080eda7b8a4fcace668077",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T02:30:43Z",
+      "subject": "Prototype finite-force tackle contact at reach, default off",
+      "sourceTree": "768a9d617e58b713af83434aeed66ea04c82366d",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 45,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 54,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 205,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/reach-contact-closure",
+        "codex/reach-wrap-transition",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/slow-rear-contact",
+        "codex/stretch-helper-check-trial",
+        "codex/wrap-force-point"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "First retirement batch",
+      "recommendation": "Whole tip retained in 4ded6b6; no open PR head/base or branch-name citation found. Tag/preserve, then delete only after cleanup approval."
+    },
+    {
+      "name": "codex/reach-wrap-transition",
+      "sha": "182f01c2640618de67b565d9e0a2a8a0dae074a3",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T03:43:40Z",
+      "subject": "Preserve approach footwork through an extended tackle strike",
+      "sourceTree": "58ec7e97fa50c93e2ae6e7c4b7b04d981bc2f449",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 42,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 51,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 208,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/slow-rear-contact",
+        "codex/stretch-helper-check-trial",
+        "codex/wrap-force-point"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "First retirement batch",
+      "recommendation": "Whole tip retained in 4ded6b6; no open PR head/base or branch-name citation found. Tag/preserve, then delete only after cleanup approval."
+    },
+    {
+      "name": "codex/roster-capability-audit",
+      "sha": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T23:41:13Z",
+      "subject": "Make tiny decision-driven testing the default workflow",
+      "sourceTree": "10ca55d45b574c524e8eb74a9a42879843e5be7a",
+      "rootRelations": {
+        "historical": {
+          "ahead": 4,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": true
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 5,
+          "tipContained": true,
+          "sameSourceTree": true
+        },
+        "githubDefault": {
+          "ahead": 254,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [
+        6
+      ],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "codex/shared-candidate-verification"
+      ],
+      "branchNameLinkLocations": [
+        "codex/run-contact-components-candidate:docs/reviews/run-contact-components-candidate.md",
+        "codex/run-hand-coherence:docs/WORKBOARD.md"
+      ],
+      "category": "Structural / incorporated policy PR",
+      "recommendation": "PR #6 included in #8. Retire only after #8 disposition and citation update."
+    },
+    {
+      "name": "codex/run-blocking-decision-dynamics",
+      "sha": "9e64fc6b740d1f859fdcdf7d58cc3f9e7e6c8b27",
+      "protected": false,
+      "commitDateUtc": "2026-10-08T19:18:15Z",
+      "subject": "Fix pursuit, run support, and momentum in tackle constraints",
+      "sourceTree": "ee7022b70f10cb3c4b2fe63d9e0f2f3e1641c419",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 244,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 253,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 6,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [
+        1
+      ],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/easy-gains",
+        "claude/engine-priorities",
+        "claude/ground-finish",
+        "claude/in-stride-catch",
+        "claude/live-gaps",
+        "claude/pass-rush-hands",
+        "claude/physics-world-wip",
+        "claude/pursuit-coverage",
+        "claude/run-blocking",
+        "claude/trench-investigation",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/defensive-flow",
+        "codex/grip-fast-integration",
+        "codex/reach-contact-closure",
+        "codex/reach-contact-physics",
+        "codex/reach-wrap-transition",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-contact",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/slow-rear-contact",
+        "codex/stretch-helper-check-trial",
+        "codex/wrap-binding-physics",
+        "codex/wrap-force-point"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Structural / legacy PR",
+      "recommendation": "PR #1 head wholly reachable from 4ded6b6. Owner may close as superseded; do not merge it again."
+    },
+    {
+      "name": "codex/run-contact-components-candidate",
+      "sha": "7a04ad6c65d9268bb332147411baacc27ebe20e0",
+      "protected": false,
+      "commitDateUtc": "2026-10-14T00:10:43Z",
+      "subject": "Record component-only evidence and integration handoff",
+      "sourceTree": "61e9e5743363a5ea3056fac88a6d1e5b7c038189",
+      "rootRelations": {
+        "historical": {
+          "ahead": 5,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 5,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 255,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 2,
+      "openPrHeads": [
+        9
+      ],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [],
+      "category": "Structural / separately ready candidate",
+      "recommendation": "PR #9, component-only enablement inherited from #4. Owner reports focused readiness; assess dependencies/settings separately, not part of #8 or this cleanup."
+    },
+    {
+      "name": "codex/run-game-contact",
+      "sha": "e4788263eaf4d187a08ba4c3eea1689d154b2629",
+      "protected": false,
+      "commitDateUtc": "2026-10-12T22:42:04Z",
+      "subject": "Diagnose neighboring footwork cause of keeper cross-pair loss",
+      "sourceTree": "8d98e47b6de8e9e90a3e0f74d0c50890f708181d",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 66,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 75,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 184,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "claude/live-gaps",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/stretch-helper-check-trial"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "First retirement batch",
+      "recommendation": "Whole tip retained in 4ded6b6; no open PR head/base or branch-name citation found. Tag/preserve, then delete only after cleanup approval."
+    },
+    {
+      "name": "codex/run-game-integration",
+      "sha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T18:14:01Z",
+      "subject": "Publish the verified shared baseline receipt and known failures",
+      "sourceTree": "10ca55d45b574c524e8eb74a9a42879843e5be7a",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 0,
+          "tipContained": true,
+          "sameSourceTree": true
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 9,
+          "tipContained": true,
+          "sameSourceTree": true
+        },
+        "githubDefault": {
+          "ahead": 250,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [
+        2
+      ],
+      "openPrBases": [
+        8,
+        6,
+        4,
+        3
+      ],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/stretch-helper-check-trial"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Structural / historical comparison",
+      "recommendation": "4ded6b6; PR #2 head and base of #3/#4/#6/#8. Keep this historical pin."
+    },
+    {
+      "name": "codex/run-hand-coherence",
+      "sha": "7eec40c699a8ba45425bcbef3eb8eacb201957a8",
+      "protected": false,
+      "commitDateUtc": "2026-10-14T00:11:52Z",
+      "subject": "Hand off exact component-only candidate to audit and integration",
+      "sourceTree": "eaacbafa5079c45cac0d4cb14298a2685134c99c",
+      "rootRelations": {
+        "historical": {
+          "ahead": 10,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 10,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 260,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 3,
+      "openPrHeads": [
+        5
+      ],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [],
+      "category": "Structural / active PR stack",
+      "recommendation": "PR #5; diagnostics and withdrawn-policy history. Preserve focused evidence."
+    },
+    {
+      "name": "codex/shared-candidate-verification",
+      "sha": "c98c2fa0e8de760c980ad3852e0ec85abcfadc8f",
+      "protected": false,
+      "commitDateUtc": "2026-10-14T00:06:19Z",
+      "subject": "Clarify unchanged production scope and shared-reference decision",
+      "sourceTree": "10ca55d45b574c524e8eb74a9a42879843e5be7a",
+      "rootRelations": {
+        "historical": {
+          "ahead": 9,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": true
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 0,
+          "tipContained": true,
+          "sameSourceTree": true
+        },
+        "githubDefault": {
+          "ahead": 259,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 5,
+      "openPrHeads": [
+        8
+      ],
+      "openPrBases": [],
+      "containedInOtherHeads": [],
+      "branchNameLinkLocations": [
+        "PR #8 body"
+      ],
+      "category": "Structural / proposed development reference",
+      "recommendation": "PR #8; verified #6-only candidate. Adoption remains a decision."
+    },
+    {
+      "name": "codex/slow-rear-contact",
+      "sha": "23de24f4fd1c624dec207d11301185778ce6ac44",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T04:24:40Z",
+      "subject": "Reject gathered contact trial and isolate slow-rear wrap geometry",
+      "sourceTree": "58ec7e97fa50c93e2ae6e7c4b7b04d981bc2f449",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 40,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 49,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 210,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/stretch-helper-check-trial",
+        "codex/wrap-force-point"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "First retirement batch",
+      "recommendation": "Whole tip retained in 4ded6b6; no open PR head/base or branch-name citation found. Tag/preserve, then delete only after cleanup approval."
+    },
+    {
+      "name": "codex/stretch-helper-check-trial",
+      "sha": "4074038c4cd966e1c213e204ca47d528e7260968",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T23:26:15Z",
+      "subject": "Trial acquired unjoined stretch-helper checks against native collection witness",
+      "sourceTree": "dc62dc727fe58d89c37f6ed992c87dfa14cd59b4",
+      "rootRelations": {
+        "historical": {
+          "ahead": 7,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 7,
+          "behind": 9,
+          "tipContained": false,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 257,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "codex/run-hand-coherence"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "Coordinate retirement",
+      "recommendation": "Rejected 4074038 retained in PR #5 ancestry. Archive as rejected; never merge the trial for cleanup."
+    },
+    {
+      "name": "codex/wrap-binding-physics",
+      "sha": "11298d3d0bff97af1baf6cb9f3bb997645e4e520",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T01:17:05Z",
+      "subject": "Add default-off force-transmitted secure-wrap recovery coupling",
+      "sourceTree": "d26602a875928f1fe5ba86a0b35dd7d95572f64c",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 49,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 58,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 201,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "claude/live-gaps",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/reach-contact-closure",
+        "codex/reach-contact-physics",
+        "codex/reach-wrap-transition",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/slow-rear-contact",
+        "codex/stretch-helper-check-trial",
+        "codex/wrap-force-point"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "First retirement batch",
+      "recommendation": "Whole tip retained in 4ded6b6; no open PR head/base or branch-name citation found. Tag/preserve, then delete only after cleanup approval."
+    },
+    {
+      "name": "codex/wrap-force-point",
+      "sha": "67301d24ef56a72b4a205185fb6c76b6dd845c7b",
+      "protected": false,
+      "commitDateUtc": "2026-10-13T06:12:20Z",
+      "subject": "Separate wrap force height and validate loaded recovery before gait promotion",
+      "sourceTree": "58ec7e97fa50c93e2ae6e7c4b7b04d981bc2f449",
+      "rootRelations": {
+        "historical": {
+          "ahead": 0,
+          "behind": 39,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "candidate": {
+          "ahead": 0,
+          "behind": 48,
+          "tipContained": true,
+          "sameSourceTree": false
+        },
+        "githubDefault": {
+          "ahead": 211,
+          "behind": 0,
+          "tipContained": false,
+          "sameSourceTree": false
+        }
+      },
+      "exclusiveCommitCount": 0,
+      "openPrHeads": [],
+      "openPrBases": [],
+      "containedInOtherHeads": [
+        "claude/contact-stability",
+        "claude/ground-finish",
+        "codex/catch-pursuit-diagnosis",
+        "codex/contact-foundations",
+        "codex/coupled-run-contact",
+        "codex/grip-fast-integration",
+        "codex/roster-capability-audit",
+        "codex/run-contact-components-candidate",
+        "codex/run-game-integration",
+        "codex/run-hand-coherence",
+        "codex/shared-candidate-verification",
+        "codex/stretch-helper-check-trial"
+      ],
+      "branchNameLinkLocations": [],
+      "category": "First retirement batch",
+      "recommendation": "Whole tip retained in 4ded6b6; no open PR head/base or branch-name citation found. Tag/preserve, then delete only after cleanup approval."
+    }
+  ],
+  "prs": [
+    {
+      "number": 9,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/run-contact-components-candidate",
+      "headSha": "7a04ad6c65d9268bb332147411baacc27ebe20e0",
+      "base": "codex/coupled-run-contact",
+      "baseSha": "b64910ee7975e679beca2590369714ff33994aa0",
+      "title": "Prepare component-only run contact promotion"
+    },
+    {
+      "number": 8,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/shared-candidate-verification",
+      "headSha": "c98c2fa0e8de760c980ad3852e0ec85abcfadc8f",
+      "base": "codex/run-game-integration",
+      "baseSha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "title": "Integrate #6 policy and publish exact combined verification"
+    },
+    {
+      "number": 7,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/grip-fast-integration",
+      "headSha": "504c749f5fdf88ed2c2da01a6502b4cabc793d51",
+      "base": "codex/contact-foundations",
+      "baseSha": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+      "title": "Add separate experimental grip integration with bounded trial reuse"
+    },
+    {
+      "number": 6,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/roster-capability-audit",
+      "headSha": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+      "base": "codex/run-game-integration",
+      "baseSha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "title": "Audit roster capabilities and add bounded behavior review"
+    },
+    {
+      "number": 5,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/run-hand-coherence",
+      "headSha": "7eec40c699a8ba45425bcbef3eb8eacb201957a8",
+      "base": "codex/coupled-run-contact",
+      "baseSha": "b64910ee7975e679beca2590369714ff33994aa0",
+      "title": "Trace run protection and combination collection failures"
+    },
+    {
+      "number": 4,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/coupled-run-contact",
+      "headSha": "b64910ee7975e679beca2590369714ff33994aa0",
+      "base": "codex/run-game-integration",
+      "baseSha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "title": "Trial run-contact motion and handover; diagnose hand protection"
+    },
+    {
+      "number": 3,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/contact-foundations",
+      "headSha": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+      "base": "codex/run-game-integration",
+      "baseSha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "title": "Correct experimental grip timing and fatigue accounting"
+    },
+    {
+      "number": 2,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/run-game-integration",
+      "headSha": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "base": "claude/engine-priorities",
+      "baseSha": "862258c5b41f3cf6e7475e8ae24adf076c3e3e60",
+      "title": "Establish a reproducible shared run-game integration baseline"
+    },
+    {
+      "number": 1,
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "head": "codex/run-blocking-decision-dynamics",
+      "headSha": "9e64fc6b740d1f859fdcdf7d58cc3f9e7e6c8b27",
+      "base": "claude/football-sim-engine",
+      "baseSha": "3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f",
+      "title": "Improve run blocking, defensive decisions, pursuit and tackle physics"
+    }
+  ],
+  "proposedRetirementBatch": [
+    {
+      "name": "codex/defensive-flow",
+      "expectedSha": "b143f1ba63460f0de0de82b8eecefcd563e052c1",
+      "preservedIn": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "proposedArchiveTag": "archive/2026-10-13/codex/defensive-flow"
+    },
+    {
+      "name": "codex/reach-contact-closure",
+      "expectedSha": "d4ec81c5e8738e118dfce5cac3b3324975509a45",
+      "preservedIn": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "proposedArchiveTag": "archive/2026-10-13/codex/reach-contact-closure"
+    },
+    {
+      "name": "codex/reach-contact-physics",
+      "expectedSha": "fda39f724b8abc957e080eda7b8a4fcace668077",
+      "preservedIn": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "proposedArchiveTag": "archive/2026-10-13/codex/reach-contact-physics"
+    },
+    {
+      "name": "codex/reach-wrap-transition",
+      "expectedSha": "182f01c2640618de67b565d9e0a2a8a0dae074a3",
+      "preservedIn": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "proposedArchiveTag": "archive/2026-10-13/codex/reach-wrap-transition"
+    },
+    {
+      "name": "codex/run-game-contact",
+      "expectedSha": "e4788263eaf4d187a08ba4c3eea1689d154b2629",
+      "preservedIn": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "proposedArchiveTag": "archive/2026-10-13/codex/run-game-contact"
+    },
+    {
+      "name": "codex/slow-rear-contact",
+      "expectedSha": "23de24f4fd1c624dec207d11301185778ce6ac44",
+      "preservedIn": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "proposedArchiveTag": "archive/2026-10-13/codex/slow-rear-contact"
+    },
+    {
+      "name": "codex/wrap-binding-physics",
+      "expectedSha": "11298d3d0bff97af1baf6cb9f3bb997645e4e520",
+      "preservedIn": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "proposedArchiveTag": "archive/2026-10-13/codex/wrap-binding-physics"
+    },
+    {
+      "name": "codex/wrap-force-point",
+      "expectedSha": "67301d24ef56a72b4a205185fb6c76b6dd845c7b",
+      "preservedIn": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+      "proposedArchiveTag": "archive/2026-10-13/codex/wrap-force-point"
+    }
+  ],
+  "analysisSeconds": 3.8842851950003023,
+  "simulations": 0,
+  "branchMutations": 0,
+  "limits": [
+    "Commit ancestry is not evidence of semantic equivalence or feature readiness.",
+    "Workboard intent is historical; recent commits/no PR do not prove owner activity or abandonment.",
+    "Branch API reports protected=false; rulesets/admin policy were not independently audited.",
+    "Citation scan covers documentation JSON/Markdown/text across all 31 fetched heads and all nine PR descriptions; external references, CI secrets and other workspaces were not inspected.",
+    "Snapshot tips must be rechecked before retirement; local worktrees inspected were the three worktrees in this workspace."
+  ],
+  "priorSnapshotAnalysisSeconds": 3.5759057259992915,
+  "totalGitAnalysisSeconds": 7.460190920999594
+}

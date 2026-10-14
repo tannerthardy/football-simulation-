@@ -114,6 +114,9 @@ remain explicit input changes; the environment launcher cannot infer them.
 
 ## Branch disposition
 
+This table describes the historical `4ded6b6` consolidation. For the current
+remote inventory, PR stacks and proposed cleanup, use [BRANCHES.md](BRANCHES.md).
+
 | Source | Disposition |
 | --- | --- |
 | `claude/engine-priorities`, `claude/live-gaps` | Latest fetched tips included; primary retains physics promotion ownership |
