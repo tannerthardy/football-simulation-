@@ -28,6 +28,8 @@ import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
+import { clearStretchDeparture, stretchHelpOpportunity } from '../stretch-help.js';
+import { TEAMMATE_INFORMATION_LIMITS } from '../teammate-information.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -382,6 +384,9 @@ export interface Combination {
   soloKind?: RunBlockKind;
   /** Optional check/post work is an installation, not a weaker double team. */
   helpPolicy?: { kind: 'check'; homeY: number; side: number };
+  /** Uncovered stretch work reads the near gap; joining is an opportunity. */
+  stretchHelp?: { homeY: number; side: number };
+  stretchNextRead?: number;
   /** Stability read only by the original uncovered check player. */
   checkSince?: number;
   /** The helper's optional look cannot retime the joined double team's read. */
@@ -493,6 +498,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       soloKind: plans.get(partner)!.kind };
     if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone')
       combination.helpPolicy = { kind: 'check', homeY: b.pos.y, side: Math.sign(b.pos.y - partner.pos.y) };
+    if (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone')
+      combination.stretchHelp = { homeY: b.pos.y, side: Math.sign(b.pos.y - partner.pos.y) };
     plans.get(partner)!.combination = combination;
     plans.set(b, { kind: 'combo', target, climbTo: backer, drive, combination });
   };
@@ -768,7 +775,11 @@ export class RunBlocker implements Behavior {
       this.nextRuleRead = t + a.mind.decisionInterval;
       this.readRules(a,sim);
     }
-    if (plan.combination) readCombination(a, sim, plan.combination);
+    if (plan.combination) {
+      const departure = this.readStretchHelp(a, sim, plan.combination);
+      if (departure) return departure;
+      readCombination(a, sim, plan.combination);
+    }
     if (a.engagement) {
       if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
       return stand();
@@ -880,10 +891,10 @@ export class RunBlocker implements Behavior {
    * when he gets there is held until the next read. If none is attainable he
    * takes the closest approach and the plan says so. Empty-space forecast
    * only: grips, traffic and the backer's future cuts are unknown. */
-  private plannedClimb(a: Agent, sim: PlaySim, target: Agent, strike: number): Intent | null {
+  private plannedClimb(a: Agent, sim: PlaySim, target: Agent, strike: number, picture?: Perceived): Intent | null {
     const read = this.climbRead;
     if (!read || read.target !== target || sim.t >= read.nextRead) {
-      const seen = sim.see(a, target), run = sim.offCall.run!;
+      const seen = picture ?? sim.see(a, target), run = sim.offCall.run!;
       const side = playSideSign(sim, run) * .5;
       const capacity = a.body.support
         ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
@@ -914,6 +925,56 @@ export class RunBlocker implements Behavior {
       ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
     return { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
       facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
+  }
+
+  /** The uncovered player's own near-gap read. It changes his job only; it
+   * neither certifies the keeper nor manipulates remote hands/contact state. */
+  private readStretchHelp(a: Agent, sim: PlaySim, combo: Combination): Intent | null {
+    const install = combo.stretchHelp, own = a.body.support;
+    if (!install || combo.released || a !== combo.members[1] || this.plan.kind !== 'combo'
+      || this.plan.target !== combo.defender || !combo.backer || a.engagement || a.isDown(sim.t)
+      || !own || own.state !== 'up' || own.foot || own.strike
+      || Math.hypot(own.load.x, own.load.y) > 1e-6
+      || sim.world.joints.some(j => j.a === a.body || j.b === a.body)
+      || sim.t < (combo.stretchNextRead ?? 0)) return null;
+    combo.stretchNextRead = sim.t + a.mind.decisionInterval;
+    const covered = combo.members[0], owner = sim.teammateInformation(a, covered);
+    if ((owner.source !== 'observed' && owner.source !== 'remembered')
+      || owner.age > TEAMMATE_INFORMATION_LIMITS.prediction + 1e-9) return null;
+    const seen = sim.see(a, combo.defender), horizon = Math.max(.3, a.mind.decisionInterval);
+    // Owned teammate positions are already carried from their acquired
+    // sample toward query time. Put this delayed DL sample on that clock too,
+    // retaining the original age and the same bounded CV assumption.
+    const age = Math.min(TEAMMATE_INFORMATION_LIMITS.prediction, Math.max(0, seen.age));
+    const down = { ...seen, pos: { x: seen.pos.x + seen.vel.x * age, y: seen.pos.y + seen.vel.y * age } };
+    if (!stretchHelpOpportunity({ pos: a.pos, radius: a.profile.radius,
+      homeY: install.homeY, playSide: playSideSign(sim, sim.offCall.run!), side: install.side,
+      owner, ownerRadius: covered.profile.radius,
+      ownerReach: covered.profile.radius + combo.defender.profile.radius + .1 + covered.player.measurables.armIn / 36 * .45,
+      down, defenderRadius: combo.defender.profile.radius, horizon, up: sim.attackDir(a.team) })) return null;
+    const backer = sim.see(a, combo.backer);
+    if (!backerShows(a, sim, backer)) return null;
+    const strike = a.profile.radius + combo.backer.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+    const command = this.plannedClimb(a, sim, combo.backer, strike, backer);
+    if (!command) return null;
+    const peers = [{ pos: down.pos, vel: down.vel, radius: combo.defender.profile.radius }];
+    for (const teammate of sim.offense) if (teammate !== a) {
+      const picture = teammate === covered ? owner : sim.teammateInformation(a, teammate);
+      if (picture.source !== 'unavailable') peers.push({ pos: picture.pos, vel: picture.vel, radius: teammate.profile.radius });
+    }
+    if (!clearStretchDeparture(a.body, command, peers, sim.t, horizon, sim.world.handContact)) return null;
+    // Only this uncovered player's branch changes. The covered player keeps
+    // his installed down-man responsibility and existing contact behavior;
+    // he has not felt a takeover or received new private information.
+    this.plan.combination = undefined;
+    this.plan.kind = 'climb';
+    this.plan.target = combo.backer;
+    this.plan.drive = { x: sim.attackDir(a.team), y: 0 };
+    delete this.plan.contactFit;
+    a.tags.add('combo-climb');
+    a.tags.add('combo-stretch-climb');
+    sim.event('block_climb', a, combo.backer, 'unjoined stretch: acquired near hip flows away; clear achieved departure');
+    return command;
   }
 
   /** A zone lineman runs the track toward the play side from the snap and

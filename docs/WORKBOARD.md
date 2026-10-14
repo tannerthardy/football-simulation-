@@ -1,5 +1,19 @@
 # Current work ownership
 
+## Wide-zone football help/read correction, 2026-10-14
+
+The user renewed end-to-end ownership: study actual wide-zone coaching/film,
+identify the football mismatch and fix it. Root owns `blocking.ts`, a bounded
+new stretch-helper decision module and their integration on
+`codex/wide-zone-help-read`. Start from PR #42 `f2dd561` / runtime `60120551`;
+the rejected PR #45 traffic replacement is evidence, not an adopted baseline.
+No physics, capacities, vision or memory extension. Research helpers are
+read-only; the evidence helper owns only the new compact stretch-help witness
+and its test file. First correction: replace obligatory completed joining with
+an acquired near-gap help/climb decision for an unjoined stretch helper.
+Retain inside-slant, blocked-departure, unavailable-picture and own-contact
+controls. Root owns coupled validation and the final result, with no handoff.
+
 ## Wide-zone opening execution, 2026-10-14
 
 Run-game owns `codex/wide-zone-opening` from Awareness's completed PR #36
