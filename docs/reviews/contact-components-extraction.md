@@ -86,3 +86,19 @@ phase costs and failures/skips. Preserve supported contracts; do not relax an
 assertion to recover an ending. The integration owner alone runs this suite;
 contributors reuse their compatible focused receipts. Merge and baseline/reference
 designation remain pending final review.
+
+
+## Final combined handoff
+
+- **What changed:** Component-only request correction extracted from #9 onto approved #8 `c98c2fa0e8de760c980ad3852e0ec85abcfadc8f`. Exact tested candidate: [`41bfb2c152e7ebdcda4cf1cd11eacefc2c186f6c`](https://github.com/tannerthardy/football-simulation-/commit/41bfb2c152e7ebdcda4cf1cd11eacefc2c186f6c). Production code changes only in the helper and engagement hook/default; handover/physics/other source is unchanged. The readonly worksheet now keeps the historical pin separately from current registration.
+- **Evidence for/against:** 42 focused assertions in four actual files passed, then the single combined run passed 1,683 TypeScript tests in 140 files, 145 Python checks, typecheck and build. No skips, worker errors or changed inputs. [Exact combined receipt](../../data/reviews/current/contact-components-combined-verification.json), SHA256 `fd5fb89b20a987e3b0490440a3ba41495473ed6e80819a086346396269cc2b54`; [extraction/settings/evidence footprint](../../data/reviews/current/contact-components-extraction.json). Reviewed source/test bytes match; excluded dependency bytes match the approved base. Earlier #8/#9 global receipts are not relabeled as this pass.
+- **Unresolved risk:** Preserved WZ gain tradeoff and existing contact-law/convergence/football limitations remain. The historical 43-flag simulation-screen baseline is not certified for the new registry. Final merge/reference approval remains pending.
+- **Runtime:** Focused command 2.562 s; one combined verification 177.646 s wall (typecheck 9.627, build 11.046, TypeScript 156.094, Python 0.875). No added native/roster/game campaign; existing full-suite game assertions retained.
+- **Next decision:** Final review of this clean extraction and its explicitly enabled combined receipt. The owner acknowledgment and verification conditions are fulfilled; no PR has been merged or baseline designated. Contributors need not repeat the shared suite.
+
+The receipt records Node `v22.23.3`, 44 resolved flags with components `1`,
+source `d6429131a16b1f79b2af05a458c647f105d4fabbad1af7c72816b5b4ed91640f`, harness `b9809014ce561f63c914619fe09c3d325288269133dbb59f52830c17e0ec7f9a`,
+and UTC interval `2026-10-14T00:29:05.420Z` to `2026-10-14T00:32:03.066Z`.
+Publication adds docs/evidence only; its source/harness/flags must match the tested
+commit, and it is not claimed as a separately tested revision. Raw log remains
+in `out/contact-components/combined-verification.log`.
