@@ -2,6 +2,11 @@
 
 [Draft PR #36](https://github.com/tannerthardy/football-simulation-/pull/36).
 
+2026-10-14 follow-up: [both RT/RB information histories and the post-mesh trial](y-coordination-review.md)
+are now pinned on candidate `6828467`. No useful RB sighting expired from RT's
+memory. The one nominal continuation fails Y and introduces an H collision;
+it remains diagnostic-only. Production and the football promotion hold remain.
+
 Spacing now consumes observer-owned information instead of every teammate's
 refreshed recorded reality. The information contracts pass. This is a
 reviewable bounded candidate; **automatic football promotion remains held**
