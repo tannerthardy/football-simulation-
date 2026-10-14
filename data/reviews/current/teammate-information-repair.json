@@ -1,0 +1,929 @@
+{
+  "protocol": "bounded-teammate-information-repair-v1",
+  "evidenceRevision": "b331bc557ed7321463e77b6ee680a98f70dc707e",
+  "candidateEngineRevision": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+  "candidateSourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+  "acceptedDevelopRevision": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "acceptedSourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "pr30EvidenceRevision": "1fbc013008faaa8ab0f677328d81c183c0b8c032",
+  "referenceSha256": "ad462904b23c6864d902107f6a0aa3a876b4e35d3247db8dfaebb835276ae10b",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "limits": {
+    "visualRangeYards": 25,
+    "fieldHalfAngleDegrees": 100,
+    "occupiedHalfAngleDegrees": 75,
+    "predictionSeconds": 0.3,
+    "memorySampleAgeSeconds": 1,
+    "tactileSeconds": 0.1,
+    "alignmentSeconds": 0.6,
+    "zoneTempoSeconds": 0.6,
+    "meshUntil": "installed meshTime (these inputs1.2s)",
+    "occupiedHalfAngleAppliesTo": "own block engagement (a.engagement), not tackle bond"
+  },
+  "actors": {
+    "2": {
+      "slot": "RT",
+      "player": "O-OT2"
+    },
+    "6": {
+      "slot": "RB",
+      "player": "O-RB1"
+    },
+    "7": {
+      "slot": "Y",
+      "player": "O-TE2"
+    },
+    "10": {
+      "slot": "H",
+      "player": "O-TE1"
+    },
+    "12": {
+      "slot": "DE_S",
+      "player": "D-DT1"
+    },
+    "13": {
+      "slot": "DT_S",
+      "player": "D-EDGE1"
+    },
+    "17": {
+      "slot": "LB_S",
+      "player": "D-LB5"
+    }
+  },
+  "focusedEvidence": {
+    "testFiles": 5,
+    "testRevision": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+    "testReceipt": "launchers/run-1792007949242-94934.json",
+    "typecheckReceipt": "launchers/run-1792008232660-95834.json",
+    "testsSeconds": 5.478322568,
+    "typecheckSeconds": 9.575480593999998,
+    "nativeRecordingNeutralityTicks": 18,
+    "baselineNativeHashChecks": {
+      "H": 54,
+      "Y": 54
+    },
+    "finalOutcomePrefixesExactlyReuse54TickCandidateHashes": true,
+    "testCasesPassed": 37
+  },
+  "outcomes": [
+    {
+      "id": "uc12-wz-s3-mirror",
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "accepted": {
+        "gain": -0.21,
+        "duration": 3.25,
+        "firstContact": {
+          "t": 2.65,
+          "actor": "RB",
+          "opponent": "DE_S",
+          "note": "body collision",
+          "depth": -0.23433344943020984
+        }
+      },
+      "candidate": {
+        "yards": 1.14,
+        "duration": 3.2,
+        "outcome": "tackle",
+        "yardsBeforeContact": -0.7169730989185155,
+        "events": [
+          {
+            "t": 2.35,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 13,
+            "pos": {
+              "x": 39.28,
+              "y": 21.75
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.35,
+            "type": "tackle_wrap",
+            "a": 13,
+            "b": 6,
+            "pos": {
+              "x": 39.84,
+              "y": 22.52
+            },
+            "note": "initial"
+          },
+          {
+            "t": 2.75,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 40.23,
+              "y": 21.02
+            },
+            "note": "legs"
+          },
+          {
+            "t": 3,
+            "type": "tackle_wrap",
+            "a": 17,
+            "b": 6,
+            "pos": {
+              "x": 41.2,
+              "y": 20.95
+            },
+            "note": "assist"
+          },
+          {
+            "t": 3.15,
+            "type": "tackle",
+            "a": 13,
+            "b": 6,
+            "pos": {
+              "x": 40.87,
+              "y": 20.93
+            }
+          }
+        ]
+      },
+      "candidateTeammateRunnerContacts": [],
+      "firstNativeDifferenceBoundary": 0.15000000000000002
+    },
+    {
+      "id": "uc12-wz-s3",
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "accepted": {
+        "gain": 1.49,
+        "duration": 4.3,
+        "firstContact": {
+          "t": 3.65,
+          "actor": "RB",
+          "opponent": "CB_S",
+          "note": "grasp",
+          "depth": 0.37540263746634395
+        }
+      },
+      "candidate": {
+        "yards": 0.62,
+        "duration": 4.15,
+        "outcome": "tackle",
+        "yardsBeforeContact": -0.08369281980288434,
+        "events": [
+          {
+            "t": 3.35,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 13,
+            "pos": {
+              "x": 39.92,
+              "y": 21.26
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3.35,
+            "type": "tackle_wrap",
+            "a": 13,
+            "b": 6,
+            "pos": {
+              "x": 39.51,
+              "y": 20.44
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.4,
+            "type": "fall",
+            "a": 20,
+            "pos": {
+              "x": 42.75,
+              "y": 22.38
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.4,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 41.41,
+              "y": 21.55
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.75,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 40.23,
+              "y": 20.18
+            },
+            "note": "legs"
+          },
+          {
+            "t": 4.1,
+            "type": "tackle",
+            "a": 13,
+            "b": 6,
+            "pos": {
+              "x": 39.88,
+              "y": 19.63
+            }
+          }
+        ]
+      },
+      "candidateTeammateRunnerContacts": [
+        {
+          "entryTime": 2.45,
+          "i": 2,
+          "j": 6,
+          "impulse": 132.36590854157774,
+          "closing": 2.233820397136571
+        },
+        {
+          "entryTime": 2.5,
+          "i": 2,
+          "j": 6,
+          "impulse": 12.75031884162961,
+          "closing": 0.014031429533149842
+        },
+        {
+          "entryTime": 2.55,
+          "i": 2,
+          "j": 6,
+          "impulse": 0,
+          "closing": 0
+        }
+      ],
+      "firstNativeDifferenceBoundary": 0.15000000000000002
+    }
+  ],
+  "packets": [
+    {
+      "label": "baseline-acquired-sidecar",
+      "path": "packets/baseline-acquired-sidecar.json.gz",
+      "sha256": "627d02e54003ee352ccb75e862604e340452989536b127a368e230960007b620",
+      "bytes": 533730,
+      "testedCommit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "harnessCommit": "b331bc557ed7321463e77b6ee680a98f70dc707e",
+      "internalSeconds": 2.617343566,
+      "cases": [
+        {
+          "id": "uc12-wz-s3-mirror",
+          "ticks": 54,
+          "endTime": 2.7,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 54
+        },
+        {
+          "id": "uc12-wz-s3",
+          "ticks": 54,
+          "endTime": 2.7,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 54
+        }
+      ]
+    },
+    {
+      "label": "baseline-first-divergence",
+      "path": "packets/baseline-first-divergence.json.gz",
+      "sha256": "6dffd4ad148bdd75e7b224071e6b3afdf44d0cc8ba7b12373877a5e125ad52b6",
+      "bytes": 171675,
+      "testedCommit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "harnessCommit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "internalSeconds": 0.40770274900000003,
+      "cases": [
+        {
+          "id": "uc12-wz-s3-mirror",
+          "ticks": 10,
+          "endTime": 0.5,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 10
+        },
+        {
+          "id": "uc12-wz-s3",
+          "ticks": 10,
+          "endTime": 0.5,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 10
+        }
+      ]
+    },
+    {
+      "label": "prototype-no-alignment-prefix",
+      "path": "packets/prototype-no-alignment-prefix.json.gz",
+      "sha256": "2c095012e4f8d69d6c93156e5784f267a1550f518c42e908ebd614b13ef30590",
+      "bytes": 554565,
+      "testedCommit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "harnessCommit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "internalSeconds": 2.842622206,
+      "cases": [
+        {
+          "id": "uc12-wz-s3-mirror",
+          "ticks": 54,
+          "endTime": 2.7,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 1
+        },
+        {
+          "id": "uc12-wz-s3",
+          "ticks": 54,
+          "endTime": 2.7,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 1
+        }
+      ]
+    },
+    {
+      "label": "prototype-no-alignment-first-divergence",
+      "path": "packets/prototype-no-alignment-first-divergence.json.gz",
+      "sha256": "4fe3928d22b6feddfd840fbef95786d86bcafb6ec28438849050f823aaf995cd",
+      "bytes": 191973,
+      "testedCommit": "1f6e06d60760502fcb370d782115580a70ee1268",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "harnessCommit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "internalSeconds": 0.495479349,
+      "cases": [
+        {
+          "id": "uc12-wz-s3-mirror",
+          "ticks": 10,
+          "endTime": 0.5,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 1
+        },
+        {
+          "id": "uc12-wz-s3",
+          "ticks": 10,
+          "endTime": 0.5,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 1
+        }
+      ]
+    },
+    {
+      "label": "candidate-prefix",
+      "path": "packets/candidate-prefix.json.gz",
+      "sha256": "00d24edb2ef678a1691e6ed1dcaa5ad64e79f65717370e136df7da4bdd06d79d",
+      "bytes": 615271,
+      "testedCommit": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "harnessCommit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "internalSeconds": 4.963041386,
+      "cases": [
+        {
+          "id": "uc12-wz-s3-mirror",
+          "ticks": 54,
+          "endTime": 2.7,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 2
+        },
+        {
+          "id": "uc12-wz-s3",
+          "ticks": 54,
+          "endTime": 2.7,
+          "censored": true,
+          "matchedAcceptedPrefixTicks": 2
+        }
+      ]
+    },
+    {
+      "label": "candidate-outcomes",
+      "path": "packets/candidate-outcomes.json.gz",
+      "sha256": "c8b55083a18a08daf990f233e6fd891e8ceb538dd04401102e8b8aec3f2ddbbf",
+      "bytes": 1648726,
+      "testedCommit": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "harnessCommit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "internalSeconds": 3.4066687190000002,
+      "cases": [
+        {
+          "id": "uc12-wz-s3-mirror",
+          "ticks": 64,
+          "endTime": 3.2,
+          "censored": false,
+          "matchedAcceptedPrefixTicks": 2
+        },
+        {
+          "id": "uc12-wz-s3",
+          "ticks": 83,
+          "endTime": 4.15,
+          "censored": false,
+          "matchedAcceptedPrefixTicks": 2
+        }
+      ]
+    }
+  ],
+  "launcherReceipts": [
+    {
+      "path": "launchers/run-1792007270772-92427.json",
+      "sha256": "4dd4d0d8839195fb6bfe9046304f3b6a9726c573fb484663a05ca1dbb815ed93",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "ad8380c4c50448c9586ed0d8c704ae54c64f5965b7eb9fcba16aad57040128db",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.47609756
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007396673-92864.json",
+      "sha256": "f407d147dbbe7be522fc04dd4a63b52e4b77a9ff0e831034e66f1d08a868b15a",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "ad8380c4c50448c9586ed0d8c704ae54c64f5965b7eb9fcba16aad57040128db",
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/teammate-information.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.9298358910000002
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007447922-93081.json",
+      "sha256": "36d85cc58b75cff74f85c4c267b431b22d294ba4f4c6689425d1a0df43fc69e2",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "06626f71080b9d64bcd4a7491f4b50e626b9a2c0cd7debd3bdc1a3c037a6770f",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/teammate-information.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.934493273
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007483385-93225.json",
+      "sha256": "6d7a509129d99f73f7a9af9e5313a2ca9a8d112c77bae751db3b36c917ed9f3e",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "06626f71080b9d64bcd4a7491f4b50e626b9a2c0cd7debd3bdc1a3c037a6770f",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/teammate-information-loop.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.20271768
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007538521-93505.json",
+      "sha256": "197ba5602250489f01d89b1a71d416f73b54a62614342d3387f11a3741dc3dac",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/teammate-information.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.8521886870000002
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007569406-93669.json",
+      "sha256": "264ade15695da47ce6ca2a863e4db57654e40e0d4812827971a40fd1eed8e20d",
+      "commit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/teammate-information.test.ts",
+            "test/teammate-information-loop.test.ts",
+            "test/traffic-control.test.ts",
+            "test/traffic-turning.test.ts",
+            "test/spacing-yield.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.6253291979999998
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007578881-93930.json",
+      "sha256": "d475d2b6879b7c222549faf11e043f2eb9c4b2a2ba116e4f445f9a5513a585ba",
+      "commit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/teammate-information-prefix.ts",
+            "--out",
+            "out/teammate-information/candidate-prefix.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.6028148119999996
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007578883-93928.json",
+      "sha256": "34b59863cb01230caa034752d5750026bc790d1da25a00cef125819bfd3218f7",
+      "commit": "063a2ddbc8078a604165979df6e1b62b910dc53f",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 12.33694817
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007664350-94338.json",
+      "sha256": "c7bc3a800bbf6de834f9f8962b8ed6660eec0061bec831e6aa14c91aa4fbdd2c",
+      "commit": "1f6e06d60760502fcb370d782115580a70ee1268",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.379677999
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007664370-94345.json",
+      "sha256": "53bd4828f41dd1a724836d1502499e18a4a2923d060d9992e4867feb096b4c19",
+      "commit": "1f6e06d60760502fcb370d782115580a70ee1268",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/teammate-information.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.864903674
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007703482-94553.json",
+      "sha256": "ecf6960794041355d1840e79197f05ccd581e540e2611d19346adee75e3f5644",
+      "commit": "1f6e06d60760502fcb370d782115580a70ee1268",
+      "sourceSha256": "7dfd13a4573411a96cde7b2696bedb99232a9b769b1e1d5e50c13bfade58415e",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/teammate-information-prefix.ts",
+            "--end-time",
+            ".50",
+            "--out",
+            "out/teammate-information/candidate-first-divergence.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.944325749
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007949242-94934.json",
+      "sha256": "8d6b1e74b34cbf5a98f00edb6d622887df75be5bd774e508d51eefa99bf64c6f",
+      "commit": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/teammate-information.test.ts",
+            "test/teammate-information-loop.test.ts",
+            "test/traffic-control.test.ts",
+            "test/traffic-turning.test.ts",
+            "test/spacing-yield.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 5.478322568
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007949248-94931.json",
+      "sha256": "7c836a95531560e33715b2f3a52d6f8a9d494423aa05bcaa0eb80f6262f66fa0",
+      "commit": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.779129300000001
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007949262-94945.json",
+      "sha256": "9be094b8df316afaea913e483e9222d9d90edd13aa586192088e92dbde25e372",
+      "commit": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/teammate-information-prefix.ts",
+            "--out",
+            "out/teammate-information/candidate-alignment-prefix.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 5.738943504000001
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792008105357-95529.json",
+      "sha256": "e7c05dfd10194bfe2105819f7f6fe3d7822884a869cb86c9bc5500ef82e49069",
+      "commit": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/teammate-information-prefix.ts",
+            "--end-time",
+            "10",
+            "--out",
+            "out/teammate-information/candidate-outcomes.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.992998438
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792008232660-95834.json",
+      "sha256": "3845b186df047a74342f2fd5884ddd603010cd0e390f4c5dae401eed9316a944",
+      "commit": "b331bc557ed7321463e77b6ee680a98f70dc707e",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.575480593999998
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007528540-93442.json",
+      "sha256": "8fe16f3e2f90247cd3a4e1068786e5ddd16bdd762d118927cb58338d8005b598",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/teammate-information-prefix.ts",
+            "--out",
+            "out/teammate-information/baseline-prefix.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.937757235
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792007703669-94561.json",
+      "sha256": "e28424bd62b1499c8ab542fdd1449ddbb07e3a1e0d5be72097b22b6da09165aa",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/teammate-information-prefix.ts",
+            "--end-time",
+            ".50",
+            "--out",
+            "out/teammate-information/baseline-first-divergence.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.8223314560000001
+        }
+      ]
+    },
+    {
+      "path": "launchers/run-1792008222310-95733.json",
+      "sha256": "87fff523b44b2c87b2585dfdd0c2ad7a8361f322c39c695731693e141ea888e9",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/teammate-information-prefix.ts",
+            "--information-sidecar",
+            "/workspace/football-teammate-information/src/sim/teammate-information.ts",
+            "--out",
+            "out/teammate-information/baseline-acquired-sidecar.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.141587202
+        }
+      ]
+    }
+  ],
+  "archive": {
+    "path": "docs/reviews/teammate-information/assets/evidence.zip",
+    "sha256": "5c0e7147ab7727cc364202ba41f278a7b9e56d4b4f19b0efd39a745f4f58491f",
+    "bytes": 3711470
+  },
+  "scope": "Only spacing migrated. No physics, behavior controllers, capacities, yielding calculations or release-rule changes. Legacy teammate see consumers remain.",
+  "decision": "Information contracts pass; reviewable bounded candidate. Hold automatic football promotion pending Run Game review of Y rear teammate collision and approximation of installed post-mesh coordination. No whole-engine repair or population football improvement claim.",
+  "newNativeRuns": {
+    "2.70sPrefixes": 8,
+    "0.50sFirstDivergencePrefixes": 4,
+    "completedPlays": 2,
+    "fullGames": 0,
+    "fullSuite": 0,
+    "nativeWorldTicksInDiagnosticPackets": 619,
+    "finalFocusedNativeLoopCheckTicks": 37,
+    "costScope": "Diagnostic native run counts exclude existing movement fixtures and repeated focused-test runs; every launcher receipt is retained."
+  },
+  "retainedFailures": [
+    "Floatingpoint delivery .6500000000000001 vs.65 corrected before spacing migration; failed receipt retained.",
+    "Incomplete typed Engagement testfixture corrected; failed typecheck retained.",
+    "Initial prototype omitted alignmentprior and changed RT\u2013TE spacing at .05; superseded code/evidence retained."
+  ]
+}

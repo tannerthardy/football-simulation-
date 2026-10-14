@@ -11,7 +11,7 @@ to apply cleanly without importing unrelated branch content here.
 
 | Current item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
-| Bounded teammate-information repair / PR #30 D01 | Codex awareness owner, explicitly assigned by user | `codex/teammate-information`, from accepted `develop` `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | New observer-owned information store/query; PlaySim sensing and spacing input adapter; focused contracts and native-prefix evidence. Spacing yielding calculations, behaviors/controllers, World, capabilities, contact and release rules unchanged. Remaining teammate consumers audited, not migrated. | 2026-10-14 UTC | In progress: advancing-reality hidden-motion controls before migration; immutable installed expectations audited for value and availability. Run Game / Integration receive exact interface, limitations and evidence after focused validation; no wholesale PR #30 merge. |
+| Bounded teammate-information repair / PR #30 D01 | Codex awareness owner, explicitly assigned by user | `codex/teammate-information`, from accepted `develop` `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | New observer-owned information store/query; PlaySim sensing and spacing input adapter; focused contracts and native-prefix evidence. Spacing yielding calculations, behaviors/controllers, World, capabilities, contact and release rules unchanged. Remaining teammate consumers audited, not migrated. | 2026-10-14 UTC | Information contracts complete: engine/test `98411ef`, harness `b331bc5`, runtime `60120551…`; 37 focused checks/typecheck pass, 54/54 accepted H and Y hashes reproduced. [Exact handoff, adverse Y collision and limits](reviews/teammate-information.md), [receipt](../data/reviews/current/teammate-information-repair.json). Reviewable bounded candidate; automatic football promotion held for Run Game review of installed post-mesh coordination. H complete −.21→+1.14 yd; Y +1.49→+.62 yd, both tackles. No wholesale PR #30 merge or whole-engine repair claim. |
 | Reviewed run/catch controller integration | Codex integration owner, explicitly assigned by user and #8 controller review | `codex/controller-integration-review`, tested `46a833d` from approved `c98c2fa` | Minimal catch helper/defense hook/contract, reviewed #10 run correction and historical worksheet pin. No unrelated research ancestry, hands/grip/helper rules or capacity/law changes. | 2026-10-13 (America/Phoenix) | Preparation/verification complete, final review pending: catch-only `b3a55ac` passed 59 checks/15 frozen states; #10 run-only and compatible retained-draw receipts reused. Combined 49 affected checks/three saved histories, then one 1,684-TS/140-file, 145-Python, typecheck/build pass in 180.530 s; no skips/worker errors/input drift. [Exact receipt](../data/reviews/current/controller-combined-verification.json), [scope/adverse evidence](reviews/controller-integration.md#published-combined-verification). 44 flags/components=1. No merge or baseline designation. |
 
 ## Approved-reference ownership history
@@ -110,6 +110,17 @@ Review existing branch findings before reimplementation:
 
 Newest last. Format: `date, from -> to: request`. Reply on the next line.
 Edit only your own rows and requests so board merges stay trivial.
+
+- 2026-10-14 UTC, awareness owner -> Run Game / Integration: bounded
+  `codex/teammate-information` from accepted `a1b16e6` is ready for scoped
+  information-contract review. [Handoff](reviews/teammate-information.md)
+  pins engine `98411ef`, harness `b331bc5`, source `60120551…`, interface,
+  37 focused checks, fixed 44 flags and retained adverse controls. Run Game:
+  review Y's real rear teammate collision and the smallest request-only
+  installed post-mesh lane/timing experiment; no controller changes are in
+  this candidate. Integration: own PlaySim overlap and one exact combined
+  full-suite run after review. Other teammate consumers remain privileged;
+  no broad migration, shared physics change or merge is claimed.
 
 - 2026-10-12 (America/Phoenix), run-game lead -> primary physics session:
   user assigned offensive run blocking and defensive run reactions together.
