@@ -97,6 +97,7 @@ checks = {name: read(root / f'{name}-checks.json') for name in
 assert all(c['exitCode'] == 0 and c['inputsUnchanged'] for c in checks.values())
 rows = []
 all_native = []
+native_provenance = {}
 for name, pin_name, component_name in [('native', 'pin', 'components'), ('weak', 'pin-weak', 'components-weak')]:
     native, pin, component = packet(name), packet(pin_name), packet(component_name)
     assert pin['provenance']['commit'] == '4ded6b600fd3785e65034aa5623d7a9f8f3c5db1'
@@ -124,19 +125,35 @@ for name, pin_name, component_name in [('native', 'pin', 'components'), ('weak',
                          biggestPositionChanges=sorted((dict(slot=k, **v) for k, v in differences.items()),
                                                       key=lambda r: -r['distance'])[:3]))
         all_native.append(p)
+        native_provenance[p['input']['id']] = native['provenance']
 
 selected = next(p for p in all_native if p['input']['id'] == 'uc12-wz-s3-mirror')
 ids = {a['slot']: a['id'] for a in selected['players']}
 slots = ['RT', 'DE_S', 'H', 'LB_S', 'RB']
 chosen = {ids[s] for s in slots}
 frames = []
+
+
+def consumed_cues(cues):
+    """Keep every distinct consumed observation and the exact repeat count."""
+    unique = {}
+    for cue in cues:
+        key = digest(cue)
+        if key not in unique:
+            unique[key] = dict(cue, repeatCount=0)
+        unique[key]['repeatCount'] += 1
+    assert sum(c['repeatCount'] for c in unique.values()) == len(cues)
+    return list(unique.values())
+
+
 for t in [1.45, 1.7, 1.75, 2, 2.4, 2.6, 2.65]:
     f = next(f for f in selected['frames'] if f['t'] == t)
     pi = f['physicsInput']
     bodies = [{k: v for k, v in pi['beforeBodies'][ids[s]].items() if k != 'profile'} for s in slots]
     frames.append(dict(t=t, after=f['after'], slots=slots, beforeBodies=bodies,
                        agents=[f['agents'][ids[s]] for s in slots],
-                       consumedCues=[c for c in f['cues'] if c['defender'] in chosen and c['opponent'] in chosen],
+                       consumedCues=consumed_cues([c for c in f['cues']
+                                                  if c['defender'] in chosen and c['opponent'] in chosen]),
                        heldAims=[a for a in f['aims'] if a['defender'] in chosen],
                        contactMovement=[e for e in f['contactEvents'] if e['phase'] == 'movement'
                                         and e['blocker'] in chosen and e['defender'] in chosen],
@@ -145,9 +162,11 @@ for t in [1.45, 1.7, 1.75, 2, 2.4, 2.6, 2.65]:
                        jointOutputs=[j for j in pi['jointOutputs'] if j['a'] in chosen and j['b'] in chosen],
                        groundImpulse=[pi['report']['groundImpulse'][ids[s]] for s in slots]))
 trace = dict(protocol='under-center-zone-consumed-native-trace-v1', input=selected['input'],
+             provenance=native_provenance[selected['input']['id']],
              profiles=[a for a in selected['players'] if a['id'] in chosen], frames=frames,
              labels=['Legacy mirror id is a TE-placement contrast; actual run side is -1.',
                      'Read-only native evidence, not a solver input or private future-path cue.',
+                     'Exact duplicate consumed observations are grouped with repeatCount; no new perception call.',
                      'Engagement movement.command is the contact controller request; deliveredIntents include spacing.'])
 Path('docs/reviews/under-center-zone-native-trace.json').write_text(json.dumps(trace, indent=2)+'\n')
 
