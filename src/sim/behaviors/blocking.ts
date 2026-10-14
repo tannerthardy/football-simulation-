@@ -1155,11 +1155,11 @@ export class RunBlocker implements Behavior {
         contact, a.profile.radius + target.profile.radius, command, sim.t);
     }
     const original = runThrough(a, aim, { speed: 1 });
-    // A mandatory double must find a shared contact surface. An installed
-    // optional check instead retains its near-level corridor until its own
-    // acquired work cue earns joining or climbing; do not reroute that check
-    // backfield just because the keeper already occupies the defender.
-    if (plan.kind === 'combo' && plan.combination && !plan.combination.released && !plan.combination.helpPolicy) {
+    // The exposed-surface approach belongs to the shared stretch track.
+    // Inside/split-zone checks and downhill doubles retain their installed
+    // near-level approach, including when optional coaching is removed.
+    const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
+    if (stretch && plan.kind === 'combo' && plan.combination && !plan.combination.released && !plan.combination.helpPolicy) {
       const partner = plan.combination.members.find(b => b !== a)!;
       const picture = sim.teammateInformation(a, partner);
       return chooseComboBlockApproach(a, seen, picture.source === 'unavailable' ? undefined
