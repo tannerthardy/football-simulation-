@@ -4,6 +4,7 @@
  * This is not inserted into World; unsupported channels return no state.
  */
 import { boundedAttachment } from '../../../src/physics/bounded-attachment.js';
+import { stiffTailStep } from './grip-stiff-tail.js';
 import type { SupportedGripInput } from './grip-force-supported.js';
 import type { Particle } from './grip-force-interval.js';
 export interface BoundedGripInput extends SupportedGripInput {
@@ -15,7 +16,7 @@ const AX=0,AY=1,AVX=2,AVY=3,AS=4,AA=5,BX=6,BY=7,BVX=8,BVY=9,BS=10,BA=11,
   ZX=12,ZY=13,FX=14,FY=15,JX=16,JY=17,QX=18,QY=19,JA=20,JB=21,QA=22,QB=23,
   BW=24,MW=25,DOSE=26,LEGS=27;
 
-export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'='adaptive') {
+export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'='adaptive') {
   const {a,b,duration:H,capacity:C,mobility:mu}=input,K=1/a.mass+1/b.mass;
   const numbers=[H,C,mu,input.legs,input.pullSpeed,input.hold,input.reach,input.minimumDistance,input.attachmentReach,
     input.desired.x,input.desired.y,input.material.x,input.material.y,input.footOffset.x,input.footOffset.y,
@@ -50,7 +51,7 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     return {c,s,rbx,rby,rax,ray,d,nx,ny,share,xx,xy,yy,jtx,jty,M,gx,gy,vt};
   }
   const start=geometry(initial),sign=Math.sign(start.vt);
-  function frame(y:State,phase:Phase,hold0:number,checkDirection=true) {
+  function frame(y:State,phase:Phase,hold0:number,checkDirection=true,validate=true) {
     const g=geometry(y),force=C===0?0:phase==='cap'?-sign*C:Math.max(-C,Math.min(C,-g.vt/g.M)),
       x=-g.ny*force,z=g.nx*force,footx=g.xx*x+g.xy*z,footy=g.xy*x+g.yy*z,
       ux=mu*footx,uy=mu*footy,pointx=g.xx*ux+g.xy*uy,pointy=g.xy*ux+g.yy*uy,
@@ -60,19 +61,19 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     // An anisotropic Jacobian couples tangent motor load into normal velocity.
     // Query that actual velocity, not just body approach. No normal law is
     // invented here; any nonzero tensile/reel demand requires another operator.
-    if(vn>1e-12||extension>1e-8&&Math.hypot(g.gx,g.gy)>1e-12||vn+input.pullSpeed>1e-12)
+    if(validate&&(vn>1e-12||extension>1e-8&&Math.hypot(g.gx,g.gy)>1e-12||vn+input.pullSpeed>1e-12))
       throw new RangeError('Normal/reel channel outside bounded tangent scope');
-    if(checkDirection&&Math.abs(vn)>1e-12&&(expectedDirection===0||Math.sign(vn)!==expectedDirection))
+    if(validate&&checkDirection&&Math.abs(vn)>1e-12&&(expectedDirection===0||Math.sign(vn)!==expectedDirection))
       throw new RangeError('Distance reversal outside bounded tangent scope');
-    if(phase==='tail'&&C>0&&Math.abs(force)>.98*C*(1+1e-10))
+    if(validate&&phase==='tail'&&C>0&&Math.abs(force)>.98*C*(1+1e-10))
       throw new RangeError('Renewed slipping outside bounded tangent scope');
     return {...g,force,x,z,footx,footy,ux,uy,vn,hold};
   }
   const initialPhase:Phase=C>0&&Math.abs(start.vt)>=start.M*C?'cap'
     :C>0&&Math.abs(start.vt)/start.M>=.98*C?'settling':'tail';
   expectedDirection=Math.sign(frame(initial,initialPhase,input.hold,false).vn);
-  function derivative(t:number,y:State,phase:Phase,hold:number) {
-    evaluations++;const f=frame(y,phase,hold),ta=-f.rax*f.z+f.ray*f.x,tb=f.rbx*f.z-f.rby*f.x;
+  function derivative(t:number,y:State,phase:Phase,hold:number,validate=true) {
+    evaluations++;const f=frame(y,phase,hold,true,validate),ta=-f.rax*f.z+f.ray*f.x,tb=f.rbx*f.z-f.rby*f.x;
     return [y[AVX],y[AVY],-f.x/a.mass,-f.z/a.mass,ta/a.inertia,y[AS],
       y[BVX],y[BVY],f.x/b.mass,f.z/b.mass,tb/b.inertia,y[BS],
       f.share*(f.c*f.ux+f.s*f.uy),f.share*(-f.s*f.ux+f.c*f.uy),f.ux,f.uy,
@@ -105,13 +106,26 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
       Math.abs(x[i+4]-z[i+4])/2.5e-4,Math.abs(x[i+5]-z[i+5])/2.5e-6]),
       Math.hypot(x[ZX]-z[ZX],x[ZY]-z[ZY])/5e-7,Math.hypot(x[FX]-z[FX],x[FY]-z[FY])/5e-7,
       Math.abs(x[LEGS]-z[LEGS])/1e-6,Math.abs(x[BW]-z[BW])/.01,Math.abs(x[MW]-z[MW])/.01);
+    function implicit(t:number,y:State,h:number,hold:number) {
+      const g=geometry(y),ka=g.rax*g.nx+g.ray*g.ny,kb=g.rbx*g.nx+g.rby*g.ny,
+        u=y.map(()=>0),w=y.map(()=>0);
+      u[AVX]=g.ny/a.mass;u[AVY]=-g.nx/a.mass;u[AS]=-ka/a.inertia;
+      u[BVX]=-g.ny/b.mass;u[BVY]=g.nx/b.mass;u[BS]=kb/b.inertia;
+      // The approximate Newton direction must respect the same linear
+      // momentum/impulse identities as its residual, even before convergence.
+      u[JX]=-g.ny;u[JY]=g.nx;u[JA]=-ka;u[JB]=kb;
+      w[AVX]=g.ny/g.M;w[AVY]=-g.nx/g.M;w[AS]=-ka/g.M;
+      w[BVX]=-g.ny/g.M;w[BVY]=g.nx/g.M;w[BS]=kb/g.M;
+      return stiffTailStep(t,y,h,(time,state,validate)=>derivative(time,state,'tail',hold,validate),
+        {u,w},delta=>localError(delta,delta.map(()=>0)),integration==='radau'?'radau':'gauss');
+    }
     for(let k=0;k<n;k++) {
       const end=(k+1)*H/n;
       let pieces=0;
       while(t<end) {
         if(++pieces>128)throw new RangeError('Bounded tangent event budget exhausted');
         let h=end-t;
-        if(phase==='tail'&&integration==='adaptive') {
+        if(phase==='tail'&&integration!=='uniform') {
           if(!nextTailStep) {
             const g=geometry(y),ka=g.rax*g.nx+g.ray*g.ny,kb=g.rbx*g.nx+g.rby*g.ny;
             // A COM-point head-on pair with zero spin has no source of
@@ -125,8 +139,9 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
             if(!(h>0)||t+h===t)throw new RangeError('Bounded tangent adaptive underflow');
             let fine:State,error:number;
             try {
-              const coarse=rk4(t,y,h,phase,hold),mid=rk4(t,y,h/2,phase,hold);
-              fine=rk4(t+h/2,mid,h/2,phase,hold);
+              const step=integration==='gauss'||integration==='radau'?implicit:(t:number,y:State,h:number,hold:number)=>rk4(t,y,h,phase,hold),
+                coarse=step(t,y,h,hold),mid=step(t,y,h/2,hold);
+              fine=step(t+h/2,mid,h/2,hold);
               // Allocate local accuracy by elapsed physical time. Separately
               // cap represented-work drift, including a roundoff floor whose
               // accumulated cost is still checked by the unchanged global gate.
