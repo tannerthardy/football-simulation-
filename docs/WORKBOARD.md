@@ -18,6 +18,17 @@ The audit separates assignment from acquisition, useful leverage, achievable
 movement and protection through runner arrival. Subtasks inspect snap planning,
 loaded technique and saved film independently; none owns a production edit.
 
+[Technique findings](reviews/ol-technique-audit.md) now identify the attached-TE
+dispatch gap before the contact-law divergence, nominal RT joining before hand
+acquisition, loaded helper requests that open separation, and RG anchor traffic.
+The [portable responsibility witness](reviews/ol-responsibility-witness.json)
+accounts for all nine blocker jobs and distinguishes no collection from loaded
+contact that fails to deny access. Offline tools reuse all three Ace inputs and
+six natural endings; current-production native behavior remains untested here.
+Focused tool validation is recorded separately in the final audit receipt.
+Controllers remain held; physics reviews retention, run-game owns feasible
+joining/anchoring afterward, and integration owns exact-pin production transfer.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
