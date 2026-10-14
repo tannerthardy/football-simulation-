@@ -388,6 +388,14 @@ export interface Combination {
   checkNextRead?: number;
 }
 
+/** The declared helper half survives later rotation and controlled mirrored
+ * installations. Neither member needs the other's private current position. */
+function installedComboSide(a: Agent, sim: PlaySim, combo: Combination): number {
+  if (combo.helpPolicy?.side) return combo.helpPolicy.side * (a === combo.members[1] ? 1 : -1);
+  const partner = combo.members.find(b => b !== a)!;
+  return Math.sign(sim.offAlign.spots[a.slot].pos.y - sim.offAlign.spots[partner.slot].pos.y) || 1;
+}
+
 export interface RunBlockPlan {
   kind: RunBlockKind;
   /** Installed initial presentation, independent of later combo/climb work.
@@ -948,7 +956,7 @@ export class RunBlocker implements Behavior {
     // same split as their combo aim; a solo reach takes the playside number.
     const combo = this.plan.combination && !this.plan.combination.released ? this.plan.combination : null;
     const partner = combo?.members.find((b) => b !== a);
-    const half = partner ? (Math.sign(sim.offAlign.spots[a.slot].pos.y - sim.offAlign.spots[partner.slot].pos.y) || ps) * .55 : ps * .6;
+    const half = partner ? installedComboSide(a, sim, combo!) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
@@ -1109,8 +1117,7 @@ export class RunBlocker implements Behavior {
       const side = zone.phase === 'runoff' ? -zone.side : zone.side;
       aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
     } else if (plan.kind === 'combo' && plan.combination) {
-      const partner = plan.combination.members.find((b) => b !== a)!;
-      const side = Math.sign(sim.offAlign.spots[a.slot].pos.y - sim.offAlign.spots[partner.slot].pos.y) || 1;
+      const side = installedComboSide(a, sim, plan.combination);
       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
