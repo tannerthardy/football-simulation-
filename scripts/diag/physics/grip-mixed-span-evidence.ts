@@ -79,6 +79,7 @@ if(mode==='accuracy'){
     world.push({id,mode:'unchanged-World128',duration:c.input.duration,partitions:128,...a.accounting});
   }
   const previous=prior.adverse[0],radial=raw.find(c=>c.id==='radial-control')!.candidate;
+  assert(radial);
   assert(Math.abs(radial.dose-previous.reference.dose)<1e-9/16&&Math.abs(radial.bodyWork-previous.reference.bodyWork)<1e-9/16);
   writeFileSync(`${root}/moving-raw.json`,JSON.stringify(raw)+'\n');
   payload={rows,long,frozen,world,priorComparison:{path:'data/reviews/current/grip-world-accounting.json',sha256:sha(readFileSync('data/reviews/current/grip-world-accounting.json')),
@@ -87,7 +88,7 @@ if(mode==='accuracy'){
     raw:{path:`${root}/moving-raw.json`,sha256:sha(readFileSync(`${root}/moving-raw.json`))},
     decision:'200us accounting/mechanics pass; ordinary whole-interval scope is incomplete, so no World/native football integration. Retain 4.166667ms curved-return refusal and unconverged reference; tangent force reverses near.806ms, normal remains negative.'};
 }else if(mode==='benchmark'){
-  const bench=[];
+  const bench:any[]=[];
   const clock=(id:string,names:string[],prepare:(method:number)=>()=>unknown)=>{
     const samples:number[][]=names.map(()=>[]);
     for(let k=0;k<26;k++)for(let j=0;j<names.length;j++){
