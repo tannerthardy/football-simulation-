@@ -87,3 +87,49 @@ Excluded: #3/#4/#5/#7/#11 ancestry, experimental hands/grip solvers, handover,
 helper rules, hip/shading variants, spacing bypasses, roster corrections and
 new recovery laws. Return the exact combined commit/receipt for final review;
 reference adoption and runtime promotion remain separate decisions.
+
+## Published combined verification
+
+- **What changed:** Exact frozen combined candidate
+  [`46a833dd006850a2c83a937bd3444181d8b10588`](https://github.com/tannerthardy/football-simulation-/commit/46a833dd006850a2c83a937bd3444181d8b10588)
+  contains the reviewed run/catch requests on approved `c98c2fa`, necessary
+  tests/flag registration and historical worksheet pin adaptation. The four
+  production files above match their reviewed contribution bytes. No excluded
+  research ancestry or additional controller/law/capacity change is imported.
+- **Evidence for/against:** Catch-only 59 contracts and 15 frozen full states
+  passed; #10's exact independent verification is reused. Combined 49 affected
+  assertions and three saved pass/catch/turnover histories passed, then **one**
+  full verification passed **1,684 TypeScript tests / 140 files**, **145 Python
+  checks**, typecheck and build. Four phases completed, no failures/skips/worker
+  errors or changed inputs. [Exact receipt](../../data/reviews/current/controller-combined-verification.json),
+  SHA256 `e6016ff3d8dd4c2e32b980b1cec600e5157be191a1f33638280bca523055b9c2`;
+  [extraction/reuse/settings footprint](../../data/reviews/current/controller-integration-extraction.json),
+  [combined focused receipt](../../data/reviews/current/controller-combined-focused.json),
+  [three-play results](../../data/reviews/current/controller-combined-spot.json) and
+  [spot-check launcher](../../data/reviews/current/controller-combined-spot-launcher.json).
+  Earlier global receipts are not relabeled as this combined pass.
+- **Unresolved risk:** The adverse/tradeoff table remains in force. P4's natural
+  TD is reproduced, P173 is untouched, and gain/clock/turnover differences remain
+  visible. Historic conservation, convergence, coverage/containment and roster
+  concerns are not resolved by functional tests. Original retained-draw and
+  transfer results are reused for compatible catch-only scope; the three-play
+  combined check is bounded, not league-wide validation.
+- **Runtime:** Full verification **180.530 s** (typecheck 9.419, build 11.495,
+  TypeScript 158.840, Python .774). Catch focused/parity commands 2.425/2.951 s;
+  combined focused/spot commands 2.131/1.155 s, **8.66 s** total. Zero catch-only
+  or repeated run-only full suites; 18 saved complete plays replayed outside
+  the existing suite, zero new rosters/full games or extra campaigns. Raw logs
+  remain in `out/controller-integration/`; their hashes/provenance are recorded.
+- **Next decision:** Review this exact combined candidate and receipt under the
+  posted controller conditions. Preparation and verification are complete;
+  no merge or shared reference/runtime baseline/default designation occurred.
+  Contributors need not repeat the shared suite.
+
+Node `v22.23.3`; 44 actual flags/components=1 with the original 43 values and
+World defaults retained. Source fingerprint
+`e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54`;
+validation fingerprint
+`26134096d7b87dce2bbd346332c739dd286ffaa9460bc2cc0e4e53acfb74b71e`.
+Publication adds only docs/data receipts and must retain these exact fingerprints;
+it is not represented as another tested revision. Historical `4ded6b6`, #8's
+reference decision and #10's independent evidence remain intact.
