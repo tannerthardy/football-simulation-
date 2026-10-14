@@ -157,3 +157,7 @@ The archive also contains both original full-context candidate captures, the
 unchanged prefix, accepted reference, report, exact receipts and reproduction
 scripts. Captures are observations, not a serialized `PlaySim` restore format;
 native reproduction regenerates and hash-checks the original source prefix.
+
+[Download the viewer and portable traces](https://github.com/tannerthardy/football-simulation-/blob/d0ea999e172874c56d6c512cd9b452c7324b5146/docs/reviews/assets/rt-recovery-counterfactual.zip?raw=true).
+Published bytes were downloaded and verified:4,841,157bytes, SHA256
+`cb0cf76e301d5b8853acd4041a50ecca308617f25bfa048ace97f22b818320bd`.
