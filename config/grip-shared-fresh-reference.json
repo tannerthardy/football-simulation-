@@ -1,0 +1,543 @@
+{
+  "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "commit": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "collectorSha256": "0a3998adf0e28cda8d1e527d55a484ea48e6413dd7ef97dea941fa38f33a7b09",
+  "helperSha256": "7a6f4908e1e8e65519f44d96bebab42b295de3c42485a3a691fcd6cc0f348247",
+  "scope": "Existing grip-fast mirrored three-body shared-foot graph; active hand row removed, prescribed existing support mobility with zero desired command, free ground, one tiny acquisition step followed by a frozen plan. Same player profiles and allocated structural capacities. Single-grip opposing control removes the second holder.",
+  "cases": [
+    {
+      "id": "shared-1-distinct",
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 4.0000012586054366e-7,
+              "y": 1.9999874139273887e-7
+            },
+            "vel": {
+              "x": 0.4000002517210873,
+              "y": 0.19999748278547771
+            },
+            "facing": -5.649747705369467e-11,
+            "spin": -0.00011299495410738934
+          },
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 1.0000002999997717,
+              "y": 0.09999990000074682
+            },
+            "vel": {
+              "x": 0.29999954356308695,
+              "y": -0.09999850636501623
+            },
+            "facing": 0,
+            "spin": 0.2
+          },
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 2.0000001000001024,
+              "y": -0.09999989999948822
+            },
+            "vel": {
+              "x": 0.10000020471582582,
+              "y": 0.10000102357953854
+            },
+            "facing": -2.365605735256976e-11,
+            "spin": -0.000047312114705139515
+          }
+        ],
+        "duration": 0.004166666666666667,
+        "mobility": 0.0031702569174998597,
+        "footOffset": {
+          "x": -8.682133686087656e-8,
+          "y": 2.8411239837298454e-7
+        },
+        "attachmentReach": 1.1275,
+        "minimumDistance": 0.54,
+        "grips": [
+          {
+            "holder": 0,
+            "held": 1,
+            "material": {
+              "x": -5.209280211652593e-8,
+              "y": 0.025000170467439024
+            },
+            "legs": 0.6,
+            "hold": 1,
+            "reach": 1.6,
+            "capacity": 500
+          },
+          {
+            "holder": 2,
+            "held": 1,
+            "material": {
+              "x": -5.209280211652593e-8,
+              "y": -0.014999829532560975
+            },
+            "legs": 0.6,
+            "hold": 1,
+            "reach": 1.6,
+            "capacity": 500
+          }
+        ]
+      },
+      "reference": {
+        "bodies": [
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 0.0016686625112883762,
+              "y": 0.0008207530902238578
+            },
+            "vel": {
+              "x": 0.4005621966909356,
+              "y": 0.195496228813963
+            },
+            "facing": -0.0005767885317824601,
+            "spin": -0.20325018144199056
+          },
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 1.001248473617841,
+              "y": 0.09959476796802487
+            },
+            "vel": {
+              "x": 0.29947103472146636,
+              "y": -0.09531620476972769
+            },
+            "facing": 0.000834941621412124,
+            "spin": 0.20063941631246238
+          },
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 2.0004169972022003,
+              "y": -0.09958198772495935
+            },
+            "vel": {
+              "x": 0.09996676858760353,
+              "y": 0.09981997595576486
+            },
+            "facing": -0.0000572642562155908,
+            "spin": 0.008256636275840171
+          }
+        ],
+        "grips": [
+          {
+            "material": {
+              "x": -0.000060177275963553905,
+              "y": 0.025534306695993405
+            },
+            "legs": 0.6,
+            "hold": 1,
+            "slipping": false,
+            "point": {
+              "x": 1.0011669906398035,
+              "y": 0.12512465106262785
+            },
+            "impulse": {
+              "x": -0.056194496985577734,
+              "y": 0.4501253971514571
+            },
+            "moment": {
+              "x": -0.0001594795658010461,
+              "y": 0.0012769753457029932
+            },
+            "angularImpulse": [
+              -0.4570586695977324,
+              0.0013962006101783336
+            ],
+            "angularMoment": [
+              -0.0012967147416964489,
+              0.000003965027665793887
+            ],
+            "dose": 0.4536195524260757,
+            "normalImpulse": 0,
+            "tangentImpulse": 0.4536195524260757
+          },
+          {
+            "material": {
+              "x": -0.000060177275963553905,
+              "y": -0.01446569330400648
+            },
+            "legs": 0.6,
+            "hold": 1,
+            "slipping": false,
+            "point": {
+              "x": 1.0012003770098838,
+              "y": 0.08512982313852092
+            },
+            "impulse": {
+              "x": 0.0033436128223775993,
+              "y": 0.01810476237778687
+            },
+            "moment": {
+              "x": -0.000022968444397246386,
+              "y": -0.00012413429906627305
+            },
+            "angularImpulse": [
+              0.018683883878727377,
+              0.000042486092846744723
+            ],
+            "angularMoment": [
+              -0.0001284009721836176,
+              -3.463794885437825e-7
+            ],
+            "dose": 0.10515353821034756,
+            "normalImpulse": 0,
+            "tangentImpulse": -0.018410924616440012
+          }
+        ],
+        "footOffset": {
+          "x": -0.00010059934789337369,
+          "y": 0.0008904968678973713
+        },
+        "bodyWork": -0.08338849634866426,
+        "motorWork": -0.06820700866070138,
+        "passiveWork": -0.015181487687963817
+      },
+      "accounting": {
+        "workResidual": 1.399574900418088e-13,
+        "angularResidual": -1.91437976582165e-11,
+        "maxCapacityExcess": 0,
+        "groundImpulse": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 0
+          }
+        ],
+        "groundYawImpulse": [
+          0,
+          0,
+          0
+        ],
+        "contactWork": 0,
+        "state": [
+          "up",
+          "up",
+          "up"
+        ],
+        "phases": [
+          "[false,false]"
+        ],
+        "sharedFootIdentity": true
+      },
+      "packetSha256": "f4fc2f10ba78958d7633e29c3d199779d9a1d060bb75e74012744aa28b8394f1",
+      "physical": true,
+      "convergence": {
+        "coarse": 16384,
+        "fine": 32768,
+        "error": 0.019916080592057673,
+        "converged": true
+      }
+    },
+    {
+      "id": "shared-1-unequal",
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 4.000001257744741e-7,
+              "y": 1.9999874225343518e-7
+            },
+            "vel": {
+              "x": 0.40000025154894825,
+              "y": 0.19999748450687035
+            },
+            "facing": -5.645884135493365e-11,
+            "spin": -0.00011291768270986731
+          },
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 1.000000299999822,
+              "y": 0.0999999000009967
+            },
+            "vel": {
+              "x": 0.2999996440301995,
+              "y": -0.09999800661134049
+            },
+            "facing": 0,
+            "spin": 0
+          },
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 2.0000001000000522,
+              "y": -0.09999989999973895
+            },
+            "vel": {
+              "x": 0.10000010442085228,
+              "y": 0.10000052210447015
+            },
+            "facing": -1.2066412843167133e-11,
+            "spin": -0.000024132825686334262
+          }
+        ],
+        "duration": 0.004166666666666667,
+        "mobility": 0.0031702569174998597,
+        "footOffset": {
+          "x": -6.109012475927177e-8,
+          "y": 4.1227735738798797e-7
+        },
+        "attachmentReach": 1.1275,
+        "minimumDistance": 0.54,
+        "grips": [
+          {
+            "holder": 0,
+            "held": 1,
+            "material": {
+              "x": -3.665407485556306e-8,
+              "y": 2.473664144327928e-7
+            },
+            "legs": 0.6,
+            "hold": 1,
+            "reach": 1.6,
+            "capacity": 500
+          },
+          {
+            "holder": 2,
+            "held": 1,
+            "material": {
+              "x": -2.443604990370871e-8,
+              "y": 1.649109429551952e-7
+            },
+            "legs": 0.4,
+            "hold": 1,
+            "reach": 1.6,
+            "capacity": 500
+          }
+        ]
+      },
+      "reference": {
+        "bodies": [
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 0.0016683382288926586,
+              "y": 0.0008208083676873609
+            },
+            "vel": {
+              "x": 0.4004536350008662,
+              "y": 0.1954579204898484
+            },
+            "facing": -0.0005711338615016874,
+            "spin": -0.20385069550160012
+          },
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 1.001249210322198,
+              "y": 0.09959686852545845
+            },
+            "vel": {
+              "x": 0.29976331679670803,
+              "y": -0.0943722452381672
+            },
+            "facing": -5.461034909250737e-9,
+            "spin": -0.000004644793295927834
+          },
+          {
+            "mass": 100,
+            "inertia": 2.25,
+            "pos": {
+              "x": 2.0004165847820525,
+              "y": -0.09958414355988394
+            },
+            "vel": {
+              "x": 0.09978304820242898,
+              "y": 0.09891432474832418
+            },
+            "facing": 0.00004203959054558897,
+            "spin": 0.05014708919620071
+          }
+        ],
+        "grips": [
+          {
+            "material": {
+              "x": -0.00003526598837784846,
+              "y": 0.0006009889438052357
+            },
+            "legs": 0.6,
+            "hold": 1,
+            "slipping": false,
+            "point": {
+              "x": 1.0012139443404535,
+              "y": 0.10019785741234288
+            },
+            "impulse": {
+              "x": -0.045338345192378546,
+              "y": 0.4539564017025757
+            },
+            "moment": {
+              "x": -0.00012705139795908042,
+              "y": 0.00127144831668529
+            },
+            "angularImpulse": [
+              -0.458410000092515,
+              3.8838325729932154e-7
+            ],
+            "angularMoment": [
+              -0.0012839924580710204,
+              -1.2996467105183335e-9
+            ],
+            "dose": 0.4562148444904493,
+            "normalImpulse": 0,
+            "tangentImpulse": 0.4562148444904493
+          },
+          {
+            "material": {
+              "x": -0.000023510658918565744,
+              "y": 0.0004006592958701573
+            },
+            "legs": 0.4,
+            "hold": 1,
+            "slipping": false,
+            "point": {
+              "x": 1.0012256996664604,
+              "y": 0.09999752780453451
+            },
+            "impulse": {
+              "x": 0.02170562184248075,
+              "y": 0.10861973561453704
+            },
+            "moment": {
+              "x": 0.00001823195556066886,
+              "y": 0.0000912402175399349
+            },
+            "angularImpulse": [
+              0.1128852495492456,
+              -0.000010839168173136989
+            ],
+            "angularMoment": [
+              0.00009481535111781563,
+              -1.098768183529594e-8
+            ],
+            "dose": 0.12737446193356589,
+            "normalImpulse": 0,
+            "tangentImpulse": -0.1107672379087776
+          }
+        ],
+        "footOffset": {
+          "x": -0.00005877664661811527,
+          "y": 0.0010016482396556319
+        },
+        "bodyWork": -0.09676787445089328,
+        "motorWork": -0.08801750655298411,
+        "passiveWork": -0.00875036789791057
+      },
+      "accounting": {
+        "workResidual": 4.9280024505549136e-14,
+        "angularResidual": -1.2878587085651816e-12,
+        "maxCapacityExcess": 0,
+        "groundImpulse": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 0
+          }
+        ],
+        "groundYawImpulse": [
+          0,
+          0,
+          0
+        ],
+        "contactWork": 0,
+        "state": [
+          "up",
+          "up",
+          "up"
+        ],
+        "phases": [
+          "[false,false]"
+        ],
+        "sharedFootIdentity": true
+      },
+      "packetSha256": "6d4454ee2f25d2a157ada56b519a82636bceed3d99abeecfcf42b201a482e364",
+      "physical": true,
+      "convergence": {
+        "coarse": 16384,
+        "fine": 32768,
+        "error": 0.03055997565472965,
+        "converged": true
+      }
+    }
+  ]
+}
