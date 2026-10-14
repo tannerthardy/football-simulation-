@@ -20,6 +20,7 @@ const args=process.argv.slice(2);
 let arm='awareness',stop=1,from=0,out='out/wide-zone-opening/awareness.json.gz',fresh=false;
 let expected:string|null=null;
 let diagnosticBypass=false;
+let selectedCases:string[]|null=null;
 while(args.length){const k=args.shift();
   if(k==='--arm')arm=args.shift()!;
   else if(k==='--stop')stop=Number(args.shift());
@@ -28,6 +29,7 @@ while(args.length){const k=args.shift();
   else if(k==='--expected-source')expected=args.shift()!;
   else if(k==='--fresh')fresh=true;
   else if(k==='--diagnostic-rt-opening-bypass')diagnosticBypass=true;
+  else if(k==='--cases')selectedCases=args.shift()!.split(',');
   else throw Error(`Unknown argument ${k}`);
 }
 assert(stop>0&&stop<=2&&from>=0&&from<stop);
@@ -47,7 +49,9 @@ const source=sourceVersion();expected??=arm==='accepted'?manifest.acceptedSource
 assert.equal(source,expected);
 const revision=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const started=performance.now(),panel:any[]=[];
-const inputs=fresh?[manifest.freshTransferDeclaredBeforeResults]:reference.manifest.inputs;
+const inputs=(fresh?[manifest.freshTransferDeclaredBeforeResults]:reference.manifest.inputs)
+ .filter((i:any)=>!selectedCases||selectedCases.includes(i.id));
+assert(inputs.length>0&&(!selectedCases||inputs.length===selectedCases.length));
 for(const input of inputs){
  const recipe=reference.manifest,formation=FORMATION_BY_ID[input.formation];
  const sim=new PlaySim({offense:pickOffense(generateTeam(new Rng(input.o),'O','O',{strength:recipe.strength}),formation.personnel),
