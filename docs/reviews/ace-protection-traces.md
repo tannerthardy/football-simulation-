@@ -152,9 +152,27 @@ receipt publication/reduction advances no simulations.
 Current `develop` was fetched read-only at
 **`a1b16e666a9ee7d1bc1d2aecba141fc535863b24`**, containing reviewed #12. **It has
 not been replayed here.** The user's prerequisite is to settle the contact
-contract first. Refresh and pin `develop` at that checkpoint, record its own
-accepted flags/source and compare these same three cases separately from the
-historical 4ded6b6 law experiment. No new baseline is designated.
+contract first. The user's next assignment gives the **integration owner** the
+current-production replay: refresh and pin `develop` after review, record its
+own accepted flags/source and compare these same three cases separately from
+the historical 4ded6b6 law experiment. The earlier handoff's promise that the
+run-game owner would perform that replay is superseded by this ownership split.
+No new baseline is designated.
+
+The **run-game owner** holds the current controller until contact review, then
+investigates achievable RT joining/recovery and RG anchoring paths. A different
+requested velocity is insufficient: any proposed route must be available from
+the player's acquired information, momentum and movement limits, respect
+teammate spacing, and control defender access through runner arrival. A failed
+alternative can instead establish a physical or information limit and a
+legitimate defensive win. Keep the successful weak call and both adverse cases;
+do not add release timers or tune toward their original gains. Any shared
+movement-file edit requires coordination with the YAC owner.
+
+At this documentation checkpoint, PR #14/#17/#18 contain no published contact
+contract review. No controller edit, additional simulation or test rerun was
+made. The original tested revision, manifests and receipts remain untouched;
+the existing 13 KB witness is the physics owner's review input.
 
 Reproduce the small portable physics and spacing controls without the large raw
 packets (Node22.23.3, recorded baseline flags):

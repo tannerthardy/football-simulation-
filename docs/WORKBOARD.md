@@ -4,8 +4,22 @@ Run-game follow-up: `codex/ace-protection-traces` from frozen PR #17 `61596bd`.
 Own only bounded Y/RT and RG/DT_S trace reduction, acquired-cue/request attribution
 and portable retained/cleared contact controls. No shared solver, capacity,
 contact-retention, RB, release or strength edits. The sole physics owner decides
-the retention contract. Historical law comparison stays 4ded6b6; assess current
-`develop` only after that contract review.
+the retention contract. Historical law comparison stays 4ded6b6.
+
+Current user-assigned checkpoint: keep the controller unchanged until physics
+reviews the retained/cleared/unreachable witness. No published contract review
+was found on PR #14, #17 or #18 at this checkpoint. After review, the run-game
+owner investigates feasible RT joining/recovery routes and RG anchoring paths
+using the same three Ace controls. Preserve acquired information, physical
+movement limits, teammate spacing, the weak-call success and ordinary defensive
+wins; add no release timer or general heuristic. Coordinate any shared movement
+edit with the YAC owner before changing it.
+
+The integration owner separately refreshes and pins current `develop` after
+contact review, records its exact source/settings and replays the same cases.
+That production evidence must remain distinct from this historical law
+comparison before accepting a controller change. Neither task starts from an
+assumed contract or promotes this diagnostic branch.
 
 [Bounded follow-up complete](reviews/ace-protection-traces.md): RT has brief
 lateral load1.50–1.95, then loses reach at2.00 before runner arrival; prior
@@ -18,10 +32,11 @@ lane; they attribute the constraint without proving optimal collision avoidance.
 replay native zero-compression lateral load exactly; clearing removes all hand
 impulse. Unreachable stale input is a synthetic opposing control, not a native
 defect. Shared source/capacities/defaults and weak success unchanged. Physics
-contract review remains the dependency for current-develop transfer; read-only
-`develop` pin a1b16e6 is not new football evidence.
- Preserve weak-call success and the
-three input manifests; no new games or broad roster panel.
+contract review remains the dependency for route work and current-develop
+transfer; read-only `develop` pin a1b16e6 is not new football evidence.
+Preserve weak-call success and the three input manifests; no new games or broad
+roster panel. This checkpoint changes ownership documentation only; all tested
+receipts, witness inputs, flags and controller/solver bytes remain unchanged.
 
 User-assigned physics support: `codex/contact-law-isolation` from PR #14
 `22d3b34df18124ffad1a5eebd30d6f41bbb67d57`. This support worker owns only the
