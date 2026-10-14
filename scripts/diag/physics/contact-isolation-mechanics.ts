@@ -1,7 +1,8 @@
 /** Exact saved contact input, with only ground selection decoupled. */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { readWitness, reflectWitness, replayKeeper, stateError, witnessPath } from './keeper-contact-law.js';
 
 const w = readWitness();
@@ -34,7 +35,10 @@ const result = { protocol: 'contact-isolation-mechanics-v1',
   worldSha256: createHash('sha256').update(readFileSync('src/physics/world.ts')).digest('hex'),
   nativeError, baseline, isolated, fullPatch, controls,
   scope: 'Common contact law with legacy ground. Native angular change includes external ground torque; free controls isolate the internal law. No PR #7 timing or controller repair.' };
-if (process.argv[2]) writeFileSync(process.argv[2], JSON.stringify(result, null, 2) + '\n');
+if (process.argv[2]) {
+  mkdirSync(dirname(process.argv[2]), { recursive: true });
+  writeFileSync(process.argv[2], JSON.stringify(result, null, 2) + '\n');
+}
 console.log(JSON.stringify({ nativeError,
   isolatedHands: isolated.joints, freeMaximumAngularChange: Math.max(...controls.map(r => Math.abs(r.angularChange))),
   nativeWorkResidual: isolated.reports[0].work.residual }));
