@@ -1,5 +1,9 @@
 # Coupled run contact components and pull-to-runner handover
 
+This report records the original default-off PR #4 stage. The separate
+[component-only promotion candidate](run-contact-components-candidate.md)
+proposes enabling the component correction alone; handover and hands stay off.
+
 Two bounded controller trials now have explicit contracts and matched offensive,
 defensive and combined controls. Both remain **off**. The shoulder-component
 repair fixes a request construction error; it does not repair the parked
