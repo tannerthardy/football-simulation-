@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Unloaded attached-TE approach study
+
+Run-game owner, user authorized continuation of the PR #22 technique findings.
+Branch `codex/te-approach-support` starts from exact current production source
+`a1b16e666a9ee7d1bc1d2aecba141fc535863b24`. One independent question: does the
+existing .7 blocking-base action preserve enough movement on the saved TE
+approach, with finite posture adjustment and unchanged physical capabilities?
+Compare the same frozen bodies/commands in empty space; retain WR/OL command
+controls and true geometric reflection. No live controller, shared movement,
+solver, capacity, roster, hand policy, release timer or default edit. This is
+a mechanical action study, not a new native Ace replay or a protection result.
+Loaded RT joining/recovery and RG anchoring remain gated on the physics owner's
+retained/cleared/unreachable contract. Integration owns the later current-
+production replay; the historical comparison stays `4ded6b6`.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
