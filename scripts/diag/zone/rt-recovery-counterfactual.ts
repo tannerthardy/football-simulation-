@@ -19,6 +19,8 @@ import {sourceVersion} from '../../source-version.js';
 
 const caseId=process.argv[2]??'uc12-wz-s3-mirror';
 assert(['uc12-wz-s3-mirror','uc12-wz-s3'].includes(caseId));
+const action=process.argv[3]??'depth-neutral';
+assert(['depth-neutral','flow-only'].includes(action));
 const manifest=JSON.parse(readFileSync('docs/reviews/run-drills/input-manifest.json','utf8'));
 const serialize=(v:unknown)=>JSON.stringify(v,(_k,x:unknown)=>x instanceof Agent?{agent:x.idx}
   :x instanceof PlaySim?{sim:true}:x instanceof Map?[...x]:x instanceof Set?[...x]:x instanceof Float64Array?[...x]:x);
@@ -64,7 +66,8 @@ runContactObservers.set(sim,(e,phase,data)=>{
   }
   // Own held read only. No new see(), target state, strength, posture, or forecast.
   // Zero requested depth is not zero achieved motion; ordinary loaded World runs.
-  const original=sim.intents[rt.idx],changed={...original,vel:{x:0,y:held.seen.vel.y}};
+  const original=sim.intents[rt.idx],changed={...original,vel:action==='depth-neutral'?{x:0,y:held.seen.vel.y}
+    :{x:original.vel.x,y:held.side*Math.max(original.vel.y*held.side,held.seen.vel.y*held.side)}};
   const {vel:_v,...rest}=changed,{vel:_o,...originalRest}=original;assert.deepEqual(rest,originalRest);
   firstAction??=sim.t;
   actions.push({t:sim.t,actor:rt.idx,original:snap(original),changed:snap(changed),consumedRead:snap(held)});
@@ -95,7 +98,7 @@ assert.equal(sourceVersion(),manifest.sourceSha256);
 const result=sim.buildResult(),first=sim.events.find(e=>e.type==='carrier_contact');
 const packet={protocol:'rt-recovery-counterfactual-v1',commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
   sourceSha256:sourceVersion(),node:process.version,input,recipe,flags:manifest.flags,worldDefaults:manifest.worldDefaults,
-  referenceSha256:manifest.reference.sha256,action:'First solo read: depth-neutral matching of acquired wide flow for the existing read beat; anchor preserved.',
+  referenceSha256:manifest.reference.sha256,action,actionContract:'First solo read, one existing read beat; acquired wide flow, anchor preserved.',
   firstRead,firstAction,finishedAction,prefixExact:true,prefixTicks:firstAction===null?hashes.length:Math.round(firstAction/sim.dt),
   naturalRunner:true,all22:true,profilesUnchanged:true,otherControllersChanged:false,spacingChanged:false,contactChanged:false,
   summary:{complete:sim.phase!=='live'&&result.outcome!=='timeout',censored:sim.phase==='live',duration:sim.t,crossing,
@@ -103,6 +106,6 @@ const packet={protocol:'rt-recovery-counterfactual-v1',commit:execFileSync('git'
       depth:sim.firstContactX===null?null:sim.firstContactX-sim.los}:null},
   actions,hashes,frames,pictures,phases,reads,events:snap(sim.events),elapsedSeconds:(performance.now()-started)/1000};
 mkdirSync('out/rt-recovery',{recursive:true});
-writeFileSync(`out/rt-recovery/${caseId}.json.gz`,gzipSync(serialize(packet)));
-console.log(JSON.stringify({caseId,firstAction,firstRead:firstRead?{t:firstRead.t,phase:firstRead.read.phase,anchored:firstRead.anchored}:null,
+writeFileSync(`out/rt-recovery/${caseId}-${action}.json.gz`,gzipSync(serialize(packet)));
+console.log(JSON.stringify({caseId,action,firstAction,firstRead:firstRead?{t:firstRead.t,phase:firstRead.read.phase,anchored:firstRead.anchored}:null,
   finishedAction,actions:actions.length,prefixTicks:packet.prefixTicks,...packet.summary,result:undefined,elapsedSeconds:packet.elapsedSeconds}));
