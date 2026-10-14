@@ -34,7 +34,8 @@ function engagement(e){return e?{blocker:e.blocker.idx,defender:e.defender.idx,k
  hands:e.hands?{normalForce:e.hands.normalForce,tangentForce:e.hands.tangentForce,
  push:e.hands.push}:null}:null;}
 function actors(sim){return sim.agents.map(a=>({i:a.idx,pos:{...a.pos},vel:{...a.vel},facing:a.facing,
- behavior:a.behavior.kind,tags:[...a.tags],down:a.isDown(sim.t),
+ behavior:a.behavior.kind,plan:typeof a.behavior.plan==='string'?a.behavior.plan:undefined,
+ protectionTarget:a.behavior.coord?.assigned.get(a)?.idx??null,tags:[...a.tags],down:a.isDown(sim.t),
  support:a.body.support?{state:a.body.support.state,cause:a.body.support.cause}:null,
  energy:a.body.energy,speedScale:a.speedScale,engagement:engagement(a.engagement)}));}
 const dist=(a,b)=>Math.hypot(a.pos.x-b.pos.x,a.pos.y-b.pos.y);
@@ -61,8 +62,9 @@ function observe(sim){
   restore.push(()=>qbBehavior.evaluate=evaluate);
  }
  for(const a of sim.agents){
-  const b=a.behavior;if(!['rush','blitz','pass-block','qb-pass'].includes(b.kind))continue;
-  const update=b.update;b.update=function(actor,s){const c=update.call(this,actor,s);if(step)step.raw.push({i:actor.idx,command:copy(c)});return c;};
+  const b=a.behavior;if(!['rush','blitz','pass-pro','qb-pass'].includes(b.kind))continue;
+  const update=b.update;b.update=function(actor,s){const c=update.call(this,actor,s);if(step)step.raw.push({i:actor.idx,
+   protectionTarget:this.coord?.assigned.get(actor)?.idx??null,command:copy(c)});return c;};
   restore.push(()=>b.update=update);
  }
  sim.tick=function(){
