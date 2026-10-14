@@ -25,6 +25,14 @@ The evidence helper owns only `test/zone-opening-spacing.test.ts`.
 Attached TE role parity changes run-technique eligibility
 and the finite posture request, not initial body state or physical capacities.
 
+Completed at code `ccbbe47`, runtime `df7dae57…`: 199 affected checks and
+typecheck pass; three Ace openings and the frozen Under front are captured
+from snap through 2s. Recommendation: adopt the bounded correction; no shared
+baseline promotion. Strong RT earns LB load, the front TE carries useful
+lateral runoff, and all former teammate impacts disappear. Remaining weak
+RT/H and fresh LT second-level misses are retained. [Evidence, replay, pins,
+cost and exact next question](reviews/wide-zone-help-read/README.md).
+
 ## Wide-zone opening execution, 2026-10-14
 
 Run-game owns `codex/wide-zone-opening` from Awareness's completed PR #36

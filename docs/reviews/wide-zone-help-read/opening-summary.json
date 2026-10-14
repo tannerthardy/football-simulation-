@@ -1,0 +1,3013 @@
+{
+  "protocol": "wz-execution-report-v1",
+  "inputs": [
+    {
+      "arm": "before",
+      "path": "/workspace/wz-execution-evidence/out/wz-execution/before.json.gz",
+      "sha256": "8e607e1059d81d71e13f71f761868f84af558410f57fed7564d628e6061084ba",
+      "revision": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "collectorSha256": "f3d91e227eafde842574d0ff88afd350ea37d0d47a050211bc03d318c69e7f9c",
+      "elapsedSeconds": 3.9954791119999995,
+      "worldSteps": 120,
+      "stop": 2
+    },
+    {
+      "arm": "candidate",
+      "path": "/workspace/wide-zone-help-read/out/wz-help/final.json.gz",
+      "sha256": "1e99176803c45234c623c6f3cb246c33664ee6561c75496cbb3bd28479c2e091",
+      "revision": "ccbbe47b217333dd7800c65890fa87a26a9877c7",
+      "sourceSha256": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96",
+      "collectorSha256": "f3d91e227eafde842574d0ff88afd350ea37d0d47a050211bc03d318c69e7f9c",
+      "elapsedSeconds": 4.19850808,
+      "worldSteps": 120,
+      "stop": 2
+    }
+  ],
+  "checks": {
+    "publishedBaseline": {
+      "firstActionAll22BodiesInformationRNGAndRequestsExactlyMatch": true,
+      "installedInitializationExactlyMatches": true,
+      "publishedAlignedOLRowsExactlyMatch": 300,
+      "timelineSha256": "7237214f86b911a50a0cada08afc636ef5b1132854d4baa2c27b5133d9fbbc6d",
+      "firstBreakdownSha256": "746eaedb617109773496e1cd8455d1b66372820f6f4797046db81855be0e8b6a"
+    },
+    "matchedInitialStates": [
+      {
+        "case": "uc12-wz-s3",
+        "arms": [
+          "before",
+          "candidate"
+        ],
+        "sameAll22PhysicalAndBehaviorInitialization": false,
+        "sameAll22PhysicalAndAssignmentsApartFromDeclaredInstallation": true,
+        "allowedInstallationDifferences": [
+          "stretchHelp",
+          "inline TE cutoff contactFit"
+        ],
+        "installedInformationIdentical": false
+      },
+      {
+        "case": "uc12-wz-weak-s3",
+        "arms": [
+          "before",
+          "candidate"
+        ],
+        "sameAll22PhysicalAndBehaviorInitialization": false,
+        "sameAll22PhysicalAndAssignmentsApartFromDeclaredInstallation": true,
+        "allowedInstallationDifferences": [
+          "stretchHelp",
+          "inline TE cutoff contactFit"
+        ],
+        "installedInformationIdentical": false
+      },
+      {
+        "case": "uc12-wz-s3-mirror",
+        "arms": [
+          "before",
+          "candidate"
+        ],
+        "sameAll22PhysicalAndBehaviorInitialization": false,
+        "sameAll22PhysicalAndAssignmentsApartFromDeclaredInstallation": true,
+        "allowedInstallationDifferences": [
+          "stretchHelp",
+          "inline TE cutoff contactFit"
+        ],
+        "installedInformationIdentical": false
+      }
+    ]
+  },
+  "cases": [
+    {
+      "arm": "before",
+      "case": "uc12-wz-s3",
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "end": 2,
+      "censored": true,
+      "slots": [
+        {
+          "slot": "LT",
+          "through": 2,
+          "playsideProgress": 2.5144597797500303,
+          "forwardProgress": 3.7396228637800135,
+          "progressAt": {
+            "0.3": 0.041409502110976604,
+            "0.5": 0.12855332129876373,
+            "1": 0.5280470594628213,
+            "1.5": 1.2294625751015573,
+            "2": 2.5144597797500303
+          },
+          "loadedPlaysideDisplacement": 1.3985015750073941,
+          "ownNormalImpulseKgYdPerS": 288.2305300194072,
+          "ownTangentImpulseKgYdPerS": 312.7447298546157,
+          "loadedSeconds": 0.55,
+          "firstOwnLoadEntry": 1.45,
+          "firstNominalJoinEntry": 1.45,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "free"
+            },
+            {
+              "entry": 1.45,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_W",
+            "status": "owner",
+            "x": 43.189622863780016,
+            "y": 26.75220688691664,
+            "post_vx": 1.2924422811567888,
+            "post_vy": -2.1470448552180477,
+            "olMinusDefenderX": 0.3020917075162046,
+            "olMinusDefenderY": 0.5298534248111615,
+            "rbMinusDefenderX": -5.354462918258562,
+            "olDefenderDistance": 0.6099213486460145,
+            "fractionAlongDefenderToRB": -0.08459579240873084,
+            "distanceFromDefenderRBLine": 0.2683852410251854,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "LG",
+          "through": 2,
+          "playsideProgress": 0.44814134802001604,
+          "forwardProgress": 0.5145146505554408,
+          "progressAt": {
+            "0.3": 0.06994869070914334,
+            "0.5": 0.16873794823532862,
+            "1": 0.37802074350205217,
+            "1.5": 0.46214921466864567,
+            "2": 0.44814134802001604
+          },
+          "loadedPlaysideDisplacement": 0.252851918223314,
+          "ownNormalImpulseKgYdPerS": 794.7120685863389,
+          "ownTangentImpulseKgYdPerS": 468.54605261845677,
+          "loadedSeconds": 1.4500000000000002,
+          "firstOwnLoadEntry": 0.55,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "combo",
+              "targetSlot": "DT_W",
+              "status": "owner"
+            },
+            {
+              "entry": 1.05,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_W",
+            "status": "owner",
+            "x": 39.964514650555444,
+            "y": 27.518525318646653,
+            "post_vx": -0.45297553161447285,
+            "post_vy": -0.1776187970648746,
+            "olMinusDefenderX": 0.405294342661243,
+            "olMinusDefenderY": 0.5266152434574849,
+            "rbMinusDefenderX": -2.0261520698889512,
+            "olDefenderDistance": 0.6645202170250316,
+            "fractionAlongDefenderToRB": -0.13349029229698706,
+            "distanceFromDefenderRBLine": 0.14837704359412757,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "C",
+          "through": 2,
+          "playsideProgress": 1.6538723353608056,
+          "forwardProgress": 1.4250304406886798,
+          "progressAt": {
+            "0.3": 0.06430071865444376,
+            "0.5": 0.17043053471304503,
+            "1": 0.4894510536556247,
+            "1.5": 0.6784887620753715,
+            "2": 1.6538723353608056
+          },
+          "loadedPlaysideDisplacement": 0,
+          "ownNormalImpulseKgYdPerS": 0.0,
+          "ownTangentImpulseKgYdPerS": 0.0,
+          "loadedSeconds": 0.0,
+          "firstOwnLoadEntry": null,
+          "firstNominalJoinEntry": 0.8,
+          "nominalJoinWithoutOwnLoadSeconds": 0.25,
+          "handJointWithoutOwnLoadSeconds": 0.25,
+          "nominalJoinNeverLoaded": true,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.8,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "helper"
+            },
+            {
+              "entry": 1.05,
+              "assignment": "climb",
+              "targetSlot": "LB_M",
+              "status": "free"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_M",
+            "status": "free",
+            "x": 40.87503044068868,
+            "y": 25.012794331305862,
+            "post_vx": 0.9714739504121688,
+            "post_vy": -2.219379004775726,
+            "olMinusDefenderX": -1.003755910289719,
+            "olMinusDefenderY": 1.7158669161644085,
+            "rbMinusDefenderX": -4.345718112973152,
+            "olDefenderDistance": 1.9878946655769012,
+            "fractionAlongDefenderToRB": 0.16172622247438878,
+            "distanceFromDefenderRBLine": 1.8559191570113598,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RG",
+          "through": 2,
+          "playsideProgress": 1.2505498372041046,
+          "forwardProgress": 0.4648139966346392,
+          "progressAt": {
+            "0.3": 0.12786691612632595,
+            "0.5": 0.28705943145283896,
+            "1": 0.6767126825201011,
+            "1.5": 0.9527290371536381,
+            "2": 1.2505498372041046
+          },
+          "loadedPlaysideDisplacement": 0.9634904057512657,
+          "ownNormalImpulseKgYdPerS": 589.4194065013031,
+          "ownTangentImpulseKgYdPerS": 303.1111863551526,
+          "loadedSeconds": 1.5,
+          "firstOwnLoadEntry": 0.5,
+          "firstNominalJoinEntry": 0.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.5,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_S",
+            "status": "owner",
+            "x": 39.91481399663464,
+            "y": 24.116116829462563,
+            "post_vx": 0.42233110491296244,
+            "post_vy": -1.5704296230500392,
+            "olMinusDefenderX": -0.19687689122701357,
+            "olMinusDefenderY": 0.571504059851133,
+            "rbMinusDefenderX": -2.578622649856406,
+            "olDefenderDistance": 0.6044645570465986,
+            "fractionAlongDefenderToRB": -0.005545134074222235,
+            "distanceFromDefenderRBLine": 0.6042718764536688,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "RT",
+          "through": 2,
+          "playsideProgress": 2.3214068987767753,
+          "forwardProgress": 0.06474190455867301,
+          "progressAt": {
+            "0.3": 0.049339356945093726,
+            "0.5": 0.158621493533186,
+            "1": 0.9936440153418609,
+            "1.5": 1.7132039345369208,
+            "2": 2.3214068987767753
+          },
+          "loadedPlaysideDisplacement": 0.6082029642398545,
+          "ownNormalImpulseKgYdPerS": 209.08606789352731,
+          "ownTangentImpulseKgYdPerS": 122.1222296379974,
+          "loadedSeconds": 0.5,
+          "firstOwnLoadEntry": 1.5,
+          "firstNominalJoinEntry": 1.2,
+          "nominalJoinWithoutOwnLoadSeconds": 0.30000000000000004,
+          "handJointWithoutOwnLoadSeconds": 0.30000000000000004,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 3,
+          "teammateImpactImpulseKgYdPerS": 125.8127181993332,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 1.2,
+              "assignment": "combo",
+              "targetSlot": "DE_S",
+              "status": "helper"
+            },
+            {
+              "entry": 1.8,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DE_S",
+            "status": "owner",
+            "x": 39.514741904558676,
+            "y": 21.74525976788989,
+            "post_vx": -0.34609247611093297,
+            "post_vy": -0.5176125882453365,
+            "olMinusDefenderX": -0.09118105423356582,
+            "olMinusDefenderY": 0.646410093644235,
+            "rbMinusDefenderX": -2.0728547207869923,
+            "olDefenderDistance": 0.6528093089228225,
+            "fractionAlongDefenderToRB": 0.17668508076611636,
+            "distanceFromDefenderRBLine": 0.47252572295048983,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "Y",
+          "through": 2,
+          "playsideProgress": 1.0780359572610472,
+          "forwardProgress": 0.7558492965686341,
+          "progressAt": {
+            "0.3": 0.09818271948105206,
+            "0.5": 0.2623780378314038,
+            "1": 0.4818267220290835,
+            "1.5": 0.6664568743129102,
+            "2": 1.0780359572610472
+          },
+          "loadedPlaysideDisplacement": 0.6378047886012403,
+          "ownNormalImpulseKgYdPerS": 875.3560492903592,
+          "ownTangentImpulseKgYdPerS": 464.30247460738656,
+          "loadedSeconds": 1.4000000000000001,
+          "firstOwnLoadEntry": 0.4,
+          "firstNominalJoinEntry": 0.4,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 3,
+          "teammateImpactImpulseKgYdPerS": 125.8127181993332,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.4,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "owner"
+            },
+            {
+              "entry": 1.8,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "free"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_S",
+            "status": "free",
+            "x": 40.15584929656863,
+            "y": 21.688630709405622,
+            "post_vx": 0.3217076581932087,
+            "post_vy": -1.5926183576413961,
+            "olMinusDefenderX": -1.4279649790714402,
+            "olMinusDefenderY": -0.06947199571402152,
+            "rbMinusDefenderX": -4.050746037634823,
+            "olDefenderDistance": 1.4296539230327694,
+            "fractionAlongDefenderToRB": 0.33513560878525167,
+            "distanceFromDefenderRBLine": 0.3529574159727209,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "H",
+          "through": 2,
+          "playsideProgress": 0.6659525079208422,
+          "forwardProgress": 2.12144464681316,
+          "progressAt": {
+            "0.3": 0.11997221970765892,
+            "0.5": 0.37153321745100243,
+            "1": 0.6621911592712308,
+            "1.5": 0.6483378292673514,
+            "2": 0.6659525079208422
+          },
+          "loadedPlaysideDisplacement": 0.2944192904698397,
+          "ownNormalImpulseKgYdPerS": 512.2932267061656,
+          "ownTangentImpulseKgYdPerS": 249.82089806320673,
+          "loadedSeconds": 1.5,
+          "firstOwnLoadEntry": 0.5,
+          "firstNominalJoinEntry": 0.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "cutoff",
+              "targetSlot": "DE_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.5,
+              "assignment": "cutoff",
+              "targetSlot": "DE_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "cutoff",
+            "targetSlot": "DE_W",
+            "status": "owner",
+            "x": 41.52144464681316,
+            "y": 29.900714158745824,
+            "post_vx": 1.78712377415846,
+            "post_vy": -0.15853483821032754,
+            "olMinusDefenderX": -0.5349564448030577,
+            "olMinusDefenderY": 0.00787165320824812,
+            "rbMinusDefenderX": -4.523332853610967,
+            "olDefenderDistance": 0.535014355658386,
+            "fractionAlongDefenderToRB": 0.03196668533802868,
+            "distanceFromDefenderRBLine": 0.45905037684720945,
+            "betweenDefenderAndRBProjection": true
+          }
+        }
+      ],
+      "ownHandLoadsByOpponent": {
+        "Y": {
+          "DE_S": {
+            "normalImpulseKgYdPerS": 875.3560492903591,
+            "tangentImpulseKgYdPerS": 464.3024746073865,
+            "firstLoadEntry": 0.4,
+            "lastLoadedBoundary": 1.8
+          }
+        },
+        "RG": {
+          "DT_S": {
+            "normalImpulseKgYdPerS": 589.4194065013031,
+            "tangentImpulseKgYdPerS": 303.1111863551526,
+            "firstLoadEntry": 0.5,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "H": {
+          "DE_W": {
+            "normalImpulseKgYdPerS": 512.2932267061656,
+            "tangentImpulseKgYdPerS": 249.82089806320676,
+            "firstLoadEntry": 0.5,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LG": {
+          "DT_W": {
+            "normalImpulseKgYdPerS": 794.712068586339,
+            "tangentImpulseKgYdPerS": 468.54605261845666,
+            "firstLoadEntry": 0.55,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LT": {
+          "LB_W": {
+            "normalImpulseKgYdPerS": 288.2305300194072,
+            "tangentImpulseKgYdPerS": 312.7447298546157,
+            "firstLoadEntry": 1.45,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RT": {
+          "DE_S": {
+            "normalImpulseKgYdPerS": 209.08606789352731,
+            "tangentImpulseKgYdPerS": 122.12222963799739,
+            "firstLoadEntry": 1.5,
+            "lastLoadedBoundary": 2
+          }
+        }
+      },
+      "unitTeammateImpactCount": 3,
+      "unitTeammateImpactImpulseKgYdPerS": 125.8127181993332,
+      "unitImpacts": [
+        {
+          "entry": 1.2,
+          "a": "RT",
+          "b": "Y",
+          "impulseKgYdPerS": 103.81898123845258
+        },
+        {
+          "entry": 1.3,
+          "a": "RT",
+          "b": "Y",
+          "impulseKgYdPerS": 8.199425357395652
+        },
+        {
+          "entry": 1.8,
+          "a": "RT",
+          "b": "Y",
+          "impulseKgYdPerS": 13.794311603484969
+        }
+      ],
+      "maxAbsoluteWorkResidual": 4.284572696633404e-12
+    },
+    {
+      "arm": "before",
+      "case": "uc12-wz-s3-mirror",
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "end": 2,
+      "censored": true,
+      "slots": [
+        {
+          "slot": "LT",
+          "through": 2,
+          "playsideProgress": 2.5359561655876313,
+          "forwardProgress": 3.888821090030376,
+          "progressAt": {
+            "0.3": 0.041409502110976604,
+            "0.5": 0.12855332129876373,
+            "1": 0.4684615490043562,
+            "1.5": 1.2233041802150453,
+            "2": 2.5359561655876313
+          },
+          "loadedPlaysideDisplacement": 1.5360914664115732,
+          "ownNormalImpulseKgYdPerS": 206.5314680928829,
+          "ownTangentImpulseKgYdPerS": 226.5983288277451,
+          "loadedSeconds": 0.6000000000000001,
+          "firstOwnLoadEntry": 1.4,
+          "firstNominalJoinEntry": 1.4,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "free"
+            },
+            {
+              "entry": 1.4,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_W",
+            "status": "owner",
+            "x": 43.33882109003038,
+            "y": 26.730710501079038,
+            "post_vx": 1.4137359056101144,
+            "post_vy": -2.827389975280885,
+            "olMinusDefenderX": 0.6952986303276205,
+            "olMinusDefenderY": 0.28787320229998414,
+            "rbMinusDefenderX": -4.884547455420922,
+            "olDefenderDistance": 0.7525364881106514,
+            "fractionAlongDefenderToRB": -0.11421056865993941,
+            "distanceFromDefenderRBLine": 0.21715336601435573,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "LG",
+          "through": 2,
+          "playsideProgress": 0.44226565907151993,
+          "forwardProgress": 0.4657847928448362,
+          "progressAt": {
+            "0.3": 0.06994869070914334,
+            "0.5": 0.16873794823532862,
+            "1": 0.38741048599346684,
+            "1.5": 0.46896723869154755,
+            "2": 0.44226565907151993
+          },
+          "loadedPlaysideDisplacement": 0.24697622927481788,
+          "ownNormalImpulseKgYdPerS": 739.787683105181,
+          "ownTangentImpulseKgYdPerS": 410.9589992267351,
+          "loadedSeconds": 1.4500000000000002,
+          "firstOwnLoadEntry": 0.55,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "combo",
+              "targetSlot": "DT_W",
+              "status": "owner"
+            },
+            {
+              "entry": 1.05,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_W",
+            "status": "owner",
+            "x": 39.91578479284484,
+            "y": 27.52440100759515,
+            "post_vx": -0.5420392457375932,
+            "post_vy": -0.19696853032953238,
+            "olMinusDefenderX": 0.18377676112717012,
+            "olMinusDefenderY": 0.6233957832856554,
+            "rbMinusDefenderX": -1.9730330274358323,
+            "olDefenderDistance": 0.649920149363542,
+            "fractionAlongDefenderToRB": -0.132357025914583,
+            "distanceFromDefenderRBLine": 0.0846291143923956,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "C",
+          "through": 2,
+          "playsideProgress": 1.8111799292037531,
+          "forwardProgress": 1.2387490211837928,
+          "progressAt": {
+            "0.3": 0.06430071865444376,
+            "0.5": 0.17043053471304503,
+            "1": 0.4893870235750235,
+            "1.5": 0.6785328598337443,
+            "2": 1.8111799292037531
+          },
+          "loadedPlaysideDisplacement": 0,
+          "ownNormalImpulseKgYdPerS": 0.0,
+          "ownTangentImpulseKgYdPerS": 0.0,
+          "loadedSeconds": 0.0,
+          "firstOwnLoadEntry": null,
+          "firstNominalJoinEntry": 0.8,
+          "nominalJoinWithoutOwnLoadSeconds": 0.25,
+          "handJointWithoutOwnLoadSeconds": 0.25,
+          "nominalJoinNeverLoaded": true,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.8,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "helper"
+            },
+            {
+              "entry": 1.05,
+              "assignment": "climb",
+              "targetSlot": "LB_M",
+              "status": "free"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_M",
+            "status": "free",
+            "x": 40.688749021183796,
+            "y": 24.855486737462915,
+            "post_vx": 0.09788471999597191,
+            "post_vy": -3.030589182123745,
+            "olMinusDefenderX": -1.1335219352074901,
+            "olMinusDefenderY": 1.5478100546837155,
+            "rbMinusDefenderX": -4.063295952109449,
+            "olDefenderDistance": 1.9184858464363348,
+            "fractionAlongDefenderToRB": 0.19011029021574477,
+            "distanceFromDefenderRBLine": 1.7485124202214943,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RG",
+          "through": 2,
+          "playsideProgress": 1.261438730335044,
+          "forwardProgress": 0.22064245833168883,
+          "progressAt": {
+            "0.3": 0.12786691612632595,
+            "0.5": 0.28705943145283896,
+            "1": 0.6680048343954077,
+            "1.5": 0.9692683444248615,
+            "2": 1.261438730335044
+          },
+          "loadedPlaysideDisplacement": 0.9743792988822051,
+          "ownNormalImpulseKgYdPerS": 681.6569414898767,
+          "ownTangentImpulseKgYdPerS": 351.8731903374303,
+          "loadedSeconds": 1.5,
+          "firstOwnLoadEntry": 0.5,
+          "firstNominalJoinEntry": 0.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.5,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_S",
+            "status": "owner",
+            "x": 39.67064245833169,
+            "y": 24.105227936331623,
+            "post_vx": 0.44814291113533744,
+            "post_vy": -1.441601658973133,
+            "olMinusDefenderX": -0.27623842462665493,
+            "olMinusDefenderY": 0.537619444559553,
+            "rbMinusDefenderX": -2.18790587867651,
+            "olDefenderDistance": 0.6044355502522485,
+            "fractionAlongDefenderToRB": 0.0006012141439204427,
+            "distanceFromDefenderRBLine": 0.6044337455770636,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RT",
+          "through": 2,
+          "playsideProgress": 2.9867722458913377,
+          "forwardProgress": 0.2224389782381806,
+          "progressAt": {
+            "0.3": 0.0493690119209802,
+            "0.5": 0.15621722843608055,
+            "1": 0.9568712123079344,
+            "1.5": 2.0633001079330953,
+            "2": 2.9867722458913377
+          },
+          "loadedPlaysideDisplacement": 1.2522128534188894,
+          "ownNormalImpulseKgYdPerS": 447.8184168693883,
+          "ownTangentImpulseKgYdPerS": 268.8793863791411,
+          "loadedSeconds": 0.65,
+          "firstOwnLoadEntry": 1.35,
+          "firstNominalJoinEntry": 1.15,
+          "nominalJoinWithoutOwnLoadSeconds": 0.2,
+          "handJointWithoutOwnLoadSeconds": 0.2,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 2,
+          "teammateImpactImpulseKgYdPerS": 94.81649638144027,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 1.15,
+              "assignment": "combo",
+              "targetSlot": "DE_S",
+              "status": "helper"
+            },
+            {
+              "entry": 1.65,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DE_S",
+            "status": "owner",
+            "x": 39.67243897823818,
+            "y": 21.07989442077533,
+            "post_vx": 0.08513376971342669,
+            "post_vy": -1.3207782726437736,
+            "olMinusDefenderX": -0.6469832594636884,
+            "olMinusDefenderY": 0.0366120386556652,
+            "rbMinusDefenderX": -2.560447233420035,
+            "olDefenderDistance": 0.6480183480433114,
+            "fractionAlongDefenderToRB": 0.20012059694412426,
+            "distanceFromDefenderRBLine": 0.27947569446331616,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "Y",
+          "through": 2,
+          "playsideProgress": 0.5869272308261095,
+          "forwardProgress": 1.8038568106120678,
+          "progressAt": {
+            "0.3": 0.13894163313799268,
+            "0.5": 0.42320715886680915,
+            "1": 0.6165464853655109,
+            "1.5": 0.5681207559688737,
+            "2": 0.5869272308261095
+          },
+          "loadedPlaysideDisplacement": 0.24228116867676874,
+          "ownNormalImpulseKgYdPerS": 470.2628578071759,
+          "ownTangentImpulseKgYdPerS": 222.11851070558575,
+          "loadedSeconds": 1.55,
+          "firstOwnLoadEntry": 0.45,
+          "firstNominalJoinEntry": 0.45,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "cutoff",
+              "targetSlot": "DE_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.45,
+              "assignment": "cutoff",
+              "targetSlot": "DE_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "cutoff",
+            "targetSlot": "DE_W",
+            "status": "owner",
+            "x": 41.203856810612066,
+            "y": 29.979739435840557,
+            "post_vx": 1.0922082383032266,
+            "post_vy": 0.004214346668402467,
+            "olMinusDefenderX": -0.39825200226854207,
+            "olMinusDefenderY": -0.3586355649601707,
+            "rbMinusDefenderX": -3.843133808598772,
+            "olDefenderDistance": 0.5359329489452982,
+            "fractionAlongDefenderToRB": 0.05662206248990006,
+            "distanceFromDefenderRBLine": 0.2009447731719214,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "H",
+          "through": 2,
+          "playsideProgress": 0.7680970735934558,
+          "forwardProgress": 0.9975363940881508,
+          "progressAt": {
+            "0.3": 0.07429736287835453,
+            "0.5": 0.2003388331935625,
+            "1": 0.3344018382759586,
+            "1.5": 0.5462919301384481,
+            "2": 0.7680970735934558
+          },
+          "loadedPlaysideDisplacement": 0.509992312878925,
+          "ownNormalImpulseKgYdPerS": 902.3221526256442,
+          "ownTangentImpulseKgYdPerS": 512.5165389856487,
+          "loadedSeconds": 1.3,
+          "firstOwnLoadEntry": 0.4,
+          "firstNominalJoinEntry": 0.4,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 2,
+          "teammateImpactImpulseKgYdPerS": 94.81649638144027,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.4,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "owner"
+            },
+            {
+              "entry": 1.65,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "free"
+            },
+            {
+              "entry": 1.95,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_S",
+            "status": "owner",
+            "x": 40.39753639408815,
+            "y": 21.998569593073213,
+            "post_vx": 0.39686990801632305,
+            "post_vy": -0.776435649438173,
+            "olMinusDefenderX": -0.9308316793324067,
+            "olMinusDefenderY": 0.4313419094125095,
+            "rbMinusDefenderX": -3.5693930691387195,
+            "olDefenderDistance": 1.025915911790249,
+            "fractionAlongDefenderToRB": 0.2739135961099536,
+            "distanceFromDefenderRBLine": 0.19520254170171739,
+            "betweenDefenderAndRBProjection": true
+          }
+        }
+      ],
+      "ownHandLoadsByOpponent": {
+        "H": {
+          "DE_S": {
+            "normalImpulseKgYdPerS": 902.3221526256443,
+            "tangentImpulseKgYdPerS": 496.6344379229557,
+            "firstLoadEntry": 0.4,
+            "lastLoadedBoundary": 1.65
+          },
+          "LB_S": {
+            "normalImpulseKgYdPerS": 0.0,
+            "tangentImpulseKgYdPerS": 15.882101062693003,
+            "firstLoadEntry": 1.95,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "Y": {
+          "DE_W": {
+            "normalImpulseKgYdPerS": 470.26285780717603,
+            "tangentImpulseKgYdPerS": 222.11851070558572,
+            "firstLoadEntry": 0.45,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RG": {
+          "DT_S": {
+            "normalImpulseKgYdPerS": 681.6569414898767,
+            "tangentImpulseKgYdPerS": 351.87319033743034,
+            "firstLoadEntry": 0.5,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LG": {
+          "DT_W": {
+            "normalImpulseKgYdPerS": 739.7876831051811,
+            "tangentImpulseKgYdPerS": 410.95899922673516,
+            "firstLoadEntry": 0.55,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RT": {
+          "DE_S": {
+            "normalImpulseKgYdPerS": 447.8184168693883,
+            "tangentImpulseKgYdPerS": 268.8793863791411,
+            "firstLoadEntry": 1.35,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LT": {
+          "LB_W": {
+            "normalImpulseKgYdPerS": 206.5314680928829,
+            "tangentImpulseKgYdPerS": 226.5983288277451,
+            "firstLoadEntry": 1.4,
+            "lastLoadedBoundary": 2
+          }
+        }
+      },
+      "unitTeammateImpactCount": 2,
+      "unitTeammateImpactImpulseKgYdPerS": 94.81649638144027,
+      "unitImpacts": [
+        {
+          "entry": 1.2,
+          "a": "RT",
+          "b": "H",
+          "impulseKgYdPerS": 87.53138116579213
+        },
+        {
+          "entry": 1.3,
+          "a": "RT",
+          "b": "H",
+          "impulseKgYdPerS": 7.285115215648148
+        }
+      ],
+      "maxAbsoluteWorkResidual": 5.6061821851471905e-12
+    },
+    {
+      "arm": "before",
+      "case": "uc12-wz-weak-s3",
+      "input": {
+        "id": "uc12-wz-weak-s3",
+        "concept": "wz_weak",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "end": 2,
+      "censored": true,
+      "slots": [
+        {
+          "slot": "LT",
+          "through": 2,
+          "playsideProgress": 1.012926043291671,
+          "forwardProgress": 2.186972556292716,
+          "progressAt": {
+            "0.3": 0.0717150188999156,
+            "0.5": 0.20457086777207323,
+            "1": 0.4868494339403071,
+            "1.5": 0.3864261880290911,
+            "2": 1.012926043291671
+          },
+          "loadedPlaysideDisplacement": 0.8083551755195977,
+          "ownNormalImpulseKgYdPerS": 364.7956485488663,
+          "ownTangentImpulseKgYdPerS": 264.4351465314501,
+          "loadedSeconds": 1.5,
+          "firstOwnLoadEntry": 0.5,
+          "firstNominalJoinEntry": 0.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DE_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.5,
+              "assignment": "combo",
+              "targetSlot": "DE_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "combo",
+            "targetSlot": "DE_W",
+            "status": "owner",
+            "x": 41.63697255629272,
+            "y": 30.27959270995834,
+            "post_vx": 0.024394248328920305,
+            "post_vy": 1.9899855880346764,
+            "olMinusDefenderX": 0.8851203364060254,
+            "olMinusDefenderY": -0.07473515533662933,
+            "rbMinusDefenderX": -3.0632976603887627,
+            "olDefenderDistance": 0.8882698651663838,
+            "fractionAlongDefenderToRB": -0.2888624313020055,
+            "distanceFromDefenderRBLine": 0.002848114594388667,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "LG",
+          "through": 2,
+          "playsideProgress": 0.9091067747517378,
+          "forwardProgress": 3.5979634928756425,
+          "progressAt": {
+            "0.3": -0.007924428958656193,
+            "0.5": -0.03534810497326646,
+            "1": -0.0342078522576017,
+            "1.5": -0.03410323352090927,
+            "2": 0.9091067747517378
+          },
+          "loadedPlaysideDisplacement": 0.8334575049670292,
+          "ownNormalImpulseKgYdPerS": 154.65450240188196,
+          "ownTangentImpulseKgYdPerS": 136.67282245769232,
+          "loadedSeconds": 0.4,
+          "firstOwnLoadEntry": 1.6,
+          "firstNominalJoinEntry": 1.6,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "climb",
+              "targetSlot": "LB_M",
+              "status": "free"
+            },
+            {
+              "entry": 1.6,
+              "assignment": "climb",
+              "targetSlot": "LB_M",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_M",
+            "status": "owner",
+            "x": 43.047963492875645,
+            "y": 28.875773441418406,
+            "post_vx": 1.076824724579118,
+            "post_vy": 2.555261382218192,
+            "olMinusDefenderX": 0.08430376390759164,
+            "olMinusDefenderY": -0.5934175637177184,
+            "rbMinusDefenderX": -5.275105169470123,
+            "olDefenderDistance": 0.5993759500828001,
+            "fractionAlongDefenderToRB": -0.038731633938495554,
+            "distanceFromDefenderRBLine": 0.5617035610373132,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "C",
+          "through": 2,
+          "playsideProgress": 1.5766342246471297,
+          "forwardProgress": -0.15816397345432875,
+          "progressAt": {
+            "0.3": 0.060508350173197556,
+            "0.5": 0.14746854766308104,
+            "1": 0.5671809087023405,
+            "1.5": 1.1048771449201773,
+            "2": 1.5766342246471297
+          },
+          "loadedPlaysideDisplacement": 1.398475053459542,
+          "ownNormalImpulseKgYdPerS": 930.6549095268521,
+          "ownTangentImpulseKgYdPerS": 375.31139696109005,
+          "loadedSeconds": 1.4500000000000002,
+          "firstOwnLoadEntry": 0.55,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_W",
+            "status": "owner",
+            "x": 39.291836026545674,
+            "y": 28.243300891313798,
+            "post_vx": -0.16084164515416088,
+            "post_vy": 1.0141517752416158,
+            "olMinusDefenderX": -0.638447637388488,
+            "olMinusDefenderY": -0.11236208740239562,
+            "rbMinusDefenderX": -2.2417291044362315,
+            "olDefenderDistance": 0.6482596889922786,
+            "fractionAlongDefenderToRB": 0.11573146185715323,
+            "distanceFromDefenderRBLine": 0.5329963160456663,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RG",
+          "through": 2,
+          "playsideProgress": 0.3898239950590856,
+          "forwardProgress": 2.821983260095273,
+          "progressAt": {
+            "0.3": 0.07487353694802934,
+            "0.5": 0.18625676429941862,
+            "1": 0.4150426042251212,
+            "1.5": 0.5336081233579328,
+            "2": 0.3898239950590856
+          },
+          "loadedPlaysideDisplacement": 0.20356723075966698,
+          "ownNormalImpulseKgYdPerS": 1237.6154385245245,
+          "ownTangentImpulseKgYdPerS": 740.4778560493785,
+          "loadedSeconds": 1.5,
+          "firstOwnLoadEntry": 0.5,
+          "firstNominalJoinEntry": 0.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.5,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_S",
+            "status": "owner",
+            "x": 42.271983260095276,
+            "y": 25.756490661725753,
+            "post_vx": 1.892619842394059,
+            "post_vy": -0.35228759896892675,
+            "olMinusDefenderX": -0.17996516198763857,
+            "olMinusDefenderY": 0.5769853187684753,
+            "rbMinusDefenderX": -4.763393862584984,
+            "olDefenderDistance": 0.6044001303801944,
+            "fractionAlongDefenderToRB": 0.07641389857692957,
+            "distanceFromDefenderRBLine": 0.24453565664008417,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RT",
+          "through": 2,
+          "playsideProgress": 1.0886617376324885,
+          "forwardProgress": 3.6328088377908045,
+          "progressAt": {
+            "0.3": 0.10943091745039979,
+            "0.5": 0.2643046018540076,
+            "1": 0.7044065357403682,
+            "1.5": 0.6692858973611528,
+            "2": 1.0886617376324885
+          },
+          "loadedPlaysideDisplacement": 0.20945119685041647,
+          "ownNormalImpulseKgYdPerS": 49.33670284309855,
+          "ownTangentImpulseKgYdPerS": 28.881720862331008,
+          "loadedSeconds": 0.2,
+          "firstOwnLoadEntry": 0.7,
+          "firstNominalJoinEntry": 0.6,
+          "nominalJoinWithoutOwnLoadSeconds": 0.1,
+          "handJointWithoutOwnLoadSeconds": 0.1,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DT_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.6,
+              "assignment": "combo",
+              "targetSlot": "DT_S",
+              "status": "helper"
+            },
+            {
+              "entry": 0.9,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "free"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_S",
+            "status": "free",
+            "x": 43.08280883779081,
+            "y": 25.155328404299155,
+            "post_vx": 2.4961221938998,
+            "post_vy": 1.854776442535097,
+            "olMinusDefenderX": 0.6171940248575538,
+            "olMinusDefenderY": -2.700645463414837,
+            "rbMinusDefenderX": -4.777060253435323,
+            "olDefenderDistance": 2.7702733409147564,
+            "fractionAlongDefenderToRB": -0.34193378104716665,
+            "distanceFromDefenderRBLine": 2.027608464659181,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "Y",
+          "through": 2,
+          "playsideProgress": 1.8602966509323338,
+          "forwardProgress": 0.6663420706195353,
+          "progressAt": {
+            "0.3": 0.06070774510294186,
+            "0.5": 0.14249478058165366,
+            "1": 0.4236235522326126,
+            "1.5": 1.4964063915896375,
+            "2": 1.8602966509323338
+          },
+          "loadedPlaysideDisplacement": 1.0607620032234593,
+          "ownNormalImpulseKgYdPerS": 216.6469552220273,
+          "ownTangentImpulseKgYdPerS": 281.1826034881905,
+          "loadedSeconds": 0.9500000000000001,
+          "firstOwnLoadEntry": 0.4,
+          "firstNominalJoinEntry": 0.4,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "cutoff",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.4,
+              "assignment": "cutoff",
+              "targetSlot": "DE_S",
+              "status": "owner"
+            },
+            {
+              "entry": 1.35,
+              "assignment": "cutoff",
+              "targetSlot": "DE_S",
+              "status": "free"
+            }
+          ],
+          "final": {
+            "assignment": "cutoff",
+            "targetSlot": "DE_S",
+            "status": "free",
+            "x": 40.066342070619534,
+            "y": 24.626963317599003,
+            "post_vx": -3.10995728766827,
+            "post_vy": -0.246845589196118,
+            "olMinusDefenderX": 0.29692532346224,
+            "olMinusDefenderY": 0.9795740032875955,
+            "rbMinusDefenderX": -2.0808621876593634,
+            "olDefenderDistance": 1.0235867699565298,
+            "fractionAlongDefenderToRB": 0.11729480902421181,
+            "distanceFromDefenderRBLine": 0.564558313552959,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "H",
+          "through": 2,
+          "playsideProgress": 0.07209288756208565,
+          "forwardProgress": 0.9003975846184389,
+          "progressAt": {
+            "0.3": 0.005117191947473287,
+            "0.5": 0.024160263302064777,
+            "1": -0.0346881106584398,
+            "1.5": 0.3085450263274083,
+            "2": 0.07209288756208565
+          },
+          "loadedPlaysideDisplacement": 0.07983930210104262,
+          "ownNormalImpulseKgYdPerS": 245.55159865618862,
+          "ownTangentImpulseKgYdPerS": 157.39044488978436,
+          "loadedSeconds": 1.1500000000000001,
+          "firstOwnLoadEntry": 0.85,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.30000000000000004,
+          "handJointWithoutOwnLoadSeconds": 0.30000000000000004,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DE_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "reach",
+              "targetSlot": "DE_W",
+              "status": "helper"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DE_W",
+            "status": "helper",
+            "x": 40.30039758461844,
+            "y": 30.638759554228752,
+            "post_vx": 0.1978837163241082,
+            "post_vy": -0.10687254162106911,
+            "olMinusDefenderX": -0.4514546352682558,
+            "olMinusDefenderY": 0.28443168893378257,
+            "rbMinusDefenderX": -3.0632976603887627,
+            "olDefenderDistance": 0.5335847387012844,
+            "fractionAlongDefenderToRB": 0.15432916277393552,
+            "distanceFromDefenderRBLine": 0.24391937001849182,
+            "betweenDefenderAndRBProjection": true
+          }
+        }
+      ],
+      "ownHandLoadsByOpponent": {
+        "Y": {
+          "DE_S": {
+            "normalImpulseKgYdPerS": 216.6469552220273,
+            "tangentImpulseKgYdPerS": 281.1826034881906,
+            "firstLoadEntry": 0.4,
+            "lastLoadedBoundary": 1.35
+          }
+        },
+        "LT": {
+          "DE_W": {
+            "normalImpulseKgYdPerS": 364.79564854886627,
+            "tangentImpulseKgYdPerS": 264.4351465314501,
+            "firstLoadEntry": 0.5,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RG": {
+          "DT_S": {
+            "normalImpulseKgYdPerS": 1237.6154385245245,
+            "tangentImpulseKgYdPerS": 740.4778560493784,
+            "firstLoadEntry": 0.5,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "C": {
+          "DT_W": {
+            "normalImpulseKgYdPerS": 930.6549095268521,
+            "tangentImpulseKgYdPerS": 375.3113969610901,
+            "firstLoadEntry": 0.55,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RT": {
+          "DT_S": {
+            "normalImpulseKgYdPerS": 49.33670284309855,
+            "tangentImpulseKgYdPerS": 28.881720862331008,
+            "firstLoadEntry": 0.7,
+            "lastLoadedBoundary": 0.9
+          }
+        },
+        "H": {
+          "DE_W": {
+            "normalImpulseKgYdPerS": 245.55159865618865,
+            "tangentImpulseKgYdPerS": 157.39044488978433,
+            "firstLoadEntry": 0.85,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LG": {
+          "LB_M": {
+            "normalImpulseKgYdPerS": 154.65450240188196,
+            "tangentImpulseKgYdPerS": 136.67282245769235,
+            "firstLoadEntry": 1.6,
+            "lastLoadedBoundary": 2
+          }
+        }
+      },
+      "unitTeammateImpactCount": 0,
+      "unitTeammateImpactImpulseKgYdPerS": 0,
+      "unitImpacts": [],
+      "maxAbsoluteWorkResidual": 5.409006575973763e-12
+    },
+    {
+      "arm": "candidate",
+      "case": "uc12-wz-s3",
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "end": 2,
+      "censored": true,
+      "slots": [
+        {
+          "slot": "LT",
+          "through": 2,
+          "playsideProgress": 2.5467927593652675,
+          "forwardProgress": 3.7073295959360166,
+          "progressAt": {
+            "0.3": 0.041409502110976604,
+            "0.5": 0.12855332129876373,
+            "1": 0.5795171361614138,
+            "1.5": 1.2390675141004373,
+            "2": 2.5467927593652675
+          },
+          "loadedPlaysideDisplacement": 1.3077252452648302,
+          "ownNormalImpulseKgYdPerS": 211.9113530196333,
+          "ownTangentImpulseKgYdPerS": 287.988331041295,
+          "loadedSeconds": 0.5,
+          "firstOwnLoadEntry": 1.5,
+          "firstNominalJoinEntry": 1.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "free"
+            },
+            {
+              "entry": 1.5,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_W",
+            "status": "owner",
+            "x": 43.15732959593602,
+            "y": 26.7198739073014,
+            "post_vx": 1.2288941614663567,
+            "post_vy": -2.3953810436933143,
+            "olMinusDefenderX": 0.20257684954356137,
+            "olMinusDefenderY": 0.6376809238906844,
+            "rbMinusDefenderX": -5.330743815933687,
+            "olDefenderDistance": 0.6690847036549794,
+            "fractionAlongDefenderToRB": -0.08175795230742448,
+            "distanceFromDefenderRBLine": 0.39523697324242046,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "LG",
+          "through": 2,
+          "playsideProgress": 0.5557239998030852,
+          "forwardProgress": 1.1550479550319324,
+          "progressAt": {
+            "0.3": 0.06994869070914334,
+            "0.5": 0.16873794823532862,
+            "1": 0.3263770616109767,
+            "1.5": 0.3810142579019349,
+            "2": 0.5557239998030852
+          },
+          "loadedPlaysideDisplacement": 0.3604345700063831,
+          "ownNormalImpulseKgYdPerS": 939.2533550835062,
+          "ownTangentImpulseKgYdPerS": 525.9649207031415,
+          "loadedSeconds": 1.4500000000000002,
+          "firstOwnLoadEntry": 0.55,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "combo",
+              "targetSlot": "DT_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "combo",
+            "targetSlot": "DT_W",
+            "status": "owner",
+            "x": 40.605047955031935,
+            "y": 27.410942666863583,
+            "post_vx": 0.5622062076412304,
+            "post_vy": -0.7448701316247247,
+            "olMinusDefenderX": 0.4705631535471966,
+            "olMinusDefenderY": 0.4484320962764663,
+            "rbMinusDefenderX": -2.5104758710259674,
+            "olDefenderDistance": 0.6500161739889158,
+            "fractionAlongDefenderToRB": -0.1141150354846615,
+            "distanceFromDefenderRBLine": 0.20794920860658928,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "C",
+          "through": 2,
+          "playsideProgress": -0.022439759658606562,
+          "forwardProgress": 0.09744774407310075,
+          "progressAt": {
+            "0.3": 0.0648190520676728,
+            "0.5": 0.13076641683458234,
+            "1": 0.05362792493433588,
+            "1.5": 0.0835129090167257,
+            "2": -0.022439759658606562
+          },
+          "loadedPlaysideDisplacement": -0.17371039583564496,
+          "ownNormalImpulseKgYdPerS": 643.8346273344051,
+          "ownTangentImpulseKgYdPerS": 267.3673271858817,
+          "loadedSeconds": 1.3,
+          "firstOwnLoadEntry": 0.7,
+          "firstNominalJoinEntry": 0.6,
+          "nominalJoinWithoutOwnLoadSeconds": 0.1,
+          "handJointWithoutOwnLoadSeconds": 0.1,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.6,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "helper"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_W",
+            "status": "helper",
+            "x": 39.547447744073104,
+            "y": 26.689106426325274,
+            "post_vx": -0.03773479981383537,
+            "post_vy": -0.11564489858875632,
+            "olMinusDefenderX": -0.587037057411635,
+            "olMinusDefenderY": -0.2734041442618427,
+            "rbMinusDefenderX": -2.5104758710259674,
+            "olDefenderDistance": 0.647581912096116,
+            "fractionAlongDefenderToRB": 0.09544535585779836,
+            "distanceFromDefenderRBLine": 0.3924731626360162,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RG",
+          "through": 2,
+          "playsideProgress": 1.712437884110848,
+          "forwardProgress": 0.41810197928803206,
+          "progressAt": {
+            "0.3": 0.12421101075409169,
+            "0.5": 0.27208409422558333,
+            "1": 0.7787995063233879,
+            "1.5": 1.267824913876506,
+            "2": 1.712437884110848
+          },
+          "loadedPlaysideDisplacement": 1.4744969791662008,
+          "ownNormalImpulseKgYdPerS": 525.3119148115859,
+          "ownTangentImpulseKgYdPerS": 271.4597371200106,
+          "loadedSeconds": 1.55,
+          "firstOwnLoadEntry": 0.45,
+          "firstNominalJoinEntry": 0.45,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.45,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_S",
+            "status": "owner",
+            "x": 39.868101979288035,
+            "y": 23.65422878255582,
+            "post_vx": 0.4058500389670944,
+            "post_vy": -1.220940102267854,
+            "olMinusDefenderX": -0.44837955500810267,
+            "olMinusDefenderY": 0.4050477732120896,
+            "rbMinusDefenderX": -2.6924726038373663,
+            "olDefenderDistance": 0.6042416105609879,
+            "fractionAlongDefenderToRB": 0.09261773051102672,
+            "distanceFromDefenderRBLine": 0.5414895381586515,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RT",
+          "through": 2,
+          "playsideProgress": 2.769284156326176,
+          "forwardProgress": 3.0366116939442165,
+          "progressAt": {
+            "0.3": 0.14438391462435263,
+            "0.5": 0.36410102023909374,
+            "1": 1.0944586140667099,
+            "1.5": 1.9098623555276575,
+            "2": 2.769284156326176
+          },
+          "loadedPlaysideDisplacement": 1.0923969752387315,
+          "ownNormalImpulseKgYdPerS": 334.14023138006,
+          "ownTangentImpulseKgYdPerS": 206.65007378801852,
+          "loadedSeconds": 0.6000000000000001,
+          "firstOwnLoadEntry": 1.4,
+          "firstNominalJoinEntry": 1.4,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.75,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "free"
+            },
+            {
+              "entry": 1.4,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_S",
+            "status": "owner",
+            "x": 42.48661169394422,
+            "y": 21.29738251034049,
+            "post_vx": 1.9502688787304945,
+            "post_vy": -2.1248417905696546,
+            "olMinusDefenderX": 0.2001075394783811,
+            "olMinusDefenderY": 0.5639610790398564,
+            "rbMinusDefenderX": -4.662495224007067,
+            "olDefenderDistance": 0.5984104995969665,
+            "fractionAlongDefenderToRB": -0.0047917924804753865,
+            "distanceFromDefenderRBLine": 0.5979528250989588,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "Y",
+          "through": 2,
+          "playsideProgress": 3.6385613669762797,
+          "forwardProgress": 0.8178915259062975,
+          "progressAt": {
+            "0.3": 0.13260523836246207,
+            "0.5": 0.3865012152630598,
+            "1": 1.0725491140877033,
+            "1.5": 2.159338703416683,
+            "2": 3.6385613669762797
+          },
+          "loadedPlaysideDisplacement": 3.18041887686973,
+          "ownNormalImpulseKgYdPerS": 228.8337754892658,
+          "ownTangentImpulseKgYdPerS": 249.43055082240895,
+          "loadedSeconds": 1.4500000000000002,
+          "firstOwnLoadEntry": 0.55,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DE_S",
+            "status": "owner",
+            "x": 40.217891525906296,
+            "y": 19.12810529969039,
+            "post_vx": -1.8598822842383635,
+            "post_vy": -3.041796408545548,
+            "olMinusDefenderX": 0.8498414780364527,
+            "olMinusDefenderY": -0.838606676347883,
+            "rbMinusDefenderX": -1.7440411174110722,
+            "olDefenderDistance": 1.1939395694114612,
+            "fractionAlongDefenderToRB": -0.4197497196345203,
+            "distanceFromDefenderRBLine": 0.14981912568843767,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "H",
+          "through": 2,
+          "playsideProgress": -0.59317633869966,
+          "forwardProgress": 2.137907684261414,
+          "progressAt": {
+            "0.3": 0.05556452594920813,
+            "0.5": 0.15655725756520766,
+            "1": 0.2930752375468302,
+            "1.5": -0.07416759792654304,
+            "2": -0.59317633869966
+          },
+          "loadedPlaysideDisplacement": -0.8315922791623009,
+          "ownNormalImpulseKgYdPerS": 552.3119021916478,
+          "ownTangentImpulseKgYdPerS": 303.5012476136352,
+          "loadedSeconds": 1.35,
+          "firstOwnLoadEntry": 0.65,
+          "firstNominalJoinEntry": 0.65,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "cutoff",
+              "targetSlot": "DE_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.65,
+              "assignment": "cutoff",
+              "targetSlot": "DE_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "cutoff",
+            "targetSlot": "DE_W",
+            "status": "owner",
+            "x": 41.53790768426141,
+            "y": 31.159843005366326,
+            "post_vx": 1.8430687361319242,
+            "post_vy": 1.1190144259980792,
+            "olMinusDefenderX": -0.23833321564262633,
+            "olMinusDefenderY": 0.4781599203931748,
+            "rbMinusDefenderX": -4.152231969445268,
+            "olDefenderDistance": 0.5342655062316506,
+            "fractionAlongDefenderToRB": -0.03436226358470996,
+            "distanceFromDefenderRBLine": 0.42407763862766473,
+            "betweenDefenderAndRBProjection": false
+          }
+        }
+      ],
+      "ownHandLoadsByOpponent": {
+        "RG": {
+          "DT_S": {
+            "normalImpulseKgYdPerS": 525.3119148115858,
+            "tangentImpulseKgYdPerS": 271.4597371200106,
+            "firstLoadEntry": 0.45,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LG": {
+          "DT_W": {
+            "normalImpulseKgYdPerS": 939.2533550835062,
+            "tangentImpulseKgYdPerS": 525.9649207031414,
+            "firstLoadEntry": 0.55,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "Y": {
+          "DE_S": {
+            "normalImpulseKgYdPerS": 228.83377548926583,
+            "tangentImpulseKgYdPerS": 249.43055082240892,
+            "firstLoadEntry": 0.55,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "H": {
+          "DE_W": {
+            "normalImpulseKgYdPerS": 552.311902191648,
+            "tangentImpulseKgYdPerS": 303.5012476136352,
+            "firstLoadEntry": 0.65,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "C": {
+          "DT_W": {
+            "normalImpulseKgYdPerS": 643.8346273344052,
+            "tangentImpulseKgYdPerS": 267.36732718588166,
+            "firstLoadEntry": 0.7,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RT": {
+          "LB_S": {
+            "normalImpulseKgYdPerS": 334.1402313800601,
+            "tangentImpulseKgYdPerS": 206.65007378801852,
+            "firstLoadEntry": 1.4,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LT": {
+          "LB_W": {
+            "normalImpulseKgYdPerS": 211.9113530196333,
+            "tangentImpulseKgYdPerS": 287.98833104129494,
+            "firstLoadEntry": 1.5,
+            "lastLoadedBoundary": 2
+          }
+        }
+      },
+      "unitTeammateImpactCount": 0,
+      "unitTeammateImpactImpulseKgYdPerS": 0,
+      "unitImpacts": [],
+      "maxAbsoluteWorkResidual": 5.093703236980218e-12
+    },
+    {
+      "arm": "candidate",
+      "case": "uc12-wz-s3-mirror",
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "end": 2,
+      "censored": true,
+      "slots": [
+        {
+          "slot": "LT",
+          "through": 2,
+          "playsideProgress": 2.5467815966516056,
+          "forwardProgress": 3.7078125524369128,
+          "progressAt": {
+            "0.3": 0.041409502110976604,
+            "0.5": 0.12855332129876373,
+            "1": 0.5795209288923537,
+            "1.5": 1.2389227291781602,
+            "2": 2.5467815966516056
+          },
+          "loadedPlaysideDisplacement": 1.3078588674734455,
+          "ownNormalImpulseKgYdPerS": 211.9113530196333,
+          "ownTangentImpulseKgYdPerS": 287.988331041295,
+          "loadedSeconds": 0.5,
+          "firstOwnLoadEntry": 1.5,
+          "firstNominalJoinEntry": 1.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "free"
+            },
+            {
+              "entry": 1.5,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_W",
+            "status": "owner",
+            "x": 43.157812552436916,
+            "y": 26.719885070015064,
+            "post_vx": 1.229057439416973,
+            "post_vy": -2.3955697685738078,
+            "olMinusDefenderX": 0.2026631660067153,
+            "olMinusDefenderY": 0.6375713473650038,
+            "rbMinusDefenderX": -5.326605043113297,
+            "olDefenderDistance": 0.6690064138980222,
+            "fractionAlongDefenderToRB": -0.08182222699340357,
+            "distanceFromDefenderRBLine": 0.3951717418800886,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "LG",
+          "through": 2,
+          "playsideProgress": 0.5557239998030852,
+          "forwardProgress": 1.1550479550319324,
+          "progressAt": {
+            "0.3": 0.06994869070914334,
+            "0.5": 0.16873794823532862,
+            "1": 0.3263770616109767,
+            "1.5": 0.3810142579019349,
+            "2": 0.5557239998030852
+          },
+          "loadedPlaysideDisplacement": 0.3604345700063831,
+          "ownNormalImpulseKgYdPerS": 939.2533550835062,
+          "ownTangentImpulseKgYdPerS": 525.9649207031415,
+          "loadedSeconds": 1.4500000000000002,
+          "firstOwnLoadEntry": 0.55,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "combo",
+              "targetSlot": "DT_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "combo",
+            "targetSlot": "DT_W",
+            "status": "owner",
+            "x": 40.605047955031935,
+            "y": 27.410942666863583,
+            "post_vx": 0.5622062076412304,
+            "post_vy": -0.7448701316247247,
+            "olMinusDefenderX": 0.4705631535471966,
+            "olMinusDefenderY": 0.4484320962764663,
+            "rbMinusDefenderX": -2.505940458167835,
+            "olDefenderDistance": 0.6500161739889158,
+            "fractionAlongDefenderToRB": -0.11422515868701567,
+            "distanceFromDefenderRBLine": 0.20818097434441607,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "C",
+          "through": 2,
+          "playsideProgress": -0.022439759658606562,
+          "forwardProgress": 0.09744774407310075,
+          "progressAt": {
+            "0.3": 0.0648190520676728,
+            "0.5": 0.13076641683458234,
+            "1": 0.05362792493433588,
+            "1.5": 0.0835129090167257,
+            "2": -0.022439759658606562
+          },
+          "loadedPlaysideDisplacement": -0.17371039583564496,
+          "ownNormalImpulseKgYdPerS": 643.8346273344051,
+          "ownTangentImpulseKgYdPerS": 267.3673271858817,
+          "loadedSeconds": 1.3,
+          "firstOwnLoadEntry": 0.7,
+          "firstNominalJoinEntry": 0.6,
+          "nominalJoinWithoutOwnLoadSeconds": 0.1,
+          "handJointWithoutOwnLoadSeconds": 0.1,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.6,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "helper"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_W",
+            "status": "helper",
+            "x": 39.547447744073104,
+            "y": 26.689106426325274,
+            "post_vx": -0.03773479981383537,
+            "post_vy": -0.11564489858875632,
+            "olMinusDefenderX": -0.587037057411635,
+            "olMinusDefenderY": -0.2734041442618427,
+            "rbMinusDefenderX": -2.505940458167835,
+            "olDefenderDistance": 0.647581912096116,
+            "fractionAlongDefenderToRB": 0.09552220516938369,
+            "distanceFromDefenderRBLine": 0.3926669950875138,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RG",
+          "through": 2,
+          "playsideProgress": 1.7137579757169732,
+          "forwardProgress": 0.41831162070964467,
+          "progressAt": {
+            "0.3": 0.12421101075409169,
+            "0.5": 0.27208409422558333,
+            "1": 0.7787995657995452,
+            "1.5": 1.268685841330747,
+            "2": 1.7137579757169732
+          },
+          "loadedPlaysideDisplacement": 1.475817070772326,
+          "ownNormalImpulseKgYdPerS": 525.3119148115859,
+          "ownTangentImpulseKgYdPerS": 271.5027277950496,
+          "loadedSeconds": 1.55,
+          "firstOwnLoadEntry": 0.45,
+          "firstNominalJoinEntry": 0.45,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.45,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_S",
+            "status": "owner",
+            "x": 39.86831162070965,
+            "y": 23.652908690949694,
+            "post_vx": 0.40345874453582237,
+            "post_vy": -1.2128084675789004,
+            "olMinusDefenderX": -0.44993390033472025,
+            "olMinusDefenderY": 0.4033323421393078,
+            "rbMinusDefenderX": -2.689701177727464,
+            "olDefenderDistance": 0.6042495286601336,
+            "fractionAlongDefenderToRB": 0.09363100976476806,
+            "distanceFromDefenderRBLine": 0.540223674145023,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RT",
+          "through": 2,
+          "playsideProgress": 2.698929184814933,
+          "forwardProgress": 2.839095724780641,
+          "progressAt": {
+            "0.3": 0.14438391462435263,
+            "0.5": 0.3640305006932856,
+            "1": 1.0882241376781465,
+            "1.5": 1.9184457831130395,
+            "2": 2.698929184814933
+          },
+          "loadedPlaysideDisplacement": 1.0121132094081773,
+          "ownNormalImpulseKgYdPerS": 340.92458174508573,
+          "ownTangentImpulseKgYdPerS": 158.33146521944246,
+          "loadedSeconds": 0.6000000000000001,
+          "firstOwnLoadEntry": 1.4,
+          "firstNominalJoinEntry": 1.4,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.75,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "free"
+            },
+            {
+              "entry": 1.4,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_S",
+            "status": "owner",
+            "x": 42.289095724780644,
+            "y": 21.367737481851734,
+            "post_vx": 1.4767590574570504,
+            "post_vy": -1.65461383636471,
+            "olMinusDefenderX": -0.5578605721501475,
+            "olMinusDefenderY": 0.20538949519313832,
+            "rbMinusDefenderX": -5.218411953613888,
+            "olDefenderDistance": 0.5944688912763915,
+            "fractionAlongDefenderToRB": 0.11037326774811576,
+            "distanceFromDefenderRBLine": 0.09379094211501052,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "Y",
+          "through": 2,
+          "playsideProgress": -0.6498189951097046,
+          "forwardProgress": 1.8179847823545643,
+          "progressAt": {
+            "0.3": 0.05580159914812555,
+            "0.5": 0.17480196669615466,
+            "1": 0.4414415030013714,
+            "1.5": 0.05421373658931472,
+            "2": -0.6498189951097046
+          },
+          "loadedPlaysideDisplacement": -0.9683823272425656,
+          "ownNormalImpulseKgYdPerS": 482.420298248912,
+          "ownTangentImpulseKgYdPerS": 240.62594046269143,
+          "loadedSeconds": 1.35,
+          "firstOwnLoadEntry": 0.65,
+          "firstNominalJoinEntry": 0.65,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "cutoff",
+              "targetSlot": "DE_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.65,
+              "assignment": "cutoff",
+              "targetSlot": "DE_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "cutoff",
+            "targetSlot": "DE_W",
+            "status": "owner",
+            "x": 41.21798478235456,
+            "y": 31.21648566177637,
+            "post_vx": 1.6946624372751378,
+            "post_vy": 1.7911169172170907,
+            "olMinusDefenderX": -0.17798955346665934,
+            "olMinusDefenderY": 0.5049287536058635,
+            "rbMinusDefenderX": -3.7674299925043186,
+            "olDefenderDistance": 0.535381478350934,
+            "fractionAlongDefenderToRB": -0.04183943310170699,
+            "distanceFromDefenderRBLine": 0.3669492541675201,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "H",
+          "through": 2,
+          "playsideProgress": 3.245410660376997,
+          "forwardProgress": 1.0058693527401346,
+          "progressAt": {
+            "0.3": 0.13067866584025722,
+            "0.5": 0.3861859149784088,
+            "1": 0.9678887738616773,
+            "1.5": 1.8719239628902322,
+            "2": 3.245410660376997
+          },
+          "loadedPlaysideDisplacement": 2.7907201244511946,
+          "ownNormalImpulseKgYdPerS": 305.9942460175757,
+          "ownTangentImpulseKgYdPerS": 218.9478114096598,
+          "loadedSeconds": 1.4500000000000002,
+          "firstOwnLoadEntry": 0.55,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "reach",
+              "targetSlot": "DE_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DE_S",
+            "status": "owner",
+            "x": 40.40586935274013,
+            "y": 19.521256006289672,
+            "post_vx": -1.508341370444755,
+            "post_vy": -2.7889147733237576,
+            "olMinusDefenderX": 0.8026990955053535,
+            "olMinusDefenderY": -0.6943971732325025,
+            "rbMinusDefenderX": -1.9746259139178761,
+            "olDefenderDistance": 1.0613732953670931,
+            "fractionAlongDefenderToRB": -0.3791693353254162,
+            "distanceFromDefenderRBLine": 0.07635749448776188,
+            "betweenDefenderAndRBProjection": false
+          }
+        }
+      ],
+      "ownHandLoadsByOpponent": {
+        "RG": {
+          "DT_S": {
+            "normalImpulseKgYdPerS": 525.3119148115858,
+            "tangentImpulseKgYdPerS": 271.5027277950497,
+            "firstLoadEntry": 0.45,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LG": {
+          "DT_W": {
+            "normalImpulseKgYdPerS": 939.2533550835062,
+            "tangentImpulseKgYdPerS": 525.9649207031414,
+            "firstLoadEntry": 0.55,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "H": {
+          "DE_S": {
+            "normalImpulseKgYdPerS": 305.9942460175756,
+            "tangentImpulseKgYdPerS": 218.9478114096598,
+            "firstLoadEntry": 0.55,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "Y": {
+          "DE_W": {
+            "normalImpulseKgYdPerS": 482.42029824891193,
+            "tangentImpulseKgYdPerS": 240.62594046269143,
+            "firstLoadEntry": 0.65,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "C": {
+          "DT_W": {
+            "normalImpulseKgYdPerS": 643.8346273344052,
+            "tangentImpulseKgYdPerS": 267.36732718588166,
+            "firstLoadEntry": 0.7,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RT": {
+          "LB_S": {
+            "normalImpulseKgYdPerS": 340.9245817450858,
+            "tangentImpulseKgYdPerS": 158.33146521944246,
+            "firstLoadEntry": 1.4,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "LT": {
+          "LB_W": {
+            "normalImpulseKgYdPerS": 211.9113530196333,
+            "tangentImpulseKgYdPerS": 287.98833104129494,
+            "firstLoadEntry": 1.5,
+            "lastLoadedBoundary": 2
+          }
+        }
+      },
+      "unitTeammateImpactCount": 0,
+      "unitTeammateImpactImpulseKgYdPerS": 0,
+      "unitImpacts": [],
+      "maxAbsoluteWorkResidual": 5.5706550483591855e-12
+    },
+    {
+      "arm": "candidate",
+      "case": "uc12-wz-weak-s3",
+      "input": {
+        "id": "uc12-wz-weak-s3",
+        "concept": "wz_weak",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "end": 2,
+      "censored": true,
+      "slots": [
+        {
+          "slot": "LT",
+          "through": 2,
+          "playsideProgress": 0.5514734521226146,
+          "forwardProgress": 2.0344219663229737,
+          "progressAt": {
+            "0.3": 0.0717150188999156,
+            "0.5": 0.22800088009363506,
+            "1": 0.5676879131230272,
+            "1.5": 0.5518120022374084,
+            "2": 0.5514734521226146
+          },
+          "loadedPlaysideDisplacement": 0.3234725720289795,
+          "ownNormalImpulseKgYdPerS": 557.7330616996107,
+          "ownTangentImpulseKgYdPerS": 243.19089394933147,
+          "loadedSeconds": 1.5,
+          "firstOwnLoadEntry": 0.5,
+          "firstNominalJoinEntry": 0.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DE_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.5,
+              "assignment": "combo",
+              "targetSlot": "DE_W",
+              "status": "owner"
+            },
+            {
+              "entry": 1,
+              "assignment": "reach",
+              "targetSlot": "DE_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DE_W",
+            "status": "owner",
+            "x": 41.48442196632298,
+            "y": 29.818140118789284,
+            "post_vx": -0.2139523863569975,
+            "post_vy": -0.13941903520304097,
+            "olMinusDefenderX": -0.05404080868252237,
+            "olMinusDefenderY": -0.5982115367725775,
+            "rbMinusDefenderX": -3.6919317671710274,
+            "olDefenderDistance": 0.6006475270330095,
+            "fractionAlongDefenderToRB": -0.003681243552130499,
+            "distanceFromDefenderRBLine": 0.6004917701404834,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "LG",
+          "through": 2,
+          "playsideProgress": 1.2029176923161913,
+          "forwardProgress": 3.0770153008971235,
+          "progressAt": {
+            "0.3": -0.037223403577289815,
+            "0.5": -0.11695186417915693,
+            "1": 0.026325373218448078,
+            "1.5": 0.26556753050760307,
+            "2": 1.2029176923161913
+          },
+          "loadedPlaysideDisplacement": 0.6157901325515986,
+          "ownNormalImpulseKgYdPerS": 162.14868367209164,
+          "ownTangentImpulseKgYdPerS": 182.46539079456184,
+          "loadedSeconds": 0.25,
+          "firstOwnLoadEntry": 1.75,
+          "firstNominalJoinEntry": 1.75,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "climb",
+              "targetSlot": "LB_M",
+              "status": "free"
+            },
+            {
+              "entry": 1.75,
+              "assignment": "climb",
+              "targetSlot": "LB_M",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_M",
+            "status": "owner",
+            "x": 42.527015300897126,
+            "y": 29.16958435898286,
+            "post_vx": 0.9076756743274186,
+            "post_vy": 2.4210703047428184,
+            "olMinusDefenderX": -0.48203970481186786,
+            "olMinusDefenderY": -0.5491334719265915,
+            "rbMinusDefenderX": -5.162523997874523,
+            "olDefenderDistance": 0.7306913486591075,
+            "fractionAlongDefenderToRB": 0.06723394630601015,
+            "distanceFromDefenderRBLine": 0.6385942048491356,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "C",
+          "through": 2,
+          "playsideProgress": 1.4350517771922746,
+          "forwardProgress": -0.08523703476538458,
+          "progressAt": {
+            "0.3": 0.043716612126573295,
+            "0.5": 0.1094152586814765,
+            "1": 0.5124152471916936,
+            "1.5": 1.0199181844235028,
+            "2": 1.4350517771922746
+          },
+          "loadedPlaysideDisplacement": 1.2847000570031142,
+          "ownNormalImpulseKgYdPerS": 902.8842614359073,
+          "ownTangentImpulseKgYdPerS": 370.6557654770645,
+          "loadedSeconds": 1.4000000000000001,
+          "firstOwnLoadEntry": 0.6,
+          "firstNominalJoinEntry": 0.6,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.6,
+              "assignment": "reach",
+              "targetSlot": "DT_W",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_W",
+            "status": "owner",
+            "x": 39.36476296523462,
+            "y": 28.101718443858942,
+            "post_vx": -0.3501218183061171,
+            "post_vy": 0.7980089527675612,
+            "olMinusDefenderX": -0.6360200264866407,
+            "olMinusDefenderY": -0.12448440076117251,
+            "rbMinusDefenderX": -2.1542519838867875,
+            "olDefenderDistance": 0.6480878336498344,
+            "fractionAlongDefenderToRB": 0.09133673615853036,
+            "distanceFromDefenderRBLine": 0.5696780609353692,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RG",
+          "through": 2,
+          "playsideProgress": 0.28730795507453166,
+          "forwardProgress": 2.8518142296199684,
+          "progressAt": {
+            "0.3": 0.07223904519909041,
+            "0.5": 0.1750344185439765,
+            "1": 0.37911978953729886,
+            "1.5": 0.41652958066520895,
+            "2": 0.28730795507453166
+          },
+          "loadedPlaysideDisplacement": 0.11227353653055516,
+          "ownNormalImpulseKgYdPerS": 1146.3143506495035,
+          "ownTangentImpulseKgYdPerS": 330.1107499790705,
+          "loadedSeconds": 1.5,
+          "firstOwnLoadEntry": 0.5,
+          "firstNominalJoinEntry": 0.5,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.5,
+              "assignment": "reach",
+              "targetSlot": "DT_S",
+              "status": "owner"
+            }
+          ],
+          "final": {
+            "assignment": "reach",
+            "targetSlot": "DT_S",
+            "status": "owner",
+            "x": 42.30181422961997,
+            "y": 25.6539746217412,
+            "post_vx": 1.521723190663883,
+            "post_vy": -0.2991351813819146,
+            "olMinusDefenderX": -0.34167412476865877,
+            "olMinusDefenderY": 0.4974565601164258,
+            "rbMinusDefenderX": -4.796957346554159,
+            "olDefenderDistance": 0.6034933609736698,
+            "fractionAlongDefenderToRB": 0.080785267864212,
+            "distanceFromDefenderRBLine": 0.060020016487943875,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "RT",
+          "through": 2,
+          "playsideProgress": 0.5215601119799835,
+          "forwardProgress": 3.3688899089448867,
+          "progressAt": {
+            "0.3": 0.10943091745039979,
+            "0.5": 0.2643046018540076,
+            "1": 0.6940129273672468,
+            "1.5": 0.6503807746694186,
+            "2": 0.5215601119799835
+          },
+          "loadedPlaysideDisplacement": 0.11898459945346573,
+          "ownNormalImpulseKgYdPerS": 150.00760210948604,
+          "ownTangentImpulseKgYdPerS": 50.02747145417249,
+          "loadedSeconds": 0.15000000000000002,
+          "firstOwnLoadEntry": 0.75,
+          "firstNominalJoinEntry": 0.6,
+          "nominalJoinWithoutOwnLoadSeconds": 0.15000000000000002,
+          "handJointWithoutOwnLoadSeconds": 0.15000000000000002,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "combo",
+              "targetSlot": "DT_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.6,
+              "assignment": "combo",
+              "targetSlot": "DT_S",
+              "status": "helper"
+            },
+            {
+              "entry": 0.9,
+              "assignment": "climb",
+              "targetSlot": "LB_S",
+              "status": "free"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_S",
+            "status": "free",
+            "x": 42.81888990894489,
+            "y": 24.58822677864665,
+            "post_vx": 1.9843124745375933,
+            "post_vy": -0.15445377234365118,
+            "olMinusDefenderX": 0.31662587511249995,
+            "olMinusDefenderY": -3.2937835249443665,
+            "rbMinusDefenderX": -4.655733025997918,
+            "olDefenderDistance": 3.3089668862026547,
+            "fractionAlongDefenderToRB": -0.3684840382978013,
+            "distanceFromDefenderRBLine": 2.6119375536736156,
+            "betweenDefenderAndRBProjection": false
+          }
+        },
+        {
+          "slot": "Y",
+          "through": 2,
+          "playsideProgress": 1.6665483988280663,
+          "forwardProgress": 0.780772011336559,
+          "progressAt": {
+            "0.3": 0.09714752987922282,
+            "0.5": 0.1283492200172489,
+            "1": 0.19381655207202186,
+            "1.5": 0.9531903680084568,
+            "2": 1.6665483988280663
+          },
+          "loadedPlaysideDisplacement": 1.0628270179864892,
+          "ownNormalImpulseKgYdPerS": 152.70336647716562,
+          "ownTangentImpulseKgYdPerS": 192.76334919884516,
+          "loadedSeconds": 1.05,
+          "firstOwnLoadEntry": 0.55,
+          "firstNominalJoinEntry": 0.55,
+          "nominalJoinWithoutOwnLoadSeconds": 0.0,
+          "handJointWithoutOwnLoadSeconds": 0.0,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "cutoff",
+              "targetSlot": "DE_S",
+              "status": "free"
+            },
+            {
+              "entry": 0.55,
+              "assignment": "cutoff",
+              "targetSlot": "DE_S",
+              "status": "owner"
+            },
+            {
+              "entry": 1.6,
+              "assignment": "cutoff",
+              "targetSlot": "DE_S",
+              "status": "free"
+            }
+          ],
+          "final": {
+            "assignment": "cutoff",
+            "targetSlot": "DE_S",
+            "status": "free",
+            "x": 40.18077201133656,
+            "y": 24.433215065494736,
+            "post_vx": -2.159239866681756,
+            "post_vy": 0.42075358750312375,
+            "olMinusDefenderX": 0.9665103570106766,
+            "olMinusDefenderY": 1.5390723020443993,
+            "rbMinusDefenderX": -1.3677306464914096,
+            "olDefenderDistance": 1.817384335007087,
+            "fractionAlongDefenderToRB": 0.16787580243962505,
+            "distanceFromDefenderRBLine": 1.2137326686714063,
+            "betweenDefenderAndRBProjection": true
+          }
+        },
+        {
+          "slot": "H",
+          "through": 2,
+          "playsideProgress": 0.3108422201337184,
+          "forwardProgress": 1.8683422134581207,
+          "progressAt": {
+            "0.3": 0.08360693456358703,
+            "0.5": 0.1737166780970263,
+            "1": 0.048210385205621265,
+            "1.5": 0.23805316115991104,
+            "2": 0.3108422201337184
+          },
+          "loadedPlaysideDisplacement": -0.008985409803457856,
+          "ownNormalImpulseKgYdPerS": 20.015027004010694,
+          "ownTangentImpulseKgYdPerS": 0.27787541811240457,
+          "loadedSeconds": 0.05,
+          "firstOwnLoadEntry": 0.95,
+          "firstNominalJoinEntry": 0.75,
+          "nominalJoinWithoutOwnLoadSeconds": 0.2,
+          "handJointWithoutOwnLoadSeconds": 0.2,
+          "nominalJoinNeverLoaded": false,
+          "teammateImpactCount": 0,
+          "teammateImpactImpulseKgYdPerS": 0,
+          "nonUprightSeconds": 0.0,
+          "transitions": [
+            {
+              "entry": 0,
+              "assignment": "reach",
+              "targetSlot": "DE_W",
+              "status": "free"
+            },
+            {
+              "entry": 0.75,
+              "assignment": "reach",
+              "targetSlot": "DE_W",
+              "status": "helper"
+            },
+            {
+              "entry": 1,
+              "assignment": "climb",
+              "targetSlot": "LB_W",
+              "status": "free"
+            }
+          ],
+          "final": {
+            "assignment": "climb",
+            "targetSlot": "LB_W",
+            "status": "free",
+            "x": 41.26834221345812,
+            "y": 30.877508886800385,
+            "post_vx": -0.5900364922797526,
+            "post_vy": -0.292483010809051,
+            "olMinusDefenderX": -0.7961547772899209,
+            "olMinusDefenderY": 1.2474790202556747,
+            "rbMinusDefenderX": -4.217965982913569,
+            "olDefenderDistance": 1.4798872711729165,
+            "fractionAlongDefenderToRB": 0.25262015926761516,
+            "distanceFromDefenderRBLine": 0.9808422196992634,
+            "betweenDefenderAndRBProjection": true
+          }
+        }
+      ],
+      "ownHandLoadsByOpponent": {
+        "LT": {
+          "DE_W": {
+            "normalImpulseKgYdPerS": 557.7330616996106,
+            "tangentImpulseKgYdPerS": 243.19089394933144,
+            "firstLoadEntry": 0.5,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RG": {
+          "DT_S": {
+            "normalImpulseKgYdPerS": 1146.3143506495032,
+            "tangentImpulseKgYdPerS": 330.1107499790706,
+            "firstLoadEntry": 0.5,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "Y": {
+          "DE_S": {
+            "normalImpulseKgYdPerS": 152.70336647716564,
+            "tangentImpulseKgYdPerS": 192.7633491988452,
+            "firstLoadEntry": 0.55,
+            "lastLoadedBoundary": 1.6
+          }
+        },
+        "C": {
+          "DT_W": {
+            "normalImpulseKgYdPerS": 902.8842614359073,
+            "tangentImpulseKgYdPerS": 370.6557654770645,
+            "firstLoadEntry": 0.6,
+            "lastLoadedBoundary": 2
+          }
+        },
+        "RT": {
+          "DT_S": {
+            "normalImpulseKgYdPerS": 150.00760210948604,
+            "tangentImpulseKgYdPerS": 50.027471454172485,
+            "firstLoadEntry": 0.75,
+            "lastLoadedBoundary": 0.9
+          }
+        },
+        "H": {
+          "DE_W": {
+            "normalImpulseKgYdPerS": 20.015027004010694,
+            "tangentImpulseKgYdPerS": 0.27787541811240457,
+            "firstLoadEntry": 0.95,
+            "lastLoadedBoundary": 1
+          }
+        },
+        "LG": {
+          "LB_M": {
+            "normalImpulseKgYdPerS": 162.14868367209164,
+            "tangentImpulseKgYdPerS": 182.46539079456187,
+            "firstLoadEntry": 1.75,
+            "lastLoadedBoundary": 2
+          }
+        }
+      },
+      "unitTeammateImpactCount": 0,
+      "unitTeammateImpactImpulseKgYdPerS": 0,
+      "unitImpacts": [],
+      "maxAbsoluteWorkResidual": 5.236699962551938e-12
+    }
+  ],
+  "metricNotes": [
+    "All positions are actual post-World diagnostic bodies and never supplied to the controller.",
+    "Normal/tangent impulse is integral of each OL own absolute transmitted hand force, in kg yd/s (engine units; multiply by .9144 for N s).",
+    "Loaded playside displacement counts signed achieved displacement only on intervals with own nonzero hand force.",
+    "Nominal joins and hand joints with zero own load are reported separately; neither proves a useful block.",
+    "Defender-to-RB projection and distance describe access geometry; they do not certify future interception.",
+    "A direct climb may legitimately have little playside progress. All results stop at the declared short boundary."
+  ],
+  "newReportWorldSteps": 0,
+  "reportSeconds": 1.8971522060001007,
+  "reportSha256": "58ad79a8e2b46bd4e2e5513503e0ea3d472de094f2eada81977339f7c4690ed1"
+}

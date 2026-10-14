@@ -141,6 +141,29 @@ def summarize(rows):
     return result
 
 
+def hand_loads(case):
+    """Keep actual loaded opponents distinct from a later nominal target."""
+    loads = {}
+    for frame in case['frames']:
+        for joint in frame['jointOutputs']:
+            if joint['kind'] != 'hands':
+                continue
+            normal, tangent = abs(joint.get('normalForce') or 0), abs(joint.get('tangentForce') or 0)
+            if max(normal, tangent) <= EPS:
+                continue
+            for i, j in ((joint['a'], joint['b']), (joint['b'], joint['a'])):
+                own, other = case['actors'][i], case['actors'][j]
+                if own['team'] != 'O' or other['team'] == 'O' or own['slot'] not in BLOCKERS:
+                    continue
+                record = loads.setdefault(own['slot'], {}).setdefault(other['slot'], {
+                    'normalImpulseKgYdPerS': 0, 'tangentImpulseKgYdPerS': 0,
+                    'firstLoadEntry': frame['t'], 'lastLoadedBoundary': frame['after']})
+                record['normalImpulseKgYdPerS'] += normal * frame['dt']
+                record['tangentImpulseKgYdPerS'] += tangent * frame['dt']
+                record['lastLoadedBoundary'] = frame['after']
+    return loads
+
+
 def check_published(label, capture, rows, published):
     assert capture['sourceSha256'] == '60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1'
     witness = read(published / 'first-breakdown.json.gz')
@@ -252,6 +275,7 @@ def main():
                         and case['actors'][c['i']]['team'] == case['actors'][c['j']]['team']]
             cases.append({'arm': label, 'case': case['input']['id'], 'input': case['input'],
                           'end': case['end'], 'censored': case['censored'], 'slots': summarize(local),
+                          'ownHandLoadsByOpponent': hand_loads(case),
                           'unitTeammateImpactCount': len(teammate),
                           'unitTeammateImpactImpulseKgYdPerS': sum(c['impulse'] for c in teammate),
                           'unitImpacts': [{'entry': f['t'], 'a': case['actors'][c['i']]['slot'],
