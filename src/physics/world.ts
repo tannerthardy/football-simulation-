@@ -374,6 +374,8 @@ export class World {
   readonly handContact: 'center' | 'patch';
   /** Experimental grip-driven local integration; production retains midpoint. */
   readonly gripTiming: 'midpoint' | 'resolved' | 'fast';
+  /** Experimental patch transport belongs to the held body's island. */
+  declare readonly materialTransport?:'owned';
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -441,12 +443,13 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast' } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast'; materialTransport?:'owned' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
     this.handContact = opts.handContact ?? 'center';
     this.gripTiming = opts.gripTiming ?? 'midpoint';
+    if(opts.materialTransport)this.materialTransport=opts.materialTransport;
     if (this.handContact === 'patch' && this.handIntegration !== 'centered')
       throw new RangeError('Common hand patches require centered force integration');
     this.supportModel = opts.supportModel ?? 'legacy';
@@ -1289,6 +1292,7 @@ export class World {
     // motor uses full achieved u over h, rather than body impulse half-travel.
     if (this.handContact === 'patch') for (const jt of this.joints) {
       if (jt.kind !== 'grasp' || jt.broken) continue;
+      if(this.materialTransport==='owned'&&!ids.includes(this.indexOf(jt.b)))continue;
       const attachment = this.attachments.get(jt), z = attachment?.material;
       if (!attachment || !z) continue;
       const j = this.indexOf(jt.b), angle = (this.facing0[j] + jt.b.facing)*.5;
