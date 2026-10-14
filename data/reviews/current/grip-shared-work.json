@@ -1,0 +1,2153 @@
+{
+  "commit": "d96a0a91f52504d5684b55948f43bfa318699b0a",
+  "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "parent": "c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "hashes": {
+    "scripts/diag/physics/grip-shared-law.ts": "9780a840c68b654e4f976cab40239f3c1e7dc2cd3868aa2c6f9d3b8c84304d6e",
+    "scripts/diag/physics/grip-shared-work-scene.ts": "ec03094ff1c97b8a3e456943311ac1c0f340401fc746defa63059027c8c687dd",
+    "scripts/diag/physics/grip-shared-work-reference.ts": "a50b550e7f49727ece34f1b771f920ba48b8ea9474427b9f566a84618d3f6751",
+    "scripts/diag/physics/grip-shared-work-motion.ts": "3725829a0523286de8ca33c272d2d88925c291fd48a4facde235ab1eb23c86e7",
+    "scripts/diag/physics/grip-shared-work-evidence.ts": "48b216a3cb57f94eaa2c2441cfcfb691d55951c38025caf6a04064f3db851328",
+    "test/grip-shared-work.test.ts": "0fad290e498ed2e493bd92dd03c1e96285ef4715de963ab5d5e65d9ac05ee111",
+    "scripts/diag/physics/grip-force-shared.ts": "52fc6d7c95d0749c1637a970df8c6c73088dd6d8091234a96d347b8b55e97f39",
+    "scripts/diag/physics/grip-shared-explicit.ts": "afe8ae8e60866a9d1e6b99890d6233578208763ba38aac2c1a6750aa9ed06d54",
+    "scripts/diag/physics/grip-shared-evidence.ts": "738a159637f5d6c85fdd5fc5624c72782aab760e704681d9d5c1ec5e33432385",
+    "test/grip-shared.test.ts": "1c7c34a125bba38241a82d4ccdedae2cf99102a00c3cb1b8545e557fc5b48181",
+    "config/grip-shared-reference.json": "d7bf904880fd1532d97a2f434c0fe7faf7ec1332bdb9b61ca7cd79ffa4c63ae2",
+    "config/grip-shared-fresh-reference.json": "0668ecfbbb2df7b186d0f011434961dca899ea5d5b17888e8c1221d3e240257c",
+    "scripts/diag/physics/grip-pressure-rate.ts": "18343c87a35f2ddfde5ab104bd8d884e380b10bc5a0e22b26d6648dd525ba93c",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+  },
+  "scope": "Separate passive force-accounting mode; zero stored span extension, desired support zero and no active reel. Existing acquired bodies/materials/mobility/capacities, same sliding-share law. World and numerical timing default unchanged.",
+  "transform": "sharedWorkInput sets each hold to its actual acquired span; closing short intervals retain zero span bias. Moving durations 100 us, except unequal-share 20 us. Original World fixture files are unchanged.",
+  "reference": "Independent two-variable convex tangent box enumeration, verified inactive normal targets; fine RK4 moving checks versus candidate DOP853. No numerical work limiter imported by the force reference.",
+  "gates": {
+    "maximumPasses": 256,
+    "normalizedForceTarget": 1e-10,
+    "forceReferenceError": 1e-09,
+    "bodyWorkResidual": 1e-08,
+    "angularMomentumResidual": 1e-07
+  },
+  "frozen": [
+    {
+      "id": "shared-1",
+      "originalInputSha256": "0797758404373e0567b7ab61daeb8aa48e9cb6faa88a99fb85e4105f940597a0",
+      "mobility": 0.0031702569174998597,
+      "frames": [
+        {
+          "holder": 0,
+          "nx": 0.9950372014727455,
+          "ny": 0.09950360639337062,
+          "vn": -0.12935510761485003,
+          "vt": -0.28844317988884116,
+          "xx": 0.5999999999999941,
+          "xy": 2.7926486497385427e-15,
+          "yy": 0.5999999999999859,
+          "capacity": 500,
+          "inverseMass": 0.02,
+          "normalBias": 0
+        },
+        {
+          "holder": 2,
+          "nx": -0.9805806756816711,
+          "ny": 0.19611613518442925,
+          "vn": -0.23533862167416342,
+          "vt": 0.15694082590696845,
+          "xx": 0.5999999999999941,
+          "xy": 2.7926486497385427e-15,
+          "yy": 0.5999999999999859,
+          "capacity": 500,
+          "inverseMass": 0.02,
+          "normalBias": 0
+        }
+      ],
+      "rows": [
+        {
+          "reverse": false,
+          "mode": "channel",
+          "iterations": 8,
+          "passes": 8,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 252.73379290618823,
+              "slip": -0.11366209604320154
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 104.15256424817588,
+              "slip": 2.7755575615628914e-17
+            }
+          ],
+          "reference": [
+            500,
+            340.5885086588134
+          ],
+          "error": 247.26620709381177,
+          "targetResidual": 0.19918136149890006,
+          "graphFraction": 1,
+          "passivePower": -28.726252642665774
+        },
+        {
+          "reverse": false,
+          "mode": "channel",
+          "iterations": 256,
+          "passes": 256,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 252.73379290618823,
+              "slip": -0.11366209604320154
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 104.15256424817588,
+              "slip": 2.7755575615628914e-17
+            }
+          ],
+          "reference": [
+            500,
+            340.5885086588134
+          ],
+          "error": 247.26620709381177,
+          "targetResidual": 0.19918136149890006,
+          "graphFraction": 1,
+          "passivePower": -28.726252642665774
+        },
+        {
+          "reverse": false,
+          "mode": "coupled",
+          "iterations": 256,
+          "passes": 4,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 500,
+              "slip": -0.0894824910363411
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 340.58850865881334,
+              "slip": -2.7755575615628914e-17
+            }
+          ],
+          "reference": [
+            500,
+            340.5885086588134
+          ],
+          "error": 5.684341886080802e-14,
+          "targetResidual": 0,
+          "graphFraction": 1,
+          "passivePower": -44.74124551817055
+        },
+        {
+          "reverse": true,
+          "mode": "channel",
+          "iterations": 8,
+          "passes": 8,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -137.51148565406632,
+              "slip": -2.7755575615628914e-17
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 0,
+              "slip": -0.13837636394168062
+            }
+          ],
+          "reference": [
+            340.5885086588134,
+            500
+          ],
+          "error": 500,
+          "targetResidual": 0.2424906237757158,
+          "graphFraction": 1,
+          "passivePower": 7.105427357601002e-15
+        },
+        {
+          "reverse": true,
+          "mode": "channel",
+          "iterations": 256,
+          "passes": 256,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -137.51148565406632,
+              "slip": -2.7755575615628914e-17
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 0,
+              "slip": -0.13837636394168062
+            }
+          ],
+          "reference": [
+            340.5885086588134,
+            500
+          ],
+          "error": 500,
+          "targetResidual": 0.2424906237757158,
+          "graphFraction": 1,
+          "passivePower": 7.105427357601002e-15
+        },
+        {
+          "reverse": true,
+          "mode": "coupled",
+          "iterations": 256,
+          "passes": 6,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 340.58850865881334,
+              "slip": -2.7755575615628914e-17
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 500,
+              "slip": -0.0894824910363411
+            }
+          ],
+          "reference": [
+            340.5885086588134,
+            500
+          ],
+          "error": 5.684341886080802e-14,
+          "targetResidual": 0,
+          "graphFraction": 1,
+          "passivePower": -44.74124551817055
+        }
+      ]
+    },
+    {
+      "id": "shared--1",
+      "originalInputSha256": "e108c24a7b42f84f35a4007099bbaed2d84f6bdd7df793ed96511d91f1d757e7",
+      "mobility": 0.0031702569174998597,
+      "frames": [
+        {
+          "holder": 0,
+          "nx": 0.9950372014727455,
+          "ny": -0.09950360639337062,
+          "vn": -0.12935510761485003,
+          "vt": 0.28844317988884116,
+          "xx": 0.5999999999999941,
+          "xy": -2.7926486497385427e-15,
+          "yy": 0.5999999999999859,
+          "capacity": 500,
+          "inverseMass": 0.02,
+          "normalBias": 0
+        },
+        {
+          "holder": 2,
+          "nx": -0.9805806756816711,
+          "ny": -0.19611613518442925,
+          "vn": -0.23533862167416342,
+          "vt": -0.15694082590696845,
+          "xx": 0.5999999999999941,
+          "xy": -2.7926486497385427e-15,
+          "yy": 0.5999999999999859,
+          "capacity": 500,
+          "inverseMass": 0.02,
+          "normalBias": 0
+        }
+      ],
+      "rows": [
+        {
+          "reverse": false,
+          "mode": "channel",
+          "iterations": 8,
+          "passes": 8,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": -252.73379290618823,
+              "slip": 0.11366209604320154
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -104.15256424817588,
+              "slip": -2.7755575615628914e-17
+            }
+          ],
+          "reference": [
+            -500,
+            -340.5885086588134
+          ],
+          "error": 247.26620709381177,
+          "targetResidual": 0.19918136149890006,
+          "graphFraction": 1,
+          "passivePower": -28.726252642665774
+        },
+        {
+          "reverse": false,
+          "mode": "channel",
+          "iterations": 256,
+          "passes": 256,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": -252.73379290618823,
+              "slip": 0.11366209604320154
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -104.15256424817588,
+              "slip": -2.7755575615628914e-17
+            }
+          ],
+          "reference": [
+            -500,
+            -340.5885086588134
+          ],
+          "error": 247.26620709381177,
+          "targetResidual": 0.19918136149890006,
+          "graphFraction": 1,
+          "passivePower": -28.726252642665774
+        },
+        {
+          "reverse": false,
+          "mode": "coupled",
+          "iterations": 256,
+          "passes": 4,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": -500,
+              "slip": 0.0894824910363411
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -340.58850865881334,
+              "slip": 2.7755575615628914e-17
+            }
+          ],
+          "reference": [
+            -500,
+            -340.5885086588134
+          ],
+          "error": 5.684341886080802e-14,
+          "targetResidual": 0,
+          "graphFraction": 1,
+          "passivePower": -44.74124551817055
+        },
+        {
+          "reverse": true,
+          "mode": "channel",
+          "iterations": 8,
+          "passes": 8,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 137.51148565406632,
+              "slip": 2.7755575615628914e-17
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 0,
+              "slip": 0.13837636394168062
+            }
+          ],
+          "reference": [
+            -340.5885086588134,
+            -500
+          ],
+          "error": 500,
+          "targetResidual": 0.2424906237757158,
+          "graphFraction": 1,
+          "passivePower": 7.105427357601002e-15
+        },
+        {
+          "reverse": true,
+          "mode": "channel",
+          "iterations": 256,
+          "passes": 256,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 137.51148565406632,
+              "slip": 2.7755575615628914e-17
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 0,
+              "slip": 0.13837636394168062
+            }
+          ],
+          "reference": [
+            -340.5885086588134,
+            -500
+          ],
+          "error": 500,
+          "targetResidual": 0.2424906237757158,
+          "graphFraction": 1,
+          "passivePower": 7.105427357601002e-15
+        },
+        {
+          "reverse": true,
+          "mode": "coupled",
+          "iterations": 256,
+          "passes": 6,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -340.58850865881334,
+              "slip": 2.7755575615628914e-17
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": -500,
+              "slip": 0.0894824910363411
+            }
+          ],
+          "reference": [
+            -340.5885086588134,
+            -500
+          ],
+          "error": 5.684341886080802e-14,
+          "targetResidual": 0,
+          "graphFraction": 1,
+          "passivePower": -44.74124551817055
+        }
+      ]
+    },
+    {
+      "id": "shared-1-distinct",
+      "originalInputSha256": "e2aa21b0c1327f88c37455fe616e13a42e13e38ac23a4a0f51acde23868a94f2",
+      "mobility": 0.0031702569174998597,
+      "frames": [
+        {
+          "holder": 0,
+          "nx": 0.9922783904667375,
+          "ny": 0.12403062449548902,
+          "vn": -0.14139784576247943,
+          "vt": -0.2845424673466697,
+          "xx": 0.5999016900590112,
+          "xy": 4.096158764723602e-10,
+          "yy": 0.5997051088362345,
+          "capacity": 500,
+          "inverseMass": 0.02,
+          "normalBias": 0
+        },
+        {
+          "holder": 2,
+          "nx": -0.9833144372322882,
+          "ny": 0.18191403884952956,
+          "vn": -0.2359946972490495,
+          "vt": 0.15978215919293542,
+          "xx": 0.5999646052542508,
+          "xy": -2.458269222263328e-10,
+          "yy": 0.5998938207738995,
+          "capacity": 500,
+          "inverseMass": 0.02,
+          "normalBias": 0
+        }
+      ],
+      "rows": [
+        {
+          "reverse": false,
+          "mode": "channel",
+          "iterations": 8,
+          "passes": 8,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 249.55872406097285,
+              "slip": -0.10625299425154955
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 97.74035756800833,
+              "slip": 0
+            }
+          ],
+          "reference": [
+            500,
+            336.3711778922869
+          ],
+          "error": 250.44127593902715,
+          "targetResidual": 0.18637893963833949,
+          "graphFraction": 1,
+          "passivePower": -26.516361673074606
+        },
+        {
+          "reverse": false,
+          "mode": "channel",
+          "iterations": 256,
+          "passes": 256,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 249.55872406097285,
+              "slip": -0.10625299425154955
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 97.74035756800833,
+              "slip": 0
+            }
+          ],
+          "reference": [
+            500,
+            336.3711778922869
+          ],
+          "error": 250.44127593902715,
+          "targetResidual": 0.18637893963833949,
+          "graphFraction": 1,
+          "passivePower": -26.516361673074606
+        },
+        {
+          "reverse": false,
+          "mode": "coupled",
+          "iterations": 256,
+          "passes": 4,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 500,
+              "slip": -0.08011848249851386
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 336.3711778922869,
+              "slip": 0
+            }
+          ],
+          "reference": [
+            500,
+            336.3711778922869
+          ],
+          "error": 0,
+          "targetResidual": 0,
+          "graphFraction": 1,
+          "passivePower": -40.05924124925691
+        },
+        {
+          "reverse": true,
+          "mode": "channel",
+          "iterations": 8,
+          "passes": 8,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -140.04953077391548,
+              "slip": 0
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 0,
+              "slip": -0.1322954083168412
+            }
+          ],
+          "reference": [
+            336.3711778922869,
+            500
+          ],
+          "error": 500,
+          "targetResidual": 0.2320600759987939,
+          "graphFraction": 1,
+          "passivePower": 7.105427357601002e-15
+        },
+        {
+          "reverse": true,
+          "mode": "channel",
+          "iterations": 256,
+          "passes": 256,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -140.04953077391548,
+              "slip": 0
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 0,
+              "slip": -0.1322954083168412
+            }
+          ],
+          "reference": [
+            336.3711778922869,
+            500
+          ],
+          "error": 500,
+          "targetResidual": 0.2320600759987939,
+          "graphFraction": 1,
+          "passivePower": 7.105427357601002e-15
+        },
+        {
+          "reverse": true,
+          "mode": "coupled",
+          "iterations": 256,
+          "passes": 7,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 336.3711778922869,
+              "slip": 0
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 500,
+              "slip": -0.08011848249851386
+            }
+          ],
+          "reference": [
+            336.3711778922869,
+            500
+          ],
+          "error": 0,
+          "targetResidual": 0,
+          "graphFraction": 1,
+          "passivePower": -40.059241249256914
+        }
+      ]
+    },
+    {
+      "id": "shared-1-unequal",
+      "originalInputSha256": "4c1c6668d6544aed3a2ac632a478de6fc8585ca7ca53b143b9ddd3794467a0bb",
+      "mobility": 0.0031702569174998597,
+      "frames": [
+        {
+          "holder": 0,
+          "nx": 0.9950371940488515,
+          "ny": 0.09950368063236677,
+          "vn": -0.1293549794480127,
+          "vt": -0.28844276234526295,
+          "xx": 0.5999999999999898,
+          "xy": 2.8492635054681292e-15,
+          "yy": 0.5999999999999709,
+          "capacity": 500,
+          "inverseMass": 0.02,
+          "normalBias": 0
+        },
+        {
+          "holder": 2,
+          "nx": -0.9805806756863146,
+          "ny": 0.19611613516121124,
+          "vn": -0.23533862217675885,
+          "vt": 0.15691616642770953,
+          "xx": 0.39999999999999697,
+          "xy": 8.435107778899998e-16,
+          "yy": 0.39999999999999136,
+          "capacity": 500,
+          "inverseMass": 0.02,
+          "normalBias": 0
+        }
+      ],
+      "rows": [
+        {
+          "reverse": false,
+          "mode": "channel",
+          "iterations": 8,
+          "passes": 8,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 252.73342705469318,
+              "slip": -0.03866366848820904
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 53.14331402134883,
+              "slip": 0
+            }
+          ],
+          "reference": [
+            500,
+            407.7977472805065
+          ],
+          "error": 354.65443325915766,
+          "targetResidual": 0.06775418013668247,
+          "graphFraction": 1,
+          "passivePower": -9.771601439531615
+        },
+        {
+          "reverse": false,
+          "mode": "channel",
+          "iterations": 256,
+          "passes": 256,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 252.73342705469318,
+              "slip": -0.03866366848820904
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 53.14331402134883,
+              "slip": 0
+            }
+          ],
+          "reference": [
+            500,
+            407.7977472805065
+          ],
+          "error": 354.65443325915766,
+          "targetResidual": 0.06775418013668247,
+          "graphFraction": 1,
+          "passivePower": -9.771601439531615
+        },
+        {
+          "reverse": false,
+          "mode": "coupled",
+          "iterations": 256,
+          "passes": 12,
+          "forces": [
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 500,
+              "slip": -0.014484015922992755
+            },
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 407.79774728050654,
+              "slip": 0
+            }
+          ],
+          "reference": [
+            500,
+            407.7977472805065
+          ],
+          "error": 5.684341886080802e-14,
+          "targetResidual": 1.1368683772161603e-16,
+          "graphFraction": 1,
+          "passivePower": -7.242007961496384
+        },
+        {
+          "reverse": true,
+          "mode": "channel",
+          "iterations": 8,
+          "passes": 8,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -309.35222781459885,
+              "slip": 0
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 0,
+              "slip": -0.0633779126539604
+            }
+          ],
+          "reference": [
+            407.7977472805065,
+            500
+          ],
+          "error": 717.1499750951053,
+          "targetResidual": 0.1110634008242881,
+          "graphFraction": 1,
+          "passivePower": -1.4210854715202004e-14
+        },
+        {
+          "reverse": true,
+          "mode": "channel",
+          "iterations": 256,
+          "passes": 256,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": -309.35222781459885,
+              "slip": 0
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 0,
+              "slip": -0.0633779126539604
+            }
+          ],
+          "reference": [
+            407.7977472805065,
+            500
+          ],
+          "error": 717.1499750951053,
+          "targetResidual": 0.1110634008242881,
+          "graphFraction": 1,
+          "passivePower": -1.4210854715202004e-14
+        },
+        {
+          "reverse": true,
+          "mode": "coupled",
+          "iterations": 256,
+          "passes": 18,
+          "forces": [
+            {
+              "holder": 2,
+              "normal": 0,
+              "tangent": 407.7977472805064,
+              "slip": 0
+            },
+            {
+              "holder": 0,
+              "normal": 0,
+              "tangent": 500,
+              "slip": -0.014484015922992755
+            }
+          ],
+          "reference": [
+            407.7977472805065,
+            500
+          ],
+          "error": 5.684341886080802e-14,
+          "targetResidual": 1.1368683772161603e-16,
+          "graphFraction": 1,
+          "passivePower": -7.242007961496412
+        }
+      ]
+    }
+  ],
+  "worldAudit": [
+    {
+      "reverse": false,
+      "h": 1e-06,
+      "result": [
+        {
+          "holder": 0,
+          "normal": 0,
+          "tangent": 252.87297954639226,
+          "limit": 252.73379290618823
+        },
+        {
+          "holder": 2,
+          "normal": 0,
+          "tangent": 104.24372825991777,
+          "limit": 104.15256424817588
+        }
+      ],
+      "error": 0.1391866402040307
+    },
+    {
+      "reverse": false,
+      "h": 1e-07,
+      "result": [
+        {
+          "holder": 0,
+          "normal": 0,
+          "tangent": 252.74789225021487,
+          "limit": 252.73379290618823
+        },
+        {
+          "holder": 2,
+          "normal": 0,
+          "tangent": 104.16185676832963,
+          "limit": 104.15256424817588
+        }
+      ],
+      "error": 0.014099344026647032
+    },
+    {
+      "reverse": false,
+      "h": 1e-08,
+      "result": [
+        {
+          "holder": 0,
+          "normal": 0,
+          "tangent": 252.73520467014728,
+          "limit": 252.73379290618823
+        },
+        {
+          "holder": 2,
+          "normal": 0,
+          "tangent": 104.15349528386217,
+          "limit": 104.15256424817588
+        }
+      ],
+      "error": 0.001411763959055179
+    },
+    {
+      "reverse": true,
+      "h": 1e-06,
+      "result": [
+        {
+          "holder": 2,
+          "normal": 0,
+          "tangent": -137.45342431968777,
+          "limit": -137.51148565406632
+        },
+        {
+          "holder": 0,
+          "normal": 0,
+          "tangent": 0,
+          "limit": 0
+        }
+      ],
+      "error": 0.0580613343785501
+    },
+    {
+      "reverse": true,
+      "h": 1e-07,
+      "result": [
+        {
+          "holder": 2,
+          "normal": 0,
+          "tangent": -137.50567731166424,
+          "limit": -137.51148565406632
+        },
+        {
+          "holder": 0,
+          "normal": 0,
+          "tangent": 0,
+          "limit": 0
+        }
+      ],
+      "error": 0.005808342402076505
+    },
+    {
+      "reverse": true,
+      "h": 1e-08,
+      "result": [
+        {
+          "holder": 2,
+          "normal": 0,
+          "tangent": -137.51090479772722,
+          "limit": -137.51148565406632
+        },
+        {
+          "holder": 0,
+          "normal": 0,
+          "tangent": 0,
+          "limit": 0
+        }
+      ],
+      "error": 0.0005808563390985455
+    }
+  ],
+  "moving": [
+    {
+      "id": "shared-1",
+      "duration": 0.0001,
+      "inputSha256": "c01022a97485df8fd04054a9005937ace0600abf6379b25c41f82e9924318e39",
+      "holdTransform": [
+        1.0049873978849766,
+        1.0198037518921756
+      ],
+      "convergence": {
+        "normalized": 3.554447978966673e-06,
+        "maximumBodyPositionError": 1.7772239894833365e-15,
+        "maximumSpinError": 3.8163916471489756e-17,
+        "maximumMaterialError": 3.86306460283459e-20,
+        "footError": 3.7269449679189215e-20,
+        "maximumLegError": 1.1102230246251565e-16,
+        "maximumDoseError": 2.983724378680108e-16,
+        "bodyWorkError": 0,
+        "motorWorkError": 8.673617379884035e-19
+      },
+      "accuracy": {
+        "normalized": 1.7901808365247238e-06,
+        "maximumBodyPositionError": 8.95090418262362e-16,
+        "maximumSpinError": 3.8163916471489756e-17,
+        "maximumMaterialError": 5.082197683525802e-20,
+        "footError": 2.06092010939461e-20,
+        "maximumLegError": 2.220446049250313e-16,
+        "maximumDoseError": 1.734723475976807e-16,
+        "bodyWorkError": 4.163336342344337e-17,
+        "motorWorkError": 1.734723475976807e-18
+      },
+      "before": {
+        "normalized": 50469130.82817452,
+        "maximumBodyPositionError": 1.2533188095292566e-08,
+        "maximumSpinError": 0.01127111827627521,
+        "maximumMaterialError": 8.452387302770802e-06,
+        "footError": 1.4084020567784054e-05,
+        "maximumLegError": 0.00013331111358028114,
+        "maximumDoseError": 0.025234565414051634,
+        "bodyWorkError": 0.0028933874754435663,
+        "motorWorkError": 0.002005451590079829
+      },
+      "old": {
+        "phases": [
+          false,
+          false
+        ],
+        "doses": [
+          0.02476543458594855,
+          0.009729726040807922
+        ],
+        "workResidual": 1.7459991785706563e-15,
+        "angularResidual": -7.993605777301127e-15,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0.19918136149890006,
+        "passiveWork": -0.00263086356294659,
+        "bodyWork": -0.005452137674241767,
+        "motorWork": -0.0028212741112951766,
+        "representationError": 1.739172270446028e-16,
+        "linearResidual": 6.938893903907228e-15,
+        "evaluations": 24
+      },
+      "candidate": {
+        "phases": [
+          true,
+          false
+        ],
+        "doses": [
+          0.05000000000000001,
+          0.03337530446494288
+        ],
+        "workResidual": 3.0600522116230877e-15,
+        "angularResidual": -1.7763568394002505e-15,
+        "maximumForceError": 1.7053025658242404e-13,
+        "maximumTargetResidual": 1.1368683772161603e-16,
+        "passiveWork": -0.0035187994483102843,
+        "bodyWork": -0.008345525149685291,
+        "motorWork": -0.004826725701375007,
+        "representationError": 1.5988648506292602e-16,
+        "linearResidual": 6.938893903907228e-15,
+        "evaluations": 24
+      },
+      "reference": {
+        "phases": [
+          true,
+          false
+        ],
+        "doses": [
+          0.05000000000000018,
+          0.033375304464942794
+        ],
+        "workResidual": 1.9088897129648785e-14,
+        "angularResidual": 7.105427357601002e-15,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0,
+        "passiveWork": -0.0035187994483103276,
+        "bodyWork": -0.008345525149685333,
+        "motorWork": -0.004826725701375005,
+        "representationError": 1.048064913862038e-15,
+        "linearResidual": 5.689893001203927e-14,
+        "evaluations": 1024
+      }
+    },
+    {
+      "id": "shared--1",
+      "duration": 0.0001,
+      "inputSha256": "1606a92ab126439ab77c9892274a9abf64a98df3d87ac55017d761d10eadb323",
+      "holdTransform": [
+        1.0049873978849766,
+        1.0198037518921756
+      ],
+      "convergence": {
+        "normalized": 3.554447978966673e-06,
+        "maximumBodyPositionError": 1.7772239894833365e-15,
+        "maximumSpinError": 3.8163916471489756e-17,
+        "maximumMaterialError": 3.86306460283459e-20,
+        "footError": 3.7269449679189215e-20,
+        "maximumLegError": 1.1102230246251565e-16,
+        "maximumDoseError": 2.983724378680108e-16,
+        "bodyWorkError": 0,
+        "motorWorkError": 8.673617379884035e-19
+      },
+      "accuracy": {
+        "normalized": 1.7901808365247238e-06,
+        "maximumBodyPositionError": 8.95090418262362e-16,
+        "maximumSpinError": 3.8163916471489756e-17,
+        "maximumMaterialError": 5.082197683525802e-20,
+        "footError": 2.06092010939461e-20,
+        "maximumLegError": 2.220446049250313e-16,
+        "maximumDoseError": 1.734723475976807e-16,
+        "bodyWorkError": 4.163336342344337e-17,
+        "motorWorkError": 1.734723475976807e-18
+      },
+      "before": {
+        "normalized": 50469130.82817452,
+        "maximumBodyPositionError": 1.2533188095292566e-08,
+        "maximumSpinError": 0.01127111827627521,
+        "maximumMaterialError": 8.452387302770802e-06,
+        "footError": 1.4084020567784054e-05,
+        "maximumLegError": 0.00013331111358028114,
+        "maximumDoseError": 0.025234565414051634,
+        "bodyWorkError": 0.0028933874754435663,
+        "motorWorkError": 0.002005451590079829
+      },
+      "old": {
+        "phases": [
+          false,
+          false
+        ],
+        "doses": [
+          0.02476543458594855,
+          0.009729726040807922
+        ],
+        "workResidual": 1.7459991785706563e-15,
+        "angularResidual": 7.993605777301127e-15,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0.19918136149890006,
+        "passiveWork": -0.00263086356294659,
+        "bodyWork": -0.005452137674241767,
+        "motorWork": -0.0028212741112951766,
+        "representationError": 1.739172270446028e-16,
+        "linearResidual": 6.938893903907228e-15,
+        "evaluations": 24
+      },
+      "candidate": {
+        "phases": [
+          true,
+          false
+        ],
+        "doses": [
+          0.05000000000000001,
+          0.03337530446494288
+        ],
+        "workResidual": 3.0600522116230877e-15,
+        "angularResidual": 1.7763568394002505e-15,
+        "maximumForceError": 1.7053025658242404e-13,
+        "maximumTargetResidual": 1.1368683772161603e-16,
+        "passiveWork": -0.0035187994483102843,
+        "bodyWork": -0.008345525149685291,
+        "motorWork": -0.004826725701375007,
+        "representationError": 1.5988648506292602e-16,
+        "linearResidual": 6.938893903907228e-15,
+        "evaluations": 24
+      },
+      "reference": {
+        "phases": [
+          true,
+          false
+        ],
+        "doses": [
+          0.05000000000000018,
+          0.033375304464942794
+        ],
+        "workResidual": 1.9088897129648785e-14,
+        "angularResidual": -7.105427357601002e-15,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0,
+        "passiveWork": -0.0035187994483103276,
+        "bodyWork": -0.008345525149685333,
+        "motorWork": -0.004826725701375005,
+        "representationError": 1.048064913862038e-15,
+        "linearResidual": 5.689893001203927e-14,
+        "evaluations": 1024
+      }
+    },
+    {
+      "id": "shared-1-single",
+      "duration": 0.0001,
+      "inputSha256": "fbff95c580eee7703ad56b0eab8e4dd0cdc7fd169017b41d10cc54d21942f33d",
+      "holdTransform": [
+        1.0049874327572959
+      ],
+      "convergence": {
+        "normalized": 8.989550626504553e-07,
+        "maximumBodyPositionError": 4.494775313252277e-16,
+        "maximumSpinError": 3.469446951953614e-18,
+        "maximumMaterialError": 2.0346429601399228e-20,
+        "footError": 3.3881317890172014e-21,
+        "maximumLegError": 0,
+        "maximumDoseError": 2.0816681711721685e-17,
+        "bodyWorkError": 5.204170427930421e-18,
+        "motorWorkError": 5.204170427930421e-18
+      },
+      "accuracy": {
+        "normalized": 2.2206195148221766e-06,
+        "maximumBodyPositionError": 1.1103097574110884e-15,
+        "maximumSpinError": 2.2551405187698492e-17,
+        "maximumMaterialError": 3.7387174583777554e-20,
+        "footError": 6.784728620158149e-20,
+        "maximumLegError": 0,
+        "maximumDoseError": 3.469446951953614e-18,
+        "bodyWorkError": 5.204170427930421e-18,
+        "motorWorkError": 8.673617379884035e-18
+      },
+      "before": {
+        "normalized": 2.2206195148221766e-06,
+        "maximumBodyPositionError": 1.1103097574110884e-15,
+        "maximumSpinError": 2.0816681711721685e-17,
+        "maximumMaterialError": 3.742313878350353e-20,
+        "footError": 6.098637220230962e-20,
+        "maximumLegError": 0,
+        "maximumDoseError": 1.3877787807814457e-17,
+        "bodyWorkError": 3.469446951953614e-18,
+        "motorWorkError": 7.806255641895632e-18
+      },
+      "old": {
+        "phases": [
+          false
+        ],
+        "doses": [
+          0.024761182055135833
+        ],
+        "workResidual": -1.7911019889460533e-15,
+        "angularResidual": -1.7763568394002505e-15,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 1.1368683772161603e-16,
+        "passiveWork": 4.336808689942018e-18,
+        "bodyWork": -0.00699843259315179,
+        "motorWork": -0.006998432593151794,
+        "representationError": 5.605325231750058e-17,
+        "linearResidual": 6.938893903907228e-15,
+        "evaluations": 24
+      },
+      "candidate": {
+        "phases": [
+          false
+        ],
+        "doses": [
+          0.024761182055135843
+        ],
+        "workResidual": -1.7893672654700765e-15,
+        "angularResidual": -1.7763568394002505e-15,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 1.1368683772161603e-16,
+        "passiveWork": 3.469446951953614e-18,
+        "bodyWork": -0.006998432593151791,
+        "motorWork": -0.006998432593151795,
+        "representationError": 5.637851296924623e-17,
+        "linearResidual": 6.938893903907228e-15,
+        "evaluations": 24
+      },
+      "reference": {
+        "phases": [
+          false
+        ],
+        "doses": [
+          0.024761182055135847
+        ],
+        "workResidual": -1.794571435898007e-15,
+        "angularResidual": 1.5987211554602254e-14,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0,
+        "passiveWork": 0,
+        "bodyWork": -0.006998432593151786,
+        "motorWork": -0.006998432593151786,
+        "representationError": 1.1257788798272522e-15,
+        "linearResidual": 4.163336342344337e-15,
+        "evaluations": 1024
+      }
+    },
+    {
+      "id": "shared-1-distinct",
+      "duration": 0.0001,
+      "inputSha256": "dc2ef5e1e92d94263a0457d51e71d35e975ca4737ae911ab775e93455534d3de",
+      "holdTransform": [
+        1.00778154348903,
+        1.0169685445733267
+      ],
+      "convergence": {
+        "normalized": 7.995340312588397e-06,
+        "maximumBodyPositionError": 3.997670156294199e-15,
+        "maximumSpinError": 2.7755575615628914e-17,
+        "maximumMaterialError": 1.0408352022793122e-17,
+        "footError": 1.5152185993940876e-20,
+        "maximumLegError": 1.1102230246251565e-16,
+        "maximumDoseError": 2.983724378680108e-16,
+        "bodyWorkError": 3.469446951953614e-18,
+        "motorWorkError": 5.204170427930421e-18
+      },
+      "accuracy": {
+        "normalized": 2.6697343572326224e-06,
+        "maximumBodyPositionError": 1.3348671786163112e-15,
+        "maximumSpinError": 2.7755575615628914e-17,
+        "maximumMaterialError": 2.7755592366031264e-17,
+        "footError": 2.7939250479261703e-20,
+        "maximumLegError": 2.220446049250313e-16,
+        "maximumDoseError": 1.734723475976807e-16,
+        "bodyWorkError": 6.938893903907228e-18,
+        "motorWorkError": 0
+      },
+      "before": {
+        "normalized": 51098013.2326226,
+        "maximumBodyPositionError": 1.2690920132225994e-08,
+        "maximumSpinError": 0.011443283605710333,
+        "maximumMaterialError": 8.838786265451067e-06,
+        "footError": 1.4727924433982076e-05,
+        "maximumLegError": 0.00013331111358028114,
+        "maximumDoseError": 0.025549006616258453,
+        "bodyWorkError": 0.0027821838847683295,
+        "motorWorkError": 0.0021487656516461515
+      },
+      "old": {
+        "phases": [
+          false,
+          false
+        ],
+        "doses": [
+          0.02445099338374173,
+          0.0091071565551518
+        ],
+        "workResidual": 4.96044177955568e-15,
+        "angularResidual": 0,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0.18637893963833949,
+        "passiveWork": -0.0024219324608469647,
+        "bodyWork": -0.005343527803114498,
+        "motorWork": -0.0029215953422675337,
+        "representationError": 7.642869773387203e-16,
+        "linearResidual": 8.326672684688674e-15,
+        "evaluations": 24
+      },
+      "candidate": {
+        "phases": [
+          true,
+          false
+        ],
+        "doses": [
+          0.05000000000000001,
+          0.0329655521435223
+        ],
+        "workResidual": -2.3939183968479938e-15,
+        "angularResidual": -1.7763568394002505e-15,
+        "maximumForceError": 1.7053025658242404e-13,
+        "maximumTargetResidual": 1.1368683772161603e-16,
+        "passiveWork": -0.0030553506939691496,
+        "bodyWork": -0.008125711687882835,
+        "motorWork": -0.005070360993913685,
+        "representationError": 1.424033784429206e-16,
+        "linearResidual": 6.938893903907228e-15,
+        "evaluations": 24
+      },
+      "reference": {
+        "phases": [
+          true,
+          false
+        ],
+        "doses": [
+          0.05000000000000018,
+          0.032965552143522335
+        ],
+        "workResidual": 8.257283745649602e-15,
+        "angularResidual": 7.105427357601002e-15,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0,
+        "passiveWork": -0.0030553506939691426,
+        "bodyWork": -0.008125711687882828,
+        "motorWork": -0.005070360993913685,
+        "representationError": 1.4128489757497865e-15,
+        "linearResidual": 3.191891195797325e-14,
+        "evaluations": 1024
+      }
+    },
+    {
+      "id": "shared-1-unequal",
+      "duration": 2e-05,
+      "inputSha256": "25a414e7a8ae32ac786ca5235f1eec3848ccaf9329a83729e437533b0294428c",
+      "holdTransform": [
+        1.0049874208988878,
+        1.01980372368278
+      ],
+      "convergence": {
+        "normalized": 3.5527136788005005e-06,
+        "maximumBodyPositionError": 1.7763568394002505e-15,
+        "maximumSpinError": 1.734723475976807e-18,
+        "maximumMaterialError": 3.083246467926228e-21,
+        "footError": 7.576092996970438e-21,
+        "maximumLegError": 2.220446049250313e-16,
+        "maximumDoseError": 4.85722573273506e-17,
+        "bodyWorkError": 3.903127820947816e-18,
+        "motorWorkError": 4.336808689942018e-19
+      },
+      "accuracy": {
+        "normalized": 2.6651134375294655e-06,
+        "maximumBodyPositionError": 1.3325567187647329e-15,
+        "maximumSpinError": 1.691355389077387e-17,
+        "maximumMaterialError": 8.470329472543003e-21,
+        "footError": 6.166492935852456e-21,
+        "maximumLegError": 1.1102230246251565e-16,
+        "maximumDoseError": 3.9898639947466563e-17,
+        "bodyWorkError": 1.734723475976807e-18,
+        "motorWorkError": 1.5178830414797062e-18
+      },
+      "before": {
+        "normalized": 14113438.1690949,
+        "maximumBodyPositionError": 7.068818005169853e-10,
+        "maximumSpinError": 0.0031984267666225847,
+        "maximumMaterialError": 1.6599072994634707e-06,
+        "footError": 2.766383104230567e-06,
+        "maximumLegError": 2.6665777797529877e-05,
+        "maximumDoseError": 0.007056719084547451,
+        "bodyWorkError": 0.00029280778888452624,
+        "motorWorkError": 0.00038603959119048905
+      },
+      "old": {
+        "phases": [
+          false,
+          false
+        ],
+        "doses": [
+          0.00503404627832151,
+          0.0010243789421653078
+        ],
+        "workResidual": 3.421742056364252e-16,
+        "angularResidual": 7.105427357601002e-15,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0.06775418013668247,
+        "passiveWork": -0.0001875963932983242,
+        "bodyWork": -0.0012851479632857246,
+        "motorWork": -0.0010975515699874004,
+        "representationError": 3.7816287949959406e-16,
+        "linearResidual": 1.3877787807814457e-15,
+        "evaluations": 24
+      },
+      "candidate": {
+        "phases": [
+          true,
+          false
+        ],
+        "doses": [
+          0.009999999999999998,
+          0.008081098026712726
+        ],
+        "workResidual": -3.316357605198661e-15,
+        "angularResidual": -4.440892098500626e-15,
+        "maximumForceError": 3.410605131648481e-13,
+        "maximumTargetResidual": 2.2737367544323206e-16,
+        "passiveWork": -9.436459099235813e-05,
+        "bodyWork": -0.001577955752170249,
+        "motorWork": -0.001483591161177891,
+        "representationError": 1.5349521623494035e-16,
+        "linearResidual": 6.938893903907228e-15,
+        "evaluations": 24
+      },
+      "reference": {
+        "phases": [
+          true,
+          false
+        ],
+        "doses": [
+          0.009999999999999959,
+          0.008081098026712759
+        ],
+        "workResidual": -6.867336560523185e-15,
+        "angularResidual": 1.5987211554602254e-14,
+        "maximumForceError": 0,
+        "maximumTargetResidual": 0,
+        "passiveWork": -9.436459099236138e-05,
+        "bodyWork": -0.0015779557521702508,
+        "motorWork": -0.0014835911611778894,
+        "representationError": 1.1787724132376993e-15,
+        "linearResidual": 3.469446951953614e-14,
+        "evaluations": 1024
+      }
+    }
+  ],
+  "refusals": [
+    {
+      "id": "unequal-100us",
+      "mode": "coupled",
+      "refusal": "Short passive motion phase",
+      "returnedState": false,
+      "inputUnchanged": true
+    },
+    {
+      "id": "unequal-100us",
+      "mode": "reference",
+      "refusal": "Short passive motion phase",
+      "returnedState": false,
+      "inputUnchanged": true
+    }
+  ],
+  "rawMoving": {
+    "path": "out/grip-shared/work-moving-raw.json",
+    "sha256": "f2d26ff3057c47168af8669ca887fdbd419ab13b1ea4a5080a59f5011beb5a4a"
+  },
+  "preservedOldLawIntegration": {
+    "commit": "4592ec3bb079d06d9f06f15f24c422e16c7d7ce1",
+    "receiptSha256": "2014dfe8dda779ae0402a04a474a3646fb9cc9973fa628edb2b0e9a2ab994a0b",
+    "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+    "protocol": {
+      "serial": true,
+      "profilersOrPerStepObservers": false,
+      "preparationOutsideClock": true,
+      "repetitions": 21,
+      "warmups": 5,
+      "rotatingInterleavedOrder": true,
+      "forcePasses": 8,
+      "errorAllowance": 0.0625,
+      "maximumPartitions": 1024,
+      "maximumEvaluations": 4096,
+      "maximumRootIterations": 8,
+      "candidate": "DOP853, one common clock, local work-boundary splits, Gershgorin initial step proposal with h*rate <=4",
+      "rootResidual": 1e-10,
+      "oldReferencesAndRuntimeUnchanged": true,
+      "costBudgetMilliseconds": {
+        "typical": 2,
+        "p95": 5,
+        "observedRefusalMaximum": 10
+      }
+    },
+    "node": "v22.23.3",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "bench": [
+      {
+        "id": "shared-1",
+        "method": "uniform",
+        "milliseconds": {
+          "median": 6.923928000000046,
+          "p95": 8.387092999999936,
+          "maximum": 8.545537999999965,
+          "samples": [
+            5.517231999999922,
+            8.387092999999936,
+            8.545537999999965,
+            7.482537999999977,
+            8.232324999999946,
+            6.923928000000046,
+            5.8521950000000516,
+            6.020497999999975,
+            7.4499700000000075,
+            5.9647750000000315,
+            6.275361999999973,
+            6.418416999999977,
+            5.669490999999994,
+            6.505207999999925,
+            8.051298999999972,
+            7.669109000000049,
+            6.953892999999994,
+            7.995971000000054,
+            6.769940000000133,
+            6.499578999999812,
+            7.520095000000083
+          ]
+        },
+        "partitions": 128,
+        "evaluations": 1016,
+        "normalized": 0.015071896326951289
+      },
+      {
+        "id": "shared-1",
+        "method": "rk8",
+        "milliseconds": {
+          "median": 3.481253000000038,
+          "p95": 4.955882999999972,
+          "maximum": 6.008805000000052,
+          "samples": [
+            3.341372000000092,
+            4.955882999999972,
+            4.027509000000009,
+            4.79029300000002,
+            3.3130950000000894,
+            4.198397,
+            2.8996329999999944,
+            3.164470999999935,
+            2.794424999999933,
+            3.488318999999933,
+            6.008805000000052,
+            3.481253000000038,
+            2.676107000000002,
+            2.97148100000004,
+            3.7067970000000514,
+            3.456841000000054,
+            3.9010999999999285,
+            3.4229499999999007,
+            4.224496000000045,
+            3.257460999999921,
+            4.164555999999948
+          ]
+        },
+        "partitions": 12,
+        "evaluations": 416,
+        "normalized": 0.01962483798731883
+      },
+      {
+        "id": "shared-1-single",
+        "method": "uniform",
+        "milliseconds": {
+          "median": 2.460681999999906,
+          "p95": 5.880648000000065,
+          "maximum": 12.135980000000018,
+          "samples": [
+            1.9299530000000686,
+            1.9877610000000914,
+            2.957800000000134,
+            5.880648000000065,
+            5.691934000000174,
+            12.135980000000018,
+            2.460681999999906,
+            2.4754149999998845,
+            2.723457999999937,
+            2.1050869999999122,
+            3.30938900000001,
+            1.9555629999999837,
+            1.8346109999999953,
+            3.303781000000072,
+            1.9090819999998985,
+            2.604718999999932,
+            1.5897319999999127,
+            2.037514999999985,
+            2.3325589999999465,
+            1.8414900000000216,
+            4.484516999999869
+          ]
+        },
+        "partitions": 64,
+        "evaluations": 504,
+        "normalized": 0.018888454152790238
+      },
+      {
+        "id": "shared-1-single",
+        "method": "rk8",
+        "milliseconds": {
+          "median": 0.32774300000005496,
+          "p95": 1.9647460000001047,
+          "maximum": 2.2704949999999826,
+          "samples": [
+            2.2704949999999826,
+            0.32774300000005496,
+            1.358564000000115,
+            1.9647460000001047,
+            1.5779540000000907,
+            1.58858999999984,
+            0.3537429999998949,
+            0.3367769999999837,
+            0.3891959999998562,
+            0.30123299999991104,
+            0.23402199999986806,
+            0.2092250000000604,
+            0.2215439999999944,
+            0.20565999999985252,
+            0.3027959999999439,
+            1.7340290000001914,
+            0.22902399999998124,
+            0.2070009999999911,
+            0.22994599999992715,
+            0.2077520000000277,
+            0.4506180000000768
+          ]
+        },
+        "partitions": 4,
+        "evaluations": 72,
+        "normalized": 0.018891545946654858
+      },
+      {
+        "id": "shared-1-distinct",
+        "method": "uniform",
+        "milliseconds": {
+          "median": 7.6560779999999795,
+          "p95": 9.399772999999868,
+          "maximum": 13.512941999999839,
+          "samples": [
+            13.512941999999839,
+            7.849409999999807,
+            8.763045000000147,
+            9.229847000000063,
+            6.806150000000116,
+            7.399663000000146,
+            8.200207999999975,
+            6.649936000000025,
+            7.6560779999999795,
+            6.6807320000000345,
+            9.307444000000032,
+            6.881073000000015,
+            8.076262000000042,
+            9.399772999999868,
+            8.124133000000029,
+            6.983357999999953,
+            6.24447599999985,
+            5.700231000000031,
+            6.89649600000007,
+            8.12123900000006,
+            7.129836999999952
+          ]
+        },
+        "partitions": 128,
+        "evaluations": 1016,
+        "normalized": 0.01580142397750908
+      },
+      {
+        "id": "shared-1-distinct",
+        "method": "rk8",
+        "milliseconds": {
+          "median": 3.6955400000001646,
+          "p95": 6.812580000000025,
+          "maximum": 7.77173300000004,
+          "samples": [
+            3.484282000000121,
+            3.0722619999999097,
+            3.9293729999999414,
+            5.974518999999873,
+            6.812580000000025,
+            5.487927000000127,
+            3.6955400000001646,
+            4.002643000000035,
+            2.5423949999999422,
+            3.4138970000001336,
+            4.565278999999919,
+            4.176954999999907,
+            4.369224000000031,
+            3.2898700000000645,
+            2.676337000000103,
+            3.945205999999871,
+            3.3983630000000176,
+            7.77173300000004,
+            3.401698000000124,
+            3.215889000000061,
+            3.2586129999999685
+          ]
+        },
+        "partitions": 12,
+        "evaluations": 455,
+        "normalized": 0.019921580379616655
+      },
+      {
+        "id": "shared-1-unequal",
+        "method": "uniform",
+        "milliseconds": {
+          "median": 7.994367999999895,
+          "p95": 10.634270000000015,
+          "maximum": 11.129183999999896,
+          "samples": [
+            6.261400999999978,
+            7.60652499999992,
+            6.895273999999972,
+            7.699233999999933,
+            10.634270000000015,
+            7.994367999999895,
+            7.847606999999925,
+            10.188769999999977,
+            11.129183999999896,
+            8.974482999999964,
+            9.057407999999896,
+            8.776804999999968,
+            6.31372999999985,
+            9.636289000000033,
+            9.97147300000006,
+            8.008460000000014,
+            8.355992000000015,
+            4.907544000000144,
+            5.465854000000036,
+            6.3293129999999564,
+            6.431806999999935
+          ]
+        },
+        "partitions": 128,
+        "evaluations": 1011,
+        "normalized": 0.029916786660623935
+      },
+      {
+        "id": "shared-1-unequal",
+        "method": "rk8",
+        "milliseconds": {
+          "median": 7.07229099999995,
+          "p95": 9.735147999999981,
+          "maximum": 9.838933999999881,
+          "samples": [
+            7.11550699999998,
+            4.480790999999954,
+            5.908249999999953,
+            7.166843000000199,
+            8.376923999999917,
+            9.838933999999881,
+            6.346569000000045,
+            9.735147999999981,
+            6.562333999999964,
+            7.07229099999995,
+            5.4235499999999774,
+            7.073362999999972,
+            7.513854999999921,
+            5.588027999999895,
+            7.738954000000149,
+            4.347091000000091,
+            5.608568999999989,
+            7.664312000000109,
+            3.912847000000056,
+            4.058095000000094,
+            7.576219000000037
+          ]
+        },
+        "partitions": 22,
+        "evaluations": 661,
+        "normalized": 0.030568827130676997
+      }
+    ],
+    "refusals": [
+      {
+        "id": "long-span-scope",
+        "method": "uniform",
+        "returnedState": false,
+        "inputUnchanged": true,
+        "milliseconds": {
+          "median": 28.932841999999937,
+          "maximum": 38.73403399999961
+        },
+        "samples": [
+          37.88660899999991,
+          28.932841999999937,
+          28.499249999999847,
+          28.82474900000011,
+          30.460606000000098,
+          28.612264999999752,
+          38.73403399999961
+        ]
+      },
+      {
+        "id": "long-span-scope",
+        "method": "rk8",
+        "returnedState": false,
+        "inputUnchanged": true,
+        "milliseconds": {
+          "median": 33.91976599999998,
+          "maximum": 39.88329900000008
+        },
+        "samples": [
+          31.757952999999816,
+          31.745750000000044,
+          32.168179999999666,
+          36.17500800000016,
+          36.948423000000275,
+          33.91976599999998,
+          39.88329900000008
+        ]
+      }
+    ],
+    "maximumReferenceNormalizedError": 0.030568827130676997,
+    "status": "Numerical agreement established, cost budget failed, and integration blocked by the frozen constitutive/work-accounting defect. Keep as a law-faithful diagnostic only.",
+    "reuseNote": "Exact historical 4592ec3 evidence retained; not rerun or relabeled as corrected-law cost."
+  },
+  "exclusions": "No production promotion, World insertion, native football replay, full suite, active-work/span-energy accounting or mixed normal/tangent proof. Nine patch failures stay 43/52; keeper and support-history remain separate.",
+  "fullAccuracyReceipt": {
+    "path": "out/grip-shared/work-evidence.json",
+    "sha256": "87b698c3dc4f9167e49ebc6a352296e042202ad7a422fbe01836bd8ebd909d9d",
+    "localBenchmarkRequired": false
+  },
+  "validation": {
+    "work-focused-publish": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-shared-foot",
+      "commit": "d96a0a91f52504d5684b55948f43bfa318699b0a",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "validationSha256": "02df3b75a6d4a7bae5420d9336c4d708e2b60748cbe0397691754d72772090ee",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T18:41:58.357Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/grip-shared-work.test.ts",
+            "test/grip-shared.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.3891920849999995
+        }
+      ],
+      "finishedAt": "2026-10-14T18:42:01.751Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "receiptSha256": "d80cf32268a212b44710ada2afd21823b7d6ba87766ccdd5f6ded405c84b8fb5"
+    },
+    "work-typecheck-publish": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-shared-foot",
+      "commit": "d96a0a91f52504d5684b55948f43bfa318699b0a",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "validationSha256": "02df3b75a6d4a7bae5420d9336c4d708e2b60748cbe0397691754d72772090ee",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T18:41:58.329Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 18.010936987
+        }
+      ],
+      "finishedAt": "2026-10-14T18:42:16.346Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "receiptSha256": "021a36dc5d1c08bc53fb6f7764ce57d297ab537bb6b128e2750a219e5d6ad705"
+    },
+    "work-evidence-publish": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-shared-foot",
+      "commit": "d96a0a91f52504d5684b55948f43bfa318699b0a",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "validationSha256": "02df3b75a6d4a7bae5420d9336c4d708e2b60748cbe0397691754d72772090ee",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T18:41:58.449Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/grip-shared-work-evidence.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.098397627
+        }
+      ],
+      "finishedAt": "2026-10-14T18:41:59.552Z",
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "receiptSha256": "43ea4e77d623ca1cf78d6e4db6b8904315512203650b2ab85158b6af1c53bc3c"
+    }
+  },
+  "testingPolicy": {
+    "sourceCommit": "f9617dde9456c0ead2d66b46d4b42608adcd3585",
+    "path": "docs/TESTING_COSTS.md",
+    "focusedReason": "New shared passive accounting defect; existing independent references and production source reused. No broader games or full suite required for an uninserted diagnostic force candidate."
+  }
+}
