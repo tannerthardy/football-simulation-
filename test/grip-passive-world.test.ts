@@ -49,7 +49,7 @@ describe('experimental passive contact in the native World lifecycle',()=>{
   });
   it('retains active-drive/yaw, recovery, multiple-contact and reel scope boundaries',()=>{
     for(const mode of ['drive','yaw','recovery','multiple','reel'] as const){let calls=0;const a=passiveWorldFixture('radial-control','owned',q=>{calls++;return spanKernelInterval(q);});
-      if(mode==='drive')a.intents[0].vel={x:2,y:0};if(mode==='yaw')a.intents[0].facing+=.3;
+      if(mode==='drive')a.intents[0].vel={x:2,y:0};if(mode==='yaw')a.intents[0].facing=a.bodies[0].facing+.3;
       if(mode==='recovery')a.bodies[1].support!.xi={x:.3,y:0};if(mode==='multiple')a.w.joints.push({...a.j});if(mode==='reel')a.j.pull=1;
       const r=a.w.step(a.intents,H);expect(calls).toBe(0);expect(r.passiveGrip?.accepted).toBe(0);expect(r.passiveGrip?.fallbacks).toBe(1);
     }
