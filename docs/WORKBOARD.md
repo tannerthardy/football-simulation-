@@ -11,19 +11,30 @@ compatible evidence and supply focused receipts; the existing integration lead
 freezes the combined candidate and owns its preserved full suite. Adoption does
 not schedule tests or an integration run.
 
-Run-game queued candidate: [draft PR #13](https://github.com/tannerthardy/football-simulation-/pull/13),
-`codex/rb-live-aim-assessment`, **`5442c13586cffcf5ecf1f5e162188b79e63741b1`**,
+Run-game compared candidate: [draft PR #13](https://github.com/tannerthardy/football-simulation-/pull/13),
+`codex/rb-live-aim-assessment`, **`d5447c274e63952c023a171b177a1bd79aa72d6b`**,
 tested engine `139f55bfecf62b61f8ebee49647e6e2b6999764f`, source `973d4ab8...`.
-[Scope and review hold point](https://github.com/tannerthardy/football-simulation-/blob/5442c13586cffcf5ecf1f5e162188b79e63741b1/docs/reviews/rb-live-aim-assessment.md)
-and [exact settings/checks/costs](https://github.com/tannerthardy/football-simulation-/blob/5442c13586cffcf5ecf1f5e162188b79e63741b1/docs/reviews/rb-live-aim-preparation.json).
+[Scope/results/reproduction](https://github.com/tannerthardy/football-simulation-/blob/d5447c274e63952c023a171b177a1bd79aa72d6b/docs/reviews/rb-live-aim-assessment.md)
+and [exact comparison settings/checks/costs](https://github.com/tannerthardy/football-simulation-/blob/d5447c274e63952c023a171b177a1bd79aa72d6b/docs/reviews/rb-live-aim-comparison.json).
 Only designed RB assessment uses the already-acquired live aim (four changed
-carrier source lines). Eight independent controller checks/typecheck pass,
-13.22 recorded command-seconds; zero native candidate pairs/games/full suite.
-The user explicitly requires sole physics-owner review of existing RT/DE_S 2.40 s
-before the three-Ace comparison. No published disposition found at preparation.
-Review does not imply importing another law; both arms keep existing World,
+carrier source lines). The sole physics-owner review in PR #14 `22d3b34` satisfies
+the user's prerequisite. The one candidate comparison was collected at `7ff529b`:
+three neutral observed/plain pairs; all twelve actual abandonment decisions,
+lanes, complete state/RNG histories, consumed pictures and requested/delivered/
+achieved movement remain exact to saved/actual-pin controls. World inputs/outputs
+and loads are exact. Successful Y and both adverse H cases are retained; no
+measured protection improvement or regression. 10.40 additional recorded
+command-seconds; existing eight checks/typecheck reused (13.22 preparation s).
+No new baseline replays, games, roster panel or full suite. Both arms keep World,
 capacities, keeper runoff, collection, information, cadence, scoring and flags.
 Same three manifests and pinned 1.433-yd read/13 KB angular inputs preserved.
+PR #14 mechanical angular repair is genuine but full patch changes precontact
+ground-facing; native results cannot isolate hand law. Physics owner next:
+separate the coherent common-point contact repair from ground-facing, first alone
+on the same controls; keep torque/work/mixed hand/torso contracts. No full-patch
+combination or new release/inside-cut tuning. Prose correction confirmed: the
+successful first stopper is CB_S, assigned Z (no substantive hand load), not SS.
+Current PR #11 prose is corrected at `7e238d3`; saved events/witnesses untouched.
 Carrier/YAC overlap is flagged to the integration owner on PR #12; default
 free/catch assessment and common movement are unchanged. No diagnostic merge,
 production promotion or new baseline; any later integration extracts minimal
