@@ -1,5 +1,23 @@
 # Current work ownership
 
+## 2026-10-14 (America/Phoenix): bounded loaded TE base test
+
+Run-game owner claims `codex/te-loaded-base`, based on PR #17 `92743c0`.
+The [PR #18 retention review](https://github.com/tannerthardy/football-simulation-/pull/18#issuecomment-6173825589)
+clears local controller investigation without promoting experimental contact.
+Question: does the existing .70 first-level base request during the playside
+TE's ordinary approach change useful loaded protection, when its existing .85
+contact technique subsequently takes over? Compare saved Y-strong and H-weak
+opposing control only; preserve H-strong input without expanding the panel.
+
+This diagnostic changes only one actor's returned approach posture, before
+normal intent refinement and teammate spacing. It changes no production source,
+movement library, solver, profile, hand policy, assignment or release rule.
+RT joining and RG anchoring remain separate. Current develop remains observed
+`a1b16e6`; integration owns the unpublished shared production Ace replay.
+These local comparisons use the exact historical isolated patch/legacy profile,
+not a claim about current production. Do not merge this diagnostic ancestry.
+
 User-assigned physics support: `codex/contact-law-isolation` from PR #14
 `22d3b34df18124ffad1a5eebd30d6f41bbb67d57`. This support worker owns only the
 isolated contact/ground-facing separation candidate in `src/physics/world.ts`
