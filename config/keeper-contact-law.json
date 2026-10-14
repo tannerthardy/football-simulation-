@@ -1,0 +1,17 @@
+{
+  "protocol": "keeper-contact-law-native-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "evidenceCommit": "45a35bbe1b09554e874370604c83df47fca809f6",
+  "strength": 0.55,
+  "los": 40,
+  "stopSeconds": 25,
+  "forkSeconds": 2.4,
+  "inputs": [
+    {"id":"uc12-wz-s3","concept":"wz_strong","kind":"run","seed":3,"flip":false,"o":31,"d":32,"front":"over","formation":"ace_12"},
+    {"id":"uc12-wz-s3-mirror","concept":"wz_strong","kind":"run","seed":3,"flip":true,"o":31,"d":32,"front":"over","formation":"ace_12"},
+    {"id":"uc12-wz-weak-s3","concept":"wz_weak","kind":"run","seed":3,"flip":false,"o":31,"d":32,"front":"over","formation":"ace_12"}
+  ],
+  "geometry": "Legacy mirror is a TE-placement contrast; weak call is not a geometric mirror of the asymmetric front.",
+  "arms": ["center", "patch-from-snap", "patch-from-2.4"],
+  "boundary": "Use the existing complete patch mode as a diagnostic. It includes loaded yaw, torso ordering and grasp laws; this is not a hands-only causal intervention. No runtime edit or promotion."
+}
