@@ -1,7 +1,7 @@
 /** Force-accounting proof and short moving controls. Accuracy only: no native
  * football claim, no timing measurement of the instrumented moving witness. */
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {World} from '../../../src/physics/world.js';
@@ -100,8 +100,10 @@ const unsupported=sharedWorkInput(cases.find(c=>c.id.endsWith('-unequal')).input
 for(const mode of ['coupled','reference'] as const){let refusal='';try{sharedWorkMotion(unsupported,mode,128,'rk4');}catch(e){assert(e instanceof RangeError);refusal=e.message;}
   assert.equal(refusal,'Short passive motion phase');assert.deepEqual(unsupported,saved);refusals.push({id:'unequal-100us',mode,refusal,returnedState:false,inputUnchanged:true});}
 writeFileSync(`${root}/work-moving-raw.json`,JSON.stringify(raw)+'\n');
-const oldIntegration=JSON.parse(readFileSync(`${root}/benchmark-run1.json`,'utf8'));
-assert.equal(oldIntegration.commit,'4592ec3bb079d06d9f06f15f24c422e16c7d7ce1');assert.equal(oldIntegration.source,source);assert.deepEqual(oldIntegration.flags,flags);
+// Historical timing is optional. Fresh force correctness must not require
+// regenerating an expensive old benchmark or an ignored local artifact.
+const oldPath=`${root}/benchmark-run1.json`,oldIntegration=existsSync(oldPath)?JSON.parse(readFileSync(oldPath,'utf8')):undefined;
+if(oldIntegration){assert.equal(oldIntegration.commit,'4592ec3bb079d06d9f06f15f24c422e16c7d7ce1');assert.equal(oldIntegration.source,source);assert.deepEqual(oldIntegration.flags,flags);}
 assert.equal(sourceVersion(),source);for(const p of files)assert.equal(hash(readFileSync(p)),hashes[p]);
 const output=process.argv.find(v=>v.startsWith('--output='))?.slice(9)??`${root}/work-evidence.json`;
 writeFileSync(output,JSON.stringify({commit,source,baseline,parent,flags,hashes,
@@ -110,9 +112,10 @@ writeFileSync(output,JSON.stringify({commit,source,baseline,parent,flags,hashes,
   reference:'Independent two-variable convex tangent box enumeration, verified inactive normal targets; fine RK4 moving checks versus candidate DOP853. No numerical work limiter imported by the force reference.',
   gates:{maximumPasses:256,normalizedForceTarget:1e-10,forceReferenceError:1e-9,bodyWorkResidual:1e-8,angularMomentumResidual:1e-7},
   frozen,worldAudit,moving,refusals,rawMoving:{path:`${root}/work-moving-raw.json`,sha256:hash(readFileSync(`${root}/work-moving-raw.json`))},
-  preservedOldLawIntegration:{commit:oldIntegration.commit,receiptSha256:hash(readFileSync(`${root}/benchmark-run1.json`)),source:oldIntegration.source,
+  preservedOldLawIntegration:oldIntegration?{commit:oldIntegration.commit,receiptSha256:hash(readFileSync(oldPath)),source:oldIntegration.source,
     protocol:oldIntegration.protocol,node:oldIntegration.node,cpu:oldIntegration.cpu,
     bench:oldIntegration.bench,refusals:oldIntegration.refusals,maximumReferenceNormalizedError:Math.max(...oldIntegration.rows.map((r:any)=>r.normalized)),
-    status:'Numerical agreement established, cost budget failed, and integration blocked by the frozen constitutive/work-accounting defect. Keep as a law-faithful diagnostic only.'},
+    status:'Numerical agreement established, cost budget failed, and integration blocked by the frozen constitutive/work-accounting defect. Keep as a law-faithful diagnostic only.'}
+    :{status:'Historical benchmark not regenerated; published receipt/document records 4592ec3. This force/moving collection is independently reproducible.'},
   exclusions:'No production promotion, World insertion, native football replay, full suite, active-work/span-energy accounting or mixed normal/tangent proof. Nine patch failures stay 43/52; keeper and support-history remain separate.'},null,2)+'\n');
 console.log(JSON.stringify({output,frozenCases:frozen.length,movingCases:moving.length,maximumMovingError:Math.max(...moving.map(r=>r.accuracy.normalized)),refusals}));
