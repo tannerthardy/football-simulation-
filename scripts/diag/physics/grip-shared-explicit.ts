@@ -14,3 +14,6 @@ export function sharedExplicitStep(y:number[],h:number,derivative:(y:number[])=>
   const z=y.slice();for(let j=0;j<B.length;j++)if(B[j]!==0)for(let k=0;k<y.length;k++)z[k]+=h*B[j]*f[j][k];
   return z;
 }
+/** Read-only reuse by the separate embedded-error diagnostic. The original
+ * table and uniform step operations above are unchanged. */
+export const DOP853_TABLE={A,B} as const;
