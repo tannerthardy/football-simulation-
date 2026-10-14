@@ -17,6 +17,32 @@ playsim.ts and spacing.ts remain untouched. Blocking-only correction is within
 this owner boundary if demonstrated; any shared spacing/movement proposal first
 requires coordination. No broad roster/game campaign or full-suite rerun.
 
+Completed [opening mechanism report](reviews/wide-zone-opening/README.md):
+all900 five-OL rows align requests with their actual executed intervals;
+60 accepted and40 Awareness body/RNG/observer prefix hashes reproduce cached
+evidence. First strong RT loss at.05 is spacing toward the attached TE.
+Current requested-ray prediction restricts movement well before the own
+World path threatens that peer; however the acquired RG nominal-track picture
+predicts an incoming conflict even under the restricted request.
+
+The four-tick RT-only diagnostic bypass is rejected: earlier nominal joining
+has zero RT hand load through2s, RT ends upfield of the defender while RB is
+backfield, and H loses lateral progress. Weak opening remains exactly identical.
+LG's near-vertical half-man approach is geometrically defensible, not a proven
+controller error. **Specific handoff to Awareness/spacing:** resolve nominal
+called tempo versus attainable COM motion in the opening forecast, then check
+achievable own movement against every acquired peer. Do not insert truth or
+bypass teammate traffic. [Portable all22 first-action witness](reviews/wide-zone-opening/first-breakdown.json.gz)
+and [forecast evidence](reviews/wide-zone-opening/forecast-probe.json) are ready.
+
+Native collectors10.27s/350 World steps, preview720 scratch steps/.053s CPU,
+zero full games/new endings. Two strong arms explicitly censored2s; weak1s.
+634 free intervals account for motion to2.56e-15; typecheck passes3cf5699,
+PR #36's37 unchanged information/traffic checks reused. Failures and hashes
+remain in the receipt. No production edits or baseline promotion; predeclared
+fresh Under case unrun because no production correction qualified. Late Y
+review remains closed and retained; gather-release stays with its owner.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

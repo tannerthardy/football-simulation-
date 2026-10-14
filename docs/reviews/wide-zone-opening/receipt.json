@@ -1,0 +1,294 @@
+{
+  "protocol": "wide-zone-opening-report-v1",
+  "testedAccepted": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "testedAwareness": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+  "runtimeSource": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "collectorRuns": [
+    {
+      "arm": "awareness",
+      "revision": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "collectorSha256": "1da0a3ec0859dd0df611eecd508ba633d804bebb733c68b1ae2eb3abd241e90d",
+      "seconds": 1.9591363170000002,
+      "newWorldSteps": 60,
+      "prefixExecutions": 3
+    },
+    {
+      "arm": "awareness",
+      "revision": "bd894cf06fdc595b29b725658314b8a6fc386ce0",
+      "collectorSha256": "e1946aad0bd73efbfc396198782196f15327fa83a221d745e0aac9b16ba1e346",
+      "seconds": 2.444597736,
+      "newWorldSteps": 80,
+      "prefixExecutions": 2
+    },
+    {
+      "arm": "diagnostic-bypass",
+      "revision": "c5509d85539e1000aad0e27185a060397817bcd9",
+      "collectorSha256": "f26869a5a56a531ca8d662843c1db5b597ce060f9a1dacb6e8ad2b03b34f0e92",
+      "seconds": 1.823496215,
+      "newWorldSteps": 60,
+      "prefixExecutions": 3
+    },
+    {
+      "arm": "diagnostic-bypass",
+      "revision": "bd894cf06fdc595b29b725658314b8a6fc386ce0",
+      "collectorSha256": "e1946aad0bd73efbfc396198782196f15327fa83a221d745e0aac9b16ba1e346",
+      "seconds": 2.3539593990000003,
+      "newWorldSteps": 80,
+      "prefixExecutions": 2
+    },
+    {
+      "arm": "accepted",
+      "revision": "d70576a7e62489c5554399afd886bd167287ded9",
+      "collectorSha256": "1da0a3ec0859dd0df611eecd508ba633d804bebb733c68b1ae2eb3abd241e90d",
+      "seconds": 1.4234416019999998,
+      "newWorldSteps": 60,
+      "prefixExecutions": 3
+    },
+    {
+      "arm": "accepted",
+      "revision": "1dd70943e846c53cdace8102ebed97083701060c",
+      "collectorSha256": "e1946aad0bd73efbfc396198782196f15327fa83a221d745e0aac9b16ba1e346",
+      "seconds": 0.264805209,
+      "newWorldSteps": 10,
+      "prefixExecutions": 1
+    }
+  ],
+  "checks": {
+    "accepted_60_prefix_hashes": true,
+    "awareness_40_legacy_and_owned_prefix_hashes": true,
+    "tail_prefix_identity": true,
+    "matched_first_action_all22_bodies_information_RNG": true,
+    "weak_full_opening_exact": true,
+    "all300_OL_rows_per_arm_exact_tick_alignment": true,
+    "unloaded_linear_feet_accounting": {
+      "intervals": 634,
+      "maxResidual": 2.5598782462800002e-15
+    }
+  },
+  "inputs": [
+    {
+      "path": "out/wide-zone-opening/awareness-launch.json",
+      "bytes": 2352,
+      "sha256": "5a33782bba7d3a02cfce8326cde589776567f5864b2748b85d1849f42a3061dc"
+    },
+    {
+      "path": "out/wide-zone-opening/awareness-tail-launch.json",
+      "bytes": 2438,
+      "sha256": "d3299c1beb51b636c62c136889cbcb626bdda95ff40a517c60ed223aafb48541"
+    },
+    {
+      "path": "out/wide-zone-opening/awareness-tail.json.gz",
+      "bytes": 1973774,
+      "sha256": "4320e1ed32f2c8e7c40d23dadc1928eec12ed37555fc13050593431324d4a9e4"
+    },
+    {
+      "path": "out/wide-zone-opening/awareness.json.gz",
+      "bytes": 1881835,
+      "sha256": "8cf2e77b92f1aff604faaf4e0475ca2229a76730fa25c010321cae14a8cf2551"
+    },
+    {
+      "path": "out/wide-zone-opening/bypass-launch.json",
+      "bytes": 2366,
+      "sha256": "35e8273a1d8df99818591d292e3668478ced6bd8d09b6d7fc5e36c71d62e8846"
+    },
+    {
+      "path": "out/wide-zone-opening/bypass-tail-launch.json",
+      "bytes": 2492,
+      "sha256": "8e107f944c5337ed69cc790f63d30f6e1f8b333e5c644e08628891e44daf21d8"
+    },
+    {
+      "path": "out/wide-zone-opening/bypass-tail.json.gz",
+      "bytes": 1965726,
+      "sha256": "07495a44d4ad7dc25101edefc7ae9e30b520468a1f11725efcd7f4e1b3d2a98f"
+    },
+    {
+      "path": "out/wide-zone-opening/bypass.json.gz",
+      "bytes": 1886046,
+      "sha256": "3192afdd9d8d4d38e5e82d85195f907a83ee59cdb06f3ca5707ae078320648c6"
+    },
+    {
+      "path": "/workspace/football-wide-zone-opening-baseline/out/wide-zone-opening/accepted-launch.json",
+      "bytes": 2324,
+      "sha256": "185809701c8b3bc9cabacfd128d93d411b2c15777c0e92dc367ef2bd809b0905"
+    },
+    {
+      "path": "/workspace/football-wide-zone-opening-baseline/out/wide-zone-opening/accepted-tail.json.gz",
+      "bytes": 900755,
+      "sha256": "116a046e212e52e684abfa85f579f83932469633123626246265486a813ad9d1"
+    },
+    {
+      "path": "/workspace/football-wide-zone-opening-baseline/out/wide-zone-opening/accepted-weak-opening-launch.json",
+      "bytes": 2378,
+      "sha256": "17d5f59ecabcc578c05eec4eecaef1e10ea1a65f939630798ee504204f0e85d4"
+    },
+    {
+      "path": "/workspace/football-wide-zone-opening-baseline/out/wide-zone-opening/accepted-weak-opening.json.gz",
+      "bytes": 132800,
+      "sha256": "0e29a58665e8388f1d01f691e43552cee4de6b1d8b3e5a2edf89408a36188238"
+    }
+  ],
+  "rawNativePackets": "Local ignored; portable first-breakdown witness, manifests and from-snap collector published.",
+  "nativeWorldSteps": 350,
+  "nativeCollectorSeconds": 10.269436478000001,
+  "previewWorldSteps": 720,
+  "previewCPUSeconds": 0.052861319999999865,
+  "newFullGames": 0,
+  "newCompleteEndings": 0,
+  "freshTransfer": "Predeclared Under-front case unrun: no supported production correction passed the mechanism contract.",
+  "productionFilesChanged": false,
+  "sourceDefaultsCapacitiesContactUnchanged": true,
+  "knownFailures": [
+    "Superseded preview used wrong H attached-TE identity; corrected output retained and all scratch cost counted.",
+    "Accepted launcher initially refused historical profile/runtime mismatch before simulation; rerun in explicit candidate mode with exact accepted e5 source/flags.",
+    "Diagnostic bypass rejected; H lateral progress worsens, new nominal helper contact carries zero load through2s.",
+    "Portable-row whole-object comparison initially differed in extra derived annotation fields only; all common numeric inputs, World samples and clearance values then verified exact."
+  ],
+  "reportSeconds": 2.5002598599967314,
+  "reportSha256": "00fabe9e2835bc5bc83947ce972587308f5569fc3ea3d81df7ad27f3ae72d141",
+  "portableProbe": {
+    "revision": "3cf5699b320775de04b914e5468fd001e0ae2552",
+    "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldSteps": 240,
+    "seconds": 0.019599338999999986,
+    "underlyingPathsAndClearancesExactlyReproduced": true,
+    "derivedAnnotations": "Original forecast-probe adds pure horizon and first-touch annotations to these same samples."
+  },
+  "typecheck": {
+    "revision": "3cf5699",
+    "passed": true,
+    "wallTimeSeconds": null,
+    "earlierFailure": "9fc1403: diagnostic .ts imports and readonly mutation; corrected to .js imports and mutable sim.intents API; production source unchanged."
+  },
+  "files": {
+    "docs/reviews/wide-zone-opening/opening-comparison.svg": {
+      "bytes": 190596,
+      "sha256": "3a457a517d2bb0a6a101ea8daf904d634b23fb2be65dd19564bfb3178d3f6f87"
+    },
+    "docs/reviews/wide-zone-opening/comparison.json": {
+      "bytes": 3806,
+      "sha256": "5a19632d1a495270c269ad5a1bc789ec0939f1c9529099e83e916b1fb1a74d82"
+    },
+    "docs/reviews/wide-zone-opening/first-breakdown.json.gz": {
+      "bytes": 82027,
+      "sha256": "746eaedb617109773496e1cd8455d1b66372820f6f4797046db81855be0e8b6a"
+    },
+    "docs/reviews/wide-zone-opening/forecast-probe.json": {
+      "bytes": 125678,
+      "sha256": "ce236f03915eddfcf61d165ebb2c29fb38b2088869e64933960cef0b7ec2a74d"
+    },
+    "docs/reviews/wide-zone-opening/README.md": {
+      "bytes": 13324,
+      "sha256": "88d517bfe0a16e54b47e0de21bea4dacd4efb74861c79314d6502498f8abf998"
+    },
+    "docs/reviews/wide-zone-opening/opening-comparison.png": {
+      "bytes": 437359,
+      "sha256": "a0b6a3270ee1c3f3ea191c430f70ada3f4cd331f1a812261454f2a046498eeaf"
+    },
+    "docs/reviews/wide-zone-opening/timeline.csv": {
+      "bytes": 379016,
+      "sha256": "7237214f86b911a50a0cada08afc636ef5b1132854d4baa2c27b5133d9fbbc6d"
+    }
+  }
+}

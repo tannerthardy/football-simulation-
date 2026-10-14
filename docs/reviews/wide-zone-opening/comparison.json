@@ -1,0 +1,135 @@
+{
+  "checks": {
+    "accepted_60_prefix_hashes": true,
+    "awareness_40_legacy_and_owned_prefix_hashes": true,
+    "tail_prefix_identity": true,
+    "matched_first_action_all22_bodies_information_RNG": true,
+    "weak_full_opening_exact": true,
+    "all300_OL_rows_per_arm_exact_tick_alignment": true,
+    "unloaded_linear_feet_accounting": {
+      "intervals": 634,
+      "maxResidual": 2.5598782462800002e-15
+    }
+  },
+  "cases": [
+    {
+      "case": "uc12-wz-s3",
+      "comparison": [
+        {
+          "arm": "awareness",
+          "end": 2,
+          "censored": true,
+          "RTforwardFromSnap": 0.06474190455867301,
+          "RTplaysideProgress": 2.3214068987767753,
+          "meanOLAbsLateral": 1.6376860398223463,
+          "firstRTNormalLoad": 1.55,
+          "firstRTTangentLoad": 1.5,
+          "teammateImpacts": [
+            {
+              "t": 1.2,
+              "i": 2,
+              "j": 7,
+              "impulse": 103.81898123845258
+            },
+            {
+              "t": 1.3,
+              "i": 2,
+              "j": 7,
+              "impulse": 8.199425357395652
+            },
+            {
+              "t": 1.8,
+              "i": 2,
+              "j": 7,
+              "impulse": 13.794311603484969
+            }
+          ]
+        },
+        {
+          "arm": "bypass",
+          "end": 2,
+          "censored": true,
+          "RTforwardFromSnap": 1.6312773692174645,
+          "RTplaysideProgress": 2.261164355888667,
+          "meanOLAbsLateral": 1.7131315528021822,
+          "firstRTNormalLoad": null,
+          "firstRTTangentLoad": null,
+          "teammateImpacts": []
+        }
+      ],
+      "firstBeatMatchedBodiesInformationRNG": true,
+      "weakFullOpeningIdentical": false
+    },
+    {
+      "case": "uc12-wz-s3-mirror",
+      "comparison": [
+        {
+          "arm": "awareness",
+          "end": 2,
+          "censored": true,
+          "RTforwardFromSnap": 0.2224389782381806,
+          "RTplaysideProgress": 2.9867722458913377,
+          "meanOLAbsLateral": 1.8075225460178572,
+          "firstRTNormalLoad": 1.35,
+          "firstRTTangentLoad": 1.35,
+          "teammateImpacts": [
+            {
+              "t": 1.2,
+              "i": 2,
+              "j": 10,
+              "impulse": 87.53138116579213
+            },
+            {
+              "t": 1.3,
+              "i": 2,
+              "j": 10,
+              "impulse": 7.285115215648148
+            }
+          ]
+        },
+        {
+          "arm": "bypass",
+          "end": 2,
+          "censored": true,
+          "RTforwardFromSnap": 1.7555423322736843,
+          "RTplaysideProgress": 2.0092841841544455,
+          "meanOLAbsLateral": 1.660516119156629,
+          "firstRTNormalLoad": null,
+          "firstRTTangentLoad": null,
+          "teammateImpacts": []
+        }
+      ],
+      "firstBeatMatchedBodiesInformationRNG": true,
+      "weakFullOpeningIdentical": false
+    },
+    {
+      "case": "uc12-wz-weak-s3",
+      "comparison": [
+        {
+          "arm": "awareness",
+          "end": 1,
+          "censored": true,
+          "RTforwardFromSnap": 0.9531613697089014,
+          "RTplaysideProgress": 0.7044065357403682,
+          "meanOLAbsLateral": 0.4415374669731477,
+          "firstRTNormalLoad": 0.75,
+          "firstRTTangentLoad": 0.7,
+          "teammateImpacts": []
+        },
+        {
+          "arm": "bypass",
+          "end": 1,
+          "censored": true,
+          "RTforwardFromSnap": 0.9531613697089014,
+          "RTplaysideProgress": 0.7044065357403682,
+          "meanOLAbsLateral": 0.4415374669731477,
+          "firstRTNormalLoad": 0.75,
+          "firstRTTangentLoad": 0.7,
+          "teammateImpacts": []
+        }
+      ],
+      "firstBeatMatchedBodiesInformationRNG": true,
+      "weakFullOpeningIdentical": true
+    }
+  ]
+}
