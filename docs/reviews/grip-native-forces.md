@@ -1,6 +1,6 @@
 # Native reel and ground: bounded World candidate
 
-2026-10-14 (America/Phoenix). Comparison baseline remains `4ded6b6`; parent is preserved PR #46 `baf7ed5`. No default or baseline promotion.
+2026-10-14 (America/Phoenix). Comparison baseline remains `4ded6b6`; parent is preserved PR #46 `baf7ed5`. [Draft PR #48](https://github.com/tannerthardy/football-simulation-/pull/48). No default or baseline promotion.
 
 **Result:** four saved native intervals now run through a separate active-force callback with their actual requests. All four pass the unchanged independent interval gates. The selected angled tick continues through 80 accepted intervals. This is useful experimental scope progress, not established football benefit or a complete tackle solver. One runtime tail fails its budget; one stricter long-reference convergence check remains inconclusive.
 
@@ -35,7 +35,7 @@ Yards below start at the **actually acquired grip**, not proximity or an NFL YAC
 
 Front stays tackled at the same .85s panel duration. Fresh stays tackled; solver versus ownership alone changes advance by **−.617774yd** and panel duration **2.90→2.75s**. Angles stay live at the 4.4s censor. These changes do not establish better or worse physics. Full native fallback counts/reasons, including bounded solver refusals, are retained in the receipt. Most difficult-angle fallback occurs after the holder leaves his feet; fresh also spends substantial time requesting recovery outside this scope.
 
-The ownership defect is independently demonstrated: patch transport advances held material during an unrelated group's interval despite unchanged held body/foot and zero grip work. The accepted **center** mode does not execute that loop; its control is identical with/without the option. Keep ownership opt-in and reviewable alone. The earlier extra1.09yd is a trajectory change, not proof of improvement or regression.
+The ownership defect is independently demonstrated: patch transport advances held material during an unrelated group's interval despite unchanged held body/foot and zero grip work. The accepted **center** mode does not execute that loop; its control is identical with/without the option. Keep ownership opt-in and reviewable alone in [draft PR #49](https://github.com/tannerthardy/football-simulation-/pull/49) (76 focused checks/typecheck/build pass). The earlier extra1.09yd is a trajectory change, not proof of improvement or regression.
 
 ## Cost, checks and review decision
 

@@ -1036,7 +1036,10 @@
   },
   "ownership": {
     "scope": "Patch-only material transport; accepted center defaults do not run this loop. Default-off owned option remains independent from active callback. Standalone ownership-only review supplied separately.",
-    "trajectoryVerdict": "The extra1.09yd from ownership alone does not establish better or worse football physics."
+    "trajectoryVerdict": "The extra1.09yd from ownership alone does not establish better or worse football physics.",
+    "pullRequest": "https://github.com/tannerthardy/football-simulation-/pull/49",
+    "testedCommit": "dc9fc4b0ace3241ac4d7d5927aee788125e70817",
+    "focusedPassed": 76
   },
   "validation": {
     "full": {
@@ -1114,5 +1117,6 @@
     "keeper": "Independent angular-law diagnosis",
     "supportHistory": "Separate history-fork diagnosis; no recovery law edits"
   },
-  "recommendation": "Useful native-force experimental candidate, default-off. Not ready for broad integration/promotion: retain fresh runtime tail, unresolved strict long-reference convergence, and native fallback scope. Next bounded physical question is the first cap/slip transition at the saved acquisition, with this below-slip phase as opposing control; do not expand recovery or capacities."
+  "recommendation": "Useful native-force experimental candidate, default-off. Not ready for broad integration/promotion: retain fresh runtime tail, unresolved strict long-reference convergence, and native fallback scope. Next bounded physical question is the first cap/slip transition at the saved acquisition, with this below-slip phase as opposing control; do not expand recovery or capacities.",
+  "pullRequest": "https://github.com/tannerthardy/football-simulation-/pull/48"
 }
