@@ -10,13 +10,13 @@ import {leverage} from '../../src/sim/behaviors/common.js';
 import type {PlaySim} from '../../src/sim/playsim.js';
 import type {arrivalChoice} from './catch-arrival-model.js';
 
-export function hipAnchor(a:Agent,sim:PlaySim,choice:ReturnType<typeof arrivalChoice>){
+export function hipAnchor(a:Agent,sim:PlaySim,choice:ReturnType<typeof arrivalChoice>,shade=true){
  if(choice.reason!=='moving-window-arrival'||!choice.window)return choice;
  const {receiver,seen}=choice.window,target=sim.agents[receiver],
   contact=a.profile.radius+target.profile.radius+a.profile.reach*.65,
   distance=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y),
   force=a.runFit?.kind==='force'||(a.runFit?.kind==='edge'&&a.runFit.edge==='box'),
-  offset=(force?Math.abs(leverage(a,seen.pos.y))*a.runFit!.side:leverage(a,seen.pos.y))*clamp((distance-contact)/6,0,1),
+  offset=shade?(force?Math.abs(leverage(a,seen.pos.y))*a.runFit!.side:leverage(a,seen.pos.y))*clamp((distance-contact)/6,0,1):0,
   goal={x:seen.pos.x,y:clamp(seen.pos.y+offset,.3,FIELD_WIDTH-.3)},
   capacity=a.body.support?availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy)):1,
   vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,contact,
