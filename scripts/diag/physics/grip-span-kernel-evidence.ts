@@ -35,7 +35,10 @@ if(mode==='accuracy'){
   const saved=JSON.parse(readFileSync(prior.raw.path,'utf8')),rows=[],raw=[];
   for(const c of inputs)for(const duration of [.0002,.05/12]){
     const input={...c.input,duration},r=saved.find((r:any)=>r.id===c.id&&r.input.duration===duration);assert(r);assert.deepEqual(r.input,input);
-    const preserved=spanEventInterval(input),candidate=spanKernelInterval(input);assert.deepEqual(preserved,r.candidate);assert.deepEqual(candidate,preserved);
+    const preserved=spanEventInterval(input),candidate=spanKernelInterval(input);
+    // JSON receipts normalize signed zero; the live old/new comparison below
+    // is still strict and preserves it. No numeric tolerance is relaxed.
+    assert.deepEqual(JSON.parse(JSON.stringify(preserved)),r.candidate);assert.deepEqual(candidate,preserved);
     const error=mixedSpanDifference(candidate,r.fine),convergence=mixedSpanDifference(r.coarse,r.fine);assert(error<=1/16&&convergence<=1/16);
     rows.push({id:c.id,duration,inputSha256:sha(JSON.stringify(input)),exactPR43:true,error,convergence,
       evaluations:candidate.evaluations,partitions:candidate.partitions,events:candidate.events,energyResidual:candidate.energyResidual,
