@@ -191,7 +191,7 @@ Every full play here ends naturally; none is a timeout. Earlier short shadow
 prefixes remain censored and are not added to completed outcomes.
 
 Recorded commands for this continuation total about **90.1 s** before the final
-compiler check; costs include observers and concurrent checks, not comparable
+compiler check (also passed at `1fa64df`); costs include observers and concurrent checks, not comparable
 performance benchmarks. No new games/full suite. Fresh declaration/collection
 took 7.71 s; production parity 2.97 s, retained draws 4.10 s, focused checks
 2.82 s and build 12.95 s. The first ten-case team prototype exceeded its
