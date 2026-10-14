@@ -945,7 +945,7 @@ export class RunBlocker implements Behavior {
     // Owned teammate positions are already carried from their acquired
     // sample toward query time. Put this delayed DL sample on that clock too,
     // retaining the original age and the same bounded CV assumption.
-    const age = Math.min(TEAMMATE_INFORMATION_LIMITS.prediction, Math.max(0, seen.age));
+    const age = Math.min(TEAMMATE_INFORMATION_LIMITS.prediction, Math.max(0, seen.age ?? 0));
     const down = { ...seen, pos: { x: seen.pos.x + seen.vel.x * age, y: seen.pos.y + seen.vel.y * age } };
     if (!stretchHelpOpportunity({ pos: a.pos, radius: a.profile.radius,
       homeY: install.homeY, playSide: playSideSign(sim, sim.offCall.run!), side: install.side,

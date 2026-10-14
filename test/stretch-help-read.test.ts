@@ -13,8 +13,10 @@ import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { stretchHelpOpportunity, type StretchHelpPicture } from '../src/sim/stretch-help.js';
 
-const packet = JSON.parse(readFileSync(new URL('../data/reviews/current/stretch-help-state.json', import.meta.url), 'utf8'));
-type Fixture = typeof packet.cases[number];
+type Fixture = Record<string, any>;
+const packet = JSON.parse(readFileSync(new URL('../data/reviews/current/stretch-help-state.json', import.meta.url), 'utf8')) as {
+  actor: { idx: number }; cases: Fixture[];
+};
 
 function picture(f: Fixture): StretchHelpPicture {
   return { pos: { ...f.ownBody.pos }, radius: f.ownBody.profile.radius, homeY: f.homeY,
