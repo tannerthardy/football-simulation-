@@ -1,5 +1,30 @@
 # Current work ownership
 
+User-assigned temporary physics support is complete in [draft PR #17](https://github.com/tannerthardy/football-simulation-/pull/17),
+`codex/contact-law-isolation` at **`61596bd78e21cf4aa7443a8d44eca4370db21470`**,
+from PR #14 `22d3b34`; runtime **`c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904`**.
+[Separation and adverse protection](https://github.com/tannerthardy/football-simulation-/blob/61596bd78e21cf4aa7443a8d44eca4370db21470/docs/reviews/contact-law-isolation.md),
+[exact settings/checks/costs](https://github.com/tannerthardy/football-simulation-/blob/61596bd78e21cf4aa7443a8d44eca4370db21470/data/reviews/current/contact-law-isolation.json),
+and [three portable first-contact pairs](https://github.com/tannerthardy/football-simulation-/blob/61596bd78e21cf4aa7443a8d44eca4370db21470/docs/reviews/contact-law-isolation-first-contact.json).
+Select `handContact: 'patch', groundMovement: 'legacy'`; default center and
+existing full patch stay unchanged. World ground selection, PlaySim plumbing
+and one existing climb-preview selector are the only production source edits;
+no movement library/controller policy/capacity/RB/grip timing/release change.
+Original 13,076-byte RT/DE_S witness untouched: center replay 8.44e-15; free
+angular ≤3.64e-12. 89 focused tests/typecheck pass; no-contact controls exact.
+Same three Ace controls first differ only at .40–.45 s, identical acquired
+cues/bodies/requests, one hand pair and zero torso/strikes. Reduced pairs replay
+both native states exactly; real hand plus ground torque accounts for yaw.
+Y success regresses (DE_S2.35 before LOS, RT zero load/Y still loaded); rightward
+H is stopped by DT_S2.40 despite loaded RT/end; weak H clears LOS2.40 before
+LB_M2.85. All natural tackles. No new games, roster panel, full suite or gain
+tuning. 83.38 recorded launcher s includes interrupted/corrected offline
+reduction; original native histories reused for neutral pre-wrap load extension.
+Primary physics retains shared-solver review and promotion; integration owner
+gets this separate candidate and overlap notice. Baseline remains **4ded6b6**;
+PR #13 RB consistency and PR #9 components/handover/active hands stay separate.
+This is a review handoff, not a diagnostic merge or promotion recommendation.
+
 Shared comparisons start from `codex/run-game-integration`; read
 [the baseline](BASELINE.md) and run `npm run baseline:info` before collecting.
 Report the exact commit, source hash, flag profile and inputs. Historical rows
