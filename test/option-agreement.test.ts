@@ -64,6 +64,23 @@ describe('observed Stick receiver commitment',()=>{
     key.body.pos={x:90,y:50};
     expect(a.runner.update(a.a,a.sim)).toEqual(b.runner.update(b.a,b.sim));
   });
+  it('lets real press contact delay the decision region without forcing a route conversion on the elapsed clock',()=>{
+    const f=fixture(),d=f.sim.slot('NB')!;
+    f.a.body.pos={...f.plan.origin};f.a.body.vel={x:0,y:0};f.sim.t=2;
+    d.body.pos={x:f.a.pos.x+.9,y:f.a.pos.y+.25};d.body.vel={x:0,y:0};d.body.facing=Math.PI;
+    f.sim.defAlign.spots.NB!.press=true;f.sim.defAlign.spots.NB!.manTarget='H';
+    let transmitted=0;
+    for(let i=0;i<8;i++){
+      const command=f.runner.update(f.a,f.sim);
+      f.sim.world.step(f.sim.agents.map(a=>a===f.a?command:{vel:{x:0,y:0},facing:a.facing}),f.sim.dt);
+      transmitted+=f.sim.world.joints.reduce((sum,j)=>sum+Math.abs(Reflect.get(j,'normalForce')??0)
+        +Math.abs(Reflect.get(j,'tangentForce')??0),0)*f.sim.dt;
+      f.sim.t+=f.sim.dt;
+    }
+    expect(transmitted).toBeGreaterThan(1);
+    expect(f.a.pos.x).toBeLessThan(f.stem.x-2);
+    expect(choice(f)).toBeNull();expect(Reflect.get(f.runner,'converted')).toBe(false);
+  });
 });
 
 describe('shared install with distinct available pictures',()=>{
