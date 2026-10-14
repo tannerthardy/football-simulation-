@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Current controller integration preparation
+
+This bounded ownership row records the current reviewed candidate. Original
+ownership rows below retain their approved-reference content and evidence;
+completed stages and older WIP claims are historical snapshots. The latest
+[navigation/completed-stage workboard](https://github.com/tannerthardy/football-simulation-/blob/545d9b89afd01118df6646a439f9516448e9dfd5/docs/WORKBOARD.md)
+remains on #8. Keeping this claim separate allows its later navigation structure
+to apply cleanly without importing unrelated branch content here.
+
+| Current item | Owner | Branch | Files / boundary | Claimed | Status |
+| --- | --- | --- | --- | --- | --- |
+| Reviewed run/catch controller integration | Codex integration owner, explicitly assigned by user and #8 controller review | `codex/controller-integration-review`, tested `46a833d` from approved `c98c2fa` | Minimal catch helper/defense hook/contract, reviewed #10 run correction and historical worksheet pin. No unrelated research ancestry, hands/grip/helper rules or capacity/law changes. | 2026-10-13 (America/Phoenix) | Preparation/verification complete, final review pending: catch-only `b3a55ac` passed 59 checks/15 frozen states; #10 run-only and compatible retained-draw receipts reused. Combined 49 affected checks/three saved histories, then one 1,684-TS/140-file, 145-Python, typecheck/build pass in 180.530 s; no skips/worker errors/input drift. [Exact receipt](../data/reviews/current/controller-combined-verification.json), [scope/adverse evidence](reviews/controller-integration.md#published-combined-verification). 44 flags/components=1. No merge or baseline designation. |
+
+## Approved-reference ownership history
+
 Shared comparisons start from `codex/run-game-integration`; read
 [the baseline](BASELINE.md) and run `npm run baseline:info` before collecting.
 Report the exact commit, source hash, flag profile and inputs. Historical rows
@@ -13,30 +28,8 @@ Read this before choosing work. Add or update one row before editing a shared
 subsystem. Claim a bounded task, not every future idea. Date uses the owner's
 local calendar; evidence receipts retain their explicit measurement timestamps.
 
-[The branch map](https://github.com/tannerthardy/football-simulation-/blob/545d9b89afd01118df6646a439f9516448e9dfd5/docs/BRANCHES.md) distinguishes current PR/reference dependencies
-from incorporated milestones and archived/rejected research. Older completed
-rows below preserve ownership/evidence at their stage, not proof that the
-branch is still an active development target.
-
-## Current integration and repository work
-
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
-| Reviewed run/catch controller integration | Codex integration owner, explicitly assigned by user and #8 controller review | `codex/controller-integration-review`, tested `46a833d` from approved `c98c2fa` | Minimal catch helper/defense hook/contract, reviewed #10 run correction and historical worksheet pin. No unrelated research ancestry, hands/grip/helper rules or capacity/law changes. | 2026-10-13 (America/Phoenix) | Preparation/verification complete, final review pending: catch-only `b3a55ac` passed 59 checks/15 frozen states; #10 run-only and compatible retained-draw receipts reused. Combined 49 affected checks/three saved histories, then one 1,684-TS/140-file, 145-Python, typecheck/build pass in 180.530 s; no skips/worker errors/input drift. [Exact receipt](../data/reviews/current/controller-combined-verification.json), [scope/adverse evidence](reviews/controller-integration.md#published-combined-verification). 44 flags/components=1. No merge or baseline designation. |
-| Preservation-first repository cleanup | Codex integration owner, explicitly authorized by user | `codex/shared-candidate-verification` | README/workboard/branch navigation; only eight manifest refs eligible for archive/leased retirement after affected-owner confirmation. No runtime, tests, fixtures, dependency files or committed receipts changed. | 2026-10-13 (America/Phoenix) | Navigation/checks complete; all eight retirements individually held for affected-owner and other-environment preservation confirmation. No tags/deletions. Adoption of #8, runtime promotion, GitHub default and legacy PR closure remain separate decisions. See [execution record](https://github.com/tannerthardy/football-simulation-/blob/545d9b89afd01118df6646a439f9516448e9dfd5/docs/BRANCHES.md#bounded-cleanup-execution). |
-
-## Completed work and historical ownership snapshots
-
-These original rows preserve their content, evidence and subsystem boundaries.
-Completed stages are historical; older WIP/next-step claims are dated snapshots,
-not proof that their branch name is still in use. Consult the [branch map](https://github.com/tannerthardy/football-simulation-/blob/545d9b89afd01118df6646a439f9516448e9dfd5/docs/BRANCHES.md)
-and the affected owner for live location and intent. The separate #9 extraction
-is now [draft #10](https://github.com/tannerthardy/football-simulation-/pull/10),
-with its own exact combined receipt; it is not part of #8's runtime.
-
-| Recorded item / stage | Owner | Branch | Files / boundary | Claimed | Status |
-| --- | --- | --- | --- | --- | --- |
-| GitHub branch and PR cleanup audit | Codex integration owner, user requested branch audit and concrete cleanup plan | `codex/shared-candidate-verification` | GitHub inventory, ancestry/runtime/evidence checks and shared branch guide only; no branch deletion, feature merge or simulation campaign | 2026-10-13 (America/Phoenix) | [Audit complete](https://github.com/tannerthardy/football-simulation-/blob/545d9b89afd01118df6646a439f9516448e9dfd5/docs/BRANCHES.md): 31 branches/nine open draft PRs, old GitHub default 250 commits behind historical reference, 14 tips preserved in 4ded6b6. Exact eight-ref first retirement batch; separate owner/citation/unique-history decisions. [Pinned inventory](https://github.com/tannerthardy/football-simulation-/blob/545d9b89afd01118df6646a439f9516448e9dfd5/data/reviews/current/github-branch-audit.json). No new work branch, deleted refs, settings changes or simulation/code-suite run. Production code and #8 receipt unchanged. |
 | Exact combined verification and testing-policy integration | Codex integration owner, explicitly assigned by user in this chat | `codex/shared-candidate-verification`, tested `c3080e8` | PR #6 plus ownership/flag documentation only; no feature promotion | 2026-10-13 (America/Phoenix) | [Verified once](INTEGRATION.md#published-verification-evidence): 1,669 TS tests/139 files, 145 Python, typecheck/build pass in 186.804 s; no skips/worker errors or changed inputs. [Exact receipt](../data/reviews/current/shared-integration-verification.json). All 43 flags/runtime/lock identical to historical 4ded6b6. #3/#4/#5 stay separate; #7 excluded. Contributors supply compatible focused evidence, not duplicate shared suites. Publication adds docs/evidence only. |
 | Tiny default testing loop and integration ownership | Codex, user requested simpler everyday interpretation and decision-driven test costs | `codex/roster-capability-audit` | Shared docs/agent guidance only; existing runners, assertions, fixtures and engine unchanged | 2026-10-13 (America/Phoenix) | [Implemented](TESTING_COSTS.md#default-loop-one-question-tiny-evidence): one question, smallest reproducer/control, directly affected checks, optional risk-driven transfer with no screen staircase, one diagnostic before expanding adverse-result coverage, and one shared integration owner. Arrival P4, blocking release/collection and physics replay priorities recorded. Review categories/worksheet are optional interpretation aids; five-field reporting links compatible evidence. Documentation checks only; zero new engine tests/snaps/games. |
 | Shared improvement and regression review | Codex, user requested a common decision procedure alongside testing costs | `codex/roster-capability-audit` | Testing/agent guidance and saved-result review worksheet; no engine, ratings, collectors or fixtures | 2026-10-13 (America/Phoenix) | [Implemented](BEHAVIOR_REVIEW.md): declared mechanism contracts, first-divergence attribution, symmetric adverse/favorable review, explained outcome changes versus regressions/tradeoffs/uncertainty, and explicit contract-repair procedure. Worksheet verifies saved receipts, starts changes unreviewed and retains blocked/skipped coverage without simulating. Five focused tests, typecheck/build pass; saved 32-case worksheet generated in 0.033 s with zero new snaps/games. No new CI matrix or baseline/cache invalidation. |
@@ -74,8 +67,7 @@ Parked controller-session branches (not for merge as they stand):
 Before crossing a boundary, state the proposed change and coordinate through
 this file and any available session messages. This board does not claim that
 separate chat sessions have a direct messaging tool. Each owner updates its
-row and links evidence when work lands; mark completed rows historical after
-handoff and preserve their content and evidence links.
+row and links evidence when work lands; remove completed rows after handoff.
 
 Land small diagnostics/docs separately when useful. Experimental engine work
 may land with a default-off option; flipping the default requires law and

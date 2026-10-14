@@ -9,10 +9,11 @@ Preparation/verification only: no merge, reference adoption or new baseline.
 
 Approved base: `c98c2fa0e8de760c980ad3852e0ec85abcfadc8f` (#8).
 Later #8 navigation at `545d9b8` has the same runtime and retains its separate
-publication. Only its workboard ownership/completed-stage structure is
-reconciled after verification, preserving both owner rows and all evidence.
-Branch-map links point to that immutable publication; README/branch-audit
-changes and unrelated branch content are not imported. Historical comparison remains
+publication. The current workboard claim is reconciled separately from the historical
+approved-reference rows, allowing its completed-stage structure to apply cleanly
+without importing unrelated branch content. All original owner rows/evidence
+remain; the later workboard is linked immutably. README/branch-audit changes
+are not imported. Historical comparison remains
 `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`.
 Candidate branch: `codex/controller-integration-review`.
 
