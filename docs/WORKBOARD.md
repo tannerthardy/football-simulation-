@@ -15,6 +15,15 @@ Loaded RT joining/recovery and RG anchoring remain gated on the physics owner's
 retained/cleared/unreachable contract. Integration owns the later current-
 production replay; the historical comparison stays `4ded6b6`.
 
+[Bounded mechanical study complete](reviews/te-approach-support.md): four TE
+actions attain finite posture .675 with less than .001 yd path difference over
+.15s; WR/OL controls exact. All six recorded first steps replay exactly,
+true mirrors within 7.11e-15, work/traction checks and typecheck pass. 72 unloaded
+World steps, zero plays; 9.89 recorded command seconds. This does not demonstrate
+loaded improvement, raise support availability or resolve the owner/helper
+timing gap. Live controllers remain held; [receipt](reviews/te-approach-support-receipt.json)
+records exact tested revision, unchanged source/flags and remaining dependency.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

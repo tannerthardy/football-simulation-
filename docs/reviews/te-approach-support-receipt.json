@@ -1,0 +1,596 @@
+{
+  "protocol": "te-approach-support-review-v1",
+  "testedCommit": "f25be9ab980bbda14277216884647a2a929b045c",
+  "runtimeSourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "comparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "productionSourceBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "productionNativeReplayed": false,
+  "controllersChanged": false,
+  "sourceWorldMatchesHistorical": true,
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "manifestSha256": "6049050200c7bae7a8c0aef4350aaa256a76ccbf0b496f15a32e9aef1b5de775",
+  "scriptSha256": "f9cd8cf4f5d9f78aa52393f8149515c34dc63a807f52ff38c7948b5ce1f38dc6",
+  "worldSha256": "ed1708d764c355da60bd31c115f557baf3d81af18c89f3479c471bf981732ca2",
+  "newPlays": 0,
+  "mechanicalWorldSteps": 72,
+  "measurementSeconds": 0.023717903000000005,
+  "commands": {
+    "mechanical-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/te-approach-support",
+      "commit": "f25be9ab980bbda14277216884647a2a929b045c",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "c70cd9c89a248791198cf3ccb9d0378c1ef7beea83f07c2e295c21e512f8b54a",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T07:13:53.531Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/te-unloaded-approach.ts",
+            "config/te-unloaded-approach.json",
+            "out/te-approach/result.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.254708178
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T07:13:53.788Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/te-approach-support",
+      "commit": "f25be9ab980bbda14277216884647a2a929b045c",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "c70cd9c89a248791198cf3ccb9d0378c1ef7beea83f07c2e295c21e512f8b54a",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T07:17:13.459Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.640216249000002
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T07:17:23.102Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "recordedCommandSeconds": 9.894924427000001,
+  "maximumSavedFirstStepError": 0,
+  "maximumTrueMirrorError": 7.105427357601002e-15,
+  "maximumWorkResidual": 2.2426505097428162e-14,
+  "maximumTractionExcess": 0,
+  "rows": [
+    {
+      "id": "uc12-wz-s3/Y",
+      "job": "reach",
+      "baseActionVaried": true,
+      "oldEndpoint": {
+        "pos": {
+          "x": 39.46484205356449,
+          "y": 22.730575576826833
+        },
+        "vel": {
+          "x": 0.8507586417220752,
+          "y": -0.4735322970589032
+        },
+        "facing": -0.5128676084459409,
+        "spin": -4.9902140359822145,
+        "energy": 0.9987859572665091,
+        "posture": 0.19983276064118846,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "baseEndpoint": {
+        "pos": {
+          "x": 39.46429448349162,
+          "y": 22.730880354353253
+        },
+        "vel": {
+          "x": 0.8376801276317778,
+          "y": -0.46625279554627697
+        },
+        "facing": -0.5551512507083138,
+        "spin": -4.199335543179936,
+        "energy": 0.9987953975073847,
+        "posture": 0.675,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "difference": {
+        "pos": {
+          "x": -0.0005475700728680977,
+          "y": 0.000304777526419997
+        },
+        "velocity": {
+          "x": -0.013078514090297366,
+          "y": 0.007279501512626241
+        },
+        "posture": 0.47516723935881156,
+        "energy": 9.44024087556894e-06,
+        "availableSupport": 0
+      }
+    },
+    {
+      "id": "uc12-wz-s3/H",
+      "job": "cutoff",
+      "baseActionVaried": true,
+      "oldEndpoint": {
+        "pos": {
+          "x": 39.45148499349262,
+          "y": 30.52257603996864
+        },
+        "vel": {
+          "x": 0.6778629502491363,
+          "y": -0.5805070616574515
+        },
+        "facing": -0.597422375140169,
+        "spin": -8.000175836785912,
+        "energy": 0.9988007794507242,
+        "posture": 0.19983451911864814,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "baseEndpoint": {
+        "pos": {
+          "x": 39.45105931675236,
+          "y": 30.522940580254573
+        },
+        "vel": {
+          "x": 0.6675527255469834,
+          "y": -0.5716776098565011
+        },
+        "facing": -0.6622080437453988,
+        "spin": -8.06233758603514,
+        "energy": 0.9988096925390577,
+        "posture": 0.675,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "difference": {
+        "pos": {
+          "x": -0.00042567674026372515,
+          "y": 0.0003645402859326907
+        },
+        "velocity": {
+          "x": -0.010310224702152926,
+          "y": 0.008829451800950405
+        },
+        "posture": 0.4751654808813519,
+        "energy": 8.913088333506458e-06,
+        "availableSupport": 0
+      }
+    },
+    {
+      "id": "uc12-wz-s3-mirror/H",
+      "job": "reach",
+      "baseActionVaried": true,
+      "oldEndpoint": {
+        "pos": {
+          "x": 39.4626645138821,
+          "y": 22.73910455036586
+        },
+        "vel": {
+          "x": 0.8225042398456208,
+          "y": -0.36176706898558014
+        },
+        "facing": -0.47116667376255594,
+        "spin": -3.016313511667592,
+        "energy": 0.9987966316561445,
+        "posture": 0.19983387654518098,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "baseEndpoint": {
+        "pos": {
+          "x": 39.46213575861253,
+          "y": 22.739337116029134
+        },
+        "vel": {
+          "x": 0.8098737781929133,
+          "y": -0.35621173580834076
+        },
+        "facing": -0.5268484873894359,
+        "spin": -2.7220796057145904,
+        "energy": 0.9988057449904799,
+        "posture": 0.675,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "difference": {
+        "pos": {
+          "x": -0.0005287552695705244,
+          "y": 0.00023256566327489736
+        },
+        "velocity": {
+          "x": -0.012630461652707536,
+          "y": 0.0055553331772393855
+        },
+        "posture": 0.47516612345481907,
+        "energy": 9.113334335397738e-06,
+        "availableSupport": 0
+      }
+    },
+    {
+      "id": "uc12-wz-weak-s3/H",
+      "job": "reach",
+      "baseActionVaried": true,
+      "oldEndpoint": {
+        "pos": {
+          "x": 39.4684472836555,
+          "y": 30.56788359527718
+        },
+        "vel": {
+          "x": 0.898406091819121,
+          "y": 0.01597281906029177
+        },
+        "facing": 0.024443637185668665,
+        "spin": -0.08888595340242667,
+        "energy": 0.9987966316561445,
+        "posture": 0.19983387654518098,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "baseEndpoint": {
+        "pos": {
+          "x": 39.467869734103466,
+          "y": 30.567873326986955
+        },
+        "vel": {
+          "x": 0.884610073340955,
+          "y": 0.015727538770108084
+        },
+        "facing": 0.024443637185668665,
+        "spin": -0.08888595340242667,
+        "energy": 0.9988057449904799,
+        "posture": 0.675,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "difference": {
+        "pos": {
+          "x": -0.0005775495520339291,
+          "y": -1.0268290225212695e-05
+        },
+        "velocity": {
+          "x": -0.013796018478166028,
+          "y": -0.0002452802901836866
+        },
+        "posture": 0.47516612345481907,
+        "energy": 9.113334335397738e-06,
+        "availableSupport": 0
+      }
+    },
+    {
+      "id": "uc12-wz-s3/Z",
+      "job": "stalk",
+      "baseActionVaried": false,
+      "oldEndpoint": {
+        "pos": {
+          "x": 38.93487596851319,
+          "y": 8.649954334095552
+        },
+        "vel": {
+          "x": 1.3141063626981127,
+          "y": -0.16282947073019394
+        },
+        "facing": -0.1309855678654379,
+        "spin": 0.9246040084619178,
+        "energy": 0.9984591120893742,
+        "posture": 0.19976858317078344,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "baseEndpoint": {
+        "pos": {
+          "x": 38.93487596851319,
+          "y": 8.649954334095552
+        },
+        "vel": {
+          "x": 1.3141063626981127,
+          "y": -0.16282947073019394
+        },
+        "facing": -0.1309855678654379,
+        "spin": 0.9246040084619178,
+        "energy": 0.9984591120893742,
+        "posture": 0.19976858317078344,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "difference": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        },
+        "posture": 0,
+        "energy": 0,
+        "availableSupport": 0
+      }
+    },
+    {
+      "id": "uc12-wz-s3/RT",
+      "job": "combo",
+      "baseActionVaried": false,
+      "oldEndpoint": {
+        "pos": {
+          "x": 39.47204595764638,
+          "y": 24.048499365169057
+        },
+        "vel": {
+          "x": 0.2939461019516542,
+          "y": -0.24223068663480213
+        },
+        "facing": -0.6532536945508473,
+        "spin": -6.415555555555556,
+        "energy": 0.9990335102513933,
+        "posture": 0.6998584182971472,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "baseEndpoint": {
+        "pos": {
+          "x": 39.47204595764638,
+          "y": 24.048499365169057
+        },
+        "vel": {
+          "x": 0.2939461019516542,
+          "y": -0.24223068663480213
+        },
+        "facing": -0.6532536945508473,
+        "spin": -6.415555555555556,
+        "energy": 0.9990335102513933,
+        "posture": 0.6998584182971472,
+        "support": "up",
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "availableSupport": 1
+      },
+      "difference": {
+        "pos": {
+          "x": 0,
+          "y": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        },
+        "posture": 0,
+        "energy": 0,
+        "availableSupport": 0
+      }
+    }
+  ],
+  "resultSha256": "181ff2ab3c729a97bd7b64afc4d067b59fe64f2b324723d882b21fc927488a46",
+  "conclusion": "Existing .7 action is attainable over finite posture adjustment with a small unloaded movement cost. It does not repair the owner/helper approach mismatch or establish a better loaded block. Availability stays1 in both unloaded arms.",
+  "remainingGate": "Contact-retention review before live TE/controller or loaded RT/RG candidate. No policy installed; native weak-call success reused, not simulated with this action."
+}
