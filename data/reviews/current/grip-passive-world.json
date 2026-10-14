@@ -1,0 +1,1256 @@
+{
+  "commit": "9d18495fae7eb49b75f005e13bfdf05a364d34d9",
+  "source": "ac38c4b790c45a3af10ae3967fc68790e5d27d0d5d5b1b0db6fd6572a72d1273",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "hashes": {
+    "src/physics/world.ts": "8445926bf85ea0cbdcb9109daec6b3e35bd1819f73c34fe4a1f5d9c698136e48",
+    "src/physics/passive-grip.ts": "5380159b676da155d4b51ef3f9ba52d0ffb0bf68b9b045544ce8ed604974f3e6",
+    "scripts/diag/tackle/panel.ts": "7a667380d24cd20e9ad9ef7edf749cc39f5710aa8c32e26063aaae13b541821d",
+    "scripts/diag/physics/grip-span-kernel-trial.ts": "9566667234459949721f320d3410ad1394948d0c0c5d45f2180e1fc681e426d6",
+    "scripts/diag/physics/grip-span-kernel-model.ts": "6205e5b9872f596489efa7cc1ebf1699acbdef6dff6c8b590adb009ec045b62f",
+    "scripts/diag/physics/grip-span-kernel-interval.ts": "ebb5d97f3ab39fc6febb6f0256e3ce657c40046dd9f5aa87e2958834991ba68f",
+    "scripts/diag/physics/grip-span-event-force.ts": "ac535725afb7525f18f0bbe8d0b34112cc4e5313e35609acb6b1511503ea3371",
+    "scripts/diag/physics/grip-mixed-span-model.ts": "542f0fff0815573f91a8b370bea7b07a4f76d3ed7c8e38a58da53ea442b2daf0",
+    "scripts/diag/physics/grip-span-event-reference.ts": "0eaffe3a11ce13b3041463ef693803dc0c35c941c3901e7bb1bbecbe96795d81",
+    "scripts/diag/physics/grip-passive-world-fixtures.ts": "84e83e2e220751aac80a3fcd14d9d4a41b386f7790b6dad585643a158f06a9b0",
+    "scripts/diag/physics/grip-passive-world-evidence.ts": "4289e6f0d7b83e5e56c005524124c89a7f85815e5f9a73bf6b53cee3120a9601",
+    "config/grip-passive-world-inputs.json": "c30b177eb4b94bb14aaba03fde4e40594ff71c0e198f13e894d6b452d43f6c37",
+    "test/grip-passive-world.test.ts": "6f8e2738fa0b68fa07d25bdc317d2d7537aa4266960a46d901c2385e834e08f0"
+  },
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "timestamp": "2026-10-14T22:28:25.655Z",
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "options": {
+    "host": {
+      "handContact": "patch",
+      "gripTiming": "midpoint",
+      "materialTransport": "owned"
+    },
+    "candidate": "passiveGrip:spanKernelInterval",
+    "production": {
+      "materialTransport": "legacy behavior (option absent)",
+      "passiveGrip": "absent"
+    },
+    "supportedWorldSubsteps": 1,
+    "duration": 0.004166666666666667
+  },
+  "physicalGates": {
+    "position": 5e-10,
+    "velocity": 2.5e-8,
+    "facing": 2.5e-9,
+    "spin": 2.5e-7,
+    "attachment": 5e-10,
+    "impulse": 5e-10,
+    "moment": 5e-10,
+    "work": 1e-9,
+    "dose": 1e-9
+  },
+  "refinementAllowance": 0.0625,
+  "costBudgetMilliseconds": {
+    "median": 2,
+    "p95": 5,
+    "refusal": 10
+  },
+  "mode": "accuracy",
+  "mechanical": [
+    {
+      "id": "radial-control",
+      "inputSha256": "7215fb755dbe50af90cf0589e8815c8a1599e3425741de92dce819b040f873d1",
+      "accepted": 1,
+      "error": 0.005374192084311379,
+      "convergence": 0.0010385840588816113,
+      "supportError": 2.6654205577624104e-15,
+      "energyError": 0,
+      "dose": 0.03273293749695846,
+      "events": [],
+      "bodyWork": 0.000010073698735954789,
+      "motorWork": -0.0000224399387015376,
+      "energyResidual": 3.4251047771648516e-14,
+      "worldWorkResidual": 1.426234076586791e-17
+    },
+    {
+      "id": "curved-return",
+      "inputSha256": "36a3d6f99d10a7fbac80a44403060a8237415f887b81737cb9438e4f4ef83a0e",
+      "accepted": 1,
+      "error": 0.005858445653216901,
+      "convergence": 0.010649363439836513,
+      "supportError": 3.844745340707088e-15,
+      "energyError": 0,
+      "dose": 0.050135310178221044,
+      "events": [
+        {
+          "time": 0.0008062849465000488,
+          "residual": -6.458839103610569e-13
+        }
+      ],
+      "bodyWork": -0.0002590578477391446,
+      "motorWork": -0.00029711448387213357,
+      "energyResidual": -5.172500814709484e-13,
+      "worldWorkResidual": 1.0240289519125589e-16
+    },
+    {
+      "id": "zero-span-control",
+      "inputSha256": "12b33b94f3814169e092c19d5f309990a68368da095be31da3a3a336cc82d4fa",
+      "accepted": 1,
+      "error": 0,
+      "convergence": 0,
+      "supportError": 0,
+      "energyError": 0,
+      "dose": 0,
+      "events": [],
+      "bodyWork": 0,
+      "motorWork": 0,
+      "energyResidual": 0,
+      "worldWorkResidual": 0
+    },
+    {
+      "id": "fresh-curved",
+      "accepted": 0,
+      "reason": {
+        "scope:ground-yaw": 1
+      },
+      "exactFallback": true
+    }
+  ],
+  "native": [
+    {
+      "id": "patch-0-3-0-3001-1",
+      "input": {
+        "name": "front patch",
+        "cell": {
+          "angle": 0,
+          "speed": 3,
+          "cut": false,
+          "difficulty": "ordinary"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-0-3-0-3001-1"
+      },
+      "legacyExactSaved": true,
+      "candidateExactOwned": true,
+      "arms": [
+        {
+          "mode": "legacy",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "afterContact": 0.4489734517965971,
+          "contactToEnd": 0.8500000000000001,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "owned",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "afterContact": 0.4490624833227841,
+          "contactToEnd": 0.8500000000000001,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "combined",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "afterContact": 0.4490624833227841,
+          "contactToEnd": 0.8500000000000001,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 1536,
+            "reasons": {
+              "scope:active-reel": 1536
+            }
+          }
+        }
+      ],
+      "verdict": "ending retained; inspect any trajectory difference as ownership-only"
+    },
+    {
+      "id": "patch-45-8-0-3001-1",
+      "input": {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-3001-1"
+      },
+      "legacyExactSaved": true,
+      "candidateExactOwned": true,
+      "arms": [
+        {
+          "mode": "legacy",
+          "ending": "censored",
+          "finish": "censored",
+          "afterContact": 22.274863595064915,
+          "contactToEnd": 4.4,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "owned",
+          "ending": "censored",
+          "finish": "censored",
+          "afterContact": 24.19973073779981,
+          "contactToEnd": 4.4,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "combined",
+          "ending": "censored",
+          "finish": "censored",
+          "afterContact": 24.19973073779981,
+          "contactToEnd": 4.4,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 8448,
+            "reasons": {
+              "scope:graph/time": 96,
+              "scope:active-reel": 8352
+            }
+          }
+        }
+      ],
+      "verdict": "ending retained; inspect any trajectory difference as ownership-only"
+    },
+    {
+      "id": "patch-45-8-0-3001--1",
+      "input": {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": -1,
+        "id": "patch-45-8-0-3001--1"
+      },
+      "legacyExactSaved": true,
+      "candidateExactOwned": true,
+      "arms": [
+        {
+          "mode": "legacy",
+          "ending": "censored",
+          "finish": "censored",
+          "afterContact": 22.2748635950649,
+          "contactToEnd": 4.4,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "owned",
+          "ending": "censored",
+          "finish": "censored",
+          "afterContact": 24.19973073779981,
+          "contactToEnd": 4.4,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "combined",
+          "ending": "censored",
+          "finish": "censored",
+          "afterContact": 24.19973073779981,
+          "contactToEnd": 4.4,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 8448,
+            "reasons": {
+              "scope:graph/time": 96,
+              "scope:active-reel": 8352
+            }
+          }
+        }
+      ],
+      "verdict": "ending retained; inspect any trajectory difference as ownership-only"
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "input": {
+        "name": "fresh angled",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 4001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-4001-1"
+      },
+      "legacyExactSaved": true,
+      "candidateExactOwned": true,
+      "arms": [
+        {
+          "mode": "legacy",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "afterContact": 13.319271331219483,
+          "contactToEnd": 2.0500000000000003,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "owned",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "afterContact": 14.405496953324146,
+          "contactToEnd": 2.9,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "combined",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "afterContact": 14.405496953324146,
+          "contactToEnd": 2.9,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 5568,
+            "reasons": {
+              "scope:graph/time": 96,
+              "scope:active-reel": 5472
+            }
+          }
+        }
+      ],
+      "verdict": "ending retained; inspect any trajectory difference as ownership-only"
+    }
+  ],
+  "raw": {
+    "path": "out/grip-passive-world/world-raw.json",
+    "sha256": "9efa62b4251b5ba02d522088a3dbad95d1bf9f558793895534d27761c4bc60f8"
+  },
+  "nativeManifest": {
+    "path": "out/grip-timing/baseline.json",
+    "sha256": "c36000fdfabf82a21f2c5224b483a892883cb44fbe746d8b7ad04501f02d102a"
+  },
+  "decision": "Useful measured experimental World prototype within passive scope; all declared accuracy/cost/support/effort checks pass. Keep both material ownership and solver options off by default. Broader integration/promotion is blocked by eight inherited validation failures and unvalidated ownership outcome changes; native football benefits of the new solver remain unproved.",
+  "benchmarks": [
+    {
+      "commit": "9d18495fae7eb49b75f005e13bfdf05a364d34d9",
+      "timestamp": "2026-10-14T22:33:45.845Z",
+      "cpu": "AMD EPYC 9V74 80-Core Processor",
+      "node": "v22.23.3",
+      "protocol": {
+        "serial": true,
+        "warmups": 5,
+        "repetitions": 21,
+        "rotatingOrder": true,
+        "preparationOutsideClock": true,
+        "profilersOrObservers": false,
+        "allWorldInputsIncludingRefusedFresh": true
+      },
+      "bench": [
+        {
+          "id": "radial-control",
+          "method": "legacy",
+          "milliseconds": {
+            "median": 0.3473619999999755,
+            "p95": 0.7931029999999737,
+            "maximum": 0.8147249999999531
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "owned",
+          "milliseconds": {
+            "median": 0.269935999999916,
+            "p95": 0.6184100000000399,
+            "maximum": 0.6854909999999563
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.6687949999999319,
+            "p95": 1.3982820000001084,
+            "maximum": 1.633735999999999
+          },
+          "acceptedCalls": 21,
+          "passesBudget": true
+        },
+        {
+          "id": "radial-control",
+          "method": "reference4096",
+          "milliseconds": {
+            "median": 33.866551999999956,
+            "p95": 41.55089600000019,
+            "maximum": 41.92391900000007
+          },
+          "acceptedCalls": 21,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "legacy",
+          "milliseconds": {
+            "median": 0.32420700000011493,
+            "p95": 0.7151050000002215,
+            "maximum": 0.7980789999996887
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "owned",
+          "milliseconds": {
+            "median": 0.29138800000009724,
+            "p95": 0.444847999999638,
+            "maximum": 1.5462250000000495
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 1.2804449999998724,
+            "p95": 2.676132999999936,
+            "maximum": 3.4057699999998476
+          },
+          "acceptedCalls": 21,
+          "passesBudget": true
+        },
+        {
+          "id": "curved-return",
+          "method": "reference4096",
+          "milliseconds": {
+            "median": 76.24105599999984,
+            "p95": 84.02982999999995,
+            "maximum": 84.72885200000019
+          },
+          "acceptedCalls": 21,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "legacy",
+          "milliseconds": {
+            "median": 0.3077320000002146,
+            "p95": 0.48322600000028615,
+            "maximum": 2.4513260000003356
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "owned",
+          "milliseconds": {
+            "median": 0.2559049999999843,
+            "p95": 0.5006430000003093,
+            "maximum": 1.470180000000255
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.3049379999993107,
+            "p95": 0.5020339999991847,
+            "maximum": 0.644549000000552
+          },
+          "acceptedCalls": 21,
+          "passesBudget": true
+        },
+        {
+          "id": "zero-span-control",
+          "method": "reference4096",
+          "milliseconds": {
+            "median": 73.73785800000041,
+            "p95": 87.78463199999987,
+            "maximum": 99.09610800000064
+          },
+          "acceptedCalls": 21,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "legacy",
+          "milliseconds": {
+            "median": 0.14187399999991612,
+            "p95": 0.34706200000073295,
+            "maximum": 0.5986400000001595
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "owned",
+          "milliseconds": {
+            "median": 0.14307499999995343,
+            "p95": 0.33431300000029296,
+            "maximum": 0.6868619999995644
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.14340499999980238,
+            "p95": 0.27985999999964406,
+            "maximum": 1.0081850000005943
+          },
+          "acceptedCalls": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "fresh-curved",
+          "method": "reference4096",
+          "milliseconds": {
+            "median": 0.1426549999996496,
+            "p95": 0.41299099999923783,
+            "maximum": 0.6520810000001802
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        }
+      ],
+      "costPass": true,
+      "raw": {
+        "path": "out/grip-passive-world/benchmark-a.samples.json",
+        "sha256": "128d3ad682c32fdcaf16c58bb78a180e4213739eb8555ae5679bc81d9a5cf79f"
+      }
+    },
+    {
+      "commit": "9d18495fae7eb49b75f005e13bfdf05a364d34d9",
+      "timestamp": "2026-10-14T22:36:41.051Z",
+      "cpu": "AMD EPYC 9V74 80-Core Processor",
+      "node": "v22.23.3",
+      "protocol": {
+        "serial": true,
+        "warmups": 5,
+        "repetitions": 21,
+        "rotatingOrder": true,
+        "preparationOutsideClock": true,
+        "profilersOrObservers": false,
+        "allWorldInputsIncludingRefusedFresh": true
+      },
+      "bench": [
+        {
+          "id": "radial-control",
+          "method": "legacy",
+          "milliseconds": {
+            "median": 0.2797199999999975,
+            "p95": 0.6533030000000508,
+            "maximum": 1.4502010000001064
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "owned",
+          "milliseconds": {
+            "median": 0.22252400000002126,
+            "p95": 0.38830399999994825,
+            "maximum": 0.48554999999998927
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.6484749999999622,
+            "p95": 0.901395999999977,
+            "maximum": 2.104485000000068
+          },
+          "acceptedCalls": 21,
+          "passesBudget": true
+        },
+        {
+          "id": "radial-control",
+          "method": "reference4096",
+          "milliseconds": {
+            "median": 27.412509999999997,
+            "p95": 32.68710299999998,
+            "maximum": 41.60904800000003
+          },
+          "acceptedCalls": 21,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "legacy",
+          "milliseconds": {
+            "median": 0.3455300000000534,
+            "p95": 1.9541989999997895,
+            "maximum": 3.0248489999999038
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "owned",
+          "milliseconds": {
+            "median": 0.30534000000011474,
+            "p95": 0.6001720000001569,
+            "maximum": 0.895577000000003
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 1.187094999999772,
+            "p95": 2.802224000000024,
+            "maximum": 4.009278999999879
+          },
+          "acceptedCalls": 21,
+          "passesBudget": true
+        },
+        {
+          "id": "curved-return",
+          "method": "reference4096",
+          "milliseconds": {
+            "median": 70.18167299999959,
+            "p95": 77.36695299999997,
+            "maximum": 123.6486319999999
+          },
+          "acceptedCalls": 21,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "legacy",
+          "milliseconds": {
+            "median": 0.3013630000004923,
+            "p95": 0.5124900000000707,
+            "maximum": 0.5371470000000045
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "owned",
+          "milliseconds": {
+            "median": 0.23911999999927502,
+            "p95": 0.3798109999997905,
+            "maximum": 0.4561460000004445
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.25541400000020076,
+            "p95": 0.47710800000004383,
+            "maximum": 0.5262609999999768
+          },
+          "acceptedCalls": 21,
+          "passesBudget": true
+        },
+        {
+          "id": "zero-span-control",
+          "method": "reference4096",
+          "milliseconds": {
+            "median": 62.2122559999998,
+            "p95": 72.2974949999998,
+            "maximum": 74.8612149999999
+          },
+          "acceptedCalls": 21,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "legacy",
+          "milliseconds": {
+            "median": 0.1893449999997756,
+            "p95": 0.33382199999959994,
+            "maximum": 0.44925599999987753
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "owned",
+          "milliseconds": {
+            "median": 0.15776699999969424,
+            "p95": 0.3452789999992092,
+            "maximum": 0.7645889999994324
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.16983499999969354,
+            "p95": 0.292210000000523,
+            "maximum": 0.3845079999991867
+          },
+          "acceptedCalls": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "fresh-curved",
+          "method": "reference4096",
+          "milliseconds": {
+            "median": 0.1641170000002603,
+            "p95": 0.779671999999664,
+            "maximum": 1.9701490000006743
+          },
+          "acceptedCalls": 0,
+          "passesBudget": null
+        }
+      ],
+      "costPass": true,
+      "raw": {
+        "path": "out/grip-passive-world/benchmark-b.samples.json",
+        "sha256": "098d822bb0615cac547881fa3013d69351cc7594df01d1619d887ae05a5fc8ad"
+      }
+    }
+  ],
+  "validation": {
+    "fullReceipt": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-span-kernel",
+      "commit": "9d18495fae7eb49b75f005e13bfdf05a364d34d9",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "ac38c4b790c45a3af10ae3967fc68790e5d27d0d5d5b1b0db6fd6572a72d1273",
+      "validationSha256": "7d45409edb0f01ca0c73d935dabdb3c8a6f42436b1f02932005c7664a7cc960c",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-14T22:39:19.485Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 13.16614231
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 19.51778918
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:all"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 260.872862963
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:data"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.0744434500000206
+        }
+      ],
+      "finishedAt": "2026-10-14T22:44:14.121Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "fullLog": {
+      "path": "out/grip-passive-world/full-validation.log",
+      "sha256": "3e13caae24ee210d388e0b03d4b2fbf4241799ed858626d6bcb47d05fa31b09f"
+    },
+    "typescript": {
+      "passed": 1883,
+      "failed": 8,
+      "total": 1891
+    },
+    "python": 145,
+    "parentFailureChecks": {
+      "parent": "938810c40554a42add66600e770ffad0e6b0d8da",
+      "fast": {
+        "path": "out/grip-passive-world/parent-fast-control.log",
+        "sha256": "f4ce74ecbf5bc40587e8a3691565029b67873668d7ffbca73fe84d01cab2c2ad"
+      },
+      "reference": {
+        "path": "out/grip-passive-world/parent-reference-controls.log",
+        "sha256": "fbc789a919796f75cf0d4ee980c823e2f4206bd0d8edfd49aa4695e62dda17e0"
+      },
+      "sameFailures": 8
+    },
+    "finalHarness": {
+      "commit": "df0db63e73461cc984f1fef02ed0d4eb7d308a08",
+      "runtimeSourceUnchanged": "ac38c4b790c45a3af10ae3967fc68790e5d27d0d5d5b1b0db6fd6572a72d1273",
+      "fix": "New test reads known fixture facing from body instead of optional Intent property. Runtime expression is equivalent; assertions unchanged.",
+      "checks": {
+        "path": "out/grip-passive-world/checks-final.log",
+        "sha256": "f0ffc4d9182fe7ef769ff2fc7789d147ea7d3d98fdba317a03cba24705ac8b07"
+      },
+      "typecheck": {
+        "path": "out/grip-passive-world/typecheck-final.log",
+        "sha256": "d1badfbc5675f8295c42598e6202d20a09e75d3fbcf711e58927dc0076d7b44d"
+      },
+      "build": {
+        "path": "out/grip-passive-world/build-final.log",
+        "sha256": "06e57012f147b583216fb2b1b18c8c4fabb405f9479ebb50c1c8eb775ecef702"
+      },
+      "receipts": [
+        {
+          "baseline": "run-game-2026-10-13",
+          "branch": "codex/grip-span-kernel",
+          "commit": "df0db63e73461cc984f1fef02ed0d4eb7d308a08",
+          "mode": "candidate",
+          "node": "v22.23.3",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceSha256": "ac38c4b790c45a3af10ae3967fc68790e5d27d0d5d5b1b0db6fd6572a72d1273",
+          "validationSha256": "78633f4ca6c716631b98e104b79a2a0b202532cce1230ccd2a966dcea6581192",
+          "flags": {
+            "ANCHOR_SPLIT": "1",
+            "CF_FLOW": null,
+            "CLIMB_INTERCEPT": "1",
+            "CLIMB_PLAN": "1",
+            "DL_FIGHT": "0",
+            "DL_FLOW": "1",
+            "DL_HANDS": "0",
+            "FLOW_READ": "1",
+            "FLOW_RELEASE": "1",
+            "GAIT_STEP": "0",
+            "HAND_FIGHT": "0",
+            "HAND_MOTOR": "0",
+            "HOLD_SUBSTEPS": "0",
+            "IN_STRIDE_CATCH": "0",
+            "KEEPER_TORSO": "1",
+            "LB_PLAN": "1",
+            "LEG_BRACE": "0",
+            "LEVER_FACING": "1",
+            "LIVE_AIM": "1",
+            "LIVE_GAPS": "1",
+            "PASS_SINK": "0",
+            "PULL_CUE": "0",
+            "PULL_PLAN": "0",
+            "PULL_READ": "1",
+            "PULL_STEP": "0",
+            "REACH_CONTACT": "0",
+            "READ_EYES": "1",
+            "READ_RISK_TRACE": "0",
+            "RUN_ANCHOR": "1",
+            "RUN_CONTACT_TRACK": "0",
+            "RUN_HANDS": "0",
+            "RUN_READ": "0",
+            "RUN_READ_TURN": "0",
+            "SCRAPE": "1",
+            "SHED_PHYSICAL": "1",
+            "STALK_CLAIM": "1",
+            "STRETCH_MESH": "1",
+            "STRETCH_REACH": "1",
+            "TACKLE_ROLL": "0",
+            "TACKLE_TOUCH": "0",
+            "THREAT_READ": "1",
+            "WRAP_BIND": "0",
+            "ZONE_FLOW": "1"
+          },
+          "worldDefaults": {
+            "handContact": "center",
+            "handIntegration": "centered",
+            "supportModel": "legacy",
+            "constraintWork": "per-solve",
+            "impactTiming": "speculative",
+            "supportIntegration": "mean",
+            "boundedAttachment": true,
+            "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+          },
+          "trackedChanges": [
+            "docs/WORKBOARD.md"
+          ],
+          "startedAt": "2026-10-14T22:49:11.718Z",
+          "commands": [
+            {
+              "command": [
+                "npx",
+                "vitest",
+                "run",
+                "--project",
+                "core",
+                "test/grip-passive-world.test.ts",
+                "--maxWorkers=1"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 3.46481721
+            }
+          ],
+          "finishedAt": "2026-10-14T22:49:15.187Z",
+          "inputsUnchanged": true,
+          "exitCode": 0
+        },
+        {
+          "baseline": "run-game-2026-10-13",
+          "branch": "codex/grip-span-kernel",
+          "commit": "df0db63e73461cc984f1fef02ed0d4eb7d308a08",
+          "mode": "candidate",
+          "node": "v22.23.3",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceSha256": "ac38c4b790c45a3af10ae3967fc68790e5d27d0d5d5b1b0db6fd6572a72d1273",
+          "validationSha256": "78633f4ca6c716631b98e104b79a2a0b202532cce1230ccd2a966dcea6581192",
+          "flags": {
+            "ANCHOR_SPLIT": "1",
+            "CF_FLOW": null,
+            "CLIMB_INTERCEPT": "1",
+            "CLIMB_PLAN": "1",
+            "DL_FIGHT": "0",
+            "DL_FLOW": "1",
+            "DL_HANDS": "0",
+            "FLOW_READ": "1",
+            "FLOW_RELEASE": "1",
+            "GAIT_STEP": "0",
+            "HAND_FIGHT": "0",
+            "HAND_MOTOR": "0",
+            "HOLD_SUBSTEPS": "0",
+            "IN_STRIDE_CATCH": "0",
+            "KEEPER_TORSO": "1",
+            "LB_PLAN": "1",
+            "LEG_BRACE": "0",
+            "LEVER_FACING": "1",
+            "LIVE_AIM": "1",
+            "LIVE_GAPS": "1",
+            "PASS_SINK": "0",
+            "PULL_CUE": "0",
+            "PULL_PLAN": "0",
+            "PULL_READ": "1",
+            "PULL_STEP": "0",
+            "REACH_CONTACT": "0",
+            "READ_EYES": "1",
+            "READ_RISK_TRACE": "0",
+            "RUN_ANCHOR": "1",
+            "RUN_CONTACT_TRACK": "0",
+            "RUN_HANDS": "0",
+            "RUN_READ": "0",
+            "RUN_READ_TURN": "0",
+            "SCRAPE": "1",
+            "SHED_PHYSICAL": "1",
+            "STALK_CLAIM": "1",
+            "STRETCH_MESH": "1",
+            "STRETCH_REACH": "1",
+            "TACKLE_ROLL": "0",
+            "TACKLE_TOUCH": "0",
+            "THREAT_READ": "1",
+            "WRAP_BIND": "0",
+            "ZONE_FLOW": "1"
+          },
+          "worldDefaults": {
+            "handContact": "center",
+            "handIntegration": "centered",
+            "supportModel": "legacy",
+            "constraintWork": "per-solve",
+            "impactTiming": "speculative",
+            "supportIntegration": "mean",
+            "boundedAttachment": true,
+            "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+          },
+          "trackedChanges": [
+            "docs/WORKBOARD.md"
+          ],
+          "startedAt": "2026-10-14T22:49:13.047Z",
+          "commands": [
+            {
+              "command": [
+                "npm",
+                "run",
+                "typecheck"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 16.174503975
+            }
+          ],
+          "finishedAt": "2026-10-14T22:49:29.226Z",
+          "inputsUnchanged": true,
+          "exitCode": 0
+        },
+        {
+          "baseline": "run-game-2026-10-13",
+          "branch": "codex/grip-span-kernel",
+          "commit": "df0db63e73461cc984f1fef02ed0d4eb7d308a08",
+          "mode": "candidate",
+          "node": "v22.23.3",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceSha256": "ac38c4b790c45a3af10ae3967fc68790e5d27d0d5d5b1b0db6fd6572a72d1273",
+          "validationSha256": "78633f4ca6c716631b98e104b79a2a0b202532cce1230ccd2a966dcea6581192",
+          "flags": {
+            "ANCHOR_SPLIT": "1",
+            "CF_FLOW": null,
+            "CLIMB_INTERCEPT": "1",
+            "CLIMB_PLAN": "1",
+            "DL_FIGHT": "0",
+            "DL_FLOW": "1",
+            "DL_HANDS": "0",
+            "FLOW_READ": "1",
+            "FLOW_RELEASE": "1",
+            "GAIT_STEP": "0",
+            "HAND_FIGHT": "0",
+            "HAND_MOTOR": "0",
+            "HOLD_SUBSTEPS": "0",
+            "IN_STRIDE_CATCH": "0",
+            "KEEPER_TORSO": "1",
+            "LB_PLAN": "1",
+            "LEG_BRACE": "0",
+            "LEVER_FACING": "1",
+            "LIVE_AIM": "1",
+            "LIVE_GAPS": "1",
+            "PASS_SINK": "0",
+            "PULL_CUE": "0",
+            "PULL_PLAN": "0",
+            "PULL_READ": "1",
+            "PULL_STEP": "0",
+            "REACH_CONTACT": "0",
+            "READ_EYES": "1",
+            "READ_RISK_TRACE": "0",
+            "RUN_ANCHOR": "1",
+            "RUN_CONTACT_TRACK": "0",
+            "RUN_HANDS": "0",
+            "RUN_READ": "0",
+            "RUN_READ_TURN": "0",
+            "SCRAPE": "1",
+            "SHED_PHYSICAL": "1",
+            "STALK_CLAIM": "1",
+            "STRETCH_MESH": "1",
+            "STRETCH_REACH": "1",
+            "TACKLE_ROLL": "0",
+            "TACKLE_TOUCH": "0",
+            "THREAT_READ": "1",
+            "WRAP_BIND": "0",
+            "ZONE_FLOW": "1"
+          },
+          "worldDefaults": {
+            "handContact": "center",
+            "handIntegration": "centered",
+            "supportModel": "legacy",
+            "constraintWork": "per-solve",
+            "impactTiming": "speculative",
+            "supportIntegration": "mean",
+            "boundedAttachment": true,
+            "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+          },
+          "trackedChanges": [
+            "docs/WORKBOARD.md"
+          ],
+          "startedAt": "2026-10-14T22:49:13.053Z",
+          "commands": [
+            {
+              "command": [
+                "npm",
+                "run",
+                "build"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 19.706862075
+            }
+          ],
+          "finishedAt": "2026-10-14T22:49:32.764Z",
+          "inputsUnchanged": true,
+          "exitCode": 0
+        }
+      ]
+    }
+  },
+  "ownership": {
+    "originalRepro": {
+      "path": "out/grip-span-kernel/ownership-repro.json",
+      "sha256": "a7f0eb139cd490496047020825dbbb95cadb77e8407acf5ae8aafdf4aebf1944"
+    },
+    "adverseFreshTrace": {
+      "path": "out/grip-span-kernel/ownership-fresh-trace.json",
+      "sha256": "95ff83e4f2bd04634412538dcb3d46fa4b798a60d913861e76ff2b11cc2095a3"
+    },
+    "firstNativeFork": {
+      "time": 2.7,
+      "identicalInputsAndPhysicalHistoryBefore": true,
+      "mechanism": "Held material/point moved during unrelated island without held motion or grip work. Owned option prevents that extra update."
+    }
+  },
+  "numericalStage": {
+    "path": "data/reviews/current/grip-span-kernel.json",
+    "sha256": "7e5be28fda528d4166e758fc55f640369d1ad4df6cc241ce563e6f5d474b0225"
+  },
+  "retained": {
+    "unrelatedPatchFailures": "43/52: nine retained, no new promotion panel",
+    "existingFullSuiteFailures": "7 incomplete reference-coordinate fixtures; 1 older fast dry-cap budget exhaustion. Reproduced on PR43; assertions unaltered.",
+    "unsupportedNativeScope": "All four native cases fall back; active reel/drive and global multiple joints are unsupported. Candidate matches ownership-only host exactly.",
+    "censored": 2,
+    "awarenessKeeperAndSupportHistoryIndependent": true
+  }
+}

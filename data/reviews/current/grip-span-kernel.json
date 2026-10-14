@@ -1,0 +1,773 @@
+{
+  "commit": "cb26be6862728fd163ad59b8387198726ab7e1e4",
+  "parent": "938810c40554a42add66600e770ffad0e6b0d8da",
+  "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "hashes": {
+    "scripts/diag/physics/grip-span-kernel-trial.ts": "9566667234459949721f320d3410ad1394948d0c0c5d45f2180e1fc681e426d6",
+    "scripts/diag/physics/grip-span-kernel-model.ts": "6205e5b9872f596489efa7cc1ebf1699acbdef6dff6c8b590adb009ec045b62f",
+    "scripts/diag/physics/grip-span-kernel-interval.ts": "ebb5d97f3ab39fc6febb6f0256e3ce657c40046dd9f5aa87e2958834991ba68f",
+    "scripts/diag/physics/grip-span-kernel-evidence.ts": "a7e239ea5215b25955a9397de4e6d0030277e4d821f1083a7a9b7afbc1279105",
+    "test/grip-span-kernel.test.ts": "901fca2f239248bf3e70a9febb43ef0c797ababdf96972e36ce1e40e658305f6"
+  },
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "timestamp": "2026-10-14T21:53:20.119Z",
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "priorReceipt": {
+    "path": "data/reviews/current/grip-span-events.json",
+    "sha256": "6ed5836dffb8103b8dcbdc000cf570f59967f398952846fdc6c7b29ed5ece2a9"
+  },
+  "protocol": {
+    "candidate": "DOP853 local embedded5/3 estimate, per-component norm and summed1/32 budget; whole-state safeguarded secant at tangent reversal; endpoint derivative reuse",
+    "reference": "Independent SPD provider + RK4 uniform pieces with whole-state bisection at reversal; same physical coordinates/ODE, independent force/step/root",
+    "shortReference": [
+      128,
+      256
+    ],
+    "longReference": [
+      2048,
+      4096
+    ],
+    "refinedAllowance": 0.0625,
+    "event": {
+      "maximum": 4,
+      "forceResidualCapacityRatio": 1e-12,
+      "timeBracket": 1e-14,
+      "detectionFloor": "1e-9/(128*duration), numerical event detection only"
+    },
+    "bounded": {
+      "evaluations": 4096,
+      "pieces": 256,
+      "retries": 24,
+      "rootTrials": 12
+    },
+    "accuracy": {
+      "position": 5e-10,
+      "velocity": 2.5e-8,
+      "facing": 2.5e-9,
+      "spin": 2.5e-7,
+      "attachment": 5e-10,
+      "impulse": 5e-10,
+      "moment": 5e-10,
+      "work": 1e-9,
+      "dose": 1e-9
+    },
+    "budgetMilliseconds": {
+      "median": 2,
+      "p95": 5,
+      "refusal": 10
+    },
+    "shortDuration": 0.0002,
+    "longDuration": 0.004166666666666667
+  },
+  "change": "Only dynamic coordinates0..15/time32 need intermediate RK stage states. Every final ledger quadrature/error retains original summation. Same field scalar/guard arithmetic without combined frame object. No World insertion in this numerical stage.",
+  "mode": "accuracy",
+  "rows": [
+    {
+      "id": "loaded-mixed",
+      "duration": 0.0002,
+      "inputSha256": "f3b63c7a91e8abe1135e3ddd5339a20e75dfe85b5f8c131b8c86eb5edcb81a6b",
+      "exactPR43": true,
+      "error": 0.0012680338210192899,
+      "convergence": 0.014239054385982271,
+      "evaluations": 99,
+      "partitions": 7,
+      "events": [],
+      "energyResidual": 1.563123381947771e-13,
+      "angularResidual": 2.2737367544323206e-13,
+      "motorCompositionResidual": -4.336808689942018e-18,
+      "estimatedError": 0.01059924129942451
+    },
+    {
+      "id": "loaded-mixed",
+      "duration": 0.004166666666666667,
+      "inputSha256": "83672b3ae4e06000dd2ea2d0e6b7208b4da20e11a6369a771df39a8f5bdaf71f",
+      "exactPR43": true,
+      "error": 0.04264858762959648,
+      "convergence": 0.043569208789615364,
+      "evaluations": 690,
+      "partitions": 54,
+      "events": [],
+      "energyResidual": -1.9287407771167303e-14,
+      "angularResidual": -8.526512829121202e-14,
+      "motorCompositionResidual": 7.806255641895632e-18,
+      "estimatedError": 0.005735894380123618
+    },
+    {
+      "id": "curved-mixed",
+      "duration": 0.0002,
+      "inputSha256": "2854c1ef7118611d1ca1ea95bd403b22d7c8135f0c8f8a07a49d6dd6eab93672",
+      "exactPR43": true,
+      "error": 0.0013800759174855714,
+      "convergence": 0.022268329137216825,
+      "evaluations": 123,
+      "partitions": 8,
+      "events": [],
+      "energyResidual": -7.340417315289686e-14,
+      "angularResidual": 0,
+      "motorCompositionResidual": 8.673617379884035e-19,
+      "estimatedError": 0.006761910449296466
+    },
+    {
+      "id": "curved-mixed",
+      "duration": 0.004166666666666667,
+      "inputSha256": "d6eef6720963b0f9a3b8998ad9d4e6de990922210ddfab4e520658289daff0ae",
+      "exactPR43": true,
+      "error": 0.04176833086631282,
+      "convergence": 0.02642657379920043,
+      "evaluations": 821,
+      "partitions": 57,
+      "events": [],
+      "energyResidual": -8.873030111491379e-14,
+      "angularResidual": 2.5579538487363607e-13,
+      "motorCompositionResidual": 3.469446951953614e-18,
+      "estimatedError": 0.006186546444792482
+    },
+    {
+      "id": "curved-return",
+      "duration": 0.0002,
+      "inputSha256": "341866a870ab33c77af83bd6d1fb97b1c84a9abb2d0edea7f66d77cd82171bb7",
+      "exactPR43": true,
+      "error": 0.00084428531558494,
+      "convergence": 0.005561695082160607,
+      "evaluations": 87,
+      "partitions": 6,
+      "events": [],
+      "energyResidual": -5.6383606601874544e-14,
+      "angularResidual": 4.973799150320701e-14,
+      "motorCompositionResidual": -1.0842021724855044e-19,
+      "estimatedError": 0.009343109106576996
+    },
+    {
+      "id": "curved-return",
+      "duration": 0.004166666666666667,
+      "inputSha256": "83779f647501896bb2b5b69155962436ea453c51713f90b9130ad7dee11d9336",
+      "exactPR43": true,
+      "error": 0.005858445653216901,
+      "convergence": 0.010649363439836513,
+      "evaluations": 740,
+      "partitions": 46,
+      "events": [
+        {
+          "time": 0.0008062849465000488,
+          "residual": -6.458839103610569e-13
+        }
+      ],
+      "energyResidual": -5.172500814709484e-13,
+      "angularResidual": 4.263256414560601e-14,
+      "motorCompositionResidual": 5.421010862427522e-19,
+      "estimatedError": 0.003187738716401619
+    },
+    {
+      "id": "radial-control",
+      "duration": 0.0002,
+      "inputSha256": "d9c06efd607766f7375d0fc3222ef54655cca6503fbbfcd25a8c38e42544c4bb",
+      "exactPR43": true,
+      "error": 0.0003681995030049845,
+      "convergence": 0.0005323963925968345,
+      "evaluations": 15,
+      "partitions": 1,
+      "events": [],
+      "energyResidual": 9.844073076207123e-15,
+      "angularResidual": 5.551115123125783e-17,
+      "motorCompositionResidual": -5.082197683525802e-21,
+      "estimatedError": 0.00005530942041074493
+    },
+    {
+      "id": "radial-control",
+      "duration": 0.004166666666666667,
+      "inputSha256": "ca47e66a292099b90ccd3737e561c18b772a755d92d2225ab11ccc2a91e3c09d",
+      "exactPR43": true,
+      "error": 0.005374192084311379,
+      "convergence": 0.0010385840588816113,
+      "evaluations": 39,
+      "partitions": 2,
+      "events": [],
+      "energyResidual": 3.4251047771648516e-14,
+      "angularResidual": 4.440892098500626e-16,
+      "motorCompositionResidual": -1.0164395367051604e-20,
+      "estimatedError": 0.0017881380060007772
+    },
+    {
+      "id": "zero-span-control",
+      "duration": 0.0002,
+      "inputSha256": "562dfd0b5c17e086d30e991bcdbc1bc7356165a917b820584c80c1cd2ffc3c8d",
+      "exactPR43": true,
+      "error": 0,
+      "convergence": 0,
+      "evaluations": 15,
+      "partitions": 1,
+      "events": [],
+      "energyResidual": 0,
+      "angularResidual": 0,
+      "motorCompositionResidual": 0,
+      "estimatedError": 3.1864070429633013e-8
+    },
+    {
+      "id": "zero-span-control",
+      "duration": 0.004166666666666667,
+      "inputSha256": "3b53526ca052239ac9bbf71591f33d4938600849350f0025b615dbb934af25ec",
+      "exactPR43": true,
+      "error": 0,
+      "convergence": 0,
+      "evaluations": 15,
+      "partitions": 1,
+      "events": [],
+      "energyResidual": 0,
+      "angularResidual": 0,
+      "motorCompositionResidual": 0,
+      "estimatedError": 6.638348006173545e-7
+    },
+    {
+      "id": "fresh-curved",
+      "duration": 0.0002,
+      "inputSha256": "9577d3ead5ef5dd3879deb11419da48972939d0dba7f6651a4a0b3db14457d44",
+      "exactPR43": true,
+      "error": 0.000775700399401195,
+      "convergence": 0.013547579809962563,
+      "evaluations": 99,
+      "partitions": 7,
+      "events": [],
+      "energyResidual": 1.186759092147889e-13,
+      "angularResidual": 1.4210854715202004e-13,
+      "motorCompositionResidual": 3.0357660829594124e-18,
+      "estimatedError": 0.010078721409256756
+    },
+    {
+      "id": "fresh-curved",
+      "duration": 0.004166666666666667,
+      "inputSha256": "48b60a081388423ca3ff9501f535183ffa17c21936485b5e111e3ee3dde0af2a",
+      "exactPR43": true,
+      "error": 0.008949850692027816,
+      "convergence": 0.004547510805419375,
+      "evaluations": 774,
+      "partitions": 54,
+      "events": [],
+      "energyResidual": 6.067195357228883e-16,
+      "angularResidual": 1.4210854715202004e-13,
+      "motorCompositionResidual": -5.637851296924623e-18,
+      "estimatedError": 0.006037511753312853
+    }
+  ],
+  "raw": {
+    "path": "out/grip-span-kernel/kernel-moving-raw.json",
+    "sha256": "2afd588beaa71983a0d43698e0a703e233a1a89694ff186fbc97b5de1469e4b2"
+  },
+  "referenceReuse": {
+    "path": "out/grip-span-events/event-moving-raw.json",
+    "sha256": "a86ff378cd01399c4c614d227bc493b89c2e0ff09091b3a0b1d4f236e8e24a9c",
+    "commit": "7b3d5e3db4da1bb907fe570bced216faa8e5027e",
+    "settings": "All prior dependency/fixture hashes checked. Independent SPD/RK4/bisection128/256 and2048/4096 states reused; original force/controller comparisons executed again."
+  },
+  "benchmarks": [
+    {
+      "commit": "cb26be6862728fd163ad59b8387198726ab7e1e4",
+      "timestamp": "2026-10-14T21:53:28.486Z",
+      "cpu": "AMD EPYC 9V74 80-Core Processor",
+      "node": "v22.23.3",
+      "protocol": {
+        "serial": true,
+        "warmups": 5,
+        "repetitions": 21,
+        "rotatingOrder": true,
+        "preparationOutsideClock": true,
+        "profilersOrLedgerObservers": false,
+        "sameSixInputsAndOrdinaryDuration": true
+      },
+      "bench": [
+        {
+          "id": "loaded-mixed",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.8588220000001456,
+            "p95": 1.4579639999999472,
+            "maximum": 1.4794460000000527
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "loaded-mixed",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 1.0033300000000054,
+            "p95": 1.663724000000002,
+            "maximum": 1.8961030000000392
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "loaded-mixed",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 28.384300999999937,
+            "p95": 37.10996799999998,
+            "maximum": 114.10756700000002
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-mixed",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.9536449999995966,
+            "p95": 1.142229000000043,
+            "maximum": 1.396871999999803
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "curved-mixed",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 2.463336999999683,
+            "p95": 3.668731000000207,
+            "maximum": 3.8752620000000206
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-mixed",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 66.61021299999993,
+            "p95": 81.30347499999971,
+            "maximum": 162.7644879999998
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.8731339999999363,
+            "p95": 1.2266960000001745,
+            "maximum": 1.45575000000008
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "curved-return",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 2.204928999999538,
+            "p95": 3.9388480000002346,
+            "maximum": 4.559221000000434
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 69.20038700000032,
+            "p95": 81.666878,
+            "maximum": 201.23672100000022
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.0815229999998337,
+            "p95": 0.16260499999953026,
+            "maximum": 0.8234290000000328
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "radial-control",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 0.12941499999942607,
+            "p95": 0.3104880000000776,
+            "maximum": 0.3808229999995092
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 66.57409900000039,
+            "p95": 75.60192000000006,
+            "maximum": 75.7907750000004
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.08540799999900628,
+            "p95": 0.21082699999988108,
+            "maximum": 0.27942000000075495
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "zero-span-control",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 0.05037600000105158,
+            "p95": 0.16791300000022602,
+            "maximum": 0.41512499999953434
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 66.4323459999996,
+            "p95": 85.14317699999992,
+            "maximum": 93.81928200000038
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.9674560000003112,
+            "p95": 1.3459359999997105,
+            "maximum": 1.639497999998639
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "fresh-curved",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 2.4978599999994913,
+            "p95": 3.9270510000005743,
+            "maximum": 4.696189000000231
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 79.11875399999917,
+            "p95": 94.28372099999979,
+            "maximum": 146.6383079999996
+          },
+          "refusals": 0,
+          "passesBudget": null
+        }
+      ],
+      "raw": {
+        "path": "out/grip-span-kernel/benchmark-a.samples.json",
+        "sha256": "5401ba279a04a5d734d3931c436cb97cdefd60f27c6bc6469bfa7b5d220ea5e4"
+      },
+      "costPass": true
+    },
+    {
+      "commit": "cb26be6862728fd163ad59b8387198726ab7e1e4",
+      "timestamp": "2026-10-14T21:56:33.168Z",
+      "cpu": "AMD EPYC 9V74 80-Core Processor",
+      "node": "v22.23.3",
+      "protocol": {
+        "serial": true,
+        "warmups": 5,
+        "repetitions": 21,
+        "rotatingOrder": true,
+        "preparationOutsideClock": true,
+        "profilersOrLedgerObservers": false,
+        "sameSixInputsAndOrdinaryDuration": true
+      },
+      "bench": [
+        {
+          "id": "loaded-mixed",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.7599129999998695,
+            "p95": 1.206666000000041,
+            "maximum": 1.2759390000001076
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "loaded-mixed",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 0.9356470000000172,
+            "p95": 1.2876970000000938,
+            "maximum": 1.4215080000001308
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "loaded-mixed",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 24.367664999999988,
+            "p95": 37.52800000000002,
+            "maximum": 41.10675299999991
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-mixed",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 1.069988999999623,
+            "p95": 1.361507999999958,
+            "maximum": 1.4998460000001614
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "curved-mixed",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 2.7685449999999037,
+            "p95": 3.5940259999999853,
+            "maximum": 3.6140269999996235
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-mixed",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 74.41635700000006,
+            "p95": 84.09661800000003,
+            "maximum": 88.10633000000007
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.9765489999999772,
+            "p95": 1.3242920000002414,
+            "maximum": 1.491743999999926
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "curved-return",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 2.583135000000766,
+            "p95": 3.137489000000187,
+            "maximum": 3.172983000000386
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 74.68854700000065,
+            "p95": 86.01401900000019,
+            "maximum": 98.0181590000002
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.08311499999945227,
+            "p95": 0.1673720000007961,
+            "maximum": 0.7565880000001926
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "radial-control",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 0.14320500000030734,
+            "p95": 0.5215939999998227,
+            "maximum": 0.8962879999999132
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 75.10618200000044,
+            "p95": 88.36977099999967,
+            "maximum": 89.68651199999931
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.08465699999942444,
+            "p95": 0.12095200000112527,
+            "maximum": 0.12833300000056624
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "zero-span-control",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 0.04938399999991816,
+            "p95": 0.21033600000009756,
+            "maximum": 0.6415999999990163
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 72.0453120000002,
+            "p95": 80.5456379999996,
+            "maximum": 85.27179599999909
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "kernel",
+          "milliseconds": {
+            "median": 0.8545350000003964,
+            "p95": 1.378193000000465,
+            "maximum": 1.559887000001254
+          },
+          "refusals": 0,
+          "passesBudget": true
+        },
+        {
+          "id": "fresh-curved",
+          "method": "PR43-event",
+          "milliseconds": {
+            "median": 2.1867889999994077,
+            "p95": 2.6815929999993386,
+            "maximum": 3.26048499999888
+          },
+          "refusals": 0,
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 68.28544800000054,
+            "p95": 77.3687489999993,
+            "maximum": 85.67300999999861
+          },
+          "refusals": 0,
+          "passesBudget": null
+        }
+      ],
+      "raw": {
+        "path": "out/grip-span-kernel/benchmark-b.samples.json",
+        "sha256": "4af4fb10dcbcf0aa841dabb9e07e58247cf86a246a0471949835db8c3a1358ad"
+      },
+      "costPass": true
+    }
+  ],
+  "checks": {
+    "tests": 20,
+    "implementation": "ddccac5",
+    "log": {
+      "path": "out/grip-span-kernel/checks-final.log",
+      "sha256": "c584a0afc68477672196a63430ce0492f5239df9950d1fda42c6629a7b8c38ee"
+    },
+    "typecheck": {
+      "path": "out/grip-span-kernel/typecheck-numerical.log",
+      "sha256": "1c0028881a402a8ab696a5a491b089dc44535e484687c593ddaac7fac59916db"
+    }
+  },
+  "development": {
+    "stageOnlyCost": {
+      "path": "out/grip-span-kernel/stage-cost.json",
+      "sha256": "5529b0ff48fc73a97740d933043f9942b1c203ea6c7937b9aac25919c230fbd9"
+    },
+    "firstFrameCost": {
+      "path": "out/grip-span-kernel/frame-cost.json",
+      "sha256": "40fce930b140e1c3cfc425c16164755e14a3cfed3ef81892eea088f6e4bfcd2c"
+    },
+    "startupTailMilliseconds": 9.840243999999984
+  },
+  "decision": "Numerical scope cost passes in both pinned serial processes, with exact PR43 outputs. Proceed to the smallest valid experimental World integration, preserving all scope/default/support/capacity/effort boundaries. Startup tail and zero-span overhead remain adverse evidence; no global/native cost claim."
+}
