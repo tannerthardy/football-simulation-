@@ -216,14 +216,17 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     coarse=fine;
   }
   if(!accepted)throw new RangeError('Bounded tangent scope/refinement limit exhausted');
-  const y=accepted.y,p=pose(y),g=geometry(y);
+  const y=accepted.y,p=pose(y),g=geometry(y),
+    representationError=Math.max(...(['a','b'] as const).flatMap((k,i)=>[
+      Math.abs(p[k].pos.x-y[i*6]),Math.abs(p[k].pos.y-y[i*6+1]),Math.abs(p[k].vel.x-y[i*6+2]),
+      Math.abs(p[k].vel.y-y[i*6+3]),Math.abs(p[k].spin-y[i*6+4]),Math.abs(p[k].facing-y[i*6+5])]));
+  if((integration==='gauss'||integration==='radau')&&!(representationError<1e-10))
+    throw new RangeError('Bounded tangent body/impulse representation limit exhausted');
   return {...p,material:{x:y[ZX],y:y[ZY]},footOffset:{x:y[FX],y:y[FY]},
     point:{x:p.b.pos.x+g.rbx,y:p.b.pos.y+g.rby},legs:y[LEGS],hold:accepted.hold,
     slipping:accepted.phase!=='tail',capUntil:accepted.capUntil,slidingUntil:accepted.slidingUntil,
     impulse:{x:y[JX],y:y[JY]},moment:{x:y[QX],y:y[QY]},
     angularImpulse:[y[JA],y[JB]],angularMoment:[y[QA],y[QB]],bodyWork:y[BW],motorWork:y[MW],
     passiveWork:y[BW]-y[MW],dose:y[DOSE],...balances(y),partitions:n,evaluations,error,integration,
-    representationError:Math.max(...(['a','b'] as const).flatMap((k,i)=>[
-      Math.abs(p[k].pos.x-y[i*6]),Math.abs(p[k].pos.y-y[i*6+1]),Math.abs(p[k].vel.x-y[i*6+2]),
-      Math.abs(p[k].vel.y-y[i*6+3]),Math.abs(p[k].spin-y[i*6+4]),Math.abs(p[k].facing-y[i*6+5])]))};
+    representationError};
 }
