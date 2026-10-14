@@ -5,6 +5,7 @@
  */
 import { boundedAttachment } from '../../../src/physics/bounded-attachment.js';
 import { stiffTailStep } from './grip-stiff-tail.js';
+import { exponentialTailStep } from './grip-exponential-tail.js';
 import type { SupportedGripInput } from './grip-force-supported.js';
 import type { Particle } from './grip-force-interval.js';
 export interface BoundedGripInput extends SupportedGripInput {
@@ -16,7 +17,7 @@ const AX=0,AY=1,AVX=2,AVY=3,AS=4,AA=5,BX=6,BY=7,BVX=8,BVY=9,BS=10,BA=11,
   ZX=12,ZY=13,FX=14,FY=15,JX=16,JY=17,QX=18,QY=19,JA=20,JB=21,QA=22,QB=23,
   BW=24,MW=25,DOSE=26,LEGS=27;
 
-export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'='adaptive') {
+export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'|'analytic'='adaptive') {
   const {a,b,duration:H,capacity:C,mobility:mu}=input,K=1/a.mass+1/b.mass;
   const numbers=[H,C,mu,input.legs,input.pullSpeed,input.hold,input.reach,input.minimumDistance,input.attachmentReach,
     input.desired.x,input.desired.y,input.material.x,input.material.y,input.footOffset.x,input.footOffset.y,
@@ -87,6 +88,44 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
       d=derivative(t+h,add(c,h),phase,hold);
     return y.map((v,i)=>v+h*(a[i]+2*b[i]+2*c[i]+d[i])/6);
   }
+  function analytic(t:number,y:State,h:number,hold:number) {
+    if(C===0)return rk4(t,y,h,'tail',hold);
+    const f=frame(y,'tail',hold),ka=f.rax*f.nx+f.ray*f.ny,kb=f.rbx*f.nx+f.rby*f.ny,
+      u=[...y,0].map(()=>0),w=u.slice(),SQUARE=28,
+      z=[...y,f.vt*f.vt];
+    u[AVX]=f.ny/a.mass;u[AVY]=-f.nx/a.mass;u[AS]=-ka/a.inertia;
+    u[BVX]=-f.ny/b.mass;u[BVY]=f.nx/b.mass;u[BS]=kb/b.inertia;
+    u[JX]=-f.ny;u[JY]=f.nx;u[JA]=-ka;u[JB]=kb;
+    const ux=mu*f.jtx,uy=mu*f.jty;
+    u[ZX]=f.share*(f.c*ux+f.s*uy);u[ZY]=f.share*(-f.s*ux+f.c*uy);
+    u[FX]=ux;u[FY]=uy;u[DOSE]=Math.sign(f.force);
+    w[AVX]=f.ny/f.M;w[AVY]=-f.nx/f.M;w[AS]=-ka/f.M;
+    w[BVX]=-f.ny/f.M;w[BVY]=f.nx/f.M;w[BS]=kb/f.M;
+    // Store elapsed impulse moments T: T'=J. At the endpoint recover the
+    // original remaining-time moment Q=T+(H-t)J. This preserves the same
+    // drift chain for translation/yaw and its impulse ledger.
+    for(const [q,j] of [[QX,JX],[QY,JY],[QA,JA],[QB,JB]])z[q]-=(H-t)*z[j];
+    const r=exponentialTailStep(z,h,{u,w,mobility:f.M,square:SQUARE,work:[BW,MW],
+      links:[[AX,AVX],[AY,AVY],[BX,BVX],[BY,BVY],[AA,AS],[BA,BS],
+        [QX,JX],[QY,JY],[QA,JA],[QB,JB]],
+      derivative:state=>{
+        const g=frame(state,'tail',hold),d=derivative(t,state,'tail',hold),
+          bx=-state[BS]*g.rby+g.xx*g.ux+g.xy*g.uy,
+          by=state[BS]*g.rbx+g.xy*g.ux+g.yy*g.uy,
+          ax=state[BVX]-state[AVX]+bx,ay=state[BVY]-state[AVY]+by,
+          ndot=g.nx*ax+g.ny*ay,nx=(ax-g.nx*ndot)/g.d,ny=(ay-g.ny*ndot)/g.d,
+          source=-ny*g.gx+nx*g.gy-g.ny*(-state[BS]*by+state[AS]*ay)
+            +g.nx*(state[BS]*bx-state[AS]*ax),
+          ca=g.rax*g.nx+g.ray*g.ny,cb=g.rbx*g.nx+g.rby*g.ny,
+          lambda=(K+ca*ca/a.inertia+cb*cb/b.inertia)/g.M,square=state[SQUARE];
+        if(!(square>=0))throw new RangeError('Negative squared slip outside analytic scope');
+        for(const [q,j] of [[QX,JX],[QY,JY],[QA,JA],[QB,JB]])d[q]=state[j];
+        d[BW]=-square/g.M;d[MW]=-square/g.M;
+        d.push(-2*lambda*square+2*g.vt*source);return d;
+      }});
+    for(const [q,j] of [[QX,JX],[QY,JY],[QA,JA],[QB,JB]])r[q]+=(H-t-h)*r[j];
+    return r.slice(0,28);
+  }
   function solve(n:number) {
     let y=initial.slice(),t=0,phase=initialPhase,hold=input.hold,
       capUntil=phase==='cap'?H:0,slidingUntil=phase==='tail'?0:H,nextTailStep=0;
@@ -139,7 +178,7 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
             if(!(h>0)||t+h===t)throw new RangeError('Bounded tangent adaptive underflow');
             let fine:State,error:number;
             try {
-              const step=integration==='gauss'||integration==='radau'?implicit:(t:number,y:State,h:number,hold:number)=>rk4(t,y,h,phase,hold),
+              const step=integration==='analytic'?analytic:integration==='gauss'||integration==='radau'?implicit:(t:number,y:State,h:number,hold:number)=>rk4(t,y,h,phase,hold),
                 coarse=step(t,y,h,hold),mid=step(t,y,h/2,hold);
               fine=step(t+h/2,mid,h/2,hold);
               // Allocate local accuracy by elapsed physical time. Separately
@@ -220,7 +259,7 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     representationError=Math.max(...(['a','b'] as const).flatMap((k,i)=>[
       Math.abs(p[k].pos.x-y[i*6]),Math.abs(p[k].pos.y-y[i*6+1]),Math.abs(p[k].vel.x-y[i*6+2]),
       Math.abs(p[k].vel.y-y[i*6+3]),Math.abs(p[k].spin-y[i*6+4]),Math.abs(p[k].facing-y[i*6+5])]));
-  if((integration==='gauss'||integration==='radau')&&!(representationError<1e-10))
+  if((integration==='gauss'||integration==='radau'||integration==='analytic')&&!(representationError<1e-10))
     throw new RangeError('Bounded tangent body/impulse representation limit exhausted');
   return {...p,material:{x:y[ZX],y:y[ZY]},footOffset:{x:y[FX],y:y[FY]},
     point:{x:p.b.pos.x+g.rbx,y:p.b.pos.y+g.rby},legs:y[LEGS],hold:accepted.hold,
