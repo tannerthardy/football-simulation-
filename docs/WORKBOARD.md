@@ -11,6 +11,7 @@ local calendar; evidence receipts retain their explicit measurement timestamps.
 
 | Active item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
+| Pass-rush timing and observed QB danger | Codex pass/coverage controller session, user asks current release/pressure diagnosis before integration | `codex/pass-rush-timing-audit` from `4ded6b6` | Observation scripts, portable references/controls and evidence/docs only; no runtime, protection, capability or physics changes | 2026-10-14 UTC | [Diagnosis complete](reviews/pass-rush-timing.md): 181 dropback labels/32 saved full signatures exact; 165 clean, release median/p90 2.40/3.20 s, seven sacks median 3.25 s. Strict two-yard presence 24.8%; shared inclusive tracking 36.4%, definitions retained. Same-picture contact geometry exposes imminent threat in 5/7 sacks; not a candidate. Four neutral/restored full pairs; 288 lab inputs reused. Two reconstructed games/8 standalone replays, no new random game contexts/full suites; 45.75 s launcher commands. Next: QB attainable-contact forecast against protected-long/windup controls. Coverage/YAC stay unmerged; coordinate QB/protection ownership and keep World/capabilities separate. |
 | Shared reproducible integration baseline | Codex run-game lead, user requested consolidation before further research | `codex/run-game-integration`, baseline `run-game-2026-10-13`, verified code/harness `1f1f1c8` | Branch reconciliation, explicit feature profile, test harness, baseline receipts and shared instructions; no feature promotion or capacity changes | 2026-10-13 UTC | [Shared baseline complete](BASELINE.md): latest primary `862258c`, live-gaps `448313e` and all included codex tips preserved. All 43 runtime flags recorded; experiments off. 32/32 native state/RNG histories unchanged through 3.5 s (12 ended/20 live). Same four game inputs/assertions now use separate existing per-game deadlines. Complete profile run: 1,652 TS, 145 Python, typecheck/build pass, no worker errors. [Pinned receipt](baseline-validation.json). PR #2 remains draft; physical/football failures and parked branches retained. |
 | Tite keeper/helper failure | Codex run-game lead, user requested diagnosis and repair | `codex/run-game-integration` from `512ad90` | Matched native Tite reads/contact and helper contracts; no engine, capacities or experimental promotion | 2026-10-13 UTC | [Contract repair complete](reviews/tite-helper-contract.md): old loss/collection endpoint conflicts with a useful loaded Y reach and RT's earned delayed-cue climb. Matched release ablation, no-premature-climb checks and two mirrored actual-contact collection controls retained. 93 focused checks, typecheck/build pass; full TS has 1,645 passes and two unchanged game-record 60-second timeouts plus a worker timeout, reproduced in isolation. Runtime byte-identical to `512ad90`; full suite is not green. |
 | Run-game integration, defensive flow and native loaded recovery | Codex run-game lead, user assigned all three priorities and loaded recovery | `codex/run-game-integration` from `67301d2`, integrating primary `1ecae63` and live-gaps `b50fa37` | Defensive acquired-cue/request diagnosis; native diagnostic recovery controls; branch reconciliation and research docs. Preserve Claude hand controllers and primary law ownership; no capacity changes or flag promotion. | 2026-10-12 (America/Phoenix) | [Bounded pass complete](reviews/run-game-integration.md): combined sources on an isolated branch, 32/32 default state/RNG parity; pull-cue information leak repaired in a disabled trial, but flow remains effectively unchanged on 32 shared/16 inspected-fresh/12 new reps. Continued recovery retains 8/8 new finishes and stabilizes several loaded paths; side-cut still falls at 12 and is censored at 48 (.957 yd path difference). Claude hand/recovery benches and four-body fall controls retained. In-stride catch rescued off; three historical docs saved; bulky receipts archived by immutable links. 1,644 TS passes + unchanged Tite, 145 Python, type/build. No promotion. |
@@ -591,3 +592,19 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+- 2026-10-14 UTC, pass/coverage session -> run-game/integration and QB/protection owners:
+  [Pass-rush timing diagnosis](reviews/pass-rush-timing.md) is on its own
+  observation-only branch. No global rush boost: current releases 2.40 median,
+  3.20 p90; pressure does not support a generally idle QB. Contact danger
+  estimates miss the .45-s emergency boundary in seven clean sacks; five
+  expose that boundary in a same-picture geometric-envelope diagnostic. This
+  is not a changed controller, stronger reach or a guaranteed save. Begin a
+  bounded QB forecast encounter with P46/P150 and opposing protected P39 and
+  successful windup P67; preserve actual execution and held protection.
+  Protection still consumes live rusher/QB bodies and behavioral roles; QB
+  pressure still reads live engagement/blind-side data. Those information
+  migrations need their own controller contracts and owner coordination.
+  Physics, roster corrections and shed-law work remain separate. Neither
+  the coverage nor YAC candidate has been integrated; run-game lead retains
+  the preserved full suite on the exact combined candidate.
