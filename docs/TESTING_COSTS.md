@@ -193,8 +193,9 @@ the same machine without competing collectors before claiming speed gains.
 ## One owner for shared integration checks
 
 Record the integration owner in [WORKBOARD.md](WORKBOARD.md) before the combined
-run. The current #6-only assignment is the Codex integration owner in this chat,
-as recorded in [INTEGRATION.md](INTEGRATION.md). Local agents hand off compatible
+run. The current component-only extraction assignment is the Codex integration
+owner in this chat, as recorded in [the extraction handoff](reviews/contact-components-extraction.md).
+The earlier #6-only pass remains in [INTEGRATION.md](INTEGRATION.md). Local agents hand off compatible
 focused receipts, limitations and candidate commits; they do not repeat the
 shared suite. Historical integration-lead rows describe their original stage.
 

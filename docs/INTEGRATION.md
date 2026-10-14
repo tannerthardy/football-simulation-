@@ -1,5 +1,11 @@
 # Current integration ownership and evidence
 
+This file records the historical #6-only pass. The current extracted runtime
+candidate and its final verification are described in
+[contact-components-extraction.md](reviews/contact-components-extraction.md).
+Its production request changes and 44 settings require their own receipt;
+the 43-flag receipt below remains evidence for its original tested commit.
+
 This pass incorporates **PR #6 only** into the previously combined runtime.
 The historical comparison stays
 `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` on

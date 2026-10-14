@@ -9,7 +9,7 @@ import type { Report } from '../scripts/roster-screen.js';
 
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const baseline: Report = JSON.parse(readFileSync('data/reviews/current/roster-screen-baseline.json', 'utf8'));
-const pins = JSON.parse(readFileSync('config/baseline.json', 'utf8'));
+const pins = JSON.parse(readFileSync('config/roster-screen-reference.json', 'utf8'));
 function candidate(): Report {
   const c = structuredClone(baseline); c.rows = c.rows.slice(0, 3); c.planned = 3;
   c.provenance.sourceSha256 = 'candidate';
@@ -43,11 +43,15 @@ describe('saved-result behavioral review has no outcome promotion rule', () => {
     const same = buildReview(baseline, candidate(), pins);
     expect(same).toContain('No changed signatures'); expect(same).not.toContain('**Verdict:');
     const c = candidate(); c.rows[0].result.completed = !c.rows[0].result.completed;
+    // Adding a current flag must not relabel or invalidate historical evidence.
+    c.provenance.flags = JSON.parse(readFileSync('config/baseline.json', 'utf8')).flags;
+    for (const row of c.rows) row.provenance = structuredClone(c.provenance);
     c.rows[0].result.yac = null; c.rows[0].result.signature = 'new-completion';
     c.rows[0].result.initialProfilesSha256 = 'different-profile';
     const review = buildReview(baseline, seal(c), pins);
     expect(review).toContain('changed completion cohorts are not paired YAC estimates');
     expect(review).toContain('| n/a | true |');
+    expect(review).toContain('Resolved flags changed: true.');
   });
 
   it('retains failed/partial evidence as blocked instead of converting it into a passing review', () => {

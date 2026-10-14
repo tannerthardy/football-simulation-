@@ -1,5 +1,12 @@
 # Shared integration baseline
 
+Current preparation: [component-only extraction](reviews/contact-components-extraction.md)
+from reviewed #8 `c98c2fa`. Its registry adds only `RUN_CONTACT_COMPONENTS=1`
+(44 settings), with `--candidate` required. The historical profile/configuration
+at `4ded6b6` and all historical receipts remain intact; this candidate is not a
+new baseline designation. The rest of this document describes that historical
+comparison and the earlier #6-only pass.
+
 Use **`codex/run-game-integration`** for shared development and comparisons.
 Baseline ID: **`run-game-2026-10-13`**. The complete profile is
 [`config/baseline.json`](../config/baseline.json). It retains the existing
