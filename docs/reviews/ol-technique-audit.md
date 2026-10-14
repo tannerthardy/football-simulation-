@@ -77,7 +77,8 @@ the same asymmetric front. G73-I48 stays secondary and is not replayed.
 though it uses post-World bodies; an event labeled2.35 therefore belongs to
 the2.35–2.40 interval, not a certified instantaneous contact at2.35. The audit
 retains both clocks and pre/post bodies. Quoted hand-load times label controller
-steps; each final-substep output belongs to its recorded World interval.
+steps; each force output averages the accumulated signed impulses over its
+recorded World interval. It is not a final-substep sample.
 
 ## 1. The attached-TE technique path is incomplete
 
@@ -199,9 +200,18 @@ runner contact. Important examples:
 | Strong-call reserved backers | C/TE departures and subsequent load occur at different times; some collection is later than the first-level stop. | Eventual contact cannot be counted as timely protection; earlier departure may still be unsafe. |
 
 Closest distances are descriptive geometry, not certified reach/interception.
-Hand force is a final-substep output, not proof of continuously retained contact.
+Hand force is a signed tick average, not proof of continuously retained contact.
 The defender's timing, acquired cue, support and runner momentum still decide
 whether a missed collection is avoidable or a legitimate defensive win.
+
+**Measurement correction:** the original viewer/witness described these loads
+as final-substep samples. That label was wrong. World resets the accumulators,
+sums signed substep impulses/moments, and divides by the full tick duration.
+The correction changes descriptions only; a complete numeric-leaf comparison
+preserves every exported load and trajectory. On all three saved first contact
+intervals, mean hand force times dt plus delivered ground impulse reproduces
+actual momentum change within1.21e-13. The corrected average still does not
+certify uninterrupted attachment. No new physics or football replay was needed.
 
 ## Narrow path to a controller improvement
 

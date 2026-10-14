@@ -142,7 +142,7 @@ def compact_cue(cue, slots):
 
 def contact_record(frame, entry, hand=False):
     result = {**interval(frame), "kind": "hands" if hand else "body", **entry}
-    result["timing"] = "final substep output, not tick-average or acquisition instant" if hand else "impulse accumulated within this World interval"
+    result["timing"] = "signed impulse divided by dt over this World interval; not an acquisition instant or continuous-contact certificate" if hand else "impulse accumulated within this World interval"
     return result
 
 
@@ -361,7 +361,7 @@ def main():
         "inputs": provenance, "baselineCollectorProvenance": {k: docs[k]["provenance"] for k in ("strong", "weak")},
         "isolatedCollectorProvenance": {k: v for k, v in docs["isolated"].items() if k != "panel"},
         "nativeTicksAdvanced": 0,
-        "timing": {"controllerT": "frame.t; pre bodies at entry to World step", "postBodyT": "frame.after = t + .05; saved agents are post-step", "events": "exact native event labels retained; block_contact uses post time; carrier_contact uses controller time, including body collisions emitted after World", "hands": "final-substep delivered outputs, not tick-average force", "bodyImpulses": "accumulated within labeled World interval; not an exact first substep time", "portableBodyVector": "[x, y, vx, vy, facing, spin]; limits are in rosterLimits; slot map and positions in snapBodies"},
+        "timing": {"controllerT": "frame.t; pre bodies at entry to World step", "postBodyT": "frame.after = t + .05; saved agents are post-step", "events": "exact native event labels retained; block_contact uses post time; carrier_contact uses controller time, including body collisions emitted after World", "hands": "signed substep impulses/moments accumulated then divided by dt; tick averages, not a continuous-contact certificate", "bodyImpulses": "accumulated within labeled World interval; not an exact first substep time", "portableBodyVector": "[x, y, vx, vy, facing, spin]; limits are in rosterLimits; slot map and positions in snapBodies"},
         "limits": ["Assignment, nominal joint, delivered force and route protection are distinct.", "Static distance and requested velocity do not certify achievable interception.", "Serialized requested commands may be placeholders for engagement; finalWorldIntent is the delivered target, not achieved movement.", "No captured pair cue is an evidence gap, not proof the player lacked information.", "Conditional snap combo ownership is not a guarantee either member has already climbed.", "Joint retention law remains under physics-owner review; experimental failures are not certified lawful defensive wins.", "No native reruns, new roster panel, full games, controller/solver changes or current-develop transfer inference."],
     }
     full = {**metadata, "cases": cases, "runtimeSeconds": time.perf_counter() - start}

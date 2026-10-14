@@ -251,26 +251,26 @@
   },
   "diagnosticHashes": {
     "scripts/diag/zone/ol-role-dispatch.ts": "fd3b791a9ca84b928fb53047a8db00ccaebc7cee3f95ae19c20a47fd2e0ee3ef",
-    "scripts/diag/zone/ol-responsibility-audit.py": "4d4bcae51a92d18600c22cf8cf460010fa179c9bc1562aa706cf1ef6c7372de0",
-    "scripts/diag/zone/ol-technique-film.py": "b7281e924863d8e2464fe8aad5fdb1cb0aedf35f525fb664d282753fe99b7eda"
+    "scripts/diag/zone/ol-responsibility-audit.py": "12192de0d809d3aa63e16638561c75e01f04551118ed35edffe9de59d0eda743",
+    "scripts/diag/zone/ol-technique-film.py": "2a603a5c91e3fcd7639b08267f6a5d84964e7aa8624152a93cdb482662fe827e"
   },
   "portableWitness": {
     "path": "docs/reviews/ol-responsibility-witness.json",
-    "sha256": "a6e91452cc2a6d9cccdf03ffe934092455066224654df8fa7a75b7a43174b122",
-    "bytes": 89528
+    "sha256": "6188006459d2729278bbfa6dbc5fcad4f26d2d1ab0ef40b13e322d490388449f",
+    "bytes": 90452
   },
   "artifacts": {
     "out/ol-technique/film.html": {
-      "sha256": "7f5817a5eb97a2e5a30fcbd0b0ddb87d637ff30a1782e4ffbe30948062daf66a",
-      "bytes": 7393960
+      "sha256": "b55e9fa6b0634faa68d44ecf58823404ac76dc7472d45291c5ac718324f83b40",
+      "bytes": 7394079
     },
     "out/ol-technique/film.json": {
-      "sha256": "8632d14a592b6d9c5aacca35943a1027975acd13809718b024ad2a731aa5c1b3",
-      "bytes": 7383486
+      "sha256": "8190ed57c2eefad9a0a508bbd9f25aa34d79500deb5537802a37fb90a0ea9734",
+      "bytes": 7383561
     },
     "out/ol-technique/responsibility.json": {
-      "sha256": "63a78dbc458642ba2d8c7709ce0dfa1d3827d22a96bdd252a4562a0380f5f33f",
-      "bytes": 751859
+      "sha256": "f3158a7ffafcaa579f18122d6787a0b368ec33c2d695ea63827b3ff3e2d116c8",
+      "bytes": 760614
     }
   },
   "checks": {
@@ -448,19 +448,19 @@
     },
     "filmExtraction": {
       "passed": true,
-      "reusedFromFinalGeneratorLocalCheck": true,
+      "reusedFromFinalGeneratorLocalCheck": false,
       "savedFrames": 462,
       "samePrefixHashes": 8,
       "richPrefixes": 2,
       "richPrefixHashesEach": 49,
-      "lastBuildSeconds": 2.948,
-      "javascriptSyntax": "Node22 --check passed on extracted viewer script; reported by film worker",
+      "lastBuildSeconds": 3.192323879993637,
+      "javascriptSyntax": "Node22 --check passed again after force-label correction",
       "browserRendering": "Not executed: installed Playwright Chromium executable absent; no download attempted"
     },
     "responsibilityExtraction": {
       "passed": true,
-      "reusedFromFinalGeneratorLocalCheck": true,
-      "lastBuildSeconds": 2.266805890998512,
+      "reusedFromFinalGeneratorLocalCheck": false,
+      "lastBuildSeconds": 2.5218027899973094,
       "cases": 3,
       "allThreats": 11,
       "changedInputHashControl": "Passed: mismatching compressed input rejected before reduction/output"
@@ -591,7 +591,7 @@
     }
   ],
   "recordedWrappedCommandSeconds": 9.710382242,
-  "runtimeAccounting": "Two wrapped commands have exact recorded times. Final worker film build2.948s and final responsibility build are measured; earlier extraction attempts, read-only inspection and total investigation time were not fully instrumented. Do not treat their sum as total task cost.",
+  "runtimeAccounting": "Two wrapped commands have exact recorded times. Final worker film build2.948s and final responsibility build are measured; earlier extraction attempts, read-only inspection and total investigation time were not fully instrumented. Do not treat their sum as total task cost. Force-label correction reruns only two offline reducers and JavaScript syntax; full numeric leaf comparison passes, three saved hand-impulse ledgers close below1.21e-13; see recorded reducer stdout for new timings.",
   "remainingDependency": "Sole physics owner must review acquired/reachable/retained/cleared contact contract before controller/feasible-route candidates. No published review found on PR14/17/18 at audit checkpoint.",
   "nextOwnerActions": {
     "physics": "Review existing PR18 12,884-byte native-retained/cleared/synthetic-unreachable witness; preserve supported zero-compression lateral force and torque/work accounting.",
@@ -604,5 +604,49 @@
     "No anatomical foot placement or realistic complete defensive-win certification.",
     "Saved nonzero hand forces do not certify retained attachments or route protection.",
     "No contact, movement, grip, capacity, roster, RB, release or default correction promoted."
-  ]
+  ],
+  "forceMeasurementCorrection": {
+    "physicsSourcePin": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+    "worldFile": "src/physics/world.ts",
+    "sourceMechanism": "World resets hand accumulators, sums signed substep impulses and angular impulses, then divides by full dt. Fields are tick averages.",
+    "rawInputSha256": "3d101564c9c4add6fcc506f24fb6dfdf63923bd1db26343513a42005348f50c6",
+    "numericTrajectoriesAndLoadsUnchanged": true,
+    "existingThreeFirstIntervalsLedger": [
+      {
+        "id": "uc12-wz-s3",
+        "controllerT": 0.4,
+        "postBodyT": 0.45,
+        "meanForceOnB": {
+          "x": -24.125618004446803,
+          "y": 357.16624002624087
+        },
+        "maximumLinearImpulseResidual": 2.7533531010703882e-14
+      },
+      {
+        "id": "uc12-wz-s3-mirror",
+        "controllerT": 0.4,
+        "postBodyT": 0.45,
+        "meanForceOnB": {
+          "x": -4.809696211315187,
+          "y": 286.2933990794678
+        },
+        "maximumLinearImpulseResidual": 8.659739592076221e-14
+      },
+      {
+        "id": "uc12-wz-weak-s3",
+        "controllerT": 0.4,
+        "postBodyT": 0.45,
+        "meanForceOnB": {
+          "x": 61.04541173636578,
+          "y": 248.3575563677703
+        },
+        "maximumLinearImpulseResidual": 1.2079226507921703e-13
+      }
+    ],
+    "previousLabel": "final-substep output (incorrect)",
+    "correctLabel": "signed tick-average impulse/dt and angular impulse/dt",
+    "scope": "No physics, controller, flag or input change. Average nonzero force does not certify continuous retention.",
+    "parentPublicationCommit": "a0eebf7d7cec8ee8142b49100196c3cb33298524",
+    "priorTypecheckReuse": "TypeScript/source/profile unchanged; prior64112f5 typecheck/role probe reused. Changed Python reducers rerun at recorded diagnostic hashes."
+  }
 }

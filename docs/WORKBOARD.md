@@ -32,6 +32,13 @@ separate measured offline builds. Zero new simulation ticks; no broad suite.
 Controllers remain held; physics reviews retention, run-game owns feasible
 joining/anchoring afterward, and integration owns exact-pin production transfer.
 
+Follow-up corrects force measurement descriptions: World outputs signed
+tick-average impulses/dt, not final-substep samples. All exported numeric
+values/histories remain exact; three existing first-contact impulse ledgers
+close within1.21e-13. Only offline reducers/syntax are rerun. Independent next
+work is an unloaded attached-TE approach comparison using frozen body/command
+inputs; it does not select a live policy or bypass the loaded-contact gate.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
