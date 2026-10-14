@@ -1,5 +1,25 @@
 # Current work ownership
 
+## 2026-10-14: bounded RT recovery counterfactual after D01–D03
+
+Run-game owns `codex/rt-recovery-counterfactual` from completed PR #30
+`1fbc013`. Accepted production remains develop `a1b16e6`, source `e5c318a`,
+44 flags/components=1; historical `4ded6b6` stays the law comparison baseline.
+Reuse the shared three Ace controls and D01 full-context prefix. Test one
+cue-supported ordinary RT action before runner traffic constrains recovery;
+at most a second action if a distinct unresolved mechanism warrants it.
+Keep all 22 players, natural RB decisions, teammate spacing, contact, posture,
+capacities and other controllers intact. Judge actual protection and traffic
+through arrival. Replay successful Y only if H is promising. No RB proposal
+without independent evidence; D02/D03, TE base and D04–D18 stay parked.
+
+Diagnostic scripts/receipts only initially: no shared movement/solver edits.
+Any demonstrated shared-controller correction requires coordination with the
+YAC/pursuit owner before editing. A parallel read-only guard/center audit
+answers whether installed zone technique matches requested and achieved work.
+Known center-hand angular-law limitation remains visible. No games/census or
+full suite; integration owner retains final combined verification.
+
 ## 2026-10-14 (America/Phoenix): one-time D01–D03 diagnostic drills
 
 The user explicitly authorizes the uploaded `Run_Game_Diagnostic_Drills_2026-10-14.md`
