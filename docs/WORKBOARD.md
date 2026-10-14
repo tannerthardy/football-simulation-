@@ -1,5 +1,31 @@
 # Current work ownership
 
+Latest run-game protection handoff: [draft PR #18](https://github.com/tannerthardy/football-simulation-/pull/18),
+`codex/ace-protection-traces` at **`830f6e2fe7ef19604b5033e9c9115413d5d2ef4c`**.
+[Findings/commands](https://github.com/tannerthardy/football-simulation-/blob/830f6e2fe7ef19604b5033e9c9115413d5d2ef4c/docs/reviews/ace-protection-traces.md),
+[settings/receipt](https://github.com/tannerthardy/football-simulation-/blob/830f6e2fe7ef19604b5033e9c9115413d5d2ef4c/docs/reviews/ace-protection-receipt.json),
+and [12,884-byte retention controls](https://github.com/tannerthardy/football-simulation-/blob/830f6e2fe7ef19604b5033e9c9115413d5d2ef4c/docs/reviews/ace-lateral-retention-controls.json).
+Diagnostic-only, same `c6b2c179...` runtime/43 historical flags as frozen #17.
+Correction: RT acquires lateral load 1.50–1.95, loses functional reach at 2.00,
+and is unloaded at runner arrival 2.35; the earlier blanket never-loaded prose
+is corrected on #17. Y constrains its early approach; delayed end information
+postpones recovery. In H, RT constrains RG's anchor, neighboring DE_S collides
+with RG 2.30, then DT_S reaches RB 2.40 despite maintained RT/end contact.
+Two saved prefixes, two observer passes each, all 49 state/RNG hashes exact;
+five exact offline traffic folds with opposing clear-lane controls. These
+attribute the limits, not optimal physical avoidance. Retention replay exact;
+cleared joint gives zero hand impulse/work. Unreachable stale joint is synthetic,
+not a native defect. New local assertions/typecheck pass; existing 89 law checks
+and weak success reused. 28.21 recorded launcher seconds includes corrected
+diagnostic failures; no new inputs, games, panel, full suite or controller edit.
+Sole physics owner has the acquired/reachable/cleared contact-contract question
+on #14/#17. No force-versus-compression rule or solver change by run-game owner.
+Historical law comparison stays **4ded6b6**. Current football transfer on
+`develop` remains pending the user's contact-contract prerequisite; read-only
+`a1b16e666a9ee7d1bc1d2aecba141fc535863b24` contains reviewed #12 and is not a
+new test result. Refresh source/flags at that separate checkpoint. No merge,
+promotion or new baseline; #13 RB consistency remains an independent review.
+
 User-assigned temporary physics support is complete in [draft PR #17](https://github.com/tannerthardy/football-simulation-/pull/17),
 `codex/contact-law-isolation` at **`61596bd78e21cf4aa7443a8d44eca4370db21470`**,
 from PR #14 `22d3b34`; runtime **`c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904`**.
