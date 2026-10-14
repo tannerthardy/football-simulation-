@@ -49,13 +49,15 @@ was safe or that the current football ending was wrong.
 
 | Control | Acquired options and actual decision before contact | Interpretation |
 | --- | --- | --- |
-| Rightward, Y playside | At 2.30 the RT/RG aperture is .426 yd, above the selector's .386-yd threshold. The RB selects that inside crease. At 2.50 he asks to redirect further inside, but traffic and momentum keep him moving outward. At 2.95 he selects bounce; by 3.20 the acquired end is .412 yd inside the keeper, and his outside approach clears the end. | Useful runoff plus a developing inside-to-outside route. RT retains end load, Y/C collect linebackers, LOS crossing is 3.60. The intentionally free SS first contacts at 3.65. Preserve this ordinary clean arrival. |
+| Rightward, Y playside | At 2.30 the RT/RG aperture is .426 yd, above the selector's .386-yd threshold. The RB selects that inside crease. At 2.50 he asks to redirect further inside, but traffic and momentum keep him moving outward. At 2.95 he selects bounce; by 3.20 the acquired end is .412 yd inside the keeper, and his outside approach clears the end. | Useful runoff plus a developing inside-to-outside route. RT retains end load, Y/C collect linebackers, LOS crossing is 3.60. CB_S first contacts at 3.65. Preserve this ordinary clean arrival. |
 | Same rightward call, H playside | At 2.30 the helper occupies the space between RT and RG. RT/H apparent width is negative and H/RG is only .292 yd, so neither near crease is offered. The next inside candidate is RG/C at (40.677,23.393). The end is .480 yd outside RT in the RB's acquired picture. Bounce at (40.642,20.270) has slightly more threat risk (2.039 vs 1.876), but wins total score (2.435 vs 3.885) because it follows the preferred track. He chooses bounce again at 2.50. | This is not an obviously free bang lane ignored by the RB. An unloaded inside request still carries him outward through the next beat and predicts keeper traffic. H really collects LB_S at 2.00, while DE_S contacts the RB at 2.65 with RT's hands still loaded. Route selection is questionable, but a superior safe alternative and a physically legitimate end win are both unproved. |
 | Explicit weak call, H playside | The early-abandon condition succeeds at 2.20; the actual crease choice starts at 2.25. Bounce is the lowest-scored available entry. At that time the acquired end is .500 yd outside LT, and even the unloaded runner cannot instantly reverse his outward momentum. The end grips him at 2.30, only one tick later. | The last read leaves little physical room to change the approach. That does not prove a better earlier read existed: it needs the same acquired information and a feasible route, not a forced early cut. H/RT have not collected their backers before contact, but the first stopper is the assigned, loaded first-level end. Positive ending gain (+2.372) is not clean protection. |
 
 The ordinary seven inline assignments account for four DL and three LBs; the
-receivers handle corners, leaving safeties free. The successful play's SS is
-intentionally unblocked. In both adverse approaches, the first stopper is an
+receivers are assigned corners, leaving safeties free. The successful play's
+actual first stopper is **CB_S**, assigned to Z, with no substantive Z/CB_S hand
+load recorded. The earlier prose incorrectly called this an intentionally free
+SS; the saved event/receipt correctly named the corner. In both adverse approaches, the first stopper is an
 assigned end with a loaded keeper, not a defender omitted from the assignment
 ledger. Failed or late linebacker collection is a separate later risk.
 

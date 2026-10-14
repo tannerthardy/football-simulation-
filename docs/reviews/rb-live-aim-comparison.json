@@ -1,0 +1,2148 @@
+{
+  "protocol": "rb-live-aim-native-comparison-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "physicsReviewCommit": "22d3b34df18124ffad1a5eebd30d6f41bbb67d57",
+  "testedCandidateCommit": "7ff529b28de496eb438bbf478ff3de4217367625",
+  "testedEngineCommit": "139f55bfecf62b61f8ebee49647e6e2b6999764f",
+  "sourceSha256": "973d4ab84f80e5aa74a25c918fb96ef0189b938f4d22c8350aba9d121bb7f965",
+  "worldSha256": "ed1708d764c355da60bd31c115f557baf3d81af18c89f3479c471bf981732ca2",
+  "resolvedFlags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_HANDOVER": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_CONTACT_COMPONENTS": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "preserved": {
+    "docs/reviews/under-center-zone-inputs.json": {
+      "sha256": "e3f27acac32b85451e602b4d49ac6ed9c4849c29f0b8bbeb19a5172e85e10e6a",
+      "bytes": 1606
+    },
+    "docs/reviews/under-center-zone-direction-inputs.json": {
+      "sha256": "30937e17ee62b89c42f9681801af1d95e2e735c4bcc9f6b6e52fbddfa3481595",
+      "bytes": 693
+    },
+    "docs/reviews/under-center-zone-runner-read-witness.json": {
+      "sha256": "411029740603dc46d8a5c0abc869690528d80507f52789ac7898a85d28f3d939",
+      "bytes": 27655
+    },
+    "docs/reviews/under-center-zone-keeper-world-witness.json": {
+      "sha256": "d5b7fb8578578dc939622455adaa3bb99ce101079ca066b749b0ad8aa353e548",
+      "bytes": 13076
+    }
+  },
+  "newCandidateObservedPlainPairs": 3,
+  "newReferencePairs": 0,
+  "newGames": 0,
+  "newFullSuites": 0,
+  "referenceEvidence": "PR #11 saved default packets; all three complete histories independently exact to actual 4ded6b6.",
+  "rawPackets": {
+    "out/rb-live-assessment/ace.json.gz": "e7255e1fd9690ab6a6355b0e48cf45c9a13cbf22a567a7c7edaacb6193fee5a4",
+    "out/rb-live-assessment/weak.json.gz": "20f97446b00eac348a3de6faa9ae965d1769bfe5765fee76e37c7b2404c3d2e3",
+    "/workspace/football-under-center-zone/out/under-center-zone/carrier-design.json.gz": "341834f4baa35bfb76534ccc04cb2ff28dd0af382b052a3cb7d68cedcfdce916",
+    "/workspace/football-under-center-zone/out/under-center-zone/carrier-design-weak.json.gz": "5eb926f1494995413cc15957141bbee08878961a34aaf450ad3963993809bdba"
+  },
+  "launchers": {
+    "ace": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-live-aim-assessment",
+      "commit": "7ff529b28de496eb438bbf478ff3de4217367625",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "973d4ab84f80e5aa74a25c918fb96ef0189b938f4d22c8350aba9d121bb7f965",
+      "validationSha256": "d2912a6b64346a0d99181d09962f31e1c454d5de63c45cd6e4348943ed4d00eb",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_HANDOVER": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_CONTACT_COMPONENTS": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T03:06:57.560Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/defense/hand-action-panel.ts",
+            "out/rb-live-assessment/ace.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.62874063
+        }
+      ],
+      "finishedAt": "2026-10-14T03:07:02.191Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "weak": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-live-aim-assessment",
+      "commit": "7ff529b28de496eb438bbf478ff3de4217367625",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "973d4ab84f80e5aa74a25c918fb96ef0189b938f4d22c8350aba9d121bb7f965",
+      "validationSha256": "d2912a6b64346a0d99181d09962f31e1c454d5de63c45cd6e4348943ed4d00eb",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_HANDOVER": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_CONTACT_COMPONENTS": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T03:06:57.571Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/defense/hand-action-panel.ts",
+            "out/rb-live-assessment/weak.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.5689426159999997
+        }
+      ],
+      "finishedAt": "2026-10-14T03:07:00.142Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "recordedCollectionCommandSeconds": 7.197683246,
+  "existingPreparationEvidence": "rb-live-aim-preparation.json: eight focused controller checks/typecheck on same engine bytes, reused.",
+  "conclusions": [
+    "The correction removes the assessment-reference mismatch.",
+    "All twelve actual abandonment checks retain the same decisions; all precontact entries and native trajectories remain identical.",
+    "No protection improvement or regression on these three controls; no football causal rescue claimed.",
+    "Successful first stopper is assigned CB_S, not SS; earlier safety prose was incorrect.",
+    "Original center law still has its independently reviewed angular defect. Results do not certify legitimate defensive wins.",
+    "PR #14 full patch combines contact correction and precontact locomotion; its outcomes cannot isolate contact-law causation."
+  ],
+  "rows": [
+    {
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "side": -1,
+      "ticks": 86,
+      "inputSha256": "92d3618f76ba9047dbbbc7133f938587065c186ef0de0d561200b6886eac5d8d",
+      "profilesSha256": "6feafb00b8e7aba4cff11223b514837f0fdd6d3a81b1333f4c36c0fc1b600559",
+      "completeHistorySha256": "b1e711fcf8f414946905d748dd8a2cdc7d5fd3f5b8a18b62a935cdad308fecb9",
+      "completeHistoryExact": true,
+      "consumedCuesExact": true,
+      "nativeCommandsAndPositionsExact": true,
+      "worldInputsAndOutputsExact": true,
+      "contactRequestsAndLoadsExact": true,
+      "original": {
+        "designedPhaseChanges": [
+          {
+            "t": 1.6,
+            "designed": true,
+            "aimUntil": 2.2979591836734694
+          },
+          {
+            "t": 2.3,
+            "designed": false,
+            "aimUntil": 2.2979591836734694
+          }
+        ],
+        "crossingBoundary": 3.6,
+        "firstContact": {
+          "t": 3.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 40.38,
+            "y": 19.1
+          },
+          "note": "grasp"
+        },
+        "firstOpponent": "CB_S",
+        "exactPostStepContactDepth": 0.3754753155027615,
+        "endTime": 4.3,
+        "gain": 1.495518431752906,
+        "outcome": "tackle",
+        "loadedPairs": {
+          "Y/DE_S": {
+            "first": 0.45,
+            "last": 2,
+            "maximumForce": 776.2293592068576
+          },
+          "RG/DT_S": {
+            "first": 0.55,
+            "last": 4.3,
+            "maximumForce": 523.6219657713626
+          },
+          "H/DE_W": {
+            "first": 0.55,
+            "last": 3.65,
+            "maximumForce": 454.37554934258065
+          },
+          "LG/DT_W": {
+            "first": 0.6,
+            "last": 4.3,
+            "maximumForce": 791.4378619072742
+          },
+          "C/DT_W": {
+            "first": 1.2,
+            "last": 1.2,
+            "maximumForce": 256.8215730824343
+          },
+          "RT/DE_S": {
+            "first": 1.65,
+            "last": 3.7,
+            "maximumForce": 717.4879189103993
+          },
+          "Y/LB_S": {
+            "first": 2.5,
+            "last": 4.3,
+            "maximumForce": 713.6411962057946
+          },
+          "C/LB_M": {
+            "first": 2.75,
+            "last": 4.3,
+            "maximumForce": 900.1108717237707
+          }
+        },
+        "installed": [
+          {
+            "slot": "LT",
+            "kind": "climb",
+            "target": "LB_W"
+          },
+          {
+            "slot": "RT",
+            "kind": "combo",
+            "target": "DE_S"
+          },
+          {
+            "slot": "C",
+            "kind": "reach",
+            "target": "DT_W"
+          },
+          {
+            "slot": "LG",
+            "kind": "combo",
+            "target": "DT_W"
+          },
+          {
+            "slot": "RG",
+            "kind": "reach",
+            "target": "DT_S"
+          },
+          {
+            "slot": "Y",
+            "kind": "reach",
+            "target": "DE_S"
+          },
+          {
+            "slot": "X",
+            "kind": "stalk",
+            "target": "CB_W"
+          },
+          {
+            "slot": "Z",
+            "kind": "stalk",
+            "target": "CB_S"
+          },
+          {
+            "slot": "H",
+            "kind": "cutoff",
+            "target": "DE_W"
+          }
+        ]
+      },
+      "corrected": {
+        "designedPhaseChanges": [
+          {
+            "t": 1.6,
+            "designed": true,
+            "aimUntil": 2.2979591836734694
+          },
+          {
+            "t": 2.3,
+            "designed": false,
+            "aimUntil": 2.2979591836734694
+          }
+        ],
+        "crossingBoundary": 3.6,
+        "firstContact": {
+          "t": 3.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 18,
+          "pos": {
+            "x": 40.38,
+            "y": 19.1
+          },
+          "note": "grasp"
+        },
+        "firstOpponent": "CB_S",
+        "exactPostStepContactDepth": 0.3754753155027615,
+        "endTime": 4.3,
+        "gain": 1.495518431752906,
+        "outcome": "tackle",
+        "loadedPairs": {
+          "Y/DE_S": {
+            "first": 0.45,
+            "last": 2,
+            "maximumForce": 776.2293592068576
+          },
+          "RG/DT_S": {
+            "first": 0.55,
+            "last": 4.3,
+            "maximumForce": 523.6219657713626
+          },
+          "H/DE_W": {
+            "first": 0.55,
+            "last": 3.65,
+            "maximumForce": 454.37554934258065
+          },
+          "LG/DT_W": {
+            "first": 0.6,
+            "last": 4.3,
+            "maximumForce": 791.4378619072742
+          },
+          "C/DT_W": {
+            "first": 1.2,
+            "last": 1.2,
+            "maximumForce": 256.8215730824343
+          },
+          "RT/DE_S": {
+            "first": 1.65,
+            "last": 3.7,
+            "maximumForce": 717.4879189103993
+          },
+          "Y/LB_S": {
+            "first": 2.5,
+            "last": 4.3,
+            "maximumForce": 713.6411962057946
+          },
+          "C/LB_M": {
+            "first": 2.75,
+            "last": 4.3,
+            "maximumForce": 900.1108717237707
+          }
+        },
+        "installed": [
+          {
+            "slot": "LT",
+            "kind": "climb",
+            "target": "LB_W"
+          },
+          {
+            "slot": "RT",
+            "kind": "combo",
+            "target": "DE_S"
+          },
+          {
+            "slot": "C",
+            "kind": "reach",
+            "target": "DT_W"
+          },
+          {
+            "slot": "LG",
+            "kind": "combo",
+            "target": "DT_W"
+          },
+          {
+            "slot": "RG",
+            "kind": "reach",
+            "target": "DT_S"
+          },
+          {
+            "slot": "Y",
+            "kind": "reach",
+            "target": "DE_S"
+          },
+          {
+            "slot": "X",
+            "kind": "stalk",
+            "target": "CB_W"
+          },
+          {
+            "slot": "Z",
+            "kind": "stalk",
+            "target": "CB_S"
+          },
+          {
+            "slot": "H",
+            "kind": "cutoff",
+            "target": "DE_W"
+          }
+        ]
+      },
+      "assessments": [
+        {
+          "t": 1.6,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 22.06666666666667
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 21.28567549990046
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": -0.34452575009179887,
+            "score": -0.20563786919096436,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": -0.09812417197242451,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": -0.34452575009179887,
+            "score": -0.17666506541311297,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": -0.08333771357297141,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 36.11702876222924,
+            "y": 23.266218984043054
+          },
+          "ownVelocity": {
+            "x": 4.1343659992903525,
+            "y": -1.4835640468662752
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.16005679316122,
+              "y": 21.304493614798208
+            },
+            "vel": {
+              "x": -1.2468665216243153,
+              "y": -1.0773545787172263
+            },
+            "stance": null,
+            "facing": 2.1442462084160274,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 1.8,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 22.06666666666667
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 21.156938978374342
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": 0,
+            "score": 0.9162923931471252,
+            "blocked": false,
+            "aimBlocked": true,
+            "aimScore": 0.5899157958488448,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": -0.547538797653798,
+            "score": 0.6198887178405066,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 0.8181754935034242,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 36.85897531194116,
+            "y": 22.891334420196138
+          },
+          "ownVelocity": {
+            "x": 3.153636976223197,
+            "y": -1.9228479792527078
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 39.81095218960572,
+              "y": 21.313860383860234
+            },
+            "vel": {
+              "x": -1.5404398788358538,
+              "y": -0.467916032943472
+            },
+            "stance": null,
+            "facing": 1.4196450583850335,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 2,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 22.06666666666667
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 20.960121096319053
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": -0.14670471108613903,
+            "score": 0.5562226413222576,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 0.5562226413222576,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": -0.47225616725811204,
+            "score": 0.8669887829761439,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 0.8839108869473189,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 37.44597255125115,
+            "y": 22.532725709401962
+          },
+          "ownVelocity": {
+            "x": 3.065417486754202,
+            "y": -1.5658381914227288
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 39.59163222410725,
+              "y": 21.22018329567257
+            },
+            "vel": {
+              "x": -1.279223415215347,
+              "y": -0.5897117170793841
+            },
+            "stance": null,
+            "facing": 1.1353124310996396,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 2.2,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 22.06666666666667
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 20.680933116361174
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": -0.060947381352007834,
+            "score": -0.05946114940035938,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": -0.05946114940035938,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": -0.6584888307071632,
+            "score": 0.26616618803080666,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 0.49010110647477845,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 37.92804062608843,
+            "y": 22.22971753227251
+          },
+          "ownVelocity": {
+            "x": 1.8677413101050426,
+            "y": -1.4450459426142248
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 39.30755433014783,
+              "y": 20.913002729451286
+            },
+            "vel": {
+              "x": -1.353211678484701,
+              "y": -1.2854176106124537
+            },
+            "stance": null,
+            "facing": 0.8424224595644199,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        }
+      ],
+      "precontactEntries": [
+        {
+          "t": 2.3,
+          "entry": {
+            "x": 40.5,
+            "y": 22.077018134659863
+          },
+          "preferred": 20.517733715344345,
+          "candidates": [
+            {
+              "entry": {
+                "x": 40.5,
+                "y": 22.077018134659863
+              },
+              "risk": 9.246307668402894,
+              "score": 10.26110262735587
+            },
+            {
+              "entry": {
+                "x": 40.65993609669409,
+                "y": 23.450582202164107
+              },
+              "risk": 11.388392852651538,
+              "score": 13.458311970787003
+            },
+            {
+              "entry": {
+                "x": 42.172834687264825,
+                "y": 26.335441220239858
+              },
+              "risk": 30.80099710057712,
+              "score": 35.092257662630914
+            },
+            {
+              "entry": {
+                "x": 41.81089987607681,
+                "y": 28.580358060523572
+              },
+              "risk": 31.144884022652306,
+              "score": 37.16473055172456
+            },
+            {
+              "entry": {
+                "x": 40.74853696861286,
+                "y": 20.239551897162528
+              },
+              "risk": 14.017407182458056,
+              "score": 14.419981399173807
+            },
+            {
+              "entry": {
+                "x": 43.22760636844591,
+                "y": 30.702144245962465
+              },
+              "risk": 21.268335394472683,
+              "score": 28.921957286332884
+            }
+          ]
+        },
+        {
+          "t": 2.5,
+          "entry": {
+            "x": 40.595314927756995,
+            "y": 22.955725280390077
+          },
+          "preferred": 20.228164657021104,
+          "candidates": [
+            {
+              "entry": {
+                "x": 40.595314927756995,
+                "y": 22.955725280390077
+              },
+              "risk": 5.082979125356173,
+              "score": 6.996618122932541
+            },
+            {
+              "entry": {
+                "x": 42.04270304554371,
+                "y": 25.819005751661827
+              },
+              "risk": 17.42144984966287,
+              "score": 21.539814810118486
+            },
+            {
+              "entry": {
+                "x": 41.92180513501827,
+                "y": 28.526812313500912
+              },
+              "risk": 18.934969320820393,
+              "score": 25.138345333892104
+            },
+            {
+              "entry": {
+                "x": 41.11455674589289,
+                "y": 19.949982838839286
+              },
+              "risk": 10.255428979486645,
+              "score": 10.656211661904386
+            },
+            {
+              "entry": {
+                "x": 43.70489219605275,
+                "y": 30.699510561968513
+              },
+              "risk": 10.923157859240895,
+              "score": 18.79951152363266
+            }
+          ]
+        },
+        {
+          "t": 2.7,
+          "entry": {
+            "x": 40.5,
+            "y": 21.445372188728996
+          },
+          "preferred": 19.267370460169975,
+          "candidates": [
+            {
+              "entry": {
+                "x": 40.5,
+                "y": 21.445372188728996
+              },
+              "risk": 4.089738002815587,
+              "score": 5.517706507985184
+            },
+            {
+              "entry": {
+                "x": 41.81986727624371,
+                "y": 25.279352131795562
+              },
+              "risk": 22.862698238871065,
+              "score": 27.218296536989453
+            },
+            {
+              "entry": {
+                "x": 42.01478978785492,
+                "y": 28.452849849273
+              },
+              "risk": 13.558690728248331,
+              "score": 20.357882268824348
+            },
+            {
+              "entry": {
+                "x": 41.4645925899993,
+                "y": 19.86972955671861
+              },
+              "risk": 13.45826312955787,
+              "score": 14.051141039761962
+            },
+            {
+              "entry": {
+                "x": 44.218106764766596,
+                "y": 30.69601608648807
+              },
+              "risk": 13.464268418498499,
+              "score": 21.990697961730117
+            }
+          ]
+        },
+        {
+          "t": 2.95,
+          "entry": {
+            "x": 40.5,
+            "y": 19.39673214501302
+          },
+          "preferred": 18.837641235922106,
+          "candidates": [
+            {
+              "entry": {
+                "x": 41.467960456714295,
+                "y": 24.6295284281374
+              },
+              "risk": 17.778105999261093,
+              "score": 21.94825403709374
+            },
+            {
+              "entry": {
+                "x": 42.1682662805459,
+                "y": 28.288902044323095
+              },
+              "risk": 12.882404485556005,
+              "score": 19.870270207851636
+            },
+            {
+              "entry": {
+                "x": 40.5,
+                "y": 19.39673214501302
+              },
+              "risk": 7.937305881675383,
+              "score": 8.523229163666697
+            },
+            {
+              "entry": {
+                "x": 44.95412984102529,
+                "y": 30.666491766498435
+              },
+              "risk": 28.841265745719525,
+              "score": 37.65987555409016
+            }
+          ]
+        },
+        {
+          "t": 3.2,
+          "entry": {
+            "x": 40.5,
+            "y": 18.986258207800027
+          },
+          "preferred": 18.427167298709115,
+          "candidates": [
+            {
+              "entry": {
+                "x": 40.5,
+                "y": 24.016145718214673
+              },
+              "risk": 1.7339855449635657,
+              "score": 5.75610548143807
+            },
+            {
+              "entry": {
+                "x": 42.36667833970357,
+                "y": 27.892127746498254
+              },
+              "risk": 9.167444065901687,
+              "score": 16.17407016415455
+            },
+            {
+              "entry": {
+                "x": 40.5,
+                "y": 18.986258207800027
+              },
+              "risk": 0.371222141550303,
+              "score": 0.9489337699132623
+            },
+            {
+              "entry": {
+                "x": 45.68998730032522,
+                "y": 30.38787069700274
+              },
+              "risk": 18.323718394761016,
+              "score": 27.25206656490233
+            }
+          ]
+        },
+        {
+          "t": 3.45,
+          "entry": {
+            "x": 40.5,
+            "y": 18.698507838649867
+          },
+          "preferred": 19.03941692955896,
+          "candidates": [
+            {
+              "entry": {
+                "x": 40.5,
+                "y": 23.506521585249423
+              },
+              "risk": 2.5281842232521408,
+              "score": 5.8453334903870875
+            },
+            {
+              "entry": {
+                "x": 42.514666271360504,
+                "y": 27.32543183935295
+              },
+              "risk": 3.878847136089241,
+              "score": 10.136557298883904
+            },
+            {
+              "entry": {
+                "x": 40.5,
+                "y": 18.698507838649867
+              },
+              "risk": 0,
+              "score": 0.38502131774671167
+            },
+            {
+              "entry": {
+                "x": 46.10120677065825,
+                "y": 29.864460953881867
+              },
+              "risk": 12.953787808193825,
+              "score": 21.166550389175754
+            }
+          ]
+        }
+      ],
+      "changedRoute": false,
+      "protectionImprovement": false,
+      "protectionRegression": false,
+      "feasibility": "No different decision or route was executed; the previous momentum/traffic limits remain."
+    },
+    {
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "side": -1,
+      "ticks": 65,
+      "inputSha256": "beb55956d28b6b61446592c76f0e75d5a94dfb0f1c1f9bc93fb8fc76dc83f819",
+      "profilesSha256": "6feafb00b8e7aba4cff11223b514837f0fdd6d3a81b1333f4c36c0fc1b600559",
+      "completeHistorySha256": "43da1c56ce6abbf801ed77f6e33184ba1e06f968b1f15607827479e12909dd73",
+      "completeHistoryExact": true,
+      "consumedCuesExact": true,
+      "nativeCommandsAndPositionsExact": true,
+      "worldInputsAndOutputsExact": true,
+      "contactRequestsAndLoadsExact": true,
+      "original": {
+        "designedPhaseChanges": [
+          {
+            "t": 1.6,
+            "designed": true,
+            "aimUntil": 2.2979591836734694
+          },
+          {
+            "t": 2.3,
+            "designed": false,
+            "aimUntil": 2.2979591836734694
+          }
+        ],
+        "crossingBoundary": null,
+        "firstContact": {
+          "t": 2.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 39.77,
+            "y": 20.55
+          },
+          "note": "body collision"
+        },
+        "firstOpponent": "DE_S",
+        "exactPostStepContactDepth": -0.23433344943020984,
+        "endTime": 3.25,
+        "gain": -0.2064288442096256,
+        "outcome": "tackle",
+        "loadedPairs": {
+          "H/DE_S": {
+            "first": 0.45,
+            "last": 1.75,
+            "maximumForce": 911.7284378745313
+          },
+          "Y/DE_W": {
+            "first": 0.5,
+            "last": 2.95,
+            "maximumForce": 370.24191181276757
+          },
+          "RG/DT_S": {
+            "first": 0.55,
+            "last": 3.25,
+            "maximumForce": 647.301979327921
+          },
+          "LG/DT_W": {
+            "first": 0.6,
+            "last": 3.25,
+            "maximumForce": 763.5359994342188
+          },
+          "RT/DE_S": {
+            "first": 1.45,
+            "last": 2.8,
+            "maximumForce": 909.1731854933279
+          },
+          "H/LB_S": {
+            "first": 2,
+            "last": 3.25,
+            "maximumForce": 605.2048633158547
+          },
+          "C/LB_M": {
+            "first": 2.6,
+            "last": 3.25,
+            "maximumForce": 1076.8152366454913
+          },
+          "LT/LB_W": {
+            "first": 3,
+            "last": 3.25,
+            "maximumForce": 268.72633077618843
+          }
+        },
+        "installed": [
+          {
+            "slot": "LT",
+            "kind": "climb",
+            "target": "LB_W"
+          },
+          {
+            "slot": "RT",
+            "kind": "combo",
+            "target": "DE_S"
+          },
+          {
+            "slot": "C",
+            "kind": "reach",
+            "target": "DT_W"
+          },
+          {
+            "slot": "LG",
+            "kind": "combo",
+            "target": "DT_W"
+          },
+          {
+            "slot": "RG",
+            "kind": "reach",
+            "target": "DT_S"
+          },
+          {
+            "slot": "Y",
+            "kind": "cutoff",
+            "target": "DE_W"
+          },
+          {
+            "slot": "X",
+            "kind": "stalk",
+            "target": "CB_S"
+          },
+          {
+            "slot": "Z",
+            "kind": "stalk",
+            "target": "CB_W"
+          },
+          {
+            "slot": "H",
+            "kind": "reach",
+            "target": "DE_S"
+          }
+        ]
+      },
+      "corrected": {
+        "designedPhaseChanges": [
+          {
+            "t": 1.6,
+            "designed": true,
+            "aimUntil": 2.2979591836734694
+          },
+          {
+            "t": 2.3,
+            "designed": false,
+            "aimUntil": 2.2979591836734694
+          }
+        ],
+        "crossingBoundary": null,
+        "firstContact": {
+          "t": 2.65,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 12,
+          "pos": {
+            "x": 39.77,
+            "y": 20.55
+          },
+          "note": "body collision"
+        },
+        "firstOpponent": "DE_S",
+        "exactPostStepContactDepth": -0.23433344943020984,
+        "endTime": 3.25,
+        "gain": -0.2064288442096256,
+        "outcome": "tackle",
+        "loadedPairs": {
+          "H/DE_S": {
+            "first": 0.45,
+            "last": 1.75,
+            "maximumForce": 911.7284378745313
+          },
+          "Y/DE_W": {
+            "first": 0.5,
+            "last": 2.95,
+            "maximumForce": 370.24191181276757
+          },
+          "RG/DT_S": {
+            "first": 0.55,
+            "last": 3.25,
+            "maximumForce": 647.301979327921
+          },
+          "LG/DT_W": {
+            "first": 0.6,
+            "last": 3.25,
+            "maximumForce": 763.5359994342188
+          },
+          "RT/DE_S": {
+            "first": 1.45,
+            "last": 2.8,
+            "maximumForce": 909.1731854933279
+          },
+          "H/LB_S": {
+            "first": 2,
+            "last": 3.25,
+            "maximumForce": 605.2048633158547
+          },
+          "C/LB_M": {
+            "first": 2.6,
+            "last": 3.25,
+            "maximumForce": 1076.8152366454913
+          },
+          "LT/LB_W": {
+            "first": 3,
+            "last": 3.25,
+            "maximumForce": 268.72633077618843
+          }
+        },
+        "installed": [
+          {
+            "slot": "LT",
+            "kind": "climb",
+            "target": "LB_W"
+          },
+          {
+            "slot": "RT",
+            "kind": "combo",
+            "target": "DE_S"
+          },
+          {
+            "slot": "C",
+            "kind": "reach",
+            "target": "DT_W"
+          },
+          {
+            "slot": "LG",
+            "kind": "combo",
+            "target": "DT_W"
+          },
+          {
+            "slot": "RG",
+            "kind": "reach",
+            "target": "DT_S"
+          },
+          {
+            "slot": "Y",
+            "kind": "cutoff",
+            "target": "DE_W"
+          },
+          {
+            "slot": "X",
+            "kind": "stalk",
+            "target": "CB_S"
+          },
+          {
+            "slot": "Z",
+            "kind": "stalk",
+            "target": "CB_W"
+          },
+          {
+            "slot": "H",
+            "kind": "reach",
+            "target": "DE_S"
+          }
+        ]
+      },
+      "assessments": [
+        {
+          "t": 1.6,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 22.06666666666667
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 21.13704029714918
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": -0.34452575009179887,
+            "score": -0.20563786919096436,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": -0.09812417197242451,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": -0.34452575009179887,
+            "score": -0.2451607509695086,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": -0.11606521796763138,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 36.11702876222924,
+            "y": 23.266218984043054
+          },
+          "ownVelocity": {
+            "x": 4.1343659992903525,
+            "y": -1.4835640468662752
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.23878840842874,
+              "y": 21.677232997044538
+            },
+            "vel": {
+              "x": -0.9077598748140415,
+              "y": -0.2982948428965326
+            },
+            "stance": null,
+            "facing": 2.044445903631292,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 1.8,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 22.06666666666667
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 20.917795231160248
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": -0.21798452950397396,
+            "score": 0.894929087405474,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 0.894929087405474,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": -0.4831197485309855,
+            "score": 1.1141171460662789,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 1.119943848471415,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 36.93761961496304,
+            "y": 22.877898998578374
+          },
+          "ownVelocity": {
+            "x": 4.14247639948837,
+            "y": -2.1730711210263096
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.06555925230971,
+              "y": 21.42386403086148
+            },
+            "vel": {
+              "x": -0.8269422169341175,
+              "y": -0.8774750717771185
+            },
+            "stance": null,
+            "facing": 1.6014758005802772,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 2,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 22.06666666666667
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 20.723488189680737
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": -0.12092134697959889,
+            "score": 0.6237508031126374,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 0.6237508031126374,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": -0.5598960390727319,
+            "score": 1.009759355573761,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 1.0554524615084415,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 37.75989844773073,
+            "y": 22.411779289618014
+          },
+          "ownVelocity": {
+            "x": 3.884236361611513,
+            "y": -2.434657685391724
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.4445993866332,
+              "y": 21.11397629679526
+            },
+            "vel": {
+              "x": 0.48115416286912505,
+              "y": -1.1401197895542907
+            },
+            "stance": null,
+            "facing": 1.530717513767996,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 2.2,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 22.06666666666667
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 20.633956161230984
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": 0,
+            "score": -0.07732446276267924,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": -0.8665654032475113,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": -0.6648034518468218,
+            "score": 0.520699284707795,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 0.7426172551922036,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 38.43660670587357,
+            "y": 21.943303381943352
+          },
+          "ownVelocity": {
+            "x": 2.8513191323465286,
+            "y": -2.2349509886175314
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.61057363483723,
+              "y": 20.921663383090394
+            },
+            "vel": {
+              "x": 0.6710796710336415,
+              "y": -1.0358842639762795
+            },
+            "stance": null,
+            "facing": 2.3657629902587045,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        }
+      ],
+      "precontactEntries": [
+        {
+          "t": 2.3,
+          "entry": {
+            "x": 40.642486859659144,
+            "y": 20.27040081144274
+          },
+          "preferred": 20.61130990235183,
+          "candidates": [
+            {
+              "entry": {
+                "x": 40.676644651275645,
+                "y": 23.392562924537796
+              },
+              "risk": 1.876449464543129,
+              "score": 3.8848803082457017
+            },
+            {
+              "entry": {
+                "x": 42.20831001494885,
+                "y": 26.275388419812806
+              },
+              "risk": 2.81549069755398,
+              "score": 7.043697172618311
+            },
+            {
+              "entry": {
+                "x": 41.391218840060226,
+                "y": 28.63644985720572
+              },
+              "risk": 7.566358971791754,
+              "score": 13.612582753648628
+            },
+            {
+              "entry": {
+                "x": 40.642486859659144,
+                "y": 20.27040081144274
+              },
+              "risk": 2.0391777450520663,
+              "score": 2.4348117284326856
+            },
+            {
+              "entry": {
+                "x": 42.42865549506158,
+                "y": 30.912422290848497
+              },
+              "risk": 10.943671570743124,
+              "score": 18.742394126504937
+            }
+          ]
+        },
+        {
+          "t": 2.5,
+          "entry": {
+            "x": 40.81356216079322,
+            "y": 20.126817231966385
+          },
+          "preferred": 19.567726322875476,
+          "candidates": [
+            {
+              "entry": {
+                "x": 42.054900645904475,
+                "y": 25.750088500575675
+              },
+              "risk": 0,
+              "score": 4.564358807632233
+            },
+            {
+              "entry": {
+                "x": 41.485826094191886,
+                "y": 28.56677851008459
+              },
+              "risk": 3.393305599341949,
+              "score": 10.126515714296044
+            },
+            {
+              "entry": {
+                "x": 40.81356216079322,
+                "y": 20.126817231966385
+              },
+              "risk": 0.6475915830624475,
+              "score": 1.1399698340775501
+            },
+            {
+              "entry": {
+                "x": 42.90732700651545,
+                "y": 30.893080146475484
+              },
+              "risk": 7.426311670921548,
+              "score": 15.950774045896633
+            }
+          ]
+        }
+      ],
+      "changedRoute": false,
+      "protectionImprovement": false,
+      "protectionRegression": false,
+      "feasibility": "No different decision or route was executed; the previous momentum/traffic limits remain."
+    },
+    {
+      "input": {
+        "id": "uc12-wz-weak-s3",
+        "concept": "wz_weak",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "side": 1,
+      "ticks": 68,
+      "inputSha256": "1417e15ea008d7795bc721a2b94b16989c0e222f62ca1a8d170043c750417d12",
+      "profilesSha256": "6feafb00b8e7aba4cff11223b514837f0fdd6d3a81b1333f4c36c0fc1b600559",
+      "completeHistorySha256": "20e54725dd774dbd3a88a8c7f98511d90cf86d3e4a4c6b6c14f074697fc7bc6d",
+      "completeHistoryExact": true,
+      "consumedCuesExact": true,
+      "nativeCommandsAndPositionsExact": true,
+      "worldInputsAndOutputsExact": true,
+      "contactRequestsAndLoadsExact": true,
+      "original": {
+        "designedPhaseChanges": [
+          {
+            "t": 1.6,
+            "designed": true,
+            "aimUntil": 2.2979591836734694
+          },
+          {
+            "t": 2.25,
+            "designed": false,
+            "aimUntil": 2.2
+          }
+        ],
+        "crossingBoundary": 2.6,
+        "firstContact": {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "pos": {
+            "x": 39.04,
+            "y": 31.5
+          },
+          "note": "grasp"
+        },
+        "firstOpponent": "DE_W",
+        "exactPostStepContactDepth": -0.9623213508506083,
+        "endTime": 3.4,
+        "gain": 2.371521112002064,
+        "outcome": "tackle",
+        "loadedPairs": {
+          "Y/DE_S": {
+            "first": 0.45,
+            "last": 2.85,
+            "maximumForce": 1018.8101806351183
+          },
+          "LT/DE_W": {
+            "first": 0.55,
+            "last": 2.35,
+            "maximumForce": 512.7626534270901
+          },
+          "RG/DT_S": {
+            "first": 0.55,
+            "last": 3.4,
+            "maximumForce": 978.0511575535205
+          },
+          "C/DT_W": {
+            "first": 0.65,
+            "last": 3.1,
+            "maximumForce": 669.4207793642538
+          },
+          "RT/DT_S": {
+            "first": 0.8,
+            "last": 0.9,
+            "maximumForce": 1091.3901932863787
+          },
+          "H/DE_W": {
+            "first": 0.85,
+            "last": 1.25,
+            "maximumForce": 435.28585994061575
+          },
+          "LG/LB_M": {
+            "first": 1.75,
+            "last": 3,
+            "maximumForce": 1006.6908408003027
+          }
+        },
+        "installed": [
+          {
+            "slot": "LT",
+            "kind": "combo",
+            "target": "DE_W"
+          },
+          {
+            "slot": "RT",
+            "kind": "combo",
+            "target": "DT_S"
+          },
+          {
+            "slot": "C",
+            "kind": "reach",
+            "target": "DT_W"
+          },
+          {
+            "slot": "LG",
+            "kind": "climb",
+            "target": "LB_M"
+          },
+          {
+            "slot": "RG",
+            "kind": "reach",
+            "target": "DT_S"
+          },
+          {
+            "slot": "Y",
+            "kind": "cutoff",
+            "target": "DE_S"
+          },
+          {
+            "slot": "X",
+            "kind": "stalk",
+            "target": "CB_W"
+          },
+          {
+            "slot": "Z",
+            "kind": "stalk",
+            "target": "CB_S"
+          },
+          {
+            "slot": "H",
+            "kind": "reach",
+            "target": "DE_W"
+          }
+        ]
+      },
+      "corrected": {
+        "designedPhaseChanges": [
+          {
+            "t": 1.6,
+            "designed": true,
+            "aimUntil": 2.2979591836734694
+          },
+          {
+            "t": 2.25,
+            "designed": false,
+            "aimUntil": 2.2
+          }
+        ],
+        "crossingBoundary": 2.6,
+        "firstContact": {
+          "t": 2.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 11,
+          "pos": {
+            "x": 39.04,
+            "y": 31.5
+          },
+          "note": "grasp"
+        },
+        "firstOpponent": "DE_W",
+        "exactPostStepContactDepth": -0.9623213508506083,
+        "endTime": 3.4,
+        "gain": 2.371521112002064,
+        "outcome": "tackle",
+        "loadedPairs": {
+          "Y/DE_S": {
+            "first": 0.45,
+            "last": 2.85,
+            "maximumForce": 1018.8101806351183
+          },
+          "LT/DE_W": {
+            "first": 0.55,
+            "last": 2.35,
+            "maximumForce": 512.7626534270901
+          },
+          "RG/DT_S": {
+            "first": 0.55,
+            "last": 3.4,
+            "maximumForce": 978.0511575535205
+          },
+          "C/DT_W": {
+            "first": 0.65,
+            "last": 3.1,
+            "maximumForce": 669.4207793642538
+          },
+          "RT/DT_S": {
+            "first": 0.8,
+            "last": 0.9,
+            "maximumForce": 1091.3901932863787
+          },
+          "H/DE_W": {
+            "first": 0.85,
+            "last": 1.25,
+            "maximumForce": 435.28585994061575
+          },
+          "LG/LB_M": {
+            "first": 1.75,
+            "last": 3,
+            "maximumForce": 1006.6908408003027
+          }
+        },
+        "installed": [
+          {
+            "slot": "LT",
+            "kind": "combo",
+            "target": "DE_W"
+          },
+          {
+            "slot": "RT",
+            "kind": "combo",
+            "target": "DT_S"
+          },
+          {
+            "slot": "C",
+            "kind": "reach",
+            "target": "DT_W"
+          },
+          {
+            "slot": "LG",
+            "kind": "climb",
+            "target": "LB_M"
+          },
+          {
+            "slot": "RG",
+            "kind": "reach",
+            "target": "DT_S"
+          },
+          {
+            "slot": "Y",
+            "kind": "cutoff",
+            "target": "DE_S"
+          },
+          {
+            "slot": "X",
+            "kind": "stalk",
+            "target": "CB_W"
+          },
+          {
+            "slot": "Z",
+            "kind": "stalk",
+            "target": "CB_S"
+          },
+          {
+            "slot": "H",
+            "kind": "reach",
+            "target": "DE_W"
+          }
+        ]
+      },
+      "assessments": [
+        {
+          "t": 1.6,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 31.266666666666666
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 31.612816052729684
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": 0.34452575009179887,
+            "score": -0.20971757971939956,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": -0.10124644350455017,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": 0.34452575009179887,
+            "score": -0.033280545867488985,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": -0.01696419266648784,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 36.11702876222924,
+            "y": 30.067114349290282
+          },
+          "ownVelocity": {
+            "x": 4.1343659992903525,
+            "y": 1.4835640468662752
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.97556215852998,
+              "y": 30.603573697105904
+            },
+            "vel": {
+              "x": 0.5380105595496041,
+              "y": 1.1732055683616145
+            },
+            "stance": null,
+            "facing": 3.797780644641887,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 1.8,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 31.266666666666666
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 31.748718051323273
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": 0.3530657554644163,
+            "score": 0.9164735991805434,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 1.0966221711624498,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": 0.3530657554644163,
+            "score": 1.1696014429734818,
+            "blocked": true,
+            "aimBlocked": true,
+            "aimScore": 1.1778614424519311,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 36.970806330272865,
+            "y": 30.370790781223974
+          },
+          "ownVelocity": {
+            "x": 4.3748262695332905,
+            "y": 1.6121525843029372
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.66932912788676,
+              "y": 30.54508164208976
+            },
+            "vel": {
+              "x": -0.6394999299737008,
+              "y": 0.31210311339004915
+            },
+            "stance": null,
+            "facing": 4.117413231979849,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 2,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 31.266666666666666
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 31.97622488814155
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": 0.9000000000000004,
+            "score": 1.220760331448929,
+            "blocked": false,
+            "aimBlocked": true,
+            "aimScore": 0.7772604608576222,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": 0.9000000000000004,
+            "score": 1.7984766989549406,
+            "blocked": false,
+            "aimBlocked": true,
+            "aimScore": 1.0096984006812386,
+            "exits": false
+          },
+          "originalAbandon": false,
+          "correctedAbandon": false,
+          "ownPosition": {
+            "x": 37.82485381603798,
+            "y": 30.730727165519493
+          },
+          "ownVelocity": {
+            "x": 3.8131024674664404,
+            "y": 2.0099611425492427
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.444479611886635,
+              "y": 30.59261177856635
+            },
+            "vel": {
+              "x": -0.773470226363446,
+              "y": 0.26320071709031984
+            },
+            "stance": null,
+            "facing": 5.644902678811137,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        },
+        {
+          "t": 2.2,
+          "snapAssessment": {
+            "x": 40.6,
+            "y": 31.266666666666666
+          },
+          "liveAssessment": {
+            "x": 40.6,
+            "y": 32.15458824804218
+          },
+          "referenceAlignmentError": 0.0,
+          "threshold": 0.8979591836734694,
+          "originalResult": {
+            "heading": 0.7875000000000001,
+            "score": 1.9862679347738599,
+            "blocked": false,
+            "aimBlocked": true,
+            "aimScore": 0.3835522585503203,
+            "exits": false
+          },
+          "correctedResult": {
+            "heading": 0.7875000000000001,
+            "score": 2.978323749410623,
+            "blocked": false,
+            "aimBlocked": true,
+            "aimScore": 0.8631481146281567,
+            "exits": false
+          },
+          "originalAbandon": true,
+          "correctedAbandon": true,
+          "ownPosition": {
+            "x": 38.54355298495534,
+            "y": 31.140110956140603
+          },
+          "ownVelocity": {
+            "x": 3.439028787977229,
+            "y": 2.333783561557862
+          },
+          "acquiredEnd": {
+            "pos": {
+              "x": 40.140937745025646,
+              "y": 30.73985941377973
+            },
+            "vel": {
+              "x": -1.264449748661386,
+              "y": 0.48069605904504453
+            },
+            "stance": null,
+            "facing": 5.559426997803575,
+            "age": 0.25,
+            "pose": "up",
+            "carrying": false
+          }
+        }
+      ],
+      "precontactEntries": [
+        {
+          "t": 2.25,
+          "entry": {
+            "x": 41.0156603840724,
+            "y": 32.459286824230965
+          },
+          "preferred": 32.18201409695824,
+          "candidates": [
+            {
+              "entry": {
+                "x": 41.0661796228898,
+                "y": 26.863136848791825
+              },
+              "risk": 2.336860227058791,
+              "score": 6.321356724506131
+            },
+            {
+              "entry": {
+                "x": 41.74193681365258,
+                "y": 29.057039757005683
+              },
+              "risk": 4.411697173604234,
+              "score": 6.706888431726904
+            },
+            {
+              "entry": {
+                "x": 41.328975574139584,
+                "y": 30.899132990929353
+              },
+              "risk": 2.2685327073311257,
+              "score": 3.14531217533257
+            },
+            {
+              "entry": {
+                "x": 40.5,
+                "y": 23.24800323518374
+              },
+              "risk": 9.121674004148787,
+              "score": 15.88982338407435
+            },
+            {
+              "entry": {
+                "x": 41.0156603840724,
+                "y": 32.459286824230965
+              },
+              "risk": 0.25137289138502616,
+              "score": 0.5759118750258233
+            }
+          ]
+        }
+      ],
+      "changedRoute": false,
+      "protectionImprovement": false,
+      "protectionRegression": false,
+      "feasibility": "No different decision or route was executed; the previous momentum/traffic limits remain."
+    }
+  ]
+}

@@ -26,6 +26,20 @@ Carrier/YAC overlap is confined to designed-phase assessment: free/catch carrier
 evaluation retains its previous default reference; no spacing/common movement
 change. Coordinate through the board/integration owner before any wider edit.
 
+Comparison complete at `7ff529b28de496eb438bbf478ff3de4217367625`: three neutral
+candidate observed/plain pairs; scores change but all twelve abandonment
+decisions, lane choices, consumed pictures and complete state/RNG histories
+remain exact. Requested/delivered/achieved movement and World inputs/outputs
+are also exact. Successful Y control and both adverse H cases retained; no
+measured protection improvement or regression. 10.40 additional recorded
+command-seconds, no new games/panel/full suite. Existing eight checks/typecheck
+reused. [Results/reproduction](reviews/rb-live-aim-assessment.md) and
+[exact comparison receipt](reviews/rb-live-aim-comparison.json).
+The physics owner's next isolation is common-point contact repair separated
+from ground-facing, tested alone; do not combine full patch/RB or tune yardage.
+Corrected prose: the successful first stopper is assigned CB_S (Z stalk), not
+an intentionally free SS. Saved events/receipts and pinned witnesses unchanged.
+
 Shared comparisons start from `codex/run-game-integration`; read
 [the baseline](BASELINE.md) and run `npm run baseline:info` before collecting.
 Report the exact commit, source hash, flag profile and inputs. Historical rows
