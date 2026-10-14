@@ -16,6 +16,7 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 import { playSideSign } from '../../../src/sim/behaviors/blocking.js';
 import { Agent } from '../../../src/sim/agent.js';
 import { runContactObservers } from '../../../src/sim/run-contact-observer.js';
+import { runReadObservers } from '../../../src/sim/run-read-observer.js';
 
 type Input = { id: string; concept: string; kind: 'run' | 'pass'; seed: number; flip: boolean;
   exchange?: boolean; o: number; d: number; front: string; formation: string };
@@ -30,6 +31,7 @@ const output = process.argv[2] ?? 'out/defensive-flow/baseline.json';
 const allCues = process.env.FLOW_TRACE !== '0';
 const peerCues = process.env.FLOW_PEERS === '1';
 const contactTrace = process.env.CONTACT_TRACE === '1';
+const carrierTrace = process.env.FLOW_CARRIER === '1';
 const stop = Number(process.env.FLOW_STOP ?? 25);
 const remove = process.env.HAND_REMOVE ?? '', keep = process.env.HAND_KEEP ?? '';
 if (remove && keep) throw Error('Choose removal or isolation, not both');
@@ -64,6 +66,14 @@ function execute(i: Input, trace: boolean) {
   const initial = sim.agents.map(a => copy(a.pos));
   const frames: unknown[] = [], hashes: string[] = [], cues: unknown[] = [], aims: unknown[] = [];
   const contactEvents: unknown[] = [], ends: unknown[] = [], shedDecisions: unknown[] = [];
+  const carrierEvents: unknown[] = [];
+  if (trace && carrierTrace) runReadObservers.set(sim, event => {
+    const a = sim.agents[event.actor];
+    carrierEvents.push(JSON.parse(serialize({ ...event, pos: a.pos, vel: a.vel, facing: a.facing,
+      support: a.body.support, decisionInterval: a.mind.decisionInterval,
+      controllerState: Object.fromEntries(['heading', 'nextEval', 'wasDesigned', 'opts']
+        .map(k => [k, Reflect.get(a.behavior, k)])) })));
+  });
   const physicalHashes: string[] = [];
   const weakSet = WeakMap.prototype.set;
   let physicsInput: unknown;
@@ -173,7 +183,7 @@ function execute(i: Input, trace: boolean) {
       const update = a.behavior.update.bind(a.behavior);
       a.behavior.update = (actor, s) => { stage = 'behavior'; const command = update(actor, s); stage = 'tick'; return command; };
     }
-    const before = sim.t, cueStart = cues.length, aimStart = aims.length, contactStart = contactEvents.length, endStart = ends.length;
+    const before = sim.t, cueStart = cues.length, aimStart = aims.length, contactStart = contactEvents.length, endStart = ends.length, carrierStart = carrierEvents.length;
     sim.tick();
     const state = { t: sim.t, rng: sim.rng, events: sim.events, perception: sim.perception,
       agents: sim.agents.map(a => ({ body: a.body, mind: a.mind, recog: a.recog, behavior: a.behavior, tags: a.tags })),
@@ -187,6 +197,7 @@ function execute(i: Input, trace: boolean) {
       agents: sim.agents.map(a => ({ body: a.body, mind: a.mind, recog: a.recog, behavior: a.behavior, tags: a.tags })),
       engagements: sim.engagements, joints: sim.world.joints, intents: sim.intents, cmds: Reflect.get(sim, 'cmds') })).digest('hex'));
     if (trace) frames.push({ t: before, after: sim.t, cues: cues.slice(cueStart), aims: aims.slice(aimStart),
+      ...(carrierTrace ? { carrierEvents: carrierEvents.slice(carrierStart) } : {}),
       ...(contactTrace ? { contactEvents: contactEvents.slice(contactStart), ends: ends.slice(endStart), carrier: sim.carrier?.idx,
         physicsInput: copy(physicsInput) } : {}),
       agents: sim.agents.map(a => ({ id: a.idx, slot: a.slot, team: a.team, pos: copy(a.pos), vel: copy(a.vel),

@@ -11,6 +11,14 @@ compatible evidence and supply focused receipts; the existing integration lead
 freezes the combined candidate and owns its preserved full suite. Adoption does
 not schedule tests or an integration run.
 
+Active run-game question (PR #11): keeper runoff and the RB's actual read on
+the three saved `ace_12` controls. Primary reference remains under-center
+singleback with two attached TEs; I-formation G73-I48 remains secondary.
+Trace consumed first-level/gap cues, bounce/bang/bend options and requested
+versus achieved movement before contact. No release timer, grip change or
+blocking heuristic while the shared angular-law witness is unresolved.
+Diagnostic evidence stays separate from production; comparison remains 4ded6b6.
+
 Latest run-game handoff to the audit/integration owner: [component-only draft PR #9](https://github.com/tannerthardy/football-simulation-/pull/9),
 branch `codex/run-contact-components-candidate`, exact published commit
 **`7a04ad6c65d9268bb332147411baacc27ebe20e0`** (tested engine change
