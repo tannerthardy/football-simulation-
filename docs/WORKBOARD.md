@@ -11,6 +11,24 @@ compatible evidence and supply focused receipts; the existing integration lead
 freezes the combined candidate and owns its preserved full suite. Adoption does
 not schedule tests or an integration run.
 
+Run-game queued candidate: [draft PR #13](https://github.com/tannerthardy/football-simulation-/pull/13),
+`codex/rb-live-aim-assessment`, **`5442c13586cffcf5ecf1f5e162188b79e63741b1`**,
+tested engine `139f55bfecf62b61f8ebee49647e6e2b6999764f`, source `973d4ab8...`.
+[Scope and review hold point](https://github.com/tannerthardy/football-simulation-/blob/5442c13586cffcf5ecf1f5e162188b79e63741b1/docs/reviews/rb-live-aim-assessment.md)
+and [exact settings/checks/costs](https://github.com/tannerthardy/football-simulation-/blob/5442c13586cffcf5ecf1f5e162188b79e63741b1/docs/reviews/rb-live-aim-preparation.json).
+Only designed RB assessment uses the already-acquired live aim (four changed
+carrier source lines). Eight independent controller checks/typecheck pass,
+13.22 recorded command-seconds; zero native candidate pairs/games/full suite.
+The user explicitly requires sole physics-owner review of existing RT/DE_S 2.40 s
+before the three-Ace comparison. No published disposition found at preparation.
+Review does not imply importing another law; both arms keep existing World,
+capacities, keeper runoff, collection, information, cadence, scoring and flags.
+Same three manifests and pinned 1.433-yd read/13 KB angular inputs preserved.
+Carrier/YAC overlap is flagged to the integration owner on PR #12; default
+free/catch assessment and common movement are unchanged. No diagnostic merge,
+production promotion or new baseline; any later integration extracts minimal
+reviewed controller bytes and tests rather than PR #11 ancestry.
+
 Run-game formation priority and latest diagnostic handoff:
 [under-center singleback two-TE controls, draft PR #11](https://github.com/tannerthardy/football-simulation-/pull/11)
 at **`f867fa31aec3d128b1c548a177c5a84088696038`**, branch `codex/under-center-zone`.
