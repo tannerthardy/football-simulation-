@@ -12,6 +12,16 @@ PR #2 or owner branch `862258c` at preparation. Independent held-controller
 correctness/cadence checks may proceed; no new games/roster panel or promotion.
 Diagnostic ancestry is evidence only; extract a reviewed change for integration,
 do not merge PR #11 as a production feature. No shared movement-file edit.
+Prepared engine `139f55bfecf62b61f8ebee49647e6e2b6999764f`, source `973d4ab8...`:
+[scope, hold point and queued three-control comparison](reviews/rb-live-aim-assessment.md),
+[exact settings/costs/checks](reviews/rb-live-aim-preparation.json).
+New live-reference contract fails before the patch, fixed-aim opposing contract
+passes; eight independent controller checks and typecheck pass afterward in
+13.22 recorded command-seconds. Zero native candidate runs/games/full suite.
+Physics review is the prerequisite, not a request to import a new contact law.
+Carrier/YAC overlap is confined to designed-phase assessment: free/catch carrier
+evaluation retains its previous default reference; no spacing/common movement
+change. Coordinate through the board/integration owner before any wider edit.
 
 Shared comparisons start from `codex/run-game-integration`; read
 [the baseline](BASELINE.md) and run `npm run baseline:info` before collecting.
