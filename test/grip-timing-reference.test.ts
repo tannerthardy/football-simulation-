@@ -10,13 +10,19 @@ class Channel {
   bodies = [0, 1].map(x => ({ pos: { x, y: 0 }, vel: { x: 0, y: x * 4 },
     facing: 0, spin: 0, support: { state: 'up' }, profile: { massKg: 100, radius: .3 } }));
   mass = [100, 100]; inertia = [2, 2]; time = 0;
-  joints = [{ kind: 'grasp', a: this.bodies[0], b: this.bodies[1], force: 0, capacity: 2000 }];
-  attachments = new WeakMap([[this.joints[0], { offset: 0 }]]);
+  joints = [{ kind: 'grasp', a: this.bodies[0], b: this.bodies[1], force: 0, capacity: 2000, legs: 1 }];
+  // This constant-Jacobian fixture has a fixed, fully coupled reference at
+  // the held COM. Its only attachment motion is the independent linear
+  // offset integrated below; it has no rotating material or share transition.
+  attachments = new WeakMap([[this.joints[0], { offset: 0, share: 1, reference: { x: 0, y: 0 } }]]);
   report = { work: { hands: 0, grasps: 0, contacts: 0, strikes: 0 }, supportMotorWork: [0, 0], passiveGraspWork: 0 };
   constructor(public mobility: number) {}
   indexOf(b: (typeof this.bodies)[number]) { return this.bodies.indexOf(b); }
   gripCapacity(j: (typeof this.joints)[number]) { return j.capacity; }
-  graspPoint(j: (typeof this.joints)[number]) { return { x: j.b.pos.x, y: j.b.pos.y + this.attachments.get(j)!.offset }; }
+  graspPoint(j: (typeof this.joints)[number]) {
+    const p = this.attachments.get(j)!;
+    return { x: j.b.pos.x + p.reference.x, y: j.b.pos.y + p.reference.y + p.offset };
+  }
   energy() { return this.bodies.reduce((s, b, i) => s + .5 * this.mass[i] * b.vel.y ** 2 + .5 * this.inertia[i] * b.spin ** 2, 0); }
   advance(h: number) {
     const [a, b] = this.bodies, K = .02 + 1 / this.inertia[0];
