@@ -13,6 +13,12 @@ to apply cleanly without importing unrelated branch content here.
 | --- | --- | --- | --- | --- | --- |
 | Reviewed run/catch controller integration | Codex integration owner, explicitly assigned by user and #8 controller review | `codex/controller-integration-review`, tested `46a833d` from approved `c98c2fa` | Minimal catch helper/defense hook/contract, reviewed #10 run correction and historical worksheet pin. No unrelated research ancestry, hands/grip/helper rules or capacity/law changes. | 2026-10-13 (America/Phoenix) | Preparation/verification complete, final review pending: catch-only `b3a55ac` passed 59 checks/15 frozen states; #10 run-only and compatible retained-draw receipts reused. Combined 49 affected checks/three saved histories, then one 1,684-TS/140-file, 145-Python, typecheck/build pass in 180.530 s; no skips/worker errors/input drift. [Exact receipt](../data/reviews/current/controller-combined-verification.json), [scope/adverse evidence](reviews/controller-integration.md#published-combined-verification). 44 flags/components=1. No merge or baseline designation. |
 
+## Isolated stalk visual-information correction
+
+| Current item | Owner | Branch | Files / boundary | Claimed | Status |
+| --- | --- | --- | --- | --- | --- |
+| PR #24 acquired visual picture for the stalk movement request | Codex pass/coverage controller session, user explicitly authorizes after lifting PR #18 hold | `codex/stalk-visual-request` from accepted `develop` `a1b16e6`, runtime `e5c318a1…` | Only far-contact `RunBlocker` stalk fit in `blocking.ts`, focused actual-controller contracts and diagnostics. No physics, speed/braking, hands, collection, helper or broader stalk policy changes. | 2026-10-14 America/Phoenix | In progress: extract the two-line input correction from PR #24 without merging its ancestry. Retain the synthetic stale-picture lateral-speed loss, verify hidden invariance/visible response/fresh compatibility on actual controller and assess requested versus achieved motion. Existing full-suite integration ownership retained. |
+
 ## Approved-reference ownership history
 
 Shared comparisons start from `codex/run-game-integration`; read
