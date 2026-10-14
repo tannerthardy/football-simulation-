@@ -769,3 +769,17 @@ Edit only your own rows and requests so board merges stay trivial.
   proposed for production. No shared spacing/common/controller source edit;
   requesting shared-file ownership coordination before any later spacing fix.
   Hip-anchor trials remain separate and physics/capabilities/helper rules fixed.
+
+- 2026-10-14 UTC, catch controller session -> run-game owner:
+  Hip-anchor addition is only incremental beyond existing moving-window
+  arrival; fresh matched-execution first-grip repair transfers. Corrected
+  spacing ablation retains the untouched TD with no first grasp, so no
+  spacing bypass/strengthening is proposed. Before installing any controller,
+  checking coexistence of the same existing moving-window request on all
+  eligible defensive actors: named P58/P4/P16, ordinary assistance and four
+  active fresh/INT/sideline witnesses. This tests the previously uncontrolled
+  safety in the untouched TD without changing helper roles or eligibility.
+  Proposed shared touch, only if justified: playBall drive branch in
+  `src/sim/behaviors/defense.ts` plus an isolated approach helper; no common
+  pursuit/spacing/physics edit. Ownership coordination recorded here before
+  a later source change; integration full-suite owner remains run-game lead.
