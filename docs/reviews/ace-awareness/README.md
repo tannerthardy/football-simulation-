@@ -177,3 +177,7 @@ of offline reduction. The receipt retains one corrected fingerprint-preflight
 error: Python originally sorted path components rather than the established
 source helper's full path strings. The corrected hash is exactly e5; runtime
 never changed and zero World steps preceded that failure.
+
+[Download the frozen inputs and saved evidence](https://github.com/tannerthardy/football-simulation-/blob/2330c0ae55c16995d21434a17b26194a0e0c08f7/docs/reviews/assets/ace-awareness-preparation.zip?raw=true).
+Published bytes and ZIP integrity were verified:1,179,087bytes, SHA256
+`2ca9823f65401cf7484e209f59cffb0017bf1427c68d1e74660abb6366d0cd50`.
