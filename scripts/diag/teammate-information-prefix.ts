@@ -30,6 +30,7 @@ let endTime = 2.70, destination = 'out/teammate-information/native-prefix.json.g
 let sidecarPath: string | null = null;
 let awarenessMode = 'off';
 let candidateReferencePath: string | null = null;
+let requestedCaptureFrom: number | null = null;
 const args = process.argv.slice(2);
 while (args.length) {
   const arg = args.shift();
@@ -38,6 +39,7 @@ while (args.length) {
   else if (arg === '--information-sidecar' && args.length) sidecarPath = args.shift()!;
   else if (arg === '--awareness' && args.length) awarenessMode = args.shift()!;
   else if (arg === '--candidate-reference' && args.length) candidateReferencePath = args.shift()!;
+  else if (arg === '--capture-from' && args.length) requestedCaptureFrom = Number(args.shift());
   else throw new Error(`Unknown or incomplete argument: ${arg}`);
 }
 assert(Number.isFinite(endTime) && endTime > 0 && endTime <= 10, 'Use a bounded positive end time, at most 10 seconds');
@@ -70,7 +72,9 @@ interface InformationSidecar {
   query(observer: number, target: number, now: number, dt: number): unknown;
 }
 type SidecarConstructor = new (agents: readonly Agent[], calls: ReadonlyMap<number, never>) => InformationSidecar;
-const captureFrom = Math.min(2.20, Math.max(0, endTime - .50));
+const captureFrom = requestedCaptureFrom ?? Math.min(2.20, Math.max(0, endTime - .50));
+assert(Number.isFinite(captureFrom) && captureFrom >= 0 && captureFrom < endTime,
+  'Capture start must be a nonnegative time before the declared end');
 let Sidecar: SidecarConstructor | null = null;
 let sidecarSourceSha256: string | null = null;
 let sidecarSourceBytes: number | null = null;
