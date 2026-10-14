@@ -1,0 +1,1941 @@
+{
+  "commit": "7b3d5e3db4da1bb907fe570bced216faa8e5027e",
+  "parent": "9a9d1b9ddddd405c5d4d9ee1b587f214ef95e134",
+  "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "hashes": {
+    "scripts/diag/physics/grip-span-dop853.ts": "711fd9d104b8daca2de83e2243053228d5fd33adaddba4d251c55e0889c0ceba",
+    "scripts/diag/physics/grip-span-event-force.ts": "ac535725afb7525f18f0bbe8d0b34112cc4e5313e35609acb6b1511503ea3371",
+    "scripts/diag/physics/grip-span-event-interval.ts": "f9ccfaa04748cead8e65449845cc785d63409367a9baf357ebd15fe87229563c",
+    "scripts/diag/physics/grip-span-event-reference.ts": "0eaffe3a11ce13b3041463ef693803dc0c35c941c3901e7bb1bbecbe96795d81",
+    "scripts/diag/physics/grip-span-event-evidence.ts": "8e5e55e162ddf4a0446437c8a65bdd86ac1854f164c06b5bc4303e707bb17564",
+    "scripts/diag/physics/grip-shared-explicit.ts": "018b10ad656b2f29e6e3912f104db1418840c3bf0c852d56b3e5b902b37a2b73",
+    "scripts/diag/physics/grip-mixed-span-model.ts": "542f0fff0815573f91a8b370bea7b07a4f76d3ed7c8e38a58da53ea442b2daf0",
+    "scripts/diag/physics/grip-mixed-span-force.ts": "97c6fa7786ee0d705cbb7aa0ec5c947a89d62f36fa0feb3b1e13061762cc104b",
+    "scripts/diag/physics/grip-mixed-span-reference-force.ts": "f10bbbdd70548b4d35eeda945c33b7ef6d79757b40b7eea5789afb190a50122e",
+    "scripts/diag/physics/grip-pressure-rate.ts": "18343c87a35f2ddfde5ab104bd8d884e380b10bc5a0e22b26d6648dd525ba93c",
+    "config/grip-mixed-span-inputs.json": "b3412a7f6369963a4682f02be3d838148c0f75f123c4eb1daa3fd83abfec5305",
+    "test/grip-span-events.test.ts": "8df32aea23d4e0d20cecc74fac8316a8541485eba08ef10990c5aa1a978c4196"
+  },
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "timestamp": "2026-10-14T21:34:01.981Z",
+  "priorReceipt": {
+    "path": "data/reviews/current/grip-mixed-span.json",
+    "sha256": "e76ca5f2a9275c30645065e473f5f7151a620132bcdd20be60726fb8c58ae789"
+  },
+  "scope": "Same isolated passive lower grip, same stored spring, sticking tangent/common-foot law, below98% vector cap. Desired motor/reel zero, fixed retained hold/share. No World/native fatigue, support, recovery, active, slip or multiple-contact insertion.",
+  "protocol": {
+    "candidate": "DOP853 local embedded5/3 estimate, per-component norm and summed1/32 budget; whole-state safeguarded secant at tangent reversal; endpoint derivative reuse",
+    "reference": "Independent SPD provider + RK4 uniform pieces with whole-state bisection at reversal; same physical coordinates/ODE, independent force/step/root",
+    "shortReference": [
+      128,
+      256
+    ],
+    "longReference": [
+      2048,
+      4096
+    ],
+    "refinedAllowance": 0.0625,
+    "event": {
+      "maximum": 4,
+      "forceResidualCapacityRatio": 1e-12,
+      "timeBracket": 1e-14,
+      "detectionFloor": "1e-9/(128*duration), numerical event detection only"
+    },
+    "bounded": {
+      "evaluations": 4096,
+      "pieces": 256,
+      "retries": 24,
+      "rootTrials": 12
+    },
+    "accuracy": {
+      "position": 5e-10,
+      "velocity": 2.5e-8,
+      "facing": 2.5e-9,
+      "spin": 2.5e-7,
+      "attachment": 5e-10,
+      "impulse": 5e-10,
+      "moment": 5e-10,
+      "work": 1e-9,
+      "dose": 1e-9
+    },
+    "budgetMilliseconds": {
+      "median": 2,
+      "p95": 5,
+      "refusal": 10
+    },
+    "shortDuration": 0.0002,
+    "longDuration": 0.004166666666666667
+  },
+  "mode": "accuracy",
+  "rows": [
+    {
+      "id": "loaded-mixed",
+      "duration": 0.0002,
+      "inputSha256": "f3b63c7a91e8abe1135e3ddd5339a20e75dfe85b5f8c131b8c86eb5edcb81a6b",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.0012680338210192899,
+      "convergence": 0.014239054385982271,
+      "candidate": {
+        "partitions": 7,
+        "evaluations": 99,
+        "energyResidual": 1.563123381947771e-13,
+        "spanResidual": 1.4125227815750888e-13,
+        "workResidual": 1.5058267133216674e-14,
+        "angularResidual": 2.2737367544323206e-13,
+        "representationError": 1.6244042609049396e-14,
+        "motorCompositionResidual": -4.336808689942018e-18,
+        "maximumTargetResidual": 1.585437241984513e-16,
+        "maximumCapacityRatio": 0.40615647936271004,
+        "minimumLoss": 0.0018631561156687044,
+        "bodyWork": -0.004428192932401113,
+        "motorWork": -0.004429544408730217,
+        "springWork": -0.000001736268089181434,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008304606763100262,
+        "dampingLoss": 3.847917600792243e-7,
+        "motorCrossWork": 2.5300037164083923e-14,
+        "separateMotorWork": -0.004429544408755513,
+        "normalImpulse": -0.0017451848126217384,
+        "tangentImpulse": -0.09202935742450871,
+        "normalDose": 0.0017451848126217384,
+        "tangentDose": 0.09202935742450871,
+        "dose": 0.09204966543936906,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 0.01059924129942451,
+        "rejections": 1,
+        "refusals": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1539,
+        "energyResidual": 9.528868398023088e-13,
+        "spanResidual": 8.139377941002765e-13,
+        "workResidual": 1.3895742195790817e-13,
+        "angularResidual": 2.8421709430404007e-13,
+        "representationError": 5.933172859428606e-14,
+        "motorCompositionResidual": 6.938893903907228e-18,
+        "maximumTargetResidual": 4.75594739730481e-16,
+        "maximumCapacityRatio": 0.40615647936271,
+        "minimumLoss": 0.0018631561156814839,
+        "bodyWork": -0.004428192932518573,
+        "motorWork": -0.004429544408848423,
+        "springWork": -0.0000017362680901518792,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008304606769817413,
+        "dampingLoss": 3.847917602933524e-7,
+        "motorCrossWork": 2.530002239689239e-14,
+        "separateMotorWork": -0.00442954440887373,
+        "normalImpulse": -0.0017451848131121808,
+        "tangentImpulse": -0.092029357424104,
+        "normalDose": 0.0017451848131121808,
+        "tangentDose": 0.092029357424104,
+        "dose": 0.0920496654389769,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.0012121522831211543,
+        "convergence": 0.014238776927072039,
+        "accepted": true,
+        "partitions": 8,
+        "evaluations": 185
+      }
+    },
+    {
+      "id": "loaded-mixed",
+      "duration": 0.004166666666666667,
+      "inputSha256": "83672b3ae4e06000dd2ea2d0e6b7208b4da20e11a6369a771df39a8f5bdaf71f",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.04264858762959648,
+      "convergence": 0.043569208789615364,
+      "candidate": {
+        "partitions": 54,
+        "evaluations": 690,
+        "energyResidual": -1.9287407771167303e-14,
+        "spanResidual": -1.9936045273383912e-14,
+        "workResidual": 6.487865800153259e-16,
+        "angularResidual": -8.526512829121202e-14,
+        "representationError": 2.947027269163379e-14,
+        "motorCompositionResidual": 7.806255641895632e-18,
+        "maximumTargetResidual": 3.2372054152471905e-16,
+        "maximumCapacityRatio": 0.737037971415448,
+        "minimumLoss": 0.0018631561156687044,
+        "bodyWork": -0.004608610958018549,
+        "motorWork": -0.00464099986180856,
+        "springWork": -0.00004582964987002367,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0007863672943679956,
+        "dampingLoss": 0.000013440746080012102,
+        "motorCrossWork": 3.9712166894957765e-14,
+        "separateMotorWork": -0.00464099986184828,
+        "normalImpulse": -0.03283612347596087,
+        "tangentImpulse": -0.11546110281866626,
+        "normalDose": 0.03283612347596087,
+        "tangentDose": 0.11546110281866626,
+        "dose": 0.14289656539455012,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 0.005735894380123618,
+        "rejections": 5,
+        "refusals": [
+          {
+            "time": 0,
+            "width": 0.004166666666666667,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "time": 0,
+            "width": 0.0020833333333333333,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "time": 0,
+            "width": 0.0010416666666666667,
+            "reason": "Mixed span cap/target/power scope"
+          }
+        ]
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 24579,
+        "energyResidual": 2.6408532478872093e-12,
+        "spanResidual": 2.2229713390691484e-12,
+        "workResidual": 4.179130999593106e-13,
+        "angularResidual": 1.2789769243681803e-12,
+        "representationError": 1.0901180131135752e-13,
+        "motorCompositionResidual": -8.673617379884035e-18,
+        "maximumTargetResidual": 4.877380711805468e-16,
+        "maximumCapacityRatio": 0.40615647936271,
+        "minimumLoss": 0.0018631561156814839,
+        "bodyWork": -0.0046086109584243225,
+        "motorWork": -0.004640999862254873,
+        "springWork": -0.00004582964992686972,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.000786367296554057,
+        "dampingLoss": 0.000013440746096287596,
+        "motorCrossWork": 3.9712170564015885e-14,
+        "separateMotorWork": -0.004640999862294577,
+        "normalImpulse": -0.03283612349728705,
+        "tangentImpulse": -0.11546110281862879,
+        "normalDose": 0.03283612349728705,
+        "tangentDose": 0.11546110281862879,
+        "dose": 0.14289656541561394,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.023893482681365732,
+        "convergence": 0.04356930056645924,
+        "accepted": true,
+        "partitions": 128,
+        "evaluations": 3000
+      }
+    },
+    {
+      "id": "curved-mixed",
+      "duration": 0.0002,
+      "inputSha256": "2854c1ef7118611d1ca1ea95bd403b22d7c8135f0c8f8a07a49d6dd6eab93672",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.0013800759174855714,
+      "convergence": 0.022268329137216825,
+      "candidate": {
+        "partitions": 8,
+        "evaluations": 123,
+        "energyResidual": -7.340417315289686e-14,
+        "spanResidual": -8.013639038239933e-14,
+        "workResidual": 6.734196533741965e-15,
+        "angularResidual": 0,
+        "representationError": 3.378416752569602e-14,
+        "motorCompositionResidual": 8.673617379884035e-19,
+        "maximumTargetResidual": 2.9970534635722655e-16,
+        "maximumCapacityRatio": 0.46094904813100973,
+        "minimumLoss": 0.0024941456260395177,
+        "bodyWork": -0.004443375635316955,
+        "motorWork": -0.004438931592885306,
+        "springWork": 0.0000031144347372982406,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008353113789151172,
+        "dampingLoss": 0.000001329607694348185,
+        "motorCrossWork": 0.000011184397621380386,
+        "separateMotorWork": -0.004450115990506687,
+        "normalImpulse": -0.003135507600928524,
+        "tangentImpulse": -0.09575774903761586,
+        "normalDose": 0.003135507600928524,
+        "tangentDose": 0.09575774903761586,
+        "dose": 0.0958205654278959,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 0.006761910449296466,
+        "rejections": 2,
+        "refusals": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1539,
+        "energyResidual": 8.222074703614609e-14,
+        "spanResidual": -1.6252618952470785e-13,
+        "workResidual": 2.4474172688471185e-13,
+        "angularResidual": 8.526512829121202e-14,
+        "representationError": 1.5113020046857893e-14,
+        "motorCompositionResidual": -4.336808689942018e-18,
+        "maximumTargetResidual": 6.461739435559646e-16,
+        "maximumCapacityRatio": 0.46094904813100973,
+        "minimumLoss": 0.0025215345850918888,
+        "bodyWork": -0.0044433756355461915,
+        "motorWork": -0.004438931593114521,
+        "springWork": 0.000003114434737350149,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008353113788327793,
+        "dampingLoss": 0.0000013296076943250414,
+        "motorCrossWork": 0.000011184397621664645,
+        "separateMotorWork": -0.004450115990736182,
+        "normalImpulse": -0.0031355076009492626,
+        "tangentImpulse": -0.09575774903692619,
+        "normalDose": 0.0031355076009492626,
+        "tangentDose": 0.09575774903692619,
+        "dose": 0.09582056542720777,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.0014404703719091629,
+        "convergence": 0.02226816194661667,
+        "accepted": true,
+        "partitions": 8,
+        "evaluations": 185
+      }
+    },
+    {
+      "id": "curved-mixed",
+      "duration": 0.004166666666666667,
+      "inputSha256": "d6eef6720963b0f9a3b8998ad9d4e6de990922210ddfab4e520658289daff0ae",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.04176833086631282,
+      "convergence": 0.02642657379920043,
+      "candidate": {
+        "partitions": 57,
+        "evaluations": 821,
+        "energyResidual": -8.873030111491379e-14,
+        "spanResidual": -8.812703408548391e-14,
+        "workResidual": -5.941427905220564e-16,
+        "angularResidual": 2.5579538487363607e-13,
+        "representationError": 6.056688167628077e-14,
+        "motorCompositionResidual": 3.469446951953614e-18,
+        "maximumTargetResidual": 3.5742919884069353e-16,
+        "maximumCapacityRatio": 0.4652625831019916,
+        "minimumLoss": 5.066498951516054e-12,
+        "bodyWork": -0.004591496631065245,
+        "motorWork": -0.004591536939368211,
+        "springWork": -0.000004283865692836597,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008279130784769917,
+        "dampingLoss": 0.000004243557389860895,
+        "motorCrossWork": 0.000013023234369984875,
+        "separateMotorWork": -0.0046045601737382,
+        "normalImpulse": -0.045646127877366084,
+        "tangentImpulse": -0.11492157796427827,
+        "normalDose": 0.045646127877366084,
+        "tangentDose": 0.11492157796427827,
+        "dose": 0.15244661885009056,
+        "events": [],
+        "rootIterations": 8,
+        "estimatedError": 0.006186546444792482,
+        "rejections": 5,
+        "refusals": [
+          {
+            "time": 0,
+            "width": 0.004166666666666667,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "time": 0,
+            "width": 0.0020833333333333333,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "time": 0,
+            "width": 0.0010416666666666667,
+            "reason": "Mixed span cap/target/power scope"
+          }
+        ]
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 24579,
+        "energyResidual": 2.693240338321086e-12,
+        "spanResidual": 1.9744910891231616e-12,
+        "workResidual": 7.187653250362303e-13,
+        "angularResidual": 2.8990143619012088e-12,
+        "representationError": 2.307810306449872e-13,
+        "motorCompositionResidual": 3.642919299551295e-17,
+        "maximumTargetResidual": 7.887442216998449e-16,
+        "maximumCapacityRatio": 0.46094904813100973,
+        "minimumLoss": 6.394208849337202e-12,
+        "bodyWork": -0.004591496631784771,
+        "motorWork": -0.004591536940124325,
+        "springWork": -0.00000428386573843438,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008279130804940121,
+        "dampingLoss": 0.000004243557398863915,
+        "motorCrossWork": 0.000013023234370751248,
+        "separateMotorWork": -0.0046045601744951125,
+        "normalImpulse": -0.04564612789824555,
+        "tangentImpulse": -0.11492157796476077,
+        "normalDose": 0.04564612789824555,
+        "tangentDose": 0.11492157796476077,
+        "dose": 0.15244661887065517,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.030733825224109886,
+        "convergence": 0.026426474292758684,
+        "accepted": true,
+        "partitions": 128,
+        "evaluations": 2999
+      }
+    },
+    {
+      "id": "curved-return",
+      "duration": 0.0002,
+      "inputSha256": "341866a870ab33c77af83bd6d1fb97b1c84a9abb2d0edea7f66d77cd82171bb7",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.00084428531558494,
+      "convergence": 0.005561695082160607,
+      "candidate": {
+        "partitions": 6,
+        "evaluations": 87,
+        "energyResidual": -5.6383606601874544e-14,
+        "spanResidual": -6.025546493102505e-14,
+        "workResidual": 3.871740168054361e-15,
+        "angularResidual": 4.973799150320701e-14,
+        "representationError": 1.788856598901472e-14,
+        "motorCompositionResidual": -1.0842021724855044e-19,
+        "maximumTargetResidual": 1.5865214973465005e-16,
+        "maximumCapacityRatio": 0.11502563272477222,
+        "minimumLoss": 0.004571984499198886,
+        "bodyWork": -0.0002765799512806677,
+        "motorWork": -0.0002783946786972464,
+        "springWork": -0.000002870981741490969,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008293259624562089,
+        "dampingLoss": 0.0000010562543249123534,
+        "motorCrossWork": -0.0000011922390913330182,
+        "separateMotorWork": -0.0002772024396059133,
+        "normalImpulse": -0.0014193713857916254,
+        "tangentImpulse": 0.023864596579734543,
+        "normalDose": 0.0014193713857916254,
+        "tangentDose": 0.023864596579734543,
+        "dose": 0.02392161896107866,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 0.009343109106576996,
+        "rejections": 1,
+        "refusals": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1539,
+        "energyResidual": 4.829618135892899e-13,
+        "spanResidual": 4.677846363710476e-13,
+        "workResidual": 1.517752937219008e-14,
+        "angularResidual": -2.1316282072803006e-13,
+        "representationError": 3.5981390006101597e-14,
+        "motorCompositionResidual": 5.963111948670274e-19,
+        "maximumTargetResidual": 4.753939983064326e-16,
+        "maximumCapacityRatio": 0.11502563272477224,
+        "minimumLoss": 0.004581224719842311,
+        "bodyWork": -0.0002765799512914704,
+        "motorWork": -0.00027839467870877083,
+        "springWork": -0.0000028709817424707955,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008293259629832692,
+        "dampingLoss": 0.0000010562543251700105,
+        "motorCrossWork": -0.000001192239091521463,
+        "separateMotorWork": -0.00027720243961725,
+        "normalImpulse": -0.001419371386188306,
+        "tangentImpulse": 0.023864596579590912,
+        "normalDose": 0.001419371386188306,
+        "tangentDose": 0.023864596579590912,
+        "dose": 0.02392161896097627,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.0007453719614229501,
+        "convergence": 0.0055617485596710535,
+        "accepted": true,
+        "partitions": 8,
+        "evaluations": 185
+      }
+    },
+    {
+      "id": "curved-return",
+      "duration": 0.004166666666666667,
+      "inputSha256": "83779f647501896bb2b5b69155962436ea453c51713f90b9130ad7dee11d9336",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.005858445653216901,
+      "convergence": 0.010649363439836513,
+      "candidate": {
+        "partitions": 46,
+        "evaluations": 740,
+        "energyResidual": -5.172500814709484e-13,
+        "spanResidual": -5.173524504848218e-13,
+        "workResidual": 1.0240289519125589e-16,
+        "angularResidual": 4.263256414560601e-14,
+        "representationError": 5.827580790230603e-14,
+        "motorCompositionResidual": 5.421010862427522e-19,
+        "maximumTargetResidual": 3.1747628208101705e-16,
+        "maximumCapacityRatio": 0.7350455185927549,
+        "minimumLoss": 0.0018453594126207125,
+        "bodyWork": -0.0002590578477391446,
+        "motorWork": -0.00029711448387213357,
+        "springWork": -0.00007165486043138822,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0007605420833092147,
+        "dampingLoss": 0.00003359822429839922,
+        "motorCrossWork": -0.0000014084228557684454,
+        "separateMotorWork": -0.00029570606101636564,
+        "normalImpulse": -0.024838369793072062,
+        "tangentImpulse": 0.027871508844513865,
+        "normalDose": 0.024838369793072062,
+        "tangentDose": 0.02870706754219124,
+        "dose": 0.050135310178221044,
+        "events": [
+          {
+            "time": 0.0008062849465000488,
+            "residual": -6.458839103610569e-13
+          }
+        ],
+        "rootIterations": 12,
+        "estimatedError": 0.003187738716401619,
+        "rejections": 5,
+        "refusals": [
+          {
+            "time": 0,
+            "width": 0.004166666666666667,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "time": 0,
+            "width": 0.0020833333333333333,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "time": 0,
+            "width": 0.0010416666666666667,
+            "reason": "Mixed span cap/target/power scope"
+          }
+        ]
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 24635,
+        "energyResidual": -1.0997319184859536e-12,
+        "spanResidual": -1.1451841401164883e-12,
+        "workResidual": 4.545002612113547e-14,
+        "angularResidual": 6.252776074688882e-13,
+        "representationError": 8.908043795965e-14,
+        "motorCompositionResidual": -1.5720931501039814e-18,
+        "maximumTargetResidual": 4.903541934181903e-16,
+        "maximumCapacityRatio": 0.11502563272477224,
+        "minimumLoss": 0.004503762404850183,
+        "bodyWork": -0.0002590578477887978,
+        "motorWork": -0.00029711448391538006,
+        "springWork": -0.00007165486042256528,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0007605420826902059,
+        "dampingLoss": 0.000033598224295985227,
+        "motorCrossWork": -0.00000140842285597229,
+        "separateMotorWork": -0.0002957060610594062,
+        "normalImpulse": -0.024838369790143106,
+        "tangentImpulse": 0.027871508844572703,
+        "normalDose": 0.024838369790143106,
+        "tangentDose": 0.028707067540574664,
+        "dose": 0.05013531017491871,
+        "events": [
+          {
+            "time": 0.0008062849442164103,
+            "residual": 8.2781548946868e-13
+          }
+        ],
+        "rootIterations": 10
+      },
+      "preservedUniform": {
+        "returned": false,
+        "reason": "Mixed span accuracy budget",
+        "error": null,
+        "convergence": 0.08520250824317621,
+        "accepted": false,
+        "partitions": null,
+        "evaluations": null
+      }
+    },
+    {
+      "id": "radial-control",
+      "duration": 0.0002,
+      "inputSha256": "d9c06efd607766f7375d0fc3222ef54655cca6503fbbfcd25a8c38e42544c4bb",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.0003681995030049845,
+      "convergence": 0.0005323963925968345,
+      "candidate": {
+        "partitions": 1,
+        "evaluations": 15,
+        "energyResidual": 9.844073076207123e-15,
+        "spanResidual": 9.844087528706785e-15,
+        "workResidual": 1.0657395012133209e-20,
+        "angularResidual": 5.551115123125783e-17,
+        "representationError": 5.516183375968656e-15,
+        "motorCompositionResidual": -5.082197683525802e-21,
+        "maximumTargetResidual": 3.169707971068155e-16,
+        "maximumCapacityRatio": 0.0038690760124535013,
+        "minimumLoss": 0.0018631561156644335,
+        "bodyWork": 2.863205862605967e-8,
+        "motorWork": -0.0000013230353261939772,
+        "springWork": -0.000001736613423329145,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008304603308444703,
+        "dampingLoss": 3.849460385091138e-7,
+        "motorCrossWork": -9.79098450551674e-38,
+        "separateMotorWork": -0.0000013230353261939721,
+        "normalImpulse": -0.0017450858183203253,
+        "tangentImpulse": 2.3902003344074583e-19,
+        "normalDose": 0.0017450858183203253,
+        "tangentDose": 3.6952557331323045e-18,
+        "dose": 0.0017450858183203253,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 0.00005530942041074493,
+        "rejections": 0,
+        "refusals": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1539,
+        "energyResidual": -3.5812695306153e-13,
+        "spanResidual": -3.5812697661963386e-13,
+        "workResidual": -3.308722450212111e-24,
+        "angularResidual": -8.326672684688674e-17,
+        "representationError": 1.7483209126294878e-14,
+        "motorCompositionResidual": 0,
+        "maximumTargetResidual": 3.1708159802015637e-16,
+        "maximumCapacityRatio": 0.0038690760124535004,
+        "minimumLoss": 0.0018631561156644341,
+        "bodyWork": 2.8632058629809035e-8,
+        "motorWork": -0.0000013230353263680177,
+        "springWork": -0.000001736613423557584,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008304603304762708,
+        "dampingLoss": 3.8494603855975547e-7,
+        "motorCrossWork": 1.3884390719518907e-39,
+        "separateMotorWork": -0.0000013230353263680177,
+        "normalImpulse": -0.0017450858184342587,
+        "tangentImpulse": 6.360744997662494e-20,
+        "normalDose": 0.0017450858184342587,
+        "tangentDose": 1.358354578401019e-19,
+        "dose": 0.0017450858184342587,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.0007382710041880007,
+        "convergence": 0.0005323963925968345,
+        "accepted": true,
+        "partitions": 2,
+        "evaluations": 39
+      }
+    },
+    {
+      "id": "radial-control",
+      "duration": 0.004166666666666667,
+      "inputSha256": "ca47e66a292099b90ccd3737e561c18b772a755d92d2225ab11ccc2a91e3c09d",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.005374192084311379,
+      "convergence": 0.0010385840588816113,
+      "candidate": {
+        "partitions": 2,
+        "evaluations": 39,
+        "energyResidual": 3.4251047771648516e-14,
+        "spanResidual": 3.4236841335057167e-14,
+        "workResidual": 1.426234076586791e-17,
+        "angularResidual": 4.440892098500626e-16,
+        "representationError": 9.80533987418574e-15,
+        "motorCompositionResidual": -1.0164395367051604e-20,
+        "maximumTargetResidual": 1.6296325435228687e-16,
+        "maximumCapacityRatio": 0.0038690760124535013,
+        "minimumLoss": 0.0018631561156644335,
+        "bodyWork": 0.000010073698735954789,
+        "motorWork": -0.0000224399387015376,
+        "springWork": -0.00004616932590238342,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0007860276183898088,
+        "dampingLoss": 0.000013655688464891003,
+        "motorCrossWork": -3.68405921077931e-31,
+        "separateMotorWork": -0.00002243993870153759,
+        "normalImpulse": -0.03273293749695846,
+        "tangentImpulse": -1.6592932697641057e-13,
+        "normalDose": 0.03273293749695846,
+        "tangentDose": 5.3743004049465724e-12,
+        "dose": 0.03273293749695846,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 0.0017881380060007772,
+        "rejections": 1,
+        "refusals": []
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 24579,
+        "energyResidual": 4.507477273780992e-13,
+        "spanResidual": 4.507475664418392e-13,
+        "workResidual": -1.1858461261560205e-20,
+        "angularResidual": -6.661338147750939e-16,
+        "representationError": 3.044499106399482e-13,
+        "motorCompositionResidual": 0,
+        "maximumTargetResidual": 4.831970535183283e-16,
+        "maximumCapacityRatio": 0.0038690760124535004,
+        "minimumLoss": 0.0018631561156644341,
+        "bodyWork": 0.000010073698734742278,
+        "motorWork": -0.000022439938698013806,
+        "springWork": -0.0000461693258953304,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0007860276188133725,
+        "dampingLoss": 0.000013655688462574505,
+        "motorCrossWork": 1.4151163542844856e-38,
+        "separateMotorWork": -0.000022439938698013806,
+        "normalImpulse": -0.03273293749496538,
+        "tangentImpulse": -3.3664032715952327e-17,
+        "normalDose": 0.03273293749496538,
+        "tangentDose": 1.0832063519367167e-16,
+        "dose": 0.03273293749496538,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.0021869987258194994,
+        "convergence": 0.0010385840588816113,
+        "accepted": true,
+        "partitions": 8,
+        "evaluations": 185
+      }
+    },
+    {
+      "id": "zero-span-control",
+      "duration": 0.0002,
+      "inputSha256": "562dfd0b5c17e086d30e991bcdbc1bc7356165a917b820584c80c1cd2ffc3c8d",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0,
+      "convergence": 0,
+      "candidate": {
+        "partitions": 1,
+        "evaluations": 15,
+        "energyResidual": 0,
+        "spanResidual": 0,
+        "workResidual": 0,
+        "angularResidual": 0,
+        "representationError": 0,
+        "motorCompositionResidual": 0,
+        "maximumTargetResidual": 0,
+        "maximumCapacityRatio": 0,
+        "minimumLoss": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "springWork": 0,
+        "initialSpringEnergy": 0,
+        "springEnergy": 0,
+        "dampingLoss": 0,
+        "motorCrossWork": 0,
+        "separateMotorWork": 0,
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "normalDose": 0,
+        "tangentDose": 0,
+        "dose": 0,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 3.1864070429633013e-8,
+        "rejections": 0,
+        "refusals": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1539,
+        "energyResidual": 0,
+        "spanResidual": 0,
+        "workResidual": 0,
+        "angularResidual": 0,
+        "representationError": 0,
+        "motorCompositionResidual": 0,
+        "maximumTargetResidual": 0,
+        "maximumCapacityRatio": 0,
+        "minimumLoss": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "springWork": 0,
+        "initialSpringEnergy": 0,
+        "springEnergy": 0,
+        "dampingLoss": 0,
+        "motorCrossWork": 0,
+        "separateMotorWork": 0,
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "normalDose": 0,
+        "tangentDose": 0,
+        "dose": 0,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0,
+        "convergence": 0,
+        "accepted": true,
+        "partitions": 2,
+        "evaluations": 39
+      }
+    },
+    {
+      "id": "zero-span-control",
+      "duration": 0.004166666666666667,
+      "inputSha256": "3b53526ca052239ac9bbf71591f33d4938600849350f0025b615dbb934af25ec",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0,
+      "convergence": 0,
+      "candidate": {
+        "partitions": 1,
+        "evaluations": 15,
+        "energyResidual": 0,
+        "spanResidual": 0,
+        "workResidual": 0,
+        "angularResidual": 0,
+        "representationError": 0,
+        "motorCompositionResidual": 0,
+        "maximumTargetResidual": 0,
+        "maximumCapacityRatio": 0,
+        "minimumLoss": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "springWork": 0,
+        "initialSpringEnergy": 0,
+        "springEnergy": 0,
+        "dampingLoss": 0,
+        "motorCrossWork": 0,
+        "separateMotorWork": 0,
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "normalDose": 0,
+        "tangentDose": 0,
+        "dose": 0,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 6.638348006173545e-7,
+        "rejections": 0,
+        "refusals": []
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 24579,
+        "energyResidual": 0,
+        "spanResidual": 0,
+        "workResidual": 0,
+        "angularResidual": 0,
+        "representationError": 0,
+        "motorCompositionResidual": 0,
+        "maximumTargetResidual": 0,
+        "maximumCapacityRatio": 0,
+        "minimumLoss": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "springWork": 0,
+        "initialSpringEnergy": 0,
+        "springEnergy": 0,
+        "dampingLoss": 0,
+        "motorCrossWork": 0,
+        "separateMotorWork": 0,
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "normalDose": 0,
+        "tangentDose": 0,
+        "dose": 0,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0,
+        "convergence": 0,
+        "accepted": true,
+        "partitions": 2,
+        "evaluations": 39
+      }
+    },
+    {
+      "id": "fresh-curved",
+      "duration": 0.0002,
+      "inputSha256": "9577d3ead5ef5dd3879deb11419da48972939d0dba7f6651a4a0b3db14457d44",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.000775700399401195,
+      "convergence": 0.013547579809962563,
+      "candidate": {
+        "partitions": 7,
+        "evaluations": 99,
+        "energyResidual": 1.186759092147889e-13,
+        "spanResidual": 1.0827808342593528e-13,
+        "workResidual": 1.0400968281087941e-14,
+        "angularResidual": 1.4210854715202004e-13,
+        "representationError": 2.3291302284350076e-14,
+        "motorCompositionResidual": 3.0357660829594124e-18,
+        "maximumTargetResidual": 3.488395261577603e-16,
+        "maximumCapacityRatio": 0.3133890572393878,
+        "minimumLoss": 0.05315472019558031,
+        "bodyWork": -0.0022689925187921937,
+        "motorWork": -0.0022471163730681423,
+        "springWork": 0.000009765058917358304,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008419620032835917,
+        "dampingLoss": 0.000012111086806690294,
+        "motorCrossWork": 0.000008162184144137358,
+        "separateMotorWork": -0.0022552785572122827,
+        "normalImpulse": -0.00503458168436747,
+        "tangentImpulse": -0.06718376697199278,
+        "normalDose": 0.00503458168436747,
+        "tangentDose": 0.06718376697199278,
+        "dose": 0.06741926789998703,
+        "events": [],
+        "rootIterations": 0,
+        "estimatedError": 0.010078721409256756,
+        "rejections": 1,
+        "refusals": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1539,
+        "energyResidual": 2.1448486466990688e-13,
+        "spanResidual": 1.1316712032803742e-13,
+        "workResidual": 1.0131869301877039e-13,
+        "angularResidual": 2.842170943040401e-14,
+        "representationError": 4.0756351571435796e-14,
+        "motorCompositionResidual": 1.3010426069826053e-18,
+        "maximumTargetResidual": 5.05740550123001e-16,
+        "maximumCapacityRatio": 0.3133890572393879,
+        "minimumLoss": 0.05319743603697025,
+        "bodyWork": -0.002268992518879309,
+        "motorWork": -0.0022471163731551964,
+        "springWork": 0.000009765058917479257,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008419620032886017,
+        "dampingLoss": 0.000012111086806632359,
+        "motorCrossWork": 0.000008162184144155139,
+        "separateMotorWork": -0.002255278557299353,
+        "normalImpulse": -0.005034581684393877,
+        "tangentImpulse": -0.06718376697160536,
+        "normalDose": 0.005034581684393877,
+        "tangentDose": 0.06718376697160536,
+        "dose": 0.06741926789960791,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.0009279913058680861,
+        "convergence": 0.013547662882385184,
+        "accepted": true,
+        "partitions": 8,
+        "evaluations": 185
+      }
+    },
+    {
+      "id": "fresh-curved",
+      "duration": 0.004166666666666667,
+      "inputSha256": "48b60a081388423ca3ff9501f535183ffa17c21936485b5e111e3ee3dde0af2a",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "error": 0.008949850692027816,
+      "convergence": 0.004547510805419375,
+      "candidate": {
+        "partitions": 54,
+        "evaluations": 774,
+        "energyResidual": 6.067195357228883e-16,
+        "spanResidual": 5.582828036670984e-16,
+        "workResidual": 4.7704895589362195e-17,
+        "angularResidual": 1.4210854715202004e-13,
+        "representationError": 8.056280752035436e-14,
+        "motorCompositionResidual": -5.637851296924623e-18,
+        "maximumTargetResidual": 4.1320046173764995e-16,
+        "maximumCapacityRatio": 0.703657474934311,
+        "minimumLoss": 0.008115944470161535,
+        "bodyWork": -0.0027016994685349826,
+        "motorWork": -0.0024548124277052096,
+        "springWork": 0.00013536072887433288,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0009675576731328465,
+        "dampingLoss": 0.00011152631195544089,
+        "motorCrossWork": 0.000009902554925400595,
+        "separateMotorWork": -0.0024647149826306047,
+        "normalImpulse": -0.08610221200979958,
+        "tangentImpulse": -0.08259430410111553,
+        "normalDose": 0.08610221200979958,
+        "tangentDose": 0.08259430410111553,
+        "dose": 0.15716840885850905,
+        "events": [],
+        "rootIterations": 7,
+        "estimatedError": 0.006037511753312853,
+        "rejections": 5,
+        "refusals": [
+          {
+            "time": 0,
+            "width": 0.004166666666666667,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "time": 0,
+            "width": 0.0020833333333333333,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "time": 0,
+            "width": 0.0010416666666666667,
+            "reason": "Mixed span cap/target/power scope"
+          }
+        ]
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 24579,
+        "energyResidual": 4.659214095266428e-13,
+        "spanResidual": 1.6519834003352052e-13,
+        "workResidual": 3.0071301351797253e-13,
+        "angularResidual": -3.979039320256561e-13,
+        "representationError": 1.0816728092852257e-13,
+        "motorCompositionResidual": -2.168404344971009e-18,
+        "maximumTargetResidual": 7.96610342641368e-16,
+        "maximumCapacityRatio": 0.3133890572393879,
+        "minimumLoss": 0.008115944468350894,
+        "bodyWork": -0.0027016994688497478,
+        "motorWork": -0.002454812428019837,
+        "springWork": 0.00013536072888155502,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0009675576733047087,
+        "dampingLoss": 0.00011152631194836566,
+        "motorCrossWork": 0.000009902554925504141,
+        "separateMotorWork": -0.0024647149829453386,
+        "normalImpulse": -0.08610221201427799,
+        "tangentImpulse": -0.08259430410117936,
+        "normalDose": 0.08610221201427799,
+        "tangentDose": 0.08259430410117936,
+        "dose": 0.15716840886277145,
+        "events": [],
+        "rootIterations": 0
+      },
+      "preservedUniform": {
+        "returned": true,
+        "reason": "",
+        "error": 0.014312020032359625,
+        "convergence": 0.004547519912717624,
+        "accepted": true,
+        "partitions": 128,
+        "evaluations": 3000
+      }
+    }
+  ],
+  "raw": {
+    "path": "out/grip-span-events/event-moving-raw.json",
+    "sha256": "a86ff378cd01399c4c614d227bc493b89c2e0ff09091b3a0b1d4f236e8e24a9c"
+  },
+  "decision": "Stop this bounded pass; reject World integration. Six ordinary mechanical cases pass unchanged accuracy and converged reference checks, but all four mixed medians exceed2ms in both serial runs and first-run tails exceed5ms. Preserve event candidate as a precise diagnostic. Next numerical feasibility should reduce unnecessary full-state RK stage arithmetic while retaining every endpoint/ledger gate; no new mechanics or accuracy relaxation.",
+  "checks": {
+    "focused": {
+      "receipt": {
+        "baseline": "run-game-2026-10-13",
+        "branch": "codex/grip-span-events",
+        "commit": "7b3d5e3db4da1bb907fe570bced216faa8e5027e",
+        "mode": "candidate",
+        "node": "v22.23.3",
+        "platform": "linux",
+        "arch": "x64",
+        "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+        "validationSha256": "c7bf66ef3aa5120304bc63575817b5f09efeecf71f6270cb5e7c4c2d8af43e21",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "trackedChanges": [],
+        "startedAt": "2026-10-14T21:34:01.441Z",
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/grip-span-events.test.ts",
+              "test/grip-mixed-span.test.ts",
+              "test/grip-effort.test.ts",
+              "--maxWorkers=1"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 4.935243181
+          }
+        ],
+        "finishedAt": "2026-10-14T21:34:06.381Z",
+        "inputsUnchanged": true,
+        "exitCode": 0
+      },
+      "log": {
+        "path": "out/grip-span-events/focused-final.log",
+        "sha256": "dc18b78cad658a907d60d7375a02a38f7a8fe55f6df2fad1c8b944fec9aea125"
+      },
+      "passed": 27
+    },
+    "typecheck": {
+      "receipt": {
+        "baseline": "run-game-2026-10-13",
+        "branch": "codex/grip-span-events",
+        "commit": "7b3d5e3db4da1bb907fe570bced216faa8e5027e",
+        "mode": "candidate",
+        "node": "v22.23.3",
+        "platform": "linux",
+        "arch": "x64",
+        "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+        "validationSha256": "c7bf66ef3aa5120304bc63575817b5f09efeecf71f6270cb5e7c4c2d8af43e21",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "trackedChanges": [],
+        "startedAt": "2026-10-14T21:34:01.426Z",
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 17.220291763000002
+          }
+        ],
+        "finishedAt": "2026-10-14T21:34:18.650Z",
+        "inputsUnchanged": true,
+        "exitCode": 0
+      },
+      "log": {
+        "path": "out/grip-span-events/typecheck-final.log",
+        "sha256": "ecebabddac675bea812edf976f9ac84e4bf8ebea5411c0b1f8a7100b998ab08b"
+      }
+    }
+  },
+  "benchmarks": [
+    {
+      "commit": "7b3d5e3db4da1bb907fe570bced216faa8e5027e",
+      "timestamp": "2026-10-14T21:34:37.902Z",
+      "node": "v22.23.3",
+      "cpu": "AMD EPYC 9V74 80-Core Processor",
+      "protocol": {
+        "serial": true,
+        "warmups": 5,
+        "repetitions": 21,
+        "rotatingOrder": true,
+        "preparationOutsideClock": true,
+        "profilersOrLedgerObservers": false,
+        "baselineIsPreservedUniformDiagnostic": true
+      },
+      "bench": [
+        {
+          "id": "loaded-mixed",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 2.3209609999998975,
+            "p95": 5.35943199999997,
+            "maximum": 6.082981000000018
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": false
+        },
+        {
+          "id": "loaded-mixed",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 9.9098469999999,
+            "p95": 13.186024999999972,
+            "maximum": 123.07322299999987
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "loaded-mixed",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 77.89920299999994,
+            "p95": 102.4315160000001,
+            "maximum": 106.30942000000005
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "curved-mixed",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 2.5422940000007657,
+            "p95": 4.443644999999833,
+            "maximum": 17.691623000000618
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": false
+        },
+        {
+          "id": "curved-mixed",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 9.611488999999892,
+            "p95": 29.587137999999868,
+            "maximum": 40.419942999999876
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "curved-mixed",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 70.60164499999973,
+            "p95": 76.15665600000011,
+            "maximum": 77.17203399999926
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 2.337916999999834,
+            "p95": 3.3258230000001276,
+            "maximum": 3.6317739999994956
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": false
+        },
+        {
+          "id": "curved-return",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 9.52020100000027,
+            "p95": 12.173993000000337,
+            "maximum": 17.0745450000004
+          },
+          "refusals": 21,
+          "reasons": [
+            "Mixed span accuracy budget"
+          ],
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 71.60672400000021,
+            "p95": 85.75684499999988,
+            "maximum": 145.95993999999973
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 0.13431200000013632,
+            "p95": 0.3039570000000822,
+            "maximum": 0.44120400000065274
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": true
+        },
+        {
+          "id": "radial-control",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 0.5704689999984112,
+            "p95": 0.8557279999995444,
+            "maximum": 0.9365089999992051
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 67.74245599999995,
+            "p95": 86.83208100000047,
+            "maximum": 161.5873309999988
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 0.07687499999883585,
+            "p95": 0.18460699999923236,
+            "maximum": 0.24917499999901338
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": true
+        },
+        {
+          "id": "zero-span-control",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 0.15706600000157778,
+            "p95": 0.36900499999865133,
+            "maximum": 0.660132999999405
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 72.60267100000056,
+            "p95": 87.63522000000012,
+            "maximum": 98.53489599999921
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 2.3862800000006246,
+            "p95": 5.8039909999988595,
+            "maximum": 5.8403849999995145
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": false
+        },
+        {
+          "id": "fresh-curved",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 9.678179000000455,
+            "p95": 13.137212000001455,
+            "maximum": 14.957760999999664
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 73.6242829999992,
+            "p95": 90.73325500000101,
+            "maximum": 95.19650899999942
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        }
+      ],
+      "raw": {
+        "path": "out/grip-span-events/benchmark-a.samples.json",
+        "sha256": "afd903ea95324c2cf0ad74609f5ca7c5ddd85fa94b7df915b56abfaa692dc2ff"
+      },
+      "evidence": {
+        "path": "out/grip-span-events/benchmark-a.json",
+        "sha256": "b0093c094ecbb46d37a73eb6d84f4598789bf7d95f1cffe8f016fb544b0af4ab"
+      },
+      "decision": "Reject World integration: at least one ordinary input misses the declared median/p95 budget. Retain precise diagnostic reference; stop this bounded pass."
+    },
+    {
+      "commit": "7b3d5e3db4da1bb907fe570bced216faa8e5027e",
+      "timestamp": "2026-10-14T21:35:03.115Z",
+      "node": "v22.23.3",
+      "cpu": "AMD EPYC 9V74 80-Core Processor",
+      "protocol": {
+        "serial": true,
+        "warmups": 5,
+        "repetitions": 21,
+        "rotatingOrder": true,
+        "preparationOutsideClock": true,
+        "profilersOrLedgerObservers": false,
+        "baselineIsPreservedUniformDiagnostic": true
+      },
+      "bench": [
+        {
+          "id": "loaded-mixed",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 2.159950999999637,
+            "p95": 2.4840889999998126,
+            "maximum": 2.7052419999999984
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": false
+        },
+        {
+          "id": "loaded-mixed",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 9.027984999999944,
+            "p95": 11.765900999999758,
+            "maximum": 19.556477000000086
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "loaded-mixed",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 66.07984699999997,
+            "p95": 73.7308579999999,
+            "maximum": 75.317182
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "curved-mixed",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 2.6176180000002205,
+            "p95": 2.9087760000002163,
+            "maximum": 3.340725999999904
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": false
+        },
+        {
+          "id": "curved-mixed",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 9.35110799999984,
+            "p95": 11.636931999999433,
+            "maximum": 17.60348299999987
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "curved-mixed",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 72.46220299999959,
+            "p95": 79.55576400000018,
+            "maximum": 80.18629199999987
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 2.3975970000001325,
+            "p95": 2.9941750000007232,
+            "maximum": 3.2529789999998684
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": false
+        },
+        {
+          "id": "curved-return",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 9.187401000000136,
+            "p95": 11.904089999999997,
+            "maximum": 14.025109000000157
+          },
+          "refusals": 21,
+          "reasons": [
+            "Mixed span accuracy budget"
+          ],
+          "passesBudget": null
+        },
+        {
+          "id": "curved-return",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 70.19245300000057,
+            "p95": 82.20581700000002,
+            "maximum": 84.48120699999981
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 0.13960000000042783,
+            "p95": 0.23518299999977899,
+            "maximum": 0.3379789999999048
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": true
+        },
+        {
+          "id": "radial-control",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 0.593933999998626,
+            "p95": 1.0565499999993335,
+            "maximum": 1.2890999999999622
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "radial-control",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 65.54089000000022,
+            "p95": 74.7341209999995,
+            "maximum": 81.46142300000065
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 0.08234399999855668,
+            "p95": 0.27337099999931525,
+            "maximum": 0.3045379999985016
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": true
+        },
+        {
+          "id": "zero-span-control",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 0.14231400000062422,
+            "p95": 0.4171170000008715,
+            "maximum": 0.4393309999995836
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "zero-span-control",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 67.54185999999936,
+            "p95": 78.52534500000002,
+            "maximum": 88.04856899999868
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "event-local",
+          "milliseconds": {
+            "median": 2.3769160000010743,
+            "p95": 3.1483570000000327,
+            "maximum": 3.292783999999301
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": false
+        },
+        {
+          "id": "fresh-curved",
+          "method": "preserved-uniform",
+          "milliseconds": {
+            "median": 8.753679999999804,
+            "p95": 11.538220000000365,
+            "maximum": 15.095933000000514
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        },
+        {
+          "id": "fresh-curved",
+          "method": "event-reference4096",
+          "milliseconds": {
+            "median": 67.70890099999997,
+            "p95": 77.92537799999991,
+            "maximum": 78.29506299999957
+          },
+          "refusals": 0,
+          "reasons": [],
+          "passesBudget": null
+        }
+      ],
+      "raw": {
+        "path": "out/grip-span-events/benchmark-b.samples.json",
+        "sha256": "0bd6558b4bf58a87f6d9325e223eedc57f2dc4b2f2db03b8e21ec7f42a86ff43"
+      },
+      "evidence": {
+        "path": "out/grip-span-events/benchmark-b.json",
+        "sha256": "9a162e76e032675f32696ae91952abfb829383f718f1120b880a705e31875f41"
+      },
+      "decision": "Reject World integration: at least one ordinary input misses the declared median/p95 budget. Retain precise diagnostic reference; stop this bounded pass."
+    }
+  ],
+  "profile": {
+    "path": "out/grip-span-events/event-final.cpuprofile",
+    "sha256": "5de989b1fb04f484fbe81e06c297fa2b7f67500c8e7433afd850295a6b6cfbb0",
+    "samples": 5087,
+    "operators": 500,
+    "input": "curved-mixed4.166667ms",
+    "hot": [
+      {
+        "count": 1784,
+        "fraction": 0.3506978572832711,
+        "function": "spanExplicitTrial",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-span-dop853.ts",
+        "line": 1
+      },
+      {
+        "count": 1258,
+        "fraction": 0.24729703164930214,
+        "function": "frame",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 511,
+        "fraction": 0.10045213288775309,
+        "function": "pressureGeometry",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-pressure-rate.ts",
+        "line": 1
+      },
+      {
+        "count": 316,
+        "fraction": 0.06211912718694712,
+        "function": "(garbage collector)",
+        "file": "",
+        "line": 0
+      },
+      {
+        "count": 312,
+        "fraction": 0.061332809121289564,
+        "function": "",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-span-dop853.ts",
+        "line": 1
+      },
+      {
+        "count": 271,
+        "fraction": 0.05327304894829959,
+        "function": "boundedAttachment",
+        "file": "file:///workspace/football-simulation-/src/physics/bounded-attachment.ts",
+        "line": 1
+      },
+      {
+        "count": 213,
+        "fraction": 0.04187143699626499,
+        "function": "",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-span-event-force.ts",
+        "line": 1
+      },
+      {
+        "count": 139,
+        "fraction": 0.027324552781600158,
+        "function": "derivative",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 136,
+        "fraction": 0.026734814232356987,
+        "function": "spanEventInterval",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-span-event-interval.ts",
+        "line": 1
+      },
+      {
+        "count": 25,
+        "fraction": 0.00491448791035974,
+        "function": "result",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 18,
+        "fraction": 0.003538431295459013,
+        "function": "",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-span-event-evidence.ts",
+        "line": 0
+      },
+      {
+        "count": 18,
+        "fraction": 0.003538431295459013,
+        "function": "mixedSpanModel",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 17,
+        "fraction": 0.0033418517790446234,
+        "function": "frame",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 14,
+        "fraction": 0.002752113229801455,
+        "function": "set filename",
+        "file": "",
+        "line": 0
+      },
+      {
+        "count": 11,
+        "fraction": 0.002162374680558286,
+        "function": "derivative",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      }
+    ],
+    "preparationExcluded": true
+  },
+  "retained": {
+    "uniformCurvedReturnRefusal": "Mixed span accuracy budget",
+    "uniformCurvedReturnReferenceConvergence": 0.08520250824317621,
+    "unrelatedPatchGate": "43/52: nine unchanged failures; not rerun or attributed to this timing/numerical candidate",
+    "noWorldNativeSupportRecoveryOrFatigueInsertion": true,
+    "awarenessAndKeeperAndSupportHistoryIndependent": true
+  },
+  "development": {
+    "logs": [
+      {
+        "path": "out/grip-span-events/development.log",
+        "sha256": "54a31377022aa7754665886500464a01ce314e54264c408e8712b899bba31854"
+      },
+      {
+        "path": "out/grip-span-events/refined.log",
+        "sha256": "fc580ec36d9568270d96425f85f0759a8e1071722dcc0d57ecb0f02f871c9695"
+      },
+      {
+        "path": "out/grip-span-events/single-root.log",
+        "sha256": "6f88e474201b54ccb7f08b88df8c9e59a537b182bd37166abde118c9fb524e1d"
+      },
+      {
+        "path": "out/grip-span-events/prepared-force.log",
+        "sha256": "6f88e474201b54ccb7f08b88df8c9e59a537b182bd37166abde118c9fb524e1d"
+      },
+      {
+        "path": "out/grip-span-events/focused-development.log",
+        "sha256": "217b43a352edbf9afca6a8e9481e7dcebaba57d5c3ee40d5e40d567581cb6085"
+      },
+      {
+        "path": "out/grip-span-events/focused-corrected.log",
+        "sha256": "d08fd015a96a1a958d75926e33306dc7b93ac065224379ab5b7e2d354f90955a"
+      }
+    ],
+    "notes": [
+      "Reference evaluation budget corrected from5*n to6*n plus bounded root allowance.",
+      "Remember the post-root side until the next accepted step; root residual no longer creates a duplicate event.",
+      "Prepared force provider retains the original early cap guard so rejected overshoots do not pollute maximum-capacity diagnostics.",
+      "New test assumptions corrected: material coordinate is local under global rotation, and zero-load contact need not refuse a tiny capacity. Existing tests/expectations unchanged."
+    ]
+  }
+}
