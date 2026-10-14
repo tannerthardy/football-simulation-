@@ -1,5 +1,17 @@
 # Offensive-line technique: making the whole wide-zone surface work
 
+[Download the interactive film viewer](https://github.com/tannerthardy/football-simulation-/blob/codex/ol-technique-audit/docs/reviews/assets/ace-wide-zone-film.zip?raw=true).
+Extract the ZIP and open `index.html` in a browser. The viewer is self-contained
+and works offline. It shows the six saved historical/isolated histories, with
+corrected tick-average force labels; the later PR #26 production replay is
+separate. Packaging adds no simulations and preserves the existing HTML bytes.
+
+Visual-artifact delivery preference: provide a user-accessible download for
+every generated viewer, video, chart or other visual artifact, rather than
+only a cloud workspace path. This explicit download request is the reason for
+publishing the bounded ZIP alongside this diagnostic guide; the original
+working outputs remain under ignored `out/`.
+
 The saved Ace runs expose broader technique and coordination gaps, not simply
 superior defenders winning every matchup. The first-level count is complete.
 What varies is whether the assigned player reaches a useful surface, maintains
