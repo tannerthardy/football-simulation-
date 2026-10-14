@@ -445,7 +445,8 @@ export class QBPass implements Behavior {
     // a little sooner.
     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
     const natural = (d: number) => (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
-    let range = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
+    const current = option ? this.knownStickPoint(sim, r, 0) : r.pos;
+    let range = Math.hypot(current.x - a.pos.x, current.y - a.pos.y);
     let T = Math.max(0.3, natural(range));
     let Tmin = T;
     let pt = predict(wind + T);

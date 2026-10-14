@@ -180,4 +180,15 @@ describe('QB option expectation from his own view',()=>{
     }
     expect({...a.sim.rng}).toEqual({...b.sim.rng});
   });
+  it('keeps throw evaluation independent of an unseen live target position or engagement',()=>{
+    const a=fixture(),b=fixture(),qa=quarterbackView(a,2),qb=quarterbackView(b,2);
+    for(const f of [a,b])vi.mocked(f.sim.see).mockImplementation((observer,d)=>d===f.a?
+      picture(44,f.plan.origin.y,6):picture(80,50));
+    b.a.body.pos={x:80,y:50};Reflect.set(b.a,'engagement',{win:0});
+    const evaluate=(f:ReturnType<typeof fixture>,q:QBPass)=>{
+      const ev=Reflect.get(q,'evaluate').call(q,f.sim.qb,f.sim,f.a,0);
+      expect(ev).not.toBeNull();const {target:_target,...measured}=ev;return measured;
+    };
+    expect(evaluate(a,qa)).toEqual(evaluate(b,qb));
+  });
 });
