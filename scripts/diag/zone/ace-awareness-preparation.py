@@ -88,6 +88,31 @@ for r in rows:
                 'consumedTargetImages':[x for x in f['consumed'] if x['actor']==2 and x['target']==12]})
 assert foot
 
+spacing_sources=[]
+for f in native['frames']:
+    if not any(near(f['t'],t) for t in [2.25,2.35,2.5]):continue
+    for observer,target in [(2,6),(6,2)]:
+        cues=[p for p in native['pictures'] if near(p['t'],f['t']) and p['actor']==observer and p['target']==target
+            and any('spaceTeammates' in line for line in p['caller'])]
+        assert len(cues)==1 and cues[0]['calledMotion'] is None
+        movement=next(p['data']['command'] for p in native['phases'] if near(p['t'],f['t'])
+            and p['phase']=='movement' and p['rep']['blocker']=={'agent':2}) if observer==2 else f['requested'][6]
+        spacing_sources.append({'case':ids[0],'entry':f['t'],'observer':observer,'target':target,
+            'actualSpacingCall':cues[0],'calledTrackOverrideApplied':False,'ownBodyAtUse':f['beforeBodies'][observer],
+            'preSpacingCommand':movement,'worldCommand':f['intents'][observer],
+            'achievedVelocity':f['afterBodies'][observer]['vel'],
+            'source':'Unconditional delayed baseline buffer; candidate acquisition/memory eligibility unresolved.'})
+yframe=next(f for f in rows[1]['detailedFrames'] if near(f['t'],2.35))
+ypictures=[p for p in yframe['consumed'] if p['actor']==2 and p['target']==6]
+assert ypictures
+spacing_sources.append({'case':ids[1],'entry':yframe['t'],'observer':2,'target':6,
+    'sampledConsumedPictures':ypictures,'callSiteUnavailable':True,
+    'ownBodyAtUse':next(a for a in yframe['before'] if a['idx']==2),
+    'preSpacingCommand':next(p['data']['command'] for p in yframe['contactPhases'] if p['phase']=='movement' and p['rep']['blocker']==2),
+    'worldCommand':yframe['delivered'][2],
+    'achievedVelocity':next(a for a in yframe['afterBodies'] if a['idx']==2)['vel'],
+    'source':'Saved baseline RT/RB image. No invented RB-observer picture or complete visibility/memory history.'})
+
 inputs = {'protocol':'ace-awareness-comparison-inputs-v1',
     'question':'How does the owner\'s information-source-only repair change actual protection and traffic in D01 H versus successful Y, with legitimate observer memory preserved?',
     'acceptedDevelop':prov['developCommit'],'historicalComparison':old_manifest['comparisonBaseline'],
@@ -104,13 +129,13 @@ inputs = {'protocol':'ace-awareness-comparison-inputs-v1',
         'observerInitializationInstructions':None,'status':'Awaiting owner; do not execute candidate, rerun references or implement another awareness layer.'},
     'preserved':['Native all22 roster/setup/call','Existing yielding and navigation equations','Movement/contact laws and capacities',
         'RT recovery variants paused; no intervention','PR32 conclusions and historical4ded6b6','Weak/withdrawn early-release/parked TE and RB evidence kept separate']}
-evidence={'protocol':'ace-awareness-saved-inspection-v1','memoryWitnesses':memory,'loadedFootInspection':{
+evidence={'protocol':'ace-awareness-saved-inspection-v1','memoryWitnesses':memory,'savedTrafficSources':spacing_sources,'loadedFootInspection':{
     'sampledRtIntervals':len(foot),'maximumCompositionResidual':maximum,'records':foot,
     'verdict':'No independent component-conversion or anchor arithmetic error demonstrated. Oblique flow-floor omission remains a policy question; an opposite request does not establish opposite achieved movement or a protection fix.',
     'newRecoveryTrialAuthorizedByInspection':False},
     'informationSources':{
         'teammateSee':'Current source always returns the .05-second delayed world-buffer picture, without visibility/occlusion or observer acquisition gating.',
-        'calledMotion':'Magnitude is declared zone-track tempo (0,side*vmax*.45*press), not actual private requested velocity. Presence is reset each update and enabled by private zoneFlow/job/contact eligibility; audit that activation separately.',
+        'calledMotion':'Magnitude is declared zone-track tempo (0,side*vmax*.45*press), not actual private requested velocity. Presence is reset each update and enabled by private zoneFlow/job/contact eligibility; audit that activation separately. No RT/RB override is active in the six inspected D01 spacing calls.',
         'heldRead':'Existing finite-cadence personally consumed picture; retain lineage and acquisition time, do not relabel it as a fresh image.',
         'ownTactile':'Own support/ground/load and actually acquired contact cues remain available; no arbitrary visual blindfold of connected contact mechanics.',
         'worldState':'All22 physical state is analyst/solver evidence, not memory initialization for every observer.'},
@@ -124,6 +149,7 @@ destination=Path('docs/reviews/ace-awareness');destination.mkdir(parents=True,ex
 receipt={'protocol':'ace-awareness-preparation-receipt-v1','testedRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
     'generatorSha256':sha(Path(__file__).read_bytes()),'candidateExecuted':False,'newWorldSteps':0,'newPlays':0,
     'controlsPrepared':ids,'referenceIntegrity':True,'d01Prefix54HashesExact':True,'heldMemoryLineageMatches':len(memory),
+    'savedTrafficSourceRecords':len(spacing_sources),'d01InspectedCalledTrackOverrides':0,
     'loadedFootIntervalsChecked':len(foot),'maximumCompositionResidual':maximum,
     'sourceAndRuntimeChanged':False,'fullSuiteOrTypecheckRun':False,
     'correctedPreparationPreflight':{'revision':'de02994','cause':'Python Path ordering compared components rather than the authoritative source helper\'s full path strings.',
