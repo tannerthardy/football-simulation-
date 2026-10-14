@@ -6,7 +6,7 @@ import type {SharedGripFrame} from './grip-shared-law.js';
 import {pressureGeometry} from './grip-pressure-rate.js';
 import {LEG_SLIDE} from '../../../src/physics/grip-sliding.js';
 export interface PhaseForce{force:number[];velocity:{x:number;y:number};normalVelocity:number[];passivePower:number;targetResidual?:number;}
-export function phaseModel(input:SharedGripInput,provider:(g:SharedGripFrame[],mu:number)=>PhaseForce,maximumEvaluations=8192,reuseFrames=true){
+export function phaseModel(input:SharedGripInput,provider:(g:SharedGripFrame[],mu:number)=>PhaseForce,maximumEvaluations=8192){
   const {bodies,grips,duration:H,mobility:mu}=input,N=bodies.length,M=grips.length,Z=6*N,FOOT=Z+3*M,J=FOOT+2,MW=J+12*M,T=MW+1,SLIP=T+1,
     initial=[...bodies.flatMap(b=>[b.pos.x,b.pos.y,b.vel.x,b.vel.y,b.spin,b.facing]),
       ...grips.flatMap(g=>[g.material.x,g.material.y,g.legs]),input.footOffset.x,input.footOffset.y,...Array(12*M+M+2).fill(0)];
@@ -17,12 +17,7 @@ export function phaseModel(input:SharedGripInput,provider:(g:SharedGripFrame[],m
       ...grips.flatMap(g=>[g.capacity,g.hold,g.reach])].every(Number.isFinite)||input.attachmentReach<=0||input.minimumDistance<0)
     throw new RangeError('Passive phase input scope');
   let evaluations=0,maximumTargetResidual=0,maximumPassivePower=-Infinity;
-  // All vectors issued by these diagnostic integrators are immutable after
-  // evaluation. Markers, endpoint gates and derivatives may query the same
-  // vector repeatedly; reuse its physical solve, not a rounded/frozen state.
-  const frames=new WeakMap<number[],ReturnType<typeof computeFrame>>();
-  function frame(y:number[]){if(!reuseFrames)return computeFrame(y);const prior=frames.get(y);if(prior)return prior;const f=computeFrame(y);frames.set(y,f);return f;}
-  function computeFrame(y:number[]){
+  function frame(y:number[]){
     if(++evaluations>maximumEvaluations)throw new RangeError('Passive phase evaluation budget');
     const g=grips.map((v,k)=>{
       const a=bodies[v.holder],b=bodies[1],ai=6*v.holder,z=Z+3*k,q=[...y.slice(ai,ai+6),...y.slice(6,12),y[z],y[z+1],...Array(13).fill(0),y[z+2]],

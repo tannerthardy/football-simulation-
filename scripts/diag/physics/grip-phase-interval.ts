@@ -17,8 +17,8 @@ export function phaseDifference(a:PhaseMotion,b:PhaseMotion){
       ...x.angularImpulse.map((v,i)=>Math.abs(v-y.angularImpulse[i])/1e-9),...x.angularMoment.map((v,i)=>Math.abs(v-y.angularMoment[i])/1e-9)];}),
     ...(['bodyWork','motorWork','passiveWork'] as const).map(k=>Math.abs(a[k]-b[k])/1e-9));
 }
-export function passivePhaseInterval(input:SharedGripInput,reuseFrames=true){
-  const model=phaseModel(input,phaseGripForce,4096,reuseFrames),first=model.frame(model.initial),phase0=first.slipping,
+export function passivePhaseInterval(input:SharedGripInput){
+  const model=phaseModel(input,phaseGripForce,4096),first=model.frame(model.initial),phase0=first.slipping,
     active=phase0.flatMap((v,k)=>v?[k]:[]);
   if(active.length>1)throw new RangeError('Passive phase initial graph');
   const member=active[0],specs:Array<{kind:'cap'|'slip'|'zero';member:number;sign:number}>=[];

@@ -88,8 +88,4 @@ describe('bounded passive two-grip phase transitions, diagnostic only',()=>{
     expect(b.force[0]).toBeLessThan(500);expect(b.passivePower).toBeLessThanOrEqual(1e-10);
     for(let k=0;k<g.length;k++)expect(Math.abs(a.force[k]-b.force[k])).toBeLessThan(1e-9);
   });
-  it('reuses only identical immutable stage vectors without changing physical results',()=>{
-    for(const c of cases){const a=passivePhaseInterval(c.input),b=passivePhaseInterval(c.input,false);
-      expect({...a,evaluations:0}).toEqual({...b,evaluations:0});expect(a.evaluations).toBeLessThan(b.evaluations);}
-  });
 });
