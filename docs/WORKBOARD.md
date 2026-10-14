@@ -1,5 +1,21 @@
 # Current work ownership
 
+## 2026-10-14 (America/Phoenix): one-time D01–D03 diagnostic drills
+
+The user explicitly authorizes the uploaded `Run_Game_Diagnostic_Drills_2026-10-14.md`
+as this checkpoint's guidance, not a future replacement for TESTING_COSTS.
+Run-game owns `codex/run-diagnostic-drills` from parked #28 `c2ab674`.
+Refreshed develop remains `a1b16e6`, accepted source `e5c318a`,44 flags/components1.
+Reuse #26's production packet and #28's stored candidate, preserving Y/H/weak
+and the historical withdrawn early-release control. Base adoption remains parked.
+
+Stage A assigns read-only D01 RT/DE/RB, D02 C/LB/RB and D03 acquired RB-lane
+timing analysis separately. Produce portable witnesses and a downloadable
+overlay; no live controller, movement, solver, strength, contact or policy edit.
+Only one targeted new physical continuation is available if saved observation
+cannot distinguish the cause. No18-drill matrix, games or broad panel.
+Physics owns laws; any future shared-movement edit requires YAC coordination.
+
 ## 2026-10-14 (America/Phoenix): TE base transfer from the shared Ace reference
 
 Run-game owns `codex/te-base-production` from the integration owner's PR #26
