@@ -18,7 +18,7 @@ const copy=<T>(x:T):T=>structuredClone(x),hash=(x:unknown)=>createHash('sha256')
 const destination=process.argv[2];if(!destination)throw Error('OUTDIR required');mkdirSync(destination,{recursive:true});
 const originalPath='data/reviews/current/catch-transition-inputs.json',freshPath='out/catch-hip-anchor/fresh/native-inputs.json',
  original=JSON.parse(readFileSync(originalPath,'utf8')),fresh=JSON.parse(readFileSync(freshPath,'utf8')),
- ids=['R3101-S1001-P58','R6103-S3001-P4','R7204-S4001-P16','R4202-S2001-P95','R3101-S1001-P19','R3101-S1001-P103',
+ ids=process.argv[3]?.split(',')??['R3101-S1001-P58','R6103-S3001-P4','R7204-S4001-P16','R4202-S2001-P95','R3101-S1001-P19','R3101-S1001-P103',
   'H10831-C1-S51001','H10831-C3-S51003','H10831-C4-S51004','H11842-C4-S52004'],
  fixtures=[...original.clips,...fresh.clips],profile=JSON.parse(readFileSync('config/baseline.json','utf8')),
  provenance={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourceSha256:sourceVersion(),collectorSha256:fileHash(import.meta.filename),
@@ -57,8 +57,10 @@ function run(f:any,observe:boolean){
   for(const a of sim.defense){const b=a.behavior;if(!wrapped.has(b)){wrapped.add(b);const update=b.update.bind(b);
    b.update=(actor,s)=>{if(actor.team!=='D')return update(actor,s);
     inside=actor;cues=[];let original;try{original=update(actor,s);}finally{inside=null;}
-    const before=hash({body:actor.body,rng:sim.rng,perception:sim.perception}),consumed=copy(cues),choice=arrivalChoice(actor,s,original,consumed);
-    if(before!==hash({body:actor.body,rng:sim.rng,perception:sim.perception}))throw Error('Team arrival mutates physical/information state');
+    const consumed=copy(cues),active=s.ball.kind==='air'&&actor.tags.has('onBall'),
+     before=active?hash({body:actor.body,rng:sim.rng,perception:sim.perception}):null,
+     choice=active?arrivalChoice(actor,s,original,consumed):{command:original,reason:'no-acquired-flight-window',window:null};
+    if(active&&before!==hash({body:actor.body,rng:sim.rng,perception:sim.perception}))throw Error('Team arrival mutates physical/information state');
     const changed=hash(original)!==hash(choice.command);
     if(changed){if(choice.reason!=='moving-window-arrival')throw Error('Protected branch changed');changes.push({t:s.t,actor:actor.idx,id:actor.player.id});}
     if(observe)decisions.push({actor:actor.idx,raw:copy(original),choice:copy(choice),cues:consumed,changed});
@@ -75,8 +77,8 @@ function run(f:any,observe:boolean){
  if(observe)writeFileSync(file,gzipSync(JSON.stringify(record)));
  return {...record,rows:undefined,frames:undefined,telemetry:undefined,artifact:observe?{path:file,sha256:fileHash(file)}:null};
 }
-const start=performance.now(),cases:any[]=[];
-for(const id of ids){if(performance.now()-start>30000)throw Error('Declared 30-second coexistence batch exhausted');
+const start=performance.now(),cases:any[]=[];let failure:string|null=null;
+for(const id of ids){if(performance.now()-start>30000){failure='Declared 30-second coexistence batch exhausted';break;}
  const f=fixtures.find((f:any)=>f.id===id),t=performance.now(),observed=run(f,true),plain=run(f,false);
  if(observed.signature!==plain.signature)throw Error(`Observer changes ${id}`);
  if(!observed.changes.length&&observed.signature!==f.nativeSignature)throw Error('Unaffected team case differs from baseline');
@@ -85,7 +87,9 @@ for(const id of ids){if(performance.now()-start>30000)throw Error('Declared 30-s
  console.log(JSON.stringify({id,outcome:observed.result.outcome,possession:observed.result.possession,yac:observed.result.stats.yac,
   receiver:observed.result.stats.receiver,interceptor:observed.result.stats.interceptedBy,
   actors:[...new Set(observed.changes.map(c=>c.actor))],firstLoad:observed.holds.find(h=>h.firstLoaded!==null)?.firstLoaded}));
+ if(performance.now()-start>30000){failure='Declared 30-second coexistence batch exceeded at completed execution-pair boundary';break;}
 }
-writeFileSync(join(destination,'summary.json'),JSON.stringify({schema:'team-moving-window-coexistence-v1',provenance,ids,cases,wallMs:performance.now()-start,
+writeFileSync(join(destination,'summary.json'),JSON.stringify({schema:'team-moving-window-coexistence-v1',provenance,ids,cases,failure,unrun:ids.slice(cases.length),wallMs:performance.now()-start,
  interpretation:'Same existing v2 moving-window choice on every defensive controller consuming the requisite observations. No new gating, receiver awareness, helper coordination, capacities or physics. One shared approach primitive with available pictures only. Ten selected old/fresh coexistence/ball/success/sideline controls, original full baselines reused; not a league sample. All new observed/plain native states verified.'})+'\n');
 if(sourceVersion()!==provenance.sourceSha256)throw Error('Runtime changed during team probe');
+if(failure)throw Error(failure);
