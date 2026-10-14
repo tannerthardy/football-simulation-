@@ -7,6 +7,16 @@ here fails: Y still collides and H gains a new rear collision. Keep this trial
 diagnostic-only and keep #36's football promotion hold. Do not widen vision,
 extend memory, tune contact or require the old yardage on this evidence.
 
+2026-10-14 movement follow-up: the delegated owner published the
+[RB gather-release investigation](https://github.com/tannerthardy/football-simulation-/blob/fb505d0f279f5af3330bec0b93a0911c5d382b4e/docs/reviews/rb-gather-release.md)
+at `fb505d0f279f5af3330bec0b93a0911c5d382b4e`, on the separate
+`codex/rb-gather-release` branch. The identical-state comparison supports a
+small achievable-motion correction; H keeps all 64 saved hashes, but Y still
+collides later and harder. The movement candidate remains experimental.
+Awareness retains the information interface; Run Game reviewed the football
+consequences without duplicating the investigation. This awareness-review
+branch has not adopted the movement change or promoted either candidate.
+
 ## Exact Run Game handoff
 
 - **`6828467` is the experimental PR #36 candidate, not the accepted shared
