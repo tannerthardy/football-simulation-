@@ -15,7 +15,7 @@ const defense=pickDefense(generateTeam(new Rng(92),'Option test defense','DT'),'
 function fixture(){
   const sim=new PlaySim({offense,defense,seed:45,audibles:false,
     offCall:{formation:FORMATION_BY_ID.gun_trips_11,flip:false,kind:'pass',pass:PASS_BY_ID.stick,label:'stick'},
-    defCall:{personnel:'nickel',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'zone'},
+    defCall:{personnel:'nickel',front:FRONT_BY_ID.over,coverage:{...COVERAGE_BY_ID.cover3},pressure:null,label:'zone'},
     los:40,ballY:26,firstDownX:50});
   const a=sim.offense.find(a=>a.behavior instanceof RouteRunner&&a.behavior.stickInstall)!;
   const runner=a.behavior as RouteRunner,plan=runner.stickInstall!;
