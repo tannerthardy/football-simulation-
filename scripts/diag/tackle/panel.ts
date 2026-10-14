@@ -18,7 +18,7 @@ import { dirname } from 'node:path';
 import { sourceVersion } from '../../source-version.js';
 import { CENTER_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
-import type { GraspJoint } from '../../../src/physics/world.js';
+import type { GraspJoint,World } from '../../../src/physics/world.js';
 import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
 import { RUN_BY_ID } from '../../../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
@@ -49,7 +49,7 @@ interface Attempt { t: number; kind: 'rolled miss' | 'rolled dive miss' | 'grip'
   capacity?: number; legs?: number; peakForce?: number; meanForce?: number; heldFor?: number; broke?: boolean }
 
 export function rep(cell: Cell, side: 1 | -1, seed: number,
-  physics: { handContact?: 'center' | 'patch'; substeps?: number; gripTiming?: 'midpoint' | 'resolved' | 'fast' } = {},
+  physics: { handContact?: 'center' | 'patch'; substeps?: number; gripTiming?: 'midpoint' | 'resolved' | 'fast'; configureWorld?:(world:World)=>void } = {},
   teams = { offense, defense }) {
   const sim = new PlaySim({
     offense: pickOffense(teams.offense, '11'), defense: pickDefense(teams.defense, 'base43'),
@@ -58,6 +58,7 @@ export function rep(cell: Cell, side: 1 | -1, seed: number,
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed,
     ...physics,
   });
+  physics.configureWorld?.(sim.world); // Explicit diagnostic option; ordinary inputs unchanged.
   const c = sim.slot('RB')!, d = sim.defense.find((a) => a.slot === 'MLB' || a.slot.startsWith('LB'))!;
   for (const a of sim.agents) {
     a.body.pos = { x: 5 + a.idx * .1, y: 1 + a.idx * 2 }; a.body.vel = { x: 0, y: 0 };

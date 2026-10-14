@@ -1,0 +1,534 @@
+{
+  "sourcePacketManifest": "out/grip-timing/baseline.json",
+  "cases": [
+    {
+      "id": "radial-control",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "radial-control",
+        "tangent": 0,
+        "curved": 0,
+        "zero": false
+      },
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.20001563049892,
+            "y": 26.66647170276743
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.000003384392344391256,
+          "y": 0.00004221454119975565
+        },
+        "footOffset": {
+          "x": -0.000019835250915366744,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.158464711270983,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "bodies": [
+        {
+          "profile": {
+            "vmax": 9.359028686477235,
+            "tau": 1.1603801148988422,
+            "brake": 7.127800453514738,
+            "lateral": 7.18977210884354,
+            "turnRate": 10.062222222222223,
+            "backpedal": 0.6214285714285714,
+            "shuffle": 0.6048,
+            "massKg": 101.60469088,
+            "heightYd": 1.9805555555555554,
+            "radius": 0.27999999999999997,
+            "reach": 0.99375,
+            "maxCatchHeight": 3.503027777777778,
+            "reactReach": 2.9599722222222224,
+            "reactionTime": 0.213265306122449,
+            "power": 95.58616811920001,
+            "balance": 0.336734693877551,
+            "bend": 0.8513469387755104,
+            "stepSpeed": 3.9831519274376417,
+            "getUp": 0.8167222222222222
+          },
+          "energy": 0.9959384311633338,
+          "posture": 0.5880331709033889
+        },
+        {
+          "profile": {
+            "vmax": 9.16396245515864,
+            "tau": 1.183496299858165,
+            "brake": 6.076065759637186,
+            "lateral": 6.469159863945579,
+            "turnRate": 7.862222222222221,
+            "backpedal": 0.5316326530612245,
+            "shuffle": 0.5208,
+            "massKg": 111.58372302000001,
+            "heightYd": 2.0305555555555554,
+            "radius": 0.3,
+            "reach": 1.0268055555555555,
+            "maxCatchHeight": 3.433972222222222,
+            "reactReach": 2.975638888888889,
+            "reactionTime": 0.23126530612244897,
+            "power": 111.19090277059286,
+            "balance": 0.826530612244898,
+            "bend": 0.5633061224489796,
+            "stepSpeed": 3.5590294784580494,
+            "getUp": 1.0072222222222222
+          },
+          "energy": 0.9911306007016009,
+          "posture": 0.19836257243721864
+        }
+      ],
+      "joint": {
+        "capacity": 2267.004730607681,
+        "reach": 1.474375,
+        "legs": 0.17062513395125756,
+        "hold": 1.158464711270983,
+        "pull": 0,
+        "origin": "reach"
+      },
+      "foot": {
+        "achieved": {
+          "x": -0.009631823002064272,
+          "y": 0.12014061833673788
+        },
+        "force": {
+          "x": -3.227235235452836,
+          "y": 40.254273424907815
+        }
+      },
+      "transform": "Controlled World interface: retained acquired poses/material/hold/foot offset and unchanged profiles/energy/capacities, fresh inside-base support history. Use ordinary matching commands, native gait/foot/support/fatigue; no prescribed mobility or free ground. Parked third body tests island ownership."
+    },
+    {
+      "id": "curved-return",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "curved-return",
+        "tangent": -0.02,
+        "curved": 0.25,
+        "zero": false
+      },
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.47216301566217,
+            "y": 26.530438532530813
+          },
+          "vel": {
+            "x": -0.019936033902530296,
+            "y": -0.0015982966674440288
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.2792013888888889,
+          "y": 0.13960069444444445
+        },
+        "footOffset": {
+          "x": -0.000019835250915366744,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.158464711270983,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "bodies": [
+        {
+          "profile": {
+            "vmax": 9.359028686477235,
+            "tau": 1.1603801148988422,
+            "brake": 7.127800453514738,
+            "lateral": 7.18977210884354,
+            "turnRate": 10.062222222222223,
+            "backpedal": 0.6214285714285714,
+            "shuffle": 0.6048,
+            "massKg": 101.60469088,
+            "heightYd": 1.9805555555555554,
+            "radius": 0.27999999999999997,
+            "reach": 0.99375,
+            "maxCatchHeight": 3.503027777777778,
+            "reactReach": 2.9599722222222224,
+            "reactionTime": 0.213265306122449,
+            "power": 95.58616811920001,
+            "balance": 0.336734693877551,
+            "bend": 0.8513469387755104,
+            "stepSpeed": 3.9831519274376417,
+            "getUp": 0.8167222222222222
+          },
+          "energy": 0.9959384311633338,
+          "posture": 0.5880331709033889
+        },
+        {
+          "profile": {
+            "vmax": 9.16396245515864,
+            "tau": 1.183496299858165,
+            "brake": 6.076065759637186,
+            "lateral": 6.469159863945579,
+            "turnRate": 7.862222222222221,
+            "backpedal": 0.5316326530612245,
+            "shuffle": 0.5208,
+            "massKg": 111.58372302000001,
+            "heightYd": 2.0305555555555554,
+            "radius": 0.3,
+            "reach": 1.0268055555555555,
+            "maxCatchHeight": 3.433972222222222,
+            "reactReach": 2.975638888888889,
+            "reactionTime": 0.23126530612244897,
+            "power": 111.19090277059286,
+            "balance": 0.826530612244898,
+            "bend": 0.5633061224489796,
+            "stepSpeed": 3.5590294784580494,
+            "getUp": 1.0072222222222222
+          },
+          "energy": 0.9911306007016009,
+          "posture": 0.19836257243721864
+        }
+      ],
+      "joint": {
+        "capacity": 2267.004730607681,
+        "reach": 1.474375,
+        "legs": 0.17062513395125756,
+        "hold": 1.158464711270983,
+        "pull": 0,
+        "origin": "reach"
+      },
+      "foot": {
+        "achieved": {
+          "x": -0.009631823002064272,
+          "y": 0.12014061833673788
+        },
+        "force": {
+          "x": -3.227235235452836,
+          "y": 40.254273424907815
+        }
+      },
+      "transform": "Controlled World interface: retained acquired poses/material/hold/foot offset and unchanged profiles/energy/capacities, fresh inside-base support history. Use ordinary matching commands, native gait/foot/support/fatigue; no prescribed mobility or free ground. Parked third body tests island ownership."
+    },
+    {
+      "id": "zero-span-control",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "zero-span-control",
+        "tangent": 0,
+        "curved": 0,
+        "zero": true
+      },
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.20001563049892,
+            "y": 26.66647170276743
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.000003384392344391256,
+          "y": 0.00004221454119975565
+        },
+        "footOffset": {
+          "x": -0.000019835250915366744,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.1586131070108552,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "bodies": [
+        {
+          "profile": {
+            "vmax": 9.359028686477235,
+            "tau": 1.1603801148988422,
+            "brake": 7.127800453514738,
+            "lateral": 7.18977210884354,
+            "turnRate": 10.062222222222223,
+            "backpedal": 0.6214285714285714,
+            "shuffle": 0.6048,
+            "massKg": 101.60469088,
+            "heightYd": 1.9805555555555554,
+            "radius": 0.27999999999999997,
+            "reach": 0.99375,
+            "maxCatchHeight": 3.503027777777778,
+            "reactReach": 2.9599722222222224,
+            "reactionTime": 0.213265306122449,
+            "power": 95.58616811920001,
+            "balance": 0.336734693877551,
+            "bend": 0.8513469387755104,
+            "stepSpeed": 3.9831519274376417,
+            "getUp": 0.8167222222222222
+          },
+          "energy": 0.9959384311633338,
+          "posture": 0.5880331709033889
+        },
+        {
+          "profile": {
+            "vmax": 9.16396245515864,
+            "tau": 1.183496299858165,
+            "brake": 6.076065759637186,
+            "lateral": 6.469159863945579,
+            "turnRate": 7.862222222222221,
+            "backpedal": 0.5316326530612245,
+            "shuffle": 0.5208,
+            "massKg": 111.58372302000001,
+            "heightYd": 2.0305555555555554,
+            "radius": 0.3,
+            "reach": 1.0268055555555555,
+            "maxCatchHeight": 3.433972222222222,
+            "reactReach": 2.975638888888889,
+            "reactionTime": 0.23126530612244897,
+            "power": 111.19090277059286,
+            "balance": 0.826530612244898,
+            "bend": 0.5633061224489796,
+            "stepSpeed": 3.5590294784580494,
+            "getUp": 1.0072222222222222
+          },
+          "energy": 0.9911306007016009,
+          "posture": 0.19836257243721864
+        }
+      ],
+      "joint": {
+        "capacity": 2267.004730607681,
+        "reach": 1.474375,
+        "legs": 0.17062513395125756,
+        "hold": 1.1586131070108552,
+        "pull": 0,
+        "origin": "reach"
+      },
+      "foot": {
+        "achieved": {
+          "x": -0.009631823002064272,
+          "y": 0.12014061833673788
+        },
+        "force": {
+          "x": -3.227235235452836,
+          "y": 40.254273424907815
+        }
+      },
+      "transform": "Controlled World interface: retained acquired poses/material/hold/foot offset and unchanged profiles/energy/capacities, fresh inside-base support history. Use ordinary matching commands, native gait/foot/support/fatigue; no prescribed mobility or free ground. Parked third body tests island ownership."
+    },
+    {
+      "id": "fresh-curved",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "fresh-curved",
+        "tangent": 0.06,
+        "curved": 0.2,
+        "zero": false,
+        "spin": 0.025
+      },
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.10742187271697,
+            "y": 27.82142142637283
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.41972364885864,
+            "y": 26.556658215932575
+          },
+          "vel": {
+            "x": 0.05980810170759089,
+            "y": 0.004794890002332086
+          },
+          "facing": 3.836261861625684e-20,
+          "spin": 0.025
+        },
+        "material": {
+          "x": -0.22336111111111112,
+          "y": 0.11168055555555556
+        },
+        "footOffset": {
+          "x": -0.000019835250915366744,
+          "y": 0.0002474110362416774
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.0002,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.158464711270983,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "bodies": [
+        {
+          "profile": {
+            "vmax": 9.359028686477235,
+            "tau": 1.1603801148988422,
+            "brake": 7.127800453514738,
+            "lateral": 7.18977210884354,
+            "turnRate": 10.062222222222223,
+            "backpedal": 0.6214285714285714,
+            "shuffle": 0.6048,
+            "massKg": 101.60469088,
+            "heightYd": 1.9805555555555554,
+            "radius": 0.27999999999999997,
+            "reach": 0.99375,
+            "maxCatchHeight": 3.503027777777778,
+            "reactReach": 2.9599722222222224,
+            "reactionTime": 0.213265306122449,
+            "power": 95.58616811920001,
+            "balance": 0.336734693877551,
+            "bend": 0.8513469387755104,
+            "stepSpeed": 3.9831519274376417,
+            "getUp": 0.8167222222222222
+          },
+          "energy": 0.9959384311633338,
+          "posture": 0.5880331709033889
+        },
+        {
+          "profile": {
+            "vmax": 9.16396245515864,
+            "tau": 1.183496299858165,
+            "brake": 6.076065759637186,
+            "lateral": 6.469159863945579,
+            "turnRate": 7.862222222222221,
+            "backpedal": 0.5316326530612245,
+            "shuffle": 0.5208,
+            "massKg": 111.58372302000001,
+            "heightYd": 2.0305555555555554,
+            "radius": 0.3,
+            "reach": 1.0268055555555555,
+            "maxCatchHeight": 3.433972222222222,
+            "reactReach": 2.975638888888889,
+            "reactionTime": 0.23126530612244897,
+            "power": 111.19090277059286,
+            "balance": 0.826530612244898,
+            "bend": 0.5633061224489796,
+            "stepSpeed": 3.5590294784580494,
+            "getUp": 1.0072222222222222
+          },
+          "energy": 0.9911306007016009,
+          "posture": 0.19836257243721864
+        }
+      ],
+      "joint": {
+        "capacity": 2267.004730607681,
+        "reach": 1.474375,
+        "legs": 0.17062513395125756,
+        "hold": 1.158464711270983,
+        "pull": 0,
+        "origin": "reach"
+      },
+      "foot": {
+        "achieved": {
+          "x": -0.009631823002064272,
+          "y": 0.12014061833673788
+        },
+        "force": {
+          "x": -3.227235235452836,
+          "y": 40.254273424907815
+        }
+      },
+      "transform": "Controlled World interface: retained acquired poses/material/hold/foot offset and unchanged profiles/energy/capacities, fresh inside-base support history. Use ordinary matching commands, native gait/foot/support/fatigue; no prescribed mobility or free ground. Parked third body tests island ownership."
+    }
+  ]
+}
