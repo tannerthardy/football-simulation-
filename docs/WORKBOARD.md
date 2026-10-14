@@ -16,6 +16,18 @@ progress, useful position and transmitted blocking load; no yardage target,
 hidden intentions, traffic bypass or force bonus. Root retains the result
 through a tested correction or the first demonstrated blocker and next fix.
 
+Final tested runtime `49ddfeb49d699c43c87584fe1976c65f3e9a5907` / source
+`cd5567393469815339dd1db159dae5c71ab76ec3b07e9180cdc4c0fbd398e0f4`:
+224 focused checks and typecheck pass; three native Ace openings through 2 s
+are saved with a [before/after replay and decision](reviews/wide-zone-execution/README.md).
+Reject promotion: strong RT collisions clear and RG gains loaded lateral travel,
+but the weak opening has a new hard RT–Y collision and LT loses real LB access.
+Fresh Under remains gated and unrun. The first remaining cause is a post-contact
+turn absent from the acquired coast/brake model; raw/half/stop cannot supply a
+clear escape under a plausible turn. A broad turn branch was falsified as a
+production policy by a clear-lane control. Root retains movement ownership;
+no sensing/memory extension, physics change or shared-baseline promotion.
+
 ## Wide-zone opening execution, 2026-10-14
 
 Run-game owns `codex/wide-zone-opening` from Awareness's completed PR #36
