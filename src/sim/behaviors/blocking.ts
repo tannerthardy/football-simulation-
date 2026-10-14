@@ -867,7 +867,8 @@ export class RunBlocker implements Behavior {
       // Stay square on the DB until the run comes; engage when he closes.
       const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
       if (dd < a.profile.radius + target.profile.radius + 0.3 && sim.engage(a, target, 'run', plan.drive)) return stand();
-      const fit = { x: Math.max(target.pos.x - 1.2, a.pos.x), y: target.pos.y };
+      const seen = sim.see(a, target);
+      const fit = { x: Math.max(seen.pos.x - 1.2, a.pos.x), y: seen.pos.y };
       return goTo(a, fit, { speed: 0.85, through: 1 });
     }
     return this.withBase(a, this.attack(a, sim, target));
