@@ -1,5 +1,13 @@
 # Loaded TE approach base: isolated historical test
 
+**Subsequent checkpoint:** integration published the shared accepted-production
+replay in PR #26 during this investigation. The separate
+[PR #28 transfer](https://github.com/tannerthardy/football-simulation-/pull/28)
+loses the Y clean crossing despite loaded C/LB_M contact and retains the weak
+initial DE_W contact. **TE-base adoption is now parked.** The historical
+support/keeper benefit below remains valid on its own source/profile; it is
+not a current-production improvement. No extra TE panel or tuning follows.
+
 Carrying the existing .70 base into first contact has a meaningful local benefit
 in the saved Y-strong case. Y's early support displacement decreases and the
 unchanged RT controller develops a keeper block through the runner's encounter.

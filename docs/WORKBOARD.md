@@ -1,5 +1,10 @@
 # Current work ownership
 
+Latest disposition: [PR #28](https://github.com/tannerthardy/football-simulation-/pull/28)
+reuses the now-published PR #26 production reference; TE-base adoption is parked
+after its Y clean-crossing loss. Keep this historical physical benefit separate.
+No source/default/physics promotion or panel expansion occurred.
+
 ## 2026-10-14 (America/Phoenix): bounded loaded TE base test
 
 Run-game owner claims `codex/te-loaded-base`, based on PR #17 `92743c0`.
