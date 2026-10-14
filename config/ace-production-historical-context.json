@@ -1,0 +1,156 @@
+{
+  "protocol": "ace-production-historical-context-v1",
+  "receiptCommit": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+  "receiptPath": "data/reviews/current/contact-law-isolation.json",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "scope": "Existing observations reused, never rerun or treated as current-production measurements. Baseline: historical center source/43 flags; isolated: experimental patch/legacy source/43 flags. Yardage is context, not an acceptance target.",
+  "rows": [
+    {
+      "id": "uc12-wz-s3",
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "baseline": {
+        "endTime": 4.3,
+        "outcome": "tackle",
+        "censored": false,
+        "crossing": 3.6,
+        "gain": 1.495518431752906,
+        "firstContact": {
+          "t": 3.65,
+          "opponent": "CB_S",
+          "note": "grasp",
+          "depth": 0.3754753155027615,
+          "roundedEventDepth": 0.38000000000000256
+        }
+      },
+      "isolated": {
+        "endTime": 4.4,
+        "outcome": "tackle",
+        "censored": false,
+        "crossing": null,
+        "gain": -0.8561299817053367,
+        "firstContact": {
+          "t": 2.35,
+          "opponent": "DE_S",
+          "note": "grasp",
+          "depth": -1.6082479515271046
+        },
+        "limits": {
+          "armImpulseExcess": 1.4210854715202004e-14,
+          "armWorkExcess": 0,
+          "supportWorkExcess": 0,
+          "workResidual": 1.0484502155350128e-11
+        }
+      },
+      "baselineFullHistorySha256": "b1e711fcf8f414946905d748dd8a2cdc7d5fd3f5b8a18b62a935cdad308fecb9",
+      "isolatedFullHistorySha256": "27bf5ec41d89b82f5ce7c30fc88cb36b9afaa5b2f5519a70206a5f4788119ee2"
+    },
+    {
+      "id": "uc12-wz-s3-mirror",
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "baseline": {
+        "endTime": 3.25,
+        "outcome": "tackle",
+        "censored": false,
+        "crossing": null,
+        "gain": -0.2064288442096256,
+        "firstContact": {
+          "t": 2.65,
+          "opponent": "DE_S",
+          "note": "body collision",
+          "depth": -0.23433344943020984,
+          "roundedEventDepth": -0.22999999999999687
+        }
+      },
+      "isolated": {
+        "endTime": 3.65,
+        "outcome": "tackle",
+        "censored": false,
+        "crossing": null,
+        "gain": -0.969239908227209,
+        "firstContact": {
+          "t": 2.4,
+          "opponent": "DT_S",
+          "note": "body collision",
+          "depth": -1.2274257230560295
+        },
+        "limits": {
+          "armImpulseExcess": 0,
+          "armWorkExcess": 0,
+          "supportWorkExcess": 0,
+          "workResidual": 8.08375588690069e-12
+        }
+      },
+      "baselineFullHistorySha256": "43da1c56ce6abbf801ed77f6e33184ba1e06f968b1f15607827479e12909dd73",
+      "isolatedFullHistorySha256": "f74cb00fb1a062621fc7a7cc3e4438083348adb77ef1533513b528e127d22554"
+    },
+    {
+      "id": "uc12-wz-weak-s3",
+      "input": {
+        "id": "uc12-wz-weak-s3",
+        "concept": "wz_weak",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "baseline": {
+        "endTime": 3.4,
+        "outcome": "tackle",
+        "censored": false,
+        "crossing": 2.6,
+        "gain": 2.371521112002064,
+        "firstContact": {
+          "t": 2.3,
+          "opponent": "DE_W",
+          "note": "grasp",
+          "depth": -0.9623213508506083,
+          "roundedEventDepth": -0.9600000000000009
+        }
+      },
+      "isolated": {
+        "endTime": 4.1,
+        "outcome": "tackle",
+        "censored": false,
+        "crossing": 2.4,
+        "gain": 9.500380676675306,
+        "firstContact": {
+          "t": 2.85,
+          "opponent": "LB_M",
+          "note": "grasp",
+          "depth": 3.1354877517233746
+        },
+        "limits": {
+          "armImpulseExcess": 1.4210854715202004e-14,
+          "armWorkExcess": 0,
+          "supportWorkExcess": 0,
+          "workResidual": 1.1325163029596297e-11
+        }
+      },
+      "baselineFullHistorySha256": "20e54725dd774dbd3a88a8c7f98511d90cf86d3e4a4c6b6c14f074697fc7bc6d",
+      "isolatedFullHistorySha256": "6dd9470d8fce800cd6063f5cbab17a6cfac78e78a2f9a7112063db5a007f5808"
+    }
+  ]
+}

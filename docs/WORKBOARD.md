@@ -1,5 +1,16 @@
 # Current work ownership
 
+## Shared Ace production replay
+
+Integration owner, explicitly assigned by the user following
+[PR #18's cleared retention contract](https://github.com/tannerthardy/football-simulation-/pull/18#issuecomment-6173825589).
+Branch `codex/ace-production-replay` starts from refreshed `develop`
+`a1b16e666a9ee7d1bc1d2aecba141fc535863b24`. Replay the same three frozen Ace
+inputs once under its accepted 44 flags/components=1 and center/legacy World.
+Publish one reusable receipt and controller/contact trace packet. No source,
+contact API, controller, capacity, profile or default changes; no experimental
+mechanics, additional games/rosters or full combined verification.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
