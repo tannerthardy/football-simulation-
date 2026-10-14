@@ -7,6 +7,7 @@ import {newSupport} from '../../../src/physics/support.js';
 import type {Body} from '../../../src/physics/kinematics.js';
 import {snapshot,restore} from '../../../src/physics/grip-timing.js';
 import type {Particle} from './grip-force-interval.js';
+import type {SharedGripInput} from './grip-force-shared.js';
 const profile={massKg:100,radius:.3,reach:1.6,heightYd:2.05,vmax:9,tau:1.3,brake:6,lateral:6,turnRate:8,
   backpedal:.6,shuffle:.55,maxCatchHeight:3,reactReach:2.6,reactionTime:.25,power:100,balance:.5,bend:.5,stepSpeed:3.4,getUp:.9};
 export function prescribeSharedSupport(original:(...args:any[])=>void){
@@ -38,7 +39,7 @@ export function prepareSharedCase(side=1,single=false,variant:'base'|'distinct'|
   if(!saved)throw Error('Shared checkpoint not acquired');
   const {w:q,args}=restore(saved,World.prototype),particle=(b:any):Particle=>({mass:b.profile.massKg,inertia:q.inertia[q.indexOf(b)],
     pos:{...b.pos},vel:{...b.vel},facing:b.facing,spin:b.spin??0}),foot=q.bodies[1].support.foot,
-    input={bodies:q.bodies.map(particle),duration:args[3],mobility:q.sp[1].stepSpeed/q.sp[1].pushForce,
+    input:SharedGripInput={bodies:q.bodies.map(particle),duration:args[3],mobility:q.sp[1].stepSpeed/q.sp[1].pushForce,
       footOffset:{...foot.offset},attachmentReach:q.sp[1].comHeight,minimumDistance:CONTACT_SCALE*.6,
       grips:q.joints.map((j:any)=>{const a=q.attachments.get(j);if(!a?.bounded||!a.material||a.foot!==foot)throw Error('Invalid acquired common foot');
         return {holder:q.indexOf(j.a),held:1,material:{...a.material},legs:j.legs,hold:j.hold,reach:j.reach,capacity:q.gripCapacity(j)};})};

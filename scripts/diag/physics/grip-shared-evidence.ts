@@ -5,6 +5,7 @@ import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {cpus} from 'node:os';
+import {serialize} from 'node:v8';
 import {World} from '../../../src/physics/world.js';
 import {sourceVersion} from '../../source-version.js';
 import {prepareSharedCase,prescribeSharedSupport} from './grip-shared-fixtures.js';
@@ -27,6 +28,13 @@ assert.equal(source,'f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da628
 for(const fixture of [reference,fresh]){assert.equal(fixture.source,source);assert.deepEqual(fixture.flags,flags);assert(fixture.cases.every((c:any)=>c.physical&&c.convergence.converged));}
 for(const p of ['src/physics/world.ts','src/physics/grip-sliding.ts','config/baseline.json','package-lock.json','scripts/diag/physics/grip-force-saturation.ts','scripts/diag/physics/grip-pressure-rate.ts','config/grip-saturation-reference.json'])
   assert.equal(hash(readFileSync(p)),hash(execFileSync('git',['show',`${parent}:${p}`])));
+// Extending the helper for fresh cases and erased types must not alter earlier
+// acquired packets. Prove compatibility from their actual bytes and inputs.
+for(const c of cases){
+  const side=c.id.startsWith('shared--1')?-1:1,single=c.id.endsWith('-single'),
+    variant=c.id.endsWith('-distinct')?'distinct':c.id.endsWith('-unequal')?'unequal':'base',v=prepareSharedCase(side,single,variant);
+  assert.deepEqual(v.input,c.input);assert.equal(hash(serialize(v.packet)),c.packetSha256);
+}
 const norm=(a:any,b:any)=>Math.hypot(a.x-b.x,a.y-b.y);
 function compare(r:ReturnType<typeof sharedGripInterval>,z:any,input:SharedGripInput){
   const error={position:Math.max(...r.bodies.map((p,i)=>norm(p.pos,z.bodies[i].pos))),velocity:Math.max(...r.bodies.map((p,i)=>norm(p.vel,z.bodies[i].vel))),
