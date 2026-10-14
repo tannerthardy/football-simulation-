@@ -8,8 +8,11 @@ Preparation/verification only: no merge, reference adoption or new baseline.
 ## Exact scope
 
 Approved base: `c98c2fa0e8de760c980ad3852e0ec85abcfadc8f` (#8).
-Later #8 navigation at `545d9b8` is not silently included; it has the same
-runtime and retains its separate publication. Historical comparison remains
+Later #8 navigation at `545d9b8` has the same runtime and retains its separate
+publication. Only its workboard ownership/completed-stage structure is
+reconciled after verification, preserving both owner rows and all evidence.
+Branch-map links point to that immutable publication; README/branch-audit
+changes and unrelated branch content are not imported. Historical comparison remains
 `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`.
 Candidate branch: `codex/controller-integration-review`.
 
@@ -130,6 +133,9 @@ World defaults retained. Source fingerprint
 `e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54`;
 validation fingerprint
 `26134096d7b87dce2bbd346332c739dd286ffaa9460bc2cc0e4e53acfb74b71e`.
-Publication adds only docs/data receipts and must retain these exact fingerprints;
-it is not represented as another tested revision. Historical `4ded6b6`, #8's
+Publication adds only docs/data receipts and the workboard reconciliation;
+its source/harness/settings retain these exact fingerprints. That documentation
+reconciliation resolves the sole conflict with the current #8 target while
+keeping the tested base/candidate explicit; it requires no suite rerun.
+It is not represented as another tested revision. Historical `4ded6b6`, #8's
 reference decision and #10's independent evidence remain intact.
