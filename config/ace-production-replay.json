@@ -1,0 +1,53 @@
+{
+  "strength": 0.55,
+  "los": 40,
+  "stopSeconds": 25,
+  "inputs": [
+    {
+      "id": "uc12-wz-s3",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "uc12-wz-s3-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "uc12-wz-weak-s3",
+      "concept": "wz_weak",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    }
+  ],
+  "geometry": "Legacy mirror is a TE-placement contrast; weak call is not a geometric mirror of the asymmetric front.",
+  "protocol": "ace-production-replay-inputs-v1",
+  "developCommit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "sourceManifestCommit": "b30284c1b3b19eace5c7b9e023208818d6e8ea78",
+  "sourceManifestPath": "config/keeper-contact-law.json",
+  "question": "What are the actual complete outcomes and protection/request/contact histories on accepted develop for the same three Ace cases?",
+  "ballY": 26.666666666666668,
+  "firstDownX": 50,
+  "coverage": "cover3",
+  "defensivePersonnel": "base43",
+  "worldSelection": "Accepted defaults only; center hands/legacy support/centered integration/mean support, no experimental API overrides.",
+  "maximumBatchWallSeconds": 60
+}

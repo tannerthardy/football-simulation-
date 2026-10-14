@@ -1,5 +1,22 @@
 # Current work ownership
 
+## Wide-zone opening execution, 2026-10-14
+
+Run-game owns `codex/wide-zone-opening` from Awareness's completed PR #36
+handoff `6828467` (runtime60120551); accepted develop staysa1b16e6/e5 and
+historical4ded6b6 remains separate. Trace all five OL and attached-TE interactions
+through the opening second on Y/H/weak; reuse accepted0–.45 all22 evidence and
+capture only missing fields with native observer initialization from snap.
+All44 flags and World/capacities unchanged. A fresh same-roster Under-front Y
+input is frozen before results, and runs only after a supported candidate.
+
+The late Y-collision investigation is closed: preserve completed reviewa6bf3cf
+and failed post-mesh evidence, without requiring its historical ending.
+Gather-release promotion remains with its owner. Awareness information modules,
+playsim.ts and spacing.ts remain untouched. Blocking-only correction is within
+this owner boundary if demonstrated; any shared spacing/movement proposal first
+requires coordination. No broad roster/game campaign or full-suite rerun.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

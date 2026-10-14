@@ -1,0 +1,18 @@
+{
+  "protocol": "wide-zone-opening-v1",
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "awarenessHead": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+  "acceptedSource": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "awarenessSource": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+  "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+  "openingStop": 1,
+  "maximumBatchWallSeconds": 30,
+  "freshTransferDeclaredBeforeResults": {
+    "id": "uc12-wz-s3-under-fresh",
+    "concept": "wz_strong", "kind": "run", "seed": 3, "flip": false,
+    "o": 31, "d": 32, "front": "under", "formation": "ace_12",
+    "purpose": "Same roster, opposite shade/front challenge; run only after mechanism candidate passes original controls. Do not replace an adverse result."
+  },
+  "scope": "Three existing Ace cases plus one declared fresh front; all22 natural players, no capacities/spacing/gather/contact changes."
+}
