@@ -1,0 +1,52 @@
+{
+  "schema": "seam-read-research-v1",
+  "retrievedAtUtc": "2026-10-14T17:10:25.134716+00:00",
+  "sources": [
+    {
+      "id": 6490,
+      "url": "https://www.xandolabs.com/the-lab/offense/pass-game/vertical-pass-concepts/the-four-vertical-concept-part-2/",
+      "title": "The Four Vertical Concept &#8211; Part 2",
+      "published": "2013-06-28T04:54:00",
+      "responsePath": "out/seam-read/sources/6490.json",
+      "responseSha256": "0101b0d527f239b3a9f83d7dc8c6a9617722ad2bd84f9440c7d05cad3e16ac08",
+      "textPath": "out/seam-read/sources/6490.txt",
+      "textSha256": "931d6dc0f1784d98971cd32213387be8e2715a5af71e67115834d346dab8d693",
+      "scope": "Read public report preview only; no paid continuation or embedded video viewed."
+    },
+    {
+      "id": 17659,
+      "url": "https://www.xandolabs.com/the-lab/offense/pass-game/vertical-pass-concepts/three-tags-in-the-four-vertical-concept/",
+      "title": "Three Tags in the Four Vertical Concept",
+      "published": "2017-06-12T12:24:42",
+      "responsePath": "out/seam-read/sources/17659.json",
+      "responseSha256": "1110140871b025adb9b3530eb7c2cdf7f0fdff3ae51ae414399155b0d9634467",
+      "textPath": "out/seam-read/sources/17659.txt",
+      "textSha256": "de42bde52acb9615e0a171119453c3198bf594064a910414bae4e1a7ac44e747",
+      "scope": "Read public report preview only; no paid continuation or embedded video viewed."
+    },
+    {
+      "id": 106265,
+      "url": "https://www.xandolabs.com/the-lab/offense/pass-game/vertical-pass-concepts/variations-of-the-sail-concept/",
+      "title": "Variations of the Sail Concept",
+      "published": "2021-06-27T13:02:22",
+      "responsePath": "out/seam-read/sources/106265.json",
+      "responseSha256": "c173fad653af554882274138a6a04a819a0f4fe809b1c3e08b9fce4c458d1745",
+      "textPath": "out/seam-read/sources/106265.txt",
+      "textSha256": "7902710d8c464409bda5074940ec88b454561dd3691c4ced3fe9120edf70fa5e",
+      "scope": "Read public report preview only; no paid continuation or embedded video viewed."
+    },
+    {
+      "id": 20783,
+      "url": "https://www.xandolabs.com/the-lab/offense/pass-game/installing-the-choice-package-in-the-pass-game/",
+      "title": "Installing the Choice Package in the Pass Game",
+      "published": "2020-04-30T02:56:55",
+      "responsePath": "out/seam-read/sources/20783.json",
+      "responseSha256": "e5e0085dcbb49fc28ab383f319a021adbac0b4f022e0ee06230e91ad8dfcfd0f",
+      "textPath": "out/seam-read/sources/20783.txt",
+      "textSha256": "2482d568e25af27b0cf10b7e28fd8c21f749a96b718f1b95e140bc6988706d71",
+      "scope": "Read public report preview only; no paid continuation or embedded video viewed."
+    }
+  ],
+  "supported": "Shared teaching, observable deep bodies/window, physical route landmarks, separate QB progression; variant-specific seam conversions.",
+  "limits": "No universal seam/post/corner table or NFL error/latency calibration. The first seam/post installation and its spatial bounds are explicit model choices inspired by the public coaching principles."
+}
