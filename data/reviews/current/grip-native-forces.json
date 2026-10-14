@@ -1,0 +1,1118 @@
+{
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "parent": "baf7ed5686ecb6ad152ffde0b0af6b410c74a340",
+  "runtimeSource": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167",
+  "stages": {
+    "engine": "5aef7aa8b046f364f47ff02d689e441c734f6f58",
+    "fullValidation": "0938ab2834311b60b844499693699517f4e741fb",
+    "portableEvidence": "7bdb409b3fdfa6f88583cd6ccd770b75198a1641",
+    "centeredReference": "ee481c8aafdf75ac458a4964de8b0b24a7ef548a",
+    "finalFocused": "ee481c8aafdf75ac458a4964de8b0b24a7ef548a"
+  },
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "settings": {
+    "handContact": "patch",
+    "gripTiming": "midpoint",
+    "constraintWork": "per-solve",
+    "materialTransport": "owned ONLY in owned/combined",
+    "nativeSubsteps": 96
+  },
+  "inputs": {
+    "path": "config/grip-native-force-inputs.json",
+    "sha256": "e13d65a55a454f39314c996c957ac1d6d79236d0e385c8e1ebecd25d443a9f9a"
+  },
+  "portablePackets": {
+    "path": "config/grip-native-world-packets.json",
+    "sha256": "07ed6399d4a2ef0484705e2edf8588b7a60567392ec82c0ca413ddca4d1a4e8f",
+    "bytesPerCase": [
+      5592,
+      5654,
+      5749
+    ],
+    "contains": "Only acquired native input graphs, not solver answers; original-vs-reduced one-interval body/support/point/work exact"
+  },
+  "accuracyGate": {
+    "coordinateTolerances": "Unchanged passive tolerances, 1e-9 for added ledgers",
+    "normalizedAllowance": 0.0625,
+    "work": 1e-08,
+    "span": 1e-09,
+    "energy": 1e-08,
+    "angular": 1e-07
+  },
+  "mechanical": [
+    {
+      "id": "patch-45-8-0-3001-1",
+      "phase": 16,
+      "duration": 0.0005208333333333333,
+      "accepted": 1,
+      "error": 0.0007797934595714581,
+      "referenceConvergence": 0.0009285923417909976,
+      "reelDose": 0.07523139716559941,
+      "armCost": 0.14821162333896962,
+      "groundForce": [
+        {
+          "x": 1196.4585990670132,
+          "y": 72.3795641201182
+        },
+        {
+          "x": 26.43379182888585,
+          "y": 2.0982372776736296
+        }
+      ],
+      "maximumCapacityRatio": 0.07123381505337219,
+      "workResidual": 5.25135490647699e-13,
+      "energyResidual": 5.250244510998039e-13,
+      "angularResidual": -4.426681243785424e-12,
+      "partitions": 11,
+      "evaluations": 159
+    },
+    {
+      "id": "patch-45-8-0-3001--1",
+      "phase": 16,
+      "duration": 0.0005208333333333333,
+      "accepted": 1,
+      "error": 0.0007797934595714581,
+      "referenceConvergence": 0.0009285923417909976,
+      "reelDose": 0.07523139716559941,
+      "armCost": 0.14821162333896962,
+      "groundForce": [
+        {
+          "x": 1196.4585990670132,
+          "y": -72.3795641201182
+        },
+        {
+          "x": 26.43379182888585,
+          "y": -2.0982372776736296
+        }
+      ],
+      "maximumCapacityRatio": 0.07123381505337219,
+      "workResidual": 5.25135490647699e-13,
+      "energyResidual": 5.250244510998039e-13,
+      "angularResidual": -3.552713678800501e-13,
+      "partitions": 11,
+      "evaluations": 159
+    },
+    {
+      "id": "patch-0-3-0-3001-1",
+      "phase": 0,
+      "duration": 0.0005208333333333333,
+      "accepted": 1,
+      "error": 0.011667111721180845,
+      "referenceConvergence": 0.01455191522836685,
+      "reelDose": 0,
+      "armCost": 0,
+      "groundForce": [
+        {
+          "x": -148.01779711478332,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "maximumCapacityRatio": 0,
+      "workResidual": 6.442069100387471e-14,
+      "energyResidual": 6.442069100387471e-14,
+      "angularResidual": 1.1475265182525618e-12,
+      "partitions": 1,
+      "evaluations": 15
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "phase": 16,
+      "duration": 0.0005208333333333333,
+      "accepted": 1,
+      "error": 0.0006636913747581274,
+      "referenceConvergence": 0.00045637374895752023,
+      "reelDose": 0.0786617052834454,
+      "armCost": 0.1544822282580897,
+      "groundForce": [
+        {
+          "x": 1196.7541223339317,
+          "y": 67.31679775775999
+        },
+        {
+          "x": 24.168569514598417,
+          "y": 1.9836866105816402
+        }
+      ],
+      "maximumCapacityRatio": 0.25020512702024833,
+      "workResidual": 3.750555421788704e-12,
+      "energyResidual": 3.75066644407975e-12,
+      "angularResidual": -3.083577837514895e-11,
+      "partitions": 16,
+      "evaluations": 375
+    }
+  ],
+  "continuation": [
+    {
+      "id": "patch-45-8-0-3001-1",
+      "intervals": 80,
+      "runnerPositionDifferenceVsOwnership": 7.858315326296776e-06,
+      "arms": [
+        {
+          "mode": "legacy",
+          "audit": null,
+          "armWork": 32.855408379316046,
+          "footWork": -2.7412947416912337,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        },
+        {
+          "mode": "owned",
+          "audit": null,
+          "armWork": 32.855408379316046,
+          "footWork": -2.7412947416912337,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        },
+        {
+          "mode": "combined",
+          "audit": {
+            "accepted": 80,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 26.515270700990758,
+            "bodyWork": 30.63159016980045,
+            "motorWork": -1.708934844484941,
+            "armCost": 32.34052501428539,
+            "reelDose": 26.505831092147172
+          },
+          "armWork": 32.78053044447437,
+          "footWork": -2.7382757053450426,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001--1",
+      "intervals": 80,
+      "runnerPositionDifferenceVsOwnership": 7.858315343185289e-06,
+      "arms": [
+        {
+          "mode": "legacy",
+          "audit": null,
+          "armWork": 32.855408379316046,
+          "footWork": -2.7412947416912337,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        },
+        {
+          "mode": "owned",
+          "audit": null,
+          "armWork": 32.855408379316046,
+          "footWork": -2.7412947416912337,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        },
+        {
+          "mode": "combined",
+          "audit": {
+            "accepted": 80,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 26.515270700990783,
+            "bodyWork": 30.63159016983548,
+            "motorWork": -1.7089348444849426,
+            "armCost": 32.340525014320434,
+            "reelDose": 26.505831092147172
+          },
+          "armWork": 32.78053044450942,
+          "footWork": -2.738275705345044,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        }
+      ]
+    },
+    {
+      "id": "patch-0-3-0-3001-1",
+      "intervals": 96,
+      "runnerPositionDifferenceVsOwnership": 1.3642420526593924e-12,
+      "arms": [
+        {
+          "mode": "legacy",
+          "audit": null,
+          "armWork": 0,
+          "footWork": 0,
+          "time": 2.7499999999999973,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        },
+        {
+          "mode": "owned",
+          "audit": null,
+          "armWork": 0,
+          "footWork": 0,
+          "time": 2.7499999999999973,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        },
+        {
+          "mode": "combined",
+          "audit": {
+            "accepted": 96,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 0,
+            "bodyWork": 0,
+            "motorWork": 0,
+            "armCost": 0,
+            "reelDose": 0
+          },
+          "armWork": 0,
+          "footWork": 0,
+          "time": 2.7499999999999973,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "intervals": 80,
+      "runnerPositionDifferenceVsOwnership": 7.90198666868792e-06,
+      "arms": [
+        {
+          "mode": "legacy",
+          "audit": null,
+          "armWork": 32.79204827844876,
+          "footWork": -1.4804857407402927,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        },
+        {
+          "mode": "owned",
+          "audit": null,
+          "armWork": 32.79204827844876,
+          "footWork": -1.4804857407402927,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        },
+        {
+          "mode": "combined",
+          "audit": {
+            "accepted": 80,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 26.789302371254742,
+            "bodyWork": 31.168244794163066,
+            "motorWork": -1.083501665001016,
+            "armCost": 32.25174645916407,
+            "reelDose": 26.77977698676915
+          },
+          "armWork": 32.71761386628355,
+          "footWork": -1.478624550262313,
+          "time": 2.699999999999997,
+          "holder": "up",
+          "runner": "up",
+          "broken": false,
+          "slipping": false
+        }
+      ]
+    }
+  ],
+  "independentContinuation": {
+    "original": [
+      {
+        "id": "patch-45-8-0-3001-1",
+        "accuracy": {
+          "position": 1.7100920035885205e-12,
+          "support": 5.21529712335192e-14,
+          "facing": 3.197442310920451e-14,
+          "material": 3.823427547385052e-15,
+          "foot": 2.1715595306798292e-14,
+          "bodyWork": 1.34807720542085e-10,
+          "footWork": 4.548361687284341e-12,
+          "armWork": 1.3027090517425677e-10
+        },
+        "convergence": {
+          "position": 1.9913491009649586e-12,
+          "support": 2.109061262577075e-13,
+          "facing": 4.729550084903167e-14,
+          "material": 1.5614526650917158e-14,
+          "foot": 8.850252761950327e-14,
+          "bodyWork": 3.959499395023158e-11,
+          "footWork": 2.0941914868899403e-11,
+          "armWork": 1.8637535958987428e-11
+        }
+      },
+      {
+        "id": "patch-45-8-0-4001-1",
+        "accuracy": {
+          "position": 4.564234742547372e-13,
+          "support": 2.7048529430609888e-14,
+          "facing": 4.596323321948148e-14,
+          "material": 1.4414499850609624e-15,
+          "foot": 1.0429436843933062e-14,
+          "bodyWork": 6.000178132126166e-11,
+          "footWork": 2.190470027585434e-12,
+          "armWork": 6.218670023372397e-11
+        },
+        "convergence": {
+          "position": 6.80379453656688e-13,
+          "support": 4.4131217940761884e-14,
+          "facing": 4.241051954068098e-14,
+          "material": 2.5988890649551455e-15,
+          "foot": 1.8465607392145957e-14,
+          "bodyWork": 8.235900850195321e-11,
+          "footWork": 3.163247441761996e-12,
+          "armWork": 7.918998790046317e-11
+        }
+      }
+    ],
+    "absolute4096": [
+      {
+        "n": 0,
+        "bodyWork": 7.179679073487932e-11,
+        "armWork": 6.847500344520085e-11,
+        "footWork": 3.304023721284466e-12,
+        "groundWork": 5.226041821515537e-12,
+        "position": 6.832395840944712e-13
+      },
+      {
+        "n": 1024,
+        "bodyWork": 1.6700951732673275e-10,
+        "armWork": 1.801083726604702e-10,
+        "footWork": 1.3089529460330596e-11,
+        "groundWork": 4.228439820508356e-11,
+        "position": 3.595093471822542e-13
+      },
+      {
+        "n": 2048,
+        "bodyWork": 2.0660451127696433e-10,
+        "armWork": 1.9874590861945762e-10,
+        "footWork": 7.852385408568807e-12,
+        "groundWork": 2.476241434123949e-11,
+        "position": 1.6401113375944072e-12
+      }
+    ],
+    "centered": [
+      {
+        "id": "patch-45-8-0-3001-1",
+        "accuracy": {
+          "position": 2.1125954315434834e-13,
+          "support": 3.2957528490201015e-14,
+          "facing": 3.1530333899354446e-14,
+          "material": 2.295200308280515e-15,
+          "foot": 1.3300446654209082e-14,
+          "bodyWork": 2.6634694449967355e-11,
+          "footWork": 3.3724134596013755e-12,
+          "armWork": 3.000621973114903e-11
+        },
+        "convergence": {
+          "position": 3.826389734580363e-14,
+          "support": 5.069264980439603e-14,
+          "facing": 4.3298697960381105e-14,
+          "material": 3.738581926427897e-15,
+          "foot": 2.1077906931453697e-14,
+          "bodyWork": 5.95399285430176e-11,
+          "footWork": 5.7194249336589564e-12,
+          "armWork": 6.52207177154196e-11
+        }
+      },
+      {
+        "id": "patch-45-8-0-4001-1",
+        "accuracy": {
+          "position": 2.0359250330975562e-13,
+          "support": 2.8116100610391118e-14,
+          "facing": 1.9539925233402755e-14,
+          "material": 1.240253478718208e-15,
+          "foot": 8.851719377468401e-15,
+          "bodyWork": 9.237055564881302e-13,
+          "footWork": 1.3844481117075702e-12,
+          "armWork": 4.476419235288631e-13
+        },
+        "convergence": {
+          "position": 2.2469334198890888e-14,
+          "support": 8.471899464812223e-15,
+          "facing": 3.9968028886505635e-15,
+          "material": 4.66906602041016e-16,
+          "foot": 3.458275126713562e-15,
+          "bodyWork": 1.5273116105163353e-11,
+          "footWork": 7.807088309164101e-13,
+          "armWork": 1.6072476682893466e-11
+        }
+      }
+    ],
+    "verdict": "One stricter 41.667ms convergence check remains inconclusive: angled centered arm-work refinement 6.5220718e-11 versus single-interval ledger allowance 6.25e-11. Candidate agreement is inside that allowance; do not claim the long reference converged or silently relax it. Fresh centered continuation converges. All four original supported intervals pass unchanged gates."
+  },
+  "native": [
+    {
+      "id": "patch-45-8-0-3001-1",
+      "input": {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-3001-1"
+      },
+      "arms": [
+        {
+          "mode": "legacy",
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 22.274863595064915,
+          "afterContact": 22.274863595064915,
+          "contactToEnd": 4.4,
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "owned",
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 24.19973073779981,
+          "afterContact": 24.19973073779981,
+          "contactToEnd": 4.4,
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "combined",
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 24.203259005386215,
+          "afterContact": 24.203259005386215,
+          "contactToEnd": 4.4,
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 249,
+            "fallbacks": 8199,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Mixed span cap/target/power scope": 5,
+              "solver:Native span evaluation budget": 2,
+              "solver:Native span cap/target/power scope": 4,
+              "scope:recovery-command": 605,
+              "scope:attachment/support": 7487
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001--1",
+      "input": {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": -1,
+        "id": "patch-45-8-0-3001--1"
+      },
+      "arms": [
+        {
+          "mode": "legacy",
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 22.2748635950649,
+          "afterContact": 22.2748635950649,
+          "contactToEnd": 4.4,
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "owned",
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 24.19973073779981,
+          "afterContact": 24.19973073779981,
+          "contactToEnd": 4.4,
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "combined",
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 24.203259005386215,
+          "afterContact": 24.203259005386215,
+          "contactToEnd": 4.4,
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "calls": {
+            "accepted": 249,
+            "fallbacks": 8199,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Mixed span cap/target/power scope": 5,
+              "solver:Native span evaluation budget": 2,
+              "solver:Native span cap/target/power scope": 4,
+              "scope:recovery-command": 605,
+              "scope:attachment/support": 7487
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "patch-0-3-0-3001-1",
+      "input": {
+        "name": "front patch",
+        "cell": {
+          "angle": 0,
+          "speed": 3,
+          "cut": false,
+          "difficulty": "ordinary"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-0-3-0-3001-1"
+      },
+      "arms": [
+        {
+          "mode": "legacy",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 0.4489734517965971,
+          "afterContact": 0.4489734517965971,
+          "contactToEnd": 0.8500000000000001,
+          "contactImpulse": 1275.6851148817564,
+          "peakClosing": 5.111145693739703,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "owned",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 0.4490624833227841,
+          "afterContact": 0.4490624833227841,
+          "contactToEnd": 0.8500000000000001,
+          "contactImpulse": 1277.0215484760395,
+          "peakClosing": 5.111145693739703,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "combined",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 0.4490624833242123,
+          "afterContact": 0.4490624833242123,
+          "contactToEnd": 0.8500000000000001,
+          "contactImpulse": 1277.0215484769205,
+          "peakClosing": 5.111145693739596,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 149,
+            "fallbacks": 1387,
+            "reasons": {
+              "scope:possible-impact": 51,
+              "scope:recovery-command": 535,
+              "scope:attachment/support": 801
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "input": {
+        "name": "fresh angled",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 4001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-4001-1"
+      },
+      "arms": [
+        {
+          "mode": "legacy",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 13.319271331219483,
+          "afterContact": 13.319271331219483,
+          "contactToEnd": 2.0500000000000003,
+          "contactImpulse": 294.16931857134585,
+          "peakClosing": 1.963985703079632,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "owned",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 14.405496953324146,
+          "afterContact": 14.405496953324146,
+          "contactToEnd": 2.9,
+          "contactImpulse": 58.19813065428681,
+          "peakClosing": 1.0686139922782734,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          }
+        },
+        {
+          "mode": "combined",
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 13.787722669937338,
+          "afterContact": 13.787722669937338,
+          "contactToEnd": 2.7499999999999996,
+          "contactImpulse": 50.51179171925435,
+          "peakClosing": 0.924861900214362,
+          "carrierState": "down",
+          "calls": {
+            "accepted": 499,
+            "fallbacks": 4781,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Mixed span cap/target/power scope": 105,
+              "solver:Native span evaluation budget": 9,
+              "solver:Native span cap/target/power scope": 20,
+              "scope:recovery-command": 3707,
+              "solver:Span event retry budget": 4,
+              "solver:Span event piece budget": 1,
+              "scope:attachment/support": 839
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "scope": "Original 22-body saved native group, preparation outside clock, 5 warm/21 measured rotating serial samples per process. Native interval .05/96 s; not full-game cost. Physical engine unchanged after these clocks; portable input extraction later reduces the fixture to the identical two-body group.",
+    "budgetMilliseconds": {
+      "median": 2,
+      "p95": 5
+    },
+    "runs": [
+      {
+        "receipt": {
+          "path": "out/grip-native-forces/benchmark-a.json",
+          "sha256": "e2490651445b8525ed8bda31bc06601d2e4fde8e78e75e313ea4a5d08c2493b9",
+          "commit": "5aef7aa8b046f364f47ff02d689e441c734f6f58",
+          "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+        },
+        "rows": [
+          {
+            "case": "patch-45-8-0-3001-1",
+            "mode": "owned",
+            "median": 0.05728599999997641,
+            "p95": 0.3009899999999561,
+            "maximum": 0.4688019999999824,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-3001-1",
+            "mode": "combined",
+            "median": 0.4486610000000155,
+            "p95": 0.8472780000000739,
+            "maximum": 1.938850999999886,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-3001--1",
+            "mode": "owned",
+            "median": 0.06001000000003387,
+            "p95": 0.25861700000007204,
+            "maximum": 0.8981139999999641,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-3001--1",
+            "mode": "combined",
+            "median": 0.4778450000000021,
+            "p95": 0.7740589999999656,
+            "maximum": 2.1524200000000064,
+            "pass": true
+          },
+          {
+            "case": "patch-0-3-0-3001-1",
+            "mode": "owned",
+            "median": 0.1023330000000442,
+            "p95": 0.14619900000002417,
+            "maximum": 0.3148909999999887,
+            "pass": true
+          },
+          {
+            "case": "patch-0-3-0-3001-1",
+            "mode": "combined",
+            "median": 0.19899799999996048,
+            "p95": 0.32136100000002443,
+            "maximum": 0.3511359999999968,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-4001-1",
+            "mode": "owned",
+            "median": 0.05755699999997432,
+            "p95": 0.2415809999999965,
+            "maximum": 0.2548910000000433,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-4001-1",
+            "mode": "combined",
+            "median": 0.8079290000000583,
+            "p95": 6.8873570000000655,
+            "maximum": 8.46041200000002,
+            "pass": false
+          }
+        ]
+      },
+      {
+        "receipt": {
+          "path": "out/grip-native-forces/benchmark-b.json",
+          "sha256": "b1c20d57b59b7b10a19e13745146c6777ff1690b947f1baf0d490f78b7adec3e",
+          "commit": "5aef7aa8b046f364f47ff02d689e441c734f6f58",
+          "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+        },
+        "rows": [
+          {
+            "case": "patch-45-8-0-3001-1",
+            "mode": "owned",
+            "median": 0.07342999999991662,
+            "p95": 0.23908800000003794,
+            "maximum": 0.3512070000000449,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-3001-1",
+            "mode": "combined",
+            "median": 0.5085919999999078,
+            "p95": 2.3708540000000085,
+            "maximum": 2.5324059999999236,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-3001--1",
+            "mode": "owned",
+            "median": 0.0785280000000057,
+            "p95": 0.16025999999999385,
+            "maximum": 0.31879700000001776,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-3001--1",
+            "mode": "combined",
+            "median": 0.5420719999999619,
+            "p95": 2.6299020000000155,
+            "maximum": 2.960868000000005,
+            "pass": true
+          },
+          {
+            "case": "patch-0-3-0-3001-1",
+            "mode": "owned",
+            "median": 0.10980399999994006,
+            "p95": 0.27103699999997843,
+            "maximum": 0.3414220000000796,
+            "pass": true
+          },
+          {
+            "case": "patch-0-3-0-3001-1",
+            "mode": "combined",
+            "median": 0.2610710000000154,
+            "p95": 0.4206009999999196,
+            "maximum": 0.6482320000000072,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-4001-1",
+            "mode": "owned",
+            "median": 0.07588399999985995,
+            "p95": 0.21666500000003452,
+            "maximum": 0.6572549999999637,
+            "pass": true
+          },
+          {
+            "case": "patch-45-8-0-4001-1",
+            "mode": "combined",
+            "median": 0.9282709999999952,
+            "p95": 3.234128000000055,
+            "maximum": 6.590207999999961,
+            "pass": true
+          }
+        ]
+      }
+    ],
+    "verdict": "All medians pass. Fresh p95 6.887ms fails 5ms on first process; second 3.234ms passes. Worst8.460ms. Retain both."
+  },
+  "dryCap": {
+    "rows": [
+      {
+        "coarse": 8192,
+        "fine": 16384,
+        "normalized": 5.013791870571044,
+        "finePhaseUncertainty": 5.013791870571044e-06,
+        "finePhaseUncertaintyNormalized": 5.013791870571044,
+        "transitions": [
+          {
+            "time": 0.004307556152343684,
+            "slipping": false,
+            "legs": 0.014250914795546493,
+            "width": 1.52587890625e-06,
+            "increment": 5.013791870571044e-06
+          }
+        ],
+        "legsDelta": 1.0862838406566766e-13,
+        "pointDelta": 7.55327569928955e-08,
+        "bodyPosition": 7.55327569928955e-08,
+        "facing": 4.238164469191896e-06,
+        "spin": 0.00016954210069441977,
+        "work": 0.0003649416206297218
+      },
+      {
+        "coarse": 16384,
+        "fine": 32768,
+        "normalized": 2.506892747598504,
+        "finePhaseUncertainty": 2.506892747598504e-06,
+        "finePhaseUncertaintyNormalized": 2.506892747598504,
+        "transitions": [
+          {
+            "time": 0.004306793212891081,
+            "slipping": false,
+            "legs": 0.014250914795523626,
+            "width": 7.62939453125e-07,
+            "increment": 2.506892747598504e-06
+          }
+        ],
+        "legsDelta": 2.286712486032627e-14,
+        "pointDelta": 3.7768467291761436e-08,
+        "bodyPosition": 3.7768467291761436e-08,
+        "facing": 2.119179235305496e-06,
+        "spin": 8.477105034720989e-05,
+        "work": 0.00018249610789888848
+      },
+      {
+        "coarse": 32768,
+        "fine": 65536,
+        "normalized": 1.2534455769044792,
+        "finePhaseUncertainty": 1.2534455769044792e-06,
+        "finePhaseUncertaintyNormalized": 1.2534455769044792,
+        "transitions": [
+          {
+            "time": 0.004306411743164325,
+            "slipping": false,
+            "legs": 0.014250914795809559,
+            "width": 3.814697265625e-07,
+            "increment": 1.2534455769044792e-06
+          }
+        ],
+        "legsDelta": 2.8593273582178114e-13,
+        "pointDelta": 1.8884755838905393e-08,
+        "bodyPosition": 1.8884755843458172e-08,
+        "facing": 1.0596139104965263e-06,
+        "spin": 4.238552517354943e-05,
+        "work": 9.125437835710848e-05
+      }
+    ],
+    "verdict": "Retained old numerical acceptance/search failure, dominated by unresolved slip-exit phase uncertainty around4.306ms. Uniform16384 uncertainty5.01379e-6 exceeds1e-6; even65536 yields1.25345e-6. Endpoint share agreement alone is not a certificate. No changed test expectation or larger production search bound."
+  },
+  "ownership": {
+    "scope": "Patch-only material transport; accepted center defaults do not run this loop. Default-off owned option remains independent from active callback. Standalone ownership-only review supplied separately.",
+    "trajectoryVerdict": "The extra1.09yd from ownership alone does not establish better or worse football physics."
+  },
+  "validation": {
+    "full": {
+      "path": "out/grip-native-forces/full-validation.json",
+      "sha256": "9c50431c29d83a13f823a35486a221281e3519f8161fb58f153b86c0a13efc03",
+      "commit": "0938ab2834311b60b844499693699517f4e741fb",
+      "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+    },
+    "typescript": {
+      "passed": 1905,
+      "failed": 1,
+      "total": 1906,
+      "failure": "grip-fast dry cap-stop search limit"
+    },
+    "pythonPassed": 145,
+    "fullTypecheckBuildPassed": true,
+    "fullInputsUnchanged": true,
+    "finalFocused": {
+      "path": "out/grip-native-forces/final-focused-receipt.json",
+      "sha256": "2f3c38b083ad4ad1b4ad077b771b99e3a43be1bcd43a430d473a0f7bb0726820",
+      "commit": "ee481c8aafdf75ac458a4964de8b0b24a7ef548a",
+      "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+    },
+    "finalFocusedTestsPassed": 38,
+    "finalTypecheckBuildPassed": true,
+    "scratchCheckpointReads": "Deliberately denied; portable tests and complete evidence collector pass.",
+    "reuse": "Full suite on0938ab2 covers the exact final runtimeSource. Subsequent edits only package native inputs/reference diagnostics; affected focused checks/typecheck/build repeated on ee481c8. No second full campaign."
+  },
+  "evidence": [
+    {
+      "path": "out/grip-native-forces/accuracy.json",
+      "sha256": "b003cb1aaba7c31553e973e19c6970a76d1022cf93f0d88017e9cacbd850d0f6",
+      "commit": "5aef7aa8b046f364f47ff02d689e441c734f6f58",
+      "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+    },
+    {
+      "path": "out/grip-native-forces/portable-accuracy.json",
+      "sha256": "4ddc1530be0c071dcf553b84a72875ffc27254a3df76d4ce8a79ad0367035293",
+      "commit": "7bdb409b3fdfa6f88583cd6ccd770b75198a1641",
+      "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+    },
+    {
+      "path": "out/grip-native-forces/reference-continuation.json",
+      "sha256": "24267592ede846976a0aa069abbc97747d84f57b044438d50e1bb777de4043ec",
+      "commit": "8d338cf5a6671405adbdbe9160c23ab1205730ef",
+      "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+    },
+    {
+      "path": "out/grip-native-forces/centered-continuation.json",
+      "sha256": "f9fe0e02685bdf4cede322dd398d60c0cbf2cb5c9f3f548ec25af2be60496106",
+      "commit": "ee481c8aafdf75ac458a4964de8b0b24a7ef548a",
+      "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+    },
+    {
+      "path": "out/grip-native-forces/finer-reference.json",
+      "sha256": "1e96912b1e465f1951f3bf4c90fa177084c4a2dc28308ec2a7bf8cea1327f6a2",
+      "commit": null,
+      "source": null
+    },
+    {
+      "path": "out/grip-native-forces/dry-cap.json",
+      "sha256": "e818a8505dbbcaa85a3b5eccd8bb1340b68024ac8446c6c7bf6f75efeecb0bd2",
+      "commit": "8d338cf5a6671405adbdbe9160c23ab1205730ef",
+      "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+    },
+    {
+      "path": "out/grip-native-forces/native-law-limit.json",
+      "sha256": "3028fade6080f3f800f8ab2c7d0326d43588acaf36643854759cbe32a9d34b66",
+      "commit": "8d338cf5a6671405adbdbe9160c23ab1205730ef",
+      "source": "4070e13cc64ea888480588bce06f2aaffc403e1d06d4da15789ce02ad1c1c167"
+    }
+  ],
+  "retained": {
+    "patchGate": "43/52, nine unrelated failures unchanged and unpromoted",
+    "keeper": "Independent angular-law diagnosis",
+    "supportHistory": "Separate history-fork diagnosis; no recovery law edits"
+  },
+  "recommendation": "Useful native-force experimental candidate, default-off. Not ready for broad integration/promotion: retain fresh runtime tail, unresolved strict long-reference convergence, and native fallback scope. Next bounded physical question is the first cap/slip transition at the saved acquisition, with this below-slip phase as opposing control; do not expand recovery or capacities."
+}
