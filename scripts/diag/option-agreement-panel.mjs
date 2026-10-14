@@ -90,9 +90,10 @@ if(mode==='prepare'){
       normalForce:j.normalForce??null,tangentForce:j.tangentForce??null,capacity:j.capacity??null}));steps.push(step);}
     step=null;return ret;};restore.push(()=>sim.tick=tick);
   }
-  const began=performance.now();let result;
-  try{while(!sim.done&&sim.t<25){if(performance.now()-began>5000)throw Error(`${row.id}: case budget exhausted`);sim.tick();}
-   result=sim.result();}finally{for(const fn of restore.reverse())fn();}
+  const began=performance.now(),boundedTick=sim.tick;let result;
+  sim.tick=function(){if(performance.now()-began>5000)throw Error(`${row.id}: case budget exhausted`);
+   return boundedTick.call(this);};
+  try{result=sim.run();}finally{sim.tick=boundedTick;for(const fn of restore.reverse())fn();}
   return {result,signature:signature(sim,result),players:sim.agents.map(a=>({i:a.idx,id:a.player.id,slot:a.slot,
    team:a.team,profile:a.profile})),steps,elapsedMs:performance.now()-began};
  }
