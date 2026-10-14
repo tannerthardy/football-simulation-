@@ -5,8 +5,8 @@ import{LEG_SLIDE}from'../../../src/physics/grip-sliding.js';
 import{writeFileSync,readFileSync,mkdirSync}from'node:fs';
 import{sourceVersion}from'../../source-version.js';import{execFileSync}from'node:child_process';
 mkdirSync('out/grip-native-forces',{recursive:true});
-const profile=JSON.parse(readFileSync('config/baseline.json','utf8')),meta={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),source:sourceVersion(),
- flags:Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),timestamp:new Date().toISOString()};
+const baselineProfile=JSON.parse(readFileSync('config/baseline.json','utf8')),meta={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),source:sourceVersion(),
+ flags:Object.fromEntries(Object.keys(baselineProfile.flags).map(k=>[k,process.env[k]??null])),timestamp:new Date().toISOString()};
 const profile={massKg:100,radius:.3,reach:1.6,heightYd:2.05,vmax:9,tau:1.3,brake:6,lateral:6,turnRate:8,backpedal:.6,shuffle:.55,maxCatchHeight:3,reactReach:2.6,reactionTime:.25,power:100,balance:.5,bend:.5,stepSpeed:3.4,getUp:.9};
 let packet:any;const bodies=[0,1].map(x=>({pos:{x,y:0},vel:{x:0,y:0},facing:0,spin:1,energy:1,profile:{...profile},support:newSupport()})),w:any=new World(bodies,{handContact:'patch',substeps:1});
 w.joints.push({kind:'grasp',a:bodies[0],b:bodies[1],capacity:500,reach:1.6,hold:1,legs:0,pull:0});
