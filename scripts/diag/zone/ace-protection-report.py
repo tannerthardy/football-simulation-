@@ -134,7 +134,10 @@ for p in probe['panel']:
 
 weak = native['panel'][2]
 checks = {path.name: read(path) for path in ROOT.glob('*checks.json')}
-assert all(c['exitCode'] == 0 and c['inputsUnchanged'] for c in checks.values())
+failed = {name for name, c in checks.items() if c['exitCode'] != 0}
+assert failed <= {'typecheck-checks.json', 'reduction-checks.json'}
+assert checks['typecheck-final-checks.json']['exitCode'] == 0
+assert all(c['inputsUnchanged'] for c in checks.values())
 assert len({c['sourceSha256'] for c in checks.values()}) == 1
 receipt = dict(protocol='ace-protection-review-v1', comparisonCommit=native['comparisonCommit'],
                historicalRuntimeSourceSha256=checks['delivery-checks.json']['sourceSha256'],
@@ -152,6 +155,7 @@ receipt = dict(protocol='ace-protection-review-v1', comparisonCommit=native['com
                                       injectedStaleDelivery=retention['stale']['joints'],
                                       scope='Unreachable stale joint is a synthetic operator control, not a native baseline defect.'),
                correctedPriorStatement='PR17 prose claiming RT never acquired any load after joining was too broad. He acquires lateral load at1.50 through1.95, loses eligibility at2.00 and has zero load at runner arrival. No compressive load in that interval.',
+               diagnosticFailures='Initial typecheck found one implicit-any callback in the new collector, corrected with a result-array type. First offline reducer correctly refused that failed validation. Both failed commands/costs are retained; runtime and native histories unchanged.',
                scope='Diagnostics only; shared runtime, solver, contact retention, capacities, roster, RB, release and hand policies unchanged. Four short observer continuations of two saved prefixes, all49 hashes exact; no new inputs/games/full suites.',
                unresolved=['Whether these rotating latched contacts remain physically retained. Zero compression alone is not a clearance rule.',
                            'Whether a feasible acquired-information helper/spacing change improves route control after the contact contract is settled.',

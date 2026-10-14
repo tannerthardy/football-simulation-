@@ -74,7 +74,7 @@ function execute(row: typeof manifest.inputs[number]) {
   assert.equal(sha(JSON.stringify(hashes)), row.referencePrefixSha256, 'Reuse exact saved state/RNG history');
   return { input: i, stop: sim.t, prefixExact: true, hashes, cues, contacts, writes, frames };
 }
-const started = performance.now(), panel = manifest.inputs.map(execute);
+const started = performance.now(), panel: ReturnType<typeof execute>[] = manifest.inputs.map(execute);
 const result = { protocol: 'ace-protection-provenance-v1', manifest,
   commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
   scriptSha256: sha(readFileSync('scripts/diag/zone/ace-protection-native.ts')),
