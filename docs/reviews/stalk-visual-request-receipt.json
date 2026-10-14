@@ -1,0 +1,1633 @@
+{
+  "schema": "stalk-visual-request-handoff-v1",
+  "comparisonBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "originPR24": "765c25c3bc781ed572fdb5d4f39531453d58b31a",
+  "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "scope": "Only the two-line far-stalk fit position source correction. No ancestry merge.",
+  "accepted": {
+    "schema": "stalk-visual-request-v1",
+    "mode": "accepted",
+    "commit": "a6e90c3a57155b9f554d3ec324758041693214f7",
+    "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+    "harnessSha256": "bad97a331a19463a94c49053a227b6aed6fc18fa82e39db9c97036de278e4a81",
+    "supportSha256": "2ebccbb44a3ded4c5bf5757e7450816fa53bbb1e2ed4e44467c35ddfb5b220d7",
+    "input": {
+      "path": "config/stalk-visual-request-witness.json",
+      "sha256": "6046856b3f861029c76a414fb26d26d5dc955628cd783f54e5612611e65d6236"
+    },
+    "originPR": "https://github.com/tannerthardy/football-simulation-/pull/24",
+    "sourceBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "hiddenResponse": 0.2896127162326456,
+    "visibleResponse": 0,
+    "freeSteps": 6,
+    "worldTicks": 0,
+    "newPlays": 0,
+    "newGames": 0,
+    "limits": "Held input and hidden/visible substitutions are synthetic controller controls. Projection control reconstructs the normal dead-reckoning operator from an archived sample; it is not the actual native perception history. Free steps have no contact loads and are not native continuations or tackle/block endings.",
+    "rows": {
+      "held": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "visualCalls": 0,
+        "engageCalls": 0,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        }
+      },
+      "hidden": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "visualCalls": 0,
+        "engageCalls": 0,
+        "distance": 2.3308695936944965,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 14.011317765192093
+        }
+      },
+      "fresh": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "visualCalls": 0,
+        "engageCalls": 0,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 13.761317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        }
+      },
+      "visible": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "visualCalls": 0,
+        "engageCalls": 0,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 14.011317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        }
+      },
+      "shiftedFresh": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "visualCalls": 0,
+        "engageCalls": 0,
+        "distance": 2.3308695936944965,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 14.011317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 14.011317765192093
+        }
+      },
+      "contact": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "visualCalls": 0,
+        "engageCalls": 1,
+        "distance": 0.5,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "hiddenTargetPos": {
+          "x": 47.2219091361951,
+          "y": 11.698922877416638
+        }
+      }
+    },
+    "analysis": {
+      "held": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 12.331918692968824
+        },
+        "fitDistance": 0.6329958155521851,
+        "unchangedBrakingLimit": 2.55051679570002,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "knownTargetLateralVelocity": 4.5843114033454295,
+        "requestedRelativeLateralOpening": -0.19033805520467428,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030738375835554166,
+            "y": 0.2234680150889048
+          },
+          "acceleration": {
+            "x": -6.423558119441052,
+            "y": 1.3507965558667756
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752647512030656,
+              "y": 11.922390892505543
+            },
+            "vel": {
+              "x": 0.4541785637250601,
+              "y": 4.5031302156747515
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775220640807695
+          }
+        }
+      },
+      "hidden": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 12.331918692968824
+        },
+        "fitDistance": 0.6329958155521851,
+        "unchangedBrakingLimit": 2.55051679570002,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "knownTargetLateralVelocity": 4.5843114033454295,
+        "requestedRelativeLateralOpening": -0.4799507714373199,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030822024284383076,
+            "y": 0.22375698457073412
+          },
+          "acceleration": {
+            "x": -6.3566393603780025,
+            "y": 1.5819721413312138
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752731160479485,
+              "y": 11.922679861987373
+            },
+            "vel": {
+              "x": 0.45752450167821257,
+              "y": 4.514688994947973
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775021424391447
+          }
+        }
+      },
+      "fresh": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 13.761317765192093
+        },
+        "fitDistance": 2.0623948877754543,
+        "unchangedBrakingLimit": 4.774649458550104,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "knownTargetLateralVelocity": 4.869673501988388,
+        "requestedRelativeLateralOpening": 0.09502404343828452,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030738375835554166,
+            "y": 0.2234680150889048
+          },
+          "acceleration": {
+            "x": -6.423558119441052,
+            "y": 1.3507965558667756
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752647512030656,
+              "y": 11.922390892505543
+            },
+            "vel": {
+              "x": 0.4541785637250601,
+              "y": 4.5031302156747515
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775220640807695
+          }
+        }
+      },
+      "visible": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 14.011317765192093
+        },
+        "fitDistance": 2.3123948877754543,
+        "unchangedBrakingLimit": 5.064262174782749,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "knownTargetLateralVelocity": 4.869673501988388,
+        "requestedRelativeLateralOpening": 0.09502404343828452,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030738375835554166,
+            "y": 0.2234680150889048
+          },
+          "acceleration": {
+            "x": -6.423558119441052,
+            "y": 1.3507965558667756
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752647512030656,
+              "y": 11.922390892505543
+            },
+            "vel": {
+              "x": 0.4541785637250601,
+              "y": 4.5031302156747515
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775220640807695
+          }
+        }
+      },
+      "shiftedFresh": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 14.011317765192093
+        },
+        "fitDistance": 2.3123948877754543,
+        "unchangedBrakingLimit": 5.064262174782749,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "knownTargetLateralVelocity": 4.869673501988388,
+        "requestedRelativeLateralOpening": -0.1945886727943611,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030822024284383076,
+            "y": 0.22375698457073412
+          },
+          "acceleration": {
+            "x": -6.3566393603780025,
+            "y": 1.5819721413312138
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752731160479485,
+              "y": 11.922679861987373
+            },
+            "vel": {
+              "x": 0.45752450167821257,
+              "y": 4.514688994947973
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775021424391447
+          }
+        }
+      },
+      "projected": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 13.707212113972453
+        },
+        "fitDistance": 2.0082892365558145,
+        "unchangedBrakingLimit": 4.709627042888292,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "knownTargetLateralVelocity": 4.5843114033454295,
+        "requestedRelativeLateralOpening": -0.19033805520467428,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030738375835554166,
+            "y": 0.2234680150889048
+          },
+          "acceleration": {
+            "x": -6.423558119441052,
+            "y": 1.3507965558667756
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752647512030656,
+              "y": 11.922390892505543
+            },
+            "vel": {
+              "x": 0.4541785637250601,
+              "y": 4.5031302156747515
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775220640807695
+          }
+        }
+      }
+    }
+  },
+  "candidate": {
+    "schema": "stalk-visual-request-v1",
+    "mode": "candidate",
+    "commit": "ce93c3bcca17832b16950988703ca95a8aff6492",
+    "sourceSha256": "1eb3b26a97eacc6896c2ee510ef5afefe9583381307f5d754925cb4a5d1d544d",
+    "harnessSha256": "bad97a331a19463a94c49053a227b6aed6fc18fa82e39db9c97036de278e4a81",
+    "supportSha256": "2ebccbb44a3ded4c5bf5757e7450816fa53bbb1e2ed4e44467c35ddfb5b220d7",
+    "input": {
+      "path": "config/stalk-visual-request-witness.json",
+      "sha256": "6046856b3f861029c76a414fb26d26d5dc955628cd783f54e5612611e65d6236"
+    },
+    "originPR": "https://github.com/tannerthardy/football-simulation-/pull/24",
+    "sourceBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "hiddenResponse": 0,
+    "visibleResponse": 0.2896127162326456,
+    "freeSteps": 6,
+    "worldTicks": 0,
+    "newPlays": 0,
+    "newGames": 0,
+    "limits": "Held input and hidden/visible substitutions are synthetic controller controls. Projection control reconstructs the normal dead-reckoning operator from an archived sample; it is not the actual native perception history. Free steps have no contact loads and are not native continuations or tackle/block endings.",
+    "rows": {
+      "held": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 2.55051679570002
+          }
+        },
+        "visualCalls": 1,
+        "engageCalls": 0,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        }
+      },
+      "hidden": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 2.55051679570002
+          }
+        },
+        "visualCalls": 1,
+        "engageCalls": 0,
+        "distance": 2.3308695936944965,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 14.011317765192093
+        }
+      },
+      "fresh": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "visualCalls": 1,
+        "engageCalls": 0,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 13.761317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        }
+      },
+      "visible": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "visualCalls": 1,
+        "engageCalls": 0,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 14.011317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        }
+      },
+      "shiftedFresh": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "visualCalls": 1,
+        "engageCalls": 0,
+        "distance": 2.3308695936944965,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 14.011317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "hiddenTargetPos": {
+          "x": 47.01479639402564,
+          "y": 14.011317765192093
+        }
+      },
+      "contact": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "visualCalls": 0,
+        "engageCalls": 1,
+        "distance": 0.5,
+        "strikeRange": 0.7927272727272727,
+        "picture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "hiddenTargetPos": {
+          "x": 47.2219091361951,
+          "y": 11.698922877416638
+        }
+      }
+    },
+    "analysis": {
+      "held": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 12.331918692968824
+        },
+        "fitDistance": 0.6329958155521851,
+        "unchangedBrakingLimit": 2.55051679570002,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 2.55051679570002
+          }
+        },
+        "knownTargetLateralVelocity": 4.5843114033454295,
+        "requestedRelativeLateralOpening": 2.0337946076454094,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.03539467203992075,
+            "y": 0.21357859638667875
+          },
+          "acceleration": {
+            "x": -2.6985211559451106,
+            "y": -6.560738405912954
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.75730380823502,
+              "y": 11.912501473803317
+            },
+            "vel": {
+              "x": 0.6404304118998572,
+              "y": 4.107553467585765
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775982973462095
+          }
+        }
+      },
+      "hidden": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 12.331918692968824
+        },
+        "fitDistance": 0.6329958155521851,
+        "unchangedBrakingLimit": 2.55051679570002,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 2.55051679570002
+          }
+        },
+        "knownTargetLateralVelocity": 4.5843114033454295,
+        "requestedRelativeLateralOpening": 2.0337946076454094,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.03539467203992075,
+            "y": 0.21357859638667875
+          },
+          "acceleration": {
+            "x": -2.6985211559451106,
+            "y": -6.560738405912954
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.75730380823502,
+              "y": 11.912501473803317
+            },
+            "vel": {
+              "x": 0.6404304118998572,
+              "y": 4.107553467585765
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775982973462095
+          }
+        }
+      },
+      "fresh": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 13.761317765192093
+        },
+        "fitDistance": 2.0623948877754543,
+        "unchangedBrakingLimit": 4.774649458550104,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "knownTargetLateralVelocity": 4.869673501988388,
+        "requestedRelativeLateralOpening": 0.09502404343828452,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030738375835554166,
+            "y": 0.2234680150889048
+          },
+          "acceleration": {
+            "x": -6.423558119441052,
+            "y": 1.3507965558667756
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752647512030656,
+              "y": 11.922390892505543
+            },
+            "vel": {
+              "x": 0.4541785637250601,
+              "y": 4.5031302156747515
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775220640807695
+          }
+        }
+      },
+      "visible": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 14.011317765192093
+        },
+        "fitDistance": 2.3123948877754543,
+        "unchangedBrakingLimit": 5.064262174782749,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "knownTargetLateralVelocity": 4.869673501988388,
+        "requestedRelativeLateralOpening": -0.1945886727943611,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030822024284383076,
+            "y": 0.22375698457073412
+          },
+          "acceleration": {
+            "x": -6.3566393603780025,
+            "y": 1.5819721413312138
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752731160479485,
+              "y": 11.922679861987373
+            },
+            "vel": {
+              "x": 0.45752450167821257,
+              "y": 4.514688994947973
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775021424391447
+          }
+        }
+      },
+      "shiftedFresh": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 14.011317765192093
+        },
+        "fitDistance": 2.3123948877754543,
+        "unchangedBrakingLimit": 5.064262174782749,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "knownTargetLateralVelocity": 4.869673501988388,
+        "requestedRelativeLateralOpening": -0.1945886727943611,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030822024284383076,
+            "y": 0.22375698457073412
+          },
+          "acceleration": {
+            "x": -6.3566393603780025,
+            "y": 1.5819721413312138
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.752731160479485,
+              "y": 11.922679861987373
+            },
+            "vel": {
+              "x": 0.45752450167821257,
+              "y": 4.514688994947973
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775021424391447
+          }
+        }
+      },
+      "projected": {
+        "fit": {
+          "x": 46.7219091361951,
+          "y": 13.707212113972453
+        },
+        "fitDistance": 2.0082892365558145,
+        "unchangedBrakingLimit": 4.709627042888292,
+        "requested": {
+          "vel": {
+            "x": 0,
+            "y": 4.709627042888292
+          }
+        },
+        "knownTargetLateralVelocity": 4.5843114033454295,
+        "requestedRelativeLateralOpening": -0.12531563954286273,
+        "freeStep": {
+          "dt": 0.05,
+          "achievedDelta": {
+            "x": 0.030722677317001512,
+            "y": 0.2234025983766994
+          },
+          "acceleration": {
+            "x": -6.4361169342850495,
+            "y": 1.298463186102623
+          },
+          "before": {
+            "pos": {
+              "x": 46.7219091361951,
+              "y": 11.698922877416638
+            },
+            "vel": {
+              "x": 0.7753564696971127,
+              "y": 4.435590387881413
+            },
+            "facing": 1.5523491368470559,
+            "energy": 0.9779264242415975
+          },
+          "after": {
+            "pos": {
+              "x": 46.7526318135121,
+              "y": 11.922325475793338
+            },
+            "vel": {
+              "x": 0.4535506229828602,
+              "y": 4.500513547186544
+            },
+            "facing": 1.567087236362327,
+            "energy": 0.9775265523254777
+          }
+        }
+      }
+    }
+  },
+  "runtimeSourceChangedFiles": [
+    "src/sim/behaviors/blocking.ts"
+  ],
+  "focusedTests": 29,
+  "newStalkTests": 7,
+  "typecheckPassed": true,
+  "newPlays": 0,
+  "newGames": 0,
+  "fullSuites": 0,
+  "diagnosticFreeStepsCompleted": 12,
+  "diagnosticWorldTicks": 0,
+  "launcherElapsedSeconds": 14.891010984000001,
+  "workflowFailure": {
+    "receipt": "out/stalk-visual-request/accepted-launch.json",
+    "cause": "Direct deep equality compared explicit undefined optional fields with an archived JSON command that omitted them. Exact serialized command equality repaired the harness; the controller remained unchanged."
+  },
+  "receipts": [
+    {
+      "path": "out/stalk-visual-request/accepted-launch-fixed.json",
+      "sha256": "841a057da203242d69b324ac69fb6783d0e95025672168400e7b81ee7c3c2667",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/stalk-visual-request",
+      "commit": "a6e90c3a57155b9f554d3ec324758041693214f7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "c9d27153059dee7bee2d4aee4186f06a48ea0894f118aaf424f92ce6f99b47c4",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:48:19.307Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/stalk-visual-request.ts",
+            "accepted",
+            "config/stalk-visual-request-witness.json",
+            "out/stalk-visual-request/accepted.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.22405292000000002
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T17:48:19.533Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/stalk-visual-request/accepted-launch.json",
+      "sha256": "b8684165e92956d9e91d89e3ba1cdc8772be9aaad771dc90ebad8ef9e87d3ed8",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/stalk-visual-request",
+      "commit": "ae718d71f36d726fd4451b3969586f0a62110513",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "3cc59982887cd5040cbf9447f3fa510fcc99b85a108ac7053f6486887871f82c",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:47:47.448Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/stalk-visual-request.ts",
+            "accepted",
+            "config/stalk-visual-request-witness.json",
+            "out/stalk-visual-request/accepted.json"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.30615293200000004
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T17:47:47.756Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    {
+      "path": "out/stalk-visual-request/candidate-launch.json",
+      "sha256": "8259f3dc4e4571f16e91c475702a55a3b1fffa37f1f25af56c9af99ee1108d22",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/stalk-visual-request",
+      "commit": "ce93c3bcca17832b16950988703ca95a8aff6492",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "1eb3b26a97eacc6896c2ee510ef5afefe9583381307f5d754925cb4a5d1d544d",
+      "validationSha256": "c9d27153059dee7bee2d4aee4186f06a48ea0894f118aaf424f92ce6f99b47c4",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:48:45.726Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/stalk-visual-request.ts",
+            "candidate",
+            "config/stalk-visual-request-witness.json",
+            "out/stalk-visual-request/candidate.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.347049804
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T17:48:46.075Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/stalk-visual-request/contracts.json",
+      "sha256": "85655fa5e3c400fadf0abacfb9dac43befb5914eda0c1b7c88a43d5ea3fee41b",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/stalk-visual-request",
+      "commit": "ce93c3bcca17832b16950988703ca95a8aff6492",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "1eb3b26a97eacc6896c2ee510ef5afefe9583381307f5d754925cb4a5d1d544d",
+      "validationSha256": "c9d27153059dee7bee2d4aee4186f06a48ea0894f118aaf424f92ce6f99b47c4",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:48:45.701Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/stalk-visual-request.test.ts",
+            "test/run-block-fit.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.364844388
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T17:48:49.069Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/stalk-visual-request/typecheck.json",
+      "sha256": "7ce9056f48660eba3b8364b100bcd2c43c1d501552cf521f3364a4ddf20eb43d",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/stalk-visual-request",
+      "commit": "ce93c3bcca17832b16950988703ca95a8aff6492",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "1eb3b26a97eacc6896c2ee510ef5afefe9583381307f5d754925cb4a5d1d544d",
+      "validationSha256": "c9d27153059dee7bee2d4aee4186f06a48ea0894f118aaf424f92ce6f99b47c4",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:48:45.749Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.64891094
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T17:48:56.400Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  ],
+  "diagnosis": {
+    "information": "The held picture determines the movement; hidden far geometry has no effect. Fresh and visibly changed pictures retain their expected requests. Real contact eligibility is preserved.",
+    "physical": "The reduced held request follows unchanged stationary-arrival braking. One .05s free step decelerates within the existing capacity; desired velocity is not imposed as achieved velocity.",
+    "football": "The held picture carries +4.584 yd/s target velocity but the static fit asks for +2.551 yd/s, which concedes relative separation. This reveals a retained moving-target collection question, not a reason to restore hidden coordinates or boost braking/speed.",
+    "staleScope": "The large loss is retained as a synthetic supplied-picture control. A separate projection operator applied to its archived raw sample gives +4.710 yd/s; neither establishes the actual native perception/history or better protection.",
+    "nextExperiment": "If collection work is separately assigned: same acquired pictures and capacities, static fit versus an attainable moving fit, with an opposing slowing/turning defender. Do not include that policy in this correction."
+  }
+}

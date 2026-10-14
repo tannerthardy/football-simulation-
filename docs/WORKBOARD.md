@@ -1,5 +1,12 @@
 # Current work ownership
 
+## Current passing-controller integration preparation
+
+| Current item | Owner | Branch | Files / boundary | Claimed | Status |
+| --- | --- | --- | --- | --- | --- |
+| PR #29 isolated review and coverage extraction | Codex integration owner in this chat | `codex/pass-controller-integration` from accepted `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | Only two-line stalk information repair and ZoneCoverage cue/spot/flat bundle with existing contracts. Preserve accepted catch helper/hook. Stick, seam/post, QB policy, physics, ratings and experimental hands excluded. | 2026-10-14 (America/Phoenix) | In preparation. Reuse #29's exact compatible focused receipts; run two existing coverage inputs (ordinary spot/adverse match) per source with observed/plain neutrality, affected contracts, then freeze one intended candidate for integration-owner verification. No merge/reference decision. |
+
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
