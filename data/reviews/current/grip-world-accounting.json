@@ -1,0 +1,909 @@
+{
+  "commit": "0e6b95a5cf6370e1a75464ab20eb7def91edcddc",
+  "parent": "abf0e1c775b4ded5e0ff09e0bbe98d5d2c9587d6",
+  "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "hashes": {
+    "scripts/diag/physics/grip-world-accounting-evidence.ts": "812e214ca75d5023595a0f3b1d13a9effbc7918f2dc167310dc0cf369e95e7b5",
+    "scripts/diag/physics/grip-world-accounting-inputs.ts": "61a0bfac12e7c4e3910c0d3b3cfbd0bce36ce2571913fcd0a52b4d2317d97523",
+    "scripts/diag/physics/grip-world-ledger.ts": "c5a71cb0c23d7612c529274082631a8aeae1d64c236c3955420eacb3f8540857",
+    "scripts/diag/physics/grip-span-accounting.ts": "51044b59f392cd382765649a35c98ee86c96bc65c787a052619a59b764f20c7f",
+    "test/grip-span-accounting.test.ts": "48a4a9430a29e926d0cf467b706f7d9e22c18059279fa1c36a30e7e7b8dc58d1"
+  },
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "worldOptions": {
+    "handContact": "patch",
+    "constraintWork": "per-solve",
+    "gripTiming": "midpoint",
+    "handIntegration": "centered"
+  },
+  "budgetMilliseconds": {
+    "median": 2,
+    "p95": 5,
+    "boundedFallback": 10
+  },
+  "scope": "Three complete native/transformed World intervals audit achieved work/circle/dose composition, not force correctness. One acquired grip is physically loaded, externally stopped and released for 1us; independent moving-radial spring reference. Zero span/mirror controls. No active/mixed/multiple stored-energy release claim.",
+  "accuracy": {
+    "position": 5e-10,
+    "velocity": 2.5e-8,
+    "material": 5e-10,
+    "foot": 5e-10,
+    "impulse": 5e-10,
+    "moment": 5e-10,
+    "work": 1e-9,
+    "dose": 1e-9,
+    "refinedAllowance": 0.0625
+  },
+  "remaining": "A finite stored-span reserve diagnoses/funds this radial first event only. It cannot replace joint normal/tangent/span-energy accounting for active/multiple/long World intervals. 200us strict agreement still fails; no native football or production promotion. Nine failures remain 43/52; awareness, keeper and support history separate.",
+  "native": [
+    {
+      "id": "patch-45-8-0-3001-1",
+      "checksum": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "transform": "Unchanged acquired World, issued plans and active pull; duration .05/12",
+      "duration": 0.004166666666666667,
+      "partitions": 12,
+      "observerIdentity": true,
+      "endpointSha256": "3e1ff8e4be7f6768c3d7d3323b86f64c41b8a05fbd5129d88273fe80e5229b5a",
+      "normalDose": 0,
+      "tangentDose": 5.545525700462114,
+      "reelDose": 0,
+      "maximumCapExcess": 0,
+      "doseResidual": 0,
+      "kineticResidual": 1.8971491044794675e-12,
+      "bodyLedgerResidual": -1.7763568394002505e-15,
+      "motorLedgerResidual": 2.220446049250313e-16,
+      "passiveLedgerResidual": 0,
+      "commonMotorCrossWork": 0
+    },
+    {
+      "id": "patch-0-3-0-3001-1",
+      "checksum": "ccf3c23363fda87c9fcb181b50e547d7b7343b030d99b784364708f187fb984b",
+      "transform": "Unchanged acquired World, issued plans and active pull; duration .05/12",
+      "duration": 0.004166666666666667,
+      "partitions": 12,
+      "observerIdentity": true,
+      "endpointSha256": "e23625a40e9ad9500c1f7a2baa0ab9ac3352b42846367264c9b2a5935a0c891a",
+      "normalDose": 0,
+      "tangentDose": 0,
+      "reelDose": 0,
+      "maximumCapExcess": 0,
+      "doseResidual": 0,
+      "kineticResidual": 2.5135449277513544e-13,
+      "bodyLedgerResidual": 0,
+      "motorLedgerResidual": 0,
+      "passiveLedgerResidual": 0,
+      "commonMotorCrossWork": 0
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3",
+      "checksum": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "declared curved-map opposing input: (-.25L, side*.125L)",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.3,
+        "relativeTangent": 16,
+        "aVelocity": {
+          "x": 0.2,
+          "y": 0
+        },
+        "spins": 0,
+        "hold": "initial point distance"
+      },
+      "duration": 0.004166666666666667,
+      "partitions": 12,
+      "normalDose": 7.028367542201802,
+      "tangentDose": 5.210054764403863,
+      "reelDose": 0,
+      "maximumCapExcess": 1.1102230246251565e-16,
+      "doseResidual": 0,
+      "kineticResidual": -3.495870259939693e-12,
+      "bodyLedgerResidual": 0,
+      "motorLedgerResidual": -6.661338147750939e-16,
+      "passiveLedgerResidual": 0,
+      "commonMotorCrossWork": 0.037553446176899596
+    }
+  ],
+  "release": [
+    {
+      "id": "patch-45-8-0-3001-1-loaded",
+      "input": {
+        "massA": 101.60469088,
+        "massB": 111.58372302000001,
+        "capacity": 2267.004730607681,
+        "share": 0.17062513395125756,
+        "mobility": 0.002984543207837393,
+        "limit": 1.1168055555555556,
+        "separation": 1.158655457000211,
+        "material": -0.000042349989377172715,
+        "hold": 1.158464711270983,
+        "velocity": 0,
+        "duration": 0.000001
+      },
+      "inputSha256": "96fc4ec7a5168666eb0fffbe15c51e267d47f8dc896b6f6931d4175b64ab8666",
+      "checksum": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "unchanged acquired point",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0,
+        "aVelocity": {
+          "x": 0.2,
+          "y": 0
+        },
+        "spins": 0,
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "No rest reset"
+      },
+      "originalNormalizedError": 17541.96845678981,
+      "candidateNormalizedError": 0.05734773992962789,
+      "referenceConvergence": 1.4867122290207478e-8,
+      "partitions": 8,
+      "initialSpring": {
+        "inverseMass": 0.018803945852731645,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "distance": 1.1586131070108552,
+        "extension": 0.00014839573987224242,
+        "energy": 0.0008321969442579555
+      },
+      "finalSpring": {
+        "inverseMass": 0.018803945852731645,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "distance": 1.1586131062486704,
+        "extension": 0.00014839497768748267,
+        "energy": 0.0008321883956810263
+      },
+      "candidate": {
+        "separation": 1.158655457000126,
+        "velocity": -1.649285733240029e-7,
+        "material": -0.00004235075147511846,
+        "footTravel": -4.466504600452958e-9,
+        "extension": 0.00014839497768748267,
+        "bodyWork": 7.232905931480186e-13,
+        "motorWork": -6.684327202226801e-9,
+        "dose": 0.000008770955554524942,
+        "impulse": -0.000008770955554524942,
+        "moment": -4.385515412028767e-12
+      },
+      "reference": {
+        "separation": 1.1586554570001284,
+        "velocity": -1.6492911250590095e-7,
+        "material": -0.000042350751477609916,
+        "extension": 0.0001483949776881488,
+        "initialEnergy": 0.0008321969442455033,
+        "energy": 0.0008321883956884977,
+        "bodyWork": 7.232953222962135e-13,
+        "motorWork": -6.6843709069167515e-9,
+        "dampingLoss": 1.86346188337844e-9,
+        "dose": 0.000008770984228394907,
+        "impulse": -0.000008770984228394907,
+        "moment": -4.38553034647776e-12,
+        "footTravel": -4.466519202282198e-9,
+        "kineticChange": 7.232953222962127e-13,
+        "workResidual": -8.077935669463161e-28,
+        "energyResidual": -9.199760092430915e-16
+      },
+      "reportedPassiveWork": 6.6850504923388065e-9,
+      "energyBalanceWithoutDamping": -1.863526436330851e-9,
+      "reserveIntervals": 8,
+      "maximumReturnedPerReserve": 8.356721764232744e-10
+    },
+    {
+      "id": "patch-45-8-0-3001-1-loaded-zero-span",
+      "input": {
+        "massA": 101.60469088,
+        "massB": 111.58372302000001,
+        "capacity": 2267.004730607681,
+        "share": 0.17062513395125756,
+        "mobility": 0.002984543207837393,
+        "limit": 1.1168055555555556,
+        "separation": 1.158655457000211,
+        "material": -0.000042349989377172715,
+        "hold": 1.1586131070108552,
+        "velocity": 0,
+        "duration": 0.000001
+      },
+      "inputSha256": "ced0a9c3dd964fb1796b40148c89778cfdd00c0363ee83b2c5cffe795b18eee0",
+      "checksum": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "unchanged acquired point",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0,
+        "aVelocity": {
+          "x": 0.2,
+          "y": 0
+        },
+        "spins": 0,
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "Plastic reset of hold to current distance (energy removed)"
+      },
+      "originalNormalizedError": 0.000002220446049250313,
+      "candidateNormalizedError": 0.000002220446049250313,
+      "referenceConvergence": 0,
+      "partitions": 8,
+      "initialSpring": {
+        "inverseMass": 0.018803945852731645,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "distance": 1.1586131070108552,
+        "extension": 0,
+        "energy": 0
+      },
+      "finalSpring": {
+        "inverseMass": 0.018803945852731645,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "distance": 1.1586131070108552,
+        "extension": 0,
+        "energy": 0
+      },
+      "candidate": {
+        "separation": 1.158655457000211,
+        "velocity": 0,
+        "material": -0.000042349989377172715,
+        "footTravel": 0,
+        "extension": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "dose": 0,
+        "impulse": 0,
+        "moment": 0
+      },
+      "reference": {
+        "separation": 1.158655457000211,
+        "velocity": 0,
+        "material": -0.000042349989377172715,
+        "extension": -1.1102230246251565e-15,
+        "initialEnergy": 4.658045318449107e-26,
+        "energy": 4.658045318449107e-26,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "dampingLoss": 0,
+        "dose": 0,
+        "impulse": 0,
+        "moment": 0,
+        "footTravel": 0,
+        "kineticChange": 0,
+        "workResidual": 0,
+        "energyResidual": 0
+      },
+      "reportedPassiveWork": 0,
+      "energyBalanceWithoutDamping": 0,
+      "reserveIntervals": 8,
+      "maximumReturnedPerReserve": 0
+    },
+    {
+      "id": "patch-45-8-0-3001--1-loaded",
+      "input": {
+        "massA": 101.60469088,
+        "massB": 111.58372302000001,
+        "capacity": 2267.004730607681,
+        "share": 0.17062513395125756,
+        "mobility": 0.002984543207837393,
+        "limit": 1.1168055555555556,
+        "separation": 1.158655457000211,
+        "material": -0.000042349989377172715,
+        "hold": 1.158464711270983,
+        "velocity": 0,
+        "duration": 0.000001
+      },
+      "inputSha256": "96fc4ec7a5168666eb0fffbe15c51e267d47f8dc896b6f6931d4175b64ab8666",
+      "checksum": "18072e0f7396aa58e9fed6630fdb154a582388b6a8c7c27524157a24fd13a7d5",
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "unchanged acquired point",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0,
+        "aVelocity": {
+          "x": 0.2,
+          "y": 0
+        },
+        "spins": 0,
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "No rest reset"
+      },
+      "originalNormalizedError": 17541.96845678981,
+      "candidateNormalizedError": 0.05734773992962789,
+      "referenceConvergence": 1.4867122290207478e-8,
+      "partitions": 8,
+      "initialSpring": {
+        "inverseMass": 0.018803945852731645,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "distance": 1.1586131070108552,
+        "extension": 0.00014839573987224242,
+        "energy": 0.0008321969442579555
+      },
+      "finalSpring": {
+        "inverseMass": 0.018803945852731645,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "distance": 1.1586131062486704,
+        "extension": 0.00014839497768748267,
+        "energy": 0.0008321883956810263
+      },
+      "candidate": {
+        "separation": 1.158655457000126,
+        "velocity": -1.649285733240029e-7,
+        "material": -0.00004235075147511846,
+        "footTravel": -4.466504600452958e-9,
+        "extension": 0.00014839497768748267,
+        "bodyWork": 7.232905931480186e-13,
+        "motorWork": -6.684327202226801e-9,
+        "dose": 0.000008770955554524942,
+        "impulse": -0.000008770955554524942,
+        "moment": -4.385515412028767e-12
+      },
+      "reference": {
+        "separation": 1.1586554570001284,
+        "velocity": -1.6492911250590095e-7,
+        "material": -0.000042350751477609916,
+        "extension": 0.0001483949776881488,
+        "initialEnergy": 0.0008321969442455033,
+        "energy": 0.0008321883956884977,
+        "bodyWork": 7.232953222962135e-13,
+        "motorWork": -6.6843709069167515e-9,
+        "dampingLoss": 1.86346188337844e-9,
+        "dose": 0.000008770984228394907,
+        "impulse": -0.000008770984228394907,
+        "moment": -4.38553034647776e-12,
+        "footTravel": -4.466519202282198e-9,
+        "kineticChange": 7.232953222962127e-13,
+        "workResidual": -8.077935669463161e-28,
+        "energyResidual": -9.199760092430915e-16
+      },
+      "reportedPassiveWork": 6.6850504923388065e-9,
+      "energyBalanceWithoutDamping": -1.863526436330851e-9,
+      "reserveIntervals": 8,
+      "maximumReturnedPerReserve": 8.356721764232744e-10
+    },
+    {
+      "id": "patch-45-8-0-3001--1-loaded-zero-span",
+      "input": {
+        "massA": 101.60469088,
+        "massB": 111.58372302000001,
+        "capacity": 2267.004730607681,
+        "share": 0.17062513395125756,
+        "mobility": 0.002984543207837393,
+        "limit": 1.1168055555555556,
+        "separation": 1.158655457000211,
+        "material": -0.000042349989377172715,
+        "hold": 1.1586131070108552,
+        "velocity": 0,
+        "duration": 0.000001
+      },
+      "inputSha256": "ced0a9c3dd964fb1796b40148c89778cfdd00c0363ee83b2c5cffe795b18eee0",
+      "checksum": "18072e0f7396aa58e9fed6630fdb154a582388b6a8c7c27524157a24fd13a7d5",
+      "transform": {
+        "freeGround": true,
+        "prescribedSupport": "existing sp.stepSpeed/sp.pushForce; desired zero",
+        "material": "unchanged acquired point",
+        "legs": "unchanged acquired initial value; existing sliding law",
+        "pull": 0,
+        "relativeNormal": 0.1,
+        "relativeTangent": 0,
+        "aVelocity": {
+          "x": 0.2,
+          "y": 0
+        },
+        "spins": 0,
+        "hold": "initial point distance",
+        "loading": {
+          "duration": 0.002,
+          "partitions": 128
+        },
+        "stopping": "External removal of body translation/yaw; stored span and material retained",
+        "zero": "Plastic reset of hold to current distance (energy removed)"
+      },
+      "originalNormalizedError": 0.000002220446049250313,
+      "candidateNormalizedError": 0.000002220446049250313,
+      "referenceConvergence": 0,
+      "partitions": 8,
+      "initialSpring": {
+        "inverseMass": 0.018803945852731645,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "distance": 1.1586131070108552,
+        "extension": 0,
+        "energy": 0
+      },
+      "finalSpring": {
+        "inverseMass": 0.018803945852731645,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "distance": 1.1586131070108552,
+        "extension": 0,
+        "energy": 0
+      },
+      "candidate": {
+        "separation": 1.158655457000211,
+        "velocity": 0,
+        "material": -0.000042349989377172715,
+        "footTravel": 0,
+        "extension": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "dose": 0,
+        "impulse": 0,
+        "moment": 0
+      },
+      "reference": {
+        "separation": 1.158655457000211,
+        "velocity": 0,
+        "material": -0.000042349989377172715,
+        "extension": -1.1102230246251565e-15,
+        "initialEnergy": 4.658045318449107e-26,
+        "energy": 4.658045318449107e-26,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "dampingLoss": 0,
+        "dose": 0,
+        "impulse": 0,
+        "moment": 0,
+        "footTravel": 0,
+        "kineticChange": 0,
+        "workResidual": 0,
+        "energyResidual": 0
+      },
+      "reportedPassiveWork": 0,
+      "energyBalanceWithoutDamping": 0,
+      "reserveIntervals": 8,
+      "maximumReturnedPerReserve": 0
+    }
+  ],
+  "adverse": [
+    {
+      "duration": 0.0002,
+      "partitions": 128,
+      "normalizedError": 142.47952353444586,
+      "accepted": false,
+      "reason": "strict impulse/dose agreement fails at 128 World partitions",
+      "actual": {
+        "separation": 1.158655453713162,
+        "velocity": -0.000032813159652641665,
+        "material": -0.00004250161162831219,
+        "footTravel": -8.886278804786786e-7,
+        "extension": 0.00014824083057152215,
+        "bodyWork": 2.8629720985750946e-8,
+        "motorWork": -0.00000132292730716262,
+        "dose": 0.0017450145788350541,
+        "impulse": -0.0017450145788350541,
+        "moment": -1.7480633843515936e-7
+      },
+      "reference": {
+        "separation": 1.1586554537130276,
+        "velocity": -0.000032814499241264514,
+        "material": -0.000042501617818250754,
+        "extension": 0.00014824082424680363,
+        "initialEnergy": 0.0008321969442455033,
+        "energy": 0.0008304603308220797,
+        "bodyWork": 2.863205863514342e-8,
+        "motorWork": -0.0000013230353266140164,
+        "dampingLoss": 3.8494603863132345e-7,
+        "dose": 0.0017450858185968214,
+        "impulse": -0.0017450858185968214,
+        "moment": -1.7481349582725233e-7,
+        "footTravel": -8.886641584783089e-7,
+        "kineticChange": 2.8632058635143437e-8,
+        "workResidual": 1.6543612251060553e-23,
+        "energyResidual": 4.568731604856166e-16
+      }
+    }
+  ],
+  "bench": [
+    {
+      "run": 1,
+      "id": "stored-span",
+      "mode": "world-original8",
+      "duration": 0.000001,
+      "partitions": 8,
+      "milliseconds": {
+        "median": 0.20053200000006655,
+        "p95": 0.3950039999999717,
+        "maximum": 0.43621599999994487
+      },
+      "accuracy": "known wrong restoring force"
+    },
+    {
+      "run": 1,
+      "id": "stored-span",
+      "mode": "world-span-reserve8",
+      "duration": 0.000001,
+      "partitions": 8,
+      "milliseconds": {
+        "median": 0.3828560000000607,
+        "p95": 1.5806980000000976,
+        "maximum": 2.0622909999999592
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 1,
+      "id": "stored-span",
+      "mode": "radial-reference128",
+      "duration": 0.000001,
+      "partitions": 128,
+      "milliseconds": {
+        "median": 0.23273999999992157,
+        "p95": 0.9654120000000148,
+        "maximum": 1.423279999999977
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 1,
+      "id": "zero-span",
+      "mode": "world-original8",
+      "duration": 0.000001,
+      "partitions": 8,
+      "milliseconds": {
+        "median": 0.129224000000022,
+        "p95": 0.40838400000006914,
+        "maximum": 0.9992129999998269
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 1,
+      "id": "zero-span",
+      "mode": "world-span-reserve8",
+      "duration": 0.000001,
+      "partitions": 8,
+      "milliseconds": {
+        "median": 0.207100999999966,
+        "p95": 0.5194910000000164,
+        "maximum": 1.6274670000000242
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 1,
+      "id": "zero-span",
+      "mode": "radial-reference128",
+      "duration": 0.000001,
+      "partitions": 128,
+      "milliseconds": {
+        "median": 0.1099859999999353,
+        "p95": 0.2932210000001305,
+        "maximum": 0.9181500000001961
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 2,
+      "id": "stored-span",
+      "mode": "world-original8",
+      "duration": 0.000001,
+      "partitions": 8,
+      "milliseconds": {
+        "median": 0.275353999999993,
+        "p95": 0.5000520000000961,
+        "maximum": 0.6816250000000537
+      },
+      "accuracy": "known wrong restoring force"
+    },
+    {
+      "run": 2,
+      "id": "stored-span",
+      "mode": "world-span-reserve8",
+      "duration": 0.000001,
+      "partitions": 8,
+      "milliseconds": {
+        "median": 0.46638099999995575,
+        "p95": 1.0709610000000112,
+        "maximum": 2.2589870000000474
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 2,
+      "id": "stored-span",
+      "mode": "radial-reference128",
+      "duration": 0.000001,
+      "partitions": 128,
+      "milliseconds": {
+        "median": 0.26861299999995936,
+        "p95": 0.7452410000000782,
+        "maximum": 1.2607559999999012
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 2,
+      "id": "zero-span",
+      "mode": "world-original8",
+      "duration": 0.000001,
+      "partitions": 8,
+      "milliseconds": {
+        "median": 0.19750700000008692,
+        "p95": 0.31432299999983115,
+        "maximum": 0.3788600000000315
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 2,
+      "id": "zero-span",
+      "mode": "world-span-reserve8",
+      "duration": 0.000001,
+      "partitions": 8,
+      "milliseconds": {
+        "median": 0.2512979999999061,
+        "p95": 0.4957560000000285,
+        "maximum": 0.7022660000000087
+      },
+      "accuracy": "validated narrow witness"
+    },
+    {
+      "run": 2,
+      "id": "zero-span",
+      "mode": "radial-reference128",
+      "duration": 0.000001,
+      "partitions": 128,
+      "milliseconds": {
+        "median": 0.10267399999997906,
+        "p95": 0.2097559999999703,
+        "maximum": 0.34674100000006547
+      },
+      "accuracy": "validated narrow witness"
+    }
+  ],
+  "profile": {
+    "path": "out/grip-world-accounting/span-release.cpuprofile",
+    "sha256": "982c0fd08c66df2308664fdcc1bb8530ecdea8726127dc28855e0776fae6f54b",
+    "samples": 331,
+    "hot": [
+      {
+        "count": 62,
+        "fraction": 0.18731117824773413,
+        "function": "integrateInterval",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 58,
+        "fraction": 0.17522658610271905,
+        "function": "w.integrateInterval",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-span-accounting.ts",
+        "line": 1
+      },
+      {
+        "count": 33,
+        "fraction": 0.09969788519637462,
+        "function": "supportImpulse",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 26,
+        "fraction": 0.07854984894259819,
+        "function": "(garbage collector)",
+        "file": "",
+        "line": 0
+      },
+      {
+        "count": 18,
+        "fraction": 0.054380664652567974,
+        "function": "solveGrasp",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 11,
+        "fraction": 0.03323262839879154,
+        "function": "syncHeldSupport",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 9,
+        "fraction": 0.027190332326283987,
+        "function": "",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 8,
+        "fraction": 0.02416918429003021,
+        "function": "withSpanReserve",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-span-accounting.ts",
+        "line": 1
+      },
+      {
+        "count": 8,
+        "fraction": 0.02416918429003021,
+        "function": "kineticEnergy",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 6,
+        "fraction": 0.01812688821752266,
+        "function": "graspJacobian",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 5,
+        "fraction": 0.015105740181268883,
+        "function": "integrateSubstep",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 5,
+        "fraction": 0.015105740181268883,
+        "function": "gripCapacity",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 5,
+        "fraction": 0.015105740181268883,
+        "function": "graspVelocity",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 4,
+        "fraction": 0.012084592145015106,
+        "function": "allocateArms",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      },
+      {
+        "count": 4,
+        "fraction": 0.012084592145015106,
+        "function": "boundedGeometry",
+        "file": "file:///workspace/football-simulation-/src/physics/world.ts",
+        "line": 1
+      }
+    ],
+    "operators": 400,
+    "preparationExcluded": true
+  },
+  "validation": {
+    "focusedTests": 10,
+    "typecheck": "pass",
+    "fullSuiteAndGames": "not run; no runtime source change, scope correctness blocker prevents integration",
+    "initialHarnessFailure": "observer nesting bypassed its interval initialization; removed that test hook, retained failure in development output",
+    "baselineAndDefaultsUnchanged": true,
+    "unrelatedPatchGate": "43/52, all nine failures retained"
+  },
+  "raw": [
+    {
+      "path": "out/grip-world-accounting/evidence.json",
+      "sha256": "fe253f023ea5c498bf480dff407bd8d42f737527236320afba8ef9eef7c33552"
+    },
+    {
+      "path": "out/grip-world-accounting/benchmark1.json",
+      "sha256": "d6eb58cd40aca2e142882f33c05e9689626b253f2dce8cca30f55af1878a83be"
+    },
+    {
+      "path": "out/grip-world-accounting/benchmark2.json",
+      "sha256": "61976f520aa98f240f34ef3533135923e3ae296a3e3504456adb5997d22f54b3"
+    },
+    {
+      "path": "out/grip-world-accounting/profile.json",
+      "sha256": "8737553e371d5f82b5214c66c38d9827a423e6424ce3dc665bff2a4cdd75c764"
+    },
+    {
+      "path": "out/grip-world-accounting/span-release.cpuprofile",
+      "sha256": "982c0fd08c66df2308664fdcc1bb8530ecdea8726127dc28855e0776fae6f54b"
+    },
+    {
+      "path": "out/grip-world-accounting/correctness-launcher.json",
+      "sha256": "b926fca3df50577cad1d866b4cf445bcb5a49f52d526ed37bf217a08b4dd449e"
+    },
+    {
+      "path": "out/grip-world-accounting/typecheck-launcher.json",
+      "sha256": "dbcef72fb329e7cc72d28013689e4da1d383f5a3d1acdaffcde1d2c7b912e671"
+    },
+    {
+      "path": "out/grip-world-accounting/accuracy-launcher.json",
+      "sha256": "a05bb595f5696c3e745b8f518cad23382a6876aa1922765c719e55de55c79683"
+    },
+    {
+      "path": "out/grip-world-accounting/benchmark1-launcher.json",
+      "sha256": "da9565a4a8eafb9e3bea69d04d36b201c568480a19c56aea023c3a75b26a500a"
+    },
+    {
+      "path": "out/grip-world-accounting/benchmark2-launcher.json",
+      "sha256": "ea9ae98b0c51fb9829f10c32c89993d68850a33820fc8af3e053868839bf1ed2"
+    },
+    {
+      "path": "out/grip-world-accounting/profile-launcher.json",
+      "sha256": "5963c8a820fe34f0ddd31dc476fecd2dcfa9c6c479e3b4b4d5cd59ad72adf67d"
+    },
+    {
+      "path": "out/grip-world-accounting/development-launcher.json",
+      "sha256": "c53595085e0d986ce452b7888d756770ae37beacf5e47fcf6380eeb7e425f05d"
+    }
+  ],
+  "worldSnapshotOptions": {
+    "supportModel": "legacy",
+    "handIntegration": "centered",
+    "handContact": "patch",
+    "gripTiming": "midpoint",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": 96
+  }
+}
