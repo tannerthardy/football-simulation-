@@ -122,7 +122,9 @@ describe('QB option expectation from his own view',()=>{
   it('can anticipate an out before observing a receiver cut without consulting his private commitment',()=>{
     const f=fixture(),q=quarterbackView(f,-1);f.a.body.pos.x=43.5;
     const draws={...f.sim.rng};vi.spyOn(f.runner,'predict').mockImplementation(()=>{throw Error('Private prediction accessed');});
-    const point=predict(f,q);
+    // Starting half a yard farther before the stem, .8 s legitimately has
+    // only begun the cut. Use a delivery horizon that reaches the out leg.
+    const point=predict(f,q,1.2);
     expect((point.y-f.plan.origin.y)*f.plan.outside).toBeGreaterThan(1);
     expect(expectation(f,q).branch).toBe('out');expect(expectation(f,q).committed).toBe(false);
     expect(Reflect.get(f.runner,'converted')).toBe(false);expect({...f.sim.rng}).toEqual(draws);
@@ -155,5 +157,22 @@ describe('QB option expectation from his own view',()=>{
     const r=f.sim.offense.find(r=>r.behavior instanceof RouteRunner&&!r.behavior.stickInstall)!;
     const route=r.behavior as RouteRunner,expected=route.predict(r,.8);
     expect(Reflect.get(q,'receiverPrediction').call(q,f.sim.qb,f.sim,r,.8)).toEqual(expected);
+  });
+  it('keeps actual release aim independent of an unseen private branch change',()=>{
+    const a=fixture(),b=fixture(),qa=quarterbackView(a,2),qb=quarterbackView(b,2);
+    const launch=(f:ReturnType<typeof fixture>,q:QBPass,hidden:boolean)=>{
+      const point={...predict(f,q),z:1.3},ev={target:f.a,point,T:.8,P:.7,intRisk:0,value:6,depth:6};
+      Reflect.get(q,'startThrow').call(q,f.sim.qb,f.sim,ev);
+      if(hidden){f.runner.path=[{p:{x:90,y:50},s:1}];f.runner.idx=999;Reflect.set(f.runner,'converted',true);}
+      vi.spyOn(f.runner,'predict').mockImplementation(()=>{throw Error('Private prediction accessed at release');});
+      f.sim.t+=.25;Reflect.get(q,'release').call(q,f.sim.qb,f.sim,ev);
+      return f.sim.ball;
+    };
+    const x=launch(a,qa,false),y=launch(b,qb,true);
+    expect(x.kind).toBe('air');expect(y.kind).toBe('air');
+    if(x.kind==='air'&&y.kind==='air'){
+      expect(x.flight).toEqual(y.flight);expect(x.intended).toEqual(y.intended);
+    }
+    expect({...a.sim.rng}).toEqual({...b.sim.rng});
   });
 });
