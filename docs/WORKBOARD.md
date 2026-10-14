@@ -1,5 +1,18 @@
 # Current work ownership
 
+Run-game bounded candidate: `codex/rb-live-aim-assessment`, child of diagnostic
+PR #11 `45a35bbe1b09554e874370604c83df47fca809f6`. Owner changes only the RB's
+designed-phase assessment reference in `behaviors/carrier.ts` to the live aim
+already acquired for its movement command. Cadence, scoring weights, information,
+capacities, assignments, keeper runoff, helper collection and contact laws stay
+fixed. Preserve both Ace manifests and the 1.433-yd read/13 KB angular witnesses.
+Native comparison on exactly those three controls waits for the sole physics
+owner's review disposition of RT/DE_S 2.40 s. No published reply was found on
+PR #2 or owner branch `862258c` at preparation. Independent held-controller
+correctness/cadence checks may proceed; no new games/roster panel or promotion.
+Diagnostic ancestry is evidence only; extract a reviewed change for integration,
+do not merge PR #11 as a production feature. No shared movement-file edit.
+
 Shared comparisons start from `codex/run-game-integration`; read
 [the baseline](BASELINE.md) and run `npm run baseline:info` before collecting.
 Report the exact commit, source hash, flag profile and inputs. Historical rows
