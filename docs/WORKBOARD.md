@@ -15,6 +15,16 @@ physics contact-contract review; integration owns subsequent native transfer.
 Historical comparison remains `4ded6b6`; no games, roster panel, spacing bypass,
 capacity, release, active hands or movement-library changes.
 
+[Witness/repair preparation complete](reviews/stalk-information.md): original
+native Z request exact; invisible .25-yd corner change alters it by .289613 yd/s
+with zero target-picture reads. Shadow input repair preserves hidden-change
+invariance, visible response and exact fresh-picture compatibility. Quarantined
+patch applies cleanly but is not installed; held controllers/source/defaults
+unchanged. Typecheck/probe pass, zero World ticks, 10.03 recorded command seconds.
+The older-picture request is slower, so no rescue is asserted. [Exact receipt](reviews/stalk-information-receipt.json)
+keeps this information error distinct from physical collection and legitimate
+defensive wins; actual-controller/native transfer remains gated.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

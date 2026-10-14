@@ -1,0 +1,523 @@
+{
+  "protocol": "stalk-information-review-v1",
+  "testedCommit": "d43da8848343f453504d1aebd69979dc95cb5b29",
+  "runtimeSourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "sourceBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "comparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "manifestSha256": "6046856b3f861029c76a414fb26d26d5dc955628cd783f54e5612611e65d6236",
+  "scriptSha256": "4b00a82151886d401622ffdc0c5ab8b3fc437bbdb4026731b678f6803e25c363",
+  "controllerSha256": "8d2d72571ac874ae98c284c258aeefa9edb48d92dd0059a8f438bdcd19cd7a21",
+  "proposedPatchSha256": "936571d79bd4ef8ca4e4790ba16c4f645c45c9c8ee9b469711c9831943ff79d8",
+  "patchAppliesCleanly": true,
+  "patchApplied": false,
+  "controllersChanged": false,
+  "worldSteps": 0,
+  "newPlays": 0,
+  "productionNativeReplayed": false,
+  "result": {
+    "protocol": "stalk-information-result-v1",
+    "commit": "d43da8848343f453504d1aebd69979dc95cb5b29",
+    "node": "v22.23.3",
+    "sourceBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+    "comparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "manifestSha256": "6046856b3f861029c76a414fb26d26d5dc955628cd783f54e5612611e65d6236",
+    "scriptSha256": "4b00a82151886d401622ffdc0c5ab8b3fc437bbdb4026731b678f6803e25c363",
+    "controllerSha256": "8d2d72571ac874ae98c284c258aeefa9edb48d92dd0059a8f438bdcd19cd7a21",
+    "proposedPatchSha256": "936571d79bd4ef8ca4e4790ba16c4f645c45c9c8ee9b469711c9831943ff79d8",
+    "existingNativeRequestExact": true,
+    "existingUnseenChangeResponseYdS": 0.2896127162326456,
+    "shadowUnseenChangeResponseYdS": 0,
+    "freshPictureCompatibilityError": 0,
+    "visibleChangeResponseYdS": 0.2896127162326456,
+    "rows": {
+      "live": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "visualCalls": 0,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "presentedPicture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "targetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        },
+        "hiddenChange": false,
+        "freshPicture": false
+      },
+      "liveHidden": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "visualCalls": 0,
+        "distance": 2.3308695936944965,
+        "strikeRange": 0.7927272727272727,
+        "presentedPicture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "targetPos": {
+          "x": 47.01479639402564,
+          "y": 14.011317765192093
+        },
+        "hiddenChange": true,
+        "freshPicture": false
+      },
+      "shadow": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 2.55051679570002
+          }
+        },
+        "visualCalls": 1,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "presentedPicture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "targetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        },
+        "hiddenChange": false,
+        "freshPicture": false
+      },
+      "shadowHidden": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 2.55051679570002
+          }
+        },
+        "visualCalls": 1,
+        "distance": 2.3308695936944965,
+        "strikeRange": 0.7927272727272727,
+        "presentedPicture": {
+          "pos": {
+            "x": 47.61761997926709,
+            "y": 12.331918692968824
+          },
+          "vel": {
+            "x": -1.2935574081462033,
+            "y": 4.5843114033454295
+          },
+          "facing": 3.1422679482415314,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0.3
+        },
+        "targetPos": {
+          "x": 47.01479639402564,
+          "y": 14.011317765192093
+        },
+        "hiddenChange": true,
+        "freshPicture": false
+      },
+      "freshLive": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "visualCalls": 0,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "presentedPicture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 13.761317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "targetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        },
+        "hiddenChange": false,
+        "freshPicture": true
+      },
+      "freshShadow": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 4.774649458550104
+          }
+        },
+        "visualCalls": 1,
+        "distance": 2.0830880007627663,
+        "strikeRange": 0.7927272727272727,
+        "presentedPicture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 13.761317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "targetPos": {
+          "x": 47.01479639402564,
+          "y": 13.761317765192093
+        },
+        "hiddenChange": false,
+        "freshPicture": true
+      },
+      "changedFreshLive": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "visualCalls": 0,
+        "distance": 2.3308695936944965,
+        "strikeRange": 0.7927272727272727,
+        "presentedPicture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 14.011317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "targetPos": {
+          "x": 47.01479639402564,
+          "y": 14.011317765192093
+        },
+        "hiddenChange": true,
+        "freshPicture": true
+      },
+      "changedFreshShadow": {
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 5.064262174782749
+          }
+        },
+        "visualCalls": 1,
+        "distance": 2.3308695936944965,
+        "strikeRange": 0.7927272727272727,
+        "presentedPicture": {
+          "pos": {
+            "x": 47.01479639402564,
+            "y": 14.011317765192093
+          },
+          "vel": {
+            "x": -2.7246442780499462,
+            "y": 4.869673501988388
+          },
+          "facing": 1.747659879975616,
+          "pose": "up",
+          "carrying": false,
+          "stance": null,
+          "age": 0
+        },
+        "targetPos": {
+          "x": 47.01479639402564,
+          "y": 14.011317765192093
+        },
+        "hiddenChange": true,
+        "freshPicture": true
+      }
+    },
+    "worldTicks": 0,
+    "newPlays": 0,
+    "controllerChanged": false,
+    "patchApplied": false,
+    "elapsedSeconds": 0.007424664000000007,
+    "scope": "Frozen own/native corner state at closest pre-contact approach. Held .30s-old picture is a synthetic available visual-input control, not an actual consumed WR picture: the existing stalk branch asks for none. Hidden-position substitution tests information dependence, not a physically evolved native counterfactual.",
+    "limitation": "Shadow only proves information consistency of this far-contact fit. It does not prove a better block, native history, contact handling, execution randomness or yardage. Live controller and all contact laws remain unchanged."
+  },
+  "commands": {
+    "probe-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/stalk-information-witness",
+      "commit": "d43da8848343f453504d1aebd69979dc95cb5b29",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "8a42b59d9b6165f5cabf74bd17687a7eddb81ec908ad4354d144e67c4b669193",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T07:22:42.599Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/stalk-information-witness.ts",
+            "config/stalk-information-witness.json",
+            "out/stalk-information/result.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.250878329
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T07:22:42.852Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/stalk-information-witness",
+      "commit": "d43da8848343f453504d1aebd69979dc95cb5b29",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "8a42b59d9b6165f5cabf74bd17687a7eddb81ec908ad4354d144e67c4b669193",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T07:24:23.632Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.777623276
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T07:24:33.412Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "recordedCommandSeconds": 10.028501605,
+  "inputPatchDecision": "Proven far-contact motion-information error. Quarantined two-line visual-input repair passes shadow invariance/fresh-picture controls; no live installation or native protection claim.",
+  "remainingGate": "User controller hold pending sole physics contact-retention review. Integration owns exact current-production replay; future actual extraction needs directly affected controller checks and bounded native adverse evidence."
+}
