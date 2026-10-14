@@ -3,6 +3,7 @@ import gzip
 import hashlib
 import json
 import math
+from functools import lru_cache
 from pathlib import Path
 import sys
 
@@ -10,6 +11,7 @@ root = Path('out/contact-isolation')
 baseline_root = Path(sys.argv[1] if len(sys.argv) > 1 else '../football-under-center-zone/out/under-center-zone')
 
 
+@lru_cache(maxsize=None)
 def read(path):
     data = path.read_bytes()
     return json.loads(gzip.decompress(data) if path.suffix == '.gz' else data)
@@ -131,6 +133,7 @@ result = dict(protocol='contact-law-isolation-review-v1', comparisonCommit=nativ
                            'Native grasp acquisition is distinct from delivered torso impulse and from maintained lane protection.',
                            'Legacy mirror is TE placement; weak call is not a true geometric reflection.'],
               initialFailedCheck='First witness command passed mechanical assertions but failed to save because the output directory was absent; retained in cost. No correctness blocker.')
+result['interruptedOfflineReduction'] = 'Initial reducer repeatedly decoded the same saved packets during flag comparisons. Interrupted and cached packet reads; no native simulation or mechanical test was interrupted. Cost retained.'
 target = Path('data/reviews/current/contact-law-isolation.json')
 target.write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps(dict(saved=str(target), bytes=target.stat().st_size, rows=len(rows),
