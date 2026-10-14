@@ -1,0 +1,2280 @@
+{
+  "commit": "927819cfa604415775121be3ae7a765775cce75d",
+  "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "parent": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "hashes": {
+    "scripts/diag/physics/grip-force-mixed.ts": "cfbbbc82a698275eccdd1ea1e186262f20d647504e765bade988bdf1bb628eee",
+    "scripts/diag/physics/grip-mixed-fixtures.ts": "3d935edd48bd711d6d6fdc8939e5d28f1dbc80860f0e8a8ca9adf3506170ea50",
+    "scripts/diag/physics/grip-mixed-reference.ts": "f016eb85523b17a20a4c78d823820c5dbbd1f90c34e653c9dd1afdebf661be83",
+    "scripts/diag/physics/grip-mixed-evidence.ts": "45b843b7a2ef7b11a6ac5a2b673bdfdfa7d3b7ebcda9730c915dce38d20cc9ac",
+    "test/grip-mixed.test.ts": "9cf29058f10f6f4aa279da31ce59ecada97c65e828d6923e74fc7ebe51a4e32e",
+    "scripts/diag/physics/grip-force-bounded.ts": "304b678af42e1325131d4595aed106d27b229586bfa47da3c6c2c82497732179",
+    "scripts/diag/physics/grip-passive-stages.ts": "df20749af80dc79607c9cc6750176a3117ec4998e65237d63eaf1cfda7fe54b3",
+    "config/grip-mixed-reference.json": "75d2b57db982c29d655f9d9cbcac04f1839f2b94272bbbd0ea8b6879dc5c0025",
+    "config/grip-bounded-reference.json": "70971a63005d758de5060ce32dca1f236ae226fee3beb8629d84f24c887acb44",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+  },
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "reference": {
+    "scope": "One passive bounded lower grip with acquired changing leg share, declared curved material offset, normal/tangent opening velocity transform from the earlier mixed witness and its lower-opening/reverse/mirrored controls. Free ground, prescribed existing mobility, desired zero, pull zero. No kernel imported.",
+    "collections": [
+      {
+        "path": "out/grip-mixed/reference-32768-65536.json",
+        "sha256": "bb14fc89db79c82c5899441406dfb3d0b7bc1af45e1b2db162ea02d0bb3266a9",
+        "collectorSha256": "d49c35a608bd9cf4b430f7a8c17725b34c73669c51161c7e4580e0aa3e5674b7",
+        "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a"
+      },
+      {
+        "path": "out/grip-mixed/reference-controls-32768-65536.json",
+        "sha256": "65d1d1dedc2880c71055d649f4d4b33e9d00e6b97c930eee25fa5a2641936c9d",
+        "collectorSha256": "f016eb85523b17a20a4c78d823820c5dbbd1f90c34e653c9dd1afdebf661be83",
+        "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a"
+      }
+    ],
+    "collectedNewWorldReferences": true,
+    "coarse": 32768,
+    "fine": 65536,
+    "slippingWholeInterval": true,
+    "activeReel": false
+  },
+  "protocol": {
+    "serial": true,
+    "repetitions": 21,
+    "warmups": 5,
+    "rotatingInterleavedOrder": true,
+    "preparationOutsideClock": true,
+    "observersOrProfilers": false,
+    "methods": [
+      "uniform RK4",
+      "adaptive RK4 with bounded accumulated local error"
+    ],
+    "rowPasses": 8,
+    "maximumUniformPieces": 1024,
+    "maximumAdaptivePiecesPerMacro": 128,
+    "maximumAdaptiveRetries": 20,
+    "costBudgetMilliseconds": {
+      "median": 2,
+      "p95": 5,
+      "observedRefusalMaximum": 10
+    },
+    "existingTangentSourceAndFixturesUnchanged": true
+  },
+  "prototypeRestored": true,
+  "scope": "One passive bounded lower grip, changing acquired share, fixed slipping/opening branch, free prescribed support, no World insertion.",
+  "accuracy": [
+    {
+      "id": "patch-45-8-0-3001-1-mixed-3",
+      "mode": "uniform",
+      "error": {
+        "position": 6.094638637983276e-13,
+        "velocity": 1.343176978033962e-10,
+        "facing": 8.386538425525503e-12,
+        "spin": 6.260810092584279e-09,
+        "material": 8.410679908275304e-10,
+        "point": 8.185165790751271e-10,
+        "foot": 2.383909469962105e-09,
+        "legs": 2.940148124963571e-12,
+        "hold": 8.165141895943862e-10,
+        "impulse": 1.3647315540150948e-08,
+        "moment": 8.984898698921384e-12,
+        "angularImpulse": 1.571861529825469e-08,
+        "angularMoment": 2.1055526246149814e-11,
+        "bodyWork": 2.3379351432595286e-07,
+        "motorWork": 1.8488069055688783e-06,
+        "passiveWork": 2.0826001829732377e-06
+      },
+      "normalized": 0.004767818939924211,
+      "matches": true,
+      "result": {
+        "method": "mixed-rk4",
+        "partitions": 8,
+        "evaluations": 56,
+        "workResidual": -7.00840274703296e-10,
+        "angularResidual": 0,
+        "representationError": 7.105427357601002e-15,
+        "normalImpulse": -9.44585304419867,
+        "tangentImpulse": 0,
+        "maximumCapacityExcess": 0
+      }
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-3",
+      "mode": "adaptive",
+      "error": {
+        "position": 5.344797675177934e-13,
+        "velocity": 1.3567855824990855e-10,
+        "facing": 7.965502823309434e-12,
+        "spin": 6.2789502486282345e-09,
+        "material": 8.4110496528846e-10,
+        "point": 8.184568867829939e-10,
+        "foot": 2.38384274754491e-09,
+        "legs": 2.9392599465438707e-12,
+        "hold": 8.164799947252277e-10,
+        "impulse": 1.3785586992000633e-08,
+        "moment": 1.729679880572961e-11,
+        "angularImpulse": 1.5764158423081653e-08,
+        "angularMoment": 1.9998460352999015e-11,
+        "bodyWork": 2.3567015006165093e-07,
+        "motorWork": 1.848797907655353e-06,
+        "passiveWork": 2.084467823237901e-06
+      },
+      "normalized": 0.0047676854950898205,
+      "matches": true,
+      "result": {
+        "method": "mixed-rk4",
+        "partitions": 4,
+        "evaluations": 312,
+        "workResidual": -2.1795898419441073e-11,
+        "angularResidual": 1.4551915228366852e-11,
+        "representationError": 1.4210854715202004e-14,
+        "normalImpulse": -9.445853044198673,
+        "tangentImpulse": 0,
+        "maximumCapacityExcess": 0,
+        "adaptiveAccounting": {
+          "estimatedErrorSum": 2.0285876227527672e-07,
+          "absoluteWorkDriftSum": 2.1614404710490476e-11
+        }
+      }
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3",
+      "mode": "uniform",
+      "error": {
+        "position": 2.8734645355078383e-10,
+        "velocity": 2.1889050877047648e-07,
+        "facing": 3.5054412607241417e-09,
+        "spin": 1.005473391790801e-05,
+        "material": 2.7106651147495975e-09,
+        "point": 3.226412400172041e-09,
+        "foot": 1.3098072655196598e-08,
+        "legs": 2.9390379019389457e-12,
+        "hold": 3.1153317703314087e-09,
+        "impulse": 2.2240302813840603e-05,
+        "moment": 2.9226104798864552e-08,
+        "angularImpulse": 2.0023519374134935e-05,
+        "angularMoment": 8.800879149582774e-09,
+        "bodyWork": 0.00025913337123029123,
+        "motorWork": 1.6149620030159184e-06,
+        "passiveWork": 0.0002575184070110481
+      },
+      "normalized": 0.04021893567163204,
+      "matches": true,
+      "result": {
+        "method": "mixed-rk4",
+        "partitions": 512,
+        "evaluations": 4088,
+        "workResidual": 2.1577761799562722e-10,
+        "angularResidual": 0,
+        "representationError": 5.684341886080802e-14,
+        "normalImpulse": -7.0957923534852085,
+        "tangentImpulse": -5.100519957654221,
+        "maximumCapacityExcess": 4.547473508864641e-13
+      }
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3",
+      "mode": "adaptive",
+      "error": {
+        "position": 4.2675678553436383e-10,
+        "velocity": 2.2099333624498305e-07,
+        "facing": 1.6397532220935318e-08,
+        "spin": 9.773941188395696e-06,
+        "material": 2.1393394523008992e-09,
+        "point": 3.819579472926555e-09,
+        "foot": 1.151778984485022e-08,
+        "legs": 2.9393432132707176e-12,
+        "hold": 3.522866665051083e-09,
+        "impulse": 2.245395935403414e-05,
+        "moment": 4.3420770248794225e-08,
+        "angularImpulse": 1.946433415866977e-05,
+        "angularMoment": 3.265829972946832e-08,
+        "bodyWork": 0.00024312997427955452,
+        "motorWork": 2.1178737108495937e-06,
+        "passiveWork": 0.0002452478502021904
+      },
+      "normalized": 0.039095764753582785,
+      "matches": true,
+      "result": {
+        "method": "mixed-rk4",
+        "partitions": 4,
+        "evaluations": 3636,
+        "workResidual": 1.170121777249733e-10,
+        "angularResidual": 0,
+        "representationError": 7.105427357601002e-15,
+        "normalImpulse": -7.0957925647619495,
+        "tangentImpulse": -5.100481846361648,
+        "maximumCapacityExcess": 4.547473508864641e-13,
+        "adaptiveAccounting": {
+          "estimatedErrorSum": 0.0002105496191622791,
+          "absoluteWorkDriftSum": 1.1464720503246567e-10
+        }
+      }
+    },
+    {
+      "id": "patch-45-8-0-3001--1-mixed-0.3",
+      "mode": "uniform",
+      "error": {
+        "position": 2.8734645355078383e-10,
+        "velocity": 2.1889050877047648e-07,
+        "facing": 3.5054412607241417e-09,
+        "spin": 1.005473391790801e-05,
+        "material": 2.7106651147495975e-09,
+        "point": 3.226412400172041e-09,
+        "foot": 1.3098072655196598e-08,
+        "legs": 2.9390379019389457e-12,
+        "hold": 3.1153317703314087e-09,
+        "impulse": 2.2240302813840603e-05,
+        "moment": 2.9226104798864552e-08,
+        "angularImpulse": 2.0023519374134935e-05,
+        "angularMoment": 8.800879149582774e-09,
+        "bodyWork": 0.00025913337123029123,
+        "motorWork": 1.6149620030159184e-06,
+        "passiveWork": 0.0002575184070110481
+      },
+      "normalized": 0.04021893567163204,
+      "matches": true,
+      "result": {
+        "method": "mixed-rk4",
+        "partitions": 512,
+        "evaluations": 4088,
+        "workResidual": 2.1577761799562722e-10,
+        "angularResidual": 7.275957614183426e-12,
+        "representationError": 5.684341886080802e-14,
+        "normalImpulse": -7.0957923534852085,
+        "tangentImpulse": 5.100519957654221,
+        "maximumCapacityExcess": 4.547473508864641e-13
+      }
+    },
+    {
+      "id": "patch-45-8-0-3001--1-mixed-0.3",
+      "mode": "adaptive",
+      "error": {
+        "position": 4.2675678553436383e-10,
+        "velocity": 2.2099333624498305e-07,
+        "facing": 1.6397532220935318e-08,
+        "spin": 9.773941188395696e-06,
+        "material": 2.1393394523008992e-09,
+        "point": 3.819579472926555e-09,
+        "foot": 1.151778984485022e-08,
+        "legs": 2.9393432132707176e-12,
+        "hold": 3.522866665051083e-09,
+        "impulse": 2.245395935403414e-05,
+        "moment": 4.3420770248794225e-08,
+        "angularImpulse": 1.946433415866977e-05,
+        "angularMoment": 3.265829972946832e-08,
+        "bodyWork": 0.00024312997427955452,
+        "motorWork": 2.1178737108495937e-06,
+        "passiveWork": 0.0002452478502021904
+      },
+      "normalized": 0.039095764753582785,
+      "matches": true,
+      "result": {
+        "method": "mixed-rk4",
+        "partitions": 4,
+        "evaluations": 3636,
+        "workResidual": 1.170121777249733e-10,
+        "angularResidual": 0,
+        "representationError": 7.105427357601002e-15,
+        "normalImpulse": -7.0957925647619495,
+        "tangentImpulse": 5.100481846361648,
+        "maximumCapacityExcess": 4.547473508864641e-13,
+        "adaptiveAccounting": {
+          "estimatedErrorSum": 0.0002105496191622791,
+          "absoluteWorkDriftSum": 1.1464720503246567e-10
+        }
+      }
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3-reverse",
+      "mode": "uniform",
+      "error": {
+        "position": 3.990799552730225e-10,
+        "velocity": 2.541870866370151e-07,
+        "facing": 1.3503601348219263e-08,
+        "spin": 1.0668842969074888e-05,
+        "material": 2.3457863187964722e-09,
+        "point": 3.2275167712903624e-09,
+        "foot": 1.2792021847383586e-08,
+        "legs": 2.939148924241408e-12,
+        "hold": 3.276371174365522e-09,
+        "impulse": 2.5826604545543057e-05,
+        "moment": 4.0559207008930456e-08,
+        "angularImpulse": 2.1246490017112762e-05,
+        "angularMoment": 2.6891859215144587e-08,
+        "bodyWork": 0.0002468334933070082,
+        "motorWork": 2.1386662245603816e-06,
+        "passiveWork": 0.00024897215082830826
+      },
+      "normalized": 0.04267537187629955,
+      "matches": true,
+      "result": {
+        "method": "mixed-rk4",
+        "partitions": 128,
+        "evaluations": 1016,
+        "workResidual": 1.0080043466587085e-09,
+        "angularResidual": 1.4551915228366852e-11,
+        "representationError": 2.1316282072803006e-14,
+        "normalImpulse": -6.4740093315776335,
+        "tangentImpulse": 6.3705935325593845,
+        "maximumCapacityExcess": 4.547473508864641e-13
+      }
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3-reverse",
+      "mode": "adaptive",
+      "error": {
+        "position": 3.99116154799857e-10,
+        "velocity": 2.5403661405545955e-07,
+        "facing": 1.3506376017602406e-08,
+        "spin": 1.0659072902541311e-05,
+        "material": 2.3448322304775817e-09,
+        "point": 3.2269132969465072e-09,
+        "foot": 1.2785556121438472e-08,
+        "legs": 2.93945423557318e-12,
+        "hold": 3.276392490647595e-09,
+        "impulse": 2.5811315826874856e-05,
+        "moment": 4.0562887216289087e-08,
+        "angularImpulse": 2.1227033398574235e-05,
+        "angularMoment": 2.6897385180246758e-08,
+        "bodyWork": 0.00024660297849266044,
+        "motorWork": 2.1388407445144253e-06,
+        "passiveWork": 0.0002487418105232564
+      },
+      "normalized": 0.042636291610165244,
+      "matches": true,
+      "result": {
+        "method": "mixed-rk4",
+        "partitions": 4,
+        "evaluations": 2448,
+        "workResidual": 1.2008172234345693e-10,
+        "angularResidual": 2.1827872842550278e-11,
+        "representationError": 8.526512829121202e-14,
+        "normalImpulse": -6.474009331582204,
+        "tangentImpulse": 6.370593551328787,
+        "maximumCapacityExcess": 4.547473508864641e-13,
+        "adaptiveAccounting": {
+          "estimatedErrorSum": 2.270239920573401e-05,
+          "absoluteWorkDriftSum": 1.165838259264973e-10
+        }
+      }
+    }
+  ],
+  "bench": [
+    {
+      "id": "patch-45-8-0-3001-1-mixed-3",
+      "mode": "uniform",
+      "milliseconds": {
+        "median": 0.16466800000000603,
+        "p95": 0.3788000000000693,
+        "maximum": 0.40733299999999417,
+        "samples": [
+          0.18190400000003137,
+          0.10838299999988976,
+          0.0988079999999627,
+          0.1171359999999595,
+          0.09829799999999977,
+          0.0992790000000241,
+          0.3788000000000693,
+          0.10484800000006089,
+          0.0952429999999822,
+          0.19634500000006483,
+          0.10754199999996672,
+          0.2801719999999932,
+          0.11612499999989723,
+          0.17799800000000232,
+          0.16582900000003065,
+          0.18295499999999265,
+          0.17447300000003452,
+          0.18110200000000987,
+          0.16466800000000603,
+          0.40733299999999417,
+          0.1181770000000597
+        ]
+      },
+      "evaluations": 56,
+      "partitions": 8,
+      "method": "mixed-rk4",
+      "error": {
+        "position": 6.094638637983276e-13,
+        "velocity": 1.343176978033962e-10,
+        "facing": 8.386538425525503e-12,
+        "spin": 6.260810092584279e-09,
+        "material": 8.410679908275304e-10,
+        "point": 8.185165790751271e-10,
+        "foot": 2.383909469962105e-09,
+        "legs": 2.940148124963571e-12,
+        "hold": 8.165141895943862e-10,
+        "impulse": 1.3647315540150948e-08,
+        "moment": 8.984898698921384e-12,
+        "angularImpulse": 1.571861529825469e-08,
+        "angularMoment": 2.1055526246149814e-11,
+        "bodyWork": 2.3379351432595286e-07,
+        "motorWork": 1.8488069055688783e-06,
+        "passiveWork": 2.0826001829732377e-06
+      },
+      "normalized": 0.004767818939924211,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-3",
+      "mode": "adaptive",
+      "milliseconds": {
+        "median": 0.5990500000000338,
+        "p95": 0.9252010000000155,
+        "maximum": 1.2576810000000478,
+        "samples": [
+          0.5990500000000338,
+          0.40796399999999267,
+          0.36686199999996916,
+          0.6091460000000097,
+          0.36280599999997776,
+          0.3908880000000181,
+          0.4946340000000191,
+          0.4142219999999952,
+          0.3988600000000133,
+          0.5815249999999423,
+          0.3628959999999779,
+          0.36410699999998997,
+          0.6055710000000545,
+          0.6515590000000202,
+          0.9252010000000155,
+          0.6862919999999804,
+          0.7001930000000129,
+          0.8668129999999792,
+          0.6705590000000257,
+          0.7756259999999884,
+          1.2576810000000478
+        ]
+      },
+      "evaluations": 312,
+      "partitions": 4,
+      "method": "mixed-rk4",
+      "error": {
+        "position": 5.344797675177934e-13,
+        "velocity": 1.3567855824990855e-10,
+        "facing": 7.965502823309434e-12,
+        "spin": 6.2789502486282345e-09,
+        "material": 8.4110496528846e-10,
+        "point": 8.184568867829939e-10,
+        "foot": 2.38384274754491e-09,
+        "legs": 2.9392599465438707e-12,
+        "hold": 8.164799947252277e-10,
+        "impulse": 1.3785586992000633e-08,
+        "moment": 1.729679880572961e-11,
+        "angularImpulse": 1.5764158423081653e-08,
+        "angularMoment": 1.9998460352999015e-11,
+        "bodyWork": 2.3567015006165093e-07,
+        "motorWork": 1.848797907655353e-06,
+        "passiveWork": 2.084467823237901e-06
+      },
+      "normalized": 0.0047676854950898205,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3",
+      "mode": "uniform",
+      "milliseconds": {
+        "median": 4.7777549999999565,
+        "p95": 6.254236000000105,
+        "maximum": 6.370138999999995,
+        "samples": [
+          5.182634000000007,
+          3.841497000000004,
+          3.7543759999999793,
+          4.164162000000033,
+          6.370138999999995,
+          4.774480999999923,
+          6.254236000000105,
+          4.356111000000055,
+          4.444903999999951,
+          5.507361999999944,
+          5.176384999999982,
+          4.578695000000039,
+          5.229123999999956,
+          5.777268000000049,
+          5.130053999999973,
+          4.7777549999999565,
+          5.025978000000009,
+          4.297061999999983,
+          4.793929000000048,
+          4.4787849999999025,
+          4.501148999999941
+        ]
+      },
+      "evaluations": 4088,
+      "partitions": 512,
+      "method": "mixed-rk4",
+      "error": {
+        "position": 2.8734645355078383e-10,
+        "velocity": 2.1889050877047648e-07,
+        "facing": 3.5054412607241417e-09,
+        "spin": 1.005473391790801e-05,
+        "material": 2.7106651147495975e-09,
+        "point": 3.226412400172041e-09,
+        "foot": 1.3098072655196598e-08,
+        "legs": 2.9390379019389457e-12,
+        "hold": 3.1153317703314087e-09,
+        "impulse": 2.2240302813840603e-05,
+        "moment": 2.9226104798864552e-08,
+        "angularImpulse": 2.0023519374134935e-05,
+        "angularMoment": 8.800879149582774e-09,
+        "bodyWork": 0.00025913337123029123,
+        "motorWork": 1.6149620030159184e-06,
+        "passiveWork": 0.0002575184070110481
+      },
+      "normalized": 0.04021893567163204,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3",
+      "mode": "adaptive",
+      "milliseconds": {
+        "median": 4.6367629999999735,
+        "p95": 5.388162999999963,
+        "maximum": 5.394126999999912,
+        "samples": [
+          3.6488070000000334,
+          3.6210660000000416,
+          3.711571999999933,
+          3.698662000000013,
+          5.0920770000000175,
+          4.665106000000037,
+          5.310856999999942,
+          4.063481000000024,
+          4.1284480000000485,
+          5.388162999999963,
+          4.186945999999921,
+          4.523963999999978,
+          5.394126999999912,
+          5.19171700000004,
+          4.736091999999985,
+          4.649411999999984,
+          3.939234000000056,
+          3.9360080000000153,
+          4.6367629999999735,
+          4.822402000000011,
+          4.788230999999996
+        ]
+      },
+      "evaluations": 3636,
+      "partitions": 4,
+      "method": "mixed-rk4",
+      "error": {
+        "position": 4.2675678553436383e-10,
+        "velocity": 2.2099333624498305e-07,
+        "facing": 1.6397532220935318e-08,
+        "spin": 9.773941188395696e-06,
+        "material": 2.1393394523008992e-09,
+        "point": 3.819579472926555e-09,
+        "foot": 1.151778984485022e-08,
+        "legs": 2.9393432132707176e-12,
+        "hold": 3.522866665051083e-09,
+        "impulse": 2.245395935403414e-05,
+        "moment": 4.3420770248794225e-08,
+        "angularImpulse": 1.946433415866977e-05,
+        "angularMoment": 3.265829972946832e-08,
+        "bodyWork": 0.00024312997427955452,
+        "motorWork": 2.1178737108495937e-06,
+        "passiveWork": 0.0002452478502021904
+      },
+      "normalized": 0.039095764753582785,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3-reverse",
+      "mode": "uniform",
+      "milliseconds": {
+        "median": 1.1915619999999763,
+        "p95": 1.6807680000000573,
+        "maximum": 1.7058359999999766,
+        "samples": [
+          1.4881079999998974,
+          1.7058359999999766,
+          1.296730000000025,
+          1.4242419999999356,
+          1.1527740000000222,
+          1.6195860000000266,
+          1.6807680000000573,
+          1.481457999999975,
+          1.1641309999999976,
+          1.059994999999958,
+          1.1508010000000013,
+          1.1915619999999763,
+          1.0280460000000176,
+          1.470862000000011,
+          1.113083999999958,
+          1.3486669999999776,
+          1.1874559999999974,
+          1.2099100000000362,
+          0.9549059999999372,
+          1.1613770000000159,
+          1.0604250000000093
+        ]
+      },
+      "evaluations": 1016,
+      "partitions": 128,
+      "method": "mixed-rk4",
+      "error": {
+        "position": 3.990799552730225e-10,
+        "velocity": 2.541870866370151e-07,
+        "facing": 1.3503601348219263e-08,
+        "spin": 1.0668842969074888e-05,
+        "material": 2.3457863187964722e-09,
+        "point": 3.2275167712903624e-09,
+        "foot": 1.2792021847383586e-08,
+        "legs": 2.939148924241408e-12,
+        "hold": 3.276371174365522e-09,
+        "impulse": 2.5826604545543057e-05,
+        "moment": 4.0559207008930456e-08,
+        "angularImpulse": 2.1246490017112762e-05,
+        "angularMoment": 2.6891859215144587e-08,
+        "bodyWork": 0.0002468334933070082,
+        "motorWork": 2.1386662245603816e-06,
+        "passiveWork": 0.00024897215082830826
+      },
+      "normalized": 0.04267537187629955,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3-reverse",
+      "mode": "adaptive",
+      "milliseconds": {
+        "median": 2.7814429999999675,
+        "p95": 3.2743639999999914,
+        "maximum": 3.3506989999999632,
+        "samples": [
+          3.3506989999999632,
+          3.1127709999999524,
+          2.9748440000000755,
+          3.0700769999999693,
+          3.2743639999999914,
+          3.2425660000000107,
+          2.881974000000014,
+          2.6081120000000055,
+          2.872130000000084,
+          2.5426129999999603,
+          2.368020999999999,
+          2.62160300000005,
+          2.946440999999936,
+          2.6539209999999684,
+          2.7814429999999675,
+          2.540791000000013,
+          2.6103259999999864,
+          2.68731200000002,
+          2.6212620000000015,
+          2.753771000000029,
+          2.801612999999975
+        ]
+      },
+      "evaluations": 2448,
+      "partitions": 4,
+      "method": "mixed-rk4",
+      "error": {
+        "position": 3.99116154799857e-10,
+        "velocity": 2.5403661405545955e-07,
+        "facing": 1.3506376017602406e-08,
+        "spin": 1.0659072902541311e-05,
+        "material": 2.3448322304775817e-09,
+        "point": 3.2269132969465072e-09,
+        "foot": 1.2785556121438472e-08,
+        "legs": 2.93945423557318e-12,
+        "hold": 3.276392490647595e-09,
+        "impulse": 2.5811315826874856e-05,
+        "moment": 4.0562887216289087e-08,
+        "angularImpulse": 2.1227033398574235e-05,
+        "angularMoment": 2.6897385180246758e-08,
+        "bodyWork": 0.00024660297849266044,
+        "motorWork": 2.1388407445144253e-06,
+        "passiveWork": 0.0002487418105232564
+      },
+      "normalized": 0.042636291610165244,
+      "matches": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "mode": "uniform",
+      "milliseconds": {
+        "median": 0.41136900000003607,
+        "p95": 0.5956160000000637,
+        "maximum": 0.6999830000000884,
+        "samples": [
+          0.4134520000000066,
+          0.41136900000003607,
+          0.3630560000000287,
+          0.5897070000000895,
+          0.31306100000006154,
+          0.3735910000000331,
+          0.2797400000000607,
+          0.37146800000004987,
+          0.27648599999997714,
+          0.5145639999999503,
+          0.27866900000003625,
+          0.5956160000000637,
+          0.5241079999999556,
+          0.5323110000000497,
+          0.5405429999999569,
+          0.27913999999998396,
+          0.6999830000000884,
+          0.42206399999997757,
+          0.40840400000001864,
+          0.5617049999999608,
+          0.3028060000000323
+        ]
+      },
+      "evaluations": 72,
+      "partitions": 4,
+      "method": "existing-tangent",
+      "error": {
+        "position": 1.8626167275215266e-10,
+        "velocity": 0,
+        "facing": 0,
+        "spin": 0,
+        "material": 0,
+        "point": 1.8626167275215266e-10,
+        "foot": 0,
+        "legs": 0,
+        "hold": 3.128661774098873e-10,
+        "impulse": 0,
+        "moment": 0,
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0
+      },
+      "normalized": 0.0006257323548197746,
+      "matches": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "mode": "adaptive",
+      "milliseconds": {
+        "median": 0.45245999999997366,
+        "p95": 0.6854410000000826,
+        "maximum": 0.7371880000000601,
+        "samples": [
+          0.5383600000000115,
+          0.27914899999996123,
+          0.27101700000002893,
+          0.3801820000001044,
+          0.2718890000001011,
+          0.3380889999999681,
+          0.450507000000016,
+          0.39548499999989417,
+          0.5765970000001062,
+          0.28724099999999453,
+          0.5130709999999681,
+          0.5544140000000652,
+          0.7371880000000601,
+          0.5078640000000405,
+          0.5043880000000627,
+          0.6579289999999673,
+          0.4222149999999374,
+          0.45245999999997366,
+          0.46191399999997884,
+          0.6854410000000826,
+          0.38430800000003273
+        ]
+      },
+      "evaluations": 72,
+      "partitions": 4,
+      "method": "existing-tangent",
+      "error": {
+        "position": 1.8626167275215266e-10,
+        "velocity": 0,
+        "facing": 0,
+        "spin": 0,
+        "material": 0,
+        "point": 1.8626167275215266e-10,
+        "foot": 0,
+        "legs": 0,
+        "hold": 3.128661774098873e-10,
+        "impulse": 0,
+        "moment": 0,
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0
+      },
+      "normalized": 0.0006257323548197746,
+      "matches": true
+    }
+  ],
+  "refusals": [
+    {
+      "id": "chart-exit",
+      "mode": "uniform",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.107421485631505,
+            "y": 27.821426254605832
+          },
+          "vel": {
+            "x": 0.2,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.2000000000003,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 15.904973719997903,
+            "y": -3.073076708150207
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.2792013888888889,
+          "y": 0.13960069444444445
+        },
+        "footOffset": {
+          "x": -1.1166938750000002,
+          "y": 0
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.004166666666666667,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.0343904971544267,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "returnedState": false,
+      "inputUnchanged": true,
+      "samples": [
+        1.1580109999999877,
+        0.7407739999999876,
+        0.7657110000000102,
+        1.2200239999999667,
+        0.7691469999999754,
+        0.7906899999999268,
+        0.8347949999999855
+      ],
+      "milliseconds": {
+        "median": 0.7906899999999268,
+        "maximum": 1.2200239999999667
+      },
+      "repetitions": 7,
+      "warmups": 1
+    },
+    {
+      "id": "chart-exit",
+      "mode": "adaptive",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.107421485631505,
+            "y": 27.821426254605832
+          },
+          "vel": {
+            "x": 0.2,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.2000000000003,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 15.904973719997903,
+            "y": -3.073076708150207
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.2792013888888889,
+          "y": 0.13960069444444445
+        },
+        "footOffset": {
+          "x": -1.1166938750000002,
+          "y": 0
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.004166666666666667,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.0343904971544267,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "returnedState": false,
+      "inputUnchanged": true,
+      "samples": [
+        27.47304100000008,
+        25.53283599999986,
+        28.695522999999866,
+        25.316777999999886,
+        27.515608999999813,
+        30.296741999999995,
+        28.891563000000133
+      ],
+      "milliseconds": {
+        "median": 27.515608999999813,
+        "maximum": 30.296741999999995
+      },
+      "repetitions": 7,
+      "warmups": 1
+    },
+    {
+      "id": "slip-phase",
+      "mode": "uniform",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.107421485631505,
+            "y": 27.821426254605832
+          },
+          "vel": {
+            "x": 0.2,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.2000000000003,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 15.904973719997903,
+            "y": -3.073076708150207
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.2792013888888889,
+          "y": 0.13960069444444445
+        },
+        "footOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 10000,
+        "duration": 0.004166666666666667,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.0343904971544267,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "returnedState": false,
+      "inputUnchanged": true,
+      "samples": [
+        12.295720999999958,
+        6.268446999999924,
+        5.653912999999875,
+        5.967534999999998,
+        6.458552999999938,
+        5.765240000000176,
+        5.5223839999998745
+      ],
+      "milliseconds": {
+        "median": 5.967534999999998,
+        "maximum": 12.295720999999958
+      },
+      "repetitions": 7,
+      "warmups": 1
+    },
+    {
+      "id": "slip-phase",
+      "mode": "adaptive",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.107421485631505,
+            "y": 27.821426254605832
+          },
+          "vel": {
+            "x": 0.2,
+            "y": 0
+          },
+          "facing": -2.0360320549455704,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.2000000000003,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 15.904973719997903,
+            "y": -3.073076708150207
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "material": {
+          "x": -0.2792013888888889,
+          "y": 0.13960069444444445
+        },
+        "footOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "mobility": 0.002984543207837393,
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "capacity": 10000,
+        "duration": 0.004166666666666667,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "attachmentReach": 1.1168055555555556,
+        "hold": 1.0343904971544267,
+        "legs": 0.17062513395125756,
+        "pullSpeed": 0
+      },
+      "returnedState": false,
+      "inputUnchanged": true,
+      "samples": [
+        29.344037999999955,
+        47.32240100000013,
+        39.145108000000164,
+        32.06157600000006,
+        29.26629200000002,
+        33.050686999999925,
+        33.174809000000096
+      ],
+      "milliseconds": {
+        "median": 33.050686999999925,
+        "maximum": 47.32240100000013
+      },
+      "repetitions": 7,
+      "warmups": 1
+    }
+  ],
+  "forceAudit": [
+    {
+      "id": "patch-45-8-0-3001-1-mixed-3",
+      "h": 1e-06,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -2267.004730607681,
+        "tangent": 0
+      },
+      "actual": {
+        "normal": -2267.004730607681,
+        "tangent": 0
+      },
+      "error": 0,
+      "passes": [
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-3",
+      "h": 1e-07,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -2267.004730607681,
+        "tangent": 0
+      },
+      "actual": {
+        "normal": -2267.004730607681,
+        "tangent": 0
+      },
+      "error": 0,
+      "passes": [
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-3",
+      "h": 1e-08,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -2267.004730607681,
+        "tangent": 0
+      },
+      "actual": {
+        "normal": -2267.004730607681,
+        "tangent": 0
+      },
+      "error": 0,
+      "passes": [
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        },
+        {
+          "normal": -2267.004730607681,
+          "tangent": 0
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3",
+      "h": 1e-06,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -762.1136136185397,
+        "tangent": -2135.062830114115
+      },
+      "actual": {
+        "normal": -762.349216320413,
+        "tangent": -2134.9787167494796
+      },
+      "error": 0.25016732648426443,
+      "passes": [
+        {
+          "normal": -762.3492163204131,
+          "tangent": -2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": -2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": -2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": -2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": -2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": -2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": -2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": -2134.9787167494796
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3",
+      "h": 1e-07,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -762.1136136185397,
+        "tangent": -2135.062830114115
+      },
+      "actual": {
+        "normal": -762.1371761941331,
+        "tangent": -2135.0544192737657
+      },
+      "error": 0.025018737057960858,
+      "passes": [
+        {
+          "normal": -762.1371761941333,
+          "tangent": -2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": -2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": -2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": -2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": -2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": -2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": -2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": -2135.0544192737657
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3",
+      "h": 1e-08,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -762.1136136185397,
+        "tangent": -2135.062830114115
+      },
+      "actual": {
+        "normal": -762.1159699470987,
+        "tangent": -2135.0619890179296
+      },
+      "error": 0.002501944657910802,
+      "passes": [
+        {
+          "normal": -762.1159699470984,
+          "tangent": -2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": -2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": -2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": -2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": -2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": -2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": -2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": -2135.0619890179296
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001--1-mixed-0.3",
+      "h": 1e-06,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": 2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -762.1136136185397,
+        "tangent": 2135.062830114115
+      },
+      "actual": {
+        "normal": -762.349216320413,
+        "tangent": 2134.9787167494796
+      },
+      "error": 0.25016732648426443,
+      "passes": [
+        {
+          "normal": -762.3492163204131,
+          "tangent": 2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": 2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": 2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": 2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": 2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": 2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": 2134.9787167494796
+        },
+        {
+          "normal": -762.349216320413,
+          "tangent": 2134.9787167494796
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001--1-mixed-0.3",
+      "h": 1e-07,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": 2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -762.1136136185397,
+        "tangent": 2135.062830114115
+      },
+      "actual": {
+        "normal": -762.1371761941331,
+        "tangent": 2135.0544192737657
+      },
+      "error": 0.025018737057960858,
+      "passes": [
+        {
+          "normal": -762.1371761941333,
+          "tangent": 2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": 2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": 2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": 2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": 2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": 2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": 2135.0544192737657
+        },
+        {
+          "normal": -762.1371761941331,
+          "tangent": 2135.0544192737657
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001--1-mixed-0.3",
+      "h": 1e-08,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": 2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -762.1136136185397,
+        "tangent": 2135.062830114115
+      },
+      "actual": {
+        "normal": -762.1159699470987,
+        "tangent": 2135.0619890179296
+      },
+      "error": 0.002501944657910802,
+      "passes": [
+        {
+          "normal": -762.1159699470984,
+          "tangent": 2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": 2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": 2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": 2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": 2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": 2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": 2135.0619890179296
+        },
+        {
+          "normal": -762.1159699470987,
+          "tangent": 2135.0619890179296
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3-reverse",
+      "h": 1e-06,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -750.1006478555049,
+        "tangent": 2139.312849184138
+      },
+      "actual": {
+        "normal": -750.2833816364115,
+        "tangent": 2139.248769039691
+      },
+      "error": 0.19364374401657083,
+      "passes": [
+        {
+          "normal": -762.3490832991786,
+          "tangent": 2134.9787642481374
+        },
+        {
+          "normal": -750.3074651393057,
+          "tangent": 2139.2403222531666
+        },
+        {
+          "normal": -750.2834292776255,
+          "tangent": 2139.2487523308296
+        },
+        {
+          "normal": -750.2833817306555,
+          "tangent": 2139.2487690066378
+        },
+        {
+          "normal": -750.2833816365982,
+          "tangent": 2139.2487690396256
+        },
+        {
+          "normal": -750.2833816364124,
+          "tangent": 2139.2487690396906
+        },
+        {
+          "normal": -750.2833816364121,
+          "tangent": 2139.248769039691
+        },
+        {
+          "normal": -750.2833816364115,
+          "tangent": 2139.248769039691
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3-reverse",
+      "h": 1e-07,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -750.1006478555049,
+        "tangent": 2139.312849184138
+      },
+      "actual": {
+        "normal": -750.1189227824472,
+        "tangent": 2139.306441415373
+      },
+      "error": 0.019365754704973953,
+      "passes": [
+        {
+          "normal": -762.1371629486615,
+          "tangent": 2135.05442400192
+        },
+        {
+          "normal": -750.1428098541987,
+          "tangent": 2139.2980655863857
+        },
+        {
+          "normal": -750.1189698363515,
+          "tangent": 2139.306424916556
+        },
+        {
+          "normal": -750.1189228751355,
+          "tangent": 2139.306441382873
+        },
+        {
+          "normal": -750.1189227826294,
+          "tangent": 2139.3064414153087
+        },
+        {
+          "normal": -750.1189227824474,
+          "tangent": 2139.306441415373
+        },
+        {
+          "normal": -750.1189227824472,
+          "tangent": 2139.306441415373
+        },
+        {
+          "normal": -750.1189227824472,
+          "tangent": 2139.306441415373
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-mixed-0.3-reverse",
+      "h": 1e-08,
+      "mobility": {
+        "nn": 8.189824857230207e-05,
+        "nt": -2.210433607184738e-06,
+        "tt": 7.512582175015602e-05
+      },
+      "predicted": {
+        "normal": -750.1006478555049,
+        "tangent": 2139.312849184138
+      },
+      "actual": {
+        "normal": -750.1024754109708,
+        "tangent": 2139.312208393141
+      },
+      "error": 0.0019366393785233593,
+      "passes": [
+        {
+          "normal": -762.1159686231186,
+          "tangent": 2135.0619894905276
+        },
+        {
+          "normal": -750.1263428837672,
+          "tangent": 2139.303839642567
+        },
+        {
+          "normal": -750.102522406415,
+          "tangent": 2139.312191915228
+        },
+        {
+          "normal": -750.1024755035058,
+          "tangent": 2139.3122083606954
+        },
+        {
+          "normal": -750.1024754111552,
+          "tangent": 2139.312208393076
+        },
+        {
+          "normal": -750.102475410971,
+          "tangent": 2139.312208393141
+        },
+        {
+          "normal": -750.1024754109708,
+          "tangent": 2139.312208393141
+        },
+        {
+          "normal": -750.1024754109708,
+          "tangent": 2139.312208393141
+        }
+      ]
+    }
+  ],
+  "gateProbe": [
+    {
+      "count": 4,
+      "error": 407.8215173174726,
+      "workResidual": 0.0061837598516092385,
+      "angularResidual": -3.1113449949771166e-07,
+      "normalImpulse": -7.095167218891859,
+      "tangentImpulse": -5.062465877565837
+    },
+    {
+      "count": 8,
+      "error": 119.38471709128962,
+      "workResidual": 0.0004516963645926353,
+      "angularResidual": -3.671448212116957e-08,
+      "normalImpulse": -7.095976681081565,
+      "tangentImpulse": -5.119823387883862
+    },
+    {
+      "count": 16,
+      "error": 47.12399509247689,
+      "workResidual": 7.420578717187709e-05,
+      "angularResidual": -1.5861587598919868e-09,
+      "normalImpulse": -7.09569675392717,
+      "tangentImpulse": -5.097181692116246
+    },
+    {
+      "count": 32,
+      "error": 10.711006784807964,
+      "workResidual": 3.435984353927779e-06,
+      "angularResidual": -1.6007106751203537e-10,
+      "normalImpulse": -7.095849326108081,
+      "tangentImpulse": -5.1023281277112025
+    },
+    {
+      "count": 64,
+      "error": 3.5174490706531003,
+      "workResidual": 7.923042062429886e-07,
+      "angularResidual": 0,
+      "normalImpulse": -7.0957763720959015,
+      "tangentImpulse": -5.100638034768726
+    },
+    {
+      "count": 128,
+      "error": 1.5203223529400844,
+      "workResidual": 1.7148975928193977e-07,
+      "angularResidual": 0,
+      "normalImpulse": -7.09579989373263,
+      "tangentImpulse": -5.099907500586773
+    },
+    {
+      "count": 256,
+      "error": 1.2873282048371237,
+      "workResidual": 4.920678975395276e-09,
+      "angularResidual": 0,
+      "normalImpulse": -7.095791520750482,
+      "tangentImpulse": -5.100526071828014
+    },
+    {
+      "count": 512,
+      "error": 0.01272419918052492,
+      "workResidual": 2.1577761799562722e-10,
+      "angularResidual": 0,
+      "normalImpulse": -7.0957923534852085,
+      "tangentImpulse": -5.100519957654221
+    }
+  ],
+  "normalTakeover": {
+    "id": "patch-45-8-0-3001-1-mixed-0.3",
+    "h": 6.357828776041667e-08,
+    "sampledBracket": [
+      0.0034627914428710938,
+      0.00346686045328776
+    ],
+    "trace": [
+      {
+        "t": 0.003458722432454427,
+        "normal": -0.00014401472427261335,
+        "reel": 0,
+        "tangent": -5.820058082749305e-06,
+        "legs": 0.18013214994615834,
+        "slipping": true,
+        "hold": 1.0361148393966075,
+        "point": {
+          "x": 54.982535934328986,
+          "y": 26.792866348846488
+        },
+        "material": {
+          "x": -0.2795506653245687,
+          "y": 0.14014669403786575
+        },
+        "foot": {
+          "x": -0.0020045351457335728,
+          "y": 0.003102982543466984
+        },
+        "mobility": 0.002984543207837393,
+        "jacobian": {
+          "xx": 0.1684975006374584,
+          "xy": 0.0035492112437347178,
+          "yy": 0.17378583480624646
+        }
+      },
+      {
+        "t": 0.0034627914428710938,
+        "normal": -0.00014409332481618087,
+        "reel": 0,
+        "tangent": -3.350765109944082e-06,
+        "legs": 0.18014327004015523,
+        "slipping": true,
+        "hold": 1.0361177143856106,
+        "point": {
+          "x": 54.98260084644817,
+          "y": 26.792855394255376
+        },
+        "material": {
+          "x": -0.279550573896077,
+          "y": 0.1401475541127487
+        },
+        "foot": {
+          "x": -0.0020040250097028297,
+          "y": 0.0031077568109231842
+        },
+        "mobility": 0.002984543207837393,
+        "jacobian": {
+          "xx": 0.16850791218732467,
+          "xy": 0.0035494600633681167,
+          "yy": 0.17379652007923138
+        }
+      },
+      {
+        "t": 0.00346686045328776,
+        "normal": -0.00014413227911680098,
+        "reel": 0,
+        "tangent": 0,
+        "legs": 0.18015438998332728,
+        "slipping": true,
+        "hold": 1.0361205903383832,
+        "point": {
+          "x": 54.982665778460664,
+          "y": 26.79284443997005
+        },
+        "material": {
+          "x": -0.2795504618276933,
+          "y": 0.14014841254652047
+        },
+        "foot": {
+          "x": -0.0020034003303651877,
+          "y": 0.0031125216107054047
+        },
+        "mobility": 0.002984543207837393,
+        "jacobian": {
+          "xx": 0.16851832516246565,
+          "xy": 0.003549708628557409,
+          "yy": 0.17380720574265499
+        }
+      },
+      {
+        "t": 0.003470929463704427,
+        "normal": -0.00014413227911680098,
+        "reel": 0,
+        "tangent": 0,
+        "legs": 0.18016550977567644,
+        "slipping": true,
+        "hold": 1.0361234680501858,
+        "point": {
+          "x": 54.982730716885165,
+          "y": 26.79283348683765
+        },
+        "material": {
+          "x": -0.2795503435681821,
+          "y": 0.14014927049661421
+        },
+        "foot": {
+          "x": -0.002002741317141144,
+          "y": 0.0031172834117500084
+        },
+        "mobility": 0.002984543207837393,
+        "jacobian": {
+          "xx": 0.16852873848878652,
+          "xy": 0.0035499571338876972,
+          "yy": 0.17381789139572829
+        }
+      }
+    ],
+    "meaning": "Trace is sampled at about4 microseconds; its bracket is not the full-resolution event bracket. The earlier adaptive retry failure occurs near3.46477ms. At256 uniform pieces work already passes, but motion coarse/fine error fails; consistent work quadrature alone cannot remove this gate."
+  },
+  "adverse": {
+    "firstAdaptive": "Time-linear local error budget hits roundoff/retry exhaustion in both shared-load mirrors; retained prototype and reason logs.",
+    "correctedAdaptive": "Accurate, but shared median4.637ms/p955.388ms misses2/5ms; normal-only and reverse controls regress; refusal observed maximum47.322ms misses10ms.",
+    "uniform": "Accurate reference; shared median4.778ms/p956.254ms and slip-refusal max12.296ms miss provisional cost budget."
+  },
+  "checks": [
+    {
+      "path": "out/grip-mixed/first-force-launcher.json",
+      "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/grip-mixed/first-force.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.382600507
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/reference-first-launcher.json",
+      "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/grip-mixed-reference.ts",
+            "--coarse=32768",
+            "--fine=65536"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.921401915000001
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/reference-controls-launcher.json",
+      "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/grip-mixed-reference.ts",
+            "--controls",
+            "--coarse=32768",
+            "--fine=65536"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.803664829000001
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/reference-combine-launcher.json",
+      "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/grip-mixed-reference.ts",
+            "--combine"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.39095446599999994
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/focused-first.json",
+      "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/grip-mixed.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.7981741840000003
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/accuracy-first-launcher.json",
+      "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/grip-mixed-evidence.ts",
+            "--output=out/grip-mixed/accuracy-first.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.7043863340000001
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/typecheck-first.json",
+      "commit": "1945a34fbca4bc39ed787e6f22dd7e6e615f8b2a",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.375009087999999
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/focused-final.json",
+      "commit": "927819cfa604415775121be3ae7a765775cce75d",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/grip-mixed.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.011332146
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/typecheck-final.json",
+      "commit": "927819cfa604415775121be3ae7a765775cce75d",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 16.283195276999997
+        }
+      ]
+    },
+    {
+      "path": "out/grip-mixed/benchmark-launcher.json",
+      "commit": "927819cfa604415775121be3ae7a765775cce75d",
+      "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/grip-mixed-evidence.ts",
+            "--benchmark",
+            "--output=out/grip-mixed/publish-evidence.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.574977357
+        }
+      ]
+    }
+  ],
+  "recordedLauncherSeconds": 46.245696103,
+  "rawEvidence": [
+    {
+      "path": "out/grip-mixed/first-force.ts",
+      "sha256": "6d0ea008732ff56a5cf76dc61727ee763d462fb67683344d9ab7ceebd266a906",
+      "bytes": 1575
+    },
+    {
+      "path": "out/grip-mixed/first-force.jsonl",
+      "sha256": "3022825d25647bda60c25708332d6e4892d33de3f84f13657b8c51f02f29f534",
+      "bytes": 10245
+    },
+    {
+      "path": "out/grip-mixed/candidate-first.jsonl",
+      "sha256": "2c2cf15fbaa4027f2a4712ea6c938d965d74f8bf4225a62743248f8a2779c723",
+      "bytes": 8616
+    },
+    {
+      "path": "out/grip-mixed/adaptive-first.jsonl",
+      "sha256": "c8c2cc209561756cf33841ee0514587b4977f73e262726bf9e37f5cdd5bf9e56",
+      "bytes": 4570
+    },
+    {
+      "path": "out/grip-mixed/rejected-adaptive.ts",
+      "sha256": "c6895620ebdfa9119ba6600efbfba56d6311882a05f272bffdaa545a85db1be0",
+      "bytes": 11259
+    },
+    {
+      "path": "out/grip-mixed/adaptive-reasons.jsonl",
+      "sha256": "979eb257bb92868d3ec3b6a026fe994e03747e4c1cdf3bc4c550512bdc2dc759",
+      "bytes": 628
+    },
+    {
+      "path": "out/grip-mixed/adaptive-reasons-final.jsonl",
+      "sha256": "961fc7d6c9ebd6ba9d0fe73ceb6651b5789f9697807d9d938b98e83a6d7cdc1e",
+      "bytes": 1507
+    },
+    {
+      "path": "out/grip-mixed/adaptive-summed.jsonl",
+      "sha256": "13bd009a447bcd4c2f413e521701d99fa99728e6063051bbab043e4e659e9da4",
+      "bytes": 9147
+    },
+    {
+      "path": "out/grip-mixed/accuracy-first.json",
+      "sha256": "cbd076392959fa71db8fec347d5973f6f8c38de672d1ed733e29eb9bf9658a6f",
+      "bytes": 36221
+    },
+    {
+      "path": "out/grip-mixed/publish-evidence.json",
+      "sha256": "80c4f01f135c78fc29d938d28cedb36a2512f002f9cfad9e07d923e7c1f785bb",
+      "bytes": 80764
+    },
+    {
+      "path": "out/grip-mixed/benchmark.log",
+      "sha256": "5bbcd6cfec60986c4a5bddad63e50baebb7926d5f0bf1db82c2150c101ed594f",
+      "bytes": 9934
+    },
+    {
+      "path": "out/grip-mixed/gate-probe.ts",
+      "sha256": "5ecd4fa08db5dc9dee038e40d5dd8794989bfbd18731ca104edb92a263c37b7a",
+      "bytes": 12078
+    },
+    {
+      "path": "out/grip-mixed/gate-probe.jsonl",
+      "sha256": "241dda4bf7436bf2b47fc029255dcd6b400f96b6c0c41f8cf7af7f88013a794f",
+      "bytes": 1431
+    },
+    {
+      "path": "out/grip-mixed/reference-32768-65536.json",
+      "sha256": "bb14fc89db79c82c5899441406dfb3d0b7bc1af45e1b2db162ea02d0bb3266a9",
+      "bytes": 13362
+    },
+    {
+      "path": "out/grip-mixed/reference-controls-32768-65536.json",
+      "sha256": "65d1d1dedc2880c71055d649f4d4b33e9d00e6b97c930eee25fa5a2641936c9d",
+      "bytes": 13398
+    },
+    {
+      "path": "out/grip-mixed/first-force-launcher.json",
+      "sha256": "06b3481bf4e2b3dc97f2aa17de0b4586a7e566ade8de5f614228a63f43a10030",
+      "bytes": 2148
+    },
+    {
+      "path": "out/grip-mixed/reference-first-launcher.json",
+      "sha256": "bbf508e5ba01553944916457b39d6658f932569bf38fd1df25b9ddd36fdcdc67",
+      "bytes": 2219
+    },
+    {
+      "path": "out/grip-mixed/reference-controls-launcher.json",
+      "sha256": "fb304fc55612ced97cbac3b3d2625e83c1c2ab7ec094caaa157bc74b8c7bc71a",
+      "bytes": 2241
+    },
+    {
+      "path": "out/grip-mixed/reference-combine-launcher.json",
+      "sha256": "96e135a52f24cc44b1e81422445abdf7b35fbebd9c04847a085c5a666e96c6d4",
+      "bytes": 2192
+    },
+    {
+      "path": "out/grip-mixed/focused-first.json",
+      "sha256": "dd12fcfb9829b5a073119e58dad7a32633b9f0a4ea22bfb1527437151e67b2ad",
+      "bytes": 2183
+    },
+    {
+      "path": "out/grip-mixed/accuracy-first-launcher.json",
+      "sha256": "e198a8a6d5da87cef24cee4d12681154f61372424ad6b294ce5745e871276b62",
+      "bytes": 2224
+    },
+    {
+      "path": "out/grip-mixed/typecheck-first.json",
+      "sha256": "c0e22cbc91aed82843db27294111fe47152fcbb327a7ec484656d20b81d0103f",
+      "bytes": 2114
+    },
+    {
+      "path": "out/grip-mixed/focused-final.json",
+      "sha256": "90656bb1aa3ffe2599e8de9360cf8788760b1ae0ba25af68a0be1ce5dfa62f1f",
+      "bytes": 2149
+    },
+    {
+      "path": "out/grip-mixed/typecheck-final.json",
+      "sha256": "66f7c5c4255e5999988f2a50071a7d9185f12c051523b1f9da7879577b1beceb",
+      "bytes": 2087
+    },
+    {
+      "path": "out/grip-mixed/benchmark-launcher.json",
+      "sha256": "6f152ae1cd439ce4d6d54cbdba0965476fe1abead19f26d43d7706a197f1f114",
+      "bytes": 2215
+    }
+  ],
+  "recommendation": "Retain uniform mixed-grip integration as a diagnostic mechanical reference. Reject current adaptive strategy for integration; do not broaden World scope. Next isolate and integrate the normal-cap takeover event under the same vector force budget and motion/work gates.",
+  "knownFailures": "Nine unrelated patch-gate failures retained at43/52; not rerun/re-pinned. Keeper angular-law and0.24-yard support-history fork remain independent. No new full suite/games/native tackles, capacities/recovery/default changes or baseline promotion."
+}
