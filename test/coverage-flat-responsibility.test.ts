@@ -43,6 +43,17 @@ function conflict(flip = false, style: 'match' | 'spot' = 'match') {
   return { sim, d, b, one, two, pictures, sign, y, expanded };
 }
 
+/** Guard controls need a genuine ordinary #1 choice. The old fixture earned
+ * it through the private QB-read bonus. A visible planted curl now supplies
+ * that precondition, leaving the original native positive conflict intact. */
+function ordinaryCurl(f: ReturnType<typeof conflict>) {
+  f.sim.qbEyes = null;
+  const landmark = f.b.recordedLandmark();
+  f.pictures.set(f.one.idx, { ...f.pictures.get(f.one.idx)!,
+    pos: { x: landmark.x, y: landmark.y + f.sign }, vel: { x: 0, y: 0 } });
+  return f;
+}
+
 describe('a curl-flat player resolves the visible two-receiver conflict', () => {
   it.each([false, true])('widens with acquired #2 instead of duplicating #1, mirror=%s', flip => {
     const { sim, d, b, one, two, sign, expanded } = conflict(flip);
@@ -79,7 +90,7 @@ describe('a curl-flat player resolves the visible two-receiver conflict', () => 
   });
 
   it('waits for its own pass belief even when an outside cue is available', () => {
-    const { sim, d, b, one, expanded } = conflict();
+    const { sim, d, b, one, expanded } = ordinaryCurl(conflict());
     d.recog!.read = 'unsure';
     b.update(d, sim);
     expect(b.target?.idx).toBe(one.idx);
@@ -94,7 +105,7 @@ describe('a curl-flat player resolves the visible two-receiver conflict', () => 
   });
 
   it('does not steal the curl while #2 remains inside its visible curl landmark', () => {
-    const { sim, d, b, one, two, pictures, expanded } = conflict();
+    const { sim, d, b, one, two, pictures, expanded } = ordinaryCurl(conflict());
     pictures.set(two.idx, { ...pictures.get(two.idx)!, pos: { x: 42.69, y: 37 } });
     b.update(d, sim);
     expect(b.target?.idx).toBe(one.idx);
@@ -117,7 +128,7 @@ describe('a curl-flat player resolves the visible two-receiver conflict', () => 
   });
 
   it('leaves a three-receiver exchange to its installed coverage rules', () => {
-    const { sim, d, b, one, expanded } = conflict();
+    const { sim, d, b, one, expanded } = ordinaryCurl(conflict());
     sim.offAlign.numbering.W3 = 'Y';
     b.update(d, sim);
     expect(b.target?.idx).toBe(one.idx);
@@ -125,7 +136,7 @@ describe('a curl-flat player resolves the visible two-receiver conflict', () => 
   });
 
   it('retains its ordinary choice with an acquired Fast-3 back release', () => {
-    const { sim, d, b, one, pictures, expanded } = conflict();
+    const { sim, d, b, one, pictures, expanded } = ordinaryCurl(conflict());
     const back = sim.slot('RB')!;
     pictures.set(back.idx, { pos: { x: 42, y: 36 }, vel: { x: 1, y: 4 }, facing: 1, stance: null, age: .25, pose: 'up' });
     b.update(d, sim);
