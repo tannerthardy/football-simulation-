@@ -74,6 +74,61 @@ The prior nine patch failures and .24-yard support-history divergence remain
 independent. The historical full-suite receipt describes its own revision;
 this pass follows the shared focused-testing policy.
 
+At exact code/harness `1db1c9d`, all 31 focused checks pass: 14 new bounded
+contracts and 17 preserved dry/linear-support contracts. Typecheck passes.
+Test bodies took 534 ms (2.36 s command), typecheck 14.35 s, and serial
+accuracy/cost collection 2.18 s. All measured kernel/helper/fixture hashes and
+flags are pinned in [the receipt](../../data/reviews/current/grip-bounded-feasibility.json).
+
+The acquired candidate ends slipping at 2.31618 ms, with legs increasing to
+`.177003758710`; cap exit occurs at 2.31339 ms. Against the independent fine
+World references, adaptive maximum body-position error is 1.87e-10 yd,
+attachment-point error 7.25e-10 yd, facing error 6.82e-9 rad and spin error
+7.21e-7 rad/s. Body/motor work errors are 3.93e-7 / 8.72e-6 in engine units.
+Represented-energy residual is <=1.73e-9 and angular residual <=2.08e-10.
+The maximum final-legs difference is 7.13e-8; finite reference slip times
+are quantized to their physical partition, so paired agreement is not an
+exact event-time oracle. The independent exponential legs identity and
+unequal-interval contract also pass.
+
+## Cost and a newly exposed acceptance gap
+
+Seven serial repetitions, same inputs and machine; p95 equals the observed
+maximum with this sample size. These describe isolated 4.167 ms intervals,
+not full ticks or native tackle performance.
+
+| Case | Midpoint median / p95=max | Resolved median / p95=max | Uniform kernel median / p95=max | Adaptive kernel median / p95=max |
+| --- | ---: | ---: | ---: | ---: |
+| Acquired angle | 1.102 / 1.469 ms | 51.14 / 83.59 ms | 8.030 / 10.861 ms | 3.986 / 11.561 ms |
+| Displaced point | .125 / 1.047 ms | 73.14 / 95.17 ms | 9.304 / 10.643 ms | 4.672 / 7.443 ms |
+| Frontal control | .074 / .095 ms | 1.653 / 5.960 ms | .046 / .567 ms | .078 / .192 ms |
+
+Both kernel strategies pass all expanded mechanical criteria. Adaptive
+roughly halves the uniform loaded-interval median and its derivative count
+(6803→3248 acquired; 6808→4756 displaced). It modestly increases the already
+small force-free control median and has a worse acquired observed maximum.
+Both remain above the prior provisional median <=2 ms / p95 <=5 ms budget.
+There is no practical-integration recommendation or relaxed budget.
+
+Both loaded midpoint results fail accuracy. Resolved stops without hitting
+its cap (256/512 accepted pieces, estimated error .746/.756), but fails the
+new partial-share requirements: final legs differ by 1.36e-5 / 1.29e-5.
+Acquired common-foot error is 5.31e-7 yd, slightly above its 5e-7 requirement.
+The existing estimator checks body, grasp point and work; it does not check
+legs or raw common-foot displacement. Thus its coarse/fine stop can miss a
+slip-marker state error. This is an expanded numerical acceptance gap,
+not evidence of changed capacities, a football regression, or a demonstrated
+cause of the .24-yard support-history divergence. Resolved is preserved
+unchanged; the independently refined World rows supply reference evidence.
+Its faster measured cost is not an accuracy-matched speed comparison.
+
+The single best next step is to establish a convergence criterion that sees
+partial-share slip events and common-foot state on this small witness before
+broader integration. Then investigate analytic treatment of its short
+viscous tail; more generic subdivisions still cost too much. Normal/reel,
+multiple contacts and actual ground/recovery/effort composition remain later
+applicability questions.
+
 ## Reproduction and next boundary
 
 Literal inputs/reference outputs ship in `config/grip-bounded-reference.json`;
