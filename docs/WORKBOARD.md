@@ -1,5 +1,22 @@
 # Current work ownership
 
+## 2026-10-14 (America/Phoenix): NFL run-line positioning audit
+
+Run-game owns `codex/run-nfl-line-audit` from preserved awareness preparation
+`fed330a`, against accepted develop `a1b16e6` / runtime e5 and original 44 flags.
+The user requests a Big Data Bowl audit of offensive depth, retreat, lateral
+positioning and spacing. Reuse the three accepted Ace traces and NFL reference
+aggregates; label old engine cohorts as historical. No awareness/RT/yielding/RB
+policy or solver edit, and no baseline Ace rerun or game campaign.
+
+Existing NFL drive metrics measure defender movement, not offensive retreat.
+For the missing direct OL comparison, selectively retrieve the verified BDB2025
+week-one tracking and metadata members from the known archive, checking member
+hashes before analysis. Measure both sides with the same fixed-time operator,
+retaining concept/personnel/alignment limits and censoring. Only aggregate
+reference results and portable diagnostics may be published, not raw provider
+tracking. Preserve the pending Pass/Pursuit candidate dependency and PR #32.
+
 ## 2026-10-14 (America/Phoenix): information-source-only Ace preparation
 
 Run-game owns `codex/ace-awareness-comparison` from preserved PR #32
