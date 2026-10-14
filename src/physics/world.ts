@@ -369,6 +369,12 @@ export class World {
    * Lower grips use material contact plus the existing recovery motor.
    * Center retains production until native helper/controller controls pass. */
   readonly handContact: 'center' | 'patch';
+  /** Independent ground-law selection for contact isolation. Omission keeps
+   * the historical center/patch pairing, including diagnostic mode switches. */
+  private readonly groundMovementSetting?: 'legacy' | 'response';
+  get groundMovement(): 'legacy' | 'response' {
+    return this.groundMovementSetting ?? (this.handContact === 'patch' ? 'response' : 'legacy');
+  }
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -436,11 +442,12 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch' } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; groundMovement?: 'legacy' | 'response' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
     this.handContact = opts.handContact ?? 'center';
+    this.groundMovementSetting = opts.groundMovement;
     if (this.handContact === 'patch' && this.handIntegration !== 'centered')
       throw new RangeError('Common hand patches require centered force integration');
     this.supportModel = opts.supportModel ?? 'legacy';
@@ -921,7 +928,7 @@ export class World {
    * loses different low bits in mirrored lean/turn requests. Center retains
    * its historical arithmetic. At an exact half turn, retain the input sign. */
   private facingDelta(from: number, to: number): number {
-    if (this.handContact === 'center') return angleDiff(from, to);
+    if (this.groundMovement === 'legacy') return angleDiff(from, to);
     let delta = (to - from) % (2 * Math.PI);
     if (delta > Math.PI) delta -= 2 * Math.PI;
     if (delta < -Math.PI) delta += 2 * Math.PI;
@@ -946,7 +953,7 @@ export class World {
     const saved = b.facing;
     // A turn-rate ceiling is not an achieved pose. Contact and the shared
     // traction budget can prevent that turn; it cannot grant gait speed yet.
-    if (this.handContact === 'center') b.facing = facing;
+    if (this.groundMovement === 'legacy') b.facing = facing;
     const acc = locomotionAccel(b, cmd, dt, a);
     b.facing = saved;
     return { ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1, free: false, dive: null, launch: 0 };
@@ -1492,7 +1499,7 @@ export class World {
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
-        const yaw: { impulse: number; work: number; peakTorque?: number } = this.handContact === 'patch'
+        const yaw: { impulse: number; work: number; peakTorque?: number } = this.groundMovement === 'response'
           ? turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy))
           : turnBody(b,plan.facing,remaining,h,turnRateOf(b),a,Math.hypot(fx,fy));
         // Strength limits drive+correction; traction also pays for yaw at

@@ -72,6 +72,7 @@ export interface PlaySetup {
   supportIntegration?: 'mean' | 'integrated';
   /** Experimental angular hand patch; default center keeps production law. */
   handContact?: 'center' | 'patch';
+  groundMovement?: 'legacy' | 'response';
 }
 
 const MAX_PLAY_TIME = 25;
@@ -210,7 +211,7 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     this.snapX = this.agents.map((a) => a.pos.x);
-    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact });
+    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact, groundMovement: setup.groundMovement });
     // Linemen and backs start in their stances; skill players upright.
     for (const a of this.agents) {
       const line = ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot) || a.player.position === 'DT' || a.player.position === 'EDGE';

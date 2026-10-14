@@ -892,7 +892,8 @@ export class RunBlocker implements Behavior {
         const meet = { x: seen.pos.x + seen.vel.x * lead, y: clamp(seen.pos.y + seen.vel.y * lead + side, .5, FIELD_WIDTH - .5) };
         const vel = movingArrivalVelocity(a.body, meet, seen.vel, a.profile.vmax, .1, Math.hypot(seen.vel.x, seen.vel.y), 1, capacity);
         const facing = Math.atan2(meet.y - a.pos.y, meet.x - a.pos.x);
-        const path = previewFreeMovement(a.body, { vel, facing }, sim.t, 26, sim.world.handContact);
+        const movementModel = sim.world.groundMovement === 'legacy' ? 'center' : 'patch';
+        const path = previewFreeMovement(a.body, { vel, facing }, sim.t, 26, movementModel);
         for (const s of path) {
           const bx = seen.pos.x + seen.vel.x * s.t, by = seen.pos.y + seen.vel.y * s.t;
           const gap = Math.hypot(s.pos.x - bx, s.pos.y - by) - strike;

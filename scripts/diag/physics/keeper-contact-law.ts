@@ -49,10 +49,10 @@ export function reflectWitness(source: KeeperWitness): KeeperWitness {
   return w;
 }
 export function replayKeeper(input: KeeperWitness, mode: 'center'|'patch',
-  opts: {free?:boolean;passiveOnly?:boolean;substeps?:number;partitions?:number[]}={}) {
+  opts: {free?:boolean;passiveOnly?:boolean;substeps?:number;partitions?:number[];groundMovement?:'legacy'|'response'}={}) {
   const bodies=structuredClone(input.beforeBodies);
   if(bodies.some(b=>b.support?.foot))throw Error('Acquire attachment prefix before replaying a foot');
-  const world=new World(bodies,{handContact:mode,substeps:opts.substeps});world.time=input.t;
+  const world=new World(bodies,{handContact:mode,substeps:opts.substeps,groundMovement:opts.groundMovement});world.time=input.t;
   world.joints=input.jointInputs.map(flat=>{
     if(flat.kind!=='hands')throw Error('This witness supports acquired hands only');
     const {a,b,actor,holder,...rest}=structuredClone(flat);

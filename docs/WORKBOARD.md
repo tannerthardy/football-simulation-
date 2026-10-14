@@ -1,5 +1,21 @@
 # Current work ownership
 
+User-assigned physics support: `codex/contact-law-isolation` from PR #14
+`22d3b34df18124ffad1a5eebd30d6f41bbb67d57`. This support worker owns only the
+isolated contact/ground-facing separation candidate in `src/physics/world.ts`
+and directly relevant diagnostics/tests. The primary physics owner retains
+shared-solver review and production promotion; do not duplicate this bounded
+extraction. PR #7 grip timing/support work and PR #13 RB correction are separate.
+Keep center/default and existing full-patch behavior unchanged; select the
+isolation explicitly through World API. Replay exact RT/DE_S input first,
+then only the three saved Ace controls after mechanical checks pass. Preserve
+old no-contact movement, force-point torque/work, shared budgets and mixed
+hand/torso law; no controller/capacity/roster/release tuning or baseline change.
+Necessary model plumbing: PlaySim passes the optional ground selection to World;
+plannedClimb chooses its existing empty-space preview by the resolved ground law,
+not the hand geometry. Existing center/full-patch routing is unchanged. No
+preview algorithm, collection rule, acquisition or shared movement-library edit.
+
 Shared comparisons start from `codex/run-game-integration`; read
 [the baseline](BASELINE.md) and run `npm run baseline:info` before collecting.
 Report the exact commit, source hash, flag profile and inputs. Historical rows
