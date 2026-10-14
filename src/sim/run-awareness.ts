@@ -152,9 +152,9 @@ export class RunAwareness {
           && (distance(next) < distance(a.pos) - .05 || distance(a.pos) <= lane.halfWidth + a.profile.radius);
         const window = lane && now + a.profile.reactionTime >= lane.arrival.earliest && now <= lane.arrival.latest;
         const lookPoint = peer.source === 'observed' || peer.source === 'remembered' ? peer.pos : lane?.lookPoint;
-        // Preview the requested region from our own pose before spending a
-        // primary-key opportunity. Clamping gaze toward an unreachable region
-        // does not make that region visible. Never consult the hidden runner
+        // Preview the selected landmark from our own pose before spending a
+        // primary-key opportunity. Clamping gaze toward an unreachable point
+        // does not make that point visible. Never consult the hidden runner
         // or scene occluders to decide whether this look is worth requesting.
         const attainable = lookPoint && this.inField(a, lookPoint,
           RUN_ATTENTION_LIMITS.gazeYaw + RUN_ATTENTION_LIMITS.glanceHalfAngle);
@@ -166,7 +166,7 @@ export class RunAwareness {
         } else {
           state.choice = 'primary'; state.lookPoint = null;
           state.reason = fresh ? 'acquired runner picture available; return to block key'
-            : crossing && window && !attainable ? 'expected look region outside attainable view; retain block key'
+            : crossing && window && !attainable ? 'selected look landmark outside attainable view; retain block key'
               : 'retain block key or return after a lane check';
         }
       }

@@ -192,6 +192,40 @@ describe('installed knowledge and acquired run attention', () => {
     expect(stationary.sim.runAwareness.recorded(stationary.observer)?.choice).toBe('primary');
   });
 
+  it('retains and acquires the primary key when its eligible installed lane look is physically unattainable', () => {
+    const left = stage(), right = stage();
+    for (const s of [left, right]) {
+      const intended = Math.atan2(s.expected.lookPoint.y - s.observer.pos.y,
+        s.expected.lookPoint.x - s.observer.pos.x);
+      s.observer.body.facing = intended - 150 * Math.PI / 180;
+      // The original key remains 60° off this achieved torso, so retaining it
+      // supplies a legitimate visual opportunity while the lane point cannot.
+      expect(Math.abs(angleDiff(s.observer.facing, intended)))
+        .toBeGreaterThan(LIMITS.gazeYaw + LIMITS.glanceHalfAngle);
+      const expected = s.sim.runAwareness.expectedLane(s.observer, s.now)!;
+      expect(s.now).toBeGreaterThanOrEqual(expected.arrival.earliest);
+      expect(s.now).toBeLessThan(expected.arrival.latest);
+      expect(Math.hypot(s.previous[s.observer.idx].vel.x,
+        s.previous[s.observer.idx].vel.y)).toBeGreaterThan(1);
+    }
+    // Different unseen real paths cannot make an impossible coached look useful.
+    left.runner.body.pos = atBearing(left, Math.PI, 4);
+    right.runner.body.pos = atBearing(right, -150 * Math.PI / 180, 7);
+    for (const s of [left, right]) {
+      expect(advance(s, s.now)).toEqual({ source: 'unavailable' });
+      const chosen = s.sim.runAwareness.recorded(s.observer)!;
+      expect(chosen.choice).toBe('primary');
+      expect(chosen.queuedSamples).toBeGreaterThan(0);
+      expect(s.sim.runAwareness.visualAttention(s.observer)).toBeNull();
+      const delivery = s.now + Math.ceil((s.observer.mind.observationDelay(s.observer.profile.reactionTime)
+        - 1e-9) / s.sim.dt) * s.sim.dt;
+      advance(s, delivery);
+      expect(s.sim.runAwareness.recorded(s.observer)?.sampledAt).toBeCloseTo(s.now, 12);
+      expect(s.sim.see(s.observer, s.key).pos).toEqual(s.key.pos);
+    }
+    expect(left.sim.runAwareness.recorded(left.observer)).toEqual(right.sim.runAwareness.recorded(right.observer));
+  });
+
   it('bounds the installed timing opportunity even if the true mesh is indefinitely stalled', () => {
     const s = stage(); s.sim.handoffAt = -1;
     s.runner.body.pos = atBearing(s, Math.PI, 7);
