@@ -157,7 +157,7 @@ for r in saved['panel']:
             actors[i]['slot']:{'depthPastLOS':current[i][0],'forwardFromSnap':current[i][0]-initial[i][0],
                 'lateralFromSnap':current[i][1]-initial[i][1],'exactDepthPastLOS':exact[i][0]-los,
                 'exactForwardFromSnap':exact[i][0]-actors[i]['initialBody']['pos']['x'],
-                'support':a.get('initialBody',{}).get('support',{}).get('state') if t==0 else support[round(t,8)][i]} for i in ol}}
+                'support':actors[i].get('initialBody',{}).get('support',{}).get('state') if t==0 else support[round(t,8)][i]} for i in ol}}
     late=[]
     for t,points in sorted(snapshots.items()):
         if t>=r['summary']['duration']:continue
