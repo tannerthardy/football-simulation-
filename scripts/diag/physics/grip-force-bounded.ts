@@ -4,6 +4,7 @@
  * This is not inserted into World; unsupported channels return no state.
  */
 import { boundedAttachment } from '../../../src/physics/bounded-attachment.js';
+import { LEG_SLIDE } from '../../../src/physics/grip-sliding.js';
 import { stiffTailStep } from './grip-stiff-tail.js';
 import { passiveStageStep } from './grip-passive-stages.js';
 import type { SupportedGripInput } from './grip-force-supported.js';
@@ -20,7 +21,7 @@ const AX=0,AY=1,AVX=2,AVY=3,AS=4,AA=5,BX=6,BY=7,BVX=8,BVY=9,BS=10,BA=11,
   ZX=12,ZY=13,FX=14,FY=15,JX=16,JY=17,QX=18,QY=19,JA=20,JB=21,QA=22,QB=23,
   BW=24,MW=25,DOSE=26,LEGS=27;
 
-export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'|'eliminated'='adaptive',witness?:GripPhaseWitness[]) {
+export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'|'eliminated'|'capped'='adaptive',witness?:GripPhaseWitness[]) {
   const {a,b,duration:H,capacity:C,mobility:mu}=input,K=1/a.mass+1/b.mass;
   const numbers=[H,C,mu,input.legs,input.pullSpeed,input.hold,input.reach,input.minimumDistance,input.attachmentReach,
     input.desired.x,input.desired.y,input.material.x,input.material.y,input.footOffset.x,input.footOffset.y,
@@ -132,6 +133,15 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
       return passiveStageStep(t,y,h,{a,b,mobility:mu,geometry,
         derivative:(time,state)=>derivative(time,state,'tail',hold),statistics:stageStatistics});
     }
+    function phaseStep(t:number,y:State,h:number,phase:Phase,hold:number) {
+      // Only the new diagnostic mode collocates the capped phase. Identical
+      // moving stages for impulse, drift and power retain quadratic body-work
+      // consistency; settling and the existing tail operator stay unchanged.
+      if(integration==='capped'&&phase==='cap')return passiveStageStep(t,y,h,{a,b,mobility:mu,geometry,
+        derivative:(time,state)=>derivative(time,state,phase,hold),statistics:stageStatistics,
+        capped:{force:-sign*C,slideTime:LEG_SLIDE}});
+      return rk4(t,y,h,phase,hold);
+    }
     for(let k=0;k<n;k++) {
       const end=(k+1)*H/n;
       let pieces=0;
@@ -152,7 +162,7 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
             if(!(h>0)||t+h===t)throw new RangeError('Bounded tangent adaptive underflow');
             let fine:State,error:number;
             try {
-              const step=integration==='eliminated'?eliminated:integration==='gauss'||integration==='radau'?implicit:(t:number,y:State,h:number,hold:number)=>rk4(t,y,h,phase,hold),
+              const step=integration==='eliminated'||integration==='capped'?eliminated:integration==='gauss'||integration==='radau'?implicit:(t:number,y:State,h:number,hold:number)=>rk4(t,y,h,phase,hold),
                 coarse=step(t,y,h,hold),mid=step(t,y,h/2,hold);
               fine=step(t+h/2,mid,h/2,hold);
               // Allocate local accuracy by elapsed physical time. Separately
@@ -176,7 +186,7 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
           h=Math.min(h,.05*g.M/inverse); // resolve the narrow 100%→98% event only
         }
         if(!(h>0)||t+h===t)throw new RangeError('Bounded tangent event underflow');
-        const next=rk4(t,y,h,phase,hold);
+        const next=phaseStep(t,y,h,phase,hold);
         if(phase!=='tail') {
           const fraction=phase==='cap'?1:.98,g=geometry(next),gap=sign*g.vt-fraction*g.M*C;
           if(gap<=0) {
@@ -185,12 +195,12 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
               // Existing motion/share/work gates still apply. A 1ns event
               // bracket per transition bounds two-clock share error by 6.67e-9, below
               // its 1e-6 budget; the old 36-iteration path remains unchanged.
-              if(integration==='eliminated'&&hi-lo<=1e-9)break;
-              const mid=(lo+hi)/2,z=geometry(rk4(t,y,mid,phase,hold));
+              if((integration==='eliminated'||integration==='capped')&&hi-lo<=1e-9)break;
+              const mid=(lo+hi)/2,z=geometry(phaseStep(t,y,mid,phase,hold));
               if(sign*z.vt-fraction*z.M*C>0)lo=mid;else hi=mid;
             }
-            if(integration==='eliminated')eventMaxBracket=Math.max(eventMaxBracket,hi-lo);
-            const delta=(lo+hi)/2;y=rk4(t,y,delta,phase,hold);t+=delta;
+            if(integration==='eliminated'||integration==='capped')eventMaxBracket=Math.max(eventMaxBracket,hi-lo);
+            const delta=(lo+hi)/2;y=phaseStep(t,y,delta,phase,hold);t+=delta;
             if(phase==='cap'){capUntil=t;phase='settling';}
             else {slidingUntil=t;phase='tail';hold=geometry(y).d;}
             if(witness)witness.push({partitions:n,time:t,phase,
@@ -240,7 +250,7 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     representationError=Math.max(...(['a','b'] as const).flatMap((k,i)=>[
       Math.abs(p[k].pos.x-y[i*6]),Math.abs(p[k].pos.y-y[i*6+1]),Math.abs(p[k].vel.x-y[i*6+2]),
       Math.abs(p[k].vel.y-y[i*6+3]),Math.abs(p[k].spin-y[i*6+4]),Math.abs(p[k].facing-y[i*6+5])]));
-  if((integration==='gauss'||integration==='radau'||integration==='eliminated')&&!(representationError<1e-10))
+  if((integration==='gauss'||integration==='radau'||integration==='eliminated'||integration==='capped')&&!(representationError<1e-10))
     throw new RangeError('Bounded tangent body/impulse representation limit exhausted');
   return {...p,material:{x:y[ZX],y:y[ZY]},footOffset:{x:y[FX],y:y[FY]},
     point:{x:p.b.pos.x+g.rbx,y:p.b.pos.y+g.rby},legs:y[LEGS],hold:accepted.hold,
@@ -248,5 +258,5 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     impulse:{x:y[JX],y:y[JY]},moment:{x:y[QX],y:y[QY]},
     angularImpulse:[y[JA],y[JB]],angularMoment:[y[QA],y[QB]],bodyWork:y[BW],motorWork:y[MW],
     passiveWork:y[BW]-y[MW],dose:y[DOSE],...balances(y),partitions:n,evaluations,error,integration,
-    representationError,...(integration==='eliminated'?{stageStatistics,eventMaxBracket}:{})};
+    representationError,...(integration==='eliminated'||integration==='capped'?{stageStatistics,eventMaxBracket}:{})};
 }
