@@ -1,5 +1,7 @@
 # Bounded teammate information: Run Game / Integration handoff
 
+[Draft PR #36](https://github.com/tannerthardy/football-simulation-/pull/36).
+
 Spacing now consumes observer-owned information instead of every teammate's
 refreshed recorded reality. The information contracts pass. This is a
 reviewable bounded candidate; **automatic football promotion remains held**
