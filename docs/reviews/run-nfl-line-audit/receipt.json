@@ -1,0 +1,93 @@
+{
+  "protocol": "run-nfl-line-audit-publication-v1",
+  "collectorRevision": "a15352119b6ff52ab7a10cb6fd98152d57f3d62c",
+  "publicationToolRevision": "e9996fad108329427d9ba81e04882e3796e7454c",
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "runtimeSourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "settingsAndInputs": "audit.json: settings (all 44 flags, World defaults, original producer) and native[].input",
+  "sourcePacketSha256": "ad462904b23c6864d902107f6a0aa3a876b4e35d3247db8dfaebb835276ae10b",
+  "operatorSha256": "c0a74965a3604dbcd459383b602140983c10ec4ca0e4e4768bdf61baedfb030e",
+  "checks": {
+    "cohort_counts_censoring_percentile_order_and_snap_origin": "pass",
+    "existing_common_time_results_unchanged_after_snap_extension": "pass",
+    "native_exact_saved_snapshots_inputs_no_interpolation": "pass",
+    "early_OL_commands_have_no_saved_engagement_or_helper": "pass"
+  },
+  "focusedUnitTests": {
+    "revision": "5b2c1a140d1ed0bc6acd67d6d824ef5f02f03c6b",
+    "command": "python3 -m unittest discover -s test -p test_run_line_geometry_audit.py",
+    "passed": 5
+  },
+  "executionHistory": [
+    {
+      "revision": "5b2c1a1",
+      "operation": "verified NFL acquisition",
+      "seconds": 21.33377927800757,
+      "downloadedBytes": 150675268
+    },
+    {
+      "revision": "5b2c1a1",
+      "operation": "first compatible collector, without snap rows",
+      "seconds": 13.543995489
+    },
+    {
+      "revision": "a857809",
+      "operation": "snap extension collector",
+      "result": "failed: NameError in native support lookup; no output accepted; zero simulation"
+    },
+    {
+      "revision": "a15352119b6ff52ab7a10cb6fd98152d57f3d62c",
+      "operation": "corrected collector with snap rows",
+      "seconds": 11.078610374999698
+    }
+  ],
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "pandas": "2.2.3",
+  "matplotlib": "3.10.8",
+  "newWorldSteps": 0,
+  "newSimulationPlays": 0,
+  "newGames": 0,
+  "productionFilesChanged": false,
+  "awarenessCandidateEvaluated": false,
+  "publicationToolSha256": "80ec57ebe973ffbbbcf0710f68038f251a30335860fb2a5bf1b281b73370dfb9",
+  "publicationSeconds": 1.0015265800029738,
+  "files": {
+    "early-commands.json": {
+      "bytes": 21965,
+      "sha256": "64220a2fdf24b75243ddb10108eb784852f3a006e50ec53d62022065b01a20ea"
+    },
+    "acquisition.json": {
+      "bytes": 2070,
+      "sha256": "12d3612caa7bed6c435aa6331958356fde6b35c40cf06d6eeeeebb5f71db16cf"
+    },
+    "measurements.csv": {
+      "bytes": 36957,
+      "sha256": "8341c31147ed5b64843069ff9b056481575e1079570c4d3e1c0b5a7bc9ea45ea"
+    },
+    "audit-first.json": {
+      "bytes": 155308,
+      "sha256": "13a1c92fbe82b24d11ae5e1b16fe2b8e0805b44cd8ac2c94579cc793af7b1089"
+    },
+    "README.md": {
+      "bytes": 11972,
+      "sha256": "d13d262b05e1379de414489aeb9497b6400260a2af41b6f62f383a846270646c"
+    },
+    "line-position-comparison.pdf": {
+      "bytes": 30789,
+      "sha256": "7919192eb745985c3a1caa8168dd211db16f41511a8d47f4760c253c72521475"
+    },
+    "line-position-comparison.svg": {
+      "bytes": 171060,
+      "sha256": "8a8c0b6675316af3568be29df52191c3d9e5ac8c5f73ab63d75f0f4145e93297"
+    },
+    "audit.json": {
+      "bytes": 170344,
+      "sha256": "7ec947615627dd5132559a7b28cdbd0406bfb57ed30782e1eb4eca2ab135de67"
+    },
+    "line-position-comparison.png": {
+      "bytes": 429549,
+      "sha256": "1904eae920360171b365a3296f7c1ce154c931180b116bdfa5da02425a240fb6"
+    }
+  }
+}

@@ -1,0 +1,446 @@
+source,cohort_or_case,slice,metric,n,mean_or_observation,p10,p50,p90
+NFL,allRBHandoffs,0s,mean_forward,556,0.0,0.0,0.0,0.0
+NFL,allRBHandoffs,0s,max_retreat,556,0.0,0.0,0.0,0.0
+NFL,allRBHandoffs,0s,deepest_los_depth,556,-1.0865107913669065,-1.4,-1.1,-0.6
+NFL,allRBHandoffs,0s,mean_abs_lateral,556,0.0,0.0,0.0,0.0
+NFL,allRBHandoffs,0s,lateral_span,556,6.252697841726619,5.8,6.2,6.7
+NFL,allRBHandoffs,0s,minimum_pair_distance,556,1.4162966511314456,1.216552506059644,1.4142135623730951,1.5999999999999999
+NFL,allRBHandoffs,0s,depth_span,556,0.8176258992805756,0.6,0.8,1.0
+NFL,allRBHandoffs,0s,retreated_over_1yd_count,556,0.0,0.0,0.0,0.0
+NFL,allRBHandoffs,0s,retreated_over_2yd_count,556,0.0,0.0,0.0,0.0
+NFL,allRBHandoffs,0.4s,mean_forward,556,0.09205035971223023,0.0,0.08000000000000003,0.2
+NFL,allRBHandoffs,0.4s,max_retreat,556,0.0868705035971223,0.0,0.09999999999999987,0.20000000000000007
+NFL,allRBHandoffs,0.4s,deepest_los_depth,556,-1.0553956834532374,-1.4,-1.1,-0.6
+NFL,allRBHandoffs,0.4s,mean_abs_lateral,556,0.28640287769784173,0.10000000000000005,0.26,0.49999999999999994
+NFL,allRBHandoffs,0.4s,lateral_span,556,6.135251798561151,5.6,6.1,6.6
+NFL,allRBHandoffs,0.4s,minimum_pair_distance,556,1.267698780504344,1.0123957324153228,1.272767955776961,1.5033296378372907
+NFL,allRBHandoffs,0.4s,depth_span,556,0.8276978417266188,0.5999999999999999,0.8,1.1
+NFL,allRBHandoffs,0.4s,retreated_over_1yd_count,556,0.0,0.0,0.0,0.0
+NFL,allRBHandoffs,0.4s,retreated_over_2yd_count,556,0.0,0.0,0.0,0.0
+NFL,allRBHandoffs,1.2s,mean_forward,555,0.4632432432432433,-0.011999999999999868,0.4800000000000001,0.9720000000000005
+NFL,allRBHandoffs,1.2s,max_retreat,555,0.5073873873873874,0.0,0.39999999999999997,1.2000000000000002
+NFL,allRBHandoffs,1.2s,deepest_los_depth,555,-1.2702702702702702,-2.1,-1.3,-0.4
+NFL,allRBHandoffs,1.2s,mean_abs_lateral,555,1.6903063063063062,0.76,1.5799999999999998,2.8
+NFL,allRBHandoffs,1.2s,lateral_span,555,5.7144144144144144,4.4,5.7,7.1
+NFL,allRBHandoffs,1.2s,minimum_pair_distance,555,1.0734082393050481,0.7000000000000001,0.9999999999999999,1.6155494421403511
+NFL,allRBHandoffs,1.2s,depth_span,555,1.8790990990990992,1.0999999999999999,1.8,2.9
+NFL,allRBHandoffs,1.2s,retreated_over_1yd_count,555,0.18198198198198198,0.0,0.0,1.0
+NFL,allRBHandoffs,1.2s,retreated_over_2yd_count,555,0.0036036036036036037,0.0,0.0,0.0
+NFL,allRBHandoffs,1.6s,mean_forward,555,0.6646126126126126,-0.0919999999999999,0.6799999999999999,1.3720000000000006
+NFL,allRBHandoffs,1.6s,max_retreat,555,0.7781981981981981,0.0,0.6,1.9000000000000001
+NFL,allRBHandoffs,1.6s,deepest_los_depth,555,-1.5063063063063062,-2.7599999999999993,-1.5,-0.3
+NFL,allRBHandoffs,1.6s,mean_abs_lateral,555,2.489801801801802,1.02,2.2600000000000002,4.26
+NFL,allRBHandoffs,1.6s,lateral_span,555,5.630090090090091,3.9,5.5,7.5
+NFL,allRBHandoffs,1.6s,minimum_pair_distance,555,1.1768503584231198,0.7028427124746187,1.077032961426901,1.841736387309156
+NFL,allRBHandoffs,1.6s,depth_span,555,2.755855855855856,1.5,2.6,4.2
+NFL,allRBHandoffs,1.6s,retreated_over_1yd_count,555,0.4,0.0,0.0,1.0
+NFL,allRBHandoffs,1.6s,retreated_over_2yd_count,555,0.07747747747747748,0.0,0.0,0.0
+NFL,allRBHandoffs,2s,mean_forward,554,0.8871841155234657,-0.08799999999999975,0.9299999999999999,1.8
+NFL,allRBHandoffs,2s,max_retreat,554,1.0299638989169675,0.0,0.8,2.6
+NFL,allRBHandoffs,2s,deepest_los_depth,554,-1.709927797833935,-3.5,-1.7,-0.1
+NFL,allRBHandoffs,2s,mean_abs_lateral,554,3.2342960288808666,1.26,2.8600000000000003,5.714
+NFL,allRBHandoffs,2s,lateral_span,554,5.690072202166065,3.9,5.5,7.9
+NFL,allRBHandoffs,2s,minimum_pair_distance,554,1.2527404167912375,0.6795742752749561,1.1661903789690604,1.9235384061671348
+NFL,allRBHandoffs,2s,depth_span,554,3.585559566787004,1.9,3.4,5.669999999999998
+NFL,allRBHandoffs,2s,retreated_over_1yd_count,554,0.5649819494584838,0.0,0.0,2.0
+NFL,allRBHandoffs,2s,retreated_over_2yd_count,554,0.21299638989169675,0.0,0.0,1.0
+NFL,allRBHandoffs,2.4s,mean_forward,548,1.1611678832116787,-0.02599999999999994,1.2399999999999998,2.32
+NFL,allRBHandoffs,2.4s,max_retreat,548,1.2025547445255473,0.0,0.8999999999999999,3.1999999999999997
+NFL,allRBHandoffs,2.4s,deepest_los_depth,548,-1.8062043795620437,-4.0,-1.7,0.1
+NFL,allRBHandoffs,2.4s,mean_abs_lateral,548,3.917992700729927,1.3800000000000001,3.37,7.026000000000001
+NFL,allRBHandoffs,2.4s,lateral_span,548,5.852737226277372,3.5,5.6,8.630000000000003
+NFL,allRBHandoffs,2.4s,minimum_pair_distance,548,1.328154639280426,0.7071067811865475,1.2206555615733703,2.0916429112474773
+NFL,allRBHandoffs,2.4s,depth_span,548,4.286678832116789,2.2,4.0,6.830000000000002
+NFL,allRBHandoffs,2.4s,retreated_over_1yd_count,548,0.6058394160583942,0.0,0.0,2.0
+NFL,allRBHandoffs,2.4s,retreated_over_2yd_count,548,0.2755474452554745,0.0,0.0,1.0
+NFL,allRBHandoffs,handoff,mean_forward,555,0.5072792792792792,-0.039999999999999994,0.5,1.06
+NFL,allRBHandoffs,handoff,max_retreat,555,0.5747747747747748,0.0,0.4,1.4000000000000001
+NFL,allRBHandoffs,handoff,deepest_los_depth,555,-1.3331531531531533,-2.2,-1.3,-0.4
+NFL,allRBHandoffs,handoff,mean_abs_lateral,555,1.891315315315315,0.76,1.72,3.384000000000001
+NFL,allRBHandoffs,handoff,lateral_span,555,5.68918918918919,4.2,5.699999999999999,7.1
+NFL,allRBHandoffs,handoff,minimum_pair_distance,555,1.0910318679737245,0.6708203932499368,1.0,1.6455941288225078
+NFL,allRBHandoffs,handoff,depth_span,555,2.0931531531531533,1.1,2.0,3.2
+NFL,allRBHandoffs,handoff,retreated_over_1yd_count,555,0.24324324324324326,0.0,0.0,1.0
+NFL,allRBHandoffs,handoff,retreated_over_2yd_count,555,0.023423423423423424,0.0,0.0,0.0
+NFL,allRBHandoffs,timing,handoff_s,556,1.293705035971223,1.1,1.3,1.5
+NFL,outsideZone,0s,mean_forward,174,0.0,0.0,0.0,0.0
+NFL,outsideZone,0s,max_retreat,174,0.0,0.0,0.0,0.0
+NFL,outsideZone,0s,deepest_los_depth,174,-1.15,-1.4,-1.2,-0.8
+NFL,outsideZone,0s,mean_abs_lateral,174,0.0,0.0,0.0,0.0
+NFL,outsideZone,0s,lateral_span,174,6.25,5.800000000000001,6.3,6.6
+NFL,outsideZone,0s,minimum_pair_distance,174,1.4131551703538348,1.2754377448471461,1.414213562373095,1.5524174696260022
+NFL,outsideZone,0s,depth_span,174,0.8160919540229885,0.6,0.8,1.0700000000000016
+NFL,outsideZone,0s,retreated_over_1yd_count,174,0.0,0.0,0.0,0.0
+NFL,outsideZone,0s,retreated_over_2yd_count,174,0.0,0.0,0.0,0.0
+NFL,outsideZone,0.4s,mean_forward,174,0.0967816091954023,0.019999999999999983,0.09,0.19999999999999998
+NFL,outsideZone,0.4s,max_retreat,174,0.06379310344827586,0.0,0.0,0.19999999999999996
+NFL,outsideZone,0.4s,deepest_los_depth,174,-1.0827586206896551,-1.3699999999999999,-1.1,-0.7299999999999983
+NFL,outsideZone,0.4s,mean_abs_lateral,174,0.39678160919540223,0.18000000000000005,0.38000000000000006,0.6
+NFL,outsideZone,0.4s,lateral_span,174,6.183333333333333,5.63,6.2,6.6000000000000005
+NFL,outsideZone,0.4s,minimum_pair_distance,174,1.2837565584820774,1.1,1.2999999999999998,1.503329637837291
+NFL,outsideZone,0.4s,depth_span,174,0.7867816091954023,0.5,0.7999999999999999,1.0
+NFL,outsideZone,0.4s,retreated_over_1yd_count,174,0.0,0.0,0.0,0.0
+NFL,outsideZone,0.4s,retreated_over_2yd_count,174,0.0,0.0,0.0,0.0
+NFL,outsideZone,1.2s,mean_forward,174,0.5219540229885057,0.086,0.5199999999999999,0.9800000000000001
+NFL,outsideZone,1.2s,max_retreat,174,0.4028735632183908,0.0,0.30000000000000004,0.9
+NFL,outsideZone,1.2s,deepest_los_depth,174,-1.170689655172414,-1.8,-1.2,-0.5299999999999983
+NFL,outsideZone,1.2s,mean_abs_lateral,174,2.378275862068966,1.58,2.5,3.0340000000000003
+NFL,outsideZone,1.2s,lateral_span,174,5.878735632183909,4.8,5.7,7.1
+NFL,outsideZone,1.2s,minimum_pair_distance,174,1.133951554175433,0.7380808854255535,1.0700237713501828,1.646506159178647
+NFL,outsideZone,1.2s,depth_span,174,1.7586206896551724,1.0,1.7000000000000002,2.6
+NFL,outsideZone,1.2s,retreated_over_1yd_count,174,0.08620689655172414,0.0,0.0,0.0
+NFL,outsideZone,1.2s,retreated_over_2yd_count,174,0.0,0.0,0.0,0.0
+NFL,outsideZone,1.6s,mean_forward,174,0.7636781609195403,0.046000000000000034,0.79,1.44
+NFL,outsideZone,1.6s,max_retreat,174,0.6540229885057471,0.0,0.55,1.5
+NFL,outsideZone,1.6s,deepest_los_depth,174,-1.4097701149425288,-2.4,-1.4,-0.5
+NFL,outsideZone,1.6s,mean_abs_lateral,174,3.602528735632184,2.404,3.73,4.576000000000001
+NFL,outsideZone,1.6s,lateral_span,174,5.666091954022988,4.03,5.5,7.4700000000000015
+NFL,outsideZone,1.6s,minimum_pair_distance,174,1.2596138457522492,0.7380808854255535,1.1661903789690604,1.9081370499312096
+NFL,outsideZone,1.6s,depth_span,174,2.6735632183908047,1.5,2.6,3.870000000000002
+NFL,outsideZone,1.6s,retreated_over_1yd_count,174,0.28160919540229884,0.0,0.0,1.0
+NFL,outsideZone,1.6s,retreated_over_2yd_count,174,0.022988505747126436,0.0,0.0,0.0
+NFL,outsideZone,2s,mean_forward,174,1.008390804597701,0.04600000000000006,1.05,1.9680000000000006
+NFL,outsideZone,2s,max_retreat,174,0.8689655172413794,0.0,0.7000000000000001,2.1700000000000017
+NFL,outsideZone,2s,deepest_los_depth,174,-1.6,-3.0,-1.65,-0.2299999999999983
+NFL,outsideZone,2s,mean_abs_lateral,174,4.8228735632183914,3.1580000000000004,5.02,6.056000000000002
+NFL,outsideZone,2s,lateral_span,174,5.536781609195402,3.4000000000000004,5.4,7.710000000000004
+NFL,outsideZone,2s,minimum_pair_distance,174,1.3649720301035981,0.7380808854255535,1.301920240520265,2.0549693105973157
+NFL,outsideZone,2s,depth_span,174,3.5247126436781606,2.0999999999999996,3.3499999999999996,5.370000000000002
+NFL,outsideZone,2s,retreated_over_1yd_count,174,0.47126436781609193,0.0,0.0,1.0
+NFL,outsideZone,2s,retreated_over_2yd_count,174,0.14367816091954022,0.0,0.0,1.0
+NFL,outsideZone,2.4s,mean_forward,172,1.291860465116279,0.19999999999999996,1.3699999999999999,2.438
+NFL,outsideZone,2.4s,max_retreat,172,1.0168604651162791,0.0,0.8999999999999999,2.4000000000000004
+NFL,outsideZone,2.4s,deepest_los_depth,172,-1.6662790697674417,-3.4,-1.6,-0.009999999999999433
+NFL,outsideZone,2.4s,mean_abs_lateral,172,5.954767441860465,4.0040000000000004,6.18,7.5200000000000005
+NFL,outsideZone,2.4s,lateral_span,172,5.597674418604651,3.1999999999999993,5.300000000000001,8.19
+NFL,outsideZone,2.4s,minimum_pair_distance,172,1.4505232725642545,0.7810249675906655,1.3910416133316956,2.220360331117452
+NFL,outsideZone,2.4s,depth_span,172,4.231395348837209,2.5,3.9000000000000004,6.570000000000001
+NFL,outsideZone,2.4s,retreated_over_1yd_count,172,0.5465116279069767,0.0,0.0,1.0
+NFL,outsideZone,2.4s,retreated_over_2yd_count,172,0.20930232558139536,0.0,0.0,1.0
+NFL,outsideZone,handoff,mean_forward,174,0.5934482758620689,0.06000000000000003,0.5599999999999999,1.1400000000000001
+NFL,outsideZone,handoff,max_retreat,174,0.4724137931034482,0.0,0.35,1.1
+NFL,outsideZone,handoff,deepest_los_depth,174,-1.2373563218390806,-2.0,-1.2,-0.5
+NFL,outsideZone,handoff,mean_abs_lateral,174,2.7368965517241386,1.706,2.8,3.7140000000000004
+NFL,outsideZone,handoff,lateral_span,174,5.795977011494253,4.53,5.6,7.2
+NFL,outsideZone,handoff,minimum_pair_distance,174,1.1584442078439785,0.7615773105863909,1.0770329614269007,1.646506159178647
+NFL,outsideZone,handoff,depth_span,174,2.02183908045977,1.03,2.0,3.0700000000000016
+NFL,outsideZone,handoff,retreated_over_1yd_count,174,0.15517241379310345,0.0,0.0,1.0
+NFL,outsideZone,handoff,retreated_over_2yd_count,174,0.011494252873563218,0.0,0.0,0.0
+NFL,outsideZone,timing,handoff_s,174,1.3166666666666669,1.1,1.3,1.5
+NFL,outsideZoneUnderCenter,0s,mean_forward,122,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,0s,max_retreat,122,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,0s,deepest_los_depth,122,-1.1770491803278689,-1.4,-1.2,-0.9
+NFL,outsideZoneUnderCenter,0s,mean_abs_lateral,122,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,0s,lateral_span,122,6.209016393442623,5.8,6.2,6.6
+NFL,outsideZoneUnderCenter,0s,minimum_pair_distance,122,1.394920663044906,1.2165525060596438,1.40356688476182,1.5132745950421558
+NFL,outsideZoneUnderCenter,0s,depth_span,122,0.8262295081967213,0.6,0.8,1.0900000000000005
+NFL,outsideZoneUnderCenter,0s,retreated_over_1yd_count,122,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,0s,retreated_over_2yd_count,122,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,0.4s,mean_forward,122,0.11278688524590164,0.020000000000000018,0.1,0.23800000000000004
+NFL,outsideZoneUnderCenter,0.4s,max_retreat,122,0.055737704918032795,0.0,0.0,0.19999999999999996
+NFL,outsideZoneUnderCenter,0.4s,deepest_los_depth,122,-1.0983606557377046,-1.3899999999999997,-1.1,-0.9
+NFL,outsideZoneUnderCenter,0.4s,mean_abs_lateral,122,0.41950819672131145,0.22200000000000011,0.41999999999999993,0.6360000000000001
+NFL,outsideZoneUnderCenter,0.4s,lateral_span,122,6.1213114754098354,5.6,6.1,6.6
+NFL,outsideZoneUnderCenter,0.4s,minimum_pair_distance,122,1.2611885017448226,1.0999999999999999,1.2649110640673518,1.5016573615267468
+NFL,outsideZoneUnderCenter,0.4s,depth_span,122,0.7885245901639345,0.5,0.8,1.0
+NFL,outsideZoneUnderCenter,0.4s,retreated_over_1yd_count,122,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,0.4s,retreated_over_2yd_count,122,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,1.2s,mean_forward,122,0.5668852459016395,0.09999999999999998,0.56,1.04
+NFL,outsideZoneUnderCenter,1.2s,max_retreat,122,0.37377049180327865,0.0,0.20000000000000004,0.9
+NFL,outsideZoneUnderCenter,1.2s,deepest_los_depth,122,-1.1598360655737705,-1.8,-1.15,-0.5
+NFL,outsideZoneUnderCenter,1.2s,mean_abs_lateral,122,2.447704918032787,1.7639999999999998,2.54,3.0960000000000005
+NFL,outsideZoneUnderCenter,1.2s,lateral_span,122,5.813934426229507,4.71,5.6,6.9
+NFL,outsideZoneUnderCenter,1.2s,minimum_pair_distance,122,1.1222224284964988,0.7280109889280518,1.0367968324948775,1.602809758769326
+NFL,outsideZoneUnderCenter,1.2s,depth_span,122,1.7639344262295082,1.0,1.8,2.5
+NFL,outsideZoneUnderCenter,1.2s,retreated_over_1yd_count,122,0.07377049180327869,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,1.2s,retreated_over_2yd_count,122,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,1.6s,mean_forward,122,0.8142622950819671,0.062000000000000055,0.8800000000000001,1.52
+NFL,outsideZoneUnderCenter,1.6s,max_retreat,122,0.6139344262295082,0.0,0.5,1.5000000000000002
+NFL,outsideZoneUnderCenter,1.6s,deepest_los_depth,122,-1.381967213114754,-2.4799999999999995,-1.3,-0.4099999999999995
+NFL,outsideZoneUnderCenter,1.6s,mean_abs_lateral,122,3.6886885245901646,2.5839999999999996,3.77,4.636
+NFL,outsideZoneUnderCenter,1.6s,lateral_span,122,5.626229508196722,4.0,5.5,7.1
+NFL,outsideZoneUnderCenter,1.6s,minimum_pair_distance,122,1.2194241085536583,0.7218003284763234,1.118033988749895,1.837112743885468
+NFL,outsideZoneUnderCenter,1.6s,depth_span,122,2.6590163934426227,1.5,2.6,3.8000000000000003
+NFL,outsideZoneUnderCenter,1.6s,retreated_over_1yd_count,122,0.26229508196721313,0.0,0.0,1.0
+NFL,outsideZoneUnderCenter,1.6s,retreated_over_2yd_count,122,0.02459016393442623,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,2s,mean_forward,122,1.0498360655737706,0.042000000000000086,1.19,2.0360000000000005
+NFL,outsideZoneUnderCenter,2s,max_retreat,122,0.8311475409836068,0.0,0.7,2.2
+NFL,outsideZoneUnderCenter,2s,deepest_los_depth,122,-1.5672131147540982,-3.1,-1.5,-0.20999999999999944
+NFL,outsideZoneUnderCenter,2s,mean_abs_lateral,122,4.9339344262295075,3.2260000000000004,5.0600000000000005,6.188000000000001
+NFL,outsideZoneUnderCenter,2s,lateral_span,122,5.503278688524591,3.4000000000000004,5.3500000000000005,7.4
+NFL,outsideZoneUnderCenter,2s,minimum_pair_distance,122,1.3188985773763153,0.7218003284763234,1.3000000000000003,2.018631689866894
+NFL,outsideZoneUnderCenter,2s,depth_span,122,3.4877049180327875,2.0,3.3,5.280000000000001
+NFL,outsideZoneUnderCenter,2s,retreated_over_1yd_count,122,0.39344262295081966,0.0,0.0,1.0
+NFL,outsideZoneUnderCenter,2s,retreated_over_2yd_count,122,0.1557377049180328,0.0,0.0,1.0
+NFL,outsideZoneUnderCenter,2.4s,mean_forward,120,1.3106666666666664,0.14000000000000015,1.4,2.462
+NFL,outsideZoneUnderCenter,2.4s,max_retreat,120,0.995,0.0,0.65,2.4000000000000004
+NFL,outsideZoneUnderCenter,2.4s,deepest_los_depth,120,-1.659166666666667,-3.5,-1.6,0.1
+NFL,outsideZoneUnderCenter,2.4s,mean_abs_lateral,120,6.087000000000001,4.050000000000001,6.27,7.58
+NFL,outsideZoneUnderCenter,2.4s,lateral_span,120,5.543333333333334,3.0999999999999996,5.300000000000001,8.020000000000001
+NFL,outsideZoneUnderCenter,2.4s,minimum_pair_distance,120,1.4355309145624895,0.7615773105863909,1.4088902235674574,2.1208413923018576
+NFL,outsideZoneUnderCenter,2.4s,depth_span,120,4.194166666666667,2.5,3.8499999999999996,6.330000000000003
+NFL,outsideZoneUnderCenter,2.4s,retreated_over_1yd_count,120,0.5166666666666667,0.0,0.0,1.1000000000000085
+NFL,outsideZoneUnderCenter,2.4s,retreated_over_2yd_count,120,0.20833333333333334,0.0,0.0,1.0
+NFL,outsideZoneUnderCenter,handoff,mean_forward,122,0.6675409836065572,0.062000000000000055,0.7,1.1800000000000002
+NFL,outsideZoneUnderCenter,handoff,max_retreat,122,0.4745901639344262,0.0,0.30000000000000004,1.1900000000000006
+NFL,outsideZoneUnderCenter,handoff,deepest_los_depth,122,-1.2573770491803278,-2.1,-1.2,-0.5
+NFL,outsideZoneUnderCenter,handoff,mean_abs_lateral,122,2.9603278688524592,2.0799999999999996,2.98,3.874
+NFL,outsideZoneUnderCenter,handoff,lateral_span,122,5.699180327868852,4.3,5.5,7.080000000000001
+NFL,outsideZoneUnderCenter,handoff,minimum_pair_distance,122,1.1463782462612595,0.7085071285771727,1.0532979877628006,1.6401219466856725
+NFL,outsideZoneUnderCenter,handoff,depth_span,122,2.145081967213115,1.2,2.1,3.190000000000001
+NFL,outsideZoneUnderCenter,handoff,retreated_over_1yd_count,122,0.18032786885245902,0.0,0.0,1.0
+NFL,outsideZoneUnderCenter,handoff,retreated_over_2yd_count,122,0.01639344262295082,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter,timing,handoff_s,122,1.3704918032786884,1.2,1.4,1.5
+NFL,outsideZoneUnderCenter12,0s,mean_forward,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,0s,max_retreat,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,0s,deepest_los_depth,34,-1.1382352941176475,-1.4,-1.2,-0.8300000000000001
+NFL,outsideZoneUnderCenter12,0s,mean_abs_lateral,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,0s,lateral_span,34,6.123529411764706,5.8,6.1,6.5
+NFL,outsideZoneUnderCenter12,0s,minimum_pair_distance,34,1.3964652634126669,1.3,1.40356688476182,1.5172071261721343
+NFL,outsideZoneUnderCenter12,0s,depth_span,34,0.8058823529411764,0.6300000000000001,0.8,1.0
+NFL,outsideZoneUnderCenter12,0s,retreated_over_1yd_count,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,0s,retreated_over_2yd_count,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,0.4s,mean_forward,34,0.12588235294117647,0.04,0.12,0.22799999999999998
+NFL,outsideZoneUnderCenter12,0.4s,max_retreat,34,0.03823529411764707,0.0,0.0,0.16999999999999993
+NFL,outsideZoneUnderCenter12,0.4s,deepest_los_depth,34,-1.0529411764705883,-1.3,-1.1,-0.7300000000000001
+NFL,outsideZoneUnderCenter12,0.4s,mean_abs_lateral,34,0.40941176470588236,0.24599999999999997,0.3600000000000001,0.6919999999999998
+NFL,outsideZoneUnderCenter12,0.4s,lateral_span,34,6.002941176470589,5.6,6.0,6.6
+NFL,outsideZoneUnderCenter12,0.4s,minimum_pair_distance,34,1.234257391417131,1.0871657678474378,1.2103559819694367,1.4560219778561039
+NFL,outsideZoneUnderCenter12,0.4s,depth_span,34,0.7823529411764706,0.6,0.8,1.0
+NFL,outsideZoneUnderCenter12,0.4s,retreated_over_1yd_count,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,0.4s,retreated_over_2yd_count,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,1.2s,mean_forward,34,0.6858823529411764,0.21200000000000002,0.74,1.04
+NFL,outsideZoneUnderCenter12,1.2s,max_retreat,34,0.2382352941176471,0.0,0.0,0.7000000000000001
+NFL,outsideZoneUnderCenter12,1.2s,deepest_los_depth,34,-0.9294117647058823,-1.57,-0.9,-0.33000000000000007
+NFL,outsideZoneUnderCenter12,1.2s,mean_abs_lateral,34,2.4629411764705886,1.8259999999999998,2.48,3.01
+NFL,outsideZoneUnderCenter12,1.2s,lateral_span,34,5.667647058823529,4.43,5.45,6.8
+NFL,outsideZoneUnderCenter12,1.2s,minimum_pair_distance,34,1.0272429039052628,0.7071067811865474,1.0,1.3830312946649517
+NFL,outsideZoneUnderCenter12,1.2s,depth_span,34,1.6088235294117645,1.0,1.6,2.2699999999999996
+NFL,outsideZoneUnderCenter12,1.2s,retreated_over_1yd_count,34,0.029411764705882353,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,1.2s,retreated_over_2yd_count,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,1.6s,mean_forward,34,0.9805882352941175,0.306,1.06,1.52
+NFL,outsideZoneUnderCenter12,1.6s,max_retreat,34,0.4117647058823529,0.0,0.15000000000000002,1.1
+NFL,outsideZoneUnderCenter12,1.6s,deepest_los_depth,34,-1.0970588235294119,-2.01,-1.0,-0.3
+NFL,outsideZoneUnderCenter12,1.6s,mean_abs_lateral,34,3.713529411764706,2.598,3.72,4.374
+NFL,outsideZoneUnderCenter12,1.6s,lateral_span,34,5.455882352941177,3.73,5.1,6.88
+NFL,outsideZoneUnderCenter12,1.6s,minimum_pair_distance,34,1.1196574592086548,0.707106781186547,1.0700237713501832,1.714929547587939
+NFL,outsideZoneUnderCenter12,1.6s,depth_span,34,2.4794117647058824,1.5,2.55,3.5799999999999996
+NFL,outsideZoneUnderCenter12,1.6s,retreated_over_1yd_count,34,0.14705882352941177,0.0,0.0,1.0
+NFL,outsideZoneUnderCenter12,1.6s,retreated_over_2yd_count,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,2s,mean_forward,34,1.26,0.4040000000000001,1.33,1.998
+NFL,outsideZoneUnderCenter12,2s,max_retreat,34,0.5970588235294118,0.0,0.39999999999999997,1.7799999999999998
+NFL,outsideZoneUnderCenter12,2s,deepest_los_depth,34,-1.2323529411764707,-2.64,-1.05,-0.1
+NFL,outsideZoneUnderCenter12,2s,mean_abs_lateral,34,4.9658823529411755,3.2980000000000005,5.14,5.933999999999999
+NFL,outsideZoneUnderCenter12,2s,lateral_span,34,5.288235294117648,3.1999999999999997,5.15,7.1000000000000005
+NFL,outsideZoneUnderCenter12,2s,minimum_pair_distance,34,1.2208063042583426,0.7380808854255534,1.2041522986797284,1.8439088914585775
+NFL,outsideZoneUnderCenter12,2s,depth_span,34,3.2705882352941176,2.0300000000000002,3.25,4.71
+NFL,outsideZoneUnderCenter12,2s,retreated_over_1yd_count,34,0.20588235294117646,0.0,0.0,1.0
+NFL,outsideZoneUnderCenter12,2s,retreated_over_2yd_count,34,0.08823529411764706,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,2.4s,mean_forward,34,1.5394117647058823,0.44800000000000006,1.51,2.462
+NFL,outsideZoneUnderCenter12,2.4s,max_retreat,34,0.7411764705882353,0.0,0.5,2.2499999999999996
+NFL,outsideZoneUnderCenter12,2.4s,deepest_los_depth,34,-1.261764705882353,-3.04,-1.05,0.1
+NFL,outsideZoneUnderCenter12,2.4s,mean_abs_lateral,34,6.1370588235294115,4.0200000000000005,6.4399999999999995,7.602
+NFL,outsideZoneUnderCenter12,2.4s,lateral_span,34,5.273529411764706,3.0999999999999996,5.15,7.569999999999999
+NFL,outsideZoneUnderCenter12,2.4s,minimum_pair_distance,34,1.323444473763144,0.7280109889280519,1.3303285242519807,1.989406481131655
+NFL,outsideZoneUnderCenter12,2.4s,depth_span,34,3.911764705882353,2.5300000000000002,3.75,5.569999999999999
+NFL,outsideZoneUnderCenter12,2.4s,retreated_over_1yd_count,34,0.3235294117647059,0.0,0.0,1.0
+NFL,outsideZoneUnderCenter12,2.4s,retreated_over_2yd_count,34,0.11764705882352941,0.0,0.0,0.6999999999999993
+NFL,outsideZoneUnderCenter12,handoff,mean_forward,34,0.7835294117647059,0.24000000000000002,0.8600000000000001,1.1800000000000002
+NFL,outsideZoneUnderCenter12,handoff,max_retreat,34,0.29411764705882354,0.0,0.04999999999999993,0.8699999999999999
+NFL,outsideZoneUnderCenter12,handoff,deepest_los_depth,34,-0.9764705882352942,-1.7,-0.95,-0.23000000000000007
+NFL,outsideZoneUnderCenter12,handoff,mean_abs_lateral,34,2.9011764705882355,2.0860000000000003,2.85,3.582
+NFL,outsideZoneUnderCenter12,handoff,lateral_span,34,5.532352941176471,4.2,5.300000000000001,6.77
+NFL,outsideZoneUnderCenter12,handoff,minimum_pair_distance,34,1.021208099666627,0.6548509067795375,0.9848857801796103,1.4584764606278189
+NFL,outsideZoneUnderCenter12,handoff,depth_span,34,1.8823529411764706,1.2,2.0,2.5
+NFL,outsideZoneUnderCenter12,handoff,retreated_over_1yd_count,34,0.058823529411764705,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,handoff,retreated_over_2yd_count,34,0.0,0.0,0.0,0.0
+NFL,outsideZoneUnderCenter12,timing,handoff_s,34,1.3441176470588232,1.2,1.35,1.5
+saved accepted sim,uc12-wz-s3,0s,mean_forward,1,0.0,,,
+saved accepted sim,uc12-wz-s3,0s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3,0s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-s3,0s,mean_abs_lateral,1,0.0,,,
+saved accepted sim,uc12-wz-s3,0s,lateral_span,1,5.2,,,
+saved accepted sim,uc12-wz-s3,0s,minimum_pair_distance,1,1.3,,,
+saved accepted sim,uc12-wz-s3,0s,depth_span,1,0.0,,,
+saved accepted sim,uc12-wz-s3,0s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,0s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,0.4s,mean_forward,1,0.06,,,
+saved accepted sim,uc12-wz-s3,0.4s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3,0.4s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-s3,0.4s,mean_abs_lateral,1,0.12000000000000004,,,
+saved accepted sim,uc12-wz-s3,0.4s,lateral_span,1,5.2,,,
+saved accepted sim,uc12-wz-s3,0.4s,minimum_pair_distance,1,1.2041594578792296,,,
+saved accepted sim,uc12-wz-s3,0.4s,depth_span,1,0.2,,,
+saved accepted sim,uc12-wz-s3,0.4s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,0.4s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,1.2s,mean_forward,1,0.8,,,
+saved accepted sim,uc12-wz-s3,1.2s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3,1.2s,deepest_los_depth,1,-0.3,,,
+saved accepted sim,uc12-wz-s3,1.2s,mean_abs_lateral,1,0.86,,,
+saved accepted sim,uc12-wz-s3,1.2s,lateral_span,1,5.8,,,
+saved accepted sim,uc12-wz-s3,1.2s,minimum_pair_distance,1,1.4,,,
+saved accepted sim,uc12-wz-s3,1.2s,depth_span,1,2.0,,,
+saved accepted sim,uc12-wz-s3,1.2s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,1.2s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,1.6s,mean_forward,1,1.02,,,
+saved accepted sim,uc12-wz-s3,1.6s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3,1.6s,deepest_los_depth,1,-0.4,,,
+saved accepted sim,uc12-wz-s3,1.6s,mean_abs_lateral,1,1.2399999999999998,,,
+saved accepted sim,uc12-wz-s3,1.6s,lateral_span,1,5.4,,,
+saved accepted sim,uc12-wz-s3,1.6s,minimum_pair_distance,1,1.2165525060596436,,,
+saved accepted sim,uc12-wz-s3,1.6s,depth_span,1,3.1,,,
+saved accepted sim,uc12-wz-s3,1.6s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,1.6s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,2s,mean_forward,1,1.08,,,
+saved accepted sim,uc12-wz-s3,2s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3,2s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-s3,2s,mean_abs_lateral,1,1.8800000000000001,,,
+saved accepted sim,uc12-wz-s3,2s,lateral_span,1,5.7,,,
+saved accepted sim,uc12-wz-s3,2s,minimum_pair_distance,1,1.30384048104053,,,
+saved accepted sim,uc12-wz-s3,2s,depth_span,1,3.8,,,
+saved accepted sim,uc12-wz-s3,2s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,2s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,2.4s,mean_forward,1,1.0,,,
+saved accepted sim,uc12-wz-s3,2.4s,max_retreat,1,0.19999999999999996,,,
+saved accepted sim,uc12-wz-s3,2.4s,deepest_los_depth,1,-0.7,,,
+saved accepted sim,uc12-wz-s3,2.4s,mean_abs_lateral,1,2.7,,,
+saved accepted sim,uc12-wz-s3,2.4s,lateral_span,1,6.0,,,
+saved accepted sim,uc12-wz-s3,2.4s,minimum_pair_distance,1,1.1401754250991376,,,
+saved accepted sim,uc12-wz-s3,2.4s,depth_span,1,4.2,,,
+saved accepted sim,uc12-wz-s3,2.4s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,2.4s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,handoff,mean_forward,1,1.02,,,
+saved accepted sim,uc12-wz-s3,handoff,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3,handoff,deepest_los_depth,1,-0.4,,,
+saved accepted sim,uc12-wz-s3,handoff,mean_abs_lateral,1,1.2399999999999998,,,
+saved accepted sim,uc12-wz-s3,handoff,lateral_span,1,5.4,,,
+saved accepted sim,uc12-wz-s3,handoff,minimum_pair_distance,1,1.2165525060596436,,,
+saved accepted sim,uc12-wz-s3,handoff,depth_span,1,3.1,,,
+saved accepted sim,uc12-wz-s3,handoff,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3,handoff,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,mean_forward,1,0.0,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,mean_abs_lateral,1,0.0,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,lateral_span,1,5.2,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,minimum_pair_distance,1,1.3,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,depth_span,1,0.0,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,0s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,mean_forward,1,0.06,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,mean_abs_lateral,1,0.12000000000000004,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,lateral_span,1,5.2,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,minimum_pair_distance,1,1.2041594578792296,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,depth_span,1,0.2,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,0.4s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,mean_forward,1,0.78,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,deepest_los_depth,1,-0.4,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,mean_abs_lateral,1,0.9,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,lateral_span,1,6.0,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,minimum_pair_distance,1,1.4,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,depth_span,1,2.3,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,1.2s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,mean_forward,1,1.06,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,deepest_los_depth,1,-0.4,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,mean_abs_lateral,1,1.3399999999999999,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,lateral_span,1,5.9,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,minimum_pair_distance,1,1.6492422502470643,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,depth_span,1,3.3,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,1.6s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,mean_forward,1,1.2,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,deepest_los_depth,1,-0.4,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,mean_abs_lateral,1,1.98,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,lateral_span,1,6.0,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,minimum_pair_distance,1,1.6278820596099708,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,depth_span,1,3.8,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,2s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,mean_forward,1,1.2,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,mean_abs_lateral,1,2.7199999999999998,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,lateral_span,1,6.1000000000000005,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,minimum_pair_distance,1,1.4764823060233407,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,depth_span,1,4.1,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,2.4s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,mean_forward,1,1.06,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,deepest_los_depth,1,-0.4,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,mean_abs_lateral,1,1.3399999999999999,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,lateral_span,1,5.9,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,minimum_pair_distance,1,1.6492422502470643,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,depth_span,1,3.3,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-s3-mirror,handoff,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,0s,mean_forward,1,0.0,,,
+saved accepted sim,uc12-wz-weak-s3,0s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,0s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-weak-s3,0s,mean_abs_lateral,1,0.0,,,
+saved accepted sim,uc12-wz-weak-s3,0s,lateral_span,1,5.2,,,
+saved accepted sim,uc12-wz-weak-s3,0s,minimum_pair_distance,1,1.3,,,
+saved accepted sim,uc12-wz-weak-s3,0s,depth_span,1,0.0,,,
+saved accepted sim,uc12-wz-weak-s3,0s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,0s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,mean_forward,1,0.09999999999999999,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,mean_abs_lateral,1,0.12000000000000008,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,lateral_span,1,5.1,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,minimum_pair_distance,1,1.1180339887498947,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,depth_span,1,0.2,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,0.4s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,mean_forward,1,1.02,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,deepest_los_depth,1,-0.3,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,mean_abs_lateral,1,0.4800000000000001,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,lateral_span,1,5.0,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,minimum_pair_distance,1,0.9999999999999999,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,depth_span,1,1.3,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,1.2s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,mean_forward,1,1.6199999999999999,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,mean_abs_lateral,1,0.6,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,lateral_span,1,5.2,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,minimum_pair_distance,1,1.004987562112089,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,depth_span,1,2.5,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,1.6s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,2s,mean_forward,1,1.9400000000000002,,,
+saved accepted sim,uc12-wz-weak-s3,2s,max_retreat,1,0.19999999999999996,,,
+saved accepted sim,uc12-wz-weak-s3,2s,deepest_los_depth,1,-0.7,,,
+saved accepted sim,uc12-wz-weak-s3,2s,mean_abs_lateral,1,0.9199999999999999,,,
+saved accepted sim,uc12-wz-weak-s3,2s,lateral_span,1,5.3,,,
+saved accepted sim,uc12-wz-weak-s3,2s,minimum_pair_distance,1,0.9899494936611665,,,
+saved accepted sim,uc12-wz-weak-s3,2s,depth_span,1,3.4000000000000004,,,
+saved accepted sim,uc12-wz-weak-s3,2s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,2s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,mean_forward,1,2.12,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,max_retreat,1,0.09999999999999998,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,deepest_los_depth,1,-0.6,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,mean_abs_lateral,1,1.4,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,lateral_span,1,5.0,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,minimum_pair_distance,1,1.8248287590894656,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,depth_span,1,3.9,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,2.4s,retreated_over_2yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,mean_forward,1,1.6199999999999999,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,max_retreat,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,deepest_los_depth,1,-0.5,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,mean_abs_lateral,1,0.6,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,lateral_span,1,5.2,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,minimum_pair_distance,1,1.004987562112089,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,depth_span,1,2.5,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,retreated_over_1yd_count,1,0,,,
+saved accepted sim,uc12-wz-weak-s3,handoff,retreated_over_2yd_count,1,0,,,

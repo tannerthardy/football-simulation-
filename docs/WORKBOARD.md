@@ -17,6 +17,26 @@ retaining concept/personnel/alignment limits and censoring. Only aggregate
 reference results and portable diagnostics may be published, not raw provider
 tracking. Preserve the pending Pass/Pursuit candidate dependency and PR #32.
 
+Completed [NFL line-position audit](reviews/run-nfl-line-audit/README.md):
+verified2022 week1 has556 RB handoffs /174 outside-zone /122 under-center
+proxy /34 under-center12 proxy; exact two-attached geometry match unavailable.
+At2s the34-play median absolute lateral movement is5.14yd versus1.88/1.98/.92
+in saved accepted Y/H/weak. Worst current retreat is0/0/.2yd versus NFLmedian.4;
+snap line is5.4yd wide with zero depth spread versus NFLmedians6.1/.8.
+Early .4s OL command changes and achieved movement already differ while they
+are not engaged/helpers; preserve acquired cues rather than blaming strength.
+No controller error is certified and no production change is proposed.
+
+Collector `a153521` takes11.08s; verified selective acquisition21.33s.
+All5 operator tests and saved-row/cohort/censoring checks pass; the intermediate
+snap-extension Python NameError remains in the receipt. Source e5, all44 flags,
+three input manifests and historical4ded6b6 retained. Zero new World steps,
+simulation plays/games; old broad engine cohorts explicitly historical.
+Portable report/aggregate data/PNG/SVG/PDF and tools are in
+`docs/reviews/assets/run-nfl-line-audit.zip`. Next dependency remains the
+Pass/Pursuit awareness pin/settings/observer initialization, before yielding
+or RB navigation changes. No new RT recovery variant or duplicate awareness.
+
 ## 2026-10-14 (America/Phoenix): information-source-only Ace preparation
 
 Run-game owns `codex/ace-awareness-comparison` from preserved PR #32

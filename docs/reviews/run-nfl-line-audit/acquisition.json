@@ -1,0 +1,55 @@
+{
+  "protocol": "bdb2025-selected-member-acquisition-v1",
+  "source": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view",
+  "archiveBytes": 1219840421,
+  "catalogArchiveSha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+  "wholeArchiveDownloaded": false,
+  "wholeArchiveChecksumVerified": false,
+  "selectedMembersIndividuallyVerified": true,
+  "memberHashAuthority": "data/reviews/run-game-coordination/nfl-reference.json",
+  "members": [
+    {
+      "path": "data/raw/bdb2025-line-audit/big-data-bowl-data/players.csv",
+      "file": "players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "cached": false,
+      "compressedBytes": 34966,
+      "sha256Verified": true,
+      "zipCrcVerified": true
+    },
+    {
+      "path": "data/raw/bdb2025-line-audit/big-data-bowl-data/plays.csv",
+      "file": "plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "cached": false,
+      "compressedBytes": 2167233,
+      "sha256Verified": true,
+      "zipCrcVerified": true
+    },
+    {
+      "path": "data/raw/bdb2025-line-audit/big-data-bowl-data/player_play.csv",
+      "file": "player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "cached": false,
+      "compressedBytes": 3010941,
+      "sha256Verified": true,
+      "zipCrcVerified": true
+    },
+    {
+      "path": "data/raw/bdb2025-line-audit/big-data-bowl-data/tracking_week_1.csv",
+      "file": "tracking_week_1.csv",
+      "bytes": 971403802,
+      "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c",
+      "cached": false,
+      "compressedBytes": 145396262,
+      "sha256Verified": true,
+      "zipCrcVerified": true
+    }
+  ],
+  "downloadedBytes": 150675268,
+  "elapsedSeconds": 21.33377927800757,
+  "redistribution": "Raw provider tracking remains ignored/local; publish aggregates and source attribution only."
+}

@@ -1,0 +1,1001 @@
+[
+  {
+    "case": "uc12-wz-s3",
+    "slot": "LT",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 6.7634486522301405,
+      "y": -1.8671988730537488
+    },
+    "worldTargetVelocity": {
+      "x": 6.7634486522301405,
+      "y": -1.8671988730537488
+    },
+    "actualEntryVelocity": {
+      "x": 1.5853165501612136,
+      "y": -0.4376615286212388
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-s3",
+    "slot": "RT",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 1.6015300464028037,
+      "y": -7.583522306970652
+    },
+    "worldTargetVelocity": {
+      "x": 0.9055080419137128,
+      "y": -2.6790708648538564
+    },
+    "actualEntryVelocity": {
+      "x": 0.4337876233841551,
+      "y": -0.7588744510891944
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": [
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 12,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 22.663825069951617
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 5,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.55316146569438,
+            "y": 25.158231325174604
+          },
+          "vel": {
+            "x": 0.6572011142176735,
+            "y": -0.8941014842172879
+          },
+          "stance": "low",
+          "facing": -0.8128651431578162,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 33.38200899202512,
+            "y": 26.383541567960936
+          },
+          "vel": {
+            "x": 0.8825632025239671,
+            "y": -1.3728760928147352
+          },
+          "stance": null,
+          "facing": -1.225811941479025,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 7,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.73081702154275,
+            "y": 22.58177790140253
+          },
+          "vel": {
+            "x": 1.6102189222443486,
+            "y": -0.9013894830515796
+          },
+          "stance": "low",
+          "facing": -0.6585130730354968,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 10,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.66488024988309,
+            "y": 30.340577717773286
+          },
+          "vel": {
+            "x": 1.2941430949701866,
+            "y": -1.103193659644892
+          },
+          "stance": "low",
+          "facing": -1.1819104643172276,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ]
+  },
+  {
+    "case": "uc12-wz-s3",
+    "slot": "C",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 1.6390691577206162,
+      "y": -3.3920662501666694
+    },
+    "worldTargetVelocity": {
+      "x": 1.6184299933555613,
+      "y": -2.4338034947651472
+    },
+    "actualEntryVelocity": {
+      "x": 0.5158926132727077,
+      "y": -0.669846829057525
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-s3",
+    "slot": "LG",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 7.603259587529371,
+      "y": 0.04684300578544826
+    },
+    "worldTargetVelocity": {
+      "x": 7.603259587529371,
+      "y": 0.04684300578544826
+    },
+    "actualEntryVelocity": {
+      "x": 0.5249557772639623,
+      "y": -0.742388271726252
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-s3",
+    "slot": "RG",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 2.727110457548775,
+      "y": -1.9615215655736449
+    },
+    "worldTargetVelocity": {
+      "x": 2.727110457548775,
+      "y": -1.9615215655736449
+    },
+    "actualEntryVelocity": {
+      "x": 0.8871176057456656,
+      "y": -0.8364904098581777
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": [
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 13,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 25.10826831662083
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 13,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 25.10826831662083
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 2,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.535693098328,
+            "y": 23.937869059168467
+          },
+          "vel": {
+            "x": 0.32235593531255957,
+            "y": -0.7269063883537592
+          },
+          "stance": "low",
+          "facing": -1.3037316548732958,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 33.38200899202512,
+            "y": 26.383541567960936
+          },
+          "vel": {
+            "x": 0.8825632025239671,
+            "y": -1.3728760928147352
+          },
+          "stance": null,
+          "facing": -1.225811941479025,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 7,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.73081702154275,
+            "y": 22.58177790140253
+          },
+          "vel": {
+            "x": 1.6102189222443486,
+            "y": -0.9013894830515796
+          },
+          "stance": "low",
+          "facing": -0.6585130730354968,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 10,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.66488024988309,
+            "y": 30.340577717773286
+          },
+          "vel": {
+            "x": 1.2941430949701866,
+            "y": -1.103193659644892
+          },
+          "stance": "low",
+          "facing": -1.1819104643172276,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ]
+  },
+  {
+    "case": "uc12-wz-s3-mirror",
+    "slot": "LT",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 6.7634486522301405,
+      "y": -1.8671988730537488
+    },
+    "worldTargetVelocity": {
+      "x": 6.7634486522301405,
+      "y": -1.8671988730537488
+    },
+    "actualEntryVelocity": {
+      "x": 1.5853165501612136,
+      "y": -0.4376615286212388
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-s3-mirror",
+    "slot": "RT",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 1.5901832681242212,
+      "y": -7.583522306970652
+    },
+    "worldTargetVelocity": {
+      "x": 0.8878090958430632,
+      "y": -2.382202427825277
+    },
+    "actualEntryVelocity": {
+      "x": 0.3661567433745455,
+      "y": -0.7516411844914909
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": [
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 12,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 22.663825069951617
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 5,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.55316161500127,
+            "y": 25.158231637291305
+          },
+          "vel": {
+            "x": 0.6572024354137496,
+            "y": -0.8940984290705408
+          },
+          "stance": "low",
+          "facing": -0.8128653258493056,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 33.38200899202512,
+            "y": 26.383541567960936
+          },
+          "vel": {
+            "x": 0.8825632025239671,
+            "y": -1.3728760928147352
+          },
+          "stance": null,
+          "facing": -1.225811941479025,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 7,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.6693915077332,
+            "y": 30.304624204887705
+          },
+          "vel": {
+            "x": 1.3160648493762355,
+            "y": -1.2797408772181245
+          },
+          "stance": "low",
+          "facing": -1.1611714742282369,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 10,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.72109777840399,
+            "y": 22.627258071985032
+          },
+          "vel": {
+            "x": 1.5661390951530763,
+            "y": -0.6764464586444742
+          },
+          "stance": "low",
+          "facing": -0.3801111546564482,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ]
+  },
+  {
+    "case": "uc12-wz-s3-mirror",
+    "slot": "C",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 1.6390691577111127,
+      "y": -3.3920662501666694
+    },
+    "worldTargetVelocity": {
+      "x": 1.6184298068313623,
+      "y": -2.4337998680165756
+    },
+    "actualEntryVelocity": {
+      "x": 0.5158926134247781,
+      "y": -0.6698467462682561
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-s3-mirror",
+    "slot": "LG",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 7.603259587529371,
+      "y": 0.04684300578544826
+    },
+    "worldTargetVelocity": {
+      "x": 7.603259587529371,
+      "y": 0.04684300578544826
+    },
+    "actualEntryVelocity": {
+      "x": 0.5249557772639623,
+      "y": -0.742388271726252
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-s3-mirror",
+    "slot": "RG",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 2.7271095253257918,
+      "y": -1.961523157503633
+    },
+    "worldTargetVelocity": {
+      "x": 2.7271095253257918,
+      "y": -1.961523157503633
+    },
+    "actualEntryVelocity": {
+      "x": 0.8871188128030717,
+      "y": -0.8364868214724317
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": [
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 13,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 25.10826831662083
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 13,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 25.10826831662083
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 2,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.543311293074346,
+            "y": 23.948103034893894
+          },
+          "vel": {
+            "x": 0.37790439269949877,
+            "y": -0.6676161644698022
+          },
+          "stance": "low",
+          "facing": -1.3038097788924081,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 33.38200899202512,
+            "y": 26.383541567960936
+          },
+          "vel": {
+            "x": 0.8825632025239671,
+            "y": -1.3728760928147352
+          },
+          "stance": null,
+          "facing": -1.225811941479025,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 7,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.6693915077332,
+            "y": 30.304624204887705
+          },
+          "vel": {
+            "x": 1.3160648493762355,
+            "y": -1.2797408772181245
+          },
+          "stance": "low",
+          "facing": -1.1611714742282369,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 10,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.72109777840399,
+            "y": 22.627258071985032
+          },
+          "vel": {
+            "x": 1.5661390951530763,
+            "y": -0.6764464586444742
+          },
+          "stance": "low",
+          "facing": -0.3801111546564482,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ]
+  },
+  {
+    "case": "uc12-wz-weak-s3",
+    "slot": "LT",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 1.669760582933506,
+      "y": 3.268246761150351
+    },
+    "worldTargetVelocity": {
+      "x": 1.3950866432830051,
+      "y": 1.486482174587844
+    },
+    "actualEntryVelocity": {
+      "x": 0.5711934177589354,
+      "y": 0.5795831402816626
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-weak-s3",
+    "slot": "RT",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 1.6516971729529573,
+      "y": 3.7138124202520477
+    },
+    "worldTargetVelocity": {
+      "x": 1.6800991692709177,
+      "y": 1.922609302318238
+    },
+    "actualEntryVelocity": {
+      "x": 0.8401598471276036,
+      "y": 0.7586106568014553
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": [
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 13,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 25.10826831662083
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 5,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.55785656115065,
+            "y": 25.49696127453159
+          },
+          "vel": {
+            "x": 0.6830064376418186,
+            "y": 0.567324113120218
+          },
+          "stance": "low",
+          "facing": 0.2667166161552123,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 33.38200899202512,
+            "y": 26.9497917653724
+          },
+          "vel": {
+            "x": 0.8825632025239671,
+            "y": 1.3728760928147352
+          },
+          "stance": null,
+          "facing": 1.225811941479025,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 7,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.761526876456735,
+            "y": 22.880641037568314
+          },
+          "vel": {
+            "x": 1.7606642010582183,
+            "y": 0.5534470218644022
+          },
+          "stance": "low",
+          "facing": 0.25672886528354877,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 2,
+        "target": 10,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.74998200858941,
+            "y": 30.57388749164016
+          },
+          "vel": {
+            "x": 1.705584366457312,
+            "y": 0.03712713440509825
+          },
+          "stance": "low",
+          "facing": 0.02313869294254922,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ]
+  },
+  {
+    "case": "uc12-wz-weak-s3",
+    "slot": "C",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 1.8361141732997024,
+      "y": 3.345684246371593
+    },
+    "worldTargetVelocity": {
+      "x": 1.4774092128168872,
+      "y": 0.8477393550988155
+    },
+    "actualEntryVelocity": {
+      "x": 0.5232391986364995,
+      "y": 0.24326199671746418
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-weak-s3",
+    "slot": "LG",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 7.349246712664784,
+      "y": -1.9494418121437107
+    },
+    "worldTargetVelocity": {
+      "x": 7.349246712664784,
+      "y": -1.9494418121437107
+    },
+    "actualEntryVelocity": {
+      "x": 1.5078715501898874,
+      "y": -0.39997403301437157
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": []
+  },
+  {
+    "case": "uc12-wz-weak-s3",
+    "slot": "RG",
+    "t": 0.4,
+    "behaviorVelocity": {
+      "x": 7.142562671089198,
+      "y": 1.242755613746126
+    },
+    "worldTargetVelocity": {
+      "x": 7.142562671089198,
+      "y": 1.242755613746126
+    },
+    "actualEntryVelocity": {
+      "x": 0.9242514967955848,
+      "y": 0.5969483801913433
+    },
+    "support": "up",
+    "engagementOrHelper": false,
+    "consumedSources": [
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 13,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 25.10826831662083
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 13,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.9,
+            "y": 25.10826831662083
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 2,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.573122593766975,
+            "y": 24.259524170327865
+          },
+          "vel": {
+            "x": 0.6649456377813516,
+            "y": 0.8219683098591117
+          },
+          "stance": "low",
+          "facing": 1.1513373636744866,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 33.38200899202512,
+            "y": 26.9497917653724
+          },
+          "vel": {
+            "x": 0.8825632025239671,
+            "y": 1.3728760928147352
+          },
+          "stance": null,
+          "facing": 1.225811941479025,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 7,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.761526876456735,
+            "y": 22.880641037568314
+          },
+          "vel": {
+            "x": 1.7606642010582183,
+            "y": 0.5534470218644022
+          },
+          "stance": "low",
+          "facing": 0.25672886528354877,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.4,
+        "actor": 5,
+        "target": 10,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.74998200858941,
+            "y": 30.57388749164016
+          },
+          "vel": {
+            "x": 1.705584366457312,
+            "y": 0.03712713440509825
+          },
+          "stance": "low",
+          "facing": 0.02313869294254922,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ]
+  }
+]
