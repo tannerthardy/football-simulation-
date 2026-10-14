@@ -79,7 +79,24 @@ for (const [name, priorName, pinName] of [['carrier-design', 'native', 'pin'], [
       const peer = (id: number) => ({ slot: slot(id), before: compactBody(pi.beforeBodies[id]),
         requested: frame.agents[id].requested, delivered: pi.intents[id], after: compactBody(pi.afterBodies[id]) });
       const foot = frame.contactEvents.find((e: any) => e.phase === 'movement' && e.blocker === keeper && e.defender === end);
+      const start = frame.carrierEvents.find((e: any) => e.actor === rb && e.phase === 'carrier-start');
+      const commandEvent = frame.carrierEvents.find((e: any) => e.actor === rb && e.phase === 'command');
+      const laneEvent = frame.carrierEvents.find((e: any) => e.actor === rb && e.phase === 'lane-evaluation');
+      let pressTrackCheck;
+      if (start?.designed && commandEvent && laneEvent) {
+        const aim = start.controllerState.opts.aim;
+        assert(!(start.controllerState.opts.follow?.length));
+        const currentPressAim = { x: aim.x, y: commandEvent.pos.y
+          + Math.tan(commandEvent.heading) * (aim.x - commandEvent.pos.x) };
+        pressTrackCheck = { assessedSnapAim: aim, commandedLiveAim: currentPressAim,
+          lateralMismatch: currentPressAim.y - aim.y, laneEvent,
+          requestedEarlyAbandon: !!laneEvent.result?.aimBlocked
+            && laneEvent.result.score > laneEvent.result.aimScore + laneEvent.earlyAbandonThreshold,
+          consumedRunnerCues: unique(frame.cues.filter((c: any) => c.defender === rb && c.stage === 'behavior')
+            .map((c: any) => ({ target: c.opponent, slot: slot(c.opponent), seen: c.seen }))) };
+      }
       movement.push({ t: frame.t, after: frame.after,
+        pressTrackCheck,
         carrierDecisionEvents: frame.carrierEvents.filter((e: any) => e.actor === rb && e.phase === 'lane-evaluation'),
         runner: peer(rb), keeper: peer(keeper), defender: peer(end),
         keeperRead: frame.agents[keeper].zone, keeperFootRequest: foot?.command,
@@ -153,6 +170,10 @@ for (const [name, priorName, pinName] of [['carrier-design', 'native', 'pin'], [
         });
         reads.push({ ...event, surface, consumedRunnerCues: cues, acquiredEnd: { slot: slot(end), ...endSeen },
           acquiredKeeper: { slot: slot(keeper), ...keeperSeen }, endOutsideKeeper,
+          apertureThreshold: body.profile.radius * 1.4,
+          adjacentSurfaceApertures: surface.slice(1).map((b: any, j: number) => ({ bounds: [surface[j].slot, b.slot],
+            width: b.pos.y - b.radius - surface[j].pos.y - surface[j].radius,
+            candidate: b.pos.y - b.radius - surface[j].pos.y - surface[j].radius > body.profile.radius * 1.4 })),
           actualKeeperHandsExist: !!hands, candidates,
           // Own body plus consumed images make this row portable for an offline
           // information/capability review without hidden defender trajectory.
