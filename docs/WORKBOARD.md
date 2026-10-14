@@ -1,5 +1,13 @@
 # Current work ownership
 
+Run-game follow-up: `codex/ace-protection-traces` from frozen PR #17 `61596bd`.
+Own only bounded Y/RT and RG/DT_S trace reduction, acquired-cue/request attribution
+and portable retained/cleared contact controls. No shared solver, capacity,
+contact-retention, RB, release or strength edits. The sole physics owner decides
+the retention contract. Historical law comparison stays 4ded6b6; assess current
+`develop` only after that contract review. Preserve weak-call success and the
+three input manifests; no new games or broad roster panel.
+
 User-assigned physics support: `codex/contact-law-isolation` from PR #14
 `22d3b34df18124ffad1a5eebd30d6f41bbb67d57`. This support worker owns only the
 isolated contact/ground-facing separation candidate in `src/physics/world.ts`
