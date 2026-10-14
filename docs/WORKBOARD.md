@@ -1,5 +1,25 @@
 # Current work ownership
 
+## 2026-10-14 (America/Phoenix): information-source-only Ace preparation
+
+Run-game owns `codex/ace-awareness-comparison` from preserved PR #32
+`7f5999c`. Further RT recovery variants are paused. Prepare accepted D01 H and
+successful Y for the awareness owner's information-source-only candidate,
+including personally acquired observer memory. Keep the original 44 flags,
+all players, native decisions, spacing/yielding equations, runner navigation,
+movement/contact capacities and laws unchanged. Preserve historical `4ded6b6`
+and the two rejected RT alternatives; no adoption or baseline promotion.
+
+At checkpoint start, refreshed develop remains `a1b16e6` / source `e5c318a`;
+no published awareness branch/PR was found. Pin the owner's exact candidate
+before evaluating it. Preparation may capture missing source provenance from
+snap through the two arrival windows, checking every state/RNG hash against
+the shared packet. Legitimate held reads are distinct from all-world history,
+another player's private decisions and new observations. A source change is
+evaluated before any yielding/RB navigation change. Inspect saved loaded-foot
+arithmetic only; a specific demonstrated cause is required for another trial.
+No shared production files or new RT action, games, census or full suite.
+
 ## 2026-10-14: bounded RT recovery counterfactual after D01–D03
 
 Run-game owns `codex/rt-recovery-counterfactual` from completed PR #30
