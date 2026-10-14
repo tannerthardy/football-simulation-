@@ -29,7 +29,16 @@ function execute(row: typeof manifest.inputs[number]) {
     defCall: { personnel: 'base43', front: FRONT_BY_ID[i.front], coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over Cover 3' },
     los: manifest.los, ballY: CENTER_Y, firstDownX: 50, seed: i.seed,
     handContact: 'patch', groundMovement: 'legacy' });
-  const cues: unknown[] = [], contacts: unknown[] = [], frames: unknown[] = [], hashes: string[] = [];
+  const cues: unknown[] = [], contacts: unknown[] = [], frames: unknown[] = [], hashes: string[] = [], writes: unknown[] = [];
+  // Distinguish the contact technique's request from teammate spacing and
+  // the final World input. Observe assignments; retain the original array data.
+  sim.intents = new Proxy(sim.intents, {
+    set(target, key, value) {
+      if ([2, 5, 6, 12, 13].includes(Number(key))) writes.push({ t: sim.t, actor: Number(key),
+        caller: new Error().stack?.split('\n')[2]?.trim(), intent: copy(value) });
+      return Reflect.set(target, key, value);
+    },
+  });
   const rep = (e: Engagement) => ({ blocker: e.blocker.idx, defender: e.defender.idx, start: e.start,
     helpers: e.helpers.map(h => ({ id: h.idx, control: contactControl(e, h) })), control: e.control,
     drive: copy(e.drive), surfaceAxis: copy(e.surfaceAxis), axis: axisOf(sim, e), sealTarget: e.sealTarget });
@@ -63,7 +72,7 @@ function execute(row: typeof manifest.inputs[number]) {
   }
   assert.equal(hashes.length, row.referencePrefixTicks);
   assert.equal(sha(JSON.stringify(hashes)), row.referencePrefixSha256, 'Reuse exact saved state/RNG history');
-  return { input: i, stop: sim.t, prefixExact: true, hashes, cues, contacts, frames };
+  return { input: i, stop: sim.t, prefixExact: true, hashes, cues, contacts, writes, frames };
 }
 const started = performance.now(), panel = manifest.inputs.map(execute);
 const result = { protocol: 'ace-protection-provenance-v1', manifest,
