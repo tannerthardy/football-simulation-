@@ -8,7 +8,8 @@ wide-zone execution, starting from PR #42 `f2dd561`. Active branch:
 prediction/information integration and any demonstrated blocker-request fix.
 The prior gather-release owner is coordinated and will not edit or duplicate
 this work. Physics, capabilities and contact laws remain unchanged. Parallel
-helpers provide read-only prediction review and new diagnostic scripts only.
+helpers provide prediction review, diagnostic scripts and explicitly assigned
+mechanism/spacing tests; root owns every runtime edit and the coupled decision.
 Test the first forecast inconsistency, a real obstruction, the three saved Ace
 openings and—after mechanism success—the frozen fresh Under front. Judge lateral
 progress, useful position and transmitted blocking load; no yardage target,

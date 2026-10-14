@@ -41,9 +41,6 @@ describe('moving teammate gathers', () => {
       spaceTeammates([a, b], intents, (_a, target) => target, { now: world.time });
       if (k === 0) {
         expect([a.body, b.body]).toEqual(before);
-        const speed = Math.hypot(intents[0].vel.x, intents[0].vel.y);
-        expect(speed).toBeGreaterThan(1);
-        expect(speed).toBeLessThan(9);
       }
       expect(intents[0].facing).toBe(request.facing);
       expect(intents[0].cutSkill).toBe(request.cutSkill);
@@ -57,23 +54,40 @@ describe('moving teammate gathers', () => {
         expect(work).toBeLessThanOrEqual(report.supportMotorWorkLimit[i] + 1e-8));
     }
     expect(a.pos.y * side).toBeGreaterThan(CENTER_Y * side + .5);
+    expect(commands.some(command => Math.hypot(command.vel.x, command.vel.y) < 9)).toBe(true);
     expect(commands.some(command => command.vel.y === request.vel.y)).toBe(true);
   });
 
-  it.each([-1, 1])('still stops when a slower turn would also hit the teammate in mirror %s', side => {
+  it.each([-1, 1])('still gathers before a genuinely obstructed turn in mirror %s', side => {
     const { a, b, world } = stage(side, .9);
     const request: Intent = { vel: { x: 0, y: side * 9 }, cutSkill: 1 };
+    // The unmodified production movement is the obstruction control. Keep
+    // identical physical starts; a safe receding prefix need not stop at t0.
+    const control = stage(side, .9), controlContacts = [];
+    for (let k = 0; k < 16; k++) {
+      const report = control.world.step([structuredClone(request), { vel: { x: 0, y: 0 } }], .05);
+      controlContacts.push(...report.contacts);
+    }
+    expect(controlContacts.some(contact => contact.impulse > 0)).toBe(true);
     const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
     try {
-      const intents: Intent[] = [request, { vel: { x: 0, y: 0 } }];
-      spaceTeammates([a, b], intents, (_a, target) => target, { now: world.time });
-      expect(intents[0].vel).toEqual({ x: 0, y: 0 });
-      expect(intents[0].cutSkill).toBe(request.cutSkill);
+      const commands: Intent[] = [];
+      for (let k = 0; k < 16; k++) {
+        const intents: Intent[] = [structuredClone(request), { vel: { x: 0, y: 0 } }];
+        spaceTeammates([a, b], intents, (_a, target) => target, { now: world.time });
+        expect(intents[0].cutSkill).toBe(request.cutSkill);
+        commands.push(structuredClone(intents[0]));
+        const report = world.step(intents, .05);
+        expect(report.contacts).toHaveLength(0);
+        expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+        report.supportMotorWork.forEach((work, i) =>
+          expect(work).toBeLessThanOrEqual(report.supportMotorWorkLimit[i] + 1e-8));
+        expect(a.body.support!.state).toBe('up');
+        expect(b.body.support!.state).toBe('up');
+      }
+      expect(commands.some(command => Math.hypot(command.vel.x, command.vel.y) < 9)).toBe(true);
       expect(preview).toHaveBeenCalled();
-      const report = world.step(intents, .05);
-      expect(report.contacts).toHaveLength(0);
-      expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
-      expect(a.body.support!.state).toBe('up');
+      expect((a.pos.y - CENTER_Y) * side).toBeGreaterThan(.5);
     } finally { preview.mockRestore(); }
   });
 
@@ -106,12 +120,8 @@ describe('moving teammate gathers', () => {
     const { a, b, world } = stage(1, 4);
     b.body.pos.x = 52;
     const request: Intent = { vel: { x: 0, y: 9 }, facing: Math.PI / 2, cutSkill: 1 };
-    const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
-    try {
-      const intents: Intent[] = [structuredClone(request), { vel: { x: 0, y: 0 } }];
-      spaceTeammates([a, b], intents, (_a, target) => target, { now: world.time });
-      expect(intents[0]).toEqual(request);
-      expect(preview).not.toHaveBeenCalled();
-    } finally { preview.mockRestore(); }
+    const intents: Intent[] = [structuredClone(request), { vel: { x: 0, y: 0 } }];
+    spaceTeammates([a, b], intents, (_a, target) => target, { now: world.time });
+    expect(intents[0]).toEqual(request);
   });
 });

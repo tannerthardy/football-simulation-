@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {describe,it,expect} from 'vitest';
+import {describe,it,expect,vi} from 'vitest';
 import {Rng} from '../src/core/rng.js';
 import {generateTeam,pickOffense,pickDefense} from '../src/league/team.js';
 import {RUN_BY_ID} from '../src/playbook/concepts.js';
@@ -10,6 +10,7 @@ import {PlaySim} from '../src/sim/playsim.js';
 import {spaceTeammates} from '../src/sim/spacing.js';
 import {World,type Intent} from '../src/physics/world.js';
 import {newSupport} from '../src/physics/support.js';
+import * as MovementPreview from '../src/physics/movement-preview.js';
 
 const witness=JSON.parse(gunzipSync(readFileSync(new URL('../docs/reviews/wide-zone-opening/first-breakdown.json.gz',import.meta.url))).toString());
 function stage(flip=false){
@@ -93,5 +94,30 @@ describe('achievable wide-zone unit traffic',()=>{
     expect(intents[0]).toEqual(requested);
     const world=new World([a.body,b.body]);world.time=1;const report=world.step(intents,.05);
     expect(report.contacts).toHaveLength(0);expect(a.pos.y).toBeLessThan(26);
+  });
+  it('previews residual own recovery after physical load clears instead of reverting to a requested ray',()=>{
+    const f=JSON.parse(readFileSync(new URL('../data/reviews/current/wz-released-recovery-state.json',import.meta.url),'utf8'));
+    const s=stage(),a=s.rt;a.body=structuredClone(f.body);a.body.support!.since=-Infinity;
+    expect(Math.hypot(a.body.support!.lean.x,a.body.support!.lean.y)).toBeGreaterThan(1);
+    expect(a.body.support!.load).toEqual({x:0,y:0});
+    const before=structuredClone(a.body);
+    const decide=(constrained=false)=>{
+      const intents:Intent[]=s.sim.agents.map(b=>b===a?structuredClone(f.raw):{vel:{x:0,y:0}});
+      spaceTeammates(s.sim.agents,intents,(o,t)=>{
+        const p=o===a?f.peers.find((p:any)=>p.idx===t.idx)?.information:null;
+        return p?.source==='unavailable'?null:p;
+      },{now:f.entry,...(constrained?{constrained:new Set([a.body])}:{})});
+      return intents[a.idx];
+    };
+    const preview=vi.spyOn(MovementPreview,'previewFreeMovement');
+    try {
+      expect(decide(true)).toEqual(f.old);
+      expect(preview.mock.calls.some(call=>call[0]===a.body)).toBe(false);
+      // This acquired picture still clears: coverage is fixed, but it does
+      // not reveal Y's subsequent turn or justify manufacturing a gather.
+      expect(decide()).toEqual(f.old);
+      expect(preview.mock.calls.some(call=>call[0]===a.body)).toBe(true);
+      expect(a.body).toEqual(before);
+    } finally {preview.mockRestore();}
   });
 });

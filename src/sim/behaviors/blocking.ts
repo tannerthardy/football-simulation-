@@ -22,7 +22,7 @@ import type { HandJoint, Intent } from '../../physics/world.js';
 import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
-import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
+import { chooseComboBlockApproach, chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { axisOf, contactControl, helperSupport, passSetDepth, promoteContact, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint } from '../../physics/reach.js';
@@ -948,7 +948,7 @@ export class RunBlocker implements Behavior {
     // same split as their combo aim; a solo reach takes the playside number.
     const combo = this.plan.combination && !this.plan.combination.released ? this.plan.combination : null;
     const partner = combo?.members.find((b) => b !== a);
-    const half = partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
+    const half = partner ? (Math.sign(sim.offAlign.spots[a.slot].pos.y - sim.offAlign.spots[partner.slot].pos.y) || ps) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
@@ -1110,7 +1110,7 @@ export class RunBlocker implements Behavior {
       aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
     } else if (plan.kind === 'combo' && plan.combination) {
       const partner = plan.combination.members.find((b) => b !== a)!;
-      const side = Math.sign(a.pos.y - partner.pos.y) || 1;
+      const side = Math.sign(sim.offAlign.spots[a.slot].pos.y - sim.offAlign.spots[partner.slot].pos.y) || 1;
       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
@@ -1148,6 +1148,13 @@ export class RunBlocker implements Behavior {
         contact, a.profile.radius + target.profile.radius, command, sim.t);
     }
     const original = runThrough(a, aim, { speed: 1 });
+    if (plan.kind === 'combo' && plan.combination && !plan.combination.released) {
+      const partner = plan.combination.members.find(b => b !== a)!;
+      const picture = sim.teammateInformation(a, partner);
+      return chooseComboBlockApproach(a, seen, picture.source === 'unavailable' ? undefined
+        : { picture, radius: partner.profile.radius }, nominalAim, placementError,
+      a.profile.radius + target.profile.radius, original);
+    }
     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
       !!zone || !!contactFit, zone ? 2.4 : 0) : original;

@@ -9,6 +9,37 @@ import { availability, supportParams } from '../physics/support.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
+import type { TeammatePicture } from './teammate-information.js';
+
+/** A helper must approach an exposed surface, rather than run through the
+ * acquired owner's torso to a fixed world-y half. This is only a footwork
+ * request: spacing checks the achieved route against all acquired neighbors,
+ * and ordinary reach/contact still determines whether hands can do work. */
+export function chooseComboBlockApproach(a: Agent, seen: Perceived,
+  owner: { picture: Exclude<TeammatePicture, { source: 'unavailable' }>; radius: number } | undefined,
+  nominalAim: Vec2, placementError: number, bodyContact: number, original: Intent): Intent {
+  if (!owner) return original;
+  const touch = .9 * (a.profile.radius + owner.radius);
+  const clearance = (goal: Vec2) => {
+    const dx = goal.x - a.pos.x, dy = goal.y - a.pos.y;
+    const rx = a.pos.x - owner.picture.pos.x, ry = a.pos.y - owner.picture.pos.y;
+    const u = clamp(-(rx * dx + ry * dy) / Math.max(1e-12, dx * dx + dy * dy), 0, 1);
+    return Math.hypot(rx + u * dx, ry + u * dy) - touch;
+  };
+  const placed = (goal: Vec2) => ({ x: goal.x,
+    y: clamp(goal.y + placementError, .5, FIELD_WIDTH - .5) });
+  if (clearance(placed(nominalAim)) >= 0) return original;
+  const sep = bodyContact + .15;
+  const candidates = [0, -.45 * sep, .45 * sep].map(y => placed({ x: seen.pos.x - sep, y: seen.pos.y + y }))
+    .filter(goal => clearance(goal) >= 0)
+    .sort((p, q) => Math.hypot(p.x - a.pos.x, p.y - a.pos.y) - Math.hypot(q.x - a.pos.x, q.y - a.pos.y));
+  const facing = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
+  if (!candidates.length) return { ...original, vel: { x: 0, y: 0 }, facing };
+  const capacity = a.body.support
+    ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+  return { ...original, vel: movingArrivalVelocity(a.body, candidates[0], seen.vel,
+    a.profile.vmax, .1, 0, 1, capacity), posture: .7, facing };
+}
 
 export function observedBlockLeverage(a: Agent, seen: Perceived, drive: Vec2): number {
   const x = a.pos.x - seen.pos.x, y = a.pos.y - seen.pos.y;

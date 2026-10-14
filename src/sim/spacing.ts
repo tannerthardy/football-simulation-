@@ -88,13 +88,15 @@ function routeSafety(a:Agent,samples:readonly MovementSample[],peer:PeerPicture)
 /** A free actor tests his actual movement, including an ordinary stop after
  * the existing .30 s closure horizon. No other actor's body/request is read.
  * Loaded/squeezed actors retain their constraint-aware radial controller.
+ * Residual own lean after release stays in the physical preview; it is not
+ * a continuing external constraint or grounds to use the requested ray.
  */
 function freeTraffic(a:Agent,original:Intent,peers:readonly PeerPicture[],context?:SpacingContext):Intent|null {
   const s=a.body.support;
   if(!context||!Number.isFinite(context.now)||a.isDown(context.now)||a.engagement||context.constrained?.has(a.body)
     ||original.free||original.dive||original.lunge||(original.push??0)>1e-6
     ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike
-    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return null;
+    ||Math.hypot(s.load.x,s.load.y)>1e-6)return null;
   const speed=Math.hypot(a.vel.x,a.vel.y);
   if(!peers.length||(speed<=Number.EPSILON&&Math.hypot(original.vel.x,original.vel.y)<=Number.EPSILON))return original;
   // Brake time is estimated only to size scratch storage. The World forecast
