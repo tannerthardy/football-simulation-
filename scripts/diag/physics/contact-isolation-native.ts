@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { gzipSync } from 'node:zlib';
+import { gzipSync, gunzipSync } from 'node:zlib';
 import { CENTER_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
@@ -49,7 +49,17 @@ function execute(input: typeof manifest.inputs[number], observe: boolean) {
           for (const key of ['actor', 'holder']) if (key in flat) flat[key] = sim.world.indexOf(Reflect.get(j, key));
           return copy(flat);
         }) };
-      return step(intents, dt);
+      const report = step(intents, dt);
+      // A subsequent tackle can remove blocking joints. Preserve their actual
+      // World delivery before that controller/event transition.
+      Object.assign(worldInput!, { jointOutputsAtWorldEnd: sim.world.joints.map(j => ({ kind: j.kind,
+        a: sim.world.indexOf(j.a), b: sim.world.indexOf(j.b),
+        normalForce: j.kind === 'hands' ? j.normalForce : undefined,
+        tangentForce: j.kind === 'hands' ? j.tangentForce : undefined,
+        forceOnB: j.kind === 'hands' ? j.forceOnB : undefined,
+        momentOnA: j.kind === 'hands' ? j.momentOnA : undefined,
+        momentOnB: j.kind === 'hands' ? j.momentOnB : undefined })) });
+      return report;
     };
   }
   while (sim.phase === 'live' && sim.t < manifest.stopSeconds) {
@@ -87,8 +97,13 @@ function execute(input: typeof manifest.inputs[number], observe: boolean) {
       depth: sim.firstContactX === null ? null : sim.firstContactX - sim.los } : null, limits, events: sim.events };
 }
 const started = performance.now();
+const reuse = process.argv[3] ? JSON.parse(gunzipSync(readFileSync(process.argv[3])).toString()) as {
+  panel: { input: typeof manifest.inputs[number]; hashes: string[]; observerNeutral: boolean }[];
+} : null;
 const panel = manifest.inputs.map((input: typeof manifest.inputs[number]) => {
-  const observed = execute(input, true), plain = execute(input, false);
+  const observed = execute(input, true), plain = reuse
+    ? reuse.panel.find(p => p.input.id === input.id)! : execute(input, false);
+  if (reuse) assert(plain && 'observerNeutral' in plain && plain.observerNeutral, 'Reuse only neutral saved histories');
   assert.deepEqual(observed.hashes, plain.hashes, `Observer neutrality: ${input.id}`);
   console.log(JSON.stringify({ id: input.id, ending: observed.endTime, firstContact: observed.firstContact,
     crossing: observed.crossing, gain: observed.gain, limits: observed.limits }));
