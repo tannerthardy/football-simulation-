@@ -36,6 +36,14 @@ const PULL_STEP = process.env.PULL_STEP === '1';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 export const isOL = (a: Agent): boolean => OL.has(a.slot);
 
+/** Attached first-level stretch blockers share line technique. This is a
+ * run job, not a TE rating/position bonus or a change to pass protection. */
+export function isZoneLineBlocker(a: Agent, sim: PlaySim, plan: RunBlockPlan): boolean {
+  const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
+  return isOL(a) || (!!sim.offAlign.spots[a.slot]?.inline && stretch
+    && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(plan.kind));
+}
+
 // ------------------------------------------------------------- protection
 
 export class ProtectionCoordinator {
@@ -693,7 +701,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   for (const [b, p] of plans) {
     // Only a clearly outside solo backside threat calls for this wall. Inside
     // shades, doubles, pullers and Draw retain their original contact frame.
-    if (isOL(b) && p.kind === 'cutoff' && p.target && dl.includes(p.target) && !p.combination
+    if (isZoneLineBlocker(b, sim, p) && p.kind === 'cutoff' && p.target && dl.includes(p.target) && !p.combination
       && rel(b) < 0 && (b.pos.y - p.target.pos.y) * ps > b.profile.radius + p.target.profile.radius)
       p.contactFit = { target: p.target, axis: norm({ x: -.3, y: p.drive.y * .6 }), sealTarget: 0 };
   }
@@ -793,7 +801,7 @@ export class RunBlocker implements Behavior {
         const target = this.availableTarget(a, sim);
         if (target && target === this.presentationThreat) {
           a.stance = 'low';
-          return this.withBase(a, this.attack(a, sim, target));
+          return this.withBase(a, sim, this.attack(a, sim, target));
         }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
@@ -804,15 +812,15 @@ export class RunBlocker implements Behavior {
     // coordination (checks, help, climb), as do all doubles once joined.
     const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
     const coordinated = !!plan.combination && !plan.combination.released && !stretch;
-    if (ZONE_FLOW && isOL(a) && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
+    if (ZONE_FLOW && isZoneLineBlocker(a, sim, plan) && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
       const flow = this.zoneFlow(a, sim);
-      if (flow) return this.withBase(a, flow);
+      if (flow) return this.withBase(a, sim, flow);
     }
-    if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
+    if (isZoneLineBlocker(a, sim, plan) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
       // Establish the first foot and pad angle before running through a
       // target. Zone gains lateral ground; Duo stays vertical. These are
       // technique landmarks, still subject to acceleration and collisions.
-      return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
+      return this.withBase(a, sim, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
     }
 
     const target = this.availableTarget(a, sim);
@@ -881,7 +889,7 @@ export class RunBlocker implements Behavior {
       const fit = { x: Math.max(target.pos.x - 1.2, a.pos.x), y: target.pos.y };
       return goTo(a, fit, { speed: 0.85, through: 1 });
     }
-    return this.withBase(a, this.attack(a, sim, target));
+    return this.withBase(a, sim, this.attack(a, sim, target));
   }
 
   /** The climb, planned on the read cadence from one acquired picture of the
@@ -941,12 +949,9 @@ export class RunBlocker implements Behavior {
     const covered = combo.members[0], owner = sim.teammateInformation(a, covered);
     if ((owner.source !== 'observed' && owner.source !== 'remembered')
       || owner.age > TEAMMATE_INFORMATION_LIMITS.prediction + 1e-9) return null;
-    const seen = sim.see(a, combo.defender), horizon = Math.max(.3, a.mind.decisionInterval);
-    // Owned teammate positions are already carried from their acquired
-    // sample toward query time. Put this delayed DL sample on that clock too,
-    // retaining the original age and the same bounded CV assumption.
-    const age = Math.min(TEAMMATE_INFORMATION_LIMITS.prediction, Math.max(0, seen.age ?? 0));
-    const down = { ...seen, pos: { x: seen.pos.x + seen.vel.x * age, y: seen.pos.y + seen.vel.y * age } };
+    // Both interfaces already carry their acquired sample toward query time.
+    // Preserve its age; do not advance the DL sample a second time.
+    const down = sim.see(a, combo.defender), horizon = Math.max(.3, a.mind.decisionInterval);
     if (!stretchHelpOpportunity({ pos: a.pos, radius: a.profile.radius,
       homeY: install.homeY, playSide: playSideSign(sim, sim.offCall.run!), side: install.side,
       owner, ownerRadius: covered.profile.radius,
@@ -1009,7 +1014,7 @@ export class RunBlocker implements Behavior {
     // same split as their combo aim; a solo reach takes the playside number.
     const combo = this.plan.combination && !this.plan.combination.released ? this.plan.combination : null;
     const partner = combo?.members.find((b) => b !== a);
-    const half = partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
+    const half = partner ? this.installedHalf(a, partner, sim, ps) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
@@ -1056,12 +1061,22 @@ export class RunBlocker implements Behavior {
     return target;
   }
 
-  private withBase(a: Agent, command: MoveCommand): Intent {
+  private installedHalf(a: Agent, partner: Agent, sim: PlaySim, fallback: number): number {
+    const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
+    // Other schemes retain their preexisting contact/collection policy.
+    if (!stretch) return Math.sign(a.pos.y - partner.pos.y) || fallback;
+    // The two halves are installed from the formation. Crossing later does
+    // not grant access to the partner's hidden current position.
+    const own = sim.offAlign.spots[a.slot]?.pos, other = sim.offAlign.spots[partner.slot]?.pos;
+    return own && other ? Math.sign(own.y - other.y) || fallback : fallback;
+  }
+
+  private withBase(a: Agent, sim: PlaySim, command: MoveCommand): Intent {
     // The visible low stance does not set the physical posture. Keep the
     // existing snap base through a first-level OL approach; World supplies
     // finite posture changes, the movement cost and actual balance. Running
     // pullers, climbs, unassigned movement and contact techniques own theirs.
-    return isOL(a) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
+    return isZoneLineBlocker(a, sim, this.plan) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
       ? { ...command, posture: .7 } : command;
   }
 
@@ -1139,7 +1154,7 @@ export class RunBlocker implements Behavior {
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
     const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
-    const fitCandidate = isOL(a) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
+    const fitCandidate = isZoneLineBlocker(a, sim, plan) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
       && (!plan.combination || plan.combination.released)
       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
     const contactFit = fitCandidate && plan.kind === 'cutoff' && plan.contactFit?.target === target
@@ -1171,7 +1186,7 @@ export class RunBlocker implements Behavior {
       aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
     } else if (plan.kind === 'combo' && plan.combination) {
       const partner = plan.combination.members.find((b) => b !== a)!;
-      const side = Math.sign(a.pos.y - partner.pos.y) || 1;
+      const side = this.installedHalf(a, partner, sim, 1);
       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
@@ -1216,7 +1231,7 @@ export class RunBlocker implements Behavior {
 
   private zoneEligible(a: Agent, sim: PlaySim): boolean {
     const e = a.engagement;
-    return isOL(a) && this.plan.kind === 'reach'
+    return isZoneLineBlocker(a, sim, this.plan) && this.plan.kind === 'reach'
       && (sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone')
       && (!this.plan.combination || this.plan.combination.released)
       && (!e || (e.type === 'run' && e.blocker === a && !e.helpers.length))

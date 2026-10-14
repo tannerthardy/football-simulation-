@@ -19,6 +19,7 @@ import time
 
 
 OL = ('LT', 'LG', 'C', 'RG', 'RT')
+BLOCKERS = (*OL, 'Y', 'H')
 EPS = 1e-8
 
 
@@ -62,7 +63,7 @@ def opening_rows(label, case):
         assert len(before) == len(after) == 22
         assert abs(frame['after'] - frame['t'] - frame['dt']) < 1e-12
         for a in actors:
-            if a['slot'] not in OL:
+            if a['slot'] not in BLOCKERS:
                 continue
             i = a['idx']
             plan = frame['behavior'][i]['plan']
@@ -109,7 +110,7 @@ def opening_rows(label, case):
 
 def summarize(rows):
     result = []
-    for slot in OL:
+    for slot in BLOCKERS:
         rs = [r for r in rows if r['slot'] == slot]
         if not rs:
             continue
@@ -152,7 +153,7 @@ def check_published(label, capture, rows, published):
                'post_vx', 'post_vy', 'dx', 'dy', 'facing_before', 'facing_after', 'playside_progress')
     count = 0
     for row in rows:
-        if row['arm'] != label or row['after'] > 1:
+        if row['arm'] != label or row['after'] > 1 or row['slot'] not in OL:
             continue
         prior = next(r for r in saved if r['arm'] == 'awareness' and r['case'] == row['case']
                      and r['slot'] == row['slot'] and float(r['entry']) == row['entry'])
@@ -227,6 +228,8 @@ def main():
     parser.add_argument('--plot', action='store_true')
     parser.add_argument('--allow-stretch-help-install', action='store_true',
                         help='Allow only the declared new stretchHelp installation in otherwise identical initial actors')
+    parser.add_argument('--allow-inline-zone-role', action='store_true',
+                        help='Also allow a declared first-level TE cutoff contactFit; all bodies, ratings, targets and other initialization must match')
     args = parser.parse_args()
     captures, rows, cases, inputs, checks = {}, [], [], [], {}
     for item in args.input:
@@ -277,8 +280,16 @@ def main():
                         return {k: without_stretch_help(v) for k, v in value.items() if k != 'stretchHelp'}
                     return value
                 same_actors = case['actors'] == base['actors']
-                if args.allow_stretch_help_install:
-                    assert without_stretch_help(case['actors']) == without_stretch_help(base['actors'])
+                def normalized_actors(actors):
+                    result = json.loads(json.dumps(actors))
+                    for a in result:
+                        if args.allow_inline_zone_role and a['team'] == 'O' and a['slot'] in ('Y', 'H'):
+                            plan = a.get('initialBehavior', {}).get('plan', {})
+                            if plan.get('kind') == 'cutoff':
+                                plan.pop('contactFit', None)
+                    return without_stretch_help(result) if args.allow_stretch_help_install else result
+                if args.allow_stretch_help_install or args.allow_inline_zone_role:
+                    assert normalized_actors(case['actors']) == normalized_actors(base['actors'])
                 else:
                     assert same_actors
                 assert case['frames'][0]['beforeBodies'] == base['frames'][0]['beforeBodies']

@@ -14,6 +14,13 @@ an acquired near-gap help/climb decision for an unjoined stretch helper.
 Retain inside-slant, blocked-departure, unavailable-picture and own-contact
 controls. Root owns coupled validation and the final result, with no handoff.
 
+Root also retains the shared-information ownership coordinated in the prior
+PR #45 work: `teammate-calls.ts` / `teammate-information.ts` now copy achieved
+nominal installed motion for the same declared inline role. No call or memory
+clock is extended. `spacing.ts` and its rejected broad traffic replacement are
+not changed here. Attached TE role parity changes run-technique eligibility
+and the finite posture request, not initial body state or physical capacities.
+
 ## Wide-zone opening execution, 2026-10-14
 
 Run-game owns `codex/wide-zone-opening` from Awareness's completed PR #36
