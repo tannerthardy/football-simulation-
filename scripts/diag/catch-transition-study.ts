@@ -77,17 +77,19 @@ export function trial(f:any,geometry:Geometry,execution:number|null,observe:bool
   return event(type,d,c,note);
  };
  if(observe||spacingOff)sim.world.step=(intents,dt)=>{
-  const s=a.body.support;
+  const s=a.body.support,own=intents[a.idx];
   // Diagnostic ablation only: one existing pursuing actor's free request,
   // after catch. Never erase a joint/strike/engagement/contact-owned demand.
   // Actual teammate body collisions and all other actors' policies remain.
-  if(spacingOff&&raw&&a.behavior.kind==='pursuit'&&s?.state==='up'&&!a.engagement&&!s.foot&&!s.strike
+  if(spacingOff&&raw&&own&&a.behavior.kind==='pursuit'&&s?.state==='up'&&!a.engagement&&!s.foot&&!s.strike
    &&Math.hypot(s.lean.x,s.lean.y)<1e-6&&Math.hypot(s.load.x,s.load.y)<1e-6
-   &&!intents[a.idx].dive&&!intents[a.idx].lunge
+   &&!own.dive&&!own.lunge
    &&!sim.world.joints.some(j=>(j.kind!=='grasp'||!j.broken)&&(j.a===a.body||j.b===a.body))
    &&!sim.lastStep?.contacts.some(c=>c.i===a.idx||c.j===a.idx)){
-   const before=copy(intents[a.idx].vel);
-   if(hash(before)!==hash(raw.vel)){intents[a.idx]={...intents[a.idx],vel:copy(raw.vel)};
+   const before=copy(own.vel);
+   if(hash(before)!==hash(raw.vel)){
+    if(intents!==sim.intents)throw Error('Unexpected owner of live World inputs');
+    sim.intents[a.idx]={...own,vel:copy(raw.vel)};
     spacingOverrides.push({t:sim.t,before,restored:copy(raw.vel),body:lean(a),cues:copy(cues)});}
   }
   if(!observe)return step(intents,dt);
