@@ -7,6 +7,7 @@
   "integrityChecked": true,
   "entryHashesChecked": true,
   "buildSeconds": 0.375991746012005,
-  "publishedDownloadVerified": false,
-  "viewerSha256": "8991c734054128407b7637f6556dbfd18e09d69c06e334dbe7b93305c6a100a0"
+  "publishedDownloadVerified": true,
+  "viewerSha256": "8991c734054128407b7637f6556dbfd18e09d69c06e334dbe7b93305c6a100a0",
+  "downloadVerifiedPublication": "6559054"
 }
