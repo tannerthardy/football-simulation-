@@ -1,0 +1,15 @@
+{
+  "protocol": "ace-awareness-delivery-v1",
+  "artifact": "docs/reviews/assets/ace-awareness-preparation.zip",
+  "bytes": 1179087,
+  "sha256": "2ca9823f65401cf7484e209f59cffb0017bf1427c68d1e74660abb6366d0cd50",
+  "entries": 8,
+  "archiveIntegrity": true,
+  "newWorldSteps": 0,
+  "candidateEvaluated": false,
+  "awaiting": [
+    "Owner candidate commit",
+    "Owner resolved settings",
+    "Owner observer-state initialization instructions"
+  ]
+}

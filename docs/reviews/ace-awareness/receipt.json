@@ -1,0 +1,32 @@
+{
+  "protocol": "ace-awareness-preparation-receipt-v1",
+  "testedRevision": "de0dd09abb3343539726153c0e9e45df92bff637",
+  "generatorSha256": "ecc7dc26477f1fc403470f7903f50bbeae3b4a7038f8e58475ea1dbd86f8f3ae",
+  "candidateExecuted": false,
+  "newWorldSteps": 0,
+  "newPlays": 0,
+  "controlsPrepared": [
+    "uc12-wz-s3-mirror",
+    "uc12-wz-s3"
+  ],
+  "referenceIntegrity": true,
+  "d01Prefix54HashesExact": true,
+  "heldMemoryLineageMatches": 2,
+  "savedTrafficSourceRecords": 7,
+  "d01InspectedCalledTrackOverrides": 0,
+  "loadedFootIntervalsChecked": 15,
+  "maximumCompositionResidual": 0,
+  "sourceAndRuntimeChanged": false,
+  "fullSuiteOrTypecheckRun": false,
+  "correctedPreparationPreflight": {
+    "revision": "de02994",
+    "cause": "Python Path ordering compared components rather than the authoritative source helper's full path strings.",
+    "runtimeChanged": false,
+    "newWorldStepsBeforeFailure": 0
+  },
+  "outputs": {
+    "docs/reviews/ace-awareness/input-manifest.json": "60bb75ece79f69cd0203da83776200bf36bb013c87aabaa074e31a689ab137ff",
+    "docs/reviews/ace-awareness/saved-inspection.json": "1975b02187c275615910d183f5d8a615626a706e9607f8e9a17cf9e4da781caa"
+  },
+  "elapsedSeconds": 0.13799309500609525
+}

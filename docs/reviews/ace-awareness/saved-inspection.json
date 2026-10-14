@@ -1,0 +1,2042 @@
+{
+  "protocol": "ace-awareness-saved-inspection-v1",
+  "memoryWitnesses": [
+    {
+      "observer": 2,
+      "target": 12,
+      "useEntry": 2.2,
+      "read": {
+        "phase": "runoff",
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "sealTarget": 0.3,
+        "aim": {
+          "x": 40.11195447920792,
+          "y": 21.68478792973669
+        },
+        "horizon": 0.1,
+        "neededTravel": 0.790310613920132,
+        "availableTravel": 0.10846214729638472,
+        "target": 12,
+        "side": -1,
+        "t": 2,
+        "nextRead": 2.2101813016582903,
+        "seen": {
+          "pos": {
+            "x": 40.411954479207914,
+            "y": 21.084787929736688
+          },
+          "vel": {
+            "x": 0.3626247612439801,
+            "y": -1.2464222536245004
+          },
+          "stance": null,
+          "facing": 1.5305875198585466,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      "acquiredAt": 2,
+      "sampledAt": 1.7,
+      "storedAgeAtAcquisition": 0.30000000000000004,
+      "effectiveSampleAgeAtUse": 0.5000000000000002,
+      "sourceEvidence": [
+        {
+          "t": 2,
+          "actor": 2,
+          "target": 12,
+          "scale": 1,
+          "seen": {
+            "pos": {
+              "x": 40.411954479207914,
+              "y": 21.084787929736688
+            },
+            "vel": {
+              "x": 0.3626247612439801,
+              "y": -1.2464222536245004
+            },
+            "stance": null,
+            "facing": 1.5305875198585466,
+            "age": 0.30000000000000004,
+            "pose": "up",
+            "carrying": false
+          }
+        }
+      ],
+      "freshTargetSeeAtUse": false,
+      "contract": "Personally consumed baseline picture, retained in the existing zone read. Not a new observation or a global-history memory grant.",
+      "visibilityQualification": "Baseline see has no visibility gate. Candidate owner must establish acquisition eligibility; later loss of visibility alone must not erase legitimately acquired memory."
+    },
+    {
+      "observer": 2,
+      "target": 12,
+      "useEntry": 2.4,
+      "read": {
+        "phase": "runoff",
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "sealTarget": 0.3,
+        "aim": {
+          "x": 40.34412761838891,
+          "y": 21.46986916989158
+        },
+        "horizon": 0.1,
+        "neededTravel": 0.8840472133086453,
+        "availableTravel": 0.055679245011213546,
+        "target": 12,
+        "side": -1,
+        "t": 2.25,
+        "nextRead": 2.4605543658771416,
+        "seen": {
+          "pos": {
+            "x": 40.64412761838891,
+            "y": 20.86986916989158
+          },
+          "vel": {
+            "x": 0.6710796710336415,
+            "y": -1.0358842639762795
+          },
+          "stance": null,
+          "facing": 2.3657629902587045,
+          "age": 0.30000000000000004,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      "acquiredAt": 2.25,
+      "sampledAt": 1.95,
+      "storedAgeAtAcquisition": 0.30000000000000004,
+      "effectiveSampleAgeAtUse": 0.44999999999999996,
+      "sourceEvidence": [
+        {
+          "t": 2.25,
+          "actor": 2,
+          "target": 12,
+          "scale": 1,
+          "seen": {
+            "pos": {
+              "x": 40.64412761838891,
+              "y": 20.86986916989158
+            },
+            "vel": {
+              "x": 0.6710796710336415,
+              "y": -1.0358842639762795
+            },
+            "stance": null,
+            "facing": 2.3657629902587045,
+            "age": 0.30000000000000004,
+            "pose": "up",
+            "carrying": false
+          },
+          "caller": [
+            "at RunBlocker.readZone (/workspace/football-run-diagnostic-drills/src/sim/behaviors/blocking.ts:1167:35)",
+            "at RunBlocker.update (/workspace/football-run-diagnostic-drills/src/sim/behaviors/blocking.ts:773:43)",
+            "at PlaySim.tick (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:558:98)"
+          ],
+          "calledMotion": null
+        }
+      ],
+      "freshTargetSeeAtUse": false,
+      "contract": "Personally consumed baseline picture, retained in the existing zone read. Not a new observation or a global-history memory grant.",
+      "visibilityQualification": "Baseline see has no visibility gate. Candidate owner must establish acquisition eligibility; later loss of visibility alone must not erase legitimately acquired memory."
+    }
+  ],
+  "savedTrafficSources": [
+    {
+      "case": "uc12-wz-s3-mirror",
+      "entry": 2.25,
+      "observer": 2,
+      "target": 6,
+      "actualSpacingCall": {
+        "t": 2.25,
+        "actor": 2,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 38.5791726624909,
+            "y": 21.831555832512475
+          },
+          "vel": {
+            "x": 2.8513191323465286,
+            "y": -2.2349509886175314
+          },
+          "stance": null,
+          "facing": -0.656308118916366,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": true
+        },
+        "caller": [
+          "at spaceTeammates.now (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:586:25)",
+          "at spaceTeammates (/workspace/football-run-diagnostic-drills/src/sim/spacing.ts:117:18)",
+          "at PlaySim.tick (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:585:5)"
+        ],
+        "calledMotion": null
+      },
+      "calledTrackOverrideApplied": false,
+      "ownBodyAtUse": {
+        "pos": {
+          "x": 40.09901019903658,
+          "y": 21.325918865893506
+        },
+        "vel": {
+          "x": 0.8695332124512934,
+          "y": -0.2921792708335216
+        },
+        "facing": -0.675965149335889,
+        "energy": 0.967850174916613,
+        "profile": {
+          "vmax": 7.583522306970652,
+          "tau": 1.271162260701725,
+          "brake": 5.078582766439909,
+          "lateral": 5.480619047619049,
+          "turnRate": 6.415555555555556,
+          "backpedal": 0.6342857142857143,
+          "shuffle": 0.5852,
+          "massKg": 144.24237366,
+          "heightYd": 2.1861111111111113,
+          "radius": 0.3654545454545455,
+          "reach": 1.0976388888888888,
+          "maxCatchHeight": 3.569750000000001,
+          "reactReach": 3.1558611111111112,
+          "reactionTime": 0.24608163265306127,
+          "power": 150.57873507435,
+          "balance": 0.7040816326530612,
+          "bend": 0.19681632653061223,
+          "stepSpeed": 2.7822267573696147,
+          "getUp": 1.2190555555555556
+        },
+        "support": {
+          "xi": {
+            "x": -0.009747221480525833,
+            "y": 0.006940150033167143
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.8439412417225381,
+          "lean": {
+            "x": 1382.798656674163,
+            "y": -124.40338741910304
+          },
+          "load": {
+            "x": -1373.5907109692243,
+            "y": 413.11496095225476
+          },
+          "felt": {
+            "x": -1347.6354489064613,
+            "y": 314.52415293240466
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0.08356875049825269,
+          "out": 0,
+          "feltTip": {
+            "x": -1.3286018161967432,
+            "y": 0.3101039538554121
+          },
+          "causes": {
+            "contact": 0.016820663115552463,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 0.21607920778667875,
+            "y": -1.6760882930812007
+          },
+          "tipAccel": {
+            "x": -0.0466899238759447,
+            "y": 0.10009235512395855
+          }
+        },
+        "spin": -1.6165052454843156,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -0.4925626819932627
+      },
+      "preSpacingCommand": {
+        "vel": {
+          "x": 0.2990248268315499,
+          "y": -0.7392044844686777
+        },
+        "facing": -0.7622561983452409,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9878838304552591
+      },
+      "worldCommand": {
+        "vel": {
+          "x": 1.0885149002946557,
+          "y": -1.001861088429764
+        },
+        "facing": -0.7622561983452409,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9878838304552591
+      },
+      "achievedVelocity": {
+        "x": 0.8489753815780952,
+        "y": -0.4379891169202474
+      },
+      "source": "Unconditional delayed baseline buffer; candidate acquisition/memory eligibility unresolved."
+    },
+    {
+      "case": "uc12-wz-s3-mirror",
+      "entry": 2.25,
+      "observer": 6,
+      "target": 2,
+      "actualSpacingCall": {
+        "t": 2.25,
+        "actor": 6,
+        "target": 2,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.09925374229615,
+            "y": 21.330399652348998
+          },
+          "vel": {
+            "x": 0.8822635890850685,
+            "y": -0.11852891132846216
+          },
+          "stance": "low",
+          "facing": -0.5960345170226118,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "caller": [
+          "at spaceTeammates.now (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:586:25)",
+          "at spaceTeammates (/workspace/football-run-diagnostic-drills/src/sim/spacing.ts:117:18)",
+          "at PlaySim.tick (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:585:5)"
+        ],
+        "calledMotion": null
+      },
+      "calledTrackOverrideApplied": false,
+      "ownBodyAtUse": {
+        "pos": {
+          "x": 38.573538513209535,
+          "y": 21.832180147498224
+        },
+        "vel": {
+          "x": 2.625953161091995,
+          "y": -2.2099783891875333
+        },
+        "facing": -0.6991628535896648,
+        "energy": 0.9806634206580417,
+        "profile": {
+          "vmax": 9.511860117418491,
+          "tau": 1.302841021221677,
+          "brake": 6.728083900226757,
+          "lateral": 6.805221088435378,
+          "turnRate": 8.711111111111112,
+          "backpedal": 0.55,
+          "shuffle": 0.528,
+          "massKg": 99.33672903,
+          "heightYd": 1.9555555555555557,
+          "radius": 0.27545454545454545,
+          "reach": 1.0220833333333335,
+          "maxCatchHeight": 3.2831111111111118,
+          "reactReach": 2.8567222222222224,
+          "reactionTime": 0.25465306122448983,
+          "power": 101.13087199309287,
+          "balance": 0.7959183673469388,
+          "bend": 0.7445170068027213,
+          "stepSpeed": 3.9037732426303857,
+          "getUp": 0.9029444444444443
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.19619330776900698,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": -4.745042612468405,
+            "y": 0.6614045865403508
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": -0.8656749925783913,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -0.6995918685452853
+      },
+      "preSpacingCommand": {
+        "vel": {
+          "x": 5.372978445012182,
+          "y": -3.186411751796849
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "worldCommand": {
+        "vel": {
+          "x": 2.5161045968513496,
+          "y": -2.2468369564615407
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "achievedVelocity": {
+        "x": 2.5161045968513496,
+        "y": -2.2468369564615407
+      },
+      "source": "Unconditional delayed baseline buffer; candidate acquisition/memory eligibility unresolved."
+    },
+    {
+      "case": "uc12-wz-s3-mirror",
+      "entry": 2.35,
+      "observer": 2,
+      "target": 6,
+      "actualSpacingCall": {
+        "t": 2.35,
+        "actor": 2,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 38.827895187000685,
+            "y": 21.60841791603392
+          },
+          "vel": {
+            "x": 2.5161045968513496,
+            "y": -2.2468369564615407
+          },
+          "stance": null,
+          "facing": -0.7356854923927882,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": true
+        },
+        "caller": [
+          "at spaceTeammates.now (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:586:25)",
+          "at spaceTeammates (/workspace/football-run-diagnostic-drills/src/sim/spacing.ts:117:18)",
+          "at PlaySim.tick (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:585:5)"
+        ],
+        "calledMotion": null
+      },
+      "calledTrackOverrideApplied": false,
+      "ownBodyAtUse": {
+        "pos": {
+          "x": 40.1848781004373,
+          "y": 21.282949134610483
+        },
+        "vel": {
+          "x": 0.8746770231867158,
+          "y": -0.5455159450762208
+        },
+        "facing": -0.8460719530316688,
+        "energy": 0.964167478256042,
+        "profile": {
+          "vmax": 7.583522306970652,
+          "tau": 1.271162260701725,
+          "brake": 5.078582766439909,
+          "lateral": 5.480619047619049,
+          "turnRate": 6.415555555555556,
+          "backpedal": 0.6342857142857143,
+          "shuffle": 0.5852,
+          "massKg": 144.24237366,
+          "heightYd": 2.1861111111111113,
+          "radius": 0.3654545454545455,
+          "reach": 1.0976388888888888,
+          "maxCatchHeight": 3.569750000000001,
+          "reactReach": 3.1558611111111112,
+          "reactionTime": 0.24608163265306127,
+          "power": 150.57873507435,
+          "balance": 0.7040816326530612,
+          "bend": 0.19681632653061223,
+          "stepSpeed": 2.7822267573696147,
+          "getUp": 1.2190555555555556
+        },
+        "support": {
+          "xi": {
+            "x": -0.005521864770468473,
+            "y": 0.00830384244974612
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.8432015964446493,
+          "lean": {
+            "x": 1279.025588003615,
+            "y": -448.4150056554946
+          },
+          "load": {
+            "x": -950.979134964906,
+            "y": 759.8308821046513
+          },
+          "felt": {
+            "x": -1053.2545936507313,
+            "y": 637.1844893973984
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0.08356875049825269,
+          "out": 0,
+          "feltTip": {
+            "x": -1.0387739894263917,
+            "y": 0.6284531676971352
+          },
+          "causes": {
+            "contact": 0.015933977434003783,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 0.3143310747518516,
+            "y": -2.3233426650763
+          },
+          "tipAccel": {
+            "x": 0.12674646760379252,
+            "y": 0.1403142984781439
+          }
+        },
+        "spin": -1.7094835403159032,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -0.9883479683490082
+      },
+      "preSpacingCommand": {
+        "vel": {
+          "x": -0.8962326863852476,
+          "y": -1.4686300822790068
+        },
+        "facing": -0.9398774288984213,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9878838304552591
+      },
+      "worldCommand": {
+        "vel": {
+          "x": 0.8106342966239847,
+          "y": -1.878017637207758
+        },
+        "facing": -0.9398774288984213,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9878838304552591
+      },
+      "achievedVelocity": {
+        "x": 0.8727071839374541,
+        "y": -0.705142999457112
+      },
+      "source": "Unconditional delayed baseline buffer; candidate acquisition/memory eligibility unresolved."
+    },
+    {
+      "case": "uc12-wz-s3-mirror",
+      "entry": 2.35,
+      "observer": 6,
+      "target": 2,
+      "actualSpacingCall": {
+        "t": 2.35,
+        "actor": 6,
+        "target": 2,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.18416298683506,
+            "y": 21.28542980205001
+          },
+          "vel": {
+            "x": 0.8489753815780952,
+            "y": -0.4379891169202474
+          },
+          "stance": "low",
+          "facing": -0.7622292173505244,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "caller": [
+          "at spaceTeammates.now (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:586:25)",
+          "at spaceTeammates (/workspace/football-run-diagnostic-drills/src/sim/spacing.ts:117:18)",
+          "at PlaySim.tick (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:585:5)"
+        ],
+        "calledMotion": null
+      },
+      "calledTrackOverrideApplied": false,
+      "ownBodyAtUse": {
+        "pos": {
+          "x": 38.832791857248836,
+          "y": 21.60510955552856
+        },
+        "vel": {
+          "x": 2.711971406777572,
+          "y": -2.3791713766759184
+        },
+        "facing": -0.7036586007180736,
+        "energy": 0.9796861627166258,
+        "profile": {
+          "vmax": 9.511860117418491,
+          "tau": 1.302841021221677,
+          "brake": 6.728083900226757,
+          "lateral": 6.805221088435378,
+          "turnRate": 8.711111111111112,
+          "backpedal": 0.55,
+          "shuffle": 0.528,
+          "massKg": 99.33672903,
+          "heightYd": 1.9555555555555557,
+          "radius": 0.27545454545454545,
+          "reach": 1.0220833333333335,
+          "maxCatchHeight": 3.2831111111111118,
+          "reactReach": 2.8567222222222224,
+          "reactionTime": 0.25465306122448983,
+          "power": 101.13087199309287,
+          "balance": 0.7959183673469388,
+          "bend": 0.7445170068027213,
+          "stepSpeed": 3.9037732426303857,
+          "getUp": 0.9029444444444443
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.19607259178841793,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 1.9563993436459448,
+            "y": -1.9848005037975494
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": 1.8763062265351316,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -0.6418701810660314
+      },
+      "preSpacingCommand": {
+        "vel": {
+          "x": 7.618785863317837,
+          "y": -5.694697960580948
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "worldCommand": {
+        "vel": {
+          "x": 1.83631524260183,
+          "y": -4.326799281930436
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "achievedVelocity": {
+        "x": 2.5215173606060635,
+        "y": -2.6598157707112313
+      },
+      "source": "Unconditional delayed baseline buffer; candidate acquisition/memory eligibility unresolved."
+    },
+    {
+      "case": "uc12-wz-s3-mirror",
+      "entry": 2.5,
+      "observer": 2,
+      "target": 6,
+      "actualSpacingCall": {
+        "t": 2.5,
+        "actor": 2,
+        "target": 6,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 39.230532627655364,
+            "y": 21.204372228158462
+          },
+          "vel": {
+            "x": 2.7182082294237877,
+            "y": -2.776896725568566
+          },
+          "stance": null,
+          "facing": -0.7051711656612747,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": true
+        },
+        "caller": [
+          "at spaceTeammates.now (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:586:25)",
+          "at spaceTeammates (/workspace/football-run-diagnostic-drills/src/sim/spacing.ts:117:18)",
+          "at PlaySim.tick (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:585:5)"
+        ],
+        "calledMotion": null
+      },
+      "calledTrackOverrideApplied": false,
+      "ownBodyAtUse": {
+        "pos": {
+          "x": 40.31247019461201,
+          "y": 21.163202982448077
+        },
+        "vel": {
+          "x": 0.800115637320751,
+          "y": -1.0692705775712321
+        },
+        "facing": -1.1603743548862977,
+        "energy": 0.9584469047382881,
+        "profile": {
+          "vmax": 7.583522306970652,
+          "tau": 1.271162260701725,
+          "brake": 5.078582766439909,
+          "lateral": 5.480619047619049,
+          "turnRate": 6.415555555555556,
+          "backpedal": 0.6342857142857143,
+          "shuffle": 0.5852,
+          "massKg": 144.24237366,
+          "heightYd": 2.1861111111111113,
+          "radius": 0.3654545454545455,
+          "reach": 1.0976388888888888,
+          "maxCatchHeight": 3.569750000000001,
+          "reactReach": 3.1558611111111112,
+          "reactionTime": 0.24608163265306127,
+          "power": 150.57873507435,
+          "balance": 0.7040816326530612,
+          "bend": 0.19681632653061223,
+          "stepSpeed": 2.7822267573696147,
+          "getUp": 1.2190555555555556
+        },
+        "support": {
+          "xi": {
+            "x": 0.0001308783345528736,
+            "y": 0.00903185886016892
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.8420823245156767,
+          "lean": {
+            "x": 1000.8066578222073,
+            "y": -884.0944346527375
+          },
+          "load": {
+            "x": -663.6073172464455,
+            "y": 969.3179898802543
+          },
+          "felt": {
+            "x": -745.9004677835372,
+            "y": 940.5487698368681
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0.08356875049825269,
+          "out": 0,
+          "feltTip": {
+            "x": -0.7360572609869015,
+            "y": 0.9281582933320582
+          },
+          "causes": {
+            "contact": 0.014909739273385413,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": -0.6749679388207948,
+            "y": -3.6039420888220124
+          },
+          "tipAccel": {
+            "x": 0.08549075381756721,
+            "y": 0.05872545371688027
+          }
+        },
+        "spin": -2.332773652030919,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -1.1270953835826076
+      },
+      "preSpacingCommand": {
+        "vel": {
+          "x": -2.03427288981408,
+          "y": -1.981031744332134
+        },
+        "facing": -1.2834001775377673,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9878838304552591
+      },
+      "worldCommand": {
+        "vel": {
+          "x": 1.534361861020177,
+          "y": -2.1168233143771387
+        },
+        "facing": -1.2834001775377673,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9878838304552591
+      },
+      "achievedVelocity": {
+        "x": 0.9206036614117421,
+        "y": -1.1849681620210208
+      },
+      "source": "Unconditional delayed baseline buffer; candidate acquisition/memory eligibility unresolved."
+    },
+    {
+      "case": "uc12-wz-s3-mirror",
+      "entry": 2.5,
+      "observer": 6,
+      "target": 2,
+      "actualSpacingCall": {
+        "t": 2.5,
+        "actor": 6,
+        "target": 2,
+        "scale": 1,
+        "seen": {
+          "pos": {
+            "x": 40.31356216079322,
+            "y": 21.167726322875478
+          },
+          "vel": {
+            "x": 0.8399805874076387,
+            "y": -0.8867250908172972
+          },
+          "stance": "low",
+          "facing": -1.0456512632727928,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "caller": [
+          "at spaceTeammates.now (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:586:25)",
+          "at spaceTeammates (/workspace/football-run-diagnostic-drills/src/sim/spacing.ts:117:18)",
+          "at PlaySim.tick (/workspace/football-run-diagnostic-drills/src/sim/playsim.ts:585:5)"
+        ],
+        "calledMotion": null
+      },
+      "calledTrackOverrideApplied": false,
+      "ownBodyAtUse": {
+        "pos": {
+          "x": 39.23525671126268,
+          "y": 21.20156023284982
+        },
+        "vel": {
+          "x": 2.9071715737163086,
+          "y": -2.8893765379142815
+        },
+        "facing": -0.6474600905023504,
+        "energy": 0.9778463892231061,
+        "profile": {
+          "vmax": 9.511860117418491,
+          "tau": 1.302841021221677,
+          "brake": 6.728083900226757,
+          "lateral": 6.805221088435378,
+          "turnRate": 8.711111111111112,
+          "backpedal": 0.55,
+          "shuffle": 0.528,
+          "massKg": 99.33672903,
+          "heightYd": 1.9555555555555557,
+          "radius": 0.27545454545454545,
+          "reach": 1.0220833333333335,
+          "maxCatchHeight": 3.2831111111111118,
+          "reactReach": 2.8567222222222224,
+          "reactionTime": 0.25465306122448983,
+          "power": 101.13087199309287,
+          "balance": 0.7959183673469388,
+          "bend": 0.7445170068027213,
+          "stepSpeed": 3.9037732426303857,
+          "getUp": 0.9029444444444443
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.19571210341229764,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 3.323561646113048,
+            "y": -2.459158891649992
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": 1.2660196919048694,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -0.6418701810660314
+      },
+      "preSpacingCommand": {
+        "vel": {
+          "x": 7.862144030660762,
+          "y": -5.3537065790424005
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "worldCommand": {
+        "vel": {
+          "x": 1.9793506194006332,
+          "y": -5.169122607255116
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "achievedVelocity": {
+        "x": 2.7160856318205977,
+        "y": -3.159782698871031
+      },
+      "source": "Unconditional delayed baseline buffer; candidate acquisition/memory eligibility unresolved."
+    },
+    {
+      "case": "uc12-wz-s3",
+      "entry": 2.35,
+      "observer": 2,
+      "target": 6,
+      "sampledConsumedPictures": [
+        {
+          "t": 2.35,
+          "actor": 2,
+          "target": 6,
+          "scale": 1,
+          "seen": {
+            "pos": {
+              "x": 38.16778094916626,
+              "y": 22.02070402570396
+            },
+            "vel": {
+              "x": 1.4178445710962124,
+              "y": -1.336296578766333
+            },
+            "stance": null,
+            "facing": -0.7413431174632598,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": true
+          }
+        }
+      ],
+      "callSiteUnavailable": true,
+      "ownBodyAtUse": {
+        "idx": 2,
+        "pos": {
+          "x": 39.28549602940355,
+          "y": 21.43327394933148
+        },
+        "vel": {
+          "x": -0.1233255578769899,
+          "y": -1.1735497543315416
+        },
+        "facing": -1.961532072915209,
+        "spin": -2.7305901883080668,
+        "energy": 0.9703243124731494,
+        "support": {
+          "xi": {
+            "x": -0.0034485376106470123,
+            "y": 0.017255892240129803
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.8443220491288282,
+          "lean": {
+            "x": 168.4579082340976,
+            "y": -850.0913048180677
+          },
+          "load": {
+            "x": 10.239315010092263,
+            "y": 706.12499280383
+          },
+          "felt": {
+            "x": -64.41505810565046,
+            "y": 700.388409312104
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0.06504858210930302,
+          "out": 0
+        },
+        "downUntil": -1
+      },
+      "preSpacingCommand": {
+        "vel": {
+          "x": -2.6300353480358982,
+          "y": -0.9086593195328614
+        },
+        "facing": -2.107122220692869,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9878838304552591
+      },
+      "worldCommand": {
+        "vel": {
+          "x": -0.639993341431971,
+          "y": -1.9545524532960843
+        },
+        "facing": -2.107122220692869,
+        "push": 1,
+        "posture": 0.85,
+        "cutSkill": 0.9878838304552591
+      },
+      "achievedVelocity": {
+        "x": -0.32534217070542437,
+        "y": -1.2374745380028505
+      },
+      "source": "Saved baseline RT/RB image. No invented RB-observer picture or complete visibility/memory history."
+    }
+  ],
+  "loadedFootInspection": {
+    "sampledRtIntervals": 15,
+    "maximumCompositionResidual": 0,
+    "records": [
+      {
+        "case": "uc12-wz-s3-mirror",
+        "entry": 1.75,
+        "completed": 1.8,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 1.012456399003705,
+        "lateral": -1.7933251770300127,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": 2.059340545255452,
+          "y": -0.014130432415604854
+        },
+        "savedPreAnchor": {
+          "x": 2.059340545255452,
+          "y": -0.014130432415604854
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": 2.059340545255452,
+          "y": -0.014130432415604854
+        },
+        "savedCommand": {
+          "vel": {
+            "x": 2.059340545255452,
+            "y": -0.014130432415604854
+          },
+          "facing": -0.43992805445714195,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 0.47837493570332146,
+          "y": -1.1460237260738178
+        },
+        "rtVelocityAfter": {
+          "x": 0.5524733393736373,
+          "y": -1.086586066518413
+        },
+        "consumedTargetImages": [
+          {
+            "t": 1.75,
+            "actor": 2,
+            "target": 12,
+            "scale": 1,
+            "seen": {
+              "pos": {
+                "x": 40.08680459635967,
+                "y": 21.457667484341535
+              },
+              "vel": {
+                "x": -0.9168854574170762,
+                "y": -0.9237185852548379
+              },
+              "stance": null,
+              "facing": 1.6679003602307167,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        ]
+      },
+      {
+        "case": "uc12-wz-s3-mirror",
+        "entry": 1.95,
+        "completed": 2,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 1.013533453270721,
+        "lateral": -2.012465027545322,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": 2.2514263038628677,
+          "y": 0.09135177210240752
+        },
+        "savedPreAnchor": {
+          "x": 2.2514263038628677,
+          "y": 0.09135177210240752
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": 2.2514263038628677,
+          "y": 0.09135177210240752
+        },
+        "savedCommand": {
+          "vel": {
+            "x": 2.2514263038628677,
+            "y": 0.09135177210240752
+          },
+          "facing": -0.46271454775930776,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 0.7235664223970742,
+          "y": -0.9304645761768282
+        },
+        "rtVelocityAfter": {
+          "x": 0.7364638196611312,
+          "y": -0.8262739369901446
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3-mirror",
+        "entry": 2,
+        "completed": 2.05,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 0.9751694666639831,
+        "lateral": -1.9662425867620246,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": 2.1923894220246574,
+          "y": 0.10244032850748519
+        },
+        "savedPreAnchor": {
+          "x": 2.1923894220246574,
+          "y": 0.10244032850748519
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": 2.1923894220246574,
+          "y": 0.10244032850748519
+        },
+        "savedCommand": {
+          "vel": {
+            "x": 2.1923894220246574,
+            "y": 0.10244032850748519
+          },
+          "facing": -0.4748678421801277,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 0.7364638196611312,
+          "y": -0.8262739369901446
+        },
+        "rtVelocityAfter": {
+          "x": 0.7453541033087417,
+          "y": -0.6526037590555436
+        },
+        "consumedTargetImages": [
+          {
+            "t": 2,
+            "actor": 2,
+            "target": 12,
+            "scale": 1,
+            "seen": {
+              "pos": {
+                "x": 40.411954479207914,
+                "y": 21.084787929736688
+              },
+              "vel": {
+                "x": 0.3626247612439801,
+                "y": -1.2464222536245004
+              },
+              "stance": null,
+              "facing": 1.5305875198585466,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        ]
+      },
+      {
+        "case": "uc12-wz-s3-mirror",
+        "entry": 2.3,
+        "completed": 2.35,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 0.8231208889161922,
+        "lateral": 0.6686390776157549,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": -0.18475287358938497,
+          "y": -1.0442569557276093
+        },
+        "savedPreAnchor": {
+          "x": -0.18475287358938497,
+          "y": -1.0442569557276093
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -0.18475287358938497,
+          "y": -1.0442569557276093
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -0.18475287358938497,
+            "y": -1.0442569557276093
+          },
+          "facing": -0.8462154464373334,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 0.8489753815780952,
+          "y": -0.4379891169202474
+        },
+        "rtVelocityAfter": {
+          "x": 0.8746770231867158,
+          "y": -0.5455159450762208
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3-mirror",
+        "entry": 2.35,
+        "completed": 2.4,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 0.8485646035209352,
+        "lateral": 1.496678141876709,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": -0.8962326863852476,
+          "y": -1.4686300822790068
+        },
+        "savedPreAnchor": {
+          "x": -0.8962326863852476,
+          "y": -1.4686300822790068
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -0.8962326863852476,
+          "y": -1.4686300822790068
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -0.8962326863852476,
+            "y": -1.4686300822790068
+          },
+          "facing": -0.9398774288984213,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 0.8746770231867158,
+          "y": -0.5455159450762208
+        },
+        "rtVelocityAfter": {
+          "x": 0.8727071839374541,
+          "y": -0.705142999457112
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3-mirror",
+        "entry": 2.4,
+        "completed": 2.45,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 0.8507773412587807,
+        "lateral": 2.318903324289797,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": -1.6139122117610698,
+          "y": -1.8698722107486705
+        },
+        "savedPreAnchor": {
+          "x": -1.6139122117610698,
+          "y": -1.8698722107486705
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -1.6139122117610698,
+          "y": -1.8698722107486705
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -1.6139122117610698,
+            "y": -1.8698722107486705
+          },
+          "facing": -1.0457963970913664,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 0.8727071839374541,
+          "y": -0.705142999457112
+        },
+        "rtVelocityAfter": {
+          "x": 0.8399805874076387,
+          "y": -0.8867250908172972
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3-mirror",
+        "entry": 2.45,
+        "completed": 2.5,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 0.8180506306256051,
+        "lateral": 2.7403485113231416,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": -1.998215084172401,
+          "y": -2.045935794487156
+        },
+        "savedPreAnchor": {
+          "x": -1.998215084172401,
+          "y": -2.045935794487156
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -1.998215084172401,
+          "y": -2.045935794487156
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -1.998215084172401,
+            "y": -2.045935794487156
+          },
+          "facing": -1.160498681850079,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 0.8399805874076387,
+          "y": -0.8867250908172972
+        },
+        "rtVelocityAfter": {
+          "x": 0.800115637320751,
+          "y": -1.0692705775712321
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3-mirror",
+        "entry": 2.65,
+        "completed": 2.7,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 0.23789808215742347,
+        "lateral": 2.7403485113231416,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": -2.279962068341242,
+          "y": -1.5387912229832421
+        },
+        "savedPreAnchor": {
+          "x": -2.279962068341242,
+          "y": -1.5387912229832421
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -2.279962068341242,
+          "y": -1.5387912229832421
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -2.279962068341242,
+            "y": -1.5387912229832421
+          },
+          "facing": -1.7982260042258618,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 1.4729483755305128,
+          "y": -0.911787007347288
+        },
+        "rtVelocityAfter": {
+          "x": 1.390378569867088,
+          "y": -0.82508070165166
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3",
+        "entry": 2,
+        "completed": 2.05,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": 0.34554345260804,
+        "lateral": 2.7403485113231416,
+        "driveTangentOverlapRemoved": 0.0,
+        "computedPreAnchor": {
+          "x": -2.227684855107795,
+          "y": -1.632890206803447
+        },
+        "savedPreAnchor": {
+          "x": -2.227684855107795,
+          "y": -1.632890206803447
+        },
+        "anchored": true,
+        "computedCommand": {
+          "x": 1.6813513229154156,
+          "y": -0.3992492650469913
+        },
+        "savedCommand": {
+          "vel": {
+            "x": 1.6813513229154156,
+            "y": -0.3992492650469913
+          },
+          "facing": -1.389006874853257,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": -0.8275971842974628,
+          "y": -1.3516914829711009
+        },
+        "rtVelocityAfter": {
+          "x": -0.6565016463291419,
+          "y": -1.2788923770495253
+        },
+        "consumedTargetImages": [
+          {
+            "t": 2,
+            "actor": 2,
+            "target": 12,
+            "scale": 1,
+            "seen": {
+              "pos": {
+                "x": 39.56566887528703,
+                "y": 21.32029703910456
+              },
+              "vel": {
+                "x": -1.3741482078509901,
+                "y": -0.224224886040752
+              },
+              "stance": null,
+              "facing": 1.2333015837255044,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": false
+            }
+          },
+          {
+            "t": 2,
+            "actor": 2,
+            "target": 12,
+            "scale": 1,
+            "seen": {
+              "pos": {
+                "x": 39.56566887528703,
+                "y": 21.32029703910456
+              },
+              "vel": {
+                "x": -1.3741482078509901,
+                "y": -0.224224886040752
+              },
+              "stance": null,
+              "facing": 1.2333015837255044,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        ]
+      },
+      {
+        "case": "uc12-wz-s3",
+        "entry": 2.3,
+        "completed": 2.35,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": -0.6131395295716467,
+        "lateral": 2.7403485113231416,
+        "driveTangentOverlapRemoved": -0.0,
+        "computedPreAnchor": {
+          "x": -2.69326246864461,
+          "y": -0.7948505024371795
+        },
+        "savedPreAnchor": {
+          "x": -2.69326246864461,
+          "y": -0.7948505024371795
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -2.69326246864461,
+          "y": -0.7948505024371795
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -2.69326246864461,
+            "y": -0.7948505024371795
+          },
+          "facing": -1.9615320729162884,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": -0.23245943385547943,
+          "y": -1.083733615382028
+        },
+        "rtVelocityAfter": {
+          "x": -0.1233255578769899,
+          "y": -1.1735497543315416
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3",
+        "entry": 2.35,
+        "completed": 2.4,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": -0.4829469198382713,
+        "lateral": 2.7403485113231416,
+        "driveTangentOverlapRemoved": -0.0,
+        "computedPreAnchor": {
+          "x": -2.6300353480358982,
+          "y": -0.9086593195328614
+        },
+        "savedPreAnchor": {
+          "x": -2.6300353480358982,
+          "y": -0.9086593195328614
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -2.6300353480358982,
+          "y": -0.9086593195328614
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -2.6300353480358982,
+            "y": -0.9086593195328614
+          },
+          "facing": -2.107122220692869,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": -0.1233255578769899,
+          "y": -1.1735497543315416
+        },
+        "rtVelocityAfter": {
+          "x": -0.32534217070542437,
+          "y": -1.2374745380028505
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3",
+        "entry": 2.4,
+        "completed": 2.45,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": -0.3540972269136743,
+        "lateral": 2.7403485113231416,
+        "driveTangentOverlapRemoved": -0.0,
+        "computedPreAnchor": {
+          "x": -2.5674604054825303,
+          "y": -1.0212942161289236
+        },
+        "savedPreAnchor": {
+          "x": -2.5674604054825303,
+          "y": -1.0212942161289236
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -2.5674604054825303,
+          "y": -1.0212942161289236
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -2.5674604054825303,
+            "y": -1.0212942161289236
+          },
+          "facing": -2.242226514358482,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": -0.32534217070542437,
+          "y": -1.2374745380028505
+        },
+        "rtVelocityAfter": {
+          "x": -0.26903216023031296,
+          "y": -1.3417630116143324
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3",
+        "entry": 2.45,
+        "completed": 2.5,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "forward": -0.2241273919864013,
+        "lateral": 2.7403485113231416,
+        "driveTangentOverlapRemoved": -0.0,
+        "computedPreAnchor": {
+          "x": -2.5043414738836463,
+          "y": -1.1349082930069145
+        },
+        "savedPreAnchor": {
+          "x": -2.5043414738836463,
+          "y": -1.1349082930069145
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": -2.5043414738836463,
+          "y": -1.1349082930069145
+        },
+        "savedCommand": {
+          "vel": {
+            "x": -2.5043414738836463,
+            "y": -1.1349082930069145
+          },
+          "facing": -2.364560664878192,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": -0.26903216023031296,
+          "y": -1.3417630116143324
+        },
+        "rtVelocityAfter": {
+          "x": -0.3559437007552768,
+          "y": -1.5198687024694808
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3",
+        "entry": 3.55,
+        "completed": 3.6,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 1,
+          "y": 0
+        },
+        "forward": 2.4,
+        "lateral": -2.7403485113231416,
+        "driveTangentOverlapRemoved": -2.09797746269169,
+        "computedPreAnchor": {
+          "x": 2.9615333261310055,
+          "y": 0.3119629589616697
+        },
+        "savedPreAnchor": {
+          "x": 2.9615333261310055,
+          "y": 0.3119629589616697
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": 2.9615333261310055,
+          "y": 0.3119629589616697
+        },
+        "savedCommand": {
+          "vel": {
+            "x": 2.9615333261310055,
+            "y": 0.3119629589616697
+          },
+          "facing": 1.9936739447810081,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 0.5208243240933261,
+          "y": -0.41432556976537543
+        },
+        "rtVelocityAfter": {
+          "x": 0.8658320009355988,
+          "y": -0.19528872748810897
+        },
+        "consumedTargetImages": []
+      },
+      {
+        "case": "uc12-wz-s3",
+        "entry": 3.65,
+        "completed": 3.7,
+        "axis": {
+          "x": -0.485642931178632,
+          "y": 0.8741572761215376
+        },
+        "lat": {
+          "x": -0.8741572761215376,
+          "y": -0.485642931178632
+        },
+        "drive": {
+          "x": 1,
+          "y": 0
+        },
+        "forward": 2.4,
+        "lateral": -2.7403485113231416,
+        "driveTangentOverlapRemoved": -2.09797746269169,
+        "computedPreAnchor": {
+          "x": 2.9615333261310055,
+          "y": 0.3119629589616697
+        },
+        "savedPreAnchor": {
+          "x": 2.9615333261310055,
+          "y": 0.3119629589616697
+        },
+        "anchored": false,
+        "computedCommand": {
+          "x": 2.9615333261310055,
+          "y": 0.3119629589616697
+        },
+        "savedCommand": {
+          "vel": {
+            "x": 2.9615333261310055,
+            "y": 0.3119629589616697
+          },
+          "facing": 1.9286818982957792,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.9878838304552591
+        },
+        "compositionResidual": 0.0,
+        "commandResidual": 0.0,
+        "flowFloorGateEligible": false,
+        "rtVelocityBefore": {
+          "x": 1.1261330916182102,
+          "y": 0.11447116546237263
+        },
+        "rtVelocityAfter": {
+          "x": 1.3229479151255228,
+          "y": 0.2138958107472617
+        },
+        "consumedTargetImages": []
+      }
+    ],
+    "verdict": "No independent component-conversion or anchor arithmetic error demonstrated. Oblique flow-floor omission remains a policy question; an opposite request does not establish opposite achieved movement or a protection fix.",
+    "newRecoveryTrialAuthorizedByInspection": false
+  },
+  "informationSources": {
+    "teammateSee": "Current source always returns the .05-second delayed world-buffer picture, without visibility/occlusion or observer acquisition gating.",
+    "calledMotion": "Magnitude is declared zone-track tempo (0,side*vmax*.45*press), not actual private requested velocity. Presence is reset each update and enabled by private zoneFlow/job/contact eligibility; audit that activation separately. No RT/RB override is active in the six inspected D01 spacing calls.",
+    "heldRead": "Existing finite-cadence personally consumed picture; retain lineage and acquisition time, do not relabel it as a fresh image.",
+    "ownTactile": "Own support/ground/load and actually acquired contact cues remain available; no arbitrary visual blindfold of connected contact mechanics.",
+    "worldState": "All22 physical state is analyst/solver evidence, not memory initialization for every observer."
+  },
+  "captureGaps": [
+    "Y has selected consumed pictures and all-tick key movement; it lacks an explicit complete observer-memory/visibility history.",
+    "H captures exact actual held RT reads and all22 late World bodies, not every observer's acquisition history from snap.",
+    "Existing state/RNG hash schema does not certify a future awareness owner's new private observer state; require a separate owner-state fingerprint."
+  ],
+  "candidateExecution": false,
+  "newWorldSteps": 0,
+  "newPlays": 0
+}

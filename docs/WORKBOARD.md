@@ -11,14 +11,26 @@ movement/contact capacities and laws unchanged. Preserve historical `4ded6b6`
 and the two rejected RT alternatives; no adoption or baseline promotion.
 
 At checkpoint start, refreshed develop remains `a1b16e6` / source `e5c318a`;
-no published awareness branch/PR was found. Pin the owner's exact candidate
-before evaluating it. Preparation may capture missing source provenance from
-snap through the two arrival windows, checking every state/RNG hash against
-the shared packet. Legitimate held reads are distinct from all-world history,
-another player's private decisions and new observations. A source change is
-evaluated before any yielding/RB navigation change. Inspect saved loaded-foot
-arithmetic only; a specific demonstrated cause is required for another trial.
-No shared production files or new RT action, games, census or full suite.
+no published awareness branch/PR was found. The user confirms Pass/Pursuit owns
+the repair and requires its exact commit, settings and observer initialization
+before evaluation. **No reruns or duplicate awareness layer while waiting.**
+Preparation uses saved packets only. Legitimate held reads are distinct from
+all-world history, another player's private decisions and new observations.
+A source change is evaluated before any yielding/RB navigation change. Inspect
+saved loaded-foot arithmetic only; a specific demonstrated cause is required
+for another trial. No shared production files or new RT action, games, census
+or full suite.
+
+Completed [readiness handoff](reviews/ace-awareness/README.md), frozen all22
+input/setting manifest, actual RT/RB source records and two personally consumed
+held-read lineages. All15 saved RT foot commands reconstruct exactly; no
+independent arithmetic error or new recovery trial. Declared track magnitude
+is distinct from private activation; the six inspected D01 RT/RB spacing calls
+have no active called-track override. Y's full observer-memory history remains
+unavailable, with no invented initialization or baseline rerun. Final offline
+preparation `de0dd09` takes .138s, zero World steps/plays and no suite/typecheck.
+Source e5, reference integrity and all54 D01 prefix hashes preserved. Candidate
+evaluation is ready but unrun pending the owner's three concrete inputs.
 
 ## 2026-10-14: bounded RT recovery counterfactual after D01–D03
 
