@@ -70,12 +70,15 @@ center-hand problem on an ordinary no-fullback run. It is **not proved to cause
 the football endpoint**, and does not certify this defensive win as physically
 correct. Force/work limits alone cannot do that.
 
-No specific controller error has been demonstrated on this panel. Contact-law
-dependent release refinement stays paused. The sole solver owner should replay
+The initial protection panel did not demonstrate a specific controller error.
+The [keeper/runoff and actual runner-read follow-up](under-center-zone-runner.md)
+now reproduces a separate live-aim/snap-aim assessment mismatch, while its effect
+on protection remains untested. Contact-law dependent release refinement stays
+paused. The sole solver owner should replay
 this same interval after the reviewed law candidate, retaining the successful
 Y/RT collection control and the failed H/RT arrival. Once execution is coherent,
-the next football question is keeper runoff versus runner response using actual
-acquired information; preserve legitimate defensive wins and free safeties.
+aligning the existing runner assessment with its commanded live aim is a bounded
+next question; preserve legitimate defensive wins and free safeties.
 
 The [withdrawn early-release trial](combination-collection.md) remains archived
 at `4074038c4cd966e1c213e204ca47d528e7260968`; its unsafe WZ-23 first-level control

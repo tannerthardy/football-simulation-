@@ -18,6 +18,22 @@ Trace consumed first-level/gap cues, bounce/bang/bend options and requested
 versus achieved movement before contact. No release timer, grip change or
 blocking heuristic while the shared angular-law witness is unresolved.
 Diagnostic evidence stays separate from production; comparison remains 4ded6b6.
+[Completed diagnosis and small RB witness](reviews/under-center-zone-runner.md):
+default press commands a live aim while its early-abandon assessment uses the
+snap aim (1.433 yd mismatch at failed rightward 2.20 s). Successful/weak controls
+also reproduce the mismatch; endpoint benefit of alignment is untested.
+Helper traffic removes the near bang candidate in the failed rightward picture;
+a last-moment inside request is not an established safe escape. Pre-World
+spacing also changes the keeper's requested x sign; YAC owner coordination is
+required before any future shared movement edit. No movement file changed.
+Sole physics owner: [13 KB RT/DE_S input handoff](https://github.com/tannerthardy/football-simulation-/pull/2#issuecomment-6159265851).
+Audit/integration owner: [exact PR #9 extension](https://github.com/tannerthardy/football-simulation-/pull/9#issuecomment-6159266104)
+also posted on [PR #10 extraction](https://github.com/tannerthardy/football-simulation-/pull/10#issuecomment-6159266455).
+Six diagnostic replay pairs retain all three actual-pin histories; typecheck
+passes, 35.75 recorded command-seconds, zero new inputs/games/full suites.
+Keep PR #11 diagnostic; no production merge, solver/default/controller change
+or baseline promotion. Return the existing angular interval after law review
+before controller candidates; keep the withdrawn unsafe early-release witness.
 
 Latest run-game handoff to the audit/integration owner: [component-only draft PR #9](https://github.com/tannerthardy/football-simulation-/pull/9),
 branch `codex/run-contact-components-candidate`, exact published commit
