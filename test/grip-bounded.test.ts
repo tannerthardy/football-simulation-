@@ -5,7 +5,7 @@ const fixture:{cases:Array<{id:string;input:BoundedGripInput;reference:Record<st
   JSON.parse(readFileSync(new URL('../config/grip-bounded-reference.json',import.meta.url),'utf8'));
 const norm=(a:{x:number;y:number},b:{x:number;y:number})=>Math.hypot(a.x-b.x,a.y-b.y);
 describe('acquired bounded partial-share tangent integration, diagnostic only',()=>{
-  it.each(fixture.cases.flatMap(c=>(['uniform','adaptive','gauss'] as const).map(integration=>({...c,integration}))))
+  it.each(fixture.cases.flatMap(c=>(['uniform','adaptive','gauss','eliminated'] as const).map(integration=>({...c,integration}))))
     ('matches independent World motion, attachment and work: $id / $integration',({input,reference:z,convergence,integration})=>{
     const original=structuredClone(input),r=boundedGripInterval(input,integration);expect(input).toEqual(original);
     expect(convergence.converged).toBe(true);
@@ -24,7 +24,7 @@ describe('acquired bounded partial-share tangent integration, diagnostic only',(
     expect(r.representationError).toBeLessThan(1e-10);
     expect(r.legs).toBeCloseTo(1-(1-input.legs)*Math.exp(-r.slidingUntil/.3),10);
   });
-  it.each(['adaptive','gauss'] as const)('composes unequal intervals across cap exit and the 98% slip marker: %s',(integration)=>{
+  it.each(['adaptive','gauss','eliminated'] as const)('composes unequal intervals across cap exit and the 98% slip marker: %s',(integration)=>{
     const input=fixture.cases[0].input,whole=boundedGripInterval(input,integration),h=.002315,
       first=boundedGripInterval({...input,duration:h},integration),second=boundedGripInterval({...input,a:first.a,b:first.b,
         material:first.material,footOffset:first.footOffset,legs:first.legs,hold:first.hold,duration:input.duration-h},integration);
@@ -36,7 +36,7 @@ describe('acquired bounded partial-share tangent integration, diagnostic only',(
     expect(norm(whole.point,second.point)).toBeLessThan(5e-7);expect(Math.abs(whole.legs-second.legs)).toBeLessThan(1e-6);
     for(const k of ['bodyWork','motorWork','passiveWork'] as const)expect(Math.abs(whole[k]-first[k]-second[k])).toBeLessThan(.01);
   });
-  it.each(['adaptive','gauss'] as const)('rotates the anisotropic material Jacobian with the body and the foot in world coordinates: %s',(integration)=>{
+  it.each(['adaptive','gauss','eliminated'] as const)('rotates the anisotropic material Jacobian with the body and the foot in world coordinates: %s',(integration)=>{
     const input=fixture.cases.find(c=>c.id.endsWith('1-offset'))!.input,angle=.7,
       rotate=(v:{x:number;y:number})=>({x:Math.cos(angle)*v.x-Math.sin(angle)*v.y,y:Math.sin(angle)*v.x+Math.cos(angle)*v.y}),
       particle=(p:typeof input.a)=>({...p,pos:rotate(p.pos),vel:rotate(p.vel),facing:p.facing+angle}),
@@ -48,12 +48,12 @@ describe('acquired bounded partial-share tangent integration, diagnostic only',(
     expect(norm(z.point,rotate(r.point))).toBeLessThan(5e-7);
     for(const k of ['bodyWork','motorWork','passiveWork'] as const)expect(Math.abs(z[k]-r[k])).toBeLessThan(.01);
   });
-  it.each(['adaptive','gauss'] as const)('does not manufacture a reaction or lose finiteness for zero/tiny capacity: %s',(integration)=>{
+  it.each(['adaptive','gauss','eliminated'] as const)('does not manufacture a reaction or lose finiteness for zero/tiny capacity: %s',(integration)=>{
     for(const capacity of [0,1e-12,1e-9]){const input={...fixture.cases[0].input,capacity},r=boundedGripInterval(input,integration);
       expect(r.dose).toBeLessThanOrEqual(capacity*input.duration+1e-20);expect(norm(r.impulse,{x:0,y:0})).toBeLessThanOrEqual(r.dose+1e-20);
       expect(Number.isFinite(r.motorWork)).toBe(true);expect(r.passiveWork).toBeLessThanOrEqual(1e-12);}
   });
-  it.each(['adaptive','gauss'] as const)('refuses new normal, reel, active motor and over-reach channels: %s',(integration)=>{
+  it.each(['adaptive','gauss','eliminated'] as const)('refuses new normal, reel, active motor and over-reach channels: %s',(integration)=>{
     const input=fixture.cases[0].input;
     expect(()=>boundedGripInterval({...input,pullSpeed:20},integration)).toThrow('Normal/reel channel');
     expect(()=>boundedGripInterval({...input,desired:{x:1,y:0}},integration)).toThrow('Active motor');

@@ -5,7 +5,7 @@
  */
 import { boundedAttachment } from '../../../src/physics/bounded-attachment.js';
 import { stiffTailStep } from './grip-stiff-tail.js';
-import { exponentialTailStep } from './grip-exponential-tail.js';
+import { passiveStageStep } from './grip-passive-stages.js';
 import type { SupportedGripInput } from './grip-force-supported.js';
 import type { Particle } from './grip-force-interval.js';
 export interface BoundedGripInput extends SupportedGripInput {
@@ -17,7 +17,7 @@ const AX=0,AY=1,AVX=2,AVY=3,AS=4,AA=5,BX=6,BY=7,BVX=8,BVY=9,BS=10,BA=11,
   ZX=12,ZY=13,FX=14,FY=15,JX=16,JY=17,QX=18,QY=19,JA=20,JB=21,QA=22,QB=23,
   BW=24,MW=25,DOSE=26,LEGS=27;
 
-export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'|'analytic'|'eliminated'='adaptive') {
+export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'|'eliminated'='adaptive') {
   const {a,b,duration:H,capacity:C,mobility:mu}=input,K=1/a.mass+1/b.mass;
   const numbers=[H,C,mu,input.legs,input.pullSpeed,input.hold,input.reach,input.minimumDistance,input.attachmentReach,
     input.desired.x,input.desired.y,input.material.x,input.material.y,input.footOffset.x,input.footOffset.y,
@@ -34,7 +34,8 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     throw new RangeError('Angular travel outside short bounded tangent scope');
   const initial=[a.pos.x,a.pos.y,a.vel.x,a.vel.y,a.spin,a.facing,b.pos.x,b.pos.y,b.vel.x,b.vel.y,b.spin,b.facing,
     input.material.x,input.material.y,input.footOffset.x,input.footOffset.y,0,0,0,0,0,0,0,0,0,0,0,input.legs];
-  let evaluations=0,expectedDirection=0;
+  let evaluations=0,expectedDirection=0,eventMaxBracket=0;
+  const stageStatistics={steps:0,geometryIterations:0};
   function geometry(y:State) {
     const c=Math.cos(y[BA]),s=Math.sin(y[BA]),map=boundedAttachment({x:y[ZX],y:y[ZY]},input.attachmentReach),
       rbx=c*map.offset.x-s*map.offset.y,rby=s*map.offset.x+c*map.offset.y,
@@ -73,8 +74,8 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
   const initialPhase:Phase=C>0&&Math.abs(start.vt)>=start.M*C?'cap'
     :C>0&&Math.abs(start.vt)/start.M>=.98*C?'settling':'tail';
   expectedDirection=Math.sign(frame(initial,initialPhase,input.hold,false).vn);
-  function derivative(t:number,y:State,phase:Phase,hold:number,validate=true,provided?:ReturnType<typeof frame>) {
-    evaluations++;const f=provided??frame(y,phase,hold,true,validate),ta=-f.rax*f.z+f.ray*f.x,tb=f.rbx*f.z-f.rby*f.x;
+  function derivative(t:number,y:State,phase:Phase,hold:number,validate=true) {
+    evaluations++;const f=frame(y,phase,hold,true,validate),ta=-f.rax*f.z+f.ray*f.x,tb=f.rbx*f.z-f.rby*f.x;
     return [y[AVX],y[AVY],-f.x/a.mass,-f.z/a.mass,ta/a.inertia,y[AS],
       y[BVX],y[BVY],f.x/b.mass,f.z/b.mass,tb/b.inertia,y[BS],
       f.share*(f.c*f.ux+f.s*f.uy),f.share*(-f.s*f.ux+f.c*f.uy),f.ux,f.uy,
@@ -87,89 +88,6 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
       b=derivative(t+h/2,add(a,h/2),phase,hold),c=derivative(t+h/2,add(b,h/2),phase,hold),
       d=derivative(t+h,add(c,h),phase,hold);
     return y.map((v,i)=>v+h*(a[i]+2*b[i]+2*c[i]+d[i])/6);
-  }
-  function analytic(t:number,y:State,h:number,hold:number) {
-    if(C===0)return rk4(t,y,h,'tail',hold);
-    const f=frame(y,'tail',hold),ka=f.rax*f.nx+f.ray*f.ny,kb=f.rbx*f.nx+f.rby*f.ny,
-      u=[...y,0].map(()=>0),w=u.slice(),SQUARE=28,
-      z=[...y,f.vt*f.vt];
-    u[AVX]=f.ny/a.mass;u[AVY]=-f.nx/a.mass;u[AS]=-ka/a.inertia;
-    u[BVX]=-f.ny/b.mass;u[BVY]=f.nx/b.mass;u[BS]=kb/b.inertia;
-    u[JX]=-f.ny;u[JY]=f.nx;u[JA]=-ka;u[JB]=kb;
-    const ux=mu*f.jtx,uy=mu*f.jty;
-    u[ZX]=f.share*(f.c*ux+f.s*uy);u[ZY]=f.share*(-f.s*ux+f.c*uy);
-    u[FX]=ux;u[FY]=uy;u[DOSE]=Math.sign(f.force);
-    w[AVX]=f.ny/f.M;w[AVY]=-f.nx/f.M;w[AS]=-ka/f.M;
-    w[BVX]=-f.ny/f.M;w[BVY]=f.nx/f.M;w[BS]=kb/f.M;
-    function rates(state:State,g:ReturnType<typeof frame>) {
-      const bx=-state[BS]*g.rby+g.xx*g.ux+g.xy*g.uy,
-        by=state[BS]*g.rbx+g.xy*g.ux+g.yy*g.uy,
-        ax=state[BVX]-state[AVX]+bx,ay=state[BVY]-state[AVY]+by,
-        ndot=g.nx*ax+g.ny*ay,nx=(ax-g.nx*ndot)/g.d,ny=(ay-g.ny*ndot)/g.d,
-        source=-ny*g.gx+nx*g.gy-g.ny*(-state[BS]*by+state[AS]*ay)
-          +g.nx*(state[BS]*bx-state[AS]*ax),
-        ca=g.rax*g.nx+g.ray*g.ny,cb=g.rbx*g.nx+g.rby*g.ny;
-      return {source,lambda:(K+ca*ca/a.inertia+cb*cb/b.inertia)/g.M};
-    }
-    // Store elapsed impulse moments T: T'=J. At the endpoint recover the
-    // original remaining-time moment Q=T+(H-t)J. This preserves the same
-    // drift chain for translation/yaw and its impulse ledger.
-    for(const [q,j] of [[QX,JX],[QY,JY],[QA,JA],[QB,JB]])z[q]-=(H-t)*z[j];
-    const r=exponentialTailStep(z,h,{u,w,mobility:f.M,squaredSource:rates(y,f).source,square:SQUARE,work:[BW,MW],
-      links:[[AX,AVX],[AY,AVY],[BX,BVX],[BY,BVY],[AA,AS],[BA,BS],
-        [QX,JX],[QY,JY],[QA,JA],[QB,JB]],
-      derivative:state=>{
-        const g=frame(state,'tail',hold),d=derivative(t,state,'tail',hold,true,g),
-          {source,lambda}=rates(state,g),square=state[SQUARE];
-        if(!(square>=0))throw new RangeError('Negative squared slip outside analytic scope');
-        for(const [q,j] of [[QX,JX],[QY,JY],[QA,JA],[QB,JB]])d[q]=state[j];
-        d[BW]=-square/g.M;d[MW]=-square/g.M;
-        d.push(-2*lambda*square+2*g.vt*source);return d;
-      }});
-    for(const [q,j] of [[QX,JX],[QY,JY],[QA,JA],[QB,JB]])r[q]+=(H-t-h)*r[j];
-    return r.slice(0,28);
-  }
-  function eliminated(t:number,y:State,h:number,hold:number) {
-    if(C===0)return rk4(t,y,h,'tail',hold);
-    const offset=Math.sqrt(3)/6,A=[[.25,.25-offset],[.25+offset,.25]],c=[.5-offset,.5+offset],
-      A2=A.map(row=>c.map((_,j)=>row[0]*A[0][j]+row[1]*A[1][j]));
-    let stages=c.map(ci=>{
-      const r=y.slice();r[AX]+=h*ci*y[AVX];r[AY]+=h*ci*y[AVY];
-      r[BX]+=h*ci*y[BVX];r[BY]+=h*ci*y[BVY];r[AA]+=h*ci*y[AS];r[BA]+=h*ci*y[BS];return r;
-    });
-    for(let iteration=0;iteration<12;iteration++) {
-      const g=stages.map(s=>geometry(s)),ka=g.map(z=>z.rax*z.nx+z.ray*z.ny),kb=g.map(z=>z.rbx*z.nx+z.rby*z.ny),
-        vt=g.map((z,i)=>-z.ny*(y[BVX]-y[AVX])+z.nx*(y[BVY]-y[AVY])-y[AS]*ka[i]+y[BS]*kb[i]),
-        m=g.map((z,i)=>g.map((v,j)=>(i===j?1:0)+h*A[i][j]/z.M*
-          (K*(z.nx*v.nx+z.ny*v.ny)+ka[i]*ka[j]/a.inertia+kb[i]*kb[j]/b.inertia))),
-        rhs=vt.map((v,i)=>-v/g[i].M),det=m[0][0]*m[1][1]-m[0][1]*m[1][0],
-        force=[(m[1][1]*rhs[0]-m[0][1]*rhs[1])/det,(m[0][0]*rhs[1]-m[1][0]*rhs[0])/det],
-        fx=g.map((z,i)=>-z.ny*force[i]),fy=g.map((z,i)=>z.nx*force[i]),
-        ta=ka.map((v,i)=>-v*force[i]),tb=kb.map((v,i)=>v*force[i]),
-        ux=g.map((z,i)=>mu*(z.xx*fx[i]+z.xy*fy[i])),uy=g.map((z,i)=>mu*(z.xy*fx[i]+z.yy*fy[i])),
-        zx=g.map((z,i)=>z.share*(z.c*ux[i]+z.s*uy[i])),zy=g.map((z,i)=>z.share*(-z.s*ux[i]+z.c*uy[i])),
-        sum=(row:number[],values:number[])=>row[0]*values[0]+row[1]*values[1],
-        next=c.map((ci,i)=>{
-          const z=y.slice();
-          z[AVX]-=h*sum(A[i],fx)/a.mass;z[AVY]-=h*sum(A[i],fy)/a.mass;
-          z[BVX]+=h*sum(A[i],fx)/b.mass;z[BVY]+=h*sum(A[i],fy)/b.mass;
-          z[AS]+=h*sum(A[i],ta)/a.inertia;z[BS]+=h*sum(A[i],tb)/b.inertia;
-          z[AX]+=h*ci*y[AVX]-h*h*sum(A2[i],fx)/a.mass;z[AY]+=h*ci*y[AVY]-h*h*sum(A2[i],fy)/a.mass;
-          z[BX]+=h*ci*y[BVX]+h*h*sum(A2[i],fx)/b.mass;z[BY]+=h*ci*y[BVY]+h*h*sum(A2[i],fy)/b.mass;
-          z[AA]+=h*ci*y[AS]+h*h*sum(A2[i],ta)/a.inertia;z[BA]+=h*ci*y[BS]+h*h*sum(A2[i],tb)/b.inertia;
-          z[ZX]+=h*sum(A[i],zx);z[ZY]+=h*sum(A[i],zy);z[FX]+=h*sum(A[i],ux);z[FY]+=h*sum(A[i],uy);return z;
-        });
-      const geometryResidual=Math.max(...next.flatMap((z,i)=>
-        [AX,AY,BX,BY,BA,ZX,ZY].map(k=>Math.abs(z[k]-stages[i][k]))));
-      if(geometryResidual<1e-13) {
-        // Evaluate work and all ledgers from the converged physical stages,
-        // rather than replacing work with the represented kinetic-energy delta.
-        const d=next.map((z,i)=>derivative(t+c[i]*h,z,'tail',hold));
-        return y.map((v,j)=>v+h*(d[0][j]+d[1][j])/2);
-      }
-      stages=next;
-    }
-    throw new RangeError('Bounded tangent geometry iteration limit');
   }
   function solve(n:number) {
     let y=initial.slice(),t=0,phase=initialPhase,hold=input.hold,
@@ -203,6 +121,14 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
       return stiffTailStep(t,y,h,(time,state,validate)=>derivative(time,state,'tail',hold,validate),
         {u,w},delta=>localError(delta,delta.map(()=>0)),integration==='radau'?'radau':'gauss');
     }
+    function eliminated(t:number,y:State,h:number,hold:number) {
+      const f=frame(y,'tail',hold);
+      // No viscous mode exists in a nonrotating, exactly head-on free pair.
+      // Retain the existing explicit operator instead of solving empty stages.
+      if(C===0||f.vt===0&&y[AS]===0&&y[BS]===0)return rk4(t,y,h,'tail',hold);
+      return passiveStageStep(t,y,h,{a,b,mobility:mu,geometry,
+        derivative:(time,state)=>derivative(time,state,'tail',hold),statistics:stageStatistics});
+    }
     for(let k=0;k<n;k++) {
       const end=(k+1)*H/n;
       let pieces=0;
@@ -223,7 +149,7 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
             if(!(h>0)||t+h===t)throw new RangeError('Bounded tangent adaptive underflow');
             let fine:State,error:number;
             try {
-              const step=integration==='eliminated'?eliminated:integration==='analytic'?analytic:integration==='gauss'||integration==='radau'?implicit:(t:number,y:State,h:number,hold:number)=>rk4(t,y,h,phase,hold),
+              const step=integration==='eliminated'?eliminated:integration==='gauss'||integration==='radau'?implicit:(t:number,y:State,h:number,hold:number)=>rk4(t,y,h,phase,hold),
                 coarse=step(t,y,h,hold),mid=step(t,y,h/2,hold);
               fine=step(t+h/2,mid,h/2,hold);
               // Allocate local accuracy by elapsed physical time. Separately
@@ -253,9 +179,14 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
           if(gap<=0) {
             let lo=0,hi=h;
             for(let j=0;j<36;j++) {
+              // Existing motion/share/work gates still apply. A 1ns event
+              // bracket per transition bounds two-clock share error by 6.67e-9, below
+              // its 1e-6 budget; the old 36-iteration path remains unchanged.
+              if(integration==='eliminated'&&hi-lo<=1e-9)break;
               const mid=(lo+hi)/2,z=geometry(rk4(t,y,mid,phase,hold));
               if(sign*z.vt-fraction*z.M*C>0)lo=mid;else hi=mid;
             }
+            if(integration==='eliminated')eventMaxBracket=Math.max(eventMaxBracket,hi-lo);
             const delta=(lo+hi)/2;y=rk4(t,y,delta,phase,hold);t+=delta;
             if(phase==='cap'){capUntil=t;phase='settling';}
             else {slidingUntil=t;phase='tail';hold=geometry(y).d;}
@@ -304,7 +235,7 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     representationError=Math.max(...(['a','b'] as const).flatMap((k,i)=>[
       Math.abs(p[k].pos.x-y[i*6]),Math.abs(p[k].pos.y-y[i*6+1]),Math.abs(p[k].vel.x-y[i*6+2]),
       Math.abs(p[k].vel.y-y[i*6+3]),Math.abs(p[k].spin-y[i*6+4]),Math.abs(p[k].facing-y[i*6+5])]));
-  if((integration==='gauss'||integration==='radau'||integration==='analytic'||integration==='eliminated')&&!(representationError<1e-10))
+  if((integration==='gauss'||integration==='radau'||integration==='eliminated')&&!(representationError<1e-10))
     throw new RangeError('Bounded tangent body/impulse representation limit exhausted');
   return {...p,material:{x:y[ZX],y:y[ZY]},footOffset:{x:y[FX],y:y[FY]},
     point:{x:p.b.pos.x+g.rbx,y:p.b.pos.y+g.rby},legs:y[LEGS],hold:accepted.hold,
@@ -312,5 +243,5 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
     impulse:{x:y[JX],y:y[JY]},moment:{x:y[QX],y:y[QY]},
     angularImpulse:[y[JA],y[JB]],angularMoment:[y[QA],y[QB]],bodyWork:y[BW],motorWork:y[MW],
     passiveWork:y[BW]-y[MW],dose:y[DOSE],...balances(y),partitions:n,evaluations,error,integration,
-    representationError};
+    representationError,...(integration==='eliminated'?{stageStatistics,eventMaxBracket}:{})};
 }
