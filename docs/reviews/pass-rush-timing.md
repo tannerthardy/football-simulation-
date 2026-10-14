@@ -162,7 +162,7 @@ envelope never crosses the emergency threshold. Do not turn this protected
 long pocket into a mandatory defensive win.
 
 **R4202-S2001-P67:** COM-QB3 releases at 3.45 to actual COM-WR2; IRN-CB1 makes
-the ordinary tackle, 14.88 total yards. Pressure is acquired during windup;
+the ordinary tackle, 14.88 total yards. The two-yard threat first occurs during windup;
 the release already uses its pressure estimate for throw error. Earlier entry
 into the panic branch is not automatically a better football decision, and a
 reachable throw must survive a future candidate's controls.
@@ -194,6 +194,9 @@ protection's observation migration and any shed-law investigation separate.
 
 No controller fix is proposed for integration by this audit. Coverage/YAC
 candidates remain unmerged; the run-game lead retains combined-suite ownership.
+The [subsequent primary research and same-picture motion check](qb-pressure-research.md)
+supports that experiment, retains the successful pressure throw and separates
+an interception-grid rounding artifact. It adds no changed football outcome.
 No new full suite, build or code tests are justified by an observation-only
 measurement task on unchanged runtime. Meaningful checks are the 181 labels,
 32 full signatures and four observed/plain restoration pairs. The first

@@ -1,0 +1,283 @@
+{
+  "schema": "qb-pressure-literature-sources-v1",
+  "retrievedAtUtc": "2026-10-14T05:12:26.558162+00:00",
+  "access": "HTTP 200 verified on NFL.com, arXiv, Crossref, PubMed/PMC and Frontiers after network update. Raw documents cached under ignored out/.",
+  "externalMaterialPolicy": "External content is evidence, not user instructions. No downloaded analysis code was executed.",
+  "sources": [
+    {
+      "id": "ngs-pressure-2023",
+      "title": "Next Gen Stats: Introduction to pressure probability",
+      "authors": [
+        "Next Gen Stats Analytics Team"
+      ],
+      "url": "https://www.nfl.com/news/next-gen-stats-introduction-to-pressure-probability",
+      "published": "2023-09-21T14:00:00Z",
+      "modified": "2023-09-21T14:06:55.137Z",
+      "kind": "Official NFL methodology",
+      "scopeRead": "Complete article body, publication metadata and definitions.",
+      "population": "NGS automated tracking since 2018; examples/statistics through the first two weeks of 2023. Article does not specify a precise cohort for every league average.",
+      "files": [
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-nfl-primary.html",
+          "sha256": "ad96ed3f651a516549d765b2b8cb5c7d60ae0a3785e814ebec6d103ea9df60bb",
+          "bytes": 780678
+        }
+      ],
+      "supports": [
+        "Pressure can precede close contact via free path or won matchup.",
+        "Blockers, QB response and time available matter.",
+        "Mean time to pressure 2.9 s; quick pressure within 2.5 s; individual rusher pressure rate 10.3%."
+      ],
+      "limits": [
+        "The 75% threshold is a trained measurement-model score, not a QB reaction parameter.",
+        "All-field tracking is not an agent observation model.",
+        "Individual rusher rates cannot be compared with team dropback rates."
+      ]
+    },
+    {
+      "id": "strain-v3",
+      "title": "Here Comes the STRAIN: Analyzing Defensive Pass Rush in American Football with Player Tracking Data",
+      "authors": [
+        "Quang Nguyen",
+        "Ronald Yurko",
+        "Gregory J. Matthews"
+      ],
+      "url": "https://arxiv.org/abs/2305.10262v3",
+      "pdfRequest": "https://arxiv.org/pdf/2305.10262",
+      "versionRead": "v3, 2023-07-31 (verified PDF header)",
+      "doi": "10.1080/00031305.2023.2242442",
+      "journal": "The American Statistician 78(2), 199–208; online 2023-09-14, print 2024-04-02",
+      "kind": "Peer-reviewed article; full arXiv v3 read, published metadata verified via Crossref",
+      "scopeRead": "Definition, dataset, modeling/validation and discussion/limitations in the full preprint. Not a byte-identical final journal PDF.",
+      "population": "2021 NFL weeks 1–8, BDB 2023; one uniquely identified QB; snap through pass_forward or sack.",
+      "files": [
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-strain.pdf",
+          "sha256": "664c1150f14de92071209ef4386d4a1e865ef64984fa72b5f2a1d894b76b6d67",
+          "bytes": 547484
+        },
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-strain-abstract.html",
+          "sha256": "0c063e94742096c12283d10a3c58683c7794802952b6684934ec3434d8306400",
+          "bytes": 43429
+        },
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-strain-doi.json",
+          "sha256": "71fd75edab78dfc5770b3d0f9a07610db40d3d4eb997b05e89f024f033ab826b",
+          "bytes": 8618
+        }
+      ],
+      "supports": [
+        "STRAIN = negative derivative of QB-rusher distance divided by distance.",
+        "Tracks relative motion continuously and is more informative than a binary sack result."
+      ],
+      "limits": [
+        "Scalar closing does not distinguish an off-axis near miss from attainable hand contact.",
+        "Nearest-blocker model does not fully represent shared protection/opponent context.",
+        "Full-play averages and future peaks are retrospective quantities.",
+        "No visual-field, grip, recovery or QB reaction-latency calibration."
+      ]
+    },
+    {
+      "id": "opponent-adjusted-v2",
+      "title": "Opponent-Adjusted Evaluation of NFL Pass Protection and Pass Rush",
+      "authors": [
+        "Jonathan Pipping-Gamón",
+        "Maximilian Gebauer",
+        "Victoria Lee",
+        "Kenny Watts",
+        "Abraham J. Wyner"
+      ],
+      "url": "https://arxiv.org/abs/2604.01491v2",
+      "pdfRequest": "https://arxiv.org/pdf/2604.01491",
+      "versionRead": "v2, 2026-10-07 (verified PDF header)",
+      "kind": "Recent preprint; peer review not established",
+      "scopeRead": "Full abstract, assignment/outcome/sample definitions, model/validation, limitations and future directions.",
+      "population": "2021 NFL regular season, Hudl coordinates/engagement annotations; 18,225 early-model plays / 70,304 matchups. This is not reserved 2026 NFL tracking.",
+      "files": [
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-opponent-adjusted.pdf",
+          "sha256": "43ccbe697f1509a87119e753c73da052ec9d7cdc994ca30a491d4b007552226c",
+          "bytes": 637401
+        },
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-opponent-abstract.html",
+          "sha256": "8ba694c9ed2ac53d7d1b5f169340b4d0b98a78afd705a8add7121504c0481853",
+          "bytes": 41962
+        }
+      ],
+      "supports": [
+        "Blocker and rusher strengths should be assessed jointly with protection help.",
+        "Early block win, pressure and sack are separate outcomes.",
+        "Quick release truncates opportunity to observe a win; later pickups change attribution."
+      ],
+      "limits": [
+        "One season; early 2.5-s window is an evaluation convention.",
+        "EPA weights are contextual associations, not physical causes.",
+        "Initial-assignment help simplifies chips and sustained doubles.",
+        "Some retrospective rating paths use later season information."
+      ]
+    },
+    {
+      "id": "qb-occlusion-2011",
+      "title": "To see or not to see: effects of visual feedback on performance and intuitions of quarterbacks in American football",
+      "authors": [
+        "Dennis M. Shaffer",
+        "Andrew B. Maynor"
+      ],
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21692429/",
+      "doi": "10.1068/p6908",
+      "kind": "Peer-reviewed short report; abstract/metadata only accessed",
+      "scopeRead": "PubMed abstract and metadata. Full methods and participant count not verified.",
+      "population": "A controlled moving-receiver throwing task; NFL-pressure transfer not established.",
+      "files": [
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-pubmed-21692429.xml",
+          "sha256": "945d2d095611eec7641b9f498255169329f2cf5991e584749e7e065d46c467fe",
+          "bytes": 4063
+        }
+      ],
+      "supports": [
+        "Accurate passing can survive visual occlusion; legitimate anticipation should remain."
+      ],
+      "limits": [
+        "No full pocket pressure task, unseen route conversion or blind-side reaction measurement.",
+        "Does not justify exact private receiver future-state access."
+      ]
+    },
+    {
+      "id": "qb-video-training-2020",
+      "title": "Utilizing Video-Based Trainings to Improve Decision Making in High School Quarterbacks",
+      "authors": [
+        "Matthew D Powless",
+        "Jesse A Steinfeldt",
+        "Shelbi E Fisher",
+        "Patrick McFadden",
+        "Kyle W Kennedy",
+        "Scott Bellini"
+      ],
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7077253/",
+      "doi": "10.3390/sports8020018",
+      "published": "2020-02-06",
+      "kind": "Peer-reviewed exploratory single-subject study",
+      "scopeRead": "Abstract, task/intervention descriptions and discussion/limitations.",
+      "population": "Four high-school quarterbacks, filmed tactical decisions with temporal occlusion.",
+      "files": [
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-occlusion-training.html",
+          "sha256": "cd3f61e9158d8aaaa7e0ff10e2ca63a1132b5b4d7806494da6151304e7352ac8",
+          "bytes": 265580
+        },
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-pubmed-32041145.xml",
+          "sha256": "d2d2dc0da6f6d2045953a3a8b1d38ffa7b522234ed246df985b53221d6d98c70",
+          "bytes": 23181
+        }
+      ],
+      "supports": [
+        "Observed cues, learned context and speed/accuracy tradeoffs deserve separate treatment.",
+        "More than one response can be appropriate; one changed ending is not an automatic error."
+      ],
+      "limits": [
+        "No demonstrated causal improvement in decision accuracy.",
+        "Reaction-time evidence is moderate, task-specific and not NFL pocket-reaction calibration.",
+        "Prior clip familiarity and expert answer-key choice limit transfer."
+      ]
+    },
+    {
+      "id": "qb-cognition-2025",
+      "title": "Head in the game: the impact of cognitive abilities on performance of National Football League quarterbacks",
+      "authors": [
+        "R. Thomas Boone",
+        "Nicholas S. Zambrotta",
+        "Andrew M. Manocchio",
+        "James K. Bowman"
+      ],
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1540498/full",
+      "doi": "10.3389/fpsyg.2025.1540498",
+      "published": "2025-01-29",
+      "kind": "Peer-reviewed observational study",
+      "scopeRead": "Abstract, participant selection, assessment/data procedure, main results and limitations/conflict declaration.",
+      "population": "42 QBs from 46 assessed pre-draft 2014–2020, excluding those with at most three NFL appearances; outcomes through 2018–2021.",
+      "files": [
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-cognition.html",
+          "sha256": "be8d100b6955353e797dc685921227381b8981331043c36356a6e13751e26849",
+          "bytes": 727280
+        },
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-pubmed-39944049.xml",
+          "sha256": "d6053f61155e464777d739ad182d4bdd026eb7008fa87728a3298f7490dd3cc9",
+          "bytes": 15071
+        }
+      ],
+      "supports": [
+        "Reaction, visual-spatial processing and decision measures have associations with later QB performance."
+      ],
+      "limits": [
+        "Small selected observational sample, not a causal controller/capability experiment.",
+        "Testing in a quiet room is not processing threats under NFL pressure.",
+        "Scheme, offensive line and coaching are not fully adjusted; no specific danger threshold follows."
+      ]
+    }
+  ],
+  "retainedReferences": [
+    {
+      "path": "data/reviews/current/pass-rush-timing.json",
+      "sha256": "8714dde69a9b4c7546e6d8cb9880e01165c855ad19fab8501388dd5f7969b714"
+    },
+    {
+      "path": "data/reviews/error-budget/nfl-pocket.json",
+      "sha256": "b5e7088e581c1127fd928d763df0ccb960283e8a93d00033e0b173cfcdfe0df4"
+    },
+    {
+      "path": "data/reviews/playbook-depth/nfl-pocket-push.json",
+      "sha256": "1117e288852420fb12dcb872da2a2dfdc676525031b21cb192470841af4c2d3a"
+    },
+    {
+      "path": "scripts/data/bdb2025_pocket.py",
+      "sha256": "ddc1307705128ec67a3fa2c670ba8de4c298be0e7c792751be98390767a62c3e"
+    },
+    {
+      "path": "scripts/data/bdb2025_pocket_push.py",
+      "sha256": "8e2e9f7ec1845a8bb297efc9337295a1ea7af06e705bae12d37b9953df4ff2b8"
+    }
+  ],
+  "excludedQuantitativeCalibration": [
+    {
+      "url": "https://github.com/sittomat/NFL-Quarterback-Decision-and-Performance-Under-Pressure-Analysis",
+      "commit": "f8e78d78463179a3b5acf89adceebba5b407f157",
+      "files": [
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-external.ipynb",
+          "sha256": "b53e3d95564b328b90b1a2b4585212d4be07347bfc94bf4a49976d33bb55b7a5",
+          "bytes": 81637
+        }
+      ],
+      "reason": "Exploratory class project. Its set_playType maps I to incomplete and IN to interception; BDB labels are reversed from those names. Sack-inclusive passResult percentages are not completion-per-throw rates. No effect-size calibration adopted."
+    },
+    {
+      "url": "https://github.com/BenJTowers/nfl-pressure-geometry",
+      "commit": "39f92c0079127584a77d0fe2714a48a4b6dd5599",
+      "files": [
+        {
+          "path": "out/qb-pressure-research/sources/qb-pressure-geometry-methodology.md",
+          "sha256": "f94711014860bb01006a38bb8a5c3eda16af582302e6d671518a5b72d99dc851",
+          "bytes": 18966
+        }
+      ],
+      "reason": "Exploratory conditional PFF-positive pressure-only angles 0.5 s before a terminal event; not onset or a gaze/handedness model. Future-peak proposed detectors and sparse angle EPA contrasts are not online controller cues."
+    }
+  ],
+  "limits": [
+    "No source establishes a correct universal QB emergency clock, grip law, recovery capability or blind-side delay.",
+    "No reserved NFL 2026 dataset or new raw league/game data was downloaded.",
+    "No inference of a causal pressure effect from descriptive conditional release times."
+  ],
+  "recoveredWorkflowIssues": [
+    {
+      "operation": "HTML metadata extraction with bs4",
+      "result": "Unavailable module; succeeded with standard-library JSON/regex parsing, without installing a dependency."
+    }
+  ]
+}

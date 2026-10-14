@@ -1,0 +1,849 @@
+{
+  "schema": "qb-pressure-research-same-picture-v1",
+  "question": "Does relative-motion hand-contact geometry explain the saved danger mismatch while retaining protected and windup controls?",
+  "commit": "be8f65a11a99e130cb48a325e1290fed6854ebdf",
+  "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+  "collectorSha256": "fd4be84bcb5b884383836529aea393fd6d80d4244621df6d84e30cf0d984fcb1",
+  "modelSha256": "39a5c7a0bb234480b25a017a98013e855acef0d985b8f05c5a195e036aacb995",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "inputs": [
+    {
+      "path": "out/pass-rush-timing/native3101/summary.json",
+      "sha256": "e9fe93b31d2fae81fe8fd635a7b949805fc6d7b25e07dd578f8d6226bc871c55"
+    },
+    {
+      "path": "out/pass-rush-timing/native4202/summary.json",
+      "sha256": "938282015dd391784b745928563f35b52220eb9e4ed13cc7b2ee14f619b4da06"
+    }
+  ],
+  "checks": 8,
+  "newSimulations": 0,
+  "newObservations": 0,
+  "newRandomDraws": 0,
+  "controllerInstalled": false,
+  "limits": [
+    "Same actor and consumed picture, not a new actor-selection or perception policy.",
+    "Original live held penalty and speedScale deliberately retained to isolate geometry.",
+    "Full reach is a possible-contact outer bound, not grip acquisition or a guaranteed sack.",
+    "Interpolation feasibility checked; full speculative intercept may still underestimate physical arrival.",
+    "The literal .45 comparison is retained separately from a 1e-9 tolerance; the latter is diagnosis, not a changed production gate.",
+    "Original feet, release and physical endings are fixed; no candidate outcome or fresh-player transfer is claimed.",
+    "Blocked/visible-lane information arm requires recording available teammate observations; it is not inferred from film truth."
+  ],
+  "rows": [
+    {
+      "id": "R3101-S1001-P39",
+      "qb": {
+        "i": 0,
+        "id": "COM-QB1"
+      },
+      "nativeSignature": "06dd75c278da2460c89d4d3356755d05a10c3679eee9d4330f8ca03ccdaad9ef",
+      "originalFilm": {
+        "path": "out/pass-rush-timing/native3101/R3101-S1001-P39.json.gz",
+        "sha256": "5bb76e61c7e5b9bf6e294a0ea47421677e12d89433feacc8b592d4751cc7f619"
+      },
+      "kind": "throwaway",
+      "pocketEnd": 5.05,
+      "release": 5.05,
+      "firstContact": null,
+      "originalFirstImminent": null,
+      "radiusFirstImminent": null,
+      "sweptFirstImminent": null,
+      "redirectFirstImminent": null,
+      "combinedFirstImminent": null,
+      "combinedLiteralFirstImminent": null,
+      "gridThresholdEdges": [],
+      "sampleCount": 92,
+      "minOriginal": 1.0278416286341485,
+      "minCombined": 1.3000000000000005
+    },
+    {
+      "id": "R3101-S1001-P46",
+      "qb": {
+        "i": 0,
+        "id": "COM-QB1"
+      },
+      "nativeSignature": "c20c5b4681d5a90f2d5662546a0d9867be5eca2f1af69bda6a023e90b2ece0ef",
+      "originalFilm": {
+        "path": "out/pass-rush-timing/native3101/R3101-S1001-P46.json.gz",
+        "sha256": "4b784b098fb00a63626793289b0be79d905c1e49e90b22b34405d3e6f6f35cc3"
+      },
+      "kind": "sack",
+      "pocketEnd": 3.55,
+      "release": null,
+      "firstContact": {
+        "t": 3.15,
+        "type": "carrier_contact",
+        "a": 0,
+        "b": 12,
+        "pos": {
+          "x": 67.99,
+          "y": 23.54
+        },
+        "note": "grasp"
+      },
+      "originalFirstImminent": null,
+      "radiusFirstImminent": {
+        "t": 3,
+        "phase": "set",
+        "i": 12,
+        "id": "IRN-EDGE1",
+        "age": 0.2,
+        "actualDistance": 2.5421019138609515,
+        "observedDistance": 2.6110207384779103,
+        "relativeClosing": 4.102049150807967,
+        "strain": 1.571051922475058,
+        "radialTime": 0.6365162001931708,
+        "held": 0,
+        "original": 0.6110621633559226,
+        "radius": 1.659318181818182,
+        "radiusOnly": 0.4365262949212414,
+        "sweptOnly": 0.2954634075035615,
+        "redirectOnly": 0.49999999999999994,
+        "combined": 0.2954634075035615,
+        "ownVelocity": {
+          "x": 0.38505690634959067,
+          "y": -0.027531709278389466
+        },
+        "observedVelocity": {
+          "x": -3.9035304101307067,
+          "y": -2.775989194998119
+        }
+      },
+      "sweptFirstImminent": {
+        "t": 2.95,
+        "phase": "set",
+        "i": 12,
+        "id": "IRN-EDGE1",
+        "age": 0.2,
+        "actualDistance": 2.780161922231502,
+        "observedDistance": 2.84990077381698,
+        "relativeClosing": 4.007319426408277,
+        "strain": 1.4061259476908463,
+        "radialTime": 0.711173847294554,
+        "held": 0,
+        "original": 0.6474567204006038,
+        "radius": 1.659318181818182,
+        "radiusOnly": 0.47629890369233374,
+        "sweptOnly": 0.38819723212474294,
+        "redirectOnly": 0.49999999999999994,
+        "combined": 0.38819723212474294,
+        "ownVelocity": {
+          "x": 0.19745793300541448,
+          "y": -0.010780728996509047
+        },
+        "observedVelocity": {
+          "x": -3.8680270447450167,
+          "y": -2.59635534002403
+        }
+      },
+      "redirectFirstImminent": null,
+      "combinedFirstImminent": {
+        "t": 2.95,
+        "phase": "set",
+        "i": 12,
+        "id": "IRN-EDGE1",
+        "age": 0.2,
+        "actualDistance": 2.780161922231502,
+        "observedDistance": 2.84990077381698,
+        "relativeClosing": 4.007319426408277,
+        "strain": 1.4061259476908463,
+        "radialTime": 0.711173847294554,
+        "held": 0,
+        "original": 0.6474567204006038,
+        "radius": 1.659318181818182,
+        "radiusOnly": 0.47629890369233374,
+        "sweptOnly": 0.38819723212474294,
+        "redirectOnly": 0.49999999999999994,
+        "combined": 0.38819723212474294,
+        "ownVelocity": {
+          "x": 0.19745793300541448,
+          "y": -0.010780728996509047
+        },
+        "observedVelocity": {
+          "x": -3.8680270447450167,
+          "y": -2.59635534002403
+        }
+      },
+      "combinedLiteralFirstImminent": {
+        "t": 2.95,
+        "phase": "set",
+        "i": 12,
+        "id": "IRN-EDGE1",
+        "age": 0.2,
+        "actualDistance": 2.780161922231502,
+        "observedDistance": 2.84990077381698,
+        "relativeClosing": 4.007319426408277,
+        "strain": 1.4061259476908463,
+        "radialTime": 0.711173847294554,
+        "held": 0,
+        "original": 0.6474567204006038,
+        "radius": 1.659318181818182,
+        "radiusOnly": 0.47629890369233374,
+        "sweptOnly": 0.38819723212474294,
+        "redirectOnly": 0.49999999999999994,
+        "combined": 0.38819723212474294,
+        "ownVelocity": {
+          "x": 0.19745793300541448,
+          "y": -0.010780728996509047
+        },
+        "observedVelocity": {
+          "x": -3.8680270447450167,
+          "y": -2.59635534002403
+        }
+      },
+      "gridThresholdEdges": [],
+      "sampleCount": 54,
+      "minOriginal": 0.5539063214713299,
+      "minCombined": 0.08866790195812833
+    },
+    {
+      "id": "R4202-S2001-P67",
+      "qb": {
+        "i": 0,
+        "id": "COM-QB3"
+      },
+      "nativeSignature": "677df9832d79620fd1069905f61d96feee2c811619d9d6aa91c24fae377ef49e",
+      "originalFilm": {
+        "path": "out/pass-rush-timing/native4202/R4202-S2001-P67.json.gz",
+        "sha256": "f4cc6f3a1ec41c041dbb38f38fc3554c9d29816820398ef5377a3745a8ce5e7a"
+      },
+      "kind": "throw",
+      "pocketEnd": 3.45,
+      "release": 3.45,
+      "firstContact": null,
+      "originalFirstImminent": {
+        "t": 3.25,
+        "phase": "set",
+        "i": 13,
+        "id": "IRN-EDGE2",
+        "age": 0.25,
+        "actualDistance": 2.7343655761977743,
+        "observedDistance": 2.8638390041128314,
+        "relativeClosing": 4.095585527540501,
+        "strain": 1.4301032710493597,
+        "radialTime": 0.6992502011873835,
+        "held": 0,
+        "original": 0.41289835958389315,
+        "radius": 1.665492424242424,
+        "radiusOnly": 0.25443244064679443,
+        "sweptOnly": 0.2925955808127105,
+        "redirectOnly": 0.3,
+        "combined": 0.2925955808127105,
+        "ownVelocity": {
+          "x": -0.15441386400443596,
+          "y": 0.05012778769970954
+        },
+        "observedVelocity": {
+          "x": -3.622089563192611,
+          "y": 2.2293909497044035
+        }
+      },
+      "radiusFirstImminent": {
+        "t": 3.1,
+        "phase": "set",
+        "i": 13,
+        "id": "IRN-EDGE2",
+        "age": 0.25,
+        "actualDistance": 3.4759944674742185,
+        "observedDistance": 3.630706011191202,
+        "relativeClosing": 3.5012001568958664,
+        "strain": 0.9643303936214748,
+        "radialTime": 1.0369889890585846,
+        "held": 0,
+        "original": 0.5972857756738045,
+        "radius": 1.665492424242424,
+        "radiusOnly": 0.4409971675896873,
+        "sweptOnly": 0.5612982207114334,
+        "redirectOnly": 0.44999999999999996,
+        "combined": 0.44999999999999996,
+        "ownVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -2.976061371442362,
+          "y": 1.8443160686155755
+        }
+      },
+      "sweptFirstImminent": {
+        "t": 3.2,
+        "phase": "set",
+        "i": 13,
+        "id": "IRN-EDGE2",
+        "age": 0.25,
+        "actualDistance": 2.9881777170498207,
+        "observedDistance": 3.1258934028321814,
+        "relativeClosing": 4.016071955272774,
+        "strain": 1.2847757225611263,
+        "radialTime": 0.7783459653226927,
+        "held": 0,
+        "original": 0.4731154883204202,
+        "radius": 1.665492424242424,
+        "radiusOnly": 0.31528521883257543,
+        "sweptOnly": 0.363643179159186,
+        "redirectOnly": 0.35,
+        "combined": 0.35,
+        "ownVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -3.4182805581539992,
+          "y": 2.10822198040475
+        }
+      },
+      "redirectFirstImminent": {
+        "t": 3.15,
+        "phase": "set",
+        "i": 13,
+        "id": "IRN-EDGE2",
+        "age": 0.25,
+        "actualDistance": 3.236872791210247,
+        "observedDistance": 3.3839421050906586,
+        "relativeClosing": 3.761794889567801,
+        "strain": 1.1116605345903279,
+        "radialTime": 0.8995551869335028,
+        "held": 0,
+        "original": 0.5347884758631444,
+        "radius": 1.665492424242424,
+        "radiusOnly": 0.3776712131194613,
+        "sweptOnly": 0.4568173675249555,
+        "redirectOnly": 0.39999999999999997,
+        "combined": 0.39999999999999997,
+        "ownVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -3.1976434244199465,
+          "y": 1.9814727125478035
+        }
+      },
+      "combinedFirstImminent": {
+        "t": 3.15,
+        "phase": "set",
+        "i": 13,
+        "id": "IRN-EDGE2",
+        "age": 0.25,
+        "actualDistance": 3.236872791210247,
+        "observedDistance": 3.3839421050906586,
+        "relativeClosing": 3.761794889567801,
+        "strain": 1.1116605345903279,
+        "radialTime": 0.8995551869335028,
+        "held": 0,
+        "original": 0.5347884758631444,
+        "radius": 1.665492424242424,
+        "radiusOnly": 0.3776712131194613,
+        "sweptOnly": 0.4568173675249555,
+        "redirectOnly": 0.39999999999999997,
+        "combined": 0.39999999999999997,
+        "ownVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -3.1976434244199465,
+          "y": 1.9814727125478035
+        }
+      },
+      "combinedLiteralFirstImminent": {
+        "t": 3.1,
+        "phase": "set",
+        "i": 13,
+        "id": "IRN-EDGE2",
+        "age": 0.25,
+        "actualDistance": 3.4759944674742185,
+        "observedDistance": 3.630706011191202,
+        "relativeClosing": 3.5012001568958664,
+        "strain": 0.9643303936214748,
+        "radialTime": 1.0369889890585846,
+        "held": 0,
+        "original": 0.5972857756738045,
+        "radius": 1.665492424242424,
+        "radiusOnly": 0.4409971675896873,
+        "sweptOnly": 0.5612982207114334,
+        "redirectOnly": 0.44999999999999996,
+        "combined": 0.44999999999999996,
+        "ownVelocity": {
+          "x": 0,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -2.976061371442362,
+          "y": 1.8443160686155755
+        }
+      },
+      "gridThresholdEdges": [
+        {
+          "t": 3.1,
+          "phase": "set",
+          "i": 13,
+          "id": "IRN-EDGE2",
+          "age": 0.25,
+          "actualDistance": 3.4759944674742185,
+          "observedDistance": 3.630706011191202,
+          "relativeClosing": 3.5012001568958664,
+          "strain": 0.9643303936214748,
+          "radialTime": 1.0369889890585846,
+          "held": 0,
+          "original": 0.5972857756738045,
+          "radius": 1.665492424242424,
+          "radiusOnly": 0.4409971675896873,
+          "sweptOnly": 0.5612982207114334,
+          "redirectOnly": 0.44999999999999996,
+          "combined": 0.44999999999999996,
+          "ownVelocity": {
+            "x": 0,
+            "y": 0
+          },
+          "observedVelocity": {
+            "x": -2.976061371442362,
+            "y": 1.8443160686155755
+          }
+        }
+      ],
+      "sampleCount": 57,
+      "minOriginal": 0.1787130020088494,
+      "minCombined": 0.014034700624513423
+    },
+    {
+      "id": "R4202-S2001-P150",
+      "qb": {
+        "i": 0,
+        "id": "IRN-QB1"
+      },
+      "nativeSignature": "68b0c73e084852631e35bb30a961f24ff78ae82908454ef441712f62e2ce3a3e",
+      "originalFilm": {
+        "path": "out/pass-rush-timing/native4202/R4202-S2001-P150.json.gz",
+        "sha256": "181d921058787329fcd9b0a1e6001648aa050c802fff8db0f946ddbaa0f80518"
+      },
+      "kind": "sack",
+      "pocketEnd": 2.65,
+      "release": null,
+      "firstContact": {
+        "t": 2.3,
+        "type": "carrier_contact",
+        "a": 0,
+        "b": 11,
+        "pos": {
+          "x": 88.95,
+          "y": 24.39
+        },
+        "note": "grasp"
+      },
+      "originalFirstImminent": null,
+      "radiusFirstImminent": {
+        "t": 2,
+        "phase": "set",
+        "i": 11,
+        "id": "COM-EDGE4",
+        "age": 0.25,
+        "actualDistance": 3.3626995592840756,
+        "observedDistance": 3.4337017788468156,
+        "relativeClosing": 5.552656674296875,
+        "strain": 1.617105104614442,
+        "radialTime": 0.6183889947205533,
+        "held": 0,
+        "original": 0.5307947980788561,
+        "radius": 1.5721085858585857,
+        "radiusOnly": 0.4176994042378591,
+        "sweptOnly": 0.34873141231752797,
+        "redirectOnly": 0.44999999999999996,
+        "combined": 0.34873141231752797,
+        "ownVelocity": {
+          "x": -0.554498451201621,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -4.986582398838739,
+          "y": 3.6161209048412553
+        }
+      },
+      "sweptFirstImminent": {
+        "t": 1.95,
+        "phase": "set",
+        "i": 11,
+        "id": "COM-EDGE4",
+        "age": 0.25,
+        "actualDistance": 3.6611598776339718,
+        "observedDistance": 3.7476525786983514,
+        "relativeClosing": 5.194161592483875,
+        "strain": 1.385977350730822,
+        "radialTime": 0.7215125120715016,
+        "held": 0,
+        "original": 0.5877740630700351,
+        "radius": 1.5721085858585857,
+        "radiusOnly": 0.47479313875605056,
+        "sweptOnly": 0.43543536202077965,
+        "redirectOnly": 0.49999999999999994,
+        "combined": 0.43543536202077965,
+        "ownVelocity": {
+          "x": -0.8694837939627824,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -4.964983994753147,
+          "y": 3.4053067927907765
+        }
+      },
+      "redirectFirstImminent": {
+        "t": 2.05,
+        "phase": "set",
+        "i": 11,
+        "id": "COM-EDGE4",
+        "age": 0.25,
+        "actualDistance": 3.0526725526616096,
+        "observedDistance": 3.1238142956269157,
+        "relativeClosing": 5.771238908001967,
+        "strain": 1.8474974380139144,
+        "radialTime": 0.5412727397744129,
+        "held": 0,
+        "original": 0.5055827367755766,
+        "radius": 1.5721085858585857,
+        "radiusOnly": 0.3911354411789457,
+        "sweptOnly": 0.28664271399027436,
+        "redirectOnly": 0.39999999999999997,
+        "combined": 0.28664271399027436,
+        "ownVelocity": {
+          "x": -0.2400785824642998,
+          "y": 0.018955548175104284
+        },
+        "observedVelocity": {
+          "x": -5.1425480745035586,
+          "y": 3.634247007580852
+        }
+      },
+      "combinedFirstImminent": {
+        "t": 1.95,
+        "phase": "set",
+        "i": 11,
+        "id": "COM-EDGE4",
+        "age": 0.25,
+        "actualDistance": 3.6611598776339718,
+        "observedDistance": 3.7476525786983514,
+        "relativeClosing": 5.194161592483875,
+        "strain": 1.385977350730822,
+        "radialTime": 0.7215125120715016,
+        "held": 0,
+        "original": 0.5877740630700351,
+        "radius": 1.5721085858585857,
+        "radiusOnly": 0.47479313875605056,
+        "sweptOnly": 0.43543536202077965,
+        "redirectOnly": 0.49999999999999994,
+        "combined": 0.43543536202077965,
+        "ownVelocity": {
+          "x": -0.8694837939627824,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -4.964983994753147,
+          "y": 3.4053067927907765
+        }
+      },
+      "combinedLiteralFirstImminent": {
+        "t": 1.95,
+        "phase": "set",
+        "i": 11,
+        "id": "COM-EDGE4",
+        "age": 0.25,
+        "actualDistance": 3.6611598776339718,
+        "observedDistance": 3.7476525786983514,
+        "relativeClosing": 5.194161592483875,
+        "strain": 1.385977350730822,
+        "radialTime": 0.7215125120715016,
+        "held": 0,
+        "original": 0.5877740630700351,
+        "radius": 1.5721085858585857,
+        "radiusOnly": 0.47479313875605056,
+        "sweptOnly": 0.43543536202077965,
+        "redirectOnly": 0.49999999999999994,
+        "combined": 0.43543536202077965,
+        "ownVelocity": {
+          "x": -0.8694837939627824,
+          "y": 0
+        },
+        "observedVelocity": {
+          "x": -4.964983994753147,
+          "y": 3.4053067927907765
+        }
+      },
+      "gridThresholdEdges": [],
+      "sampleCount": 37,
+      "minOriginal": 0.4569534102558692,
+      "minCombined": 0.01997722118026362
+    }
+  ],
+  "baselineIntegration": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "baselineRemoteVerifiedAtUtc": "2026-10-14T05:12:26.562223+00:00",
+  "launchReceipts": [
+    {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/qb-contact-danger",
+      "commit": "dea869331d3f7a553915d7e8ef950ca3e5143e49",
+      "mode": "baseline",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "validationSha256": "b7d5126de92108ab52321359209dfec174a26dcef035731a911eb78c276ac6dd",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T05:07:48.683Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/qb-pressure-research-check.mjs",
+            "out/qb-pressure-research/same-picture.json",
+            "out/pass-rush-timing/native3101/summary.json",
+            "out/pass-rush-timing/native4202/summary.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.37163370399999995
+        }
+      ],
+      "finishedAt": "2026-10-14T05:07:49.057Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/qb-contact-danger",
+      "commit": "be8f65a11a99e130cb48a325e1290fed6854ebdf",
+      "mode": "baseline",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "validationSha256": "18c2bbe51288875fe9faea9d6998c7efe58b637ae68b9517ce4b0313f1124fc4",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T05:09:29.538Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/qb-pressure-research-check.mjs",
+            "out/qb-pressure-research/same-picture.json",
+            "out/pass-rush-timing/native3101/summary.json",
+            "out/pass-rush-timing/native4202/summary.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.356372113
+        }
+      ],
+      "finishedAt": "2026-10-14T05:09:29.897Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  ],
+  "literalInitialRun": {
+    "commit": "dea869331d3f7a553915d7e8ef950ca3e5143e49",
+    "output": "out/qb-pressure-research/same-picture-raw-v1.json",
+    "sha256": "f0a8f6ec02e0d98bc394f74619f9711bae1c6cdaedaf87c7aa3526f88a473cf5",
+    "retained": "Initial P67 .44999999999999996 result is visible; corrected diagnosis separates the .45 boundary instead of rerunning any simulation."
+  },
+  "cost": {
+    "launcherSeconds": 0.7280058169999999,
+    "staticRuns": 2,
+    "geometryAssertionsPerRun": 8,
+    "newSimulations": 0,
+    "newObservationQueries": 0,
+    "newExecutionDraws": 0,
+    "newGames": 0,
+    "fullSuites": 0,
+    "reasonForRepeat": "Resolve the specific P67 50-ms intercept-grid floating-point boundary; reuse all original films."
+  },
+  "observedControlDetail": {
+    "R4202-S2001-P67": {
+      "qb": "COM-QB3",
+      "pressureDefender": "IRN-EDGE2",
+      "actualCatcher": "COM-WR2",
+      "ordinaryTackler": "IRN-CB1",
+      "windupBegan": 3.25,
+      "release": 3.45,
+      "missedTackle": {
+        "i": 13,
+        "t": 3.4
+      },
+      "yards": 14.88,
+      "ending": "Natural completed pass and tackle. New forecast has not been connected to policy; no candidate ending is claimed."
+    },
+    "R3101-S1001-P39": {
+      "qb": "COM-QB1",
+      "actualCatcher": "COM-TE1",
+      "ordinaryTackler": "IRN-LB2",
+      "release": 5.05,
+      "throwDecision": "throwaway",
+      "yards": -0.27,
+      "ending": "Throwaway decision, actual caught pass and natural tackle. Both labels retained."
+    }
+  }
+}
