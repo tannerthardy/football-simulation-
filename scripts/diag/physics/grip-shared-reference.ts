@@ -20,6 +20,7 @@ function run(side:number,single:boolean,n:number,variant:'base'|'distinct'|'uneq
       energy:w.kineticEnergy(),angular:w.bodies.reduce((s:number,b:any,i:number)=>s+w.mass[i]*(b.pos.x*b.vel.y-b.pos.y*b.vel.x)+w.inertia[i]*(b.spin??0),0)},
     sums=input.grips.map(()=>({x:0,y:0,qx:0,qy:0,ja:0,jb:0,qa:0,qb:0,normal:0,tangent:0,dose:0})),
     original=w.jointRows,trace:any[]=[];let rows:any[]=[];let maxCapacityExcess=0;
+  writeFileSync(`${root}/${v.id}-packet-${n}.bin`,bytes);
   w.jointRows=function(h:number){rows=original.call(this,h);if(rows.length!==input.grips.length)throw Error('Graph/row change');return rows;};
   for(let k=0;k<n;k++){
     const next=[...args];next[3]=h;next[4]=args[4]-k*h;w.integrateInterval(...next);
@@ -54,6 +55,23 @@ function difference(x:any,y:any){return Math.max(...x.bodies.flatMap((b:any,i:nu
     ...g.angularMoment.map((v:number,k:number)=>Math.abs(v-y.grips[i].angularMoment[k])/.000005)]),
   norm(x.footOffset,y.footOffset)/5e-7,...['bodyWork','motorWork','passiveWork'].map(k=>Math.abs(x[k]-y[k])/.01));}
 const prototype:any=World.prototype,feet=prototype.feet,cases:any[]=[];
+if(process.argv.includes('--verify-frozen')){
+  const saved=[...JSON.parse(readFileSync('config/grip-shared-reference.json','utf8')).cases,
+    ...JSON.parse(readFileSync('config/grip-shared-fresh-reference.json','utf8')).cases],checks:any[]=[];
+  try{
+    prototype.feet=prescribeSharedSupport(feet);
+    for(const c of saved){
+      const side=c.id.startsWith('shared--1')?-1:1,single=c.id.endsWith('-single'),variant=c.id.endsWith('-distinct')?'distinct':c.id.endsWith('-unequal')?'unequal':'base',
+        v=run(side,single,c.convergence.fine,variant),error=difference(v.result,c.reference),equalInput=JSON.stringify(v.input)===JSON.stringify(c.input);
+      checks.push({id:c.id,equalInput,error,oldPacketSha256:c.packetSha256,packetSha256:v.packetSha256,
+        packetPath:`${root}/${v.id}-packet-${c.convergence.fine}.bin`,result:v.result,accounting:v.accounting});
+      console.log(JSON.stringify({id:c.id,equalInput,error}));
+      if(!equalInput||error!==0)throw Error('Frozen physical reference changed');
+    }
+  }finally{prototype.feet=feet;}
+  writeFileSync(`${root}/frozen-verification.json`,JSON.stringify({source,commit,flags,checks},null,2)+'\n');
+  process.exit(0);
+}
 try{
   prototype.feet=prescribeSharedSupport(feet);
   const selected=process.argv.includes('--fresh')?[[1,false,'distinct'],[1,false,'unequal']] as const:[[1,false,'base'],[-1,false,'base'],[1,true,'base']] as const;

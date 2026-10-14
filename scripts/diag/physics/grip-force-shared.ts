@@ -41,6 +41,7 @@ export function sharedGripInterval(input:SharedGripInput,method:'uniform'|'rk8'=
   }
   function frame(y:number[]){
     const g=geometry(y),force=sharedGripForce(g,mu),slipping=force.rows.map((r,k)=>grips[k].capacity>0&&Math.hypot(r.normal,r.tangent)>=.98*grips[k].capacity);
+    if(method==='rk8'&&M===2&&force.rows.some(r=>Math.abs(r.normal)>1e-9))throw new RangeError('Shared work-switch normal-load scope');
     if(phases&&slipping.some((v,k)=>v!==phases![k]))throw new RangeError('Shared-grip phase change outside fixed-phase scope');
     if(force.passivePower>1e-8)throw new RangeError('Shared-grip passive power');
     return {geometry:g,force,slipping};
@@ -77,6 +78,8 @@ export function sharedGripInterval(input:SharedGripInput,method:'uniform'|'rk8'=
   }
   function derivative(y:number[]){
     if(++evaluations>4096)throw new RangeError('Shared-grip evaluation budget');const f=frame(y),d=Array(y.length).fill(0),time=y[T],c=Math.cos(y[11]),s=Math.sin(y[11]);
+    if(method==='rk8'&&M===2&&(f.geometry[0].vt*direction>=0||Math.abs(f.geometry[0].vt/f.geometry[0].tt)>=.98*grips[0].capacity))
+      throw new RangeError('Shared work-switch first-row scope');
     for(let i=0;i<N;i++){const k=6*i;d[k]=y[k+2];d[k+1]=y[k+3];d[k+5]=y[k+4];}
     d[FOOT]=f.force.velocity.x;d[FOOT+1]=f.force.velocity.y;d[MW]=f.force.motorPower;d[T]=1;
     for(let k=0;k<M;k++){
