@@ -19,7 +19,7 @@ const rows={held:stalkRequest(f),hidden:stalkRequest(f,{hiddenY:.25}),fresh:stal
  visible:stalkRequest(f,{fresh:true,visibleY:.25}),shiftedFresh:stalkRequest(f,{fresh:true,visibleY:.25,hiddenY:.25}),
  contact:stalkRequest(f,{near:true})};
 const difference=(a:typeof rows.held,b:typeof rows.held)=>Math.hypot(a.command.vel.x-b.command.vel.x,a.command.vel.y-b.command.vel.y);
-assert.deepEqual(rows.fresh.command,f.recordedMovementCommand);
+assert.equal(JSON.stringify(rows.fresh.command),JSON.stringify(f.recordedMovementCommand));
 assert.equal(rows.contact.engageCalls,1);assert.equal(rows.contact.visualCalls,0);
 if(mode==='accepted'){
  assert.equal(sourceVersion(),'e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54');
@@ -52,7 +52,7 @@ const record={schema:'stalk-visual-request-v1',mode,commit:execFileSync('git',['
  originPR:'https://github.com/tannerthardy/football-simulation-/pull/24',sourceBase:f.sourceBase,
  historicalComparison:f.comparisonBaseline,node:process.version,flags,worldDefaults:profile.worldDefaults,
  hiddenResponse:difference(rows.held,rows.hidden),visibleResponse:difference(rows.fresh,rows.visible),
- rows,analysis,freeSteps:7,worldTicks:0,newPlays:0,newGames:0,
+ rows,analysis,freeSteps:Object.keys(analysis).length,worldTicks:0,newPlays:0,newGames:0,
  limits:'Held input and hidden/visible substitutions are synthetic controller controls. Projection control reconstructs the normal dead-reckoning operator from an archived sample; it is not the actual native perception history. Free steps have no contact loads and are not native continuations or tackle/block endings.'};
 mkdirSync(dirname(output),{recursive:true});writeFileSync(output,JSON.stringify(record,null,2)+'\n');
 console.log(JSON.stringify({mode,output,hiddenResponse:record.hiddenResponse,visibleResponse:record.visibleResponse,
