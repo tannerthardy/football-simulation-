@@ -11,7 +11,30 @@ compatible evidence and supply focused receipts; the existing integration lead
 freezes the combined candidate and owns its preserved full suite. Adoption does
 not schedule tests or an integration run.
 
-Latest run-game handoff: [bounded combination/collection diagnosis](reviews/combination-collection.md),
+Latest run-game handoff to the audit/integration owner: [component-only draft PR #9](https://github.com/tannerthardy/football-simulation-/pull/9),
+branch `codex/run-contact-components-candidate`, exact published commit
+**`7a04ad6c65d9268bb332147411baacc27ebe20e0`** (tested engine change
+`176866ed47cacd56331b33b676c0509a350e95d7`; subsequent commit is receipts/docs only).
+[Guide and reproduction](https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-candidate.md),
+[all 45 settings](https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-settings.json),
+[two-input manifest](https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-inputs.json)
+and [receipt](https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-receipt.json)
+are pinned. Only `RUN_CONTACT_COMPONENTS=1`; handover, motor, offensive/defensive
+hands, hand fight and contact tracking remain `0`, with collection absent.
+32 affected assertions/typecheck and two neutral native pairs pass in 18.60
+command-seconds; WZ exactly matches the saved component-only complete history,
+counter exactly matches actual **4ded6b6**. Compatible old 60-input/eight-ending
+evidence is reused; lower-gain WZ and the withdrawn early-release control remain
+visible. Source is `0ba6cfb6fe924d9d7edc5d04316218cadeb14ef5f604003e2549187f7d0e1678`,
+validation inputs `6afb7bc25b3db765e66c478a85034052c92d3026bfade16479d32b33e0771661`.
+Existing audit/integration owner: freeze the exact combined source/settings,
+then use Node **22.23.3** and run
+`npm run baseline:verify -- --candidate --flag RUN_CONTACT_COMPONENTS=1 --receipt out/run-contact-components/integration-verify.json`.
+Record that combined tree's own commit/fingerprints and resolved flags. Do not
+reuse the historical full pass as verification of the combined tree. No new
+baseline designation before review; no shared solver/movement/capacity changes.
+
+Retained collection handoff: [bounded combination/collection diagnosis](reviews/combination-collection.md),
 comparison **4ded6b6**, trial **4074038** withdrawn. Sole physics owner: replay
 the [two-body Y/DE_S witness](reviews/combination-keeper-world-witness.json),
 then return the same failed WZ interval after law review; its passive angular
