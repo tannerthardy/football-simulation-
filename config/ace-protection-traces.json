@@ -1,0 +1,49 @@
+{
+  "protocol": "ace-protection-trace-inputs-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "referenceCommit": "2db2c9cc1b4bac612573c199d0933818b12d1e3a",
+  "referenceRawSha256": "3d101564c9c4add6fcc506f24fb6dfdf63923bd1db26343513a42005348f50c6",
+  "candidateCommit": "61596bd78e21cf4aa7443a8d44eca4370db21470",
+  "referenceSourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+  "strength": 0.55,
+  "los": 40,
+  "stopSeconds": 2.45,
+  "selection": {
+    "handContact": "patch",
+    "groundMovement": "legacy",
+    "controllerMovementPreview": "center"
+  },
+  "inputs": [
+    {
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "referencePrefixTicks": 49,
+      "referencePrefixSha256": "a4357cb0dad85f02efe927b9dde9e169613466b65772cd31bfac3dff49be1abe"
+    },
+    {
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "referencePrefixTicks": 49,
+      "referencePrefixSha256": "95943cd110d9f96c4071bee6b552936679b5eedff6aa58d069bb36c94fb86ebe"
+    }
+  ],
+  "scope": "Two exact historical inputs, short observer replay only. Weak-call success and complete natural endings reuse PR17 evidence. No current develop transfer until contact review."
+}
