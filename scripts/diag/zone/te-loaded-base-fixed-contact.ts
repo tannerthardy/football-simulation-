@@ -63,11 +63,19 @@ function run(row: Row, attainedPosture: boolean, substeps: number) {
   }
   assert(Object.values(limits).every(x => x < 1e-8), JSON.stringify(limits));
   const actor = bodies[row.actor], sup = actor.support!, params = supportParams(actor.profile);
+  const yawImpulse = params.yawInertia * ((actor.spin ?? 0) - (before[row.actor].spin ?? 0));
+  const handYawImpulse = world.joints.reduce((sum, j) => sum + (j.kind !== 'hands' ? 0
+    : j.a === actor ? (j.momentOnA ?? 0) * row.dt : j.b === actor ? (j.momentOnB ?? 0) * row.dt : 0), 0);
+  const yawLedger = { achieved: yawImpulse, hands: handYawImpulse,
+    ground: report.groundYawImpulse[row.actor],
+    residual: yawImpulse - handYawImpulse - report.groundYawImpulse[row.actor],
+    torsoAbsent: report.contacts.length === 0 };
+  if (yawLedger.torsoAbsent) assert(Math.abs(yawLedger.residual) < 1e-10, 'Unaccounted stance-dependent rotation');
   return { attainedPosture, substeps, referenceError, bodies, hands, limits,
     actor: { pos: actor.pos, vel: actor.vel, spin: actor.spin, state: sup.state,
       posture: sup.posture, xi: sup.xi, xiMagnitude: Math.hypot(sup.xi.x, sup.xi.y),
       availability: availability(sup, params, fatigueFactor(actor.energy)), baseRadius: baseRadiusAt(params, sup.posture) },
-    contacts: report.contacts, strikes: report.strikes, groundImpulse: report.groundImpulse[row.actor] };
+    contacts: report.contacts, strikes: report.strikes, groundImpulse: report.groundImpulse[row.actor], yawLedger };
 }
 const rows = manifest.rows.map(row => {
   const unchanged = JSON.stringify(row);
