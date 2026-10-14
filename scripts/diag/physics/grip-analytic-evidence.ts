@@ -49,7 +49,7 @@ function compare(r:any,z:any,input:any) {
     &&Math.abs(r.workResidual)<=1e-8&&Math.abs(r.angularResidual)<=1e-7
     &&r.representationError<1e-10&&r.passiveWork<=1e-9&&r.dose<=input.capacity*input.duration+1e-9};
 }
-const rows:any[]=[],bench:any[]=[],benchmark=process.argv.includes('--benchmark');
+const rows:any[]=[],bench:any[]=[],refusals:any[]=[],benchmark=process.argv.includes('--benchmark');
 for(const c of reference.cases) {
   assert(c.physical&&c.convergence.converged);
   const input=structuredClone(c.input),r=boundedGripInterval(input);
@@ -61,26 +61,47 @@ for(const c of reference.cases) {
 
 }
 if(benchmark)for(const id of ['patch-45-8-0-3001-1-acquired','patch-45-8-0-3001-1-offset','patch-0-3-0-3001-1-acquired']) {
-  const c=reference.cases.find((c:any)=>c.id===id),input=structuredClone(c.input);
-  for(const mode of ['adaptive','gauss','eliminated'] as const) {
-    boundedGripInterval(input,mode);const samples=Array.from({length:7},()=>{
-      const start=performance.now(),result=boundedGripInterval(input,mode);return {milliseconds:performance.now()-start,result};
-    }),sorted=samples.map(s=>s.milliseconds).sort((a,b)=>a-b),endpoint=JSON.stringify(samples[0].result);
-    assert(samples.every(s=>JSON.stringify(s.result)===endpoint));assert.deepEqual(input,c.input);
-    bench.push({id,mode,milliseconds:{median:sorted[3],p95:sorted[6],maximum:sorted[6],samples:samples.map(s=>s.milliseconds)},
-      evaluations:samples[0].result.evaluations,partitions:samples[0].result.partitions,
-      stageStatistics:samples[0].result.stageStatistics,eventMaxBracket:samples[0].result.eventMaxBracket,
-      ...compare(samples[0].result,c.reference,input)});
+  const c=reference.cases.find((c:any)=>c.id===id),input=structuredClone(c.input),
+    modes=['adaptive','gauss','eliminated'] as const,
+    samples=new Map(modes.map(mode=>[mode,[] as Array<{milliseconds:number;result:ReturnType<typeof boundedGripInterval>}>]));
+  for(let k=0;k<5;k++)for(const mode of modes)boundedGripInterval(input,mode);
+  for(let k=0;k<21;k++)for(let j=0;j<modes.length;j++) {
+    const mode=modes[(j+k)%modes.length],start=performance.now(),result=boundedGripInterval(input,mode);
+    samples.get(mode)!.push({milliseconds:performance.now()-start,result});
+  }
+  for(const mode of modes) {
+    const repeats=samples.get(mode)!,sorted=repeats.map(s=>s.milliseconds).sort((a,b)=>a-b),endpoint=JSON.stringify(repeats[0].result);
+    assert(repeats.every(s=>JSON.stringify(s.result)===endpoint));assert.deepEqual(input,c.input);
+    bench.push({id,mode,milliseconds:{median:sorted[10],p95:sorted[19],maximum:sorted[20],samples:repeats.map(s=>s.milliseconds)},
+      evaluations:repeats[0].result.evaluations,partitions:repeats[0].result.partitions,
+      stageStatistics:repeats[0].result.stageStatistics,eventMaxBracket:repeats[0].result.eventMaxBracket,
+      ...compare(repeats[0].result,c.reference,input)});
     console.log(JSON.stringify(bench.at(-1)));
   }
+}
+// Fresh declared mechanical boundary control: initially inside the raw-foot
+// chart, but the grip load carries it outside before the interval ends.
+const boundary={...structuredClone(reference.cases[0].input),
+  footOffset:{x:-reference.cases[0].input.attachmentReach*.9999,y:0}};
+for(const mode of ['adaptive','eliminated'] as const) {
+  const sample=()=>{
+    const saved=structuredClone(boundary),start=performance.now();let refused=false;
+    try{boundedGripInterval(boundary,mode);}catch(e){
+      assert(e instanceof RangeError&&e.message==='Bounded tangent scope/refinement limit exhausted');refused=true;
+    }
+    const milliseconds=performance.now()-start;assert(refused,'Accepted a chart exit');assert.deepEqual(boundary,saved);return milliseconds;
+  };
+  sample();const times=Array.from({length:benchmark?7:1},sample),sorted=[...times].sort((a,b)=>a-b);
+  refusals.push({mode,input:boundary,returnedState:false,inputUnchanged:true,samples:times,
+    milliseconds:{median:sorted[Math.floor(sorted.length/2)],maximum:sorted.at(-1)},repetitions:times.length,warmups:1});
 }
 assert.equal(sourceVersion(),source);for(const p of files)assert.equal(hash(readFileSync(p)),hashes[p]);
 const output=process.argv.find(v=>v.startsWith('--output='))?.slice(9)??`${root}/evidence.json`;
 writeFileSync(output,JSON.stringify({commit,source,parent,baseline:reference.baseline,flags,hashes,node:process.version,cpu:cpus()[0].model,
   reference:{commit:'1db1c9d86a3c36fb0af7303a5945f9ab63795fab',source:reference.source,scope:reference.scope,
     strictAcceptanceReceipt:'data/reviews/current/grip-state-convergence.json',collectedNewWorldReferences:false},
-  protocol:{serial:true,repetitions:benchmark?7:0,warmups:benchmark?1:0,preparationOutsideClock:true,observersOrProfilers:false,
+  protocol:{serial:true,repetitions:benchmark?21:0,warmups:benchmark?5:0,rotatingInterleavedOrder:true,preparationOutsideClock:true,observersOrProfilers:false,
     tailStability:'Two viscous force unknowns eliminated analytically; moving geometry iterated; original cap/scope/work checks',
     geometryIterationLimit:12,eventBracketSeconds:1e-9,
     costBudgetMilliseconds:{median:2,p95:5},existingAdaptiveResultsExact:true},
-  rows,bench,recommendation:'Keep force elimination diagnostic until cost and World composition are established. Preserve the independently integrated work and all current accuracy gates; do not promote the full patch.'},null,2)+'\n');
+  rows,bench,refusals,recommendation:'Keep force elimination diagnostic until cost and World composition are established. Preserve the independently integrated work and all current accuracy gates; do not promote the full patch.'},null,2)+'\n');
