@@ -10,7 +10,9 @@ declare that the remaining football mechanisms are finished.
 `4ded6b6` remains the historical comparison. The current **#6-only** candidate
 and explicitly assigned verification owner are described in
 [INTEGRATION.md](INTEGRATION.md). Its receipt is a separate combined-tooling
-verification; the engine and all 43 profile flags remain unchanged.
+verification; the engine and all 43 profile flags remain unchanged. The
+[exact candidate receipt](../data/reviews/current/shared-integration-verification.json)
+records `c3080e8`: 1,669 TypeScript/145 Python checks, typecheck/build, all passing.
 
 Complete checks passed: **1,652 TypeScript tests, 145 Python checks,
 typecheck and build**, with no test or worker errors. The
