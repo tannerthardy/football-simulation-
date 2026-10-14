@@ -2,7 +2,7 @@ import {describe,expect,it} from 'vitest';
 import {World,type GraspJoint} from '../src/physics/world.js';
 import {newSupport} from '../src/physics/support.js';
 import type {Body} from '../src/physics/kinematics.js';
-import {difference,snapshot,restore,resolveGripInterval} from '../src/physics/grip-timing.js';
+import {advance,difference,snapshot,restore,resolveGripInterval} from '../src/physics/grip-timing.js';
 import {resolveFastGripInterval} from '../src/physics/grip-fast.js';
 import {LEG_SLIDE} from '../src/physics/grip-sliding.js';
 
@@ -103,6 +103,17 @@ describe('grip refinement observes persistent state and phase uncertainty',()=>{
     const x=resolveGripInterval(a,clockArgs(a),tickClock),y=resolveGripInterval(b,clockArgs(b),tickClock);
     expect(x.intervals).toBe(y.intervals);expect(x.maxAcceptedError).toBe(y.maxAcceptedError);
     expect(b.joints.every(j=>Math.abs(j.legs-exactShare(b))<1e-6)).toBe(true);
+  });
+  it('retains the preceding force sample width when the next piece is shorter',()=>{
+    const w=new Clock(),q=restore(snapshot(w,clockArgs(w)),Clock.prototype);
+    const first=.00226,second=.00012;
+    advance(q.w,q.args,first,w.duration,tickClock);
+    advance(q.w,q.args,second,w.duration-first,tickClock);
+    // The force-midpoint gap spans half of both widths, not just the short
+    // piece. Possible slide times in that bracket must remain distinguishable.
+    const frameGap=(first+second)/2;
+    const required=(1-.17)*(1-Math.exp(-frameGap/.3))/1e-6;
+    expect(difference(q.w,q.w,[0,1])).toBeGreaterThanOrEqual(required);
   });
   it('reports exhaustion rather than false convergence at the unchanged cap',()=>{
     const w=new Clock(.05),r=resolveGripInterval(w,clockArgs(w),tickClock);

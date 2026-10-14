@@ -17,7 +17,7 @@ const SHARE = 1e-6;
 // Scratch-only phase samples, excluded from physical World/snapshot state.
 // The first force sample establishes the phase for the newly issued plan;
 // an old controller interval's slipping flag is not a cue about this one.
-const slipSamples = new WeakMap<object,Map<object,{slipping:boolean;uncertainty:number}>>();
+const slipSamples = new WeakMap<object,Map<object,{slipping:boolean;uncertainty:number;width:number;legs:number}>>();
 function shareUncertainty(w: Private): number {
   return Math.max(0,...[...(slipSamples.get(w)?.values()??[])].map(s=>s.uncertainty));
 }
@@ -44,12 +44,13 @@ function advance(w: Private, args: any[], h: number, remaining: number, execute:
   for(const {j,legs} of before) {
     const previous=samples!.get(j),slipping=!!j.slipping;
     // Endpoint agreement on dyadic grids can alias the same transition.
-    // One observed phase change has up to h of unknown sliding duration.
+    // A change between force samples can straddle unequal pieces. The larger
+    // adjacent width bounds their midpoint gap; use the earlier/lower share.
     // Bound its possible share change with the actual exponential slide law,
     // accumulating changes per grip rather than across unrelated contacts.
     const uncertainty=(previous?.uncertainty??0)+(previous&&previous.slipping!==slipping
-      ? Math.max(0,1-legs)*(1-Math.exp(-h/LEG_SLIDE)):0);
-    samples!.set(j,{slipping,uncertainty});
+      ? Math.max(0,1-Math.min(legs,previous.legs))*(1-Math.exp(-Math.max(h,previous.width)/LEG_SLIDE)):0);
+    samples!.set(j,{slipping,uncertainty,width:h,legs});
   }
 }
 function difference(a: Private, b: Private, ids: number[]) {
