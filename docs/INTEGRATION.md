@@ -1,5 +1,14 @@
 # Current integration ownership and evidence
 
+Current task: [reviewed run/catch controller integration](reviews/controller-integration.md),
+owned by the same Codex integration session. It starts from approved `c98c2fa`,
+reuses #10's compatible independent verification, and verifies a minimal
+catch-only extraction before one frozen combined run. The candidate changes
+production requests and registers 44 flags/components=1. It is not merged or
+designated a baseline. The #6-only pass and 43-flag receipt below are historical
+evidence for their exact pins; their unchanged-production statement is not a
+description of this new candidate.
+
 This pass incorporates **PR #6 only** into the previously combined runtime.
 The historical comparison stays
 `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` on

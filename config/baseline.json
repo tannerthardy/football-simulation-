@@ -35,6 +35,7 @@
     "READ_EYES": "1",
     "READ_RISK_TRACE": "0",
     "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
     "RUN_CONTACT_TRACK": "0",
     "RUN_HANDS": "0",
     "RUN_READ": "0",

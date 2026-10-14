@@ -21,11 +21,15 @@ Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
 Read [work ownership](docs/WORKBOARD.md) before selecting work; claim it there
 and coordinate before editing another session's subsystem.
 
-For the current #6-only pass, the user assigned the Codex integration owner in
-this chat to run the exact combined verification. Follow
-[current integration scope and handoff](docs/INTEGRATION.md); contributors supply
-compatible focused receipts and do not repeat the shared suite. `4ded6b6` stays
-the historical comparison baseline. #3/#4/#5/#7 remain separate.
+The current pass prepares the reviewed run/catch corrections on approved #8
+`c98c2fa`; follow [controller integration](docs/reviews/controller-integration.md).
+The Codex integration owner in this chat owns one exact combined verification.
+Reuse #10's compatible run-only receipt and contributors' focused evidence.
+Actual candidate settings are 44 flags/components=1, with the original 43 values
+retained and no new catch flag. Historical `4ded6b6` stays unchanged; unrelated
+hands/grip/helper experiments and #3/#4/#5/#7/#11 ancestry remain excluded.
+No merge or reference/baseline designation is authorized. The earlier #6-only
+receipt remains in [integration ownership/evidence](docs/INTEGRATION.md).
 
 ## Model rules
 
