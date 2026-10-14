@@ -77,7 +77,7 @@ function plannedPath(p:StickInstall,branch:StickBranch):PlannedPoint[]{
     if(d.y< -1e-6)k=Math.min(k,(last.y-5)/-d.y);
     if(d.y>1e-6)k=Math.min(k,(FIELD_WIDTH-5-last.y)/d.y);
     const edge={x:Math.min(OPP_GOAL_X+8.5,last.x+d.x*k),y:last.y+d.y*k};
-    out.push({p:edge,s:1});
+    out.push({p:edge,s:k<39?.75:1});
     if(k<39)out.push({p:{x:Math.min(OPP_GOAL_X+8.5,edge.x+40),y:edge.y},s:1});
   }
   return out;

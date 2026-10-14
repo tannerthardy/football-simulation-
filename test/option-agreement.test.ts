@@ -5,6 +5,7 @@ import {PASS_BY_ID} from '../src/playbook/concepts.js';
 import {COVERAGE_BY_ID,FRONT_BY_ID} from '../src/playbook/defense.js';
 import {FORMATION_BY_ID} from '../src/playbook/formations.js';
 import {RouteRunner} from '../src/sim/behaviors/receiver.js';
+import {QBPass} from '../src/sim/behaviors/qb.js';
 import {PlaySim} from '../src/sim/playsim.js';
 import {atStickDecision,readStick,stickStem,predictStick} from '../src/sim/option-route.js';
 import type {Perceived} from '../src/sim/perception.js';
@@ -89,5 +90,70 @@ describe('shared install with distinct available pictures',()=>{
     expect(Math.hypot(out.x-seen.pos.x,out.y-seen.pos.y)).toBeLessThan(f.a.profile.vmax*.8);
     expect(seen).toEqual(before);expect(f.a.profile).toEqual(profile);
     expect(predictStick(f.plan,'out',{...seen,age:.8},f.a.profile,.8)).toEqual(out);
+  });
+});
+
+function quarterbackView(f:ReturnType<typeof fixture>,keySide:number){
+  const qb=f.sim.qb.behavior as QBPass;
+  Reflect.set(qb,'phase','set');
+  Reflect.set(qb,'readIdx',Reflect.get(qb,'reads').indexOf(f.a));
+  const key=f.sim.slot('LB_M')!;
+  vi.spyOn(f.sim.qbMind,'estimate').mockImplementation(d=>d===key?
+    picture(f.stem.x+1,f.stem.y+keySide*f.plan.outside):picture(80,50));
+  vi.spyOn(f.sim,'see').mockImplementation((a,d)=>d===f.a?
+    picture(f.a.pos.x,f.a.pos.y,f.a.vel.x,f.a.vel.y):d===key?
+      picture(f.stem.x+1,f.stem.y+keySide*f.plan.outside):picture(80,50));
+  return qb;
+}
+function predict(f:ReturnType<typeof fixture>,qb:QBPass,ahead=.8){
+  return Reflect.get(qb,'receiverPrediction').call(qb,f.sim.qb,f.sim,f.a,ahead);
+}
+function expectation(f:ReturnType<typeof fixture>,qb:QBPass){return Reflect.get(qb,'optionMemories').get(f.a);}
+
+describe('QB option expectation from his own view',()=>{
+  it('cannot learn the private route path, index, settled state or choice when the acquired pictures are identical',()=>{
+    const a=fixture(),b=fixture(),qa=quarterbackView(a,2),qb=quarterbackView(b,2);
+    b.runner.path=[{p:{x:90,y:50},s:1}];b.runner.idx=999;b.runner.settled=true;
+    Reflect.set(b.runner,'converted',true);Reflect.set(b.runner,'optionDecision',{branch:'out'});
+    vi.spyOn(a.runner,'predict').mockImplementation(()=>{throw Error('Private prediction accessed');});
+    vi.spyOn(b.runner,'predict').mockImplementation(()=>{throw Error('Private prediction accessed');});
+    expect(predict(a,qa)).toEqual(predict(b,qb));expect(expectation(a,qa).branch).toBe('sit');
+  });
+  it('can anticipate an out before observing a receiver cut without consulting his private commitment',()=>{
+    const f=fixture(),q=quarterbackView(f,-1);f.a.body.pos.x=43.5;
+    const draws={...f.sim.rng};vi.spyOn(f.runner,'predict').mockImplementation(()=>{throw Error('Private prediction accessed');});
+    const point=predict(f,q);
+    expect((point.y-f.plan.origin.y)*f.plan.outside).toBeGreaterThan(1);
+    expect(expectation(f,q).branch).toBe('out');expect(expectation(f,q).committed).toBe(false);
+    expect(Reflect.get(f.runner,'converted')).toBe(false);expect({...f.sim.rng}).toEqual(draws);
+  });
+  it('preserves a receiver/QB disagreement caused by separate key pictures',()=>{
+    const f=fixture(),q=quarterbackView(f,2),key=f.sim.slot('LB_M')!;
+    vi.mocked(f.sim.see).mockImplementation((a,d)=>d===f.a?picture(44,f.plan.origin.y,6):d===key?
+      picture(f.stem.x+1,f.stem.y+(a===f.a?-1:2)*f.plan.outside):picture(80,50));
+    f.runner.update(f.a,f.sim);expect(choice(f).branch).toBe('out');
+    predict(f,q);expect(expectation(f,q).branch).toBe('sit');expect(expectation(f,q).evidence).toBe('key');
+  });
+  it('corrects an old expectation only after observable receiver motion reveals the out',()=>{
+    const f=fixture(),q=quarterbackView(f,2);predict(f,q);expect(expectation(f,q).branch).toBe('sit');
+    vi.mocked(f.sim.qbMind.estimate).mockImplementation(()=>picture(f.stem.x,f.stem.y-f.plan.outside));
+    f.sim.t+=.05;f.a.body.pos.x+=.2;predict(f,q);
+    expect(expectation(f,q).branch).toBe('sit');
+    f.sim.t+=.05;f.a.body.pos={x:46.1,y:f.stem.y+.5*f.plan.outside};f.a.body.vel={x:1,y:2*f.plan.outside};
+    predict(f,q);expect(expectation(f,q).branch).toBe('out');expect(expectation(f,q).evidence).toBe('motion');
+  });
+  it('does not refresh an option receiver during an emergency evaluation while looking at another read',()=>{
+    const a=fixture(),b=fixture(),qa=quarterbackView(a,-1),qb=quarterbackView(b,-1);
+    for(const q of [qa,qb])Reflect.set(q,'readIdx',Reflect.get(q,'reads').findIndex((r:unknown)=>r!==a.a&&r!==b.a));
+    b.a.body.pos={x:80,y:50};b.runner.path=[{p:{x:90,y:50},s:1}];
+    const pa=predict(a,qa),pb=predict(b,qb);
+    expect(pa).toEqual(pb);expect(a.sim.see).not.toHaveBeenCalled();expect(b.sim.see).not.toHaveBeenCalled();
+    expect(expectation(a,qa).observedAt).toBe(0);
+  });
+  it('retains the existing route prediction for an ordinary non-option receiver',()=>{
+    const f=fixture(),q=f.sim.qb.behavior as QBPass;
+    const r=f.sim.offense.find(r=>r.behavior instanceof RouteRunner&&!r.behavior.stickInstall)!;
+    const route=r.behavior as RouteRunner,expected=route.predict(r,.8);
+    expect(Reflect.get(q,'receiverPrediction').call(q,f.sim.qb,f.sim,r,.8)).toEqual(expected);
   });
 });
