@@ -46,12 +46,12 @@ function pair(c:Agent,d:Agent){const dx=c.pos.x-d.pos.x,dy=c.pos.y-d.pos.y,dist=
  headingDifference:Math.atan2(Math.sin(Math.atan2(d.vel.y,d.vel.x)-Math.atan2(c.vel.y,c.vel.x)),Math.cos(Math.atan2(d.vel.y,d.vel.x)-Math.atan2(c.vel.y,c.vel.x))),
  defenderSpeed:d.speed,runnerSpeed:c.speed,defender:lean(d),runner:lean(c)};}
 type Geometry='baseline'|'arrival'|'hip'|'hip-unshaded';
-export function trial(f:any,geometry:Geometry,execution:number|null,observe:boolean,destination:string,label:string,audit=false){
+export function trial(f:any,geometry:Geometry,execution:number|null,observe:boolean,destination:string,label:string,audit=false,spacingOff=false){
  const sim=restore(f,observe),a=sim.agents[f.defender],ci=sim.offense.find(a=>a.player.id===(f.nativeResult.stats.receiver??f.nativeResult.stats.target))?.idx??sim.slot('X')!.idx;
  const wrapped=new WeakSet<object>(),rows:any[]=[],holds:any[]=[],ids=new WeakMap<object,number>();
  const seen=sim.see.bind(sim),step=sim.world.step.bind(sim.world),tick=sim.tick.bind(sim),event=sim.event.bind(sim);
  let inside=false,cues:Consumed[]=[],decision:any=null,raw:any=null,world:any=null,acquisition:any=null,changedCalls=0,forecast:any=null;
- const randomCalls:any[]=[];
+ const randomCalls:any[]=[],spacingOverrides:any[]=[];
  if(audit&&observe){for(const name of ['nextU32','normal'] as const){const native=sim.rng[name].bind(sim.rng);
   Reflect.set(sim.rng,name,(...args:any[])=>{const value=Reflect.apply(native,sim.rng,args);
    const caller=new Error().stack?.split('\n').filter(line=>line.includes('/src/')&&!line.includes('/core/rng.ts')).slice(0,2);
@@ -76,7 +76,21 @@ export function trial(f:any,geometry:Geometry,execution:number|null,observe:bool
   }
   return event(type,d,c,note);
  };
- if(observe)sim.world.step=(intents,dt)=>{
+ if(observe||spacingOff)sim.world.step=(intents,dt)=>{
+  const s=a.body.support;
+  // Diagnostic ablation only: one existing pursuing actor's free request,
+  // after catch. Never erase a joint/strike/engagement/contact-owned demand.
+  // Actual teammate body collisions and all other actors' policies remain.
+  if(spacingOff&&raw&&a.behavior.kind==='pursuit'&&s?.state==='up'&&!a.engagement&&!s.foot&&!s.strike
+   &&Math.hypot(s.lean.x,s.lean.y)<1e-6&&Math.hypot(s.load.x,s.load.y)<1e-6
+   &&!intents[a.idx].dive&&!intents[a.idx].lunge
+   &&!sim.world.joints.some(j=>(j.kind!=='grasp'||!j.broken)&&(j.a===a.body||j.b===a.body))
+   &&!sim.lastStep?.contacts.some(c=>c.i===a.idx||c.j===a.idx)){
+   const before=copy(intents[a.idx].vel);
+   if(hash(before)!==hash(raw.vel)){intents[a.idx]={...intents[a.idx],vel:copy(raw.vel)};
+    spacingOverrides.push({t:sim.t,before,restored:copy(raw.vel),body:lean(a),cues:copy(cues)});}
+  }
+  if(!observe)return step(intents,dt);
   const before=sim.agents.map(lean),applied=copy(intents),entry=new Map(sim.world.joints.filter(j=>j.kind==='grasp')
    .map(j=>[j,pair(sim.agents[sim.world.indexOf(j.b)],sim.agents[sim.world.indexOf(j.a)])]));
   const report=step(intents,dt);
@@ -122,7 +136,7 @@ export function trial(f:any,geometry:Geometry,execution:number|null,observe:bool
  const record={id:f.id,geometry,execution,setupSha256:hash(f.setup),signature:sig,acquisition,
   selectedDefender:{idx:a.idx,id:a.player.id,slot:a.slot,profile:a.profile},actualReceiverId:result.stats.receiver??null,
   result:{...result,frames:undefined,telemetry:undefined},censored:result.outcome==='timeout',changedCalls,holds,rows,
-  randomCalls,frames:observe?result.frames:undefined,telemetry:observe?result.telemetry:undefined};
+  randomCalls,spacingOff,spacingOverrides,frames:observe?result.frames:undefined,telemetry:observe?result.telemetry:undefined};
  if(observe)writeFileSync(file,gzipSync(JSON.stringify(record)));
  return {...record,rows:undefined,randomCalls:undefined,frames:undefined,telemetry:undefined,artifact:observe?{path:file,sha256:fileHash(file)}:null};
 }

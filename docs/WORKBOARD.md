@@ -758,3 +758,14 @@ Edit only your own rows and requests so board merges stay trivial.
   the spend. Diagnostic-only request override; no shared controller edit yet,
   no helpers, capacities, awareness or World law change. Shared PR #6 policy
   and run-game lead integration-test ownership retained.
+
+- 2026-10-14 UTC, catch controller session -> run-game owner:
+  New fresh untouched TD H10831/C3 (comebacks vs Cover3 match) has no hold:
+  LB_M asks ~9.1 yd/s while spacing halves/redirects that free request near
+  FS traffic, shedding achieved speed. Separately diagnosing one pursuing
+  actor's post-catch spacing contribution, retaining actual physical teammate
+  collisions and all held/contact-owned demands. Ordinary loaded and sideline
+  controls retain actual execution values. This is an ablation, not a bypass
+  proposed for production. No shared spacing/common/controller source edit;
+  requesting shared-file ownership coordination before any later spacing fix.
+  Hip-anchor trials remain separate and physics/capabilities/helper rules fixed.
