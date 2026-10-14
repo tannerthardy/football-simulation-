@@ -75,7 +75,7 @@ function execute(i: Input, trace: boolean) {
     if (event.phase === 'carrier-start' && !evaluated.has(a.behavior)) {
       evaluated.add(a.behavior);
       const evaluate = Reflect.get(a.behavior, 'evaluate');
-      if (typeof evaluate === 'function') Reflect.set(a.behavior, 'evaluate', function (...args: unknown[]) {
+      if (typeof evaluate === 'function') Reflect.set(a.behavior, 'evaluate', function (this: object, ...args: unknown[]) {
         const result = evaluate.apply(this, args);
         carrierEvents.push(JSON.parse(serialize({ phase: 'lane-evaluation', t: sim.t, actor: a.idx,
           designed: args[3], result, patience: a.r('patience'), earlyAbandonThreshold: .5 + .5 * a.r('patience') })));

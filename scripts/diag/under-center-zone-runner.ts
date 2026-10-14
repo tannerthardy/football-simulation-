@@ -72,10 +72,14 @@ for (const [name, priorName, pinName] of [['carrier-design', 'native', 'pin'], [
     const carrierEvents = play.frames.flatMap((f: any) => f.carrierEvents.filter((e: any) => e.actor === rb));
     const starts = carrierEvents.filter((e: any) => e.phase === 'carrier-start');
     const switches = starts.filter((e: any, k: number) => k === 0 || e.designed !== starts[k - 1].designed);
-    const reads: any[] = [], movement: any[] = [];
+    const reads: any[] = [], movement: any[] = [], runnerPath: any[] = [];
     for (const frame of play.frames) {
       if (frame.t < 1.6 || frame.t > first.t) continue;
       const pi = frame.physicsInput;
+      runnerPath.push({ t: frame.t, after: frame.after, pos: pi.beforeBodies[rb].pos,
+        vel: pi.beforeBodies[rb].vel, requested: frame.agents[rb].requested.vel,
+        delivered: pi.intents[rb].vel, achieved: pi.afterBodies[rb].vel,
+        support: pi.afterBodies[rb].support.state });
       const peer = (id: number) => ({ slot: slot(id), before: compactBody(pi.beforeBodies[id]),
         requested: frame.agents[id].requested, delivered: pi.intents[id], after: compactBody(pi.afterBodies[id]) });
       const foot = frame.contactEvents.find((e: any) => e.phase === 'movement' && e.blocker === keeper && e.defender === end);
@@ -95,7 +99,8 @@ for (const [name, priorName, pinName] of [['carrier-design', 'native', 'pin'], [
           consumedRunnerCues: unique(frame.cues.filter((c: any) => c.defender === rb && c.stage === 'behavior')
             .map((c: any) => ({ target: c.opponent, slot: slot(c.opponent), seen: c.seen }))) };
       }
-      movement.push({ t: frame.t, after: frame.after,
+      if (pressTrackCheck || frame.carrierEvents.some((e: any) => e.actor === rb && e.phase === 'aim')
+        || [1.75, 2.4, first.t - .05, first.t].some(t => Math.abs(t - frame.t) < 1e-8)) movement.push({ t: frame.t, after: frame.after,
         pressTrackCheck,
         carrierDecisionEvents: frame.carrierEvents.filter((e: any) => e.actor === rb && e.phase === 'lane-evaluation'),
         runner: peer(rb), keeper: peer(keeper), defender: peer(end),
@@ -166,7 +171,10 @@ for (const [name, priorName, pinName] of [['carrier-design', 'native', 'pin'], [
             minimumPictureTorsoMarginThroughEntry: Math.min(...approach.map(s => s.pictureTorsoMargin)),
             minimumPictureArmMarginThroughEntry: Math.min(...approach.map(s => s.pictureArmMargin)),
             minimumPictureArmMarginBeforeOriginalContact: Math.min(...beforeOriginalContact.map(s => s.pictureArmMargin)),
-            atNextDecisionBeat: atDecisionBeat, peerClearance, samples: screen };
+            atNextDecisionBeat: atDecisionBeat, peerClearance, sampleSha256: digest(screen),
+            criticalSamples: unique([screen[0], opposingEnvelope,
+              ...['pictureTorsoMargin', 'pictureArmMargin'].map(k => approach.reduce((a: any, b: any) => a[k] < b[k] ? a : b)),
+              beforeOriginalContact.at(-1)].filter(Boolean)) };
         });
         reads.push({ ...event, surface, consumedRunnerCues: cues, acquiredEnd: { slot: slot(end), ...endSeen },
           acquiredKeeper: { slot: slot(keeper), ...keeperSeen }, endOutsideKeeper,
@@ -185,7 +193,7 @@ for (const [name, priorName, pinName] of [['carrier-design', 'native', 'pin'], [
       savedHistoryExact: true, actualPinHistoryExact: true, ticks: play.hashes.length,
       profiles: play.players.map((a: any) => ({ id: a.id, slot: a.slot, team: a.team, profile: a.profile })),
       designedPhaseChanges: switches, firstContact: first, endTime: play.endTime, gain: play.gain,
-      outcome: play.outcome, reads, movement });
+      outcome: play.outcome, reads, movement, runnerPath });
     console.log(`${play.input.id}: ${reads.length} precontact reads, saved/pin histories exact`);
   }
 }
@@ -203,4 +211,14 @@ const report = { protocol: 'under-center-zone-runner-information-v1',
     'No alternative native ending is generated; shared passive angular-law witness remains unresolved.'],
   observationReceipts: receipts, recordedObservedPlainPairs: 3, newGames: 0, newFullSuites: 0, findings };
 writeFileSync(destination, JSON.stringify(report, null, 2) + '\n');
+const failing = findings.find(f => f.input.id === 'uc12-wz-s3-mirror');
+const firstMismatch = failing.movement.find((f: any) => f.t === 2.2);
+assert(Math.abs(firstMismatch.pressTrackCheck.lateralMismatch) > 1.4);
+writeFileSync('docs/reviews/under-center-zone-runner-read-witness.json', JSON.stringify({
+  protocol: 'under-center-zone-press-aim-mismatch-v1', input: failing.input, provenance: failing.provenance,
+  comparisonCommit: report.comparisonCommit, stateRngHistorySha256: failing.stateRngHistorySha256,
+  interval: firstMismatch, ownProfile: failing.profiles.find((p: any) => p.slot === 'RB'),
+  contract: 'The early-abandon evaluation assesses the original snap aim; the movement command presses the live acquired aim.',
+  limitation: 'A reproduced reference-frame inconsistency, not proof that a different read improves the ending. No new read or contact action is prescribed.'
+}, null, 2) + '\n');
 console.log(`Saved ${destination}`);
