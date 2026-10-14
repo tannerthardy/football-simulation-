@@ -15,7 +15,11 @@ for(const input of inputs){
   if(r.gameDisposition.nullified)continue;
   const f=JSON.parse(gunzipSync(readFileSync(r.film.path)));
   const log={kind:'pass',yards:r.result.yards,plan:{concept:r.effectiveConcept,coverage:r.effectiveCoverage},
-   replay:{players:f.players.map(a=>({team:a.team,pos:a.position})),frames:f.frames,events:r.result.events,los:r.setup.los}};
+   replay:{players:f.players.map(a=>({team:a.team,pos:a.position})),
+    // Adapter uses only snap ball-y. The observer did not record a ball path;
+    // retain unknown x/z instead of inventing ball motion.
+    frames:f.frames.map((s,i)=>i===0?{...s,ball:[null,Math.round(r.setup.ballY*10)/10,null]}:s),
+    events:r.result.events,los:r.setup.los}};
   const original=commonPlay(log,r.id);if(!original)throw Error(`No common play ${r.id}`);raw.push(original);
   // NFL pass_forward includes thrown-away passes. The legacy adapter looks
   // only for sim 'throw', so correct that label on a copy, retaining both.
