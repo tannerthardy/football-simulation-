@@ -15,6 +15,9 @@ import {availability,supportParams} from '../physics/support.js';
 import type { Agent } from './agent.js';
 import type {Perceived} from './perception.js';
 import type {TeammateForecast} from './teammate-information.js';
+import type {TeammatePicture} from './teammate-information.js';
+import type {PhysicalProfile} from '../players/physical.js';
+import {brakingTeammateForecast} from './traffic-forecast.js';
 
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
@@ -39,6 +42,8 @@ interface PeerPicture {
   vel: {x:number;y:number};
   touch: number;
   forecast?: TeammateForecast;
+  information?: TeammatePicture;
+  profile?: PhysicalProfile;
 }
 
 function peerAt(peer:PeerPicture,t:number):{x:number;y:number} {
@@ -53,9 +58,11 @@ function peerAt(peer:PeerPicture,t:number):{x:number;y:number} {
 
 /** All known routes are tested together. A called route stops making claims
  * at its installed deadline; it is neither extended nor treated as stopped. */
-function routeClearance(a:Agent,samples:readonly MovementSample[],peer:PeerPicture):number {
-  let previous={t:0,pos:a.pos},px=a.pos.x-peer.pos.x,py=a.pos.y-peer.pos.y;
+function routeSafety(a:Agent,samples:readonly MovementSample[],peer:PeerPicture):{gap:number;impact:number} {
+  const initial=peerAt(peer,0);
+  let previous={t:0,pos:a.pos},px=a.pos.x-initial.x,py=a.pos.y-initial.y;
   let minimum=Math.hypot(px,py)-peer.touch;
+  let impact=0,contactSeen=false;
   for(const sample of samples){
     const t=Math.min(sample.t,peer.forecast?.validFor??Infinity);
     if(t<=previous.t+1e-9)break;
@@ -63,11 +70,19 @@ function routeClearance(a:Agent,samples:readonly MovementSample[],peer:PeerPictu
     const rx=previous.pos.x+(sample.pos.x-previous.pos.x)*u-p.x;
     const ry=previous.pos.y+(sample.pos.y-previous.pos.y)*u-p.y;
     const dx=rx-px,dy=ry-py,q=Math.max(0,Math.min(1,-(px*dx+py*dy)/Math.max(1e-12,dx*dx+dy*dy)));
-    minimum=Math.min(minimum,Math.hypot(px+q*dx,py+q*dy)-peer.touch);
+    const gap=Math.hypot(px+q*dx,py+q*dy)-peer.touch;
+    minimum=Math.min(minimum,gap);
+    if(!contactSeen&&gap<=0){
+      const v2=dx*dx+dy*dy,dot=px*dx+py*dy;
+      const enter=v2>1e-12?Math.max(0,Math.min(q,(-dot-Math.sqrt(Math.max(0,dot*dot-v2*(px*px+py*py-peer.touch**2))))/v2)):0;
+      const ex=px+enter*dx,ey=py+enter*dy;
+      impact=Math.max(0,-(ex*dx+ey*dy)/Math.max(1e-12,Math.hypot(ex,ey)*(t-previous.t)));
+      contactSeen=true;
+    }
     px=rx;py=ry;previous=sample;
     if(t<sample.t-1e-9)break;
   }
-  return minimum;
+  return {gap:minimum,impact};
 }
 
 /** A free actor tests his actual movement, including an ordinary stop after
@@ -89,14 +104,19 @@ function freeTraffic(a:Agent,original:Intent,peers:readonly PeerPicture[],contex
   const ownReach=speed*horizon+.5*supportParams(a.profile).traction/a.profile.massKg*horizon*horizon;
   const near=peers.filter(p=>{
     const duration=Math.min(horizon,p.forecast?.validFor??horizon);
-    const reach=p.forecast?.samples.length?Math.max(...p.forecast.samples.map(s=>Math.hypot(s.pos.x-p.pos.x,s.pos.y-p.pos.y)))
+    const reach=p.forecast&&p.forecast.samples.length>1?Math.max(...p.forecast.samples.map(s=>Math.hypot(s.pos.x-p.pos.x,s.pos.y-p.pos.y)))
       :Math.hypot(p.vel.x,p.vel.y)*duration;
     return Math.hypot(p.pos.x-a.pos.x,p.pos.y-a.pos.y)<=p.touch+ownReach+reach;
   });
   if(!near.length)return original;
+  const routes=near.flatMap(p=>{
+    const braking=p.information&&p.profile?brakingTeammateForecast(p.information,p.profile,context.now,horizon):undefined;
+    return braking?[p,{...p,forecast:braking}]:[p];
+  });
   const evaluate=(command:Intent)=>{
     const samples=previewFreeMovement(a.body,command,context.now,steps,'center',6);
-    return {command,gaps:near.map(p=>routeClearance(a,samples,p)),
+    const safety=routes.map(p=>routeSafety(a,samples,p));
+    return {command,gaps:safety.map(s=>s.gap),impact:safety.reduce((sum,s)=>sum+s.impact*s.impact,0),
       stable:samples.every(s=>s.support==='up')&&Math.hypot(samples.at(-1)!.vel.x,samples.at(-1)!.vel.y)<.05};
   };
   const raw=evaluate(original);
@@ -108,8 +128,13 @@ function freeTraffic(a:Agent,original:Intent,peers:readonly PeerPicture[],contex
   // If no route is clear, do not cure one neighbor by hitting another. Keep
   // the existing request unless braking demonstrably improves the worst gap.
   const worst=Math.min(...raw.gaps);
-  for(const candidate of [half,stop])if(candidate.stable
-    &&candidate.gaps.every((g,k)=>raw.gaps[k]<0||g>=0)&&Math.min(...candidate.gaps)>worst+TURN_MARGIN)return candidate.command;
+  const alternatives=[half,stop].filter(candidate=>candidate.stable
+    &&candidate.gaps.every((g,k)=>raw.gaps[k]<0||g>=0))
+    .sort((a,b)=>Math.min(...b.gaps)-Math.min(...a.gaps)||a.impact-b.impact);
+  if(alternatives.length){
+    const best=alternatives[0],gap=Math.min(...best.gaps);
+    if(gap>worst+TURN_MARGIN||(gap>=worst-1e-9&&best.impact<raw.impact-1e-9))return best.command;
+  }
   return original;
 }
 
@@ -186,6 +211,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     const pictures=agents.filter(b=>b!==a&&b.team===a.team).flatMap(b=>{
       const seen=observe(a,b);
       return seen?[{target:b,picture:{pos:seen.pos,vel:seen.vel,forecast:seen.forecast,
+        information:'source' in seen?seen as TeammatePicture:undefined,profile:b.profile,
         touch:TOUCH*(a.profile.radius+b.profile.radius)}}]:[];
     });
     const planned=freeTraffic(a,ia,pictures.map(p=>p.picture),context);

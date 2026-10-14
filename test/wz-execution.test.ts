@@ -66,4 +66,32 @@ describe('achievable wide-zone unit traffic',()=>{
     expect(a.pos.y-b.pos.y).toBeGreaterThan(.9*(a.profile.radius+b.profile.radius));
     expect(a.pos.y).toBeLessThan(26); // Safe progress, not a blanket ban on lateral travel.
   });
+  it('accounts for ordinary braking since the same delayed TE sighting without acquiring his live state',()=>{
+    const fixture=JSON.parse(readFileSync(new URL('../data/reviews/current/wz-delayed-braking-state.json',import.meta.url),'utf8'));
+    const s=stage(),a=s.rt;a.body=structuredClone(fixture.body);a.body.support!.since=-Infinity;
+    const decide=()=>{
+      const intents:Intent[]=s.sim.agents.map(b=>b===a?structuredClone(fixture.raw):{vel:{x:0,y:0}});
+      spaceTeammates(s.sim.agents,intents,(o,t)=>{
+        const p=o===a?fixture.peers.find((p:any)=>p.idx===t.idx)?.information:null;
+        return p?.source==='unavailable'?null:p;
+      },{now:fixture.entry});
+      return intents[a.idx];
+    };
+    const selected=decide();
+    expect(Math.hypot(selected.vel.x,selected.vel.y)).toBeLessThan(Math.hypot(fixture.raw.vel.x,fixture.raw.vel.y));
+    s.te.body.pos={x:5,y:50};s.te.body.vel={x:9,y:9};s.te.body.support=newSupport();
+    expect(decide()).toEqual(selected);
+  });
+  it('keeps moving alongside an ordinary continuing peer with a separate clear lane',()=>{
+    const s=stage(),a=s.rt,b=s.te;
+    a.body.pos={x:50,y:26};a.body.vel={x:0,y:-2};a.body.facing=-Math.PI/2;a.body.support=newSupport();
+    b.body.pos={x:51.5,y:26};b.body.vel={x:0,y:-2};b.body.support=newSupport();
+    const picture={source:'observed' as const,pos:{...b.pos},vel:{...b.vel},sampledAt:.7,availableAt:1,age:.3,predictedFor:.3};
+    const requested={vel:{x:0,y:-5},facing:-Math.PI/2};
+    const intents:Intent[]=[structuredClone(requested),{vel:{x:0,y:-2}}];
+    spaceTeammates([a,b],intents,(o,t)=>o===a&&t===b?picture:null,{now:1});
+    expect(intents[0]).toEqual(requested);
+    const world=new World([a.body,b.body]);world.time=1;const report=world.step(intents,.05);
+    expect(report.contacts).toHaveLength(0);expect(a.pos.y).toBeLessThan(26);
+  });
 });
