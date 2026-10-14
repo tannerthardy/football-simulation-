@@ -39,11 +39,17 @@ for row in coupled['panel']:
         referenceWindow=windows(prior['frames']),candidateWindow=windows(row['frames'])))
 
 packets = [p for p in sorted(root.glob('*.json.gz')) if p.name != 'mechanism.json.gz']
-launchers = {p.name: json.loads(p.read_text()) for p in sorted(root.glob('*launcher.json'))}
+launchers = {}
+for p in sorted(root.glob('*launcher.json')):
+    row = json.loads(p.read_text())
+    assert row.pop('flags') == coupled['flags']
+    assert row.pop('worldDefaults') == coupled['worldDefaults']
+    launchers[p.name] = dict(sha256=digest(p), **row)
 output = dict(protocol='rb-gather-release-summary-v1',
     candidate='68284671d062dfd4e7e879bcd037bc21dad3e3ac',
     priorReview='a6bf3cf47af738298c67ec45301d17c1d06b4cd3',
-    runtimeCommit='3965abf',testedCommit=coupled['commit'],
+    runtimeCommit=subprocess.check_output(['git','rev-parse','3965abf'],text=True).strip(),testedCoupledCommit=coupled['commit'],
+    testedChecksCommit=launchers['focused-passing-launcher.json']['commit'],
     publicationParent=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
     referenceSource=before['source'],initialCandidateSource='e7fff5a0792ccaed77f1e3aba1aa49a442f70c0415ce85f282b1794270643002',
     finalSource=after['source'],flags=coupled['flags'],worldDefaults=coupled['worldDefaults'],

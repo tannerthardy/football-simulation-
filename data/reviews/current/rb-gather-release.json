@@ -1,0 +1,3103 @@
+{
+  "protocol": "rb-gather-release-summary-v1",
+  "candidate": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+  "priorReview": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+  "runtimeCommit": "3965abf8f35ec3593f535a8046235ec4dc47873e",
+  "testedCoupledCommit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+  "testedChecksCommit": "0a35c5f92b9760cb7e0ab241aea225dbe8e69bd5",
+  "publicationParent": "0a35c5f92b9760cb7e0ab241aea225dbe8e69bd5",
+  "referenceSource": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+  "initialCandidateSource": "e7fff5a0792ccaed77f1e3aba1aa49a442f70c0415ce85f282b1794270643002",
+  "finalSource": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "fixture": {
+    "path": "data/reviews/current/rb-gather-release-state.json",
+    "sha256": "338f412b6eae483918e99b263227a1f639ab3d4ce05fde5625c9e48d91d61043",
+    "matchedSavedPrefixHashes": 47,
+    "nonFiniteNumbers": [
+      {
+        "path": [
+          "support",
+          "since"
+        ],
+        "value": "-Infinity"
+      }
+    ],
+    "guards": {
+      "speed": 1.8227784363298143,
+      "down": false,
+      "engaged": false,
+      "constrained": false,
+      "free": false,
+      "dive": false,
+      "lunge": false,
+      "requestedSqueeze": 0,
+      "activeSqueeze": 0,
+      "push": 0,
+      "support": "up",
+      "foot": false,
+      "strike": false,
+      "lean": 0,
+      "load": 0,
+      "materialTurn": 7.94789453746442
+    }
+  },
+  "sameStateComparison": {
+    "release": {
+      "request": {
+        "vel": {
+          "x": 9.283028322226889,
+          "y": 2.073853433121528
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "upright": true,
+      "clearances": [
+        {
+          "idx": 0,
+          "slot": "QB",
+          "at300ms": 2.0927046952045485,
+          "at600ms": 2.0927046952045485
+        },
+        {
+          "idx": 1,
+          "slot": "LT",
+          "at300ms": 5.4699950158816675,
+          "at600ms": 4.494475707554258
+        },
+        {
+          "idx": 2,
+          "slot": "RT",
+          "at300ms": -0.2902278845136806,
+          "at600ms": -0.309709926275664
+        },
+        {
+          "idx": 3,
+          "slot": "C",
+          "at300ms": 2.3857526989160323,
+          "at600ms": 1.3178666686682736
+        },
+        {
+          "idx": 4,
+          "slot": "LG",
+          "at300ms": 5.0532133215245585,
+          "at600ms": 5.0532133215245585
+        },
+        {
+          "idx": 5,
+          "slot": "RG",
+          "at300ms": 1.167683498846813,
+          "at600ms": 0.25558148655834945
+        },
+        {
+          "idx": 7,
+          "slot": "Y",
+          "at300ms": 1.3725524858697251,
+          "at600ms": 1.1357801847815343
+        },
+        {
+          "idx": 8,
+          "slot": "X",
+          "at300ms": 20.55644296031449,
+          "at600ms": 19.52117656133816
+        },
+        {
+          "idx": 9,
+          "slot": "Z",
+          "at300ms": 11.653186460684507,
+          "at600ms": 10.475932011860612
+        },
+        {
+          "idx": 10,
+          "slot": "H",
+          "at300ms": 8.227117185877585,
+          "at600ms": 8.227117185877585
+        }
+      ]
+    },
+    "half": {
+      "request": {
+        "vel": {
+          "x": 4.641514161113444,
+          "y": 1.036926716560764
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "upright": true,
+      "clearances": [
+        {
+          "idx": 0,
+          "slot": "QB",
+          "at300ms": 2.0927046952045485,
+          "at600ms": 2.0927046952045485
+        },
+        {
+          "idx": 1,
+          "slot": "LT",
+          "at300ms": 5.453297049011151,
+          "at600ms": 4.596081337147152
+        },
+        {
+          "idx": 2,
+          "slot": "RT",
+          "at300ms": -0.17721846946796427,
+          "at600ms": -0.1791633951275053
+        },
+        {
+          "idx": 3,
+          "slot": "C",
+          "at300ms": 2.3694473970207066,
+          "at600ms": 1.4493760452888442
+        },
+        {
+          "idx": 4,
+          "slot": "LG",
+          "at300ms": 5.034977321670227,
+          "at600ms": 4.7888246077377765
+        },
+        {
+          "idx": 5,
+          "slot": "RG",
+          "at300ms": 1.1357065421887425,
+          "at600ms": 0.18714364100220482
+        },
+        {
+          "idx": 7,
+          "slot": "Y",
+          "at300ms": 1.4748340982475823,
+          "at600ms": 1.4712337655609882
+        },
+        {
+          "idx": 8,
+          "slot": "X",
+          "at300ms": 20.486808973472638,
+          "at600ms": 19.359528703095574
+        },
+        {
+          "idx": 9,
+          "slot": "Z",
+          "at300ms": 11.761430467606633,
+          "at600ms": 10.972360163294736
+        },
+        {
+          "idx": 10,
+          "slot": "H",
+          "at300ms": 8.227117185877585,
+          "at600ms": 8.080066231506654
+        }
+      ]
+    },
+    "gather": {
+      "request": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "cutSkill": 1.0892857142857142,
+        "squeeze": 0
+      },
+      "upright": true,
+      "clearances": [
+        {
+          "idx": 0,
+          "slot": "QB",
+          "at300ms": 2.0927046952045485,
+          "at600ms": 2.0927046952045485
+        },
+        {
+          "idx": 1,
+          "slot": "LT",
+          "at300ms": 5.8186419518223005,
+          "at600ms": 5.792594176568796
+        },
+        {
+          "idx": 2,
+          "slot": "RT",
+          "at300ms": 0.10599451019306039,
+          "at600ms": 0.04428011615958116
+        },
+        {
+          "idx": 3,
+          "slot": "C",
+          "at300ms": 2.7416217571278416,
+          "at600ms": 2.6912706671732054
+        },
+        {
+          "idx": 4,
+          "slot": "LG",
+          "at300ms": 5.0532133215245585,
+          "at600ms": 5.044776858659561
+        },
+        {
+          "idx": 5,
+          "slot": "RG",
+          "at300ms": 1.4855371014042433,
+          "at600ms": 1.4078717638550116
+        },
+        {
+          "idx": 7,
+          "slot": "Y",
+          "at300ms": 1.6545930820532273,
+          "at600ms": 1.6545930820532273
+        },
+        {
+          "idx": 8,
+          "slot": "X",
+          "at300ms": 20.686279779385604,
+          "at600ms": 20.13417123575124
+        },
+        {
+          "idx": 9,
+          "slot": "Z",
+          "at300ms": 12.058862889052447,
+          "at600ms": 11.804524783910836
+        },
+        {
+          "idx": 10,
+          "slot": "H",
+          "at300ms": 8.227117185877585,
+          "at600ms": 8.227117185877585
+        }
+      ]
+    }
+  },
+  "threshold": {
+    "before": [
+      {
+        "speed": 1.95,
+        "request": {
+          "vel": {
+            "x": 9.283028322226889,
+            "y": 2.073853433121528
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        }
+      },
+      {
+        "speed": 2,
+        "request": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        }
+      },
+      {
+        "speed": 2.05,
+        "request": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        }
+      }
+    ],
+    "after": [
+      {
+        "speed": 1.95,
+        "request": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        }
+      },
+      {
+        "speed": 2,
+        "request": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        }
+      },
+      {
+        "speed": 2.05,
+        "request": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        }
+      }
+    ],
+    "caution": "Secondary continuity control; changed speed also changes physical braking. The primary request comparison changes no state."
+  },
+  "exactDecision": {
+    "before": {
+      "vel": {
+        "x": 9.283028322226889,
+        "y": 2.073853433121528
+      },
+      "cutSkill": 1.0892857142857142,
+      "squeeze": 0
+    },
+    "after": {
+      "vel": {
+        "x": 0,
+        "y": 0
+      },
+      "cutSkill": 1.0892857142857142,
+      "squeeze": 0
+    }
+  },
+  "clearPath": {
+    "request": {
+      "vel": {
+        "x": 9.283028322226889,
+        "y": 2.073853433121528
+      },
+      "cutSkill": 1.0892857142857142,
+      "squeeze": 0
+    },
+    "visiblePeers": 0,
+    "clearances": [],
+    "finalMotion": {
+      "t": 0.6000000000000001,
+      "pos": {
+        "x": 40.14337099217192,
+        "y": 21.683619275375953
+      },
+      "vel": {
+        "x": 4.359877547598407,
+        "y": 0.01994507481735129
+      },
+      "support": "up"
+    }
+  },
+  "firstChange": {
+    "now": 1.1,
+    "body": {
+      "pos": {
+        "x": 39.8238089495854,
+        "y": 22.864884136998665
+      },
+      "vel": {
+        "x": 0.3301350201334815,
+        "y": -1.8314887831184863
+      },
+      "facing": -1.3924563972436392,
+      "energy": 0.992379895424559,
+      "profile": {
+        "vmax": 7.583522306970652,
+        "tau": 1.271162260701725,
+        "brake": 5.078582766439909,
+        "lateral": 5.480619047619049,
+        "turnRate": 6.415555555555556,
+        "backpedal": 0.6342857142857143,
+        "shuffle": 0.5852,
+        "massKg": 144.24237366,
+        "heightYd": 2.1861111111111113,
+        "radius": 0.3654545454545455,
+        "reach": 1.0976388888888888,
+        "maxCatchHeight": 3.569750000000001,
+        "reactReach": 3.1558611111111112,
+        "reactionTime": 0.24608163265306127,
+        "power": 150.57873507435,
+        "balance": 0.7040816326530612,
+        "bend": 0.19681632653061223,
+        "stepSpeed": 2.7822267573696147,
+        "getUp": 1.2190555555555556
+      },
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.6985282056925307,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": -0.9915031139153355,
+          "y": 4.432656722144424
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "spin": -4.03519694339223,
+      "squeeze": 0,
+      "sprintLoad": 0,
+      "squeezeHeading": -1.6007675351621413
+    },
+    "engaged": false,
+    "constrained": false,
+    "peerY": {
+      "idx": 7,
+      "slot": "Y",
+      "touch": 0.6013636363636364,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 40.34297498579608,
+          "y": 22.211913919401955
+        },
+        "vel": {
+          "x": 0.27186401154535783,
+          "y": -0.5058066703753263
+        },
+        "sampledAt": 0.8,
+        "availableAt": 1.1,
+        "age": 0.30000000000000004,
+        "predictedFor": 0.3
+      }
+    },
+    "comparison": {
+      "radial": {
+        "request": {
+          "vel": {
+            "x": 2.578929893926149,
+            "y": 0.5086254939513388
+          },
+          "posture": 0.7
+        },
+        "upright": true,
+        "clearances": [
+          {
+            "idx": 1,
+            "slot": "LT",
+            "at300ms": 5.719589877996534,
+            "at600ms": 5.719589877996534
+          },
+          {
+            "idx": 3,
+            "slot": "C",
+            "at300ms": 3.1258781721641524,
+            "at600ms": 3.1258781721641524
+          },
+          {
+            "idx": 4,
+            "slot": "LG",
+            "at300ms": 4.416564624793759,
+            "at600ms": 4.416564624793759
+          },
+          {
+            "idx": 5,
+            "slot": "RG",
+            "at300ms": 1.7951933769799893,
+            "at600ms": 1.7951933769799893
+          },
+          {
+            "idx": 6,
+            "slot": "RB",
+            "at300ms": 4.295178265296161,
+            "at600ms": 4.264280315794267
+          },
+          {
+            "idx": 7,
+            "slot": "Y",
+            "at300ms": -0.05813539507491139,
+            "at600ms": -0.1349476709170952
+          },
+          {
+            "idx": 8,
+            "slot": "X",
+            "at300ms": 21.24761082516707,
+            "at600ms": 21.24761082516707
+          },
+          {
+            "idx": 9,
+            "slot": "Z",
+            "at300ms": 13.813665876181549,
+            "at600ms": 13.813665876181549
+          },
+          {
+            "idx": 10,
+            "slot": "H",
+            "at300ms": 7.0444591903824705,
+            "at600ms": 7.0444591903824705
+          }
+        ]
+      },
+      "gather": {
+        "request": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "posture": 0.7
+        },
+        "upright": true,
+        "clearances": [
+          {
+            "idx": 1,
+            "slot": "LT",
+            "at300ms": 5.719589877996534,
+            "at600ms": 5.719589877996534
+          },
+          {
+            "idx": 3,
+            "slot": "C",
+            "at300ms": 3.1258781721641524,
+            "at600ms": 3.1258781721641524
+          },
+          {
+            "idx": 4,
+            "slot": "LG",
+            "at300ms": 4.416564624793759,
+            "at600ms": 4.416564624793759
+          },
+          {
+            "idx": 5,
+            "slot": "RG",
+            "at300ms": 1.7951933769799893,
+            "at600ms": 1.7951933769799893
+          },
+          {
+            "idx": 6,
+            "slot": "RB",
+            "at300ms": 4.085430747786231,
+            "at600ms": 3.563616455285285
+          },
+          {
+            "idx": 7,
+            "slot": "Y",
+            "at300ms": 0.11421605125272827,
+            "at600ms": 0.11421605125272827
+          },
+          {
+            "idx": 8,
+            "slot": "X",
+            "at300ms": 21.24761082516707,
+            "at600ms": 21.24761082516707
+          },
+          {
+            "idx": 9,
+            "slot": "Z",
+            "at300ms": 13.87223479191482,
+            "at600ms": 13.87223479191482
+          },
+          {
+            "idx": 10,
+            "slot": "H",
+            "at300ms": 7.0444591903824705,
+            "at600ms": 7.0444591903824705
+          }
+        ]
+      }
+    }
+  },
+  "cases": [
+    {
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "fromSnap": true,
+      "bodyRestores": 0,
+      "nativeHashes": [
+        "0b583991e4037d21cc505cc9c02f83408719fae42b92ab1d0bd844188a1dbf21",
+        "85007d513d43980feedda3fabc62007c1cf6ee61b809320b1dbc786008994d53",
+        "355c2d5c44fc389182787c9121006c3441ad862872abc2ca10235f88cd1ecbc4",
+        "8ab77b2b64037e405346a4749f56c851740ef30d7368b7e7fad78d2341bb17b2",
+        "7e501238ca92987ecf2e6c0f653a207ca155285d68afd75dee8223d8a4a3b672",
+        "a89c7dea09b00794e8d7cfc2430139152576dde08b347bfd69024201fe3a05b1",
+        "e3c6b1cfd3d15b5542f97783441496b8cf3fd82a71f6872d274db301d7ecdc4e",
+        "92a5b9eb7fdc2a56737d3c7b3ef946a527860b6a4a8766fa0662ffc61a7112b4",
+        "3dc2abbcbe435813e2d011f6703ae8ff5cdf7104429bc7c0d5958d49b0a674be",
+        "1e3dc1fa07eb49ef266b56cb52ca4e9ffac09d51c201a1f61424f5b67b265403",
+        "d3b923c2f1d4c73e95b0f602913efe91407403d5aaeeac1e2231d4874edef771",
+        "53dad893feca68eb445058356c5afa84154d102298caeb8747c6d3194382de3a",
+        "9fbb65901192e57d415a1a4f59a9f66318e4f93744f74d6772c97d8f37b6114e",
+        "bf288556dc75fba98949660d3912b67303bc3de217a77c2c4fc19ded0b31aa6b",
+        "67b27c5bfba6f61b5ccf7ddf5d8b3bbfab69a5a4ac2c2c43e0e203abbad0b391",
+        "1d2fe138023ed799976ab0c1463a0ee2da1a20dc48506692f3376cfe41797f9e",
+        "79894509d90d833149054492c899708d43b5b0ec77f3cfd744c3c0939039b834",
+        "23d65f6c3287b93d8eb93923d0f9aa0d667f5413858698b8515d99c44f12ae56",
+        "aca056991f1d5ecc26d692b031c01e83da7f9d03bcffc4c9fe1c1d34ce521f04",
+        "9727cb87adf84c57d311b509a0f3c2d4e1a18cd07dda587e7769333e56c19355",
+        "319f6d5d8017dd10a196081ed8c54619b7250bb3966936383e1e69f09d7ae133",
+        "5b23d861190deb50ecef762806314290e9b4056856fad2e54990b22025798e50",
+        "c74bfc822a90e385b163a3e4ddfefeb5325f5cc778db3872031a53cb1c569ead",
+        "76feb58173eba0394d43212ad85877de3328b7b8afaab3529920333b1683cdaa",
+        "797a3603f425cc6d30cebe276cff6f6919878cf0ea3a0a6f3783223bedf04676",
+        "a8df8baba61d1dfeef22b27f90d0344b3c66e0d432347a64bec0d5214e6c97a7",
+        "938fec31c1ff5f267f60d803518ca38e388abd2984ef69b0f8a73ce187791aa6",
+        "ba29605c71d5981cf269c4bf84b59f3e44268effc1863b52bfb49772c4e81212",
+        "fa1cdcc667ed0e773660e4b3cb63a9176abe275b9650deec9957082c1565eb58",
+        "438b73e681e386c713af3d600fea13261461fee01c81cd38ad2086f185ed07c2",
+        "e1262837f1678bfb752222822064fbab20a51a411844648bf56c559428f2c85b",
+        "2e5f210f6e78589b1aa68753ae7762c2268bda828b42423fc880f307600adc71",
+        "39058179b7c527f081ae1346072b7e0f71dd336dd662be27c5e66df12b32d223",
+        "fee142c3726eaa80c29951292754867f667995c8e71de59bdb205ea661fd160b",
+        "c2b58ab0c661b35b1d662239d46ce01d3f453a442307595d4b8e0289cf00e074",
+        "98208b1fd933e33da8edd617b50d17564980519cf1eaf1f66594941ba3ffed0d",
+        "51d01eaee5e8ae7fadc4b40ccfc746355fe98ca3c399fa277634b083c57ebad1",
+        "aed958324df59d4da4d3016160f4ff644433256fb814662d728142d8285e1979",
+        "d393633e31bd2099834d66607fa68a269296e26a07b901fb79bbf7ab7bd57088",
+        "a5a52c6dbe4fe532aaf029e0cc68b6f5e2dd3c2cb2e509a320efe371f6facd14",
+        "32e909712cb3b90478c10ecd790b7e797ed065b7ea8d0431b8c014ee18d61a4a",
+        "b5806d75753cedf4ecca9a57588eefb28adf43fd48db9388c863d0e8a17cea07",
+        "428fdd8809d9d3a2b7b358bc7a728fa41feb82eaa9b5210cf9b42a7741c30caf",
+        "94e657b807fea96be7e655dfdc7439d35aa041d627d784817753aa27eac926ec",
+        "a8bef496e69777f0cbe7bae87b1380e4b3b1c66b629fbca6981e717c0dc8ec95",
+        "9500e059df276a71e96b868c64ffe9ca3e5e05f1a097f4c1e258f575bd13160c",
+        "a837d1ac0235168d212e6fc7f017fee79f25f3b8038e5f4014216cf2b98afde2",
+        "047de1efb8d092708e192b3d25bc46d0845320550bb8ab3cd9b9b66b5baef87a",
+        "2e1c3c66c0519d44a6971a71cda6fbae0438d3be930cd3d89a1e68c75c9d1181",
+        "417fd9c82a2ecfac033255176c7a4e9948d1ef280423d175adef9cc168b1414f",
+        "9dc854a442cf25f6f11ddecd7fccb9e0c66a12e2b60d904897348f608a0e3670",
+        "2936b4be6b34a7aede5e325c96a31405e95d59bed075ba61829bb4fe725daf84",
+        "75fc38b88af4c2e2c9eb5e7f111372be34b9680f550ca39ce99c8cad60791c65",
+        "faa2981e46723219a603304f465802637a46996daf1eff059e47fc264c993061",
+        "edbb294e5b7b8d65dd4067b008353f9305eac0163113b26734bafd61e0e9ed00",
+        "4800980a0cd1bf549f67fa185e89c0fc0f350deaee6bf41dbbcbac911850ec0f",
+        "60ea84f0d37009d924c9f2c0a773279d32139a489aad4b0dba34374fd6f503f9",
+        "1f3ffd972bf7032337b9fa5785ff433e0b4759ec0f10b94ee76e084b5dd424ee",
+        "8bc63c2a191a4f60543acf334539603ca372fe24d06498699890120ea416fce4",
+        "324e2ae6bb1e0ae8267f9f4ac0584ee6c46b73be3c3ef0af7ec8de29a64494d9",
+        "852df9dc84e74222761b98d455ea185149d4012fcce2463d05ce3624fc5499ca",
+        "0bc448a8cf0fc0aba717f81bf4315ec2cb95636860d18a6dd4a9ea5fb910928a",
+        "400ed16be37e051ae7bef062f2090dd5f5ed3a723105ba6fb6e95d3028d40f9c",
+        "0883f6bb0c44efaba379e8228a37262782562cf930e040b6780008ba02fb3bcc"
+      ],
+      "referenceHashes": [
+        "0b583991e4037d21cc505cc9c02f83408719fae42b92ab1d0bd844188a1dbf21",
+        "85007d513d43980feedda3fabc62007c1cf6ee61b809320b1dbc786008994d53",
+        "355c2d5c44fc389182787c9121006c3441ad862872abc2ca10235f88cd1ecbc4",
+        "8ab77b2b64037e405346a4749f56c851740ef30d7368b7e7fad78d2341bb17b2",
+        "7e501238ca92987ecf2e6c0f653a207ca155285d68afd75dee8223d8a4a3b672",
+        "a89c7dea09b00794e8d7cfc2430139152576dde08b347bfd69024201fe3a05b1",
+        "e3c6b1cfd3d15b5542f97783441496b8cf3fd82a71f6872d274db301d7ecdc4e",
+        "92a5b9eb7fdc2a56737d3c7b3ef946a527860b6a4a8766fa0662ffc61a7112b4",
+        "3dc2abbcbe435813e2d011f6703ae8ff5cdf7104429bc7c0d5958d49b0a674be",
+        "1e3dc1fa07eb49ef266b56cb52ca4e9ffac09d51c201a1f61424f5b67b265403",
+        "d3b923c2f1d4c73e95b0f602913efe91407403d5aaeeac1e2231d4874edef771",
+        "53dad893feca68eb445058356c5afa84154d102298caeb8747c6d3194382de3a",
+        "9fbb65901192e57d415a1a4f59a9f66318e4f93744f74d6772c97d8f37b6114e",
+        "bf288556dc75fba98949660d3912b67303bc3de217a77c2c4fc19ded0b31aa6b",
+        "67b27c5bfba6f61b5ccf7ddf5d8b3bbfab69a5a4ac2c2c43e0e203abbad0b391",
+        "1d2fe138023ed799976ab0c1463a0ee2da1a20dc48506692f3376cfe41797f9e",
+        "79894509d90d833149054492c899708d43b5b0ec77f3cfd744c3c0939039b834",
+        "23d65f6c3287b93d8eb93923d0f9aa0d667f5413858698b8515d99c44f12ae56",
+        "aca056991f1d5ecc26d692b031c01e83da7f9d03bcffc4c9fe1c1d34ce521f04",
+        "9727cb87adf84c57d311b509a0f3c2d4e1a18cd07dda587e7769333e56c19355",
+        "319f6d5d8017dd10a196081ed8c54619b7250bb3966936383e1e69f09d7ae133",
+        "5b23d861190deb50ecef762806314290e9b4056856fad2e54990b22025798e50",
+        "c74bfc822a90e385b163a3e4ddfefeb5325f5cc778db3872031a53cb1c569ead",
+        "76feb58173eba0394d43212ad85877de3328b7b8afaab3529920333b1683cdaa",
+        "797a3603f425cc6d30cebe276cff6f6919878cf0ea3a0a6f3783223bedf04676",
+        "a8df8baba61d1dfeef22b27f90d0344b3c66e0d432347a64bec0d5214e6c97a7",
+        "938fec31c1ff5f267f60d803518ca38e388abd2984ef69b0f8a73ce187791aa6",
+        "ba29605c71d5981cf269c4bf84b59f3e44268effc1863b52bfb49772c4e81212",
+        "fa1cdcc667ed0e773660e4b3cb63a9176abe275b9650deec9957082c1565eb58",
+        "438b73e681e386c713af3d600fea13261461fee01c81cd38ad2086f185ed07c2",
+        "e1262837f1678bfb752222822064fbab20a51a411844648bf56c559428f2c85b",
+        "2e5f210f6e78589b1aa68753ae7762c2268bda828b42423fc880f307600adc71",
+        "39058179b7c527f081ae1346072b7e0f71dd336dd662be27c5e66df12b32d223",
+        "fee142c3726eaa80c29951292754867f667995c8e71de59bdb205ea661fd160b",
+        "c2b58ab0c661b35b1d662239d46ce01d3f453a442307595d4b8e0289cf00e074",
+        "98208b1fd933e33da8edd617b50d17564980519cf1eaf1f66594941ba3ffed0d",
+        "51d01eaee5e8ae7fadc4b40ccfc746355fe98ca3c399fa277634b083c57ebad1",
+        "aed958324df59d4da4d3016160f4ff644433256fb814662d728142d8285e1979",
+        "d393633e31bd2099834d66607fa68a269296e26a07b901fb79bbf7ab7bd57088",
+        "a5a52c6dbe4fe532aaf029e0cc68b6f5e2dd3c2cb2e509a320efe371f6facd14",
+        "32e909712cb3b90478c10ecd790b7e797ed065b7ea8d0431b8c014ee18d61a4a",
+        "b5806d75753cedf4ecca9a57588eefb28adf43fd48db9388c863d0e8a17cea07",
+        "428fdd8809d9d3a2b7b358bc7a728fa41feb82eaa9b5210cf9b42a7741c30caf",
+        "94e657b807fea96be7e655dfdc7439d35aa041d627d784817753aa27eac926ec",
+        "a8bef496e69777f0cbe7bae87b1380e4b3b1c66b629fbca6981e717c0dc8ec95",
+        "9500e059df276a71e96b868c64ffe9ca3e5e05f1a097f4c1e258f575bd13160c",
+        "a837d1ac0235168d212e6fc7f017fee79f25f3b8038e5f4014216cf2b98afde2",
+        "047de1efb8d092708e192b3d25bc46d0845320550bb8ab3cd9b9b66b5baef87a",
+        "2e1c3c66c0519d44a6971a71cda6fbae0438d3be930cd3d89a1e68c75c9d1181",
+        "417fd9c82a2ecfac033255176c7a4e9948d1ef280423d175adef9cc168b1414f",
+        "9dc854a442cf25f6f11ddecd7fccb9e0c66a12e2b60d904897348f608a0e3670",
+        "2936b4be6b34a7aede5e325c96a31405e95d59bed075ba61829bb4fe725daf84",
+        "75fc38b88af4c2e2c9eb5e7f111372be34b9680f550ca39ce99c8cad60791c65",
+        "faa2981e46723219a603304f465802637a46996daf1eff059e47fc264c993061",
+        "edbb294e5b7b8d65dd4067b008353f9305eac0163113b26734bafd61e0e9ed00",
+        "4800980a0cd1bf549f67fa185e89c0fc0f350deaee6bf41dbbcbac911850ec0f",
+        "60ea84f0d37009d924c9f2c0a773279d32139a489aad4b0dba34374fd6f503f9",
+        "1f3ffd972bf7032337b9fa5785ff433e0b4759ec0f10b94ee76e084b5dd424ee",
+        "8bc63c2a191a4f60543acf334539603ca372fe24d06498699890120ea416fce4",
+        "324e2ae6bb1e0ae8267f9f4ac0584ee6c46b73be3c3ef0af7ec8de29a64494d9",
+        "852df9dc84e74222761b98d455ea185149d4012fcce2463d05ce3624fc5499ca",
+        "0bc448a8cf0fc0aba717f81bf4315ec2cb95636860d18a6dd4a9ea5fb910928a",
+        "400ed16be37e051ae7bef062f2090dd5f5ed3a723105ba6fb6e95d3028d40f9c",
+        "0883f6bb0c44efaba379e8228a37262782562cf930e040b6780008ba02fb3bcc"
+      ],
+      "matchedReferenceHashes": 64,
+      "firstRequestDifference": null,
+      "firstDifferenceBoundary": null,
+      "reference": {
+        "yards": 1.14,
+        "endTime": 3.2,
+        "contacts": []
+      },
+      "candidate": {
+        "yards": 1.14,
+        "endTime": 3.2,
+        "contacts": []
+      },
+      "referenceWindow": [
+        {
+          "t": 2.2,
+          "RT": {
+            "vel": {
+              "x": 2.096797159307293,
+              "y": 0.40045713897478474
+            },
+            "facing": -0.06067005836215681,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 3.337710469808345,
+              "y": -2.053478773371036
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 4.0046164528033925,
+            "y": -1.8832952334308806
+          },
+          "rtVelocity": {
+            "x": 0.06359456432657676,
+            "y": -0.8995441055957905
+          }
+        },
+        {
+          "t": 2.25,
+          "RT": {
+            "vel": {
+              "x": 2.074599812127579,
+              "y": 0.46391693669588496
+            },
+            "facing": -0.0686189795569949,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.303400583454311,
+              "y": -2.608442025910229
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 3.6787834958745638,
+            "y": -1.9664424947439163
+          },
+          "rtVelocity": {
+            "x": 0.05108731144861224,
+            "y": -0.7874690352488803
+          }
+        },
+        {
+          "t": 2.3,
+          "RT": {
+            "vel": {
+              "x": 1.7285312989155945,
+              "y": 0.12755007536059432
+            },
+            "facing": -0.08066998130180368,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.5782350661867546,
+              "y": -2.1815378153393308
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 3.3729787673633846,
+            "y": -2.1091856468942827
+          },
+          "rtVelocity": {
+            "x": 0.03777014394047608,
+            "y": -0.6759304143048489
+          }
+        },
+        {
+          "t": 2.35,
+          "RT": {
+            "vel": {
+              "x": 1.7058685941461311,
+              "y": 0.2400230992114975
+            },
+            "facing": -0.09697801914344807,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.6863493950543744,
+              "y": -1.788520785485415
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 3.036821654051435,
+            "y": -2.1397888414214474
+          },
+          "rtVelocity": {
+            "x": 0.028067996345386186,
+            "y": -0.5843688343530461
+          }
+        },
+        {
+          "t": 2.4,
+          "RT": {
+            "vel": {
+              "x": 1.4061082936702833,
+              "y": 0.06479016193600351
+            },
+            "facing": -0.11748511441474577,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.374990332187303,
+              "y": -1.3884087235508509
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.799131435171404,
+            "y": -1.9015589132099298
+          },
+          "rtVelocity": {
+            "x": 0.018115578216960793,
+            "y": -0.49198424795588713
+          }
+        },
+        {
+          "t": 2.45,
+          "RT": {
+            "vel": {
+              "x": 1.7725673443784022,
+              "y": 0.47753741489528645
+            },
+            "facing": -0.14222539351998406,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.596143031495302,
+              "y": -1.6684263681492066
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.4182314381476955,
+            "y": -1.5314672697546583
+          },
+          "rtVelocity": {
+            "x": 0.011375249867866935,
+            "y": -0.4136952364765451
+          }
+        },
+        {
+          "t": 2.5,
+          "RT": {
+            "vel": {
+              "x": 1.734826378440786,
+              "y": 0.5218051032012645
+            },
+            "facing": -0.17181684356537996,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.7167122494489755,
+              "y": -1.499890631254652
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.2937784987701733,
+            "y": -1.4870071270941498
+          },
+          "rtVelocity": {
+            "x": 0.003469188889493421,
+            "y": -0.31809553540065183
+          }
+        },
+        {
+          "t": 2.55,
+          "RT": {
+            "vel": {
+              "x": 1.6052707403196858,
+              "y": 0.4711151574717502
+            },
+            "facing": -0.20632127313744716,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 4.085743283537742,
+              "y": -1.5167275178695778
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.378643528523785,
+            "y": -1.2947787139021407
+          },
+          "rtVelocity": {
+            "x": 0.0031628149930804615,
+            "y": -0.26106853283438364
+          }
+        },
+        {
+          "t": 2.6,
+          "RT": {
+            "vel": {
+              "x": 1.442888656739791,
+              "y": 0.40086256055179903
+            },
+            "facing": -0.24508631600619302,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 4.969897681908417,
+              "y": -1.7107771271930021
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.253988164648064,
+            "y": -2.2423624909440374
+          },
+          "rtVelocity": {
+            "x": 0.005296184374922187,
+            "y": -0.2055875517675481
+          }
+        },
+        {
+          "t": 2.65,
+          "RT": {
+            "vel": {
+              "x": 1.2544105541043278,
+              "y": 0.3159469778907615
+            },
+            "facing": -0.28829403817952165,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 5.8849852441637465,
+              "y": -2.431529001065476
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.238519583574615,
+            "y": -1.9422360381353427
+          },
+          "rtVelocity": {
+            "x": 0.010302811674043608,
+            "y": -0.1529822949672416
+          }
+        }
+      ],
+      "candidateWindow": [
+        {
+          "t": 2.2,
+          "RT": {
+            "vel": {
+              "x": 2.096797159307293,
+              "y": 0.40045713897478474
+            },
+            "facing": -0.06067005836215681,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 3.337710469808345,
+              "y": -2.053478773371036
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 4.0046164528033925,
+            "y": -1.8832952334308806
+          },
+          "rtVelocity": {
+            "x": 0.06359456432657676,
+            "y": -0.8995441055957905
+          }
+        },
+        {
+          "t": 2.25,
+          "RT": {
+            "vel": {
+              "x": 2.074599812127579,
+              "y": 0.46391693669588496
+            },
+            "facing": -0.0686189795569949,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.303400583454311,
+              "y": -2.608442025910229
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 3.6787834958745638,
+            "y": -1.9664424947439163
+          },
+          "rtVelocity": {
+            "x": 0.05108731144861224,
+            "y": -0.7874690352488803
+          }
+        },
+        {
+          "t": 2.3,
+          "RT": {
+            "vel": {
+              "x": 1.7285312989155945,
+              "y": 0.12755007536059432
+            },
+            "facing": -0.08066998130180368,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.5782350661867546,
+              "y": -2.1815378153393308
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 3.3729787673633846,
+            "y": -2.1091856468942827
+          },
+          "rtVelocity": {
+            "x": 0.03777014394047608,
+            "y": -0.6759304143048489
+          }
+        },
+        {
+          "t": 2.35,
+          "RT": {
+            "vel": {
+              "x": 1.7058685941461311,
+              "y": 0.2400230992114975
+            },
+            "facing": -0.09697801914344807,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.6863493950543744,
+              "y": -1.788520785485415
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 3.036821654051435,
+            "y": -2.1397888414214474
+          },
+          "rtVelocity": {
+            "x": 0.028067996345386186,
+            "y": -0.5843688343530461
+          }
+        },
+        {
+          "t": 2.4,
+          "RT": {
+            "vel": {
+              "x": 1.4061082936702833,
+              "y": 0.06479016193600351
+            },
+            "facing": -0.11748511441474577,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.374990332187303,
+              "y": -1.3884087235508509
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.799131435171404,
+            "y": -1.9015589132099298
+          },
+          "rtVelocity": {
+            "x": 0.018115578216960793,
+            "y": -0.49198424795588713
+          }
+        },
+        {
+          "t": 2.45,
+          "RT": {
+            "vel": {
+              "x": 1.7725673443784022,
+              "y": 0.47753741489528645
+            },
+            "facing": -0.14222539351998406,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.596143031495302,
+              "y": -1.6684263681492066
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.4182314381476955,
+            "y": -1.5314672697546583
+          },
+          "rtVelocity": {
+            "x": 0.011375249867866935,
+            "y": -0.4136952364765451
+          }
+        },
+        {
+          "t": 2.5,
+          "RT": {
+            "vel": {
+              "x": 1.734826378440786,
+              "y": 0.5218051032012645
+            },
+            "facing": -0.17181684356537996,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.7167122494489755,
+              "y": -1.499890631254652
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.2937784987701733,
+            "y": -1.4870071270941498
+          },
+          "rtVelocity": {
+            "x": 0.003469188889493421,
+            "y": -0.31809553540065183
+          }
+        },
+        {
+          "t": 2.55,
+          "RT": {
+            "vel": {
+              "x": 1.6052707403196858,
+              "y": 0.4711151574717502
+            },
+            "facing": -0.20632127313744716,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 4.085743283537742,
+              "y": -1.5167275178695778
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.378643528523785,
+            "y": -1.2947787139021407
+          },
+          "rtVelocity": {
+            "x": 0.0031628149930804615,
+            "y": -0.26106853283438364
+          }
+        },
+        {
+          "t": 2.6,
+          "RT": {
+            "vel": {
+              "x": 1.442888656739791,
+              "y": 0.40086256055179903
+            },
+            "facing": -0.24508631600619302,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 4.969897681908417,
+              "y": -1.7107771271930021
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.253988164648064,
+            "y": -2.2423624909440374
+          },
+          "rtVelocity": {
+            "x": 0.005296184374922187,
+            "y": -0.2055875517675481
+          }
+        },
+        {
+          "t": 2.65,
+          "RT": {
+            "vel": {
+              "x": 1.2544105541043278,
+              "y": 0.3159469778907615
+            },
+            "facing": -0.28829403817952165,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 5.8849852441637465,
+              "y": -2.431529001065476
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0,
+            "push": 1,
+            "posture": 0.5
+          },
+          "rbVelocity": {
+            "x": 2.238519583574615,
+            "y": -1.9422360381353427
+          },
+          "rtVelocity": {
+            "x": 0.010302811674043608,
+            "y": -0.1529822949672416
+          }
+        }
+      ]
+    },
+    {
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "fromSnap": true,
+      "bodyRestores": 0,
+      "nativeHashes": [
+        "4d66716f096ac868e2d709b9eb96f950887152d079090763976a9f3955e65d5b",
+        "308eeb6310aab61df787b25da358365b8d5e2005f2be87de8eb8dda4f0773fbe",
+        "b0f50f4cc21b2e868f461b6cc9e10f9f84d5265a2dd1163924a1b65eadaabce2",
+        "c3c0395e91fe199564564c9b427c594c951a467656f15a86b02800d65c31d714",
+        "9d60f7ebccc33c83cf57389f14c939cd0b9dae18453238154ee8ccdc3a3b6031",
+        "a1a3665d2549dac0941bbc2ec439a6637c73a129b729c9d2dc7eaadbd9881e03",
+        "8823239dad8868c4fa1cb07e8d573f9c7dee29198fbc181006ec8fd02a3aaf42",
+        "f6b4230b63daaa1b7dc1e280bf037fe8cf9d1b3f2e532697c8317afe005dd0fe",
+        "9801e3e75c8e9a2a9484f26fa5e353b0411e960d30ba038a46ffcd1765a61746",
+        "18d1f49ed88b44855da1c6039e78a364a4caff21c9fd097baef23505ec9afd04",
+        "92e6d41432b7f7fc3df2126480bc0903ae809eabb8fe883e8c24f8988c4b1dca",
+        "8decf4cbbf03c680668222abd004b293f790e3479ee7f98e60b736e081e068b4",
+        "b8e818fd8ce987c7693c793ff092ac1de12fb3d429409c93816291e45dc07bc2",
+        "a2f49843744286c28150151cb7f6cfafec867b3ea5b1cb829756af18a2c7c7d3",
+        "6fa6ccb339bd83eea17c4e7326c9aaddb92ad74bec107a47fab10a45f8c9a160",
+        "a7f5798e2e7b2c598f13bdc9316337e2c6df05893fc0cd2be165a5a479ca55ed",
+        "50d46a04b7099d0e8562c5b89f21855f6a53846330c3a7d126e68122b8d1ba9a",
+        "8b81fea38e83c3aee362299d34f8b0226f9ebff35f9e6cf6412273ff146a0b4f",
+        "722a07cad167663e438cfe9172e31d211a1371027cce5c26022b3e6407dfc618",
+        "7e00e8c9fccd9ef23c0e96c892cc7bc79827f4e636e9257c9eafc49b4a7cecd2",
+        "4f76f52a0ef81e1272489e7bbc0fa98db94b862df8194082ad0cb8065424e3ce",
+        "f7ba2704e4dc6bb2bbcf25cc9cf9baf99c7dc838c2a01416e553a70947a3425c",
+        "c89a81eeedc1bf15ffb1299f5b18fc3ca307e233af1dd1c7826d0013ae3be13d",
+        "9f507d4c84b384e19cf8c855da85c5a3e38eab1f42127dc0393f52a766e55fb2",
+        "a5a129274f14e100a4758c2578492ddfe496e50167004c00f12c6ba47a052633",
+        "30d37fca6a96435428fe0ef6b4f8f052daba0414714682483875cb9f349c9673",
+        "fdefa7bc2a1c35266bdf62658add1d07106d294f90ecac949b2ffd800899d573",
+        "feb301c2b0c03d5f982f0972ab7c3045d38efa62471897e8dc7dfb9b81dc1379",
+        "a7f3c166146169efbf773177c72f11858cee68ef439c9435bf49d19e0b22a2eb",
+        "9e68b6eeaf4656eeacb8738770c19f1d66756b0c5bd147fbe64bc28ab906c3d8",
+        "3433ac1e9940e518901aee0fcb5004e501a9a05f697ab25e2b1e316ba09b60af",
+        "9ac8109e39168e5e310591a78fcf3eef16292b032e064d810b24b509e51ee0e6",
+        "ae2eedb9c6aaa2d163f64c9ee0b6303b207dee2fcd4d57b889bec70e04827ef3",
+        "038b5fd0da204849920dee41b6374dbe7935b26baaea2f92611fb5db13d06f5a",
+        "871eeafc4824e1398ced15b17f57c83d0fc500e9194f7771dec86d8fe4aecd22",
+        "fb0c909a57fedafa6d6d0e89b0ea9b95703ec62e0c73fea9ee65e75ae0e84b39",
+        "a37a0cc607ed36bda6c8a1922955fe8ac7e56cf39cd06a99ac5265f1fd022834",
+        "6574c0b313aaa8c45b0346c3748394ed812578700a5d4c4319318e91545f59cf",
+        "5ccecd482d8468a1d83e4b17301edc912f15d624ede8671e9457bce623cc240c",
+        "6aca4d4f938f8802220ecb048814728135b772539a8c17d50afd1beb175e3215",
+        "6f4a87c6e97eb87f6563bff0544fec4f16b333ba1ac2965e8a25fd758614e7c9",
+        "71e9ed76ad1acd546be01691d2177ebd4c0311ff8acd0d54d27e34c1bcc7e11c",
+        "ac29fcc7cb1217009f4d1c819143830d04bd523808dbbaa27a1d0ab3e83bdecb",
+        "6631430ef986c35b61cd862584cd91ed5f4f0e7a479e895b6c4f99e8c60bc35d",
+        "2a88b99f750273dc68b5846647b68e6de67144d16032068788e9a9750b67ca28",
+        "60ee96dd2cdafbbf455d45402b80681c834f503b7a1fcb54ae4308dcf6d7f8b3",
+        "1d85b23e96a3a178143f681afb9631d181272f78cde39fe5a6db5b49189572fe",
+        "ba3b1ecf2ff401e92bd81e876f6bf25b3f7d5274a53a0ba2c1adb7a783e764ed",
+        "7fcd4ce682882423e67fed98722bbb46c9f96f0b7166d86140018d568137c3c7",
+        "7a756a600121c55239b31ddceee0fa954c83f7396e53fffed99b4c1cfd0e27e1",
+        "ad9617103655a2c782a944ede7e25e85a15674ab77d81906be1f1af05ba0d9d2",
+        "c8ef72aa35214267b38a4f6f0f227b8a2a74a708dc27888359a85c78932815a4",
+        "4effcfc3a2a72eea367c92cc4ef5c5e36b84527039e4f44b5011525fd836d184",
+        "3ade2ae961682b2dadc77eb0e570d3dc9c73638921359e066ea890d13102b525",
+        "4559e2934be5fd9f93f7aedb0a0e71e9f34e20def2a19d8f807ce2d7cd06a62d",
+        "50bc6de83eb5aadd4fe0702521fb34af56064cb1203abedcea0124484ce8344c",
+        "e0d00451e0470ecb01c002acb33b587ad4ee944107c72fbe017b6f0cabfa50be",
+        "b25834c9b11fdf0ffc5437ccdd20a1baee93a7a785824dbee1b172ac20710aea",
+        "513cc53484230f787a6e650d7ef87d0ee7eb4504e16b6205b81bbdbeac9adf78",
+        "a09ba8e7ae0f2ecaf2857aaca92a5253fac2515ff134f00a6fc2e2e00fdc6757",
+        "6cd33ec836679ec9fd83eea4892a2c0cd53c078f6ed9ddeebba0d4bedc8ddf5c",
+        "2bd0650248e5178bd3857bdec7d3f64280853020116669c2d2cc40a1f2bd6a73",
+        "3796492de1ceab6aa6a0242d73f4af3249149d6be7c527f23121d98009357244",
+        "9bbb94a5c93b26ea1c4b9499b342ca91b2cdcb6627efb10a2d11cdfbea046c67",
+        "5842b85c8cbbeb8235b4bc023240fbb69238ee75d7d79ea6a3dacc82a57c9474",
+        "7b868ea808519f5fcd69b7186c18c62038782f900013b8f1696ab84e5645a3c9",
+        "d5bd652edf31a96199755535627a7f5713fadf18da8d2bc087885914d1aac014",
+        "b046b798eb9ab38d2a577217910d0838a2c63b9ab311fb7bb4ce1ce547913d96",
+        "d52e2cf6e1dd176d6cdc04d3c3b959020637fabc51dd489e1935bea2bcc95730",
+        "c6ea29d2d51d2d54429aa98d9115701e9c8e5708ef172922a9d739ed3b0b58d3",
+        "a6ae2bb09780dd50e108be8a424d33eabe2b993e6d552479e3190978970c712d",
+        "7e57da9f15f47f4db22064cfa87119917cad19cc85b3003afb2c9d0271e2e27c",
+        "bebf53311a0dc1cdfed228fa0b15b7d98751ab9412f5a9c887dd80c83ae371f7",
+        "ab1fbe1502fb61149caa747bee0e4991c95f5df2022e23182f5a3af690e395a6",
+        "0734c87b31402fe14d73ba71d8c94a774d345b71c58a73acbe515fcf7948ef17",
+        "fd0b8431084796e66e4755d25b2a88b1d4f3470b42fc4c554079ebaea2bbb9cb",
+        "249a5702111ebc90a77265b8bf0fe5761f13a23cb4e330820207b13da470f0d4",
+        "86a0f5defa8aa5ebe415d8c70dfd49df674da604d8dbe70ef9a1c4a8eb833d0f",
+        "de3d66616625ce0a217171d2f09e39afe05a1ced0ef719d2e1069d484ff803a7",
+        "af54af5ef4e1bdb1bf64e937a2c0c9043e1cc9213299e661690ecdd01b35c815",
+        "76a55e1ce13cead28ac2d0e05e405aaab60ac2d49a726c73484e654160c89b82",
+        "7d39c65a28f1bfdd3efffc61e5792505b2ac802bb30e0ecdf53111b578bfb7a3",
+        "a0e8ddbafa3b6e2b6e6700446bef066b484455e8511ca22d5591d8400e51ef0f",
+        "4d9ede7a301a9fe6e39773a837169eed575cc72237923543b0e7e369d96587ed",
+        "f289fa898ba9cb7e752a2f838b7ce9d04005383898bee762a14cab2bb51f41da"
+      ],
+      "referenceHashes": [
+        "4d66716f096ac868e2d709b9eb96f950887152d079090763976a9f3955e65d5b",
+        "308eeb6310aab61df787b25da358365b8d5e2005f2be87de8eb8dda4f0773fbe",
+        "b0f50f4cc21b2e868f461b6cc9e10f9f84d5265a2dd1163924a1b65eadaabce2",
+        "c3c0395e91fe199564564c9b427c594c951a467656f15a86b02800d65c31d714",
+        "9d60f7ebccc33c83cf57389f14c939cd0b9dae18453238154ee8ccdc3a3b6031",
+        "a1a3665d2549dac0941bbc2ec439a6637c73a129b729c9d2dc7eaadbd9881e03",
+        "8823239dad8868c4fa1cb07e8d573f9c7dee29198fbc181006ec8fd02a3aaf42",
+        "f6b4230b63daaa1b7dc1e280bf037fe8cf9d1b3f2e532697c8317afe005dd0fe",
+        "9801e3e75c8e9a2a9484f26fa5e353b0411e960d30ba038a46ffcd1765a61746",
+        "18d1f49ed88b44855da1c6039e78a364a4caff21c9fd097baef23505ec9afd04",
+        "92e6d41432b7f7fc3df2126480bc0903ae809eabb8fe883e8c24f8988c4b1dca",
+        "8decf4cbbf03c680668222abd004b293f790e3479ee7f98e60b736e081e068b4",
+        "b8e818fd8ce987c7693c793ff092ac1de12fb3d429409c93816291e45dc07bc2",
+        "a2f49843744286c28150151cb7f6cfafec867b3ea5b1cb829756af18a2c7c7d3",
+        "6fa6ccb339bd83eea17c4e7326c9aaddb92ad74bec107a47fab10a45f8c9a160",
+        "a7f5798e2e7b2c598f13bdc9316337e2c6df05893fc0cd2be165a5a479ca55ed",
+        "50d46a04b7099d0e8562c5b89f21855f6a53846330c3a7d126e68122b8d1ba9a",
+        "8b81fea38e83c3aee362299d34f8b0226f9ebff35f9e6cf6412273ff146a0b4f",
+        "722a07cad167663e438cfe9172e31d211a1371027cce5c26022b3e6407dfc618",
+        "7e00e8c9fccd9ef23c0e96c892cc7bc79827f4e636e9257c9eafc49b4a7cecd2",
+        "4f76f52a0ef81e1272489e7bbc0fa98db94b862df8194082ad0cb8065424e3ce",
+        "f7ba2704e4dc6bb2bbcf25cc9cf9baf99c7dc838c2a01416e553a70947a3425c",
+        "a569d5f2170f7e032256ef1215f90a37ffc610af6e595d0af28dfdb40d4e9a37",
+        "48fb1c088947c9c5ae055e38fdbf0899625c9369301d86ab833c4d0b91cceaaf",
+        "f1333300cd892109cd3b7464da2bbf3aa4907a188f801ef987c080111d08b4b1",
+        "155cf5ee43a8d448b5ebcdfcf0e54ae279d9bbcdb2ea5c62798ada5d82d11af8",
+        "e863e7b361138895e89114fb60828b3bf3103af6806869ab02838c1535feb66c",
+        "6eaae09de3ed92e0ba32839e0e88a9dea6cff06121998851d0232b07f7e95188",
+        "d9be72f429ba696e441eab53a212d831fedc34a0c9144eb0993f9f501a2b28e7",
+        "68a9616843a27cf1b02caccb63286b67a92e977cb6d6710742fd4280d7a8ba21",
+        "1650448dcd45a510bc02073918fbfada13477c18ff7b93bcf3f7c8e8ff056996",
+        "38cc1f3b643cf37c275245d35f586e671aa03829a7a1d27d3d2a4264b3e389a7",
+        "8cd986ade2a3bf0328e80af600b56c54d26d8d9c54a2d38b89a32a89c0381d47",
+        "0be7e332a26fb8a50caa7da5c64a8e88798ced3ed8ceabb1045ea33718d84e54",
+        "c76fe431cc344b3aadf363d1c850d43f77f925afbcf67181bbf1ddfcf24b79b7",
+        "474498d248963a3f3079707661eff60af352188f17d691f90e7c703a910ac87c",
+        "274a8292b1e0037a5bb2270417a0c73451716aa078d645502d5e5d6a264b03b7",
+        "aa90dc8c533280ac1ed86fd97fd9af65b46bec5087b2b44e0ee12ea8d1c803ea",
+        "ecb3b64a04082dc1317709e641fb6e65d52df79a6577cad77dfb0dd5fe0ea7dc",
+        "c53fac61fe0eb44d9215c1391fcdfa3398b634b7d880b26dab36613ad63ac7b1",
+        "f17dde5b241ba0f73ab949406202b26a8e78d9393df51901846d84e29ace9e69",
+        "1765821f424b061ba6c6a3fecf4ce4f8c18885aea1c7c01d03b3a20037613431",
+        "eb386b534082a13945bc1527008e2de8c09a7bfdfb59453285f9e53d1cb266fc",
+        "62624309ab81cca1f46c557cd8c428c087d9faacac9149da1863c9c4e605b513",
+        "3333756b91e6f7ae998278552d6cd0bf7a7895d060f533e0011066f6ccc67735",
+        "4344f61e6cd5b3742c64e60756e58f815c1eae81300a8929568118fa96798315",
+        "4f00bc61c35cdec1953f19eedf18fe62db14f6ea4938019ca2a9f827a8600d70",
+        "4b1454e3f627d78318d7edcc591722abfb8a569cf2d4c487dfca7444d78493a7",
+        "f98ee28ad098ae48903aa7be0e4a4585e523164fa456602ae9eaaed9024fefad",
+        "86d4433a49f3f048f86099f1687c073ed5a4a004ce1a62a3e93a4d537cbb3659",
+        "60dd2603779b9ef40f821c4d55741b48061a94aaf9d1865c2a1247aba86f098a",
+        "9a537d89d4a22a95b5fbf9b59690dd4504d5d23fc336085df0a8b1e7d49a7795",
+        "6e63f840132114b472b9ec7a388f0420a41a67927ea2bc573c6e0b31dbe31281",
+        "62bdf36cce3ff27f4f38998f799370550f14860e3407c90e0189111efb44cb55",
+        "e77973be108983f9623c7ff8b05266935d44e94d5c66899020eb7f80da715d5b",
+        "882fabd04b491fc84187df5bfba81bbfc3c87e2905f5dd681fb8ee10a0639ab5",
+        "d7cf446ddc51b5401cac772a9a6ca27fc10f09934ff480534de9af27d035cb26",
+        "d2be1ebd4e6b9a55230d6015aa411b8f3e81d02d967f724e70f0fb50e70bb3d5",
+        "461f17b5c47176abffebb813fcb0b4fe9471422fc9b5c8b49983089ee68fa707",
+        "4df1c1f5ab3d0d60731b28374444d2491a3c83aeacad25df84498fb1cd7eba1a",
+        "99c9ba6aea4d42870886a401694896f615fdd7ab1a5b2b8bbc3ce120649dfe62",
+        "a81d06b91db17353623482e6c7407c3e5848cfa1099124e94d4de4289be321d1",
+        "d8d72fe587e6eb29a4a626fd3ebdcadbec10ab743365b7ab24abb18b24631d22",
+        "af141ec5970abb799ca2ef17daf25cebafc9bf5f6d988166f0396e573983e121",
+        "36f35f010846fae3508cc5ddd3709995176528f378b01b8e0080a29c5fda91b7",
+        "01df409c03b81ba0d318f1ccfafbfc9fd3652a92e23b9bade315cfe595490ea5",
+        "8de364e5c48b4f633339a0f72d4a14cfa3c177751c7837177aa79a35511600c4",
+        "07f34b51dc347b81b204c560c1dfbd1cbd8e9873b5e36ec665672f38e56be378",
+        "70c8f6b63fc012b38f560f7e92eb8c37ee18cc8e1b0ccaee18626a5f53c3a53f",
+        "154c225c7999acc929ebcca02129981031f3649c3dca60b55951f6633e86ae6a",
+        "4eb49a077f0dde23e0332f94ba42ab3f8b03fd138dd1f7d522101e05af0dc4e4",
+        "2d543d1de674603c2f09be33175356e467b86697d378b348b6403bd1527bea9c",
+        "dd5c4e44d625c6abea4636953cedf1b4dae97d85002accbb3c02b34c35de6926",
+        "184ab73071adc2920ae6b86513e8a9bc31e520ce01ce3c8ce708fe1563e64717",
+        "233541ecc91e524e1de4259295388086e9c900cd580b963038fa1a2a72e66cdc",
+        "fa216df3f01991fb1e9f0bb6a27b1ad67c9e440dda096db64d8754462786eb0e",
+        "500ede4858f1e39805f4377ab2615d8e5d804b7a9d9227f536f15fc50ba04dd5",
+        "786097c2066758698e10818079647cf4ee727931f983bdab4aa34db3923ecf6a",
+        "73965a8c6951889cb28ac17ca118f6eba02691ae65f883e5e361572191fefcda",
+        "f5c847b29be1b2a7a253922b5e8f223cd63a25565b45fd722da314863c36f0c9",
+        "660baec4c257d164334ef26d8ea5e97eeb3399af5c1fd8a02029a0274e43698a",
+        "75d59e04614530b5491842ca82fcbb28f16055757c78035d759d0817b7cc2547",
+        "fd7d2d8d19ddb843919d1d6b1087ac36288fad5b3231b1d3e040c7e9095ceac5"
+      ],
+      "matchedReferenceHashes": 22,
+      "firstRequestDifference": {
+        "t": 1.1,
+        "actors": [
+          2
+        ]
+      },
+      "firstDifferenceBoundary": 1.1500000000000001,
+      "reference": {
+        "yards": 0.62,
+        "endTime": 4.15,
+        "contacts": [
+          {
+            "t": 2.45,
+            "i": 2,
+            "j": 6,
+            "impulse": 132.36590854157774,
+            "closing": 2.233820397136571
+          },
+          {
+            "t": 2.5,
+            "i": 2,
+            "j": 6,
+            "impulse": 12.75031884162961,
+            "closing": 0.014031429533149842
+          },
+          {
+            "t": 2.55,
+            "i": 2,
+            "j": 6,
+            "impulse": 0,
+            "closing": 0
+          }
+        ]
+      },
+      "candidate": {
+        "yards": 0.75,
+        "endTime": 4.25,
+        "contacts": [
+          {
+            "t": 2.5,
+            "i": 2,
+            "j": 6,
+            "impulse": 154.1641223068617,
+            "closing": 2.604984757776897
+          },
+          {
+            "t": 2.55,
+            "i": 2,
+            "j": 6,
+            "impulse": 0,
+            "closing": 0
+          }
+        ]
+      },
+      "referenceWindow": [
+        {
+          "t": 2.2,
+          "RT": {
+            "vel": {
+              "x": -2.645222033347684,
+              "y": -0.8813232859716466
+            },
+            "facing": -1.7533245836637563,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.754274840148987,
+              "y": -1.492886382447064
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 2.232302978383136,
+            "y": -1.520251329849557
+          },
+          "rtVelocity": {
+            "x": -0.9750805041075984,
+            "y": -0.1857775462839944
+          }
+        },
+        {
+          "t": 2.25,
+          "RT": {
+            "vel": {
+              "x": -2.5888255541375678,
+              "y": -0.9828369485498559
+            },
+            "facing": -1.8229187415013623,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.3905030431238283,
+              "y": -1.50271826926419
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 1.8931321472045246,
+            "y": -1.5008353348205858
+          },
+          "rtVelocity": {
+            "x": -0.987604382991054,
+            "y": -0.40528742771938403
+          }
+        },
+        {
+          "t": 2.3,
+          "RT": {
+            "vel": {
+              "x": -2.5398007244320078,
+              "y": -1.071081642019864
+            },
+            "facing": -1.8897885178523126,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 1.5509983075433018,
+            "y": -1.50211702660045
+          },
+          "rtVelocity": {
+            "x": -1.052037768328636,
+            "y": -0.37521449636302096
+          }
+        },
+        {
+          "t": 2.35,
+          "RT": {
+            "vel": {
+              "x": -2.492491295406291,
+              "y": -1.1562386142661538
+            },
+            "facing": -1.955124676852997,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 9.283028322226889,
+              "y": 2.073853433121528
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 1.309366843647128,
+            "y": -1.2681008227686474
+          },
+          "rtVelocity": {
+            "x": -1.0323486663602277,
+            "y": -0.5774819954075987
+          }
+        },
+        {
+          "t": 2.4,
+          "RT": {
+            "vel": {
+              "x": -2.446575510412449,
+              "y": -1.2388870272550698
+            },
+            "facing": -2.0165245545447776,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.824250436342786,
+              "y": 4.914663421368688
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 1.6252969153015524,
+            "y": -1.1288463358731846
+          },
+          "rtVelocity": {
+            "x": -1.1604361455136794,
+            "y": -0.4688143705367651
+          }
+        },
+        {
+          "t": 2.45,
+          "RT": {
+            "vel": {
+              "x": -2.4456899048629146,
+              "y": -1.2404811172442318
+            },
+            "facing": -2.076372678239515,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 2.227403245823,
+              "y": 5.4433661582564525
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 1.6325955799033443,
+            "y": -0.7798217287469971
+          },
+          "rtVelocity": {
+            "x": -1.1618090689906724,
+            "y": -0.8377737758274673
+          }
+        },
+        {
+          "t": 2.5,
+          "RT": {
+            "vel": {
+              "x": -1.3609139257123763,
+              "y": -2.1245112990041912
+            },
+            "facing": -2.139712868518724,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 4.708690077435805,
+              "y": 5.514991139591925
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 0.3256720571138685,
+            "y": 0.015023500733319392
+          },
+          "rtVelocity": {
+            "x": -0.5017894637123482,
+            "y": -1.046451223311211
+          }
+        },
+        {
+          "t": 2.55,
+          "RT": {
+            "vel": {
+              "x": -1.8714975542999772,
+              "y": -1.8950263474259967
+            },
+            "facing": -2.2252186057978904,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 5.8283016073094105,
+              "y": 5.496510395642828
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 0.36564495741398384,
+            "y": 0.27471400149410746
+          },
+          "rtVelocity": {
+            "x": -0.9035429502823947,
+            "y": -0.9697509393412833
+          }
+        },
+        {
+          "t": 2.6,
+          "RT": {
+            "vel": {
+              "x": -1.9027744043412758,
+              "y": -1.9052412827223997
+            },
+            "facing": -2.283476081358792,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 5.94427963709374,
+              "y": 5.462257524751026
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 0.4652107789862109,
+            "y": 0.5777715168917306
+          },
+          "rtVelocity": {
+            "x": -1.324236645526078,
+            "y": -0.8535831671027068
+          }
+        },
+        {
+          "t": 2.65,
+          "RT": {
+            "vel": {
+              "x": -1.9550845435417639,
+              "y": -1.8966713576395373
+            },
+            "facing": -2.328954271141825,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 6.266776682085826,
+              "y": 5.361893552824483
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 0.7661289835612763,
+            "y": 0.6626122664660574
+          },
+          "rtVelocity": {
+            "x": -1.4480077448390447,
+            "y": -1.01062754111305
+          }
+        }
+      ],
+      "candidateWindow": [
+        {
+          "t": 2.2,
+          "RT": {
+            "vel": {
+              "x": 0.9454965552418756,
+              "y": -0.24759654037312834
+            },
+            "facing": -1.3133065416810181,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.992005054249565,
+              "y": -1.5106478198568123
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 2.196155920173051,
+            "y": -1.4611709860644009
+          },
+          "rtVelocity": {
+            "x": -0.27673530940865554,
+            "y": -0.41729109114919444
+          }
+        },
+        {
+          "t": 2.25,
+          "RT": {
+            "vel": {
+              "x": -2.4282905103172463,
+              "y": -1.2718000274264343
+            },
+            "facing": -1.4155102994693651,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.7796763081138662,
+              "y": -1.6206400523758981
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 1.992005054249565,
+            "y": -1.5106478198568123
+          },
+          "rtVelocity": {
+            "x": -0.06515942973161051,
+            "y": -0.28942444384525057
+          }
+        },
+        {
+          "t": 2.3,
+          "RT": {
+            "vel": {
+              "x": -2.456472513730676,
+              "y": -1.221072421282261
+            },
+            "facing": -1.5285139398835423,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 9.324030264354185,
+              "y": 1.8809419243410277
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0.8892857142857142
+          },
+          "rbVelocity": {
+            "x": 1.7796763081138662,
+            "y": -1.6206400523758981
+          },
+          "rtVelocity": {
+            "x": -0.12916645764722967,
+            "y": -0.2905396693939319
+          }
+        },
+        {
+          "t": 2.35,
+          "RT": {
+            "vel": {
+              "x": 1.6813513229154156,
+              "y": -0.3992492650469913
+            },
+            "facing": -1.6366575260115195,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 9.324030264354185,
+              "y": 1.8809419243410277
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0.8892857142857142
+          },
+          "rbVelocity": {
+            "x": 2.0766669895215784,
+            "y": -1.476042213656498
+          },
+          "rtVelocity": {
+            "x": -0.23549374167078,
+            "y": -0.20573174089746032
+          }
+        },
+        {
+          "t": 2.4,
+          "RT": {
+            "vel": {
+              "x": -2.47961329841969,
+              "y": -1.179419008842036
+            },
+            "facing": -1.745663236164704,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 9.324030264354185,
+              "y": 1.8809419243410277
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 2.358580129530585,
+            "y": -1.33639838683755
+          },
+          "rtVelocity": {
+            "x": -0.0633104837425221,
+            "y": -0.15134724358362514
+          }
+        },
+        {
+          "t": 2.45,
+          "RT": {
+            "vel": {
+              "x": -2.4850478671327867,
+              "y": -1.1696367851584615
+            },
+            "facing": -1.8563278097026203,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 9.324030264354185,
+              "y": 1.8809419243410277
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 2.6346416865821385,
+            "y": -1.203863089965163
+          },
+          "rtVelocity": {
+            "x": -0.1220778359520589,
+            "y": -0.1349719318853917
+          }
+        },
+        {
+          "t": 2.5,
+          "RT": {
+            "vel": {
+              "x": -2.4361862860267456,
+              "y": -1.257587631149336
+            },
+            "facing": -1.9596259212698792,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.0402926448275274,
+              "y": 0.6438528232598788
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 2.9025793923345673,
+            "y": -1.0793711708668599
+          },
+          "rtVelocity": {
+            "x": -0.16605853505647364,
+            "y": -0.17885136311824262
+          }
+        },
+        {
+          "t": 2.55,
+          "RT": {
+            "vel": {
+              "x": -0.6744747370698727,
+              "y": -2.6780527864013424
+            },
+            "facing": -2.0603498652765144,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.4738361530782953,
+              "y": 0.15309020417086128
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 1.1751757125297424,
+            "y": -0.23443865262583574
+          },
+          "rtVelocity": {
+            "x": 0.7236683340036608,
+            "y": -0.8638828716440144
+          }
+        },
+        {
+          "t": 2.6,
+          "RT": {
+            "vel": {
+              "x": -0.7461765662414817,
+              "y": -2.727920649463107
+            },
+            "facing": -2.1932446965826653,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.5625457997004553,
+              "y": 0.23141632397307177
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0.8892857142857142
+          },
+          "rbVelocity": {
+            "x": 1.2564726794810444,
+            "y": 0.11751542068679484
+          },
+          "rtVelocity": {
+            "x": 0.4266450203991841,
+            "y": -0.9228880561830402
+          }
+        },
+        {
+          "t": 2.65,
+          "RT": {
+            "vel": {
+              "x": 1.6813513229154156,
+              "y": -0.3992492650469913
+            },
+            "facing": -2.2948574106235577,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.9878838304552591
+          },
+          "RB": {
+            "vel": {
+              "x": 1.7646635802147674,
+              "y": 0.3948861581329215
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "rbVelocity": {
+            "x": 1.25880371115315,
+            "y": 0.2030079232980449
+          },
+          "rtVelocity": {
+            "x": -0.5821010295189218,
+            "y": -1.5271213425038195
+          }
+        }
+      ]
+    }
+  ],
+  "packetDigests": {
+    "out/rb-gather-release/coupled-first-candidate.json.gz": {
+      "sha256": "17bd291d9c294a0b88c78cbc5dbfc54789608f01b98384aac5d458af7cf11760",
+      "bytes": 1168357
+    },
+    "out/rb-gather-release/coupled.json.gz": {
+      "sha256": "bcaca4b8782c1e16974f805bf0b6b0269dc815673c2453bd0647f986458f0736",
+      "bytes": 1168363
+    },
+    "out/rb-gather-release/first-change.json.gz": {
+      "sha256": "a84f8136674a084f1d183cab58e7f57a9890c85599b0480ec45313295817ff60",
+      "bytes": 2581
+    },
+    "out/rb-gather-release/mechanism-after.json.gz": {
+      "sha256": "7183ee7325c60403a078428a8215f64c12fe6f84b462daf159bce7a4e7178cef",
+      "bytes": 4002
+    },
+    "out/rb-gather-release/mechanism-before-final.json.gz": {
+      "sha256": "e18f1e046f88a0e2e48f4a95510381ec9179ca7b045e13230ae42730c120cec7",
+      "bytes": 4217
+    },
+    "out/rb-gather-release/mechanism-before.json.gz": {
+      "sha256": "96998d9231ee29c639360ae5d368d4ca7df3b85f6299bd8d7122e55fc4045848",
+      "bytes": 4220
+    },
+    "out/rb-gather-release/mechanism-exact-before.json.gz": {
+      "sha256": "cafa67b9936f224fb034815cfbf8f5743a8afb5ed109ec3d4dba8a6000244bb9",
+      "bytes": 4216
+    },
+    "out/rb-gather-release/mechanism-exact-final.json.gz": {
+      "sha256": "003a15a4c0258ac961aabeef6951a10cee7c27a08ca311a222092b4169426f0f",
+      "bytes": 3993
+    },
+    "out/rb-gather-release/mechanism-final.json.gz": {
+      "sha256": "6c8d8d9db891679a2061ce08ea37f1bc143ac9ae9a5e489dcb1e9108a13acb1f",
+      "bytes": 3990
+    }
+  },
+  "launchers": {
+    "capture-exact-final-launcher.json": {
+      "sha256": "9645a92bd8041afcc6d59d798728b683b9d5e1fb77ee36895216af5e426585bb",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "validationSha256": "b650745845ec9587906d4f1c422e8e954a93e9a924b15fc738ad1d6ef13fbf9e",
+      "trackedChanges": [
+        "data/reviews/current/rb-gather-release-state.json",
+        "scripts/diag/rb-gather-release.ts",
+        "src/sim/spacing.ts",
+        "test/gather-release.test.ts"
+      ],
+      "startedAt": "2026-10-14T20:43:46.373Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "capture"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.027587339
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:43:47.402Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "capture-exact-launcher.json": {
+      "sha256": "265eb95a4fe80d584e9cf1bff12b9b1621028b46df5bbb93fbd8e456bbd8b323",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "validationSha256": "0e04edc70b6f0359225461f746c822359044934958e2ef458ec0b3de64c2cbc3",
+      "trackedChanges": [
+        "scripts/diag/rb-gather-release.ts",
+        "src/sim/spacing.ts",
+        "test/gather-release.test.ts"
+      ],
+      "startedAt": "2026-10-14T20:43:02.787Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "capture"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9893304869999999
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:43:03.778Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "capture-launcher.json": {
+      "sha256": "64c500693bef250090e4471abe6621e10ea754a88ee0833bfb6776639455a72c",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "validationSha256": "f76d5744948325ea238f4e28b9714ac4404c3bdac7ef52f18e55545efb2d42b7",
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-14T20:37:26.525Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "capture"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.378163984
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:37:27.906Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "coupled-final-launcher.json": {
+      "sha256": "46a8d1dd36365db1844a49173845d566b19a4e28c655409679ea7bc5bc32f28b",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "e89e6ca97a45cb7811a3251247207f5ddc7492f4dfc075f64d37ba80fa27af40",
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T20:41:57.405Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "coupled"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.820681005
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:41:59.228Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "coupled-first-candidate-launcher.json": {
+      "sha256": "28c45d20189c4c4c85c4d498b0aed3bb7d99d4c1b0ff63fb3f4823b753b451c1",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e7fff5a0792ccaed77f1e3aba1aa49a442f70c0415ce85f282b1794270643002",
+      "validationSha256": "f76d5744948325ea238f4e28b9714ac4404c3bdac7ef52f18e55545efb2d42b7",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-14T20:38:05.572Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "coupled"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.859186271
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:38:07.434Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "coupled-launcher.json": {
+      "sha256": "28c45d20189c4c4c85c4d498b0aed3bb7d99d4c1b0ff63fb3f4823b753b451c1",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e7fff5a0792ccaed77f1e3aba1aa49a442f70c0415ce85f282b1794270643002",
+      "validationSha256": "f76d5744948325ea238f4e28b9714ac4404c3bdac7ef52f18e55545efb2d42b7",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-14T20:38:05.572Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "coupled"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.859186271
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:38:07.434Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "first-change-launcher.json": {
+      "sha256": "4b931688a797242867dd145ce11c334e266fdf3ac986622c6dd99eada0ebf5d1",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "9441b1e9635ef53b03e4c9c3a8bdd5a3d1f51049e439019cdffab040353cc99c",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-14T20:40:05.699Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "first-change"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.58610469
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:40:06.287Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "focused-final-launcher.json": {
+      "sha256": "3f5cc7c7254fef943df6aa4923163811a04bbae07d8b598ca8722df393d811df",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "9441b1e9635ef53b03e4c9c3a8bdd5a3d1f51049e439019cdffab040353cc99c",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-14T20:40:17.673Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/gather-release.test.ts",
+            "test/traffic-turning.test.ts",
+            "test/spacing-yield.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 2.965875538
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:40:20.641Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "focused-launcher.json": {
+      "sha256": "645dc926377efeaab3b6ce21dbf5db44e4956e5b99a4b7d0ef004f589bfa1535",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e7fff5a0792ccaed77f1e3aba1aa49a442f70c0415ce85f282b1794270643002",
+      "validationSha256": "60a335b3c131c03bd952ee71b0f1b1541dda4e6b593166ba74117670173309d9",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-14T20:39:21.385Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/gather-release.test.ts",
+            "test/traffic-turning.test.ts",
+            "test/spacing-yield.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 2.116482882
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:39:23.503Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "focused-passing-launcher.json": {
+      "sha256": "e3de8001d4e7263e2ea0aa6a6c35a8a7608eb000439b960708c8e6b02bed7d90",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "0a35c5f92b9760cb7e0ab241aea225dbe8e69bd5",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "b650745845ec9587906d4f1c422e8e954a93e9a924b15fc738ad1d6ef13fbf9e",
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T20:44:00.564Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/gather-release.test.ts",
+            "test/traffic-turning.test.ts",
+            "test/spacing-yield.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.909858115
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:44:03.476Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "focused-pre-encoding-launcher.json": {
+      "sha256": "e1fd40a3f6c45b75b41d745a3c3c23783310943d4e662b4bb9e0dc7c87b782f0",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "e89e6ca97a45cb7811a3251247207f5ddc7492f4dfc075f64d37ba80fa27af40",
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T20:41:59.657Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/gather-release.test.ts",
+            "test/traffic-turning.test.ts",
+            "test/spacing-yield.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.125524918
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:42:02.785Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "mechanism-after-launcher.json": {
+      "sha256": "f9655e1be09c32a2cfe630f3b4ce732aac91afc45c5459bf3034caf7ec1c6c58",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e7fff5a0792ccaed77f1e3aba1aa49a442f70c0415ce85f282b1794270643002",
+      "validationSha256": "f76d5744948325ea238f4e28b9714ac4404c3bdac7ef52f18e55545efb2d42b7",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-14T20:37:57.090Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "mechanism"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.41387748500000004
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:37:57.507Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "mechanism-before-final-launcher.json": {
+      "sha256": "3dc3a44cc0c8f32d23a8a6c1ba4daa3044b16a588dd316e600dfbba0cf10a020",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "validationSha256": "e89e6ca97a45cb7811a3251247207f5ddc7492f4dfc075f64d37ba80fa27af40",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "test/traffic-turning.test.ts"
+      ],
+      "startedAt": "2026-10-14T20:41:35.540Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "mechanism"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.47201705600000005
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:41:36.014Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "mechanism-before-launcher.json": {
+      "sha256": "b6ed77eedce6c1ff88ce42e9c83568a02fdb2ab6ca7586213d246847b7416a3d",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "validationSha256": "f76d5744948325ea238f4e28b9714ac4404c3bdac7ef52f18e55545efb2d42b7",
+      "trackedChanges": [
+        "docs/WORKBOARD.md"
+      ],
+      "startedAt": "2026-10-14T20:37:32.492Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "mechanism"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.41596296200000005
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:37:32.910Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "mechanism-exact-before-final-launcher.json": {
+      "sha256": "704dee6f2df8bac11d42ce4345bdcedc5aa036ab48dc4bdaca991845fc570916",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "validationSha256": "b650745845ec9587906d4f1c422e8e954a93e9a924b15fc738ad1d6ef13fbf9e",
+      "trackedChanges": [
+        "data/reviews/current/rb-gather-release-state.json",
+        "scripts/diag/rb-gather-release.ts",
+        "src/sim/spacing.ts",
+        "test/gather-release.test.ts"
+      ],
+      "startedAt": "2026-10-14T20:43:47.683Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "mechanism"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.395446375
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:43:48.080Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "mechanism-exact-before-launcher.json": {
+      "sha256": "12e64db7ac59356c8d7dbcd817139b93f85fadb572b85408ad60267d6dea75c5",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+      "validationSha256": "0e04edc70b6f0359225461f746c822359044934958e2ef458ec0b3de64c2cbc3",
+      "trackedChanges": [
+        "data/reviews/current/rb-gather-release-state.json",
+        "scripts/diag/rb-gather-release.ts",
+        "src/sim/spacing.ts",
+        "test/gather-release.test.ts"
+      ],
+      "startedAt": "2026-10-14T20:43:04.066Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "mechanism"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.39569523100000004
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:43:04.464Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "mechanism-exact-final-launcher.json": {
+      "sha256": "23b5c0872bd66a67f46eb609dd4a9c73be7ad44b3d703d3b13a9f375cc84e6d6",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "0a35c5f92b9760cb7e0ab241aea225dbe8e69bd5",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "b650745845ec9587906d4f1c422e8e954a93e9a924b15fc738ad1d6ef13fbf9e",
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T20:43:59.719Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "mechanism"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.40127437
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:44:00.122Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "mechanism-final-launcher.json": {
+      "sha256": "92cc35d5e593b1230080e7b0d60a7f5924ad62b9b847fcc220300ebf3a0d8e27",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "e89e6ca97a45cb7811a3251247207f5ddc7492f4dfc075f64d37ba80fa27af40",
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T20:41:56.710Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/rb-gather-release.ts",
+            "mechanism"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.41716954599999995
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:41:57.128Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "squeeze-probe-launcher.json": {
+      "sha256": "70dd05c5111c4ae8b7acc4aea86bdbe53a7fa3c235d2d3d9c5aaf01c0e2fdd11",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "127f27eb235eb7b87e732442250ba4128bc32d2d00641abbf763b6507d1107fc",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts",
+        "test/traffic-turning.test.ts"
+      ],
+      "startedAt": "2026-10-14T20:40:49.970Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/traffic-turning.test.ts",
+            "-t",
+            "shoulder-turn"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 2.242533656
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:40:52.215Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "typecheck-final-launcher.json": {
+      "sha256": "fdf7bc6163091a0f5ad81750ed1f89abd00b0f6cad4c178680157316d40a644d",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "0a35c5f92b9760cb7e0ab241aea225dbe8e69bd5",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "b650745845ec9587906d4f1c422e8e954a93e9a924b15fc738ad1d6ef13fbf9e",
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T20:44:00.564Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.509175636000002
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:44:11.075Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-launcher.json": {
+      "sha256": "79e1ff0ce4088c689b4fd951f9a848123cf7d77418c198857db9a4e12b39ed3d",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "9441b1e9635ef53b03e4c9c3a8bdd5a3d1f51049e439019cdffab040353cc99c",
+      "trackedChanges": [
+        "docs/WORKBOARD.md",
+        "src/sim/spacing.ts"
+      ],
+      "startedAt": "2026-10-14T20:40:17.651Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.691514996
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:40:28.345Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-pre-encoding-launcher.json": {
+      "sha256": "10e893194e493f1d16e476b711c0408a2f1a0523cb72ae125649c559407b1ecb",
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/rb-gather-release",
+      "commit": "bc1c4e19cac23e030a54337a28a9906da6c91de7",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "0306594882fcb5913173e8d7b7c219a1031d4e9abc1948123d0ad69dc251883d",
+      "validationSha256": "e89e6ca97a45cb7811a3251247207f5ddc7492f4dfc075f64d37ba80fa27af40",
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T20:41:59.650Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.611632868000001
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T20:42:09.263Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "scriptsSha256": {
+    "scripts/diag/rb-gather-release.ts": "85cea59d4cd3b6a368d26f87ddd1574e1ac7c856eb0cc20ecf4a191f538a4d89",
+    "scripts/diag/summarize-rb-gather-release.py": "b920d5049e488cb59d70f1df2e00dbf36430bbffb9d2c75de8c681be4c8ba1a1",
+    "test/gather-release.test.ts": "31d63609e5ca0601bf35cbaa02694d66f0f10af1040bda5c841d86b6acf236b6",
+    "test/traffic-turning.test.ts": "f875743e6d410b9cac30dcae52e1a841966718d608f1c8b82382923abcf9782f",
+    "src/sim/spacing.ts": "108be368d9a586ef398f0802e7400a051d17e7a912f1e7a7c9595227f5c91879"
+  },
+  "newCompleteNativePlays": 4,
+  "newNativePrefixCaptures": 4,
+  "newGames": 0,
+  "retainedFailures": [
+    "baseline:info without --candidate rejected the experimental runtime as expected; no simulations.",
+    "First focused run: 24/25 pass; second:25/26 pass. Both fail the overbroad global no-preview squeeze assertion.",
+    "A spy held mutable body references. The displayed final velocity -4e-51 was initially misread as call-time velocity. Frozen probe establishes actual unsqueezed-peer speed .20096; candidate returns the same request and both squeeze modes preserve all command/body/report frames.",
+    "The assertion now excludes preview for squeezed bodies/requests; full coupled-frame identity remains required. Numerical-rest guard is machine epsilon, not a football speed cutoff.",
+    "Initial clear-path forecast was incorrectly scored against witness pictures. Final measurement uses the same empty picture set as the control decision.",
+    "Initial fixture JSON stored support.since=-Infinity as null. Final fixture carries a non-finite side table, restores it and strictly matches the original full native body before capture completes."
+  ],
+  "mechanismVerdict": "The original speed gate releases an achievable-path-unsafe request at the identical saved low-speed state. Candidate keeps gathering, with all acquired peer pictures clear and support upright in the held-command preview.",
+  "footballVerdict": "H is fully unchanged. Y still collides, later and harder after a supported earlier RT gather; no whole-football improvement or promotion claim.",
+  "forecastLimits": "Own free motion and acquired constant-velocity teammate pictures only; no coupled collision-avoidance claim.",
+  "scope": "No shared information, teammate sensing/memory, physics/capacity, nominal post-mesh, RT recovery search, new baseline or accepted runtime changed. Candidate remains on isolated experimental branch; Integration owns full checks."
+}
