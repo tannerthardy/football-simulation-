@@ -1,0 +1,1800 @@
+{
+  "protocol": "keeper-contact-law-review-v1",
+  "testedCommit": "86fe58926c03529ca7522af27019a666d617b16d",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+  "worldSha256": "ed1708d764c355da60bd31c115f557baf3d81af18c89f3479c471bf981732ca2",
+  "witnessSha256": "d5b7fb8578578dc939622455adaa3bb99ce101079ca066b749b0ad8aa353e548",
+  "previousEvidenceCommit": "45a35bbe1b09554e874370604c83df47fca809f6",
+  "previousReceiptSha256": "7152989f5f8e9840820f22a0b6b3229533dadd78a26feebd9cc57d6a5dbb1eee",
+  "manifest": {
+    "protocol": "keeper-contact-law-native-v1",
+    "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "evidenceCommit": "45a35bbe1b09554e874370604c83df47fca809f6",
+    "strength": 0.55,
+    "los": 40,
+    "stopSeconds": 25,
+    "forkSeconds": 2.4,
+    "inputs": [
+      {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      {
+        "id": "uc12-wz-weak-s3",
+        "concept": "wz_weak",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      }
+    ],
+    "geometry": "Legacy mirror is a TE-placement contrast; weak call is not a geometric mirror of the asymmetric front.",
+    "arms": [
+      "center",
+      "patch-from-snap",
+      "patch-from-2.4"
+    ],
+    "boundary": "Use the existing complete patch mode as a diagnostic. It includes loaded yaw, torso ordering and grasp laws; this is not a hands-only causal intervention. No runtime edit or promotion."
+  },
+  "collectorSha256": "b372153c8a580db55e0819aff37ea51d9f46bfd523b83ce9715f1574b5a5a727",
+  "reducerSha256": "27d892f1c716b4850ffb0fd8949880dbc027ea63aea6a994f60a0b46bc7b31a4",
+  "rawSha256": {
+    "native-final.json": "7d54ffd43e5639d382f1a0531202937c59d06c9b91af68a561644503d9815fc9",
+    "mechanical-final.json": "a66db4260286313c5d25252bef61847917489201ad4c6592e8e3c94d6f670fff"
+  },
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "settings": {
+    "mechanical": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/keeper-contact-law",
+      "commit": "86fe58926c03529ca7522af27019a666d617b16d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "validationSha256": "585c80bcecb9d52f6deed028d1640db5e9deccbe3c4286d36b57514f579569d6",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T02:55:45.525Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/keeper-contact-law.ts",
+            "out/keeper-contact-law/mechanical-final.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.367354242
+        }
+      ],
+      "finishedAt": "2026-10-14T02:55:45.897Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "native": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/keeper-contact-law",
+      "commit": "86fe58926c03529ca7522af27019a666d617b16d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "validationSha256": "585c80bcecb9d52f6deed028d1640db5e9deccbe3c4286d36b57514f579569d6",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T02:54:07.818Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/keeper-contact-native.ts",
+            "out/keeper-contact-law/native-final.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 5.7684361399999995
+        }
+      ],
+      "finishedAt": "2026-10-14T02:54:13.591Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "focused": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/keeper-contact-law",
+      "commit": "86fe58926c03529ca7522af27019a666d617b16d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "validationSha256": "585c80bcecb9d52f6deed028d1640db5e9deccbe3c4286d36b57514f579569d6",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T02:54:40.227Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/keeper-contact-law.test.ts",
+            "test/hand-angular-transfer.test.ts",
+            "test/hand-force-point.test.ts",
+            "test/contact-angular-transfer.test.ts",
+            "test/hand-comoving.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.439907182
+        }
+      ],
+      "finishedAt": "2026-10-14T02:54:43.673Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/keeper-contact-law",
+      "commit": "86fe58926c03529ca7522af27019a666d617b16d",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+      "validationSha256": "585c80bcecb9d52f6deed028d1640db5e9deccbe3c4286d36b57514f579569d6",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T02:54:40.218Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 15.160973010000001
+        }
+      ],
+      "finishedAt": "2026-10-14T02:54:55.384Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "nativeMaximumError": 8.43769498715119e-15,
+  "focusedTestsPassed": 68,
+  "mechanicalControls": [
+    {
+      "mode": "center",
+      "mirror": false,
+      "substeps": 1,
+      "clean": true,
+      "angularChange": 16.278730540210745,
+      "linearResidual": 5.684341886080802e-14,
+      "workResidual": 3.907985046680551e-14
+    },
+    {
+      "mode": "center",
+      "mirror": false,
+      "substeps": 12,
+      "clean": true,
+      "angularChange": 15.153603048967852,
+      "linearResidual": 1.1718571004216928e-13,
+      "workResidual": 1.1723955140041653e-13
+    },
+    {
+      "mode": "center",
+      "mirror": false,
+      "substeps": 48,
+      "clean": true,
+      "angularChange": 15.079236394205509,
+      "linearResidual": 1.1457157353758233e-13,
+      "workResidual": 1.1723955140041653e-13
+    },
+    {
+      "mode": "patch",
+      "mirror": false,
+      "substeps": 1,
+      "clean": true,
+      "angularChange": 0,
+      "linearResidual": 1.4210854715202004e-14,
+      "workResidual": 6.039613253960852e-14
+    },
+    {
+      "mode": "patch",
+      "mirror": false,
+      "substeps": 12,
+      "clean": true,
+      "angularChange": -3.637978807091713e-12,
+      "linearResidual": 7.105427357601002e-14,
+      "workResidual": 5.5067062021407764e-14
+    },
+    {
+      "mode": "patch",
+      "mirror": false,
+      "substeps": 48,
+      "clean": true,
+      "angularChange": 0,
+      "linearResidual": 8.038873388460929e-14,
+      "workResidual": 8.881784197001252e-14
+    },
+    {
+      "mode": "center",
+      "mirror": true,
+      "substeps": 1,
+      "clean": true,
+      "angularChange": -16.278730540210745,
+      "linearResidual": 5.684341886080802e-14,
+      "workResidual": 3.907985046680551e-14
+    },
+    {
+      "mode": "center",
+      "mirror": true,
+      "substeps": 12,
+      "clean": true,
+      "angularChange": -15.153603048967852,
+      "linearResidual": 1.1718571004216928e-13,
+      "workResidual": 1.1723955140041653e-13
+    },
+    {
+      "mode": "center",
+      "mirror": true,
+      "substeps": 48,
+      "clean": true,
+      "angularChange": -15.079236394205509,
+      "linearResidual": 1.1457157353758233e-13,
+      "workResidual": 1.1723955140041653e-13
+    },
+    {
+      "mode": "patch",
+      "mirror": true,
+      "substeps": 1,
+      "clean": true,
+      "angularChange": 0,
+      "linearResidual": 1.4210854715202004e-14,
+      "workResidual": 6.039613253960852e-14
+    },
+    {
+      "mode": "patch",
+      "mirror": true,
+      "substeps": 12,
+      "clean": true,
+      "angularChange": 3.637978807091713e-12,
+      "linearResidual": 7.105427357601002e-14,
+      "workResidual": 5.5067062021407764e-14
+    },
+    {
+      "mode": "patch",
+      "mirror": true,
+      "substeps": 48,
+      "clean": true,
+      "angularChange": 0,
+      "linearResidual": 8.038873388460929e-14,
+      "workResidual": 8.881784197001252e-14
+    }
+  ],
+  "nativeInterval": {
+    "center": {
+      "bodies": [
+        {
+          "pos": {
+            "x": 40.27156313142284,
+            "y": 21.212062577416344
+          },
+          "vel": {
+            "x": 0.8399805874076385,
+            "y": -0.886725090817298
+          },
+          "facing": -1.0456512632727928,
+          "spin": -2.182624168552097
+        },
+        {
+          "pos": {
+            "x": 40.53038650623571,
+            "y": 20.617045962193973
+          },
+          "vel": {
+            "x": -0.5732156858539097,
+            "y": -1.5014933595187276
+          },
+          "facing": 3.0426517383161866,
+          "spin": -4.173975593979532
+        }
+      ],
+      "joints": [
+        {
+          "normalForce": 752.8853446311965,
+          "tangentForce": 460.03793941271977
+        }
+      ],
+      "work": {
+        "before": 276.67549747538175,
+        "after": 337.23090774594533,
+        "hands": -35.93962354694142,
+        "grasps": 0,
+        "strikes": 0,
+        "contacts": -4.762646769921161,
+        "residual": -1.4299672557172016e-13
+      },
+      "contacts": [
+        {
+          "i": 0,
+          "j": 1,
+          "impulse": 21.769463410517442,
+          "closing": 0.08171351398076443
+        }
+      ]
+    },
+    "patch": {
+      "bodies": [
+        {
+          "pos": {
+            "x": 40.27261545670384,
+            "y": 21.21255605058348
+          },
+          "vel": {
+            "x": 0.8571579652156524,
+            "y": -0.8949303043517971
+          },
+          "facing": -1.0183762717578888,
+          "spin": -1.5309563850843038
+        },
+        {
+          "pos": {
+            "x": 40.52912997408587,
+            "y": 20.616486522776974
+          },
+          "vel": {
+            "x": -0.5997848386032422,
+            "y": -1.4951884742449661
+          },
+          "facing": 3.0697541203365954,
+          "spin": -3.2900229946414496
+        }
+      ],
+      "joints": [
+        {
+          "normalForce": 752.8853446311965,
+          "tangentForce": 135.62956727911333,
+          "forceOnB": {
+            "x": 461.448013991129,
+            "y": -615.4240635105622
+          },
+          "momentOnA": -44.61354942909205,
+          "momentOnB": -43.39278066361939
+        }
+      ],
+      "work": {
+        "before": 276.67549747538175,
+        "after": 320.90409034611685,
+        "hands": -2.004337285380748,
+        "grasps": 0,
+        "strikes": 0,
+        "contacts": -3.292947644114938,
+        "residual": -1.127986593019159e-13
+      },
+      "contacts": [
+        {
+          "i": 0,
+          "j": 1,
+          "impulse": 19.015830307968876,
+          "closing": 0.1064617111762245
+        }
+      ]
+    }
+  },
+  "rows": [
+    {
+      "id": "uc12-wz-s3",
+      "historyExact": true,
+      "historySha256": "b1e711fcf8f414946905d748dd8a2cdc7d5fd3f5b8a18b62a935cdad308fecb9",
+      "prefixTicks": 48,
+      "prefixExact": true,
+      "arms": [
+        {
+          "arm": "center",
+          "endTime": 4.3,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": 3.6,
+          "gain": 1.495518431752906,
+          "firstContact": {
+            "t": 3.65,
+            "opponent": "CB_S",
+            "note": "grasp",
+            "depth": 0.3754753155027615,
+            "roundedEventDepth": 0.38000000000000256
+          },
+          "limits": {
+            "armImpulse": 7.105427357601002e-15,
+            "armWork": 0,
+            "workResidual": 8.643752380521619e-12
+          },
+          "frozenInputError": null,
+          "approach": "clean",
+          "handsAtFirstContact": [],
+          "handsBeforeFirstContact": [],
+          "deliveredBodyContactAtFirst": []
+        },
+        {
+          "arm": "patch-from-snap",
+          "endTime": 4.75,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": null,
+          "gain": -0.20385615760617526,
+          "firstContact": {
+            "t": 3.05,
+            "opponent": "DT_S",
+            "note": "body collision",
+            "depth": -1.0327414451425057,
+            "roundedEventDepth": -1.0300000000000011
+          },
+          "limits": {
+            "armImpulse": 7.105427357601002e-15,
+            "armWork": 0,
+            "workResidual": 1.0182077403442236e-11
+          },
+          "frozenInputError": null,
+          "approach": "ended-unreached",
+          "handsAtFirstContact": [
+            {
+              "a": "RG",
+              "b": "DT_S",
+              "normal": 0,
+              "tangent": -183.55978605561606,
+              "forceOnB": {
+                "x": 78.75263643001549,
+                "y": -165.7959967707189
+              },
+              "momentOnA": 119.571090397119,
+              "momentOnB": 94.3829914514789
+            }
+          ],
+          "handsBeforeFirstContact": [
+            {
+              "a": "RG",
+              "b": "DT_S",
+              "normal": 0,
+              "tangent": -196.89171931652047,
+              "forceOnB": {
+                "x": 77.55949725062217,
+                "y": -180.95875813736302
+              },
+              "momentOnA": 127.22896927802438,
+              "momentOnB": 100.42770940589816
+            }
+          ],
+          "deliveredBodyContactAtFirst": [
+            {
+              "i": 6,
+              "j": 13,
+              "impulse": 97.64291804940164,
+              "closing": 1.8996920125862593,
+              "a": "RB",
+              "b": "DT_S",
+              "delivered": true
+            }
+          ],
+          "firstDifference": {
+            "t": 0.05,
+            "referenceHandCount": 0,
+            "candidateHandCount": 0,
+            "referenceContactCount": 0,
+            "candidateContactCount": 0,
+            "keeperReference": {
+              "pos": {
+                "x": 39.4524495508496,
+                "y": 24.064648077611377
+              },
+              "vel": {
+                "x": 0.09798203398388473,
+                "y": -0.08074356221160071
+              },
+              "facing": -0.08604351394209027,
+              "spin": -3.4417405576836106,
+              "request": {
+                "vel": {
+                  "x": 1.822727272727267,
+                  "y": -7.583522306970652
+                },
+                "facing": -1.0518931625770767,
+                "cutSkill": 1.0173469387755103,
+                "posture": 0.7
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.049444461633651,
+                  "y": -1.688875395405181
+                },
+                "facing": -1.0518931625770767,
+                "cutSkill": 1.0173469387755103,
+                "posture": 0.7
+              }
+            },
+            "keeperCandidate": {
+              "pos": {
+                "x": 39.4524495508496,
+                "y": 24.064648077611377
+              },
+              "vel": {
+                "x": 0.09798203398388473,
+                "y": -0.08074356221160071
+              },
+              "facing": -0.0738553993849434,
+              "spin": -2.3240722569781145,
+              "request": {
+                "vel": {
+                  "x": 1.822727272727267,
+                  "y": -7.583522306970652
+                },
+                "facing": -1.0518931625770767,
+                "cutSkill": 1.0173469387755103,
+                "posture": 0.7
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.049444461633651,
+                  "y": -1.688875395405181
+                },
+                "facing": -1.0518931625770767,
+                "cutSkill": 1.0173469387755103,
+                "posture": 0.7
+              }
+            },
+            "rbReference": {
+              "pos": {
+                "x": 33.20407159921164,
+                "y": 26.660333067893017
+              },
+              "vel": {
+                "x": 0.16286396846531997,
+                "y": -0.2533439509460537
+              },
+              "facing": -0.08864306755706403,
+              "spin": -3.5457227022825606,
+              "request": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": -6.601345299888643
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": -6.601345299888643
+                }
+              }
+            },
+            "rbCandidate": {
+              "pos": {
+                "x": 33.203991970105285,
+                "y": 26.660456935391785
+              },
+              "vel": {
+                "x": 0.15967880421125313,
+                "y": -0.2483892509952831
+              },
+              "facing": -0.0856428947533272,
+              "spin": -3.0238433998882828,
+              "request": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": -6.601345299888643
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": -6.601345299888643
+                }
+              }
+            }
+          },
+          "firstKeeperMovementRequestDifference": {
+            "t": 0.15,
+            "reference": {
+              "vel": {
+                "x": 1.965216475526141,
+                "y": -1.8150882592744937
+              },
+              "facing": -1.0536763663880782,
+              "cutSkill": 1.0173469387755103,
+              "posture": 0.7
+            },
+            "candidate": {
+              "vel": {
+                "x": 1.9701896857609573,
+                "y": -1.8082383797490635
+              },
+              "facing": -1.0536763663880782,
+              "cutSkill": 1.0173469387755103,
+              "posture": 0.7
+            }
+          },
+          "gainDifference": -1.6993745893590813
+        },
+        {
+          "arm": "patch-from-2.4",
+          "endTime": 4.4,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": 3.55,
+          "gain": 1.392012454876948,
+          "firstContact": {
+            "t": 3.45,
+            "opponent": "LB_M",
+            "note": "grasp",
+            "depth": -0.041680292271770725,
+            "roundedEventDepth": -0.03999999999999915
+          },
+          "limits": {
+            "armImpulse": 7.105427357601002e-15,
+            "armWork": 0,
+            "workResidual": 7.862155371185509e-12
+          },
+          "frozenInputError": null,
+          "approach": "interrupted",
+          "handsAtFirstContact": [],
+          "handsBeforeFirstContact": [
+            {
+              "a": "C",
+              "b": "LB_M",
+              "normal": 0,
+              "tangent": -169.0124081795003,
+              "forceOnB": {
+                "x": -165.44474131296457,
+                "y": 34.513137210290274
+              },
+              "momentOnA": 83.91539473113912,
+              "momentOnB": 65.70931158498176
+            }
+          ],
+          "deliveredBodyContactAtFirst": [],
+          "firstDifference": {
+            "t": 2.4,
+            "referenceHandCount": 4,
+            "candidateHandCount": 4,
+            "referenceContactCount": 2,
+            "candidateContactCount": 2,
+            "keeperReference": {
+              "pos": {
+                "x": 39.259493134392244,
+                "y": 21.3085752291659
+              },
+              "vel": {
+                "x": -0.26903216023031296,
+                "y": -1.3417630116143324
+              },
+              "facing": -2.2422265143584874,
+              "spin": -2.6916332676366355,
+              "request": {
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": -0.550498811728489,
+                  "y": -2.1561506431031168
+                },
+                "facing": -2.242226514358482,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            "keeperCandidate": {
+              "pos": {
+                "x": 39.262764015806034,
+                "y": 21.306026910102627
+              },
+              "vel": {
+                "x": -0.1817713201129406,
+                "y": -1.403972081835995
+              },
+              "facing": -2.192715530544526,
+              "spin": -1.4086180720961563,
+              "request": {
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": -0.550498811728489,
+                  "y": -2.1561506431031168
+                },
+                "facing": -2.242226514358482,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            "rbReference": {
+              "pos": {
+                "x": 38.313993603261196,
+                "y": 21.8660677595214
+              },
+              "vel": {
+                "x": 1.5949994437708486,
+                "y": -1.5251408647637774
+              },
+              "facing": -0.8273923663232426,
+              "spin": -0.1321206428155186,
+              "request": {
+                "vel": {
+                  "x": 9.511769310355088,
+                  "y": -0.04156296336421341
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0.8892857142857142
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.7413798070954343,
+                  "y": -2.932223016355099
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0.8892857142857142
+              }
+            },
+            "rbCandidate": {
+              "pos": {
+                "x": 38.313993603261196,
+                "y": 21.8660677595214
+              },
+              "vel": {
+                "x": 1.5949994437708486,
+                "y": -1.5251408647637774
+              },
+              "facing": -0.8227504870860317,
+              "spin": -0.04860446824618472,
+              "request": {
+                "vel": {
+                  "x": 9.511769310355088,
+                  "y": -0.04156296336421341
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0.8892857142857142
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.7413798070954343,
+                  "y": -2.932223016355099
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0.8892857142857142
+              }
+            }
+          },
+          "firstKeeperMovementRequestDifference": {
+            "t": 2.45,
+            "reference": {
+              "vel": {
+                "x": -0.4945108891798293,
+                "y": -2.3058051455424797
+              },
+              "facing": -2.364560664878192,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9878838304552591
+            },
+            "candidate": {
+              "vel": {
+                "x": -0.4822428047404723,
+                "y": -2.271383216619122
+              },
+              "facing": -2.374561382738783,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9878838304552591
+            }
+          },
+          "gainDifference": -0.10350597687595808
+        }
+      ]
+    },
+    {
+      "id": "uc12-wz-s3-mirror",
+      "historyExact": true,
+      "historySha256": "43da1c56ce6abbf801ed77f6e33184ba1e06f968b1f15607827479e12909dd73",
+      "prefixTicks": 48,
+      "prefixExact": true,
+      "arms": [
+        {
+          "arm": "center",
+          "endTime": 3.25,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": null,
+          "gain": -0.2064288442096256,
+          "firstContact": {
+            "t": 2.65,
+            "opponent": "DE_S",
+            "note": "body collision",
+            "depth": -0.23433344943020984,
+            "roundedEventDepth": -0.22999999999999687
+          },
+          "limits": {
+            "armImpulse": 1.4210854715202004e-14,
+            "armWork": 0,
+            "workResidual": 8.180123245438153e-12
+          },
+          "frozenInputError": 0,
+          "approach": "ended-unreached",
+          "handsAtFirstContact": [
+            {
+              "a": "RT",
+              "b": "DE_S",
+              "normal": 766.4491589666324,
+              "tangent": 471.51501308116514
+            }
+          ],
+          "handsBeforeFirstContact": [
+            {
+              "a": "RT",
+              "b": "DE_S",
+              "normal": 765.1571590353021,
+              "tangent": 470.4217823700398
+            }
+          ],
+          "deliveredBodyContactAtFirst": [
+            {
+              "i": 6,
+              "j": 12,
+              "impulse": 313.1961934478901,
+              "closing": 5.377642859556666,
+              "a": "RB",
+              "b": "DE_S",
+              "delivered": true
+            }
+          ]
+        },
+        {
+          "arm": "patch-from-snap",
+          "endTime": 3.35,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": null,
+          "gain": -0.9299468846762053,
+          "firstContact": {
+            "t": 2.35,
+            "opponent": "DE_S",
+            "note": "grasp",
+            "depth": -1.1089493798346197,
+            "roundedEventDepth": -1.1099999999999994
+          },
+          "limits": {
+            "armImpulse": 1.4210854715202004e-14,
+            "armWork": 0,
+            "workResidual": 6.821210263296962e-12
+          },
+          "frozenInputError": null,
+          "approach": "ended-unreached",
+          "handsAtFirstContact": [],
+          "handsBeforeFirstContact": [
+            {
+              "a": "RT",
+              "b": "DE_S",
+              "normal": -149.41161486593475,
+              "tangent": -575.1284863790905,
+              "forceOnB": {
+                "x": 270.5275584851879,
+                "y": 527.5581761971974
+              },
+              "momentOnA": 300.783997695401,
+              "momentOnB": 292.55358979826315
+            }
+          ],
+          "deliveredBodyContactAtFirst": [],
+          "firstDifference": {
+            "t": 0.05,
+            "referenceHandCount": 0,
+            "candidateHandCount": 0,
+            "referenceContactCount": 0,
+            "candidateContactCount": 0,
+            "keeperReference": {
+              "pos": {
+                "x": 39.452448682554014,
+                "y": 24.06464702439919
+              },
+              "vel": {
+                "x": 0.09794730216038905,
+                "y": -0.08078569069915303
+              },
+              "facing": -0.08604351394209027,
+              "spin": -3.4417405576836106,
+              "request": {
+                "vel": {
+                  "x": 1.822727272727267,
+                  "y": -7.583522306970652
+                },
+                "facing": -1.0518931625770767,
+                "cutSkill": 1.0173469387755103,
+                "posture": 0.7
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.0493892751909115,
+                  "y": -1.6903102429164116
+                },
+                "facing": -1.0518931625770767,
+                "cutSkill": 1.0173469387755103,
+                "posture": 0.7
+              }
+            },
+            "keeperCandidate": {
+              "pos": {
+                "x": 39.452448682554014,
+                "y": 24.06464702439919
+              },
+              "vel": {
+                "x": 0.09794730216038905,
+                "y": -0.08078569069915303
+              },
+              "facing": -0.0738553993849434,
+              "spin": -2.3240722569781145,
+              "request": {
+                "vel": {
+                  "x": 1.822727272727267,
+                  "y": -7.583522306970652
+                },
+                "facing": -1.0518931625770767,
+                "cutSkill": 1.0173469387755103,
+                "posture": 0.7
+              },
+              "intent": {
+                "vel": {
+                  "x": 2.0493892751909115,
+                  "y": -1.6903102429164116
+                },
+                "facing": -1.0518931625770767,
+                "cutSkill": 1.0173469387755103,
+                "posture": 0.7
+              }
+            },
+            "rbReference": {
+              "pos": {
+                "x": 33.20407159921164,
+                "y": 26.660333067893017
+              },
+              "vel": {
+                "x": 0.16286396846531997,
+                "y": -0.2533439509460537
+              },
+              "facing": -0.08864306755706403,
+              "spin": -3.5457227022825606,
+              "request": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": -6.601345299888643
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": -6.601345299888643
+                }
+              }
+            },
+            "rbCandidate": {
+              "pos": {
+                "x": 33.203991970105285,
+                "y": 26.660456935391785
+              },
+              "vel": {
+                "x": 0.15967880421125313,
+                "y": -0.2483892509952831
+              },
+              "facing": -0.0856428947533272,
+              "spin": -3.0238433998882828,
+              "request": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": -6.601345299888643
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": -6.601345299888643
+                }
+              }
+            }
+          },
+          "firstKeeperMovementRequestDifference": {
+            "t": 0.15,
+            "reference": {
+              "vel": {
+                "x": 1.9701012161391904,
+                "y": -1.7743363511484311
+              },
+              "facing": -1.0536744691769129,
+              "cutSkill": 1.0173469387755103,
+              "posture": 0.7
+            },
+            "candidate": {
+              "vel": {
+                "x": 1.9733478039752959,
+                "y": -1.771077203646696
+              },
+              "facing": -1.0536744691769129,
+              "cutSkill": 1.0173469387755103,
+              "posture": 0.7
+            }
+          },
+          "gainDifference": -0.7235180404665797
+        },
+        {
+          "arm": "patch-from-2.4",
+          "endTime": 3.25,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": null,
+          "gain": -0.8811634744778658,
+          "firstContact": {
+            "t": 2.65,
+            "opponent": "DE_S",
+            "note": "body collision",
+            "depth": -0.2458867577354411,
+            "roundedEventDepth": -0.25
+          },
+          "limits": {
+            "armImpulse": 0,
+            "armWork": 0,
+            "workResidual": 7.617018127348274e-12
+          },
+          "frozenInputError": 0,
+          "approach": "ended-unreached",
+          "handsAtFirstContact": [
+            {
+              "a": "RT",
+              "b": "DE_S",
+              "normal": 766.4491589666324,
+              "tangent": -136.60756138575402,
+              "forceOnB": {
+                "x": -392.6686107037322,
+                "y": -662.8839678828093
+              },
+              "momentOnA": 51.41387411908008,
+              "momentOnB": 50.0070268173142
+            }
+          ],
+          "handsBeforeFirstContact": [
+            {
+              "a": "RT",
+              "b": "DE_S",
+              "normal": 765.1571590353021,
+              "tangent": 334.49455004130283,
+              "forceOnB": {
+                "x": 222.61287023703633,
+                "y": -803.8211662197575
+              },
+              "momentOnA": -113.71576036229771,
+              "momentOnB": -110.60413507875225
+            }
+          ],
+          "deliveredBodyContactAtFirst": [
+            {
+              "i": 6,
+              "j": 12,
+              "impulse": 327.1632108989856,
+              "closing": 5.497872885249471,
+              "a": "RB",
+              "b": "DE_S",
+              "delivered": true
+            }
+          ],
+          "firstDifference": {
+            "t": 2.4,
+            "referenceHandCount": 5,
+            "candidateHandCount": 5,
+            "referenceContactCount": 3,
+            "candidateContactCount": 3,
+            "keeperReference": {
+              "pos": {
+                "x": 40.27156313142284,
+                "y": 21.212062577416344
+              },
+              "vel": {
+                "x": 0.8399805874076387,
+                "y": -0.8867250908172972
+              },
+              "facing": -1.0456512632727928,
+              "spin": -2.1826241685521053,
+              "request": {
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": 1.1271492922345303,
+                  "y": -2.379521800229132
+                },
+                "facing": -1.0457963970913664,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            "keeperCandidate": {
+              "pos": {
+                "x": 40.27261545670384,
+                "y": 21.21255605058348
+              },
+              "vel": {
+                "x": 0.8571579652156539,
+                "y": -0.8949303043517959
+              },
+              "facing": -1.0183762717578886,
+              "spin": -1.5309563850843095,
+              "request": {
+                "vel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": 1.1271492922345303,
+                  "y": -2.379521800229132
+                },
+                "facing": -1.0457963970913664,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            "rbReference": {
+              "pos": {
+                "x": 39.09462221618418,
+                "y": 21.34321706443689
+              },
+              "vel": {
+                "x": 2.7182082294237877,
+                "y": -2.776896725568566
+              },
+              "facing": -0.7051711656612747,
+              "spin": 1.0424233144521011,
+              "request": {
+                "vel": {
+                  "x": 7.618785863317837,
+                  "y": -5.694697960580948
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "intent": {
+                "vel": {
+                  "x": 7.618785863317837,
+                  "y": -5.694697960580948
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            },
+            "rbCandidate": {
+              "pos": {
+                "x": 39.094622538963776,
+                "y": 21.343217454296425
+              },
+              "vel": {
+                "x": 2.7182211406077585,
+                "y": -2.7768811311870696
+              },
+              "facing": -0.7076981193143392,
+              "spin": 0.3834659293863846,
+              "request": {
+                "vel": {
+                  "x": 7.618785863317837,
+                  "y": -5.694697960580948
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "intent": {
+                "vel": {
+                  "x": 7.618785863317837,
+                  "y": -5.694697960580948
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          },
+          "firstKeeperMovementRequestDifference": {
+            "t": 2.45,
+            "reference": {
+              "vel": {
+                "x": 1.1417729567332013,
+                "y": -2.402166639569023
+              },
+              "facing": -1.160498681850079,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9878838304552591
+            },
+            "candidate": {
+              "vel": {
+                "x": 1.1555917828089797,
+                "y": -2.270429714927603
+              },
+              "facing": -1.164408589985308,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9878838304552591
+            }
+          },
+          "gainDifference": -0.6747346302682402
+        }
+      ]
+    },
+    {
+      "id": "uc12-wz-weak-s3",
+      "historyExact": true,
+      "historySha256": "20e54725dd774dbd3a88a8c7f98511d90cf86d3e4a4c6b6c14f074697fc7bc6d",
+      "prefixTicks": 48,
+      "prefixExact": true,
+      "arms": [
+        {
+          "arm": "center",
+          "endTime": 3.4,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": 2.6,
+          "gain": 2.371521112002064,
+          "firstContact": {
+            "t": 2.3,
+            "opponent": "DE_W",
+            "note": "grasp",
+            "depth": -0.9623213508506083,
+            "roundedEventDepth": -0.9600000000000009
+          },
+          "limits": {
+            "armImpulse": 1.4210854715202004e-14,
+            "armWork": 0,
+            "workResidual": 7.645439836778678e-12
+          },
+          "frozenInputError": null,
+          "approach": "interrupted",
+          "handsAtFirstContact": [],
+          "handsBeforeFirstContact": [
+            {
+              "a": "LT",
+              "b": "DE_W",
+              "normal": 0,
+              "tangent": -126.87379753441914
+            }
+          ],
+          "deliveredBodyContactAtFirst": []
+        },
+        {
+          "arm": "patch-from-snap",
+          "endTime": 3.15,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": 2.4,
+          "gain": 1.479540570678708,
+          "firstContact": {
+            "t": 2.45,
+            "opponent": "DE_W",
+            "note": "grasp",
+            "depth": 0.5385134529525857,
+            "roundedEventDepth": 0.5399999999999991
+          },
+          "limits": {
+            "armImpulse": 1.4210854715202004e-14,
+            "armWork": 0,
+            "workResidual": 6.0508403842973735e-12
+          },
+          "frozenInputError": null,
+          "approach": "clean",
+          "handsAtFirstContact": [],
+          "handsBeforeFirstContact": [
+            {
+              "a": "LT",
+              "b": "DE_W",
+              "normal": 0,
+              "tangent": 127.4039859472104,
+              "forceOnB": {
+                "x": 35.82535641635079,
+                "y": -122.25625176537747
+              },
+              "momentOnA": -132.56709042104674,
+              "momentOnB": -103.35739253166356
+            },
+            {
+              "a": "H",
+              "b": "DE_W",
+              "normal": 373.82661973436063,
+              "tangent": -183.24172568231072,
+              "forceOnB": {
+                "x": 343.5274255718275,
+                "y": 234.59294296380463
+              },
+              "momentOnA": 49.780001614118106,
+              "momentOnB": 48.28060397513863
+            }
+          ],
+          "deliveredBodyContactAtFirst": [],
+          "firstDifference": {
+            "t": 0.05,
+            "referenceHandCount": 0,
+            "candidateHandCount": 0,
+            "referenceContactCount": 0,
+            "candidateContactCount": 0,
+            "keeperReference": {
+              "pos": {
+                "x": 39.45180824219571,
+                "y": 29.269690275908278
+              },
+              "vel": {
+                "x": 0.07232968782843845,
+                "y": 0.1209443696643458
+              },
+              "facing": 0.08642375461431961,
+              "spin": 3.4569501845727846,
+              "request": {
+                "vel": {
+                  "x": 1.9545454545454355,
+                  "y": 3.268246761150351
+                },
+                "facing": 0.7415428886710093,
+                "cutSkill": 0.9959183673469388,
+                "posture": 0.7
+              },
+              "intent": {
+                "vel": {
+                  "x": 1.9545454545454355,
+                  "y": 3.268246761150351
+                },
+                "facing": 0.7415428886710093,
+                "cutSkill": 0.9959183673469388,
+                "posture": 0.7
+              }
+            },
+            "keeperCandidate": {
+              "pos": {
+                "x": 39.45180824219571,
+                "y": 29.269690275908278
+              },
+              "vel": {
+                "x": 0.07232968782843845,
+                "y": 0.1209443696643458
+              },
+              "facing": 0.06739933068370554,
+              "spin": 2.0119620832747014,
+              "request": {
+                "vel": {
+                  "x": 1.9545454545454355,
+                  "y": 3.268246761150351
+                },
+                "facing": 0.7415428886710093,
+                "cutSkill": 0.9959183673469388,
+                "posture": 0.7
+              },
+              "intent": {
+                "vel": {
+                  "x": 1.9545454545454355,
+                  "y": 3.268246761150351
+                },
+                "facing": 0.7415428886710093,
+                "cutSkill": 0.9959183673469388,
+                "posture": 0.7
+              }
+            },
+            "rbReference": {
+              "pos": {
+                "x": 33.20407159921164,
+                "y": 26.67300026544032
+              },
+              "vel": {
+                "x": 0.16286396846531997,
+                "y": 0.2533439509460537
+              },
+              "facing": 0.08864306755706403,
+              "spin": 3.5457227022825606,
+              "request": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": 6.601345299888643
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": 6.601345299888643
+                }
+              }
+            },
+            "rbCandidate": {
+              "pos": {
+                "x": 33.203991970105285,
+                "y": 26.67287639794155
+              },
+              "vel": {
+                "x": 0.15967880421125313,
+                "y": 0.2483892509952831
+              },
+              "facing": 0.0856428947533272,
+              "spin": 3.0238433998882828,
+              "request": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": 6.601345299888643
+                }
+              },
+              "intent": {
+                "vel": {
+                  "x": 4.243721978499835,
+                  "y": 6.601345299888643
+                }
+              }
+            }
+          },
+          "firstKeeperMovementRequestDifference": {
+            "t": 0.15,
+            "reference": {
+              "vel": {
+                "x": 1.9813230049073225,
+                "y": 1.5698601960262464
+              },
+              "facing": 0.7411711545439617,
+              "cutSkill": 0.9959183673469388,
+              "posture": 0.7
+            },
+            "candidate": {
+              "vel": {
+                "x": 1.9813247954606052,
+                "y": 1.569862281627437
+              },
+              "facing": 0.7411711545439617,
+              "cutSkill": 0.9959183673469388,
+              "posture": 0.7
+            }
+          },
+          "gainDifference": -0.8919805413233561
+        },
+        {
+          "arm": "patch-from-2.4",
+          "endTime": 3.65,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": 2.6,
+          "gain": 3.0927187749829486,
+          "firstContact": {
+            "t": 2.3,
+            "opponent": "DE_W",
+            "note": "grasp",
+            "depth": -0.9623213508506083,
+            "roundedEventDepth": -0.9600000000000009
+          },
+          "limits": {
+            "armImpulse": 7.105427357601002e-15,
+            "armWork": 0,
+            "workResidual": 8.677503160470224e-12
+          },
+          "frozenInputError": null,
+          "approach": "interrupted",
+          "handsAtFirstContact": [],
+          "handsBeforeFirstContact": [
+            {
+              "a": "LT",
+              "b": "DE_W",
+              "normal": 0,
+              "tangent": -126.87379753441914
+            }
+          ],
+          "deliveredBodyContactAtFirst": [],
+          "firstDifference": {
+            "t": 2.4,
+            "referenceHandCount": 4,
+            "candidateHandCount": 4,
+            "referenceContactCount": 1,
+            "candidateContactCount": 1,
+            "keeperReference": {
+              "pos": {
+                "x": 40.8035397559255,
+                "y": 30.53005374348382
+              },
+              "vel": {
+                "x": -0.9173798050845369,
+                "y": 0.9514331554663946
+              },
+              "facing": 2.7362368947840316,
+              "spin": -2.1074132610472622,
+              "request": {
+                "vel": {
+                  "x": -4.0575605196739915,
+                  "y": -1.1137135608491073
+                },
+                "posture": 0.7,
+                "facing": 2.727136599162249
+              },
+              "intent": {
+                "vel": {
+                  "x": -4.0575605196739915,
+                  "y": -1.1137135608491073
+                },
+                "posture": 0.7,
+                "facing": 2.727136599162249
+              }
+            },
+            "keeperCandidate": {
+              "pos": {
+                "x": 40.8035397559255,
+                "y": 30.53005374348382
+              },
+              "vel": {
+                "x": -0.9173798050845369,
+                "y": 0.9514331554663946
+              },
+              "facing": 2.7726986403685454,
+              "spin": -0.2311352558880976,
+              "request": {
+                "vel": {
+                  "x": -4.0575605196739915,
+                  "y": -1.1137135608491073
+                },
+                "posture": 0.7,
+                "facing": 2.727136599162249
+              },
+              "intent": {
+                "vel": {
+                  "x": -4.0575605196739915,
+                  "y": -1.1137135608491073
+                },
+                "posture": 0.7,
+                "facing": 2.727136599162249
+              }
+            },
+            "rbReference": {
+              "pos": {
+                "x": 39.39361830749978,
+                "y": 31.737431899957564
+              },
+              "vel": {
+                "x": 3.798072137244217,
+                "y": 2.346084570760183
+              },
+              "facing": 0.407753368617132,
+              "spin": 2.1585215065733476,
+              "request": {
+                "vel": {
+                  "x": 8.435883912503815,
+                  "y": 4.394467602349099
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "intent": {
+                "vel": {
+                  "x": 8.435883912503815,
+                  "y": 4.394467602349099
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0,
+                "push": 1,
+                "posture": 0.5
+              }
+            },
+            "rbCandidate": {
+              "pos": {
+                "x": 39.393874441531324,
+                "y": 31.737545941070902
+              },
+              "vel": {
+                "x": 3.7971230231779978,
+                "y": 2.3454734702164477
+              },
+              "facing": 0.38763027627053237,
+              "spin": 0.8379501880275855,
+              "request": {
+                "vel": {
+                  "x": 8.435883912503815,
+                  "y": 4.394467602349099
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              },
+              "intent": {
+                "vel": {
+                  "x": 8.435883912503815,
+                  "y": 4.394467602349099
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0,
+                "push": 1,
+                "posture": 0.5
+              }
+            }
+          },
+          "firstKeeperMovementRequestDifference": {
+            "t": 2.55,
+            "reference": {
+              "vel": {
+                "x": 1.7255524416685093,
+                "y": 3.1538881534827548
+              },
+              "facing": 2.2651085232733106,
+              "cutSkill": 0.9959183673469388,
+              "posture": 0.7
+            },
+            "candidate": {
+              "vel": {
+                "x": 1.7268899852802986,
+                "y": 3.152661109100287
+              },
+              "facing": 2.2651085232733106,
+              "cutSkill": 0.9959183673469388,
+              "posture": 0.7
+            }
+          },
+          "gainDifference": 0.7211976629808845
+        }
+      ]
+    }
+  ],
+  "commandCosts": {
+    "focused-settings.json": {
+      "seconds": 2.7051261270000007,
+      "exitCode": 0
+    },
+    "typecheck-settings.json": {
+      "seconds": 13.465678363999999,
+      "exitCode": 1
+    },
+    "focused-final-settings.json": {
+      "seconds": 3.439907182,
+      "exitCode": 0
+    },
+    "native-final-settings.json": {
+      "seconds": 5.7684361399999995,
+      "exitCode": 0
+    },
+    "typecheck-final-settings.json": {
+      "seconds": 15.160973010000001,
+      "exitCode": 0
+    },
+    "native-settings.json": {
+      "seconds": 5.3656067080000005,
+      "exitCode": 0
+    },
+    "mechanical-settings.json": {
+      "seconds": 0.40601025100000004,
+      "exitCode": 0
+    },
+    "mechanical-final-settings.json": {
+      "seconds": 0.367354242,
+      "exitCode": 0
+    }
+  },
+  "totalRecordedCommandSeconds": 46.679092024,
+  "correctedDiagnosticTypeErrors": [
+    "Flat hand packet was not typed as a HandJoint before revival.",
+    "Rounded event position is optional; exact firstContactX is now reported separately."
+  ],
+  "scope": "No runtime/default/law/capacity change; existing patch diagnosis only. 68 focused tests/typecheck; no new full suite or games.",
+  "retainedFailures": "Nine historical patch-gate failures remain separate, as pinned in PR #7; not rerun or reclassified here.",
+  "limitations": [
+    "Three reused football inputs, not an outcome sample.",
+    "The full patch also changes ground facing, torso ordering and grasp laws; endpoint causation is not isolated.",
+    "The weak fork at 2.40 is after its first contact, so it cannot establish protection improvement.",
+    "Contacts are tick-boundary observations: body impulses, acquired grasps and mere proximity remain distinct.",
+    "The saved successful first opponent is CB_S; prose claiming SS disagrees with its own saved receipt."
+  ]
+}
