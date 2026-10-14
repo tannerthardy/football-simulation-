@@ -1,3 +1,81 @@
+# Integration ledger
+
+Updated **2026-10-14 (America/Phoenix)**. [Priorities](STATUS.md),
+[issue/blocker details](ISSUES.md), [file ownership](WORKBOARD.md).
+
+## Accepted reference and verification ownership
+
+`develop` at **a1b16e666a9ee7d1bc1d2aecba141fc535863b24** contains merged
+[#12](https://github.com/tannerthardy/football-simulation-/pull/12).
+Historical `4ded6b6` remains a comparison, not the development starting point.
+The designated **Integration owner** freezes candidates and owns one combined
+verification. Contributors supply compatible focused receipts.
+
+The accepted #12 code was tested at `46a833dd006850a2c83a937bd3444181d8b10588`:
+**1,684 TypeScript / 145 Python checks, typecheck/build pass**, 180.530 s,
+44 flags/components=1. [Exact receipt](../data/reviews/current/controller-combined-verification.json),
+[scope and adverse evidence](reviews/controller-integration.md).
+Publication/merge commits are distinct from the tested commit; reuse depends on
+source/test/input/settings/measurement compatibility, not PR state alone.
+
+## Candidate dispositions
+
+| Work / exact publication snapshot | Disposition | Remaining decision |
+| --- | --- | --- |
+| #12 accepted run/catch + shared policy/tooling; develop `a1b16e6` | Integrated | Maintain known limitations; no new baseline designation in this documentation pass |
+| [#29](https://github.com/tannerthardy/football-simulation-/pull/29) `b8e4d86`; tested `ce93c3b` | Ready for isolated integration review; **not yet fully verified/merged** | [STALK-001](ISSUES.md#STALK-001): preserve two-line scope and complete required verification, independently if coverage stays parked |
+| [#34](https://github.com/tannerthardy/football-simulation-/pull/34) `306579f`; tested `cb240d2` | **Blocked; follow-up parked while Pass Game helps awareness** | [COV-001/002](ISSUES.md#COV-001): supported controller/test-contract adjudication, then one revised combined pass including Python |
+| Awareness implementation | Active user-assigned work; no published implementation snapshot verified here | Exact candidate, settings and observer-state contract; [INFO-001/002](ISSUES.md#INFO-001) |
+| [#35](https://github.com/tannerthardy/football-simulation-/pull/35) `fed330a` | Diagnostic preparation, not a runtime feature | D01/Y comparison after awareness candidate; preserve incomplete-memory disclosure |
+| [#17/#18](https://github.com/tannerthardy/football-simulation-/pull/17) `92743c0` / `b30284c` | Experimental contact correction/evidence; unpromoted | [PHY-001](ISSUES.md#PHY-001); retention review permits bounded controller work, not package adoption |
+| Physics #3/#7/#15–#21/#25/#31/#33; latest #33 `abf0e1c` | Research, not a combined production candidate | Local correctness/composition, cost, and named transfer; [PHY-002](ISSUES.md#PHY-002) |
+| #23/#27/#28 TE studies/intervention | Diagnostics and parked intervention; do not merge ancestry | [RUN-003](ISSUES.md#RUN-003): adverse transfer retained |
+| #22/#26/#30/#32 run audits/reference/rejected alternatives | Evidence, not production changes | Reuse exact references; no automatic campaign or runtime merge |
+| #13 RB assessment; #4/#5 hands/handover/helper experiments; Stick/seam/post/QB-pressure prototypes | Separate review/research; excluded from #34 | A named independent question before extraction; no broader candidate by collection |
+
+Relevant #6/#8/#9/#10 code/evidence is incorporated through accepted #12 even
+when the older draft PR remains open. Do not confuse code inclusion with PR
+closure, or close/delete historical refs from this ledger alone.
+
+## Parked coverage receipt — not a passing verification
+
+[#34 exact receipt](https://github.com/tannerthardy/football-simulation-/blob/306579fda9d496d45606445fd542239cf2f5acf4/data/reviews/current/pass-controller-combined-verification.json):
+**1,698 passed / two failed; Python skipped**. Typecheck/build and 94 affected
+checks pass. Combined runtime 205.662 s; candidate `cb240d2`, publication `306579f`.
+The [register](ISSUES.md#COV-001) preserves numeric failures, intended contracts,
+next actions and owner return condition. Existing diagnostics do not clear them.
+Do not rerun the same failed source or treat that receipt as covering #29 alone.
+
+## Promotion path
+
+1. Identify the smallest independently useful correction and opposing contract.
+2. Resolve named blockers with saved/focused evidence. A changed ending is not
+   automatically a defect; an assertion change needs a supported contract.
+3. Integration freezes exact source, tests, inputs, flags/model choices and dependencies.
+4. One owner performs the required combined verification; every phase must pass.
+   Fail-fast skips remain skips, not inherited passes.
+5. Publish exact receipt, remaining risks and final decision. Merge/reference
+   changes remain separately reviewed; a draft or focused pass is not approval.
+
+Use [TESTING_COSTS](TESTING_COSTS.md). No automatic mode/roster matrices or games.
+For current development, use the historical launcher in candidate mode; it still
+guards the original historical source hash:
+
+```sh
+npm run baseline:info -- --candidate
+# Integration owner only, for a reviewed exact combined candidate:
+npm run baseline:verify -- --candidate --fail-fast
+```
+
+Use Node22.23.3 and preserve accepted resolved settings. Do not edit the historical
+profile/source pin simply to make the launcher label current development a baseline.
+
+<details>
+<summary>Historical #6 / #12 preparation and original receipts</summary>
+
+The following original records describe their own stage. Then-current ownership,
+43-flag and adoption-pending statements are historical, superseded above.
+
 # Current integration ownership and evidence
 
 Current task: [reviewed run/catch controller integration](reviews/controller-integration.md),
@@ -118,3 +196,5 @@ fingerprint `2636006bf58c4d30db9ff67049b18d4d33059ff7f0bf49c51e3e50617a0c9597`, 
 The publication follow-up adds only docs/evidence; it is not represented as
 another tested commit. Runtime and validation fingerprints must match this
 receipt at publication. `4ded6b6` remains the historical comparison pin.
+
+</details>

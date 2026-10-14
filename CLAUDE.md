@@ -6,14 +6,17 @@ their bodies and make decisions. **We are not tuning toward NFL numbers.** Many
 wrong mechanisms can produce 4.4 yards per carry. NFL game statistics are the
 final exam, not the objective function.
 
-The shared development baseline is `codex/run-game-integration`, described in
-[BASELINE.md](docs/BASELINE.md) and `config/baseline.json`. Fetch it and record
-the exact commit before comparing results; use `npm run baseline:run` so ambient
-flags cannot change the experiment. Start new work from this baseline. Existing
-feature branches must reconcile it before claiming comparable results.
+The accepted development reference is `develop`, verified at
+`a1b16e666a9ee7d1bc1d2aecba141fc535863b24`, containing merged #12. Fetch and pin
+the exact reference before comparing. Start new feature work from it; research
+keeps explicitly declared ancestors/settings. `4ded6b6` is the historical
+comparison, described in [BASELINE.md](docs/BASELINE.md), not today's starting tree.
+Use `npm run baseline:run -- --candidate -- ...` so ambient flags cannot change
+the experiment; the launcher still guards a historical source hash. Current
+accepted settings have 44 flags/components=1. Do not change the historical pin.
 
-`claude/engine-priorities` remains the primary physics owner's branch and PR #2's
-target; it is not the current combined test baseline. Commit coherent steps on
+`claude/engine-priorities` and PR #2's target retain historical physics work;
+consult [WORKBOARD](docs/WORKBOARD.md) for the current owner/branch. Commit coherent steps on
 the assigned feature branch and push only that branch. Keep PR #2 draft and do
 not merge it until explicitly instructed. Experimental code can be preserved
 with its flag off; promotion requires its law and football controls.
@@ -21,15 +24,17 @@ Do not push main, rewrite history, force-push, or touch PR #1 without the owner.
 Read [work ownership](docs/WORKBOARD.md) before selecting work; claim it there
 and coordinate before editing another session's subsystem.
 
-The current pass prepares the reviewed run/catch corrections on approved #8
-`c98c2fa`; follow [controller integration](docs/reviews/controller-integration.md).
-The Codex integration owner in this chat owns one exact combined verification.
-Reuse #10's compatible run-only receipt and contributors' focused evidence.
-Actual candidate settings are 44 flags/components=1, with the original 43 values
-retained and no new catch flag. Historical `4ded6b6` stays unchanged; unrelated
-hands/grip/helper experiments and #3/#4/#5/#7/#11 ancestry remain excluded.
-No merge or reference/baseline designation is authorized. The earlier #6-only
-receipt remains in [integration ownership/evidence](docs/INTEGRATION.md).
+The reviewed run/catch corrections are accepted through #12; preserve
+[their receipt and adverse evidence](docs/reviews/controller-integration.md).
+[STATUS](docs/STATUS.md) gives priorities, [ISSUES](docs/ISSUES.md) is the master
+problem register, and [INTEGRATION](docs/INTEGRATION.md) separates accepted code,
+reviewable candidates, blocked combinations and diagnostics. Coverage #34 stays
+blocked; its follow-up is parked while Pass Game helps awareness. #29 remains
+independently reviewable. New promotion/merge decisions remain separately reviewed.
+One designated Integration owner verifies an exact combined candidate; contributors
+reuse compatible focused evidence and do not repeat that suite. Do not import
+unrelated experimental ancestry. In normal handoffs, include the relevant issue
+ID and proposed status change; Architecture/Integration maintain master rows.
 
 ## Model rules
 

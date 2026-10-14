@@ -1,3 +1,72 @@
+# Project status and priorities
+
+Updated **2026-10-14 (America/Phoenix)**. Start here for the current project;
+older chronological material is preserved in the collapsed section below.
+
+## One place for each question
+
+| Question | Canonical record |
+| --- | --- |
+| What should we work on next? | This page: three active priorities |
+| What bugs, limitations and parked work remain? | [Master issue register](ISSUES.md) |
+| What is integrated, reviewable or blocked? | [Integration ledger](INTEGRATION.md) |
+| Who owns shared files? | [Workboard](WORKBOARD.md) |
+| Where is the evidence? | Linked receipts/reviews, [data guide](../data/README.md) |
+| How much testing is appropriate? | [Testing costs](TESTING_COSTS.md) and [behavior review](BEHAVIOR_REVIEW.md) |
+| What can eventually be cleaned up? | [Preservation/branch record](BRANCHES.md) |
+
+## Accepted reference
+
+- **Development:** `develop` at `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`.
+  [PR #12](https://github.com/tannerthardy/football-simulation-/pull/12) is merged.
+  Its reviewed run-contact component and moving-catch corrections are included.
+- **Comparison history:** `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` remains the
+  historical reference, not the current development tree. [Reproduction](BASELINE.md).
+- **Settings at the development pin:** 44 accepted flags/components=1;
+  center/centered hands, legacy/mean support. Experimental physics remains separate.
+- **Navigation limitation:** GitHub still defaults to `claude/football-sim-engine`.
+  Follow `develop`; changing that default remains [REPO-001](ISSUES.md#REPO-001).
+
+## Three active priorities
+
+| Priority | Owner | Concrete next action | Dependency / boundary |
+| --- | --- | --- | --- |
+| 1. Honest teammate information — [INFO-001/002](ISSUES.md#INFO-001) | Pass Game/Pursuit awareness owner; Run Game supplies #35 | Publish the smallest acquired/memory/expectation query and focused information tests; then compare existing D01/Y inputs | Preserve yielding/contact/capabilities. #35 waits for exact candidate/settings and honest observer initialization. |
+| 2. Independently useful stalk correction — [STALK-001](ISSUES.md#STALK-001) | Integration + Run Game | Decide a #29-only candidate while coverage is parked, then complete required exact verification | Focused review found no blocker, but no standalone full pass/merge is claimed. Coordinate shared API changes; do not adopt diagnostic ancestry. |
+| 3. Bounded grip composition — [PHY-002](ISSUES.md#PHY-002) | Primary Physics | #33's named saved World-interval question: normal/tangent group work and span-energy accounting | Research only; practical cost is still a gate. Keep support history, contact-law promotion and awareness independent. |
+
+These streams may proceed in parallel within their ownership boundaries.
+Architecture owns ordering; Integration owns exact combined verification.
+No row requires a new suite, game campaign or architectural approval by itself.
+
+## Important parked / blocked work
+
+- **Coverage #34:** [COV-001](ISSUES.md#COV-001) seam-gap requirement and
+  [COV-002](ISSUES.md#COV-002) scramble-recording fixture remain unresolved.
+  Preserve the failed receipt. Pass Game is currently helping awareness; return
+  when that owner is available. #34 cannot merge while these are parked.
+- **D01 policy and RT recovery:** [RUN-001](ISSUES.md#RUN-001), after the honest
+  information comparison. Two #32 alternatives are rejected; do not stack more.
+- **TE base:** [RUN-003](ISSUES.md#RUN-003), parked after adverse production transfer.
+- **Live center-hand angular defect:** [PHY-001](ISSUES.md#PHY-001) remains known;
+  the accounting correction is experimental and unpromoted.
+- **Long-hold recovery history:** [PHY-003](ISSUES.md#PHY-003), separate saved-tape work.
+- **Branch cleanup, calibration and richer anatomy:** recorded return conditions
+  in [the register](ISSUES.md); no deletion, tuning campaign or rewrite is assigned.
+
+## Keep the board current
+
+Owners include an issue ID and proposed state change in their normal handoff.
+Architecture/Integration update the master rows on meaningful status changes,
+preserving exact evidence and failures. WORKBOARD records edit ownership, not a
+second competing bug list. Completed diagnostics are not automatically mergeable.
+
+<details>
+<summary>Historical chronological status retained from develop a1b16e6</summary>
+
+The following text retains its original source/counts and then-current guidance.
+It is historical; the reference and priorities above supersede its live-status claims.
+
 # Current status
 
 Current shared baseline: [BASELINE.md](BASELINE.md), `codex/run-game-integration`.
@@ -249,3 +318,5 @@ random-film review, the two-attempt stopping rule and the future untouched exam.
 Research probes stay outside production/default tests; generated films and
 traces go to ignored `out/`. Old large evidence remains recoverable at `663193d`
 through [the retrieval guide](../data/README.md). History was not rewritten.
+
+</details>

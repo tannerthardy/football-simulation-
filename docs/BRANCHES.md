@@ -1,5 +1,13 @@
 # GitHub branch map and preservation record
 
+Current navigation: [STATUS](STATUS.md), [master issues](ISSUES.md#REPO-001),
+[integration ledger](INTEGRATION.md). Accepted development is `develop` at
+`a1b16e6`; GitHub's default was still `claude/football-sim-engine` at the
+2026-10-14 (America/Phoenix) tracking update. The map/counts and cleanup outcomes
+below are historical snapshots, not current PR dispositions. Refresh the
+manifest and affected-owner evidence before retirement. This documentation
+update makes no tags, deletions, PR closures or default-branch changes.
+
 ## Bounded cleanup execution
 
 The user authorized only the eight milestone names in the original manifest,

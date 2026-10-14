@@ -7,12 +7,13 @@ We build the mechanisms correctly rather than tune outcomes to NFL averages.
 
 ## Where to find things
 
-- **Development reference:** `codex/run-game-integration` at historical
-  `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` remains the designated starting point.
-  [Draft #8](https://github.com/tannerthardy/football-simulation-/pull/8) is the
-  verified policy/tooling candidate; adoption is **pending**. Its reviewed tree
-  is `c98c2fa0e8de760c980ad3852e0ec85abcfadc8f`; subsequent #8 navigation adds
-  documentation only. Production simulation code is unchanged.
+- **Start here:** [current priorities and project map](docs/STATUS.md),
+  [master issue register](docs/ISSUES.md), and [integration dispositions](docs/INTEGRATION.md).
+- **Development reference:** `develop`, verified at
+  `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`. [PR #12](https://github.com/tannerthardy/football-simulation-/pull/12)
+  is merged, including shared tooling and reviewed run/catch corrections.
+  GitHub's default still points to the older `claude/football-sim-engine` branch;
+  use the explicit development reference. Candidate details remain in the ledger.
 - **Historical comparisons:** [baseline/profile and known failures](docs/BASELINE.md)
   pin `4ded6b6`; new reference adoption must preserve that exact comparison.
 - **Simulation:** [single play](scripts/sim-play.ts), [game](scripts/sim-game.ts),
@@ -21,8 +22,8 @@ We build the mechanisms correctly rather than tune outcomes to NFL averages.
   [players](src/players), [playbook](src/playbook), [game](src/game) and [league](src/league).
 - **Integration and ownership:** [scope, flags and receipts](docs/INTEGRATION.md),
   [workboard](docs/WORKBOARD.md), [agent instructions](CLAUDE.md).
-  [Draft #10](https://github.com/tannerthardy/football-simulation-/pull/10) is the
-  separately verified component correction; runtime promotion remains pending.
+  Open historical PRs do not mean their code is absent: the component correction
+  is incorporated through #12. New focused passes are not combined merge approval.
 - **Testing:** [tiny decision-driven loop and cost policy](docs/TESTING_COSTS.md),
   [interpret improvement/regression](docs/BEHAVIOR_REVIEW.md),
   [validation](docs/VALIDATION.md). Contributors supply focused receipts;
@@ -40,7 +41,7 @@ Requires Node 22.23.3. Record the exact source and settings before comparisons.
 
 ```sh
 npm ci
-npm run baseline:info
+npm run baseline:info -- --candidate
 npm run sim:game -- 7 --pbp
 npm run replay -- 7 --games 6 --doc
 ```
@@ -69,5 +70,6 @@ owns profiles; `src/game` owns the game; `scripts` contains labs and exporters.
 experiments. `npm test` keeps production contracts in the normal development
 loop when relevant; `npm run test:all` retains every TypeScript assertion.
 
-Start assigned feature work from the shared baseline and push its feature
-branch. Primary retains physics promotion ownership. Do not touch main or PR #1.
+Start assigned feature work from pinned `develop` and push its feature branch;
+research retains explicit ancestor/settings pins. Read the workboard for current
+ownership and coordinate shared edits. Do not touch main or PR #1.

@@ -1,22 +1,28 @@
-# Shared integration baseline
+# Development reference and historical comparison
 
-Current preparation: [reviewed run/catch corrections](reviews/controller-integration.md)
-from approved #8 `c98c2fa`. This candidate has 44 flags/components=1 and requires
-`--candidate`; the original 43 values, historical `4ded6b6` and its receipts
-remain pinned. No reference or runtime baseline designation has occurred.
-The remaining guidance describes that historical comparison and #6-only pass.
+Use **`develop`** for new shared feature work; verified reference
+**`a1b16e666a9ee7d1bc1d2aecba141fc535863b24`** includes merged #12 and reviewed
+run/catch corrections. [Current integration](INTEGRATION.md),
+[priorities](STATUS.md), [master issues](ISSUES.md).
 
-Use **`codex/run-game-integration`** for shared development and comparisons.
-Baseline ID: **`run-game-2026-10-13`**. The complete profile is
-[`config/baseline.json`](../config/baseline.json). It retains the existing
-default-on controllers and preserves experimental implementations with their
-flags off. This designation does not promote the experimental contact law or
-declare that the remaining football mechanisms are finished.
+Current accepted settings are 44 flags/components=1 with center/centered hands
+and legacy/mean support. The [launcher profile](../config/baseline.json) still
+retains the historical engine/source hash and ID `run-game-2026-10-13` as a guard;
+its current flag inventory includes the accepted component setting. Use
+`npm run baseline:info -- --candidate` and
+`npm run baseline:run -- --candidate -- ...` on develop. Candidate labeling is
+not a new reference designation. Do not rewrite the historical source pin.
 
-`4ded6b6` remains the historical comparison. The current **#6-only** candidate
-and explicitly assigned verification owner are described in
-[INTEGRATION.md](INTEGRATION.md). Its receipt is a separate combined-tooling
-verification; the engine and all 43 profile flags remain unchanged. The
+## Historical comparison and exact receipts
+
+`4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` on `codex/run-game-integration`
+remains the historical comparison. For its exact original 43-flag reproduction,
+use its pinned tree/profile and receipt, not today's 44-flag file. The following
+source/counts describe that stage and #6-only preparation, not current develop.
+Experimental contact/timing laws are not promoted by any reference naming.
+
+The historical **#6-only** candidate verification is retained in
+[INTEGRATION.md](INTEGRATION.md). Its engine and all 43 profile flags were unchanged. The
 [exact candidate receipt](../data/reviews/current/shared-integration-verification.json)
 records `c3080e8`: 1,669 TypeScript/145 Python checks, typecheck/build, all passing.
 
@@ -26,7 +32,7 @@ typecheck and build**, with no test or worker errors. The
 43 flag values, source and harness hashes, and known failures. The published
 baseline commit is pinned in [PR #2](https://github.com/tannerthardy/football-simulation-/pull/2).
 
-## Revisions and reproduction
+## Historical revisions and reproduction
 
 The runtime is frozen at `5db48d58747767bc62f2ebb061ceb19a637ee0a8`, SHA-256
 `8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c`.
@@ -40,7 +46,9 @@ The tested code/harness commit is `1f1f1c82b8c030c96e0122ec189d1962be2e51b1`;
 the publication follow-up only adds documentation and the receipt. Compare
 both fingerprints when repeating results from the published snapshot.
 
-Use Node **22.23.3** (`.nvmrc`), install with `npm ci`, then:
+For historical reproduction only, use Node **22.23.3** and a separate checkout
+with the pinned tree/profile. New development uses develop above. Original
+branch-based reproduction commands are retained here:
 
 ```sh
 git fetch origin

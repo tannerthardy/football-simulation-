@@ -1,3 +1,45 @@
+# Work ownership
+
+Updated **2026-10-14 (America/Phoenix)**. Use [STATUS](STATUS.md) for priorities,
+[ISSUES](ISSUES.md) for canonical problem states, and [INTEGRATION](INTEGRATION.md)
+for exact candidate decisions. This page controls shared-edit coordination.
+
+New development starts from `develop` (verified `a1b16e6`); historical comparisons
+retain `4ded6b6`. Research may use declared experimental ancestors with explicit pins.
+
+## Current coordination
+
+| Work | Owner | Published location / edit boundary | Current state |
+| --- | --- | --- | --- |
+| Shared teammate awareness, INFO-001/002 | Pass Game/Pursuit awareness owner, user-assigned | Implementation branch not published at this snapshot; claim exact perception/spacing files before shared edits | Active; retain observation/memory/expectation boundary, current policy and physics |
+| D01/Y awareness comparison, RUN-001 | Run Game | `codex/ace-awareness-comparison`, #35 `fed330a`; fixtures/harness/domain interpretation | Prepared; waiting for exact awareness commit/settings/observer initialization; no new recovery policy |
+| Coverage COV-001/002 | Pass Game + recording-contract owner; Integration handles later freeze | #34 `306579f`, tested `cb240d2`; coverage/test-contract review | Parked while Pass Game helps awareness; candidate remains blocked |
+| Stalk STALK-001 and exact shared verification | Integration + Run Game contributor | #29 `b8e4d86`, or a reviewed extraction; only minimal fit input correction | Independent review eligible; no standalone combined pass claimed |
+| Grip composition/cost PHY-002 | Primary Physics | `codex/grip-phase-transition`, #33 `abf0e1c`; bounded diagnostic solver/reference/composition work | Active research; no World/default promotion |
+| Run-game contact-law/retention support PHY-001/004 | Architecture lead, user-delegated physics reviewer; Integration owns promotion | #17/#18 evidence and published retention ruling; coordinate World edits with primary Physics | Retention prerequisite reviewed; angular correction remains unpromoted |
+| Master tracking and priorities | Architecture lead + Integration maintainer | `codex/project-tracking`; documentation only | Initial register/current-reference repair; contributors propose updates by issue ID |
+
+The awareness owner assignment is user-reported; this board does not invent an
+implementation SHA or assume an unpublished file claim. Named branch rows are
+published scope records, not authority to edit another worker's checkout.
+Coordinate shared movement/spacing changes with the YAC/Pursuit owner. The
+primary Physics owner retains unrelated solver work. No new agent is launched
+or broad subsystem task assigned by creating a register row.
+
+## Before editing shared code
+
+Record the named issue, branch and smallest file/interface boundary. Coordinate
+overlaps first; routine local fixes within agreed scope need no architecture
+approval round-trip. If a handoff changes an API or claim, update this section.
+Master issue states are updated by Architecture/Integration from normal handoffs,
+avoiding simultaneous master-list edits by every feature worker.
+
+<details>
+<summary>Preserved historical ownership, completed work and branch snapshots</summary>
+
+The following original rows are historical. Their WIP/next-step/reference claims
+do not override the current section; their source pins and evidence remain useful.
+
 # Current work ownership
 
 ## Current controller integration preparation
@@ -637,3 +679,5 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+</details>
