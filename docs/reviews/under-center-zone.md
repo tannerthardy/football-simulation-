@@ -145,9 +145,9 @@ npm run baseline:run -- --candidate -- \
 ```
 
 Nine matched observer pairs plus native/reduced/free witness checks cost 19.25
-recorded command-seconds. Offline reduction and checking the compact portable
-witness bring that first validation stage to 23.51 command-seconds. The final
-duplicate-cue aggregation only repeats offline reduction; it runs no additional
+recorded command-seconds. With offline reduction, compact-witness verification
+and final duplicate-cue aggregation, total recorded validation commands cost
+**27.83 seconds**. Aggregation repeats only offline reduction and runs no new
 plays. [Analysis validation](under-center-zone-analysis-validation.json) distinguishes
 these stages. No games, new census or full suite were run. Runtime is unchanged;
 the full-suite responsibility remains with the designated integration owner.
