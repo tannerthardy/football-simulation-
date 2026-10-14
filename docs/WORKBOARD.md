@@ -18,6 +18,23 @@ RT joining and RG anchoring remain separate. Current develop remains observed
 These local comparisons use the exact historical isolated patch/legacy profile,
 not a claim about current production. Do not merge this diagnostic ancestry.
 
+Completed [isolated loaded base comparison](reviews/te-loaded-base.md),
+[exact pins/settings/cost](reviews/te-loaded-base-receipt.json) and
+[117 KB portable same-state input](reviews/te-loaded-base-fixed-contact.json).
+Two candidate native endings reuse the neutral reference; no panel expansion.
+Y initial loaded support improves and unchanged RT earns a real keeper before
+the runner arrives; DE_S no longer gets the runner. Weak retains the 1.25
+handoff, but crossing is .10 s later and torso clearance .115 yd smaller.
+Both upright; later peaks and long weak carry remain visible. Fixed input
+reproduces exactly,12/48 support/yaw effect closes torque/work/budgets;
+typecheck passes. Total wrapped simulations/checks25.15 s (including the added
+ledger and final typecheck). Native tested `b7f95cf`; final physical probe
+`0df76fb`; final typecheck `831eea0`. No live source/movement edit.
+
+Next: integration's single accepted-profile shared Ace replay, then one
+separate production transfer question if these inputs remain relevant. This
+does not accept all three candidate controls or settle RT recovery/RG traffic.
+
 User-assigned physics support: `codex/contact-law-isolation` from PR #14
 `22d3b34df18124ffad1a5eebd30d6f41bbb67d57`. This support worker owns only the
 isolated contact/ground-facing separation candidate in `src/physics/world.ts`

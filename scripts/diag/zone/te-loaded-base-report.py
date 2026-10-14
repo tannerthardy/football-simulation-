@@ -52,7 +52,7 @@ def clearance(frame, rb, defender):
             'clearance': distance - touch, 'runner': a, 'defender': b}
 
 
-def summarize(arm, actor, defender, keeper):
+def summarize(arm, actor, defender, keeper, matched_stop):
     first = arm['firstContact']
     before_contact = [f for f in arm['frames'] if first is None or f['t'] <= first['t']]
     closest = min((clearance(f, 6, defender) for f in before_contact), key=lambda x: x['clearance'])
@@ -60,6 +60,7 @@ def summarize(arm, actor, defender, keeper):
     first_climb = climbs[0]['t'] if climbs else None
     first_level = [f for f in arm['frames'] if first_climb is None or f['t'] < first_climb]
     arrival = [f for f in before_contact if abs(f['t'] - closest['t']) <= .150001]
+    matched = [f for f in arm['frames'] if .4 <= f['t'] < matched_stop]
     body_contacts = [{'t': f['t'], **j} for f in arm['frames'] for j in f['report']['contacts']
                      if {j['i'], j['j']} == {6, defender} and j['impulse'] > 1e-6]
     return {'endTime': arm['endTime'], 'censored': arm['censored'], 'outcome': arm['outcome'],
@@ -72,6 +73,9 @@ def summarize(arm, actor, defender, keeper):
             'TEFirstLevelMaxXi': max(math.hypot(*f['agents'][actor]['body']['support']['xi'].values()) for f in first_level),
             'TEFirstLevelMaxPeak': max(f['agents'][actor]['body']['support']['peak'] for f in first_level),
             'TEWholeRunMaxPeak': max(f['agents'][actor]['body']['support']['peak'] for f in arm['frames']),
+            'matchedFirstLevelWindow': {'start': .4, 'stop': matched_stop,
+                'maxXi': max(math.hypot(*f['agents'][actor]['body']['support']['xi'].values()) for f in matched),
+                'maxPeak': max(f['agents'][actor]['body']['support']['peak'] for f in matched)},
             'TESupportStates': sorted({f['agents'][actor]['body']['support']['state'] for f in arm['frames']}),
             'arrivalWindow': [{'t': f['t'], 'after': f['after'],
                                'keeperBody': f['worldInput']['beforeBodies'][keeper],
@@ -97,7 +101,8 @@ for row in candidate['panel']:
     actor = c['actor']
     defender, keeper = (12, 2) if actor == 7 else (11, 1)
     assert all(abs((f['after'] - f['t']) - .05) < 1e-10 for f in c['frames'])
-    old, new = summarize(b, actor, defender, keeper), summarize(c, actor, defender, keeper)
+    matched_stop = next(e['t'] for e in c['events'] if e['type'] == 'block_climb' and e.get('a') == actor)
+    old, new = summarize(b, actor, defender, keeper, matched_stop), summarize(c, actor, defender, keeper, matched_stop)
     rows.append({'input': c['input'], 'actor': actor, 'defender': defender, 'keeper': keeper,
                  'reference': old, 'candidate': new,
                  'firstChangedInterval': {k: c['frames'][row['firstChangedTick']][k] for k in ['t', 'after']},

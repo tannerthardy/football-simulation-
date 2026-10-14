@@ -1,0 +1,702 @@
+{
+  "protocol": "te-loaded-base-review-v1",
+  "comparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "runtimeSourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+  "historicalSourceBase": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+  "retentionReview": "https://github.com/tannerthardy/football-simulation-/pull/18#issuecomment-6173825589",
+  "productionObservedCommit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "productionNativeReplayed": false,
+  "productionControllersChanged": false,
+  "worldSelection": {
+    "handContact": "patch",
+    "groundMovement": "legacy",
+    "controllerMovementPreview": "center"
+  },
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "testedNativeCommit": "b7f95cf79d083b7d02ad13af7d87d5dbf001a4cd",
+  "testedFixedCommit": "0df76fb65331aac7122e1ea1447371e9c29e272d",
+  "finalTypecheckCommit": "831eea0bfcee92b75b4a34021db7acd3386408ac",
+  "savedReference": {
+    "path": "/workspace/football-contact-law-isolation/out/contact-isolation/protection.json.gz",
+    "sha256": "3d101564c9c4add6fcc506f24fb6dfdf63923bd1db26343513a42005348f50c6",
+    "producer": "2db2c9cc1b4bac612573c199d0933818b12d1e3a",
+    "protocol": "contact-isolation-native-v1"
+  },
+  "candidateRawSha256": "6b32990dd55825e1cdf5b975e10a6a138e3a6d70acead4e2b4e12038568d3254",
+  "candidateRawBytes": 7267830,
+  "manifestSha256": "309f9ce4945f3442daf4d0622d2a0a9b3303f7518876683e8d264145220d56ee",
+  "nativeCollectorTestedSha256": "010df389ca9e72b2e4c0e604ab87f03edae531e4ff769391e9d158d22ac04be7",
+  "currentNativeCollectorSha256": "822a4a46b97124f00393a42cc04cc980b2daacb7c7b9712cadc4e5f63bebcbb5",
+  "nativeCollectorChangeAfterTest": "Console output only: prints t/after instead of entire first frame; native execution/serialization unchanged.",
+  "fixedWitnessSha256": "b1e61e63c5b1e52baf486020a570356394f36f867a12a269e6d1d97d8704f4e9",
+  "fixedWitnessBytes": 117244,
+  "fixedCollectorSha256": "54e4ed7f8549d9d0c77cb3bce36cf9b3a68524002456183a8aaf2d56062e73c1",
+  "offlineReducerSha256": "bb2fe0fdfea3f9d31266f5c31ce952f39ebe8d02e1ecbf6214d0bb98f4c16488",
+  "protectionResultSha256": "f6e6961885b63bad8a221f46db5f7bbbcba2e69e798a0119b38bb7131e41e8d3",
+  "nativePlays": 2,
+  "shortReferencePrefixes": 2,
+  "referencePrefixTicks": 4,
+  "nativeCandidateWorldTicks": 266,
+  "fixedWorldSteps": 16,
+  "newGames": 0,
+  "fullSuiteRun": false,
+  "nativeElapsedSeconds": 2.4411844920000005,
+  "wrappedSimulationCheckSeconds": 25.150182451,
+  "commandReceipts": {
+    "native-checks.json": {
+      "commit": "b7f95cf79d083b7d02ad13af7d87d5dbf001a4cd",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "326b8fa47ee1141104791c371573156c12e5f8d05782a6baff2a883c312bb1c2",
+      "node": "v22.23.3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:16:31.692Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/te-loaded-base.ts",
+            "out/te-loaded-base/native.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.602707694
+        }
+      ]
+    },
+    "fixed-checks.json": {
+      "commit": "36ae0d9b4a22f3ab6bb43f1fd22b97bc663de7d5",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "3892a4d2beb657015899b995e0f127ed21fe9d46cfb76d43d5b900e0163bed77",
+      "node": "v22.23.3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:21:30.041Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/te-loaded-base-fixed-contact.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.314078317
+        }
+      ]
+    },
+    "fixed-ledger-checks.json": {
+      "commit": "0df76fb65331aac7122e1ea1447371e9c29e272d",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "bd99f33bab57063f2ea4b0de7fbc4969b51583164a821baa64a372b2cbfcf987",
+      "node": "v22.23.3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:22:58.599Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/te-loaded-base-fixed-contact.ts",
+            "out/te-loaded-base/fixed-ledger.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.24975755300000002
+        }
+      ]
+    },
+    "typecheck.json": {
+      "commit": "36ae0d9b4a22f3ab6bb43f1fd22b97bc663de7d5",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "3892a4d2beb657015899b995e0f127ed21fe9d46cfb76d43d5b900e0163bed77",
+      "node": "v22.23.3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:21:30.030Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.301836588
+        }
+      ]
+    },
+    "final-typecheck.json": {
+      "commit": "831eea0bfcee92b75b4a34021db7acd3386408ac",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "a3119436cbae56dec0bd681e2bfe70a0646b55627e7caf94aa8b118764bb76b0",
+      "node": "v22.23.3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:28:01.918Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.681802299
+        }
+      ]
+    }
+  },
+  "nativeLimits": {
+    "uc12-wz-s3": {
+      "armImpulseExcess": 1.4210854715202004e-14,
+      "armWorkExcess": 0,
+      "supportWorkExcess": 0,
+      "workResidual": 7.638334409421077e-12
+    },
+    "uc12-wz-weak-s3": {
+      "armImpulseExcess": 7.105427357601002e-15,
+      "armWorkExcess": 0,
+      "supportWorkExcess": 0,
+      "workResidual": 3.664801795366657e-11
+    }
+  },
+  "physicalSensitivity": [
+    {
+      "id": "uc12-wz-s3",
+      "originalPosture": 0.1994815691121567,
+      "attainedPosture": 0.6994916135191103,
+      "differences": [
+        {
+          "substeps": 12,
+          "xiMagnitude": -0.00199408406362349,
+          "supportAvailability": 0,
+          "actorPosition": 9.563130310089796e-06,
+          "actorSpin": 0.7652053823331042
+        },
+        {
+          "substeps": 48,
+          "xiMagnitude": -0.0019127269034602298,
+          "supportAvailability": 0,
+          "actorPosition": 8.681820733592027e-06,
+          "actorSpin": 0.7648505622569646
+        }
+      ],
+      "referenceError": 0,
+      "yawLedgers": [
+        {
+          "achieved": -1.8501176217710549,
+          "hands": -8.888896301122282,
+          "ground": 7.038778679351227,
+          "residual": 0,
+          "torsoAbsent": true
+        },
+        {
+          "achieved": 0.12997820814925296,
+          "hands": -8.888896160777652,
+          "ground": 9.018874368926902,
+          "residual": 3.552713678800501e-15,
+          "torsoAbsent": true
+        },
+        {
+          "achieved": -1.8688216009125889,
+          "hands": -8.88893674886299,
+          "ground": 7.020115147950405,
+          "residual": -3.552713678800501e-15,
+          "torsoAbsent": true
+        },
+        {
+          "achieved": 0.11035607321666326,
+          "hands": -8.888936637070739,
+          "ground": 8.999292710287401,
+          "residual": 0,
+          "torsoAbsent": true
+        }
+      ]
+    },
+    {
+      "id": "uc12-wz-weak-s3",
+      "originalPosture": 0.7486958044429437,
+      "attainedPosture": 0.7487250180689202,
+      "differences": [
+        {
+          "substeps": 12,
+          "xiMagnitude": 0,
+          "supportAvailability": 0,
+          "actorPosition": 0,
+          "actorSpin": 0
+        },
+        {
+          "substeps": 48,
+          "xiMagnitude": 0,
+          "supportAvailability": 0,
+          "actorPosition": 0,
+          "actorSpin": 0
+        }
+      ],
+      "referenceError": 0,
+      "yawLedgers": [
+        {
+          "achieved": 5.991464609322467,
+          "hands": -4.074641824424687,
+          "ground": 10.066106433747157,
+          "residual": -1.7763568394002505e-15,
+          "torsoAbsent": false
+        },
+        {
+          "achieved": 5.991464609322467,
+          "hands": -4.074641824424687,
+          "ground": 10.066106433747157,
+          "residual": -1.7763568394002505e-15,
+          "torsoAbsent": false
+        },
+        {
+          "achieved": 6.156384067033337,
+          "hands": -3.9088265934921846,
+          "ground": 10.06521066052552,
+          "residual": 3.552713678800501e-15,
+          "torsoAbsent": false
+        },
+        {
+          "achieved": 6.156384067033337,
+          "hands": -3.9088265934921846,
+          "ground": 10.06521066052552,
+          "residual": 3.552713678800501e-15,
+          "torsoAbsent": false
+        }
+      ]
+    }
+  ],
+  "protection": [
+    {
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "firstChangedInterval": {
+        "t": 0.05,
+        "after": 0.1
+      },
+      "firstIntervention": {
+        "t": 0.05,
+        "actor": 7,
+        "slot": "Y",
+        "job": "reach",
+        "target": 12,
+        "original": {
+          "vel": {
+            "x": 8.104710358057194,
+            "y": -4.511082138501099
+          }
+        },
+        "changed": {
+          "vel": {
+            "x": 8.104710358057194,
+            "y": -4.511082138501099
+          },
+          "posture": 0.7
+        }
+      },
+      "reference": {
+        "endTime": 4.4,
+        "censored": false,
+        "outcome": "tackle",
+        "gain": -0.8561299817053367,
+        "crossing": null,
+        "firstContact": {
+          "t": 2.35,
+          "opponent": "DE_S",
+          "note": "grasp",
+          "depth": -1.6082479515271046
+        },
+        "edgeCarrierEvents": [
+          {
+            "t": 2.35,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 38.39,
+              "y": 21.56
+            },
+            "note": "grasp"
+          }
+        ],
+        "firstLevelClimb": [],
+        "TEHands": {
+          "meanForceSampleConvention": "signed tick averages, not substep samples",
+          "loadedIntervals": 40,
+          "firstLoadedInterval": 0.4,
+          "positiveNormalWindow": [
+            0.5,
+            2.15
+          ],
+          "signedNormalImpulse": 1077.1482832446954,
+          "signedLateralImpulse": 191.95227132533677
+        },
+        "keeperHandsThroughFirstContact": {
+          "meanForceSampleConvention": "signed tick averages, not substep samples",
+          "loadedIntervals": 10,
+          "firstLoadedInterval": 1.5,
+          "positiveNormalWindow": null,
+          "signedNormalImpulse": 0.0,
+          "signedLateralImpulse": -73.58348096655175
+        },
+        "TEFirstLevelMaxXi": 0.46283802452242506,
+        "TEFirstLevelMaxPeak": 0.3792605706690628,
+        "TEWholeRunMaxPeak": 0.3792605706690628,
+        "matchedFirstLevelWindow": {
+          "start": 0.4,
+          "stop": 1.65,
+          "maxXi": 0.46283802452242506,
+          "maxPeak": 0.3792605706690628
+        },
+        "TESupportStates": [
+          "up"
+        ]
+      },
+      "candidate": {
+        "endTime": 4.65,
+        "censored": false,
+        "outcome": "tackle",
+        "gain": 0.16629136242425346,
+        "crossing": 3.75,
+        "firstContact": {
+          "t": 3.55,
+          "opponent": "LB_M",
+          "note": "grasp",
+          "depth": -0.2687158414480848
+        },
+        "edgeCarrierEvents": [],
+        "firstLevelClimb": [
+          {
+            "t": 1.65,
+            "type": "block_climb",
+            "a": 7,
+            "b": 17,
+            "pos": {
+              "x": 40.36,
+              "y": 22.13
+            },
+            "note": "secured DE_S; RT stays"
+          }
+        ],
+        "TEHands": {
+          "meanForceSampleConvention": "signed tick averages, not substep samples",
+          "loadedIntervals": 25,
+          "firstLoadedInterval": 0.4,
+          "positiveNormalWindow": [
+            0.5,
+            1.65
+          ],
+          "signedNormalImpulse": 755.0141839092394,
+          "signedLateralImpulse": 186.85845070612115
+        },
+        "keeperHandsThroughFirstContact": {
+          "meanForceSampleConvention": "signed tick averages, not substep samples",
+          "loadedIntervals": 44,
+          "firstLoadedInterval": 1.4,
+          "positiveNormalWindow": [
+            1.4,
+            3.6
+          ],
+          "signedNormalImpulse": 1505.2306841514512,
+          "signedLateralImpulse": 40.87871906223212
+        },
+        "TEFirstLevelMaxXi": 0.339567854217304,
+        "TEFirstLevelMaxPeak": 0.2775564641193419,
+        "TEWholeRunMaxPeak": 0.39545313738236904,
+        "matchedFirstLevelWindow": {
+          "start": 0.4,
+          "stop": 1.65,
+          "maxXi": 0.339567854217304,
+          "maxPeak": 0.2775564641193419
+        },
+        "TESupportStates": [
+          "up"
+        ]
+      },
+      "oldClearance": 0.5850600558020728,
+      "newClearance": 0.5522487834049976,
+      "crossingDelay": null,
+      "oldEdgeRunnerBodyImpulse": 2032.3741133231104,
+      "newEdgeRunnerBodyImpulse": 0
+    },
+    {
+      "input": {
+        "id": "uc12-wz-weak-s3",
+        "concept": "wz_weak",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "firstChangedInterval": {
+        "t": 0.05,
+        "after": 0.1
+      },
+      "firstIntervention": {
+        "t": 0.05,
+        "actor": 10,
+        "slot": "H",
+        "job": "reach",
+        "target": 11,
+        "original": {
+          "vel": {
+            "x": 8.863236921213291,
+            "y": 0.15758005307419526
+          }
+        },
+        "changed": {
+          "vel": {
+            "x": 8.863236921213291,
+            "y": 0.15758005307419526
+          },
+          "posture": 0.7
+        }
+      },
+      "reference": {
+        "endTime": 4.1,
+        "censored": false,
+        "outcome": "tackle",
+        "gain": 9.500380676675306,
+        "crossing": 2.4,
+        "firstContact": {
+          "t": 2.85,
+          "opponent": "LB_M",
+          "note": "grasp",
+          "depth": 3.1354877517233746
+        },
+        "edgeCarrierEvents": [],
+        "firstLevelClimb": [
+          {
+            "t": 1.25,
+            "type": "block_climb",
+            "a": 10,
+            "b": 16,
+            "pos": {
+              "x": 40.5,
+              "y": 30.5
+            },
+            "note": "secured DE_W; LT stays"
+          }
+        ],
+        "TEHands": {
+          "meanForceSampleConvention": "signed tick averages, not substep samples",
+          "loadedIntervals": 6,
+          "firstLoadedInterval": 0.95,
+          "positiveNormalWindow": [
+            0.95,
+            1.25
+          ],
+          "signedNormalImpulse": 114.36818910864807,
+          "signedLateralImpulse": 6.250045484581853
+        },
+        "keeperHandsThroughFirstContact": {
+          "meanForceSampleConvention": "signed tick averages, not substep samples",
+          "loadedIntervals": 48,
+          "firstLoadedInterval": 0.5,
+          "positiveNormalWindow": [
+            0.55,
+            2.05
+          ],
+          "signedNormalImpulse": 490.8834527817461,
+          "signedLateralImpulse": -37.99286382114702
+        },
+        "TEFirstLevelMaxXi": 0.0019461431996544035,
+        "TEFirstLevelMaxPeak": 0.001753868259354791,
+        "TEWholeRunMaxPeak": 0.027393114358781213,
+        "matchedFirstLevelWindow": {
+          "start": 0.4,
+          "stop": 1.25,
+          "maxXi": 0.0019461431996544035,
+          "maxPeak": 0.001753868259354791
+        },
+        "TESupportStates": [
+          "up"
+        ]
+      },
+      "candidate": {
+        "endTime": 8.65,
+        "censored": false,
+        "outcome": "tackle",
+        "gain": 41.65073589102313,
+        "crossing": 2.5,
+        "firstContact": {
+          "t": 3.25,
+          "opponent": "LB_M",
+          "note": "grasp",
+          "depth": 3.743283368909715
+        },
+        "edgeCarrierEvents": [],
+        "firstLevelClimb": [
+          {
+            "t": 1.25,
+            "type": "block_climb",
+            "a": 10,
+            "b": 16,
+            "pos": {
+              "x": 40.46,
+              "y": 30.44
+            },
+            "note": "secured DE_W; LT stays"
+          }
+        ],
+        "TEHands": {
+          "meanForceSampleConvention": "signed tick averages, not substep samples",
+          "loadedIntervals": 6,
+          "firstLoadedInterval": 0.95,
+          "positiveNormalWindow": [
+            0.95,
+            1.25
+          ],
+          "signedNormalImpulse": 119.66277360539516,
+          "signedLateralImpulse": 9.228602644327134
+        },
+        "keeperHandsThroughFirstContact": {
+          "meanForceSampleConvention": "signed tick averages, not substep samples",
+          "loadedIntervals": 47,
+          "firstLoadedInterval": 0.5,
+          "positiveNormalWindow": [
+            0.55,
+            2.05
+          ],
+          "signedNormalImpulse": 459.8721424563715,
+          "signedLateralImpulse": 8.477618082926348
+        },
+        "TEFirstLevelMaxXi": 1.0034850928864896e-05,
+        "TEFirstLevelMaxPeak": 8.474272822075958e-06,
+        "TEWholeRunMaxPeak": 0.1801057910357805,
+        "matchedFirstLevelWindow": {
+          "start": 0.4,
+          "stop": 1.25,
+          "maxXi": 1.0034850928864896e-05,
+          "maxPeak": 8.474272822075958e-06
+        },
+        "TESupportStates": [
+          "up"
+        ]
+      },
+      "oldClearance": 0.14465066046292074,
+      "newClearance": 0.029979163615657778,
+      "crossingDelay": 0.10000000000000009,
+      "oldEdgeRunnerBodyImpulse": 0,
+      "newEdgeRunnerBodyImpulse": 0
+    }
+  ],
+  "preservedUntestedCandidateControl": "uc12-wz-s3-mirror is declared in allPreservedInputs; no candidate transfer claim.",
+  "conclusion": "Meaningful historical Y first-level support/protection advantage, with unchanged RT policy; weak success retained but crossing later/clearance narrower. Do not infer general stance policy or realistic final gain. Keep isolated pending exact current-production reference; no panel expansion.",
+  "limitations": [
+    "Historical isolated law, not accepted develop/components1 behavior.",
+    "Synthetic posture sensitivity holds other state fixed; it is not an instantaneous native action.",
+    "First-level contact and force alone do not establish protection; native event/body-impulse evidence is retained.",
+    "Whole-run grip convergence and RNG equivalence after paths diverge remain unestablished.",
+    "RG anchoring and both RT route/information questions are separate; no shared movement edit."
+  ],
+  "diagnosticFailures": [
+    "Initial native console accidentally printed a complete first frame; output exceeded tool display budget. Measurement file remained complete; console corrected without replaying the native candidates.",
+    "One read-only exploratory Python command had a missing space after else; corrected without simulation."
+  ]
+}
