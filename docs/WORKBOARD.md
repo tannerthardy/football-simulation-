@@ -1,5 +1,21 @@
 # Current work ownership
 
+## 2026-10-14 (America/Phoenix): TE base transfer from the shared Ace reference
+
+Run-game owns `codex/te-base-production` from the integration owner's PR #26
+`ba9544f`, accepted source `e5c318a`, exact44 flags/components1. Reuse its three
+Ace reference histories; do not re-run baselines. The historical #27 loaded
+base action helps Y keeper protection under c6 patch/legacy, with weak arrival
+and clearance tradeoffs. Current production already retains Y/RT and has weak
+contact before LOS. One bounded two-case candidate transfer question can decide
+whether that action belongs in production or compensates for the experiment.
+
+Diagnostic only: same named playside TE approach .70 action, before existing
+contact .85/.75 requests and spacing. No source, movement, capacity, hand law,
+RB, release, lateral-track or solver edits. Preserve H-strong manifest; no
+panel expansion. RT/RG route work remains separate and now uses the shared
+production evidence rather than assuming the isolated-law failures transfer.
+
 ## Shared Ace production replay
 
 Integration owner, explicitly assigned by the user following
