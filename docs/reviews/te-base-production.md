@@ -57,7 +57,7 @@ side of C and can reach him while C is engaged and loaded. C's final requested
 movement is(+2.4,−2.1944), achieved execution remains under World. That is
 actual failed protection despite hand load, not a missing assignment or a
 reason to increase strength. Its hand acquisition is earlier than the
-reference (native `block_contact`2.60 versus2.70); earlier collection alone
+reference (native `block_contact`2.60 versus2.75); earlier collection alone
 also does not establish a useful blocking surface.
 
 The original Y clean crossing is lost, which is material adverse evidence.
