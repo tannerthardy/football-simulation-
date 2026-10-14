@@ -15,18 +15,18 @@ import type {ActiveGripInput} from '../../../src/physics/active-grip.js';
 const root='out/grip-native-forces';mkdirSync(root,{recursive:true});
 const source=sourceVersion(),commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
   manifest=JSON.parse(readFileSync('config/grip-native-force-inputs.json','utf8')),cases=manifest.cases as Array<{id:string;phase:number;input:ActiveGripInput}>,
-  profile=JSON.parse(readFileSync('config/baseline.json','utf8')),flags=Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),
+  prior=JSON.parse(readFileSync('data/reviews/current/grip-passive-world.json','utf8')),profile=JSON.parse(readFileSync('config/baseline.json','utf8')),flags=Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),
   mode=process.argv.includes('--benchmark')?'benchmark':'accuracy',output=process.argv.find(x=>x.startsWith('--output='))?.slice(9)??`${root}/evidence.json`,
   files=['src/physics/world.ts','src/physics/active-grip.ts','scripts/diag/physics/grip-native-span-model.ts','scripts/diag/physics/grip-native-span-interval.ts',
     'scripts/diag/physics/grip-native-span-reference.ts','scripts/diag/physics/grip-native-world-fixtures.ts','scripts/diag/physics/grip-native-forces-evidence.ts',
-    'config/grip-native-force-inputs.json','test/grip-native-forces.test.ts','test/grip-timing-reference.test.ts','test/grip-passive-world.test.ts'],
+    'config/grip-native-force-inputs.json','config/grip-native-world-packets.json','test/grip-native-forces.test.ts','test/grip-timing-reference.test.ts','test/grip-passive-world.test.ts'],
   hashes=Object.fromEntries(files.map(p=>[p,sha(readFileSync(p))]));
 assert.deepEqual(flags,profile.flags);
 for(const p of ['src/physics/support.ts','src/physics/kinematics.ts','src/physics/virtual-foot.ts','src/physics/bounded-attachment.ts','src/physics/grip-timing.ts','src/physics/grip-fast.ts','config/baseline.json'])
   assert.equal(sha(readFileSync(p)),sha(execFileSync('git',['show',`${manifest.parent}:${p}`])));
 const meta={commit,source,flags,hashes,node:process.version,cpu:cpus()[0].model,timestamp:new Date().toISOString(),baseline:manifest.baseline,parent:manifest.parent,
   manifest:{path:'config/grip-native-force-inputs.json',sha256:sha(readFileSync('config/grip-native-force-inputs.json'))},
-  nativeManifest:{path:'out/grip-timing/baseline.json',sha256:sha(readFileSync('out/grip-timing/baseline.json'))},
+  nativeManifest:prior.nativeManifest,priorNativeEvidence:{path:'data/reviews/current/grip-passive-world.json',sha256:sha(readFileSync('data/reviews/current/grip-passive-world.json'))},
   settings:{handContact:'patch',gripTiming:'midpoint',constraintWork:'per-solve',materialTransport:'owned ONLY in owned/combined',nativeSubsteps:96},
   accuracy:{coordinateTolerances:'Unchanged passive tolerances, 1e-9 for added ledgers',normalizedAllowance:1/16,work:1e-8,span:1e-9,energy:1e-8,angular:1e-7},costBudgetMilliseconds:{median:2,p95:5}};
 let payload:any;
@@ -55,15 +55,15 @@ if(mode==='accuracy'){
       holder:v.end.bodies[a.w.indexOf(a.joint.a)].support.state,runner:v.end.bodies[idx].support.state,broken:v.end.joint.broken??false,slipping:v.end.joint.slipping??false})),
       runnerPositionDifference:Math.hypot(cand[idx].pos.x-b[idx].pos.x,cand[idx].pos.y-b[idx].pos.y)});
   }
-  const native=[],saved=JSON.parse(readFileSync('out/grip-timing/baseline.json','utf8'));
-  for(const c of cases){const input=saved.inputs.find((i:any)=>i.id===c.id);assert(input);const arms=[];
+  const native=[];
+  for(const c of cases){const saved=prior.native.find((i:any)=>i.id===c.id);assert(saved);const input=saved.input;const arms=[];
     for(const mode of ['legacy','owned','combined']){const calls={accepted:0,fallbacks:0,reasons:{} as Record<string,number>},start=performance.now(),
       result=rep(input.cell,input.side,input.seed,{handContact:'patch',substeps:96,configureWorld:w=>{
         if(mode!=='legacy')(w as any).materialTransport='owned';if(mode==='combined')(w as any).activeGrip=nativeSpanInterval;
         const step=w.step;w.step=function(...args:Parameters<typeof step>){const r=step.apply(this,args),p=r.activeGrip;
           if(p){calls.accepted+=p.accepted;calls.fallbacks+=p.fallbacks;for(const[k,v]of Object.entries(p.reasons))calls.reasons[k]=(calls.reasons[k]??0)+v;}return r;};}});
       arms.push({mode,result,calls,seconds:(performance.now()-start)/1000});}
-    assert.deepEqual(arms[0].result,saved.native.find((v:any)=>v.id===c.id&&v.n===96&&v.timing==='midpoint').result);
+    assert.deepEqual(arms[0].result,saved.arms.find((v:any)=>v.mode==='legacy').result);
     native.push({id:c.id,input,arms,legacyExactSaved:true,interpretation:'Trajectory/ending differences are observations, not automatic football gains or losses.'});
   }
   const path=`${root}/active-world-raw.json`;writeFileSync(path,JSON.stringify(raw));
