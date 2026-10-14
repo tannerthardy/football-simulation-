@@ -100,12 +100,15 @@ outward = sorted([(s, q["pos"]["y"]) for s, q in present.items()
 assert all(homes[s]["y"] > homes["C"]["y"] for s in gone)
 assert len(outward) == 3
 candidate_edge_bound, candidate_bound_y = outward[2]
-candidate_live_aim = {"x": 40.6, "y": candidate_bound_y - .7}
+installed_aim = ref["actors"][rb]["initialBehavior"]["aim"]
+gap_offset = installed_aim["y"] - (reference["manifest"]["ballY"] - 4.6)
+assert gap_offset == 0
+candidate_live_aim = {"x": installed_aim["x"], "y": candidate_bound_y - .7 + gap_offset}
 candidate_heading_reproduction = angle({"x": candidate_live_aim["x"] - before_can["pos"]["x"],
                                        "y": candidate_live_aim["y"] - before_can["pos"]["y"]})
 assert abs(candidate_heading_reproduction - angle(cr["requested"]["vel"])) < 1e-12
 accepted_bound = min(accepted_edge, key=lambda s: accepted_edge[s]["pos"]["y"])
-accepted_reconstructed_edge_aim = {"x": 40.6, "y": accepted_edge[accepted_bound]["pos"]["y"] - .7}
+accepted_reconstructed_edge_aim = {"x": installed_aim["x"], "y": accepted_edge[accepted_bound]["pos"]["y"] - .7 + gap_offset}
 accepted_heading_reproduction = angle({"x": accepted_reconstructed_edge_aim["x"] - before_ref["pos"]["x"],
                                       "y": accepted_reconstructed_edge_aim["y"] - before_ref["pos"]["y"]})
 assert abs(accepted_heading_reproduction - angle(rr["requested"]["vel"])) < 1e-12
@@ -128,14 +131,20 @@ import {availability,supportParams} from './src/physics/support.ts';
 const results=[];
 for(const f of JSON.parse(readFileSync(0,'utf8'))){
   const b=f.body,cap=availability(b.support,supportParams(b.profile),fatigueFactor(b.energy));
-  let v={...f.intent.vel};const cuts=[];
+  let v={...f.intent.vel};const cuts=[],peerBudgets=[];
   for(const q of f.peers){
     const seen=q.seen,dx=seen.pos.x-b.pos.x,dy=seen.pos.y-b.pos.y,d=Math.hypot(dx,dy);
     const touch=.9*(b.profile.radius+q.profile.radius),gap=d-touch;if(d<1e-6)continue;
     const nx=dx/d,ny=dy/d,brake=followAccel(b,{x:-nx*1e3,y:-ny*1e3},f.intent.cutSkill??1,cap);
     const decel=Math.max(.1,-brake.x*nx-brake.y*ny);
     const current=Math.max(0,(b.vel.x-seen.vel.x)*nx+(b.vel.y-seen.vel.y)*ny);
-    const stopping=current*.3+current*current/(2*decel);if(gap>Math.max(1.2,stopping))continue;
+    const stopping=current*.3+current*current/(2*decel);
+    const active=gap<=Math.max(1.2,stopping);
+    const requestedClosing=(v.x-seen.vel.x)*nx+(v.y-seen.vel.y)*ny;
+    const budgetAllowed=Math.sqrt((decel*.3)**2+2*decel*Math.max(0,gap))-decel*.3;
+    peerBudgets.push({peer:q.idx,gap,decel,current,stopping,requestedClosing,
+      allowed:budgetAllowed,withinCurrentStoppingGate:active});
+    if(!active)continue;
     const rx=v.x-seen.vel.x,ry=v.y-seen.vel.y,closing=rx*nx+ry*ny,speed2=rx*rx+ry*ry;
     const closest=speed2>1e-9?Math.max(0,(dx*rx+dy*ry)/speed2):0;
     if(gap>0&&Math.hypot(dx-rx*closest,dy-ry*closest)>touch)continue;
@@ -145,7 +154,7 @@ for(const f of JSON.parse(readFileSync(0,'utf8'))){
   }
   const speed=Math.hypot(b.vel.x,b.vel.y);
   const gatherPerp=speed>0?Math.abs(v.x*b.vel.y-v.y*b.vel.x)/speed:0;
-  results.push({label:f.label,cap,cuts,radialResult:v,gatherPerp,
+  results.push({label:f.label,cap,cuts,peerBudgets,radialResult:v,gatherPerp,
     gatherSkippedBySmallTurn:gatherPerp<1});
 }
 process.stdout.write(JSON.stringify(results));
@@ -171,7 +180,7 @@ def emit_reference(row):
     frames = []
     for f in row["series"]:
         detail = detailed.get(f["t"])
-        frames.append({"t": f["t"], "after": f["after"], "carrier": f["carrier"],
+        frames.append({"t": f["t"], "after": f["after"], "carrier": f.get("carrier"),
                        "actors": [actor_at(f, a["idx"]) for a in f["actors"]],
                        "rbPictureCalls": [q for q in f["pictureCallCounts"] if q[0] == rb],
                        "rbConsumedPictureValues": None,
@@ -188,7 +197,7 @@ def emit_reference(row):
 def emit_candidate(row):
     frames = []
     for f in row["frames"]:
-        frames.append({"t": f["t"], "after": f["after"], "carrier": f["carrier"],
+        frames.append({"t": f["t"], "after": f["after"], "carrier": f.get("carrier"),
                        "actors": [actor_at(f, a["id"], True) for a in f["agents"]],
                        "rbBefore": f["worldInput"]["beforeBodies"][rb],
                        "rbConsumedPictures": [q for q in f["cues"] if q["actor"] == rb],
@@ -213,12 +222,14 @@ designed_assessment_ticks = [f["t"] for f in ref["series"] if 1.6 <= f["t"] <= 2
 aim_until = 1.6 + .3 + .5 * ((ref["actors"][rb]["player"]["ratings"]["patience"] - 1) / 98)
 output = {
     "protocol": "run-drills-d03-saved-trace-v1",
+    "eventAndBodyTiming": "Frame.t is controller entry; actor poses are post-World Frame.after. block_contact labels the completed boundary; carrier_contact uses entry label although contact tested after World. Candidate null carrier on final dead-ball frame is absence, not failed capture.",
     "provenance": {"referenceSha256": hashlib.sha256(ref_bytes).hexdigest(),
                    "candidateSha256": hashlib.sha256(can_bytes).hexdigest(),
                    "reference": reference["provenance"], "candidateCommit": candidate["commit"],
                    "candidateManifestSha256": candidate["manifestSha256"], "candidateScriptSha256": candidate["scriptSha256"],
                    "candidateWorld": candidate["worldSelection"]},
     "firstDifference": {"t": 1.6, "after": 1.65, "acceptedEdgePictures": accepted_edge,
+                        "installedSnapAim": installed_aim, "installedGapOffset": gap_offset,
                         "acceptedEdgePictureStatus": "Actual other-O consumed .05s pictures, identical to RB teammate channel; complete RB surface/read not stored.",
                         "acceptedRelevantBound": accepted_bound,
                         "acceptedReconstructedRelevantEdgeAim": accepted_reconstructed_edge_aim,
@@ -230,6 +241,7 @@ output = {
                         "acceptedBeforeRB": before_ref, "candidateBeforeRB": before_can,
                         "requestedHeadingDeltaDeg": angle(cr["requested"]["vel"]) - angle(rr["requested"]["vel"]),
                         "pureSpacingReconstruction": spacing,
+                        "pureSpacingFixtures": fixtures,
                         "nominalInstalledAimUntil": aim_until,
                         "acceptedRecordedDesignedAssessmentTicks": designed_assessment_ticks},
     "decisiveIntervals": decisive,

@@ -121,7 +121,19 @@ def candidate_row(frame):
             'idx': i, 'slot': frame['agents'][i]['slot'],
             'pos': b['pos'], 'vel': b['vel'], 'radius': b['profile']['radius'],
             'facing': b['facing'], 'supportState': b['support']['state']
-        } for i, b in enumerate(before)] if frame['t'] in (2.55, 3.0) else None
+        } for i, b in enumerate(before)] if frame['t'] in (2.55, 2.85, 3.0) else None,
+        'coupledNeighborContext': {
+            'neighborBodiesBefore': {frame['agents'][i]['slot']: before[i] for i in (7, 17)},
+            'neighborBodiesAfter': {frame['agents'][i]['slot']: after[i] for i in (7, 17)},
+            'neighborWorldIntents': {frame['agents'][i]['slot']: frame['worldInput']['intents'][i]
+                                     for i in (7, 17)},
+            'neighborSupportMetricsAfter': {frame['agents'][i]['slot']: frame['agents'][i]['supportMetrics']
+                                            for i in (7, 17)},
+            'neighborHandInputs': [j for j in frame['worldInput']['jointInputs']
+                                   if j['a'] in (7, 17) or j['b'] in (7, 17)],
+            'neighborMeanHandLoads': [j for j in frame['worldInput']['jointOutputsAtWorldEnd']
+                                     if j['a'] in (7, 17) or j['b'] in (7, 17)]
+        } if frame['t'] in (2.85, 3.0) else None
     }
 
 
@@ -172,7 +184,7 @@ for f in reference['detailedFrames']:
             'RB_positionDifference': vector(c_before[6]['pos'], before[6]['pos'])
         })
 
-selected_times = {1.2, 2.4, 2.55, 2.7, 2.95, 3.0}
+selected_times = {1.2, 2.4, 2.55, 2.7, 2.75, 2.85, 2.95, 3.0}
 selected = [candidate_row(f) for f in candidate['frames'] if f['t'] in selected_times]
 first_loaded = next(f for f in candidate['frames'] if any(
     j['a'] == 3 and j['b'] == 15 and (j['normalForce'] != 0 or j['tangentForce'] != 0)
@@ -254,6 +266,8 @@ result = {
         'parkedTrialReceipt': {'path': str(RECEIPT.relative_to(ROOT)), 'sha256': sha(RECEIPT)},
         'reducerSha256': sha(Path(__file__)),
         'input': candidate['input'],
+        'declaredSetup': {k: saved['manifest'][k] for k in
+                          ('strength', 'los', 'ballY', 'firstDownX', 'coverage', 'defensivePersonnel')},
         'setupSha256': reference['summary']['setupSha256'],
         'selectedActorsSha256': reference['summary']['selectedActorsSha256']
     },
@@ -285,6 +299,10 @@ result = {
     'actualCoupledAchievedWindows': achieved_windows,
     'arrival': {
         'candidateFirstLoadedInterval': [first_loaded['t'], first_loaded['after']],
+        'referenceFirstLoadedInterval': [reference_loads[0]['controllerEntryTime'],
+                                        reference_loads[0]['completedWorldBoundary']],
+        'referenceActualCBlockContactEvent': next(e for e in reference['summary']['result']['events']
+                                                 if e['type'] == 'block_contact' and e['a'] == 3),
         'candidateFirstSampleInsideEngagedStandingReach': first_in_range['after'],
         'candidatePreviousBoundaryOutsideEngagedStandingReach': first_in_range['t'],
         'candidateActualFirstContact': candidate['firstContact'],
@@ -301,13 +319,17 @@ result = {
         'candidate': {k: candidate[k] for k in ('endTime', 'outcome', 'censored', 'crossing', 'gain')},
         'reference': reference['summary']
     },
+    'verdictClass': 'uncertain',
     'verdict': 'Protection is lost by geometry and runner-arrival timing despite real '
     'acquired hand load. Candidate C collects earlier and from the far side of the runner '
     'corridor. A specific faulty C request or feasible better route is not yet demonstrated.',
     'nextQuestion': 'Using the C-consumed LB picture at the last pre-strike approach and '
     'the already available RB picture, could the existing body reach the runner-side shoulder '
-    'before entry without losing first-level/teammate clearance? The D03 RB information '
-    'diagnosis should precede any C policy alteration.',
+    'before entry without losing first-level/teammate clearance? The source tests actual '
+    'strike distance and may acquire hands before invoking plannedClimb, while its solo '
+    'lost-shoulder guard excludes climb. Far-side acquisition may constrain a later useful '
+    'fit, but no physically attainable better alternative is demonstrated. The D03 RB '
+    'information diagnosis should precede any C policy alteration.',
     'ownership': 'Run-game controller owner handles collection placement and RB-read '
     'comparison. Physics retains center-hand angular-law and contact execution questions; '
     'shared movement changes require YAC/Pursuit coordination. No production patch warranted here.',

@@ -135,9 +135,55 @@ for row in packet['panel']:
                   'setupSha256':row['summary']['setupSha256'],'selectedActorsSha256':row['summary']['selectedActorsSha256'],
                   'fullStateRngHistorySha256':row['summary']['fullStateRngHistorySha256'],
                   'series':series,'detailed':detailed})
+native_path=Path('out/run-drills/native-prefix.json.gz')
+native_summary=None
+if native_path.exists():
+    native=json.loads(gzip.decompress(native_path.read_bytes()))
+    assert native['prefixExact'] and native['hashes']==packet['panel'][1]['hashes'][:len(native['hashes'])]
+    assert native['sourceSha256']==packet['provenance']['sourceSha256']
+    assert native['flags']==packet['provenance']['flags']
+    native_frames=[]
+    for f in native['frames']:
+        raw_phase=next(q for q in native['phases'] if q['t']==f['t'] and q['phase']=='movement'
+                       and q['rep']['blocker']=={'agent':2})
+        phase={**raw_phase,'rep':{**raw_phase['rep'],'blocker':2,'defender':12}}
+        peers=[]
+        for c in native['pictures']:
+            if c['t']!=f['t'] or c['actor']!=2 or 'spaceTeammates.now' not in c['caller'][0]:continue
+            cue={**c,'seen':{**c['seen']}}
+            if c['calledMotion']:
+                seen=cue['seen'];called=c['calledMotion'];age=seen.get('age',0)
+                seen['pos']={k:seen['pos'][k]+(called[k]-seen['vel'][k])*age for k in ['x','y']}
+                seen['vel']=called
+            peers.append(cue)
+        before=[{'idx':i,**a}for i,a in enumerate(f['beforeBodies'])]
+        after=[{'idx':i,**a}for i,a in enumerate(f['afterBodies'])]
+        profiles={i:a['profile']for i,a in enumerate(f['beforeBodies'])}
+        shim={'before':before,'afterBodies':after,'consumed':peers,'contactPhases':[phase],'delivered':f['intents']}
+        fold=spacing_fold(shim,profiles)
+        assert fold['foldError']<1e-12
+        carrier=next(c for c in native['pictures']if c['t']==f['t'] and c['actor']==12 and c['target']==6
+                     and 'runContactRead' in c['caller'][0])
+        delta=sub(vec(carrier['seen']['pos']),vec(f['beforeBodies'][12]['pos']))
+        lat=vec(phase['data']['lat'])
+        de_writes=[w for w in native['writes']if w['t']==f['t'] and w['actor']==12]
+        rt_de=[c for c in native['pictures']if c['t']==f['t'] and c['actor']==2 and c['target']==12]
+        native_frames.append({'controllerT':f['t'],'worldEnd':f['after'],
+                              'allPeerSpacing':fold,'rtEndPictures':rt_de,'deCarrierPicture':carrier,
+                              'deCarrierDistance':length(delta),'deCarrierLateralProjection':dot(delta,lat),
+                              'deIntentWrites':de_writes,'rtZoneRead':f['behavior'][2]['zoneRead'],
+                              'repDecision':{k:raw_phase['rep'][k]for k in ['control','side','nextMoveAt','sealTarget','surfaceAxis']},
+                              'actualSqueezeRtDeRb':[f['beforeBodies'][i]['squeeze']for i in [2,12,6]],
+                              'beforeGeometry':nominal_geometry(before[2],before[12],before[6],profiles),
+                              'afterGeometry':nominal_geometry(after[2],after[12],after[6],profiles)})
+    native_summary={'packetPath':str(native_path),'packetSha256':hashlib.sha256(native_path.read_bytes()).hexdigest(),
+                    'collectorCommit':native['commit'],'prefixExact':True,'ticks':len(native['hashes']),
+                    'endTime':native['endTime'],'censored':native['censored'],'censoring':native['censoring'],
+                    'nativeContinuations':native['nativeContinuations'],'physicalCounterfactuals':native['physicalCounterfactuals'],
+                    'reducedFixtures':native['reducedFixtures'],'collectorSeconds':native['elapsedSeconds'],'frames':native_frames}
 report={'protocol':'d01-offline-keeper-protection-v1','packetPath':str(PACKET),
         'packetSha256':hashlib.sha256(PACKET.read_bytes()).hexdigest(),'provenance':packet['provenance'],
-        'manifest':packet['manifest'],'cases':cases,'runtimeSeconds':time.perf_counter()-START,
+        'manifest':packet['manifest'],'cases':cases,'nativeCapture':native_summary,'runtimeSeconds':time.perf_counter()-START,
         'newPlays':0,'newWorldSteps':0,'limits':['Nominal circular corridor geometry is not earliest attainable interception.',
         'Detailed contact/cues sampled, not all frames. No full joint/bodies/motor replay.',
         'Center-law force vectors/torques unavailable; numerical law legitimacy not certified.']}

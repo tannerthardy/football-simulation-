@@ -16,6 +16,23 @@ Only one targeted new physical continuation is available if saved observation
 cannot distinguish the cause. No18-drill matrix, games or broad panel.
 Physics owns laws; any future shared-movement edit requires YAC coordination.
 
+Completed [D01–D03 explanations](reviews/run-drills/README.md),
+[exact receipt](reviews/run-drills/receipt.json) and downloadable overlay/witness
+ZIP. D01: acquired DE choice is consistent; RT already requests recovery but
+real RB traffic changes its request and the loaded positional screen is lost.
+D02: parked-trial C acquires on the far side, with LB_M/LB_S collision retained;
+not a baseline C error claim. D03: first observededge shift is reasonable;
+RT-spacing explains the larger speed/timing change. No correction is demonstrated.
+
+The sole new native H continuation captures all22 bodies2.20–2.70 and matches
+all54 full state/RNG hashes. Native+typecheck10.96wrapped seconds; offline
+reducers/visual add no simulation. Budget/work/posture and whole-contextlinear
+impulse checks pass; center angular validity remains unestablished. No miniature,
+new full ending, games, roster panel or policy/controller/solver/movement edit.
+Tested native/typecheck `e21bbfee29b11950b72235079faf285decb85e06`; source e5.
+Preserve the current controls and withdrawn early-release evidence. This
+one-time pass is complete; general future work remains under TESTING_COSTS.
+
 ## 2026-10-14 (America/Phoenix): TE base transfer from the shared Ace reference
 
 Run-game owns `codex/te-base-production` from the integration owner's PR #26

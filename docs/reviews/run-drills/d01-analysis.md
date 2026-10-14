@@ -50,10 +50,9 @@ Those pictures drive the spacing arithmetic below.
 
 DE_S consumes RB pictures three times per tick and RT pictures twice per tick
 from 1.75 onward, according to the saved counts. The compact packet omits their
-contents. The visible contact policy issues a held physical shed request
-toward the acquired carrier (`engagement.ts:980`, `:1153`), but a specific
-correct/incorrect side choice cannot be certified from counts alone.
-Facing here is body orientation, not eye gaze.
+contents. The sole new native prefix capture below supplies those missing
+pictures and verifies the actual shed side. Facing here is body orientation,
+not eye gaze.
 
 ## First causal command difference: real RB traffic
 
@@ -87,9 +86,11 @@ requested sweep into the back. It is not an oracle about the runner's future
 route. At this point the end is moving backfield while RT continues upfield.
 
 The compact packet retains RG/RB/Y/H spacing pictures, not every teammate
-picture. Omitted calls are not invented. Exact agreement of the captured-peer
-fold is strong evidence of the actual composition; the follow-up full native
-capture can certify that all other peers make no additional correction.
+picture. Omitted calls were not invented. The full native capture subsequently
+certifies the same result against all ten other offensive peers over the
+entire 2.20–2.70 interval: maximum fold error **2.70e-15 yd/s**. RB is the only
+restricting peer through entry 2.60, then H also restricts at 2.65. The Y control
+remains a saved-picture partial fold; no second control execution was added.
 Source references: [`playsim.ts`](../../../src/sim/playsim.ts):562–594,
 [`spacing.ts`](../../../src/sim/spacing.ts):121–179 and
 [`kinematics.ts`](../../../src/physics/kinematics.ts):219–237.
@@ -109,7 +110,10 @@ subtracts the nominal collision radius
 `.9*(RT.radius+DE.radius) = .6488181818 yd`. This is a **static circular
 clearance measurement**, not an attained-route forecast or proof that hands
 cannot obstruct the path. The shared packet does not serialize every squeeze
-or attachment state. The circular measure is kept explicitly nominal.
+or attachment state. The new native capture verifies **zero actual squeeze
+for RT, DE and RB throughout 2.20–2.70**, so the circular body radii are the
+native H footprints here. This still does not make center-segment clearance
+an attainable-intercept test.
 
 | Saved World boundary | RT (x,y) | DE_S (x,y) | RB (x,y) | Nominal center-path clearance | DE/RB separation |
 | --- | --- | --- | --- | ---: | ---: |
@@ -157,7 +161,59 @@ outcome, not a clean no-contact arrival or an RT/DE_S keeper mirror. The
 withdrawn early-release control remains separate; this analysis supplies no
 release-timing recommendation.
 
-## Attainability verdict and exact remaining gap
+## The sole new native measurement: consumed cues and command ownership
+
+The full native prefix was regenerated from the original installed input and
+compared against the shared saved history: **all 54 complete state/RNG hashes
+through boundary 2.70 match exactly**. Capture starts at 2.20 and stops at the
+declared diagnostic boundary 2.70, after the first carrier contact. The original
+natural ending is reused, not repeated. No controller action changes, reduced
+fixture or physical counterfactual was executed.
+
+Packet: `out/run-drills/native-prefix.json.gz`, SHA256
+`0be4172745d5d93c9c0eab409be0718eea291c1033587cbf845bfa1f6fa9c8eb`;
+collector revision `e21bbfee29b11950b72235079faf285decb85e06`, unchanged source
+and the same 44 flags. Internal collector time **.817244 s**. Reduction with
+the new packet takes **.121724 s**, still zero new physics steps in the reducer.
+The root owner retains the wrapped command/typecheck receipt separately.
+
+The first captured defensive carrier picture at **2.20** is .30 s old,
+**(38.613120,21.955337)** with velocity **(+4.194930,-2.325818)**. Relative to
+the end's current body, its projection along the installed contact lateral
+axis is **+1.205351 yd**, supporting the already-held +1 shed side. This is the
+first *captured supporting cue*, not a reconstruction of the earlier shed's
+initial decision.
+
+At the next visible shed renewal, **2.35**, the actual `runContactRead` carrier
+picture remains .30 s old: **(39.044081,21.571366)**. Its distance from DE_S is
+**1.726591 yd**, within the ordinary 3.5-yard threat gate. Its lateral projection
+is **+.937305 yd**, again selecting +1. The engagement's next-move deadline
+advances from **2.333146** to **2.783644**. The existing work-off formula
+`lat*(+1)*td.lateral + axis*.6` gives exactly
+**(-2.624660,-.771769) yd/s**. Intent-write provenance shows this request comes
+from `stepRunRep`, and teammate spacing leaves it unchanged. No hidden future
+runner path or incorrect shed-side command is demonstrated.
+
+RT's newly recovered end pictures at **2.25** and **2.50** both have age .30.
+At 2.25, the picture is **(40.644128,20.869869)** moving
+**(+.671080,-1.035884)**; the actual end is **(40.568298,20.877864)** moving
+**(+.113228,-1.089780)**. At 2.50, RT sees **(40.612170,20.624148)** moving
+**(+.169413,-1.021169)**, while the actual end has already turned backfield:
+**(40.496400,20.540933)**, velocity **(-.793334,-1.538803)**. These are real
+delivered pictures, not same-state synthetic information.
+
+Both technique reads choose **runoff**, with their existing .10-s read-aid
+estimates reporting required lateral travel **.884047/.965581 yd** versus
+available **.055679/.132096 yd**. As `zone-reach.ts:29–32` explicitly states,
+this estimate ignores loaded contact and traffic; it is not proof that all
+recovery routes are unavailable. Nevertheless, the stated picture supports
+the existing choice to attempt useful runoff rather than forcing a hook.
+The raw contact controller responds backfield by 2.30 and increasingly
+thereafter using its acquired contact state. The record therefore does not
+demonstrate “RT never requests recovery” or a wrong-side request. The final
+request is constrained by the real back arriving in that same workspace.
+
+## Attainability verdict and precise blocker
 
 The saved execution proves that **the original final movement request loses
 the positional screen while still loaded**. It does not prove RT had an
@@ -167,20 +223,18 @@ recovery: hands, torso geometry, bracing, runner traffic and finite turning
 share the same physical interval. No .1/.3/.6-s alternative is declared
 attainable here, and no earlier departure is prescribed.
 
-The next bounded measurement belongs to one native H prefix, hash-matched to
-the existing accepted history, through boundary **2.70**. Capture actual
-`sim.see` results from 2.20 onward, especially RT's omitted 2.25/2.50 end reads
-and DE's carrier/threat pictures; record exact post-calledMotion spacing
-pictures and per-peer radial corrections, contact-phase requests, all 22 full
-pre/post bodies, input/output joints before tackle cleanup, complete World
-intents and World reports. Use boundary **2.30** as the earliest useful full
-loaded restoration state. This is not a miniature replacement of native
-context, a planner proposal or a candidate controller. It can distinguish
-the actual shed cue, body-route constraints and a request/spacing conflict
-without injecting a future runner path.
+The only authorized new continuation has closed the acquired-information and
+command-composition gaps. Full 22-body states, World input/output joints before
+tackle cleanup, all spacing pictures, raw writes and reports are now portable
+in the native packet. Boundary **2.30** is the smallest useful future restoration
+state for the loaded arc; it preserves all native context and acquired state.
+No additional simulation or miniature was run after that capture.
 
-**Verdict: unresolved between a coherent defensive win, unavailable recovery,
-and a correctable contact/spacing interaction.** The existing center contact
+**Verdict: the defensive work-off decision is consistent with acquired cues;
+RT's attempted recovery is restricted by actual runner traffic. Whether a
+safe alternative recovery was physically attainable remains unresolved.** This
+could be a coherent defender win or a correctable block/runner-path interaction;
+the current evidence does not justify changing either controller. The center contact
 law has known accounting caveats and does not expose the patch-only hand
 vectors/torques; a finite work residual is not an angular-law certificate.
 Any solver repair stays with Physics. No strength, grip, traffic, release or
