@@ -91,6 +91,11 @@ describe('shared install with distinct available pictures',()=>{
     expect(seen).toEqual(before);expect(f.a.profile).toEqual(profile);
     expect(predictStick(f.plan,'out',{...seen,age:.8},f.a.profile,.8)).toEqual(out);
   });
+  it('continues an observed receiver already on the out leg instead of forecasting a return to the stem',()=>{
+    const f=fixture(),seen=picture(46,f.stem.y+4*f.plan.outside,0,4*f.plan.outside);
+    const next=predictStick(f.plan,'out',seen,f.a.profile,1.2);
+    expect((next.y-seen.pos.y)*f.plan.outside).toBeGreaterThan(1);
+  });
 });
 
 function quarterbackView(f:ReturnType<typeof fixture>,keySide:number){

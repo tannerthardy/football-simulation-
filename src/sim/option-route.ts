@@ -85,6 +85,22 @@ function plannedPath(p:StickInstall,branch:StickBranch):PlannedPoint[]{
 const passed=(pos:Vec2,p:Vec2,next:Vec2):boolean=>(pos.x-p.x)*(next.x-p.x)+(pos.y-p.y)*(next.y-p.y)>0
   &&Math.hypot(pos.x-p.x,pos.y-p.y)<2;
 
+/** Reacquiring someone already on an installed leg does not reset him to
+ * waypoint zero. Infer progress geometrically, without reading his index.
+ */
+function observedLeg(p:StickInstall,path:PlannedPoint[],pos:Vec2):number{
+  if(pos.x<stickStem(p).x-1)return 0;
+  let best=0,distance=Infinity;
+  for(let i=0;i<path.length;i++){
+    const from=i?path[i-1].p:p.origin,to=path[i].p;
+    const dx=to.x-from.x,dy=to.y-from.y,den=dx*dx+dy*dy;
+    const t=den?clamp(((pos.x-from.x)*dx+(pos.y-from.y)*dy)/den,0,1):0;
+    const D=Math.hypot(pos.x-from.x-t*dx,pos.y-from.y-t*dy);
+    if(D<distance-1e-9){best=i;distance=D;}
+  }
+  return best;
+}
+
 /** Forecast a rehearsed branch from the last observed motion. Nominal physical
  * capabilities remain fixed; contact and later receiver decisions are unknown.
  * Perceived.pos is already projected: `memoryAge` is time since acquisition,
@@ -95,7 +111,7 @@ export function predictStick(p:StickInstall,branch:StickBranch,picture:Perceived
   const path=plannedPath(p,branch),body:Body={pos:{...picture.pos},vel:{...picture.vel},
     facing:picture.facing,energy:1,profile},cutSkill=.8+.4*p.routeSkill;
   const targetTime=Math.max(0,ahead+memoryAge),count=Math.ceil(targetTime/dt);
-  let idx=0;
+  let idx=observedLeg(p,path,picture.pos);
   for(let k=0;k<count;k++){
     let command:MoveCommand|null=null;
     for(let guard=0;guard<6;guard++){
