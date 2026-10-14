@@ -20,7 +20,7 @@ prov = packet['provenance']
 assert prov['developCommit'] == 'a1b16e666a9ee7d1bc1d2aecba141fc535863b24'
 assert prov['sourceSha256'] == old_manifest['sourceSha256']
 runtime_hash = hashlib.sha256()
-for path in sorted(p for p in Path('src').rglob('*') if p.is_file()):
+for path in sorted((p for p in Path('src').rglob('*') if p.is_file()), key=str):
     runtime_hash.update(str(path).encode()); runtime_hash.update(b'\0')
     runtime_hash.update(path.read_bytes()); runtime_hash.update(b'\0')
 assert runtime_hash.hexdigest() == prov['sourceSha256']
@@ -126,6 +126,8 @@ receipt={'protocol':'ace-awareness-preparation-receipt-v1','testedRevision':subp
     'controlsPrepared':ids,'referenceIntegrity':True,'d01Prefix54HashesExact':True,'heldMemoryLineageMatches':len(memory),
     'loadedFootIntervalsChecked':len(foot),'maximumCompositionResidual':maximum,
     'sourceAndRuntimeChanged':False,'fullSuiteOrTypecheckRun':False,
+    'correctedPreparationPreflight':{'revision':'de02994','cause':'Python Path ordering compared components rather than the authoritative source helper\'s full path strings.',
+        'runtimeChanged':False,'newWorldStepsBeforeFailure':0},
     'outputs':{str(destination/name):sha((destination/name).read_bytes()) for name in ['input-manifest.json','saved-inspection.json']},
     'elapsedSeconds':time.perf_counter()-start}
 (destination/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
