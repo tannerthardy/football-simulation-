@@ -1,6 +1,7 @@
 # Current work ownership
 
-Run-game bounded candidate: `codex/rb-live-aim-assessment`, child of diagnostic
+Run-game bounded candidate: [draft PR #13](https://github.com/tannerthardy/football-simulation-/pull/13),
+`codex/rb-live-aim-assessment`, child of diagnostic
 PR #11 `45a35bbe1b09554e874370604c83df47fca809f6`. Owner changes only the RB's
 designed-phase assessment reference in `behaviors/carrier.ts` to the live aim
 already acquired for its movement command. Cadence, scoring weights, information,

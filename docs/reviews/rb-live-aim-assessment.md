@@ -4,8 +4,8 @@ Prepared candidate changes only the designed runner's assessment reference:
 pass the live aim already acquired for movement into `BallCarrier.evaluate`.
 Its candidate heading and existing 2.5-weight designed-track penalty use that
 same reference. The four-argument/default evaluator retains its previous
-fixed-aim behavior for other calls. No extra perception, cadence change, new
-movement request, scoring weight, release timer or lane preference is added.
+fixed-aim behavior for other calls. Cue acquisition, cadence, command generation,
+scoring weights, release rules and lane preferences retain their implementations.
 
 Tested engine commit: **`139f55bfecf62b61f8ebee49647e6e2b6999764f`**, source
 `973d4ab84f80e5aa74a25c918fb96ef0189b938f4d22c8350aba9d121bb7f965`.
