@@ -552,7 +552,9 @@ export class ZoneCoverage implements Behavior {
       const flat = threats.find(th => th.r.slot === two);
       const fastBack = threats.some(th => sim.offAlign.spots[th.r.slot]?.backfield
         && th.pos.x > sim.los - 1 && sign * th.vel.y > 1.8);
-      if (best && best.r.slot === one && flat && !sim.offAlign.numbering[`${side}3`] && !fastBack) {
+      // The visible conflict is the same whether generic lane geometry first
+      // picked #1 or #2. Do not require a privileged read to enter this rule.
+      if (best && (best.r.slot === one || best.r.slot === two) && flat && !sim.offAlign.numbering[`${side}3`] && !fastBack) {
         const depth = flat.pos.x - sim.los;
         const vOut = sign * flat.vel.y;
         const outward = sign * (flat.pos.y - sim.offAlign.spots[flat.r.slot].pos.y);
