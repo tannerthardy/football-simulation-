@@ -35,6 +35,15 @@ for(const path of ['src/physics/world.ts','src/physics/grip-sliding.ts'])
 assert.equal(hashes['scripts/diag/physics/grip-force-mixed.ts'],hash(execFileSync('git',['show',`${parent}:scripts/diag/physics/grip-force-mixed.ts`])));
 mkdirSync(root,{recursive:true});
 const run=(input:any,mode:'uniform'|'event')=>mode==='uniform'?mixedGripInterval(input):saturationGripInterval(input);
+// Keep the newly observed numerical refusal visible; do not count it as a
+// successful baseline result or discard its independent physical reference.
+function call(c:any,mode:'uniform'|'event') {
+  try{return {refused:false as const,result:run(c.input,mode)};}catch(e){
+    assert(e instanceof RangeError&&e.message==='Mixed-grip scope/refinement limit exhausted'
+      &&mode==='uniform'&&c.id==='fresh-lower-opening','Unexpected operator refusal');
+    return {refused:true as const,error:e.message,returnedState:false as const};
+  }
+}
 const norm=(x:any,z:any)=>Math.hypot(x.x-z.x,x.y-z.y);
 function compare(r:any,z:any,input:any) {
   const error={position:Math.max(norm(r.a.pos,z.a.pos),norm(r.b.pos,z.b.pos)),
@@ -60,30 +69,32 @@ for(const c of [...reference.cases,...fresh.cases]) {
   assert(c.physical&&c.convergence.converged);
   const input=structuredClone(c.input);
   for(const mode of ['uniform','event'] as const) {
-    const result=run(input,mode),comparison=compare(result,c.reference,input);
-    assert.deepEqual(input,c.input);
-    rows.push({id:c.id,mode,result,...comparison});assert(comparison.matches,`${c.id} / ${mode}`);
+    const outcome=call({...c,input},mode);assert.deepEqual(input,c.input);
+    if(outcome.refused){rows.push({id:c.id,mode,...outcome,inputUnchanged:true,physicalAndConverged:true});continue;}
+    const comparison=compare(outcome.result,c.reference,input);
+    rows.push({id:c.id,mode,...outcome,...comparison});assert(comparison.matches,`${c.id} / ${mode}`);
   }
 
 }
 if(benchmark)for(const id of ['patch-45-8-0-3001-1-mixed-3','patch-45-8-0-3001-1-mixed-0.3','patch-45-8-0-3001-1-mixed-0.3-reverse',
-  'patch-0-3-0-3001-1-acquired','fresh-moving-arm']) {
+  'patch-0-3-0-3001-1-acquired','fresh-moving-arm','fresh-lower-opening']) {
   const c=[...reference.cases,...fresh.cases].find((c:any)=>c.id===id)??tangent.cases.find((c:any)=>c.id===id),input=structuredClone(c.input),
-    modes=['uniform','event'] as const,
-    samples=new Map(modes.map(mode=>[mode,[] as Array<{milliseconds:number;result:ReturnType<typeof run>}>]));
-  for(let k=0;k<5;k++)for(const mode of modes)run(input,mode);
+    prepared={...c,input},modes=['uniform','event'] as const,
+    samples=new Map(modes.map(mode=>[mode,[] as Array<{milliseconds:number;outcome:ReturnType<typeof call>}>]));
+  for(let k=0;k<5;k++)for(const mode of modes)call(prepared,mode);
   for(let k=0;k<21;k++)for(let j=0;j<modes.length;j++) {
-    const mode=modes[(j+k)%modes.length],start=performance.now(),result=run(input,mode);
-    samples.get(mode)!.push({milliseconds:performance.now()-start,result});
+    const mode=modes[(j+k)%modes.length],start=performance.now(),outcome=call(prepared,mode);
+    samples.get(mode)!.push({milliseconds:performance.now()-start,outcome});
   }
   for(const mode of modes) {
-    const repeats=samples.get(mode)!,sorted=repeats.map(s=>s.milliseconds).sort((a,b)=>a-b),endpoint=JSON.stringify(repeats[0].result);
-    assert(repeats.every(s=>JSON.stringify(s.result)===endpoint));assert.deepEqual(input,c.input);
+    const repeats=samples.get(mode)!,sorted=repeats.map(s=>s.milliseconds).sort((a,b)=>a-b),endpoint=JSON.stringify(repeats[0].outcome);
+    assert(repeats.every(s=>JSON.stringify(s.outcome)===endpoint));assert.deepEqual(input,c.input);
+    const outcome=repeats[0].outcome;
     bench.push({id,mode,milliseconds:{median:sorted[10],p95:sorted[19],maximum:sorted[20],samples:repeats.map(s=>s.milliseconds)},
-      evaluations:repeats[0].result.evaluations,partitions:repeats[0].result.partitions,
-      method:repeats[0].result.method,stageStatistics:(repeats[0].result as any).stageStatistics,
-      eventTime:(repeats[0].result as any).eventTime,rootIterations:(repeats[0].result as any).rootIterations,
-      ...compare(repeats[0].result,c.reference,input)});
+      ...(outcome.refused?outcome:{refused:false,evaluations:outcome.result.evaluations,partitions:outcome.result.partitions,
+        method:outcome.result.method,stageStatistics:(outcome.result as any).stageStatistics,
+        eventTime:(outcome.result as any).eventTime,rootIterations:(outcome.result as any).rootIterations,
+        ...compare(outcome.result,c.reference,input)})});
     console.log(JSON.stringify(bench.at(-1)));
   }
 }

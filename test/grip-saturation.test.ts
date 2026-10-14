@@ -1,6 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {describe,it,expect} from 'vitest';
 import {saturationGripInterval} from '../scripts/diag/physics/grip-force-saturation.js';
+import {mixedGripInterval} from '../scripts/diag/physics/grip-force-mixed.js';
 import {angleGripStep} from '../scripts/diag/physics/grip-angle-stages.js';
 import {pressureGeometry,pressureRate} from '../scripts/diag/physics/grip-pressure-rate.js';
 import {boundedGripInterval,type BoundedGripInput} from '../scripts/diag/physics/grip-force-bounded.js';
@@ -71,6 +72,12 @@ describe('normal-saturation event integration, diagnostic only',()=>{
         expect(Math.abs(r.eventResidual)).toBeLessThanOrEqual(1e-10);
         expect(r.maximumCapacityExcess).toBeLessThan(1e-9);expect(r.partitions).toBeLessThanOrEqual(16);}
     });
+  it('retains the uniform refusal on the valid fresh late-transition case',()=>{
+    const c=fresh.cases.find(c=>c.id==='fresh-lower-opening')!;
+    expect(c.physical&&c.convergence.converged).toBe(true);
+    expect(()=>mixedGripInterval(c.input)).toThrow('Mixed-grip scope/refinement limit exhausted');
+    expect(saturationGripInterval(c.input).method).toBe('saturation-gauss');
+  });
   it.each(tangent.cases)('retains the complete existing tangent result: $id',({input})=>{
     const {method,normalImpulse,tangentImpulse,...r}=saturationGripInterval(input);
     expect(method).toBe('existing-tangent');expect(normalImpulse).toBe(0);expect(tangentImpulse).toBeUndefined();
