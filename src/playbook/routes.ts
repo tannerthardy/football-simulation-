@@ -11,6 +11,12 @@ export const ROUTES: Record<string, RouteDef> = {
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
   fade: { id: 'fade', family: 'deep', depth: 25, end: 'continue', points: [{ d: 3, l: 1.6 }, { d: 50, l: 3.5 }] },
   seam: { id: 'seam', family: 'deep', depth: 22, end: 'continue', points: [{ d: 4, l: -0.4 }, { d: 50, l: -1.2 }] },
+  seam_read: {
+    id: 'seam_read', family: 'deep', depth: 22, end: 'continue',
+    points: [{ d: 10, l: -0.4, s: 0.85 }, { d: 50, l: -1.2 }],
+    middleRead: { decisionDepth: 8,
+      post: [{ d: 10, l: -0.4, s: 0.7 }, { d: 40, l: -16 }] },
+  },
   // Quick game
   hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
   // Three-step slant: break at 45°, then flatten across the field if not thrown.

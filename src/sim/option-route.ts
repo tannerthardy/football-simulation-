@@ -9,7 +9,7 @@ import type {RouteDef,RoutePoint} from '../playbook/types.js';
 import type {Perceived} from './perception.js';
 
 export type StickBranch = 'sit' | 'out';
-export interface StickInstall {
+export interface RouteInstall {
   readonly origin: Vec2;
   readonly los: number;
   readonly outside: number;
@@ -17,6 +17,7 @@ export interface StickInstall {
   readonly effort: number;
   readonly routeSkill: number;
 }
+export type StickInstall = RouteInstall;
 export interface OptionPicture extends Pick<Perceived,'pos'|'vel'|'pose'> { readonly i: number }
 export interface StickRead {
   branch: StickBranch;
@@ -67,11 +68,10 @@ interface PlannedPoint {p:Vec2;s:number}
 /** Same installed waypoints and field limits as the receiver. No live index,
  * settled state, press contact, chosen branch or future movement is read.
  */
-function plannedPath(p:StickInstall,branch:StickBranch):PlannedPoint[]{
-  const points:RoutePoint[]=branch==='out'?p.route.vsMan!:p.route.points;
+function plannedPoints(p:RouteInstall,points:RoutePoint[],extend:boolean):PlannedPoint[]{
   const out=points.map(r=>({p:{x:Math.min(OPP_GOAL_X+8.5,p.los+r.d),
     y:clamp(p.origin.y+r.l*p.outside,1.2,FIELD_WIDTH-1.2)},s:r.s??1}));
-  if(branch==='out'&&out.length){
+  if(extend&&out.length){
     const last=out.at(-1)!.p,prev=out.length>1?out.at(-2)!.p:p.origin,d=norm(sub(last,prev));
     let k=40;
     if(d.y< -1e-6)k=Math.min(k,(last.y-5)/-d.y);
@@ -108,7 +108,20 @@ function observedLeg(p:StickInstall,path:PlannedPoint[],pos:Vec2):number{
  */
 export function predictStick(p:StickInstall,branch:StickBranch,picture:Perceived,
   profile:PhysicalProfile,ahead:number,memoryAge=0,dt=.05):Vec2{
-  const path=plannedPath(p,branch),body:Body={pos:{...picture.pos},vel:{...picture.vel},
+  return predictPath(p,plannedPoints(p,branch==='out'?p.route.vsMan!:p.route.points,branch==='out'),
+    branch==='sit',picture,profile,ahead,memoryAge,dt);
+}
+
+/** A continuing called branch uses the same preview as Stick, including
+ * geometric progress inference. It cannot inspect a receiver's live path. */
+export function predictContinueRoute(p:RouteInstall,points:RoutePoint[],picture:Perceived,
+  profile:PhysicalProfile,ahead:number,memoryAge=0,dt=.05):Vec2{
+  return predictPath(p,plannedPoints(p,points,true),false,picture,profile,ahead,memoryAge,dt);
+}
+
+function predictPath(p:RouteInstall,path:PlannedPoint[],stop:boolean,picture:Perceived,
+  profile:PhysicalProfile,ahead:number,memoryAge:number,dt:number):Vec2{
+  const body:Body={pos:{...picture.pos},vel:{...picture.vel},
     facing:picture.facing,energy:1,profile},cutSkill=.8+.4*p.routeSkill;
   const targetTime=Math.max(0,ahead+memoryAge),count=Math.ceil(targetTime/dt);
   let idx=observedLeg(p,path,picture.pos);
@@ -119,7 +132,7 @@ export function predictStick(p:StickInstall,branch:StickBranch,picture:Perceived
       const point=path[idx],next=path[idx+1],D=Math.hypot(point.p.x-body.pos.x,point.p.y-body.pos.y);
       if(D<.6||(next&&passed(body.pos,point.p,next.p))){idx++;continue;}
       const top=profile.vmax*p.effort;
-      let through=idx===path.length-1&&branch==='sit'?0:point.s*top*clamp(.82+.3*p.routeSkill,0,1);
+      let through=idx===path.length-1&&stop?0:point.s*top*clamp(.82+.3*p.routeSkill,0,1);
       if(next){
         const ax=point.p.x-body.pos.x,ay=point.p.y-body.pos.y,bx=next.p.x-point.p.x,by=next.p.y-point.p.y;
         const cos=(ax*bx+ay*by)/((Math.hypot(ax,ay)||1)*(Math.hypot(bx,by)||1));
@@ -127,7 +140,7 @@ export function predictStick(p:StickInstall,branch:StickBranch,picture:Perceived
       }
       command={vel:arriveVelocity(body,point.p,top,through),cutSkill};break;
     }
-    if(!command)command=branch==='out'?{vel:body.vel}:{vel:arriveVelocity(body,path.at(-1)!.p,profile.vmax*.6,0)};
+    if(!command)command=stop?{vel:arriveVelocity(body,path.at(-1)!.p,profile.vmax*.6,0)}:{vel:body.vel};
     stepBody(body,command,Math.min(dt,targetTime-k*dt));
   }
   return {...body.pos};

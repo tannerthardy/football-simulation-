@@ -13,6 +13,7 @@ import type { RouteDef, RoutePoint } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { atStickDecision, readStick, type StickInstall, type StickRead } from '../option-route.js';
+import {atMiddleDecision,readMiddle,type MiddleInstall,type MiddleRead} from '../middle-read.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 
 interface PathPoint {
@@ -43,9 +44,10 @@ export class RouteRunner implements Behavior {
   private pressContact: PressContact | null = null;
   private readonly releasedCorners = new Set<Agent>();
   private converted = false;
-  private optionDecision: StickRead | null = null;
+  private optionDecision: StickRead | MiddleRead | null = null;
   /** Rehearsed call shared with teammates, never this runner's live choice. */
   readonly stickInstall: StickInstall | null;
+  readonly middleInstall: MiddleInstall | null;
   private readAt: number;
   private readonly start: Vec2;
   /** Time at which the route's final break is expected (for QB timing). */
@@ -66,6 +68,9 @@ export class RouteRunner implements Behavior {
     this.effort = clamp((base[route.family] ?? 0.85) + 0.04 * (a.r('routeRunning') - 0.5), 0.7, 0.98);
     this.stickInstall = route.id === 'stick' && route.vsMan ? {
       origin: { ...a.pos }, los: sim.los, outside, route, effort: this.effort, routeSkill: a.r('routeRunning'),
+    } : null;
+    this.middleInstall = route.middleRead ? {
+      origin: {...a.pos}, los: sim.los, outside, route, effort: this.effort, routeSkill: a.r('routeRunning'),
     } : null;
     this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
     this.readAt = 0.55 + 0.6 * (1 - a.r('awareness'));
@@ -140,7 +145,16 @@ export class RouteRunner implements Behavior {
         this.idx = 0;
         this.skipPassed(a);
       }
-    } else if (!this.converted && !this.stickInstall && sim.t >= this.readAt && this.route.end === 'sitVsZone') {
+    } else if (!this.converted && this.middleInstall && atMiddleDecision(this.middleInstall, a.pos)) {
+      this.optionDecision = readMiddle(this.middleInstall,
+        sim.defense.map(d => ({i:d.idx,...sim.see(a,d)})));
+      this.converted = true;
+      if (this.optionDecision.branch === 'post') {
+        this.path = this.buildPath(this.start, this.route.middleRead!.post, true);
+        this.idx = 0;
+        this.skipPassed(a);
+      }
+    } else if (!this.converted && !this.stickInstall && !this.middleInstall && sim.t >= this.readAt && this.route.end === 'sitVsZone') {
       this.converted = true;
       const misread = sim.rng.chance(0.15 * (1 - a.r('awareness')));
       const isMan = sim.defAlign.coverage.man !== misread;

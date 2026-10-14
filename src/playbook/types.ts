@@ -69,6 +69,9 @@ export interface RouteDef {
   end: RouteEnd;
   /** Converts against man coverage (e.g. stick → out-breaking). */
   vsMan?: RoutePoint[];
+  /** Installed seam/post read. Depth is physical route progress, not a timer
+   * or a private coverage classification. The default points stay vertical. */
+  middleRead?: { decisionDepth: number; post: RoutePoint[] };
   /** Typical target depth for the QB's timing (yards beyond LOS). */
   depth: number;
   /** Route family for defensive anticipation. */

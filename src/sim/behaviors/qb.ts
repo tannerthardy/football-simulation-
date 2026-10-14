@@ -31,6 +31,8 @@ import type { ReplayTelemetryFrame } from '../types.js';
 import type { Perceived } from '../perception.js';
 import { atStickDecision, observedStickBranch, predictStick, readStick,
   type StickBranch, type StickInstall, type StickRead } from '../option-route.js';
+import {atMiddleDecision,observedMiddleBranch,predictMiddle,readMiddle,
+  type MiddleBranch,type MiddleInstall,type MiddleRead} from '../middle-read.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -45,16 +47,16 @@ interface ThrowEval {
   depth: number;
 }
 
-interface OptionMemory {
-  install: StickInstall;
+interface OptionMemoryBase {
   picture: Perceived;
   observedAt: number;
   attemptedAt: number;
-  branch: StickBranch;
   committed: boolean;
   evidence: 'install' | 'key' | 'motion';
-  read: StickRead | null;
 }
+type OptionMemory=OptionMemoryBase & (
+  {kind:'stick';install:StickInstall;branch:StickBranch;read:StickRead|null}
+  |{kind:'middle';install:MiddleInstall;branch:MiddleBranch;read:MiddleRead|null});
 
 function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
   switch (drop) {
@@ -142,10 +144,13 @@ export class QBPass implements Behavior {
     this.reads = this.orderReads(sim, this.reads);
     for (const r of this.reads) {
       const install = r.behavior instanceof RouteRunner ? r.behavior.stickInstall : null;
-      if (install) this.optionMemories.set(r, { install, picture: {
-        pos: { ...install.origin }, vel: { x: 0, y: 0 }, facing: 0,
+      const middle = r.behavior instanceof RouteRunner ? r.behavior.middleInstall : null;
+      const common = {picture: {
+        pos: { ...(install ?? middle)?.origin ?? r.pos }, vel: { x: 0, y: 0 }, facing: 0,
         stance: null, pose: 'up', carrying: false, age: 0,
-      }, observedAt: 0, attemptedAt: -1, branch: 'sit', committed: false, evidence: 'install', read: null });
+      } as Perceived, observedAt: 0, attemptedAt: -1, committed: false, evidence: 'install' as const};
+      if (install) this.optionMemories.set(r, {...common,kind:'stick',install,branch:'sit',read:null});
+      else if (middle) this.optionMemories.set(r, {...common,kind:'middle',install:middle,branch:'seam',read:null});
     }
   }
 
@@ -207,7 +212,7 @@ export class QBPass implements Behavior {
     this.mind.observe(this.gazePoint(sim));
     const attention = this.phase === 'windup' ? this.pending?.target
       : this.lookOff && t < this.lookOff.until ? this.lookOff.decoy : this.reads[this.readIdx];
-    if (attention) this.observeStick(a, sim, attention);
+    if (attention) this.observeOption(a, sim, attention);
     if (this.mind.justIdentified && this.readIdx === 0) this.reads = this.orderReads(sim, this.reads);
 
     if (this.phase === 'snap') {
@@ -341,7 +346,7 @@ export class QBPass implements Behavior {
     const read = this.reads[this.readIdx];
     // During the drop: the key (middle-of-field safety); quick game eyes the first read.
     if ((this.phase === 'snap' || this.phase === 'drop') && this.concept.family !== 'quick') return { x: sim.los + 12, y: sim.ballY };
-    if (read && this.optionMemories.has(read)) return this.knownStickPoint(sim, read, 0);
+    if (read && this.optionMemories.has(read)) return this.knownOptionPoint(sim, read, 0);
     return read ? read.pos : { x: sim.los + 10, y: sim.ballY };
   }
 
@@ -349,7 +354,7 @@ export class QBPass implements Behavior {
    * same clear-cone dimensions as QBMind, with delayed sector membership.
    * Emergency scans of other options retain their previous/installed picture.
    */
-  private observeStick(a: Agent, sim: PlaySim, r: Agent): void {
+  private observeOption(a: Agent, sim: PlaySim, r: Agent): void {
     const m = this.optionMemories.get(r);
     if (!m || m.attemptedAt === sim.t) return;
     const looking = this.phase === 'windup' ? this.pending?.target === r
@@ -363,28 +368,39 @@ export class QBPass implements Behavior {
     if (ang > cone) return;
     m.picture = { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } };
     m.observedAt = sim.t;
-    const motion = observedStickBranch(m.install, m.picture);
-    if (motion) { m.branch = motion; m.committed = true; m.evidence = 'motion'; }
-    else if (!m.committed) {
-      m.read = readStick(m.install, sim.defense.map(d => ({ i: d.idx, ...this.mind.estimate(d) })));
-      m.branch = m.read.branch; m.evidence = 'key';
-      m.committed = atStickDecision(m.install, m.picture.pos);
+    if (m.kind === 'stick') {
+      const motion = observedStickBranch(m.install, m.picture);
+      if (motion) { m.branch = motion; m.committed = true; m.evidence = 'motion'; }
+      else if (!m.committed) {
+        m.read = readStick(m.install, sim.defense.map(d => ({ i: d.idx, ...this.mind.estimate(d) })));
+        m.branch = m.read.branch; m.evidence = 'key';
+        m.committed = atStickDecision(m.install, m.picture.pos);
+      }
+    } else {
+      const motion = observedMiddleBranch(m.install, m.picture);
+      if (motion) { m.branch = motion; m.committed = true; m.evidence = 'motion'; }
+      else if (!m.committed) {
+        m.read = readMiddle(m.install, sim.defense.map(d => ({i:d.idx,...this.mind.estimate(d)})));
+        m.branch = m.read.branch; m.evidence = 'key';
+        m.committed = atMiddleDecision(m.install, m.picture.pos);
+      }
     }
   }
 
-  private knownStickPoint(sim: PlaySim, r: Agent, ahead: number): Vec2 {
+  private knownOptionPoint(sim: PlaySim, r: Agent, ahead: number): Vec2 {
     const m = this.optionMemories.get(r)!;
-    return predictStick(m.install, m.branch, m.picture, r.profile, ahead,
-      Math.max(0, sim.t - m.observedAt), sim.dt);
+    const age = Math.max(0, sim.t-m.observedAt);
+    return m.kind==='stick' ? predictStick(m.install,m.branch,m.picture,r.profile,ahead,age,sim.dt)
+      : predictMiddle(m.install,m.branch,m.picture,r.profile,ahead,age,sim.dt);
   }
 
   /** Called-route anticipation and the QB's own evidence. The receiver's
-   * private path/index/commitment cannot reveal a Stick conversion at release.
+   * private path/index/commitment cannot reveal an option conversion at release.
    */
   private receiverPrediction(a: Agent, sim: PlaySim, r: Agent, ahead: number): Vec2 {
     if (this.optionMemories.has(r)) {
-      this.observeStick(a, sim, r);
-      return this.knownStickPoint(sim, r, ahead);
+      this.observeOption(a, sim, r);
+      return this.knownOptionPoint(sim, r, ahead);
     }
     const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     return rr ? rr.predict(r, ahead) : { x: r.pos.x + r.vel.x * ahead, y: r.pos.y + r.vel.y * ahead };
@@ -433,7 +449,7 @@ export class QBPass implements Behavior {
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
     const option = this.optionMemories.get(r);
     if (option) {
-      this.observeStick(a, sim, r);
+      this.observeOption(a, sim, r);
       if (option.picture.pose === 'down' || option.picture.pose === 'rising') return null;
     } else if (r.isDown(sim.t) || r.engagement) return null;
     const wind = this.windup(a);
@@ -445,7 +461,7 @@ export class QBPass implements Behavior {
     // a little sooner.
     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
     const natural = (d: number) => (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
-    const current = option ? this.knownStickPoint(sim, r, 0) : r.pos;
+    const current = option ? this.knownOptionPoint(sim, r, 0) : r.pos;
     let range = Math.hypot(current.x - a.pos.x, current.y - a.pos.y);
     let T = Math.max(0.3, natural(range));
     let Tmin = T;

@@ -30,6 +30,11 @@ export const PASS_CONCEPTS: PassConcept[] = [
   },
   // ------------------------------------------------------------ dropback
   {
+    id: 'seam_read', name: 'Seam Read', family: 'dropback', drop: 'gun5',
+    strong: { 1: 'go', 2: 'seam_read', 3: 'shallow' }, weak: { 1: 'go', 2: 'seam' }, back: 'check',
+    progression: ['S2', 'W1', 'S1', 'S3', 'B'], beats: ['cover2'], minReceivers: 3,
+  },
+  {
     id: 'smash', name: 'Smash', family: 'dropback', drop: 'gun5',
     strong: { 1: 'hitch', 2: 'corner', 3: 'hook' }, weak: { 1: 'hitch', 2: 'corner' }, back: 'check',
     progression: ['S2', 'S1', 'W2', 'W1', 'B'], beats: ['cover2', 'cover4'],
