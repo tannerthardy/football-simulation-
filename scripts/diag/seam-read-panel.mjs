@@ -11,9 +11,9 @@ import {dirname,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {gzipSync} from 'node:zlib';
 const local=p=>import(pathToFileURL(join(process.cwd(),p)).href);
-const [{PlaySim},{ROUTES},{PASS_BY_ID},{COVERAGE_BY_ID},{sourceVersion}]=await Promise.all([
+const [{PlaySim},{ROUTES},{PASS_BY_ID},{COVERAGE_BY_ID},{sourceVersion},{goTo}]=await Promise.all([
  local('src/sim/playsim.ts'),local('src/playbook/routes.ts'),local('src/playbook/concepts.ts'),
- local('src/playbook/defense.ts'),local('scripts/source-version.ts')]);
+ local('src/playbook/defense.ts'),local('scripts/source-version.ts'),local('src/sim/behaviors/common.ts')]);
 const [mode,input,out,group]=process.argv.slice(2),copy=x=>structuredClone(x);
 const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const digest=p=>createHash('sha256').update(readFileSync(p)).digest('hex');
@@ -43,8 +43,20 @@ if(mode==='prepare'){
   freshTrigger:'Only after initial contracts and football; named remaining risks are flipped roof rotation and a Tampa pole with fresh actual players.',
   routes:{seam_read:copy(ROUTES.seam_read)},rows},null,2)+'\n');
  console.log(JSON.stringify({input,cases:rows.length,newSimulations:0}));
+}else if(mode==='prepare-rotation'){
+ const original='data/reviews/current/seam-read-inputs.json',base=JSON.parse(readFileSync(original,'utf8'));
+ const setup=base.rows.find(r=>r.id==='middle-open').setup;
+ const rows=[['held-underneath',null,0],['late-pole-clear',.65,0],['late-pole-peripheral',.65,.2]]
+  .map(([id,moveAt,peripheral])=>({id,cohort:'rotation',setup:copy(setup),
+   intervention:{slot:'LB_M',moveAt,until:2.5,targetDepth:18,peripheral}}));
+ mkdirSync(dirname(input),{recursive:true});writeFileSync(input,JSON.stringify({...base,
+  preparedBy:provenance,preparedBeforeOutcomes:true,originalInputs:{path:original,sha256:digest(original)},
+  question:'Can the actual QB release toward a post expectation rejected by the receiver after a prescribed pole carry and delayed key acquisition?',
+  comparison:'Controlled encounter, not native disagreement frequency. Same actual generated bodies and physics; coached Mike movement and one declared attention intervention.',
+  budget:{cases:3,caseMaxMs:5000,batchMaxMs:30000,newGames:0},freshTrigger:null,rows},null,2)+'\n');
+ console.log(JSON.stringify({input,cases:3,newSimulations:0}));
 }else if(mode==='run'){
- assert.ok(['initial','fresh'].includes(group));const packet=JSON.parse(readFileSync(input,'utf8'));
+ assert.ok(['initial','fresh','rotation'].includes(group));const packet=JSON.parse(readFileSync(input,'utf8'));
  assert.deepEqual(packet.integrationBaseline,profile);
  for(const [id,route]of Object.entries(packet.routes)){
   if(ROUTES[id])assert.deepEqual(ROUTES[id],route);else ROUTES[id]=copy(route);
@@ -56,6 +68,15 @@ if(mode==='prepare'){
   const sim=new PlaySim(copy(row.setup)),qb=sim.qb.behavior,
    runners=sim.offense.filter(a=>a.behavior.kind==='route').map(a=>({a,r:a.behavior})),steps=[],balls=[];
   let step=null;const tick=sim.tick,see=sim.see,updateBall=sim.updateBall;
+  if(row.intervention){
+   const p=row.intervention,key=sim.slot(p.slot),hold=copy(key.pos),original=key.behavior.update;
+   key.behavior.update=function(a,s){
+    if(s.t>=p.until)return original.call(this,a,s);
+    const target=p.moveAt!==null&&s.t>=p.moveAt?{x:s.los+p.targetDepth,y:26.65}:hold;
+    return goTo(a,target,{facing:p.moveAt!==null&&s.t>=p.moveAt?0:Math.PI});
+   };
+   if(p.peripheral)sim.qb.eyes={keys:sim.defense.filter(d=>d!==key),peripheral:p.peripheral};
+  }
   const routes=()=>runners.map(({a,r})=>({i:a.idx,id:a.player.id,slot:a.slot,route:r.route.id,
    idx:r.idx,converted:r.converted,decision:copy(r.optionDecision??null),path:copy(r.path)}));
   const qstate=()=>({...qb.recordedState(),options:qb.optionMemories?
