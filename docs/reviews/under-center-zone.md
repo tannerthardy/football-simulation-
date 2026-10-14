@@ -16,7 +16,7 @@ PR #4 (`09c65f70ff3835dba17fb08487582d65f49eaea827f4e6e48f396f93210b773c`).
 
 | Ordinary 12-personnel look | Collection and first-level protection | Runner ending |
 | --- | --- | --- |
-| Rightward WZ, Y playside | Y leaves the end to RT at 2.00 s and loads LB_S at 2.50; C collects LB_M at 2.75. RT retains end load through arrival. | Crosses LOS at 3.60; first contact is the intentionally free SS at 3.65. Ends at 4.30, +1.496 yd. Clean arrival. |
+| Rightward WZ, Y playside | Y leaves the end to RT at 2.00 s and loads LB_S at 2.50; C collects LB_M at 2.75. RT retains end load through arrival. | Crosses LOS at 3.60; first contact is CB_S at 3.65. Ends at 4.30, +1.496 yd. Clean arrival. |
 | Same rightward call, H playside after skill-side flip | H leaves at 1.75 and loads LB_S at 2.00. RT still has loaded end hands, but DE_S reaches the runner. | First contact at 2.65 before LOS; ends at 3.25, −.206 yd without crossing. Collection succeeds while first-level protection fails. |
 | Explicit weak-side WZ, running left with H playside | H leaves DE_W to LT at 1.25; neither H nor RT collects its assigned backer before first contact. LG collects LB_M at 1.75. LT retains end load until after the end's runner contact. | DE_W grips at 2.30 before LOS crossing at 2.60. Ends at 3.40, +2.372 yd; the positive gain does not establish a protected approach. |
 
@@ -31,6 +31,12 @@ The front accounts for four DL and three linebackers using the seven inline
 blockers; the two receivers handle corners and the safeties remain free. There
 is no missing-fullback assumption in these installations. Nominal assignment
 still does not establish collection or path protection.
+
+Prose correction after the PR #14 review: the successful first stopper is
+**CB_S**, as the saved receipt/event already records, not SS. Z is assigned that
+corner; no substantive Z/CB_S hand load is recorded in this play. The later
+corner collection/protection question is separate from the protected LOS
+arrival. The earlier “intentionally free safety” explanation was incorrect.
 
 The original input's `mirror` suffix was corrected after inspecting actual
 geometry. In balanced `ace_12`, flipping the formation swaps the tight ends and
