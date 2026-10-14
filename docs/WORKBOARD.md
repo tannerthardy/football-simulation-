@@ -11,16 +11,16 @@ retain `4ded6b6`. Research may use declared experimental ancestors with explicit
 
 | Work | Owner | Published location / edit boundary | Current state |
 | --- | --- | --- | --- |
-| Shared teammate awareness, INFO-001/002 | Pass Game/Pursuit awareness owner, user-assigned | Implementation branch not published at this snapshot; claim exact perception/spacing files before shared edits | Active; retain observation/memory/expectation boundary, current policy and physics |
-| D01/Y awareness comparison, RUN-001 | Run Game | `codex/ace-awareness-comparison`, #35 `fed330a`; fixtures/harness/domain interpretation | Prepared; waiting for exact awareness commit/settings/observer initialization; no new recovery policy |
+| Shared teammate awareness, INFO-001/002 | Pass Game/Pursuit awareness owner, user-assigned | `codex/teammate-information`, #36 `6828467`; acquisition/memory/installed expectations and spacing input adapter | Focused candidate published; promotion held for Run Game review; policy/physics unchanged |
+| D01/Y awareness comparison, RUN-001 | Run Game | `codex/ace-awareness-comparison`, #35 `fed330a`; fixtures/harness/domain interpretation of #36 | Review rear collision and bounded post-mesh expectations; preserve observer initialization and no new yielding policy |
 | Coverage COV-001/002 | Pass Game + recording-contract owner; Integration handles later freeze | #34 `306579f`, tested `cb240d2`; coverage/test-contract review | Parked while Pass Game helps awareness; candidate remains blocked |
 | Stalk STALK-001 and exact shared verification | Integration + Run Game contributor | #29 `b8e4d86`, or a reviewed extraction; only minimal fit input correction | Independent review eligible; no standalone combined pass claimed |
 | Grip composition/cost PHY-002 | Primary Physics | `codex/grip-phase-transition`, #33 `abf0e1c`; bounded diagnostic solver/reference/composition work | Active research; no World/default promotion |
 | Run-game contact-law/retention support PHY-001/004 | Architecture lead, user-delegated physics reviewer; Integration owns promotion | #17/#18 evidence and published retention ruling; coordinate World edits with primary Physics | Retention prerequisite reviewed; angular correction remains unpromoted |
 | Master tracking and priorities | Architecture lead + Integration maintainer | `codex/project-tracking`; documentation only | Initial register/current-reference repair; contributors propose updates by issue ID |
 
-The awareness owner assignment is user-reported; this board does not invent an
-implementation SHA or assume an unpublished file claim. Named branch rows are
+The awareness owner assignment is user-reported; #36 supplies its published
+candidate pins. Named branch rows are
 published scope records, not authority to edit another worker's checkout.
 Coordinate shared movement/spacing changes with the YAC/Pursuit owner. The
 primary Physics owner retains unrelated solver work. No new agent is launched

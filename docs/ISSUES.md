@@ -28,13 +28,13 @@ a defect. Historical/experimental witnesses must retain their source and setting
 
 | ID | Problem / decision | Evidence class | Status | Owner / return condition |
 | --- | --- | --- | --- | --- |
-| [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect | Active | Pass Game/Pursuit awareness owner; first shared teammate-information repair |
-| [INFO-002](#INFO-002) | Call-based anticipation can expose hidden live state | Confirmed information-boundary limitation | Active with INFO-001 | Awareness owner; same acquisition/expectation boundary |
+| [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
+| [INFO-002](#INFO-002) | Call-based anticipation can expose hidden live state | Confirmed limitation; #36 copied installed prior prepared | Active with INFO-001 | Awareness + Run Game; bounded installed expectations without hidden updates |
 | [INFO-003](#INFO-003) | Other controller reads still need scoped information review | Known information debt; scope varies | Parked migration | Awareness + affected controller owner; after first reusable boundary passes |
 | [STALK-001](#STALK-001) | Far stalk request reads hidden defender position | Confirmed defect; isolated correction prepared | Integration review | Integration + Run Game; #29-only verification or a repaired combined candidate |
 | [COV-001](#COV-001) | Match/spot seam-gap contract fails | Failed contract; cause not adjudicated | Parked / blocks coverage | Pass Game, currently helping awareness; resume when available |
 | [COV-002](#COV-002) | Scramble-recording fixture now throws | Failed fixture precondition; recorder defect unproved | Parked / blocks coverage | Pass Game + recording-contract owner; resume when available |
-| [RUN-001](#RUN-001) | D01 loaded RT loses useful position through runner arrival | Observed protection failure; safe alternative unproved | Awaiting awareness candidate | Run Game; #35 exact candidate and observer initialization |
+| [RUN-001](#RUN-001) | D01 loaded RT loses useful position through runner arrival | Observed failure; #36 changes information and retains adverse Y collision | Active domain review | Run Game; #35/#36 exact source/initialization and bounded coordination question |
 | [RUN-002](#RUN-002) | Historical isolated-law RT joining / RG interior access | Experimental observed failures | Parked | Run Game + physics reviewer; only for a named current-source transfer question |
 | [RUN-003](#RUN-003) | First-level TE base/dispatch policy | Observed role difference; intervention adverse | Parked | Run Game; a new decision-changing mechanism, not another gain-rescue trial |
 | [RUN-004](#RUN-004) | Stalk fit ignores known target velocity | Observed approximation; protection effect unproved | Parked | Run Game; after STALK-001, one actual moving-target fit question |
@@ -60,16 +60,31 @@ RB is about 1.50 yd from RT and 152 degrees from torso-forward; the saved
 interval has no RT/RB contact. This is not measured eye gaze or proof of no
 earlier glance, but the code supplies no acquisition justification for refresh.
 
-**Next:** one shared query separating acquired picture, aging memory, installed
-expectation and unavailable information; migrate spacing first with yielding
-policy unchanged. Hidden-state tests must advance reality snapshots while
-holding legitimate inputs and private randomness fixed. Preserve observed,
-remembered/called and tactile controls. Do not seed memory from all true bodies.
+**Required contract:** one shared query separates acquired picture, aging memory,
+installed expectation and unavailable information; spacing migrates first with
+yielding unchanged. #36 reports this first implementation. Review its scoped
+remaining questions instead of recollecting the same evidence. Hidden-state
+checks advance reality snapshots with legitimate inputs/private randomness fixed;
+observed, remembered/called and tactile controls oppose unavailability. Memory
+must not be seeded from all true bodies.
 
-**Owner:** Pass Game/Pursuit is helping start awareness, per the user's current
-assignment. A published awareness implementation/branch was not available at
-this snapshot. Run Game has prepared [#35](https://github.com/tannerthardy/football-simulation-/pull/35)
-at `fed330a`: D01/Y inputs and memory gaps, not an implemented repair.
+**Owner/current candidate:** Pass Game/Pursuit prepared
+[#36](https://github.com/tannerthardy/football-simulation-/pull/36), publication
+`6828467`, tested engine/tests `98411ef`, harness `b331bc5`, branch
+`codex/teammate-information`. Published evidence reports 37 focused checks and
+typecheck, observer-owned acquisition/memory/expectations/touch/unavailability,
+once-per-tick sensing and query/recording neutrality. Only spacing is migrated;
+no full-suite pass or production merge is claimed. Run Game prepared
+[#35](https://github.com/tannerthardy/football-simulation-/pull/35) at `fed330a`
+with exact D01/Y inputs and memory gaps. The full #36 receipt is owner-published
+evidence; this tracking pass does not independently rerun it.
+
+**Promotion remains held:** H changes -.21 -> +1.14 yd, Y +1.49 -> +.62 yd,
+both tackled; Y has a real rear teammate collision before a tactile cue. Motion
+diverges by .15 s, so gains are not isolated late-spacing effects or general
+improvement. Run Game reviews the collision and bounded post-mesh coordination.
+The published next experiment is a request-only installed lane/timing expectation,
+opposed by hidden divergence and an observed cutback; do not add RB yielding policy.
 [Accepted information entry](../src/sim/playsim.ts),
 [D01 source-pinned evidence](https://github.com/tannerthardy/football-simulation-/blob/1fbc013008faaa8ab0f677328d81c183c0b8c032/docs/reviews/run-drills/d01-analysis.md).
 
@@ -169,7 +184,7 @@ project is assigned to them by this register.
 ## Run-game mechanisms
 
 <a id="RUN-001"></a>
-### RUN-001 — Current D01; await honest information
+### RUN-001 — Current D01; review the honest-information candidate
 
 Accepted H loses the positional screen while RT hands remain loaded; spacing
 redirects an existing backfield recovery request. This does not prove no recovery
@@ -178,11 +193,12 @@ effort, inevitable collision, or a faulty yielding policy. [#32](https://github.
 Preserve their findings; do not stack a third adjustment or rerun them by default.
 
 [#35](https://github.com/tannerthardy/football-simulation-/pull/35) prepares D01/Y
-and reports incomplete Y observer-memory history. Next, obtain the awareness
-owner's exact source/settings/initialization; compare information first with
-unchanged yielding, native reactions and all 22 bodies. A later role-specific
-yielding trial needs a remaining named policy question. No automatic promise
-that removing privileged information improves yards or prevents collisions.
+and reports incomplete original Y observer-memory history. #36 now publishes a
+from-start information candidate and retains a real rear collision/adverse Y
+ending. Review that actual source/initialization and post-mesh coordination,
+with unchanged yielding, native reactions and all 22 bodies. A later role-specific
+yielding trial needs a remaining named policy question. Do not infer improved
+football from H's gain or reject an honest collision from Y's loss alone.
 
 <a id="RUN-002"></a>
 ### RUN-002 — Keep historical contact-law failures separate

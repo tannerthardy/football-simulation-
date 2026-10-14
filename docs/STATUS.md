@@ -31,7 +31,7 @@ older chronological material is preserved in the collapsed section below.
 
 | Priority | Owner | Concrete next action | Dependency / boundary |
 | --- | --- | --- | --- |
-| 1. Honest teammate information — [INFO-001/002](ISSUES.md#INFO-001) | Pass Game/Pursuit awareness owner; Run Game supplies #35 | Publish the smallest acquired/memory/expectation query and focused information tests; then compare existing D01/Y inputs | Preserve yielding/contact/capabilities. #35 waits for exact candidate/settings and honest observer initialization. |
+| 1. Review honest teammate information — [INFO-001/002](ISSUES.md#INFO-001) | Pass Game/Pursuit awareness owner + Run Game | Review #36's information repair, real rear collision and bounded post-mesh coordination using #35 D01/Y | 37 focused checks/typecheck reported; promotion held. Preserve yielding/contact/capabilities and honest observer initialization. |
 | 2. Independently useful stalk correction — [STALK-001](ISSUES.md#STALK-001) | Integration + Run Game | Decide a #29-only candidate while coverage is parked, then complete required exact verification | Focused review found no blocker, but no standalone full pass/merge is claimed. Coordinate shared API changes; do not adopt diagnostic ancestry. |
 | 3. Bounded grip composition — [PHY-002](ISSUES.md#PHY-002) | Primary Physics | #33's named saved World-interval question: normal/tangent group work and span-energy accounting | Research only; practical cost is still a gate. Keep support history, contact-law promotion and awareness independent. |
 
