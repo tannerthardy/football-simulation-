@@ -16,6 +16,15 @@ RB, release, lateral-track or solver edits. Preserve H-strong manifest; no
 panel expansion. RT/RG route work remains separate and now uses the shared
 production evidence rather than assuming the isolated-law failures transfer.
 
+Completed [production transfer](reviews/te-base-production.md) at tested
+`bea6d62`: both endings and typecheck pass; no production source edits. Shared
+reference reused, two candidate plays plus two .10-s prefixes only. Y's clean
+crossing is lost to LB_M despite loaded C contact; weak's initial DE_W contact
+and crossing are unchanged. **TE base adoption parked**, no panel expansion.
+Historical #27 support benefit is kept distinct. Current H-strong is DE_S
+route access despite loaded RT; the historical RT loss/RG collision is not
+reproduced. Next route/cue/attainability work uses exact shared a1/e5 controls.
+
 ## Shared Ace production replay
 
 Integration owner, explicitly assigned by the user following

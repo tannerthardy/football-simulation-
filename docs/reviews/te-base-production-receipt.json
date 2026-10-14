@@ -1,0 +1,3183 @@
+{
+  "protocol": "te-base-production-review-v1",
+  "disposition": "parked, not a production feature",
+  "testedCommit": "bea6d6299e682487e2b0a6ea8158d99f5bdabcf9",
+  "sourceBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "runtimeSourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "comparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "sharedReferencePR": "https://github.com/tannerthardy/football-simulation-/pull/26",
+  "sharedReferencePublication": "ba9544f23029c634cb6e22b14ecad617fcdd3470",
+  "sharedReferencePacketSha256": "ad462904b23c6864d902107f6a0aa3a876b4e35d3247db8dfaebb835276ae10b",
+  "worldSelection": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "supportIntegration": "mean",
+    "controllerMovementPreview": "center"
+  },
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "node": "v22.23.3",
+  "productionSourceChanged": false,
+  "nativePlays": 2,
+  "shortReferencePrefixes": 2,
+  "nativeTicks": 152,
+  "newGames": 0,
+  "fullSuiteRun": false,
+  "wrappedSeconds": 12.073845304,
+  "commands": {
+    "native-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/te-base-production",
+      "commit": "bea6d6299e682487e2b0a6ea8158d99f5bdabcf9",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "a238c31795c795adfa7c5024aae875a70c02fe01b1ac951d29a35b07c9553e9b",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:37:06.933Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/te-base-production.ts",
+            "out/te-base-production/native.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.4338758780000003
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T17:37:09.369Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/te-base-production",
+      "commit": "bea6d6299e682487e2b0a6ea8158d99f5bdabcf9",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "a238c31795c795adfa7c5024aae875a70c02fe01b1ac951d29a35b07c9553e9b",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:40:40.551Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.639969426
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T17:40:50.193Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "manifestSha256": "208591ab3410c8d565a84d5b50199fe4b2b5610a8be8dc6425e5031766a73588",
+  "collectorSha256": "a018cb149f1abb187868596b8b74ea2e62ae0d92a3afcff20ecf9fb467487cff",
+  "nativeRawSha256": "57a4245ec6ebf2392398fe3d5a5ebc5429ebef835d8269c29a77037174e151d7",
+  "nativeRawBytes": 3911738,
+  "pairs": [
+    {
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "referenceSummary": {
+        "id": "uc12-wz-s3",
+        "outcome": "tackle",
+        "complete": true,
+        "censoredByBudget": false,
+        "duration": 4.3,
+        "crossing": 3.6,
+        "gain": 1.49,
+        "result": {
+          "outcome": "tackle",
+          "possession": "O",
+          "turnover": false,
+          "endX": 41.49457932100041,
+          "endY": 17.20671533606514,
+          "yards": 1.49,
+          "offenseYards": 1.49,
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "O-QB3",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.37059079936772,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O-RB1",
+              "how": "handoff",
+              "startX": 36.11702876222924,
+              "endX": 41.49457932100041,
+              "end": "dead"
+            }
+          ],
+          "score": null,
+          "duration": 4.3,
+          "clockStops": false,
+          "kind": "run",
+          "stats": {
+            "tacklers": [
+              "D-CB1",
+              "D-S2"
+            ],
+            "completed": false,
+            "attempted": false,
+            "sacked": false,
+            "scramble": false,
+            "throwaway": false,
+            "pressured": false,
+            "brokenTackles": 0,
+            "missedTackles": 1,
+            "dropped": false,
+            "qbRead": {
+              "pre": "cover3",
+              "actual": "cover3"
+            },
+            "rusher": "O-RB1",
+            "yardsBeforeContact": 0.37540263746634395
+          },
+          "events": [
+            {
+              "t": 0.3,
+              "type": "read",
+              "a": 15,
+              "pos": {
+                "x": 45.01,
+                "y": 26.01
+              },
+              "note": "run; pPass=0.27 focus=0.93 urgency=0.74"
+            },
+            {
+              "t": 0.3,
+              "type": "read",
+              "a": 17,
+              "pos": {
+                "x": 44.12,
+                "y": 23.28
+              },
+              "note": "run; pPass=0.24 focus=1.00 urgency=0.67"
+            },
+            {
+              "t": 0.35,
+              "type": "read",
+              "a": 21,
+              "pos": {
+                "x": 47.47,
+                "y": 19.83
+              },
+              "note": "run; pPass=0.29 focus=1.00 urgency=0.78"
+            },
+            {
+              "t": 0.4,
+              "type": "read",
+              "a": 12,
+              "pos": {
+                "x": 40.87,
+                "y": 22.64
+              },
+              "note": "run; pPass=0.27 focus=0.86 urgency=0.78"
+            },
+            {
+              "t": 0.4,
+              "type": "read",
+              "a": 16,
+              "pos": {
+                "x": 44.58,
+                "y": 28.38
+              },
+              "note": "run; pPass=0.28 focus=0.93 urgency=0.69"
+            },
+            {
+              "t": 0.4,
+              "type": "read",
+              "a": 20,
+              "pos": {
+                "x": 53.11,
+                "y": 26.52
+              },
+              "note": "run; pPass=0.28 focus=0.96 urgency=0.79"
+            },
+            {
+              "t": 0.45,
+              "type": "block_contact",
+              "a": 7,
+              "b": 12,
+              "pos": {
+                "x": 39.834466009884785,
+                "y": 22.535830158948468
+              },
+              "note": "run"
+            },
+            {
+              "t": 0.5,
+              "type": "read",
+              "a": 11,
+              "pos": {
+                "x": 40.69,
+                "y": 29.72
+              },
+              "note": "run; pPass=0.24 focus=0.61 urgency=0.79"
+            },
+            {
+              "t": 0.55,
+              "type": "block_contact",
+              "a": 5,
+              "b": 13,
+              "pos": {
+                "x": 39.71516024059562,
+                "y": 25.035590164355824
+              },
+              "note": "run"
+            },
+            {
+              "t": 0.55,
+              "type": "block_contact",
+              "a": 10,
+              "b": 11,
+              "pos": {
+                "x": 39.92084999296397,
+                "y": 30.113699608636477
+              },
+              "note": "run"
+            },
+            {
+              "t": 0.55,
+              "type": "read",
+              "a": 13,
+              "pos": {
+                "x": 40.68,
+                "y": 25.19
+              },
+              "note": "run; pPass=0.23 focus=0.44 urgency=0.83"
+            },
+            {
+              "t": 0.6,
+              "type": "block_contact",
+              "a": 4,
+              "b": 14,
+              "pos": {
+                "x": 39.72022698233112,
+                "y": 27.692775602033084
+              },
+              "note": "run"
+            },
+            {
+              "t": 0.6,
+              "type": "read",
+              "a": 14,
+              "pos": {
+                "x": 40.75,
+                "y": 27.23
+              },
+              "note": "run; pPass=0.25 focus=0.43 urgency=0.54"
+            },
+            {
+              "t": 0.85,
+              "type": "read",
+              "a": 18,
+              "pos": {
+                "x": 47.81,
+                "y": 8.19
+              },
+              "note": "run; pPass=0.26 focus=1.00 urgency=0.72"
+            },
+            {
+              "t": 0.85,
+              "type": "read",
+              "a": 19,
+              "pos": {
+                "x": 48.01,
+                "y": 45.15
+              },
+              "note": "run; pPass=0.26 focus=1.00 urgency=0.81"
+            },
+            {
+              "t": 1.2,
+              "type": "block_climb",
+              "a": 3,
+              "b": 15,
+              "pos": {
+                "x": 40.13,
+                "y": 26.05
+              },
+              "note": "secured DT_W; LG stays"
+            },
+            {
+              "t": 1.6,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.37,
+                "y": 24.36
+              }
+            },
+            {
+              "t": 2,
+              "type": "block_climb",
+              "a": 7,
+              "b": 17,
+              "pos": {
+                "x": 40.11,
+                "y": 21.66
+              },
+              "note": "secured DE_S; RT stays"
+            },
+            {
+              "t": 2.25,
+              "type": "squeeze",
+              "a": 6,
+              "pos": {
+                "x": 38.02,
+                "y": 22.16
+              },
+              "note": "turn shoulders through a narrow opening"
+            },
+            {
+              "t": 2.5,
+              "type": "block_contact",
+              "a": 7,
+              "b": 17,
+              "pos": {
+                "x": 40.61927872869222,
+                "y": 20.937668619060066
+              },
+              "note": "run"
+            },
+            {
+              "t": 2.55,
+              "type": "missed_tackle",
+              "a": 12,
+              "b": 6,
+              "pos": {
+                "x": 38.31,
+                "y": 20.63
+              }
+            },
+            {
+              "t": 2.75,
+              "type": "block_contact",
+              "a": 3,
+              "b": 15,
+              "pos": {
+                "x": 40.48949921270023,
+                "y": 22.62285446024298
+              },
+              "note": "run"
+            },
+            {
+              "t": 3.65,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 18,
+              "pos": {
+                "x": 40.38,
+                "y": 19.1
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 3.65,
+              "type": "tackle_wrap",
+              "a": 18,
+              "b": 6,
+              "pos": {
+                "x": 41.28,
+                "y": 19.26
+              },
+              "note": "initial"
+            },
+            {
+              "t": 3.65,
+              "type": "hit",
+              "a": 18,
+              "b": 6,
+              "pos": {
+                "x": 41.28,
+                "y": 19.26
+              }
+            },
+            {
+              "t": 3.85,
+              "type": "tackle_wrap",
+              "a": 21,
+              "b": 6,
+              "pos": {
+                "x": 41.79,
+                "y": 19.3
+              },
+              "note": "assist"
+            },
+            {
+              "t": 3.9,
+              "type": "fall",
+              "a": 6,
+              "pos": {
+                "x": 40.97,
+                "y": 18.18
+              },
+              "note": "legs"
+            },
+            {
+              "t": 4.25,
+              "type": "tackle",
+              "a": 18,
+              "b": 6,
+              "pos": {
+                "x": 41.12,
+                "y": 17.63
+              }
+            }
+          ]
+        },
+        "firstContact": {
+          "t": 3.65,
+          "actor": "RB",
+          "opponent": "CB_S",
+          "note": "grasp",
+          "depth": 0.37540263746634395
+        },
+        "setupSha256": "c6dd6e512ccbcdd29103e0e61c807e6046ff83b6b85b9f14b934eca6c5f80bb1",
+        "selectedActorsSha256": "952ca7f2c079e2d3479cd08fab86f5771aeeaf35f55fce88007cd4c577118ea3",
+        "ticks": 86,
+        "fullStateRngHistorySha256": "d9f52957949390cb605dca8e7797ac3e7b277d6c140d89fc0981e87d17e34c0c",
+        "historicalContext": {
+          "baseline": {
+            "endTime": 4.3,
+            "outcome": "tackle",
+            "censored": false,
+            "crossing": 3.6,
+            "gain": 1.495518431752906,
+            "firstContact": {
+              "t": 3.65,
+              "opponent": "CB_S",
+              "note": "grasp",
+              "depth": 0.3754753155027615,
+              "roundedEventDepth": 0.38000000000000256
+            }
+          },
+          "isolated": {
+            "endTime": 4.4,
+            "outcome": "tackle",
+            "censored": false,
+            "crossing": null,
+            "gain": -0.8561299817053367,
+            "firstContact": {
+              "t": 2.35,
+              "opponent": "DE_S",
+              "note": "grasp",
+              "depth": -1.6082479515271046
+            },
+            "limits": {
+              "armImpulseExcess": 1.4210854715202004e-14,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0,
+              "workResidual": 1.0484502155350128e-11
+            }
+          },
+          "exactHistoricalCenterStateRngHistory": false,
+          "exactHistoricalIsolatedStateRngHistory": false
+        },
+        "elapsedSeconds": 0.987632131
+      },
+      "candidate": {
+        "endTime": 3.75,
+        "outcome": "tackle",
+        "censored": false,
+        "crossing": 3.1,
+        "gain": 0.23297042975524107,
+        "firstContact": {
+          "t": 3,
+          "opponent": "LB_M",
+          "note": "grasp",
+          "depth": -0.04024991232152786
+        },
+        "limits": {
+          "armImpulseExcess": 0,
+          "armWorkExcess": 0,
+          "supportWorkExcess": 0,
+          "workResidual": 4.6842529854984605e-12
+        }
+      },
+      "candidateClimbs": [
+        {
+          "t": 1.2,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "pos": {
+            "x": 40.13,
+            "y": 26.05
+          },
+          "note": "secured DT_W; LG stays"
+        },
+        {
+          "t": 1.65,
+          "type": "block_climb",
+          "a": 7,
+          "b": 17,
+          "pos": {
+            "x": 40.3,
+            "y": 22.2
+          },
+          "note": "secured DE_S; RT stays"
+        }
+      ],
+      "firstRBRequestDifference": {
+        "t": 1.6,
+        "referenceRequested": {
+          "vel": {
+            "x": 5.713978867491565,
+            "y": -2.5243935359635206
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        },
+        "candidateRequested": {
+          "vel": {
+            "x": 5.698974492500207,
+            "y": -2.5580865810966205
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        }
+      },
+      "firstContactWitness": {
+        "t": 3,
+        "after": 3.05,
+        "bodies": [
+          {
+            "idx": 2,
+            "slot": "RT",
+            "body": {
+              "pos": {
+                "x": 39.35009963058333,
+                "y": 20.339550722056146
+              },
+              "vel": {
+                "x": -1.1808226620544766,
+                "y": -1.7102253559170544
+              },
+              "facing": -2.961027274907444,
+              "energy": 0.9555310508383043,
+              "profile": {
+                "vmax": 7.583522306970652,
+                "tau": 1.271162260701725,
+                "brake": 5.078582766439909,
+                "lateral": 5.480619047619049,
+                "turnRate": 6.415555555555556,
+                "backpedal": 0.6342857142857143,
+                "shuffle": 0.5852,
+                "massKg": 144.24237366,
+                "heightYd": 2.1861111111111113,
+                "radius": 0.3654545454545455,
+                "reach": 1.0976388888888888,
+                "maxCatchHeight": 3.569750000000001,
+                "reactReach": 3.1558611111111112,
+                "reactionTime": 0.24608163265306127,
+                "power": 150.57873507435,
+                "balance": 0.7040816326530612,
+                "bend": 0.19681632653061223,
+                "stepSpeed": 2.7822267573696147,
+                "getUp": 1.2190555555555556
+              },
+              "support": {
+                "xi": {
+                  "x": 0.0005225727012971768,
+                  "y": -0.1369779540357455
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8412962533112136,
+                "lean": {
+                  "x": 265.75766403800577,
+                  "y": -512.8439571523228
+                },
+                "load": {
+                  "x": -196.6988577669721,
+                  "y": 456.3749781566838
+                },
+                "felt": {
+                  "x": -211.84007321081054,
+                  "y": 443.95975696919544
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.4582842976368983,
+                "out": 0,
+                "feltTip": {
+                  "x": -0.2106424082535003,
+                  "y": 0.4416747095640283
+                },
+                "causes": {
+                  "contact": 0.08543791176965498,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 0.5150799394147697,
+                  "y": -1.355473940725485
+                },
+                "tipAccel": {
+                  "x": 0.012177031053781592,
+                  "y": 0.01949764212909155
+                }
+              },
+              "spin": -0.9711634252079179,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": -2.2042944721193116
+            },
+            "requested": {
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "worldTarget": {
+              "vel": {
+                "x": -1.7990431983033865,
+                "y": -2.4044451890513816
+              },
+              "facing": -3.0142437138331015,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9878838304552591
+            }
+          },
+          {
+            "idx": 3,
+            "slot": "C",
+            "body": {
+              "pos": {
+                "x": 40.499886939229874,
+                "y": 22.13073063729421
+              },
+              "vel": {
+                "x": 0.40754317232385306,
+                "y": -1.7852270202915674
+              },
+              "facing": -1.1976533308815436,
+              "energy": 0.9696312196813474,
+              "profile": {
+                "vmax": 7.537925000370376,
+                "tau": 1.5717447650908591,
+                "brake": 4.969829931972788,
+                "lateral": 4.890210884353745,
+                "turnRate": 5.7266666666666675,
+                "backpedal": 0.5475510204081633,
+                "shuffle": 0.5232000000000001,
+                "massKg": 143.78878129,
+                "heightYd": 2.138888888888889,
+                "radius": 0.3645454545454545,
+                "reach": 1.038611111111111,
+                "maxCatchHeight": 3.4047222222222224,
+                "reactReach": 3.054722222222223,
+                "reactionTime": 0.2278367346938776,
+                "power": 182.8098286206893,
+                "balance": 0.7244897959183674,
+                "bend": 0.12156462585034028,
+                "stepSpeed": 2.6273605442176873,
+                "getUp": 1.2603333333333333
+              },
+              "support": {
+                "xi": {
+                  "x": -0.010258324989786167,
+                  "y": 0.04958753918378566
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.844242984988198,
+                "lean": {
+                  "x": 1064.4240477093392,
+                  "y": -810.7696071435232
+                },
+                "load": {
+                  "x": -838.8974807132736,
+                  "y": 760.7813741691641
+                },
+                "felt": {
+                  "x": -955.5456739823351,
+                  "y": 780.7947623845648
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.05378024689809538,
+                "out": 0,
+                "feltTip": {
+                  "x": 1.632585420209248,
+                  "y": -1.3338588917273733
+                },
+                "causes": {
+                  "contact": 0.07214634802161717,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 3.186549760828213,
+                  "y": 1.5296612439896051
+                },
+                "tipAccel": {
+                  "x": -0.35079201178586256,
+                  "y": 0.20460976822968296
+                }
+              },
+              "spin": -1.8642890395628111,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": -0.7406679281439328
+            },
+            "requested": {
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "worldTarget": {
+              "vel": {
+                "x": 2.4,
+                "y": -2.194356197843126
+              },
+              "facing": -1.301623904851191,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.9862825745682889
+            }
+          },
+          {
+            "idx": 6,
+            "slot": "RB",
+            "body": {
+              "pos": {
+                "x": 39.84027400582249,
+                "y": 21.051454767273725
+              },
+              "vel": {
+                "x": 2.3701223520199637,
+                "y": -1.31609828553402
+              },
+              "facing": -0.9427408349790807,
+              "energy": 0.975157990193316,
+              "profile": {
+                "vmax": 9.511860117418491,
+                "tau": 1.302841021221677,
+                "brake": 6.728083900226757,
+                "lateral": 6.805221088435378,
+                "turnRate": 8.711111111111112,
+                "backpedal": 0.55,
+                "shuffle": 0.528,
+                "massKg": 99.33672903,
+                "heightYd": 1.9555555555555557,
+                "radius": 0.27545454545454545,
+                "reach": 1.0220833333333335,
+                "maxCatchHeight": 3.2831111111111118,
+                "reactReach": 2.8567222222222224,
+                "reactionTime": 0.25465306122448983,
+                "power": 101.13087199309287,
+                "balance": 0.7959183673469388,
+                "bend": 0.7445170068027213,
+                "stepSpeed": 3.9037732426303857,
+                "getUp": 0.9029444444444443
+              },
+              "support": {
+                "xi": {
+                  "x": -0.01972971546294055,
+                  "y": 0.013293522558373906
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.19514272431162355,
+                "lean": {
+                  "x": 0,
+                  "y": 0
+                },
+                "load": {
+                  "x": 0,
+                  "y": 0
+                },
+                "felt": {
+                  "x": -0.16745274493095186,
+                  "y": 0.1950083427486149
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.08136341624651672,
+                "out": 0,
+                "feltTip": {
+                  "x": -0.0008987391676988716,
+                  "y": 0.001046683895217827
+                },
+                "causes": {
+                  "contact": 0.05580471788491775,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 2.837780585206767,
+                  "y": -4.532837395155079
+                },
+                "tipAccel": {
+                  "x": 0.00718594407432874,
+                  "y": -0.008292222951435425
+                }
+              },
+              "spin": 2.0766336683366373,
+              "squeeze": 0.2,
+              "sprintLoad": 0,
+              "squeezeHeading": -0.9427408349789221
+            },
+            "requested": {
+              "vel": {
+                "x": 3.355817615315193,
+                "y": -8.900223088556643
+              },
+              "cutSkill": 1.0892857142857142,
+              "squeeze": 0.09919430746641779
+            },
+            "worldTarget": {
+              "vel": {
+                "x": 3.355817615315193,
+                "y": -8.900223088556643
+              },
+              "cutSkill": 1.0892857142857142,
+              "squeeze": 0.09919430746641779
+            }
+          },
+          {
+            "idx": 7,
+            "slot": "Y",
+            "body": {
+              "pos": {
+                "x": 41.702757070000615,
+                "y": 21.077122492999866
+              },
+              "vel": {
+                "x": 1.9236731984434592,
+                "y": -0.2922922927141707
+              },
+              "facing": 2.746201704598444,
+              "energy": 0.9507654876482619,
+              "profile": {
+                "vmax": 9.275569634707251,
+                "tau": 1.3773091639970407,
+                "brake": 6.2857142857142865,
+                "lateral": 6.606210884353744,
+                "turnRate": 8.780000000000001,
+                "backpedal": 0.5479591836734694,
+                "shuffle": 0.5316000000000001,
+                "massKg": 112.94450013000001,
+                "heightYd": 2.102777777777778,
+                "radius": 0.30272727272727273,
+                "reach": 1.0244444444444443,
+                "maxCatchHeight": 3.454472222222223,
+                "reactReach": 3.0433611111111114,
+                "reactionTime": 0.21902040816326532,
+                "power": 100.80872884052144,
+                "balance": 0.35714285714285715,
+                "bend": 0.5640952380952383,
+                "stepSpeed": 3.523619047619048,
+                "getUp": 0.9471666666666666
+              },
+              "support": {
+                "xi": {
+                  "x": 0.01722101807140002,
+                  "y": -0.00288093124928385
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8402998237999497,
+                "lean": {
+                  "x": 37.965162411534955,
+                  "y": 227.73967177275668
+                },
+                "load": {
+                  "x": 361.8266440243644,
+                  "y": -346.6517649072114
+                },
+                "felt": {
+                  "x": 310.60892670365024,
+                  "y": -391.0533729778464
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.25078595637596507,
+                "out": 0,
+                "feltTip": {
+                  "x": 0.13522137338398096,
+                  "y": -0.17021496608115302
+                },
+                "causes": {
+                  "contact": 0.03054276740047698,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 4.5208290544037855,
+                  "y": -6.918931827043169
+                },
+                "tipAccel": {
+                  "x": 0.02981768658069193,
+                  "y": 0.021916928689127042
+                }
+              },
+              "spin": 4.11678173859108,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": -0.9314249943779895
+            },
+            "requested": {
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "worldTarget": {
+              "vel": {
+                "x": 2.4,
+                "y": -3.6781325307988455
+              },
+              "facing": 2.909965269081732,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 1.0048759811616954
+            }
+          },
+          {
+            "idx": 12,
+            "slot": "DE_S",
+            "body": {
+              "pos": {
+                "x": 38.08593787549803,
+                "y": 20.1776850830427
+              },
+              "vel": {
+                "x": -1.2945597558731956,
+                "y": -0.22438120701977837
+              },
+              "facing": 0.18056537868234906,
+              "energy": 0.9458562671671991,
+              "profile": {
+                "vmax": 8.064835132128126,
+                "tau": 1.0271931967376147,
+                "brake": 5.387256235827662,
+                "lateral": 5.495285714285716,
+                "turnRate": 6.575555555555555,
+                "backpedal": 0.5489795918367347,
+                "shuffle": 0.5044000000000001,
+                "massKg": 139.25285759000002,
+                "heightYd": 2.091666666666667,
+                "radius": 0.35545454545454547,
+                "reach": 1.0102777777777778,
+                "maxCatchHeight": 3.5174722222222226,
+                "reactReach": 3.0577500000000004,
+                "reactionTime": 0.2359183673469388,
+                "power": 157.45519540355002,
+                "balance": 0.7551020408163265,
+                "bend": 0.29835374149659855,
+                "stepSpeed": 2.9175056689342402,
+                "getUp": 1.187388888888889
+              },
+              "support": {
+                "xi": {
+                  "x": -0.01892999699326006,
+                  "y": 0.0072854643397025996
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8393153347587983,
+                "lean": {
+                  "x": -264.03712579159935,
+                  "y": 500.5287815633342
+                },
+                "load": {
+                  "x": 196.6988577669721,
+                  "y": -456.3749781566838
+                },
+                "felt": {
+                  "x": 212.0075259557411,
+                  "y": -444.1547653119454
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.20656627513879744,
+                "out": 0,
+                "feltTip": {
+                  "x": 0.4624306866631186,
+                  "y": -0.9688016590682188
+                },
+                "causes": {
+                  "contact": 0.014349241138674133,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 4.36188494511119,
+                  "y": 2.559812692329832
+                },
+                "tipAccel": {
+                  "x": -0.033874376411676094,
+                  "y": -0.03442146659343902
+                }
+              },
+              "spin": -0.9711812917385728,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": -4.499496611273536
+            },
+            "requested": {
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "worldTarget": {
+              "vel": {
+                "x": 2.0418887007543116,
+                "y": 1.8207579542626395
+              },
+              "facing": 0.1273489397566919,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.969570695970696
+            }
+          },
+          {
+            "idx": 15,
+            "slot": "LB_M",
+            "body": {
+              "pos": {
+                "x": 40.65989663329563,
+                "y": 21.55070664900224
+              },
+              "vel": {
+                "x": -0.6278058428799664,
+                "y": -2.481085065913417
+              },
+              "facing": 1.8017613297154027,
+              "energy": 0.9754326274049882,
+              "profile": {
+                "vmax": 9.205838561829612,
+                "tau": 1.2254375051198332,
+                "brake": 6.784455782312924,
+                "lateral": 6.56142517006803,
+                "turnRate": 9.053333333333333,
+                "backpedal": 0.6051020408163265,
+                "shuffle": 0.5904,
+                "massKg": 104.32624510000001,
+                "heightYd": 1.9888888888888887,
+                "radius": 0.28545454545454546,
+                "reach": 0.9913888888888889,
+                "maxCatchHeight": 3.3985555555555553,
+                "reactReach": 2.927722222222222,
+                "reactionTime": 0.18779591836734694,
+                "power": 108.41413062228573,
+                "balance": 0.41836734693877553,
+                "bend": 0.6983401360544219,
+                "stepSpeed": 3.7390204081632654,
+                "getUp": 0.893
+              },
+              "support": {
+                "xi": {
+                  "x": -0.8420701532740184,
+                  "y": 0.5505778045916984
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8451630823924304,
+                "lean": {
+                  "x": -269.7898818280537,
+                  "y": 234.7889695052713
+                },
+                "load": {
+                  "x": 236.12472981414018,
+                  "y": -518.7739110800215
+                },
+                "felt": {
+                  "x": 293.76347527992186,
+                  "y": -412.8565085973161
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.8092938360736647,
+                "out": 0.11666666666666665,
+                "feltTip": {
+                  "x": 0.4223142200973072,
+                  "y": -0.5933163408281205
+                },
+                "causes": {
+                  "contact": 0.09957682185660739,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": -0.35732144841692426,
+                  "y": -2.2082121160760515
+                },
+                "tipAccel": {
+                  "x": -0.14975522316597945,
+                  "y": -0.12090698833918756
+                }
+              },
+              "spin": -0.5587920501200476,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": 4.048344322544324
+            },
+            "requested": {
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "worldTarget": {
+              "vel": {
+                "x": -1.7851006454339782,
+                "y": -3.960871486504504
+              },
+              "facing": 1.8399687487386023,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 1.1241820338391768
+            }
+          }
+        ],
+        "hands": [
+          {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": -131.00609262959742,
+            "tangentForce": 469.89068630441466
+          },
+          {
+            "kind": "hands",
+            "a": 3,
+            "b": 15,
+            "normalForce": 946.5562320303719,
+            "tangentForce": 586.0227468140439
+          }
+        ],
+        "report": {
+          "substeps": 12,
+          "groundImpulse": [
+            {
+              "x": 2.7848046101884227,
+              "y": -1.5423394216258586
+            },
+            {
+              "x": -3.3903799574696247,
+              "y": 36.598692836526375
+            },
+            {
+              "x": -3.5341512321960455,
+              "y": -21.62229784670565
+            },
+            {
+              "x": 68.91143246308566,
+              "y": -27.40367389946927
+            },
+            {
+              "x": -20.202934528173056,
+              "y": -54.700514399183476
+            },
+            {
+              "x": -0.8680598847909975,
+              "y": 39.628398375193214
+            },
+            {
+              "x": 3.8541230546547056,
+              "y": -30.249073206866054
+            },
+            {
+              "x": 6.404523977164899,
+              "y": -25.405101527148545
+            },
+            {
+              "x": -32.74095184145099,
+              "y": -4.812194538137371
+            },
+            {
+              "x": 3.918186485364862e-12,
+              "y": 1.3630960014610007
+            },
+            {
+              "x": -36.11522017120427,
+              "y": -38.22619094594623
+            },
+            {
+              "x": -17.450904400621095,
+              "y": 37.417965928002616
+            },
+            {
+              "x": 18.803627563548105,
+              "y": 45.82380656353892
+            },
+            {
+              "x": -48.96031193169523,
+              "y": -29.136743098886527
+            },
+            {
+              "x": 66.7958320190701,
+              "y": 25.635758003600678
+            },
+            {
+              "x": -16.265263598498723,
+              "y": 4.664393659947694
+            },
+            {
+              "x": 6.2203813613304355,
+              "y": 35.45135919744185
+            },
+            {
+              "x": -17.12253294759193,
+              "y": -8.224083244147334
+            },
+            {
+              "x": 20.95234313859267,
+              "y": -18.39015076847374
+            },
+            {
+              "x": -6.18773458536445,
+              "y": -9.056441119845521
+            },
+            {
+              "x": 13.38160146199423,
+              "y": 29.066332494344422
+            },
+            {
+              "x": -3.711857033432603,
+              "y": -6.275078283809953
+            }
+          ],
+          "groundWork": [
+            2.844443196517077,
+            -85.72623257924751,
+            41.34703605038361,
+            84.06694632218283,
+            123.53941341467427,
+            -51.789148692727714,
+            53.62584343977342,
+            24.745544984146715,
+            12.265234653744407,
+            6.427051880933963,
+            -25.667944790588134,
+            19.132890209291734,
+            -28.687283192514652,
+            45.1355997325325,
+            -14.837505362376788,
+            -1.6453633388802325,
+            4.618573727462611,
+            14.340335628788571,
+            -165.04512671567602,
+            58.576736683381945,
+            -156.1782694857099,
+            16.918897814514605
+          ],
+          "groundYawImpulse": [
+            0.014650648658013379,
+            -3.5579001034548265,
+            -0.4701735017609423,
+            -1.1103761396065357,
+            1.285352218171139,
+            0.0016832060198647327,
+            -6.616057638522933,
+            -2.48295334478987,
+            2.1148173856101224,
+            -0.0009085837081904348,
+            -1.1600040655636266,
+            -1.0256903163696833,
+            -0.42932632587903846,
+            0.0013583504637627321,
+            1.1721826038328746,
+            2.0147559312552534,
+            6.633502120387951,
+            0.4530036941456582,
+            -1.326066674203188,
+            5.185584782275584,
+            -2.6857598535809264,
+            3.8251392502023425e-06
+          ],
+          "groundYawWork": [
+            0.002582871616377736,
+            1.3214618648306047,
+            0.47956552021541315,
+            2.199107268228562,
+            3.3852712140138843,
+            3.333900865821646e-08,
+            -2.1241387514555683,
+            -9.030537915596419,
+            -0.9591715266989069,
+            3.5634337469557016e-06,
+            5.462123158513403,
+            4.8251960470666875,
+            0.4379060474140803,
+            3.333717517163411e-08,
+            3.094078148833354,
+            -0.458866417597206,
+            -15.735669731013573,
+            1.8873765711945159,
+            0.8706528217895478,
+            -33.17146009913942,
+            -5.290360852907897,
+            -7.918835594798779e-13
+          ],
+          "armWork": [
+            0,
+            0,
+            1.263260951883213,
+            26.128645936715895,
+            3.001446906355015,
+            0,
+            0,
+            15.929952317113136,
+            0,
+            0,
+            17.22794413300424,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "armWorkLimit": [
+            91.81413080280487,
+            196.65131292967646,
+            181.35166427671626,
+            220.33318734787514,
+            202.48487440500793,
+            213.7705205407644,
+            121.9203235141333,
+            121.37704898979067,
+            120.51758160890506,
+            94.87371341875803,
+            135.9960312549316,
+            126.00787008599866,
+            189.52538796943173,
+            130.07084326488243,
+            201.9926004552208,
+            130.70240223068865,
+            139.27990546842128,
+            136.15019546207145,
+            76.54139725502924,
+            94.48890862106124,
+            111.09455169598164,
+            90.94781844024817
+          ],
+          "armImpulse": [
+            0,
+            0,
+            24.39056443492588,
+            55.663977583779705,
+            38.60837526480523,
+            0,
+            0,
+            17.934784544544684,
+            0,
+            0,
+            20.513778481378324,
+            0,
+            0,
+            23.44695136544431,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "armImpulseLimit": [
+            30.60471026760162,
+            65.5504376432255,
+            60.45055475890541,
+            73.44439578262505,
+            67.49495813500265,
+            71.2568401802548,
+            40.64010783804443,
+            40.45901632993022,
+            40.172527202968354,
+            31.62457113958601,
+            45.33201041831054,
+            42.002623361999554,
+            63.175129323143906,
+            43.35694775496081,
+            67.33086681840693,
+            43.56746741022954,
+            46.42663515614043,
+            45.38339848735715,
+            25.513799085009747,
+            31.496302873687082,
+            37.03151723199388,
+            30.315939480082722
+          ],
+          "work": {
+            "before": 11771.727127692511,
+            "after": 11604.173082341871,
+            "hands": -101.33945974344353,
+            "grasps": 0,
+            "strikes": 0,
+            "contacts": -1.4173790572209344,
+            "residual": 5.615508058554042e-13
+          },
+          "contacts": [
+            {
+              "i": 5,
+              "j": 13,
+              "impulse": 20.460960798783063,
+              "closing": 0.06171713687440332
+            },
+            {
+              "i": 15,
+              "j": 17,
+              "impulse": 25.47610491924071,
+              "closing": 0
+            }
+          ],
+          "strikes": [],
+          "falls": [],
+          "downs": [],
+          "rises": [],
+          "maxPenetration": 0.0007944978056807495,
+          "maxLeanReleaseResidual": 6.888356551826291e-10,
+          "maxLeanReleaseIterations": 22,
+          "leanRelease": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0.00038430223380226845,
+              "y": 0.02072120554141913
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ],
+          "supportMotorWork": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "supportMotorWorkLimit": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "passiveGraspWork": 0,
+          "maxHeldRecoveryExcursion": 0,
+          "lowerHoldReleases": 0,
+          "impactSplits": 0,
+          "impactSplitLimitHits": 0,
+          "maxSupportIntegrationError": 0,
+          "supportIntegrationFailures": 0
+        }
+      },
+      "referencePrefixTicks": 2
+    },
+    {
+      "input": {
+        "id": "uc12-wz-weak-s3",
+        "concept": "wz_weak",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "referenceSummary": {
+        "id": "uc12-wz-weak-s3",
+        "outcome": "tackle",
+        "complete": true,
+        "censoredByBudget": false,
+        "duration": 3.4,
+        "crossing": 2.6,
+        "gain": 2.37,
+        "result": {
+          "outcome": "tackle",
+          "possession": "O",
+          "turnover": false,
+          "endX": 42.367700257053365,
+          "endY": 33.53272400897884,
+          "yards": 2.37,
+          "offenseYards": 2.37,
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "O-QB3",
+              "how": "snap",
+              "startX": 38.4,
+              "endX": 36.37059079936772,
+              "end": "handoff"
+            },
+            {
+              "team": "O",
+              "carrier": "O-RB1",
+              "how": "handoff",
+              "startX": 36.11702876222924,
+              "endX": 42.367700257053365,
+              "end": "dead"
+            }
+          ],
+          "score": null,
+          "duration": 3.4,
+          "clockStops": false,
+          "kind": "run",
+          "stats": {
+            "tacklers": [
+              "D-LB1",
+              "D-LB3"
+            ],
+            "completed": false,
+            "attempted": false,
+            "sacked": false,
+            "scramble": false,
+            "throwaway": false,
+            "pressured": false,
+            "brokenTackles": 1,
+            "missedTackles": 0,
+            "dropped": false,
+            "qbRead": {
+              "pre": "cover3",
+              "actual": "cover3"
+            },
+            "rusher": "O-RB1",
+            "yardsBeforeContact": -0.9623213508506083
+          },
+          "events": [
+            {
+              "t": 0.3,
+              "type": "read",
+              "a": 15,
+              "pos": {
+                "x": 45.01,
+                "y": 26.01
+              },
+              "note": "run; pPass=0.27 focus=0.93 urgency=0.74"
+            },
+            {
+              "t": 0.3,
+              "type": "read",
+              "a": 17,
+              "pos": {
+                "x": 44.12,
+                "y": 23.28
+              },
+              "note": "run; pPass=0.24 focus=1.00 urgency=0.67"
+            },
+            {
+              "t": 0.35,
+              "type": "read",
+              "a": 21,
+              "pos": {
+                "x": 47.47,
+                "y": 19.83
+              },
+              "note": "run; pPass=0.29 focus=1.00 urgency=0.78"
+            },
+            {
+              "t": 0.4,
+              "type": "read",
+              "a": 12,
+              "pos": {
+                "x": 40.87,
+                "y": 22.64
+              },
+              "note": "run; pPass=0.27 focus=0.86 urgency=0.77"
+            },
+            {
+              "t": 0.4,
+              "type": "read",
+              "a": 16,
+              "pos": {
+                "x": 44.58,
+                "y": 28.38
+              },
+              "note": "run; pPass=0.28 focus=0.93 urgency=0.69"
+            },
+            {
+              "t": 0.4,
+              "type": "read",
+              "a": 20,
+              "pos": {
+                "x": 53.11,
+                "y": 26.52
+              },
+              "note": "run; pPass=0.28 focus=0.96 urgency=0.79"
+            },
+            {
+              "t": 0.45,
+              "type": "block_contact",
+              "a": 7,
+              "b": 12,
+              "pos": {
+                "x": 39.87261195988092,
+                "y": 22.90461062133981
+              },
+              "note": "run"
+            },
+            {
+              "t": 0.5,
+              "type": "read",
+              "a": 11,
+              "pos": {
+                "x": 40.68,
+                "y": 29.73
+              },
+              "note": "run; pPass=0.24 focus=0.61 urgency=0.79"
+            },
+            {
+              "t": 0.55,
+              "type": "block_contact",
+              "a": 1,
+              "b": 11,
+              "pos": {
+                "x": 39.6719315461847,
+                "y": 29.454467096272953
+              },
+              "note": "run"
+            },
+            {
+              "t": 0.55,
+              "type": "block_contact",
+              "a": 5,
+              "b": 13,
+              "pos": {
+                "x": 39.7517449750909,
+                "y": 25.584136762642366
+              },
+              "note": "run"
+            },
+            {
+              "t": 0.55,
+              "type": "read",
+              "a": 13,
+              "pos": {
+                "x": 40.7,
+                "y": 25.23
+              },
+              "note": "run; pPass=0.23 focus=0.44 urgency=0.83"
+            },
+            {
+              "t": 0.65,
+              "type": "block_contact",
+              "a": 3,
+              "b": 14,
+              "pos": {
+                "x": 39.67255788970773,
+                "y": 26.8574629328502
+              },
+              "note": "run"
+            },
+            {
+              "t": 0.65,
+              "type": "read",
+              "a": 14,
+              "pos": {
+                "x": 40.67,
+                "y": 27.28
+              },
+              "note": "run; pPass=0.21 focus=0.83 urgency=0.54"
+            },
+            {
+              "t": 0.75,
+              "type": "read",
+              "a": 18,
+              "pos": {
+                "x": 47.59,
+                "y": 8.09
+              },
+              "note": "run; pPass=0.26 focus=1.00 urgency=0.72"
+            },
+            {
+              "t": 0.8,
+              "type": "read",
+              "a": 19,
+              "pos": {
+                "x": 47.83,
+                "y": 45.05
+              },
+              "note": "run; pPass=0.26 focus=1.00 urgency=0.81"
+            },
+            {
+              "t": 0.9,
+              "type": "block_climb",
+              "a": 2,
+              "b": 17,
+              "pos": {
+                "x": 40.22,
+                "y": 24.69
+              },
+              "note": "secured DT_S; RG stays"
+            },
+            {
+              "t": 1.25,
+              "type": "block_climb",
+              "a": 10,
+              "b": 16,
+              "pos": {
+                "x": 40.47,
+                "y": 30.66
+              },
+              "note": "secured DE_W; LT stays"
+            },
+            {
+              "t": 1.6,
+              "type": "handoff",
+              "a": 0,
+              "b": 6,
+              "pos": {
+                "x": 36.37,
+                "y": 28.97
+              }
+            },
+            {
+              "t": 1.75,
+              "type": "block_contact",
+              "a": 4,
+              "b": 15,
+              "pos": {
+                "x": 42.311686055162134,
+                "y": 28.52448941713282
+              },
+              "note": "run"
+            },
+            {
+              "t": 1.95,
+              "type": "block_contact",
+              "a": 7,
+              "b": 12,
+              "pos": {
+                "x": 40.34783854121398,
+                "y": 23.955938004940617
+              },
+              "note": "run"
+            },
+            {
+              "t": 2.3,
+              "type": "carrier_contact",
+              "a": 6,
+              "b": 11,
+              "pos": {
+                "x": 39.04,
+                "y": 31.5
+              },
+              "note": "grasp"
+            },
+            {
+              "t": 2.3,
+              "type": "tackle_wrap",
+              "a": 11,
+              "b": 6,
+              "pos": {
+                "x": 39.72,
+                "y": 30.93
+              },
+              "note": "initial"
+            },
+            {
+              "t": 2.75,
+              "type": "tackle_wrap",
+              "a": 16,
+              "b": 6,
+              "pos": {
+                "x": 41.4,
+                "y": 31.23
+              },
+              "note": "assist"
+            },
+            {
+              "t": 2.8,
+              "type": "broken_tackle",
+              "a": 6,
+              "b": 11,
+              "pos": {
+                "x": 40.83,
+                "y": 32.5
+              },
+              "note": "hold slipped"
+            },
+            {
+              "t": 3,
+              "type": "fall",
+              "a": 6,
+              "pos": {
+                "x": 41.75,
+                "y": 32.9
+              },
+              "note": "legs"
+            },
+            {
+              "t": 3.05,
+              "type": "tackle_wrap",
+              "a": 15,
+              "b": 6,
+              "pos": {
+                "x": 41.94,
+                "y": 32.43
+              },
+              "note": "assist"
+            },
+            {
+              "t": 3.35,
+              "type": "fall",
+              "a": 16,
+              "pos": {
+                "x": 41.66,
+                "y": 33.49
+              },
+              "note": "contact"
+            },
+            {
+              "t": 3.35,
+              "type": "tackle",
+              "a": 16,
+              "b": 6,
+              "pos": {
+                "x": 41.66,
+                "y": 33.49
+              }
+            }
+          ]
+        },
+        "firstContact": {
+          "t": 2.3,
+          "actor": "RB",
+          "opponent": "DE_W",
+          "note": "grasp",
+          "depth": -0.9623213508506083
+        },
+        "setupSha256": "ce53fdd8751a5ed9864a594a737084bde814af98d3a950a63d8563314f0c1ef8",
+        "selectedActorsSha256": "6f88ceef51450a3e1258010c042d71116d64eb22e31d8f89d5e9afcb29d66e95",
+        "ticks": 68,
+        "fullStateRngHistorySha256": "45f7f7bb4ad74f73217d2960b4186f16216e585fb751342678ec8886719b3771",
+        "historicalContext": {
+          "baseline": {
+            "endTime": 3.4,
+            "outcome": "tackle",
+            "censored": false,
+            "crossing": 2.6,
+            "gain": 2.371521112002064,
+            "firstContact": {
+              "t": 2.3,
+              "opponent": "DE_W",
+              "note": "grasp",
+              "depth": -0.9623213508506083,
+              "roundedEventDepth": -0.9600000000000009
+            }
+          },
+          "isolated": {
+            "endTime": 4.1,
+            "outcome": "tackle",
+            "censored": false,
+            "crossing": 2.4,
+            "gain": 9.500380676675306,
+            "firstContact": {
+              "t": 2.85,
+              "opponent": "LB_M",
+              "note": "grasp",
+              "depth": 3.1354877517233746
+            },
+            "limits": {
+              "armImpulseExcess": 1.4210854715202004e-14,
+              "armWorkExcess": 0,
+              "supportWorkExcess": 0,
+              "workResidual": 1.1325163029596297e-11
+            }
+          },
+          "exactHistoricalCenterStateRngHistory": false,
+          "exactHistoricalIsolatedStateRngHistory": false
+        },
+        "elapsedSeconds": 0.5124766360000002
+      },
+      "candidate": {
+        "endTime": 3.85,
+        "outcome": "tackle",
+        "censored": false,
+        "crossing": 2.6,
+        "gain": 4.884145653666764,
+        "firstContact": {
+          "t": 2.3,
+          "opponent": "DE_W",
+          "note": "grasp",
+          "depth": -0.9300601095028895
+        },
+        "limits": {
+          "armImpulseExcess": 0,
+          "armWorkExcess": 0,
+          "supportWorkExcess": 0,
+          "workResidual": 1.0595968547022494e-11
+        }
+      },
+      "candidateClimbs": [
+        {
+          "t": 0.9,
+          "type": "block_climb",
+          "a": 2,
+          "b": 17,
+          "pos": {
+            "x": 40.22,
+            "y": 24.69
+          },
+          "note": "secured DT_S; RG stays"
+        },
+        {
+          "t": 1.25,
+          "type": "block_climb",
+          "a": 10,
+          "b": 16,
+          "pos": {
+            "x": 40.45,
+            "y": 30.64
+          },
+          "note": "secured DE_W; LT stays"
+        }
+      ],
+      "firstRBRequestDifference": {
+        "t": 1.6,
+        "referenceRequested": {
+          "vel": {
+            "x": 5.905587278625035,
+            "y": 2.0362112162289887
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        },
+        "candidateRequested": {
+          "vel": {
+            "x": 5.921539258445387,
+            "y": 1.9893441213738368
+          },
+          "cutSkill": 1.0892857142857142,
+          "squeeze": 0
+        }
+      },
+      "firstContactWitness": {
+        "t": 2.3,
+        "after": 2.35,
+        "bodies": [
+          {
+            "idx": 1,
+            "slot": "LT",
+            "body": {
+              "pos": {
+                "x": 40.86909702605835,
+                "y": 30.340829059159866
+              },
+              "vel": {
+                "x": -0.7884891803361052,
+                "y": 0.9790413867571589
+              },
+              "facing": 2.603485214014886,
+              "energy": 0.9636128135559214,
+              "profile": {
+                "vmax": 7.262770580334114,
+                "tau": 1.3511348542519153,
+                "brake": 4.979183673469388,
+                "lateral": 4.860204081632653,
+                "turnRate": 5.5,
+                "backpedal": 0.656734693877551,
+                "shuffle": 0.57,
+                "massKg": 149.23188973,
+                "heightYd": 2.2194444444444446,
+                "radius": 0.3754545454545455,
+                "reach": 1.0575,
+                "maxCatchHeight": 3.549638888888889,
+                "reactReach": 3.1760277777777777,
+                "reactionTime": 0.25416326530612243,
+                "power": 163.16527535275003,
+                "balance": 0.8775510204081632,
+                "bend": 0.05751020408163253,
+                "stepSpeed": 2.610530612244898,
+                "getUp": 1.2935
+              },
+              "support": {
+                "xi": {
+                  "x": -0.03503569886370964,
+                  "y": 0.042727873767141
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8428188423386656,
+                "lean": {
+                  "x": 92.54311530919816,
+                  "y": 132.9674463516751
+                },
+                "load": {
+                  "x": -62.13908554646772,
+                  "y": -110.61507378406229
+                },
+                "felt": {
+                  "x": -65.68191976678398,
+                  "y": -110.92825009955098
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.2888009535978726,
+                "out": 0,
+                "feltTip": {
+                  "x": 0.12103260611067877,
+                  "y": 0.20453334342711732
+                },
+                "causes": {
+                  "contact": 0.08389423563489508,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 1.3953412630477497,
+                  "y": 2.9820759502546927
+                },
+                "tipAccel": {
+                  "x": -0.009029558990091505,
+                  "y": -0.0055403405473511925
+                }
+              },
+              "spin": 0.5744621195153236,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": 2.2510081589697
+            },
+            "requested": {
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "worldTarget": {
+              "vel": {
+                "x": -1.5110648708275203,
+                "y": 1.7475613236431036
+              },
+              "facing": 2.6329799428077068,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 0.970204081632653
+            }
+          },
+          {
+            "idx": 6,
+            "slot": "RB",
+            "body": {
+              "pos": {
+                "x": 38.89453760681747,
+                "y": 31.32720029000099
+              },
+              "vel": {
+                "x": 3.4093794939224704,
+                "y": 1.7110724249534788
+              },
+              "facing": 0.47889041861388204,
+              "energy": 0.9800177914088981,
+              "profile": {
+                "vmax": 9.511860117418491,
+                "tau": 1.302841021221677,
+                "brake": 6.728083900226757,
+                "lateral": 6.805221088435378,
+                "turnRate": 8.711111111111112,
+                "backpedal": 0.55,
+                "shuffle": 0.528,
+                "massKg": 99.33672903,
+                "heightYd": 1.9555555555555557,
+                "radius": 0.27545454545454545,
+                "reach": 1.0220833333333335,
+                "maxCatchHeight": 3.2831111111111118,
+                "reactReach": 2.8567222222222224,
+                "reactionTime": 0.25465306122448983,
+                "power": 101.13087199309287,
+                "balance": 0.7959183673469388,
+                "bend": 0.7445170068027213,
+                "stepSpeed": 3.9037732426303857,
+                "getUp": 0.9029444444444443
+              },
+              "support": {
+                "xi": {
+                  "x": 0,
+                  "y": 0
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.19610804227148337,
+                "lean": {
+                  "x": 0,
+                  "y": 0
+                },
+                "load": {
+                  "x": 0,
+                  "y": 0
+                },
+                "felt": {
+                  "x": 0,
+                  "y": 0
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0,
+                "out": 0,
+                "feltTip": {
+                  "x": 0,
+                  "y": 0
+                },
+                "causes": {
+                  "contact": 0,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": 2.4317864105337224,
+                  "y": -4.104743964740512
+                },
+                "tipAccel": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "spin": -3.8446013410619795,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": 0.4251253459769364
+            },
+            "requested": {
+              "vel": {
+                "x": 8.558993360346587,
+                "y": 4.149592215010956
+              },
+              "cutSkill": 1.0892857142857142,
+              "squeeze": 0
+            },
+            "worldTarget": {
+              "vel": {
+                "x": 8.558993360346587,
+                "y": 4.149592215010956
+              },
+              "cutSkill": 1.0892857142857142,
+              "squeeze": 0
+            }
+          },
+          {
+            "idx": 10,
+            "slot": "H",
+            "body": {
+              "pos": {
+                "x": 40.60741126256623,
+                "y": 31.42376418048085
+              },
+              "vel": {
+                "x": 0.7536310836961578,
+                "y": 0.8128863130807695
+              },
+              "facing": -0.917977672719126,
+              "energy": 0.980402408828085,
+              "profile": {
+                "vmax": 8.864637623427441,
+                "tau": 1.4286285466550095,
+                "brake": 6.4659297052154185,
+                "lateral": 6.479486394557826,
+                "turnRate": 8.875555555555556,
+                "backpedal": 0.5316326530612245,
+                "shuffle": 0.5304000000000001,
+                "massKg": 112.49090776,
+                "heightYd": 2.1055555555555556,
+                "radius": 0.3018181818181818,
+                "reach": 0.9913888888888889,
+                "maxCatchHeight": 3.500388888888889,
+                "reactReach": 3.062888888888889,
+                "reactionTime": 0.24706122448979595,
+                "power": 113.19684559951429,
+                "balance": 0.30612244897959184,
+                "bend": 0.5652244897959184,
+                "stepSpeed": 3.5374512471655324,
+                "getUp": 0.9355555555555557
+              },
+              "support": {
+                "xi": {
+                  "x": -0.004856794517454915,
+                  "y": 0.0005431108035757247
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.19612834392729347,
+                "lean": {
+                  "x": -0.09532513396419855,
+                  "y": -0.530524308737646
+                },
+                "load": {
+                  "x": 0,
+                  "y": 0
+                },
+                "felt": {
+                  "x": -0.0009446753897384631,
+                  "y": 0.0009478222301103408
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.09582165395088539,
+                "out": 0,
+                "feltTip": {
+                  "x": 2.7589221275672887e-06,
+                  "y": -2.7681599021904495e-06
+                },
+                "causes": {
+                  "contact": 0.0063642634649660424,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": -0.21903424851450753,
+                  "y": 0.49078667028797096
+                },
+                "tipAccel": {
+                  "x": -3.7033935997191906e-05,
+                  "y": 3.7311772104888206e-05
+                }
+              },
+              "spin": -0.399045514467104,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": -5.463995264159426
+            },
+            "requested": {
+              "vel": {
+                "x": -0.6184769281619673,
+                "y": 0.8240293715196215
+              },
+              "facing": -0.9515998904617555
+            },
+            "worldTarget": {
+              "vel": {
+                "x": 0.8375385207291703,
+                "y": 0.9013345265636079
+              },
+              "facing": -0.9515998904617555
+            }
+          },
+          {
+            "idx": 11,
+            "slot": "DE_W",
+            "body": {
+              "pos": {
+                "x": 39.95197915137501,
+                "y": 30.85215783962373
+              },
+              "vel": {
+                "x": -2.1238094390422524,
+                "y": 0.7775202056331678
+              },
+              "facing": 5.745077867604679,
+              "energy": 0.9797671716630211,
+              "profile": {
+                "vmax": 9.555490388543753,
+                "tau": 1.1835083047635615,
+                "brake": 7.174444444444444,
+                "lateral": 7.317768707482994,
+                "turnRate": 9.997777777777777,
+                "backpedal": 0.5244897959183674,
+                "shuffle": 0.5444,
+                "massKg": 107.95498406,
+                "heightYd": 2.111111111111111,
+                "radius": 0.2927272727272727,
+                "reach": 1.0409722222222222,
+                "maxCatchHeight": 3.827777777777778,
+                "reactReach": 3.190277777777778,
+                "reactionTime": 0.2569795918367347,
+                "power": 104.5510973177,
+                "balance": 0.5,
+                "bend": 0.7799999999999999,
+                "stepSpeed": 4.004888888888889,
+                "getUp": 0.8427777777777778
+              },
+              "support": {
+                "xi": {
+                  "x": -0.01062229837581042,
+                  "y": 0.000290092824713138
+                },
+                "state": "up",
+                "since": null,
+                "posture": 0.8460290748976677,
+                "lean": {
+                  "x": -100.83671092768887,
+                  "y": -152.1772778422598
+                },
+                "load": {
+                  "x": 62.13908554646772,
+                  "y": 110.61507378406229
+                },
+                "felt": {
+                  "x": 65.66877103701616,
+                  "y": 110.93240163437486
+                },
+                "feetLock": 0,
+                "feetVel": {
+                  "x": 0,
+                  "y": 0
+                },
+                "fall": {
+                  "x": 0,
+                  "y": 0
+                },
+                "peak": 0.2370709082238795,
+                "out": 0,
+                "feltTip": {
+                  "x": 0.07332495439896279,
+                  "y": 0.1238681349669588
+                },
+                "causes": {
+                  "contact": 0.008379952311359198,
+                  "legs": 0,
+                  "overspeed": 0
+                },
+                "accel": {
+                  "x": -3.2060412044529008,
+                  "y": -1.263548238632291
+                },
+                "tipAccel": {
+                  "x": -0.0056874956907846524,
+                  "y": -0.0031551751690819083
+                }
+              },
+              "spin": 0.5744621848717905,
+              "squeeze": 0,
+              "sprintLoad": 0,
+              "squeezeHeading": -3.532417935368091
+            },
+            "requested": {
+              "vel": {
+                "x": 0,
+                "y": 0
+              }
+            },
+            "worldTarget": {
+              "vel": {
+                "x": -4.781917573249465,
+                "y": 1.9702455312950145
+              },
+              "facing": -0.5086127107820866,
+              "push": 1,
+              "posture": 0.85,
+              "cutSkill": 1.1518321995464853
+            }
+          }
+        ],
+        "hands": [
+          {
+            "kind": "hands",
+            "a": 1,
+            "b": 11,
+            "normalForce": 0,
+            "tangentForce": -126.48800303361689
+          }
+        ],
+        "report": {
+          "substeps": 12,
+          "groundImpulse": [
+            {
+              "x": 3.2937877913646405,
+              "y": 2.8690598345778726
+            },
+            {
+              "x": -8.496043853693024,
+              "y": 3.663047055946615
+            },
+            {
+              "x": -7.788199853334291,
+              "y": 26.906620608716324
+            },
+            {
+              "x": 35.93695768166071,
+              "y": 29.657059748758336
+            },
+            {
+              "x": -5.3440961784447465,
+              "y": 56.94094004050142
+            },
+            {
+              "x": 31.819835405030606,
+              "y": -43.787839792850335
+            },
+            {
+              "x": 19.60235110867309,
+              "y": 9.28217409796922
+            },
+            {
+              "x": -15.039269734545696,
+              "y": 26.317169012217473
+            },
+            {
+              "x": -31.654597041745753,
+              "y": -8.598916792699654
+            },
+            {
+              "x": -28.899162764617326,
+              "y": 4.76097227481156
+            },
+            {
+              "x": 0.43746939042269745,
+              "y": 0.2225875048648636
+            },
+            {
+              "x": -8.340424771409774,
+              "y": 15.28427837300447
+            },
+            {
+              "x": 37.30396880490478,
+              "y": -18.634941376432923
+            },
+            {
+              "x": -32.28494277987658,
+              "y": 45.39726877457717
+            },
+            {
+              "x": -20.345384773918827,
+              "y": 4.321379714634513
+            },
+            {
+              "x": -36.72601719349706,
+              "y": -38.719647339413775
+            },
+            {
+              "x": 27.794732635736406,
+              "y": 27.999014058612655
+            },
+            {
+              "x": -33.91575312644384,
+              "y": 2.7724415070538595
+            },
+            {
+              "x": -11.882086078081924,
+              "y": 9.010687389351341
+            },
+            {
+              "x": -11.21700196674297,
+              "y": -9.95521083934472
+            },
+            {
+              "x": -16.072750902541703,
+              "y": 2.5538238788515133
+            },
+            {
+              "x": -24.77848081137134,
+              "y": -17.532159812093855
+            }
+          ],
+          "groundWork": [
+            4.504581628512309,
+            10.588591284021648,
+            76.49848363113323,
+            47.96528953404875,
+            151.0247027006169,
+            86.18025394183442,
+            85.08208533007036,
+            53.99069405391442,
+            9.95107154678745,
+            8.467695854576808,
+            0.5116997297909912,
+            31.256336477367928,
+            -52.58118766936047,
+            -73.2992858030693,
+            17.29746721111984,
+            -56.86500148203254,
+            27.183056633157882,
+            20.78154476696741,
+            53.09388641681863,
+            82.68087638275644,
+            76.50913055274712,
+            35.87025468926357
+          ],
+          "groundYawImpulse": [
+            2.3007221254101324,
+            0.08504632391455796,
+            -3.4666682441435697,
+            -0.9689326251545142,
+            -12.649142034298754,
+            0.23898714565137202,
+            7.201735453793392,
+            -0.8236163283363462,
+            -1.5421794202913794,
+            -0.43247383613524054,
+            -0.7382075621956204,
+            0.03739783026105948,
+            0,
+            0.29245901976109717,
+            0.5364292442079941,
+            5.042332702822183,
+            7.878568836394011,
+            -3.046055619884977,
+            3.5394177646103433,
+            -2.149808835249983,
+            -6.1392668846991425,
+            -0.0002722003302146201
+          ],
+          "groundYawWork": [
+            -3.0633148985670697,
+            0.049543537169096596,
+            1.9328299936491582,
+            -1.967941110369481,
+            -33.58751760214252,
+            -0.21957621831977775,
+            -13.925388935758106,
+            -0.6817364539371626,
+            -0.41056581038129375,
+            -0.15570416687972058,
+            0.4009385212859009,
+            0.02178601975088142,
+            -1.0097419586828951e-28,
+            -0.26051200670505426,
+            1.0106032749250573,
+            16.658298293003806,
+            -6.648374873363513,
+            27.392249806907127,
+            15.059341855905387,
+            10.848970943557214,
+            -2.143328629803352,
+            -7.399764461996833e-08
+          ],
+          "armWork": [
+            0,
+            0,
+            0,
+            0,
+            11.208238558229532,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.7246398285673703,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "armWorkLimit": [
+            91.83096256332954,
+            196.5968278083047,
+            181.5512000833014,
+            220.24351122973187,
+            202.8435005443663,
+            213.64347432950927,
+            121.94574994304794,
+            121.49110289708909,
+            120.55011488649575,
+            94.8963824330545,
+            136.49730057994185,
+            126.06863161467852,
+            189.8110578594957,
+            130.2932452362399,
+            202.01159076309875,
+            130.7098507113371,
+            139.32234523388948,
+            136.1770331744907,
+            76.57587048397947,
+            94.50197755298373,
+            111.14831317257244,
+            90.96063611127619
+          ],
+          "armImpulse": [
+            0,
+            0,
+            0,
+            0,
+            50.334542040015144,
+            45.661583043347974,
+            0,
+            0,
+            0,
+            0,
+            0,
+            6.324400151680845,
+            23.973649432978473,
+            0,
+            26.17103833749955,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "armImpulseLimit": [
+            30.610320854443177,
+            65.53227593610157,
+            60.5170666944338,
+            73.41450374324396,
+            67.61450018145543,
+            71.21449144316976,
+            40.64858331434931,
+            40.4970342990297,
+            40.183371628831914,
+            31.632127477684833,
+            45.49910019331395,
+            42.02287720489284,
+            63.27035261983189,
+            43.4310817454133,
+            67.33719692103291,
+            43.569950237112366,
+            46.44078174462983,
+            45.392344391496906,
+            25.525290161326495,
+            31.50065918432791,
+            37.04943772419082,
+            30.32021203709206
+          ],
+          "work": {
+            "before": 11770.421342600042,
+            "after": 12392.506457380705,
+            "hands": -83.80395723159553,
+            "grasps": 0,
+            "strikes": 0,
+            "contacts": -1.1137568647124019,
+            "residual": -2.2575274982727933e-12
+          },
+          "contacts": [
+            {
+              "i": 5,
+              "j": 13,
+              "impulse": 8.885222313609589,
+              "closing": 0.06535898789517743
+            }
+          ],
+          "strikes": [],
+          "falls": [],
+          "downs": [],
+          "rises": [],
+          "maxPenetration": 1.4968919345159648e-06,
+          "maxLeanReleaseResidual": 0,
+          "maxLeanReleaseIterations": 1,
+          "leanRelease": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": -0.00203276395175378,
+              "y": 0.002071521318119187
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ],
+          "supportMotorWork": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "supportMotorWorkLimit": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "passiveGraspWork": 0,
+          "maxHeldRecoveryExcursion": 0,
+          "lowerHoldReleases": 0,
+          "impactSplits": 0,
+          "impactSplitLimitHits": 0,
+          "maxSupportIntegrationError": 0,
+          "supportIntegrationFailures": 0
+        }
+      },
+      "referencePrefixTicks": 2
+    }
+  ],
+  "preservedUntestedCandidateControl": "uc12-wz-s3-mirror; no panel expansion or acceptance claim",
+  "decision": "Park TE approach-base adoption. Historical isolated Y improvement does not establish useful production protection. Current Y loses its clean pre-contact crossing to LB_M despite loaded C contact and intact edge protection; current weak keeps DE_W first contact at2.30 and LOS2.60. No specific controller defect or unlawful physical win demonstrated here. Do not retune posture or expand panel.",
+  "separateRT_RGProductionFinding": "Shared production Y retains RT load and has no historical RG/DE_S collision. H-strong first contact is DE_S, not DT_S. At2.65 RT is upfield/interior of the end while loaded; RG/DT_S remain separate. Future route/cue/attainability work must use that production encounter, not presume historical failure transfers.",
+  "limitations": [
+    "Mean contact load does not certify route protection.",
+    "Candidate first-level changes propagate through acquired live gaps and alter runner requests from1.60. No new RB scoring/read/controller policy is introduced.",
+    "LB_M candidate access while C transmits force is a geometry/timing observation, not a proven collection error or solver defect.",
+    "Different endings are preserved but not optimized; current center angular-law defect remains.",
+    "Historical patch/legacy physical sensitivity and current center production transfer are distinct sources/profiles."
+  ]
+}
