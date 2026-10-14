@@ -1,0 +1,2245 @@
+{
+  "protocol": "ace-production-replay-v1",
+  "provenance": {
+    "developCommit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+    "collectorCommit": "ac6f663f958f4d59cb0f3e0e9d25c84e1c06dd79",
+    "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+    "collectorSha256": "18f11d25f4854656e0a230c1b9c23f27cd5ef92cedf507a151b1ccab6f8978c5",
+    "manifestSha256": "2d9e4a851857b3bbd72e2d8c63a1b2901a06e325b6c15911303e68a3ffd4a8fc",
+    "historicalContextSha256": "152cda13fd4df816a4e7caa8ca72855efce736d07826a3f51b4a1a8c0e0a6e95",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "worldSha256": "ed1708d764c355da60bd31c115f557baf3d81af18c89f3479c471bf981732ca2",
+    "lockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "startedAt": "2026-10-14T17:13:48.571Z",
+    "finishedAt": "2026-10-14T17:13:50.600Z",
+    "elapsedSeconds": 2.0275501
+  },
+  "cases": [
+    {
+      "id": "uc12-wz-s3",
+      "outcome": "tackle",
+      "complete": true,
+      "censoredByBudget": false,
+      "duration": 4.3,
+      "crossing": 3.6,
+      "gain": 1.49,
+      "result": {
+        "outcome": "tackle",
+        "possession": "O",
+        "turnover": false,
+        "endX": 41.49457932100041,
+        "endY": 17.20671533606514,
+        "yards": 1.49,
+        "offenseYards": 1.49,
+        "segments": [
+          {
+            "team": "O",
+            "carrier": "O-QB3",
+            "how": "snap",
+            "startX": 38.4,
+            "endX": 36.37059079936772,
+            "end": "handoff"
+          },
+          {
+            "team": "O",
+            "carrier": "O-RB1",
+            "how": "handoff",
+            "startX": 36.11702876222924,
+            "endX": 41.49457932100041,
+            "end": "dead"
+          }
+        ],
+        "score": null,
+        "duration": 4.3,
+        "clockStops": false,
+        "kind": "run",
+        "stats": {
+          "tacklers": [
+            "D-CB1",
+            "D-S2"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "O-RB1",
+          "yardsBeforeContact": 0.37540263746634395
+        },
+        "events": [
+          {
+            "t": 0.3,
+            "type": "read",
+            "a": 15,
+            "pos": {
+              "x": 45.01,
+              "y": 26.01
+            },
+            "note": "run; pPass=0.27 focus=0.93 urgency=0.74"
+          },
+          {
+            "t": 0.3,
+            "type": "read",
+            "a": 17,
+            "pos": {
+              "x": 44.12,
+              "y": 23.28
+            },
+            "note": "run; pPass=0.24 focus=1.00 urgency=0.67"
+          },
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 21,
+            "pos": {
+              "x": 47.47,
+              "y": 19.83
+            },
+            "note": "run; pPass=0.29 focus=1.00 urgency=0.78"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 12,
+            "pos": {
+              "x": 40.87,
+              "y": 22.64
+            },
+            "note": "run; pPass=0.27 focus=0.86 urgency=0.78"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 16,
+            "pos": {
+              "x": 44.58,
+              "y": 28.38
+            },
+            "note": "run; pPass=0.28 focus=0.93 urgency=0.69"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 20,
+            "pos": {
+              "x": 53.11,
+              "y": 26.52
+            },
+            "note": "run; pPass=0.28 focus=0.96 urgency=0.79"
+          },
+          {
+            "t": 0.45,
+            "type": "block_contact",
+            "a": 7,
+            "b": 12,
+            "pos": {
+              "x": 39.834466009884785,
+              "y": 22.535830158948468
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.5,
+            "type": "read",
+            "a": 11,
+            "pos": {
+              "x": 40.69,
+              "y": 29.72
+            },
+            "note": "run; pPass=0.24 focus=0.61 urgency=0.79"
+          },
+          {
+            "t": 0.55,
+            "type": "block_contact",
+            "a": 5,
+            "b": 13,
+            "pos": {
+              "x": 39.71516024059562,
+              "y": 25.035590164355824
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.55,
+            "type": "block_contact",
+            "a": 10,
+            "b": 11,
+            "pos": {
+              "x": 39.92084999296397,
+              "y": 30.113699608636477
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.55,
+            "type": "read",
+            "a": 13,
+            "pos": {
+              "x": 40.68,
+              "y": 25.19
+            },
+            "note": "run; pPass=0.23 focus=0.44 urgency=0.83"
+          },
+          {
+            "t": 0.6,
+            "type": "block_contact",
+            "a": 4,
+            "b": 14,
+            "pos": {
+              "x": 39.72022698233112,
+              "y": 27.692775602033084
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.6,
+            "type": "read",
+            "a": 14,
+            "pos": {
+              "x": 40.75,
+              "y": 27.23
+            },
+            "note": "run; pPass=0.25 focus=0.43 urgency=0.54"
+          },
+          {
+            "t": 0.85,
+            "type": "read",
+            "a": 18,
+            "pos": {
+              "x": 47.81,
+              "y": 8.19
+            },
+            "note": "run; pPass=0.26 focus=1.00 urgency=0.72"
+          },
+          {
+            "t": 0.85,
+            "type": "read",
+            "a": 19,
+            "pos": {
+              "x": 48.01,
+              "y": 45.15
+            },
+            "note": "run; pPass=0.26 focus=1.00 urgency=0.81"
+          },
+          {
+            "t": 1.2,
+            "type": "block_climb",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 40.13,
+              "y": 26.05
+            },
+            "note": "secured DT_W; LG stays"
+          },
+          {
+            "t": 1.6,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 36.37,
+              "y": 24.36
+            }
+          },
+          {
+            "t": 2,
+            "type": "block_climb",
+            "a": 7,
+            "b": 17,
+            "pos": {
+              "x": 40.11,
+              "y": 21.66
+            },
+            "note": "secured DE_S; RT stays"
+          },
+          {
+            "t": 2.25,
+            "type": "squeeze",
+            "a": 6,
+            "pos": {
+              "x": 38.02,
+              "y": 22.16
+            },
+            "note": "turn shoulders through a narrow opening"
+          },
+          {
+            "t": 2.5,
+            "type": "block_contact",
+            "a": 7,
+            "b": 17,
+            "pos": {
+              "x": 40.61927872869222,
+              "y": 20.937668619060066
+            },
+            "note": "run"
+          },
+          {
+            "t": 2.55,
+            "type": "missed_tackle",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 38.31,
+              "y": 20.63
+            }
+          },
+          {
+            "t": 2.75,
+            "type": "block_contact",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 40.48949921270023,
+              "y": 22.62285446024298
+            },
+            "note": "run"
+          },
+          {
+            "t": 3.65,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 18,
+            "pos": {
+              "x": 40.38,
+              "y": 19.1
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3.65,
+            "type": "tackle_wrap",
+            "a": 18,
+            "b": 6,
+            "pos": {
+              "x": 41.28,
+              "y": 19.26
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.65,
+            "type": "hit",
+            "a": 18,
+            "b": 6,
+            "pos": {
+              "x": 41.28,
+              "y": 19.26
+            }
+          },
+          {
+            "t": 3.85,
+            "type": "tackle_wrap",
+            "a": 21,
+            "b": 6,
+            "pos": {
+              "x": 41.79,
+              "y": 19.3
+            },
+            "note": "assist"
+          },
+          {
+            "t": 3.9,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 40.97,
+              "y": 18.18
+            },
+            "note": "legs"
+          },
+          {
+            "t": 4.25,
+            "type": "tackle",
+            "a": 18,
+            "b": 6,
+            "pos": {
+              "x": 41.12,
+              "y": 17.63
+            }
+          }
+        ]
+      },
+      "firstContact": {
+        "t": 3.65,
+        "actor": "RB",
+        "opponent": "CB_S",
+        "note": "grasp",
+        "depth": 0.37540263746634395
+      },
+      "setupSha256": "c6dd6e512ccbcdd29103e0e61c807e6046ff83b6b85b9f14b934eca6c5f80bb1",
+      "selectedActorsSha256": "952ca7f2c079e2d3479cd08fab86f5771aeeaf35f55fce88007cd4c577118ea3",
+      "ticks": 86,
+      "fullStateRngHistorySha256": "d9f52957949390cb605dca8e7797ac3e7b277d6c140d89fc0981e87d17e34c0c",
+      "historicalContext": {
+        "baseline": {
+          "endTime": 4.3,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": 3.6,
+          "gain": 1.495518431752906,
+          "firstContact": {
+            "t": 3.65,
+            "opponent": "CB_S",
+            "note": "grasp",
+            "depth": 0.3754753155027615,
+            "roundedEventDepth": 0.38000000000000256
+          }
+        },
+        "isolated": {
+          "endTime": 4.4,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": null,
+          "gain": -0.8561299817053367,
+          "firstContact": {
+            "t": 2.35,
+            "opponent": "DE_S",
+            "note": "grasp",
+            "depth": -1.6082479515271046
+          },
+          "limits": {
+            "armImpulseExcess": 1.4210854715202004e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0,
+            "workResidual": 1.0484502155350128e-11
+          }
+        },
+        "exactHistoricalCenterStateRngHistory": false,
+        "exactHistoricalIsolatedStateRngHistory": false
+      },
+      "elapsedSeconds": 0.987632131,
+      "unroundedDeadBallGain": 1.4945793210004084,
+      "deltaFromHistoricalCenterUnroundedGain": -0.0009391107524976405,
+      "pairLoadObservations": [
+        {
+          "blocker": "RT",
+          "defender": "DE_S",
+          "firstNominalParticipation": {
+            "controllerT": 1.2,
+            "worldEnd": 1.25,
+            "owner": "Y",
+            "helper": true
+          },
+          "firstNonzeroTickAverage": {
+            "controllerT": 1.6,
+            "worldEnd": 1.65,
+            "normalTickAverage": 0,
+            "tangentTickAverage": 313.7834803590345
+          },
+          "lastNonzeroTickAverage": {
+            "controllerT": 3.65,
+            "worldEnd": 3.7,
+            "normalTickAverage": -111.2192882496802,
+            "tangentTickAverage": 426.35971666859706
+          },
+          "sampledNonzeroTicks": 42,
+          "sampledNonzeroWindows": [
+            {
+              "fromControllerT": 1.6,
+              "throughWorldEnd": 3.7
+            }
+          ],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "firstNominalParticipation": {
+            "controllerT": 0.5,
+            "worldEnd": 0.55,
+            "owner": "RG",
+            "helper": false
+          },
+          "firstNonzeroTickAverage": {
+            "controllerT": 0.5,
+            "worldEnd": 0.55,
+            "normalTickAverage": 0,
+            "tangentTickAverage": -221.9581569023316
+          },
+          "lastNonzeroTickAverage": {
+            "controllerT": 4.25,
+            "worldEnd": 4.3,
+            "normalTickAverage": 437.89062196853854,
+            "tangentTickAverage": 212.62466395106816
+          },
+          "sampledNonzeroTicks": 76,
+          "sampledNonzeroWindows": [
+            {
+              "fromControllerT": 0.5,
+              "throughWorldEnd": 4.3
+            }
+          ],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "firstNominalParticipation": {
+            "controllerT": 0.4,
+            "worldEnd": 0.45,
+            "owner": "Y",
+            "helper": false
+          },
+          "firstNonzeroTickAverage": {
+            "controllerT": 0.4,
+            "worldEnd": 0.45,
+            "normalTickAverage": 0,
+            "tangentTickAverage": -307.12664976084835
+          },
+          "lastNonzeroTickAverage": {
+            "controllerT": 1.95,
+            "worldEnd": 2,
+            "normalTickAverage": 569.5369360817036,
+            "tangentTickAverage": 267.6751253383628
+          },
+          "sampledNonzeroTicks": 32,
+          "sampledNonzeroWindows": [
+            {
+              "fromControllerT": 0.4,
+              "throughWorldEnd": 2
+            }
+          ],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_S",
+          "firstNominalParticipation": null,
+          "firstNonzeroTickAverage": null,
+          "lastNonzeroTickAverage": null,
+          "sampledNonzeroTicks": 0,
+          "sampledNonzeroWindows": [],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "Z",
+          "defender": "CB_S",
+          "firstNominalParticipation": null,
+          "firstNonzeroTickAverage": null,
+          "lastNonzeroTickAverage": null,
+          "sampledNonzeroTicks": 0,
+          "sampledNonzeroWindows": [],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        }
+      ],
+      "firstCarrierContactWorldInterval": {
+        "controllerT": 3.65,
+        "worldEnd": 3.7,
+        "handsBeforeControllerCleanup": [
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "normalTickAverage": 413.7523693817809,
+            "tangentTickAverage": -197.77035466690967
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "normalTickAverage": -111.2192882496802,
+            "tangentTickAverage": 426.35971666859706
+          },
+          {
+            "blocker": "Y",
+            "defender": "LB_S",
+            "normalTickAverage": -125.38760459426669,
+            "tangentTickAverage": -397.48116523089783
+          }
+        ]
+      },
+      "rgDeSBodyContacts": [],
+      "zCbSConsumedPictureCount": 0,
+      "rtRgRequestDeliveryDifferences": {
+        "RT": {
+          "ticks": 70,
+          "first": {
+            "controllerT": 0.05,
+            "worldEnd": 0.1,
+            "requested": {
+              "x": 1.822727272727267,
+              "y": -7.583522306970652
+            },
+            "delivered": {
+              "x": 2.049444461633651,
+              "y": -1.688875395405181
+            },
+            "achievedVelocityAtWorldEnd": {
+              "x": 0.09798203398388473,
+              "y": -0.08074356221160071
+            },
+            "deltaYdS": 5.899005246291442
+          },
+          "interpretation": "All controller composition/spacing stages; not attributed solely to teammate spacing."
+        },
+        "RG": {
+          "ticks": 81,
+          "first": {
+            "controllerT": 0.05,
+            "worldEnd": 0.1,
+            "requested": {
+              "x": 1.9454545454545347,
+              "y": -7.249871931691923
+            },
+            "delivered": {
+              "x": 1.9454545454545347,
+              "y": -5.16999557626634
+            },
+            "achievedVelocityAtWorldEnd": {
+              "x": 0.07491081380233235,
+              "y": -0.19907356708870513
+            },
+            "deltaYdS": 2.0798763554255837
+          },
+          "interpretation": "All controller composition/spacing stages; not attributed solely to teammate spacing."
+        }
+      },
+      "blockClimbs": [
+        {
+          "t": 1.2,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "pos": {
+            "x": 40.13,
+            "y": 26.05
+          },
+          "note": "secured DT_W; LG stays"
+        },
+        {
+          "t": 2,
+          "type": "block_climb",
+          "a": 7,
+          "b": 17,
+          "pos": {
+            "x": 40.11,
+            "y": 21.66
+          },
+          "note": "secured DE_S; RT stays"
+        }
+      ],
+      "budgetMaxima": {
+        "armImpulseExcess": 3.552713678800501e-15,
+        "armWorkExcess": 0,
+        "supportWorkExcess": 0,
+        "workResidual": 8.107736704232593e-12
+      },
+      "observations": {
+        "firstContactBeforeLos": false,
+        "rgDeSCollisionObserved": false,
+        "zConsumedAssignedCornerPicture": false
+      }
+    },
+    {
+      "id": "uc12-wz-s3-mirror",
+      "outcome": "tackle",
+      "complete": true,
+      "censoredByBudget": false,
+      "duration": 3.25,
+      "crossing": null,
+      "gain": -0.21,
+      "result": {
+        "outcome": "tackle",
+        "possession": "O",
+        "turnover": false,
+        "endX": 39.793571155790374,
+        "endY": 19.74353385177914,
+        "yards": -0.21,
+        "offenseYards": -0.21,
+        "segments": [
+          {
+            "team": "O",
+            "carrier": "O-QB3",
+            "how": "snap",
+            "startX": 38.4,
+            "endX": 36.37059079936772,
+            "end": "handoff"
+          },
+          {
+            "team": "O",
+            "carrier": "O-RB1",
+            "how": "handoff",
+            "startX": 36.11702876222924,
+            "endX": 39.793571155790374,
+            "end": "dead"
+          }
+        ],
+        "score": null,
+        "duration": 3.25,
+        "clockStops": false,
+        "kind": "run",
+        "stats": {
+          "tacklers": [
+            "D-DT1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "O-RB1",
+          "yardsBeforeContact": -0.23433344943020984
+        },
+        "events": [
+          {
+            "t": 0.3,
+            "type": "read",
+            "a": 15,
+            "pos": {
+              "x": 45.01,
+              "y": 26.01
+            },
+            "note": "run; pPass=0.27 focus=0.93 urgency=0.74"
+          },
+          {
+            "t": 0.3,
+            "type": "read",
+            "a": 17,
+            "pos": {
+              "x": 44.12,
+              "y": 23.28
+            },
+            "note": "run; pPass=0.24 focus=1.00 urgency=0.67"
+          },
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 21,
+            "pos": {
+              "x": 47.47,
+              "y": 19.83
+            },
+            "note": "run; pPass=0.29 focus=1.00 urgency=0.78"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 12,
+            "pos": {
+              "x": 40.87,
+              "y": 22.64
+            },
+            "note": "run; pPass=0.27 focus=0.86 urgency=0.78"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 16,
+            "pos": {
+              "x": 44.58,
+              "y": 28.38
+            },
+            "note": "run; pPass=0.28 focus=0.93 urgency=0.69"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 20,
+            "pos": {
+              "x": 53.11,
+              "y": 26.52
+            },
+            "note": "run; pPass=0.28 focus=0.96 urgency=0.79"
+          },
+          {
+            "t": 0.45,
+            "type": "block_contact",
+            "a": 10,
+            "b": 12,
+            "pos": {
+              "x": 39.82180196149529,
+              "y": 22.592846332507357
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.5,
+            "type": "block_contact",
+            "a": 7,
+            "b": 11,
+            "pos": {
+              "x": 39.84431007404774,
+              "y": 30.143459507799857
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.5,
+            "type": "read",
+            "a": 11,
+            "pos": {
+              "x": 40.7,
+              "y": 29.73
+            },
+            "note": "run; pPass=0.18 focus=0.61 urgency=0.78"
+          },
+          {
+            "t": 0.55,
+            "type": "block_contact",
+            "a": 5,
+            "b": 13,
+            "pos": {
+              "x": 39.71513441765548,
+              "y": 25.03583289152098
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.55,
+            "type": "read",
+            "a": 13,
+            "pos": {
+              "x": 40.68,
+              "y": 25.19
+            },
+            "note": "run; pPass=0.23 focus=0.44 urgency=0.83"
+          },
+          {
+            "t": 0.6,
+            "type": "block_contact",
+            "a": 4,
+            "b": 14,
+            "pos": {
+              "x": 39.72045976259242,
+              "y": 27.693320820986393
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.6,
+            "type": "read",
+            "a": 14,
+            "pos": {
+              "x": 40.75,
+              "y": 27.23
+            },
+            "note": "run; pPass=0.25 focus=0.43 urgency=0.54"
+          },
+          {
+            "t": 0.85,
+            "type": "read",
+            "a": 18,
+            "pos": {
+              "x": 47.8,
+              "y": 8.19
+            },
+            "note": "run; pPass=0.26 focus=1.00 urgency=0.72"
+          },
+          {
+            "t": 0.85,
+            "type": "read",
+            "a": 19,
+            "pos": {
+              "x": 48.01,
+              "y": 45.14
+            },
+            "note": "run; pPass=0.26 focus=1.00 urgency=0.81"
+          },
+          {
+            "t": 1.15,
+            "type": "block_climb",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 40.04,
+              "y": 26.04
+            },
+            "note": "secured DT_W; LG stays"
+          },
+          {
+            "t": 1.6,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 36.37,
+              "y": 24.36
+            }
+          },
+          {
+            "t": 1.75,
+            "type": "block_climb",
+            "a": 10,
+            "b": 17,
+            "pos": {
+              "x": 40.36,
+              "y": 22.19
+            },
+            "note": "secured DE_S; RT stays"
+          },
+          {
+            "t": 2,
+            "type": "block_contact",
+            "a": 10,
+            "b": 17,
+            "pos": {
+              "x": 40.52831307494061,
+              "y": 21.86070012869631
+            },
+            "note": "run"
+          },
+          {
+            "t": 2.6,
+            "type": "block_contact",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 40.48589268399955,
+              "y": 23.14416755508322
+            },
+            "note": "run"
+          },
+          {
+            "t": 2.65,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 39.77,
+              "y": 20.55
+            },
+            "note": "body collision"
+          },
+          {
+            "t": 2.75,
+            "type": "tackle_wrap",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 40.23,
+              "y": 20.02
+            },
+            "note": "initial"
+          },
+          {
+            "t": 2.8,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 39.79,
+              "y": 20.27
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3,
+            "type": "block_contact",
+            "a": 1,
+            "b": 16,
+            "pos": {
+              "x": 43.14809607018997,
+              "y": 21.72755729164524
+            },
+            "note": "run"
+          },
+          {
+            "t": 3.2,
+            "type": "tackle",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 40.03,
+              "y": 19.39
+            }
+          }
+        ]
+      },
+      "firstContact": {
+        "t": 2.65,
+        "actor": "RB",
+        "opponent": "DE_S",
+        "note": "body collision",
+        "depth": -0.23433344943020984
+      },
+      "setupSha256": "8204dc0ee1e44749ed63b0bd9e74ae0dd25620059d76f8b869eee4d624d875a1",
+      "selectedActorsSha256": "d670fd3e17a82797d4e7261bcaf1e74a748a89ca5eb7b01f0f2803477e01b84a",
+      "ticks": 65,
+      "fullStateRngHistorySha256": "025ebdc99c4c641be9dbfd11ad74d1297e86762e26bb86214d94dd992252340d",
+      "historicalContext": {
+        "baseline": {
+          "endTime": 3.25,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": null,
+          "gain": -0.2064288442096256,
+          "firstContact": {
+            "t": 2.65,
+            "opponent": "DE_S",
+            "note": "body collision",
+            "depth": -0.23433344943020984,
+            "roundedEventDepth": -0.22999999999999687
+          }
+        },
+        "isolated": {
+          "endTime": 3.65,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": null,
+          "gain": -0.969239908227209,
+          "firstContact": {
+            "t": 2.4,
+            "opponent": "DT_S",
+            "note": "body collision",
+            "depth": -1.2274257230560295
+          },
+          "limits": {
+            "armImpulseExcess": 0,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0,
+            "workResidual": 8.08375588690069e-12
+          }
+        },
+        "exactHistoricalCenterStateRngHistory": false,
+        "exactHistoricalIsolatedStateRngHistory": false
+      },
+      "elapsedSeconds": 0.512529624,
+      "unroundedDeadBallGain": -0.2064288442096256,
+      "deltaFromHistoricalCenterUnroundedGain": 0.0,
+      "pairLoadObservations": [
+        {
+          "blocker": "RT",
+          "defender": "DE_S",
+          "firstNominalParticipation": {
+            "controllerT": 1.25,
+            "worldEnd": 1.3,
+            "owner": "H",
+            "helper": true
+          },
+          "firstNonzeroTickAverage": {
+            "controllerT": 1.4,
+            "worldEnd": 1.45,
+            "normalTickAverage": 405.9734389711895,
+            "tangentTickAverage": -411.8656581774988
+          },
+          "lastNonzeroTickAverage": {
+            "controllerT": 2.75,
+            "worldEnd": 2.8,
+            "normalTickAverage": 0,
+            "tangentTickAverage": 467.7710507466529
+          },
+          "sampledNonzeroTicks": 28,
+          "sampledNonzeroWindows": [
+            {
+              "fromControllerT": 1.4,
+              "throughWorldEnd": 2.8
+            }
+          ],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "firstNominalParticipation": {
+            "controllerT": 0.5,
+            "worldEnd": 0.55,
+            "owner": "RG",
+            "helper": false
+          },
+          "firstNonzeroTickAverage": {
+            "controllerT": 0.5,
+            "worldEnd": 0.55,
+            "normalTickAverage": 0,
+            "tangentTickAverage": -254.34893541720592
+          },
+          "lastNonzeroTickAverage": {
+            "controllerT": 3.2,
+            "worldEnd": 3.25,
+            "normalTickAverage": 560.9952995259314,
+            "tangentTickAverage": -288.3813886017716
+          },
+          "sampledNonzeroTicks": 55,
+          "sampledNonzeroWindows": [
+            {
+              "fromControllerT": 0.5,
+              "throughWorldEnd": 3.25
+            }
+          ],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "firstNominalParticipation": null,
+          "firstNonzeroTickAverage": null,
+          "lastNonzeroTickAverage": null,
+          "sampledNonzeroTicks": 0,
+          "sampledNonzeroWindows": [],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_S",
+          "firstNominalParticipation": {
+            "controllerT": 0.4,
+            "worldEnd": 0.45,
+            "owner": "H",
+            "helper": false
+          },
+          "firstNonzeroTickAverage": {
+            "controllerT": 0.4,
+            "worldEnd": 0.45,
+            "normalTickAverage": 0,
+            "tangentTickAverage": 91.57479790000193
+          },
+          "lastNonzeroTickAverage": {
+            "controllerT": 1.7,
+            "worldEnd": 1.75,
+            "normalTickAverage": 781.0123313440221,
+            "tangentTickAverage": -169.32315238097516
+          },
+          "sampledNonzeroTicks": 27,
+          "sampledNonzeroWindows": [
+            {
+              "fromControllerT": 0.4,
+              "throughWorldEnd": 1.75
+            }
+          ],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "Z",
+          "defender": "CB_S",
+          "firstNominalParticipation": null,
+          "firstNonzeroTickAverage": null,
+          "lastNonzeroTickAverage": null,
+          "sampledNonzeroTicks": 0,
+          "sampledNonzeroWindows": [],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        }
+      ],
+      "firstCarrierContactWorldInterval": {
+        "controllerT": 2.65,
+        "worldEnd": 2.7,
+        "handsBeforeControllerCleanup": [
+          {
+            "blocker": "Y",
+            "defender": "DE_W",
+            "normalTickAverage": 0,
+            "tangentTickAverage": -140.61832233128268
+          },
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "normalTickAverage": 573.6369889195099,
+            "tangentTickAverage": -213.0999843495797
+          },
+          {
+            "blocker": "RT",
+            "defender": "DE_S",
+            "normalTickAverage": 766.4491589666324,
+            "tangentTickAverage": 471.51501308116514
+          },
+          {
+            "blocker": "H",
+            "defender": "LB_S",
+            "normalTickAverage": 460.33210160682955,
+            "tangentTickAverage": 10.592449629886943
+          }
+        ]
+      },
+      "rgDeSBodyContacts": [],
+      "zCbSConsumedPictureCount": 0,
+      "rtRgRequestDeliveryDifferences": {
+        "RT": {
+          "ticks": 57,
+          "first": {
+            "controllerT": 0.05,
+            "worldEnd": 0.1,
+            "requested": {
+              "x": 1.822727272727267,
+              "y": -7.583522306970652
+            },
+            "delivered": {
+              "x": 2.0493892751909115,
+              "y": -1.6903102429164116
+            },
+            "achievedVelocityAtWorldEnd": {
+              "x": 0.09794730216038905,
+              "y": -0.08078569069915303
+            },
+            "deltaYdS": 5.8975693378946605
+          },
+          "interpretation": "All controller composition/spacing stages; not attributed solely to teammate spacing."
+        },
+        "RG": {
+          "ticks": 60,
+          "first": {
+            "controllerT": 0.05,
+            "worldEnd": 0.1,
+            "requested": {
+              "x": 1.9454545454545347,
+              "y": -7.249871931691923
+            },
+            "delivered": {
+              "x": 1.9454545454545347,
+              "y": -5.16999557626634
+            },
+            "achievedVelocityAtWorldEnd": {
+              "x": 0.07491081380233235,
+              "y": -0.19907356708870513
+            },
+            "deltaYdS": 2.0798763554255837
+          },
+          "interpretation": "All controller composition/spacing stages; not attributed solely to teammate spacing."
+        }
+      },
+      "blockClimbs": [
+        {
+          "t": 1.15,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "pos": {
+            "x": 40.04,
+            "y": 26.04
+          },
+          "note": "secured DT_W; LG stays"
+        },
+        {
+          "t": 1.75,
+          "type": "block_climb",
+          "a": 10,
+          "b": 17,
+          "pos": {
+            "x": 40.36,
+            "y": 22.19
+          },
+          "note": "secured DE_S; RT stays"
+        }
+      ],
+      "budgetMaxima": {
+        "armImpulseExcess": 1.4210854715202004e-14,
+        "armWorkExcess": 0,
+        "supportWorkExcess": 0,
+        "workResidual": 7.755573960821494e-12
+      },
+      "observations": {
+        "firstContactBeforeLos": true,
+        "rgDeSCollisionObserved": false,
+        "zConsumedAssignedCornerPicture": false
+      }
+    },
+    {
+      "id": "uc12-wz-weak-s3",
+      "outcome": "tackle",
+      "complete": true,
+      "censoredByBudget": false,
+      "duration": 3.4,
+      "crossing": 2.6,
+      "gain": 2.37,
+      "result": {
+        "outcome": "tackle",
+        "possession": "O",
+        "turnover": false,
+        "endX": 42.367700257053365,
+        "endY": 33.53272400897884,
+        "yards": 2.37,
+        "offenseYards": 2.37,
+        "segments": [
+          {
+            "team": "O",
+            "carrier": "O-QB3",
+            "how": "snap",
+            "startX": 38.4,
+            "endX": 36.37059079936772,
+            "end": "handoff"
+          },
+          {
+            "team": "O",
+            "carrier": "O-RB1",
+            "how": "handoff",
+            "startX": 36.11702876222924,
+            "endX": 42.367700257053365,
+            "end": "dead"
+          }
+        ],
+        "score": null,
+        "duration": 3.4,
+        "clockStops": false,
+        "kind": "run",
+        "stats": {
+          "tacklers": [
+            "D-LB1",
+            "D-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "O-RB1",
+          "yardsBeforeContact": -0.9623213508506083
+        },
+        "events": [
+          {
+            "t": 0.3,
+            "type": "read",
+            "a": 15,
+            "pos": {
+              "x": 45.01,
+              "y": 26.01
+            },
+            "note": "run; pPass=0.27 focus=0.93 urgency=0.74"
+          },
+          {
+            "t": 0.3,
+            "type": "read",
+            "a": 17,
+            "pos": {
+              "x": 44.12,
+              "y": 23.28
+            },
+            "note": "run; pPass=0.24 focus=1.00 urgency=0.67"
+          },
+          {
+            "t": 0.35,
+            "type": "read",
+            "a": 21,
+            "pos": {
+              "x": 47.47,
+              "y": 19.83
+            },
+            "note": "run; pPass=0.29 focus=1.00 urgency=0.78"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 12,
+            "pos": {
+              "x": 40.87,
+              "y": 22.64
+            },
+            "note": "run; pPass=0.27 focus=0.86 urgency=0.77"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 16,
+            "pos": {
+              "x": 44.58,
+              "y": 28.38
+            },
+            "note": "run; pPass=0.28 focus=0.93 urgency=0.69"
+          },
+          {
+            "t": 0.4,
+            "type": "read",
+            "a": 20,
+            "pos": {
+              "x": 53.11,
+              "y": 26.52
+            },
+            "note": "run; pPass=0.28 focus=0.96 urgency=0.79"
+          },
+          {
+            "t": 0.45,
+            "type": "block_contact",
+            "a": 7,
+            "b": 12,
+            "pos": {
+              "x": 39.87261195988092,
+              "y": 22.90461062133981
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.5,
+            "type": "read",
+            "a": 11,
+            "pos": {
+              "x": 40.68,
+              "y": 29.73
+            },
+            "note": "run; pPass=0.24 focus=0.61 urgency=0.79"
+          },
+          {
+            "t": 0.55,
+            "type": "block_contact",
+            "a": 1,
+            "b": 11,
+            "pos": {
+              "x": 39.6719315461847,
+              "y": 29.454467096272953
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.55,
+            "type": "block_contact",
+            "a": 5,
+            "b": 13,
+            "pos": {
+              "x": 39.7517449750909,
+              "y": 25.584136762642366
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.55,
+            "type": "read",
+            "a": 13,
+            "pos": {
+              "x": 40.7,
+              "y": 25.23
+            },
+            "note": "run; pPass=0.23 focus=0.44 urgency=0.83"
+          },
+          {
+            "t": 0.65,
+            "type": "block_contact",
+            "a": 3,
+            "b": 14,
+            "pos": {
+              "x": 39.67255788970773,
+              "y": 26.8574629328502
+            },
+            "note": "run"
+          },
+          {
+            "t": 0.65,
+            "type": "read",
+            "a": 14,
+            "pos": {
+              "x": 40.67,
+              "y": 27.28
+            },
+            "note": "run; pPass=0.21 focus=0.83 urgency=0.54"
+          },
+          {
+            "t": 0.75,
+            "type": "read",
+            "a": 18,
+            "pos": {
+              "x": 47.59,
+              "y": 8.09
+            },
+            "note": "run; pPass=0.26 focus=1.00 urgency=0.72"
+          },
+          {
+            "t": 0.8,
+            "type": "read",
+            "a": 19,
+            "pos": {
+              "x": 47.83,
+              "y": 45.05
+            },
+            "note": "run; pPass=0.26 focus=1.00 urgency=0.81"
+          },
+          {
+            "t": 0.9,
+            "type": "block_climb",
+            "a": 2,
+            "b": 17,
+            "pos": {
+              "x": 40.22,
+              "y": 24.69
+            },
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 1.25,
+            "type": "block_climb",
+            "a": 10,
+            "b": 16,
+            "pos": {
+              "x": 40.47,
+              "y": 30.66
+            },
+            "note": "secured DE_W; LT stays"
+          },
+          {
+            "t": 1.6,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 36.37,
+              "y": 28.97
+            }
+          },
+          {
+            "t": 1.75,
+            "type": "block_contact",
+            "a": 4,
+            "b": 15,
+            "pos": {
+              "x": 42.311686055162134,
+              "y": 28.52448941713282
+            },
+            "note": "run"
+          },
+          {
+            "t": 1.95,
+            "type": "block_contact",
+            "a": 7,
+            "b": 12,
+            "pos": {
+              "x": 40.34783854121398,
+              "y": 23.955938004940617
+            },
+            "note": "run"
+          },
+          {
+            "t": 2.3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 11,
+            "pos": {
+              "x": 39.04,
+              "y": 31.5
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.3,
+            "type": "tackle_wrap",
+            "a": 11,
+            "b": 6,
+            "pos": {
+              "x": 39.72,
+              "y": 30.93
+            },
+            "note": "initial"
+          },
+          {
+            "t": 2.75,
+            "type": "tackle_wrap",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 41.4,
+              "y": 31.23
+            },
+            "note": "assist"
+          },
+          {
+            "t": 2.8,
+            "type": "broken_tackle",
+            "a": 6,
+            "b": 11,
+            "pos": {
+              "x": 40.83,
+              "y": 32.5
+            },
+            "note": "hold slipped"
+          },
+          {
+            "t": 3,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 41.75,
+              "y": 32.9
+            },
+            "note": "legs"
+          },
+          {
+            "t": 3.05,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 41.94,
+              "y": 32.43
+            },
+            "note": "assist"
+          },
+          {
+            "t": 3.35,
+            "type": "fall",
+            "a": 16,
+            "pos": {
+              "x": 41.66,
+              "y": 33.49
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.35,
+            "type": "tackle",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 41.66,
+              "y": 33.49
+            }
+          }
+        ]
+      },
+      "firstContact": {
+        "t": 2.3,
+        "actor": "RB",
+        "opponent": "DE_W",
+        "note": "grasp",
+        "depth": -0.9623213508506083
+      },
+      "setupSha256": "ce53fdd8751a5ed9864a594a737084bde814af98d3a950a63d8563314f0c1ef8",
+      "selectedActorsSha256": "6f88ceef51450a3e1258010c042d71116d64eb22e31d8f89d5e9afcb29d66e95",
+      "ticks": 68,
+      "fullStateRngHistorySha256": "45f7f7bb4ad74f73217d2960b4186f16216e585fb751342678ec8886719b3771",
+      "historicalContext": {
+        "baseline": {
+          "endTime": 3.4,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": 2.6,
+          "gain": 2.371521112002064,
+          "firstContact": {
+            "t": 2.3,
+            "opponent": "DE_W",
+            "note": "grasp",
+            "depth": -0.9623213508506083,
+            "roundedEventDepth": -0.9600000000000009
+          }
+        },
+        "isolated": {
+          "endTime": 4.1,
+          "outcome": "tackle",
+          "censored": false,
+          "crossing": 2.4,
+          "gain": 9.500380676675306,
+          "firstContact": {
+            "t": 2.85,
+            "opponent": "LB_M",
+            "note": "grasp",
+            "depth": 3.1354877517233746
+          },
+          "limits": {
+            "armImpulseExcess": 1.4210854715202004e-14,
+            "armWorkExcess": 0,
+            "supportWorkExcess": 0,
+            "workResidual": 1.1325163029596297e-11
+          }
+        },
+        "exactHistoricalCenterStateRngHistory": false,
+        "exactHistoricalIsolatedStateRngHistory": false
+      },
+      "elapsedSeconds": 0.5124766360000002,
+      "unroundedDeadBallGain": 2.3677002570533645,
+      "deltaFromHistoricalCenterUnroundedGain": -0.003820854948699548,
+      "pairLoadObservations": [
+        {
+          "blocker": "RT",
+          "defender": "DE_S",
+          "firstNominalParticipation": null,
+          "firstNonzeroTickAverage": null,
+          "lastNonzeroTickAverage": null,
+          "sampledNonzeroTicks": 0,
+          "sampledNonzeroWindows": [],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "RG",
+          "defender": "DT_S",
+          "firstNominalParticipation": {
+            "controllerT": 0.5,
+            "worldEnd": 0.55,
+            "owner": "RG",
+            "helper": false
+          },
+          "firstNonzeroTickAverage": {
+            "controllerT": 0.5,
+            "worldEnd": 0.55,
+            "normalTickAverage": 0,
+            "tangentTickAverage": 444.489503791873
+          },
+          "lastNonzeroTickAverage": {
+            "controllerT": 3.35,
+            "worldEnd": 3.4,
+            "normalTickAverage": 835.5661424059236,
+            "tangentTickAverage": -199.71355440438955
+          },
+          "sampledNonzeroTicks": 58,
+          "sampledNonzeroWindows": [
+            {
+              "fromControllerT": 0.5,
+              "throughWorldEnd": 3.4
+            }
+          ],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "Y",
+          "defender": "DE_S",
+          "firstNominalParticipation": {
+            "controllerT": 0.4,
+            "worldEnd": 0.45,
+            "owner": "Y",
+            "helper": false
+          },
+          "firstNonzeroTickAverage": {
+            "controllerT": 0.4,
+            "worldEnd": 0.45,
+            "normalTickAverage": 0,
+            "tangentTickAverage": 357.9917103330222
+          },
+          "lastNonzeroTickAverage": {
+            "controllerT": 2.8,
+            "worldEnd": 2.85,
+            "normalTickAverage": 0,
+            "tangentTickAverage": -285.10200677835087
+          },
+          "sampledNonzeroTicks": 39,
+          "sampledNonzeroWindows": [
+            {
+              "fromControllerT": 0.4,
+              "throughWorldEnd": 1.4
+            },
+            {
+              "fromControllerT": 1.9,
+              "throughWorldEnd": 2.85
+            }
+          ],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "H",
+          "defender": "DE_S",
+          "firstNominalParticipation": null,
+          "firstNonzeroTickAverage": null,
+          "lastNonzeroTickAverage": null,
+          "sampledNonzeroTicks": 0,
+          "sampledNonzeroWindows": [],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        },
+        {
+          "blocker": "Z",
+          "defender": "CB_S",
+          "firstNominalParticipation": null,
+          "firstNonzeroTickAverage": null,
+          "lastNonzeroTickAverage": null,
+          "sampledNonzeroTicks": 0,
+          "sampledNonzeroWindows": [],
+          "interpretation": "Sampled signed average load and nominal role, not proof of continuous connection or protection."
+        }
+      ],
+      "firstCarrierContactWorldInterval": {
+        "controllerT": 2.3,
+        "worldEnd": 2.35,
+        "handsBeforeControllerCleanup": [
+          {
+            "blocker": "RG",
+            "defender": "DT_S",
+            "normalTickAverage": 789.4020321163106,
+            "tangentTickAverage": 459.16935666534306
+          },
+          {
+            "blocker": "Y",
+            "defender": "DE_S",
+            "normalTickAverage": 0,
+            "tangentTickAverage": -479.4729886595694
+          }
+        ]
+      },
+      "rgDeSBodyContacts": [],
+      "zCbSConsumedPictureCount": 0,
+      "rtRgRequestDeliveryDifferences": {
+        "RT": {
+          "ticks": 24,
+          "first": {
+            "controllerT": 0.3,
+            "worldEnd": 0.35,
+            "requested": {
+              "x": 1.8122259599152102,
+              "y": 3.4125850381367933
+            },
+            "delivered": {
+              "x": 1.8389052438380944,
+              "y": 1.8927228017705098
+            },
+            "achievedVelocityAtWorldEnd": {
+              "x": 0.6649456377813516,
+              "y": 0.8219683098591117
+            },
+            "deltaYdS": 1.5200963790901412
+          },
+          "interpretation": "All controller composition/spacing stages; not attributed solely to teammate spacing."
+        },
+        "RG": {
+          "ticks": 58,
+          "first": {
+            "controllerT": 0.5,
+            "worldEnd": 0.55,
+            "requested": {
+              "x": 0,
+              "y": 0
+            },
+            "delivered": {
+              "x": 3.0154801024658235,
+              "y": 1.0702346473377418
+            },
+            "achievedVelocityAtWorldEnd": {
+              "x": 1.4953993526649576,
+              "y": 0.3559351420784391
+            },
+            "deltaYdS": 3.1997691242852873
+          },
+          "interpretation": "All controller composition/spacing stages; not attributed solely to teammate spacing."
+        }
+      },
+      "blockClimbs": [
+        {
+          "t": 0.9,
+          "type": "block_climb",
+          "a": 2,
+          "b": 17,
+          "pos": {
+            "x": 40.22,
+            "y": 24.69
+          },
+          "note": "secured DT_S; RG stays"
+        },
+        {
+          "t": 1.25,
+          "type": "block_climb",
+          "a": 10,
+          "b": 16,
+          "pos": {
+            "x": 40.47,
+            "y": 30.66
+          },
+          "note": "secured DE_W; LT stays"
+        }
+      ],
+      "budgetMaxima": {
+        "armImpulseExcess": 7.105427357601002e-15,
+        "armWorkExcess": 0,
+        "supportWorkExcess": 0,
+        "workResidual": 9.820588786624285e-12
+      },
+      "observations": {
+        "firstContactBeforeLos": true,
+        "rgDeSCollisionObserved": false,
+        "zConsumedAssignedCornerPicture": false
+      }
+    }
+  ],
+  "unrun": [],
+  "executions": 3,
+  "sourceUnchanged": true,
+  "collectorUnchanged": true,
+  "observation": "Original perception/World methods invoked once per original call. Snapshots and existing passive observer only; no interventions or new RNG/see/previews. One execution per case; no new observed/plain duplicate run. Full-state histories use the original reference serializer/tick loop.",
+  "forceMeasurement": "Hand normal/tangent fields are signed tick-average impulse/dt, not final-substep samples or proof of continuous retention. Center mode does not expose patch-only force vectors/moments; null means unavailable, not zero.",
+  "limitations": [
+    "One accepted-production replay, not a runtime candidate or league benchmark.",
+    "Historical center and patch/legacy observations are reused on their own source/flag pins, never relabeled as current production.",
+    "Request/delivery/achieved paths, nominal engagement and nonzero average load do not alone establish protection through runner arrival.",
+    "Existing center-contact conservation and football limitations remain; no experimental law or collection/base/controller patch applied."
+  ],
+  "sharedReceiptPurpose": "One accepted-develop reference for all run-game workers; consume saved outcomes/observations before considering another replay. Not a runtime candidate, law promotion or new historical baseline.",
+  "displayDate": "2026-10-14 America/Phoenix",
+  "reviewHandoff": "https://github.com/tannerthardy/football-simulation-/pull/18#issuecomment-6173825589",
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "sourceAndFlagHashes": {
+    "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+    "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+    "canonicalFlagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+    "canonicalEncoding": "UTF-8 JSON with sorted keys, no whitespace; null preserved."
+  },
+  "replayLauncher": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/ace-production-replay",
+    "commit": "ac6f663f958f4d59cb0f3e0e9d25c84e1c06dd79",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "failFast": false,
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+    "validationSha256": "487dacad1aa0e1230818cf0894632e00ae97db825d245d506d61d6fa445a7481",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [],
+    "startedAt": "2026-10-14T17:13:48.345Z",
+    "commands": [
+      {
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/zone/ace-production-replay.ts",
+          "out/ace-production"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 2.849170569
+      }
+    ],
+    "skippedCommands": [],
+    "finishedAt": "2026-10-14T17:13:51.197Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "replayLauncherFileSha256": "b57fbbcd7e10461cb87800021301fa678296418bff5ebe5ba5dd309437040ccb",
+  "collectorTypecheck": {
+    "receipt": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-production-replay",
+      "commit": "771ba376fec7f2d3cad4d9c22be2b552b509ebe6",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "b18e0bd4ba883c05466e1ad2ae0d6cda401aaa0cf12b60614c58655ec6421ce6",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T17:12:26.813Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.781451852
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T17:12:37.599Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "collectorBytesUnchangedAfterTypecheck": true,
+    "note": "The manifest field-center value was corrected after this successful typecheck; TypeScript/engine/profile bytes did not change."
+  },
+  "preflightFailures": [
+    {
+      "receipt": {
+        "baseline": "run-game-2026-10-13",
+        "branch": "codex/ace-production-replay",
+        "commit": "771ba376fec7f2d3cad4d9c22be2b552b509ebe6",
+        "mode": "candidate",
+        "node": "v22.23.3",
+        "failFast": false,
+        "platform": "linux",
+        "arch": "x64",
+        "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+        "validationSha256": "b18e0bd4ba883c05466e1ad2ae0d6cda401aaa0cf12b60614c58655ec6421ce6",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "trackedChanges": [],
+        "startedAt": "2026-10-14T17:13:18.302Z",
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/zone/ace-production-replay.ts",
+              "out/ace-production"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 0.409153551
+          }
+        ],
+        "skippedCommands": [],
+        "finishedAt": "2026-10-14T17:13:18.714Z",
+        "inputsUnchanged": true,
+        "exitCode": 1
+      },
+      "receiptFileSha256": "c03804113d33a23c9ea617491529e6a933f6b498fa4f50184c8b81addcf3af3a",
+      "logSha256": "9026d1731e4a9b6ed19fa4ec8de7f639ad01adb1be2e1c71ea93552d478ca02b",
+      "cause": "Rounded manifest ballY 26.65 failed exact CENTER_Y 26.666666666666668 assertion before any PlaySim was constructed. Corrected manifest at ac6f663; no play execution was repeated.",
+      "simulationExecutions": 0
+    }
+  ],
+  "fullLocalTracePacket": {
+    "sha256": "38181edfb21c3cf186fa145acfae2b5adbb1c1107eb5f1c5e87a2d7a5a34eb75",
+    "bytes": 3586411,
+    "path": "out/ace-production/traces.json.gz",
+    "tracked": false
+  },
+  "sharedObservations": {
+    "path": "data/reviews/current/ace-production-observations.json.gz",
+    "sha256": "ad462904b23c6864d902107f6a0aa3a876b4e35d3247db8dfaebb835276ae10b",
+    "bytes": 781084,
+    "scope": "All complete results and full tick hashes; all-tick key-actor paths/requests/delivery, all World-end hands/contacts, sampled detailed pictures/support/phase frames. Not graph-complete World replay. Included numeric fields checked exactly against full raw packet."
+  },
+  "offlineReducer": {
+    "path": "scripts/diag/zone/ace-production-report.py",
+    "sha256": "3b98d581b5dd9ef6a247fb29fc22a813c5ebc033117b12f06e22f41eef46f60a",
+    "extraSimulationCalls": 0
+  },
+  "historicalSourcePins": {
+    "baselineCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "baselineRuntimeSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
+    "baselineFlagCount": 43,
+    "isolatedSourceCommit": "92743c0a58804d1bc78551bda9a057d79a0845b2",
+    "isolatedRuntimeSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+    "isolatedFlagCount": 43,
+    "isolatedWorld": {
+      "handContact": "patch",
+      "groundMovement": "legacy"
+    },
+    "receiptPath": "data/reviews/current/contact-law-isolation.json",
+    "actualSourceManifestSha256": "97f7d083dceebe26f1482a2275564877bbc07b928da459141cbf0ff81dfb78bc"
+  },
+  "executionAccounting": {
+    "completedNativePlays": 3,
+    "nativeReplaysPerDeclaredInput": 1,
+    "tickCounts": [
+      86,
+      65,
+      68
+    ],
+    "totalTicks": 219,
+    "newRosterSamples": 0,
+    "fullGames": 0,
+    "fullCombinedSuiteRuns": 0,
+    "experimentalPhysicsSelections": 0,
+    "standalonePlainDuplicates": 0,
+    "collectorSeconds": 2.0275501,
+    "replayCommandSeconds": 2.849170569,
+    "typecheckCommandSeconds": 10.781451852,
+    "failedPreflightCommandSeconds": 0.409153551,
+    "notPerformanceBenchmark": "Includes observers/serialization/loading. Offline curation/reduction advances no simulations."
+  },
+  "publicationCompatibility": "Publication adds an offline Python reducer, docs and derived evidence only. It does not change measured engine, collector, manifest, flags or dependencies. Replay validation hash belongs to frozen ac6f663; additional offline tooling is explicitly separate, not falsely assigned that old global hash."
+}

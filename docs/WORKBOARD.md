@@ -11,6 +11,15 @@ Publish one reusable receipt and controller/contact trace packet. No source,
 contact API, controller, capacity, profile or default changes; no experimental
 mechanics, additional games/rosters or full combined verification.
 
+Completed at collector `ac6f663`: **3/3 natural tackles**, gains +1.49/-.21/+2.37,
+219 ticks, exact 44 flags/components=1. [Shared receipt](../data/reviews/current/ace-production-replay.json)
+and [reuse/observations](reviews/ace-production-replay.md) are the common reference
+for all run-game workers. RT load persists beyond the isolated-law dispute;
+no RG/DE_S collision appears here. Old weak clean arrival belongs to isolated
+physics; production first contact precedes LOS. Collector 2.028 s, no extra
+games or full suite. New collector typecheck passes; field-center preflight
+failure preserved, zero plays before correction. Runtime source unchanged.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
