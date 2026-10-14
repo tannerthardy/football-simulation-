@@ -1,0 +1,17 @@
+{
+  "protocol": "under-center-zone-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "question": "In ordinary under-center singleback with two attached tight ends, which first-level and linebacker responsibilities become real protection before the runner arrives?",
+  "selection": "Existing ace_12, same WZ seed 3 and rosters as the saved ace_11 native controls; both directions selected before observing new outcomes. No fullback, shotgun, roster or capacity changes.",
+  "windowSeconds": 25,
+  "inputs": [
+    {"id":"uc12-wz-s3","concept":"wz_strong","kind":"run","seed":3,"flip":false,"o":31,"d":32,"front":"over","formation":"ace_12"},
+    {"id":"uc12-wz-s3-mirror","concept":"wz_strong","kind":"run","seed":3,"flip":true,"o":31,"d":32,"front":"over","formation":"ace_12"}
+  ],
+  "controls": {
+    "reused": ["wz_strong-s3", "wz_strong-s3-mirror"],
+    "receipt": "hand-action-protection-receipt.json, baseline arm at actual 4ded6b6",
+    "secondary": "G73-I48 offset-I and withdrawn WZ-23 early-release failure, retained in combination-collection.md",
+    "additionalCoverage": "Only after a specific unresolved mechanism requires it."
+  }
+}
