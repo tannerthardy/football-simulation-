@@ -5,27 +5,26 @@ import type {Particle} from './grip-force-interval.js';
 import type {BoundedGripInput} from './grip-force-bounded.js';
 import {pressureGeometry} from './grip-pressure-rate.js';
 import {sharedGripForce} from './grip-shared-law.js';
-import {eliminatedSharedStep} from './grip-shared-eliminated.js';
 import {sharedExplicitStep} from './grip-shared-explicit.js';
 import {sharedViscousCoefficients} from './grip-shared-viscous.js';
-import {sharedGaussStep} from './grip-shared-stages.js';
 import {LEG_SLIDE} from '../../../src/physics/grip-sliding.js';
 export interface SharedGripInput{
   bodies:Particle[];duration:number;mobility:number;footOffset:{x:number;y:number};attachmentReach:number;minimumDistance:number;
   grips:Array<{holder:number;held:number;material:{x:number;y:number};legs:number;hold:number;reach:number;capacity:number}>;
 }
-export function sharedGripInterval(input:SharedGripInput,method:'gauss'|'uniform'|'event'|'eliminated'|'rk8'='rk8'){
+export function sharedGripInterval(input:SharedGripInput,method:'uniform'|'rk8'='rk8'){
   const {bodies,duration:H,grips,mobility:mu}=input,N=bodies.length,M=grips.length,Z=6*N,FOOT=Z+3*M,J=FOOT+2,MW=J+12*M,T=MW+1,
     initial=[...bodies.flatMap(p=>[p.pos.x,p.pos.y,p.vel.x,p.vel.y,p.spin,p.facing]),
       ...grips.flatMap(g=>[g.material.x,g.material.y,g.legs]),input.footOffset.x,input.footOffset.y,...Array(12*M+2).fill(0)],
-    dynamic=[...Array.from({length:FOOT+2},(_v,j)=>j),T],statistics={steps:0,iterations:0,maximumResidual:0};
+    statistics={steps:0};
   if(![H,mu,input.attachmentReach,input.minimumDistance,...initial,...bodies.flatMap(p=>[p.mass,p.inertia]),
     ...grips.flatMap(g=>[g.holder,g.held,g.capacity,g.hold,g.reach])].every(Number.isFinite)
     ||H<=0||mu<=0||input.attachmentReach<=0||input.minimumDistance<0||![2,3].includes(N)||M!==N-1
     ||grips.some(g=>g.held!==1||![0,2].includes(g.holder)||g.holder>=N||g.legs<=0||g.legs>1||g.capacity<0||g.hold<0||g.hold>g.reach)
     ||new Set(grips.map(g=>g.holder)).size!==M||bodies.some(p=>p.mass<=0||p.inertia<=0))throw new RangeError('Invalid shared-grip input');
   let evaluations=0;let phases:boolean[]|undefined;
-  const pairs=grips.map(g=>({...g,a:bodies[g.holder],b:bodies[1],mobility:mu,attachmentReach:input.attachmentReach} as BoundedGripInput)),
+  const pairs:BoundedGripInput[]=grips.map(g=>({...g,a:bodies[g.holder],b:bodies[1],mobility:mu,attachmentReach:input.attachmentReach,
+    duration:H,minimumDistance:input.minimumDistance,footOffset:input.footOffset,desired:{x:0,y:0},pullSpeed:0})),
     pairStates=grips.map(()=>Array(30).fill(0));
   function geometry(y:number[]){
     return grips.map((g,k)=>{
@@ -77,7 +76,7 @@ export function sharedGripInterval(input:SharedGripInput,method:'gauss'|'uniform
     return [direction*(g[1].vt+cross),direction*(g[1].vt+2*cross)];
   }
   function derivative(y:number[]){
-    evaluations++;const f=frame(y),d=Array(y.length).fill(0),time=y[T],c=Math.cos(y[11]),s=Math.sin(y[11]);
+    if(++evaluations>4096)throw new RangeError('Shared-grip evaluation budget');const f=frame(y),d=Array(y.length).fill(0),time=y[T],c=Math.cos(y[11]),s=Math.sin(y[11]);
     for(let i=0;i<N;i++){const k=6*i;d[k]=y[k+2];d[k+1]=y[k+3];d[k+5]=y[k+4];}
     d[FOOT]=f.force.velocity.x;d[FOOT+1]=f.force.velocity.y;d[MW]=f.force.motorPower;d[T]=1;
     for(let k=0;k<M;k++){
@@ -101,9 +100,7 @@ export function sharedGripInterval(input:SharedGripInput,method:'gauss'|'uniform
     const add=(v:number[],a:number)=>y.map((z,j)=>z+a*v[j]),a=derivative(y),b=derivative(add(a,h/2)),c=derivative(add(b,h/2)),e=derivative(add(c,h));
     return y.map((z,j)=>z+h*(a[j]+2*b[j]+2*c[j]+e[j])/6);
   }
-  const step=(y:number[],h:number)=>method==='rk8'?sharedExplicitStep(y,h,derivative):method==='eliminated'
-    ?eliminatedSharedStep(y,h,input,Z,FOOT,T,geometry,derivative,direction,statistics)
-    :sharedGaussStep(y,h,derivative,dynamic,statistics);
+  const step=(y:number[],h:number)=>{statistics.steps++;return sharedExplicitStep(y,h,derivative);};
   let eventTimes:number[]=[],eventResiduals:number[]=[],rootIterations=0;const seeds:number[]=[];
   function solve(n:number){
     let y=initial.slice();const h=H/n,seen=[false,false];eventTimes=[];eventResiduals=[];
@@ -113,7 +110,7 @@ export function sharedGripInterval(input:SharedGripInput,method:'gauss'|'uniform
       for(let pieces=0;y[T]<end-1e-16;pieces++){
         if(pieces>2)throw new RangeError('Shared work-switch piece budget');
         const trial=step(y,end-y[T]);
-        if(!['event','eliminated','rk8'].includes(method)||M!==2){y=trial;break;}
+        if(M!==2){y=trial;break;}
         const start=switches(y),finish=switches(trial),event=[0,1].find(j=>!seen[j]&&start[j]<0&&finish[j]>=0);
         if(event===undefined){y=trial;break;}
         let lo=y[T],hi=end,te=seeds[event]>lo&&seeds[event]<hi?seeds[event]:lo+(hi-lo)*(-start[event])/(finish[event]-start[event]),solved=false,priorTime:number|undefined,priorGap=0;

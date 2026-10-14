@@ -1,0 +1,107 @@
+/** Reuse five independent shared-foot references; pin exact settings/inputs.
+ * Accepted runtime is observer-free, serial and measured outside preparation. */
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {cpus} from 'node:os';
+import {World} from '../../../src/physics/world.js';
+import {sourceVersion} from '../../source-version.js';
+import {prepareSharedCase,prescribeSharedSupport} from './grip-shared-fixtures.js';
+import {sharedGripInterval,type SharedGripInput} from './grip-force-shared.js';
+import {sharedGripForce} from './grip-shared-law.js';
+import {pressureGeometry} from './grip-pressure-rate.js';
+const root='out/grip-shared';mkdirSync(root,{recursive:true});
+const hash=(v:Uint8Array|string)=>createHash('sha256').update(v).digest('hex'),parent='c61e8d56b57a24a3dcc52ba6ca5f4d22fcad2254',
+  source=sourceVersion(),commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
+  reference=JSON.parse(readFileSync('config/grip-shared-reference.json','utf8')),
+  fresh=JSON.parse(readFileSync('config/grip-shared-fresh-reference.json','utf8')),
+  flags=Object.fromEntries(Object.keys(JSON.parse(readFileSync('config/baseline.json','utf8')).flags).map(k=>[k,process.env[k]??null])),
+  files=['scripts/diag/physics/grip-force-shared.ts','scripts/diag/physics/grip-shared-law.ts','scripts/diag/physics/grip-shared-viscous.ts',
+    'scripts/diag/physics/grip-shared-explicit.ts','scripts/diag/physics/grip-shared-fixtures.ts','scripts/diag/physics/grip-shared-reference.ts',
+    'scripts/diag/physics/grip-shared-evidence.ts','test/grip-shared.test.ts','config/grip-shared-reference.json','config/grip-shared-fresh-reference.json',
+    'scripts/diag/physics/grip-force-saturation.ts','scripts/diag/physics/grip-pressure-rate.ts','config/grip-saturation-reference.json','package-lock.json'],
+  hashes=Object.fromEntries(files.map(p=>[p,hash(readFileSync(p))])),cases=[...reference.cases,...fresh.cases],
+  methods=['uniform','rk8'] as const,benchmark=process.argv.includes('--benchmark');
+assert.equal(source,'f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12');
+for(const fixture of [reference,fresh]){assert.equal(fixture.source,source);assert.deepEqual(fixture.flags,flags);assert(fixture.cases.every((c:any)=>c.physical&&c.convergence.converged));}
+for(const p of ['src/physics/world.ts','src/physics/grip-sliding.ts','config/baseline.json','package-lock.json','scripts/diag/physics/grip-force-saturation.ts','scripts/diag/physics/grip-pressure-rate.ts','config/grip-saturation-reference.json'])
+  assert.equal(hash(readFileSync(p)),hash(execFileSync('git',['show',`${parent}:${p}`])));
+const norm=(a:any,b:any)=>Math.hypot(a.x-b.x,a.y-b.y);
+function compare(r:ReturnType<typeof sharedGripInterval>,z:any,input:SharedGripInput){
+  const error={position:Math.max(...r.bodies.map((p,i)=>norm(p.pos,z.bodies[i].pos))),velocity:Math.max(...r.bodies.map((p,i)=>norm(p.vel,z.bodies[i].vel))),
+    facing:Math.max(...r.bodies.map((p,i)=>Math.abs(p.facing-z.bodies[i].facing))),spin:Math.max(...r.bodies.map((p,i)=>Math.abs(p.spin-z.bodies[i].spin))),
+    material:Math.max(...r.grips.map((g,i)=>norm(g.material,z.grips[i].material))),point:Math.max(...r.grips.map((g,i)=>norm(g.point,z.grips[i].point))),
+    legs:Math.max(...r.grips.map((g,i)=>Math.abs(g.legs-z.grips[i].legs))),hold:Math.max(...r.grips.map((g,i)=>Math.abs(g.hold-z.grips[i].hold))),
+    foot:norm(r.footOffset,z.footOffset),impulse:Math.max(...r.grips.map((g,i)=>norm(g.impulse,z.grips[i].impulse))),moment:Math.max(...r.grips.map((g,i)=>norm(g.moment,z.grips[i].moment))),
+    angularImpulse:Math.max(...r.grips.flatMap((g,i)=>g.angularImpulse.map((v,k)=>Math.abs(v-z.grips[i].angularImpulse[k])))),
+    angularMoment:Math.max(...r.grips.flatMap((g,i)=>g.angularMoment.map((v,k)=>Math.abs(v-z.grips[i].angularMoment[k])))),
+    normal:Math.max(...r.grips.map((g,i)=>Math.abs(g.normalImpulse-z.grips[i].normalImpulse))),tangent:Math.max(...r.grips.map((g,i)=>Math.abs(g.tangentImpulse-z.grips[i].tangentImpulse))),
+    dose:Math.max(...r.grips.map((g,i)=>Math.abs(g.dose-z.grips[i].dose))),bodyWork:Math.abs(r.bodyWork-z.bodyWork),motorWork:Math.abs(r.motorWork-z.motorWork),passiveWork:Math.abs(r.passiveWork-z.passiveWork)},
+    normalized=Math.max(error.position/5e-7,error.velocity/2.5e-5,error.facing/2.5e-6,error.spin/2.5e-4,error.material/5e-7,error.point/5e-7,error.foot/5e-7,
+      error.legs/1e-6,error.hold/5e-7,error.impulse/.002,error.moment/.00005,error.angularImpulse/.0005,error.angularMoment/.000005,error.normal/.002,error.tangent/.002,
+      error.dose/.002,error.bodyWork/.01,error.motorWork/.01,error.passiveWork/.01);
+  return {error,normalized,matches:normalized<=1&&Math.abs(r.workResidual)<=1e-8&&Math.abs(r.angularResidual)<=1e-7&&r.representationError<1e-10
+    &&r.passiveWork<=1e-9&&r.grips.every((g,i)=>g.slipping===z.grips[i].slipping&&g.dose<=input.grips[i].capacity*input.duration+1e-9)};
+}
+const rows:any[]=[],bench:any[]=[],refusals:any[]=[],audit:any[]=[];
+for(const c of cases){
+  const input=structuredClone(c.input);
+  for(const method of methods){const result=sharedGripInterval(input,method),comparison=compare(result,c.reference,input);assert(comparison.matches,`${c.id}/${method}`);
+    assert.deepEqual(input,c.input);rows.push({id:c.id,method,...comparison,result});}
+}
+if(benchmark)for(const c of cases.filter((c:any)=>c.id!=='shared--1')){
+  const input=structuredClone(c.input),samples=methods.map(()=>[] as any[]);
+  for(let k=0;k<5;k++)for(const method of methods)sharedGripInterval(input,method);
+  for(let k=0;k<21;k++)for(let j=0;j<2;j++){
+    const index=(k+j)%2,start=performance.now(),result=sharedGripInterval(input,methods[index]),milliseconds=performance.now()-start;samples[index].push({milliseconds,result});
+  }
+  for(let j=0;j<2;j++){
+    const s=samples[j],times=s.map(v=>v.milliseconds).sort((a,b)=>a-b),result=s[0].result;
+    assert(s.every(v=>JSON.stringify(v.result)===JSON.stringify(result)));assert.deepEqual(input,c.input);
+    const comparison=compare(result,c.reference,input);assert(comparison.matches);
+    bench.push({id:c.id,method:methods[j],milliseconds:{median:times[10],p95:times[19],maximum:times[20],samples:s.map(v=>v.milliseconds)},
+      partitions:result.partitions,evaluations:result.evaluations,initialPartitions:result.initialPartitions,stabilityRate:result.stabilityRate,
+      eventTimes:result.eventTimes,eventResiduals:result.eventResiduals,rootIterations:result.rootIterations,normalized:comparison.normalized});
+  }
+}
+// A genuine unsupported span/phase horizon; count no returned state as refusal.
+for(const method of methods){
+  const input={...structuredClone(reference.cases[0].input),duration:.05},times:number[]=[];
+  for(let k=0;k<(benchmark?8:1);k++){
+    const start=performance.now();let refused=false;
+    try{sharedGripInterval(input,method);}catch(e){assert(e instanceof RangeError&&e.message==='Shared-grip scope/refinement budget');refused=true;}
+    const elapsed=performance.now()-start;assert(refused);if(k||!benchmark)times.push(elapsed);
+  }
+  const sorted=times.slice().sort((a,b)=>a-b);refusals.push({id:'long-span-scope',method,returnedState:false,inputUnchanged:true,
+    milliseconds:{median:sorted[Math.floor(sorted.length/2)],maximum:sorted.at(-1)},samples:times});
+}
+// Force audit is separate from all measured operator calls. Retain each of
+// the eight physical row passes while shrinking h on the literal checkpoint.
+const prototype:any=World.prototype,feet=prototype.feet;
+try{
+  prototype.feet=prescribeSharedSupport(feet);
+  for(const h of [1e-6,1e-7,1e-8]){
+    const v=prepareSharedCase(),w=v.w,x=v.input,frames=x.grips.map(g=>{
+      const a=x.bodies[g.holder],b=x.bodies[1],q=[a.pos.x,a.pos.y,a.vel.x,a.vel.y,a.spin,a.facing,b.pos.x,b.pos.y,b.vel.x,b.vel.y,b.spin,b.facing,
+        g.material.x,g.material.y,...Array(13).fill(0),g.legs],geometry=pressureGeometry({...g,a,b,mobility:x.mobility,attachmentReach:x.attachmentReach} as any,q);
+      return {...geometry,capacity:g.capacity,inverseMass:1/a.mass+1/b.mass,normalBias:2*Math.PI*6/(2*.8)*Math.max(0,geometry.d-g.hold)};
+    }),limit=sharedGripForce(frames,x.mobility),passes:any[]=[],original=w.solveGrasp,rows=w.jointRows;let solved:any[]=[];
+    w.jointRows=function(h:number){solved=rows.call(this,h);return solved;};
+    w.solveGrasp=function(r:any,...args:any[]){original.call(this,r,...args);passes.push({holder:r.i,normal:r.ln/h,tangent:r.lt/h});};
+    const args=[...v.args];args[3]=h;w.integrateInterval(...args);
+    const differences=solved.map((r:any,k:number)=>Math.hypot(r.ln/h-limit.rows[k].normal,r.lt/h-limit.rows[k].tangent));
+    audit.push({h,passes,limit:limit.rows.map(r=>({normal:r.normal,tangent:r.tangent})),differences,maximum:Math.max(...differences)});
+    assert(Math.max(...differences)<.1);
+  }
+}finally{prototype.feet=feet;}
+assert.equal(sourceVersion(),source);for(const p of files)assert.equal(hash(readFileSync(p)),hashes[p]);
+const output=process.argv.find(a=>a.startsWith('--output='))?.slice(9)??`${root}/evidence.json`;
+writeFileSync(output,JSON.stringify({commit,source,parent,baseline:reference.baseline,flags,hashes,node:process.version,cpu:cpus()[0].model,
+  reference:{baseCollector:reference.collectorSha256,baseHelper:reference.helperSha256,freshCollector:fresh.collectorSha256,freshHelper:fresh.helperSha256,
+    baseInputPreparationExtendedOnlyForFresh:true,baseScope:reference.scope,freshScope:fresh.scope,coarse:16384,fine:32768},
+  protocol:{serial:true,profilersOrPerStepObservers:false,preparationOutsideClock:true,repetitions:benchmark?21:0,warmups:benchmark?5:0,rotatingInterleavedOrder:true,
+    forcePasses:8,errorAllowance:1/16,maximumPartitions:1024,maximumEvaluations:4096,maximumRootIterations:8,
+    candidate:'DOP853, one common clock, local work-boundary splits, Gershgorin initial step proposal with h*rate <=4',
+    rootResidual:1e-10,oldReferencesAndRuntimeUnchanged:true,costBudgetMilliseconds:{typical:2,p95:5,observedRefusalMaximum:10}},rows,bench,refusals,audit},null,2)+'\n');
+console.log(JSON.stringify({output,matched:rows.every(r=>r.matches),bench:bench.map(r=>({id:r.id,method:r.method,...r.milliseconds,samples:undefined})),refusals,audit:audit.map(r=>({h:r.h,maximum:r.maximum}))}));
