@@ -172,6 +172,8 @@ python3 scripts/data/fetch_bdb2025_line_audit.py
 # Collector tested at a15352119b6ff52ab7a10cb6fd98152d57f3d62c; source e5 required.
 python3 scripts/diag/zone/run-nfl-line-audit.py
 python3 -m unittest discover -s test -p test_run_line_geometry_audit.py
+# Validate/render the published saved results without downloading or replaying.
+python3 scripts/diag/zone/publish_run_line_audit.py --input docs/reviews/run-nfl-line-audit --out out/run-nfl-line-audit-publication
 ```
 
 The5 directly affected tests pass. Offline publication checks verify cohort
@@ -184,3 +186,4 @@ suite/typecheck or game campaign was needed for this Python/data-only audit.
 
 Downloadable packaging contains this report, PNG/SVG/PDF, aggregate JSON/CSV,
 command evidence and reproducible tools. It contains no raw NFL tracking.
+[Download the audit bundle](../assets/run-nfl-line-audit.zip?raw=true).

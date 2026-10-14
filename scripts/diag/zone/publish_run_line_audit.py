@@ -4,11 +4,13 @@ import csv
 import gzip
 import hashlib
 import json
+import os
 from pathlib import Path
 import platform
 import subprocess
 import time
 
+os.environ.setdefault('MPLCONFIGDIR', '/tmp/run-nfl-line-audit-matplotlib')
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -91,6 +93,7 @@ assert audit['newWorldSteps'] == audit['newSimulationPlays'] == audit['newGames'
 
 args.out.mkdir(parents=True, exist_ok=True)
 (args.out / 'audit.json').write_text(json.dumps(audit, indent=2) + '\n')
+(args.out / 'audit-first.json').write_text(json.dumps(first, indent=2) + '\n')
 (args.out / 'acquisition.json').write_bytes((args.input / 'acquisition.json').read_bytes())
 (args.out / 'early-commands.json').write_text(json.dumps(early, indent=2) + '\n')
 
@@ -150,7 +153,8 @@ receipt = {'protocol':'run-nfl-line-audit-publication-v1',
     'settingsAndInputs':'audit.json: settings (all 44 flags, World defaults, original producer) and native[].input',
     'sourcePacketSha256':audit['sourcePacketSha256'], 'operatorSha256':audit['operator']['sha256'],
     'checks':checks,
-    'focusedUnitTests':{'revision':'5b2c1a1','command':'python3 -m unittest discover -s test -p test_run_line_geometry_audit.py','passed':5},
+    'focusedUnitTests':{'revision':subprocess.check_output(['git','rev-parse','5b2c1a1'],text=True).strip(),
+                        'command':'python3 -m unittest discover -s test -p test_run_line_geometry_audit.py','passed':5},
     'executionHistory':[
         {'revision':'5b2c1a1','operation':'verified NFL acquisition','seconds':21.33377927800757,'downloadedBytes':150675268},
         {'revision':'5b2c1a1','operation':'first compatible collector, without snap rows','seconds':13.543995489},
