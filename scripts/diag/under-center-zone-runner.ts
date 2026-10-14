@@ -8,6 +8,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { previewFreeMovement } from '../../src/physics/movement-preview.js';
 import { timeToReach } from '../../src/physics/reach.js';
+import { World } from '../../src/physics/world.js';
 
 const root = process.argv[2] ?? 'out/under-center-zone';
 const destination = process.argv[3] ?? 'docs/reviews/under-center-zone-runner-trace.json';
@@ -16,6 +17,27 @@ const packet = (name: string) => JSON.parse(gunzipSync(readFileSync(`${root}/${n
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const distance = (a: any, b: any) => Math.hypot(a.x - b.x, a.y - b.y);
 const unique = (values: any[]) => [...new Map(values.map(v => [JSON.stringify(v), v])).values()];
+const compactBody = (b: any) => ({ pos: b.pos, vel: b.vel, facing: b.facing, energy: b.energy,
+  support: Object.fromEntries(['state', 'xi', 'peak', 'posture', 'lean', 'load', 'felt', 'causes']
+    .map(k => [k, b.support?.[k]])) });
+function frozenEntryMovement(source: any, entry: any, now: number, beat: number, cutSkill: number) {
+  const body = structuredClone(source), world = new World([body]);
+  const original = digest(source);
+  world.time = now;
+  let next = 0, vel = { x: 0, y: 0 };
+  const samples: any[] = [];
+  for (let k = 0; k < 30; k++) {
+    if (k * .05 >= next) {
+      const h = Math.atan2(entry.y - body.pos.y, entry.x - body.pos.x);
+      vel = { x: Math.cos(h) * body.profile.vmax, y: Math.sin(h) * body.profile.vmax };
+      next = k * .05 + beat;
+    }
+    world.step([{ vel, cutSkill, squeeze: 0 }], .05);
+    samples.push({ t: (k + 1) * .05, pos: { ...body.pos }, vel: { ...body.vel }, support: body.support.state });
+  }
+  assert.equal(digest(source), original);
+  return samples;
+}
 const findings: any[] = [], receipts: any[] = [];
 
 for (const [name, priorName, pinName] of [['carrier', 'native', 'pin'], ['carrier-weak', 'weak', 'pin-weak']]) {
@@ -54,13 +76,15 @@ for (const [name, priorName, pinName] of [['carrier', 'native', 'pin'], ['carrie
     for (const frame of play.frames) {
       if (frame.t < 1.6 || frame.t > first.t) continue;
       const pi = frame.physicsInput;
-      const peer = (id: number) => ({ slot: slot(id), before: pi.beforeBodies[id],
-        requested: frame.agents[id].requested, delivered: pi.intents[id], after: pi.afterBodies[id] });
+      const peer = (id: number) => ({ slot: slot(id), before: compactBody(pi.beforeBodies[id]),
+        requested: frame.agents[id].requested, delivered: pi.intents[id], after: compactBody(pi.afterBodies[id]) });
       const foot = frame.contactEvents.find((e: any) => e.phase === 'movement' && e.blocker === keeper && e.defender === end);
       movement.push({ t: frame.t, after: frame.after,
         runner: peer(rb), keeper: peer(keeper), defender: peer(end),
         keeperRead: frame.agents[keeper].zone, keeperFootRequest: foot?.command,
-        joints: pi.jointOutputs.filter((j: any) => j.kind === 'hands' && [keeper, end].includes(j.a) && [keeper, end].includes(j.b)),
+        joints: pi.jointOutputs.filter((j: any) => j.kind === 'hands' && [keeper, end].includes(j.a) && [keeper, end].includes(j.b))
+          .map((j: any) => Object.fromEntries(['kind', 'a', 'b', 'normalForce', 'tangentForce', 'forceOnB',
+            'momentOnA', 'momentOnB', 'extension', 'drive'].map(k => [k, j[k]]))),
         opposingRunnerContacts: frame.contacts.filter((c: any) => (c.i === rb && play.players[c.j].team === 'D')
           || (c.j === rb && play.players[c.i].team === 'D')) });
       for (const event of frame.carrierEvents.filter((e: any) => e.actor === rb && e.phase === 'aim' && e.t < first.t)) {
@@ -92,7 +116,10 @@ for (const [name, priorName, pinName] of [['carrier', 'native', 'pin'], ['carrie
           const d = distance(body.pos, p), heading = Math.atan2(p.y - body.pos.y, p.x - body.pos.x);
           const command = { vel: { x: Math.cos(heading) * body.profile.vmax, y: Math.sin(heading) * body.profile.vmax },
             cutSkill: frame.agents[rb].requested.cutSkill, squeeze: 0 };
-          const samples = previewFreeMovement(body, command, event.t, 30, 'center');
+          const heldSamples = previewFreeMovement(body, command, event.t, 30, 'center');
+          const samples = frozenEntryMovement(body, p, event.t, event.decisionInterval, command.cutSkill);
+          assert(distance(samples[0].pos, heldSamples[0].pos) < 1e-12);
+          assert(distance(samples[0].vel, heldSamples[0].vel) < 1e-12);
           const arrival = samples.find(s => distance(s.pos, p) <= .65)?.t ?? null;
           const radius = body.profile.radius + play.players[end].profile.radius;
           const armRadius = radius + play.players[end].profile.reach * .75;
@@ -115,6 +142,7 @@ for (const [name, priorName, pinName] of [['carrier', 'native', 'pin'], ['carrie
           return { ...candidate, selected: distance(p, event.selected) < 1e-10, label, bounds, command,
             geometricArrivalUsedBySelector: d / Math.max(2, Math.hypot(body.vel.x, body.vel.y)),
             publicTurnAwareArrivalEstimate: timeToReach(body, p), unloadedArrivalWithinPoint65: arrival,
+            heldHeadingArrivalWithinPoint65: heldSamples.find(s => distance(s.pos, p) <= .65)?.t ?? null,
             earliestEndReachEnvelopeWithExistingBlockCredit: opposingEnvelope?.t ?? null,
             minimumPictureTorsoMarginThroughEntry: Math.min(...approach.map(s => s.pictureTorsoMargin)),
             minimumPictureArmMarginThroughEntry: Math.min(...approach.map(s => s.pictureArmMargin)),
@@ -132,6 +160,7 @@ for (const [name, priorName, pinName] of [['carrier', 'native', 'pin'], ['carrie
     findings.push({ input: play.input, side: play.side, initial: play.initial,
       provenance: collected.provenance, stateRngHistorySha256: digest(play.hashes),
       savedHistoryExact: true, actualPinHistoryExact: true, ticks: play.hashes.length,
+      profiles: play.players.map((a: any) => ({ id: a.id, slot: a.slot, team: a.team, profile: a.profile })),
       designedPhaseChanges: switches, firstContact: first, endTime: play.endTime, gain: play.gain,
       outcome: play.outcome, reads, movement });
     console.log(`${play.input.id}: ${reads.length} precontact reads, saved/pin histories exact`);
@@ -143,7 +172,8 @@ const report = { protocol: 'under-center-zone-runner-information-v1',
   caveats: ['Default crease selector; RUN_READ and RUN_READ_TURN remain off.',
     'Consumed images are controller information; movement actual before/after and hands existence are offline truth.',
     'Labels describe acquired geometry, not installed gap names or a new policy.',
-    'Scratch preview holds an unsqueezed full-speed heading with native own capacity in empty space for at most 1.5 s.',
+    'Scratch preview requests unsqueezed full speed toward a frozen observed entry, updating heading on the recorded finite decision beat, in empty space for at most 1.5 s.',
+    'A separate held-heading arrival and a first-step match to existing previewFreeMovement check distinguish fixed-heading misses from capability.',
     'Entry radius .65 yd and .6-s peer screens are diagnostic tolerances, not certified protection.',
     'A moving defender in a hand joint is not a free reacher or a constant-velocity object; both screens are uncertainty bounds.',
     'Quarter-second block credit reuses the current selector allowance. It cannot prove the future block win.',
