@@ -295,7 +295,10 @@ def main():
                 assert case['frames'][0]['beforeBodies'] == base['frames'][0]['beforeBodies']
                 initial.append({'case': ident, 'arms': [matched[0][0], label],
                                 'sameAll22PhysicalAndBehaviorInitialization': same_actors,
-                                'sameAll22PhysicalAndAssignmentsApartFromDeclaredStretchHelp': True,
+                                'sameAll22PhysicalAndAssignmentsApartFromDeclaredInstallation': True,
+                                'allowedInstallationDifferences': [name for name, enabled in
+                                    [('stretchHelp', args.allow_stretch_help_install),
+                                     ('inline TE cutoff contactFit', args.allow_inline_zone_role)] if enabled],
                                 'installedInformationIdentical': case['initializedInformationSha256'] == base['initializedInformationSha256']})
         checks['matchedInitialStates'] = initial
     result = {'protocol': 'wz-execution-report-v1', 'inputs': inputs, 'checks': checks, 'cases': cases,

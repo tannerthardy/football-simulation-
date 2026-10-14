@@ -1016,6 +1016,10 @@ export class RunBlocker implements Behavior {
     const partner = combo?.members.find((b) => b !== a);
     const half = partner ? this.installedHalf(a, partner, sim, ps) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
+    // Track tempo gets us to a surface; it is not a reason to run away
+    // after that acquired half is already inside us. The ordinary fit owns
+    // collection/braking from this same body, including residual momentum.
+    if (!firstStep && (shoulder - a.pos.y) * ps <= 0) return null;
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.

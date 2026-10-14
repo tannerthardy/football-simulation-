@@ -55,6 +55,21 @@ rest and initial role posture using the existing free World. They do not
 poll live fatigue, snap reaction, support, jobs or future decisions. Their
 existing `.60s` validity and information priority remain unchanged.
 
+A bounded opening spacing check compares the original achievable motion
+against every acquired route for a fixed `.30s`. It may restore an original
+request only when each radial restriction being excused came from a valid
+multi-sample installed zone route. Observed stopping-distance restrictions
+remain binding, and insufficient remaining call validity rejects the check.
+This chooses between the original and existing restricted request; it does
+not search new directions, peer braking policies or hidden future actions.
+
+The first TE-role native comparison exposed another actual error: weak H
+kept requesting `+3.989 yd/s` after the assigned half-man shoulder was already
+inside him. He moved `3.912 yd` laterally with zero own hand load. After the
+ordinary first step, attained/inside acquired shoulder geometry now ends
+the minimum-tempo track branch and returns to the existing fit/attack
+controller. This is a geometry transition, not a tempo tuned to the result.
+
 ## Validation protocol
 
 Mechanism tests use saved acquired pictures and complete own physical state.

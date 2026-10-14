@@ -66,9 +66,9 @@ function oldRaw(f: ReturnType<typeof fixture>): Intent {
     y: clamp(seen.pos.y + f.drive.y * .6 + error, .5, FIELD_WIDTH - .5) });
 }
 
-function execute(source: ReturnType<typeof fixture>['blocker']['body'], command: Intent, ticks = 6) {
+function execute(source: ReturnType<typeof fixture>['blocker']['body'], command: Intent, ticks = 6, now = .5) {
   const body = structuredClone(source), world = new World([body]);
-  world.time = .5;
+  world.time = now;
   const start = { ...body.pos };
   for (let k = 0; k < ticks; k++) {
     const report = world.step([command], .05);
@@ -128,6 +128,58 @@ describe('attached stretch role uses line technique through unchanged movement',
     expect(result.dy * side).toBeLessThanOrEqual(1e-10);
     expect(f.sim.world.joints).toHaveLength(0);
     expect(f.sim.events.some(e => e.type === 'block_contact')).toBe(false);
+  });
+
+  it('leaves nominal tempo when weak H has already attained its installed half, while an ahead shoulder retains it', () => {
+    // Exact free H body and consumed DE_W picture at .55 from aaad9a4's
+    // uc12-wz-weak-s3 capture (out/wz-help/role.json.gz). This is a local
+    // controller/empty-World comparison, not a restarted interacting play.
+    const saved = (ahead: boolean) => {
+      const sim = stage('wz_weak'), blocker = sim.slot('H')!, defender = sim.slot('DE_W')!, partner = sim.slot('LT')!;
+      expect(blocker.profile.vmax).toBe(8.864637623427441);
+      blocker.body = { ...structuredClone(blocker.body),
+        pos: { x: 39.590650920455765, y: 30.91147551259616 },
+        vel: { x: .5707699131580013, y: 1.4334864703654397 },
+        facing: .27052267755124365, energy: .996629970965859,
+        support: { ...newSupport(.6994015288218274), since: -Infinity,
+          feltTip: { x: 0, y: 0 }, accel: { x: -1.804315712691296, y: 3.950079751358606 },
+          tipAccel: { x: 0, y: 0 }, causes: { contact: 0, legs: 0, overspeed: 0 } },
+        spin: -.94807594949323, squeeze: 0, sprintLoad: 0, squeezeHeading: 1.1644461785155094 };
+      defender.body.pos = { x: 40.598106007459485, y: 29.673317184184945 };
+      const down: Perceived = { pos: { x: 40.76631284077048,
+        y: ahead ? blocker.pos.y + 1 : 29.79275286743372 },
+      vel: { x: -.44535445371405924, y: -.5883484162442193 },
+      stance: null, facing: 3.463403902197287, age: .25, pose: 'up', carrying: false };
+      sim.see = (observer, target) => {
+        expect(observer).toBe(blocker); expect(target).toBe(defender);
+        return structuredClone(down);
+      };
+      const drive = { x: .485642931178632, y: .8741572761215376 };
+      const combination: Combination = { members: [blocker, partner], defender,
+        backer: sim.slot('LB_W')!, released: false, secureSince: -1, nextRead: .7631311841376605,
+        soloKind: 'reach', stretchHelp: { homeY: 29.26666666666667, side: -1 },
+        stretchNextRead: .5089573787476613 };
+      const behavior = new RunBlocker({ kind: 'reach', target: defender, drive, combination });
+      blocker.behavior = behavior;
+      sim.t = sim.world.time = .55;
+      return { sim, blocker, behavior };
+    };
+    const attained = saved(false), ahead = saved(true), body = structuredClone(attained.blocker.body);
+    expect(ahead.blocker.body).toEqual(body);
+    const command = attained.behavior.update(attained.blocker, attained.sim);
+    const continueTrack = ahead.behavior.update(ahead.blocker, ahead.sim);
+    expect(attained.blocker.body).toEqual(body);
+    expect(command.vel.y).toBeLessThan(0);
+    expect(continueTrack.vel.y).toBeGreaterThanOrEqual(attained.blocker.profile.vmax * .45);
+    const old: Intent = { vel: { x: 1.4527911644231573, y: 3.989086930542349 },
+      facing: .23047436707549795, cutSkill: 1.0479591836734694, posture: .7 };
+    const first = execute(body, command, 1, .55), corrected = execute(body, command, 12, .55), raw = execute(body, old, 12, .55);
+    expect(first.body.vel.y).toBeGreaterThan(0); // Residual momentum cannot reverse instantly.
+    expect(first.body.vel.y).toBeLessThan(body.vel.y);
+    expect(corrected.body.vel.y).toBeLessThan(0);
+    expect(corrected.dy).toBeLessThan(raw.dy);
+    expect(corrected.body.support!.state).toBe('up');
+    expect(attained.blocker.engagement).toBeNull();
   });
 
   it('does not replace an active double or a foreign hand constraint with a solo zone fit', () => {

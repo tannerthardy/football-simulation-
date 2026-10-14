@@ -29,7 +29,7 @@ import { PerceptionBuffer, type Perceived } from './perception.js';
 import { TeammateInformation, type TeammatePicture } from './teammate-information.js';
 import { installTeammateExpectations } from './teammate-calls.js';
 import { spaceTeammates } from './spacing.js';
-import { prepareJoinedCombinations } from './behaviors/blocking.js';
+import { RunBlocker, isZoneLineBlocker, prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { ReplayTrace } from './telemetry.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
@@ -594,11 +594,16 @@ export class PlaySim {
       constrained.add(this.agents[contact.i].body);constrained.add(this.agents[contact.j].body);
     }
     // Spacing consumes owned information, never a live teammate controller
-    // or an unrestricted history lookup. Its yielding calculations are fixed.
+    // or an unrestricted history lookup. Only own installed opening duties
+    // can challenge a requested-ray restriction with an achieved-path check.
+    const stretch=this.offCall.run?.scheme==='wideZone'||this.offCall.run?.scheme==='outsideZone';
+    const openingTrack=stretch&&t<=.3+1e-9?new Set(this.offense.filter(a=>a.behavior instanceof RunBlocker
+      &&isZoneLineBlocker(a,this,a.behavior.plan)
+      &&['drive','reach','cutoff','combo'].includes(a.behavior.plan.kind)).map(a=>a.body)):undefined;
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const information = this.teammateInformation(a,b);
       return information.source === 'unavailable' ? null : information;
-    },{now:t,constrained});
+    },{now:t,constrained,openingTrack,handContact:this.world.handContact});
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,

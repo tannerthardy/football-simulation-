@@ -17,8 +17,12 @@ controls. Root owns coupled validation and the final result, with no handoff.
 Root also retains the shared-information ownership coordinated in the prior
 PR #45 work: `teammate-calls.ts` / `teammate-information.ts` now copy achieved
 nominal installed motion for the same declared inline role. No call or memory
-clock is extended. `spacing.ts` and its rejected broad traffic replacement are
-not changed here. Attached TE role parity changes run-technique eligibility
+clock is extended. Root owns `spacing.ts` and the `playsim.ts` spacing call
+for a bounded opening veto: restore an original request only when all acquired
+routes clear its achieved path and every excused restriction came from a valid
+installed zone route. The rejected broad traffic planner is not inherited.
+The evidence helper owns only `test/zone-opening-spacing.test.ts`.
+Attached TE role parity changes run-technique eligibility
 and the finite posture request, not initial body state or physical capacities.
 
 ## Wide-zone opening execution, 2026-10-14

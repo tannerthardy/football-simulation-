@@ -14,6 +14,7 @@ import {previewFreeMovement,type MovementSample} from '../physics/movement-previ
 import {availability,supportParams} from '../physics/support.js';
 import type { Agent } from './agent.js';
 import type {Perceived} from './perception.js';
+import type {TeammateForecast} from './teammate-information.js';
 
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
@@ -31,26 +32,73 @@ export interface SpacingContext {
   now: number;
   /** Own tactile constraint state, never a teammate's unobserved intention. */
   constrained?: ReadonlySet<Body>;
+  /** Own installed first-level stretch duty, never a peer's next command. */
+  openingTrack?: ReadonlySet<Body>;
+  handContact?: 'center' | 'patch';
 }
 
-interface PeerPicture {
+export interface SpacingPicture extends Pick<Perceived, 'pos' | 'vel'> {
+  source?: 'called' | 'observed' | 'remembered' | 'tactile';
+  forecast?: TeammateForecast;
+}
+
+interface PeerPicture extends SpacingPicture {
   pos: {x:number;y:number};
   vel: {x:number;y:number};
   touch: number;
 }
 
-function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPicture):number {
+function peerAt(peer:PeerPicture,t:number,route:boolean):{x:number;y:number} {
+  const path=route&&peer.source==='called'?peer.forecast?.samples:undefined;
+  if(path&&path.length>1){
+    const k=path.findIndex(s=>s.t>=t-1e-9);
+    const hi=path[k<0?path.length-1:k],lo=path[Math.max(0,(k<0?path.length-1:k)-1)];
+    const u=hi.t>lo.t?Math.max(0,Math.min(1,(t-lo.t)/(hi.t-lo.t))):0;
+    return {x:lo.pos.x+(hi.pos.x-lo.pos.x)*u,y:lo.pos.y+(hi.pos.y-lo.pos.y)*u};
+  }
+  return {x:peer.pos.x+peer.vel.x*t,y:peer.pos.y+peer.vel.y*t};
+}
+
+function coversOpening(peer:PeerPicture):boolean {
+  const f=peer.forecast;
+  return peer.source==='called'&&!!f&&f.validFor>=CLOSE_HORIZON-1e-9
+    &&f.samples.length>1&&f.samples[0].t<=1e-9&&f.samples.at(-1)!.t>=CLOSE_HORIZON-1e-9;
+}
+
+function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPicture,route=false):number {
   let px=a.pos.x-peer.pos.x,py=a.pos.y-peer.pos.y;
   let minimum=Math.hypot(px,py)-peer.touch;
   for(const sample of samples){
-    const rx=sample.pos.x-peer.pos.x-peer.vel.x*sample.t;
-    const ry=sample.pos.y-peer.pos.y-peer.vel.y*sample.t;
+    const future=peerAt(peer,sample.t,route);
+    const rx=sample.pos.x-future.x;
+    const ry=sample.pos.y-future.y;
     const ex=rx-px,ey=ry-py;
     const along=Math.max(0,Math.min(1,-(px*ex+py*ey)/Math.max(1e-12,ex*ex+ey*ey)));
     minimum=Math.min(minimum,Math.hypot(px+along*ex,py+along*ey)-peer.touch);
     px=rx;py=ry;
   }
   return minimum;
+}
+
+/** Excuse only a demonstrated installed-tempo false positive. Keep the
+ * existing answer unless the original command's achievable opening clears
+ * every acquired peer together. This selects no new direction/braking plan.
+ * An observed stopping-distance restriction can never be excused here. */
+function clearInstalledOpening(a:Agent,original:Intent,peers:readonly PeerPicture[],context?:SpacingContext):boolean {
+  const s=a.body.support;
+  if(!context?.openingTrack?.has(a.body)||!Number.isFinite(context.now)||context.now<0||context.now>.3+1e-9
+    ||context.constrained?.has(a.body)||a.engagement||a.isDown(context.now)
+    ||original.free||original.dive||original.lunge||(original.push??0)>1e-6
+    ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
+    ||!s||s.state!=='up'||s.foot||s.strike
+    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return false;
+  // A shorter remaining call cannot certify this fixed horizon. Alignment
+  // and mesh calls retain their declared CV only while that call is valid.
+  if(peers.some(p=>p.source==='called'&&(!p.forecast
+    ||p.forecast.validFor<CLOSE_HORIZON-1e-9
+    ||(p.forecast.samples.length>1&&!coversOpening(p)))))return false;
+  const path=previewFreeMovement(a.body,original,context.now,Math.round(CLOSE_HORIZON/.05),context.handContact);
+  return path.every(s=>s.support==='up')&&peers.every(p=>sweptClearance(a,path,p,true)>=0);
 }
 
 /** A gather request is evaluated with the same posture/facing as its execution.
@@ -100,7 +148,7 @@ function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], c
 }
 
 export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
-  observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> | null = ()=>null,
+  observe: (a:Agent,b:Agent)=>SpacingPicture | null = ()=>null,
   context?:SpacingContext): void {
   const n = agents.length;
   for (let i = 0; i < n; i++) {
@@ -110,6 +158,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
+    let installedOnly=true,restrictedByRoute=false;
     for (let j = 0; j < n; j++) {
       if (j === i) continue;
       const b = agents[j];
@@ -119,7 +168,8 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
       const d = Math.hypot(dx, dy);
       const touch = TOUCH * (a.profile.radius + b.profile.radius);
-      peers.push({pos:seen.pos,vel:seen.vel,touch});
+      const peer:PeerPicture={pos:seen.pos,vel:seen.vel,source:seen.source,forecast:seen.forecast,touch};
+      peers.push(peer);
       const gap = d - touch;
       if (d < 1e-6) continue;
       const nx = dx / d, ny = dy / d;
@@ -128,6 +178,12 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const current=Math.max(0,(a.vel.x-seen.vel.x)*nx+(a.vel.y-seen.vel.y)*ny);
       const stopping=current*CLOSE_HORIZON+current*current/(2*decel);
       if(gap>Math.max(AWARE_GAP,stopping))continue;
+      const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
+      const rawX=ia.vel.x-seen.vel.x,rawY=ia.vel.y-seen.vel.y,raw2=rawX*rawX+rawY*rawY;
+      const rawClosest=raw2>1e-9?Math.max(0,(dx*rawX+dy*rawY)/raw2):0;
+      if(rawX*nx+rawY*ny>allowed&&(gap<=0||Math.hypot(dx-rawX*rawClosest,dy-rawY*rawClosest)<=touch)){
+        if(coversOpening(peer))restrictedByRoute=true;else installedOnly=false;
+      }
       // Closing he plans, relative to where the teammate is going now.
       const rx=vx-seen.vel.x,ry=vy-seen.vel.y;
       const closing=rx*nx+ry*ny;
@@ -140,8 +196,8 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // Budget headway plus the distance this body needs to remove relative
       // speed. Do not assume the blocker, grounded helper or occupied tackler
       // will take half the correction. The world still limits the braking.
-      const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
       if (closing > allowed) {
+        if(!coversOpening(peer))installedOnly=false;
         const cut = closing - allowed;
         vx -= nx * cut; vy -= ny * cut;
       }
@@ -151,6 +207,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
     }
+    if(spaced!==ia&&installedOnly&&restrictedByRoute&&clearInstalledOpening(a,ia,peers,context))spaced=ia;
     intents[i]=gatherForTurn(a,spaced,peers,context);
   }
 }
