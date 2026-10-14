@@ -184,7 +184,11 @@ describe('achievable teammate turning', () => {
     const legacy = execute(false), preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
     try {
       const current = execute(true);
-      expect(preview).not.toHaveBeenCalled();
+      // The unsqueezed partner can now check his own low-speed motion. The
+      // squeezed actor/request still stays outside the free preview, and the
+      // entire coupled trajectory below must remain unchanged.
+      expect(preview.mock.calls.filter(([body,request]) =>
+        (body.squeeze??0)>1e-6||(request.squeeze??0)>1e-6)).toHaveLength(0);
       // Preserve actual shape, support, motion and contact, including any
       // collisions; the scope guard does not award a successful squeeze.
       expect(current).toEqual(legacy);

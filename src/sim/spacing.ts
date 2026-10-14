@@ -59,7 +59,10 @@ function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPic
  */
 function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
   const s=a.body.support,speed=Math.hypot(a.vel.x,a.vel.y);
-  if(!context||!Number.isFinite(context.now)||speed<2||a.isDown(context.now)
+  // Low speed still carries momentum through a requested turn. Release on
+  // the achievable path below, rather than a speed cutoff. Numerical rest
+  // has no current travel direction for the material-turn normalization.
+  if(!context||!Number.isFinite(context.now)||speed<=Number.EPSILON||a.isDown(context.now)
     ||a.engagement||context.constrained?.has(a.body)||original.free||original.dive||original.lunge
     ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
     ||(original.push??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike

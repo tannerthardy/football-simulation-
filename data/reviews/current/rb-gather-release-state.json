@@ -1,0 +1,390 @@
+{
+  "protocol": "rb-gather-release-exact-state-v1",
+  "candidate": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+  "review": "a6bf3cf47af738298c67ec45301d17c1d06b4cd3",
+  "source": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+  "input": {
+    "id": "uc12-wz-s3",
+    "concept": "wz_strong",
+    "kind": "run",
+    "seed": 3,
+    "flip": false,
+    "o": 31,
+    "d": 32,
+    "front": "over",
+    "formation": "ace_12"
+  },
+  "now": 2.35,
+  "body": {
+    "pos": {
+      "x": 38.36587390648638,
+      "y": 22.022479839529996
+    },
+    "vel": {
+      "x": 1.309366843647128,
+      "y": -1.2681008227686474
+    },
+    "facing": -0.8825564331732227,
+    "energy": 0.9808024228264873,
+    "profile": {
+      "vmax": 9.511860117418491,
+      "tau": 1.302841021221677,
+      "brake": 6.728083900226757,
+      "lateral": 6.805221088435378,
+      "turnRate": 8.711111111111112,
+      "backpedal": 0.55,
+      "shuffle": 0.528,
+      "massKg": 99.33672903,
+      "heightYd": 1.9555555555555557,
+      "radius": 0.27545454545454545,
+      "reach": 1.0220833333333335,
+      "maxCatchHeight": 3.2831111111111118,
+      "reactReach": 2.8567222222222224,
+      "reactionTime": 0.25465306122448983,
+      "power": 101.13087199309287,
+      "balance": 0.7959183673469388,
+      "bend": 0.7445170068027213,
+      "stepSpeed": 3.9037732426303857,
+      "getUp": 0.9029444444444443
+    },
+    "support": {
+      "xi": {
+        "x": 0,
+        "y": 0
+      },
+      "state": "up",
+      "since": null,
+      "posture": 0.1962098913121266,
+      "lean": {
+        "x": 0,
+        "y": 0
+      },
+      "load": {
+        "x": 0,
+        "y": 0
+      },
+      "felt": {
+        "x": 0,
+        "y": 0
+      },
+      "feetLock": 0,
+      "feetVel": {
+        "x": 0,
+        "y": 0
+      },
+      "fall": {
+        "x": 0,
+        "y": 0
+      },
+      "peak": 0,
+      "out": 0,
+      "feltTip": {
+        "x": 0,
+        "y": 0
+      },
+      "causes": {
+        "contact": 0,
+        "legs": 0,
+        "overspeed": 0
+      },
+      "accel": {
+        "x": -5.393773113316928,
+        "y": 3.3999999222972277
+      },
+      "tipAccel": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "spin": -0.12204750614642124,
+    "squeeze": 0,
+    "sprintLoad": 0,
+    "squeezeHeading": -0.8241642982886597
+  },
+  "raw": {
+    "vel": {
+      "x": 9.283028322226889,
+      "y": 2.073853433121528
+    },
+    "cutSkill": 1.0892857142857142,
+    "squeeze": 0
+  },
+  "final": {
+    "vel": {
+      "x": 9.283028322226889,
+      "y": 2.073853433121528
+    },
+    "cutSkill": 1.0892857142857142,
+    "squeeze": 0
+  },
+  "peers": [
+    {
+      "idx": 0,
+      "slot": "QB",
+      "touch": 0.5113636363636364,
+      "information": {
+        "source": "remembered",
+        "pos": {
+          "x": 36.184856510302644,
+          "y": 23.44527110778414
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "sampledAt": 1.6,
+        "availableAt": 1.9000000000000001,
+        "age": 0.75,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 1,
+      "slot": "LT",
+      "touch": 0.5858181818181818,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 43.60114618345789,
+          "y": 25.96225257429556
+        },
+        "vel": {
+          "x": 1.166827328708734,
+          "y": -2.265790330181446
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 2,
+      "slot": "RT",
+      "touch": 0.5768181818181818,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 39.30750959820674,
+          "y": 21.6051760981126
+        },
+        "vel": {
+          "x": -0.6112374504153493,
+          "y": -0.3906053682578979
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 3,
+      "slot": "C",
+      "touch": 0.576,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 41.17241846558845,
+          "y": 24.19769893509283
+        },
+        "vel": {
+          "x": 0.8403113111983367,
+          "y": -2.3372643725958158
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 4,
+      "slot": "LG",
+      "touch": 0.5776363636363637,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 39.78035204596468,
+          "y": 27.4727752232514
+        },
+        "vel": {
+          "x": -0.5319279471358878,
+          "y": -0.12715765971009618
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 5,
+      "slot": "RG",
+      "touch": 0.5858181818181818,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 40.10566451411346,
+          "y": 23.512834845231268
+        },
+        "vel": {
+          "x": 0.5553122183747088,
+          "y": -1.7356760858170444
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 7,
+      "slot": "Y",
+      "touch": 0.5203636363636364,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 40.360063167980016,
+          "y": 21.114656368917387
+        },
+        "vel": {
+          "x": 0.6036026443754968,
+          "y": -1.6433803868184287
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 8,
+      "slot": "X",
+      "touch": 0.5048181818181818,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 47.1649706009275,
+          "y": 41.90062963062395
+        },
+        "vel": {
+          "x": 3.0471871570864772,
+          "y": -3.754357206925832
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 9,
+      "slot": "Z",
+      "touch": 0.4786363636363636,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 46.78227498680322,
+          "y": 11.868552359651448
+        },
+        "vel": {
+          "x": 2.405196367102234,
+          "y": 4.03373033985432
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "idx": 10,
+      "slot": "H",
+      "touch": 0.5195454545454545,
+      "information": {
+        "source": "observed",
+        "pos": {
+          "x": 42.175391756553786,
+          "y": 29.895959444849993
+        },
+        "vel": {
+          "x": 1.8740716063627436,
+          "y": -0.0024583181420190572
+        },
+        "sampledAt": 2.05,
+        "availableAt": 2.3499999999999996,
+        "age": 0.30000000000000027,
+        "predictedFor": 0.3
+      }
+    }
+  ],
+  "guards": {
+    "speed": 1.8227784363298143,
+    "down": false,
+    "engaged": false,
+    "constrained": false,
+    "free": false,
+    "dive": false,
+    "lunge": false,
+    "requestedSqueeze": 0,
+    "activeSqueeze": 0,
+    "push": 0,
+    "support": "up",
+    "foot": false,
+    "strike": false,
+    "lean": 0,
+    "load": 0,
+    "materialTurn": 7.94789453746442
+  },
+  "matchedSavedPrefixHashes": [
+    "4d66716f096ac868e2d709b9eb96f950887152d079090763976a9f3955e65d5b",
+    "308eeb6310aab61df787b25da358365b8d5e2005f2be87de8eb8dda4f0773fbe",
+    "b0f50f4cc21b2e868f461b6cc9e10f9f84d5265a2dd1163924a1b65eadaabce2",
+    "c3c0395e91fe199564564c9b427c594c951a467656f15a86b02800d65c31d714",
+    "9d60f7ebccc33c83cf57389f14c939cd0b9dae18453238154ee8ccdc3a3b6031",
+    "a1a3665d2549dac0941bbc2ec439a6637c73a129b729c9d2dc7eaadbd9881e03",
+    "8823239dad8868c4fa1cb07e8d573f9c7dee29198fbc181006ec8fd02a3aaf42",
+    "f6b4230b63daaa1b7dc1e280bf037fe8cf9d1b3f2e532697c8317afe005dd0fe",
+    "9801e3e75c8e9a2a9484f26fa5e353b0411e960d30ba038a46ffcd1765a61746",
+    "18d1f49ed88b44855da1c6039e78a364a4caff21c9fd097baef23505ec9afd04",
+    "92e6d41432b7f7fc3df2126480bc0903ae809eabb8fe883e8c24f8988c4b1dca",
+    "8decf4cbbf03c680668222abd004b293f790e3479ee7f98e60b736e081e068b4",
+    "b8e818fd8ce987c7693c793ff092ac1de12fb3d429409c93816291e45dc07bc2",
+    "a2f49843744286c28150151cb7f6cfafec867b3ea5b1cb829756af18a2c7c7d3",
+    "6fa6ccb339bd83eea17c4e7326c9aaddb92ad74bec107a47fab10a45f8c9a160",
+    "a7f5798e2e7b2c598f13bdc9316337e2c6df05893fc0cd2be165a5a479ca55ed",
+    "50d46a04b7099d0e8562c5b89f21855f6a53846330c3a7d126e68122b8d1ba9a",
+    "8b81fea38e83c3aee362299d34f8b0226f9ebff35f9e6cf6412273ff146a0b4f",
+    "722a07cad167663e438cfe9172e31d211a1371027cce5c26022b3e6407dfc618",
+    "7e00e8c9fccd9ef23c0e96c892cc7bc79827f4e636e9257c9eafc49b4a7cecd2",
+    "4f76f52a0ef81e1272489e7bbc0fa98db94b862df8194082ad0cb8065424e3ce",
+    "f7ba2704e4dc6bb2bbcf25cc9cf9baf99c7dc838c2a01416e553a70947a3425c",
+    "a569d5f2170f7e032256ef1215f90a37ffc610af6e595d0af28dfdb40d4e9a37",
+    "48fb1c088947c9c5ae055e38fdbf0899625c9369301d86ab833c4d0b91cceaaf",
+    "f1333300cd892109cd3b7464da2bbf3aa4907a188f801ef987c080111d08b4b1",
+    "155cf5ee43a8d448b5ebcdfcf0e54ae279d9bbcdb2ea5c62798ada5d82d11af8",
+    "e863e7b361138895e89114fb60828b3bf3103af6806869ab02838c1535feb66c",
+    "6eaae09de3ed92e0ba32839e0e88a9dea6cff06121998851d0232b07f7e95188",
+    "d9be72f429ba696e441eab53a212d831fedc34a0c9144eb0993f9f501a2b28e7",
+    "68a9616843a27cf1b02caccb63286b67a92e977cb6d6710742fd4280d7a8ba21",
+    "1650448dcd45a510bc02073918fbfada13477c18ff7b93bcf3f7c8e8ff056996",
+    "38cc1f3b643cf37c275245d35f586e671aa03829a7a1d27d3d2a4264b3e389a7",
+    "8cd986ade2a3bf0328e80af600b56c54d26d8d9c54a2d38b89a32a89c0381d47",
+    "0be7e332a26fb8a50caa7da5c64a8e88798ced3ed8ceabb1045ea33718d84e54",
+    "c76fe431cc344b3aadf363d1c850d43f77f925afbcf67181bbf1ddfcf24b79b7",
+    "474498d248963a3f3079707661eff60af352188f17d691f90e7c703a910ac87c",
+    "274a8292b1e0037a5bb2270417a0c73451716aa078d645502d5e5d6a264b03b7",
+    "aa90dc8c533280ac1ed86fd97fd9af65b46bec5087b2b44e0ee12ea8d1c803ea",
+    "ecb3b64a04082dc1317709e641fb6e65d52df79a6577cad77dfb0dd5fe0ea7dc",
+    "c53fac61fe0eb44d9215c1391fcdfa3398b634b7d880b26dab36613ad63ac7b1",
+    "f17dde5b241ba0f73ab949406202b26a8e78d9393df51901846d84e29ace9e69",
+    "1765821f424b061ba6c6a3fecf4ce4f8c18885aea1c7c01d03b3a20037613431",
+    "eb386b534082a13945bc1527008e2de8c09a7bfdfb59453285f9e53d1cb266fc",
+    "62624309ab81cca1f46c557cd8c428c087d9faacac9149da1863c9c4e605b513",
+    "3333756b91e6f7ae998278552d6cd0bf7a7895d060f533e0011066f6ccc67735",
+    "4344f61e6cd5b3742c64e60756e58f815c1eae81300a8929568118fa96798315",
+    "4f00bc61c35cdec1953f19eedf18fe62db14f6ea4938019ca2a9f827a8600d70"
+  ],
+  "seconds": 0.723598948
+}
