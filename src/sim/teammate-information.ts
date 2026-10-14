@@ -12,6 +12,7 @@ export const TEAMMATE_INFORMATION_LIMITS = Object.freeze({
   prediction: .30,
   memory: 1.00,
   tactile: .10,
+  alignmentExpectation: .60,
   zoneExpectation: .60,
 });
 

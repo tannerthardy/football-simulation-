@@ -41,6 +41,7 @@ describe('teammate information at native loop boundaries', () => {
     target.body.pos = { x: 50 - touch - .02, y: CENTER_Y };
     target.body.vel = { x: 3, y: 0 }; target.body.facing = 0;
     target.behavior = { kind: 'fixture', update: () => ({ vel: { x: 3, y: 0 } }) };
+    sim.t = 1; // Installed snap landmarks have expired; no acquired rear sight.
     expect(sim.teammateInformation(observer, target)).toEqual({ source: 'unavailable' });
     sim.tick();
     expect(sim.lastStep!.contacts.some(c => c.impulse > 0

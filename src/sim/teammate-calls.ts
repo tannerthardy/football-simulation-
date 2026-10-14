@@ -7,6 +7,16 @@ import { TEAMMATE_INFORMATION_LIMITS, type InstalledTeammateExpectation } from '
 export function installTeammateExpectations(sim: PlaySim): Map<number, InstalledTeammateExpectation> {
   const calls = new Map<number, InstalledTeammateExpectation>();
   const run = sim.offCall.run;
+  // Players know installed alignment landmarks before the snap, even where
+  // their first post-snap visual picture has not arrived. This is a bounded
+  // expectation, not a fabricated sighting or a claim the teammate stayed put.
+  // In particular defensive scatter/late staging is not copied from reality.
+  for (const a of sim.agents) {
+    const spots = a.team === 'O' ? sim.offAlign.spots : sim.defAlign.spots;
+    const origin = (spots as Record<string, { pos: { x: number; y: number } } | undefined>)[a.slot]?.pos;
+    if (origin) calls.set(a.idx, { origin: { ...origin }, velocity: { x: 0, y: 0 },
+      startsAt: 0, until: TEAMMATE_INFORMATION_LIMITS.alignmentExpectation, label: 'installed alignment landmark' });
+  }
   for (const a of sim.offense) {
     const origin = sim.offAlign.spots[a.slot as keyof typeof sim.offAlign.spots]?.pos;
     if (!origin) continue;

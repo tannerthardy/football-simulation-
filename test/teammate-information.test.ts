@@ -6,7 +6,7 @@ import { PASS_BY_ID, RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Intent } from '../src/physics/world.js';
-import type { Engagement } from '../src/sim/agent.js';
+import type { Agent, Engagement } from '../src/sim/agent.js';
 import { RunBlocker } from '../src/sim/behaviors/blocking.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { spaceTeammates } from '../src/sim/spacing.js';
@@ -63,6 +63,15 @@ function spaced(s: Stage, velocity = { x: 9, y: 0 }) {
     return picture.source === 'unavailable' ? null : picture;
   }, { now: s.sim.t });
   return intents[0];
+}
+
+function privateEngagement(blocker: Agent, defender: Agent): Engagement {
+  return {
+    blocker, defender, helpers: [], start: .2, type: 'run',
+    win: 0, control: 0, phi: 0, side: 1, baseB: 1, baseD: 1,
+    move: 'bull', moveUntil: .5, moveOk: false, nextMoveAt: .5, pushBoost: 0,
+    drive: { x: 1, y: 0 }, sealTarget: 0, repEdge: 0, holding: false,
+  };
 }
 
 describe('observer-owned teammate information', () => {
@@ -140,13 +149,7 @@ describe('observer-owned teammate information', () => {
       expect(before.source).toBe('called');
       expect(calls.get(s.b.idx)!.origin).toEqual(s.sim.offAlign.spots.LG.pos);
       s.b.body.pos = { x: 10, y: 1 }; s.b.body.vel = { x: -9, y: 6 };
-      const hiddenEngagement: Engagement = {
-        blocker: s.b, defender: s.sim.slot('DT_S')!, helpers: [], start: .2, type: 'run',
-        win: 0, control: 0, phi: 0, side: 1, baseB: 1, baseD: 1,
-        move: 'bull', moveUntil: .5, moveOk: false, nextMoveAt: .5, pushBoost: 0,
-        drive: { x: 1, y: 0 }, sealTarget: 0, repEdge: 0, holding: false,
-      };
-      s.b.engagement = hiddenEngagement;
+      s.b.engagement = privateEngagement(s.b, s.sim.slot('DT_S')!);
       expect(installTeammateExpectations(s.sim)).toEqual(calls);
       (original as RunBlocker).plan.kind = 'climb';
       s.b.behavior = { kind: 'hidden-live-reassignment',
@@ -175,31 +178,63 @@ describe('observer-owned teammate information', () => {
       .toEqual({ source: 'unavailable' });
   });
 
-  it('never falls back to truth when there is no acquired, remembered or installed information', () => {
+  it('uses bounded installed alignment on both teams without copying hidden motion or defensive scatter', () => {
     const s = stage();
+    for (const [observerSlot, targetSlot] of [['RT', 'Y'], ['FS', 'CB_S']] as const) {
+      const observer = s.sim.slot(observerSlot)!, target = s.sim.slot(targetSlot)!;
+      const nominal = target.team === 'O' ? s.sim.offAlign.spots.Y.pos : s.sim.defAlign.spots.CB_S!.pos;
+      const before = available(s.sim.teammateAwareness.query(observer.idx, target.idx, .2, s.sim.dt));
+      expect(before.source).toBe('called'); expect(before.label).toBe('installed alignment landmark');
+      expect(before.pos).toEqual(nominal); expect(before.vel).toEqual({ x: 0, y: 0 });
+      const calls = installTeammateExpectations(s.sim);
+      const awareness = new TeammateInformation(s.sim.agents, calls);
+      target.body.pos = { x: nominal.x + 7, y: nominal.y - 5 };
+      target.body.vel = { x: -8, y: 4 };
+      target.engagement = privateEngagement(target, s.sim.opponents(target)[0]);
+      target.behavior = { kind: 'hidden-private-reassignment',
+        calledMotion: () => { throw new Error('Alignment must not poll live behavior'); },
+        update: () => ({ vel: { x: 0, y: 0 } }) };
+      // Reinstalling the same nominal call cannot import live scatter/engagement.
+      expect(installTeammateExpectations(s.sim)).toEqual(calls);
+      expect(s.sim.teammateAwareness.query(observer.idx, target.idx, .2, s.sim.dt)).toEqual(before);
+      // The already-installed observer copy does not share mutable map inputs.
+      calls.get(target.idx)!.origin.x = 999;
+      calls.get(target.idx)!.velocity.y = 999;
+      calls.get(target.idx)!.until = 999;
+      expect(awareness.query(observer.idx, target.idx, .2, s.sim.dt)).toEqual(before);
+      expect(s.sim.teammateAwareness.query(observer.idx, target.idx, .2, s.sim.dt)).toEqual(before);
+      expect(s.sim.teammateAwareness.query(observer.idx, target.idx, LIMITS.alignmentExpectation + s.sim.dt, s.sim.dt))
+        .toEqual({ source: 'unavailable' });
+    }
+  });
+
+  it('never falls back to truth when there is no acquired, remembered or installed information', () => {
+    const s = stage(), awareness = new TeammateInformation(s.sim.agents, new Map());
     s.b.body.pos = { x: 49, y: CENTER_Y };
     for (let tick = 0; tick <= 24; tick++) {
       s.b.body.vel = { x: tick % 2 ? -8 : 7, y: tick % 2 ? 3 : -2 };
-      expect(sample(s, tick * s.sim.dt)).toEqual({ source: 'unavailable' });
+      expect(sample(s, tick * s.sim.dt, awareness)).toEqual({ source: 'unavailable' });
     }
+    // The production installation has also expired without any acquired look.
+    expect(s.sim.teammateInformation(s.a, s.b)).toEqual({ source: 'unavailable' });
     expect(s.sim.teammateInformation(s.a, s.a)).toEqual({ source: 'unavailable' });
     expect(s.sim.teammateInformation(s.a, s.sim.slot('DT_S')!)).toEqual({ source: 'unavailable' });
     expect(s.sim.teammateAwareness.query(-1, s.b.idx, s.sim.t, s.sim.dt)).toEqual({ source: 'unavailable' });
   });
 
   it('lets a limited resolved-touch cue oppose unavailability without exposing remote target velocity', () => {
-    const s = stage();
-    s.b.body.pos = { x: 45, y: CENTER_Y }; sample(s, .4);
-    expect(s.sim.teammateInformation(s.a, s.b)).toEqual({ source: 'unavailable' });
+    const s = stage(), awareness = new TeammateInformation(s.sim.agents, new Map());
+    s.b.body.pos = { x: 45, y: CENTER_Y }; sample(s, .4, awareness);
+    expect(awareness.query(s.a.idx, s.b.idx, .4, s.sim.dt)).toEqual({ source: 'unavailable' });
     const local = { x: 49.4, y: CENTER_Y }, ownVelocity = { x: 1, y: 0 };
-    s.sim.teammateAwareness.touched(s.a.idx, s.b.idx, local, ownVelocity, .4);
-    const touched = available(s.sim.teammateInformation(s.a, s.b));
+    awareness.touched(s.a.idx, s.b.idx, local, ownVelocity, .4);
+    const touched = available(awareness.query(s.a.idx, s.b.idx, .4, s.sim.dt));
     expect(touched.source).toBe('tactile'); expect(touched.pos).toEqual(local);
     expect(touched.vel).toEqual(ownVelocity);
     s.b.body.pos = { x: 44, y: CENTER_Y }; s.b.body.vel = { x: -10, y: 5 };
     local.x = 999; ownVelocity.x = 999;
-    expect(s.sim.teammateInformation(s.a, s.b)).toEqual(touched);
-    expect(sample(s, .4 + LIMITS.tactile + s.sim.dt)).toEqual({ source: 'unavailable' });
+    expect(awareness.query(s.a.idx, s.b.idx, .4, s.sim.dt)).toEqual(touched);
+    expect(sample(s, .4 + LIMITS.tactile + s.sim.dt, awareness)).toEqual({ source: 'unavailable' });
   });
 
   it('cannot acquire extra sightings or consume randomness through duplicate sensing or repeated queries', () => {
@@ -262,13 +297,13 @@ describe('observer-owned teammate information', () => {
     const s = stage();
     s.a.body.vel = { x: 0, y: 0 };
     s.b.body.pos = { x: 49.4, y: CENTER_Y };
-    sample(s, .4);
+    sample(s, LIMITS.alignmentExpectation + s.sim.dt);
     const request = { x: -9, y: 0 };
     expect(spaced(s, request).vel).toEqual(request);
     const noObserver: Intent[] = [{ vel: { ...request } }, { vel: { x: 0, y: 0 } }];
     spaceTeammates([s.a, s.b], noObserver);
     expect(noObserver[0].vel).toEqual(request);
-    s.sim.teammateAwareness.touched(s.a.idx, s.b.idx, { x: 49.4, y: CENTER_Y }, s.a.vel, .4);
+    s.sim.teammateAwareness.touched(s.a.idx, s.b.idx, { x: 49.4, y: CENTER_Y }, s.a.vel, s.sim.t);
     expect(spaced(s, request).vel.x).toBeGreaterThan(-9);
   });
 });
