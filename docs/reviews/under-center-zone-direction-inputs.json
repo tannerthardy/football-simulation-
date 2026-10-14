@@ -1,0 +1,10 @@
+{
+  "protocol": "under-center-zone-direction-control-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "question": "Does the first-level/collection behavior transfer to an explicitly opposite run direction in balanced under-center ace_12?",
+  "reason": "Flipping balanced ace_12 does not reverse the strength tie-break, so the original two clips both run right. Add one weak call with unchanged rosters/capacities; do not relabel it a complete geometric mirror of the asymmetric Over front.",
+  "windowSeconds": 25,
+  "inputs": [
+    {"id":"uc12-wz-weak-s3","concept":"wz_weak","kind":"run","seed":3,"flip":false,"o":31,"d":32,"front":"over","formation":"ace_12"}
+  ]
+}

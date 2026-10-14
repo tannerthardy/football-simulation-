@@ -4,6 +4,7 @@
   "question": "In ordinary under-center singleback with two attached tight ends, which first-level and linebacker responsibilities become real protection before the runner arrives?",
   "selection": "Existing ace_12, same WZ seed 3 and rosters as the saved ace_11 native controls; both directions selected before observing new outcomes. No fullback, shotgun, roster or capacity changes.",
   "windowSeconds": 25,
+  "geometryCorrection": "Native inspection shows both original strong calls have side=-1. In balanced ace_12, flip swaps H/Y placement while formation strength retains the field-side tie-break. The legacy mirror id is a TE-placement contrast, not a geometric run-direction mirror. The original two executions remain recorded at 2dc252d; an explicit weak-call control is separately declared in under-center-zone-direction-inputs.json.",
   "inputs": [
     {"id":"uc12-wz-s3","concept":"wz_strong","kind":"run","seed":3,"flip":false,"o":31,"d":32,"front":"over","formation":"ace_12"},
     {"id":"uc12-wz-s3-mirror","concept":"wz_strong","kind":"run","seed":3,"flip":true,"o":31,"d":32,"front":"over","formation":"ace_12"}
