@@ -62,6 +62,37 @@ for(const c of cases){
   for(const method of methods){const result=sharedGripInterval(input,method),comparison=compare(result,c.reference,input);assert(comparison.matches,`${c.id}/${method}`);
     assert.deepEqual(input,c.input);rows.push({id:c.id,method,...comparison,result});}
 }
+// Force audit is separate from all measured operator calls. Retain each of
+// the eight physical row passes while shrinking h on the literal checkpoint.
+const prototype:any=World.prototype,feet=prototype.feet;
+try{
+  prototype.feet=prescribeSharedSupport(feet);
+  for(const h of [1e-6,1e-7,1e-8]){
+    const v=prepareSharedCase(),w=v.w,x=v.input,frames=x.grips.map(g=>{
+      const a=x.bodies[g.holder],b=x.bodies[1],q=[a.pos.x,a.pos.y,a.vel.x,a.vel.y,a.spin,a.facing,b.pos.x,b.pos.y,b.vel.x,b.vel.y,b.spin,b.facing,
+        g.material.x,g.material.y,...Array(13).fill(0),g.legs],geometry=pressureGeometry({...g,a,b,mobility:x.mobility,attachmentReach:x.attachmentReach} as any,q);
+      return {...geometry,capacity:g.capacity,inverseMass:1/a.mass+1/b.mass,normalBias:2*Math.PI*6/(2*.8)*Math.max(0,geometry.d-g.hold)};
+    }),limit=sharedGripForce(frames,x.mobility),passes:any[]=[],original=w.solveGrasp,rows=w.jointRows;let solved:any[]=[];
+    w.jointRows=function(h:number){solved=rows.call(this,h);return solved;};
+    w.solveGrasp=function(r:any,...args:any[]){original.call(this,r,...args);passes.push({holder:r.i,normal:r.ln/h,tangent:r.lt/h});};
+    const args=[...v.args];args[3]=h;w.integrateInterval(...args);
+    const differences=solved.map((r:any,k:number)=>Math.hypot(r.ln/h-limit.rows[k].normal,r.lt/h-limit.rows[k].tangent));
+    audit.push({h,passes,limit:limit.rows.map(r=>({normal:r.normal,tangent:r.tangent})),differences,maximum:Math.max(...differences)});
+    assert.equal(passes.length,16);
+    assert(passes.every((r:any)=>Math.abs(r.normal)<1e-9&&Math.hypot(r.normal,r.tangent)<=500+1e-9));
+  }
+}finally{prototype.feet=feet;}
+// Finite World steps change body velocity during the row passes. Compare
+// convergence toward the instantaneous map, not a fixed-size step against
+// an arbitrary absolute force cutoff. Keep all observed discrepancies.
+writeFileSync(`${root}/force-audit.json`,JSON.stringify(audit,null,2)+'\n');
+for(let k=1;k<audit.length;k++)assert(audit[k].maximum<audit[k-1].maximum*.2,'Force limit does not converge with h');
+const a=audit[1],b=audit[2],extrapolation=b.limit.map((r:any,k:number)=>{
+  const x=a.passes.filter((p:any)=>p.holder===(k===0?0:2)).at(-1),y=b.passes.filter((p:any)=>p.holder===(k===0?0:2)).at(-1),
+    normal=(a.h*y.normal-b.h*x.normal)/(a.h-b.h),tangent=(a.h*y.tangent-b.h*x.tangent)/(a.h-b.h);
+  return {normal,tangent,error:Math.hypot(normal-r.normal,tangent-r.tangent)};
+});
+assert(Math.max(...extrapolation.map((r:any)=>r.error))<.001,'Wrong limiting force map');
 if(benchmark)for(const c of cases.filter((c:any)=>c.id!=='shared--1')){
   const input=structuredClone(c.input),samples=methods.map(()=>[] as any[]);
   for(let k=0;k<5;k++)for(const method of methods)sharedGripInterval(input,method);
@@ -79,34 +110,15 @@ if(benchmark)for(const c of cases.filter((c:any)=>c.id!=='shared--1')){
 }
 // A genuine unsupported span/phase horizon; count no returned state as refusal.
 for(const method of methods){
-  const input={...structuredClone(reference.cases[0].input),duration:.05},times:number[]=[];
+  const input={...structuredClone(reference.cases[0].input),duration:.05},saved=structuredClone(input),times:number[]=[];
   for(let k=0;k<(benchmark?8:1);k++){
     const start=performance.now();let refused=false;
     try{sharedGripInterval(input,method);}catch(e){assert(e instanceof RangeError&&e.message==='Shared-grip scope/refinement budget');refused=true;}
-    const elapsed=performance.now()-start;assert(refused);if(k||!benchmark)times.push(elapsed);
+    const elapsed=performance.now()-start;assert(refused);assert.deepEqual(input,saved);if(k||!benchmark)times.push(elapsed);
   }
   const sorted=times.slice().sort((a,b)=>a-b);refusals.push({id:'long-span-scope',method,returnedState:false,inputUnchanged:true,
     milliseconds:{median:sorted[Math.floor(sorted.length/2)],maximum:sorted.at(-1)},samples:times});
 }
-// Force audit is separate from all measured operator calls. Retain each of
-// the eight physical row passes while shrinking h on the literal checkpoint.
-const prototype:any=World.prototype,feet=prototype.feet;
-try{
-  prototype.feet=prescribeSharedSupport(feet);
-  for(const h of [1e-6,1e-7,1e-8]){
-    const v=prepareSharedCase(),w=v.w,x=v.input,frames=x.grips.map(g=>{
-      const a=x.bodies[g.holder],b=x.bodies[1],q=[a.pos.x,a.pos.y,a.vel.x,a.vel.y,a.spin,a.facing,b.pos.x,b.pos.y,b.vel.x,b.vel.y,b.spin,b.facing,
-        g.material.x,g.material.y,...Array(13).fill(0),g.legs],geometry=pressureGeometry({...g,a,b,mobility:x.mobility,attachmentReach:x.attachmentReach} as any,q);
-      return {...geometry,capacity:g.capacity,inverseMass:1/a.mass+1/b.mass,normalBias:2*Math.PI*6/(2*.8)*Math.max(0,geometry.d-g.hold)};
-    }),limit=sharedGripForce(frames,x.mobility),passes:any[]=[],original=w.solveGrasp,rows=w.jointRows;let solved:any[]=[];
-    w.jointRows=function(h:number){solved=rows.call(this,h);return solved;};
-    w.solveGrasp=function(r:any,...args:any[]){original.call(this,r,...args);passes.push({holder:r.i,normal:r.ln/h,tangent:r.lt/h});};
-    const args=[...v.args];args[3]=h;w.integrateInterval(...args);
-    const differences=solved.map((r:any,k:number)=>Math.hypot(r.ln/h-limit.rows[k].normal,r.lt/h-limit.rows[k].tangent));
-    audit.push({h,passes,limit:limit.rows.map(r=>({normal:r.normal,tangent:r.tangent})),differences,maximum:Math.max(...differences)});
-    assert(Math.max(...differences)<.1);
-  }
-}finally{prototype.feet=feet;}
 assert.equal(sourceVersion(),source);for(const p of files)assert.equal(hash(readFileSync(p)),hashes[p]);
 const output=process.argv.find(a=>a.startsWith('--output='))?.slice(9)??`${root}/evidence.json`;
 writeFileSync(output,JSON.stringify({commit,source,parent,baseline:reference.baseline,flags,hashes,node:process.version,cpu:cpus()[0].model,
@@ -117,5 +129,5 @@ writeFileSync(output,JSON.stringify({commit,source,parent,baseline:reference.bas
   protocol:{serial:true,profilersOrPerStepObservers:false,preparationOutsideClock:true,repetitions:benchmark?21:0,warmups:benchmark?5:0,rotatingInterleavedOrder:true,
     forcePasses:8,errorAllowance:1/16,maximumPartitions:1024,maximumEvaluations:4096,maximumRootIterations:8,
     candidate:'DOP853, one common clock, local work-boundary splits, Gershgorin initial step proposal with h*rate <=4',
-    rootResidual:1e-10,oldReferencesAndRuntimeUnchanged:true,costBudgetMilliseconds:{typical:2,p95:5,observedRefusalMaximum:10}},rows,bench,refusals,audit},null,2)+'\n');
+    rootResidual:1e-10,oldReferencesAndRuntimeUnchanged:true,costBudgetMilliseconds:{typical:2,p95:5,observedRefusalMaximum:10}},rows,bench,refusals,audit,extrapolation},null,2)+'\n');
 console.log(JSON.stringify({output,matched:rows.every(r=>r.matches),bench:bench.map(r=>({id:r.id,method:r.method,...r.milliseconds,samples:undefined})),refusals,audit:audit.map(r=>({h:r.h,maximum:r.maximum}))}));
