@@ -16,12 +16,19 @@ Exact settings/revisions/fingerprints are in the
 
 ## Explicit hold point
 
-**The native candidate comparison has not run.** The user's prerequisite is:
+The preparation-stage native comparison waited on the user's prerequisite:
 “After the physics owner reviews the existing RT/DE_S angular-law interval”.
-No interval review disposition was found on the existing PR #2 handoff, PR #11
+At preparation no interval review disposition was found on the PR #2 handoff, PR #11
 thread, shared-review discussion, or sole owner's published
 `claude/engine-priorities` tip `862258c` at preparation. This is a user-defined
 technical prerequisite, not a new permission or promotion request.
+
+The prerequisite is now satisfied by sole physics-owner [PR #14 at `22d3b34`](https://github.com/tannerthardy/football-simulation-/pull/14).
+That review verifies the angular defect and the existing patch's mechanical
+repair, while retaining adverse football results and precontact ground-facing
+confounding. The authorized three-control RB comparison proceeds with the
+original contact law fixed in both arms. No full-patch result is imported as
+evidence for the isolated reference correction or a legitimate defensive win.
 
 That prerequisite calls for review; it does not authorize importing another
 contact law into this comparison. Both arms must keep the existing World hash

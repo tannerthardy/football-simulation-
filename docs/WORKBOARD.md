@@ -7,9 +7,11 @@ designed-phase assessment reference in `behaviors/carrier.ts` to the live aim
 already acquired for its movement command. Cadence, scoring weights, information,
 capacities, assignments, keeper runoff, helper collection and contact laws stay
 fixed. Preserve both Ace manifests and the 1.433-yd read/13 KB angular witnesses.
-Native comparison on exactly those three controls waits for the sole physics
-owner's review disposition of RT/DE_S 2.40 s. No published reply was found on
-PR #2 or owner branch `862258c` at preparation. Independent held-controller
+The sole physics-owner review of RT/DE_S 2.40 s is now recorded in PR #14
+`22d3b34df18124ffad1a5eebd30d6f41bbb67d57`, satisfying the user's prerequisite.
+The exact three-control native comparison proceeds with unchanged original
+contact law, one RB-reference candidate and reused saved controls. At preparation
+no reply had been found on PR #2 or owner tip `862258c`. Independent held-controller
 correctness/cadence checks may proceed; no new games/roster panel or promotion.
 Diagnostic ancestry is evidence only; extract a reviewed change for integration,
 do not merge PR #11 as a production feature. No shared movement-file edit.
