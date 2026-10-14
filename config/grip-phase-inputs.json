@@ -1,0 +1,44 @@
+{
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "parent": "bf4d6b60122c8eed940c02f0b6188079fa6ffa47",
+  "scope": "Existing passive shared-foot graph; zero-extension transform preserved. Fixed capacities/mobility/profiles. Fresh share/material/spin transforms declared before candidate results.",
+  "cases": [
+    {
+      "id": "unequal-100us",
+      "fixture": "shared-1-unequal",
+      "duration": 0.0001
+    },
+    {
+      "id": "unequal-200us",
+      "fixture": "shared-1-unequal",
+      "duration": 0.0002
+    },
+    {
+      "id": "ordinary-control",
+      "fixture": "shared-1",
+      "duration": 0.0001
+    },
+    {
+      "id": "single-control",
+      "fixture": "shared-1-single",
+      "duration": 0.0001
+    },
+    {
+      "id": "fresh-share42",
+      "fixture": "shared-1-unequal",
+      "duration": 0.0002,
+      "secondLegs": 0.42,
+      "secondMaterialYDelta": 0.01,
+      "heldSpin": 0.05
+    },
+    {
+      "id": "fresh-share42-mirror",
+      "fixture": "shared-1-unequal",
+      "duration": 0.0002,
+      "secondLegs": 0.42,
+      "secondMaterialYDelta": 0.01,
+      "heldSpin": 0.05,
+      "mirror": true
+    }
+  ]
+}
