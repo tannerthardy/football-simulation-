@@ -144,7 +144,8 @@ const panel = manifest.cases.map((row: typeof manifest.cases[number]) => {
   let firstChangedTick = candidate.hashes.findIndex((hash, i) => hash !== reference.hashes[i]);
   assert(firstChangedTick >= 0);
   const firstChangedInterval = candidate.frames[firstChangedTick] as { t: number; after: number };
-  console.log(serialize({ id: row.input.id, referencePrefixTicks: prefix.hashes.length, firstChangedInterval,
+  console.log(serialize({ id: row.input.id, referencePrefixTicks: prefix.hashes.length,
+    firstChangedInterval: { t: firstChangedInterval.t, after: firstChangedInterval.after },
     ending: candidate.endTime, firstContact: candidate.firstContact, crossing: candidate.crossing,
     gain: candidate.gain, limits: candidate.limits }));
   return { referencePrefixTicks: prefix.hashes.length, referenceReused: true, firstChangedTick, candidate };
