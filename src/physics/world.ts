@@ -38,6 +38,7 @@ import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, new
 import { ARM_SPEED, turnBody, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { resolveGripInterval, type GripTimingReport } from './grip-timing.js';
+import { LEG_SLIDE } from './grip-sliding.js';
 import { resolveFastGripInterval, commitGripTrial } from './grip-fast.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
 import { integrateFilteredFollow } from './filtered-follow.js';
@@ -248,8 +249,6 @@ const FALL_TIP = 3;
 const FALL_FRICTION = 0.25;
 const DOWN_FRICTION = 0.75;
 const FOLLOW_MARGIN = 1.1;
-/** Time constant of a slipping hold sliding down to the legs, s. */
-const LEG_SLIDE = 0.3;
 /** Experimental (HOLD_SUBSTEPS=n, off): minimum substeps while a grasp is live. */
 const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 /** Experimental active hand motor (HAND_MOTOR=1): HandJoint.drive and .shove. */

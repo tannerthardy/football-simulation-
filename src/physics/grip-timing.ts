@@ -4,6 +4,7 @@
  * The force can stop or relax before the outer interval ends. Resolving its
  * evolution carries impulse AND temporal moment through every existing path.
  */
+import { LEG_SLIDE } from './grip-sliding.js';
 type Private = any;
 type Packet = { fields: Private; args: any[]; attachments: any[] };
 export interface GripTimingReport { trials: number; intervals: number; limited: number; maxAcceptedError: number;
@@ -12,6 +13,14 @@ const MAX_PARTITIONS = 16384;
 // Engineering local error tolerances, in yd, yd/s, rad, rad/s and kg*yd²/s².
 // These bound numerical comparison, never body capacities or football outcomes.
 const POSITION = 5e-7, VELOCITY = 2.5e-5, ANGLE = 2.5e-6, SPIN = 2.5e-4, WORK = 1e-2;
+const SHARE = 1e-6;
+// Scratch-only phase samples, excluded from physical World/snapshot state.
+// The first force sample establishes the phase for the newly issued plan;
+// an old controller interval's slipping flag is not a cue about this one.
+const slipSamples = new WeakMap<object,Map<object,{slipping:boolean;uncertainty:number}>>();
+function shareUncertainty(w: Private): number {
+  return Math.max(0,...[...(slipSamples.get(w)?.values()??[])].map(s=>s.uncertainty));
+}
 
 function snapshot(w: Private, args: any[]): Packet {
   const fields = { ...w }; delete fields.attachments;
@@ -24,13 +33,27 @@ function snapshot(w: Private, args: any[]): Packet {
 function restore(packet: Packet, prototype: object) {
   const p = structuredClone(packet), w = Object.assign(Object.create(prototype), p.fields);
   w.attachments = new WeakMap(p.attachments);
+  slipSamples.set(w,new Map());
   return { w, args: p.args };
 }
 function advance(w: Private, args: any[], h: number, remaining: number, execute: (w: Private, args: any[]) => void) {
+  const samples=slipSamples.get(w);
+  const before=samples?w.joints.filter((j:Private)=>j.kind==='grasp'&&!j.broken).map((j:Private)=>({j,legs:j.legs})):[];
   const a = [...args]; a[3] = h; a[4] = remaining;
   execute(w, a);
+  for(const {j,legs} of before) {
+    const previous=samples!.get(j),slipping=!!j.slipping;
+    // Endpoint agreement on dyadic grids can alias the same transition.
+    // One observed phase change has up to h of unknown sliding duration.
+    // Bound its possible share change with the actual exponential slide law,
+    // accumulating changes per grip rather than across unrelated contacts.
+    const uncertainty=(previous?.uncertainty??0)+(previous&&previous.slipping!==slipping
+      ? Math.max(0,1-legs)*(1-Math.exp(-h/LEG_SLIDE)):0);
+    samples!.set(j,{slipping,uncertainty});
+  }
 }
 function difference(a: Private, b: Private, ids: number[]) {
+  if(a.joints.length!==b.joints.length)return Infinity;
   let error = 0;
   for (const i of ids) {
     const x = a.bodies[i], y = b.bodies[i];
@@ -38,20 +61,44 @@ function difference(a: Private, b: Private, ids: number[]) {
       Math.hypot(x.vel.x - y.vel.x, x.vel.y - y.vel.y) / VELOCITY,
       Math.abs(x.facing - y.facing) / ANGLE, Math.abs((x.spin ?? 0) - (y.spin ?? 0)) / SPIN);
     if (x.support.state !== y.support.state) error = Math.max(error, 2);
+    // A partial-share grasp point can conceal common-foot displacement. These
+    // persistent coordinates affect the next solve even when COM/point agree.
+    const xf = x.support.foot, yf = y.support.foot;
+    if (!!xf !== !!yf) error = Math.max(error, 2);
+    if (xf && yf) {
+      if (xf.state !== yf.state) error = Math.max(error, 2);
+      error = Math.max(error, Math.hypot(xf.offset.x-yf.offset.x, xf.offset.y-yf.offset.y) / POSITION);
+    }
     error = Math.max(error, Math.abs((a.report.supportMotorWork?.[i] ?? 0)
       - (b.report.supportMotorWork?.[i] ?? 0)) / WORK);
   }
   for (let k = 0; k < a.joints.length; k++) {
     const x = a.joints[k], y = b.joints[k];
+    if(x.kind!==y.kind)return Infinity;
     if (x.kind !== 'grasp') continue;
     if (!!x.broken !== !!y.broken || !!x.slipping !== !!y.slipping) error = Math.max(error, 2);
+    const share = (j: Private) => j.legs > 0 ? Math.max(0,Math.min(1,j.recoveryCoupling??j.legs)) : 0;
+    error = Math.max(error, Math.abs(x.legs-y.legs) / SHARE,
+      Math.abs(share(x)-share(y)) / SHARE, Math.abs((x.hold??0)-(y.hold??0)) / POSITION);
+    const xa = a.attachments.get(x), ya = b.attachments.get(y);
+    if (!!xa !== !!ya) error = Math.max(error, 2);
+    if (xa && ya) {
+      if (!!xa.bounded !== !!ya.bounded || !!xa.material !== !!ya.material) error = Math.max(error, 2);
+      error = Math.max(error, Math.abs(xa.share-ya.share) / SHARE,
+        Math.hypot(xa.reference.x-ya.reference.x,xa.reference.y-ya.reference.y) / POSITION);
+      if (xa.material && ya.material) error = Math.max(error,
+        Math.hypot(xa.material.x-ya.material.x,xa.material.y-ya.material.y) / POSITION);
+    }
     const p = a.graspPoint(x), q = b.graspPoint(y);
     error = Math.max(error, Math.hypot(p.x - q.x, p.y - q.y) / POSITION);
   }
   for (const key of ['hands', 'grasps', 'strikes', 'contacts'])
     error = Math.max(error, Math.abs(a.report.work[key] - b.report.work[key]) / WORK);
   error = Math.max(error, Math.abs((a.report.passiveGraspWork ?? 0) - (b.report.passiveGraspWork ?? 0)) / WORK);
-  return error;
+  // b is the finer candidate that would be committed. Coarse phase uncertainty
+  // does not bound b; its endpoint discrepancy is already compared above.
+  error=Math.max(error,shareUncertainty(b)/SHARE);
+  return Number.isFinite(error)?error:Infinity;
 }
 
 /** Choose partitions with the same issued plan and acquired attachment graph.
