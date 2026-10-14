@@ -13,7 +13,9 @@ neither the primary acquisition change nor the glance policy is promoted.
 
 ## Exact candidate and ownership
 
-This separate branch is `codex/run-awareness-model`, based on frozen PR #36
+Review is [draft PR #41](https://github.com/tannerthardy/football-simulation-/pull/41),
+stacked on independently reviewable PR #36. This separate branch is
+`codex/run-awareness-model`, based on frozen PR #36
 `68284671d062dfd4e7e879bcd037bc21dad3e3ac`. Accepted `develop` was reverified as
 `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`; no baseline, merge or physics change
 is implied. The source-tested candidate is
