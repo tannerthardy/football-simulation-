@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from run_line_geometry import normalize,measure
 
-TIMES=(.4,1.2,1.6,2.,2.4)
+TIMES=(0.,.4,1.2,1.6,2.,2.4)
 OL={'T','G','C','OT','OG','OC'}
 END={'tackle','out_of_bounds','touchdown','fumble','qb_slide','safety'}
 BASE='a1b16e666a9ee7d1bc1d2aecba141fc535863b24'
@@ -67,7 +67,8 @@ for chunk in pd.read_csv(args.bdb_dir/'tracking_week_1.csv',usecols=columns,chun
     if len(parts)%5==0:print('tracking rows read',read_rows,'retained',sum(len(c) for c in parts),flush=True)
 track=pd.concat(parts,ignore_index=True);print('tracking retained',len(track),flush=True)
 cohorts=['allRBHandoffs','outsideZone','outsideZoneUnderCenter','outsideZoneUnderCenter12','outsideZoneUnderCenter12TwoAttached']
-values={c:defaultdict(lambda:defaultdict(list)) for c in cohorts};cohort_counts=Counter();censor=Counter()
+values={c:defaultdict(lambda:defaultdict(list)) for c in cohorts};cohort_counts=Counter({co:0 for co in cohorts});censor=Counter()
+attachment_diagnostic=Counter()
 for (gid,pid),c in track.groupby(['gameId','playId'],sort=False):
     r=meta[key(gid,pid)];counts['week1TrackedRBCandidates']+=1
     snap=c.loc[c.frameType.eq('SNAP'),'frameId'].unique()
@@ -105,6 +106,12 @@ for (gid,pid),c in track.groupby(['gameId','playId'],sort=False):
             if twelve:
                 selected.append('outsideZoneUnderCenter12')
                 if both_attached:selected.append('outsideZoneUnderCenter12TwoAttached')
+    if 'outsideZoneUnderCenter12' in selected:
+        attachment_diagnostic['plays']+=1
+        attachment_diagnostic['officialFormation:'+r['offenseFormation']]+=1
+        attachment_diagnostic['twoTEOppositeOLSides']+=int(min(initial[i][1] for i in te)<lo and max(initial[i][1] for i in te)>hi)
+        attachment_diagnostic['twoTEWithin2ydOutsideOLEnds']+=int(all(lo-2<=initial[i][1]<lo or hi<initial[i][1]<=hi+2 for i in te))
+        attachment_diagnostic['twoTEAtDeclaredAbsoluteLineDepth']+=int(all(-1.2<=initial[i][0]<=.7 for i in te))
     for co in selected:cohort_counts[co]+=1
     ends=[frame for name,frame in events.items() if name in END]
     end=min(ends) if ends else int(c.frameId.max())
@@ -142,14 +149,15 @@ for r in saved['panel']:
             support[round(t,8)]={a['idx']:a.get('support',{}).get('state') for a in f[field]}
     observations={};handoff=next(e['t'] for e in r['summary']['result']['events'] if e['type']=='handoff')
     for label,t in [(f'{t:g}s',t) for t in TIMES]+[('handoff',handoff)]:
-        assert t<r['summary']['duration'];current=normalize(snapshots[round(t,8)],los,by,1)
+        assert t<r['summary']['duration']
+        exact={i:tuple(a['initialBody']['pos'][k] for k in ['x','y']) for i,a in actors.items()} if t==0 else snapshots[round(t,8)]
+        current=normalize(exact,los,by,1)
         measurements=measure(initial,current,ol);assert measurements is not None
-        exact=snapshots[round(t,8)]
         observations[label]={'t':t,'metrics':measurements,'perOL':{
             actors[i]['slot']:{'depthPastLOS':current[i][0],'forwardFromSnap':current[i][0]-initial[i][0],
                 'lateralFromSnap':current[i][1]-initial[i][1],'exactDepthPastLOS':exact[i][0]-los,
                 'exactForwardFromSnap':exact[i][0]-actors[i]['initialBody']['pos']['x'],
-                'support':support[round(t,8)][i]} for i in ol}}
+                'support':a.get('initialBody',{}).get('support',{}).get('state') if t==0 else support[round(t,8)][i]} for i in ol}}
     late=[]
     for t,points in sorted(snapshots.items()):
         if t>=r['summary']['duration']:continue
@@ -166,7 +174,7 @@ result={'protocol':'run-nfl-line-position-audit-v1','testedRevision':subprocess.
     'acceptedDevelop':BASE,'runtimeSourceSha256':SOURCE,'historicalComparison':'4ded6b600fd3785e65034aa5623d7a9f8f3c5db1',
     'settings':saved['provenance'],'sourcePacketSha256':sha(shared.read_bytes()),'NFL':{
         'source':'Big Data Bowl2025 / NFL2022 week1, PFF primary run labels; verified original provider members.',
-        'counts':dict(counts),'cohortCounts':dict(cohort_counts),'censoring':dict(censor),'cohorts':nfl,
+        'counts':dict(counts),'cohortCounts':dict(cohort_counts),'attachmentDiagnostic':dict(attachment_diagnostic),'censoring':dict(censor),'cohorts':nfl,
         'inputPins':acquisition['members'],'trackingRowsRead':read_rows},'native':sim,
     'operator':{'path':'scripts/diag/zone/run_line_geometry.py','sha256':sha(Path('scripts/diag/zone/run_line_geometry.py').read_bytes()),
         'times':TIMES,'coordinates':'Both sources: x toward offense goal from snap-ball/declared LOS, y rotated with attack and centered on snap ball; positions rounded0.1yd.',
