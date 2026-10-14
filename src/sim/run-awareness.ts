@@ -151,15 +151,23 @@ export class RunAwareness {
         const crossing = lane && distance(next) <= lane.halfWidth + a.profile.radius
           && (distance(next) < distance(a.pos) - .05 || distance(a.pos) <= lane.halfWidth + a.profile.radius);
         const window = lane && now + a.profile.reactionTime >= lane.arrival.earliest && now <= lane.arrival.latest;
+        const lookPoint = peer.source === 'observed' || peer.source === 'remembered' ? peer.pos : lane?.lookPoint;
+        // Preview the requested region from our own pose before spending a
+        // primary-key opportunity. Clamping gaze toward an unreachable region
+        // does not make that region visible. Never consult the hidden runner
+        // or scene occluders to decide whether this look is worth requesting.
+        const attainable = lookPoint && this.inField(a, lookPoint,
+          RUN_ATTENTION_LIMITS.gazeYaw + RUN_ATTENTION_LIMITS.glanceHalfAngle);
         if (this.mode === 'glance' && state.choice !== 'lane' && ownBlock && !a.isDown(now)
-          && a.mind.focus >= .4 && Math.hypot(request.x, request.y) >= 1 && crossing && window && !fresh) {
+          && a.mind.focus >= .4 && Math.hypot(request.x, request.y) >= 1 && crossing && window && !fresh && attainable) {
           state.choice = 'lane';
-          state.lookPoint = peer.source === 'observed' || peer.source === 'remembered' ? { ...peer.pos } : lane!.lookPoint;
+          state.lookPoint = { ...lookPoint };
           state.reason = 'own movement may cross installed runner lane; acquire traffic';
         } else {
           state.choice = 'primary'; state.lookPoint = null;
           state.reason = fresh ? 'acquired runner picture available; return to block key'
-            : 'retain block key or return after a lane check';
+            : crossing && window && !attainable ? 'expected look region outside attainable view; retain block key'
+              : 'retain block key or return after a lane check';
         }
       }
       // A deliberate glance spends this visual opportunity. Existing pending
