@@ -19,6 +19,11 @@ native = json.loads(gzip.decompress(native_path.read_bytes()))
 prov = packet['provenance']
 assert prov['developCommit'] == 'a1b16e666a9ee7d1bc1d2aecba141fc535863b24'
 assert prov['sourceSha256'] == old_manifest['sourceSha256']
+runtime_hash = hashlib.sha256()
+for path in sorted(p for p in Path('src').rglob('*') if p.is_file()):
+    runtime_hash.update(str(path).encode()); runtime_hash.update(b'\0')
+    runtime_hash.update(path.read_bytes()); runtime_hash.update(b'\0')
+assert runtime_hash.hexdigest() == prov['sourceSha256']
 assert sha(Path('package-lock.json').read_bytes()) == prov['lockSha256']
 assert prov['flags'] == old_manifest['flags'] and len(prov['flags']) == 44
 assert prov['worldDefaults'] == old_manifest['worldDefaults']
