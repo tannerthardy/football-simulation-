@@ -119,8 +119,12 @@ All three finish naturally; zero censored. A changed gain is neither the
 acceptance criterion nor proof of realism. In particular, the weak result is
 an observed transfer on one retained input, not an outcome-distribution claim.
 
-In the regressed Y control, RT's end connection never develops load after
-joining at 1.25 s. At first runner contact RT is about **2.094 yd** from DE_S.
+Follow-up [PR #18](https://github.com/tannerthardy/football-simulation-/pull/18)
+corrects the earlier blanket claim about RT: he acquires lateral load from
+1.50 through 1.95 s, develops no compression, then loses functional reach at
+2.00. He is unloaded at runner arrival. At first runner contact RT is about
+**2.094 yd** from DE_S. See the [source-pinned trace and retention handoff](https://github.com/tannerthardy/football-simulation-/blob/830f6e2fe7ef19604b5033e9c9115413d5d2ef4c/docs/reviews/ace-protection-traces.md);
+original receipts, witnesses, source/flags and mechanical results are unchanged.
 Y remains alongside the end, carries **103.98 lateral load** in the actual
 physics interval, but has no compressive load; it does not protect the runner's
 approach. Y never earns the baseline's 2.00-s climb. At 2.10 s Y requests
