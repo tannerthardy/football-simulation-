@@ -14,6 +14,14 @@ import { spaceTeammates } from '../src/sim/spacing.js';
 // Exact entry-2.35 body/support, request and owned teammate pictures, captured
 // from snap with all 47 saved candidate state/RNG prefix hashes matching.
 const fixture=JSON.parse(readFileSync(new URL('../data/reviews/current/rb-gather-release-state.json',import.meta.url),'utf8'));
+function exactBody() {
+  const body=structuredClone(fixture.body);
+  for(const field of fixture.bodyNonFinite) {
+    let target=body;for(const key of field.path.slice(0,-1))target=target[key];
+    target[field.path.at(-1)!]=Number(field.value);
+  }
+  return body;
+}
 function stage() {
   const sim=new PlaySim({
     offense:pickOffense(generateTeam(new Rng(31),'O','O',{strength:.55}),'12'),
@@ -22,7 +30,7 @@ function stage() {
     defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'Over Cover 3'},
     los:40,ballY:CENTER_Y,firstDownX:50,seed:3,
   });
-  const a=sim.agents[6];a.body=structuredClone(fixture.body);
+  const a=sim.agents[6];a.body=exactBody();
   expect(a.player.id).toBe('O-RB1');
   const pictures=fixture.peers.filter((p:any)=>p.information.source!=='unavailable');
   const decide=(visible=pictures)=>{
@@ -50,6 +58,7 @@ function minimumGap(body:any,samples:MovementPreview.MovementSample[],peer:any) 
 describe('low-speed gather release',()=>{
   it('keeps gathering from the identical saved state when release curves into acquired traffic',()=>{
     const {a,pictures,decide}=stage(),before=structuredClone(a.body),request=decide();
+    expect(a.body.support!.since).toBe(-Infinity);
     expect(Math.hypot(a.vel.x,a.vel.y)).toBeCloseTo(1.8227784363298143,12);
     expect(request).toEqual({...fixture.raw,vel:{x:0,y:0}});
     const released=MovementPreview.previewFreeMovement(a.body,fixture.raw,fixture.now,12);
@@ -65,7 +74,7 @@ describe('low-speed gather release',()=>{
   it('keeps the same decision immediately below, at and above the old threshold',()=>{
     const {a,decide}=stage(),speed=Math.hypot(a.vel.x,a.vel.y);
     for(const target of [1.95,2,2.05]) {
-      a.body=structuredClone(fixture.body);a.body.vel.x*=target/speed;a.body.vel.y*=target/speed;
+      a.body=exactBody();a.body.vel.x*=target/speed;a.body.vel.y*=target/speed;
       expect(decide()).toEqual({...fixture.raw,vel:{x:0,y:0}});
     }
   });

@@ -26,6 +26,18 @@ const encode = (v: unknown) => JSON.stringify(v, (_k, x) => x instanceof Agent ?
   : x instanceof PlaySim ? { sim: true } : x instanceof Map || x instanceof Set ? [...x]
   : x instanceof Float64Array ? [...x] : x);
 const copy = (v: unknown): any => JSON.parse(encode(v));
+function nonFiniteFields(value:any,path:string[]=[]):{path:string[];value:string}[] {
+  if(typeof value==='number'&&!Number.isFinite(value))return [{path,value:String(value)}];
+  return value&&typeof value==='object'?Object.entries(value).flatMap(([key,v])=>nonFiniteFields(v,[...path,key])):[];
+}
+function restoreBody(fixture:any) {
+  const body=structuredClone(fixture.body);
+  for(const field of fixture.bodyNonFinite) {
+    let target=body;for(const key of field.path.slice(0,-1))target=target[key];
+    target[field.path.at(-1)!]=Number(field.value);
+  }
+  return body;
+}
 const candidateSource = '60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1';
 const phase = process.argv[2] ?? 'mechanism', started = performance.now();
 const baseline = JSON.parse(readFileSync('config/baseline.json', 'utf8'));
@@ -86,15 +98,16 @@ if (phase === 'capture') {
       const peers=sim.agents.filter(b=>b!==a&&b.team===a.team).map(b=>({idx:b.idx,slot:b.slot,
         touch:.9*(a.profile.radius+b.profile.radius),information:copy(query(a,b))}));
       const speed=Math.hypot(a.vel.x,a.vel.y);
-      fixture={protocol:'rb-gather-release-exact-state-v1',candidate:'68284671d062dfd4e7e879bcd037bc21dad3e3ac',
+      fixture={protocol:'rb-gather-release-exact-state-v2',candidate:'68284671d062dfd4e7e879bcd037bc21dad3e3ac',
         review:'a6bf3cf47af738298c67ec45301d17c1d06b4cd3',source:sourceVersion(),input:row.input,
-        now:sim.t,body:copy(a.body),raw:raw[6],final:copy(intents[6]),peers,
+        now:sim.t,body:copy(a.body),bodyNonFinite:nonFiniteFields(a.body),raw:raw[6],final:copy(intents[6]),peers,
         guards:{speed,down:a.isDown(sim.t),engaged:!!a.engagement,constrained:constrained.has(a.body),
           free:!!intents[6]?.free,dive:!!intents[6]?.dive,lunge:!!intents[6]?.lunge,
           requestedSqueeze:intents[6]?.squeeze??0,activeSqueeze:a.body.squeeze??0,push:intents[6]?.push??0,
           support:s.state,foot:!!s.foot,strike:!!s.strike,lean:Math.hypot(s.lean.x,s.lean.y),load:Math.hypot(s.load.x,s.load.y),
           materialTurn:Math.abs(intents[6]!.vel.x*a.vel.y-intents[6]!.vel.y*a.vel.x)/speed},
         matchedSavedPrefixHashes:hashes,seconds:(performance.now()-started)/1000};
+      assert.deepEqual(restoreBody(fixture),a.body,'Decoded fixture must preserve every native body/support field');
       assert.equal(encode({body:a.body,awareness:sim.teammateAwareness,rng:sim.rng}),neutral);
       throw done;
     }
@@ -112,7 +125,7 @@ if (phase === 'capture') {
 } else if (phase === 'mechanism') {
   const fixture=JSON.parse(readFileSync(statePath,'utf8'));
   const sim=createSim(saved.panel.find((r:any)=>!r.input.flip)),a=sim.agents[6];
-  a.body=structuredClone(fixture.body);
+  a.body=restoreBody(fixture);
   const peers=fixture.peers.filter((p:any)=>p.information.source!=='unavailable');
   const requests={release:fixture.raw,half:{...fixture.raw,vel:{x:fixture.raw.vel.x*.5,y:fixture.raw.vel.y*.5}},
     gather:{...fixture.raw,vel:{x:0,y:0}}};
@@ -130,12 +143,12 @@ if (phase === 'capture') {
     spaceTeammates(sim.agents,intents,(o,b)=>o===a?visible.find(p=>p.idx===b.idx)?.information??null:null,{now:fixture.now});
     return {request:intents[6],forecast:assess(intents[6],visible)};
   }
-  const exactDecision=spacing(fixture.body,peers);
+  const exactBody=restoreBody(fixture),exactDecision=spacing(exactBody,peers);
   const originalSpeed=fixture.guards.speed;
-  const transition=[1.95,2,2.05].map(speed=>{const body=structuredClone(fixture.body);
+  const transition=[1.95,2,2.05].map(speed=>{const body=structuredClone(exactBody);
     body.vel.x*=speed/originalSpeed;body.vel.y*=speed/originalSpeed;
     return {speed,...spacing(body,peers)};});
-  const clearPath=spacing(fixture.body,[]);
+  const clearPath=spacing(exactBody,[]);
   assert.deepEqual(clearPath.request,fixture.raw);
   assert.deepEqual(clearPath.forecast.clearances,[]);
   assert.ok(Math.hypot(clearPath.forecast.samples.at(-1)!.vel.x,clearPath.forecast.samples.at(-1)!.vel.y)>originalSpeed);
