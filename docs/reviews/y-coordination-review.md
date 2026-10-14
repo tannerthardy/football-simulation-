@@ -9,6 +9,9 @@ extend memory, tune contact or require the old yardage on this evidence.
 
 ## Exact Run Game handoff
 
+- **`6828467` is the experimental PR #36 candidate, not the accepted shared
+  baseline.** “Runtime unchanged” in this review means unchanged relative to
+  that experimental candidate. This review made no merge or baseline promotion.
 - Reviewed [PR #36](https://github.com/tannerthardy/football-simulation-/pull/36)
   head `68284671d062dfd4e7e879bcd037bc21dad3e3ac`, engine/test `98411ef`,
   original harness `b331bc5`, accepted develop `a1b16e6`.

@@ -5,7 +5,8 @@
 2026-10-14 follow-up: [both RT/RB information histories and the post-mesh trial](y-coordination-review.md)
 are now pinned on candidate `6828467`. No useful RB sighting expired from RT's
 memory. The one nominal continuation fails Y and introduces an H collision;
-it remains diagnostic-only. Production and the football promotion hold remain.
+it remains diagnostic-only. The experimental candidate runtime and football
+promotion hold remain unchanged. `6828467` has not become the accepted shared baseline.
 
 Spacing now consumes observer-owned information instead of every teammate's
 refreshed recorded reality. The information contracts pass. This is a
