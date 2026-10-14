@@ -67,8 +67,21 @@ function execute(i: Input, trace: boolean) {
   const frames: unknown[] = [], hashes: string[] = [], cues: unknown[] = [], aims: unknown[] = [];
   const contactEvents: unknown[] = [], ends: unknown[] = [], shedDecisions: unknown[] = [];
   const carrierEvents: unknown[] = [];
+  const evaluated = new WeakSet<object>();
   if (trace && carrierTrace) runReadObservers.set(sim, event => {
     const a = sim.agents[event.actor];
+    // Capture a value the default controller already computes, including its
+    // early-abandon decision. Do not call evaluate again or ask for new cues.
+    if (event.phase === 'carrier-start' && !evaluated.has(a.behavior)) {
+      evaluated.add(a.behavior);
+      const evaluate = Reflect.get(a.behavior, 'evaluate');
+      if (typeof evaluate === 'function') Reflect.set(a.behavior, 'evaluate', function (...args: unknown[]) {
+        const result = evaluate.apply(this, args);
+        carrierEvents.push(JSON.parse(serialize({ phase: 'lane-evaluation', t: sim.t, actor: a.idx,
+          designed: args[3], result, patience: a.r('patience'), earlyAbandonThreshold: .5 + .5 * a.r('patience') })));
+        return result;
+      });
+    }
     carrierEvents.push(JSON.parse(serialize({ ...event, pos: a.pos, vel: a.vel, facing: a.facing,
       support: a.body.support, decisionInterval: a.mind.decisionInterval,
       controllerState: Object.fromEntries(['heading', 'nextEval', 'wasDesigned', 'opts']

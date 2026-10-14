@@ -40,7 +40,7 @@ function frozenEntryMovement(source: any, entry: any, now: number, beat: number,
 }
 const findings: any[] = [], receipts: any[] = [];
 
-for (const [name, priorName, pinName] of [['carrier', 'native', 'pin'], ['carrier-weak', 'weak', 'pin-weak']]) {
+for (const [name, priorName, pinName] of [['carrier-design', 'native', 'pin'], ['carrier-design-weak', 'weak', 'pin-weak']]) {
   const collected = packet(name), prior = packet(priorName), pin = packet(pinName);
   const receipt = load(`${root}/${name}-checks.json`);
   assert.equal(receipt.exitCode, 0);
@@ -80,6 +80,7 @@ for (const [name, priorName, pinName] of [['carrier', 'native', 'pin'], ['carrie
         requested: frame.agents[id].requested, delivered: pi.intents[id], after: compactBody(pi.afterBodies[id]) });
       const foot = frame.contactEvents.find((e: any) => e.phase === 'movement' && e.blocker === keeper && e.defender === end);
       movement.push({ t: frame.t, after: frame.after,
+        carrierDecisionEvents: frame.carrierEvents.filter((e: any) => e.actor === rb && e.phase === 'lane-evaluation'),
         runner: peer(rb), keeper: peer(keeper), defender: peer(end),
         keeperRead: frame.agents[keeper].zone, keeperFootRequest: foot?.command,
         joints: pi.jointOutputs.filter((j: any) => j.kind === 'hands' && [keeper, end].includes(j.a) && [keeper, end].includes(j.b))
@@ -143,6 +144,7 @@ for (const [name, priorName, pinName] of [['carrier', 'native', 'pin'], ['carrie
             geometricArrivalUsedBySelector: d / Math.max(2, Math.hypot(body.vel.x, body.vel.y)),
             publicTurnAwareArrivalEstimate: timeToReach(body, p), unloadedArrivalWithinPoint65: arrival,
             heldHeadingArrivalWithinPoint65: heldSamples.find(s => distance(s.pos, p) <= .65)?.t ?? null,
+            closestUnloadedEntryDistance: Math.min(...samples.map(s => distance(s.pos, p))),
             earliestEndReachEnvelopeWithExistingBlockCredit: opposingEnvelope?.t ?? null,
             minimumPictureTorsoMarginThroughEntry: Math.min(...approach.map(s => s.pictureTorsoMargin)),
             minimumPictureArmMarginThroughEntry: Math.min(...approach.map(s => s.pictureArmMargin)),
@@ -178,6 +180,6 @@ const report = { protocol: 'under-center-zone-runner-information-v1',
     'A moving defender in a hand joint is not a free reacher or a constant-velocity object; both screens are uncertainty bounds.',
     'Quarter-second block credit reuses the current selector allowance. It cannot prove the future block win.',
     'No alternative native ending is generated; shared passive angular-law witness remains unresolved.'],
-  observationReceipts: receipts, newObservedPlainPairs: 3, newGames: 0, newFullSuites: 0, findings };
+  observationReceipts: receipts, recordedObservedPlainPairs: 3, newGames: 0, newFullSuites: 0, findings };
 writeFileSync(destination, JSON.stringify(report, null, 2) + '\n');
 console.log(`Saved ${destination}`);
