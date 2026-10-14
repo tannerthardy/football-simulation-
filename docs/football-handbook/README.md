@@ -21,6 +21,7 @@ and proposed mechanisms are identified separately.
 | [Trenches](trenches.md) | OL/DL base, feet and hands; zone and gap installations; combinations, pullers, protection, rush and exchanges. |
 | [Offensive skill and playcalling](offensive-skill-and-playcalling.md) | QB, RB, FB, WR and TE reads; releases, option coordination, motion, screens and situation. |
 | [Defense and perception](defense-and-perception.md) | Position-specific keys, coverage distribution, fits, vertical protection, motion, pursuit and legal contact. |
+| [Current awareness audit and future work](../reviews/awareness-audit.md) | Source-linked information shortcuts, all-role keys, useful simplifications, prepared corrections and owner handoff on pinned develop. |
 | [Data and measurement](data-and-measurement.md) | What existing NFL data can test, useful public additions, matching definitions and realistic roster variation. |
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
 | [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
