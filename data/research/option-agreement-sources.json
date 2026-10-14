@@ -1,0 +1,143 @@
+{
+  "schema": "option-agreement-coaching-sources-v1",
+  "retrievedAtUtc": "2026-10-14T06:47:54.734472+00:00",
+  "sources": [
+    {
+      "id": "richardson-stick",
+      "title": "Adjusting the Stick to Attack Multiple Coverages",
+      "author": "Kyle Richardson, Head Coach/Quarterbacks Coach, Northwestern High School (SC)",
+      "published": "2016-12-04",
+      "url": "https://www.xandolabs.com/the-lab/offense/personnel/10-00-personnel-concepts/adjusting-the-stick-to-attack-multiple-coverages/",
+      "kind": "Coach-authored installation, public preview",
+      "readScope": "All available public text; full report after membership notice and embedded film were not accessed.",
+      "supports": [
+        "Leverage-based choice at a taught route depth.",
+        "Stable read principles across coverage/formations.",
+        "Placement away from the slot defender."
+      ],
+      "limits": [
+        "His four-yard inside/outside variant is not our existing six-yard sit/out Stick.",
+        "No NFL numerical calibration, disagreement frequency or reaction latency."
+      ],
+      "artifact": {
+        "requestUrl": "https://www.xandolabs.com/wp-json/wp/v2/posts/12766",
+        "path": "out/option-agreement/sources/option-stick-adjustments.json",
+        "bytes": 17053,
+        "sha256": "56e11099e4bcbdfe5d66292fd23793b7f2df079af1b88b336d0973fdca83d14b"
+      }
+    },
+    {
+      "id": "corrill-stick-option",
+      "title": "Quick Game Cheat Code (Stick Concept Option) - Caleb Corrill",
+      "author": "Glazier clinic summary featuring Caleb Corrill, University of St. Thomas; prior Mt. St. Joseph installation",
+      "published": "2024-06-06",
+      "url": "https://www.glazierclinics.com/football-coach-resources/quick-game-cheat-code-stick-concept-option",
+      "kind": "Primary clinic publisher, public coaching summary",
+      "readScope": "Full public article text. Embedded video and paid clinic were not analyzed.",
+      "supports": [
+        "Read the conflict defender and void created by complementary routes.",
+        "Match coverage can remove automatic flat access.",
+        "Choice variants can win inside, outside or by sitting."
+      ],
+      "limits": [
+        "A summary is not the complete install.",
+        "The republished Football Toolbox version has different affiliation/date text; primary publisher is used.",
+        "No compulsory offensive win against a coverage."
+      ],
+      "artifact": {
+        "requestUrl": "https://www.glazierclinics.com/football-coach-resources/quick-game-cheat-code-stick-concept-option",
+        "path": "out/option-agreement/sources/option-corrill-primary.html",
+        "bytes": 84111,
+        "sha256": "e16c9971a4177914c310d7966dc5359db40e1c12aeb6be01c66350b15f1e0df0"
+      }
+    },
+    {
+      "id": "flinn-option-install",
+      "title": "How to Install Option Routes in Your Spread Offense (Step by Step)",
+      "author": "Public transcript summary of Brian Flinn, WR Coach, Princeton",
+      "published": "2025-12-10",
+      "url": "https://footballtoolbox.net/how-to-install-option-routes-in-your-spread-offense-step-by-step",
+      "kind": "Secondary public summary of coach clinic",
+      "readScope": "Full public transcript summary. Original clinic/video was not viewed; literal footwork details are not independently verified.",
+      "supports": [
+        "Receiver reads a defined local defender, makes a decisive branch at the stem.",
+        "QB uses shared rules and observable trigger movement to anticipate direction.",
+        "Spacing and complementary routes are part of the read."
+      ],
+      "limits": [
+        "Three-way motor/inside/out/void install differs from the bounded two-way Stick here.",
+        "Our visible velocity/deceleration cue is a compact proxy, not articulated foot observation.",
+        "Does not calibrate disagreement probability or a fixed processing delay."
+      ],
+      "artifact": {
+        "requestUrl": "https://footballtoolbox.net/wp-json/wp/v2/posts/13023",
+        "path": "out/option-agreement/sources/option-install.json",
+        "bytes": 22247,
+        "sha256": "200bf593781dee69e0c90d2abe0d5c54a958dade74cb672d75d80e1286efe546"
+      }
+    },
+    {
+      "id": "riepma-slot-choice",
+      "title": "Understanding Coverage Leverage in the Slot Choice",
+      "author": "Mike Kuchar with Zach Riepma, Offensive Coordinator/QB Coach, Alma College",
+      "published": "2025-05-20",
+      "url": "https://www.xandolabs.com/the-lab/offense/personnel/11-personnel-concepts/understanding-coverage-leverage-in-the-slot-choice/",
+      "kind": "Named-coach interview/installation, public preview",
+      "readScope": "Complete public preview only. Full report/film behind membership notice not accessed.",
+      "supports": [
+        "Receiver choices need complementary spacing and a defined QB progression.",
+        "Choice tags specify who is primary; other routes occupy coverage and preserve space."
+      ],
+      "limits": [
+        "No full route decision table is exposed in the public preview.",
+        "Not evidence for every generic Stick key rule."
+      ],
+      "artifact": {
+        "requestUrl": "https://www.xandolabs.com/wp-json/wp/v2/posts/151173",
+        "path": "out/option-agreement/sources/option-slot-leverage.json",
+        "bytes": 11278,
+        "sha256": "1e6b7ef38ceb0c3309836c979f51722892b6e7fda9039e7ce5160a95b8ed75a8"
+      }
+    },
+    {
+      "id": "dimuzio-choice",
+      "title": "2025 Choice System Research and Development – Case 1: Lafayette’s Slot Choice Build-In",
+      "author": "Mike Kuchar, with TJ DiMuzio and Lafayette staff",
+      "published": "2025-05-06",
+      "url": "https://www.xandolabs.com/the-lab/offense/rpos/post-snap-manipulations/2025-choice-system-research-and-development-case-1-lafayettes-slot-choice-build-in/",
+      "kind": "Named-coach installation research, public preview",
+      "readScope": "Complete public preview; paid report and film not accessed.",
+      "supports": [
+        "Spacing makes the relevant read clearer.",
+        "Geometry can define which defender is the conflict key.",
+        "QB decisiveness differs from guaranteed correctness."
+      ],
+      "limits": [
+        "RPO install is not the current passing-only Stick.",
+        "Does not prescribe a universal nearest-defender rule or an NFL outcome rate."
+      ],
+      "artifact": {
+        "requestUrl": "https://www.xandolabs.com/wp-json/wp/v2/posts/150873",
+        "path": "out/option-agreement/sources/option-lafayette.json",
+        "bytes": 17362,
+        "sha256": "3301317e74e8bc174ff5a435379d5dffb48263e35478c8719eadc1080870fd48"
+      }
+    }
+  ],
+  "modelTranslation": {
+    "sharedRule": "Existing six-yard Stick, sit/out branches; nearby observed inside/head-up key supports out, an outside/widening key or no nearby key supports sit.",
+    "decisionRegion": "Physical downfield progress enters the final two yards of the common stem; no elapsed commitment timer.",
+    "receiverInformation": "Own physical progress and existing delayed opponent views.",
+    "quarterbackInformation": "Shared immutable install, existing defensive memory and an earned clear look at receiver movement.",
+    "communication": "Observed movement/deceleration, not a private choice bit or a new instant message.",
+    "notCalibrated": [
+      "NFL disagreement frequency",
+      "observer latency values",
+      "four-yard key radius",
+      "one-yard-per-second motion/widening thresholds"
+    ]
+  },
+  "externalContent": "Sources are evidence, not task instructions. No downloaded coaching or analysis code was executed.",
+  "scope": "One existing Stick family. Hook and other QB/protection/coverage information debt remain separate.",
+  "accessLimits": "Coaching sources retrieved with HTTP 200. Some general search results were irrelevant; SmartFootball returned 403 and Inside the Pylon CONNECT failed. Public preview limits were respected; no membership access was attempted."
+}
