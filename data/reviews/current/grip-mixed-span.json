@@ -1,0 +1,1932 @@
+{
+  "commit": "a06f02ace09efebe123f2efb20f9919ce3f9d9d0",
+  "parent": "03700539089162b7d667d6d836d34c88cebb9806",
+  "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "hashes": {
+    "scripts/diag/physics/grip-mixed-span-force.ts": "97c6fa7786ee0d705cbb7aa0ec5c947a89d62f36fa0feb3b1e13061762cc104b",
+    "scripts/diag/physics/grip-mixed-span-inputs.ts": "1850c115efb2947e21b838ff538a9c1745b618ff2ea350e5605fcc7b6962f8b3",
+    "scripts/diag/physics/grip-mixed-span-model.ts": "542f0fff0815573f91a8b370bea7b07a4f76d3ed7c8e38a58da53ea442b2daf0",
+    "scripts/diag/physics/grip-mixed-span-interval.ts": "67030862ebc904ba1b9868f6dd2b0dc397c36d685bc6c9c1e229773665272b68",
+    "scripts/diag/physics/grip-mixed-span-reference.ts": "5362e25b1190c7574be3983caca9133879fc34285683e36eae39d021db9d23ad",
+    "scripts/diag/physics/grip-mixed-span-reference-force.ts": "f10bbbdd70548b4d35eeda945c33b7ef6d79757b40b7eea5789afb190a50122e",
+    "scripts/diag/physics/grip-mixed-span-evidence.ts": "e7035babedfcfe12c9a66aab4262edb0b10655a327a6de645e265f388728a856",
+    "config/grip-mixed-span-inputs.json": "b3412a7f6369963a4682f02be3d838148c0f75f123c4eb1daa3fd83abfec5305",
+    "test/grip-mixed-span.test.ts": "32d7b7472cc7426d9252765689b0076caf4d52f05b3770ebed5d95b8c2488b44",
+    "scripts/diag/physics/grip-pressure-rate.ts": "18343c87a35f2ddfde5ab104bd8d884e380b10bc5a0e22b26d6648dd525ba93c",
+    "scripts/diag/physics/grip-shared-explicit.ts": "afe8ae8e60866a9d1e6b99890d6233578208763ba38aac2c1a6750aa9ed06d54"
+  },
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "scope": "One passive lower grip; original 6Hz/.8 spring/damper, existing sticking tangent and shared capacity. Desired motor/reel zero, fixed retained rest/share, below98% vector cap. Moving two-body yaw/material/raw foot/work/dose, no World or recovery insertion.",
+  "protocol": {
+    "candidate": "Coupled force elimination + DOP853, dyadic physical refinement 1..128, max4096 fields; coarse overshoot refusals retained",
+    "reference": "Independent SPD halfplane force + uniform RK4; same physical coordinates/ODE, independent force and timestepping",
+    "shortReference": [
+      128,
+      256
+    ],
+    "longReference": [
+      2048,
+      4096
+    ],
+    "refinedAllowance": 0.0625,
+    "accuracy": {
+      "position": 5e-10,
+      "velocity": 2.5e-08,
+      "facing": 2.5e-09,
+      "spin": 2.5e-07,
+      "attachment": 5e-10,
+      "impulse": 5e-10,
+      "moment": 5e-10,
+      "work": 1e-09,
+      "dose": 1e-09
+    },
+    "budgetMilliseconds": {
+      "median": 2,
+      "p95": 5,
+      "refusal": 10
+    },
+    "shortDuration": 0.0002,
+    "longDuration": 0.004166666666666667
+  },
+  "rows": [
+    {
+      "id": "loaded-mixed",
+      "inputSha256": "f3b63c7a91e8abe1135e3ddd5339a20e75dfe85b5f8c131b8c86eb5edcb81a6b",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "loaded-mixed",
+        "tangent": 0.08,
+        "curved": 0,
+        "zero": false
+      },
+      "convergence": 0.014238776927072039,
+      "error": 0.0012121522831211543,
+      "candidate": {
+        "partitions": 8,
+        "evaluations": 185,
+        "workResidual": 1.478851763270228e-15,
+        "spanResidual": 1.0911706765436653e-13,
+        "energyResidual": 1.1060708034726625e-13,
+        "angularResidual": 2.842170943040401e-14,
+        "motorCompositionResidual": -6.938893903907228e-18,
+        "representationError": 1.8674931614246417e-14,
+        "maximumTargetResidual": 3.1685081756519725e-16,
+        "maximumCapacityRatio": 0.40615647936271004,
+        "minimumLoss": 0.0018631561156687044,
+        "bodyWork": -0.004428192932387978,
+        "motorWork": -0.004429544408717252,
+        "motorCrossWork": 2.5300021568587025e-14,
+        "separateMotorWork": -0.0044295444087425456,
+        "passiveWork": 1.3514763292747645e-06,
+        "springWork": -1.7362680893881911e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008304606762776842,
+        "dampingLoss": 3.8479176012469603e-07,
+        "normalImpulse": -0.0017451848127272606,
+        "tangentImpulse": -0.0920293574245721,
+        "normalDose": 0.0017451848127272606,
+        "tangentDose": 0.0920293574245721,
+        "dose": 0.09204966543943219,
+        "finalForce": {
+          "normal": -8.681063283253637,
+          "tangent": -186.84769764875682
+        },
+        "refusedTrials": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1026,
+        "workResidual": 1.3895395251095621e-13,
+        "spanResidual": 8.139377943120347e-13,
+        "energyResidual": 9.528885982427073e-13,
+        "angularResidual": 2.8421709430404007e-13,
+        "motorCompositionResidual": 8.673617379884035e-19,
+        "representationError": 5.93317285926317e-14,
+        "maximumTargetResidual": 4.755505462179434e-16,
+        "maximumCapacityRatio": 0.40615647936271,
+        "minimumLoss": 0.0018631561156814839,
+        "bodyWork": -0.004428192932518569,
+        "motorWork": -0.004429544408848424,
+        "motorCrossWork": 2.530002248394663e-14,
+        "separateMotorWork": -0.004429544408873725,
+        "passiveWork": 1.3514763298550295e-06,
+        "springWork": -1.7362680901518794e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008304606769817413,
+        "dampingLoss": 3.8479176029337613e-07,
+        "normalImpulse": -0.0017451848131121834,
+        "tangentImpulse": -0.09202935742410392,
+        "normalDose": 0.0017451848131121834,
+        "tangentDose": 0.09202935742410392,
+        "dose": 0.09204966543897697,
+        "finalForce": {
+          "normal": -8.681063286954853,
+          "tangent": -186.8476976524383
+        }
+      }
+    },
+    {
+      "id": "curved-mixed",
+      "inputSha256": "2854c1ef7118611d1ca1ea95bd403b22d7c8135f0c8f8a07a49d6dd6eab93672",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "curved-mixed",
+        "tangent": 0.08,
+        "curved": 0.25,
+        "zero": false
+      },
+      "convergence": 0.02226816194661667,
+      "error": 0.0014404703719091629,
+      "candidate": {
+        "partitions": 8,
+        "evaluations": 185,
+        "workResidual": 3.905729906161781e-15,
+        "spanResidual": -1.1007945357178442e-13,
+        "energyResidual": -1.0617864471528795e-13,
+        "angularResidual": -2.842170943040401e-14,
+        "motorCompositionResidual": 6.938893903907228e-18,
+        "representationError": 1.9679777903646737e-14,
+        "maximumTargetResidual": 4.12695292067368e-16,
+        "maximumCapacityRatio": 0.46094904813100973,
+        "minimumLoss": 0.0024941456260395177,
+        "bodyWork": -0.004443375635314182,
+        "motorWork": -0.004438931592882525,
+        "motorCrossWork": 1.1184397621394315e-05,
+        "separateMotorWork": -0.004450115990503926,
+        "passiveWork": -4.444042431656428e-06,
+        "springWork": 3.1144347373001935e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008353113788851761,
+        "dampingLoss": 1.3296076943513136e-06,
+        "normalImpulse": -0.003135507600905099,
+        "tangentImpulse": -0.09575774903764522,
+        "normalDose": 0.003135507600905099,
+        "tangentDose": 0.09575774903764522,
+        "dose": 0.09582056542792479,
+        "finalForce": {
+          "normal": -14.08090771834003,
+          "tangent": -167.14255620438854
+        },
+        "refusedTrials": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1026,
+        "workResidual": 2.4474085952297386e-13,
+        "spanResidual": -1.6252618783064196e-13,
+        "energyResidual": 8.221814240983328e-14,
+        "angularResidual": 8.526512829121202e-14,
+        "motorCompositionResidual": -4.336808689942018e-18,
+        "representationError": 1.5113020049339435e-14,
+        "maximumTargetResidual": 6.461739435559646e-16,
+        "maximumCapacityRatio": 0.46094904813100973,
+        "minimumLoss": 0.0025215345850918888,
+        "bodyWork": -0.004443375635546191,
+        "motorWork": -0.0044389315931145186,
+        "motorCrossWork": 1.1184397621664647e-05,
+        "separateMotorWork": -0.004450115990736179,
+        "passiveWork": -4.444042431672041e-06,
+        "springWork": 3.1144347373501472e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008353113788327793,
+        "dampingLoss": 1.3296076943250388e-06,
+        "normalImpulse": -0.003135507600949261,
+        "tangentImpulse": -0.09575774903692615,
+        "normalDose": 0.003135507600949261,
+        "tangentDose": 0.09575774903692615,
+        "dose": 0.09582056542720777,
+        "finalForce": {
+          "normal": -14.080907718090135,
+          "tangent": -167.14255621097834
+        }
+      }
+    },
+    {
+      "id": "curved-return",
+      "inputSha256": "341866a870ab33c77af83bd6d1fb97b1c84a9abb2d0edea7f66d77cd82171bb7",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "curved-return",
+        "tangent": -0.02,
+        "curved": 0.25,
+        "zero": false
+      },
+      "convergence": 0.0055617485596710535,
+      "error": 0.0007453719614229501,
+      "candidate": {
+        "partitions": 8,
+        "evaluations": 185,
+        "workResidual": 2.3922920935892655e-16,
+        "spanResidual": 1.1149375845985856e-13,
+        "energyResidual": 1.1173270539548781e-13,
+        "angularResidual": -2.842170943040401e-14,
+        "motorCompositionResidual": 4.336808689942018e-19,
+        "representationError": 1.111224876459528e-14,
+        "maximumTargetResidual": 1.5865215127893513e-16,
+        "maximumCapacityRatio": 0.11502563272477222,
+        "minimumLoss": 0.004571984499198886,
+        "bodyWork": -0.00027657995127719476,
+        "motorWork": -0.00027839467869392214,
+        "motorCrossWork": -1.1922390914171117e-06,
+        "separateMotorWork": -0.0002772024396025055,
+        "passiveWork": 1.8147274167273778e-06,
+        "springWork": -2.8709817416969657e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008293259626277521,
+        "dampingLoss": 1.0562543249693056e-06,
+        "normalImpulse": -0.001419371385868486,
+        "tangentImpulse": 0.023864596579783244,
+        "normalDose": 0.001419371385868486,
+        "tangentDose": 0.023864596579783244,
+        "dose": 0.023921618961130178,
+        "finalForce": {
+          "normal": -7.363082613938806,
+          "tangent": 41.49400008643184
+        },
+        "refusedTrials": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1026,
+        "workResidual": 1.5177583582298704e-14,
+        "spanResidual": 4.677846359475311e-13,
+        "energyResidual": 4.829622459996094e-13,
+        "angularResidual": -2.1316282072803006e-13,
+        "motorCompositionResidual": 2.710505431213761e-19,
+        "representationError": 3.598139001065109e-14,
+        "maximumTargetResidual": 4.754300915286268e-16,
+        "maximumCapacityRatio": 0.11502563272477224,
+        "minimumLoss": 0.004581224719842296,
+        "bodyWork": -0.00027657995129147045,
+        "motorWork": -0.00027839467870877126,
+        "motorCrossWork": -1.1922390915214627e-06,
+        "separateMotorWork": -0.0002772024396172501,
+        "passiveWork": 1.8147274173008123e-06,
+        "springWork": -2.870981742470795e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008293259629832692,
+        "dampingLoss": 1.0562543251700092e-06,
+        "normalImpulse": -0.0014193713861883053,
+        "tangentImpulse": 0.023864596579590894,
+        "normalDose": 0.0014193713861883053,
+        "tangentDose": 0.023864596579590894,
+        "dose": 0.02392161896097629,
+        "finalForce": {
+          "normal": -7.363082615802901,
+          "tangent": 41.494000088032635
+        }
+      }
+    },
+    {
+      "id": "radial-control",
+      "inputSha256": "d9c06efd607766f7375d0fc3222ef54655cca6503fbbfcd25a8c38e42544c4bb",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "radial-control",
+        "tangent": 0,
+        "curved": 0,
+        "zero": false
+      },
+      "convergence": 0.0005323963925968345,
+      "error": 0.0007382710041880007,
+      "candidate": {
+        "partitions": 2,
+        "evaluations": 39,
+        "workResidual": -1.7999450129153882e-21,
+        "spanResidual": 1.578182300555203e-14,
+        "energyResidual": 1.5781766995498394e-14,
+        "angularResidual": 6.938893903907228e-17,
+        "motorCompositionResidual": 8.470329472543003e-22,
+        "representationError": 1.2621653783590102e-14,
+        "maximumTargetResidual": 3.169707971068155e-16,
+        "maximumCapacityRatio": 0.0038690760124535013,
+        "minimumLoss": 0.0018631561156644335,
+        "bodyWork": 2.863205864192386e-08,
+        "motorWork": -1.3230353269269606e-06,
+        "motorCrossWork": -1.0943901575175862e-37,
+        "separateMotorWork": -1.3230353269269614e-06,
+        "passiveWork": 1.3516673855688843e-06,
+        "springWork": -1.73661342429126e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008304603308494459,
+        "dampingLoss": 3.849460387223744e-07,
+        "normalImpulse": -0.001745085818803395,
+        "tangentImpulse": 2.7624153202372745e-19,
+        "normalDose": 0.001745085818803395,
+        "tangentDose": 3.104779865618672e-18,
+        "dose": 0.001745085818803395,
+        "finalForce": {
+          "normal": -8.679739401641479,
+          "tangent": -1.4764056560834807e-14
+        },
+        "refusedTrials": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1026,
+        "workResidual": 3.308722450212111e-24,
+        "spanResidual": -3.581269774666668e-13,
+        "energyResidual": -3.581269506263103e-13,
+        "angularResidual": 1.1102230246251565e-16,
+        "motorCompositionResidual": -4.235164736271502e-22,
+        "representationError": 1.7483209123813336e-14,
+        "maximumTargetResidual": 3.1708159802015637e-16,
+        "maximumCapacityRatio": 0.0038690760124535004,
+        "minimumLoss": 0.0018631561156644341,
+        "bodyWork": 2.863205862980902e-08,
+        "motorWork": -1.32303532636802e-06,
+        "motorCrossWork": 1.390426974683498e-39,
+        "separateMotorWork": -1.3230353263680196e-06,
+        "passiveWork": 1.3516673849978291e-06,
+        "springWork": -1.736613423557583e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008304603304762708,
+        "dampingLoss": 3.8494603855975557e-07,
+        "normalImpulse": -0.001745085818434259,
+        "tangentImpulse": 6.295148303857495e-20,
+        "normalDose": 0.001745085818434259,
+        "tangentDose": 1.3564305488714713e-19,
+        "dose": 0.001745085818434259,
+        "finalForce": {
+          "normal": -8.679739399690238,
+          "tangent": 5.115335807228826e-16
+        }
+      }
+    },
+    {
+      "id": "zero-span-control",
+      "inputSha256": "562dfd0b5c17e086d30e991bcdbc1bc7356165a917b820584c80c1cd2ffc3c8d",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "zero-span-control",
+        "tangent": 0,
+        "curved": 0,
+        "zero": true
+      },
+      "convergence": 0,
+      "error": 0,
+      "candidate": {
+        "partitions": 2,
+        "evaluations": 39,
+        "workResidual": 0,
+        "spanResidual": 0,
+        "energyResidual": 0,
+        "angularResidual": 0,
+        "motorCompositionResidual": 0,
+        "representationError": 0,
+        "maximumTargetResidual": 0,
+        "maximumCapacityRatio": 0,
+        "minimumLoss": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "motorCrossWork": 0,
+        "separateMotorWork": 0,
+        "passiveWork": 0,
+        "springWork": 0,
+        "initialSpringEnergy": 0,
+        "springEnergy": 0,
+        "dampingLoss": 0,
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "normalDose": 0,
+        "tangentDose": 0,
+        "dose": 0,
+        "finalForce": {
+          "normal": 0,
+          "tangent": 0
+        },
+        "refusedTrials": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1026,
+        "workResidual": 0,
+        "spanResidual": 0,
+        "energyResidual": 0,
+        "angularResidual": 0,
+        "motorCompositionResidual": 0,
+        "representationError": 0,
+        "maximumTargetResidual": 0,
+        "maximumCapacityRatio": 0,
+        "minimumLoss": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "motorCrossWork": 0,
+        "separateMotorWork": 0,
+        "passiveWork": 0,
+        "springWork": 0,
+        "initialSpringEnergy": 0,
+        "springEnergy": 0,
+        "dampingLoss": 0,
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "normalDose": 0,
+        "tangentDose": 0,
+        "dose": 0,
+        "finalForce": {
+          "normal": 0,
+          "tangent": 0
+        }
+      }
+    },
+    {
+      "id": "fresh-curved",
+      "inputSha256": "9577d3ead5ef5dd3879deb11419da48972939d0dba7f6651a4a0b3db14457d44",
+      "packetSha256": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "selector": {
+        "id": "fresh-curved",
+        "tangent": 0.06,
+        "curved": 0.2,
+        "zero": false,
+        "spin": 0.025
+      },
+      "convergence": 0.013547662882385184,
+      "error": 0.0009279913058680861,
+      "candidate": {
+        "partitions": 8,
+        "evaluations": 185,
+        "workResidual": 1.3491811834409617e-15,
+        "spanResidual": -3.8459954486555134e-15,
+        "energyResidual": -2.50061236095004e-15,
+        "angularResidual": -5.684341886080802e-14,
+        "motorCompositionResidual": 3.469446951953614e-18,
+        "representationError": 3.0396794347327314e-14,
+        "maximumTargetResidual": 3.477163493981433e-16,
+        "maximumCapacityRatio": 0.3133890572393878,
+        "minimumLoss": 0.05315472019558031,
+        "bodyWork": -0.002268992518782698,
+        "motorWork": -0.0022471163730589413,
+        "motorCrossWork": 8.162184143937848e-06,
+        "separateMotorWork": -0.0022552785572028827,
+        "passiveWork": -2.1876145723756513e-05,
+        "springWork": 9.765058916757341e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008419620031708667,
+        "dampingLoss": 1.211108680699559e-05,
+        "normalImpulse": -0.005034581684235179,
+        "tangentImpulse": -0.06718376697204356,
+        "normalDose": 0.005034581684235179,
+        "tangentDose": 0.06718376697204356,
+        "dose": 0.0674192679000199,
+        "finalForce": {
+          "normal": -24.34463111243615,
+          "tangent": -124.21528347607169
+        },
+        "refusedTrials": []
+      },
+      "reference": {
+        "partitions": 256,
+        "evaluations": 1026,
+        "workResidual": 1.0131739197616341e-13,
+        "spanResidual": 1.1316711863397153e-13,
+        "energyResidual": 2.144865909230534e-13,
+        "angularResidual": 2.842170943040401e-14,
+        "motorCompositionResidual": -1.3010426069826053e-18,
+        "representationError": 4.0756351743489364e-14,
+        "maximumTargetResidual": 5.064196250805809e-16,
+        "maximumCapacityRatio": 0.3133890572393879,
+        "minimumLoss": 0.05319743603697025,
+        "bodyWork": -0.0022689925188793076,
+        "motorWork": -0.002247116373155198,
+        "motorCrossWork": 8.162184144155134e-06,
+        "separateMotorWork": -0.002255278557299352,
+        "passiveWork": -2.187614572410953e-05,
+        "springWork": 9.765058917479259e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008419620032886017,
+        "dampingLoss": 1.211108680663235e-05,
+        "normalImpulse": -0.005034581684393882,
+        "tangentImpulse": -0.06718376697160544,
+        "normalDose": 0.005034581684393882,
+        "tangentDose": 0.06718376697160544,
+        "dose": 0.06741926789960784,
+        "finalForce": {
+          "normal": -24.344631113067226,
+          "tangent": -124.21528347991745
+        }
+      }
+    }
+  ],
+  "long": [
+    {
+      "id": "loaded-mixed",
+      "convergence": 0.04356930056645924,
+      "error": 0.023893482681365732,
+      "accepted": true,
+      "reason": "",
+      "candidate": {
+        "partitions": 128,
+        "evaluations": 3000,
+        "workResidual": 1.1153404588792881e-14,
+        "spanResidual": 5.144613576292534e-13,
+        "energyResidual": 5.256091158964199e-13,
+        "angularResidual": 3.410605131648481e-13,
+        "motorCompositionResidual": -2.6020852139652106e-18,
+        "representationError": 7.211551861452609e-14,
+        "maximumTargetResidual": 3.2391176735784874e-16,
+        "maximumCapacityRatio": 0.737037971415448,
+        "minimumLoss": 0.0018631561156687044,
+        "bodyWork": -0.004608610958023114,
+        "motorWork": -0.004640999861831504,
+        "motorCrossWork": 3.9712152815533485e-14,
+        "separateMotorWork": -0.004640999861871214,
+        "passiveWork": 3.238890380839049e-05,
+        "springWork": -4.582964989603477e-05,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0007863672948763819,
+        "dampingLoss": 1.3440746087638744e-05,
+        "normalImpulse": -0.032836123485339694,
+        "tangentImpulse": -0.11546110281864522,
+        "normalDose": 0.032836123485339694,
+        "tangentDose": 0.11546110281864522,
+        "dose": 0.14289656540313803,
+        "finalForce": {
+          "normal": -7.0303833814662,
+          "tangent": -0.00017215294191409394
+        },
+        "refusedTrials": [
+          {
+            "partitions": 1,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "partitions": 2,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "partitions": 4,
+            "reason": "Mixed span cap/target/power scope"
+          }
+        ]
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 16386,
+        "workResidual": 4.1802152017655914e-13,
+        "spanResidual": 2.22297128485904e-12,
+        "energyResidual": 2.6409633435356275e-12,
+        "angularResidual": 1.1937117960769683e-12,
+        "motorCompositionResidual": -1.1275702593849246e-17,
+        "representationError": 1.0901181650501101e-13,
+        "maximumTargetResidual": 4.875800441536408e-16,
+        "maximumCapacityRatio": 0.40615647936271,
+        "minimumLoss": 0.0018631561156814839,
+        "bodyWork": -0.00460861095842432,
+        "motorWork": -0.004640999862254872,
+        "motorCrossWork": 3.971217058616366e-14,
+        "separateMotorWork": -0.004640999862294573,
+        "passiveWork": 3.238890383055245e-05,
+        "springWork": -4.5829649926869665e-05,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.000786367296554057,
+        "dampingLoss": 1.3440746096287537e-05,
+        "normalImpulse": -0.03283612349728707,
+        "tangentImpulse": -0.11546110281862876,
+        "normalDose": 0.03283612349728707,
+        "tangentDose": 0.11546110281862876,
+        "dose": 0.14289656541561366,
+        "finalForce": {
+          "normal": -7.030383390006596,
+          "tangent": -0.00017215296174549925
+        }
+      },
+      "candidateStateReturned": true,
+      "referenceConverged": true
+    },
+    {
+      "id": "curved-mixed",
+      "convergence": 0.026426474292758684,
+      "error": 0.030733825224109886,
+      "accepted": true,
+      "reason": "",
+      "candidate": {
+        "partitions": 128,
+        "evaluations": 2999,
+        "workResidual": 3.038107959651981e-14,
+        "spanResidual": 1.0540332898888649e-13,
+        "energyResidual": 1.3578992192285998e-13,
+        "angularResidual": 6.536993168992922e-13,
+        "motorCompositionResidual": -3.469446951953614e-18,
+        "representationError": 6.023348357901085e-14,
+        "maximumTargetResidual": 3.314298459638051e-16,
+        "maximumCapacityRatio": 0.4652625831019916,
+        "minimumLoss": 3.8131252448293615e-12,
+        "bodyWork": -0.0045914966310962755,
+        "motorWork": -0.004591536939409193,
+        "motorCrossWork": 1.3023234370502334e-05,
+        "separateMotorWork": -0.004604560173779692,
+        "passiveWork": 4.0308312917493316e-08,
+        "springWork": -4.283865705033821e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008279130786583249,
+        "dampingLoss": 4.243557392121408e-06,
+        "normalImpulse": -0.04564612788288062,
+        "tangentImpulse": -0.11492157796439828,
+        "normalDose": 0.04564612788288062,
+        "tangentDose": 0.11492157796439828,
+        "dose": 0.15244661885534483,
+        "finalForce": {
+          "normal": -8.400266664890411,
+          "tangent": -0.19266925867377688
+        },
+        "refusedTrials": [
+          {
+            "partitions": 1,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "partitions": 2,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "partitions": 4,
+            "reason": "Mixed span cap/target/power scope"
+          }
+        ]
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 16386,
+        "workResidual": 7.187635903127543e-13,
+        "spanResidual": 1.974491066253272e-12,
+        "energyResidual": 2.6932394506305572e-12,
+        "angularResidual": 2.8990143619012088e-12,
+        "motorCompositionResidual": 4.0766001685454967e-17,
+        "representationError": 2.307810221746577e-13,
+        "maximumTargetResidual": 7.478071039900474e-16,
+        "maximumCapacityRatio": 0.46094904813100973,
+        "minimumLoss": 6.394208848820195e-12,
+        "bodyWork": -0.004591496631784769,
+        "motorWork": -0.004591536940124324,
+        "motorCrossWork": 1.3023234370751251e-05,
+        "separateMotorWork": -0.004604560174495116,
+        "passiveWork": 4.030833955503965e-08,
+        "springWork": -4.2838657384343574e-06,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0008279130804940121,
+        "dampingLoss": 4.243557398863895e-06,
+        "normalImpulse": -0.04564612789824581,
+        "tangentImpulse": -0.11492157796476063,
+        "normalDose": 0.04564612789824581,
+        "tangentDose": 0.11492157796476063,
+        "dose": 0.15244661887065536,
+        "finalForce": {
+          "normal": -8.400266673010206,
+          "tangent": -0.19266925885064592
+        }
+      },
+      "candidateStateReturned": true,
+      "referenceConverged": true
+    },
+    {
+      "id": "curved-return",
+      "convergence": 0.08520250824317621,
+      "error": null,
+      "accepted": false,
+      "reason": "Mixed span accuracy budget",
+      "candidate": null,
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 16386,
+        "workResidual": 4.546872860861084e-14,
+        "spanResidual": -1.1451874198280601e-12,
+        "energyResidual": -1.0997165363676314e-12,
+        "angularResidual": 6.323830348264892e-13,
+        "motorCompositionResidual": -2.222614453595284e-18,
+        "representationError": 8.90804367949797e-14,
+        "maximumTargetResidual": 4.918369932483196e-16,
+        "maximumCapacityRatio": 0.11502563272477224,
+        "minimumLoss": 0.004503762404850188,
+        "bodyWork": -0.00025905784778879916,
+        "motorWork": -0.0002971144839153793,
+        "motorCrossWork": -1.4084228559722932e-06,
+        "separateMotorWork": -0.0002957060610594048,
+        "passiveWork": 3.805663612658014e-05,
+        "springWork": -7.1654860422562e-05,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0007605420826902059,
+        "dampingLoss": 3.359822429598402e-05,
+        "normalImpulse": -0.02483836979014232,
+        "tangentImpulse": 0.027871508844572717,
+        "normalDose": 0.02483836979014232,
+        "tangentDose": 0.028707067507581358,
+        "dose": 0.05013531017491786,
+        "finalForce": {
+          "normal": -4.465993372331409,
+          "tangent": -0.10202571190171907
+        }
+      },
+      "candidateStateReturned": false,
+      "referenceConverged": false
+    },
+    {
+      "id": "radial-control",
+      "convergence": 0.0010385840588816113,
+      "error": 0.0021869987258194994,
+      "accepted": true,
+      "reason": "",
+      "candidate": {
+        "partitions": 8,
+        "evaluations": 185,
+        "workResidual": -4.912791094074942e-20,
+        "spanResidual": -1.989335345758958e-13,
+        "energyResidual": -1.9893363621984947e-13,
+        "angularResidual": 6.661338147750939e-16,
+        "motorCompositionResidual": 1.3552527156068805e-20,
+        "representationError": 9.785769310288327e-15,
+        "maximumTargetResidual": 1.6296325437562066e-16,
+        "maximumCapacityRatio": 0.0038690760124535013,
+        "minimumLoss": 0.0018631561156644335,
+        "bodyWork": 1.0073698734069223e-05,
+        "motorWork": -2.243993869765742e-05,
+        "motorCrossWork": 1.4079639530323434e-34,
+        "separateMotorWork": -2.2439938697657432e-05,
+        "passiveWork": 3.251363743172664e-05,
+        "springWork": -4.616932589430686e-05,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.000786027618164715,
+        "dampingLoss": 1.3655688462580162e-05,
+        "normalImpulse": -0.032732937493871773,
+        "tangentImpulse": -3.841765339194831e-16,
+        "normalDose": 0.032732937493871773,
+        "tangentDose": 9.781564584198439e-15,
+        "dose": 0.032732937493871773,
+        "finalForce": {
+          "normal": -6.980384566259079,
+          "tangent": 3.0672323450836163e-12
+        },
+        "refusedTrials": []
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 16386,
+        "workResidual": 4.743384504624082e-20,
+        "spanResidual": 4.507477019671108e-13,
+        "energyResidual": 4.507478527389754e-13,
+        "angularResidual": -2.220446049250313e-16,
+        "motorCompositionResidual": 0,
+        "representationError": 3.0444990933631156e-13,
+        "maximumTargetResidual": 4.854604993122312e-16,
+        "maximumCapacityRatio": 0.0038690760124535004,
+        "minimumLoss": 0.0018631561156644341,
+        "bodyWork": 1.0073698734742261e-05,
+        "motorWork": -2.243993869801381e-05,
+        "motorCrossWork": 1.7350455860396852e-38,
+        "separateMotorWork": -2.243993869801381e-05,
+        "passiveWork": 3.251363743275607e-05,
+        "springWork": -4.6169325895330536e-05,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0007860276188133725,
+        "dampingLoss": 1.3655688462574519e-05,
+        "normalImpulse": -0.032732937494965364,
+        "tangentImpulse": -3.385693640998362e-17,
+        "normalDose": 0.032732937494965364,
+        "tangentDose": 1.0844584695192948e-16,
+        "dose": 0.032732937494965364,
+        "finalForce": {
+          "normal": -6.980384569724821,
+          "tangent": -6.602963156854006e-14
+        }
+      },
+      "candidateStateReturned": true,
+      "referenceConverged": true
+    },
+    {
+      "id": "zero-span-control",
+      "convergence": 0,
+      "error": 0,
+      "accepted": true,
+      "reason": "",
+      "candidate": {
+        "partitions": 2,
+        "evaluations": 39,
+        "workResidual": 0,
+        "spanResidual": 0,
+        "energyResidual": 0,
+        "angularResidual": 0,
+        "motorCompositionResidual": 0,
+        "representationError": 0,
+        "maximumTargetResidual": 0,
+        "maximumCapacityRatio": 0,
+        "minimumLoss": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "motorCrossWork": 0,
+        "separateMotorWork": 0,
+        "passiveWork": 0,
+        "springWork": 0,
+        "initialSpringEnergy": 0,
+        "springEnergy": 0,
+        "dampingLoss": 0,
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "normalDose": 0,
+        "tangentDose": 0,
+        "dose": 0,
+        "finalForce": {
+          "normal": 0,
+          "tangent": 0
+        },
+        "refusedTrials": []
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 16386,
+        "workResidual": 0,
+        "spanResidual": 0,
+        "energyResidual": 0,
+        "angularResidual": 0,
+        "motorCompositionResidual": 0,
+        "representationError": 0,
+        "maximumTargetResidual": 0,
+        "maximumCapacityRatio": 0,
+        "minimumLoss": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "motorCrossWork": 0,
+        "separateMotorWork": 0,
+        "passiveWork": 0,
+        "springWork": 0,
+        "initialSpringEnergy": 0,
+        "springEnergy": 0,
+        "dampingLoss": 0,
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "normalDose": 0,
+        "tangentDose": 0,
+        "dose": 0,
+        "finalForce": {
+          "normal": 0,
+          "tangent": 0
+        }
+      },
+      "candidateStateReturned": true,
+      "referenceConverged": true
+    },
+    {
+      "id": "fresh-curved",
+      "convergence": 0.004547519912717624,
+      "error": 0.014312020032359625,
+      "accepted": true,
+      "reason": "",
+      "candidate": {
+        "partitions": 128,
+        "evaluations": 3000,
+        "workResidual": 1.1064066329780076e-14,
+        "spanResidual": -8.239626971169589e-13,
+        "energyResidual": -8.12901422607773e-13,
+        "angularResidual": -3.694822225952521e-13,
+        "motorCompositionResidual": 0,
+        "representationError": 8.05587599734159e-14,
+        "maximumTargetResidual": 4.0670667032192774e-16,
+        "maximumCapacityRatio": 0.703657474934311,
+        "minimumLoss": 0.008115944468284854,
+        "bodyWork": -0.0027016994685377833,
+        "motorWork": -0.0024548124277072995,
+        "motorCrossWork": 9.902554925145499e-06,
+        "separateMotorWork": -0.002464714982632445,
+        "passiveWork": -0.00024688704083048385,
+        "springWork": 0.00013536072886908196,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0009675576723030746,
+        "dampingLoss": 0.00011152631196139921,
+        "normalImpulse": -0.08610221200711832,
+        "tangentImpulse": -0.08259430410107103,
+        "normalDose": 0.08610221200711832,
+        "tangentDose": 0.08259430410107103,
+        "dose": 0.15716840885593955,
+        "finalForce": {
+          "normal": -17.196077967744305,
+          "tangent": -0.25896341779566123
+        },
+        "refusedTrials": [
+          {
+            "partitions": 1,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "partitions": 2,
+            "reason": "Mixed span cap/target/power scope"
+          },
+          {
+            "partitions": 4,
+            "reason": "Mixed span cap/target/power scope"
+          }
+        ]
+      },
+      "reference": {
+        "partitions": 4096,
+        "evaluations": 16386,
+        "workResidual": 3.0076982571181077e-13,
+        "spanResidual": 1.6519801477286877e-13,
+        "energyResidual": 4.659771239657814e-13,
+        "angularResidual": -4.831690603168681e-13,
+        "motorCompositionResidual": -9.107298248878237e-18,
+        "representationError": 1.0816728008148963e-13,
+        "maximumTargetResidual": 7.158259692753824e-16,
+        "maximumCapacityRatio": 0.3133890572393879,
+        "minimumLoss": 0.008115944468350947,
+        "bodyWork": -0.002701699468849749,
+        "motorWork": -0.002454812428019837,
+        "motorCrossWork": 9.902554925504136e-06,
+        "separateMotorWork": -0.0024647149829453317,
+        "passiveWork": -0.00024688704082991226,
+        "springWork": 0.00013536072888155535,
+        "initialSpringEnergy": 0.0008321969442579554,
+        "springEnergy": 0.0009675576733047087,
+        "dampingLoss": 0.00011152631194836586,
+        "normalImpulse": -0.086102212014278,
+        "tangentImpulse": -0.08259430410117943,
+        "normalDose": 0.086102212014278,
+        "tangentDose": 0.08259430410117943,
+        "dose": 0.15716840886277111,
+        "finalForce": {
+          "normal": -17.196077972053118,
+          "tangent": -0.25896341786239363
+        }
+      },
+      "candidateStateReturned": true,
+      "referenceConverged": true
+    }
+  ],
+  "frozen": [
+    {
+      "id": "loaded-mixed",
+      "q": {
+        "vn": -1.1171619185290638e-15,
+        "vt": 0.08,
+        "nn": 8.688881615157877e-05,
+        "nt": 0,
+        "tt": 8.688881631817077e-05,
+        "inverseMass": 0.018803945852731645,
+        "extension": 0.00014839573987224242,
+        "capacity": 2267.004730607681
+      },
+      "candidate": {
+        "normal": -8.771213623309988,
+        "tangent": -920.7168815265569,
+        "normalVelocity": -0.0007621203679431219,
+        "tangentVelocity": 0,
+        "total": 920.7586600822245,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "loss": 0.0018631561156687044,
+        "targetResidual": 1.5837824764843716e-16
+      },
+      "ordered": {
+        "normal": -8.771213623309988,
+        "tangent": -920.7168815265569
+      },
+      "reference": {
+        "normal": -8.771213623309984,
+        "tangent": -920.7168815265568
+      }
+    },
+    {
+      "id": "curved-mixed",
+      "q": {
+        "vn": -1.1171619185290638e-15,
+        "vt": 0.08,
+        "nn": 8.039193122364246e-05,
+        "nt": -3.580286132647077e-06,
+        "tt": 7.663213909881556e-05,
+        "inverseMass": 0.018803945852731645,
+        "extension": 0.00014839573987224242,
+        "capacity": 2267.004730607681
+      },
+      "candidate": {
+        "normal": -18.4558865455498,
+        "tangent": -1044.81067990835,
+        "normalVelocity": 0.0022570168266751248,
+        "tangentVelocity": 0,
+        "total": 1044.9736726821066,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "loss": 0.01634073937110272,
+        "targetResidual": 1.9249758986284806e-16
+      },
+      "ordered": {
+        "normal": -18.455886545549795,
+        "tangent": -1044.81067990835
+      },
+      "reference": {
+        "normal": -18.455886545549795,
+        "tangent": -1044.81067990835
+      }
+    },
+    {
+      "id": "curved-return",
+      "q": {
+        "vn": 2.7929047963226594e-16,
+        "vt": -0.02,
+        "nn": 8.039193122364246e-05,
+        "nt": -3.580286132647077e-06,
+        "tt": 7.663213909881556e-05,
+        "inverseMass": 0.018803945852731645,
+        "extension": 0.00014839573987224242,
+        "capacity": 2267.004730607681
+      },
+      "candidate": {
+        "normal": -6.5364530615821,
+        "tangent": 260.6817173925878,
+        "normalVelocity": -0.0014587932227883027,
+        "tangentVelocity": 0,
+        "total": 260.7636535282003,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "loss": 0.006826366219240761,
+        "targetResidual": 0
+      },
+      "ordered": {
+        "normal": -6.536453061582101,
+        "tangent": 260.6817173925878
+      },
+      "reference": {
+        "normal": -6.536453061582098,
+        "tangent": 260.68171739258787
+      }
+    },
+    {
+      "id": "radial-control",
+      "q": {
+        "vn": 0,
+        "vt": 0,
+        "nn": 8.688881615157877e-05,
+        "nt": 0,
+        "tt": 8.688881631817077e-05,
+        "inverseMass": 0.018803945852731645,
+        "extension": 0.00014839573987224242,
+        "capacity": 2267.004730607681
+      },
+      "candidate": {
+        "normal": -8.77121362331279,
+        "tangent": 0,
+        "normalVelocity": -0.0007621203679422481,
+        "tangentVelocity": 0,
+        "total": 8.77121362331279,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "loss": 0.0018631561156644335,
+        "targetResidual": 0
+      },
+      "ordered": {
+        "normal": -8.77121362331279,
+        "tangent": 0
+      },
+      "reference": {
+        "normal": -8.771213623312788,
+        "tangent": 0
+      }
+    },
+    {
+      "id": "zero-span-control",
+      "q": {
+        "vn": 0,
+        "vt": 0,
+        "nn": 8.688881615157877e-05,
+        "nt": 0,
+        "tt": 8.688881631817077e-05,
+        "inverseMass": 0.018803945852731645,
+        "extension": 0,
+        "capacity": 2267.004730607681
+      },
+      "candidate": {
+        "normal": 0,
+        "tangent": 0,
+        "normalVelocity": 0,
+        "tangentVelocity": 0,
+        "total": 0,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "loss": 0,
+        "targetResidual": 0
+      },
+      "ordered": {
+        "normal": 0,
+        "tangent": 0
+      },
+      "reference": {
+        "normal": 0,
+        "tangent": 0
+      }
+    },
+    {
+      "id": "fresh-curved",
+      "q": {
+        "vn": 0.005255739965785141,
+        "vt": 0.05682343626270384,
+        "nn": 8.263100601259127e-05,
+        "nt": -2.385001041491076e-06,
+        "tt": 8.012642738359988e-05,
+        "inverseMass": 0.018803945852731645,
+        "extension": 0.00014839573987224242,
+        "capacity": 2267.004730607681
+      },
+      "candidate": {
+        "normal": -26.48619424566772,
+        "tangent": -709.9605925423842,
+        "normalVelocity": 0.0047604158424519195,
+        "tangentVelocity": 0,
+        "total": 710.4544752823734,
+        "stiffness": 75581.10648092549,
+        "damping": 3207.7617868784473,
+        "loss": 0.07269288296905267,
+        "targetResidual": 2.0120182117415432e-16
+      },
+      "ordered": {
+        "normal": -26.48619424566771,
+        "tangent": -709.9605925423842
+      },
+      "reference": {
+        "normal": -26.48619424566772,
+        "tangent": -709.9605925423845
+      }
+    }
+  ],
+  "priorComparison": {
+    "path": "data/reviews/current/grip-world-accounting.json",
+    "sha256": "0bc4d1686e829a99bf85a8a220afe3b13006bf1435749d09328e0b0f0a650a90",
+    "originalFundedWorld128NormalizedError": 142.47952353444586,
+    "newRadialReferenceError": 0.0007382710041880007,
+    "inputBasis": "Same acquired loaded/stopped radial checkpoint, existing mobility, unchanged capacities, 200us. Reuse prior scalar work/dose oracle."
+  },
+  "decision": "200us accounting/mechanics pass; ordinary whole-interval scope is incomplete, so no World/native football integration. Retain 4.166667ms curved-return refusal and unconverged reference; tangent force reverses near.806ms, normal remains negative.",
+  "inputManifest": {
+    "path": "config/grip-mixed-span-inputs.json",
+    "sha256": "b3412a7f6369963a4682f02be3d838148c0f75f123c4eb1daa3fd83abfec5305"
+  },
+  "world": [
+    {
+      "id": "loaded-mixed",
+      "mode": "unchanged-World128",
+      "duration": 0.0002,
+      "partitions": 128,
+      "normalDose": 4.5743743402735324e-07,
+      "tangentDose": 0.09179731577516248,
+      "dose": 0.09179731577864171,
+      "maximumCapExcess": 0,
+      "bodyLedgerResidual": 1.9949319973733282e-17,
+      "motorLedgerResidual": -8.673617379884035e-19,
+      "passiveLedgerResidual": 1.5317743818146767e-17,
+      "kineticResidual": -6.531233887052679e-16,
+      "doseResidual": -2.3592239273284576e-16,
+      "spanEnergyChange": -1.6785519372022883e-12,
+      "reportedPassive": -2.7393212917607712e-05,
+      "commonMotorCrossWork": 6.938893903907228e-18
+    },
+    {
+      "id": "curved-return",
+      "mode": "unchanged-World128",
+      "duration": 0.0002,
+      "partitions": 128,
+      "normalDose": 5.239939660202365e-12,
+      "tangentDose": 0.023853500459595344,
+      "dose": 0.023853500459595344,
+      "maximumCapExcess": 0,
+      "bodyLedgerResidual": 1.8539857149502126e-17,
+      "motorLedgerResidual": -3.74049749507499e-18,
+      "passiveLedgerResidual": 2.938060832493629e-17,
+      "kineticResidual": 2.894819800536297e-17,
+      "doseResidual": -1.214306433183765e-16,
+      "spanEnergyChange": -1.5196370643622654e-06,
+      "reportedPassive": -1.9714217989116878e-06,
+      "commonMotorCrossWork": -9.654115614571301e-15
+    },
+    {
+      "id": "radial-control",
+      "mode": "unchanged-World128",
+      "duration": 0.0002,
+      "partitions": 128,
+      "normalDose": 0,
+      "tangentDose": 0,
+      "dose": 0,
+      "maximumCapExcess": 0,
+      "bodyLedgerResidual": 0,
+      "motorLedgerResidual": 0,
+      "passiveLedgerResidual": 0,
+      "kineticResidual": 0,
+      "doseResidual": 0,
+      "spanEnergyChange": 0,
+      "reportedPassive": 0,
+      "commonMotorCrossWork": 0
+    },
+    {
+      "id": "zero-span-control",
+      "mode": "unchanged-World128",
+      "duration": 0.0002,
+      "partitions": 128,
+      "normalDose": 0,
+      "tangentDose": 0,
+      "dose": 0,
+      "maximumCapExcess": 0,
+      "bodyLedgerResidual": 0,
+      "motorLedgerResidual": 0,
+      "passiveLedgerResidual": 0,
+      "kineticResidual": 0,
+      "doseResidual": 0,
+      "spanEnergyChange": 0,
+      "reportedPassive": 0,
+      "commonMotorCrossWork": 0
+    }
+  ],
+  "bench": [
+    {
+      "run": 1,
+      "id": "loaded-mixed-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.7524209999999698,
+        "p95": 1.3929219999999987,
+        "maximum": 1.449418000000037
+      }
+    },
+    {
+      "run": 1,
+      "id": "loaded-mixed-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 3.0431029999999737,
+        "p95": 6.136889999999994,
+        "maximum": 11.084074000000044
+      }
+    },
+    {
+      "run": 1,
+      "id": "curved-mixed-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.7240379999999504,
+        "p95": 0.8984299999999621,
+        "maximum": 2.8676289999999653
+      }
+    },
+    {
+      "run": 1,
+      "id": "curved-mixed-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 2.900929000000019,
+        "p95": 5.909840000000031,
+        "maximum": 6.78143
+      }
+    },
+    {
+      "run": 1,
+      "id": "curved-return-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.6749939999999697,
+        "p95": 0.8882750000000215,
+        "maximum": 1.0651200000000927
+      }
+    },
+    {
+      "run": 1,
+      "id": "curved-return-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 3.1898129999999583,
+        "p95": 3.788903000000005,
+        "maximum": 3.865047000000004
+      }
+    },
+    {
+      "run": 1,
+      "id": "radial-control-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.13968999999997322,
+        "p95": 0.28378699999996115,
+        "maximum": 0.34115299999996296
+      }
+    },
+    {
+      "run": 1,
+      "id": "radial-control-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 2.942841000000044,
+        "p95": 3.980311000000029,
+        "maximum": 4.083470000000034
+      }
+    },
+    {
+      "run": 1,
+      "id": "zero-span-control-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.21457199999997556,
+        "p95": 0.28143199999999524,
+        "maximum": 0.4242380000000594
+      }
+    },
+    {
+      "run": 1,
+      "id": "zero-span-control-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 3.09667300000001,
+        "p95": 5.250227999999993,
+        "maximum": 5.621212000000014
+      }
+    },
+    {
+      "run": 1,
+      "id": "fresh-curved-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.6809630000000197,
+        "p95": 0.96841500000005,
+        "maximum": 1.0391409999999723
+      }
+    },
+    {
+      "run": 1,
+      "id": "fresh-curved-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 2.76108899999997,
+        "p95": 3.3804000000000087,
+        "maximum": 3.7082719999999654
+      }
+    },
+    {
+      "run": 1,
+      "id": "radial-matched-200us",
+      "method": "originalWorld128-known-wrong",
+      "milliseconds": {
+        "median": 2.8222699999998895,
+        "p95": 5.15447499999982,
+        "maximum": 5.568768000000091
+      }
+    },
+    {
+      "run": 1,
+      "id": "radial-matched-200us",
+      "method": "fundedWorld128-fails-strict-dose",
+      "milliseconds": {
+        "median": 3.447730999999976,
+        "p95": 8.06619999999998,
+        "maximum": 8.435043999999834
+      }
+    },
+    {
+      "run": 1,
+      "id": "radial-matched-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.21730600000000777,
+        "p95": 0.34657100000003993,
+        "maximum": 0.3749840000000404
+      }
+    },
+    {
+      "run": 1,
+      "id": "radial-matched-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 2.9163120000000617,
+        "p95": 4.9187100000001465,
+        "maximum": 4.927323999999999
+      }
+    },
+    {
+      "run": 1,
+      "id": "long-curved-return-refusal",
+      "method": "candidate-refusal",
+      "milliseconds": {
+        "median": 9.315305999999964,
+        "p95": 14.001899000000094,
+        "maximum": 24.686852999999928
+      }
+    },
+    {
+      "run": 1,
+      "id": "long-curved-mixed",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 9.415597000000162,
+        "p95": 11.529833999999937,
+        "maximum": 11.722492999999758
+      }
+    },
+    {
+      "run": 2,
+      "id": "loaded-mixed-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.7726920000000064,
+        "p95": 1.7765610000000152,
+        "maximum": 1.9279189999999744
+      }
+    },
+    {
+      "run": 2,
+      "id": "loaded-mixed-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 3.59236199999998,
+        "p95": 9.799994999999967,
+        "maximum": 10.983834000000002
+      }
+    },
+    {
+      "run": 2,
+      "id": "curved-mixed-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.6470630000000028,
+        "p95": 1.4021180000000868,
+        "maximum": 3.6330930000000308
+      }
+    },
+    {
+      "run": 2,
+      "id": "curved-mixed-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 2.921051999999918,
+        "p95": 3.42149500000005,
+        "maximum": 3.4832170000000815
+      }
+    },
+    {
+      "run": 2,
+      "id": "curved-return-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.8481160000000045,
+        "p95": 1.294526000000019,
+        "maximum": 1.4009509999999636
+      }
+    },
+    {
+      "run": 2,
+      "id": "curved-return-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 3.373503000000028,
+        "p95": 4.1954880000000685,
+        "maximum": 4.5574620000001005
+      }
+    },
+    {
+      "run": 2,
+      "id": "radial-control-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.1304259999999431,
+        "p95": 0.23957099999995535,
+        "maximum": 0.41507400000000416
+      }
+    },
+    {
+      "run": 2,
+      "id": "radial-control-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 3.072791000000052,
+        "p95": 3.576838000000066,
+        "maximum": 4.258443000000057
+      }
+    },
+    {
+      "run": 2,
+      "id": "zero-span-control-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.1595999999999549,
+        "p95": 0.3056890000000294,
+        "maximum": 0.3937819999999874
+      }
+    },
+    {
+      "run": 2,
+      "id": "zero-span-control-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 2.833349999999996,
+        "p95": 3.3401320000000396,
+        "maximum": 3.4367369999999937
+      }
+    },
+    {
+      "run": 2,
+      "id": "fresh-curved-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.630198000000064,
+        "p95": 0.8418050000000221,
+        "maximum": 0.8685660000001008
+      }
+    },
+    {
+      "run": 2,
+      "id": "fresh-curved-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 2.654280999999969,
+        "p95": 3.048813999999993,
+        "maximum": 3.0858990000000404
+      }
+    },
+    {
+      "run": 2,
+      "id": "radial-matched-200us",
+      "method": "originalWorld128-known-wrong",
+      "milliseconds": {
+        "median": 3.39014700000007,
+        "p95": 5.485488000000032,
+        "maximum": 6.899644999999964
+      }
+    },
+    {
+      "run": 2,
+      "id": "radial-matched-200us",
+      "method": "fundedWorld128-fails-strict-dose",
+      "milliseconds": {
+        "median": 4.32811700000002,
+        "p95": 6.394755000000032,
+        "maximum": 6.863990999999942
+      }
+    },
+    {
+      "run": 2,
+      "id": "radial-matched-200us",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 0.25794699999983095,
+        "p95": 0.39782900000000154,
+        "maximum": 0.47600599999987026
+      }
+    },
+    {
+      "run": 2,
+      "id": "radial-matched-200us",
+      "method": "reference256",
+      "milliseconds": {
+        "median": 2.9741720000001806,
+        "p95": 4.250791000000163,
+        "maximum": 4.276560000000018
+      }
+    },
+    {
+      "run": 2,
+      "id": "long-curved-return-refusal",
+      "method": "candidate-refusal",
+      "milliseconds": {
+        "median": 8.974373000000014,
+        "p95": 10.666858000000047,
+        "maximum": 10.938896999999997
+      }
+    },
+    {
+      "run": 2,
+      "id": "long-curved-mixed",
+      "method": "candidate",
+      "milliseconds": {
+        "median": 9.685271999999713,
+        "p95": 12.937852999999905,
+        "maximum": 13.571625999999924
+      }
+    }
+  ],
+  "profile": {
+    "path": "out/grip-mixed-span/mixed-span.cpuprofile",
+    "sha256": "bfbc0577715d6a93713d2c12a255808a21d5bb1b3c6db48601a71aba67bdad14",
+    "samples": 310,
+    "operators": 400,
+    "hot": [
+      {
+        "count": 78,
+        "fraction": 0.25161290322580643,
+        "function": "frame",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 57,
+        "fraction": 0.18387096774193548,
+        "function": "sharedExplicitStep",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-shared-explicit.ts",
+        "line": 1
+      },
+      {
+        "count": 37,
+        "fraction": 0.11935483870967742,
+        "function": "spanForce",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-force.ts",
+        "line": 1
+      },
+      {
+        "count": 30,
+        "fraction": 0.0967741935483871,
+        "function": "(garbage collector)",
+        "file": "",
+        "line": 0
+      },
+      {
+        "count": 18,
+        "fraction": 0.05806451612903226,
+        "function": "pressureGeometry",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-pressure-rate.ts",
+        "line": 1
+      },
+      {
+        "count": 16,
+        "fraction": 0.05161290322580645,
+        "function": "derivative",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 13,
+        "fraction": 0.041935483870967745,
+        "function": "boundedAttachment",
+        "file": "file:///workspace/football-simulation-/src/physics/bounded-attachment.ts",
+        "line": 1
+      },
+      {
+        "count": 10,
+        "fraction": 0.03225806451612903,
+        "function": "mixedSpanDifference",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 8,
+        "fraction": 0.025806451612903226,
+        "function": "result",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 7,
+        "fraction": 0.02258064516129032,
+        "function": "spanForce",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-force.ts",
+        "line": 1
+      },
+      {
+        "count": 7,
+        "fraction": 0.02258064516129032,
+        "function": "mixedSpanInterval",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-interval.ts",
+        "line": 1
+      },
+      {
+        "count": 4,
+        "fraction": 0.012903225806451613,
+        "function": "__name",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 4,
+        "fraction": 0.012903225806451613,
+        "function": "",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-evidence.ts",
+        "line": 0
+      },
+      {
+        "count": 4,
+        "fraction": 0.012903225806451613,
+        "function": "mixedSpanModel",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      },
+      {
+        "count": 2,
+        "fraction": 0.0064516129032258064,
+        "function": "frame",
+        "file": "file:///workspace/football-simulation-/scripts/diag/physics/grip-mixed-span-model.ts",
+        "line": 1
+      }
+    ],
+    "input": "curved-mixed200us",
+    "preparationExcluded": true
+  },
+  "longFailureDiagnosis": {
+    "id": "curved-return",
+    "duration": 0.004166666666666667,
+    "reversalBracketSeconds": [
+      0.0008056640625,
+      0.0008066813151041667
+    ],
+    "normalAtFirstNegativeTangent": -7.000322767310199,
+    "firstNegativeTangent": -0.0005735657822404867,
+    "candidate64vs128NormalizedError": 204.2682221981007,
+    "candidateComponentErrors": [
+      {
+        "field": "tangentDose",
+        "absolute": 2.042682221981007e-07,
+        "normalized": 204.2682221981007
+      },
+      {
+        "field": "normalImpulse",
+        "absolute": 1.319483064476934e-11,
+        "normalized": 0.01319483064476934
+      },
+      {
+        "field": "normalDose",
+        "absolute": 1.319483064476934e-11,
+        "normalized": 0.01319483064476934
+      },
+      {
+        "field": "dose",
+        "absolute": 1.306410535306668e-11,
+        "normalized": 0.01306410535306668
+      },
+      {
+        "field": "springEnergy",
+        "absolute": 6.237704580289161e-13,
+        "normalized": 0.0006237704580289161
+      },
+      {
+        "field": "bodyWork",
+        "absolute": 5.379130843009838e-13,
+        "normalized": 0.0005379130843009838
+      },
+      {
+        "field": "separateMotorWork",
+        "absolute": 5.047940689582864e-13,
+        "normalized": 0.0005047940689582864
+      },
+      {
+        "field": "motorWork",
+        "absolute": 5.043063406109938e-13,
+        "normalized": 0.0005043063406109938
+      },
+      {
+        "field": "tangentImpulse",
+        "absolute": 3.166703010926142e-13,
+        "normalized": 0.0003166703010926142
+      },
+      {
+        "field": "springWork",
+        "absolute": 5.752955620566547e-14,
+        "normalized": 5.752955620566546e-05
+      },
+      {
+        "field": "dampingLoss",
+        "absolute": 2.3924160992127436e-14,
+        "normalized": 2.3924160992127436e-05
+      },
+      {
+        "field": "motorCrossWork",
+        "absolute": 4.86849338851591e-16,
+        "normalized": 4.86849338851591e-07
+      }
+    ],
+    "accepted": false,
+    "classification": "Tangent absolute-component dose quadrature at a sign reversal; physical vector dose, impulses, body/motor/spring work and damping agree at these two grids. Whole gate remains failed; reference2048/4096 also unconverged."
+  },
+  "validation": {
+    "tests": 16,
+    "newMechanicalTests": 12,
+    "reusedFatiguePartitionChecks": 4,
+    "typecheck": "pass",
+    "runtimeDefaultsAndBaseline": "unchanged",
+    "WorldOrRecoveryInsertion": false,
+    "fullSuiteOrFootball": "not run; long accuracy/cost gate unresolved",
+    "unrelatedPatchGate": "43/52, all nine failures retained",
+    "developmentEvidence": "Initial64/128 short references and1024/2048 long references were not converged; retained. Coarse long stages overshoot cap, rejected/refined under original bounded field budget. Collector type declarations corrected before final pinned checks."
+  },
+  "raw": [
+    {
+      "path": "out/grip-mixed-span/evidence.json",
+      "sha256": "265945382f10e53533d842f7637e72a493ff000b11c9d290b1002700a865d49d"
+    },
+    {
+      "path": "out/grip-mixed-span/moving-raw.json",
+      "sha256": "f5dba867fa491d9493e42f50d3a70d754e19776c9b4155c4e21d51d07960144a"
+    },
+    {
+      "path": "out/grip-mixed-span/accuracy-final-launcher.json",
+      "sha256": "42f832a23a81e5919b1043783894e8b479d1688433b9f67588ac06edd621242c"
+    },
+    {
+      "path": "out/grip-mixed-span/correctness-launcher.json",
+      "sha256": "659b3e8a816444dacd745533ea8c692017144b25298076f42a16448c8da71065"
+    },
+    {
+      "path": "out/grip-mixed-span/typecheck-launcher.json",
+      "sha256": "519570dbfc1f68817e2374348226936a3c019ae5531e9a33cce65b3d87560d25"
+    },
+    {
+      "path": "out/grip-mixed-span/benchmark1.json",
+      "sha256": "a04b6702e3a2d25996da01a0046dce93a27a40a95f52458f5987546dd2734857"
+    },
+    {
+      "path": "out/grip-mixed-span/benchmark2.json",
+      "sha256": "e630cb8b3d72ad141c475bdc1349caa3492ca5d050528f6aa631f69e287ec659"
+    },
+    {
+      "path": "out/grip-mixed-span/benchmark1-launcher.json",
+      "sha256": "617321b951eb1f59f1c539290c254281e82755db693c51aa43ba3619dc08725e"
+    },
+    {
+      "path": "out/grip-mixed-span/benchmark2-launcher.json",
+      "sha256": "2d92b395bd6a4042f9020c5500452ae41e3148e776ca08d3700f66818fd735d7"
+    },
+    {
+      "path": "out/grip-mixed-span/profile.json",
+      "sha256": "83b4b10de1a6c297ee7c165ea91ffd208550ce9ce0946e1a2224c1f5a0dc7310"
+    },
+    {
+      "path": "out/grip-mixed-span/profile-launcher.json",
+      "sha256": "9ba439a2a472d32ab762886130f4cfe880751c7a550601e4370ef9bb28bbb38c"
+    },
+    {
+      "path": "out/grip-mixed-span/mixed-span.cpuprofile",
+      "sha256": "bfbc0577715d6a93713d2c12a255808a21d5bb1b3c6db48601a71aba67bdad14"
+    },
+    {
+      "path": "out/grip-mixed-span/frozen-screen.jsonl",
+      "sha256": "891b952fb9f6963b19e2a74905540b79106f40dd7841faf14eda3701615e7cb1"
+    },
+    {
+      "path": "out/grip-mixed-span/moving-refined.jsonl",
+      "sha256": "49d0ea6c1c95d4452d2fee6f913a4d5afa45d2a5d4150a68e1875c82169adc48"
+    },
+    {
+      "path": "out/grip-mixed-span/long-development.jsonl",
+      "sha256": "29463bd0adce77fee76f293acdab373d824bb1c5a5a4678b7a67f3f3e35b0db5"
+    },
+    {
+      "path": "out/grip-mixed-span/long-refined.jsonl",
+      "sha256": "225ba58c0c0460cfe9ef1d095bd3208a20eefafe3527676e95927bcd9578d324"
+    },
+    {
+      "path": "out/grip-mixed-span/unload-final.jsonl",
+      "sha256": "3b4cfbc709a954dbe0094e152da59790edd0a06469a72d81d75556b7c84efa76"
+    },
+    {
+      "path": "out/grip-mixed-span/unload.ts",
+      "sha256": "30d384b3e89f813f5e87169821303d4c7d841752e7814ed13e5fc37c62987fe4"
+    },
+    {
+      "path": "out/grip-mixed-span/unload-launcher.json",
+      "sha256": "e92fab5c6fbcd879b9c451c77c4ba2ea5a3584cf9e8d47bf1092c561a83c806d"
+    },
+    {
+      "path": "out/grip-mixed-span/failed-partitions.json",
+      "sha256": "cb176e3d5fc6725bdc7c3c58eda6289a16a66406bdcfcefa07d92845a3919cdd"
+    },
+    {
+      "path": "out/grip-mixed-span/failed-partitions.ts",
+      "sha256": "ebeb1def4a444aab52fd4c03e09d33e4b983c4917ded9812ea3a01bcedf9bcfe"
+    },
+    {
+      "path": "out/grip-mixed-span/failed-partitions-launcher.json",
+      "sha256": "ef7cbeec566b54fcabc01ec8f5e68c53b4a49b96547f27b0352a9e6bd455080d"
+    }
+  ]
+}
