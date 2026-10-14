@@ -11,7 +11,35 @@ compatible evidence and supply focused receipts; the existing integration lead
 freezes the combined candidate and owns its preserved full suite. Adoption does
 not schedule tests or an integration run.
 
-Latest run-game handoff to the audit/integration owner: [component-only draft PR #9](https://github.com/tannerthardy/football-simulation-/pull/9),
+Run-game formation priority and latest diagnostic handoff:
+[under-center singleback two-TE controls, draft PR #11](https://github.com/tannerthardy/football-simulation-/pull/11)
+at **`f867fa31aec3d128b1c548a177c5a84088696038`**, branch `codex/under-center-zone`.
+Existing `ace_12` is the main ordinary OZ/WZ reference: one back, two attached
+TEs, under center, no fullback. I-formation G73-I48 remains secondary.
+[Findings/commands](https://github.com/tannerthardy/football-simulation-/blob/f867fa31aec3d128b1c548a177c5a84088696038/docs/reviews/under-center-zone.md)
+and [exact inputs/settings/receipts](https://github.com/tannerthardy/football-simulation-/blob/f867fa31aec3d128b1c548a177c5a84088696038/docs/reviews/under-center-zone-receipt.json)
+retain three completed default histories exactly matching actual **4ded6b6**.
+Nine neutral observed/plain pairs (pin/default/components), 27.83 recorded
+validation command-seconds, zero games/full suite. Useful Y→LB_S/C→LB_M
+collection preserves a clean arrival; two H-playside looks lose first-level end
+protection despite keeper hand load. Balanced-formation flip is a TE-placement
+contrast; an explicit weak call supplies the opposite direction against Over.
+Sole physics owner: [13 KB RT/DE_S two-body input](https://github.com/tannerthardy/football-simulation-/blob/f867fa31aec3d128b1c548a177c5a84088696038/docs/reviews/under-center-zone-keeper-world-witness.json),
+2.40 s, native reduced error 8.44e−15. Clean passive free pair has no external
+ground/contact/strike yet angular change +15.153603; the known law fails.
+Football endpoint cause is unproved. Return this interval after law review
+with the useful Y/RT control; no dependent release heuristic is installed.
+Audit/integration owner: exact PR #9 `7a04ad6` tested alone on the new three
+inputs. Contact/crossing/ending boundaries and approach categories retained;
+small adverse gains and off-ball changes remain visible. This adds focused
+evidence without changing that candidate or certifying the angular law.
+Next football question: keeper runoff and runner response using acquired
+information. PR #11 changes diagnostics/docs only, retaining PR #4 source
+`09c65f70...` and reference experiments off. No solver, capacity, roster,
+movement-file, default or baseline changes. Withdrawn early-release control
+and parked reach-track collision remain separate and preserved.
+
+Component-only handoff to the audit/integration owner: [draft PR #9](https://github.com/tannerthardy/football-simulation-/pull/9),
 branch `codex/run-contact-components-candidate`, exact published commit
 **`7a04ad6c65d9268bb332147411baacc27ebe20e0`** (tested engine change
 `176866ed47cacd56331b33b676c0509a350e95d7`; subsequent commit is receipts/docs only).
