@@ -1,0 +1,482 @@
+{
+  "source": "7a4283fcd382b3c598b72f3845b37b49e1cb3d3cf3c06fdad15c16a1794b4c5b",
+  "commit": "504c749f5fdf88ed2c2da01a6502b4cabc793d51",
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "referenceCommit": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "collectorSha256": "d0b714a21049400829eeb1d38480ff9f184aca0a630e7d0bf8ca1a53339f64a2",
+  "kernelSha256": "9a1badf7743c1270c40febd6c941966a55a161257d8b8765c7dadc22911e2f84",
+  "worldOptions": {
+    "handContact": "patch",
+    "variant": "grip-only",
+    "duration": 0.004166666666666667
+  },
+  "rows": [
+    {
+      "id": "patch-45-8-0-3001-1",
+      "checksum": "c02db74d2987731b573c85bea413126bf0387110f129e79b698085a8ff3779b7",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.107421485631505,
+            "y": 27.821426254605832
+          },
+          "vel": {
+            "x": 0.9384014975733385,
+            "y": -2.9045766160063295
+          },
+          "facing": -2.0360320549455704,
+          "spin": 3.019929686635717
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.2000000000003,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.004166666666666667,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "pullSpeed": 2.1061224489795918
+      },
+      "reference": {
+        "cached": true,
+        "source": "a4bfc67148f4b8228acb419e6ab744c2d5195776233f231fe6e7765745a3ceb0",
+        "partitions": 4096
+      },
+      "kernel": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.11149237009037,
+            "y": 27.809337829056464
+          },
+          "vel": {
+            "x": 0.9935849150991524,
+            "y": -2.8997165946793766
+          },
+          "facing": -2.013924453121884,
+          "spin": 6.286114530116066
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.23318684259766,
+            "y": 26.666653939626503
+          },
+          "vel": {
+            "x": 7.949751684854544,
+            "y": -0.004425385273323159
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "impulse": {
+          "x": -5.606894079412297,
+          "y": -0.49380096459527834
+        },
+        "moment": {
+          "x": -0.016345981707678352,
+          "y": -0.0014201305247953904
+        },
+        "angularImpulse": 6.504450147023736,
+        "angularMoment": 0.018967706414438495,
+        "work": -10.464702383109781,
+        "dose": 5.628657388875425,
+        "slidingUntil": 0.0024526478936043837,
+        "finalSlip": -7.718270467194088e-13,
+        "partitions": 4,
+        "evaluations": 328,
+        "error": 2.5299939920842004e-05,
+        "representationError": 6.0645932720149176e-15
+      },
+      "errors": [
+        {
+          "i": 15,
+          "position": 3.4264735889739924e-10,
+          "velocity": 1.9707626869925474e-07,
+          "facing": 2.0158422930904862e-08,
+          "spin": 1.1592775857494075e-05
+        },
+        {
+          "i": 6,
+          "position": 3.1221545867132007e-10,
+          "velocity": 1.794515765663086e-07,
+          "facing": 0,
+          "spin": 0
+        }
+      ],
+      "accounting": {
+        "workResidual": 1.0890488510995056e-09,
+        "angularResidual": 1.709850039333105e-10,
+        "representationError": 6.0645932720149176e-15,
+        "forceDoseExcess": -3.8171956553232445,
+        "passiveWork": -10.464702383109781,
+        "normalImpulse": 0,
+        "armWork": 0,
+        "supportMotorWork": 0,
+        "attachmentPositionError": 3.1221545867132007e-10
+      },
+      "impulseError": 2.0023873350293937e-05,
+      "momentError": 3.482593985169547e-08,
+      "angularImpulseError": 2.3086455980703136e-05,
+      "angularMomentError": 4.014624389522825e-08,
+      "seconds": 0.0014271169999999528
+    },
+    {
+      "id": "patch-45-8-0-3001--1",
+      "checksum": "18072e0f7396aa58e9fed6630fdb154a582388b6a8c7c27524157a24fd13a7d5",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.107421485631505,
+            "y": 25.511907078727504
+          },
+          "vel": {
+            "x": 0.9384014975733385,
+            "y": 2.9045766160063295
+          },
+          "facing": 2.0360320549455704,
+          "spin": -3.019929686635717
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.2000000000003,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.004166666666666667,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "pullSpeed": 2.1061224489795918
+      },
+      "reference": {
+        "cached": true,
+        "source": "a4bfc67148f4b8228acb419e6ab744c2d5195776233f231fe6e7765745a3ceb0",
+        "partitions": 4096
+      },
+      "kernel": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 55.11149237009037,
+            "y": 25.523995504276872
+          },
+          "vel": {
+            "x": 0.9935849150991524,
+            "y": 2.8997165946793766
+          },
+          "facing": 2.013924453121884,
+          "spin": -6.286114530116066
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 55.23318684259766,
+            "y": 26.666679393706833
+          },
+          "vel": {
+            "x": 7.949751684854544,
+            "y": 0.004425385273323159
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "impulse": {
+          "x": -5.606894079412297,
+          "y": 0.49380096459527834
+        },
+        "moment": {
+          "x": -0.016345981707678352,
+          "y": 0.0014201305247953904
+        },
+        "angularImpulse": -6.504450147023736,
+        "angularMoment": -0.018967706414438495,
+        "work": -10.464702383109781,
+        "dose": 5.628657388875425,
+        "slidingUntil": 0.0024526478936043837,
+        "finalSlip": 7.718270467194088e-13,
+        "partitions": 4,
+        "evaluations": 328,
+        "error": 2.5299939920842004e-05,
+        "representationError": 6.0645932720149176e-15
+      },
+      "errors": [
+        {
+          "i": 15,
+          "position": 3.4264735889739924e-10,
+          "velocity": 1.9707626869925474e-07,
+          "facing": 2.0158422930904862e-08,
+          "spin": 1.1592775857494075e-05
+        },
+        {
+          "i": 6,
+          "position": 3.1221545867132007e-10,
+          "velocity": 1.794515765663086e-07,
+          "facing": 0,
+          "spin": 0
+        }
+      ],
+      "accounting": {
+        "workResidual": 1.0890488510995056e-09,
+        "angularResidual": -1.7826096154749393e-10,
+        "representationError": 6.0645932720149176e-15,
+        "forceDoseExcess": -3.8171956553232445,
+        "passiveWork": -10.464702383109781,
+        "normalImpulse": 0,
+        "armWork": 0,
+        "supportMotorWork": 0,
+        "attachmentPositionError": 3.1221545867132007e-10
+      },
+      "impulseError": 2.0023873350293937e-05,
+      "momentError": 3.482593985169547e-08,
+      "angularImpulseError": 2.3086455980703136e-05,
+      "angularMomentError": 4.014624389522825e-08,
+      "seconds": 0.0005126719999999522
+    },
+    {
+      "id": "patch-0-3-0-3001-1",
+      "checksum": "ccf3c23363fda87c9fcb181b50e547d7b7343b030d99b784364708f187fb984b",
+      "input": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 53.07957199566374,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": -2.0081632653061225,
+            "y": 0
+          },
+          "facing": 3.141592653589793,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 52.09999999999998,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "capacity": 2267.004730607681,
+        "duration": 0.004166666666666667,
+        "minimumDistance": 0.522,
+        "reach": 1.474375,
+        "pullSpeed": 2.1061224489795918
+      },
+      "reference": {
+        "cached": false,
+        "source": "7a4283fcd382b3c598b72f3845b37b49e1cb3d3cf3c06fdad15c16a1794b4c5b",
+        "partitions": 4096
+      },
+      "kernel": {
+        "a": {
+          "mass": 101.60469088,
+          "inertia": 1.9914519412479996,
+          "pos": {
+            "x": 53.071204648724965,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": -2.0081632653061225,
+            "y": 0
+          },
+          "facing": 3.141592653589793,
+          "spin": 0
+        },
+        "b": {
+          "mass": 111.58372302000001,
+          "inertia": 2.51063376795,
+          "pos": {
+            "x": 52.11249999999998,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0
+        },
+        "impulse": {
+          "x": 0,
+          "y": 0
+        },
+        "moment": {
+          "x": 0,
+          "y": 0
+        },
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "work": 0,
+        "dose": 0,
+        "slidingUntil": 0,
+        "finalSlip": 0,
+        "partitions": 4,
+        "evaluations": 24,
+        "error": 0,
+        "representationError": 3.552713678800501e-15
+      },
+      "errors": [
+        {
+          "i": 15,
+          "position": 1.0167866548727034e-11,
+          "velocity": 0,
+          "facing": 0,
+          "spin": 0
+        },
+        {
+          "i": 6,
+          "position": 1.1638690011750441e-11,
+          "velocity": 0,
+          "facing": 0,
+          "spin": 0
+        }
+      ],
+      "accounting": {
+        "workResidual": 0,
+        "angularResidual": 0,
+        "representationError": 3.552713678800501e-15,
+        "forceDoseExcess": -9.44585304419867,
+        "passiveWork": 0,
+        "normalImpulse": 0,
+        "armWork": 0,
+        "supportMotorWork": 0,
+        "attachmentPositionError": 1.1638690011750441e-11
+      },
+      "impulseError": 0,
+      "momentError": 0,
+      "angularImpulseError": 0,
+      "angularMomentError": 0,
+      "seconds": 7.101699999998345e-05
+    }
+  ],
+  "bench": [
+    {
+      "mode": "resolved",
+      "seconds": {
+        "median": 0.0308583779999999,
+        "p95": 0.042557473999999956,
+        "maximum": 0.042557473999999956,
+        "samples": [
+          0.042557473999999956,
+          0.03217917500000021,
+          0.028086786999999957,
+          0.0308583779999999,
+          0.028211254000000054,
+          0.028838017000000035,
+          0.0309077420000001
+        ]
+      }
+    },
+    {
+      "mode": "kernel",
+      "seconds": {
+        "median": 0.0007839999999998781,
+        "p95": 0.0011613080000001902,
+        "maximum": 0.0011613080000001902,
+        "samples": [
+          0.0011613080000001902,
+          0.0007950960000000578,
+          0.0005623060000000351,
+          0.0005235179999999673,
+          0.0007839999999998781,
+          0.0007872650000001613,
+          0.0006762679999999364
+        ]
+      }
+    }
+  ],
+  "rawSha256": "6d6ffabfad2fadef3eda1117c3247a86284f05c7493cf2bf0ee3e97c7a680097",
+  "speedRatio": 39.36017602041416,
+  "scope": "Diagnostic dry-only two-body kernel at the held COM, zero support mobility/normal load, inactive reel, no torso contact. Existing grip-only isolation, not live football or an inserted World solver.",
+  "testFixtureSha256": "0b709f70e1d86fd7222b5afed9de9b34f8fbe559d56c6de5f308106a873e5f2d",
+  "limits": [
+    "World/fast/resolved/defaults remain byte-identical to PR #7.",
+    "One structural cap is obtained from the existing World; zero normal load means simultaneous normal/tangent competition is not established.",
+    "The attachment has zero relative offset; moving support/material-point integration is not established.",
+    "Full/loaded ground response, active reeling, multiple contacts and fatigue composition are not implemented; no replacement or promotion.",
+    "The prior 1687-test pass describes production defaults at f658941, not a full-suite pass for this new diagnostic.",
+    "The same nine prior gate fixtures have zero timing invocation; keeper/contact diagnosis remains independent."
+  ]
+}

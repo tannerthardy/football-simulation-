@@ -94,7 +94,8 @@ also retain exact motion, work and shared attachment identities.
 All 12 fresh finishes remain physical falls, with no outcome trade. However,
 the fresh frontal fine run advances .004853 yd farther than slow, in both
 mirrors. Its coarse/fine advance gap worsens from .000825 to .004028 yd.
-This is a retained numerical regression, not an accuracy improvement. The
+This is reduced numerical agreement. No whole-play accuracy threshold was
+declared, so it is not automatically a football regression or improvement. The
 fresh 70° coarse run hits the reference's refinement cap once in each mirror;
 fast exhausts its own search and falls back to that same limited result.
 These completed tackles are not evidence of converged contact integration.
