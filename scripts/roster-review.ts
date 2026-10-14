@@ -126,7 +126,8 @@ function main(): void {
   }
   if (!values['--baseline'] || !values['--candidate'] || !values['--out']) throw new Error('Supply --baseline, --candidate and --out');
   const baselineBytes = readFileSync(values['--baseline'], 'utf8'), candidateBytes = readFileSync(values['--candidate'], 'utf8');
-  const pins = JSON.parse(readFileSync('config/baseline.json', 'utf8'));
+  // Evidence pins describe the historical collector, not today's flag inventory.
+  const pins = JSON.parse(readFileSync('config/roster-screen-reference.json', 'utf8'));
   let review = buildReview(JSON.parse(baselineBytes), JSON.parse(candidateBytes), pins);
   // Absolute links remain usable if the worksheet is placed outside the default out/ tree.
   review = review.replace('../../../docs/BEHAVIOR_REVIEW.md', resolve('docs/BEHAVIOR_REVIEW.md'));

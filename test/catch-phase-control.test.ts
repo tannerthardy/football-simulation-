@@ -84,4 +84,22 @@ describe('running phase at an observed receiver catch', () => {
     r.body.pos = { x: 80, y: 4 }; r.body.vel = { x: 0, y: -8 };
     expect(playBall(d, sim, null)).toEqual(before);
   });
+
+  it('redirects a free moving arrival from its acquired picture without seeing the later catcher state', () => {
+    const { sim, r, d } = stage();
+    d.body.pos = { x: 55, y: CENTER_Y + 3 };
+    d.body.vel = { x: -3, y: -3 };
+    d.body.facing = Math.atan2(-3, -3);
+    const profile = { ...d.profile }, body = structuredClone(d.body);
+    const command = playBall(d, sim, null);
+    // The receiver is coming through this visible window. A stationary-point
+    // drive would keep asking the defender to run the opposite way.
+    expect(command.vel.x).toBeGreaterThan(0);
+    expect(d.body).toEqual(body);
+    expect(d.profile).toEqual(profile);
+    if (sim.ball.kind !== 'air') throw new Error('Expected flight');
+    sim.ball.target = sim.slot('H')!;
+    r.body.pos = { x: 80, y: 4 }; r.body.vel = { x: 0, y: -8 };
+    expect(playBall(d, sim, null)).toEqual(command);
+  });
 });

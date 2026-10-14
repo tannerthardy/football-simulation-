@@ -1,5 +1,11 @@
 # Shared integration baseline
 
+Current preparation: [reviewed run/catch corrections](reviews/controller-integration.md)
+from approved #8 `c98c2fa`. This candidate has 44 flags/components=1 and requires
+`--candidate`; the original 43 values, historical `4ded6b6` and its receipts
+remain pinned. No reference or runtime baseline designation has occurred.
+The remaining guidance describes that historical comparison and #6-only pass.
+
 Use **`codex/run-game-integration`** for shared development and comparisons.
 Baseline ID: **`run-game-2026-10-13`**. The complete profile is
 [`config/baseline.json`](../config/baseline.json). It retains the existing

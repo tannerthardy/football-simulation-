@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Current controller integration preparation
+
+This bounded ownership row records the current reviewed candidate. Original
+ownership rows below retain their approved-reference content and evidence;
+completed stages and older WIP claims are historical snapshots. The latest
+[navigation/completed-stage workboard](https://github.com/tannerthardy/football-simulation-/blob/545d9b89afd01118df6646a439f9516448e9dfd5/docs/WORKBOARD.md)
+remains on #8. Keeping this claim separate allows its later navigation structure
+to apply cleanly without importing unrelated branch content here.
+
+| Current item | Owner | Branch | Files / boundary | Claimed | Status |
+| --- | --- | --- | --- | --- | --- |
+| Reviewed run/catch controller integration | Codex integration owner, explicitly assigned by user and #8 controller review | `codex/controller-integration-review`, tested `46a833d` from approved `c98c2fa` | Minimal catch helper/defense hook/contract, reviewed #10 run correction and historical worksheet pin. No unrelated research ancestry, hands/grip/helper rules or capacity/law changes. | 2026-10-13 (America/Phoenix) | Preparation/verification complete, final review pending: catch-only `b3a55ac` passed 59 checks/15 frozen states; #10 run-only and compatible retained-draw receipts reused. Combined 49 affected checks/three saved histories, then one 1,684-TS/140-file, 145-Python, typecheck/build pass in 180.530 s; no skips/worker errors/input drift. [Exact receipt](../data/reviews/current/controller-combined-verification.json), [scope/adverse evidence](reviews/controller-integration.md#published-combined-verification). 44 flags/components=1. No merge or baseline designation. |
+
+## Approved-reference ownership history
+
 Shared comparisons start from `codex/run-game-integration`; read
 [the baseline](BASELINE.md) and run `npm run baseline:info` before collecting.
 Report the exact commit, source hash, flag profile and inputs. Historical rows
