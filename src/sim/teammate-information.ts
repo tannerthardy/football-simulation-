@@ -4,6 +4,8 @@
  */
 import type { Vec2 } from '../core/vec.js';
 import type { Agent } from './agent.js';
+import { angleDiff } from '../core/vec.js';
+import type { RunVisualAttention } from './run-awareness.js';
 
 export const TEAMMATE_INFORMATION_LIMITS = Object.freeze({
   visualRange: 25,
@@ -72,7 +74,8 @@ export class TeammateInformation {
    * not yet model occlusion or deliberate head scans. Latency belongs to the
    * acquired sample; losing sight cannot fetch a newer historical snapshot.
    */
-  sense(agents: readonly Agent[], now: number, dt: number): void {
+  sense(agents: readonly Agent[], now: number, dt: number,
+    attention?: ReadonlyMap<number, RunVisualAttention>): void {
     if (now <= this.lastSenseAt) return;
     this.lastSenseAt = now;
     for (const a of agents) {
@@ -85,9 +88,14 @@ export class TeammateInformation {
           Math.cos(Math.atan2(dy, dx) - a.facing)));
         const halfAngle = a.engagement ? TEAMMATE_INFORMATION_LIMITS.occupiedHalfAngle
           : TEAMMATE_INFORMATION_LIMITS.fieldHalfAngle;
-        if (!a.isDown(now) && Math.hypot(dx, dy) <= TEAMMATE_INFORMATION_LIMITS.visualRange && angle <= halfAngle) {
+        const glance = attention?.get(a.idx);
+        const inGlance = !!glance && angle <= glance.maximumBodyAngle
+          && Math.abs(angleDiff(glance.bearing, Math.atan2(dy, dx))) <= glance.halfAngle
+          && !this.occluded(a, b, agents);
+        if (!a.isDown(now) && Math.hypot(dx, dy) <= TEAMMATE_INFORMATION_LIMITS.visualRange
+          && (angle <= halfAngle || inGlance)) {
           const peripheral = a.eyes && !a.eyes.keys.includes(b) ? a.eyes.peripheral : 0;
-          const delay = a.mind.observationDelay(a.profile.reactionTime) + peripheral;
+          const delay = a.mind.observationDelay(a.profile.reactionTime) + peripheral + (glance && !inGlance ? .15 : 0);
           // Quantize delivery upward, so a sub-tick delay cannot arrive early.
           const availableAt = now + Math.ceil((delay - 1e-9) / dt) * dt;
           queue.push({ pos: { ...b.pos }, vel: { ...b.vel }, sampledAt: now, availableAt });
@@ -140,5 +148,20 @@ export class TeammateInformation {
       // Beyond the prediction horizon we know a location, not current speed.
       vel: age <= TEAMMATE_INFORMATION_LIMITS.prediction + 1e-9 ? { ...sample.vel } : { x: 0, y: 0 },
       sampledAt: sample.sampledAt, availableAt: sample.availableAt, age, predictedFor };
+  }
+
+  /** Coarse solid body silhouettes for the additional glance opportunity.
+   * Physical scene geometry determines sensing, never a controller query.
+   * Existing foreground acquisition is retained for this bounded pilot.
+   */
+  private occluded(a: Agent, b: Agent, agents: readonly Agent[]): boolean {
+    const dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y, length2 = dx * dx + dy * dy;
+    if (length2 < 1e-9) return false;
+    return agents.some(other => {
+      if (other === a || other === b) return false;
+      const along = ((other.pos.x - a.pos.x) * dx + (other.pos.y - a.pos.y) * dy) / length2;
+      return along > 0 && along < 1 && Math.hypot(other.pos.x - a.pos.x - dx * along,
+        other.pos.y - a.pos.y - dy * along) < other.profile.radius;
+    });
   }
 }

@@ -28,6 +28,7 @@ import { createEngagement, releaseJoints, updateEngagements } from './engagement
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { TeammateInformation, type TeammatePicture } from './teammate-information.js';
 import { installTeammateExpectations } from './teammate-calls.js';
+import { RunAwareness, type RunAwarenessMode } from './run-awareness.js';
 import { spaceTeammates } from './spacing.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
@@ -36,6 +37,8 @@ import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from 
 import type { BallState, CarrierSegment, Frame, PenaltyCall, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
 export interface PlaySetup {
+  /** Explicit awareness research arms; default preserves the PR #36 behavior. */
+  runAwareness?: RunAwarenessMode;
   offense: Partial<Record<OffSlot, Player>>;
   /** The defense's scouting of this offense (run/pass tendencies so far). */
   scouting?: ScoutingReport;
@@ -115,6 +118,7 @@ export class PlaySim {
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
   readonly teammateAwareness: TeammateInformation;
+  readonly runAwareness: RunAwareness;
   readonly trace: ReplayTrace;
   private readonly record: boolean;
   private readonly recordEvery: number;
@@ -247,6 +251,7 @@ export class PlaySim {
     for (const d of this.defense) d.recog = new Recognition(d, this, expected);
     assignBehaviors(this);
     this.teammateAwareness = new TeammateInformation(this.agents, installTeammateExpectations(this));
+    this.runAwareness = new RunAwareness(this, setup.runAwareness ?? 'off');
     this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
   }
 
@@ -337,6 +342,11 @@ export class PlaySim {
       const seen = this.perception.perceive(target.idx, 0.05);
       this.trace.observe(observer, target, seen, this.t);
       return seen;
+    }
+    const ownedPrimary = this.runAwareness?.primaryPicture(observer, target, this.t);
+    if (ownedPrimary) {
+      this.trace.observe(observer, target, ownedPrimary, this.t);
+      return ownedPrimary;
     }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
     // Attention follows the observer's belief, regardless of the hidden call.
@@ -559,7 +569,12 @@ export class PlaySim {
       }
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
-    this.teammateAwareness.sense(this.agents, t, this.dt);
+    this.runAwareness.prepare(this.agents, this.intents, this.teammateAwareness, t, this.dt);
+    const attention = new Map(this.agents.flatMap(a => {
+      const view = this.runAwareness.visualAttention(a);
+      return view ? [[a.idx, view] as const] : [];
+    }));
+    this.teammateAwareness.sense(this.agents, t, this.dt, attention);
     for (const d of this.defense) d.recog?.update(d, this);
 
     this.prepareJoinedRunBlocks();

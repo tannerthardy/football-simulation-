@@ -28,16 +28,21 @@ const REFERENCE_PATH = 'out/teammate-information/accepted-observations.json.gz';
 const REFERENCE_SHA = 'ad462904b23c6864d902107f6a0aa3a876b4e35d3247db8dfaebb835276ae10b';
 let endTime = 2.70, destination = 'out/teammate-information/native-prefix.json.gz';
 let sidecarPath: string | null = null;
+let awarenessMode = 'off';
+let candidateReferencePath: string | null = null;
 const args = process.argv.slice(2);
 while (args.length) {
   const arg = args.shift();
   if (arg === '--end-time' && args.length) endTime = Number(args.shift());
   else if (arg === '--out' && args.length) destination = args.shift()!;
   else if (arg === '--information-sidecar' && args.length) sidecarPath = args.shift()!;
+  else if (arg === '--awareness' && args.length) awarenessMode = args.shift()!;
+  else if (arg === '--candidate-reference' && args.length) candidateReferencePath = args.shift()!;
   else throw new Error(`Unknown or incomplete argument: ${arg}`);
 }
 assert(Number.isFinite(endTime) && endTime > 0 && endTime <= 10, 'Use a bounded positive end time, at most 10 seconds');
 assert(Math.abs(endTime / .05 - Math.round(endTime / .05)) < 1e-8, 'End time must be a .05-second World boundary');
+assert(['off', 'primary', 'glance'].includes(awarenessMode));
 const baseline = JSON.parse(readFileSync('config/baseline.json', 'utf8'));
 const flags = Object.fromEntries(Object.keys(baseline.flags).map(k => [k, process.env[k] ?? null]));
 assert.equal(Object.keys(flags).length, 44);
@@ -56,6 +61,8 @@ const serialize = (v: unknown) => JSON.stringify(v, (_k, x: unknown) => x instan
   : x instanceof PlaySim ? { sim: true } : x instanceof Map ? [...x] : x instanceof Set ? [...x]
   : x instanceof Float64Array ? [...x] : x);
 const snap = (v: unknown): any => v === undefined ? null : JSON.parse(serialize(v));
+const candidateReferenceBytes = candidateReferencePath ? readFileSync(candidateReferencePath) : null;
+const candidateReference = candidateReferenceBytes ? JSON.parse(gunzipSync(candidateReferenceBytes).toString()) : null;
 type Query = (observer: Agent, target: Agent) => unknown;
 interface InformationSidecar {
   sense(agents: readonly Agent[], now: number, dt: number): void;
@@ -97,7 +104,10 @@ for (const id of ['uc12-wz-s3-mirror', 'uc12-wz-s3']) {
     offCall: { formation, flip: input.flip, kind: 'run', run: RUN_BY_ID[input.concept], label: input.id },
     defCall: { personnel: 'base43', front: FRONT_BY_ID[input.front], coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over Cover 3' },
     los: recipe.los, ballY: CENTER_Y, firstDownX: recipe.firstDownX, seed: input.seed,
+    ...({ runAwareness: awarenessMode } as object),
   });
+  const runAwareness = Reflect.get(sim, 'runAwareness');
+  assert(awarenessMode === 'off' || runAwareness, 'This checkout does not implement the requested awareness mode');
   assert.equal(sim.agents[2].slot, 'RT');
   assert.equal(sim.agents[6].slot, 'RB');
   const installedQuery = Reflect.get(sim, 'teammateInformation') as Query | undefined;
@@ -158,9 +168,9 @@ for (const id of ['uc12-wz-s3-mirror', 'uc12-wz-s3']) {
   }
   const sampleQuery = () => {
     if (!query) return null;
-    const before = serialize({ rng: sim.rng, awareness: Reflect.get(sim, 'teammateAwareness'), informationSidecar: sidecar });
+    const before = serialize({ rng: sim.rng, awareness: Reflect.get(sim, 'teammateAwareness'), informationSidecar: sidecar, runAwareness });
     const sample = pairs.map(([a, b]) => ({ observer: a, target: b, information: snap(query(sim.agents[a], sim.agents[b])) }));
-    assert.equal(serialize({ rng: sim.rng, awareness: Reflect.get(sim, 'teammateAwareness'), informationSidecar: sidecar }), before,
+    assert.equal(serialize({ rng: sim.rng, awareness: Reflect.get(sim, 'teammateAwareness'), informationSidecar: sidecar, runAwareness }), before,
       'Diagnostic query changed observation state or RNG');
     return sample;
   };
@@ -174,6 +184,10 @@ for (const id of ['uc12-wz-s3-mirror', 'uc12-wz-s3']) {
       beforeBodies: snap(sim.agents.map(a => a.body)), requestedBehavior: snap(Reflect.get(sim, 'cmds')),
       rawTechniqueIntents: rawSpacing.get(sim.t), finalWorldIntents: snap(intents),
       informationAtWorldEntry: sampleQuery(), engagements: sim.engagements.map(rep),
+      runAttention: runAwareness ? sim.offense.map(a => ({ observer: a.idx,
+        attention: runAwareness.recorded(a), expectation: runAwareness.expectedLane(a, sim.t),
+        primary: runAwareness.recorded(a) ? runAwareness.primaryPicture(a,
+          sim.agents[runAwareness.recorded(a).key], sim.t) : null })) : null,
       jointInputs: sim.world.joints.map(flatten),
     } : null;
     if (frame) assert(frame.rawTechniqueIntents !== undefined, 'Missing actual pre-spacing technique intents');
@@ -203,9 +217,20 @@ for (const id of ['uc12-wz-s3-mirror', 'uc12-wz-s3']) {
       engagements: sim.engagements, joints: sim.world.joints, intents: sim.intents, cmds: Reflect.get(sim, 'cmds') };
     hashes.push(sha(serialize(legacyState)));
     completeStateHashes.push(sha(serialize({ ...legacyState, teammateAwareness: Reflect.get(sim, 'teammateAwareness'),
+      ...(runAwareness ? { runAwareness } : {}),
       ...(sidecar ? { informationSidecar: sidecar } : {}) })));
   }
   if (!candidate) assert.deepEqual(hashes, row.hashes.slice(0, hashes.length), 'Baseline prefix changed accepted state/RNG history');
+  const ownReference = candidateReference?.panel.find((r: any) => r.input.id === id);
+  if (candidateReference) {
+    assert(ownReference, 'Missing same-input candidate reference');
+    assert.deepEqual(input, ownReference.input);
+    if (awarenessMode === 'off') assert.deepEqual(hashes, ownReference.legacyStateRngHashes.slice(0, hashes.length),
+      'Default-off awareness changed the PR #36 physical/controller/RNG history');
+  }
+  const ownHashes = ownReference?.legacyStateRngHashes ?? [];
+  const ownFirstMismatch = hashes.slice(0, Math.min(hashes.length, ownHashes.length))
+    .findIndex((hash, i) => hash !== ownHashes[i]);
   const common = Math.min(hashes.length, row.hashes.length);
   const firstMismatch = hashes.slice(0, common).findIndex((hash, i) => hash !== row.hashes[i]);
   panel.push({ input, installedSetup: row.setup,
@@ -218,8 +243,10 @@ for (const id of ['uc12-wz-s3-mirror', 'uc12-wz-s3']) {
     legacyStateRngHashes: hashes, completeStateHashes,
     matchedAcceptedPrefixTicks: firstMismatch < 0 ? common : firstMismatch,
     firstLegacyDifferenceBoundary: firstMismatch < 0 ? null : (firstMismatch + 1) * sim.dt,
+    awarenessMode, firstReferenceDifferenceBoundary: !ownReference || ownFirstMismatch < 0 ? null : (ownFirstMismatch + 1) * sim.dt,
     entryInformation, frames, pictures, phases, events: snap(sim.events),
     finalAwareness: candidate ? snap(Reflect.get(sim, 'teammateAwareness')) : null,
+    finalRunAwareness: runAwareness ? snap(runAwareness) : null,
     informationSidecarState: sidecar ? snap(sidecar) : null,
     queryNeutralityChecked: query !== null,
     internalSeconds: (performance.now() - caseStarted) / 1000,
@@ -233,8 +260,12 @@ const result = { protocol: 'teammate-information-native-prefix-v1', commit, sour
   flags, worldDefaults: baseline.worldDefaults,
   reference: { commit: REFERENCE_COMMIT, path: REFERENCE_PATH, sha256: REFERENCE_SHA, bytes: referenceBytes.length },
   captureFrom, declaredEndTime: endTime, panel,
+  awarenessMode, candidateReference: candidateReferenceBytes ? { path: candidateReferencePath,
+    sha256: sha(candidateReferenceBytes), commit: candidateReference.commit,
+    sourceSha256: candidateReference.sourceSha256 } : null,
   informationScope: Sidecar ? 'Accepted native controllers and physics are unchanged. The sidecar records acquired/tactile information only; native spacing continues to consume its original feed.'
-    : 'Only spacing is migrated. Other teammate consumers, controllers and all physical laws retain their accepted behavior.',
+    : awarenessMode === 'off' ? 'Only spacing is migrated. Other teammate consumers, controllers and all physical laws retain their accepted behavior.'
+      : 'Opt-in zone-OL near-line key acquisition and installed-lane attention. Other teammate/opponent consumers remain outside the pilot; physics and controller algorithms are unchanged.',
   informationSidecar: Sidecar ? { path: sidecarPath, sourceSha256: sidecarSourceSha256, bytes: sidecarSourceBytes,
     installedPriorsOmitted: true, installedPriorExpiry: sidecarPriorExpiry, sensedFromSnap: true,
     limitation: 'Acquired/tactile diagnostic channel only. Installed call priors are omitted and have expired before the captured late window. This is not the native candidate trajectory or a new football ending.' } : null,
