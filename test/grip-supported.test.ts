@@ -4,7 +4,9 @@ import { linearSupportForce, supportedGripInterval, type SupportedGripInput } fr
 import { passiveSlipReference } from '../scripts/diag/physics/passive-slip-reference.js';
 import type { Particle } from '../scripts/diag/physics/grip-force-interval.js';
 
-const fixture=JSON.parse(readFileSync(new URL('../config/grip-supported-reference.json',import.meta.url),'utf8'));
+const fixture:{cases:Array<{id:string;input:SupportedGripInput;reference:Record<string,any>;
+  convergence:{converged:boolean}}>}=
+  JSON.parse(readFileSync(new URL('../config/grip-supported-reference.json',import.meta.url),'utf8'));
 const distance=(a:{x:number;y:number},b:{x:number;y:number})=>Math.hypot(a.x-b.x,a.y-b.y);
 const energy=(p:Particle)=>.5*p.mass*(p.vel.x**2+p.vel.y**2)+.5*p.inertia*p.spin**2;
 const angular=(p:Particle)=>p.mass*(p.pos.x*p.vel.y-p.pos.y*p.vel.x)+p.inertia*p.spin;
