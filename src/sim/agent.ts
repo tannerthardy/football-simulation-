@@ -30,6 +30,9 @@ export interface Behavior {
   /** Current held contact technique's movement intention, separate from the
    * free track advertised to teammates. No achieved motion is implied. */
   contactMotion?(a: Agent): Vec2 | null;
+  /** Own held stretch fit for a current run contact. This is private movement
+   * technique, never a teammate forecast or permission to change grips. */
+  runSurfaceMotion?(a: Agent): MoveCommand | null;
 }
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';

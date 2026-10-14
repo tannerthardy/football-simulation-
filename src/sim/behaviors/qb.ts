@@ -603,6 +603,7 @@ export class QBHandoff implements Behavior {
     private readonly rb: Agent | null,
     private readonly pitchRange = 1.3,
     private readonly keeper = false,
+    private readonly ride = false,
   ) {}
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -629,14 +630,29 @@ export class QBHandoff implements Behavior {
       }
     }
     if (sim.t < 0.05) return stand();
+    // A stretch exchange is on the move for both players. The back already
+    // rides at this installed tempo; asking the QB to stop at his landmark
+    // applies arrival braking from his very first opening step.
+    const through = this.ride ? a.profile.vmax * .55 : 0;
     // Quick reverse pivot / step to the mesh. Once the back is already on it
     // and riding past, ride with him: put the ball where he is going.
-    if (rb && sim.t >= this.meshTime - 0.3 && Math.hypot(rb.pos.x - this.mesh.x, rb.pos.y - this.mesh.y) < 1.2) {
-      const seen = sim.see(a, rb), lead = { x: seen.pos.x + seen.vel.x * .2, y: seen.pos.y + seen.vel.y * .2 };
-      return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through: 0 });
+    if (rb && sim.t >= this.meshTime - 0.3) {
+      const picture = sim.teammateInformation(a, rb);
+      if (picture.source !== 'unavailable' && Math.hypot(picture.pos.x - this.mesh.x, picture.pos.y - this.mesh.y) < 1.2) {
+        const dt = picture.source === 'called' ? Math.min(.2, Math.max(0, picture.forecast?.validFor ?? 0)) : .2;
+        let lead = { x: picture.pos.x + picture.vel.x * dt, y: picture.pos.y + picture.vel.y * dt };
+        const path = picture.source === 'called' ? picture.forecast?.samples : undefined;
+        if (path && path.length > 1) {
+          const t = Math.min(dt, path.at(-1)!.t), k = path.findIndex(s => s.t >= t - 1e-9);
+          const hi = path[k], lo = path[Math.max(0, k - 1)];
+          const u = hi.t > lo.t ? clamp((t - lo.t) / (hi.t - lo.t), 0, 1) : 0;
+          lead = { x: lo.pos.x + (hi.pos.x - lo.pos.x) * u, y: lo.pos.y + (hi.pos.y - lo.pos.y) * u };
+        }
+        return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through });
+      }
     }
     const facing = angleTo(a.pos, this.mesh);
-    return goTo(a, this.mesh, { speed: 1, facing, through: 0 });
+    return goTo(a, this.mesh, { speed: 1, facing, through });
   }
 }
 

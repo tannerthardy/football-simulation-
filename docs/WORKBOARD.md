@@ -1,5 +1,27 @@
 # Current work ownership
 
+## Continuous wide-zone interaction, 2026-10-14
+
+The user explicitly authorizes continuing the entire wide-zone correction,
+including defensive front/LB technique and QB/RB mesh where demonstrated.
+`codex/wide-zone-flow` starts from PR #47 `8e68bf7` / code `ccbbe47`, runtime
+`df7dae57…`; that tested improvement is preserved, with no baseline promotion.
+The two user clips and pasted notes are evidence to assess, not authoritative
+implementation instructions or numerical targets.
+
+Root owns `behaviors/blocking.ts`, `engagement.ts`, any new OL surface/motion
+helper and combined validation/publication. Evidence helper owns only a new
+loaded-flow test/compact saved witness. Defensive owner owns `behaviors/defense.ts`,
+a bounded local-block response module and its tests, with its exact law reviewed
+before integration. Mesh owner owns only the `RunnerToMesh` region of `assign.ts`
+and the verified QB controller region, plus a small helper/tests if demonstrated;
+it reports the first cause and exact file claim before edits. Film/design
+reviewers are read-only. Coordinate imports/API changes with root. No physics,
+ratings, strength, collisions, broad sensing/memory expansion, hidden playcall
+or forced lateral success. No native simulations until root freezes every
+source/test/script/config input and HEAD. Start with matched mechanism and
+real opposing controls, then short natural all-22 continuations/openings.
+
 ## Wide-zone football help/read correction, 2026-10-14
 
 The user renewed end-to-end ownership: study actual wide-zone coaching/film,

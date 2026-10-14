@@ -30,6 +30,7 @@ import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import { clearStretchDeparture, stretchHelpOpportunity } from '../stretch-help.js';
 import { TEAMMATE_INFORMATION_LIMITS } from '../teammate-information.js';
+import { planStretchFeet, type StretchFootPlan } from '../stretch-footwork.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -748,9 +749,19 @@ export class RunBlocker implements Behavior {
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
+  /** Own acquired half-man fit, retained across approach and actual contact. */
+  stretchFootRead: { target: number; nextRead: number; seen: Perceived; choice: StretchFootPlan } | null = null;
   constructor(public plan: RunBlockPlan) {}
 
   calledMotion(): Vec2 | null { return this.track; }
+
+  runSurfaceMotion(a: Agent): MoveCommand | null {
+    const read = this.stretchFootRead, combo = this.plan.combination;
+    if (!read || !combo || combo.released || !a.engagement
+      || a.engagement.defender.idx !== read.target || this.plan.target !== a.engagement.defender
+      || a.body.support?.state !== 'up') return null;
+    return { vel: { ...read.choice.vel }, facing: read.choice.facing };
+  }
 
   contactMotion(a: Agent): Vec2 | null {
     const e = a.engagement, read = this.zoneRead;
@@ -789,6 +800,7 @@ export class RunBlocker implements Behavior {
       readCombination(a, sim, plan.combination);
     }
     if (a.engagement) {
+      if (this.stretchPairEligible(a, sim)) this.readStretchFeet(a, sim, a.engagement.defender);
       if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
       return stand();
     }
@@ -1144,6 +1156,7 @@ export class RunBlocker implements Behavior {
     const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
+    const pairFeet = this.stretchPairEligible(a, sim) ? this.readStretchFeet(a, sim, target, seen) : null;
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
       // If the end crosses the puller's inside shoulder, getting back inside
@@ -1227,6 +1240,8 @@ export class RunBlocker implements Behavior {
       return secondLevelBlockApproach(a, seen, plan.drive, nominalAim, placementError,
         contact, a.profile.radius + target.profile.radius, command, sim.t);
     }
+    if (pairFeet) return { vel: { ...pairFeet.vel }, facing: pairFeet.facing,
+      cutSkill: .8 + .3 * a.r('runBlock') };
     const original = runThrough(a, aim, { speed: 1 });
     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
@@ -1240,6 +1255,30 @@ export class RunBlocker implements Behavior {
       && (!this.plan.combination || this.plan.combination.released)
       && (!e || (e.type === 'run' && e.blocker === a && !e.helpers.length))
       && !sim.world.joints.some(j => (j.a === a.body || j.b === a.body) && j !== e?.hands);
+  }
+
+  private stretchPairEligible(a: Agent, sim: PlaySim): boolean {
+    const combo = this.plan.combination;
+    return isZoneLineBlocker(a, sim, this.plan)
+      && (sim.offCall.run?.scheme === 'wideZone' || sim.offCall.run?.scheme === 'outsideZone')
+      && !!combo && !combo.released && combo.members.includes(a)
+      && this.plan.target === combo.defender
+      && ['reach', 'combo', 'drive', 'cutoff'].includes(this.plan.kind);
+  }
+
+  private readStretchFeet(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): StretchFootPlan {
+    const read = this.stretchFootRead;
+    if (!read || read.target !== target.idx || sim.t >= read.nextRead) {
+      const seen = picture ?? sim.see(a, target), combo = this.plan.combination!;
+      const partner = combo.members.find(b => b !== a)!;
+      const choice = planStretchFeet(a.body, seen, { side: playSideSign(sim, sim.offCall.run!),
+        half: this.installedHalf(a, partner, sim, 1) * .55,
+        bodyContact: a.profile.radius + target.profile.radius, tempo: a.profile.vmax * .45,
+        placementError: a.mind.placementError * (1 - .5 * a.r('runBlock')) });
+      this.stretchFootRead = { target: target.idx, nextRead: sim.t + a.mind.decisionInterval,
+        seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } }, choice };
+    }
+    return this.stretchFootRead!.choice;
   }
 
   private readZone(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): ZoneReachRead {
