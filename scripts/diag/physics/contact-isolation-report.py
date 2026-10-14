@@ -2,7 +2,6 @@
 import gzip
 import hashlib
 import json
-import math
 from functools import lru_cache
 from pathlib import Path
 import sys
@@ -48,7 +47,8 @@ def snapshot(frame, slots, old=False):
         if a['slot'] not in slots:
             continue
         body = a if old else a['body']
-        result.append(dict(slot=a['slot'], **{k: body[k] for k in ['pos', 'vel', 'facing', 'spin', 'support']},
+        support = {k: body['support'][k] for k in ['state', 'posture', 'xi', 'lean', 'load', 'felt', 'feetVel', 'feetLock']}
+        result.append(dict(slot=a['slot'], **{k: body[k] for k in ['pos', 'vel', 'facing', 'spin']}, support=support,
                            requested=a['requested'], delivered=a['applied'] if old else a['delivered']))
     return result
 
@@ -103,7 +103,8 @@ for p in native['panel']:
                                     jointSlots=[[slot(j['a']), slot(j['b'])] for j in cf['worldInput']['jointInputs']]),
                firstDeliveredRequestDifference=first_delivery, firstDeliveredVelocityDifference=first_velocity_request,
                firstOriginalControllerRequestDifference=first_request,
-               baseline=old_receipt['arms'][0], fullPatch=old_receipt['arms'][1],
+               baseline={k: old_receipt['arms'][0][k] for k in ['endTime', 'outcome', 'censored', 'crossing', 'gain', 'firstContact']},
+               fullPatch={k: old_receipt['arms'][1][k] for k in ['endTime', 'outcome', 'censored', 'crossing', 'gain', 'firstContact']},
                isolated={k: p[k] for k in ['endTime', 'outcome', 'censored', 'crossing', 'gain', 'firstContact', 'limits']},
                firstContactDeliveredHands=hands, firstContactBodies=snapshot(f, chosen),
                firstContactBodyImpulses=f['report']['contacts'], checkpoints=checkpoints,
@@ -111,6 +112,11 @@ for p in native['panel']:
                isolatedClimbs=[e for e in p['events'] if e['type'] == 'block_climb'])
     rows.append(row)
 
+first_summary = []
+for row in first['rows']:
+    summary = {k: v for k, v in row.items() if k != 'firstSlip'}
+    summary['firstSlip'] = {k: v[0] for k, v in row['firstSlip'].items()}
+    first_summary.append(summary)
 costs = {k: dict(commit=v['commit'], sourceSha256=v['sourceSha256'], validationSha256=v['validationSha256'],
                  seconds=sum(c['elapsedSeconds'] for c in v['commands']), exitCode=v['exitCode'],
                  commands=v['commands']) for k, v in checks.items()}
@@ -122,7 +128,7 @@ result = dict(protocol='contact-law-isolation-review-v1', comparisonCommit=nativ
               testedRevisions=costs, totalRecordedCommandSeconds=sum(c['seconds'] for c in costs.values()),
               rawSha256={name: sha(root / name) for name in ['native.json.gz', 'protection.json.gz', 'mechanics.json', 'first.json']},
               portableFirstInputsSha256=sha(Path('docs/reviews/contact-law-isolation-first-contact.json')),
-              firstIntervals=first['rows'], nativeWitnessError=mechanics['nativeError'],
+              firstIntervals=first_summary, nativeWitnessError=mechanics['nativeError'],
               freeMaximumAngularChange=max(abs(c['angularChange']) for c in mechanics['controls']),
               focusedTestsPassed=89, rows=rows,
               scope='Separate existing common-point contact package from ground/facing/planning. Defaults, profiles, RB policy, grip timing and release heuristics unchanged. No promotion.',
