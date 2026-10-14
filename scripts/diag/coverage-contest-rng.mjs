@@ -17,12 +17,12 @@ const profile=JSON.parse(readFileSync('config/baseline.json','utf8')),provenance
  worldDefaults:profile.worldDefaults,node:process.version,platform:process.platform,arch:process.arch,lockSha256:fileHash('package-lock.json'),startedAt:new Date().toISOString()};
 if(provenance.sourceSha256!==profile.sourceSha256)throw Error('Requires baseline');
 function trial(remove,observe){
- const sim=new PlaySim({...copy(f.setup),record:false}),update=ZoneCoverage.prototype.update,next=sim.rng.next.bind(sim.rng),draws=[];let ordinal=0;
- ZoneCoverage.prototype.update=function(a,s){const eyes=s.qbEyes;if(remove)s.qbEyes=null;try{return update.call(this,a,s);}finally{s.qbEyes=eyes;}};
+ const sim=new PlaySim({...copy(f.setup),record:false}),update=ZoneCoverage.prototype.update,next=sim.rng.next.bind(sim.rng),draws=[];let ordinal=0,activeZone=null;
+ ZoneCoverage.prototype.update=function(a,s){const eyes=s.qbEyes,prior=activeZone;activeZone=a;if(remove)s.qbEyes=null;try{return update.call(this,a,s);}finally{s.qbEyes=eyes;activeZone=prior;}};
  if(observe)sim.rng.next=()=>{
   const value=next(),stack=new Error().stack.split('\n').filter(x=>x.includes('/src/')),
    source=stack.find(x=>!x.includes('/core/rng.ts'))??'unclassified';
-  const d={ordinal:ordinal++,t:sim.t,value,source};
+  const d={ordinal:ordinal++,t:sim.t,value,source,zoneActor:activeZone?{idx:activeZone.idx,id:activeZone.player.id,slot:activeZone.slot}:null};
   if(stack.some(x=>x.includes('/sim/catching.ts'))&&sim.t>=2.7){
    d.contest={line:source,defender:{idx:15,id:sim.agents[15].player.id,body:copy(sim.agents[15].body),tags:[...sim.agents[15].tags]},
     receiver:{idx:7,id:sim.agents[7].player.id,body:copy(sim.agents[7].body),tags:[...sim.agents[7].tags]},
