@@ -18,7 +18,7 @@ The one question is whether the **actual `RunBlocker.update`** uses acquired
 evidence for its far movement while preserving fresh behavior and felt
 contact. [The small frozen witness](../../config/stalk-visual-request-witness.json)
 is copied exactly from PR #24 `765c25c3bc781ed572fdb5d4f39531453d58b31a`.
-It preserves the Z/CB_S identities (indices 9/17), own body, defender body,
+It preserves the Z/CB_S identities (indices 9/18; see the frozen witness IDs), own body, defender body,
 installed drive and recorded command at 2.35 s. Its held old picture and
 position substitutions remain **synthetic available-input controls**, not
 native receiver observations or physically evolved counterfactuals.

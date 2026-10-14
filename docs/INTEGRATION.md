@@ -1,5 +1,23 @@
 # Current integration ownership and evidence
 
+## Current passing-controller review — blocked candidate
+
+Accepted `develop` remains `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`;
+PR #12's moving-catch repair is already integrated. The integration owner in this
+chat prepared PR #29 plus the coherent ZoneCoverage extraction as frozen
+`cb240d236b3b5bbc13c855dab251fdf986a3ae77`. **The combined run failed two
+preserved TypeScript contracts; Python was skipped. Do not promote this tree.**
+See [the exact scope, failures, bounded diagnosis and next decisions](reviews/pass-controller-integration.md)
+and [the shared receipt](../data/reviews/current/pass-controller-combined-verification.json).
+Contributors reuse compatible evidence rather than repeat the shared suite.
+Stick, seam/post, QB-pressure policy and experimental physics remain excluded.
+No merge, new baseline or default change. Historical comparison stays full
+`4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`.
+
+The earlier stages below retain their original pins/status/evidence as history;
+they do not supersede this current reference and failed-candidate status.
+
+
 Current task: [reviewed run/catch controller integration](reviews/controller-integration.md),
 owned by the same Codex integration session. It starts from approved `c98c2fa`,
 reuses #10's compatible independent verification, and verifies a minimal
