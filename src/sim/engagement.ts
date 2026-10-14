@@ -632,8 +632,8 @@ const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 const STRETCH_REACH = process.env.STRETCH_REACH !== '0';
 /** Trial: retain the held solo reach's track intention through contact. */
 const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
-/** Trial: shoulder speed is a complete component, not added twice by a diagonal drive. */
-const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS === '1';
+/** Shoulder speed is a complete component; set 0 to reproduce the comparison baseline. */
+const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';

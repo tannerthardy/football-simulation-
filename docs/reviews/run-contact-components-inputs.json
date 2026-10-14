@@ -1,0 +1,20 @@
+{
+  "protocol": "run-contact-components-candidate-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "candidateBaseCommit": "b64910ee7975e679beca2590369714ff33994aa0",
+  "question": "Does isolated component enablement preserve the already-tested request correction and complete native protection, with an unaffected gap-run opposing control?",
+  "windowSeconds": 25,
+  "inputs": [
+    {"id":"wz_strong-s3-mirror","concept":"wz_strong","kind":"run","seed":3,"flip":true,"o":31,"d":32,"front":"over","formation":"ace_11"},
+    {"id":"counter-s3","concept":"counter","kind":"run","seed":3,"flip":false,"o":31,"d":32,"front":"over","formation":"ace_11"}
+  ],
+  "common": {
+    "strength": 0.55,
+    "los": 40,
+    "ballY": 26.666666666666668,
+    "firstDownX": 50,
+    "coverage": "cover3",
+    "personnel": "base43",
+    "observation": "Native observed/plain complete state and RNG histories must match."
+  }
+}
