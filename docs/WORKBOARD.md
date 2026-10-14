@@ -25,7 +25,10 @@ The [portable responsibility witness](reviews/ol-responsibility-witness.json)
 accounts for all nine blocker jobs and distinguishes no collection from loaded
 contact that fails to deny access. Offline tools reuse all three Ace inputs and
 six natural endings; current-production native behavior remains untested here.
-Focused tool validation is recorded separately in the final audit receipt.
+Nine no-World role observations, saved-input integrity/rejection checks and
+typecheck pass; [exact receipt](reviews/ol-technique-receipt.json) records tested
+`64112f5`, unchanged accepted runtime/flags,9.71 wrapped command seconds and
+separate measured offline builds. Zero new simulation ticks; no broad suite.
 Controllers remain held; physics reviews retention, run-game owns feasible
 joining/anchoring afterward, and integration owns exact-pin production transfer.
 

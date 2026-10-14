@@ -76,7 +76,8 @@ the same asymmetric front. G73-I48 stays secondary and is not replayed.
 `block_contact` stamps the World-step end. `carrier_contact` stamps entry even
 though it uses post-World bodies; an event labeled2.35 therefore belongs to
 the2.35–2.40 interval, not a certified instantaneous contact at2.35. The audit
-retains both clocks and pre/post bodies.
+retains both clocks and pre/post bodies. Quoted hand-load times label controller
+steps; each final-substep output belongs to its recorded World interval.
 
 ## 1. The attached-TE technique path is incomplete
 
@@ -248,8 +249,14 @@ It neither simulates alternative routes nor depicts anatomical footwork.
 Actual browser rendering could not be automated because the installed
 Playwright browser executable is absent; no dependency download was performed.
 
-The final receipt records tested diagnostic revision, source/profile/input
-hashes, reused evidence, tool checks, failures, runtime and remaining gate.
+The [final receipt](ol-technique-receipt.json) records tested diagnostic revision
+`64112f524343db314b373fc8e0612519c315a92b`, source/profile/input hashes, reused
+evidence, tool checks, failures, runtime and remaining gate. The nine no-World
+role observations and typecheck pass on unchanged accepted runtime source,
+with exact accepted settings; wrapped command cost is9.71 seconds. Final film
+and responsibility reductions take2.95 and2.27 seconds respectively; those
+are the measured final builds, not total investigation cost. The initial film
+extraction/round-trip fixes and unavailable browser check remain visible.
 No new engine suite, roster panel, snap or game is needed for this audit. The
 integration owner retains the preserved full-suite responsibility for an exact
 reviewed combined candidate.

@@ -1,0 +1,608 @@
+{
+  "protocol": "ol-technique-audit-v1",
+  "testedDiagnosticCommit": "64112f524343db314b373fc8e0612519c315a92b",
+  "productionSourceAuditPin": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalComparisonPin": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "runtimeSourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "validationSha256": "dff738d627dfa87b57ba24642e2a638ba255d3e57009f45a42d92b85a4f8ce25",
+  "currentDevelopNativeTested": false,
+  "controllersChanged": false,
+  "physicsChanged": false,
+  "nativeTicksAdvanced": 0,
+  "newSnaps": 0,
+  "newGames": 0,
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "productionAuditFlags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "productionWorldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "historicalPacketFlags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_HANDOVER": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_CONTACT_COMPONENTS": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "historicalIsolatedLaunchFlags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "historicalIsolatedWorldSelection": {
+    "handContact": "patch",
+    "groundMovement": "legacy",
+    "controllerMovementPreview": "center"
+  },
+  "inputs": [
+    {
+      "id": "uc12-wz-s3",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "uc12-wz-s3-mirror",
+      "concept": "wz_strong",
+      "kind": "run",
+      "seed": 3,
+      "flip": true,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    {
+      "id": "uc12-wz-weak-s3",
+      "concept": "wz_weak",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    }
+  ],
+  "inputFiles": {
+    "baseline": {
+      "path": "/workspace/football-under-center-zone/out/under-center-zone/carrier-design.json.gz",
+      "bytes": 4972780,
+      "sha256": "341834f4baa35bfb76534ccc04cb2ff28dd0af382b052a3cb7d68cedcfdce916",
+      "protocol": "hand-action-protection-v1",
+      "producerCommit": "26baffe0d370f94444c87e4140f838d69b286cac",
+      "producerSourceSha256": "09c65f70ff3835dba17fb08487582d65f49eaea827f4e6e48f396f93210b773c",
+      "producerProbeSha256": "a1a5bc5b81a4ee86611535fd9eceaa9c93a8fd7f3a54d510003ca436a9a8ce7b"
+    },
+    "weak": {
+      "path": "/workspace/football-under-center-zone/out/under-center-zone/carrier-design-weak.json.gz",
+      "bytes": 2209708,
+      "sha256": "5eb926f1494995413cc15957141bbee08878961a34aaf450ad3963993809bdba",
+      "protocol": "hand-action-protection-v1",
+      "producerCommit": "26baffe0d370f94444c87e4140f838d69b286cac",
+      "producerSourceSha256": "09c65f70ff3835dba17fb08487582d65f49eaea827f4e6e48f396f93210b773c",
+      "producerProbeSha256": "a1a5bc5b81a4ee86611535fd9eceaa9c93a8fd7f3a54d510003ca436a9a8ce7b"
+    },
+    "isolated": {
+      "path": "/workspace/football-contact-law-isolation/out/contact-isolation/protection.json.gz",
+      "bytes": 5987199,
+      "sha256": "3d101564c9c4add6fcc506f24fb6dfdf63923bd1db26343513a42005348f50c6",
+      "protocol": "contact-isolation-native-v1",
+      "producerCommit": "2db2c9cc1b4bac612573c199d0933818b12d1e3a",
+      "producerSourceSha256": null,
+      "producerProbeSha256": "a6291b310957a7e5b84fd32825c0d01b13eaae2e2a32a21dac781a0f2fc4270a"
+    },
+    "delivery": {
+      "path": "/workspace/football-protection-traces/out/ace-protection/delivery.json.gz",
+      "bytes": 300193,
+      "sha256": "7876316abd4ba234a0ad870627a3406943e5f1b5d0bc7e4377a6b3afb5de0f25",
+      "protocol": "ace-protection-provenance-v1",
+      "producerCommit": "ee2e568605a68f7b59f5c114fb346930d77de6ce",
+      "producerSourceSha256": null,
+      "producerProbeSha256": "d141bc371f9cb63773c36606b55d4960dbf215cd5db76d0d99972ecafced0deb"
+    },
+    "receipt": {
+      "path": "/workspace/football-protection-traces/docs/reviews/ace-protection-receipt.json",
+      "bytes": 188559,
+      "sha256": "8f8f745c6641ef5cd6aac46a116694f9208e7583dc67e403a9c522a2865cbe8d",
+      "protocol": "ace-protection-review-v1",
+      "producerCommit": null,
+      "producerSourceSha256": null,
+      "producerProbeSha256": null
+    }
+  },
+  "diagnosticHashes": {
+    "scripts/diag/zone/ol-role-dispatch.ts": "fd3b791a9ca84b928fb53047a8db00ccaebc7cee3f95ae19c20a47fd2e0ee3ef",
+    "scripts/diag/zone/ol-responsibility-audit.py": "4d4bcae51a92d18600c22cf8cf460010fa179c9bc1562aa706cf1ef6c7372de0",
+    "scripts/diag/zone/ol-technique-film.py": "b7281e924863d8e2464fe8aad5fdb1cb0aedf35f525fb664d282753fe99b7eda"
+  },
+  "portableWitness": {
+    "path": "docs/reviews/ol-responsibility-witness.json",
+    "sha256": "a6e91452cc2a6d9cccdf03ffe934092455066224654df8fa7a75b7a43174b122",
+    "bytes": 89528
+  },
+  "artifacts": {
+    "out/ol-technique/film.html": {
+      "sha256": "7f5817a5eb97a2e5a30fcbd0b0ddb87d637ff30a1782e4ffbe30948062daf66a",
+      "bytes": 7393960
+    },
+    "out/ol-technique/film.json": {
+      "sha256": "8632d14a592b6d9c5aacca35943a1027975acd13809718b024ad2a731aa5c1b3",
+      "bytes": 7383486
+    },
+    "out/ol-technique/responsibility.json": {
+      "sha256": "63a78dbc458642ba2d8c7709ce0dfa1d3827d22a96bdd252a4562a0380f5f33f",
+      "bytes": 751859
+    }
+  },
+  "checks": {
+    "roleDispatch": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ol-technique-audit",
+      "commit": "64112f524343db314b373fc8e0612519c315a92b",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "dff738d627dfa87b57ba24642e2a638ba255d3e57009f45a42d92b85a4f8ce25",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T06:46:52.193Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/ol-role-dispatch.ts",
+            "out/ol-technique/role-dispatch.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.281519419
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T06:46:52.477Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ol-technique-audit",
+      "commit": "64112f524343db314b373fc8e0612519c315a92b",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "validationSha256": "dff738d627dfa87b57ba24642e2a638ba255d3e57009f45a42d92b85a4f8ce25",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T06:47:06.119Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.428862823
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T06:47:15.552Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "filmExtraction": {
+      "passed": true,
+      "reusedFromFinalGeneratorLocalCheck": true,
+      "savedFrames": 462,
+      "samePrefixHashes": 8,
+      "richPrefixes": 2,
+      "richPrefixHashesEach": 49,
+      "lastBuildSeconds": 2.948,
+      "javascriptSyntax": "Node22 --check passed on extracted viewer script; reported by film worker",
+      "browserRendering": "Not executed: installed Playwright Chromium executable absent; no download attempted"
+    },
+    "responsibilityExtraction": {
+      "passed": true,
+      "reusedFromFinalGeneratorLocalCheck": true,
+      "lastBuildSeconds": 2.266805890998512,
+      "cases": 3,
+      "allThreats": 11,
+      "changedInputHashControl": "Passed: mismatching compressed input rejected before reduction/output"
+    },
+    "sourceCompatibility": {
+      "src/sim/behaviors/blocking.ts": {
+        "sha256": "8d2d72571ac874ae98c284c258aeefa9edb48d92dd0059a8f438bdcd19cd7a21",
+        "byteIdenticalToHistorical": true
+      },
+      "src/sim/zone-reach.ts": {
+        "sha256": "3a4f02d2b9d3e274a39d1fc45f60286d3d80f1109987fa9957fb80a7e54852c2",
+        "byteIdenticalToHistorical": true
+      },
+      "src/sim/run-block-fit.ts": {
+        "sha256": "c01c4c67d6630ad2789975260301c0cc36ec63832eacf97cde49987083b3250e",
+        "byteIdenticalToHistorical": true
+      },
+      "src/sim/spacing.ts": {
+        "sha256": "b1aac502e9c49c31993a342de54ff19a6fe61bfddd01a488bd8396d8c61433a5",
+        "byteIdenticalToHistorical": true
+      }
+    }
+  },
+  "diagnosticFailuresRetained": [
+    {
+      "stage": "initial film extraction",
+      "reason": "Ended frames may omit carrier; optional lookup corrected. No engine/input change.",
+      "elapsedSeconds": null
+    },
+    {
+      "stage": "initial film roundtrip check",
+      "reason": "Tuple summaries decode as JSON lists; exporter corrected to lists. No engine/input change.",
+      "elapsedSeconds": null
+    },
+    {
+      "stage": "attempted browser check",
+      "reason": "Chromium executable not installed; rendering remains unverified. No download or dependency change.",
+      "elapsedSeconds": null
+    }
+  ],
+  "nativeEndingsReused": [
+    {
+      "arm": "baseline",
+      "endTime": 4.3,
+      "outcome": "tackle",
+      "gain": 1.495518431752906,
+      "censored": false,
+      "crossing": 3.6,
+      "firstContact": {
+        "t": 3.65,
+        "opponent": "CB_S",
+        "note": "grasp",
+        "depth": 0.38000000000000256,
+        "depthSource": "event position; see original receipt for exact firstContactX"
+      }
+    },
+    {
+      "arm": "isolated",
+      "endTime": 4.4,
+      "outcome": "tackle",
+      "gain": -0.8561299817053367,
+      "censored": false,
+      "crossing": null,
+      "firstContact": {
+        "t": 2.35,
+        "opponent": "DE_S",
+        "note": "grasp",
+        "depth": -1.6082479515271046
+      }
+    },
+    {
+      "arm": "baseline",
+      "endTime": 3.25,
+      "outcome": "tackle",
+      "gain": -0.2064288442096256,
+      "censored": false,
+      "crossing": null,
+      "firstContact": {
+        "t": 2.65,
+        "opponent": "DE_S",
+        "note": "body collision",
+        "depth": -0.22999999999999687,
+        "depthSource": "event position; see original receipt for exact firstContactX"
+      }
+    },
+    {
+      "arm": "isolated",
+      "endTime": 3.65,
+      "outcome": "tackle",
+      "gain": -0.969239908227209,
+      "censored": false,
+      "crossing": null,
+      "firstContact": {
+        "t": 2.4,
+        "opponent": "DT_S",
+        "note": "body collision",
+        "depth": -1.2274257230560295
+      }
+    },
+    {
+      "arm": "baseline",
+      "endTime": 3.4,
+      "outcome": "tackle",
+      "gain": 2.371521112002064,
+      "censored": false,
+      "crossing": 2.6,
+      "firstContact": {
+        "t": 2.3,
+        "opponent": "DE_W",
+        "note": "grasp",
+        "depth": -0.9600000000000009,
+        "depthSource": "event position; see original receipt for exact firstContactX"
+      }
+    },
+    {
+      "arm": "isolated",
+      "endTime": 4.1,
+      "outcome": "tackle",
+      "gain": 9.500380676675306,
+      "censored": false,
+      "crossing": 2.4,
+      "firstContact": {
+        "t": 2.85,
+        "opponent": "LB_M",
+        "note": "grasp",
+        "depth": 3.1354877517233746
+      }
+    }
+  ],
+  "recordedWrappedCommandSeconds": 9.710382242,
+  "runtimeAccounting": "Two wrapped commands have exact recorded times. Final worker film build2.948s and final responsibility build are measured; earlier extraction attempts, read-only inspection and total investigation time were not fully instrumented. Do not treat their sum as total task cost.",
+  "remainingDependency": "Sole physics owner must review acquired/reachable/retained/cleared contact contract before controller/feasible-route candidates. No published review found on PR14/17/18 at audit checkpoint.",
+  "nextOwnerActions": {
+    "physics": "Review existing PR18 12,884-byte native-retained/cleared/synthetic-unreachable witness; preserve supported zero-compression lateral force and torque/work accounting.",
+    "runGame": "After review, investigate feasible RT joining/recovery and RG anchoring; isolate attached-first-level posture from movement policy and preserve WR/climb/pull/Draw contracts.",
+    "integration": "After review, refresh/pin current develop and replay same three cases/settings separately from historical comparison."
+  },
+  "limits": [
+    "Slot-dispatch controls do not run football or establish optimal TE posture.",
+    "Static code equality is not native outcome transfer.",
+    "No anatomical foot placement or realistic complete defensive-win certification.",
+    "Saved nonzero hand forces do not certify retained attachments or route protection.",
+    "No contact, movement, grip, capacity, roster, RB, release or default correction promoted."
+  ]
+}
