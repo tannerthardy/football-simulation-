@@ -67,13 +67,18 @@ for (const input of inputs) {
         redirectOnly:finite(g.redirect+held),combined:finite(g.time),
         ownVelocity:own.vel,observedVelocity:picture.vel});
     }
-    const first = key => samples.find(s => s[key] !== null && s[key] < .45) ?? null;
+    // Retain the literal engine comparison beside a numerically stable
+    // diagnostic comparison. The 50-ms intercept grid represents .45 as
+    // .44999999999999996; that is not evidence of earlier football urgency.
+    const firstRaw = key => samples.find(s => s[key] !== null && s[key] < .45) ?? null;
+    const first = key => samples.find(s => s[key] !== null && s[key] < .45 - 1e-9) ?? null;
     rows.push({id:r.id,qb:{i:qb.i,id:qb.id},nativeSignature:r.signature,
       originalFilm:r.film,kind:r.measurement.kind,pocketEnd:r.measurement.pocketEnd,
       release:r.measurement.release,firstContact:contact??null,
       originalFirstImminent:first('original'),radiusFirstImminent:first('radiusOnly'),
       sweptFirstImminent:first('sweptOnly'),redirectFirstImminent:first('redirectOnly'),
-      combinedFirstImminent:first('combined'),samples});
+      combinedFirstImminent:first('combined'),combinedLiteralFirstImminent:firstRaw('combined'),
+      gridThresholdEdges:samples.filter(s=>s.combined!==null&&Math.abs(s.combined-.45)<1e-9),samples});
   }
 }
 assert.deepEqual(rows.map(r=>r.id).sort(),wanted.slice().sort());
@@ -88,11 +93,13 @@ const result = {schema:'qb-pressure-research-same-picture-v1',
     'Original live held penalty and speedScale deliberately retained to isolate geometry.',
     'Full reach is a possible-contact outer bound, not grip acquisition or a guaranteed sack.',
     'Interpolation feasibility checked; full speculative intercept may still underestimate physical arrival.',
+    'The literal .45 comparison is retained separately from a 1e-9 tolerance; the latter is diagnosis, not a changed production gate.',
     'Original feet, release and physical endings are fixed; no candidate outcome or fresh-player transfer is claimed.',
     'Blocked/visible-lane information arm requires recording available teammate observations; it is not inferred from film truth.']};
 mkdirSync(dirname(out),{recursive:true});writeFileSync(out,JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify({out,checks,newSimulations:0,rows:rows.map(r=>({id:r.id,
   original:r.originalFirstImminent?.t??null,radius:r.radiusFirstImminent?.t??null,
   swept:r.sweptFirstImminent?.t??null,redirect:r.redirectFirstImminent?.t??null,
-  combined:r.combinedFirstImminent?.t??null,phase:r.combinedFirstImminent?.phase??null,
+  combined:r.combinedFirstImminent?.t??null,literalCombined:r.combinedLiteralFirstImminent?.t??null,
+  phase:r.combinedFirstImminent?.phase??null,
   actor:r.combinedFirstImminent?.id??null,contact:r.firstContact?.t??null,release:r.release}))}));
