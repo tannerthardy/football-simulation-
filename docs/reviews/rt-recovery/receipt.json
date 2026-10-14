@@ -3098,5 +3098,159 @@
     "Angular law remains uncertain.",
     "Candidates rejected; no production-controller change.",
     "Y not replayed because neither H action demonstrates useful arrival protection."
-  ]
+  ],
+  "typecheckReceipt": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/rt-recovery-counterfactual",
+    "commit": "2617671f02447ba9caa8cc1bd5bbb4cdf9d4ba76",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "failFast": false,
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+    "validationSha256": "2556e1d9de7c40a2a13456edcc88aa2e32ea6c4d6bec11f11a3466143708233e",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [],
+    "startedAt": "2026-10-14T19:18:14.386Z",
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.294555156
+      }
+    ],
+    "skippedCommands": [],
+    "finishedAt": "2026-10-14T19:18:25.684Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "wrappedNativeAndTypecheckSeconds": 15.849008353999999,
+  "viewerChecks": {
+    "protocol": "rt-recovery-offline-viewer-v1",
+    "generatorSha256": "b1b980021df341a0c1622a64bce43311cd94cccfaac6619a0732fdbd7094ab29",
+    "htmlSha256": "5830e9432ae2e7577571cf3e5c3dd5a2475695256fa4aec75383839c7a6a213f",
+    "embeddedDataSha256": "cadc5810888cea752241a339fdd766ff5c9a33b2326d60075b61ac1df41b0643",
+    "inputs": {
+      "unchanged": {
+        "path": "/workspace/football-run-diagnostic-drills/out/run-drills/native-prefix.json.gz",
+        "sha256": "0be4172745d5d93c9c0eab409be0718eea291c1033587cbf845bfa1f6fa9c8eb",
+        "bytes": 338637
+      },
+      "a": {
+        "path": "/workspace/football-run-diagnostic-drills/out/rt-recovery/uc12-wz-s3-mirror.json.gz",
+        "sha256": "c9b43791e63ab11667a3ab9f1b6237e6a9e97b9dfb530c3d479f2572fa50bb26",
+        "bytes": 2120140
+      },
+      "b": {
+        "path": "/workspace/football-run-diagnostic-drills/out/rt-recovery/uc12-wz-s3-mirror-flow-only.json.gz",
+        "sha256": "75b9ffc8f4229f4a242ddf43b46205942dfccf06bf1ca573e951a12925476465",
+        "bytes": 1474766
+      },
+      "reference": {
+        "path": "/workspace/football-run-diagnostic-drills/data/reviews/current/ace-production-observations.json.gz",
+        "sha256": "ad462904b23c6864d902107f6a0aa3a876b4e35d3247db8dfaebb835276ae10b",
+        "bytes": 781084
+      }
+    },
+    "node": "v22.23.3",
+    "embeddedRoundTrip": true,
+    "javascriptSyntax": true,
+    "commonIntervalsPerPane": 10,
+    "bodiesPerBoundary": 22,
+    "panes": 3,
+    "sameInputsFlagsSourcesProfiles": true,
+    "preAction35HashesExact": true,
+    "actualCOMReconstruction": true,
+    "interventionInactiveThroughoutDisplayedWindow": true,
+    "worldTicksExecuted": 0,
+    "browserVisualVerified": false,
+    "elapsedSeconds": 0.8028063390083844
+  },
+  "runtimeChangesVsAcceptedDevelop": [],
+  "artifacts": {
+    "scripts/diag/zone/rt-recovery-counterfactual.ts": {
+      "sha256": "07321749f705c7eb6e42cd03223c1288d732372f3509f595b478a2d3e3c1562f",
+      "bytes": 8349
+    },
+    "scripts/diag/zone/rt-recovery-analysis.py": {
+      "sha256": "245f3607dadae1a0030c34a7cdfab74b2b23c0966de5e9c19760e47c127722cf",
+      "bytes": 8586
+    },
+    "scripts/diag/zone/rt-recovery-viewer.py": {
+      "sha256": "b1b980021df341a0c1622a64bce43311cd94cccfaac6619a0732fdbd7094ab29",
+      "bytes": 26009
+    },
+    "docs/reviews/rt-recovery/input-manifest.json": {
+      "sha256": "de68f7069c5d8477587a1c17a2162664de1bbc66bcb03eed8c8f255d83de1d0d",
+      "bytes": 3706
+    },
+    "out/rt-recovery/viewer.html": {
+      "sha256": "5830e9432ae2e7577571cf3e5c3dd5a2475695256fa4aec75383839c7a6a213f",
+      "bytes": 633357
+    },
+    "out/rt-recovery/analysis.json": {
+      "sha256": "e430b6d039717e4975b1e6f61eb9f32ad26d255ccdfded35cc597f9afe353ba9",
+      "bytes": 79277
+    }
+  }
 }

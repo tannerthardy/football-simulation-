@@ -140,8 +140,20 @@ profiles, finite state, support/posture, arm work/impulse, represented work and
 whole-context linear impulse. Max work residual8.94e-12 and linear residual
 1.59e-12; these checks do not validate the known angular law.
 
+Typecheck passes at `2617671f02447ba9caa8cc1bd5bbb4cdf9d4ba76`; the subsequent
+Python viewer packaging change does not change any TypeScript or simulation.
+Native candidates plus typecheck cost15.85wrapped seconds. The viewer's saved
+data roundtrip, COM reconstruction and Node22 JavaScript syntax pass; browser
+rendering is unverified.
+
 The receipt and portable download below contain exact revision/settings,
 original cached traces and script fingerprints. The viewer compares full22
 context only over their shared2.20–2.70 window; its position/request overlays
 are recorded facts. Hand N/T values are signed tick averages, not final-substep
 samples or proof of uninterrupted retention.
+
+Unzip the downloadable `rt-recovery-counterfactual.zip` and open `viewer.html`.
+The archive also contains both original full-context candidate captures, the
+unchanged prefix, accepted reference, report, exact receipts and reproduction
+scripts. Captures are observations, not a serialized `PlaySim` restore format;
+native reproduction regenerates and hash-checks the original source prefix.

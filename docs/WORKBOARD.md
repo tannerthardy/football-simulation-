@@ -20,6 +20,19 @@ answers whether installed zone technique matches requested and achieved work.
 Known center-hand angular-law limitation remains visible. No games/census or
 full suite; integration owner retains final combined verification.
 
+Completed [two-action report](reviews/rt-recovery/README.md): A holds a more
+useful static screen but induces earlier runner braking and DE contact .414yd
+deeper; B follows the acquired lateral flow while preserving depth requests,
+yet DE contact remains2.65 and it adds small later RT/H traffic. Both rejected;
+no controller/solver/movement edit. First35 state/RNG hashes match exactly;
+two natural candidates,154ticks, accepted endings reused. Native+typecheck
+15.85wrapped seconds; budgets/work/posture/linear impulse and offline viewer
+checks pass, no angular certificate. Y replay omitted because neither H action
+passes actual-arrival protection. The precise next question is first-solo
+runoff foot objective versus acquired shoulder/corridor, not a release timer,
+strength increase or inferred RB fault. Guard/center audit confirms installed
+zone intentions while keeping second-level leverage limits visible.
+
 ## 2026-10-14 (America/Phoenix): one-time D01–D03 diagnostic drills
 
 The user explicitly authorizes the uploaded `Run_Game_Diagnostic_Drills_2026-10-14.md`

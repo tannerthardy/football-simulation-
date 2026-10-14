@@ -125,14 +125,14 @@ def main():
     started = time.perf_counter()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--unchanged", default="out/run-drills/native-prefix.json.gz")
-    parser.add_argument("--a", default="out/rt-recovery/uc12-wz-s3-mirror.json.gz")
+    parser.add_argument("--a", default="out/rt-recovery/uc12-wz-s3-mirror-depth-neutral.json.gz" if Path("out/rt-recovery/uc12-wz-s3-mirror-depth-neutral.json.gz").exists() else "out/rt-recovery/uc12-wz-s3-mirror.json.gz")
     parser.add_argument("--b", default="out/rt-recovery/uc12-wz-s3-mirror-flow-only.json.gz")
-    parser.add_argument("--labels", default="out/run-drills/d03-overlay.json")
+    parser.add_argument("--reference", default="data/reviews/current/ace-production-observations.json.gz")
     parser.add_argument("--out", default="out/rt-recovery")
     parser.add_argument("--node", default="/workspace/.cloud-tools/node22/node_modules/.bin/node")
     args = parser.parse_args()
     packets, pins = {}, {}
-    for name in ("unchanged", "a", "b", "labels"):
+    for name in ("unchanged", "a", "b", "reference"):
         packets[name], pins[name] = read(getattr(args, name))
     unchanged, a, b = (packets[k] for k in ("unchanged", "a", "b"))
     assert unchanged["prefixExact"] and unchanged["controllersChanged"] is False
@@ -149,7 +149,9 @@ def main():
         assert p["otherControllersChanged"] is False and p["spacingChanged"] is False and p["contactChanged"] is False
         assert len(p["actions"]) == 5 and [round(x["t"], 2) for x in p["actions"]] == [1.75, 1.8, 1.85, 1.9, 1.95]
         assert p["finishedAction"]["t"] == 2 and p["firstAction"] == 1.75
-    labels = sorted(packets["labels"]["runs"][0]["actors"], key=lambda p: p["idx"])
+    assert pins["reference"]["sha256"] == unchanged["referenceSha256"]
+    reference_row = next(r for r in packets["reference"]["panel"] if r["input"] == unchanged["input"])
+    labels = sorted(reference_row["actors"], key=lambda p: p["idx"])
     assert [p["idx"] for p in labels] == list(range(22))
     assert [labels[i]["slot"] for i in (2, 6, 12)] == ["RT", "RB", "DE_S"]
     runs = []

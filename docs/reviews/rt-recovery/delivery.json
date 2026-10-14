@@ -1,0 +1,10 @@
+{
+  "protocol": "rt-recovery-download-v1",
+  "artifact": "docs/reviews/assets/rt-recovery-counterfactual.zip",
+  "bytes": 4841157,
+  "sha256": "cb0cf76e301d5b8853acd4041a50ecca308617f25bfa048ace97f22b818320bd",
+  "entries": 15,
+  "archiveIntegrity": true,
+  "browserRenderingVerified": false,
+  "newWorldSteps": 0
+}
