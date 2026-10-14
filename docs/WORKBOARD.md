@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Offensive-line technique audit
+
+User-assigned deep dive on `codex/ol-technique-audit`, from exact current
+`develop` `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`. Run-game owner owns
+read-only assignment/footwork/leverage review and offline reduction of the saved
+three Ace controls, plus portable diagnosis and film tools. Physics owns the
+unreviewed retained/cleared/unreachable contract from PR #18. Current controller,
+shared movement, solver, capacities, experimental hands and release policies
+remain unchanged until that review. Integration owns the later native replay
+on pinned current `develop`; a code audit is not production transfer evidence.
+Historical law comparison remains `4ded6b6`. No new games, roster census or
+gain-based tuning. Independent analysis continues while that dependency is
+pending; a candidate needs a demonstrated decision error and feasible execution.
+
+The audit separates assignment from acquisition, useful leverage, achievable
+movement and protection through runner arrival. Subtasks inspect snap planning,
+loaded technique and saved film independently; none owns a production edit.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
