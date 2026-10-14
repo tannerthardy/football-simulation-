@@ -140,7 +140,13 @@ describe('observer-owned teammate information', () => {
       expect(before.source).toBe('called');
       expect(calls.get(s.b.idx)!.origin).toEqual(s.sim.offAlign.spots.LG.pos);
       s.b.body.pos = { x: 10, y: 1 }; s.b.body.vel = { x: -9, y: 6 };
-      s.b.engagement = { blocker: s.b, defender: s.sim.slot('DT_S')!, helpers: [] } as Engagement;
+      const hiddenEngagement: Engagement = {
+        blocker: s.b, defender: s.sim.slot('DT_S')!, helpers: [], start: .2, type: 'run',
+        win: 0, control: 0, phi: 0, side: 1, baseB: 1, baseD: 1,
+        move: 'bull', moveUntil: .5, moveOk: false, nextMoveAt: .5, pushBoost: 0,
+        drive: { x: 1, y: 0 }, sealTarget: 0, repEdge: 0, holding: false,
+      };
+      s.b.engagement = hiddenEngagement;
       expect(installTeammateExpectations(s.sim)).toEqual(calls);
       (original as RunBlocker).plan.kind = 'climb';
       s.b.behavior = { kind: 'hidden-live-reassignment',
