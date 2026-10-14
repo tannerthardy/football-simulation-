@@ -39,6 +39,18 @@ describe('experimental passive contact in the native World lifecycle',()=>{
       else expect(Math.hypot(rows[0].after.x-rows[0].before.x,rows[0].after.y-rows[0].before.y)).toBeGreaterThan(1e-7);
     }
   });
+  it('confines the ownership defect to experimental patch transport; accepted center execution is identical',()=>{
+    const legacy=passiveWorldFixture('radial-control','legacy'),owned=passiveWorldFixture('radial-control','owned');
+    for(const a of [legacy,owned]){
+      // Use the accepted hand mode with the same held-foot and parked-body
+      // graph. Center attachments follow support coordinates, not material.
+      const w:any=a.w;w.handContact='center';delete w.attachments.get(a.j).material;
+    }
+    const r=legacy.w.step(legacy.intents,H),s=owned.w.step(owned.intents,H);
+    expect(owned.bodies).toEqual(legacy.bodies);expect(s).toEqual(r);
+    const coordinates=(a:typeof legacy)=>{const w:any=a.w;return {attachment:w.attachments.get(a.j),point:w.graspPoint(a.j)};};
+    expect(coordinates(owned)).toEqual(coordinates(legacy));
+  });
   it.each(['unsupported','refused','invalid'] as const)('falls back without partial body/material/work/fatigue commits: %s',mode=>{
     const baseline=passiveWorldFixture('curved-return','owned'),r=baseline.w.step(baseline.intents,H),
       a=passiveWorldFixture('curved-return','owned',q=>{if(mode==='unsupported')return undefined;

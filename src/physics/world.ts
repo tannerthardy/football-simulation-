@@ -35,10 +35,11 @@ import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
-import { ARM_SPEED, turnBody, turnBodyResponse, workFraction } from './actuation.js';
+import { ARM_SPEED, YAW_RESPONSE, turnBody, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { resolveGripInterval, type GripTimingReport } from './grip-timing.js';
 import {passiveGripResultValid,type PassiveGripInput,type PassiveGripResult,type PassiveGripSolver,type PassiveGripReport} from './passive-grip.js';
+import {activeGripResultValid,type ActiveGripInput,type ActiveGripResult,type ActiveGripSolver} from './active-grip.js';
 import { LEG_SLIDE } from './grip-sliding.js';
 import { resolveFastGripInterval, commitGripTrial } from './grip-fast.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
@@ -166,6 +167,7 @@ export interface StrikeRecord {
 export interface StepReport {
   /** Explicit experimental callback only; absent under production defaults. */
   passiveGrip?:PassiveGripReport;
+  activeGrip?:PassiveGripReport & {armCost:number;reelDose:number};
   /** Experimental grip integration only; absent from unchanged default reports. */
   gripTiming?: GripTimingReport;
   /** Substeps used by the contact island (1 when nobody was near contact). */
@@ -381,6 +383,7 @@ export class World {
   declare readonly passiveGrip?:PassiveGripSolver;
   /** Experimental material transport ownership; absent retains legacy path. */
   declare readonly materialTransport?:'owned';
+  declare readonly activeGrip?:ActiveGripSolver;
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -448,13 +451,14 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast'; materialTransport?:'owned'; passiveGrip?:PassiveGripSolver } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast'; materialTransport?:'owned'; passiveGrip?:PassiveGripSolver; activeGrip?:ActiveGripSolver } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
     this.handContact = opts.handContact ?? 'center';
     this.gripTiming = opts.gripTiming ?? 'midpoint';
     if(opts.passiveGrip)this.passiveGrip=opts.passiveGrip;
+    if(opts.activeGrip)this.activeGrip=opts.activeGrip;
     if(opts.materialTransport)this.materialTransport=opts.materialTransport;
     if (this.handContact === 'patch' && this.handIntegration !== 'centered')
       throw new RangeError('Common hand patches require centered force integration');
@@ -467,6 +471,8 @@ export class World {
       throw new RangeError('Bounded attachments require the live held-only support lifecycle');
     if(this.passiveGrip&&(this.handContact!=='patch'||this.gripTiming!=='midpoint'||!this.boundedAttachment||this.constraintWork!=='per-solve'||this.materialTransport!=='owned'))
       throw new RangeError('Passive grip callback requires owned material, bounded patch, midpoint and per-solve work');
+    if(this.activeGrip&&(this.passiveGrip||this.handContact!=='patch'||this.gripTiming!=='midpoint'||!this.boundedAttachment||this.constraintWork!=='per-solve'||this.materialTransport!=='owned'))
+      throw new RangeError('Active grip callback requires sole callback, owned material, bounded patch, midpoint and per-solve work');
     const n = (this.n = bodies.length);
     bodies.forEach((b, i) => {
       this.index.set(b, i);
@@ -1051,8 +1057,9 @@ export class World {
   private integrateInterval(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
     report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean, swept = true): void {
     const bs = this.bodies;
-    const passiveStarts=this.passiveGrip&&contact?ids.map(i=>({mass:this.mass[i],inertia:this.inertia[i],
+    const passiveStarts=(this.passiveGrip||this.activeGrip)&&contact?ids.map(i=>({mass:this.mass[i],inertia:this.inertia[i],
       pos:{...bs[i].pos},vel:{...bs[i].vel},facing:bs[i].facing,spin:bs[i].spin??0})):undefined;
+    const groundStarts=this.activeGrip&&contact?ids.map(i=>({work:report.groundWork[i],yawWork:report.groundYawWork[i],yawImpulse:report.groundYawImpulse[i]})):undefined;
     this.syncHeldSupport();
     this.reels.clear();
     for (const i of ids) {
@@ -1095,7 +1102,7 @@ export class World {
     }
     // Complete the declared passive contact once, then retain the native load,
     // support, release and tick-fatigue lifecycle below. Refusal commits nothing.
-    const passive=passiveStarts?this.tryPassiveGrip(ids,passiveStarts,h,report):undefined;
+    const passive=passiveStarts?(this.activeGrip?this.tryActiveGrip(ids,passiveStarts,plans,h,report,groundStarts!):this.tryPassiveGrip(ids,passiveStarts,h,report)):undefined;
 
     // Strikes develop over the controller tick, sharing arm force with all
     // hand actions. A distant target cannot receive a remote shove.
@@ -1468,6 +1475,56 @@ export class World {
   }
 
   /** The feet: gait plan, lean into a felt load, one shared budget; or off-feet motion. */
+  /** Issued native feet/arm allocation, integrated on one contact clock.
+   * Unsupported geometry/phase falls back before any contact mutation. Native
+   * support, release and fatigue still run once in their existing lifecycle. */
+  private tryActiveGrip(ids:number[],starts:PassiveGripInput['a'][],plans:Plan[],h:number,report:StepReport,
+    groundStarts:Array<{work:number;yawWork:number;yawImpulse:number}>):{joint:GraspJoint}|undefined{
+    const audit=report.activeGrip??={accepted:0,fallbacks:0,reasons:{},dose:0,bodyWork:0,motorWork:0,armCost:0,reelDose:0},
+      refuse=(reason:string)=>{audit.fallbacks++;audit.reasons[reason]=(audit.reasons[reason]??0)+1;return undefined;};
+    if(this.materialTransport!=='owned'||this.handContact!=='patch'||this.gripTiming!=='midpoint'||!this.boundedAttachment||this.constraintWork!=='per-solve')return refuse('scope:host');
+    if(h<=0||h>.05/12||ids.length!==2||this.joints.length!==1||this.pending.length)return refuse('scope:graph/time');
+    const jt=this.joints[0];
+    if(jt.kind!=='grasp'||jt.broken||jt.brace!==undefined||jt.legs<=0||jt.hold===undefined)return refuse('scope:hold');
+    const i=this.indexOf(jt.a),j=this.indexOf(jt.b),a=jt.a,b=jt.b,attachment=this.attachments.get(jt),foot=b.support!.foot,ia=ids.indexOf(i),ib=ids.indexOf(j);
+    if(ia<0||ib<0||a.support!.state!=='up'||b.support!.state!=='up'||a.support!.foot
+      ||!attachment?.bounded||!attachment.material||!foot||attachment.foot!==foot)return refuse('scope:attachment/support');
+    if(foot.desired.x!==0||foot.desired.y!==0||!(foot.mobility>0))return refuse('scope:recovery-command');
+    const capacity=this.gripCapacity(jt),R=CONTACT_SCALE*1.12*(a.profile.radius+b.profile.radius),
+      travel=Math.hypot(starts[ib].vel.x-starts[ia].vel.x,starts[ib].vel.y-starts[ia].vel.y)*h
+        +.5*(capacity*(1/this.mass[i]+1/this.mass[j])+Math.hypot(this.amx[j]-this.amx[i],this.amy[j]-this.amy[i]))*h*h;
+    if(capacity<=0||Math.hypot(b.pos.x-a.pos.x,b.pos.y-a.pos.y)-R<=travel)return refuse('scope:possible-impact');
+    const ground=(idx:number,s:PassiveGripInput['a'])=>{
+      const body=this.bodies[idx],force={x:this.amx[idx]*this.mass[idx],y:this.amy[idx]*this.mass[idx]},available=this.alpha[idx],rate=turnRateOf(body),
+        magnitude=Math.hypot(force.x,force.y),torque=Math.sqrt(Math.max(0,(this.sp[idx].traction*available)**2-magnitude*magnitude))*baseRadiusAt(this.sp[idx],body.support!.posture);
+      return {force,target:s.facing+angleDiff(s.facing,plans[idx].facing),rate,
+        acceleration:plans[idx].free?0:Math.min(rate/YAW_RESPONSE*(.3+.7*available),torque/this.inertia[idx])};
+    };
+    const input:ActiveGripInput={a:starts[ia],b:starts[ib],material:{...attachment.material},footOffset:{...foot.offset},mobility:foot.mobility,
+      desired:{...foot.desired},capacity,duration:h,minimumDistance:R,reach:jt.reach,attachmentReach:this.sp[j].comHeight,hold:jt.hold,legs:jt.legs,
+      ...(jt.recoveryCoupling===undefined?{}:{recoveryCoupling:jt.recoveryCoupling}),pullSpeed:jt.pull??0,
+      ground:[ground(i,starts[ia]),ground(j,starts[ib])],tickDuration:this.tickDt,armCapacity:this.armCap[i]*this.armScale[i],
+      armWorkRemaining:Math.max(0,report.armWorkLimit[i]-report.armWork[i])};
+    let r:ActiveGripResult|undefined;
+    try{r=this.activeGrip!(structuredClone(input));}catch(e){if(e instanceof RangeError)return refuse(`solver:${e.message}`);throw e;}
+    if(!r)return refuse('solver:unsupported');
+    try{if(!activeGripResultValid(input,r))return refuse('solver:invalid-result');}
+    catch(e){if(e instanceof RangeError||e instanceof TypeError)return refuse('solver:invalid-result');throw e;}
+    for(const [k,idx,p,body] of [[0,i,r.a,a],[1,j,r.b,b]] as const){
+      body.pos={...p.pos};body.vel={...p.vel};body.facing=p.facing;body.spin=p.spin;
+      const old=groundStarts[ids.indexOf(idx)];report.groundWork[idx]=old.work+r.groundWork[k];
+      report.groundYawWork[idx]=old.yawWork+r.groundYawWork[k];report.groundYawImpulse[idx]=old.yawImpulse+r.groundYawImpulse[k];
+    }
+    this.footImpulseX[j]=(r.footOffset.x-input.footOffset.x)/input.mobility;this.footImpulseY[j]=(r.footOffset.y-input.footOffset.y)/input.mobility;
+    foot.offset={...r.footOffset};attachment.material={...r.material};attachment.geometry=undefined;
+    this.addLoad(i,j,1,0,r.impulse.x,r.impulse.y,jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1)),true);
+    report.work.grasps+=r.bodyWork;report.passiveGraspWork+=r.bodyWork-r.motorWork-r.reelWork;
+    report.supportMotorWork[j]+=r.motorWork;report.armWork[i]+=r.armCost;report.armImpulse[i]+=r.reelDose;
+    jt.force=(jt.force??0)+r.dose;jt.slipping=false;
+    audit.accepted++;audit.dose+=r.dose;audit.bodyWork+=r.bodyWork;audit.motorWork+=r.motorWork;audit.armCost+=r.armCost;audit.reelDose+=r.reelDose;
+    return {joint:jt};
+  }
+
   private feet(i: number, intent: Intent, plan: Plan, h: number, remaining: number, report: StepReport): void {
     const b = this.bodies[i];
     const sup = b.support!;
