@@ -31,6 +31,7 @@ native = read(LAW / 'protection.json.gz')
 old_rows = read(OLD / 'carrier-design.json.gz')['panel'] + read(OLD / 'carrier-design-weak.json.gz')['panel']
 probe = read(ROOT / 'delivery.json.gz')
 retention = read(ROOT / 'retention.json')
+spacing = read(ROOT / 'spacing.json')
 prior = read(Path('data/reviews/current/contact-law-isolation.json'))
 
 
@@ -148,6 +149,8 @@ receipt = dict(protocol='ace-protection-review-v1', comparisonCommit=native['com
                settings=checks, recordedCommandSeconds=sum(cmd['elapsedSeconds'] for c in checks.values() for cmd in c['commands']),
                rows=rows, weakSuccessReused={k: weak[k] for k in ['input', 'endTime', 'outcome', 'crossing', 'firstContact', 'gain']},
                weakFullHistorySha256=digest(weak['hashes']),
+               spacingControls=spacing,
+               spacingInputSha256=sha(Path('docs/reviews/ace-protection-spacing-controls.json')),
                retentionControls=dict(inputSha256=sha(Path('docs/reviews/ace-lateral-retention-controls.json')),
                                       nativeError=retention['nativeError'], retained=retention['retained']['joints'],
                                       clearedImpulse=retention['cleared']['reports'][0]['armImpulse'],

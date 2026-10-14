@@ -5,7 +5,22 @@ Own only bounded Y/RT and RG/DT_S trace reduction, acquired-cue/request attribut
 and portable retained/cleared contact controls. No shared solver, capacity,
 contact-retention, RB, release or strength edits. The sole physics owner decides
 the retention contract. Historical law comparison stays 4ded6b6; assess current
-`develop` only after that contract review. Preserve weak-call success and the
+`develop` only after that contract review.
+
+[Bounded follow-up complete](reviews/ace-protection-traces.md): RT has brief
+lateral load1.50–1.95, then loses reach at2.00 before runner arrival; prior
+blanket never-loaded prose corrected. RG anchoring is clipped by RT traffic;
+new RG/DE_S collision2.30 precedes DT_S runner access2.40 despite the loaded
+end block. Both short observed prefixes preserve all49 state/RNG hashes. Five
+consumed-picture spacing folds reproduce delivery exactly and preserve a clear
+lane; they attribute the constraint without proving optimal collision avoidance.
+[12,884-byte retention controls](reviews/ace-lateral-retention-controls.json)
+replay native zero-compression lateral load exactly; clearing removes all hand
+impulse. Unreachable stale input is a synthetic opposing control, not a native
+defect. Shared source/capacities/defaults and weak success unchanged. Physics
+contract review remains the dependency for current-develop transfer; read-only
+`develop` pin a1b16e6 is not new football evidence.
+ Preserve weak-call success and the
 three input manifests; no new games or broad roster panel.
 
 User-assigned physics support: `codex/contact-law-isolation` from PR #14

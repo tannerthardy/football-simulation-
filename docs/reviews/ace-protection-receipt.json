@@ -1,0 +1,6260 @@
+{
+  "protocol": "ace-protection-review-v1",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "historicalRuntimeSourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+  "manifest": {
+    "protocol": "ace-protection-trace-inputs-v1",
+    "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "referenceCommit": "2db2c9cc1b4bac612573c199d0933818b12d1e3a",
+    "referenceRawSha256": "3d101564c9c4add6fcc506f24fb6dfdf63923bd1db26343513a42005348f50c6",
+    "candidateCommit": "61596bd78e21cf4aa7443a8d44eca4370db21470",
+    "referenceSourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+    "strength": 0.55,
+    "los": 40,
+    "stopSeconds": 2.45,
+    "selection": {
+      "handContact": "patch",
+      "groundMovement": "legacy",
+      "controllerMovementPreview": "center"
+    },
+    "inputs": [
+      {
+        "input": {
+          "id": "uc12-wz-s3",
+          "concept": "wz_strong",
+          "kind": "run",
+          "seed": 3,
+          "flip": false,
+          "o": 31,
+          "d": 32,
+          "front": "over",
+          "formation": "ace_12"
+        },
+        "referencePrefixTicks": 49,
+        "referencePrefixSha256": "a4357cb0dad85f02efe927b9dde9e169613466b65772cd31bfac3dff49be1abe"
+      },
+      {
+        "input": {
+          "id": "uc12-wz-s3-mirror",
+          "concept": "wz_strong",
+          "kind": "run",
+          "seed": 3,
+          "flip": true,
+          "o": 31,
+          "d": 32,
+          "front": "over",
+          "formation": "ace_12"
+        },
+        "referencePrefixTicks": 49,
+        "referencePrefixSha256": "95943cd110d9f96c4071bee6b552936679b5eedff6aa58d069bb36c94fb86ebe"
+      }
+    ],
+    "scope": "Two exact historical inputs, short observer replay only. Weak-call success and complete natural endings reuse PR17 evidence. No current develop transfer until contact review."
+  },
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "observedDevelopCommit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "developTested": false,
+  "developGate": "User requires contact-retention contract settled first. Refresh develop at that checkpoint; current read-only pin is not a test result.",
+  "rawSha256": {
+    "../football-contact-law-isolation/out/contact-isolation/protection.json.gz": "3d101564c9c4add6fcc506f24fb6dfdf63923bd1db26343513a42005348f50c6",
+    "../football-under-center-zone/out/under-center-zone/carrier-design.json.gz": "341834f4baa35bfb76534ccc04cb2ff28dd0af382b052a3cb7d68cedcfdce916",
+    "out/ace-protection/delivery.json.gz": "7876316abd4ba234a0ad870627a3406943e5f1b5d0bc7e4377a6b3afb5de0f25"
+  },
+  "settings": {
+    "spacing-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-protection-traces",
+      "commit": "4e5e5f32ab24a4fd8b9f84d2dc8527b316fdafdc",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "33f59ea502c53468d12a1f09d81d460a5be362649700d713789a1e07c1f47f94",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T05:16:30.040Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/ace-protection-spacing.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.771198086
+        }
+      ],
+      "finishedAt": "2026-10-14T05:16:30.814Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "retention-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-protection-traces",
+      "commit": "64169da93c9418db691b93d06c58f27975c9e552",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "23ca24e45f555ff1bff41cbe43981cb09e143e94405935d1f2de85e3dcc22d50",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T05:02:27.821Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/ace-retention-controls.ts",
+            "out/ace-protection/retention.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.17497834899999998
+        }
+      ],
+      "finishedAt": "2026-10-14T05:02:27.998Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "delivery-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-protection-traces",
+      "commit": "ee2e568605a68f7b59f5c114fb346930d77de6ce",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "a93865a6f0e2d95dba057727d504f10cb8fd40b2cedd000be7a958f273031605",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T04:56:05.541Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/ace-protection-native.ts",
+            "out/ace-protection/delivery.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.20279449
+        }
+      ],
+      "finishedAt": "2026-10-14T04:56:06.746Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "reduction-final-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-protection-traces",
+      "commit": "f16c2edc3d24fa1d861e0da5006cba79010aadd1",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "7bf3864eeeaf667061482def50258ec222e40c65d596a228156c2fc3ed239f76",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T05:10:18.268Z",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/diag/zone/ace-protection-report.py"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.352238539
+        }
+      ],
+      "finishedAt": "2026-10-14T05:10:21.623Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-final-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-protection-traces",
+      "commit": "f16c2edc3d24fa1d861e0da5006cba79010aadd1",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "7bf3864eeeaf667061482def50258ec222e40c65d596a228156c2fc3ed239f76",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T05:10:01.194Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.197743512
+        }
+      ],
+      "finishedAt": "2026-10-14T05:10:10.394Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "typecheck-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-protection-traces",
+      "commit": "f577b4ed2bc83312761a4a7ad2895654244fd86a",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "fdce03b420d8a1faf22fad0021290794acadf3efa9f8761304ed242d9eef484e",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T05:08:45.034Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 9.072845512
+        }
+      ],
+      "finishedAt": "2026-10-14T05:08:54.109Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    },
+    "provenance-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-protection-traces",
+      "commit": "8382403015031747ae67d77c9e8d001788f71cfd",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "e00407ca38f04659afa694074033adbfce38c312fe5d9c65beac6fcc4a29a9d6",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T04:53:39.782Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/ace-protection-native.ts",
+            "out/ace-protection/provenance.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.2781365859999998
+        }
+      ],
+      "finishedAt": "2026-10-14T04:53:41.063Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "reduction-checks.json": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/ace-protection-traces",
+      "commit": "f577b4ed2bc83312761a4a7ad2895654244fd86a",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "c6b2c179a896aa1c9593def9af01c4869306a63bba9196a04e450e53f55d1904",
+      "validationSha256": "fdce03b420d8a1faf22fad0021290794acadf3efa9f8761304ed242d9eef484e",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T05:09:15.714Z",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/diag/zone/ace-protection-report.py"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 3.162257765
+        }
+      ],
+      "finishedAt": "2026-10-14T05:09:18.878Z",
+      "inputsUnchanged": true,
+      "exitCode": 1
+    }
+  },
+  "recordedCommandSeconds": 28.212192839,
+  "rows": [
+    {
+      "id": "uc12-wz-s3",
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "hashesExact": 49,
+      "firstJoint": 1.25,
+      "firstAcquired": 1.5,
+      "firstLoaded": 1.5,
+      "handExchange": {
+        "isolatedAt": 1.5,
+        "isolatedControl": -0.04947871557819712,
+        "baselineAt": 1.6,
+        "baselineActor": 2,
+        "baselineControl": 0.1983129786376714,
+        "scope": "Control inferred from native joint parameters for baseline; native probe reads acquired control directly. Hand-exchange timing/control differ; no locked-RNG attribution or new technique trial."
+      },
+      "runnerArrival": {
+        "t": 2.35,
+        "opponent": "DE_S",
+        "note": "grasp",
+        "depth": -1.6082479515271046
+      },
+      "crossing": null,
+      "endTime": 4.4,
+      "gain": -0.8561299817053367,
+      "firstRGEndCollision": [
+        {
+          "arm": "isolated",
+          "first": null
+        },
+        {
+          "arm": "baseline",
+          "first": null
+        }
+      ],
+      "checkpoints": [
+        {
+          "t": 1.25,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": null
+              }
+            ],
+            "control": -0.2789683208654129,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 3.6346111373444656,
+              "y": -2.9298291531053122
+            },
+            "facing": -0.7527739171913139,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 1.1969571287017848,
+            "requestedClosing": 1.3569715510915887,
+            "actualClosing": 1.7750724486168012
+          },
+          "rawMovement": {
+            "distance": 1.1969571287017848,
+            "requestedClosing": 4.551159335728299,
+            "actualClosing": 1.7750724486168012
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnA": 0,
+            "momentOnB": 0
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 1.0200757575757575,
+            "push": 0,
+            "hold": 0,
+            "steer": 0,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.87899255982122,
+                "y": 22.534454732740482
+              },
+              "vel": {
+                "x": 1.3073808350311862,
+                "y": -1.7428666369475245
+              },
+              "facing": -0.07577640253421344,
+              "spin": 6.415555555555556,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.143135150031508,
+                  "y": 0.15020755811939912
+                },
+                "facing": -0.7527739171913139,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.1878047519659,
+                "y": 21.89523440413572
+              },
+              "vel": {
+                "x": -0.5722840582906439,
+                "y": -0.671772186770477
+              },
+              "facing": -0.2465068522221674,
+              "spin": -0.9915494062526273,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.5047477746750606,
+                  "y": 0.05819320815281137
+                },
+                "facing": -0.30711054985217423,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.752526182962924,
+                "y": 21.71613610458214
+              },
+              "vel": {
+                "x": -0.8324463333956917,
+                "y": -1.4306720550204512
+              },
+              "facing": 2.7016446021613567,
+              "spin": -1.6416820153508243,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": -1.7538970559769873
+                },
+                "facing": 2.834482103737619,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 34.900747357770676,
+                "y": 24.078079928175473
+              },
+              "vel": {
+                "x": 2.6762656889477268,
+                "y": -3.024712197110273
+              },
+              "facing": -0.6477062817017123,
+              "spin": 7.036740681199301,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 4.933299496655044,
+                  "y": -1.7410886397703556
+                }
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 1.2071767310139465,
+            "requestedClosing": 1.4670887911977148,
+            "actualClosing": 1.1720229430090314
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 1.0200757575757575,
+            "push": 0,
+            "hold": 0,
+            "steer": 0,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.92362277157624,
+                "y": 22.690604342447354
+              },
+              "vel": {
+                "x": 0.6577383450852711,
+                "y": -1.1094252211618407
+              },
+              "facing": 0.376281739925213,
+              "spin": -3.1215063657383437,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.5431142817095989,
+                  "y": -1.6249728240298755
+                },
+                "facing": -0.9831207383947725,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.312419665165955,
+                "y": 22.207745031904448
+              },
+              "vel": {
+                "x": -0.044367321859838035,
+                "y": -0.3202339407902063
+              },
+              "facing": -0.7189829064407021,
+              "spin": -1.1861721769377251,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.0147105353700425,
+                  "y": -3.3092294461354452
+                },
+                "facing": -1.07755172783946,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.592915440951536,
+                "y": 21.685953665534225
+              },
+              "vel": {
+                "x": -1.23177083880107,
+                "y": -0.9599163590525976
+              },
+              "facing": 2.669150115209399,
+              "spin": -5.202857372686335,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": 0.16658673504909463
+                },
+                "facing": 2.0640409257503336,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 34.900747357770676,
+                "y": 24.078079928175473
+              },
+              "vel": {
+                "x": 2.6762656889477268,
+                "y": -3.024712197110273
+              },
+              "facing": -0.6477062817017123,
+              "spin": 7.036740681199301,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 4.933299496655044,
+                  "y": -1.7410886397703556
+                }
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 4,
+              "j": 14,
+              "impulse": 15.627027235210258,
+              "closing": 0.10621793679575409
+            },
+            {
+              "i": 7,
+              "j": 12,
+              "impulse": 22.790975753828118,
+              "closing": 0.09938617587060014
+            },
+            {
+              "i": 10,
+              "j": 11,
+              "impulse": 22.34676321574799,
+              "closing": 0.09876009486210346
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": [
+            {
+              "t": 1.25,
+              "actor": 2,
+              "target": 7,
+              "caller": "at helperFit (/workspace/football-protection-traces/src/sim/engagement.ts:1220:23)",
+              "seen": {
+                "pos": {
+                  "x": 40.18987206703106,
+                  "y": 21.89245961976597
+                },
+                "vel": {
+                  "x": -0.5059279994763686,
+                  "y": -0.7591530955234437
+                },
+                "stance": "low",
+                "facing": -0.18953845161582483,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.25,
+              "actor": 2,
+              "target": 12,
+              "caller": "at helperFit (/workspace/football-protection-traces/src/sim/engagement.ts:1220:55)",
+              "seen": {
+                "pos": {
+                  "x": 40.82922550561308,
+                  "y": 21.748318160726594
+                },
+                "vel": {
+                  "x": -0.1768313318970685,
+                  "y": -1.3074107153701588
+                },
+                "stance": null,
+                "facing": 2.99321387530154,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "observedSurfaceDepth": 1.1486809175480484,
+          "actualSurfaceDepth": 1.139564612216036
+        },
+        {
+          "t": 1.5,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": -0.04947871557819712
+              }
+            ],
+            "control": -0.2588234885428562,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 2.2054116222928513,
+              "y": -2.8474749829908133
+            },
+            "facing": -1.256939078813111,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 1.0094787106816077,
+            "requestedClosing": 1.0355939765335216,
+            "actualClosing": 0.32959654315450415
+          },
+          "rawMovement": {
+            "distance": 1.0094787106816077,
+            "requestedClosing": 2.0049436339760742,
+            "actualClosing": 0.32959654315450415
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": -215.03969066928536,
+            "forceOnB": {
+              "x": -208.57620485519598,
+              "y": -51.54762476047676
+            },
+            "momentOnA": 109.17324882540005,
+            "momentOnB": 106.18592112122244
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8617141519158323,
+            "push": 484.004354744453,
+            "hold": 0,
+            "steer": 215.03969066928545,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnB": 0,
+            "momentOnA": 0,
+            "actor": 12,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.22101270904273,
+                "y": 22.31011973177022
+              },
+              "vel": {
+                "x": 1.7170585992335419,
+                "y": -0.8984879008323821
+              },
+              "facing": -0.7372756924264687,
+              "spin": -6.415555555555556,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.5133388442571962,
+                  "y": -1.7283915867969724
+                },
+                "facing": -1.256939078813111,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.05342506283687,
+                "y": 21.698350793203627
+              },
+              "vel": {
+                "x": -0.49544142607395414,
+                "y": -0.710970412926459
+              },
+              "facing": -0.6603512483314784,
+              "spin": -0.24413936892812757,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.9717472607173372,
+                  "y": -0.5632944585981678
+                },
+                "facing": -0.6285992232014301,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.53266881366275,
+                "y": 21.34995425656687
+              },
+              "vel": {
+                "x": -1.0525828451767985,
+                "y": -1.4509499337106484
+              },
+              "facing": 2.5804569745350547,
+              "spin": 0.5458123976887681,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": -1.9422833417126748
+                },
+                "facing": 2.512993430388363,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 35.71943885662016,
+                "y": 23.440789880314192
+              },
+              "vel": {
+                "x": 3.8075646833673007,
+                "y": -2.0017039599227053
+              },
+              "facing": -0.3433966318801132,
+              "spin": -2.015674261408611,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 5.035736328104353,
+                  "y": -1.4178128258146028
+                }
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 1.1000799514065591,
+            "requestedClosing": 2.4879369409786545,
+            "actualClosing": 0.6591743666502458
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 1.0200757575757575,
+            "push": 0,
+            "hold": 0,
+            "steer": 0,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.88916246954545,
+                "y": 22.488086073588637
+              },
+              "vel": {
+                "x": -0.718616956619942,
+                "y": -0.9886946347998459
+              },
+              "facing": -1.0205531085661679,
+              "spin": -6.3797060785369535,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.4468422244875496,
+                  "y": -1.9231356445527785
+                },
+                "facing": -1.2164044556459066,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.298369952613704,
+                "y": 22.048105383089975
+              },
+              "vel": {
+                "x": -0.30394855139971433,
+                "y": -0.6059976546204996
+              },
+              "facing": -1.272707663212523,
+              "spin": -5.51130500815537,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.1976539482240995,
+                  "y": -3.966420231054366
+                },
+                "facing": -1.6171647673265903,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.27091231451741,
+                "y": 21.456367625876016
+              },
+              "vel": {
+                "x": -1.4566664114201944,
+                "y": -0.5589318043838115
+              },
+              "facing": 1.512796679759199,
+              "spin": -2.5757059303777514,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": 0.709982511467781
+                },
+                "facing": 1.524427886263203,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 35.71943885662016,
+                "y": 23.440789880314192
+              },
+              "vel": {
+                "x": 3.8075646833673007,
+                "y": -2.0017039599227053
+              },
+              "facing": -0.3433966318801132,
+              "spin": -2.015674261408611,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 5.035736328104353,
+                  "y": -1.4178128258146028
+                }
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 5,
+              "j": 13,
+              "impulse": 13.679029818520284,
+              "closing": 0.05477898039718672
+            },
+            {
+              "i": 7,
+              "j": 12,
+              "impulse": 17.335792608129385,
+              "closing": 0.09787971546947138
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": [
+            {
+              "t": 1.5,
+              "actor": 2,
+              "target": 7,
+              "caller": "at helperFit (/workspace/football-protection-traces/src/sim/engagement.ts:1220:23)",
+              "seen": {
+                "pos": {
+                  "x": 40.052280627842,
+                  "y": 21.696905774029155
+                },
+                "vel": {
+                  "x": -0.573352330252933,
+                  "y": -0.7634312901708556
+                },
+                "stance": "low",
+                "facing": -0.6222084506523817,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 1.5,
+              "actor": 2,
+              "target": 12,
+              "caller": "at helperFit (/workspace/football-protection-traces/src/sim/engagement.ts:1220:55)",
+              "seen": {
+                "pos": {
+                  "x": 40.544414599614,
+                  "y": 21.358468090827028
+                },
+                "vel": {
+                  "x": -0.8324463333956917,
+                  "y": -1.4306720550204512
+                },
+                "stance": null,
+                "facing": 2.7016446021613567,
+                "age": 0.25,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "observedSurfaceDepth": 0.9889510483492359,
+          "actualSurfaceDepth": 0.9906892205970836
+        },
+        {
+          "t": 1.65,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": -0.03945934776820263
+              }
+            ],
+            "control": -0.2898438911632349,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 1.1848990826283283,
+              "y": -2.490504369095084
+            },
+            "facing": -1.7230851662668236,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 0.9747148387674273,
+            "requestedClosing": 0.6086590424682108,
+            "actualClosing": 0.07031476392595343
+          },
+          "rawMovement": {
+            "distance": 0.9747148387674273,
+            "requestedClosing": 0.6086590424682108,
+            "actualClosing": 0.07031476392595343
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": 207.43181746106112,
+            "forceOnB": {
+              "x": 201.69532320240657,
+              "y": -47.5515760346139
+            },
+            "momentOnA": -102.86178892762166,
+            "momentOnB": -100.04716286243796
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8603698867346581,
+            "push": 475.7562077286577,
+            "hold": 0,
+            "steer": 209.96390789033455,
+            "normalForce": 0,
+            "tangentForce": 11.265254138630754,
+            "forceOnB": {
+              "x": 10.642840955230454,
+              "y": -9.194629055530193
+            },
+            "momentOnB": -5.238308695398743,
+            "momentOnA": -5.385677993734779,
+            "actor": 12,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.47580393493157,
+                "y": 22.114916293361333
+              },
+              "vel": {
+                "x": 1.5044769896902757,
+                "y": -1.6620469167781964
+              },
+              "facing": -1.5968867480963296,
+              "spin": -3.2935549734728156,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.1848990826283283,
+                  "y": -2.490504369095084
+                },
+                "facing": -1.7230851662668236,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.96804544217087,
+                "y": 21.622137559426648
+              },
+              "vel": {
+                "x": -0.4766127444683021,
+                "y": -0.25557240101299433
+              },
+              "facing": -0.8100349386371304,
+              "spin": -1.723352600807122,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.450326764326932,
+                  "y": -0.6773719568127086
+                },
+                "facing": -0.9179757023806672,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.327938838741616,
+                "y": 21.151482367115143
+              },
+              "vel": {
+                "x": -1.6404563143527087,
+                "y": -1.1082334224005697
+              },
+              "facing": 2.393037687104902,
+              "spin": -3.159315265820683,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": -1.4626478295031342
+                },
+                "facing": 2.223616951209126,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 36.318576609427396,
+                "y": 23.18540821701637
+              },
+              "vel": {
+                "x": 3.9275478886365343,
+                "y": -1.7488666342010917
+              },
+              "facing": -0.2705113682889489,
+              "spin": -1.5303129259206036,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 3.2977696291305563,
+                  "y": -2.5130014475494606
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.9669216041202672,
+            "requestedClosing": -0.08497504912214109,
+            "actualClosing": 1.20484492888498
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.9042401316913857,
+            "push": 601.5303570336238,
+            "hold": 0,
+            "steer": 331.9683345224658,
+            "normalForce": 0,
+            "tangentForce": 146.0237396539939,
+            "actor": 2,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.76542081844936,
+                "y": 22.32225902924192
+              },
+              "vel": {
+                "x": -0.9556361930100156,
+                "y": -1.314610866660304
+              },
+              "facing": -1.2642753216954157,
+              "spin": -0.2586009222041948,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.5439277141746022,
+                  "y": -2.0704025521768643
+                },
+                "facing": -1.2761496888609007,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.242369331252924,
+                "y": 21.95597337668064
+              },
+              "vel": {
+                "x": -0.3417515592121802,
+                "y": -0.5460377111210023
+              },
+              "facing": -1.8897084783761446,
+              "spin": -1.1740574621426998,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.149718359257914,
+                  "y": -3.939789348295374
+                },
+                "facing": -1.9082910698642905,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.04621652931213,
+                "y": 21.39700708664705
+              },
+              "vel": {
+                "x": -1.3807968844934826,
+                "y": -0.18453240411180188
+              },
+              "facing": 1.3281352604062902,
+              "spin": -1.8365138633426592,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.5,
+                  "y": -2.145873344362729
+                },
+                "facing": 1.2333015837255028,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 36.32099679690677,
+                "y": 23.184094511958946
+              },
+              "vel": {
+                "x": 4.0243553878108,
+                "y": -1.801414836498099
+              },
+              "facing": -0.2705163622435376,
+              "spin": -1.5305126841041414,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 3.6671858641100137,
+                  "y": -2.064351716702572
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 5,
+              "j": 13,
+              "impulse": 47.38125200482689,
+              "closing": 0.08960426873178988
+            },
+            {
+              "i": 7,
+              "j": 12,
+              "impulse": 0,
+              "closing": 0.05675826682248808
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": []
+        },
+        {
+          "t": 1.8,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": -0.09910884155835156
+              }
+            ],
+            "control": -0.3247101681528656,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 0.5826704375706568,
+              "y": -1.7266591643535978
+            },
+            "facing": -2.1604342708282527,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 1.0350725057244885,
+            "requestedClosing": 0.18067264276537176,
+            "actualClosing": -0.5762599563423648
+          },
+          "rawMovement": {
+            "distance": 1.0350725057244885,
+            "requestedClosing": 0.18067264276537176,
+            "actualClosing": -0.5762599563423648
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": -221.54658213400168,
+            "forceOnB": {
+              "x": -175.24328866842612,
+              "y": 135.2779036000537
+            },
+            "momentOnA": 118.10043219620394,
+            "momentOnB": 114.8688283301387
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8683728604848364,
+            "push": 524.8608821481492,
+            "hold": 0,
+            "steer": 240.18216907156005,
+            "normalForce": 0,
+            "tangentForce": -209.59830251294022,
+            "forceOnB": {
+              "x": -181.61748598425325,
+              "y": 104.27774473307423
+            },
+            "momentOnB": 105.60964165819722,
+            "momentOnA": 108.58075689666316,
+            "actor": 12,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.65056026335351,
+                "y": 21.83001333987265
+              },
+              "vel": {
+                "x": 0.8679818102223051,
+                "y": -2.021563767238802
+              },
+              "facing": -2.018829553692712,
+              "spin": -2.995768300299466,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.5826704375706568,
+                  "y": -1.7266591643535978
+                },
+                "facing": -2.1604342708282527,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.94205888890692,
+                "y": 21.591849674185127
+              },
+              "vel": {
+                "x": -0.009099410470112099,
+                "y": -0.3303381096800103
+              },
+              "facing": -1.211791317595465,
+              "spin": -2.8649518604459927,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.482938726854728,
+                  "y": -4.124911774738049
+                },
+                "facing": -1.3602785480197288,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.07499770150702,
+                "y": 20.969721046807393
+              },
+              "vel": {
+                "x": -1.8418541955800012,
+                "y": -0.9019334689229789
+              },
+              "facing": 1.9310740853744688,
+              "spin": -3.1006254625271636,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.492804985005657,
+                  "y": -0.12072215030938599
+                },
+                "facing": 1.7813141055700645,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 36.85321888597832,
+                "y": 22.871984200906798
+              },
+              "vel": {
+                "x": 3.1302021823138095,
+                "y": -2.327552632488494
+              },
+              "facing": -0.7874801830528007,
+              "spin": -1.0068690699510618,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 3.110516822545206,
+                  "y": -2.2642398133751485
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.7958335154875378,
+            "requestedClosing": 2.0839348815178482,
+            "actualClosing": 1.1756763574524542
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.9083130584176198,
+            "push": 622.9664737440232,
+            "hold": 0,
+            "steer": 350.10658712357304,
+            "normalForce": 622.9664737440231,
+            "tangentForce": 350.1065871235731,
+            "actor": 2,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.618279014482304,
+                "y": 22.10231476868567
+              },
+              "vel": {
+                "x": -0.8756124800352842,
+                "y": -1.6169315195628764
+              },
+              "facing": -1.2768758485804508,
+              "spin": 0.0001866639398784284,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.2622767608880894,
+                  "y": -2.5376250983673616
+                },
+                "facing": -1.277990841222495,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.1882351016362,
+                "y": 21.85402212616865
+              },
+              "vel": {
+                "x": -0.34665997868363424,
+                "y": -0.8160447222922974
+              },
+              "facing": -2.088353297102675,
+              "spin": -2.0181826754520995,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.544245393097038,
+                  "y": -4.158971033761554
+                },
+                "facing": -2.155829973371059,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.84798795123811,
+                "y": 21.340353622203928
+              },
+              "vel": {
+                "x": -1.2672671546020036,
+                "y": -0.5070638134972736
+              },
+              "facing": 1.0532393564926779,
+              "spin": -1.5996732779044698,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 0.9857626802187344,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 36.85897531194116,
+                "y": 22.891334420196138
+              },
+              "vel": {
+                "x": 3.153636976223197,
+                "y": -1.9228479792527078
+              },
+              "facing": -0.5780483995908975,
+              "spin": 2.1191977354372526,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.9229162795436117,
+                  "y": -1.84526809009125
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 5,
+              "j": 13,
+              "impulse": 1.5936697809581142,
+              "closing": 0.044977099469598325
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": []
+        },
+        {
+          "t": 1.95,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": -0.09516110594578617
+              }
+            ],
+            "control": -0.32890752546232405,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 0.29145391805217846,
+              "y": -1.2051922525249121
+            },
+            "facing": -2.514578607844577,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 1.1922693335750385,
+            "requestedClosing": -2.107117801864301,
+            "actualClosing": -1.4454585601392105
+          },
+          "rawMovement": {
+            "distance": 1.1922693335750385,
+            "requestedClosing": -2.107117801864301,
+            "actualClosing": -1.4454585601392105
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": -219.62673363714012,
+            "forceOnB": {
+              "x": -122.33698227534703,
+              "y": 182.34108319917402
+            },
+            "momentOnA": 137.2943289238313,
+            "momentOnB": 133.5375189284031
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8678432059568173,
+            "push": 521.6110260365242,
+            "hold": 0,
+            "steer": 238.18225761825232,
+            "normalForce": 0,
+            "tangentForce": -220.02739314136267,
+            "forceOnB": {
+              "x": -137.04201795901082,
+              "y": 172.0201373196587
+            },
+            "momentOnB": 125.37142852324668,
+            "momentOnA": 128.89850195996206,
+            "actor": 12,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.7405693741413,
+                "y": 21.57119438568965
+              },
+              "vel": {
+                "x": -0.058904718610920455,
+                "y": -1.1746006341543955
+              },
+              "facing": -2.401883998202834,
+              "spin": -1.3583676109424192,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.29145391805217846,
+                  "y": -1.2051922525249121
+                },
+                "facing": -2.514578607844577,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.934995826521885,
+                "y": 21.506853023945023
+              },
+              "vel": {
+                "x": -0.23136722876596047,
+                "y": -0.8133572570656783
+              },
+              "facing": -1.665381455920323,
+              "spin": -2.8191653539889954,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -3.649579207171071,
+                  "y": -4.773045374913794
+                },
+                "facing": -1.8174137308171143,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.77508986146637,
+                "y": 20.8716549126158
+              },
+              "vel": {
+                "x": -2.207469548327013,
+                "y": -0.6728142103020534
+              },
+              "facing": 1.4776336015124596,
+              "spin": -3.125510804955014,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.324178922772679,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.31525102695867,
+                "y": 22.5373461859906
+              },
+              "vel": {
+                "x": 2.92983076449397,
+                "y": -2.1211294315420046
+              },
+              "facing": -0.5544366258880669,
+              "spin": -0.5381637618227142,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 5.529518546508048,
+                  "y": -2.9062934928148794
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6466519719504193,
+            "requestedClosing": 2.3740115506380164,
+            "actualClosing": -0.0011620244815152142
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.9061813054944345,
+            "push": 611.7468993370494,
+            "hold": 0,
+            "steer": 340.6131010869028,
+            "normalForce": 611.7468993370494,
+            "tangentForce": 340.6131010869027,
+            "actor": 2,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.50118337438205,
+                "y": 21.86461758827144
+              },
+              "vel": {
+                "x": -0.9447398637623774,
+                "y": -1.190462223107091
+              },
+              "facing": -1.308655079724607,
+              "spin": -0.4943988600966531,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.77924366293347,
+                  "y": -2.783914635967924
+                },
+                "facing": -1.3451590077285596,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.12193391188208,
+                "y": 21.713582788948795
+              },
+              "vel": {
+                "x": -0.1661931724113369,
+                "y": -1.0692338525948164
+              },
+              "facing": -2.299215321813906,
+              "spin": -1.4791759885531852,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.3241590427990846,
+                  "y": -5.242560817207363
+                },
+                "facing": -2.3528981689509485,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.64585724976901,
+                "y": 21.2343571321044
+              },
+              "vel": {
+                "x": -1.353211678484701,
+                "y": -1.2854176106124537
+              },
+              "facing": 0.8424224595644199,
+              "spin": -1.4901762961566047,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 0.7886944846388448,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.299118896082184,
+                "y": 22.615953935887337
+              },
+              "vel": {
+                "x": 2.8087287200045865,
+                "y": -1.7632908679923136
+              },
+              "facing": -0.5728871940252516,
+              "spin": 0.5431994669568141,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 5.620835524262329,
+                  "y": -2.72549541033281
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 2,
+              "j": 17,
+              "impulse": 3.7418434744494204,
+              "closing": 0.0003128486805197908
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": []
+        },
+        {
+          "t": 2,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": null
+              }
+            ],
+            "control": -0.33354877781277004,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 0.23368442407908807,
+              "y": -1.1569352977735423
+            },
+            "facing": -2.5875373594575306,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 1.2789273692726344,
+            "requestedClosing": -2.2280788480090568,
+            "actualClosing": -2.037304692115646
+          },
+          "rawMovement": {
+            "distance": 1.2789273692726344,
+            "requestedClosing": -2.2280788480090568,
+            "actualClosing": -2.037304692115646
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnA": 0,
+            "momentOnB": 0
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8678432059568173,
+            "push": 0,
+            "hold": 0,
+            "steer": 0,
+            "normalForce": 0,
+            "tangentForce": -219.62673363714012,
+            "forceOnB": {
+              "x": -122.33698227534703,
+              "y": 182.34108319917402
+            },
+            "momentOnB": 133.5375189284031,
+            "momentOnA": 137.2943289238313,
+            "actor": 12,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.74652964158927,
+                "y": 21.510122269967255
+              },
+              "vel": {
+                "x": 0.2964474936895725,
+                "y": -1.2682616727696414
+              },
+              "facing": -2.5060847364850276,
+              "spin": -2.7877840431663174,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.23368442407908807,
+                  "y": -1.1569352977735423
+                },
+                "facing": -2.5875373594575306,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.92169959597882,
+                "y": 21.461866559806417
+              },
+              "vel": {
+                "x": -0.2895288492844188,
+                "y": -0.9905624181705521
+              },
+              "facing": -1.8170673742185883,
+              "spin": -2.919797438188412,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -3.649579207171071,
+                  "y": -4.773045374913794
+                },
+                "facing": -1.968993758063175,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.658932534240606,
+                "y": 20.8372272202296
+              },
+              "vel": {
+                "x": -2.448313046475833,
+                "y": -0.7040891562644268
+              },
+              "facing": 1.3253434836801121,
+              "spin": -3.2744941730529638,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.1725988955266184,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.46827757998684,
+                "y": 22.43601570659501
+              },
+              "vel": {
+                "x": 3.191231356632922,
+                "y": -1.932089744281589
+              },
+              "facing": -0.5326295084057358,
+              "spin": 1.4104484611159585,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.822716502709444,
+                  "y": -2.0670897299021544
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6473877978217102,
+            "requestedClosing": -0.14336642383327314,
+            "actualClosing": -0.002898005562547948
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.9087387053909178,
+            "push": 625.2066854665355,
+            "hold": 0,
+            "steer": 352.0021508887757,
+            "normalForce": 625.2066854665354,
+            "tangentForce": 352.0021508887757,
+            "actor": 2,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.457279932815354,
+                "y": 21.80153409000847
+              },
+              "vel": {
+                "x": -0.8275971842974628,
+                "y": -1.3516914829711009
+              },
+              "facing": -1.3452704166067266,
+              "spin": -0.7708522358414656,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.2668489078600973,
+                  "y": -0.09448694005587788
+                },
+                "facing": -1.389006874853257,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.1078282310886,
+                "y": 21.65800695148019
+              },
+              "vel": {
+                "x": -0.39796125184601777,
+                "y": -1.1526943437318833
+              },
+              "facing": -2.3528981689511905,
+              "spin": -1.033546128069885,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.668600222303943,
+                  "y": -2.470216513020711
+                },
+                "facing": -0.4016601222972698
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.574321060690885,
+                "y": 21.16481410826291
+              },
+              "vel": {
+                "x": -1.4927408061176328,
+                "y": -1.4769039710693939
+              },
+              "facing": 0.7885758373388393,
+              "spin": -1.042639773742459,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.7525857787365364,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.44597255125115,
+                "y": 22.532725709401962
+              },
+              "vel": {
+                "x": 3.065417486754202,
+                "y": -1.5658381914227288
+              },
+              "facing": -0.4986075727661645,
+              "spin": 2.427985383406668,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.110523840863844,
+                  "y": -1.5263795344634703
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 2,
+              "j": 17,
+              "impulse": 1.0474999683121933,
+              "closing": 0.0024677691188531234
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": []
+        },
+        {
+          "t": 2.05,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": null
+              }
+            ],
+            "control": -0.3432731810452365,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 0.13620538305080165,
+              "y": -1.131048075859378
+            },
+            "facing": -2.6554151227442464,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 1.3921730661383642,
+            "requestedClosing": -2.2730783361403994,
+            "actualClosing": -2.486359064673273
+          },
+          "rawMovement": {
+            "distance": 1.3921730661383642,
+            "requestedClosing": -2.2730783361403994,
+            "actualClosing": -2.486359064673273
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnA": 0,
+            "momentOnB": 0
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8678432059568173,
+            "push": 0,
+            "hold": 0,
+            "steer": 0,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnB": 0,
+            "momentOnA": 0,
+            "actor": 12,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.76280551730703,
+                "y": 21.448369004345263
+              },
+              "vel": {
+                "x": 0.35134389420126794,
+                "y": -1.201417547554158
+              },
+              "facing": -2.5875369263556114,
+              "spin": -1.3356702373459208,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.13620538305080165,
+                  "y": -1.131048075859378
+                },
+                "facing": -2.6554151227442464,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.90548245802049,
+                "y": 21.408742368155814
+              },
+              "vel": {
+                "x": -0.34646708456126857,
+                "y": -1.139925879129937
+              },
+              "facing": -1.9677757135643337,
+              "spin": -2.9816043156163214,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -3.649579207171071,
+                  "y": -4.773045374913794
+                },
+                "facing": -2.119614473676681,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.53195000238801,
+                "y": 20.79787646213242
+              },
+              "vel": {
+                "x": -2.648003827757481,
+                "y": -0.8473449837671605
+              },
+              "facing": 1.1733100077540743,
+              "spin": -3.063663263162663,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.0219781799131125,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.61986959997592,
+                "y": 22.336491692982758
+              },
+              "vel": {
+                "x": 2.8724494429303893,
+                "y": -2.0488708002085088
+              },
+              "facing": -0.5462497516596405,
+              "spin": -1.9552581912721472,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.763516913739431,
+                  "y": -2.081323258176437
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6480198297030928,
+            "requestedClosing": -0.366388801413813,
+            "actualClosing": -0.005149551800099003
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.908210028351897,
+            "push": 622.4242188344787,
+            "hold": 0,
+            "steer": 349.64775604626607,
+            "normalForce": 622.4242188344788,
+            "tangentForce": 349.647756046266,
+            "actor": 2,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.42006532733854,
+                "y": 21.73580161878845
+              },
+              "vel": {
+                "x": -0.6565016463291419,
+                "y": -1.2788923770495253
+              },
+              "facing": -1.3890201202308057,
+              "spin": -0.8629282729088368,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.07327212673326988,
+                  "y": -0.0731635627656671
+                },
+                "facing": -1.4492696008483779,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.095157136695086,
+                "y": 21.59632052605636
+              },
+              "vel": {
+                "x": -0.10677328393999536,
+                "y": -1.3027789598196935
+              },
+              "facing": -2.317161666023707,
+              "spin": 2.4492644743243237,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.7223005382890326,
+                  "y": -2.270925682150891
+                },
+                "facing": -0.3508629651707245
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.4986233546484,
+                "y": 21.09256112252472
+              },
+              "vel": {
+                "x": -1.5507546337257896,
+                "y": -1.3932940086535877
+              },
+              "facing": 0.8025076521830758,
+              "spin": 1.6499320623505402,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.6923230527414155,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 37.59080962392806,
+                "y": 22.45478230616766
+              },
+              "vel": {
+                "x": 2.7280654203220793,
+                "y": -1.5518979379493378
+              },
+              "facing": -0.4615784587670256,
+              "spin": -0.9468208234411111,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.071384467249123,
+                  "y": -1.4929770130793505
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 2,
+              "j": 17,
+              "impulse": 6.126510289849138,
+              "closing": 0.0077838224944816944
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": [
+            {
+              "t": 2.05,
+              "actor": 2,
+              "target": 7,
+              "caller": "at helperFit (/workspace/football-protection-traces/src/sim/engagement.ts:1220:23)",
+              "seen": {
+                "pos": {
+                  "x": 39.9072231535146,
+                  "y": 21.41233843889789
+                },
+                "vel": {
+                  "x": -0.2895288492844188,
+                  "y": -0.9905624181705521
+                },
+                "stance": "low",
+                "facing": -1.8170673742185883,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.05,
+              "actor": 2,
+              "target": 12,
+              "caller": "at helperFit (/workspace/football-protection-traces/src/sim/engagement.ts:1220:55)",
+              "seen": {
+                "pos": {
+                  "x": 39.653641687920725,
+                  "y": 20.670154674340058
+                },
+                "vel": {
+                  "x": -1.7004034926022726,
+                  "y": -1.1715742166609544
+                },
+                "stance": null,
+                "facing": 2.080422678004444,
+                "age": 0.30000000000000004,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "observedSurfaceDepth": 0.1416241456956171,
+          "actualSurfaceDepth": -0.029123491284505976
+        },
+        {
+          "t": 2.3,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": null
+              }
+            ],
+            "control": -0.33067693285915717,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": -2.2971026638599144,
+              "y": 1.6910492246320052
+            },
+            "facing": -2.862938832987392,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 1.94012072424235,
+            "requestedClosing": 2.722491887545238,
+            "actualClosing": -1.7898417666378847
+          },
+          "rawMovement": {
+            "distance": 1.94012072424235,
+            "requestedClosing": 4.2199679112609685,
+            "actualClosing": -1.7898417666378847
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnA": 0,
+            "momentOnB": 0
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8678432059568173,
+            "push": 0,
+            "hold": 0,
+            "steer": 0,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnB": 0,
+            "momentOnA": 0,
+            "actor": 12,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.770218462028566,
+                "y": 21.154073281956858
+              },
+              "vel": {
+                "x": -0.30390260607200004,
+                "y": -1.1909946545575691
+              },
+              "facing": -2.843657614993758,
+              "spin": -0.746764987055818,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.5911789359063095,
+                  "y": 1.1282535525086232
+                },
+                "facing": -2.862938832987392,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.69359078301707,
+                "y": 21.021674579765108
+              },
+              "vel": {
+                "x": -1.5461074766211662,
+                "y": -1.8781823237889823
+              },
+              "facing": -2.6042612478679743,
+              "spin": -2.3061704177249966,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -3.649579207171071,
+                  "y": -4.773045374913794
+                },
+                "facing": -2.6971803515651693,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 38.89859204403138,
+                "y": 20.643110488703094
+              },
+              "vel": {
+                "x": -2.3264090254111847,
+                "y": -0.5786852172243748
+              },
+              "facing": 0.5345008745555788,
+              "spin": -2.3268459969719153,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.0418887007543116,
+                  "y": 1.8207579542626395
+                },
+                "facing": 0.444412302024624,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.23161356642183,
+                "y": 21.801439078428302
+              },
+              "vel": {
+                "x": 1.8141368453593172,
+                "y": -2.2821726480723203
+              },
+              "facing": -0.8945713578522703,
+              "spin": -3.413602073497506,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.4350253136629867,
+                  "y": -4.814541644877036
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0.8892857142857142
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6933862627538344,
+            "requestedClosing": 0.23759106761374604,
+            "actualClosing": -0.32196332475781975
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.9070710013812364,
+            "push": 616.4294350535419,
+            "hold": 0,
+            "steer": 344.5752466931657,
+            "normalForce": 616.4294350535417,
+            "tangentForce": 344.5752466931657,
+            "actor": 2,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.29441037435165,
+                "y": 21.489646479918722
+              },
+              "vel": {
+                "x": -0.23245943385547943,
+                "y": -1.083733615382028
+              },
+              "facing": -1.8281787836096908,
+              "spin": -2.127202902939939,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.362060125241098,
+                  "y": -1.960726923291574
+                },
+                "facing": -1.9615320729162884,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.25571541304101,
+                "y": 21.218363978225813
+              },
+              "vel": {
+                "x": 1.3764020919699729,
+                "y": -1.593564778881852
+              },
+              "facing": -0.42539978933342343,
+              "spin": 8.780000000000001,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 3.6409986270258874,
+                  "y": -2.425964342224337
+                },
+                "facing": -0.30523131085814553
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.03032117329991,
+                "y": 20.848521372577274
+              },
+              "vel": {
+                "x": -2.2064198428881836,
+                "y": -0.6188373300570968
+              },
+              "facing": 1.8471423277229062,
+              "spin": 0.4597654264472934,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.180060580673505,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.096888720611446,
+                "y": 22.087518854642276
+              },
+              "vel": {
+                "x": 1.4178445710962124,
+                "y": -1.336296578766333
+              },
+              "facing": -0.7413431174632598,
+              "spin": -2.2160874375681594,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.8276639247785083,
+                  "y": -2.6097427317400292
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0.8892857142857142
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 4,
+              "j": 14,
+              "impulse": 11.361366530849994,
+              "closing": 0.07512819601284024
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": [
+            {
+              "t": 2.3,
+              "actor": 2,
+              "target": 7,
+              "caller": "at helperFit (/workspace/football-protection-traces/src/sim/engagement.ts:1220:23)",
+              "seen": {
+                "pos": {
+                  "x": 39.70057951986673,
+                  "y": 21.023902431800764
+                },
+                "vel": {
+                  "x": -1.2702993060984598,
+                  "y": -1.7860430239286897
+                },
+                "stance": "low",
+                "facing": -2.4992629228971914,
+                "age": 0.05,
+                "pose": "up",
+                "carrying": false
+              }
+            },
+            {
+              "t": 2.3,
+              "actor": 2,
+              "target": 12,
+              "caller": "at helperFit (/workspace/football-protection-traces/src/sim/engagement.ts:1220:55)",
+              "seen": {
+                "pos": {
+                  "x": 38.924438620297856,
+                  "y": 20.626000473350274
+                },
+                "vel": {
+                  "x": -2.448313046475833,
+                  "y": -0.7040891562644268
+                },
+                "stance": null,
+                "facing": 1.3253434836801121,
+                "age": 0.30000000000000004,
+                "pose": "up",
+                "carrying": false
+              }
+            }
+          ],
+          "observedSurfaceDepth": -0.43477124468315187,
+          "actualSurfaceDepth": -0.46228029615735333
+        },
+        {
+          "t": 2.35,
+          "nominalRep": {
+            "blocker": 7,
+            "defender": 12,
+            "start": 0.4,
+            "helpers": [
+              {
+                "id": 2,
+                "control": null
+              }
+            ],
+            "control": -0.3509260259591569,
+            "drive": {
+              "x": 0.485642931178632,
+              "y": -0.8741572761215376
+            },
+            "axis": {
+              "x": -0.485642931178632,
+              "y": 0.8741572761215376
+            },
+            "sealTarget": 0.3933707742546919
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": -2.236110396194277,
+              "y": 1.8567215097459713
+            },
+            "facing": -2.8878282087772833,
+            "push": 1,
+            "posture": 0.75
+          },
+          "movement": {
+            "distance": 2.0235047409345164,
+            "requestedClosing": 2.681175309640422,
+            "actualClosing": -1.5413139762420835
+          },
+          "rawMovement": {
+            "distance": 2.0235047409345164,
+            "requestedClosing": 4.145341023377527,
+            "actualClosing": -1.5413139762420835
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 2,
+            "b": 12,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnA": 0,
+            "momentOnB": 0
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8678432059568173,
+            "push": 0,
+            "hold": 0,
+            "steer": 0,
+            "normalForce": 0,
+            "tangentForce": 0,
+            "forceOnB": {
+              "x": 0,
+              "y": 0
+            },
+            "momentOnB": 0,
+            "momentOnA": 0,
+            "actor": 12,
+            "a": 2,
+            "b": 12
+          },
+          "bodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.75468255351678,
+                "y": 21.100684638726914
+              },
+              "vel": {
+                "x": -0.3184603680176115,
+                "y": -0.9441890847121251
+              },
+              "facing": -2.862938832987453,
+              "spin": -0.35940350519254544,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.5731486121008293,
+                  "y": 1.2269220383825044
+                },
+                "facing": -2.8878282087772833,
+                "push": 1,
+                "posture": 0.75
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 39.61669433341477,
+                "y": 20.92214759098961
+              },
+              "vel": {
+                "x": -1.5401639586448521,
+                "y": -2.0691079307764086
+              },
+              "facing": -2.698249394784884,
+              "spin": -1.8668791301312189,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -3.649579207171071,
+                  "y": -4.773045374913794
+                },
+                "facing": -2.7879486944614493,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.0048759811616954
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 38.78985851308965,
+                "y": 20.61690997347039
+              },
+              "vel": {
+                "x": -2.0137704865561914,
+                "y": -0.5056999410588457
+              },
+              "facing": 0.44367384757589834,
+              "spin": -1.7801925692908822,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.0418887007543116,
+                  "y": 1.8207579542626395
+                },
+                "facing": 0.35364395912834395,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.31743758277808,
+                "y": 21.680866119455324
+              },
+              "vel": {
+                "x": 1.6188238088909663,
+                "y": -2.5407457108468394
+              },
+              "facing": -1.1512100104926868,
+              "spin": -6.851944032119152,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.876650152775249,
+                  "y": -1.9688612696680572
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0.8892857142857142
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.7189799879009041,
+            "requestedClosing": 0.0025833647013537853,
+            "actualClosing": -0.7165485651731403
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.9063248796184931,
+            "push": 612.5025406453227,
+            "hold": 0,
+            "steer": 341.2524898862111,
+            "normalForce": 612.5025406453226,
+            "tangentForce": 341.25248988621115,
+            "actor": 2,
+            "a": 2,
+            "b": 12
+          },
+          "baselineBodies": [
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.28549602940355,
+                "y": 21.43327394933148
+              },
+              "vel": {
+                "x": -0.1233255578769899,
+                "y": -1.1735497543315416
+              },
+              "facing": -1.961532072915209,
+              "spin": -2.7305901883080668,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.639993341431971,
+                  "y": -1.9545524532960843
+                },
+                "facing": -2.107122220692869,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "Y",
+              "pos": {
+                "x": 40.33134236557756,
+                "y": 21.14091360371112
+              },
+              "vel": {
+                "x": 1.6490806875469999,
+                "y": -1.5021510105604587
+              },
+              "facing": -0.054540972331258625,
+              "spin": 6.057639089410812,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 3.5446084408781333,
+                  "y": -2.2205693607710524
+                },
+                "facing": -0.2625748556008211
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 38.91811076099843,
+                "y": 20.81524459116078
+              },
+              "vel": {
+                "x": -2.2837378334260916,
+                "y": -0.7228922551083542
+              },
+              "facing": 1.7772420818297034,
+              "spin": -3.2816128656879813,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.0344704328969245,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.16979644604042,
+                "y": 22.020186620635915
+              },
+              "vel": {
+                "x": 1.4984644460628243,
+                "y": -1.3569927814880902
+              },
+              "facing": -0.7987444709514481,
+              "spin": -0.07996670195937305,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.6417726506267742,
+                  "y": -2.8431146036079062
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0.8892857142857142
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 4,
+              "j": 14,
+              "impulse": 20.443835534657136,
+              "closing": 0.08234728522986842
+            }
+          ],
+          "helperAcquisitionReach": 1.0200757575757575,
+          "helperFunctionalReach": 1.269659090909091,
+          "consumedHelperPictures": []
+        }
+      ]
+    },
+    {
+      "id": "uc12-wz-s3-mirror",
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "hashesExact": 49,
+      "firstJoint": 0.5,
+      "firstAcquired": 0.5,
+      "firstLoaded": 0.5,
+      "handExchange": null,
+      "runnerArrival": {
+        "t": 2.4,
+        "opponent": "DT_S",
+        "note": "body collision",
+        "depth": -1.2274257230560295
+      },
+      "crossing": null,
+      "endTime": 3.65,
+      "gain": -0.969239908227209,
+      "firstRGEndCollision": [
+        {
+          "arm": "isolated",
+          "first": [
+            2.3,
+            150.80989670517909
+          ]
+        },
+        {
+          "arm": "baseline",
+          "first": null
+        }
+      ],
+      "checkpoints": [
+        {
+          "t": 2.15,
+          "nominalRep": {
+            "blocker": 5,
+            "defender": 13,
+            "start": 0.5,
+            "helpers": [],
+            "control": -0.35290627681609277,
+            "drive": {
+              "x": 1,
+              "y": 0
+            },
+            "surfaceAxis": {
+              "x": -1,
+              "y": 0
+            },
+            "axis": {
+              "x": -1,
+              "y": 0
+            },
+            "sealTarget": -0.3
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": -0.8718905597441102,
+              "y": -2.138245167474313
+            },
+            "facing": 0.9247218824660918,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.948945054945055
+          },
+          "movement": {
+            "distance": 0.6087780342441399,
+            "requestedClosing": -5.512152229493564,
+            "actualClosing": -0.05497372613258655
+          },
+          "rawMovement": {
+            "distance": 0.6087780342441399,
+            "requestedClosing": -5.512152229493564,
+            "actualClosing": -0.05497372613258655
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 5,
+            "b": 13,
+            "normalForce": 503.73064371470934,
+            "tangentForce": -253.14160041025036,
+            "forceOnB": {
+              "x": 498.1462927110833,
+              "y": 263.81458853422293
+            },
+            "momentOnA": 86.74560205166036,
+            "momentOnB": 68.4723154209232
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8662984591104952,
+            "push": 503.73064371470946,
+            "hold": 0,
+            "steer": 253.14160041025033,
+            "actor": 13,
+            "normalForce": 505.2077993945287,
+            "tangentForce": -168.834130152296,
+            "forceOnB": {
+              "x": 449.748823681002,
+              "y": 289.0228475847947
+            },
+            "momentOnB": 45.276403483391306,
+            "momentOnA": 57.359370057179774,
+            "a": 5,
+            "b": 13
+          },
+          "bodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.02826215111628,
+                "y": 21.2129207550299
+              },
+              "vel": {
+                "x": -0.1398913426677978,
+                "y": -2.6164415676352974
+              },
+              "facing": 0.8586310284092976,
+              "spin": 1.8169296069681884,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.8718905597441102,
+                  "y": -2.138245167474313
+                },
+                "facing": 0.9247218824660918,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.39478103299061,
+                "y": 21.699001616829406
+              },
+              "vel": {
+                "x": -0.6827701170219843,
+                "y": -2.138245167474313
+              },
+              "facing": 4.145723055397643,
+              "spin": 0.23915485139352594,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": 4.56027853642529
+                },
+                "facing": -2.2168707711237015,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.7969654905907,
+                "y": 21.26294989707135
+              },
+              "vel": {
+                "x": -0.5172758472510168,
+                "y": -1.9864953766117477
+              },
+              "facing": -1.4226722147944983,
+              "spin": -0.8096499219972068,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.40333035887129176,
+                  "y": -1.7064928430396913
+                },
+                "facing": -1.4871704796412784,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.852232221468086,
+                "y": 20.603610222799503
+              },
+              "vel": {
+                "x": -1.6061012656436697,
+                "y": -1.7438788524947477
+              },
+              "facing": 1.7565124211133953,
+              "spin": -2.3936745221213336,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.654422173948515,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.17668137040214,
+                "y": 22.179511872864328
+              },
+              "vel": {
+                "x": 3.012297909752331,
+                "y": -1.7740479199499386
+              },
+              "facing": -0.6015739434575692,
+              "spin": 1.0464471062028924,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.517290353186055,
+                  "y": -2.0601834874082456
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6039544017942855,
+            "requestedClosing": 2.073027971401731,
+            "actualClosing": 5.127658915231085e-14
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.8735510298217642,
+            "push": 532.2425031220052,
+            "hold": 0,
+            "steer": 270.68736004550925,
+            "actor": 13,
+            "normalForce": 532.2425031220052,
+            "tangentForce": -72.88153058703556,
+            "a": 5,
+            "b": 13
+          },
+          "baselineBodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.57560757484656,
+                "y": 22.886531095639302
+              },
+              "vel": {
+                "x": -0.03490473244731318,
+                "y": -1.3813144557481698
+              },
+              "facing": 0.8487078579840636,
+              "spin": 0.00014807586443642604,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.23849605798857765,
+                  "y": -2.11625198138819
+                },
+                "facing": 0.8487281289297404,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.97478407600415,
+                "y": 23.33976286898521
+              },
+              "vel": {
+                "x": -0.03490471791688887,
+                "y": -1.3813144685456726
+              },
+              "facing": 3.9902958191080766,
+              "spin": -0.00018766563614001016,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": -4.56027853642529
+                },
+                "facing": -2.292864524660053,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.013038346597206,
+                "y": 21.344761056906847
+              },
+              "vel": {
+                "x": 0.8068516698091691,
+                "y": -0.21609791351727684
+              },
+              "facing": -0.5362821181162005,
+              "spin": -0.7798816472324084,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.1661027926981844,
+                  "y": -0.25477330034117407
+                },
+                "facing": -0.5959099368242756,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.54982570546757,
+                "y": 20.980739171070653
+              },
+              "vel": {
+                "x": 0.288169044224589,
+                "y": -0.9907478279432896
+              },
+              "facing": 3.3695125696472865,
+              "spin": 3.2880622856417183,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 2.5456827167655174,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.2873859590002,
+                "y": 22.056355925418583
+              },
+              "vel": {
+                "x": 3.1175107425885424,
+                "y": -2.2871507503917528
+              },
+              "facing": -0.6223777321291437,
+              "spin": -0.5087010771353295,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.8513191323465286,
+                  "y": -2.2349509886175314
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 2,
+              "j": 13,
+              "impulse": 20.920999553680645,
+              "closing": 0
+            },
+            {
+              "i": 10,
+              "j": 17,
+              "impulse": 31.42414222553211,
+              "closing": 0.08814229118069768
+            },
+            {
+              "i": 4,
+              "j": 14,
+              "impulse": 70.03157378556222,
+              "closing": 1.029026861537045
+            }
+          ],
+          "consumedContactController": {
+            "anchored": false,
+            "forward": -0.8718905597441102,
+            "lateral": 2.138245167474313,
+            "defensiveAim": {
+              "x": 39.465780012935575,
+              "y": 21.052830334989892
+            },
+            "declared": false,
+            "fit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "interior",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        },
+        {
+          "t": 2.2,
+          "nominalRep": {
+            "blocker": 5,
+            "defender": 13,
+            "start": 0.5,
+            "helpers": [],
+            "control": -0.36495889111828256,
+            "drive": {
+              "x": 1,
+              "y": 0
+            },
+            "surfaceAxis": {
+              "x": -1,
+              "y": 0
+            },
+            "axis": {
+              "x": -1,
+              "y": 0
+            },
+            "sealTarget": -0.3
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 2.4,
+              "y": -0.6348755944164569
+            },
+            "facing": 0.9789655583424375,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.948945054945055
+          },
+          "movement": {
+            "distance": 0.6209351668318415,
+            "requestedClosing": -4.410239513210738,
+            "actualClosing": -0.45304770220982593
+          },
+          "rawMovement": {
+            "distance": 0.6209351668318415,
+            "requestedClosing": -2.637922002195763,
+            "actualClosing": -0.45304770220982593
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 5,
+            "b": 13,
+            "normalForce": 510.5418287909803,
+            "tangentForce": 26.99979665838722,
+            "forceOnB": {
+              "x": 249.68183180390923,
+              "y": 442.4208286364644
+            },
+            "momentOnA": -10.577449041079069,
+            "momentOnB": -8.349269703127783
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8680310224164349,
+            "push": 510.54182879098033,
+            "hold": 0,
+            "steer": 257.33309891872466,
+            "actor": 13,
+            "normalForce": 503.73064371470934,
+            "tangentForce": -253.14160041025036,
+            "forceOnB": {
+              "x": 498.1462927110833,
+              "y": 263.81458853422293
+            },
+            "momentOnB": 68.4723154209232,
+            "momentOnA": 86.74560205166036,
+            "a": 5,
+            "b": 13
+          },
+          "bodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.01645195094318,
+                "y": 21.084937249315235
+              },
+              "vel": {
+                "x": -0.340200116923275,
+                "y": -2.508470873259873
+              },
+              "facing": 0.9251979714595022,
+              "spin": 1.0988877296271315,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.35026162377056336,
+                  "y": -0.9216473775428388
+                },
+                "facing": 0.9789655583424375,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.36286009986863,
+                "y": 21.60026420937703
+              },
+              "vel": {
+                "x": -0.5920801505629167,
+                "y": -1.793261743284154
+              },
+              "facing": 4.089609478503495,
+              "spin": -2.475227185274965,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": 4.56027853642529
+                },
+                "facing": -2.162627095247356,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.77332411903034,
+                "y": 21.17159330984897
+              },
+              "vel": {
+                "x": -0.45622903865279046,
+                "y": -1.6654246166700917
+              },
+              "facing": -1.4878757184632463,
+              "spin": -1.1397341680858077,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.5643466269126778,
+                  "y": -1.3937640705496466
+                },
+                "facing": -1.580573324936479,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.76696004668344,
+                "y": 20.520691113331203
+              },
+              "vel": {
+                "x": -1.770985512309294,
+                "y": -1.5687573561961836
+              },
+              "facing": 1.636656029262968,
+              "spin": -2.7089148869976536,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.5610193286533143,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.31990182399792,
+                "y": 22.08653517277047
+              },
+              "vel": {
+                "x": 2.716520234078589,
+                "y": -1.945020083804318
+              },
+              "facing": -0.6175598219378696,
+              "spin": -1.6858822454149092,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.2970863736672675,
+                  "y": -2.0190574867020956
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6040534883710443,
+            "requestedClosing": 4.932971591296524,
+            "actualClosing": -4.128865387283352e-14
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.875283593127704,
+            "push": 539.0536881982762,
+            "hold": 0,
+            "steer": 274.87885855398366,
+            "actor": 13,
+            "normalForce": 539.0536881982762,
+            "tangentForce": 31.798259134988385,
+            "a": 5,
+            "b": 13
+          },
+          "baselineBodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.569787427463815,
+                "y": 22.81841415630083
+              },
+              "vel": {
+                "x": -0.20418593026522827,
+                "y": -1.3502310440701366
+              },
+              "facing": 0.8487253984783847,
+              "spin": 6.271472272090005e-05,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.4,
+                  "y": -0.629046670726116
+                },
+                "facing": 0.8487339179243447,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.969026794526066,
+                "y": 23.27172259941761
+              },
+              "vel": {
+                "x": -0.20418595807561707,
+                "y": -1.3502310195768206
+              },
+              "facing": 3.9903160798178803,
+              "spin": -7.931253568205209e-05,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": -4.56027853642529
+                },
+                "facing": -2.2928587356654484,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.0551405628419,
+                "y": 21.33632609791542
+              },
+              "vel": {
+                "x": 0.8822635890850685,
+                "y": -0.11852891132846216
+              },
+              "facing": -0.5960345170226118,
+              "spin": -1.2160181941565555,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.3234208906095417,
+                  "y": -0.7102593890399055
+                },
+                "facing": -0.6757789340746447,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.56134631043726,
+                "y": 20.930499065966725
+              },
+              "vel": {
+                "x": 0.1694127001501292,
+                "y": -1.0211694373765678
+              },
+              "facing": 3.500504869649475,
+              "spin": 1.8672712536357041,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 2.4658137195151486,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.43660670587357,
+                "y": 21.943303381943352
+              },
+              "vel": {
+                "x": 2.8513191323465286,
+                "y": -2.2349509886175314
+              },
+              "facing": -0.656308118916366,
+              "spin": -0.8485143943535611,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.625953161091995,
+                  "y": -2.2099783891875333
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 2,
+              "j": 13,
+              "impulse": 15.484178187672095,
+              "closing": 0.003757321535007449
+            },
+            {
+              "i": 4,
+              "j": 14,
+              "impulse": 3.7790457540747795,
+              "closing": 0.1061922789795885
+            },
+            {
+              "i": 10,
+              "j": 17,
+              "impulse": 32.43831537416641,
+              "closing": 0.0892400805330901
+            }
+          ],
+          "consumedContactController": {
+            "anchored": true,
+            "forward": -0.744729195521938,
+            "lateral": 2.11625198138819,
+            "defensiveAim": {
+              "x": 39.465780012935575,
+              "y": 21.052830334989892
+            },
+            "declared": false,
+            "fit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "interior",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        },
+        {
+          "t": 2.25,
+          "nominalRep": {
+            "blocker": 5,
+            "defender": 13,
+            "start": 0.5,
+            "helpers": [],
+            "control": -0.37487066904778543,
+            "drive": {
+              "x": 1,
+              "y": 0
+            },
+            "surfaceAxis": {
+              "x": -1,
+              "y": 0
+            },
+            "axis": {
+              "x": -1,
+              "y": 0
+            },
+            "sealTarget": -0.3
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": -0.6537772136909018,
+              "y": -1.702792664842628
+            },
+            "facing": 1.0307479893810545,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.948945054945055
+          },
+          "movement": {
+            "distance": 0.6495312986833535,
+            "requestedClosing": -5.399385915808859,
+            "actualClosing": -0.6740790522636646
+          },
+          "rawMovement": {
+            "distance": 0.6495312986833535,
+            "requestedClosing": -5.399385915808859,
+            "actualClosing": -0.6740790522636646
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 5,
+            "b": 13,
+            "normalForce": 516.1431823413443,
+            "tangentForce": -166.59365532040903,
+            "forceOnB": {
+              "x": 398.6460644452605,
+              "y": 370.7817159976552
+            },
+            "momentOnA": 63.19644690604425,
+            "momentOnB": 49.8838781873376
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.869455840493801,
+            "push": 516.1431823413444,
+            "hold": 0,
+            "steer": 260.78008571894884,
+            "actor": 13,
+            "normalForce": 510.5418287909803,
+            "tangentForce": 26.99979665838722,
+            "forceOnB": {
+              "x": 249.68183180390923,
+              "y": 442.4208286364644
+            },
+            "momentOnB": -8.349269703127783,
+            "momentOnA": -10.577449041079069,
+            "a": 5,
+            "b": 13
+          },
+          "bodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.00030563696009,
+                "y": 20.964837837624906
+              },
+              "vel": {
+                "x": -0.2643721798556246,
+                "y": -2.310522540816677
+              },
+              "facing": 0.9784604416649764,
+              "spin": 1.1495903096447662,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6537772136909018,
+                  "y": -1.702792664842628
+                },
+                "facing": 1.0307479893810545,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.33427998411883,
+                "y": 21.521930328517737
+              },
+              "vel": {
+                "x": -0.5869165642864166,
+                "y": -1.3312291535055163
+              },
+              "facing": 4.119404794032576,
+              "spin": 2.6665340801393245,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": 4.56027853642529
+                },
+                "facing": -2.110844664208739,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.74934561528973,
+                "y": 21.097117719864414
+              },
+              "vel": {
+                "x": -0.5402777470310116,
+                "y": -1.2856410077795872
+              },
+              "facing": -1.581485493672529,
+              "spin": -1.877564264351266,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.8909915752966926,
+                  "y": -1.1210182226985264
+                },
+                "facing": -1.6885667698838056,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.67235637956642,
+                "y": 20.446419969210602
+              },
+              "vel": {
+                "x": -1.9823100151645867,
+                "y": -1.4053490593770925
+              },
+              "facing": 1.5152997545965226,
+              "spin": -2.451265306132846,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.4530258837059877,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.447345176294945,
+                "y": 21.987804482769352
+              },
+              "vel": {
+                "x": 2.381213857802613,
+                "y": -2.004207516240491
+              },
+              "facing": -0.7114624674792988,
+              "spin": -2.070223576242256,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.0065636715574438,
+                  "y": -1.9336512740645462
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6039322941247212,
+            "requestedClosing": 2.075998351095215,
+            "actualClosing": 7.847445861503873e-15
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.87670841120507,
+            "push": 544.6550417486403,
+            "hold": 0,
+            "steer": 278.32584535420784,
+            "actor": 13,
+            "normalForce": 544.6550417486403,
+            "tangentForce": -72.37513197753685,
+            "a": 5,
+            "b": 13
+          },
+          "baselineBodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.56382459359606,
+                "y": 22.7504638554334
+              },
+              "vel": {
+                "x": -0.030360900509517365,
+                "y": -1.3634460600500469
+              },
+              "facing": 0.8487327700953416,
+              "spin": 2.62960418253592e-05,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.2340185510275063,
+                  "y": -2.11625198138819
+                },
+                "facing": 0.8487363519469152,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.96298275614184,
+                "y": 23.203682320591014
+              },
+              "vel": {
+                "x": -0.03036088794712416,
+                "y": -1.363446071113997
+              },
+              "facing": 3.990324594589209,
+              "spin": -3.337645757246974e-05,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": -4.56027853642529
+                },
+                "facing": -2.2928563016428782,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.09901019903658,
+                "y": 21.325918865893506
+              },
+              "vel": {
+                "x": 0.8695332124512934,
+                "y": -0.2921792708335216
+              },
+              "facing": -0.675965149335889,
+              "spin": -1.6165052454843156,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.0885149002946557,
+                  "y": -1.001861088429764
+                },
+                "facing": -0.7622561983452409,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.56829826678617,
+                "y": 20.877863713454857
+              },
+              "vel": {
+                "x": 0.11322807850947506,
+                "y": -1.0897799726875301
+              },
+              "facing": 3.5479054461431305,
+              "spin": -0.06965847767749618,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 2.379336455244552,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.573538513209535,
+                "y": 21.832180147498224
+              },
+              "vel": {
+                "x": 2.625953161091995,
+                "y": -2.2099783891875333
+              },
+              "facing": -0.6991628535896648,
+              "spin": -0.8656749925783913,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 2.5161045968513496,
+                  "y": -2.2468369564615407
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 2,
+              "j": 13,
+              "impulse": 15.716379607246719,
+              "closing": 0.00127281734958732
+            },
+            {
+              "i": 4,
+              "j": 14,
+              "impulse": 0,
+              "closing": 0.06459286842931697
+            },
+            {
+              "i": 10,
+              "j": 17,
+              "impulse": 34.23012819274583,
+              "closing": 0.08993591151050429
+            }
+          ],
+          "consumedContactController": {
+            "anchored": false,
+            "forward": -0.6537772136909018,
+            "lateral": 1.702792664842628,
+            "defensiveAim": {
+              "x": 39.465780012935575,
+              "y": 21.052830334989892
+            },
+            "declared": false,
+            "fit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "interior",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        },
+        {
+          "t": 2.3,
+          "nominalRep": {
+            "blocker": 5,
+            "defender": 13,
+            "start": 0.5,
+            "helpers": [],
+            "control": -0.376341412481598,
+            "drive": {
+              "x": 1,
+              "y": 0
+            },
+            "surfaceAxis": {
+              "x": -1,
+              "y": 0
+            },
+            "axis": {
+              "x": -1,
+              "y": 0
+            },
+            "sealTarget": -0.3
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": -0.43749198280866425,
+              "y": -0.8303991193641487
+            },
+            "facing": 1.0874150382082142,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.948945054945055
+          },
+          "movement": {
+            "distance": 0.6925557600102007,
+            "requestedClosing": -4.697529562580728,
+            "actualClosing": -1.0612360480756111
+          },
+          "rawMovement": {
+            "distance": 0.6925557600102007,
+            "requestedClosing": -4.697529562580728,
+            "actualClosing": -1.0612360480756111
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 5,
+            "b": 13,
+            "normalForce": 516.974330296157,
+            "tangentForce": 225.96318388241534,
+            "forceOnB": {
+              "x": 25.37823783267352,
+              "y": 562.8026259395753
+            },
+            "momentOnA": -91.54532118047558,
+            "momentOnB": -72.26095570177976
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8696672598624116,
+            "push": 516.974330296157,
+            "hold": 0,
+            "steer": 261.29156138344877,
+            "actor": 13,
+            "normalForce": 516.1431823413443,
+            "tangentForce": -166.59365532040903,
+            "forceOnB": {
+              "x": 398.6460644452605,
+              "y": 370.7817159976552
+            },
+            "momentOnB": 49.8838781873376,
+            "momentOnA": 63.19644690604425,
+            "a": 5,
+            "b": 13
+          },
+          "bodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 38.98467542448592,
+                "y": 20.854410461473723
+              },
+              "vel": {
+                "x": -0.38437819004837465,
+                "y": -2.0894924111172894
+              },
+              "facing": 1.031292221654597,
+              "spin": 0.8835130128421833,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.43749198280866425,
+                  "y": -0.8303991193641487
+                },
+                "facing": 1.0874150382082142,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.306558523611535,
+                "y": 21.467619032206876
+              },
+              "vel": {
+                "x": -0.4997047173847207,
+                "y": -0.8303991193641487
+              },
+              "facing": 4.173832114113881,
+              "spin": 0.31191424128647893,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": 4.56027853642529
+                },
+                "facing": -2.054177615381579,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.71791812759582,
+                "y": 21.038982181097968
+              },
+              "vel": {
+                "x": -0.7306793347110535,
+                "y": -1.0512542575005148
+              },
+              "facing": -1.689053975482464,
+              "spin": -2.07312332659207,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.3274606471965129,
+                  "y": -1.7467881918581776
+                },
+                "facing": -1.7956941906426185,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.56732430801225,
+                "y": 20.380700015553472
+              },
+              "vel": {
+                "x": -2.1957066390764393,
+                "y": -1.2265356815840376
+              },
+              "facing": 1.4092768963663076,
+              "spin": -2.027341563463855,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.3458984629471749,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.55808450949582,
+                "y": 21.889161232481413
+              },
+              "vel": {
+                "x": 2.048359470232517,
+                "y": -1.9415224952770882
+              },
+              "facing": -0.7668956001054898,
+              "spin": -0.9055761256529835,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.3906195277795774,
+                  "y": -1.39141344244816
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6040421431247639,
+            "requestedClosing": 3.1754565595190636,
+            "actualClosing": -7.007171505941001e-15
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.8793306073614826,
+            "push": 554.9636193725468,
+            "hold": 0,
+            "steer": 284.66958543045786,
+            "actor": 13,
+            "normalForce": 554.9636193725466,
+            "tangentForce": -108.7299170291659,
+            "a": 5,
+            "b": 13
+          },
+          "baselineBodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.55829839055706,
+                "y": 22.68325966630213
+              },
+              "vel": {
+                "x": -0.19700924147995755,
+                "y": -1.3315777473132677
+              },
+              "facing": 0.8487358697545746,
+              "spin": 1.1111242874534633e-05,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.3564516401609112,
+                  "y": -2.0519363274976854
+                },
+                "facing": 0.848737374151154,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.95752869245283,
+                "y": 23.136560975277707
+              },
+              "vel": {
+                "x": -0.19700926811737643,
+                "y": -1.331577723853223
+              },
+              "facing": 3.990328175048843,
+              "spin": -1.3943435582187363e-05,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": -4.56027853642529
+                },
+                "facing": -2.292855279438639,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.14171421775616,
+                "y": 21.307329257896022
+              },
+              "vel": {
+                "x": 0.8489753815780952,
+                "y": -0.4379891169202474
+              },
+              "facing": -0.7622292173505244,
+              "spin": -1.6382747407903762,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.8924249083407104,
+                  "y": -1.3548822987944606
+                },
+                "facing": -0.8462154464373334,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.571777402906065,
+                "y": 20.821494894259573
+              },
+              "vel": {
+                "x": 0.013848120862404303,
+                "y": -1.181265813198307
+              },
+              "facing": 3.497473837833698,
+              "spin": -1.8103135419949576,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 2.29537720715246,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.702089957158115,
+                "y": 21.720759763856996
+              },
+              "vel": {
+                "x": 2.5161045968513496,
+                "y": -2.2468369564615407
+              },
+              "facing": -0.7356854923927882,
+              "spin": -0.5952305595465468,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 7.618785863317837,
+                  "y": -5.694697960580948
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 10,
+              "j": 17,
+              "impulse": 35.68633253388388,
+              "closing": 0.0906620472630005
+            },
+            {
+              "i": 5,
+              "j": 12,
+              "impulse": 150.80989670517909,
+              "closing": 2.0795703362973663
+            }
+          ],
+          "consumedContactController": {
+            "anchored": false,
+            "forward": -0.43749198280866425,
+            "lateral": 0.8303991193641487,
+            "defensiveAim": {
+              "x": 38.729783418605,
+              "y": 21.848487379703013
+            },
+            "declared": true,
+            "fit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "interior",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        },
+        {
+          "t": 2.35,
+          "nominalRep": {
+            "blocker": 5,
+            "defender": 13,
+            "start": 0.5,
+            "helpers": [],
+            "control": -0.36171489255604883,
+            "drive": {
+              "x": 1,
+              "y": 0
+            },
+            "surfaceAxis": {
+              "x": -1,
+              "y": 0
+            },
+            "axis": {
+              "x": -1,
+              "y": 0
+            },
+            "sealTarget": -0.3
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 2.4,
+              "y": -0.09848511551043802
+            },
+            "facing": 1.1385519016549956,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.948945054945055
+          },
+          "movement": {
+            "distance": 0.7509151246864437,
+            "requestedClosing": -5.016516516805991,
+            "actualClosing": -1.0537087361825714
+          },
+          "rawMovement": {
+            "distance": 0.7509151246864437,
+            "requestedClosing": -2.9735574604664423,
+            "actualClosing": -1.0537087361825714
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 5,
+            "b": 13,
+            "normalForce": 366.7113184555303,
+            "tangentForce": 256.2049440807635,
+            "forceOnB": {
+              "x": -78.06235986877506,
+              "y": 440.51489326569697
+            },
+            "momentOnA": -111.83883725432243,
+            "momentOnB": -88.27956645256444
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8675646976231138,
+            "push": 508.7085771792934,
+            "hold": 0,
+            "steer": 256.2049440807635,
+            "actor": 13,
+            "normalForce": 516.974330296157,
+            "tangentForce": 225.96318388241534,
+            "forceOnB": {
+              "x": 25.37823783267352,
+              "y": 562.8026259395753
+            },
+            "momentOnB": -72.26095570177976,
+            "momentOnA": -91.54532118047558,
+            "a": 5,
+            "b": 13
+          },
+          "bodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 38.96696077886505,
+                "y": 20.7564737376098
+              },
+              "vel": {
+                "x": -1.067714570390104,
+                "y": -1.2340731744797353
+              },
+              "facing": 1.084674253974868,
+              "spin": 0.7547927653148767,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.47267530652734413,
+                  "y": -1.0230901030025525
+                },
+                "facing": 1.1385519016549956,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.281526525852215,
+                "y": 21.438325565579238
+              },
+              "vel": {
+                "x": -0.5157421059002817,
+                "y": -0.32828371836812675
+              },
+              "facing": 4.22799047132722,
+              "spin": 1.5180814719458573,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": 4.56027853642529
+                },
+                "facing": -2.0030407519347975,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.685661146788476,
+                "y": 20.986791627542217
+              },
+              "vel": {
+                "x": -0.5339712916730259,
+                "y": -1.0661639732860808
+              },
+              "facing": -1.7972049971179191,
+              "spin": -1.7080456454877706,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.8511415215338356,
+                  "y": -1.56407790109108
+                },
+                "facing": -1.9044273801832152,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.455621923112226,
+                "y": 20.323064410525554
+              },
+              "vel": {
+                "x": -1.4916720264456849,
+                "y": -1.712077505817007
+              },
+              "facing": 1.2967798519476659,
+              "spin": -2.808684477965414,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.2371652734065781,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.65247102683336,
+                "y": 21.794750288567478
+              },
+              "vel": {
+                "x": 1.7271012232692409,
+                "y": -1.8349152612805741
+              },
+              "facing": -0.8964142862721942,
+              "spin": -4.275171321015187,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.24524754087953893,
+                  "y": -1.134629150131234
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6039807726491624,
+            "requestedClosing": 2.0763917265484015,
+            "actualClosing": -5.20943886036578e-15
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.8793646668294886,
+            "push": 555.097516552172,
+            "hold": 0,
+            "steer": 284.7519836948427,
+            "actor": 13,
+            "normalForce": 555.0975165521719,
+            "tangentForce": -101.60517293672875,
+            "a": 5,
+            "b": 13
+          },
+          "baselineBodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.552469174638105,
+                "y": 22.614311048437674
+              },
+              "vel": {
+                "x": -0.02991403504272867,
+                "y": -1.4206519948041525
+              },
+              "facing": 0.8487371720283826,
+              "spin": 4.726000421364159e-06,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.23342630985234608,
+                  "y": -2.11625198138819
+                },
+                "facing": 0.8487378026757597,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.95165872064038,
+                "y": 23.06756647321754
+              },
+              "vel": {
+                "x": -0.02991408234528765,
+                "y": -1.4206519531439998
+              },
+              "facing": 3.9903296796215466,
+              "spin": -5.75091536697906e-06,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": -4.56027853642529
+                },
+                "facing": -2.2928548509140336,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.1848781004373,
+                "y": 21.282949134610483
+              },
+              "vel": {
+                "x": 0.8746770231867158,
+                "y": -0.5455159450762208
+              },
+              "facing": -0.8460719530316688,
+              "spin": -1.7094835403159032,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.8106342966239847,
+                  "y": -1.878017637207758
+                },
+                "facing": -0.9398774288984213,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.56762770835572,
+                "y": 20.759010019824526
+              },
+              "vel": {
+                "x": -0.1805301098952486,
+                "y": -1.318307162841645
+              },
+              "facing": 3.3861913487799193,
+              "spin": -2.5958642589826857,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 2.201715224691372,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.832791857248836,
+                "y": 21.60510955552856
+              },
+              "vel": {
+                "x": 2.711971406777572,
+                "y": -2.3791713766759184
+              },
+              "facing": -0.7036586007180736,
+              "spin": 1.8763062265351316,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.83631524260183,
+                  "y": -4.326799281930436
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 5,
+              "j": 12,
+              "impulse": 60.85647652923692,
+              "closing": 0.05939730698468587
+            },
+            {
+              "i": 10,
+              "j": 17,
+              "impulse": 35.58839766511413,
+              "closing": 0.08978780958949155
+            },
+            {
+              "i": 4,
+              "j": 14,
+              "impulse": 6.86678698495533,
+              "closing": 0.1619231309509544
+            }
+          ],
+          "consumedContactController": {
+            "anchored": true,
+            "forward": -0.2784512772954961,
+            "lateral": 0.32828371836812675,
+            "defensiveAim": {
+              "x": 38.729783418605,
+              "y": 21.848487379703013
+            },
+            "declared": true,
+            "fit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "interior",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        },
+        {
+          "t": 2.4,
+          "nominalRep": {
+            "blocker": 5,
+            "defender": 13,
+            "start": 0.5,
+            "helpers": [],
+            "control": -0.34396788432736813,
+            "drive": {
+              "x": 1,
+              "y": 0
+            },
+            "surfaceAxis": {
+              "x": -1,
+              "y": 0
+            },
+            "axis": {
+              "x": -1,
+              "y": 0
+            },
+            "sealTarget": -0.3
+          },
+          "rawContactRequest": {
+            "vel": {
+              "x": 2.4,
+              "y": 0.05343853529287562
+            },
+            "facing": 1.1364324435598805,
+            "push": 1,
+            "posture": 0.85,
+            "cutSkill": 0.948945054945055
+          },
+          "movement": {
+            "distance": 0.8146434370804462,
+            "requestedClosing": -4.715833878922386,
+            "actualClosing": -1.420614950184943
+          },
+          "rawMovement": {
+            "distance": 0.8146434370804462,
+            "requestedClosing": -2.8258251643138554,
+            "actualClosing": -1.420614950184943
+          },
+          "deliveredHands": {
+            "kind": "hands",
+            "a": 5,
+            "b": 13,
+            "normalForce": 0,
+            "tangentForce": 103.8251136701375,
+            "forceOnB": {
+              "x": -93.87037202775804,
+              "y": 44.3599771571159
+            },
+            "momentOnA": -50.12317540345003,
+            "momentOnB": -39.56454039110098
+          },
+          "requestedHands": {
+            "kind": "hands",
+            "extension": 0.8650135651902411,
+            "push": 498.67937068807726,
+            "hold": 0,
+            "steer": 250.03312470155353,
+            "actor": 13,
+            "normalForce": 366.7113184555303,
+            "tangentForce": 256.2049440807635,
+            "forceOnB": {
+              "x": -78.06235986877506,
+              "y": 440.51489326569697
+            },
+            "momentOnB": -88.27956645256444,
+            "momentOnA": -111.83883725432243,
+            "a": 5,
+            "b": 13
+          },
+          "bodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 38.911956216468795,
+                "y": 20.69651452116645
+              },
+              "vel": {
+                "x": -1.077855864966392,
+                "y": -1.153440125540658
+              },
+              "facing": 1.117386513302882,
+              "spin": 0.44920625926916774,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.2672432984050621,
+                  "y": -0.7926770535629257
+                },
+                "facing": 1.1364324435598805,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.25478541720789,
+                "y": 21.43550847831281
+              },
+              "vel": {
+                "x": -0.5724335910148244,
+                "y": 0.17812845097625207
+              },
+              "facing": 4.279040041990049,
+              "spin": 1.3780487964462471,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": 4.56027853642529
+                },
+                "facing": -2.0051602100299126,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 39.66449175466291,
+                "y": 20.93189772410141
+              },
+              "vel": {
+                "x": -0.34308785011347415,
+                "y": -1.1339506103357955
+              },
+              "facing": -1.9031296883375977,
+              "spin": -2.5621640162636794,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -1.2647905813318039,
+                  "y": -1.8069582437352707
+                },
+                "facing": -1.9621249589263738,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 39.377798905836364,
+                "y": 20.23706817664271
+              },
+              "vel": {
+                "x": -1.6464544386118396,
+                "y": -1.7367976856123781
+              },
+              "facing": 1.2228595149368766,
+              "spin": -0.044287778973346695,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 1.1794676946634195,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.73118123950417,
+                "y": 21.706617285173902
+              },
+              "vel": {
+                "x": 1.4213072835628788,
+                "y": -1.6904048744624451
+              },
+              "facing": -1.1944423400023598,
+              "spin": -7.645950828191439,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 0.6072262992540001,
+                  "y": -2.0811637555030433
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "baselineMovement": {
+            "distance": 0.6040866027195192,
+            "requestedClosing": 3.242834240709057,
+            "actualClosing": -1.677304376414414e-15
+          },
+          "baselineHands": {
+            "kind": "hands",
+            "extension": 0.8814943971951259,
+            "push": 563.4700750804399,
+            "hold": 0,
+            "steer": 289.904327404546,
+            "actor": 13,
+            "normalForce": 563.4700750804398,
+            "tangentForce": -192.02679999934182,
+            "a": 5,
+            "b": 13
+          },
+          "baselineBodies": [
+            {
+              "slot": "RG",
+              "pos": {
+                "x": 39.54697235877472,
+                "y": 22.544067016008523
+              },
+              "vel": {
+                "x": -0.1964806309911015,
+                "y": -1.3953002531787653
+              },
+              "facing": 0.8487377182171589,
+              "spin": 2.0078026267299197e-06,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.333532484056549,
+                  "y": -1.9419677988869566
+                },
+                "facing": 0.848737981784668,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.948945054945055
+              }
+            },
+            {
+              "slot": "DT_S",
+              "pos": {
+                "x": 39.946231769942635,
+                "y": 22.997401932134622
+              },
+              "vel": {
+                "x": -0.19648066694605357,
+                "y": -1.3953002215126538
+              },
+              "facing": 3.990330310801104,
+              "spin": -2.364000369674967e-06,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -0.6,
+                  "y": -4.56027853642529
+                },
+                "facing": -2.2928546718051255,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 1.1443529042386187
+              }
+            },
+            {
+              "slot": "RT",
+              "pos": {
+                "x": 40.22866046669318,
+                "y": 21.25182712817194
+              },
+              "vel": {
+                "x": 0.8727071839374541,
+                "y": -0.705142999457112
+              },
+              "facing": -0.9397246378924393,
+              "spin": -1.9193584403242978,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 1.1271492922345303,
+                  "y": -2.379521800229132
+                },
+                "facing": -1.0457963970913664,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.9878838304552591
+              }
+            },
+            {
+              "slot": "DE_S",
+              "pos": {
+                "x": 40.55387862100695,
+                "y": 20.69035107274913
+              },
+              "vel": {
+                "x": -0.370977368105465,
+                "y": -1.4266087572438366
+              },
+              "facing": 3.2343689909648545,
+              "spin": -3.420287557400134,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": -2.6246602181686702,
+                  "y": -0.7717692229167946
+                },
+                "facing": 2.095796256498427,
+                "push": 1,
+                "posture": 0.85,
+                "cutSkill": 0.969570695970696
+              }
+            },
+            {
+              "slot": "RB",
+              "pos": {
+                "x": 38.96362907643343,
+                "y": 21.479134876843883
+              },
+              "vel": {
+                "x": 2.5215173606060635,
+                "y": -2.6598157707112313
+              },
+              "facing": -0.6939913467886363,
+              "spin": -1.4896160693576395,
+              "support": "up",
+              "intent": {
+                "vel": {
+                  "x": 7.618785863317837,
+                  "y": -5.694697960580948
+                },
+                "cutSkill": 1.0892857142857142,
+                "squeeze": 0
+              }
+            }
+          ],
+          "bodyContacts": [
+            {
+              "i": 4,
+              "j": 14,
+              "impulse": 18.87551879058999,
+              "closing": 0.09771965724084958
+            },
+            {
+              "i": 5,
+              "j": 12,
+              "impulse": 37.39896380516258,
+              "closing": 0.05535251887671877
+            },
+            {
+              "i": 10,
+              "j": 17,
+              "impulse": 30.984730836773714,
+              "closing": 0.08332892558052486
+            },
+            {
+              "i": 6,
+              "j": 13,
+              "impulse": 133.3808407405926,
+              "closing": 2.5368013754464864
+            }
+          ],
+          "consumedContactController": {
+            "anchored": true,
+            "forward": -0.14395782522803147,
+            "lateral": -0.17812845097625207,
+            "defensiveAim": {
+              "x": 38.729783418605,
+              "y": 21.848487379703013
+            },
+            "declared": true,
+            "fit": {
+              "gap": "B",
+              "side": -1,
+              "kind": "interior",
+              "technique": "attack",
+              "edge": "box",
+              "pace": "stack"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "weakSuccessReused": {
+    "input": {
+      "id": "uc12-wz-weak-s3",
+      "concept": "wz_weak",
+      "kind": "run",
+      "seed": 3,
+      "flip": false,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "formation": "ace_12"
+    },
+    "endTime": 4.1,
+    "outcome": "tackle",
+    "crossing": 2.4,
+    "firstContact": {
+      "t": 2.85,
+      "opponent": "LB_M",
+      "note": "grasp",
+      "depth": 3.1354877517233746
+    },
+    "gain": 9.500380676675306
+  },
+  "weakFullHistorySha256": "6dd9470d8fce800cd6063f5cbab17a6cfac78e78a2f9a7112063db5a007f5808",
+  "spacingControls": {
+    "protocol": "ace-protection-spacing-review-v1",
+    "rows": [
+      {
+        "id": "uc12-wz-s3",
+        "t": 1.25,
+        "actor": "RT",
+        "request": {
+          "vel": {
+            "x": 3.6346111373444656,
+            "y": -2.9298291531053122
+          },
+          "facing": -0.7527739171913139,
+          "push": 1,
+          "posture": 0.75
+        },
+        "expectedWorldVelocity": {
+          "x": 2.143135150031508,
+          "y": 0.15020755811939912
+        },
+        "error": 0,
+        "velocity": {
+          "x": 2.143135150031508,
+          "y": 0.15020755811939912
+        },
+        "cuts": [
+          {
+            "slot": "Y",
+            "seen": {
+              "pos": {
+                "x": 40.18987206703106,
+                "y": 21.89245961976597
+              },
+              "vel": {
+                "x": -0.5059279994763686,
+                "y": -0.7591530955234437
+              },
+              "stance": "low",
+              "facing": -0.18953845161582483,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "touch": 0.6013636363636364,
+            "gap": 0.11194120245788086,
+            "closing": 3.7582419764392507,
+            "allowed": 0.3360896181677644,
+            "closestDistance": 0.4242512856103024,
+            "before": {
+              "x": 3.6346111373444656,
+              "y": -2.9298291531053122
+            },
+            "after": {
+              "x": 2.143135150031508,
+              "y": 0.15020755811939912
+            }
+          }
+        ],
+        "clearLaneControl": {
+          "x": 3.6346111373444656,
+          "y": -2.9298291531053122
+        }
+      },
+      {
+        "id": "uc12-wz-s3",
+        "t": 1.5,
+        "actor": "RT",
+        "request": {
+          "vel": {
+            "x": 2.2054116222928513,
+            "y": -2.8474749829908133
+          },
+          "facing": -1.256939078813111,
+          "push": 1,
+          "posture": 0.75
+        },
+        "expectedWorldVelocity": {
+          "x": 2.5133388442571962,
+          "y": -1.7283915867969724
+        },
+        "error": 0,
+        "velocity": {
+          "x": 2.5133388442571962,
+          "y": -1.7283915867969724
+        },
+        "cuts": [
+          {
+            "slot": "Y",
+            "seen": {
+              "pos": {
+                "x": 40.052280627842,
+                "y": 21.696905774029155
+              },
+              "vel": {
+                "x": -0.573352330252933,
+                "y": -0.7634312901708556
+              },
+              "stance": "low",
+              "facing": -0.6222084506523817,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "touch": 0.6013636363636364,
+            "gap": 0.0346409809111069,
+            "closing": 1.272157519182445,
+            "allowed": 0.11148236149903012,
+            "closestDistance": 0.5918119853564486,
+            "before": {
+              "x": 2.2054116222928513,
+              "y": -2.8474749829908133
+            },
+            "after": {
+              "x": 2.5133388442571962,
+              "y": -1.7283915867969724
+            }
+          }
+        ],
+        "clearLaneControl": {
+          "x": 2.2054116222928513,
+          "y": -2.8474749829908133
+        }
+      },
+      {
+        "id": "uc12-wz-s3-mirror",
+        "t": 2.2,
+        "actor": "RG",
+        "request": {
+          "vel": {
+            "x": 2.4,
+            "y": -0.6348755944164569
+          },
+          "facing": 0.9789655583424375,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.948945054945055
+        },
+        "expectedWorldVelocity": {
+          "x": -0.35026162377056336,
+          "y": -0.9216473775428388
+        },
+        "error": 0,
+        "velocity": {
+          "x": -0.35026162377056336,
+          "y": -0.9216473775428388
+        },
+        "cuts": [
+          {
+            "slot": "RT",
+            "seen": {
+              "pos": {
+                "x": 39.77110169822815,
+                "y": 21.163625128240763
+              },
+              "vel": {
+                "x": -0.5172758472510168,
+                "y": -1.9864953766117477
+              },
+              "stance": "low",
+              "facing": -1.4226722147944983,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "touch": 0.6668181818181819,
+            "gap": 0.09192289613072635,
+            "closing": 3.041719555901878,
+            "allowed": 0.27654739945617446,
+            "closestDistance": 0.24584800394414028,
+            "before": {
+              "x": 2.4,
+              "y": -0.6348755944164569
+            },
+            "after": {
+              "x": -0.35026162377056336,
+              "y": -0.9216473775428388
+            }
+          }
+        ],
+        "clearLaneControl": {
+          "x": 2.4,
+          "y": -0.6348755944164569
+        }
+      },
+      {
+        "id": "uc12-wz-s3-mirror",
+        "t": 2.35,
+        "actor": "RG",
+        "request": {
+          "vel": {
+            "x": 2.4,
+            "y": -0.09848511551043802
+          },
+          "facing": 1.1385519016549956,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.948945054945055
+        },
+        "expectedWorldVelocity": {
+          "x": -0.47267530652734413,
+          "y": -1.0230901030025525
+        },
+        "error": 0,
+        "velocity": {
+          "x": -0.47267530652734413,
+          "y": -1.0230901030025525
+        },
+        "cuts": [
+          {
+            "slot": "RT",
+            "seen": {
+              "pos": {
+                "x": 39.68138416086027,
+                "y": 20.98641946822294
+              },
+              "vel": {
+                "x": -0.7306793347110535,
+                "y": -1.0512542575005148
+              },
+              "stance": "low",
+              "facing": -1.689053975482464,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "touch": 0.6668181818181819,
+            "gap": 0.08369884514969217,
+            "closing": 3.2720319812444325,
+            "allowed": 0.2542251949131302,
+            "closestDistance": 0.011980567105985626,
+            "before": {
+              "x": 2.4,
+              "y": -0.09848511551043802
+            },
+            "after": {
+              "x": -0.47267530652734413,
+              "y": -1.0230901030025525
+            }
+          }
+        ],
+        "clearLaneControl": {
+          "x": 2.4,
+          "y": -0.09848511551043802
+        }
+      },
+      {
+        "id": "uc12-wz-s3-mirror",
+        "t": 2.4,
+        "actor": "RG",
+        "request": {
+          "vel": {
+            "x": 2.4,
+            "y": 0.05343853529287562
+          },
+          "facing": 1.1364324435598805,
+          "push": 1,
+          "posture": 0.85,
+          "cutSkill": 0.948945054945055
+        },
+        "expectedWorldVelocity": {
+          "x": -0.2672432984050621,
+          "y": -0.7926770535629257
+        },
+        "error": 0,
+        "velocity": {
+          "x": -0.2672432984050621,
+          "y": -0.7926770535629257
+        },
+        "cuts": [
+          {
+            "slot": "RT",
+            "seen": {
+              "pos": {
+                "x": 39.65896258220482,
+                "y": 20.933483428877913
+              },
+              "vel": {
+                "x": -0.5339712916730259,
+                "y": -1.0661639732860808
+              },
+              "stance": "low",
+              "facing": -1.7972049971179191,
+              "age": 0.05,
+              "pose": "up",
+              "carrying": false
+            },
+            "touch": 0.6668181818181819,
+            "gap": 0.11687357753118854,
+            "closing": 3.135169135037618,
+            "allowed": 0.3369378360575792,
+            "closestDistance": 0.044928415577445105,
+            "before": {
+              "x": 2.4,
+              "y": 0.05343853529287562
+            },
+            "after": {
+              "x": -0.2672432984050621,
+              "y": -0.7926770535629257
+            }
+          }
+        ],
+        "clearLaneControl": {
+          "x": 2.4,
+          "y": 0.05343853529287562
+        }
+      }
+    ],
+    "scope": "Diagnostic fold reproduces existing spacing, not a spacing replacement or proposed traffic bypass. Clear lane is an opposing local control."
+  },
+  "spacingInputSha256": "6efe1cf657b4c5f6302cc8d058c9f689c3645d94f6fc4d8154608b3c3db7f28f",
+  "retentionControls": {
+    "inputSha256": "c1651510629569d3693bf2db0a7c51135688db6e8ab2293d1190aaca5340203c",
+    "nativeError": 0,
+    "retained": [
+      {
+        "normalForce": 0,
+        "tangentForce": 41.87815502583664,
+        "forceOnB": {
+          "x": 12.681501332075866,
+          "y": -40.089025682098075
+        },
+        "momentOnA": -17.004669005320128,
+        "momentOnB": -19.966443186426932
+      }
+    ],
+    "clearedImpulse": [
+      0,
+      0
+    ],
+    "unreachableDistance": 3.8805303890442624,
+    "generousReach": 2.6929040404040405,
+    "injectedStaleDelivery": [
+      {
+        "normalForce": 0,
+        "tangentForce": -168.9081072444853,
+        "forceOnB": {
+          "x": -71.37027023724268,
+          "y": 153.08503905152114
+        },
+        "momentOnA": 301.5129487937405,
+        "momentOnB": 354.02871765271027
+      }
+    ],
+    "scope": "Unreachable stale joint is a synthetic operator control, not a native baseline defect."
+  },
+  "correctedPriorStatement": "PR17 prose claiming RT never acquired any load after joining was too broad. He acquires lateral load at1.50 through1.95, loses eligibility at2.00 and has zero load at runner arrival. No compressive load in that interval.",
+  "diagnosticFailures": "Initial typecheck found one implicit-any callback in the new collector, corrected with a result-array type. First offline reducer correctly refused that failed validation. Both failed commands/costs are retained; runtime and native histories unchanged.",
+  "scope": "Diagnostics only; shared runtime, solver, contact retention, capacities, roster, RB, release and hand policies unchanged. Four short observer continuations of two saved prefixes, all49 hashes exact; no new inputs/games/full suites.",
+  "unresolved": [
+    "Whether these rotating latched contacts remain physically retained. Zero compression alone is not a clearance rule.",
+    "Whether a feasible acquired-information helper/spacing change improves route control after the contact contract is settled.",
+    "Changed native hand-exchange control/timing are not isolated from closed-loop RNG advancement. No deterministic superiority claim.",
+    "Current develop transfer remains untested under the explicit contract-review prerequisite."
+  ]
+}
