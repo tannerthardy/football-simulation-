@@ -18,6 +18,7 @@ and proposed mechanisms are identified separately.
 | Chapter | What it helps us build |
 | --- | --- |
 | [Shared model and learning](shared-model-and-learning.md) | A small common relationship between responsibility, perception, technique and achieved physics; transfer tests and future player development. |
+| [Player awareness](player-awareness-model.md) | Shared own-team calls, personal evidence, uncertain expectations and role keys; the bounded run-attention pilot and its adverse findings. |
 | [Trenches](trenches.md) | OL/DL base, feet and hands; zone and gap installations; combinations, pullers, protection, rush and exchanges. |
 | [Offensive skill and playcalling](offensive-skill-and-playcalling.md) | QB, RB, FB, WR and TE reads; releases, option coordination, motion, screens and situation. |
 | [Defense and perception](defense-and-perception.md) | Position-specific keys, coverage distribution, fits, vertical protection, motion, pursuit and legal contact. |

@@ -4,7 +4,6 @@ Players know their own team's installed play and maintain uncertain expectations
 of teammate movement. They update their picture through legitimate observation,
 received communication and contact. They must still make useful decisions when
 a teammate is unseen, an opponent is deceptive or execution defeats the call.
-This is the common direction for every position, beginning with run awareness.
 
 This chapter is a **model proposal**, not an authenticated NFL installation or
 a claim that all engine consumers now obey it. [PR #36's bounded repair](../reviews/teammate-information.md)
@@ -12,7 +11,7 @@ migrates spacing's teammate input only. Its acquired pictures, memory, installed
 expectations and tactile cues are useful foundations; remaining controller
 shortcuts and opponent acquisition are explicitly outside that repair.
 
-The subsequent opt-in research pilot uses `PlaySetup.runAwareness`: `off`
+The subsequent opt-in research pilot uses `PlaySetup.runAwareness`: default `off`
 preserves PR #36, `primary` owns one acquired near-line key, and `glance` adds
 installed-lane attention. It covers eligible outside/wide-zone OL and their
 original acquired key only. Other targets, retargeted work and all other roles
@@ -129,33 +128,41 @@ per-call training.
 
 ## First run pilot: installed lane selects attention
 
-PR #36's retained Y encounter has a useful loaded RT block and a rear RB collision
-after the approximate mesh expectation expires. Its source-pinned review retains
-the adverse outcome. The next question is whether the RT can use his knowledge
-of the run to seek a relevant picture without receiving unseen coordinates.
+The pilot installs a nominal post-mesh lane/landmark and arrival window from
+the call and alignment. **That expectation chooses attention; it does not place
+a precise RB traffic point into spacing.** Neither the installed window nor a
+glance certifies a successful handoff or achieved runner path. Hidden possession,
+engagement, cuts and private carrier state cannot refresh the expectation.
 
-Install a nominal post-mesh lane/landmark and approximate arrival window from
-the call and alignment. **Use that expectation to choose attention, not to place
-a precise RB traffic point into spacing.** The arrival window can justify a
-look; it cannot certify that the handoff occurred or the back reached the lane.
-Do not poll live possession, engagement, private carrier aim/read state or a
-teammate's live getter to decide whether the expectation exists.
+A selected-landmark correction checks the chosen point against the observer's
+attainable view before spending a primary-key opportunity. It rejects that
+selected point only; it does not prove the whole uncertain lane is invisible.
+Retain legitimate fringe searches, missed looks and stale-picture mistakes.
 
-An acquired cut may move the next look away from the nominal lane. Without such
-evidence, an unseen cut can still defeat the expectation. The RT can miss the
-back, remain uncertain and receive a real collision. That adverse case is
-essential: anticipation must help through admissible evidence, not disguise a
-remote tracking oracle. Actual tactile feedback remains a separate local cue.
+Earlier scoped tests passed 53 checks across six files. The final selector
+revision has a separate focused recheck; do not add its assertions to that
+earlier total. Exact revisions, validation and adverse native evidence belong
+in the [run-awareness review](../reviews/run-awareness-model.md).
 
-Start with the existing Y interval and D01 H, preserving identities and draws.
-Compare acquired evidence, requests, achieved lateral movement, contact and
-loaded-block continuity before interpreting gain. Keep physics, capacity,
-contact/release and spacing's yielding calculations fixed. A useful attention
-pilot does not repair the other teammate or opponent consumers by implication.
+Native results do not justify promotion. On H's fixed primary-only trajectory,
+the earliest physically possible RB sight is 2.25 s; the observer's 0.30-s delay
+would deliver it at 2.55, after the defender wraps at 2.30. The current first
+delivered visual is at 2.70 from a 2.40 sample. On Y's primary-only trajectory,
+no RT/RB sight falls within the attainable 125 degrees from snap through 3.25 s.
+Better timing alone cannot resolve that geometry. These are two retained
+encounters, not NFL calibration or demonstrated transfer. Default remains off.
+
+The most useful next experiment is request-only anticipation from the uncertain
+installed lane, own acquired block key and felt load. Run Game should compare
+feasible own motion through that range without inventing a precise RB position.
+Keep a stalled handoff, unseen cutback and necessary maintained block as adverse
+controls. Compare raw/final requests, achieved motion, collision and loaded-block
+continuity before gain; physics and contact rules stay fixed. No broader
+consumer migration or integration readiness follows from this pilot.
 
 ## Focused contracts and opposing controls
 
-These are proposed checks, not assertions that the new pilot has passed them.
+These contracts guide the scoped checks and later work, not all-role certification.
 
 | Question | Small reproducer and necessary opposing control |
 | --- | --- |
