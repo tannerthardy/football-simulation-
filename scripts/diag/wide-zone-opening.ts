@@ -19,6 +19,7 @@ import {sourceVersion} from '../source-version.js';
 const args=process.argv.slice(2);
 let arm='awareness',stop=1,from=0,out='out/wide-zone-opening/awareness.json.gz',fresh=false;
 let expected:string|null=null;
+let diagnosticBypass=false;
 while(args.length){const k=args.shift();
   if(k==='--arm')arm=args.shift()!;
   else if(k==='--stop')stop=Number(args.shift());
@@ -26,6 +27,7 @@ while(args.length){const k=args.shift();
   else if(k==='--out')out=args.shift()!;
   else if(k==='--expected-source')expected=args.shift()!;
   else if(k==='--fresh')fresh=true;
+  else if(k==='--diagnostic-rt-opening-bypass')diagnosticBypass=true;
   else throw Error(`Unknown argument ${k}`);
 }
 assert(stop>0&&stop<=2&&from>=0&&from<stop);
@@ -57,7 +59,7 @@ for(const input of inputs){
  const initializedInformation=snap(Reflect.get(sim,'teammateAwareness'));
  const actors=sim.agents.map(a=>({idx:a.idx,slot:a.slot,team:a.team,player:snap(a.player),profile:snap(a.profile),
   initialBody:snap(a.body),initialBehavior:snap(a.behavior)}));
- const frames:any[]=[],writes:any[]=[],cues:any[]=[],methods:any[]=[],phases:any[]=[],hashes:string[]=[],informationHashes:string[]=[];
+ const frames:any[]=[],writes:any[]=[],cues:any[]=[],methods:any[]=[],phases:any[]=[],hashes:string[]=[],informationHashes:string[]=[],actions:any[]=[];
  const liveCapture=()=>sim.t>=from-1e-9;
  const interesting=(a:Agent)=>a.team==='O'&&['LT','LG','C','RG','RT','Y','H'].includes(a.slot);
  const caller=()=>new Error().stack?.split('\n').slice(3,6).map(s=>s.trim());
@@ -92,6 +94,17 @@ for(const input of inputs){
  const step=sim.world.step.bind(sim.world);
  let frame:any=null;
  sim.world.step=(intents,dt)=>{
+  // Diagnostic cause isolation only. Not a production policy: one actor's
+  // first opening beat, no peer removal or new observation/future command.
+  if(diagnosticBypass&&sim.t>=.05-1e-9&&sim.t<.25-1e-9){
+   const rt=sim.slot('RT')!,raw=Reflect.get(sim,'cmds')[rt.idx];
+   if(!rt.engagement&&!sim.world.joints.some(j=>j.a===rt.body||j.b===rt.body)){
+    actions.push({t:sim.t,actor:rt.idx,original:snap(intents[rt.idx]),changed:snap(raw),
+     preActionBodiesSha256:sha(serialize(sim.agents.map(a=>a.body))),
+     preActionInformationSha256:sha(serialize(Reflect.get(sim,'teammateAwareness'))),rngSha256:sha(serialize(sim.rng))});
+    intents[rt.idx]={...intents[rt.idx],vel:{...raw.vel}};
+   }
+  }
   frame=liveCapture()?{t:sim.t,after:Math.round((sim.t+dt)*100)/100,dt,beforeBodies:snap(sim.agents.map(a=>a.body)),
    requested:snap(Reflect.get(sim,'cmds')),final:snap(intents),behavior:sim.agents.map(a=>snap(a.behavior)),
    engagements:snap(sim.engagements),jointInputs:sim.world.joints.map(flatten),pending:(Reflect.get(sim.world,'pending') as any[]).map(flatten),
@@ -114,12 +127,13 @@ for(const input of inputs){
  const old=reference.panel.find((r:any)=>r.input.id===input.id);
  if(arm==='accepted'&&!fresh)assert.deepEqual(hashes,old.hashes.slice(0,hashes.length),'Passive capture changed accepted full-state/RNG prefix');
  panel.push({input,actors,initializedInformation,initializedInformationSha256:sha(serialize(initializedInformation)),
-  restoredFromSnap:true,censored:sim.phase==='live',end:sim.t,frames,writes,cues,methods,phases,hashes,informationHashes,
+  restoredFromSnap:true,censored:sim.phase==='live',end:sim.t,frames,writes,cues,methods,phases,hashes,informationHashes,actions,
   elapsedSeconds:(performance.now()-caseStarted)/1000});
  console.log(JSON.stringify({arm,id:input.id,ticks:hashes.length,capturedFrames:frames.length,seconds:panel.at(-1).elapsedSeconds}));
 }
 assert.equal(sourceVersion(),source);
 const result={protocol:'wide-zone-opening-capture-v1',arm,revision,sourceSha256:source,flags,worldDefaults:baseline.worldDefaults,
+ diagnosticBypass,productionCorrection:false,
  historicalComparison:manifest.historicalComparison,acceptedDevelop:manifest.acceptedDevelop,awarenessHead:manifest.awarenessHead,
  initialization:manifest.initialization,referencePacketSha256:sha(bytes),manifestSha256:sha(readFileSync('config/wide-zone-opening.json')),
  collectorSha256:sha(readFileSync('scripts/diag/wide-zone-opening.ts')),node:process.version,lockSha256:sha(readFileSync('package-lock.json')),
