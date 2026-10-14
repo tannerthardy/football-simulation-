@@ -8,7 +8,7 @@ import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {cpus} from 'node:os';
 import {sourceVersion} from '../../source-version.js';
-import {boundedGripInterval} from './grip-force-bounded.js';
+import {boundedGripInterval,type GripPhaseWitness} from './grip-force-bounded.js';
 const root='out/grip-analytic',parent='c641f2b102594a7c906116bf7c167270a71c3b04',
   reference=JSON.parse(readFileSync('config/grip-bounded-reference.json','utf8')),
   hash=(bytes:Buffer|string)=>createHash('sha256').update(bytes).digest('hex'),
@@ -95,6 +95,11 @@ for(const mode of ['adaptive','eliminated'] as const) {
   refusals.push({mode,input:boundary,returnedState:false,inputUnchanged:true,samples:times,
     milliseconds:{median:sorted[Math.floor(sorted.length/2)],maximum:sorted.at(-1)},repetitions:times.length,warmups:1});
 }
+// Separate phase witness after every timed call. Assert instrumentation does
+// not change the accepted state; share this small reproduction with the owner.
+const displaced=reference.cases.find((c:any)=>c.id==='patch-45-8-0-3001-1-offset'),phaseWork:GripPhaseWitness[]=[],
+  traced=boundedGripInterval(structuredClone(displaced.input),'eliminated',phaseWork);
+assert.deepEqual(traced,rows.find(r=>r.id===displaced.id&&r.mode==='eliminated').result);
 assert.equal(sourceVersion(),source);for(const p of files)assert.equal(hash(readFileSync(p)),hashes[p]);
 const output=process.argv.find(v=>v.startsWith('--output='))?.slice(9)??`${root}/evidence.json`;
 writeFileSync(output,JSON.stringify({commit,source,parent,baseline:reference.baseline,flags,hashes,node:process.version,cpu:cpus()[0].model,
@@ -102,6 +107,6 @@ writeFileSync(output,JSON.stringify({commit,source,parent,baseline:reference.bas
     strictAcceptanceReceipt:'data/reviews/current/grip-state-convergence.json',collectedNewWorldReferences:false},
   protocol:{serial:true,repetitions:benchmark?21:0,warmups:benchmark?5:0,rotatingInterleavedOrder:true,preparationOutsideClock:true,observersOrProfilers:false,
     tailStability:'Two viscous force unknowns eliminated analytically; moving geometry iterated; original cap/scope/work checks',
-    geometryIterationLimit:12,eventBracketSeconds:1e-9,
+    geometryIterationLimit:12,eventBracketSeconds:1e-9,phaseWitnessAfterTiming:true,
     costBudgetMilliseconds:{median:2,p95:5},existingAdaptiveResultsExact:true},
-  rows,bench,refusals,recommendation:'Keep force elimination diagnostic until cost and World composition are established. Preserve the independently integrated work and all current accuracy gates; do not promote the full patch.'},null,2)+'\n');
+  rows,bench,refusals,phaseWork,recommendation:'Keep force elimination diagnostic until cost and World composition are established. Next: capped-phase work integration on the displaced witness; its error predates the viscous tail. Preserve all current accuracy gates and do not promote the full patch.'},null,2)+'\n');

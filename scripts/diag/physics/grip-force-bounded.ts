@@ -13,11 +13,14 @@ export interface BoundedGripInput extends SupportedGripInput {
 }
 type State=number[];
 type Phase='cap'|'settling'|'tail';
+export interface GripPhaseWitness {
+  partitions:number;time:number;phase:Phase;workResidual:number;state:State;
+}
 const AX=0,AY=1,AVX=2,AVY=3,AS=4,AA=5,BX=6,BY=7,BVX=8,BVY=9,BS=10,BA=11,
   ZX=12,ZY=13,FX=14,FY=15,JX=16,JY=17,QX=18,QY=19,JA=20,JB=21,QA=22,QB=23,
   BW=24,MW=25,DOSE=26,LEGS=27;
 
-export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'|'eliminated'='adaptive') {
+export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'|'adaptive'|'gauss'|'radau'|'eliminated'='adaptive',witness?:GripPhaseWitness[]) {
   const {a,b,duration:H,capacity:C,mobility:mu}=input,K=1/a.mass+1/b.mass;
   const numbers=[H,C,mu,input.legs,input.pullSpeed,input.hold,input.reach,input.minimumDistance,input.attachmentReach,
     input.desired.x,input.desired.y,input.material.x,input.material.y,input.footOffset.x,input.footOffset.y,
@@ -190,6 +193,8 @@ export function boundedGripInterval(input:BoundedGripInput,integration:'uniform'
             const delta=(lo+hi)/2;y=rk4(t,y,delta,phase,hold);t+=delta;
             if(phase==='cap'){capUntil=t;phase='settling';}
             else {slidingUntil=t;phase='tail';hold=geometry(y).d;}
+            if(witness)witness.push({partitions:n,time:t,phase,
+              workResidual:energyChange(initial,y)-y[BW],state:y.slice()});
             continue;
           }
         }
