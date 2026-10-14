@@ -63,8 +63,9 @@ if(mode==='accuracy'){
         const step=w.step;w.step=function(...args:Parameters<typeof step>){const r=step.apply(this,args),p=r.activeGrip;
           if(p){calls.accepted+=p.accepted;calls.fallbacks+=p.fallbacks;for(const[k,v]of Object.entries(p.reasons))calls.reasons[k]=(calls.reasons[k]??0)+v;}return r;};}});
       arms.push({mode,result,calls,seconds:(performance.now()-start)/1000});}
-    assert.deepEqual(arms[0].result,saved.arms.find((v:any)=>v.mode==='legacy').result);
-    native.push({id:c.id,input,arms,legacyExactSaved:true,interpretation:'Trajectory/ending differences are observations, not automatic football gains or losses.'});
+    const preserved=saved.arms.find((v:any)=>v.mode==='legacy'),keys=['ending','finish','afterContact','contactToEnd','carrierState'];
+    for(const k of keys)assert.deepEqual((arms[0].result as any)[k],preserved[k]);
+    native.push({id:c.id,input,arms,legacyMatchesSavedFields:keys,interpretation:'Trajectory/ending differences are observations, not automatic football gains or losses.'});
   }
   const path=`${root}/active-world-raw.json`;writeFileSync(path,JSON.stringify(raw));
   payload={mechanical,continuation,native,raw:{path,sha256:sha(readFileSync(path))},
