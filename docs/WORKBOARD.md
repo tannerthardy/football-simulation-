@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Receiver stalk information witness
+
+Run-game owner, bounded independent follow-up to PR #22's uncollected Z/CB_S
+case. Branch `codex/stalk-information-witness` starts from exact current
+`develop` `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`. Demonstrate whether the
+existing far-contact stalk request changes under an unseen corner-position
+change while the assigned target, own body and presented picture stay fixed.
+Compare a shadow input correction and a fresh-picture compatibility control.
+This calls the controller without World/PlaySim or contact acquisition; it
+does not change production source. A portable proposed patch is quarantined,
+not applied. Controllers/loaded route candidates remain held for the existing
+physics contact-contract review; integration owns subsequent native transfer.
+Historical comparison remains `4ded6b6`; no games, roster panel, spacing bypass,
+capacity, release, active hands or movement-library changes.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
