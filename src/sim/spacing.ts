@@ -100,7 +100,7 @@ function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], c
 }
 
 export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
-  observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> = (_a,b)=>b,
+  observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> | null = ()=>null,
   context?:SpacingContext): void {
   const n = agents.length;
   for (let i = 0; i < n; i++) {
@@ -115,6 +115,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const b = agents[j];
       if (b.team !== a.team) continue;
       const seen=observe(a,b);
+      if (!seen) continue; // Unavailable information is not a live-body fallback.
       const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
       const d = Math.hypot(dx, dy);
       const touch = TOUCH * (a.profile.radius + b.profile.radius);

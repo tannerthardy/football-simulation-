@@ -26,6 +26,8 @@ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, 
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
+import { TeammateInformation, type TeammatePicture } from './teammate-information.js';
+import { installTeammateExpectations } from './teammate-calls.js';
 import { spaceTeammates } from './spacing.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
@@ -112,6 +114,7 @@ export class PlaySim {
   readonly events: PlayEvent[] = [];
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
+  readonly teammateAwareness: TeammateInformation;
   readonly trace: ReplayTrace;
   private readonly record: boolean;
   private readonly recordEvery: number;
@@ -243,6 +246,7 @@ export class PlaySim {
     const expected = setup.scouting ? setup.scouting.passLogOdds(this.snapContext) : leaguePassLogOdds(this.snapContext);
     for (const d of this.defense) d.recog = new Recognition(d, this, expected);
     assignBehaviors(this);
+    this.teammateAwareness = new TeammateInformation(this.agents, installTeammateExpectations(this));
     this.cmds = this.agents.map(() => ({ vel: { x: 0, y: 0 } }));
   }
 
@@ -314,6 +318,14 @@ export class PlaySim {
   }
   teammates(a: Agent): Agent[] {
     return a.team === 'O' ? this.offense : this.defense;
+  }
+  /** Pure query of this observer's acquired information and installed call.
+   * Unavailable is explicit; callers must not substitute the target's body.
+   * Legacy see() consumers are not migrated by this bounded repair.
+   */
+  teammateInformation(observer: Agent, target: Agent): TeammatePicture {
+    if (observer === target || observer.team !== target.team) return { source: 'unavailable' };
+    return this.teammateAwareness.query(observer.idx, target.idx, this.t, this.dt);
   }
   slot(name: string): Agent | undefined {
     return this.bySlot.get(name);
@@ -547,6 +559,7 @@ export class PlaySim {
       }
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
+    this.teammateAwareness.sense(this.agents, t, this.dt);
     for (const d of this.defense) d.recog?.update(d, this);
 
     this.prepareJoinedRunBlocks();
@@ -580,13 +593,11 @@ export class PlaySim {
     for(const contact of this.lastStep?.contacts??[]){
       constrained.add(this.agents[contact.i].body);constrained.add(this.agents[contact.j].body);
     }
-    // A teammate's delayed picture lags motion the call itself announces (a
-    // rehearsed track on the snap count); predict him from the call there.
+    // Spacing consumes owned information, never a live teammate controller
+    // or an unrestricted history lookup. Its yielding calculations are fixed.
     spaceTeammates(this.agents, this.intents, (a,b)=>{
-      const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
-      if (!called) return seen;
-      const age = seen.age ?? 0;
-      return { ...seen, pos: { x: seen.pos.x + (called.x - seen.vel.x) * age, y: seen.pos.y + (called.y - seen.vel.y) * age }, vel: called };
+      const information = this.teammateInformation(a,b);
+      return information.source === 'unavailable' ? null : information;
     },{now:t,constrained});
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
@@ -627,7 +638,17 @@ export class PlaySim {
     const carrier = this.carrier;
     for (const c of report.contacts) {
       const a = this.agents[c.i], b = this.agents[c.j];
-      if (a.team === b.team) continue;
+      if (a.team === b.team) {
+        if (c.impulse > 0) {
+          const dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y, length = Math.hypot(dx, dy);
+          const nx = length > 1e-9 ? dx / length : Math.cos(a.facing);
+          const ny = length > 1e-9 ? dy / length : Math.sin(a.facing);
+          const touch = .9 * (a.profile.radius + b.profile.radius);
+          this.teammateAwareness.touched(a.idx, b.idx, { x: a.pos.x + nx * touch, y: a.pos.y + ny * touch }, a.vel, t + this.dt);
+          this.teammateAwareness.touched(b.idx, a.idx, { x: b.pos.x - nx * touch, y: b.pos.y - ny * touch }, b.vel, t + this.dt);
+        }
+        continue;
+      }
       this.touchedAt.set(a, t);
       this.touchedAt.set(b, t);
       if (carrier && t >= 0 && this.firstContactX === null && (carrier === a || carrier === b)) {
