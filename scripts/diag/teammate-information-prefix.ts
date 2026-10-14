@@ -184,10 +184,11 @@ for (const id of ['uc12-wz-s3-mirror', 'uc12-wz-s3']) {
       beforeBodies: snap(sim.agents.map(a => a.body)), requestedBehavior: snap(Reflect.get(sim, 'cmds')),
       rawTechniqueIntents: rawSpacing.get(sim.t), finalWorldIntents: snap(intents),
       informationAtWorldEntry: sampleQuery(), engagements: sim.engagements.map(rep),
-      runAttention: runAwareness ? sim.offense.map(a => ({ observer: a.idx,
-        attention: runAwareness.recorded(a), expectation: runAwareness.expectedLane(a, sim.t),
-        primary: runAwareness.recorded(a) ? runAwareness.primaryPicture(a,
-          sim.agents[runAwareness.recorded(a).key], sim.t) : null })) : null,
+      runAttention: runAwareness ? sim.offense.map(a => {
+        const recorded = runAwareness.recorded(a);
+        return { observer: a.idx, attention: recorded, expectation: runAwareness.expectedLane(a, sim.t),
+          primary: recorded ? runAwareness.primaryPicture(a, sim.agents[recorded.key], sim.t) : null };
+      }) : null,
       jointInputs: sim.world.joints.map(flatten),
     } : null;
     if (frame) assert(frame.rawTechniqueIntents !== undefined, 'Missing actual pre-spacing technique intents');
