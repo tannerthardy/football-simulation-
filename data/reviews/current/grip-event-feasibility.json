@@ -1,0 +1,1172 @@
+{
+  "commit": "59724bf206110f3fd98beef77f79443ea76f39f0",
+  "source": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "parent": "3bd8d5eb4bcbb82d0f739da818906eaa1898b60d",
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "hashes": {
+    "scripts/diag/physics/grip-force-bounded.ts": "b3f510e6b87e704a315fd56294069e6e7cbcc59024a348ef15dfde5298a8bb5c",
+    "scripts/diag/physics/grip-stiff-tail.ts": "00eb51f17e63dd3bca37c51cb74608bb6a364bf1135ddf1a0b27b4760adef4ae",
+    "scripts/diag/physics/grip-event-evidence.ts": "eeab44b50edd79bc76b7e44be23bc13c52ad554c9f727bbe0e022b1bbbcd85c0",
+    "test/grip-bounded.test.ts": "f2314297810631379125fbc53ad6d3f15c82ce775b241570d3d3246b285da61a",
+    "config/grip-bounded-reference.json": "70971a63005d758de5060ce32dca1f236ae226fee3beb8629d84f24c887acb44",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+  },
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "reference": {
+    "commit": "1db1c9d86a3c36fb0af7303a5945f9ab63795fab",
+    "source": "7a4283fcd382b3c598b72f3845b37b49e1cb3d3cf3c06fdad15c16a1794b4c5b",
+    "scope": "Original acquired bounded geometry, initial legs and pull; existing support mobility prescribed with free ground and desired zero. Offset controls are declared mechanical transforms.",
+    "strictAcceptanceReceipt": "data/reviews/current/grip-state-convergence.json",
+    "collectedNewWorldReferences": false
+  },
+  "protocol": {
+    "serial": true,
+    "repetitions": 7,
+    "warmups": 1,
+    "preparationOutsideClock": true,
+    "observersOrProfilers": false,
+    "tailStability": "Gauss A-stable, Radau L-stable; moving nonlinear residual, original force cap and scope checks",
+    "costBudgetMilliseconds": {
+      "median": 2,
+      "p95": 5
+    },
+    "existingAdaptiveResultsExact": true,
+    "p95IsSampleMaximum": true,
+    "physicsOwner": "Physics Codex; diagnostic only; no World insertion",
+    "partialOutputsOnRefusal": false,
+    "implicitRepresentationGate": 1e-10
+  },
+  "rows": [
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "mode": "adaptive",
+      "result": {
+        "legs": 0.177003758710424,
+        "hold": 1.1491365125296888,
+        "slipping": false,
+        "capUntil": 0.0023133944999926825,
+        "slidingUntil": 0.002316182998651873,
+        "bodyWork": -10.462871488862238,
+        "motorWork": -1.1062715681837083,
+        "passiveWork": -9.35659992067853,
+        "dose": 5.6219893765184175,
+        "workResidual": 1.6816734671465383e-09,
+        "angularResidual": 2.0736479200422764e-10,
+        "partitions": 4,
+        "evaluations": 3248,
+        "error": 1.6791368295798748e-05,
+        "representationError": 2.1316282072803006e-14
+      },
+      "error": {
+        "position": 1.1564636230450894e-10,
+        "velocity": 1.2104406803762751e-08,
+        "facing": 6.819076858732842e-09,
+        "spin": 7.209314967226987e-07,
+        "material": 6.196754152227788e-10,
+        "point": 7.245555025865614e-10,
+        "foot": 2.099544392751759e-09,
+        "legs": 7.125759157733391e-08,
+        "hold": 2.422395617429629e-11,
+        "impulse": 1.2298636848631868e-06,
+        "moment": 1.1754532895156543e-08,
+        "angularImpulse": 1.4357006010712325e-06,
+        "angularMoment": 1.3579603493768522e-08,
+        "bodyWork": 3.9291939479824123e-07,
+        "motorWork": 8.719187361894143e-06,
+        "passiveWork": 9.112106955200261e-06
+      },
+      "normalized": 0.07125759157733391,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "mode": "gauss",
+      "result": {
+        "legs": 0.177003758710424,
+        "hold": 1.1491365125296933,
+        "slipping": false,
+        "capUntil": 0.0023133944999926825,
+        "slidingUntil": 0.002316182998651873,
+        "bodyWork": -10.462871488847702,
+        "motorWork": -1.106271568169168,
+        "passiveWork": -9.356599920678534,
+        "dose": 5.621989382525659,
+        "workResidual": 1.6225722987428526e-09,
+        "angularResidual": 2.0736479200422764e-10,
+        "partitions": 4,
+        "evaluations": 3050,
+        "error": 1.6918733081183746e-05,
+        "representationError": 2.1316282072803006e-14
+      },
+      "error": {
+        "position": 1.1563899182380384e-10,
+        "velocity": 1.2163286233755412e-08,
+        "facing": 6.818603903724352e-09,
+        "spin": 7.243955399971469e-07,
+        "material": 6.202368604990305e-10,
+        "point": 7.251127138031392e-10,
+        "foot": 2.1027153913498176e-09,
+        "legs": 7.125759157733391e-08,
+        "hold": 2.421951528219779e-11,
+        "impulse": 1.2358461173735595e-06,
+        "moment": 1.1753716507571162e-08,
+        "angularImpulse": 1.4425990766397945e-06,
+        "angularMoment": 1.3578661656882263e-08,
+        "bodyWork": 3.9293393072625804e-07,
+        "motorWork": 8.719172821525234e-06,
+        "passiveWork": 9.112106951647547e-06
+      },
+      "normalized": 0.07125759157733391,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "mode": "radau",
+      "result": {
+        "legs": 0.1770037587105893,
+        "hold": 1.1491365125296065,
+        "slipping": false,
+        "capUntil": 0.0023133945000499995,
+        "slidingUntil": 0.0023161829987095924,
+        "bodyWork": -10.462871488395468,
+        "motorWork": -1.1062715679989852,
+        "passiveWork": -9.356599920396484,
+        "dose": 5.621989384316937,
+        "workResidual": -1.0386358439973264e-10,
+        "angularResidual": -3.637978807091713e-12,
+        "partitions": 64,
+        "evaluations": 36390,
+        "error": 3.9041125887706585e-07,
+        "representationError": 4.263256414560601e-14
+      },
+      "error": {
+        "position": 1.1567123594867789e-10,
+        "velocity": 1.2181208286918817e-08,
+        "facing": 6.821252895861107e-09,
+        "spin": 7.253534111129056e-07,
+        "material": 6.203697434553704e-10,
+        "point": 7.25268310476596e-10,
+        "foot": 2.103634451719989e-09,
+        "legs": 7.12577568617867e-08,
+        "hold": 2.4306334722723477e-11,
+        "impulse": 1.2376670798693444e-06,
+        "moment": 1.1756436291381152e-08,
+        "angularImpulse": 1.4445066298662823e-06,
+        "angularMoment": 1.3583936361166726e-08,
+        "bodyWork": 3.9338616453221675e-07,
+        "motorWork": 8.719002638768458e-06,
+        "passiveWork": 9.112389001586507e-06
+      },
+      "normalized": 0.0712577568617867,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001--1-acquired",
+      "mode": "adaptive",
+      "result": {
+        "legs": 0.177003758710424,
+        "hold": 1.1491365125296888,
+        "slipping": false,
+        "capUntil": 0.0023133944999926825,
+        "slidingUntil": 0.002316182998651873,
+        "bodyWork": -10.462871488862238,
+        "motorWork": -1.1062715681837083,
+        "passiveWork": -9.35659992067853,
+        "dose": 5.6219893765184175,
+        "workResidual": 1.6816734671465383e-09,
+        "angularResidual": -2.0736479200422764e-10,
+        "partitions": 4,
+        "evaluations": 3248,
+        "error": 1.6791368295798748e-05,
+        "representationError": 2.1316282072803006e-14
+      },
+      "error": {
+        "position": 1.1564636230450894e-10,
+        "velocity": 1.2104406803762751e-08,
+        "facing": 6.819076858732842e-09,
+        "spin": 7.209314967226987e-07,
+        "material": 6.196754152227788e-10,
+        "point": 7.245555025865614e-10,
+        "foot": 2.099544392751759e-09,
+        "legs": 7.125759157733391e-08,
+        "hold": 2.422395617429629e-11,
+        "impulse": 1.2298636848631868e-06,
+        "moment": 1.1754532895156543e-08,
+        "angularImpulse": 1.4357006010712325e-06,
+        "angularMoment": 1.3579603493768522e-08,
+        "bodyWork": 3.9291939479824123e-07,
+        "motorWork": 8.719187361894143e-06,
+        "passiveWork": 9.112106955200261e-06
+      },
+      "normalized": 0.07125759157733391,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001--1-acquired",
+      "mode": "gauss",
+      "result": {
+        "legs": 0.177003758710424,
+        "hold": 1.1491365125296933,
+        "slipping": false,
+        "capUntil": 0.0023133944999926825,
+        "slidingUntil": 0.002316182998651873,
+        "bodyWork": -10.462871488847702,
+        "motorWork": -1.106271568169168,
+        "passiveWork": -9.356599920678534,
+        "dose": 5.621989382525659,
+        "workResidual": 1.6225722987428526e-09,
+        "angularResidual": -2.1100277081131935e-10,
+        "partitions": 4,
+        "evaluations": 3050,
+        "error": 1.6918733081183746e-05,
+        "representationError": 2.1316282072803006e-14
+      },
+      "error": {
+        "position": 1.1563899182380384e-10,
+        "velocity": 1.2163286233755412e-08,
+        "facing": 6.818603903724352e-09,
+        "spin": 7.243955399971469e-07,
+        "material": 6.202368604990305e-10,
+        "point": 7.251127138031392e-10,
+        "foot": 2.1027153913498176e-09,
+        "legs": 7.125759157733391e-08,
+        "hold": 2.421951528219779e-11,
+        "impulse": 1.2358461173735595e-06,
+        "moment": 1.1753716507571162e-08,
+        "angularImpulse": 1.4425990766397945e-06,
+        "angularMoment": 1.3578661656882263e-08,
+        "bodyWork": 3.9293393072625804e-07,
+        "motorWork": 8.719172821525234e-06,
+        "passiveWork": 9.112106951647547e-06
+      },
+      "normalized": 0.07125759157733391,
+      "matches": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "mode": "adaptive",
+      "result": {
+        "legs": 0.2705178936866569,
+        "hold": 0.9587046487250035,
+        "slipping": false,
+        "capUntil": 0,
+        "slidingUntil": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0,
+        "dose": 0,
+        "workResidual": 0,
+        "angularResidual": 0,
+        "partitions": 4,
+        "evaluations": 72,
+        "error": 0,
+        "representationError": 1.4210854715202004e-14
+      },
+      "error": {
+        "position": 1.8626167275215266e-10,
+        "velocity": 0,
+        "facing": 0,
+        "spin": 0,
+        "material": 0,
+        "point": 1.8626167275215266e-10,
+        "foot": 0,
+        "legs": 0,
+        "hold": 3.128661774098873e-10,
+        "impulse": 0,
+        "moment": 0,
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0
+      },
+      "normalized": 0.0006257323548197746,
+      "matches": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "mode": "gauss",
+      "result": {
+        "legs": 0.2705178936866569,
+        "hold": 0.9587046487250035,
+        "slipping": false,
+        "capUntil": 0,
+        "slidingUntil": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0,
+        "dose": 0,
+        "workResidual": 0,
+        "angularResidual": 0,
+        "partitions": 4,
+        "evaluations": 108,
+        "error": 0,
+        "representationError": 1.4210854715202004e-14
+      },
+      "error": {
+        "position": 1.8626167275215266e-10,
+        "velocity": 0,
+        "facing": 0,
+        "spin": 0,
+        "material": 0,
+        "point": 1.8626167275215266e-10,
+        "foot": 0,
+        "legs": 0,
+        "hold": 3.128661774098873e-10,
+        "impulse": 0,
+        "moment": 0,
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0
+      },
+      "normalized": 0.0006257323548197746,
+      "matches": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "mode": "radau",
+      "result": {
+        "legs": 0.2705178936866569,
+        "hold": 0.9587046487250035,
+        "slipping": false,
+        "capUntil": 0,
+        "slidingUntil": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0,
+        "dose": 0,
+        "workResidual": 0,
+        "angularResidual": 0,
+        "partitions": 4,
+        "evaluations": 108,
+        "error": 0,
+        "representationError": 1.4210854715202004e-14
+      },
+      "error": {
+        "position": 1.8626167275215266e-10,
+        "velocity": 0,
+        "facing": 0,
+        "spin": 0,
+        "material": 0,
+        "point": 1.8626167275215266e-10,
+        "foot": 0,
+        "legs": 0,
+        "hold": 3.128661774098873e-10,
+        "impulse": 0,
+        "moment": 0,
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0
+      },
+      "normalized": 0.0006257323548197746,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-offset",
+      "mode": "adaptive",
+      "result": {
+        "legs": 0.1777616842491525,
+        "hold": 1.0178976529717068,
+        "slipping": false,
+        "capUntil": 0.002589481317716035,
+        "slidingUntil": 0.002592590610841538,
+        "bodyWork": -10.297730709410676,
+        "motorWork": -1.0769185155729164,
+        "passiveWork": -9.220812193837759,
+        "dose": 6.334782211266931,
+        "workResidual": 1.7207959501774894e-09,
+        "angularResidual": 1.8189894035458565e-11,
+        "partitions": 8,
+        "evaluations": 4756,
+        "error": 4.8546056063969445e-06,
+        "representationError": 4.973799150320701e-14
+      },
+      "error": {
+        "position": 1.7820322923972026e-11,
+        "velocity": 3.455182934930528e-09,
+        "facing": 9.331468930895426e-10,
+        "spin": 1.825320250503637e-07,
+        "material": 9.664437533333344e-11,
+        "point": 1.1335023276769614e-10,
+        "foot": 3.613497371413079e-10,
+        "legs": 8.6074773142375e-09,
+        "hold": 1.8378853994249766e-11,
+        "impulse": 3.5106428496844215e-07,
+        "moment": 1.7836593013213495e-09,
+        "angularImpulse": 3.635036831539651e-07,
+        "angularMoment": 1.8278896833645586e-09,
+        "bodyWork": 9.565896874619284e-08,
+        "motorWork": 9.66266261670512e-07,
+        "passiveWork": 1.0619166506131705e-06
+      },
+      "normalized": 0.0086074773142375,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-offset",
+      "mode": "gauss",
+      "result": {
+        "legs": 0.1777616842491525,
+        "hold": 1.0178976529716723,
+        "slipping": false,
+        "capUntil": 0.002589481317716035,
+        "slidingUntil": 0.002592590610841538,
+        "bodyWork": -10.297730709362916,
+        "motorWork": -1.0769185155251386,
+        "passiveWork": -9.220812193837778,
+        "dose": 6.334782211577062,
+        "workResidual": 1.6684893466845097e-09,
+        "angularResidual": 2.546585164964199e-11,
+        "partitions": 8,
+        "evaluations": 4824,
+        "error": 4.843947465360543e-06,
+        "representationError": 3.552713678800501e-14
+      },
+      "error": {
+        "position": 1.7820322923972026e-11,
+        "velocity": 3.4581947240151653e-09,
+        "facing": 9.331264649858895e-10,
+        "spin": 1.8268849544256227e-07,
+        "material": 9.667164340981403e-11,
+        "point": 1.1337148113504558e-10,
+        "foot": 3.6150274556555493e-10,
+        "legs": 8.6074773142375e-09,
+        "hold": 1.8344437080486387e-11,
+        "impulse": 3.513702983124499e-07,
+        "moment": 1.7836216369856264e-09,
+        "angularImpulse": 3.638152845653053e-07,
+        "angularMoment": 1.8278484524569816e-09,
+        "bodyWork": 9.570672787617696e-08,
+        "motorWork": 9.66218483888781e-07,
+        "passiveWork": 1.0619166310732453e-06
+      },
+      "normalized": 0.0086074773142375,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001--1-offset",
+      "mode": "adaptive",
+      "result": {
+        "legs": 0.1777616842491525,
+        "hold": 1.0178976529717068,
+        "slipping": false,
+        "capUntil": 0.002589481317716035,
+        "slidingUntil": 0.002592590610841538,
+        "bodyWork": -10.297730709410676,
+        "motorWork": -1.0769185155729164,
+        "passiveWork": -9.220812193837759,
+        "dose": 6.334782211266931,
+        "workResidual": 1.7207959501774894e-09,
+        "angularResidual": -2.546585164964199e-11,
+        "partitions": 8,
+        "evaluations": 4756,
+        "error": 4.8546056063969445e-06,
+        "representationError": 4.973799150320701e-14
+      },
+      "error": {
+        "position": 1.7820322923972026e-11,
+        "velocity": 3.455182934930528e-09,
+        "facing": 9.331468930895426e-10,
+        "spin": 1.825320250503637e-07,
+        "material": 9.664437533333344e-11,
+        "point": 1.1335023276769614e-10,
+        "foot": 3.613497371413079e-10,
+        "legs": 8.6074773142375e-09,
+        "hold": 1.8378853994249766e-11,
+        "impulse": 3.5106428496844215e-07,
+        "moment": 1.7836593013213495e-09,
+        "angularImpulse": 3.635036831539651e-07,
+        "angularMoment": 1.8278896833645586e-09,
+        "bodyWork": 9.565896874619284e-08,
+        "motorWork": 9.66266261670512e-07,
+        "passiveWork": 1.0619166506131705e-06
+      },
+      "normalized": 0.0086074773142375,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001--1-offset",
+      "mode": "gauss",
+      "result": {
+        "legs": 0.1777616842491525,
+        "hold": 1.0178976529716723,
+        "slipping": false,
+        "capUntil": 0.002589481317716035,
+        "slidingUntil": 0.002592590610841538,
+        "bodyWork": -10.297730709362916,
+        "motorWork": -1.0769185155251386,
+        "passiveWork": -9.220812193837778,
+        "dose": 6.334782211577062,
+        "workResidual": 1.6684893466845097e-09,
+        "angularResidual": -2.546585164964199e-11,
+        "partitions": 8,
+        "evaluations": 4824,
+        "error": 4.843947465360543e-06,
+        "representationError": 3.552713678800501e-14
+      },
+      "error": {
+        "position": 1.7820322923972026e-11,
+        "velocity": 3.4581947240151653e-09,
+        "facing": 9.331264649858895e-10,
+        "spin": 1.8268849544256227e-07,
+        "material": 9.667164340981403e-11,
+        "point": 1.1337148113504558e-10,
+        "foot": 3.6150274556555493e-10,
+        "legs": 8.6074773142375e-09,
+        "hold": 1.8344437080486387e-11,
+        "impulse": 3.513702983124499e-07,
+        "moment": 1.7836216369856264e-09,
+        "angularImpulse": 3.638152845653053e-07,
+        "angularMoment": 1.8278484524569816e-09,
+        "bodyWork": 9.570672787617696e-08,
+        "motorWork": 9.66218483888781e-07,
+        "passiveWork": 1.0619166310732453e-06
+      },
+      "normalized": 0.0086074773142375,
+      "matches": true
+    }
+  ],
+  "bench": [
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "mode": "adaptive",
+      "milliseconds": {
+        "median": 5.29204100000004,
+        "p95": 6.858413999999925,
+        "maximum": 6.858413999999925,
+        "samples": [
+          6.858413999999925,
+          6.569330000000036,
+          5.591390000000047,
+          5.27402399999994,
+          5.158830999999964,
+          5.29204100000004,
+          4.626431000000025
+        ]
+      },
+      "evaluations": 3248,
+      "partitions": 4,
+      "error": {
+        "position": 1.1564636230450894e-10,
+        "velocity": 1.2104406803762751e-08,
+        "facing": 6.819076858732842e-09,
+        "spin": 7.209314967226987e-07,
+        "material": 6.196754152227788e-10,
+        "point": 7.245555025865614e-10,
+        "foot": 2.099544392751759e-09,
+        "legs": 7.125759157733391e-08,
+        "hold": 2.422395617429629e-11,
+        "impulse": 1.2298636848631868e-06,
+        "moment": 1.1754532895156543e-08,
+        "angularImpulse": 1.4357006010712325e-06,
+        "angularMoment": 1.3579603493768522e-08,
+        "bodyWork": 3.9291939479824123e-07,
+        "motorWork": 8.719187361894143e-06,
+        "passiveWork": 9.112106955200261e-06
+      },
+      "normalized": 0.07125759157733391,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "mode": "gauss",
+      "milliseconds": {
+        "median": 14.427143999999998,
+        "p95": 18.756568000000016,
+        "maximum": 18.756568000000016,
+        "samples": [
+          18.756568000000016,
+          12.36867200000006,
+          14.427143999999998,
+          16.61434599999984,
+          14.831592,
+          10.751943999999867,
+          11.77405900000008
+        ]
+      },
+      "evaluations": 3050,
+      "partitions": 4,
+      "error": {
+        "position": 1.1563899182380384e-10,
+        "velocity": 1.2163286233755412e-08,
+        "facing": 6.818603903724352e-09,
+        "spin": 7.243955399971469e-07,
+        "material": 6.202368604990305e-10,
+        "point": 7.251127138031392e-10,
+        "foot": 2.1027153913498176e-09,
+        "legs": 7.125759157733391e-08,
+        "hold": 2.421951528219779e-11,
+        "impulse": 1.2358461173735595e-06,
+        "moment": 1.1753716507571162e-08,
+        "angularImpulse": 1.4425990766397945e-06,
+        "angularMoment": 1.3578661656882263e-08,
+        "bodyWork": 3.9293393072625804e-07,
+        "motorWork": 8.719172821525234e-06,
+        "passiveWork": 9.112106951647547e-06
+      },
+      "normalized": 0.07125759157733391,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "mode": "radau",
+      "milliseconds": {
+        "median": 150.471677,
+        "p95": 300.1092319999998,
+        "maximum": 300.1092319999998,
+        "samples": [
+          139.3677600000001,
+          149.95017400000006,
+          154.96860800000013,
+          159.1663900000001,
+          150.471677,
+          144.43662500000028,
+          300.1092319999998
+        ]
+      },
+      "evaluations": 36390,
+      "partitions": 64,
+      "error": {
+        "position": 1.1567123594867789e-10,
+        "velocity": 1.2181208286918817e-08,
+        "facing": 6.821252895861107e-09,
+        "spin": 7.253534111129056e-07,
+        "material": 6.203697434553704e-10,
+        "point": 7.25268310476596e-10,
+        "foot": 2.103634451719989e-09,
+        "legs": 7.12577568617867e-08,
+        "hold": 2.4306334722723477e-11,
+        "impulse": 1.2376670798693444e-06,
+        "moment": 1.1756436291381152e-08,
+        "angularImpulse": 1.4445066298662823e-06,
+        "angularMoment": 1.3583936361166726e-08,
+        "bodyWork": 3.9338616453221675e-07,
+        "motorWork": 8.719002638768458e-06,
+        "passiveWork": 9.112389001586507e-06
+      },
+      "normalized": 0.0712577568617867,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-offset",
+      "mode": "adaptive",
+      "milliseconds": {
+        "median": 4.820462000000134,
+        "p95": 5.596892999999909,
+        "maximum": 5.596892999999909,
+        "samples": [
+          5.3461019999999735,
+          4.12888299999986,
+          5.596892999999909,
+          5.0750700000003235,
+          4.820462000000134,
+          4.16905399999996,
+          4.593029999999999
+        ]
+      },
+      "evaluations": 4756,
+      "partitions": 8,
+      "error": {
+        "position": 1.7820322923972026e-11,
+        "velocity": 3.455182934930528e-09,
+        "facing": 9.331468930895426e-10,
+        "spin": 1.825320250503637e-07,
+        "material": 9.664437533333344e-11,
+        "point": 1.1335023276769614e-10,
+        "foot": 3.613497371413079e-10,
+        "legs": 8.6074773142375e-09,
+        "hold": 1.8378853994249766e-11,
+        "impulse": 3.5106428496844215e-07,
+        "moment": 1.7836593013213495e-09,
+        "angularImpulse": 3.635036831539651e-07,
+        "angularMoment": 1.8278896833645586e-09,
+        "bodyWork": 9.565896874619284e-08,
+        "motorWork": 9.66266261670512e-07,
+        "passiveWork": 1.0619166506131705e-06
+      },
+      "normalized": 0.0086074773142375,
+      "matches": true
+    },
+    {
+      "id": "patch-45-8-0-3001-1-offset",
+      "mode": "gauss",
+      "milliseconds": {
+        "median": 20.065835999999763,
+        "p95": 25.39127600000029,
+        "maximum": 25.39127600000029,
+        "samples": [
+          18.525743000000148,
+          22.000488000000132,
+          20.065835999999763,
+          16.1303640000001,
+          19.22842800000035,
+          20.661075000000437,
+          25.39127600000029
+        ]
+      },
+      "evaluations": 4824,
+      "partitions": 8,
+      "error": {
+        "position": 1.7820322923972026e-11,
+        "velocity": 3.4581947240151653e-09,
+        "facing": 9.331264649858895e-10,
+        "spin": 1.8268849544256227e-07,
+        "material": 9.667164340981403e-11,
+        "point": 1.1337148113504558e-10,
+        "foot": 3.6150274556555493e-10,
+        "legs": 8.6074773142375e-09,
+        "hold": 1.8344437080486387e-11,
+        "impulse": 3.513702983124499e-07,
+        "moment": 1.7836216369856264e-09,
+        "angularImpulse": 3.638152845653053e-07,
+        "angularMoment": 1.8278484524569816e-09,
+        "bodyWork": 9.570672787617696e-08,
+        "motorWork": 9.66218483888781e-07,
+        "passiveWork": 1.0619166310732453e-06
+      },
+      "normalized": 0.0086074773142375,
+      "matches": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "mode": "adaptive",
+      "milliseconds": {
+        "median": 0.0954530000003615,
+        "p95": 0.24794299999985014,
+        "maximum": 0.24794299999985014,
+        "samples": [
+          0.15767700000014884,
+          0.08257400000002235,
+          0.07989999999972497,
+          0.0954530000003615,
+          0.1657889999996769,
+          0.24794299999985014,
+          0.08451700000023266
+        ]
+      },
+      "evaluations": 72,
+      "partitions": 4,
+      "error": {
+        "position": 1.8626167275215266e-10,
+        "velocity": 0,
+        "facing": 0,
+        "spin": 0,
+        "material": 0,
+        "point": 1.8626167275215266e-10,
+        "foot": 0,
+        "legs": 0,
+        "hold": 3.128661774098873e-10,
+        "impulse": 0,
+        "moment": 0,
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0
+      },
+      "normalized": 0.0006257323548197746,
+      "matches": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "mode": "gauss",
+      "milliseconds": {
+        "median": 0.4069209999997838,
+        "p95": 1.1858969999998408,
+        "maximum": 1.1858969999998408,
+        "samples": [
+          0.39267000000018015,
+          0.5757149999999456,
+          0.48014100000000326,
+          0.4033159999999043,
+          1.1858969999998408,
+          0.4054290000003675,
+          0.4069209999997838
+        ]
+      },
+      "evaluations": 108,
+      "partitions": 4,
+      "error": {
+        "position": 1.8626167275215266e-10,
+        "velocity": 0,
+        "facing": 0,
+        "spin": 0,
+        "material": 0,
+        "point": 1.8626167275215266e-10,
+        "foot": 0,
+        "legs": 0,
+        "hold": 3.128661774098873e-10,
+        "impulse": 0,
+        "moment": 0,
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0
+      },
+      "normalized": 0.0006257323548197746,
+      "matches": true
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "mode": "radau",
+      "milliseconds": {
+        "median": 0.34210399999983565,
+        "p95": 0.7352449999998498,
+        "maximum": 0.7352449999998498,
+        "samples": [
+          0.4758449999999357,
+          0.7352449999998498,
+          0.3158040000002984,
+          0.34210399999983565,
+          0.30029100000001563,
+          0.30883399999993344,
+          0.5211229999999887
+        ]
+      },
+      "evaluations": 108,
+      "partitions": 4,
+      "error": {
+        "position": 1.8626167275215266e-10,
+        "velocity": 0,
+        "facing": 0,
+        "spin": 0,
+        "material": 0,
+        "point": 1.8626167275215266e-10,
+        "foot": 0,
+        "legs": 0,
+        "hold": 3.128661774098873e-10,
+        "impulse": 0,
+        "moment": 0,
+        "angularImpulse": 0,
+        "angularMoment": 0,
+        "bodyWork": 0,
+        "motorWork": 0,
+        "passiveWork": 0
+      },
+      "normalized": 0.0006257323548197746,
+      "matches": true
+    }
+  ],
+  "recommendation": "Do not integrate either implicit method: fewer tail steps do not compensate for repeated nonlinear solves. Investigate analytically integrated viscous impulse/time moment and force-squared work together; unchanged moving-geometry gates remain required.",
+  "inputs": [
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "referenceConverged": true,
+      "inputSha256": "50f9f05894c54e040e9423a797397fd7a921c9ca58764e5899f82c981164252c"
+    },
+    {
+      "id": "patch-45-8-0-3001--1-acquired",
+      "referenceConverged": true,
+      "inputSha256": "c72962c7887760a66f3f12eca84f3e776f18ff6f3a5eb1ef9b9542484088b05a"
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "referenceConverged": true,
+      "inputSha256": "a7d7fd4692a6cd5514c0f73e2128fdb1d1a11315b7e97a93e69019021ae48211"
+    },
+    {
+      "id": "patch-45-8-0-3001-1-offset",
+      "referenceConverged": true,
+      "inputSha256": "67a45e9ea4d2203dae73d1aabb173b83ebbf209e9400fda0bf92320a12318abf"
+    },
+    {
+      "id": "patch-45-8-0-3001--1-offset",
+      "referenceConverged": true,
+      "inputSha256": "cfc9bb1ec865ba3914406516c5ebe0f81353ba82021ac82ad4e85fa693e5c6e0"
+    }
+  ],
+  "validation": {
+    "focusedChecks": 23,
+    "fullSuiteOrGames": false,
+    "checks": [
+      {
+        "file": "out/grip-event/units.json",
+        "sha256": "c67db738e9997998a16a509917a5c133eb0e910c74f7305b1ebea0e66d3da154",
+        "exitCode": 1,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/grip-bounded.test.ts"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 2.21889137
+          }
+        ],
+        "startedAt": "2026-10-14T04:10:32.176Z",
+        "finishedAt": "2026-10-14T04:10:34.399Z",
+        "inputsUnchanged": true
+      },
+      {
+        "file": "out/grip-event/offset-recheck.json",
+        "sha256": "24a4b0ba653edec76d58e1bf638d6eca9f1ea4325de21dd6faa695a46f89aa86",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/grip-bounded.test.ts",
+              "-t",
+              "offset.*gauss"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 1.6989165800000001
+          }
+        ],
+        "startedAt": "2026-10-14T04:11:42.674Z",
+        "finishedAt": "2026-10-14T04:11:44.379Z",
+        "inputsUnchanged": true
+      },
+      {
+        "file": "out/grip-event/focused-final.json",
+        "sha256": "f8b4587044c88619626d25ea3a4bfbe4913d91c2a2955313da44d1ffd7bc833a",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/grip-bounded.test.ts"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 1.6709240710000002
+          }
+        ],
+        "startedAt": "2026-10-14T04:13:58.611Z",
+        "finishedAt": "2026-10-14T04:14:00.286Z",
+        "inputsUnchanged": true
+      },
+      {
+        "file": "out/grip-event/typecheck.json",
+        "sha256": "90cee0cf6d3294dd696f0dd7b6f6d9dc126af6048da87f313edc246c2ea64229",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 12.288830706
+          }
+        ],
+        "startedAt": "2026-10-14T04:10:32.102Z",
+        "finishedAt": "2026-10-14T04:10:44.395Z",
+        "inputsUnchanged": true
+      },
+      {
+        "file": "out/grip-event/typecheck-final.json",
+        "sha256": "e408c52c40f3c3c0ce9fc535572fb90ea6e8f953d9712f03dfdd7f7d2f37564f",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 12.442807412999999
+          }
+        ],
+        "startedAt": "2026-10-14T04:14:20.854Z",
+        "finishedAt": "2026-10-14T04:14:33.301Z",
+        "inputsUnchanged": true
+      },
+      {
+        "file": "out/grip-event/publish-benchmark-launcher.json",
+        "sha256": "f2f05e6dc450afbf1e45c554a3315c5a6abf133dd1bfdd3da69151250cfef97d",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/physics/grip-event-evidence.ts",
+              "--benchmark",
+              "--output=out/grip-event/publish-evidence.json"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.5224534710000004
+          }
+        ],
+        "startedAt": "2026-10-14T04:14:40.003Z",
+        "finishedAt": "2026-10-14T04:14:42.528Z",
+        "inputsUnchanged": true
+      },
+      {
+        "file": "out/grip-event/guard-units.json",
+        "sha256": "12927a7943d5c536588a3aa113c578295d7034b8709922b2a3113fb93c5e6a52",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/grip-bounded.test.ts"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.096716529
+          }
+        ],
+        "startedAt": "2026-10-14T04:20:19.506Z",
+        "finishedAt": "2026-10-14T04:20:21.655Z",
+        "inputsUnchanged": true
+      },
+      {
+        "file": "out/grip-event/guard-typecheck.json",
+        "sha256": "13e1c9b6061b95c654d99c2bacab8d172803df3211df3c8c3f23381fc73ddb3e",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 13.448878042
+          }
+        ],
+        "startedAt": "2026-10-14T04:20:19.473Z",
+        "finishedAt": "2026-10-14T04:20:32.928Z",
+        "inputsUnchanged": true
+      },
+      {
+        "file": "out/grip-event/guard-benchmark-launcher.json",
+        "sha256": "5dcd1da965f705d714c1c92ec4ed4658752d56de24e71948db4aecf5d821d605",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/physics/grip-event-evidence.ts",
+              "--benchmark",
+              "--output=out/grip-event/guard-evidence.json"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.7462109560000005
+          }
+        ],
+        "startedAt": "2026-10-14T04:20:43.802Z",
+        "finishedAt": "2026-10-14T04:20:46.552Z",
+        "inputsUnchanged": true
+      }
+    ],
+    "recordedLauncherSeconds": 51.134629138
+  },
+  "retainedAdverse": {
+    "initialGauss": {
+      "failedCases": [
+        "patch-45-8-0-3001-1-offset",
+        "patch-45-8-0-3001--1-offset"
+      ],
+      "representationError": 1.0953282725267854e-10,
+      "unchangedLimit": 1e-10,
+      "correction": "Newton search direction now preserves body/impulse linear invariants; normalized stage residual threshold tightened 1e-8 to 1e-9. No physical tolerance relaxed."
+    },
+    "initialProfile": {
+      "scope": "Instrumented pre-invariant-correction Gauss draft; not runtime benchmark or final-candidate iteration counts",
+      "adaptive": {
+        "tailSteps": 217,
+        "tailEvaluations": 2628,
+        "totalEvaluations": 3248
+      },
+      "gauss": {
+        "tailSteps": 95,
+        "tailEvaluations": 3336,
+        "totalEvaluations": 3956
+      }
+    },
+    "files": {
+      "out/grip-event/radau/first.json": "349f3879e82b2746e808c6031ca4cdd50079ba9a788b1cd567fe58edeb2f7a24",
+      "out/grip-event/gauss-first.json": "7f93eae2d7152194afcccead7eb1ed4065d9882dc6c257ff37a7b9503a1de890",
+      "out/grip-event/gauss-cost-first.json": "d77eb87e1178a748ff89e703d6896a4cca8de8a9b1e35ac7345a93f1aa489633",
+      "out/grip-event/profile.json": "e2d25255aeef817b7e905a3f070bc99932c00ebfbe666162e762b604d1e6b5ae",
+      "out/grip-event/profiled.ts": "47e8019a6fbf68680bf6ce1ad84baab1425bc713781ab00803d58a4c49e33250",
+      "out/grip-event/gauss-before-invariant.ts": "e03b774b063efb90d69705035979f0fe4c37d4498c30efe36b29c0c68ac22355",
+      "out/grip-event/gauss-before-invariant-step.ts": "324354010201f637745508614951599f685e197836ec0abf48d771aa92d01ad5",
+      "out/grip-event/publish-evidence.json": "3970ad683905a434aacc46905ba366fd0ef212ed790853ccecc3c34e2ac906a5"
+    }
+  },
+  "raw": {
+    "file": "out/grip-event/guard-evidence.json",
+    "sha256": "78a4e1da4976446c71cea7734c1c69d7bc38e5a0f1dc86aafaa2bcb8820567a2"
+  },
+  "remaining": [
+    "Neither implicit prototype satisfies the median 2ms / sample-p95 5ms mechanical budget.",
+    "One passive tangent grip, zero attained normal/reel and free prescribed support only. Multiple contacts, active drive and World/support/effort/fatigue composition remain unproved.",
+    "Node/end-state scope checks do not establish detection of every hidden subinterval event.",
+    "Preserve all nine unrelated full-patch promotion failures; none are re-pinned or retested here.",
+    "Keeper angular-law witness and 0.24yd support-history fork remain independent."
+  ]
+}
