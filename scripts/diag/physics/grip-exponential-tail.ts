@@ -4,7 +4,7 @@
  * The frozen operator is an integration device, not a new contact law. */
 type State=number[];
 export interface ExponentialTailSystem {
-  u:State;w:State;mobility:number;
+  u:State;w:State;mobility:number;squaredSource:number;
   links:Array<[number,number]>;
   square:number;work:[number,number];
   derivative:(y:State)=>State;
@@ -26,15 +26,15 @@ function phi(z:number) {
   return values;
 }
 export function exponentialTailStep(y:State,h:number,s:ExponentialTailSystem) {
-  const {u,w,links,mobility,square,work,derivative}=s,
+  const {u,w,links,mobility,squaredSource,square,work,derivative}=s,
     dot=(v:State)=>v.reduce((sum,x,i)=>sum+x*w[i],0),gamma=dot(u),
-    Bu=y.map(()=>0);
+    Bu=y.map(()=>0),coupling=2*mobility*squaredSource;
   for(const [to,from] of links)Bu[to]=u[from];
   if(!(gamma>0&&Number.isFinite(gamma)))throw new RangeError('Invalid exponential relaxation');
   function linear(v:State) {
     const alpha=dot(v),r=v.map((_,i)=>-u[i]*alpha);
     for(const [to,from] of links)r[to]+=v[from];
-    r[square]=-2*gamma*v[square];
+    r[square]=-2*gamma*v[square]+coupling*alpha;
     for(const index of work)r[index]-=v[square]/mobility;
     return r;
   }
@@ -46,12 +46,14 @@ export function exponentialTailStep(y:State,h:number,s:ExponentialTailSystem) {
       combine=(f:(k:number)=>number)=>coefficients.reduce((v,[k,c])=>v+c*f(k),0),
       zero=combine(k=>1/factorial[k]),drift=dt*combine(k=>1/factorial[k+1]),
       response=-dt*combine(k=>p[k+1]),travel=-dt*dt*combine(k=>p[k+2]),
-      squareResponse=combine(k=>p2[k]),workResponse=-dt/mobility*combine(k=>p2[k+1]);
+      squareResponse=combine(k=>p2[k]),workResponse=-dt/mobility*combine(k=>p2[k+1]),
+      drivenSquare=dt*coupling*combine(k=>2*p2[k+1]-p[k+1]),
+      drivenWork=-dt*dt*coupling/mobility*combine(k=>2*p2[k+2]-p[k+2]);
     return (v:State)=>{
       const alpha=dot(v),r=v.map((x,i)=>zero*x+(response*u[i]+travel*Bu[i])*alpha);
       for(const [to,from] of links)r[to]+=drift*v[from];
-      r[square]=squareResponse*v[square];
-      for(const index of work)r[index]+=workResponse*v[square];
+      r[square]=squareResponse*v[square]+drivenSquare*alpha;
+      for(const index of work)r[index]+=workResponse*v[square]+drivenWork*alpha;
       return r;
     };
   }
