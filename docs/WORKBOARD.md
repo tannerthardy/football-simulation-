@@ -745,3 +745,16 @@ Edit only your own rows and requests so board merges stay trivial.
   screen. Original callback sampling failure is retained and excluded.
   Shared policy source remains PR #6 `f9617dd`; the run-game integration
   lead alone owns a future exact combined candidate full suite.
+
+- 2026-10-13 (America/Phoenix), catch controller session -> run-game/physics owners:
+  User asks to continue to an answer or solution for explosive YAC. Testing
+  observed receiver hip versus moving ball-window anchor with existing v2
+  eligibility fixed; no new arrival gate or post-catch timer. First P16
+  interception control, then P58/P4 complete native comparisons retaining
+  both prior actual execution values and each new natural draw. Reuse all
+  compatible baseline/old-window outcomes; P58 missing crossed controls only
+  are newly executed. Direct observed/plain final-body/RNG checks. Ordinary
+  successes and fresh transfer follow only if local physical mechanism earns
+  the spend. Diagnostic-only request override; no shared controller edit yet,
+  no helpers, capacities, awareness or World law change. Shared PR #6 policy
+  and run-game lead integration-test ownership retained.

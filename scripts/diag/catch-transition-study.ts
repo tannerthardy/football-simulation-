@@ -19,6 +19,7 @@ import {interceptPoint} from '../../src/physics/reach.js';
 import {FIELD_WIDTH} from '../../src/core/field.js';
 import {gatheringApproach,leverage} from '../../src/sim/behaviors/common.js';
 import {arrivalChoice,type Consumed} from './catch-arrival-model.js';
+import {hipAnchor} from './catch-hip-anchor-model.js';
 import {sourceVersion} from '../source-version.js';
 
 const copy=<T>(x:T):T=>structuredClone(x);
@@ -27,6 +28,7 @@ const fileHash=(p:string)=>createHash('sha256').update(readFileSync(p)).digest('
 const profile=JSON.parse(readFileSync('config/baseline.json','utf8'));
 const provenance={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourceSha256:sourceVersion(),
  collectorSha256:fileHash(import.meta.filename),modelSha256:fileHash('scripts/diag/catch-arrival-model.ts'),
+ hipModelSha256:fileHash('scripts/diag/catch-hip-anchor-model.ts'),
  flags:Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),worldDefaults:profile.worldDefaults,
  startedAt:new Date().toISOString()};
 function restore(f:any,record=false){const s=copy(f.setup),scouting=s.scouting?new ScoutingReport(s.scouting.strength):undefined;
@@ -43,7 +45,7 @@ function pair(c:Agent,d:Agent){const dx=c.pos.x-d.pos.x,dy=c.pos.y-d.pos.y,dist=
  transverseSpeed:Math.abs(vx*dy-vy*dx)/Math.max(1e-9,dist),rearCos:-(c.vel.x*dx+c.vel.y*dy)/Math.max(1e-9,c.speed*dist),
  headingDifference:Math.atan2(Math.sin(Math.atan2(d.vel.y,d.vel.x)-Math.atan2(c.vel.y,c.vel.x)),Math.cos(Math.atan2(d.vel.y,d.vel.x)-Math.atan2(c.vel.y,c.vel.x))),
  defenderSpeed:d.speed,runnerSpeed:c.speed,defender:lean(d),runner:lean(c)};}
-type Geometry='baseline'|'arrival';
+type Geometry='baseline'|'arrival'|'hip';
 export function trial(f:any,geometry:Geometry,execution:number|null,observe:boolean,destination:string,label:string,audit=false){
  const sim=restore(f,observe),a=sim.agents[f.defender],ci=sim.offense.find(a=>a.player.id===(f.nativeResult.stats.receiver??f.nativeResult.stats.target))?.idx??sim.slot('X')!.idx;
  const wrapped=new WeakSet<object>(),rows:any[]=[],holds:any[]=[],ids=new WeakMap<object,number>();
@@ -91,8 +93,11 @@ export function trial(f:any,geometry:Geometry,execution:number|null,observe:bool
   const t=sim.t,rngBefore=audit?hash(sim.rng):null;cues=[];raw=null;decision=null;world=null;forecast=null;
   const b=a.behavior;if(!wrapped.has(b)){wrapped.add(b);const update=b.update.bind(b);
    b.update=(actor,s)=>{inside=true;let original;try{original=update(actor,s);}finally{inside=false;}
-    const choice=arrivalChoice(actor,s,original,cues);raw=copy(original);decision=copy(choice);
-    const command=geometry==='arrival'?choice.command:original;if(hash(command)!==hash(original))changedCalls++;
+    const windowChoice=arrivalChoice(actor,s,original,cues),choice=geometry==='hip'?hipAnchor(actor,s,windowChoice):windowChoice;
+    raw=copy(original);decision=copy(choice);
+    const command=geometry==='baseline'?original:choice.command;if(hash(command)!==hash(original))changedCalls++;
+    if(geometry==='hip'&&windowChoice.reason!=='moving-window-arrival'&&hash(choice.command)!==hash(windowChoice.command))
+     throw Error('Hip anchor changes a protected or ineligible branch');
     if(audit&&observe){
      const cue=choice.window?{target:choice.window.receiver,seen:choice.window.seen}:cues.find(c=>c.target===ci),sup=a.body.support;
      if(cue&&sup?.state==='up'&&!a.engagement&&!sup.foot&&!sup.strike&&Math.hypot(sup.lean.x,sup.lean.y)<1e-6
