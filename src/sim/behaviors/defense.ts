@@ -425,10 +425,7 @@ export class ZoneCoverage implements Behavior {
         if (owned) vert = [owned];
       }
       if (vert.length === 0) {
-        let tgt = lm;
-        // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
-        if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
-        return goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs });
+        return goTo(a, lm, { facing: facingQB, speed: zs });
       }
       vert.sort((p, q) => q.fut.x - p.fut.x);
       const deepest = vert[0];
@@ -452,9 +449,9 @@ export class ZoneCoverage implements Behavior {
       const cushion = 1.6 + 0.16 * Math.max(0, deepest.vel.x) - 0.6 * a.r('anticipation');
       let ty: number;
       if (vert.length >= 2) {
-        // Split them, leaning toward where the QB is looking.
-        const w = sim.qbEyes === vert[1].r ? 0.65 : sim.qbEyes === vert[0].r ? 0.35 : 0.5;
-        ty = vert[0].fut.y * (1 - w) + vert[1].fut.y * w;
+        // Split observed threats. A private QB read is not an acquired cue
+        // to abandon one side; owned verticals were selected above.
+        ty = (vert[0].fut.y + vert[1].fut.y) * 0.5;
       } else ty = deepest.fut.y + inside(deepest.fut.y) * 0.8;
       // A landmark describes responsibility, not a minimum depth to sprint
       // to regardless of the release. Let the initial cushion compress as
@@ -535,8 +532,7 @@ export class ZoneCoverage implements Behavior {
     for (const th of threats) {
       const depth = th.fut.x - sim.los;
       if (depth > 16) continue;
-      let dd = Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y);
-      if (sim.qbEyes === th.r) dd -= 3 * a.r('anticipation');
+      const dd = Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y);
       if (dd < bd && dd < this.radius + 2) {
         bd = dd;
         best = th;
@@ -581,9 +577,7 @@ export class ZoneCoverage implements Behavior {
     }
     this.target = best?.r ?? null;
     if (!best) {
-      let tgt = lm;
-      if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
-      return goTo(a, tgt, { facing: facingQB, speed: zs });
+      return goTo(a, lm, { facing: facingQB, speed: zs });
     }
     const lane = lerp(qb.pos, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
@@ -601,7 +595,7 @@ export class ZoneCoverage implements Behavior {
   /**
    * Spot-drop underneath defender: sprint to the spot (turned to run, so quick
    * throws beat him before he gets there), then settle with eyes on the QB.
-   * He leans where the QB looks and squeezes the lane of a receiver in his
+   * He squeezes the lane of an observed receiver in his
    * zone, but keeps his depth and never leaves his zone with a route.
    */
   private spotUnderneath(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand {
@@ -615,22 +609,13 @@ export class ZoneCoverage implements Behavior {
     a.tags.add('settled');
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
     let tgt: Vec2 = lm;
-    const eyes = sim.qbEyes;
     const inZone = threats.filter((th) => Math.hypot(th.pos.x - lm.x, th.pos.y - lm.y) < this.radius && th.pos.x - sim.los > 1);
-    const looked = eyes ? inZone.find((th) => th.r === eyes) : undefined;
-    if (looked) {
-      // The QB is looking at a receiver in my zone: get in the throwing lane.
-      const lane = lerp(qb.pos, looked.pos, 0.82);
+    const near = inZone.sort((p, q) => Math.hypot(p.pos.x - lm.x, p.pos.y - lm.y) - Math.hypot(q.pos.x - lm.x, q.pos.y - lm.y))[0];
+    if (near) {
+      // Threat proximity supplies a lane, not knowledge of the QB's read.
+      // Keep the called depth/radius while squeezing this observed route.
+      const lane = lerp(qb.pos, near.pos, 0.82);
       tgt = lerp(lm, lane, 0.45 + 0.4 * read);
-    } else if (eyes) {
-      // Looking elsewhere: drift that way ("rally to the eyes"), and squeeze
-      // whoever is in my zone on the way.
-      const seen = sim.see(a, eyes);
-      tgt = lerp(lm, seen.pos, 0.15 + 0.25 * read);
-      if (inZone.length) {
-        const near = inZone.reduce((p, q) => (Math.hypot(p.pos.x - lm.x, p.pos.y - lm.y) < Math.hypot(q.pos.x - lm.x, q.pos.y - lm.y) ? p : q));
-        tgt = lerp(tgt, lerp(qb.pos, near.pos, 0.82), 0.3);
-      }
     }
     // Hold the spot's depth until the ball is thrown; stay within the zone.
     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
