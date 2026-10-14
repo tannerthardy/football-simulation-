@@ -478,5 +478,21 @@
     "Full/loaded ground response, active reeling, multiple contacts and fatigue composition are not implemented; no replacement or promotion.",
     "The prior 1687-test pass describes production defaults at f658941, not a full-suite pass for this new diagnostic.",
     "The same nine prior gate fixtures have zero timing invocation; keeper/contact diagnosis remains independent."
-  ]
+  ],
+  "publishedCodeCommit": "7fa7316a6592dbee335c84e643afca5b216eba75",
+  "platform": "linux",
+  "arch": "x64",
+  "dependencyLockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+  "focusedTests": {
+    "passed": 6,
+    "files": 1,
+    "testedCommit": "7fa7316a6592dbee335c84e643afca5b216eba75",
+    "validationSha256": "6e605f1fab50bb41cf7a22c5a21cceaea0c24aed4a622617e7b1da104f999cef",
+    "testSourceSha256": "8713b8ce666d0a65c3796b996360f915b9627371853b3ffa4d6913a1fc25e710",
+    "testBodySeconds": 0.02,
+    "runnerCommandSeconds": 1.55353725,
+    "typecheckCommandSeconds": 12.200075754,
+    "fullSuiteRun": false
+  },
+  "collectorCommandSeconds": 1.6024916009999999
 }

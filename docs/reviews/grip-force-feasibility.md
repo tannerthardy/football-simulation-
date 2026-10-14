@@ -121,6 +121,8 @@ npm run baseline:run -- --candidate -- npx vitest run --project core test/grip-f
 
 The collector rejects changed packet hashes/settings. It reuses compatible
 cached witness references instead of launching a new reference/native panel.
-The six local contracts use the tracked small fixture and run without ignored
-packets. No claim of a new full-suite pass is made; the preserved 1,687-test
+The six local contracts and typecheck pass at
+`7fa7316a6592dbee335c84e643afca5b216eba75`, with unchanged inputs during each
+run. They use the tracked small fixture and run without ignored packets.
+The receipt records that test/fixture/kernel version, flags and command costs. No claim of a new full-suite pass is made; the preserved 1,687-test
 receipt describes production defaults at its recorded revision.
