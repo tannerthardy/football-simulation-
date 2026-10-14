@@ -1,0 +1,997 @@
+{
+  "protocol": "grip-state-convergence-v1",
+  "testedCommit": "dac7a5732a9cf85098b6a77f9f3c198653574db9",
+  "comparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "preservedCandidate": "62f1f0e344c84e6501bb15257519f367eda9d58d",
+  "preservedSlowReference": "8e36cce80e138133acd6afc7aba0befc21d5a746",
+  "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+  "validationSha256": "399d85b2057456d7e991e3b622edab41acf9737b211b4692d16b798083e38ec3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "hashes": {
+    "src/physics/grip-timing.ts": "2875ee87f217007979f21a3d880544a34d566311877391801cbb4cfef3534e46",
+    "src/physics/grip-sliding.ts": "5d84574edd28025b7f4babef039ae2bb100ebd757427e3e571dedde788647f41",
+    "src/physics/world.ts": "fceb83707617d9b7cc73c04a859c3ecd4eaaaa5741d2097a7b22ff684702bcda",
+    "scripts/diag/physics/grip-state-convergence.ts": "44af3598b106b6a8761d6a1f927ec28e2a24175f3a7a32045d726ff4abe212da",
+    "test/grip-state-convergence.test.ts": "187cfeefe6c20c618cf75d2a2dd60691a672fc684b03211b4d8ca2b39e096014",
+    "config/grip-bounded-reference.json": "70971a63005d758de5060ce32dca1f236ae226fee3beb8629d84f24c887acb44"
+  },
+  "rawHashes": {
+    "publish-accuracy.json": "b957836f15a96aca51a8370f564f2b39c45a9ee09333082a856cf7b4047048c7",
+    "publish-benchmark.json": "5ca4f11da94c2b039e545d9f106f8f0281839e7ca47f749d2e3f0dae2479e4a2",
+    "first.json": "5776363a04a79ea9638f1b9c34759738f6f8919050189eb2b751d072c225a0a5",
+    "grid.json": "8d2f9b3669c8d48981abb8bb73791c920a51610f3c5c6aaf4003d25dac3c8a9b",
+    "endpoint-only-grip-timing.ts": "d46fac1d5e08a1ee0f168e3bda8e20abe1a6f3f5ff11478184bfef16f17abd0b"
+  },
+  "checkedReference": "config/grip-bounded-reference.json; immutable inputs/helpers and physical World operator reused, with only exact extraction of unchanged LEG_SLIDE=0.3",
+  "acceptance": {
+    "footAndMaterialYards": 5e-07,
+    "legsAndCoupling": 1e-06,
+    "oldBodyAndWorkTolerances": "unchanged",
+    "maxPartitions": 16384,
+    "phaseGuard": "Accumulate observed within-interval slip transitions per grip, using the larger adjacent width and lower preceding/current legs in the existing exponential slide law. First sample establishes the newly issued plan phase; this is not a proof of arbitrary unobserved transient topology."
+  },
+  "rows": [
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "samples": [
+        {
+          "mode": "legacy",
+          "error": {
+            "position": 2.984802498389512e-08,
+            "velocity": 3.1094953707768876e-06,
+            "facing": 1.7597208818997956e-06,
+            "spin": 0.00018519038032849267,
+            "material": 1.5624433757423954e-07,
+            "foot": 5.310215069837673e-07,
+            "point": 1.8342330744105576e-07,
+            "legs": 1.3604535146316543e-05,
+            "hold": 6.302060651108832e-09,
+            "bodyWork": 0.00010122500155240743,
+            "motorWork": 0.002163831951437656,
+            "passiveWork": 0.0022650569527815634
+          },
+          "normalized": 13.604535146316543,
+          "matches": false,
+          "share": 0.17699008291768611,
+          "integration": {
+            "trials": 511,
+            "intervals": 256,
+            "limited": 0,
+            "maxAcceptedError": 0.746464062547858
+          }
+        },
+        {
+          "mode": "resolved",
+          "error": {
+            "position": 3.4671689190089126e-10,
+            "velocity": 3.6457829052488014e-08,
+            "facing": 2.0426143443330602e-08,
+            "spin": 2.170959022329555e-06,
+            "material": 1.9132364728354578e-09,
+            "foot": 6.455821854615726e-09,
+            "point": 2.2294053454304796e-09,
+            "legs": 3.4883283220321637e-07,
+            "hold": 7.422951142643797e-11,
+            "bodyWork": 1.178113338440312e-06,
+            "motorWork": 2.615736781685918e-05,
+            "passiveWork": 2.733548092770377e-05
+          },
+          "normalized": 0.34883283220321637,
+          "matches": true,
+          "share": 0.17700333862000023,
+          "integration": {
+            "trials": 32767,
+            "intervals": 16384,
+            "limited": 0,
+            "maxAcceptedError": 0.6976633402933086
+          }
+        },
+        {
+          "mode": "fast",
+          "error": {
+            "position": 3.4671689190089126e-10,
+            "velocity": 3.6457829052488014e-08,
+            "facing": 2.0426143443330602e-08,
+            "spin": 2.170959022329555e-06,
+            "material": 1.9132364728354578e-09,
+            "foot": 6.455821854615726e-09,
+            "point": 2.2294053454304796e-09,
+            "legs": 3.4883283220321637e-07,
+            "hold": 7.422951142643797e-11,
+            "bodyWork": 1.178113338440312e-06,
+            "motorWork": 2.615736781685918e-05,
+            "passiveWork": 2.733548092770377e-05
+          },
+          "normalized": 0.34883283220321637,
+          "matches": true,
+          "share": 0.17700333862000023,
+          "integration": {
+            "trials": 32767,
+            "intervals": 16384,
+            "limited": 0,
+            "maxAcceptedError": 0.6976633402933086,
+            "commits": 1,
+            "fallbacks": 0,
+            "eventSplits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001--1-acquired",
+      "samples": [
+        {
+          "mode": "legacy",
+          "error": {
+            "position": 2.984802498389512e-08,
+            "velocity": 3.1094953707768876e-06,
+            "facing": 1.7597208818997956e-06,
+            "spin": 0.00018519038032849267,
+            "material": 1.5624433757423954e-07,
+            "foot": 5.310215069837673e-07,
+            "point": 1.8342330744105576e-07,
+            "legs": 1.3604535146316543e-05,
+            "hold": 6.302060651108832e-09,
+            "bodyWork": 0.00010122500155240743,
+            "motorWork": 0.002163831951437656,
+            "passiveWork": 0.0022650569527815634
+          },
+          "normalized": 13.604535146316543,
+          "matches": false,
+          "share": 0.17699008291768611,
+          "integration": {
+            "trials": 511,
+            "intervals": 256,
+            "limited": 0,
+            "maxAcceptedError": 0.746464062547858
+          }
+        },
+        {
+          "mode": "resolved",
+          "error": {
+            "position": 3.4671689190089126e-10,
+            "velocity": 3.6457829052488014e-08,
+            "facing": 2.0426143443330602e-08,
+            "spin": 2.170959022329555e-06,
+            "material": 1.9132364728354578e-09,
+            "foot": 6.455821854615726e-09,
+            "point": 2.2294053454304796e-09,
+            "legs": 3.4883283220321637e-07,
+            "hold": 7.422951142643797e-11,
+            "bodyWork": 1.178113338440312e-06,
+            "motorWork": 2.615736781685918e-05,
+            "passiveWork": 2.733548092770377e-05
+          },
+          "normalized": 0.34883283220321637,
+          "matches": true,
+          "share": 0.17700333862000023,
+          "integration": {
+            "trials": 32767,
+            "intervals": 16384,
+            "limited": 0,
+            "maxAcceptedError": 0.6976633402933086
+          }
+        },
+        {
+          "mode": "fast",
+          "error": {
+            "position": 3.4671689190089126e-10,
+            "velocity": 3.6457829052488014e-08,
+            "facing": 2.0426143443330602e-08,
+            "spin": 2.170959022329555e-06,
+            "material": 1.9132364728354578e-09,
+            "foot": 6.455821854615726e-09,
+            "point": 2.2294053454304796e-09,
+            "legs": 3.4883283220321637e-07,
+            "hold": 7.422951142643797e-11,
+            "bodyWork": 1.178113338440312e-06,
+            "motorWork": 2.615736781685918e-05,
+            "passiveWork": 2.733548092770377e-05
+          },
+          "normalized": 0.34883283220321637,
+          "matches": true,
+          "share": 0.17700333862000023,
+          "integration": {
+            "trials": 32767,
+            "intervals": 16384,
+            "limited": 0,
+            "maxAcceptedError": 0.6976633402933086,
+            "commits": 1,
+            "fallbacks": 0,
+            "eventSplits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "samples": [
+        {
+          "mode": "legacy",
+          "error": {
+            "position": 1.8626167275215266e-10,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0,
+            "material": 0,
+            "foot": 0,
+            "point": 1.8626167275215266e-10,
+            "legs": 0,
+            "hold": 3.128448611278145e-10,
+            "bodyWork": 0,
+            "motorWork": 0,
+            "passiveWork": 0
+          },
+          "normalized": 0.000625689722255629,
+          "matches": true,
+          "share": 0.2705178936866569,
+          "integration": {
+            "trials": 3,
+            "intervals": 1,
+            "limited": 0,
+            "maxAcceptedError": 0
+          }
+        },
+        {
+          "mode": "resolved",
+          "error": {
+            "position": 1.8626167275215266e-10,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0,
+            "material": 0,
+            "foot": 0,
+            "point": 1.8626167275215266e-10,
+            "legs": 0,
+            "hold": 3.128448611278145e-10,
+            "bodyWork": 0,
+            "motorWork": 0,
+            "passiveWork": 0
+          },
+          "normalized": 0.000625689722255629,
+          "matches": true,
+          "share": 0.2705178936866569,
+          "integration": {
+            "trials": 3,
+            "intervals": 1,
+            "limited": 0,
+            "maxAcceptedError": 0
+          }
+        },
+        {
+          "mode": "fast",
+          "error": {
+            "position": 1.8626167275215266e-10,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0,
+            "material": 0,
+            "foot": 0,
+            "point": 1.8626167275215266e-10,
+            "legs": 0,
+            "hold": 3.128448611278145e-10,
+            "bodyWork": 0,
+            "motorWork": 0,
+            "passiveWork": 0
+          },
+          "normalized": 0.000625689722255629,
+          "matches": true,
+          "share": 0.2705178936866569,
+          "integration": {
+            "trials": 3,
+            "intervals": 1,
+            "limited": 0,
+            "maxAcceptedError": 0,
+            "commits": 1,
+            "fallbacks": 0,
+            "eventSplits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-offset",
+      "samples": [
+        {
+          "mode": "legacy",
+          "error": {
+            "position": 1.8028947777167147e-08,
+            "velocity": 3.5512026117453554e-06,
+            "facing": 9.43668855057922e-07,
+            "spin": 0.00018757470180208458,
+            "material": 1.0077099586047394e-07,
+            "foot": 3.754902163371882e-07,
+            "point": 1.1777805170973755e-07,
+            "legs": 1.2873188224210574e-05,
+            "hold": 1.8624890296692342e-08,
+            "bodyWork": 9.950107373590811e-05,
+            "motorWork": 0.0009797978021754972,
+            "passiveWork": 0.001079298884487656
+          },
+          "normalized": 12.873188224210574,
+          "matches": false,
+          "share": 0.17774880245345098,
+          "integration": {
+            "trials": 1023,
+            "intervals": 512,
+            "limited": 0,
+            "maxAcceptedError": 0.7563206315026605
+          }
+        },
+        {
+          "mode": "resolved",
+          "error": {
+            "position": 5.434694366173626e-10,
+            "velocity": 1.0764129235378093e-07,
+            "facing": 2.8447959987687454e-08,
+            "spin": 5.685047450576519e-06,
+            "material": 3.0269036148336168e-09,
+            "foot": 1.1303853843819292e-08,
+            "point": 3.5412050215108385e-09,
+            "legs": 3.267261619033235e-07,
+            "hold": 5.616405118757939e-10,
+            "bodyWork": 3.002933896212312e-06,
+            "motorWork": 2.9949741441992472e-05,
+            "passiveWork": 3.295268393443962e-05
+          },
+          "normalized": 0.3267261619033235,
+          "matches": true,
+          "share": 0.1777613489155133,
+          "integration": {
+            "trials": 32767,
+            "intervals": 16384,
+            "limited": 0,
+            "maxAcceptedError": 0.6970206363422962
+          }
+        },
+        {
+          "mode": "fast",
+          "error": {
+            "position": 5.434694366173626e-10,
+            "velocity": 1.0764129235378093e-07,
+            "facing": 2.8447959987687454e-08,
+            "spin": 5.685047450576519e-06,
+            "material": 3.0269036148336168e-09,
+            "foot": 1.1303853843819292e-08,
+            "point": 3.5412050215108385e-09,
+            "legs": 3.267261619033235e-07,
+            "hold": 5.616405118757939e-10,
+            "bodyWork": 3.002933896212312e-06,
+            "motorWork": 2.9949741441992472e-05,
+            "passiveWork": 3.295268393443962e-05
+          },
+          "normalized": 0.3267261619033235,
+          "matches": true,
+          "share": 0.1777613489155133,
+          "integration": {
+            "trials": 32767,
+            "intervals": 16384,
+            "limited": 0,
+            "maxAcceptedError": 0.6970206363422962,
+            "commits": 1,
+            "fallbacks": 0,
+            "eventSplits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001--1-offset",
+      "samples": [
+        {
+          "mode": "legacy",
+          "error": {
+            "position": 1.8028947777167147e-08,
+            "velocity": 3.5512026117453554e-06,
+            "facing": 9.43668855057922e-07,
+            "spin": 0.00018757470180208458,
+            "material": 1.0077099586047394e-07,
+            "foot": 3.754902163371882e-07,
+            "point": 1.1777805170973755e-07,
+            "legs": 1.2873188224210574e-05,
+            "hold": 1.8624890296692342e-08,
+            "bodyWork": 9.950107373590811e-05,
+            "motorWork": 0.0009797978021754972,
+            "passiveWork": 0.001079298884487656
+          },
+          "normalized": 12.873188224210574,
+          "matches": false,
+          "share": 0.17774880245345098,
+          "integration": {
+            "trials": 1023,
+            "intervals": 512,
+            "limited": 0,
+            "maxAcceptedError": 0.7563206315026605
+          }
+        },
+        {
+          "mode": "resolved",
+          "error": {
+            "position": 5.434694366173626e-10,
+            "velocity": 1.0764129235378093e-07,
+            "facing": 2.8447959987687454e-08,
+            "spin": 5.685047450576519e-06,
+            "material": 3.0269036148336168e-09,
+            "foot": 1.1303853843819292e-08,
+            "point": 3.5412050215108385e-09,
+            "legs": 3.267261619033235e-07,
+            "hold": 5.616405118757939e-10,
+            "bodyWork": 3.002933896212312e-06,
+            "motorWork": 2.9949741441992472e-05,
+            "passiveWork": 3.295268393443962e-05
+          },
+          "normalized": 0.3267261619033235,
+          "matches": true,
+          "share": 0.1777613489155133,
+          "integration": {
+            "trials": 32767,
+            "intervals": 16384,
+            "limited": 0,
+            "maxAcceptedError": 0.6970206363422962
+          }
+        },
+        {
+          "mode": "fast",
+          "error": {
+            "position": 5.434694366173626e-10,
+            "velocity": 1.0764129235378093e-07,
+            "facing": 2.8447959987687454e-08,
+            "spin": 5.685047450576519e-06,
+            "material": 3.0269036148336168e-09,
+            "foot": 1.1303853843819292e-08,
+            "point": 3.5412050215108385e-09,
+            "legs": 3.267261619033235e-07,
+            "hold": 5.616405118757939e-10,
+            "bodyWork": 3.002933896212312e-06,
+            "motorWork": 2.9949741441992472e-05,
+            "passiveWork": 3.295268393443962e-05
+          },
+          "normalized": 0.3267261619033235,
+          "matches": true,
+          "share": 0.1777613489155133,
+          "integration": {
+            "trials": 32767,
+            "intervals": 16384,
+            "limited": 0,
+            "maxAcceptedError": 0.6970206363422962,
+            "commits": 1,
+            "fallbacks": 0,
+            "eventSplits": 0
+          }
+        }
+      ]
+    }
+  ],
+  "benchmark": [
+    {
+      "id": "patch-45-8-0-3001-1-acquired",
+      "samples": [
+        {
+          "mode": "legacy",
+          "matches": false,
+          "milliseconds": {
+            "median": 33.430315000000064,
+            "p95": 52.144206999999994,
+            "maximum": 52.144206999999994
+          },
+          "samplesMilliseconds": [
+            52.144206999999994,
+            48.027540999999985,
+            49.90946400000007,
+            28.182868999999982,
+            28.07344400000011,
+            25.686612999999966,
+            33.430315000000064
+          ],
+          "intervals": 256
+        },
+        {
+          "mode": "resolved",
+          "matches": true,
+          "milliseconds": {
+            "median": 1063.0183550000006,
+            "p95": 1188.4834840000003,
+            "maximum": 1188.4834840000003
+          },
+          "samplesMilliseconds": [
+            1068.9120550000002,
+            1024.6588180000003,
+            1063.0183550000006,
+            1188.4834840000003,
+            1149.955352,
+            1052.2463859999998,
+            1052.6295579999987
+          ],
+          "intervals": 16384
+        },
+        {
+          "mode": "fast",
+          "matches": true,
+          "milliseconds": {
+            "median": 710.7689470000005,
+            "p95": 767.3957929999997,
+            "maximum": 767.3957929999997
+          },
+          "samplesMilliseconds": [
+            767.3957929999997,
+            658.1298929999994,
+            754.2656960000004,
+            710.7689470000005,
+            659.869772,
+            734.6803089999994,
+            664.5989479999989
+          ],
+          "intervals": 16384
+        }
+      ]
+    },
+    {
+      "id": "patch-0-3-0-3001-1-acquired",
+      "samples": [
+        {
+          "mode": "legacy",
+          "matches": true,
+          "milliseconds": {
+            "median": 1.3725560000002588,
+            "p95": 3.2746569999999338,
+            "maximum": 3.2746569999999338
+          },
+          "samplesMilliseconds": [
+            1.2331650000014633,
+            1.3587250000000495,
+            3.2746569999999338,
+            1.3488199999992503,
+            1.3725560000002588,
+            2.1011519999992743,
+            3.1222490000000107
+          ],
+          "intervals": 1
+        },
+        {
+          "mode": "resolved",
+          "matches": true,
+          "milliseconds": {
+            "median": 1.4798360000004323,
+            "p95": 1.9529590000001917,
+            "maximum": 1.9529590000001917
+          },
+          "samplesMilliseconds": [
+            1.3985140000004321,
+            1.3321849999992992,
+            1.9529590000001917,
+            1.4798360000004323,
+            1.233596000000034,
+            1.5583950000000186,
+            1.6778249999988475
+          ],
+          "intervals": 1
+        },
+        {
+          "mode": "fast",
+          "matches": true,
+          "milliseconds": {
+            "median": 1.6372040000005654,
+            "p95": 1.9916470000007394,
+            "maximum": 1.9916470000007394
+          },
+          "samplesMilliseconds": [
+            1.9916470000007394,
+            1.596322000001237,
+            1.903295000000071,
+            1.6247249999996711,
+            1.4552800000001298,
+            1.7081600000001345,
+            1.6372040000005654
+          ],
+          "intervals": 1
+        }
+      ]
+    },
+    {
+      "id": "patch-45-8-0-3001-1-offset",
+      "samples": [
+        {
+          "mode": "legacy",
+          "matches": false,
+          "milliseconds": {
+            "median": 36.080111999999644,
+            "p95": 66.58926199999951,
+            "maximum": 66.58926199999951
+          },
+          "samplesMilliseconds": [
+            66.58926199999951,
+            40.73310400000082,
+            33.93148900000051,
+            34.18137000000024,
+            34.820668000000296,
+            36.080111999999644,
+            38.251695999999356
+          ],
+          "intervals": 512
+        },
+        {
+          "mode": "resolved",
+          "matches": true,
+          "milliseconds": {
+            "median": 1091.3365360000025,
+            "p95": 1191.991280000002,
+            "maximum": 1191.991280000002
+          },
+          "samplesMilliseconds": [
+            1121.7912350000006,
+            1191.991280000002,
+            1046.7981880000007,
+            1094.7099139999991,
+            1091.3365360000025,
+            1058.325080999999,
+            1061.773319
+          ],
+          "intervals": 16384
+        },
+        {
+          "mode": "fast",
+          "matches": true,
+          "milliseconds": {
+            "median": 722.2596259999991,
+            "p95": 776.7345060000007,
+            "maximum": 776.7345060000007
+          },
+          "samplesMilliseconds": [
+            710.0486310000015,
+            741.4078999999983,
+            722.2596259999991,
+            706.0149810000003,
+            726.7963229999987,
+            718.9123229999968,
+            776.7345060000007
+          ],
+          "intervals": 16384
+        }
+      ]
+    }
+  ],
+  "benchmarkProtocol": {
+    "serial": true,
+    "repetitions": 7,
+    "warmups": 1,
+    "preparationOutsideClock": true,
+    "observers": false
+  },
+  "correctness": {
+    "focusedPassed": 25,
+    "targetFilterSkipped": 8,
+    "unit": 14,
+    "effort": 4,
+    "movingMultipleUnequalAndTiny": 7,
+    "typecheckPassed": true,
+    "boundedLimitWitness": "Long synthetic phase clock reports limited=1 at the unchanged maximum, not false convergence. Fast bounded-search fallback passes the same share criterion.",
+    "noNewFullSuiteOrFootballInputs": true
+  },
+  "checks": {
+    "final-unit-check": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-state-convergence",
+      "commit": "dac7a5732a9cf85098b6a77f9f3c198653574db9",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "validationSha256": "399d85b2057456d7e991e3b622edab41acf9737b211b4692d16b798083e38ec3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T03:38:03.528Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/grip-state-convergence.test.ts",
+            "test/grip-effort.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.3556857
+        }
+      ],
+      "finishedAt": "2026-10-14T03:38:06.891Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "final-transfer-check": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-state-convergence",
+      "commit": "dac7a5732a9cf85098b6a77f9f3c198653574db9",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "validationSha256": "399d85b2057456d7e991e3b622edab41acf9737b211b4692d16b798083e38ec3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T03:38:03.516Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/grip-fast.test.ts",
+            "test/grip-timing.test.ts",
+            "-t",
+            "zero.*tiny|multiple-contact|moving off-axis|unequal external"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.519414353
+        }
+      ],
+      "finishedAt": "2026-10-14T03:38:17.043Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "publish-typecheck": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-state-convergence",
+      "commit": "dac7a5732a9cf85098b6a77f9f3c198653574db9",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "validationSha256": "399d85b2057456d7e991e3b622edab41acf9737b211b4692d16b798083e38ec3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T03:38:03.517Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 16.404590769
+        }
+      ],
+      "finishedAt": "2026-10-14T03:38:19.926Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "publish-accuracy-check": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-state-convergence",
+      "commit": "dac7a5732a9cf85098b6a77f9f3c198653574db9",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "validationSha256": "399d85b2057456d7e991e3b622edab41acf9737b211b4692d16b798083e38ec3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T03:39:33.200Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/grip-state-convergence.ts",
+            "--output=out/grip-state-convergence/publish-accuracy.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 8.604593653
+        }
+      ],
+      "finishedAt": "2026-10-14T03:39:41.808Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "publish-benchmark-check": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/grip-state-convergence",
+      "commit": "dac7a5732a9cf85098b6a77f9f3c198653574db9",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "f0879d091645ec5c5fb84c8fd163da006fe3c9cdcae71bf95d87d2da62829e12",
+      "validationSha256": "399d85b2057456d7e991e3b622edab41acf9737b211b4692d16b798083e38ec3",
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [],
+      "startedAt": "2026-10-14T03:40:31.479Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/grip-state-convergence.ts",
+            "--benchmark",
+            "--output=out/grip-state-convergence/publish-benchmark.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 30.410974932
+        }
+      ],
+      "finishedAt": "2026-10-14T03:41:01.895Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  },
+  "commandCosts": {
+    "publish-accuracy-check.json": {
+      "seconds": 8.604593653,
+      "exitCode": 0
+    },
+    "typecheck.json": {
+      "seconds": 16.58578783,
+      "exitCode": 0
+    },
+    "publish-typecheck.json": {
+      "seconds": 16.404590769,
+      "exitCode": 0
+    },
+    "final-transfer-check.json": {
+      "seconds": 13.519414353,
+      "exitCode": 0
+    },
+    "final-accuracy-check.json": {
+      "seconds": 8.688212126999998,
+      "exitCode": 0
+    },
+    "publish-benchmark-check.json": {
+      "seconds": 30.410974932,
+      "exitCode": 0
+    },
+    "first-check.json": {
+      "seconds": 1.083949726,
+      "exitCode": 0
+    },
+    "unit-corrected-check.json": {
+      "seconds": 3.153095693,
+      "exitCode": 0
+    },
+    "phase-check.json": {
+      "seconds": 0.40008049100000004,
+      "exitCode": 1
+    },
+    "unit-check.json": {
+      "seconds": 1.920259094,
+      "exitCode": 1
+    },
+    "final-unit-check.json": {
+      "seconds": 3.3556857,
+      "exitCode": 0
+    },
+    "grid-check.json": {
+      "seconds": 4.507280989,
+      "exitCode": 0
+    },
+    "transfer-check.json": {
+      "seconds": 14.234889692,
+      "exitCode": 0
+    },
+    "phase-corrected-check.json": {
+      "seconds": 8.685880093,
+      "exitCode": 0
+    },
+    "final-benchmark-check.json": {
+      "seconds": 29.042036934,
+      "exitCode": 0
+    },
+    "final-typecheck.json": {
+      "seconds": 12.87454221,
+      "exitCode": 0
+    }
+  },
+  "recordedLauncherSeconds": 173.47127428599998,
+  "retainedDevelopmentEvidence": [
+    "Endpoint-only estimator falsely accepts share error 1.36e-5 at 512: adjacent dyadic grids alias the same phase duration.",
+    "Initial fast material discrepancy was a stale diagnostic attachment-record pointer; live record is now queried, not a solver repair.",
+    "One unit mutation initially set an already-unloaded foot to unloaded; corrected to an actual state change.",
+    "Initial reference-normalization check used the wrong comment marker and rejected collection; corrected before physics execution."
+  ],
+  "remaining": [
+    "Cost exceeds prior 2-ms median/5-ms tail isolated-interval budget. Candidate is a diagnostic acceptance correction, not production integration.",
+    "Five saved mechanical inputs and selected moving/multiple-contact controls do not certify all native contacts or support history.",
+    "Original nine patch-gate failures, keeper angular/contact promotion and .24-yard history divergence remain separately documented and unmodified.",
+    "No physical capacity, recovery law, experimental default, baseline profile or existing test expectation changed."
+  ]
+}
