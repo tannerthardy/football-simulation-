@@ -80,7 +80,7 @@ function native(f:any,remove:boolean,observe:boolean){
  };
  if(observe)sim.world.step=(intents,dt)=>{const before=sim.agents.map(a=>({pos:copy(a.pos),vel:copy(a.vel),support:copy(a.body.support)})),applied=copy(intents),report=step(intents,dt);
   world={before,applied,after:sim.agents.map(a=>({pos:copy(a.pos),vel:copy(a.vel),support:copy(a.body.support)})),report:copy(report)};return report;};
- sim.tick=()=>{const t=sim.t;decisions=[];world=null;tick();if(observe)rows.push({t,decisions,ball:copy(sim.ball),carrier:sim.carrier?.idx??null,world,
+ sim.tick=()=>{const t=sim.t;decisions=[];world=null;tick();if(observe)rows.push({t,decisions,ball:sim.ball.kind,carrier:sim.carrier?.idx??null,world,
   jobs:sim.defense.map(a=>({idx:a.idx,kind:a.behavior.kind,target:Reflect.get(a.behavior,'target')?.idx??null,
    job:Reflect.get(a.behavior,'job')??null,rule:Reflect.get(a.behavior,'recordedRule')?.call(a.behavior,t)??null}))});};
  let result;try{result=sim.run();}finally{ZoneCoverage.prototype.update=update;}
