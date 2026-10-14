@@ -5,6 +5,7 @@ import {activeGripResultValid,type ActiveGripInput} from '../src/physics/active-
 import {nativeForceFixture} from '../scripts/diag/physics/grip-native-world-fixtures.js';
 import {nativeSpanInterval} from '../scripts/diag/physics/grip-native-span-interval.js';
 import {nativeSpanReference} from '../scripts/diag/physics/grip-native-span-reference.js';
+import {nativeCenteredReference} from '../scripts/diag/physics/grip-native-centered-reference.js';
 import {nativeSpanDifference} from '../scripts/diag/physics/grip-native-span-model.js';
 const cases=JSON.parse(readFileSync('config/grip-native-force-inputs.json','utf8')).cases as Array<{id:string;phase:number;input:ActiveGripInput}>;
 const strip=(r:any)=>{const {activeGrip,...rest}=r;return rest;};
@@ -16,6 +17,10 @@ describe('existing native reel and ground on one experimental force clock',()=>{
     expect(input).toEqual(c.input);expect(report.activeGrip?.accepted).toBe(1);expect(motion).toBeDefined();
     const lo=nativeSpanReference(input!,1024),hi=nativeSpanReference(input!,2048);
     expect(nativeSpanDifference(lo,hi)).toBeLessThanOrEqual(1/16);expect(nativeSpanDifference(motion!,hi)).toBeLessThanOrEqual(1/16);
+    const centeredLo=nativeCenteredReference(input!,1024),centeredHi=nativeCenteredReference(input!,2048);
+    expect(nativeSpanDifference(centeredLo,centeredHi)).toBeLessThanOrEqual(1/16);
+    expect(nativeSpanDifference(motion!,centeredHi)).toBeLessThanOrEqual(1/16);
+    expect(activeGripResultValid(input!,centeredHi)).toBe(true);
     expect(activeGripResultValid(input!,motion!)).toBe(true);expect(motion!.armCost).toBeLessThanOrEqual(input!.armWorkRemaining);
     expect(motion!.reelDose).toBeLessThanOrEqual(input!.armCapacity*input!.duration);
     if(c.id.includes('45-8')){expect(motion!.reelDose).toBeGreaterThan(0);expect(Math.hypot(input!.ground[0].force.x,input!.ground[0].force.y)).toBeGreaterThan(0);}
