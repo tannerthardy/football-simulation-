@@ -28,14 +28,14 @@ a defect. Historical/experimental witnesses must retain their source and setting
 
 | ID | Problem / decision | Evidence class | Status | Owner / return condition |
 | --- | --- | --- | --- | --- |
-| [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | In combined candidate; not merged | Integration; three-line fix only, preserve DT tackle |
-| [RUN-006](#RUN-006) | Riding back leaves before the installed mesh window | Confirmed cadence defect | Minimal #57 extraction in candidate | Integration + Run Game; real-reach transfer and same-source success control |
+| [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Verified candidate; not merged | Integration; three-line fix only, preserve DT tackle |
+| [RUN-006](#RUN-006) | Riding back leaves before the installed mesh window | Confirmed cadence defect | Verified minimal #57 extraction | Integration + Run Game; real-reach transfer and same-source success control |
 | [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Active bounded owner follow-up | Do-It-All! + Run Game; no earlier zone/Duo/detour ancestry imported |
-| [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | #58 in candidate; combined pending | Integration; preserve real blocking and adverse run evidence |
-| [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | #61 in candidate; combined pending | Integration; preserve targeted check-release and acquired emergency catch |
+| [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | #58 verified; review pending | Integration; preserve real blocking and adverse run evidence |
+| [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | #61 verified; review pending | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix in candidate; policy open | Integration; correct state is distinct from optimal choice |
-| [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | #60 in candidate; combined pending | Integration; actual possession segments, no historical rewrite |
+| [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | #60 verified; review pending | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
 | [INFO-002](#INFO-002) | Call-based anticipation can expose hidden live state | Confirmed limitation; #36 copied installed prior prepared | Active with INFO-001 | Awareness + Run Game; bounded installed expectations without hidden updates |
 | [INFO-003](#INFO-003) | Other controller reads still need scoped information review | Known information debt; scope varies | Parked migration | Awareness + affected controller owner; after first reusable boundary passes |
@@ -72,7 +72,7 @@ at `73b9441` skips only C in that vacancy loop; the same DT still tackles the
 runner. Evidence `badddf4` preserves the failed unpaired arm, exact paired
 initialization and first changed request. Earlier zone/Duo/clearance/detour work
 in its parent history is separate, not a dependency. **Candidate; combined
-verification pending.**
+verified; promotion review pending.**
 
 <a id="RUN-006"></a>
 ### RUN-006 — Riding departure starts before the mesh window
@@ -84,7 +84,7 @@ before `meshTime-.15`. Physical reach still controls the exchange. P038
 transfers in the combined preflight. P069's historical experimental trajectory
 is not a current-source golden: the matched current-source rollback control
 preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
-**Candidate; combined verification pending.**
+**Candidate; combined verified; promotion review pending.**
 
 <a id="RUN-007"></a>
 ### RUN-007 — Remaining lane, spacing and collection boundaries
@@ -96,7 +96,12 @@ P037's +45.51 gain does not certify a successful LG block. P039 retains a
 plausible penetrating DT win. Owners: Do-It-All! for its lane/climb scope and
 Run Game for exchange/protection, with explicit function boundaries. Next:
 one acquired, attainable entry/collection question and its opposing control;
-no automatic roster sweep, stronger grip or hidden teammate intent.
+no automatic roster sweep, stronger grip or hidden teammate intent. The author
+now records a separate entry-risk trial as **rejected**: it removes a private
+engagement cue but creates an RB/RG collision. Its next question is attainable
+approach clearance from acquired teammate uncertainty, with a clear-crossing
+control. [Published handoff and exact rejected-trial pins](https://github.com/tannerthardy/football-simulation-/blob/4da1c3aa82352e9dc4a953f11be494626b96d8eb/docs/WORKBOARD.md).
+It is not imported or newly verified here.
 
 <a id="PASS-002"></a>
 ### PASS-002 — Slow upright release is interpreted as blocking
@@ -106,7 +111,7 @@ speed-only blocking cue with acquired pad/contact evidence; contact is limited
 to the observer himself. It is independent of #61 and #54. Preserve legitimate
 blocking, PA, offensive wins, and the adverse power rushing6.82→1.17 evidence.
 The matched92→25.31 gain supports earlier informed containment; it does not
-calibrate the league. **Candidate; combined verification pending.**
+calibrate the league. **Candidate; combined verified; promotion review pending.**
 
 <a id="PASS-003"></a>
 ### PASS-003 — Incidental offensive catch without acquiring the flight
@@ -116,7 +121,7 @@ once-per-tick observer-owned delivery before incidental attempts. P004/P024
 protectors are not QB-selected targets. P034 is a legitimate check-release;
 an acquired emergency catch remains allowed. Preserve the body-facing/occlusion
 limitations, existing privileged targeted tracking, and no claim that P023's
-entire interception is repaired. **Candidate; combined verification pending.**
+entire interception is repaired. **Candidate; combined verified; promotion review pending.**
 
 <a id="PASS-004"></a>
 ### PASS-004 — Quarters match approach and secondary containment
@@ -147,7 +152,7 @@ was assigned, retaining `retainedSnap` and the failed-exchange description.
 It separately records achieved catch depth while keeping intended target/air
 depth. QB and receiver boxes already have distinct actual-recipient semantics.
 No historical recording, comparison table, physical transfer or fumble is
-invented. **Candidate; combined verification pending.** More complex possession
+invented. **Candidate; combined verified; promotion review pending.** More complex possession
 allocation and versioned research-adapter migrations remain separate.
 
 ## Information and awareness

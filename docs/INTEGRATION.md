@@ -5,9 +5,20 @@
 
 **Accepted develop remains `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`.**
 Integration owns `codex/departed-center-integration` directly from that commit.
-The five contributions below are being prepared as one coherent candidate,
-not merged experimental stacks. [Current priorities](STATUS.md),
+The five contributions below are verified together in [draft PR #63](https://github.com/tannerthardy/football-simulation-/pull/63),
+with required review still pending. Experimental stacks were not merged. [Current priorities](STATUS.md),
 [issue decisions](ISSUES.md), [ownership](WORKBOARD.md).
+
+**Passing exact candidate:** `a862a05713d0b8bbd22683ce8a70d5ac16eb18e2`.
+**1,720 TypeScript checks / 143 files, 145 Python checks, typecheck and build pass**;
+all four phases complete, no skips/worker errors/input drift. Final wall
+**200.945 s**, source `2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad`,
+validation `bd503123ac660bf6e07e061dd5d74e832309390187aa822b5d6289cb1dfbc495`.
+[Exact launcher](../data/reviews/current/departed-center-integration/combined-final.json) ·
+[Shared review/receipt](../data/reviews/current/departed-center-integration/receipt.json) ·
+[Five independently applicable patches](../data/reviews/current/departed-center-integration/patches).
+The patches together reproduce the exact tested source/tests/scripts. Publication
+adds docs/evidence only; a later doc-only #58 head does not invalidate this pass.
 
 | Contribution / exact publication | Independent readiness and smallest portable extraction | Real dependency / excluded ancestry |
 | --- | --- | --- |
@@ -21,15 +32,15 @@ The first portability screen has **92 passes and one source-specific P069
 historical-trajectory mismatch**. The single targeted current-source
 cadence-rollback diagnostic passes with complete frame/event/stat equality.
 The original fixture and upstream assertion remain preserved; the extracted
-regression protects the matching current-source control. No accepted existing
-assertion is removed or relaxed. Exact receipts and per-path patches will be
-published with the frozen candidate.
+regression protects the matching current-source control. No accepted assertion
+was changed for P069. The separately reviewed zone-key contract revision below
+is explicit; failed evidence and original assertions are preserved.
 
 The first frozen run at `c412d3a` stopped at strict typecheck: #61's JSON
 slot index lacked an explicit offense-key type. Build, TypeScript suites and
 Python were skipped by fail-fast. The extracted test adds only that static
 annotation; no runtime or expectation changes. The failed receipt is retained.
-A refrozen verification is pending. It will use Node22.23.3, all44
+The final refrozen verification passes as recorded above, using Node22.23.3, all44
 accepted flags including `RUN_CONTACT_COMPONENTS=1`, and existing center hands /
 centered integration / legacy support / per-solve work / speculative impacts /
 mean support / bounded attachment / adaptive substeps. Settings, dependencies,
@@ -64,8 +75,49 @@ does not affect the current zone trajectory. No new endpoint is used as truth.
 ambiguity for the upright cue, and add low-pad/own-contact run controls. Other
 man-key/tactile/privacy checks remain. No numeric threshold or runtime changes.
 The original failed assertion, full failed receipt and diagnostic remain
-published. This explicit test-contract revision requires a refrozen combined
-verification; it does not convert the failed run into a pass.
+published. Thirty focused checks then passed. The new exact `a862a05`
+verification passes; it does not convert the failed `47e0da1` run into a pass.
+
+
+### Separately identified earlier work and remaining decisions
+
+- **Earlier zone/Duo:** code `6ac628b9cd017fb475c477d41904264d463a6a46`,
+  publication `6122fb03c7104c0f9d762591d737cf2cf6a49067`, source
+  `1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527`.
+  The author recommends separate review and reports 201 checks/typecheck.
+  Its broader navigation/clearance work consumes `teammateInformation` and
+  depends on that experimental run stack; it is not needed by the gap fix.
+  [Full prior review and rejected gap-run transfer](https://github.com/tannerthardy/football-simulation-/blob/badddf495fa9ff7cfa6579709dec853dc449974e/docs/reviews/run-lanes/README.md)
+  remains preserved. Actual git merge base with approved develop is `a1b16e6`,
+  despite older prose mentioning a historical fetched reference.
+- **Latest gap handoff:** `codex/run-lanes` moved to `4da1c3a` with workboard
+  documentation only. The author also published `codex/departed-center-gap`
+  at `132c27a`, code `d63bf45`, evidence `92566b3`, directly from accepted
+  develop. All three extracted files are byte-identical to this candidate.
+  [Portable author handoff](https://github.com/tannerthardy/football-simulation-/blob/132c27a8f1d9ce9a4366b92f0ede0df42a0dac52/docs/reviews/departed-center-gap/README.md).
+  The separate entry-risk trial is rejected after an RB/RG collision; its
+  [owner record](https://github.com/tannerthardy/football-simulation-/blob/4da1c3aa82352e9dc4a953f11be494626b96d8eb/docs/WORKBOARD.md)
+  preserves pins and the next clearance question. Neither trial nor older zone
+  code is imported. No test repeat is needed for these documentation updates.
+- **#58 refresh:** newest head `f597cec3983e73ac5538f1f68a1ef7db4c49fa43`
+  adds only 17 documentation lines; runtime/tests/tooling match reviewed `cb73b08`.
+  Its new P046/P009 tracking-guided native transfer is linked, not rerun. The
+  selected #58/#61 native combination is not claimed measured by this receipt;
+  the exact combined code suite passes. No new football campaign is automatic.
+- **Still held:** #54 wholesale, earlier zone/Duo/detour imports, rejected QB
+  late-chase, #34 coverage blockers, experimental hands/grips/helper/physics,
+  P022 value policy, P045 approach/secondary support and unfinished run collection.
+- **Smallest next decision:** review PR #63's exact candidate and explicit
+  zone-key contract repair for integration. Gap already has conditional merge
+  authority; the broader batch retains its required review. No new testing is
+  justified for unchanged code/inputs/settings. Develop, historical reference,
+  default branch and source branches remain unchanged in this preparation pass.
+
+There were three frozen verification attempts: a fail-fast typecheck stop,
+a 1,717-pass/one-failure TS run, and the final all-phase pass. Recorded validation
+commands total about **428 s**, including failures and focused diagnostics;
+source/evidence audit and patch checks are separately timed. No additional
+full-game or roster campaign ran; preserved suite game assertions did execute.
 
 <details>
 <summary>Published 2026-10-14 integration ledger and prior receipts — preserved</summary>

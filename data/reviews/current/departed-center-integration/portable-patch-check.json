@@ -1,7 +1,7 @@
 {
   "schema": "controller-portable-patch-check-v1",
   "base": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
-  "testedTarget": "47e0da138454a6ae4ffd0647b9afbcf62a95f9f2",
+  "testedTarget": "a862a05713d0b8bbd22683ce8a70d5ac16eb18e2",
   "eachPatchAppliesIndependently": true,
   "combinedPatchesExactlyMatchTestedSourceTestsScripts": true,
   "verifiedPaths": [
@@ -16,6 +16,7 @@
     "src/sim/playsim.ts",
     "src/sim/recognition.ts",
     "src/sim/types.ts",
+    "test/defensive-awareness-contact.test.ts",
     "test/departed-center-gap.test.ts",
     "test/fixtures/incidental-catch-windows.json",
     "test/fixtures/p033-gap-decision.json",
@@ -38,7 +39,7 @@
     },
     {
       "path": "data/reviews/current/departed-center-integration/patches/blocking-recognition.patch",
-      "sha256": "597a28e78aeec1d44e8d9f6e3dab53ca722d0b4b09d0a14b65a37ae6b50504d0"
+      "sha256": "0881f9ffbb9e5f174ac65ad4215bac56e70f810b330aedf8030418b045a15bb6"
     },
     {
       "path": "data/reviews/current/departed-center-integration/patches/bookkeeping.patch",
@@ -50,5 +51,5 @@
     }
   ],
   "newSimulations": 0,
-  "elapsedSeconds": 0.5592966030235402
+  "elapsedSeconds": 0.4971826830005739
 }

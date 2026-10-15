@@ -7,11 +7,13 @@ are the existing shared records, refreshed from published tracking commit
 ## Accepted tree versus pending candidate
 
 - **Accepted:** `develop@a1b16e666a9ee7d1bc1d2aecba141fc535863b24`, merged #12.
-- **Preparing:** `codex/departed-center-integration`, directly from that tree.
+- **Verified candidate, review pending:** [PR #63](https://github.com/tannerthardy/football-simulation-/pull/63),
+  `codex/departed-center-integration`, tested `a862a05`, directly from that tree.
   Only gap identity plus minimal #57 cadence, #58 blocking recognition,
   #60 bookkeeping and #61 incidental acquisition. See the
   [current integration ledger](INTEGRATION.md#current-candidate-2026-10-15).
-  A focused pass is not a combined pass or merge approval.
+  1,720 TS / 145 Python checks, typecheck/build pass. This is not a merge
+  or new reference designation.
 - **Historical comparison:** `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`.
   The historical profile is unchanged. Current candidates explicitly use
   44 accepted flags/components=1 and existing World defaults.
@@ -23,7 +25,7 @@ are the existing shared records, refreshed from published tracking commit
 
 | Priority | Owner | Next decision and evidence |
 | --- | --- | --- |
-| Exact coherent candidate | Integration in this chat | Freeze the narrow five-contribution tree; reuse compatible focused receipts; own one full verification. [Readiness and dependencies](INTEGRATION.md#current-candidate-2026-10-15). |
+| Exact coherent candidate | Integration in this chat | Review the verified narrow five-contribution tree and explicit zone-key contract repair; reuse its one final passing receipt. [Readiness and dependencies](INTEGRATION.md#current-candidate-2026-10-15). |
 | Remaining run execution | Run Game and Do-It-All!, independent scopes | [RUN-007](ISSUES.md#RUN-007): inconsistent lane/spacing pictures, late Will protection and P037 puller collection. P038 defensive recovery and wide-rush cutoff remain separate. Earlier trials are not dependencies merely because they share a branch. |
 | Coverage and awareness follow-up | Catching And Defensive Pursuit / measurement and coaching owners | [PASS-004](ISSUES.md#PASS-004): P045 Quarters approach/secondary support; retain P006/P010 and plausible P003 PA. #58 does not claim to solve this mechanism. |
 
@@ -33,10 +35,10 @@ the four-centimeter result difference is not the acceptance measure.
 
 ## Ready, held and parked
 
-- **Ready for combined verification:** gap-only extraction; #57's minimal
+- **Verified together, ready for required review:** gap-only extraction; #57's minimal
   cadence condition; isolated #58, #60 and #61. No experimental parent is
-  required. Contribution receipts are source-specific; they do not certify
-  this combined tree. Promotion and any required review remain separate.
+  required. The exact combined receipt is published in the ledger; original
+  focused receipts remain source-specific. Promotion/review remains separate.
 - **Held from this candidate:** #54, earlier zone/Duo/clearance/detour code,
   rejected late-QB chase, coverage #34, seam/post/QB-pressure bundles,
   stronger grip/helper/hands experiments. Existing #34 blockers remain blockers.
