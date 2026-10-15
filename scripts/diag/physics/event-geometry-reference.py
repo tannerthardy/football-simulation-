@@ -120,7 +120,11 @@ def replay(field, phases, *, moving=False, weights=(D(1),)):
     return {'after': bs, 'angularResidual': residue, 'geometricResidual': geometric,
             'externalAngularImpulse': external, 'workResidual': energy_residue,
             'handWork': hand_work, 'impulse': j, 'timeImpulse': it,
-            'midpointTimeImpulse': elapsed * j / 2, 'phases': observations}
+            'midpointTimeImpulse': elapsed * j / 2,
+            'chordGeometryContribution': j*(c0+c1*elapsed/2+c2*elapsed*elapsed/4),
+            'firstMomentAngularContribution': c1*(it-j*elapsed/2),
+            'accelerationAngularContribution': c2*(itt-j*elapsed*elapsed/2)/2,
+            'phases': observations}
 
 
 def error(a, b):
