@@ -1,5 +1,27 @@
 # Current work ownership
 
+## Loaded pass-foot objective follow-up, 2026-10-15
+
+Run-game continues from #64 evidence `eba1b61`, publication `db77674`, on
+`codex/pass-loaded-objective`. First question: does field-x give-ground oppose
+the contact-relative mirror action in native P040, or is the observed motion
+an execution/geometry limit? Start with saved P040/P019 body and command traces;
+reconstruct the loaded request independently before attributing it to spacing.
+The code ownership boundary remains PassProtector/pass-specific cutOffPoint.
+No shared engagement, run controller, spacing, awareness, capacity or solver
+edit is claimed. #57 and #64 retain their separate receipts and adverse arms.
+Current remote #62 changes experimental turn routing/World, #55 experimental
+grip/World, and #63 integration patches; none claims this loaded pass technique.
+These pending branches are not imported into the historical comparison.
+The loaded-axis alternative is parked: P040 still pressure2.40/sack3.00.
+A pass-only cutoff approach (ordinary goTo at the forecast's existing .75*vmax,
+through the selected point) is promising but has RT/RG adverse changes.
+One targeted initial-contact variate comparison is diagnostic only; no RNG
+policy is changed. Before viewing any transfer result, select saved **P020,
+index19**, Gun Doubles Levels / Wide9 / dime, from the same frozen game/rosters.
+It changes the alignment/personnel from P040 and is not replaced after a loss.
+Budget one baseline/candidate opening to2s for the free-to-loaded transition.
+
 ## Opening pass-set investigation, 2026-10-15
 
 Run-game owns `codex/pass-set-opening-diagnosis` from PR #57 `1f11e45` /

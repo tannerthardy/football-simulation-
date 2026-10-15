@@ -56,7 +56,7 @@ export function savedNativePlay(id,index){
     for(const a of sim.agents)setup.energy.set(a.player.id,setup.energy.get(a.player.id)+errors[a.idx]);
    }
    assert(error<1e-14);assert.deepEqual({...sim.rng},o.seedState);
-   return {sim,play,observation:o,initialization:{error,iterations,seed:o.seedState.key,ballY,
+   return {sim,play,observation:o,setup,initialization:{error,iterations,seed:o.seedState.key,ballY,
     ballYSource:lane!==undefined?'recorded center installed pass-set lane':precise===undefined?'recorded hash landmark':'saved full prefix first-tick QB coordinate',
     call:setup.offCall,defense:setup.defCall,energy:[...setup.energy],manPrefs:prefs,hurry,
     scouting:{...setup.scouting,cells:[...setup.scouting.cells]},coverageScouting:{...setup.coverageScouting}}};

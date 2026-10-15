@@ -283,9 +283,13 @@ export class PassProtector implements Behavior {
     // earliest point on his projected path you can reach first, on his inside
     // shoulder — and let the hands decide the rep.
     let ride = false;
+    let cuttingOff = false;
     if (edgeRusher && isOL(a)) {
       const meet = cutOffPoint(a, r, qb.pos, contact);
-      if (meet) set = { x: meet.x, y: meet.y + out * overset };
+      if (meet) {
+        set = { x: meet.x, y: meet.y + out * overset };
+        cuttingOff = true;
+      }
       else if (r.pos.x < a.pos.x + 1.0 && Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y) < 4) {
         // Beaten to the corner: run him past the QB — chase his inside hip
         // and get hands on him from a losing angle.
@@ -304,6 +308,11 @@ export class PassProtector implements Behavior {
     const facing = Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x);
     const quick = 0.85 + 0.3 * traits(a).feet;
     if (ride) return track(a, set, r.vel, { cutSkill: quick, gain: 3 });
+    // The cutoff is an interception, not a point on which to match the
+    // rusher's present velocity. Approach through it at the kick-slide speed
+    // already assumed by the forecast; physical movement and contact still
+    // decide whether the tackle can arrive and obtain useful protection.
+    if (cuttingOff) return goTo(a, set, { speed: 0.75, through: a.profile.vmax * 0.75, facing, cutSkill: quick });
     return track(a, set, { x: r.vel.x * 0.7, y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
   }
 }
