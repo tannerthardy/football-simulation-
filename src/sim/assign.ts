@@ -126,11 +126,7 @@ export function assignBehaviors(sim: PlaySim): void {
   } else {
     qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ride,
       mesh.ride ? -playSideSign(sim, concept) : undefined);
-    // Inside/split zone also exchanges with a running back. A mesh landmark
-    // is not a stop: keep the back's existing rolling approach, while the QB
-    // retains this call's pivot and only transfers within physical reach.
-    const rollingBack = mesh.ride || concept.scheme === 'insideZone' || concept.scheme === 'splitZone';
-    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, rollingBack);
+    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride);
   }
   for (const a of sim.offense) {
     if (a.behavior.kind === 'idle') a.behavior = new DownfieldBlocker();
@@ -259,7 +255,7 @@ export class RunnerToMesh implements Behavior {
     // until the QB actually gives him the ball; onHandoff installs the run.
     // Running through an expired landmark used to strand him yards away.
     if (this.ride) {
-      // A zone back takes the ball on the move: arrive running, then keep
+      // A stretch back takes the ball on the move: arrive running, then keep
       // riding the track toward the aiming point until the QB puts it in.
       if (d < .7) this.passed = true;
       if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });

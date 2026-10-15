@@ -35,13 +35,13 @@ export function meshExperiment(rolling:boolean|null,delay:number,concept='iz_str
   world.step([sim.t<delay?{vel:{x:0,y:0}}:q,r] as Intent[],.05);steps++;
  }
  const f=frames.find(f=>f.handed);
- return {rolling,installedRolling:old.ride,delay,concept,initial,steps,handoff:f?{t:f.t,rbSpeed:Math.hypot(f.before[1].vel.x,f.before[1].vel.y),
+ return {rolling,installedRolling:old.ride,executedRolling:rolling ?? old.ride,delay,concept,initial,steps,handoff:f?{t:f.t,rbSpeed:Math.hypot(f.before[1].vel.x,f.before[1].vel.y),
   distance:Math.hypot(f.before[0].pos.x-f.before[1].pos.x,f.before[0].pos.y-f.before[1].pos.y),
   physicalReach:handoffReach(qb,rb)}:null,frames};
 }
 if(process.argv[1]?.endsWith('/run-tempo-mesh.ts')) {
 const start=performance.now();
-const cases=[meshExperiment(false,0),meshExperiment(null,0),meshExperiment(false,1),meshExperiment(null,1)];
+const cases=[meshExperiment(false,0),meshExperiment(true,0),meshExperiment(false,1),meshExperiment(true,1)];
 const result={kind:'isolated same-snap QB/RB World experiment; no native all-22 play',sourceSha256:sourceVersion(),
  ordinaryOwnWorldSteps:cases.reduce((n,c)=>n+c.steps,0),nativePlays:0,elapsedSeconds:(performance.now()-start)/1000,cases};
 mkdirSync('out/tempo-climb',{recursive:true});writeFileSync('out/tempo-climb/mesh-experiment.json',JSON.stringify(result)+'\n');
