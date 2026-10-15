@@ -1,5 +1,21 @@
 # Current work ownership
 
+## Joined release and run-scheme transfer, 2026-10-15
+
+Root continues PR #50 publication `da6cbce` / tested `0336414`, runtime
+`afb8a307…`, on `codex/joined-release-transfer`. Root owns blocking.ts and any
+bounded departure helper, diagnostic/fixture and integration changes. No other
+agent is editing these files. This is one joined-release investigation plus a
+short matched PR47/PR50 transfer screen: inside zone strong/weak, split zone,
+counter, trap, duo and outside zone. Wham is absent from the installed playbook.
+The shared baseline remote was fetched at `4ded6b6`; this experiment compares
+explicit experimental parents and makes no baseline promotion claim.
+First test whether the exact post-release command, from own momentum/support
+and acquired DL/keeper pictures, is physically clear over the ordinary decision
+beat. Preserve honest held/contact outcomes and the known weak adverse control;
+no graph-route retry, hidden information, capacity/physics or perception change.
+Freeze source/tests/scripts/config and HEAD during every baseline receipt.
+
 ## Continuous wide-zone interaction, 2026-10-14
 
 The user explicitly authorizes continuing the entire wide-zone correction,
