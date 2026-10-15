@@ -27,6 +27,7 @@ import { contactCost } from '../contact-choice.js';
 import type { Perceived } from '../perception.js';
 import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
 import { observeRunRead, runReadObservers } from '../run-read-observer.js';
+import {chooseRunApproach,type RunApproachPeer} from '../run-approach.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -63,7 +64,8 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
 
 /** Read the current surface, rather than a two-second forecast through it.
  * Entry points are between moving blockers, or outside a kick/log. */
-export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
+export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions,
+  movingApproach?: (entry:Vec2)=>boolean): Vec2 | null {
   if (!opts.run || !opts.aim) return null;
   const side=opts.run.side;
   const surface=sim.offense.filter((b)=>['LT','LG','C','RG','RT'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)
@@ -103,8 +105,14 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       risk+=Math.max(0,arrive-reach)*3;
     }
     const score=Math.abs(p.y-preferred)*.65+Math.abs(p.y-a.pos.y)*.12+risk;
-    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
+    measurements.push({ entry: p, risk, score });
     if(score<cost) {cost=score;best=p;}
+  }
+  // A low destination risk does not make its approach traversable. Keep the
+  // original ranking among clear moving approaches; gather only if none exist.
+  if(best&&movingApproach&&!movingApproach(best)){
+    const moving=measurements.sort((l,r)=>l.score-r.score).find(c=>movingApproach(c.entry));
+    if(moving)best=moving.entry;
   }
   if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface });
   return best;
@@ -121,6 +129,7 @@ export class BallCarrier implements Behavior {
   private plannedExit = false;
   private boundaryRecovery = false;
   private readDone = false;
+  private entryApproach = false;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -209,14 +218,19 @@ export class BallCarrier implements Behavior {
       // This holds a chosen action through one processing interval; movement,
       // real contact and boundary recovery still execute on every native tick.
       this.nextEval = sim.t + a.mind.decisionInterval;
-      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
+      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts,p=>{
+        const h=angleOf({x:p.x-a.pos.x,y:p.y-a.pos.y});
+        const approach=this.approach(a,sim,{vel:{x:Math.cos(h)*a.profile.vmax,y:Math.sin(h)*a.profile.vmax},cutSkill,squeeze:0});
+        return !approach||(approach.kind!=='gather'&&approach.minimumGap>=0);
+      }) : null;
       const best = entry ? null : this.evaluate(a, sim, dir, false);
+      this.entryApproach = !!entry;
       if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
       else if (best) { this.heading = best.heading; this.plannedExit = best.exits; }
       else if (this.heading === null) this.heading = dir > 0 ? 0 : Math.PI;
     }
     const h = this.heading!;
-    return this.command(a, sim, h, a.profile.vmax, cutSkill);
+    return this.command(a, sim, h, a.profile.vmax, cutSkill, this.entryApproach);
   }
 
   /** Press the live track until the read commits, then attack the entry. */
@@ -240,7 +254,7 @@ export class BallCarrier implements Behavior {
     return null;
   }
 
-  private command(a: Agent, sim: PlaySim, h: number, speed: number, cutSkill: number): MoveCommand {
+  private command(a: Agent, sim: PlaySim, h: number, speed: number, cutSkill: number, entryApproach=false): MoveCommand {
     const bodies = sim.agents.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ pos: sim.see(a, o).pos, radius: o.profile.radius }));
     const squeeze = sim.bond ? 0 : squeezeForGap(a.pos, h, a.profile.radius, bodies) * (0.65 + 0.35 * a.r('elusiveness'));
     if (squeeze > 0.3 && !a.tags.has('squeezed')) {
@@ -268,8 +282,33 @@ export class BallCarrier implements Behavior {
         vel.y = inward * Math.max(1, outward);
       }
     }
-    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'command', { heading: h, speed, vel, cutSkill, squeeze });
-    return { vel, cutSkill, squeeze };
+    let command:MoveCommand={vel,cutSkill,squeeze};
+    if(entryApproach){
+      const approach=this.approach(a,sim,command);
+      if(approach){
+        command=approach.command;
+        if(runReadObservers.has(sim))observeRunRead(sim,a,'entry-approach',{
+          choice:approach.kind,minimumGap:approach.minimumGap,
+          choices:approach.choices.map(c=>({kind:c.kind,minimumGap:c.minimumGap,up:c.up,gaps:c.gaps}))});
+      }
+    }
+    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'command', { heading: h, speed:Math.hypot(command.vel.x,command.vel.y), vel:command.vel, cutSkill, squeeze });
+    return command;
+  }
+
+  private approach(a:Agent,sim:PlaySim,command:MoveCommand){
+    const s=a.body.support;
+    // Empty-World forecasting is limited by the runner's own tactile state.
+    if(sim.bond||a.engagement||this.boundaryRecovery||s?.state!=='up'||s.foot||s.strike
+      ||(a.body.squeeze??0)>1e-6||(command.squeeze??0)>1e-6
+      ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6
+      ||sim.world.joints.some(j=>j.a===a.body||j.b===a.body))return null;
+    const peers:RunApproachPeer[]=[];
+    for(const b of sim.teammates(a))if(b!==a){
+      const picture=sim.teammateInformation(a,b);
+      if(picture.source!=='unavailable')peers.push({id:b.idx,picture,radius:b.profile.radius,brake:b.profile.brake});
+    }
+    return chooseRunApproach(a.body,command,peers,sim.t,sim.world.handContact);
   }
 
   private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean, assessmentAim = this.opts.aim): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
