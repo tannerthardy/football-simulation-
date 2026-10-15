@@ -24,6 +24,19 @@ simulation, default/reference change or shared verifier run by this owner.
 Original query/control checks and
 [execution handoff](reviews/p045-nfl-restoration-handoff-2026-10-15.md) remain preserved.
 
+## AMF source research, October 15, 2026 (America/Phoenix)
+
+Measurement owner: `codex/nfl-catch-approach`.
+[Source review](reviews/amf-source-review-2026-10-15.md),
+[resumable acquisition manifest](../data/reviews/current/amf-acquisition-manifest.json)
+and [one-game audit](../data/reviews/current/amf-source-audit.json) are prepared.
+124 selected HF games, 108 games in play tables, 105 overlapping; LFT on 37
+games. One HF game and linked labels inspected; raw files remain outside the
+repository. Canonical acquisition is 1.70 GB, with 1.62 GB remaining. Bulk is
+deferred for the acquisition/usage decision: noncommercial research terms,
+redistribution restrictions, identity/visibility gaps. No engine adapter/tuning,
+new BDB query or simulation; the P045 expansion above stays open separately.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

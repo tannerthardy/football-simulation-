@@ -1,0 +1,2328 @@
+{
+  "schema": "amf-acquisition-manifest-v1",
+  "source_repository": "https://github.com/hudl/amf-open-data",
+  "source_commit": "0ef19db20d768f34ad0e260c9c19b85c30ab8984",
+  "inventory_date": "2026-10-15",
+  "storage_root": "/workspace/datasets/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984",
+  "status": "bulk_not_started_cost_and_usage_decision_pending",
+  "terms_url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/LICENSE.pdf",
+  "usage": "Research only; no commercial exploitation of data/derived analysis; redistribution/alteration restricted; publications require StatsBomb credit and logo. Obtain written permission before product incorporation or sharing raw data.",
+  "files": [
+    {
+      "path": "data/plays/tb12_plays_dataset_2017_2018.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/plays/tb12_plays_dataset_2017_2018.csv",
+      "bytes": 8407768,
+      "etag": "\"242bd59dc042612d8bb945f56180a1f9f376131b43eb06fe208eabb270d42be7\"",
+      "sha256": "10379a84cb87a6f41f567dd6425ef591e319901fb9de60e3ab336a6f87b31e00"
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2018_2019.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/plays/tb12_plays_dataset_2018_2019.csv",
+      "bytes": 8743076,
+      "etag": "\"1815f8debe83049938fd7212e78523f5bc4fa2a64ccc35422c5040b7ba56d3eb\"",
+      "sha256": "da5506f6cd1474ee3991df0659014f4d2189c09d28424969b79d13382d8d7c05"
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2019_2020.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/plays/tb12_plays_dataset_2019_2020.csv",
+      "bytes": 4246148,
+      "etag": "\"9b91fee5be43682c90d2d6583135027693568fa5e75b59466cf986bfb0a4f686\"",
+      "sha256": "fff0704772a3e0ebd76cb486839a38d728859a49ae4d0caf12eb6d63df553232"
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2020_2021.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/plays/tb12_plays_dataset_2020_2021.csv",
+      "bytes": 3676462,
+      "etag": "\"623de7667171f8b07990d0a20eb5fb4c3832dfeb9652786c03046c05b56e9390\"",
+      "sha256": "eaec78f9788f30e0ffbb9928ba35e2fa73c7618be66fb94dd12c7f35000d1b85"
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2021_2022.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/plays/tb12_plays_dataset_2021_2022.csv",
+      "bytes": 3346407,
+      "etag": "\"64e793e53db02bec345217ed8d10638e719f22afdd8398c4e64d0602b1267d3c\"",
+      "sha256": "00efc7e00a5967371dae8aeea2c9e8cbf8d6eed478671ecaf74c83f7b9535d92"
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2022_2023.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/plays/tb12_plays_dataset_2022_2023.csv",
+      "bytes": 3186814,
+      "etag": "\"23c908aa03611261cbd077c445dd8ff6b05008374976db5b7bdd92afceef70da\"",
+      "sha256": "c1237992db9c1398efc63a55de28864ececce9ab24371462300d2367a8b81fd0"
+    },
+    {
+      "path": "data/events/tb12_events_dataset_2017_2018.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/events/tb12_events_dataset_2017_2018.csv",
+      "bytes": 56732981,
+      "etag": "\"87a31e990ea2ca602c469fb0841e6cdab2d490bbb016f2bbfb40e418e19f3d5b\"",
+      "sha256": null
+    },
+    {
+      "path": "data/events/tb12_events_dataset_2018_2019.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/events/tb12_events_dataset_2018_2019.csv",
+      "bytes": 57461589,
+      "etag": "\"65943272f792800f4299974d7bfbf2db80794c2b4b918ea0479058cd9d811eca\"",
+      "sha256": null
+    },
+    {
+      "path": "data/events/tb12_events_dataset_2019_2020.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/events/tb12_events_dataset_2019_2020.csv",
+      "bytes": 55697201,
+      "etag": "\"afbd7934bb65338317ec582616cbf5eb5b03765d1a6c0c9e6d056a98223763ae\"",
+      "sha256": null
+    },
+    {
+      "path": "data/events/tb12_events_dataset_2020_2021.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/events/tb12_events_dataset_2020_2021.csv",
+      "bytes": 50423510,
+      "etag": "\"79f370b936cc783d209336087d5c4006bee02a3ca2653df9b43994fc181f347b\"",
+      "sha256": null
+    },
+    {
+      "path": "data/events/tb12_events_dataset_2021_2022.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/events/tb12_events_dataset_2021_2022.csv",
+      "bytes": 40818741,
+      "etag": "\"2eddd2f63d739db4b787e5c330e734dfdbd15f74bf75d5dbba33ead284d71475\"",
+      "sha256": null
+    },
+    {
+      "path": "data/events/tb12_events_dataset_2022_2023.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/events/tb12_events_dataset_2022_2023.csv",
+      "bytes": 43823584,
+      "etag": "\"1c79153a5eb64e84795189d7a16c2cdda5a52087f8d4bdb9ddba2ffcdca2b089\"",
+      "sha256": "2723d8eaf2127c5add45b759239ce1d2feebb270a5fed95e4f692a83ecd00327"
+    },
+    {
+      "path": "data/lft/tb12_lft_dataset_2021_2022.parquet",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/tb12_lft_dataset_2021_2022.parquet",
+      "bytes": 52797011,
+      "etag": "\"fdc4da3d7acd6bee2cd1ba3791e78a8948265b6d51c9c457b40ffebfbc305f65\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/tb12_lft_dataset_2022_2023.parquet",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/tb12_lft_dataset_2022_2023.parquet",
+      "bytes": 55934905,
+      "etag": "\"b8f336c9e4ca8b7b9cee776dc551301fad90ebf5456d4e82b7e2b5fa302f9147\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20160911_NE_ARI.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20160911_NE_ARI.json.gz",
+      "bytes": 8222906,
+      "etag": "\"ca6164549115f55d7eebff77d40ebc25af4daf23de9690bb70489a9b3a7a347f\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20160918_MIA_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20160918_MIA_NE.json.gz",
+      "bytes": 11836657,
+      "etag": "\"1bb1af08fc2f2e679b97845212bb34fd133a3691989757a2d0da8080cd057a7f\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20160922_HOU_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20160922_HOU_NE.json.gz",
+      "bytes": 10172388,
+      "etag": "\"e60d44a82e6b6f57b4a4e18dd33236bb5ea133fc838da53c182886d70a003c51\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161002_BUF_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161002_BUF_NE.json.gz",
+      "bytes": 11643005,
+      "etag": "\"f7fa08720370a04ffbf7742deba5d02873bfb7a8dc6013cdb2bed71f7a67ada2\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161009_NE_CLE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161009_NE_CLE.json.gz",
+      "bytes": 11595528,
+      "etag": "\"ff652e805d308aaab26cd12cee4f109977ddbc20147ac0a5f2ffe6ff2f8727b3\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161016_CIN_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161016_CIN_NE.json.gz",
+      "bytes": 11662645,
+      "etag": "\"b1ecdad159263169495b34f7a03a75ec109591aa36b821d9e84261787af90b44\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161023_NE_PIT.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161023_NE_PIT.json.gz",
+      "bytes": 9716410,
+      "etag": "\"5f14028300a507a3c978f4ecfbb7ded345b6606f97abe384a68d806d66712cc2\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161030_NE_BUF.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161030_NE_BUF.json.gz",
+      "bytes": 11994435,
+      "etag": "\"44ed4b5e98735f6051774f20e233a0bb628365bf50396607baf6bff7628654a3\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161113_SEA_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161113_SEA_NE.json.gz",
+      "bytes": 12532701,
+      "etag": "\"57a2c19a15e564abc668c27e1011b6b3f41254d27b6fefc19a58e9305d50fe4a\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161120_NE_SF.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161120_NE_SF.json.gz",
+      "bytes": 11053765,
+      "etag": "\"7918aa964078b727e9b2a9f92104049885efb77741886f9fbae2dc57fa983b02\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161127_NE_NYJ.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161127_NE_NYJ.json.gz",
+      "bytes": 10910854,
+      "etag": "\"7f5635ca7740db65b24aa0996c8487fd568010f2ae713d2ed7f7d2d4dd213654\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161204_LAR_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161204_LAR_NE.json.gz",
+      "bytes": 10962615,
+      "etag": "\"869d367d15050b82314d00c72e29beddac6135f23311aa6343f957e981e434a6\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161212_BAL_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161212_BAL_NE.json.gz",
+      "bytes": 11072621,
+      "etag": "\"2037d303ffb65831697bd3f5d543f171da9c129d97d1c7d0c726a683cbd5cd31\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161218_NE_DEN.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161218_NE_DEN.json.gz",
+      "bytes": 11345332,
+      "etag": "\"2580c495c999009e5aa7520ecc882083eb6253e04b9c9879a7687864a7889a6e\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20161224_NYJ_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20161224_NYJ_NE.json.gz",
+      "bytes": 10957675,
+      "etag": "\"6b883e920383df0449a66eac50fe07d4bffdd555cd9802e2db6646d426ee20f4\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20170101_NE_MIA.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20170101_NE_MIA.json.gz",
+      "bytes": 9984814,
+      "etag": "\"8665eb4c3e29ec2bf931afc50a212e4b7efd46f68a7c5c8e1b5b8ee3a5f3cf25\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20170114_HOU_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20170114_HOU_NE.json.gz",
+      "bytes": 11441167,
+      "etag": "\"62822a6374961047fe696b8464a36acac0ced6f8a3b10ba72f0e4498576365e5\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20170205_NE_ATL.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20170205_NE_ATL.json.gz",
+      "bytes": 11170309,
+      "etag": "\"0288e6cce54901ee75c100b3d323c1ea88943bd9fc94e6851704ff89154bf649\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20170907_KC_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20170907_KC_NE.json.gz",
+      "bytes": 12892570,
+      "etag": "\"f5e9bb38a1e00fdaf0d2ebe2d4237c5c67806b5f5581a46c520f362734c15b65\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20170924_HOU_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20170924_HOU_NE.json.gz",
+      "bytes": 10524328,
+      "etag": "\"20930373b0f8429a4cbb2b0390e1629f2b6804117a3458319cd76fd980988150\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171001_CAR_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171001_CAR_NE.json.gz",
+      "bytes": 12295611,
+      "etag": "\"ae35a35b4840ff91c173203f15402de8b2ec34aa3b163ba42e249b9c57ecfcf8\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171005_NE_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171005_NE_TB.json.gz",
+      "bytes": 12228049,
+      "etag": "\"3d54389ccd6f71e76b558c81142678c15904cbd5a8914c8f1c7e4131a20ffd85\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171015_NE_NYJ.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171015_NE_NYJ.json.gz",
+      "bytes": 12081102,
+      "etag": "\"b9070581176f0ab44f41123a677fb9b9b7a8dd716e269c13a883697f16635023\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171029_LAC_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171029_LAC_NE.json.gz",
+      "bytes": 11418642,
+      "etag": "\"79ac9f76887a9c88005aaea5163840ae5e04605c39dbe472a9583427bca86dcd\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171112_NE_DEN.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171112_NE_DEN.json.gz",
+      "bytes": 10019592,
+      "etag": "\"043903da1305789c218ff7d2110869a2d32decde7e72014c623a49775088a5fc\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171119_NE_LV.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171119_NE_LV.json.gz",
+      "bytes": 9758661,
+      "etag": "\"25caa63d27437f5f53ee10a2a0855348e90e078f2aeb83d5829152834a1119fc\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171203_NE_BUF.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171203_NE_BUF.json.gz",
+      "bytes": 10611398,
+      "etag": "\"6bbdb48610976b495253391caebc9dc21eba1f83298936b179b74a34987de0dd\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171211_NE_MIA.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171211_NE_MIA.json.gz",
+      "bytes": 12042699,
+      "etag": "\"11d90dbb76acbcc76f9853cdb1f6e2b96850ed32dca93ef107892989834cacf3\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171217_NE_PIT.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171217_NE_PIT.json.gz",
+      "bytes": 9037001,
+      "etag": "\"df572190a0884b51240649edf94828079c377f170f80f09f8cbccb0dfb063ea0\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171224_BUF_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171224_BUF_NE.json.gz",
+      "bytes": 10779280,
+      "etag": "\"8d652cf31c280c99715b334d2cee8c839cd632d1e01e8756157270cc564c9971\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20171231_NYJ_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20171231_NYJ_NE.json.gz",
+      "bytes": 11506546,
+      "etag": "\"30b2abc57999d8ccbd46934e812b5ffec79e29b0a650c6271a4cbead57b57b6d\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20180113_TEN_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20180113_TEN_NE.json.gz",
+      "bytes": 13582571,
+      "etag": "\"3e3dcc755e14d09cfde667ecb89b6c11b542ccb8def6d78eb3d9bf903b8addf1\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20180121_JAX_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20180121_JAX_NE.json.gz",
+      "bytes": 10182530,
+      "etag": "\"1b6b83a77305fe37210e4286a6b293f7e60d35b10347c4487dcf6cb4db913586\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20180204_PHI_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20180204_PHI_NE.json.gz",
+      "bytes": 12796769,
+      "etag": "\"bee17488931810254c4e84f8186543329e7b0347f1b98a890a7d6a3b6a903bd1\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20180909_HOU_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20180909_HOU_NE.json.gz",
+      "bytes": 12244896,
+      "etag": "\"470a3d46f1e47597e5e4ae6b573cc68ff9e932fb4cc25b2f251db2406333be95\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20180923_NE_DET.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20180923_NE_DET.json.gz",
+      "bytes": 11158639,
+      "etag": "\"58aeee7e82c91734d0d831d49cbfa203cfc2d37bb9971df028231bae87e4d03c\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20180930_MIA_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20180930_MIA_NE.json.gz",
+      "bytes": 10118133,
+      "etag": "\"6beaf5c491cf754c4d4d298f5ea4fca367ea885fcf846382a5d7736d06203c8f\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181004_IND_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181004_IND_NE.json.gz",
+      "bytes": 12712930,
+      "etag": "\"673da4f03f73136786c76ae04c14034d889dbd50a8f6df2631580379c1a174a7\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181014_KC_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181014_KC_NE.json.gz",
+      "bytes": 12224356,
+      "etag": "\"4aef9917ae84a3e492cd609dda6e77fc042464759e3b7c3fa518118023bcee9d\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181029_NE_BUF.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181029_NE_BUF.json.gz",
+      "bytes": 11632232,
+      "etag": "\"9f48102c0762eb9bdda962692ef18ed078aa590b888f54e0095fac402ed81193\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181104_GB_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181104_GB_NE.json.gz",
+      "bytes": 11739765,
+      "etag": "\"8cbe42b50e5ac8e5c1a060bfa2e0b7452ba1d75e39136d5237f58b39b53fece3\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181125_NE_NYJ.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181125_NE_NYJ.json.gz",
+      "bytes": 10195526,
+      "etag": "\"3c4a11185348a3add29cbf3d9fa352f44d992996435ab46fdcd0455f1a461eb1\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181202_MIN_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181202_MIN_NE.json.gz",
+      "bytes": 10750480,
+      "etag": "\"41e048b81f6cd04090a43841a4257f74b41603064e7e4016e81dde358df96037\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181209_NE_MIA.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181209_NE_MIA.json.gz",
+      "bytes": 10665422,
+      "etag": "\"e9cb947ae18839ab7af98239e7a926f970e5b126eafb142a562cfd558865b9f3\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181216_NE_PIT.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181216_NE_PIT.json.gz",
+      "bytes": 9698485,
+      "etag": "\"92e4f1e94f81e5b502357e75520a795c357505b9c81052255e4893b454955377\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181223_BUF_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181223_BUF_NE.json.gz",
+      "bytes": 11090888,
+      "etag": "\"ad33fc0babfba34f308867253d77975e6d7431bf695391347d63ecd88dbd9360\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20181230_NYJ_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20181230_NYJ_NE.json.gz",
+      "bytes": 10678663,
+      "etag": "\"e06eb97a40733303e32c7ec37b574a67a77122e911432a2e285d1618b53fe99d\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20190113_LAC_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20190113_LAC_NE.json.gz",
+      "bytes": 13208542,
+      "etag": "\"9d0f3a0fa48c079483835db425a24944a7fa43d1d3b396423446ba26ea4cd8af\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20190120_NE_KC.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20190120_NE_KC.json.gz",
+      "bytes": 10712895,
+      "etag": "\"65acf700dc90f9dc4f7f060f19cd675b5a03bfaaa4c27f7fb909e260c55f0986\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20190203_NE_LAR.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20190203_NE_LAR.json.gz",
+      "bytes": 11710961,
+      "etag": "\"a2b6e88669e328dc1b89e49b11c6c482e7438987c758196316dd34e5e23d232a\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20190908_PIT_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20190908_PIT_NE.json.gz",
+      "bytes": 11501631,
+      "etag": "\"31674ebfafcbbd3908f8d224fbb5525453fe1849fcb296048961c59a0c36850f\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20190915_MIA_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20190915_MIA_NE.json.gz",
+      "bytes": 9714949,
+      "etag": "\"79773aa96bb37a80d983986d1cd84141fbed67d52f94210133ecc7ad87c691f7\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20190922_NYJ_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20190922_NYJ_NE.json.gz",
+      "bytes": 10389892,
+      "etag": "\"1a79d99c917dc89fcabb9847f640bf1a656cd390c7d463df05683a1c1f7c12da\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20190929_NE_BUF.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20190929_NE_BUF.json.gz",
+      "bytes": 11915924,
+      "etag": "\"deeff81368999409c942b746bc276bd47f3387fbb8f739d27d03edc08a11c7b4\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191006_NE_WAS.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191006_NE_WAS.json.gz",
+      "bytes": 9928925,
+      "etag": "\"d843664211937dc7f1eeaf3e9f89b764bccf749c5fa958d4d6e245ab384dd40e\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191010_NYG_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191010_NYG_NE.json.gz",
+      "bytes": 10558279,
+      "etag": "\"46e5ba6371a2923094a266f29b0bb38426e2e1ef95ebd3c54c33d51c6680cef3\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191020_NE_NYJ.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191020_NE_NYJ.json.gz",
+      "bytes": 11832583,
+      "etag": "\"aa44e3549b5cc15951546c8137a9e6a769a912ddfd824191a7e3e51a0a91c1e2\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191027_CLE_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191027_CLE_NE.json.gz",
+      "bytes": 11623861,
+      "etag": "\"3a30a7d9edd2201e38fe57a4f0157425d489892f9e2a1e4a1d75a796882f0104\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191103_NE_BAL.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191103_NE_BAL.json.gz",
+      "bytes": 12025424,
+      "etag": "\"eb1f688c549495b70d70ed8e848b9eab5446c327addc8f907c350c59944a0ddf\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191117_NE_PHI.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191117_NE_PHI.json.gz",
+      "bytes": 12173323,
+      "etag": "\"508d02be7d4f8eb98f3d98a88ecd1462d0b74617e9f3e778064b8a2e037dd0c9\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191124_DAL_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191124_DAL_NE.json.gz",
+      "bytes": 10943333,
+      "etag": "\"3636a902829d70930c51465b0cf35a132f8e779a91f0101906bd5ea8d48109bf\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191201_NE_HOU.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191201_NE_HOU.json.gz",
+      "bytes": 11127949,
+      "etag": "\"1bc8109b2261ff8599e1551c0cc50b2bc3d0eb3c3f54b78dc317835a991cfa73\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191208_KC_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191208_KC_NE.json.gz",
+      "bytes": 12929646,
+      "etag": "\"25d22304ab593e6c18d1285350150a3caa1995e19f4d345ba96ccb957cf41f9a\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191215_NE_CIN.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191215_NE_CIN.json.gz",
+      "bytes": 11249311,
+      "etag": "\"23b0eb6cac64040e5c2d1463911ce1979e722fcef292c42697d8a95ff026105b\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191221_BUF_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191221_BUF_NE.json.gz",
+      "bytes": 12654692,
+      "etag": "\"e6b07ce6ba37c95870d6eb2ba461f8a8b4bffbe879b3b5511f8bc32d8c7b7556\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20191229_MIA_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20191229_MIA_NE.json.gz",
+      "bytes": 11093117,
+      "etag": "\"21ba499d9788a9e2b0cc3d89bb4d48e5dbcb32fa4e17c1d73296ddad7619a732\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20200104_TEN_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20200104_TEN_NE.json.gz",
+      "bytes": 11364517,
+      "etag": "\"ba20213e9ace5975311c35363833a4525b09c5f9a5479064ab59c175752ef9ec\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20200913_TB_NO.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20200913_TB_NO.json.gz",
+      "bytes": 9006941,
+      "etag": "\"74fb5fe4b73599bfaea2adf5333fd1549722b362255643b09f04772a820dacd7\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20200920_CAR_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20200920_CAR_TB.json.gz",
+      "bytes": 10331919,
+      "etag": "\"8876002a575c20dba6aa23d07aea5c01892abe152912ba8bdf17806de6637d3b\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20200927_TB_DEN.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20200927_TB_DEN.json.gz",
+      "bytes": 8677228,
+      "etag": "\"eaf08e9f9633bc517658854a0893b43663b813a9be0c03a45cd5dfc6f681e88f\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201004_LAC_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201004_LAC_TB.json.gz",
+      "bytes": 9050789,
+      "etag": "\"cfd4f0efc54074fb49d986806c1d44d45da6cdeab1bddf4bcf4b48136d49c04f\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201008_TB_CHI.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201008_TB_CHI.json.gz",
+      "bytes": 10980978,
+      "etag": "\"209262618d22d9d9ae8c27155546eeee5af3c1e64c92ca196b0a9f4dafe35b46\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201018_GB_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201018_GB_TB.json.gz",
+      "bytes": 9201425,
+      "etag": "\"5b39cf9e18dbb59c4b954c197f0f271b6eb8de3f3014eaa181ce31ad29920e4c\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201025_TB_LV.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201025_TB_LV.json.gz",
+      "bytes": 11356867,
+      "etag": "\"d33c4f273fbbb76b08a3882f6c7ab643f4a1360d98cda4fe06008010c5ba62a0\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201102_TB_NYG.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201102_TB_NYG.json.gz",
+      "bytes": 11118509,
+      "etag": "\"14fa4f44eea8db6544e5d7e6a1466e5d2aef18a91554384ecf012c709102f1ae\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201108_NO_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201108_NO_TB.json.gz",
+      "bytes": 7598801,
+      "etag": "\"aad01be6803994ac5b5342cf1cf3a69c622c08020c17b7add602f83b7d9bfd63\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201115_TB_CAR.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201115_TB_CAR.json.gz",
+      "bytes": 9862317,
+      "etag": "\"5e781c77b49b642fea93855866a109f8fb0ef7da10c9ba4bcda769bc9989d300\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201123_LAR_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201123_LAR_TB.json.gz",
+      "bytes": 10632523,
+      "etag": "\"8f1c8d8989dbba501ecc91351e687934aedb03a3fea1122c7a39922a03e6abfd\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201129_KC_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201129_KC_TB.json.gz",
+      "bytes": 10075985,
+      "etag": "\"0e5fd91ff7841371ab836e79329d52e54279e3ff73e78e93be2503f718720e9c\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201213_MIN_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201213_MIN_TB.json.gz",
+      "bytes": 8688483,
+      "etag": "\"caba6a28e70a365b23e7f3790a82c97dbe209469a1eaec164c80d3a3f6a50b96\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201220_TB_ATL.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201220_TB_ATL.json.gz",
+      "bytes": 10282884,
+      "etag": "\"b0cf02f2aea46ca241419dd7cc96f7230e4fa3144da1d497232112878cf55605\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20201226_TB_DET.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20201226_TB_DET.json.gz",
+      "bytes": 9450419,
+      "etag": "\"e2c4abb3096c1b84bb1ee2eacc1508af33316bad0f13cca39c9d598a5a28d343\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20210103_ATL_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20210103_ATL_TB.json.gz",
+      "bytes": 10152647,
+      "etag": "\"a22d0437b89fc2f90cad3047a52cd469e967a8f16139839919d8c0132966310c\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20210109_TB_WAS.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20210109_TB_WAS.json.gz",
+      "bytes": 10308719,
+      "etag": "\"b79ef0416350a6e182f14d7145c6f71d1a4099edb8171895e03907f283c17642\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20210117_TB_NO.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20210117_TB_NO.json.gz",
+      "bytes": 8539643,
+      "etag": "\"a1cf4d437cb1a2d2b1935bc02ac2a8772c5ef8e11ad7e40a1b6dfed480f03f04\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20210124_TB_GB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20210124_TB_GB.json.gz",
+      "bytes": 11695656,
+      "etag": "\"1283a803237fea8e831abf9f2ba2ecd7dcc1b7e4f67c4b16d1958bdef9d93432\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20210207_KC_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20210207_KC_TB.json.gz",
+      "bytes": 10999628,
+      "etag": "\"4f4b4420e3b6a614d49c43faa59f03036dbedcb45881421ac18b7598ee3d4f13\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20210909_DAL_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20210909_DAL_TB.json.gz",
+      "bytes": 9203742,
+      "etag": "\"c91594da3fedfd037fee073a0663ed7b27150394fff06b2bf1aad827135c52bc\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20210919_ATL_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20210919_ATL_TB.json.gz",
+      "bytes": 8121827,
+      "etag": "\"efce44fb6c2e776e995811ed89c78c10eb720a26bcbda6b8d7c3c4b721664172\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20210926_TB_LAR.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20210926_TB_LAR.json.gz",
+      "bytes": 8476493,
+      "etag": "\"0aa3fe479b9f166180fb7c9d491309ff82580825195bb11d7b1037c822e317f8\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211003_TB_NE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211003_TB_NE.json.gz",
+      "bytes": 8395345,
+      "etag": "\"19e8c4786fa87b86a2547e82e6b7473f94a833d16e05dd1e71d9e2da2f8f2689\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211010_MIA_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211010_MIA_TB.json.gz",
+      "bytes": 7569306,
+      "etag": "\"aee5eb37bc1d7cd72e5fe16c9f5848251ec6da03a1e2f2d3505d1197443af1c5\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211015_TB_PHI.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211015_TB_PHI.json.gz",
+      "bytes": 7674137,
+      "etag": "\"c3fb0f77c93af9ad052320452eb6919034ba389dbce193a2ba70e7d935a6da5d\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211024_CHI_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211024_CHI_TB.json.gz",
+      "bytes": 8531789,
+      "etag": "\"eaed9a9fa09517c0e51bd8b48e593d6966ba0e7b284b8140cbe155d41ddb758c\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211031_TB_NO.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211031_TB_NO.json.gz",
+      "bytes": 8136290,
+      "etag": "\"6583eb7f07cd341875a977621eb70cf69cb0be269bf42593ef4e419a08de758d\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211114_TB_WAS.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211114_TB_WAS.json.gz",
+      "bytes": 7543709,
+      "etag": "\"59dde74e2fa026830e154b6ff4ede1cebb8d6576ff2b68ac7e66e9773eb44bc9\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211122_NYG_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211122_NYG_TB.json.gz",
+      "bytes": 8808733,
+      "etag": "\"b740199ad9ad5e43462075b3405b68c68772bf737b42b4f2f8742210afceba10\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211128_TB_IND.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211128_TB_IND.json.gz",
+      "bytes": 7767066,
+      "etag": "\"446b53b9e5023e7a5c85e4409e661b1499c61433c4ec61d10d584b6832212a6c\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211205_TB_ATL.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211205_TB_ATL.json.gz",
+      "bytes": 9048859,
+      "etag": "\"01892bceadc41b18a039dff457c4a8a0f872eb7d8fe3fc0a24a9cfea44c3d8a4\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211212_BUF_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211212_BUF_TB.json.gz",
+      "bytes": 8920581,
+      "etag": "\"0dd76cdbf85619d501b82b319340182491eddc35eca83d721d59067ab598771b\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211219_NO_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211219_NO_TB.json.gz",
+      "bytes": 7165757,
+      "etag": "\"6fab2da085c41e873929ef3e19d762bd7d27e9212b2cb1fe4bf7df6814f05962\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20211226_TB_CAR.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20211226_TB_CAR.json.gz",
+      "bytes": 7325680,
+      "etag": "\"a798dea39abbf87a5ae555f7bb5ed7f439f7b1de5c1c9723e34adcc1620c3e2e\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20220102_TB_NYJ.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20220102_TB_NYJ.json.gz",
+      "bytes": 7786288,
+      "etag": "\"756907c313f8bb869d7f2d24d57d875a713fa08a5f43ed90e7e47807661caedb\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20220109_CAR_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20220109_CAR_TB.json.gz",
+      "bytes": 7983190,
+      "etag": "\"a43c94c96698f2bd81a02dcf380a30757d37741d4ee87e9b2418fd50ae88a1ff\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20220116_PHI_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20220116_PHI_TB.json.gz",
+      "bytes": 8862627,
+      "etag": "\"c812424e652d829d76ac1ba352045a5caf4733d1a232361f3bba8ab33b43142b\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20220123_LAR_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20220123_LAR_TB.json.gz",
+      "bytes": 8081383,
+      "etag": "\"a67d92d0dfa02d8cdb040b66353a1fe6342be44105966854d968385440265614\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20220911_TB_DAL.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20220911_TB_DAL.json.gz",
+      "bytes": 7752122,
+      "etag": "\"e238ad216424e5c52b3108d1bcd14f3e71a15fbb203d0ad50939147224f3b0cf\"",
+      "sha256": "d3bf9cb93f64c53145674ecfe0f1049c7fd1191db6c2f8c8fcfbe41504309224"
+    },
+    {
+      "path": "data/tracking/SB_tracking_20220918_TB_NO.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20220918_TB_NO.json.gz",
+      "bytes": 8569706,
+      "etag": "\"69b631babe1f6e7946ff43eae49193d7be7ca2d6f9e2320a91d47def0c100ca3\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20220925_GB_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20220925_GB_TB.json.gz",
+      "bytes": 7225452,
+      "etag": "\"5c26f61dafd438f4a17e762a48535795b4c092d93aebb6518661aca8c3292bbd\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221002_KC_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221002_KC_TB.json.gz",
+      "bytes": 8951479,
+      "etag": "\"519e8f7761606e2ed114c21e32e6d344ac15941182c4ee5112f863f26f1fa7e6\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221009_ATL_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221009_ATL_TB.json.gz",
+      "bytes": 7872759,
+      "etag": "\"e5a817bb79a6675da63686add8fee4b3e6b93e32b8df36f951199aee96b9539b\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221016_TB_PIT.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221016_TB_PIT.json.gz",
+      "bytes": 7330448,
+      "etag": "\"d3be0010faaeb8b0f839c2b564fec6360874868de1f50095f5da62cedf3c72b3\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221023_TB_CAR.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221023_TB_CAR.json.gz",
+      "bytes": 7428362,
+      "etag": "\"25eed5ecdd01842b6db307b4564e3165675673aee8e0d2d7cbaa9ebfd9996cad\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221027_BAL_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221027_BAL_TB.json.gz",
+      "bytes": 8064535,
+      "etag": "\"b9964792cfb2c02e59ec9d55ce2e4c33bf4cbf8dbc0b2a7928d273e0512357b1\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221106_LAR_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221106_LAR_TB.json.gz",
+      "bytes": 8230701,
+      "etag": "\"eb9e3f0a058b301cecb681b363fe9eac7dcbb28bda24afa545c3dd56ba2e72b8\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221113_SEA_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221113_SEA_TB.json.gz",
+      "bytes": 7546770,
+      "etag": "\"e4a4b9e14d51e161c22bd2544bcbe2a941aebc0c3c71c2cf5f5ad4d7be2bc188\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221127_TB_CLE.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221127_TB_CLE.json.gz",
+      "bytes": 9673580,
+      "etag": "\"cf0431f3101970253d164aff360704ee3f5263bfde3dbd1e2d146879dfe1bb03\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221205_NO_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221205_NO_TB.json.gz",
+      "bytes": 8536904,
+      "etag": "\"7b09e039df9713896bc61cb8a0117bba9854bfeb932cd42440f7eb590e95aeca\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221211_TB_SF.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221211_TB_SF.json.gz",
+      "bytes": 8829940,
+      "etag": "\"011054d75e4cf372fe9f64b8b437932069cbc71697d988ac88c5ca3bb58fc359\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221218_CIN_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221218_CIN_TB.json.gz",
+      "bytes": 8199830,
+      "etag": "\"9c57a23c5fff00d9ba807adda27024122031b76aac7bbb25c50727391a092926\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20221225_TB_ARI.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20221225_TB_ARI.json.gz",
+      "bytes": 8777735,
+      "etag": "\"fc7c8c8386040f0b319193149824a8ecd97e51b4912384093329e6c0c38fc1d9\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20230101_CAR_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20230101_CAR_TB.json.gz",
+      "bytes": 9243066,
+      "etag": "\"924c4923704088b81e34b19c638c95e19a5c695fa28c36d78fd3923578a4875e\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20230108_TB_ATL.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20230108_TB_ATL.json.gz",
+      "bytes": 8201022,
+      "etag": "\"fbf2e10dc0a94c121284682110c4685432f9d5df7379c180da48d56995f016e7\"",
+      "sha256": null
+    },
+    {
+      "path": "data/tracking/SB_tracking_20230116_DAL_TB.json.gz",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/tracking/SB_tracking_20230116_DAL_TB.json.gz",
+      "bytes": 8583273,
+      "etag": "\"b4c0961b5b3117dab897dc5c6043ad78cf59b0f68e72e087fba6b65f55d4fc36\"",
+      "sha256": null
+    },
+    {
+      "path": "data/games.json",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/games.json",
+      "bytes": 80411,
+      "etag": "\"d573423ff56b04435b70fa4ca8cbfb16ddcec63f5eb3c7ee7ac80f6f097e9d9f\"",
+      "sha256": "05ce3805facc39d6d292bad0d473e082e7a0104863da4d1b9104488d0bce2d3a"
+    },
+    {
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/README.md",
+      "bytes": 5029,
+      "etag": "\"394330c56ebd23ea9655e7b0c446a4ae473f125dadf2191bfce3067c83dfa83f\"",
+      "sha256": "bd4721d6148c7b5ed230b77c55f47b11f2f5d5cb5e0f1d23bc1be4b25936d97a"
+    },
+    {
+      "path": "LICENSE.pdf",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/LICENSE.pdf",
+      "bytes": 165130,
+      "etag": "\"6fc4695ec33603692b95e45b384bda037b5ece2eae62f5ce3e16b09feefcd367\"",
+      "sha256": "a5462e69aeb71a39268b760b110c5c2190a2e0cee3015ba976f66bd71f6c2bb4"
+    },
+    {
+      "path": "doc/coordinates_explainer.pdf",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/doc/coordinates_explainer.pdf",
+      "bytes": 374586,
+      "etag": "\"d706a3589d364debbdaa819012fe4d4168fd3cceee230f7b6a4d4587cc0fb6ea\"",
+      "sha256": "aeae6b8935d926152d9301ae4a9c0506ce3ca831f16e3777e5d34efa662e8c9c"
+    },
+    {
+      "path": "doc/lft_dictionary.pdf",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/doc/lft_dictionary.pdf",
+      "bytes": 38884,
+      "etag": "\"9944142b5be718bb9b58739904ce9eee1a25a6003eb6b0db78f0df6686e79686\"",
+      "sha256": "a18d168a6dd6c8218e6c3d2ce49d6209015e06ca5ae7308e9cf43afabfbbdd21"
+    },
+    {
+      "path": "doc/full_tracking_dictionary.pdf",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/doc/full_tracking_dictionary.pdf",
+      "bytes": 151045,
+      "etag": "\"4ca4c4d29b3f186211328be0ebc90a1dd61c76f19e83be0504cb8fed06127d84\"",
+      "sha256": "7f100741ebf18a6c94a26437287012340577e05d2b3fa3b0245794a4f97fbb4b"
+    },
+    {
+      "path": "doc/plays_dictionary.pdf",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/doc/plays_dictionary.pdf",
+      "bytes": 178785,
+      "etag": "\"e5f395eded206edf95c3c3a785095a45d41d88eb3f2846ccc25dfa817856e3c5\"",
+      "sha256": "87538e55cc7dac67f4fb22f49e1297b57f75e345e4800feb062ea060c0520e24"
+    },
+    {
+      "path": "doc/events_dictionary.pdf",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/doc/events_dictionary.pdf",
+      "bytes": 162115,
+      "etag": "\"3944c347dff9726f57cb40ecab345e540674412b6ce8d0a20a0681c5bd8391af\"",
+      "sha256": "bac423ff7c65bf2961ef298416b7747fb43a7cb5a61e50bffed475895d21570b"
+    }
+  ],
+  "totals": {
+    "canonical_files": 146,
+    "canonical_bytes": 1702488374,
+    "all_github_data_formats_and_docs_bytes": 2424231877,
+    "excluded_lft_csv_bytes": 721743503,
+    "existing_canonical_bytes_verified": 84338366,
+    "remaining_canonical_bytes": 1618150008
+  },
+  "seasons": [
+    {
+      "season": 2016,
+      "tracking_games": 18,
+      "tracking_gzip_bytes": 198275827,
+      "first_date": "2016-09-11",
+      "last_date": "2017-02-05",
+      "play_event_season_file": false,
+      "lft_games": 0
+    },
+    {
+      "season": 2017,
+      "tracking_games": 16,
+      "tracking_gzip_bytes": 181757349,
+      "first_date": "2017-09-07",
+      "last_date": "2018-02-04",
+      "play_event_season_file": true,
+      "lft_games": 0
+    },
+    {
+      "season": 2018,
+      "tracking_games": 16,
+      "tracking_gzip_bytes": 180542813,
+      "first_date": "2018-09-09",
+      "last_date": "2019-02-03",
+      "play_event_season_file": true,
+      "lft_games": 0
+    },
+    {
+      "season": 2019,
+      "tracking_games": 17,
+      "tracking_gzip_bytes": 193027356,
+      "first_date": "2019-09-08",
+      "last_date": "2020-01-04",
+      "play_event_season_file": true,
+      "lft_games": 0
+    },
+    {
+      "season": 2020,
+      "tracking_games": 20,
+      "tracking_gzip_bytes": 198012361,
+      "first_date": "2020-09-13",
+      "last_date": "2021-02-07",
+      "play_event_season_file": true,
+      "lft_games": 0
+    },
+    {
+      "season": 2021,
+      "tracking_games": 19,
+      "tracking_gzip_bytes": 155402802,
+      "first_date": "2021-09-09",
+      "last_date": "2022-01-23",
+      "play_event_season_file": true,
+      "lft_games": 19
+    },
+    {
+      "season": 2022,
+      "tracking_games": 18,
+      "tracking_gzip_bytes": 149017684,
+      "first_date": "2022-09-11",
+      "last_date": "2023-01-16",
+      "play_event_season_file": true,
+      "lft_games": 18
+    }
+  ],
+  "games": [
+    {
+      "game_id": 1075254,
+      "nfl_game_id": "2016_01_NE_ARI",
+      "season": 2016,
+      "date": "2016-09-11",
+      "tracking_path": "data/tracking/SB_tracking_20160911_NE_ARI.json.gz"
+    },
+    {
+      "game_id": 1075270,
+      "nfl_game_id": "2016_02_MIA_NE",
+      "season": 2016,
+      "date": "2016-09-18",
+      "tracking_path": "data/tracking/SB_tracking_20160918_MIA_NE.json.gz"
+    },
+    {
+      "game_id": 1075292,
+      "nfl_game_id": "2016_03_HOU_NE",
+      "season": 2016,
+      "date": "2016-09-22",
+      "tracking_path": "data/tracking/SB_tracking_20160922_HOU_NE.json.gz"
+    },
+    {
+      "game_id": 1075339,
+      "nfl_game_id": "2016_04_BUF_NE",
+      "season": 2016,
+      "date": "2016-10-02",
+      "tracking_path": "data/tracking/SB_tracking_20161002_BUF_NE.json.gz"
+    },
+    {
+      "game_id": 1075361,
+      "nfl_game_id": "2016_05_NE_CLE",
+      "season": 2016,
+      "date": "2016-10-09",
+      "tracking_path": "data/tracking/SB_tracking_20161009_NE_CLE.json.gz"
+    },
+    {
+      "game_id": 1075395,
+      "nfl_game_id": "2016_06_CIN_NE",
+      "season": 2016,
+      "date": "2016-10-16",
+      "tracking_path": "data/tracking/SB_tracking_20161016_CIN_NE.json.gz"
+    },
+    {
+      "game_id": 1075442,
+      "nfl_game_id": "2016_07_NE_PIT",
+      "season": 2016,
+      "date": "2016-10-23",
+      "tracking_path": "data/tracking/SB_tracking_20161023_NE_PIT.json.gz"
+    },
+    {
+      "game_id": 1075597,
+      "nfl_game_id": "2016_08_NE_BUF",
+      "season": 2016,
+      "date": "2016-10-30",
+      "tracking_path": "data/tracking/SB_tracking_20161030_NE_BUF.json.gz"
+    },
+    {
+      "game_id": 1075669,
+      "nfl_game_id": "2016_10_SEA_NE",
+      "season": 2016,
+      "date": "2016-11-13",
+      "tracking_path": "data/tracking/SB_tracking_20161113_SEA_NE.json.gz"
+    },
+    {
+      "game_id": 1075693,
+      "nfl_game_id": "2016_11_NE_SF",
+      "season": 2016,
+      "date": "2016-11-20",
+      "tracking_path": "data/tracking/SB_tracking_20161120_NE_SF.json.gz"
+    },
+    {
+      "game_id": 1075727,
+      "nfl_game_id": "2016_12_NE_NYJ",
+      "season": 2016,
+      "date": "2016-11-27",
+      "tracking_path": "data/tracking/SB_tracking_20161127_NE_NYJ.json.gz"
+    },
+    {
+      "game_id": 1075747,
+      "nfl_game_id": "2016_13_LA_NE",
+      "season": 2016,
+      "date": "2016-12-04",
+      "tracking_path": "data/tracking/SB_tracking_20161204_LAR_NE.json.gz"
+    },
+    {
+      "game_id": 1075793,
+      "nfl_game_id": "2016_14_BAL_NE",
+      "season": 2016,
+      "date": "2016-12-12",
+      "tracking_path": "data/tracking/SB_tracking_20161212_BAL_NE.json.gz"
+    },
+    {
+      "game_id": 1075819,
+      "nfl_game_id": "2016_15_NE_DEN",
+      "season": 2016,
+      "date": "2016-12-18",
+      "tracking_path": "data/tracking/SB_tracking_20161218_NE_DEN.json.gz"
+    },
+    {
+      "game_id": 1075841,
+      "nfl_game_id": "2016_16_NYJ_NE",
+      "season": 2016,
+      "date": "2016-12-24",
+      "tracking_path": "data/tracking/SB_tracking_20161224_NYJ_NE.json.gz"
+    },
+    {
+      "game_id": 1075863,
+      "nfl_game_id": "2016_17_NE_MIA",
+      "season": 2016,
+      "date": "2017-01-01",
+      "tracking_path": "data/tracking/SB_tracking_20170101_NE_MIA.json.gz"
+    },
+    {
+      "game_id": 1075903,
+      "nfl_game_id": "2016_19_HOU_NE",
+      "season": 2016,
+      "date": "2017-01-14",
+      "tracking_path": "data/tracking/SB_tracking_20170114_HOU_NE.json.gz"
+    },
+    {
+      "game_id": 1075913,
+      "nfl_game_id": "2016_21_NE_ATL",
+      "season": 2016,
+      "date": "2017-02-05",
+      "tracking_path": "data/tracking/SB_tracking_20170205_NE_ATL.json.gz"
+    },
+    {
+      "game_id": 1074629,
+      "nfl_game_id": "2017_01_KC_NE",
+      "season": 2017,
+      "date": "2017-09-07",
+      "tracking_path": "data/tracking/SB_tracking_20170907_KC_NE.json.gz"
+    },
+    {
+      "game_id": 1074707,
+      "nfl_game_id": "2017_03_HOU_NE",
+      "season": 2017,
+      "date": "2017-09-24",
+      "tracking_path": "data/tracking/SB_tracking_20170924_HOU_NE.json.gz"
+    },
+    {
+      "game_id": 1074739,
+      "nfl_game_id": "2017_04_CAR_NE",
+      "season": 2017,
+      "date": "2017-10-01",
+      "tracking_path": "data/tracking/SB_tracking_20171001_CAR_NE.json.gz"
+    },
+    {
+      "game_id": 1074755,
+      "nfl_game_id": "2017_05_NE_TB",
+      "season": 2017,
+      "date": "2017-10-05",
+      "tracking_path": "data/tracking/SB_tracking_20171005_NE_TB.json.gz"
+    },
+    {
+      "game_id": 1074795,
+      "nfl_game_id": "2017_06_NE_NYJ",
+      "season": 2017,
+      "date": "2017-10-15",
+      "tracking_path": "data/tracking/SB_tracking_20171015_NE_NYJ.json.gz"
+    },
+    {
+      "game_id": 1074849,
+      "nfl_game_id": "2017_08_LAC_NE",
+      "season": 2017,
+      "date": "2017-10-29",
+      "tracking_path": "data/tracking/SB_tracking_20171029_LAC_NE.json.gz"
+    },
+    {
+      "game_id": 1074917,
+      "nfl_game_id": "2017_10_NE_DEN",
+      "season": 2017,
+      "date": "2017-11-12",
+      "tracking_path": "data/tracking/SB_tracking_20171112_NE_DEN.json.gz"
+    },
+    {
+      "game_id": 1074943,
+      "nfl_game_id": "2017_11_NE_OAK",
+      "season": 2017,
+      "date": "2017-11-19",
+      "tracking_path": "data/tracking/SB_tracking_20171119_NE_LV.json.gz"
+    },
+    {
+      "game_id": 1074987,
+      "nfl_game_id": "2017_13_NE_BUF",
+      "season": 2017,
+      "date": "2017-12-03",
+      "tracking_path": "data/tracking/SB_tracking_20171203_NE_BUF.json.gz"
+    },
+    {
+      "game_id": 1075041,
+      "nfl_game_id": "2017_14_NE_MIA",
+      "season": 2017,
+      "date": "2017-12-11",
+      "tracking_path": "data/tracking/SB_tracking_20171211_NE_MIA.json.gz"
+    },
+    {
+      "game_id": 1075067,
+      "nfl_game_id": "2017_15_NE_PIT",
+      "season": 2017,
+      "date": "2017-12-17",
+      "tracking_path": "data/tracking/SB_tracking_20171217_NE_PIT.json.gz"
+    },
+    {
+      "game_id": 1075087,
+      "nfl_game_id": "2017_16_BUF_NE",
+      "season": 2017,
+      "date": "2017-12-24",
+      "tracking_path": "data/tracking/SB_tracking_20171224_BUF_NE.json.gz"
+    },
+    {
+      "game_id": 1075113,
+      "nfl_game_id": "2017_17_NYJ_NE",
+      "season": 2017,
+      "date": "2017-12-31",
+      "tracking_path": "data/tracking/SB_tracking_20171231_NYJ_NE.json.gz"
+    },
+    {
+      "game_id": 1075150,
+      "nfl_game_id": "2017_19_TEN_NE",
+      "season": 2017,
+      "date": "2018-01-13",
+      "tracking_path": "data/tracking/SB_tracking_20180113_TEN_NE.json.gz"
+    },
+    {
+      "game_id": 1075156,
+      "nfl_game_id": "2017_20_JAX_NE",
+      "season": 2017,
+      "date": "2018-01-21",
+      "tracking_path": "data/tracking/SB_tracking_20180121_JAX_NE.json.gz"
+    },
+    {
+      "game_id": 1075160,
+      "nfl_game_id": "2017_21_PHI_NE",
+      "season": 2017,
+      "date": "2018-02-04",
+      "tracking_path": "data/tracking/SB_tracking_20180204_PHI_NE.json.gz"
+    },
+    {
+      "game_id": 1074021,
+      "nfl_game_id": "2018_01_HOU_NE",
+      "season": 2018,
+      "date": "2018-09-09",
+      "tracking_path": "data/tracking/SB_tracking_20180909_HOU_NE.json.gz"
+    },
+    {
+      "game_id": 1074187,
+      "nfl_game_id": "2018_03_NE_DET",
+      "season": 2018,
+      "date": "2018-09-23",
+      "tracking_path": "data/tracking/SB_tracking_20180923_NE_DET.json.gz"
+    },
+    {
+      "game_id": 1074205,
+      "nfl_game_id": "2018_04_MIA_NE",
+      "season": 2018,
+      "date": "2018-09-30",
+      "tracking_path": "data/tracking/SB_tracking_20180930_MIA_NE.json.gz"
+    },
+    {
+      "game_id": 1074221,
+      "nfl_game_id": "2018_05_IND_NE",
+      "season": 2018,
+      "date": "2018-10-04",
+      "tracking_path": "data/tracking/SB_tracking_20181004_IND_NE.json.gz"
+    },
+    {
+      "game_id": 1074277,
+      "nfl_game_id": "2018_06_KC_NE",
+      "season": 2018,
+      "date": "2018-10-14",
+      "tracking_path": "data/tracking/SB_tracking_20181014_KC_NE.json.gz"
+    },
+    {
+      "game_id": 1074335,
+      "nfl_game_id": "2018_08_NE_BUF",
+      "season": 2018,
+      "date": "2018-10-29",
+      "tracking_path": "data/tracking/SB_tracking_20181029_NE_BUF.json.gz"
+    },
+    {
+      "game_id": 1074359,
+      "nfl_game_id": "2018_09_GB_NE",
+      "season": 2018,
+      "date": "2018-11-04",
+      "tracking_path": "data/tracking/SB_tracking_20181104_GB_NE.json.gz"
+    },
+    {
+      "game_id": 1074431,
+      "nfl_game_id": "2018_12_NE_NYJ",
+      "season": 2018,
+      "date": "2018-11-25",
+      "tracking_path": "data/tracking/SB_tracking_20181125_NE_NYJ.json.gz"
+    },
+    {
+      "game_id": 1074471,
+      "nfl_game_id": "2018_13_MIN_NE",
+      "season": 2018,
+      "date": "2018-12-02",
+      "tracking_path": "data/tracking/SB_tracking_20181202_MIN_NE.json.gz"
+    },
+    {
+      "game_id": 1074491,
+      "nfl_game_id": "2018_14_NE_MIA",
+      "season": 2018,
+      "date": "2018-12-09",
+      "tracking_path": "data/tracking/SB_tracking_20181209_NE_MIA.json.gz"
+    },
+    {
+      "game_id": 1074537,
+      "nfl_game_id": "2018_15_NE_PIT",
+      "season": 2018,
+      "date": "2018-12-16",
+      "tracking_path": "data/tracking/SB_tracking_20181216_NE_PIT.json.gz"
+    },
+    {
+      "game_id": 1074559,
+      "nfl_game_id": "2018_16_BUF_NE",
+      "season": 2018,
+      "date": "2018-12-23",
+      "tracking_path": "data/tracking/SB_tracking_20181223_BUF_NE.json.gz"
+    },
+    {
+      "game_id": 1074581,
+      "nfl_game_id": "2018_17_NYJ_NE",
+      "season": 2018,
+      "date": "2018-12-30",
+      "tracking_path": "data/tracking/SB_tracking_20181230_NYJ_NE.json.gz"
+    },
+    {
+      "game_id": 1074619,
+      "nfl_game_id": "2018_19_LAC_NE",
+      "season": 2018,
+      "date": "2019-01-13",
+      "tracking_path": "data/tracking/SB_tracking_20190113_LAC_NE.json.gz"
+    },
+    {
+      "game_id": 1074625,
+      "nfl_game_id": "2018_20_NE_KC",
+      "season": 2018,
+      "date": "2019-01-20",
+      "tracking_path": "data/tracking/SB_tracking_20190120_NE_KC.json.gz"
+    },
+    {
+      "game_id": 1074627,
+      "nfl_game_id": "2018_21_NE_LA",
+      "season": 2018,
+      "date": "2019-02-03",
+      "tracking_path": "data/tracking/SB_tracking_20190203_NE_LAR.json.gz"
+    },
+    {
+      "game_id": 1503707,
+      "nfl_game_id": "2019_01_PIT_NE",
+      "season": 2019,
+      "date": "2019-09-08",
+      "tracking_path": "data/tracking/SB_tracking_20190908_PIT_NE.json.gz"
+    },
+    {
+      "game_id": 1503708,
+      "nfl_game_id": "2019_02_NE_MIA",
+      "season": 2019,
+      "date": "2019-09-15",
+      "tracking_path": "data/tracking/SB_tracking_20190915_MIA_NE.json.gz"
+    },
+    {
+      "game_id": 1503709,
+      "nfl_game_id": "2019_03_NYJ_NE",
+      "season": 2019,
+      "date": "2019-09-22",
+      "tracking_path": "data/tracking/SB_tracking_20190922_NYJ_NE.json.gz"
+    },
+    {
+      "game_id": 1503710,
+      "nfl_game_id": "2019_04_NE_BUF",
+      "season": 2019,
+      "date": "2019-09-29",
+      "tracking_path": "data/tracking/SB_tracking_20190929_NE_BUF.json.gz"
+    },
+    {
+      "game_id": 1503711,
+      "nfl_game_id": "2019_05_NE_WAS",
+      "season": 2019,
+      "date": "2019-10-06",
+      "tracking_path": "data/tracking/SB_tracking_20191006_NE_WAS.json.gz"
+    },
+    {
+      "game_id": 1503712,
+      "nfl_game_id": "2019_06_NYG_NE",
+      "season": 2019,
+      "date": "2019-10-10",
+      "tracking_path": "data/tracking/SB_tracking_20191010_NYG_NE.json.gz"
+    },
+    {
+      "game_id": 1503713,
+      "nfl_game_id": "2019_07_NE_NYJ",
+      "season": 2019,
+      "date": "2019-10-20",
+      "tracking_path": "data/tracking/SB_tracking_20191020_NE_NYJ.json.gz"
+    },
+    {
+      "game_id": 1503714,
+      "nfl_game_id": "2019_08_CLE_NE",
+      "season": 2019,
+      "date": "2019-10-27",
+      "tracking_path": "data/tracking/SB_tracking_20191027_CLE_NE.json.gz"
+    },
+    {
+      "game_id": 1503715,
+      "nfl_game_id": "2019_09_NE_BAL",
+      "season": 2019,
+      "date": "2019-11-03",
+      "tracking_path": "data/tracking/SB_tracking_20191103_NE_BAL.json.gz"
+    },
+    {
+      "game_id": 1503716,
+      "nfl_game_id": "2019_11_NE_PHI",
+      "season": 2019,
+      "date": "2019-11-17",
+      "tracking_path": "data/tracking/SB_tracking_20191117_NE_PHI.json.gz"
+    },
+    {
+      "game_id": 1503717,
+      "nfl_game_id": "2019_12_DAL_NE",
+      "season": 2019,
+      "date": "2019-11-24",
+      "tracking_path": "data/tracking/SB_tracking_20191124_DAL_NE.json.gz"
+    },
+    {
+      "game_id": 1503718,
+      "nfl_game_id": "2019_13_NE_HOU",
+      "season": 2019,
+      "date": "2019-12-01",
+      "tracking_path": "data/tracking/SB_tracking_20191201_NE_HOU.json.gz"
+    },
+    {
+      "game_id": 1503719,
+      "nfl_game_id": "2019_14_KC_NE",
+      "season": 2019,
+      "date": "2019-12-08",
+      "tracking_path": "data/tracking/SB_tracking_20191208_KC_NE.json.gz"
+    },
+    {
+      "game_id": 1503720,
+      "nfl_game_id": "2019_15_NE_CIN",
+      "season": 2019,
+      "date": "2019-12-15",
+      "tracking_path": "data/tracking/SB_tracking_20191215_NE_CIN.json.gz"
+    },
+    {
+      "game_id": 1503721,
+      "nfl_game_id": "2019_16_BUF_NE",
+      "season": 2019,
+      "date": "2019-12-21",
+      "tracking_path": "data/tracking/SB_tracking_20191221_BUF_NE.json.gz"
+    },
+    {
+      "game_id": 1503722,
+      "nfl_game_id": "2019_17_MIA_NE",
+      "season": 2019,
+      "date": "2019-12-29",
+      "tracking_path": "data/tracking/SB_tracking_20191229_MIA_NE.json.gz"
+    },
+    {
+      "game_id": 1503723,
+      "nfl_game_id": "2019_18_TEN_NE",
+      "season": 2019,
+      "date": "2020-01-04",
+      "tracking_path": "data/tracking/SB_tracking_20200104_TEN_NE.json.gz"
+    },
+    {
+      "game_id": 1503686,
+      "nfl_game_id": "2020_01_TB_NO",
+      "season": 2020,
+      "date": "2020-09-13",
+      "tracking_path": "data/tracking/SB_tracking_20200913_TB_NO.json.gz"
+    },
+    {
+      "game_id": 1503687,
+      "nfl_game_id": "2020_02_CAR_TB",
+      "season": 2020,
+      "date": "2020-09-20",
+      "tracking_path": "data/tracking/SB_tracking_20200920_CAR_TB.json.gz"
+    },
+    {
+      "game_id": 1503688,
+      "nfl_game_id": "2020_03_TB_DEN",
+      "season": 2020,
+      "date": "2020-09-27",
+      "tracking_path": "data/tracking/SB_tracking_20200927_TB_DEN.json.gz"
+    },
+    {
+      "game_id": 1503728,
+      "nfl_game_id": "2020_04_LAC_TB",
+      "season": 2020,
+      "date": "2020-10-04",
+      "tracking_path": "data/tracking/SB_tracking_20201004_LAC_TB.json.gz"
+    },
+    {
+      "game_id": 1503690,
+      "nfl_game_id": "2020_05_TB_CHI",
+      "season": 2020,
+      "date": "2020-10-08",
+      "tracking_path": "data/tracking/SB_tracking_20201008_TB_CHI.json.gz"
+    },
+    {
+      "game_id": 1503729,
+      "nfl_game_id": "2020_06_GB_TB",
+      "season": 2020,
+      "date": "2020-10-18",
+      "tracking_path": "data/tracking/SB_tracking_20201018_GB_TB.json.gz"
+    },
+    {
+      "game_id": 1503692,
+      "nfl_game_id": "2020_07_TB_LV",
+      "season": 2020,
+      "date": "2020-10-25",
+      "tracking_path": "data/tracking/SB_tracking_20201025_TB_LV.json.gz"
+    },
+    {
+      "game_id": 1503693,
+      "nfl_game_id": "2020_08_TB_NYG",
+      "season": 2020,
+      "date": "2020-11-02",
+      "tracking_path": "data/tracking/SB_tracking_20201102_TB_NYG.json.gz"
+    },
+    {
+      "game_id": 1503694,
+      "nfl_game_id": "2020_09_NO_TB",
+      "season": 2020,
+      "date": "2020-11-08",
+      "tracking_path": "data/tracking/SB_tracking_20201108_NO_TB.json.gz"
+    },
+    {
+      "game_id": 1503730,
+      "nfl_game_id": "2020_10_TB_CAR",
+      "season": 2020,
+      "date": "2020-11-15",
+      "tracking_path": "data/tracking/SB_tracking_20201115_TB_CAR.json.gz"
+    },
+    {
+      "game_id": 1503731,
+      "nfl_game_id": "2020_11_LA_TB",
+      "season": 2020,
+      "date": "2020-11-23",
+      "tracking_path": "data/tracking/SB_tracking_20201123_LAR_TB.json.gz"
+    },
+    {
+      "game_id": 1503732,
+      "nfl_game_id": "2020_12_KC_TB",
+      "season": 2020,
+      "date": "2020-11-29",
+      "tracking_path": "data/tracking/SB_tracking_20201129_KC_TB.json.gz"
+    },
+    {
+      "game_id": 1503733,
+      "nfl_game_id": "2020_14_MIN_TB",
+      "season": 2020,
+      "date": "2020-12-13",
+      "tracking_path": "data/tracking/SB_tracking_20201213_MIN_TB.json.gz"
+    },
+    {
+      "game_id": 1503734,
+      "nfl_game_id": "2020_15_TB_ATL",
+      "season": 2020,
+      "date": "2020-12-20",
+      "tracking_path": "data/tracking/SB_tracking_20201220_TB_ATL.json.gz"
+    },
+    {
+      "game_id": 1503735,
+      "nfl_game_id": "2020_16_TB_DET",
+      "season": 2020,
+      "date": "2020-12-26",
+      "tracking_path": "data/tracking/SB_tracking_20201226_TB_DET.json.gz"
+    },
+    {
+      "game_id": 1503736,
+      "nfl_game_id": "2020_17_ATL_TB",
+      "season": 2020,
+      "date": "2021-01-03",
+      "tracking_path": "data/tracking/SB_tracking_20210103_ATL_TB.json.gz"
+    },
+    {
+      "game_id": 1503737,
+      "nfl_game_id": "2020_18_TB_WAS",
+      "season": 2020,
+      "date": "2021-01-09",
+      "tracking_path": "data/tracking/SB_tracking_20210109_TB_WAS.json.gz"
+    },
+    {
+      "game_id": 1503738,
+      "nfl_game_id": "2020_19_TB_NO",
+      "season": 2020,
+      "date": "2021-01-17",
+      "tracking_path": "data/tracking/SB_tracking_20210117_TB_NO.json.gz"
+    },
+    {
+      "game_id": 1503739,
+      "nfl_game_id": "2020_20_TB_GB",
+      "season": 2020,
+      "date": "2021-01-24",
+      "tracking_path": "data/tracking/SB_tracking_20210124_TB_GB.json.gz"
+    },
+    {
+      "game_id": 1503740,
+      "nfl_game_id": "2020_21_KC_TB",
+      "season": 2020,
+      "date": "2021-02-07",
+      "tracking_path": "data/tracking/SB_tracking_20210207_KC_TB.json.gz"
+    },
+    {
+      "game_id": 1502044,
+      "nfl_game_id": "2021_01_DAL_TB",
+      "season": 2021,
+      "date": "2021-09-09",
+      "tracking_path": "data/tracking/SB_tracking_20210909_DAL_TB.json.gz"
+    },
+    {
+      "game_id": 1502070,
+      "nfl_game_id": "2021_02_ATL_TB",
+      "season": 2021,
+      "date": "2021-09-19",
+      "tracking_path": "data/tracking/SB_tracking_20210919_ATL_TB.json.gz"
+    },
+    {
+      "game_id": 1069736,
+      "nfl_game_id": "2021_03_TB_LA",
+      "season": 2021,
+      "date": "2021-09-26",
+      "tracking_path": "data/tracking/SB_tracking_20210926_TB_LAR.json.gz"
+    },
+    {
+      "game_id": 1502101,
+      "nfl_game_id": "2021_04_TB_NE",
+      "season": 2021,
+      "date": "2021-10-03",
+      "tracking_path": "data/tracking/SB_tracking_20211003_TB_NE.json.gz"
+    },
+    {
+      "game_id": 1502211,
+      "nfl_game_id": "2021_05_MIA_TB",
+      "season": 2021,
+      "date": "2021-10-10",
+      "tracking_path": "data/tracking/SB_tracking_20211010_MIA_TB.json.gz"
+    },
+    {
+      "game_id": 1502262,
+      "nfl_game_id": "2021_06_TB_PHI",
+      "season": 2021,
+      "date": "2021-10-15",
+      "tracking_path": "data/tracking/SB_tracking_20211015_TB_PHI.json.gz"
+    },
+    {
+      "game_id": 1502120,
+      "nfl_game_id": "2021_07_CHI_TB",
+      "season": 2021,
+      "date": "2021-10-24",
+      "tracking_path": "data/tracking/SB_tracking_20211024_CHI_TB.json.gz"
+    },
+    {
+      "game_id": 1502133,
+      "nfl_game_id": "2021_08_TB_NO",
+      "season": 2021,
+      "date": "2021-10-31",
+      "tracking_path": "data/tracking/SB_tracking_20211031_TB_NO.json.gz"
+    },
+    {
+      "game_id": 1502162,
+      "nfl_game_id": "2021_10_TB_WAS",
+      "season": 2021,
+      "date": "2021-11-14",
+      "tracking_path": "data/tracking/SB_tracking_20211114_TB_WAS.json.gz"
+    },
+    {
+      "game_id": 1071896,
+      "nfl_game_id": "2021_11_NYG_TB",
+      "season": 2021,
+      "date": "2021-11-22",
+      "tracking_path": "data/tracking/SB_tracking_20211122_NYG_TB.json.gz"
+    },
+    {
+      "game_id": 1502244,
+      "nfl_game_id": "2021_12_TB_IND",
+      "season": 2021,
+      "date": "2021-11-28",
+      "tracking_path": "data/tracking/SB_tracking_20211128_TB_IND.json.gz"
+    },
+    {
+      "game_id": 1071960,
+      "nfl_game_id": "2021_13_TB_ATL",
+      "season": 2021,
+      "date": "2021-12-05",
+      "tracking_path": "data/tracking/SB_tracking_20211205_TB_ATL.json.gz"
+    },
+    {
+      "game_id": 1502260,
+      "nfl_game_id": "2021_14_BUF_TB",
+      "season": 2021,
+      "date": "2021-12-12",
+      "tracking_path": "data/tracking/SB_tracking_20211212_BUF_TB.json.gz"
+    },
+    {
+      "game_id": 1502236,
+      "nfl_game_id": "2021_15_NO_TB",
+      "season": 2021,
+      "date": "2021-12-19",
+      "tracking_path": "data/tracking/SB_tracking_20211219_NO_TB.json.gz"
+    },
+    {
+      "game_id": 1502266,
+      "nfl_game_id": "2021_16_TB_CAR",
+      "season": 2021,
+      "date": "2021-12-26",
+      "tracking_path": "data/tracking/SB_tracking_20211226_TB_CAR.json.gz"
+    },
+    {
+      "game_id": 1502261,
+      "nfl_game_id": "2021_17_TB_NYJ",
+      "season": 2021,
+      "date": "2022-01-02",
+      "tracking_path": "data/tracking/SB_tracking_20220102_TB_NYJ.json.gz"
+    },
+    {
+      "game_id": 1072135,
+      "nfl_game_id": "2021_18_CAR_TB",
+      "season": 2021,
+      "date": "2022-01-09",
+      "tracking_path": "data/tracking/SB_tracking_20220109_CAR_TB.json.gz"
+    },
+    {
+      "game_id": 1072133,
+      "nfl_game_id": "2021_19_PHI_TB",
+      "season": 2021,
+      "date": "2022-01-16",
+      "tracking_path": "data/tracking/SB_tracking_20220116_PHI_TB.json.gz"
+    },
+    {
+      "game_id": 1072153,
+      "nfl_game_id": "2021_20_LA_TB",
+      "season": 2021,
+      "date": "2022-01-23",
+      "tracking_path": "data/tracking/SB_tracking_20220123_LAR_TB.json.gz"
+    },
+    {
+      "game_id": 1501094,
+      "nfl_game_id": "2022_01_TB_DAL",
+      "season": 2022,
+      "date": "2022-09-11",
+      "tracking_path": "data/tracking/SB_tracking_20220911_TB_DAL.json.gz"
+    },
+    {
+      "game_id": 1500094,
+      "nfl_game_id": "2022_02_TB_NO",
+      "season": 2022,
+      "date": "2022-09-18",
+      "tracking_path": "data/tracking/SB_tracking_20220918_TB_NO.json.gz"
+    },
+    {
+      "game_id": 1500118,
+      "nfl_game_id": "2022_03_GB_TB",
+      "season": 2022,
+      "date": "2022-09-25",
+      "tracking_path": "data/tracking/SB_tracking_20220925_GB_TB.json.gz"
+    },
+    {
+      "game_id": 1500135,
+      "nfl_game_id": "2022_04_KC_TB",
+      "season": 2022,
+      "date": "2022-10-02",
+      "tracking_path": "data/tracking/SB_tracking_20221002_KC_TB.json.gz"
+    },
+    {
+      "game_id": 1500146,
+      "nfl_game_id": "2022_05_ATL_TB",
+      "season": 2022,
+      "date": "2022-10-09",
+      "tracking_path": "data/tracking/SB_tracking_20221009_ATL_TB.json.gz"
+    },
+    {
+      "game_id": 1500161,
+      "nfl_game_id": "2022_06_TB_PIT",
+      "season": 2022,
+      "date": "2022-10-16",
+      "tracking_path": "data/tracking/SB_tracking_20221016_TB_PIT.json.gz"
+    },
+    {
+      "game_id": 1500169,
+      "nfl_game_id": "2022_07_TB_CAR",
+      "season": 2022,
+      "date": "2022-10-23",
+      "tracking_path": "data/tracking/SB_tracking_20221023_TB_CAR.json.gz"
+    },
+    {
+      "game_id": 1500181,
+      "nfl_game_id": "2022_08_BAL_TB",
+      "season": 2022,
+      "date": "2022-10-27",
+      "tracking_path": "data/tracking/SB_tracking_20221027_BAL_TB.json.gz"
+    },
+    {
+      "game_id": 1500206,
+      "nfl_game_id": "2022_09_LA_TB",
+      "season": 2022,
+      "date": "2022-11-06",
+      "tracking_path": "data/tracking/SB_tracking_20221106_LAR_TB.json.gz"
+    },
+    {
+      "game_id": 1500210,
+      "nfl_game_id": "2022_10_SEA_TB",
+      "season": 2022,
+      "date": "2022-11-13",
+      "tracking_path": "data/tracking/SB_tracking_20221113_SEA_TB.json.gz"
+    },
+    {
+      "game_id": 1500241,
+      "nfl_game_id": "2022_12_TB_CLE",
+      "season": 2022,
+      "date": "2022-11-27",
+      "tracking_path": "data/tracking/SB_tracking_20221127_TB_CLE.json.gz"
+    },
+    {
+      "game_id": 1500267,
+      "nfl_game_id": "2022_13_NO_TB",
+      "season": 2022,
+      "date": "2022-12-05",
+      "tracking_path": "data/tracking/SB_tracking_20221205_NO_TB.json.gz"
+    },
+    {
+      "game_id": 1500278,
+      "nfl_game_id": "2022_14_TB_SF",
+      "season": 2022,
+      "date": "2022-12-11",
+      "tracking_path": "data/tracking/SB_tracking_20221211_TB_SF.json.gz"
+    },
+    {
+      "game_id": 1500289,
+      "nfl_game_id": "2022_15_CIN_TB",
+      "season": 2022,
+      "date": "2022-12-18",
+      "tracking_path": "data/tracking/SB_tracking_20221218_CIN_TB.json.gz"
+    },
+    {
+      "game_id": 1500305,
+      "nfl_game_id": "2022_16_TB_ARI",
+      "season": 2022,
+      "date": "2022-12-25",
+      "tracking_path": "data/tracking/SB_tracking_20221225_TB_ARI.json.gz"
+    },
+    {
+      "game_id": 1500316,
+      "nfl_game_id": "2022_17_CAR_TB",
+      "season": 2022,
+      "date": "2023-01-01",
+      "tracking_path": "data/tracking/SB_tracking_20230101_CAR_TB.json.gz"
+    },
+    {
+      "game_id": 1501332,
+      "nfl_game_id": "2022_18_TB_ATL",
+      "season": 2022,
+      "date": "2023-01-08",
+      "tracking_path": "data/tracking/SB_tracking_20230108_TB_ATL.json.gz"
+    },
+    {
+      "game_id": 1501351,
+      "nfl_game_id": "2022_19_DAL_TB",
+      "season": 2022,
+      "date": "2023-01-16",
+      "tracking_path": "data/tracking/SB_tracking_20230116_DAL_TB.json.gz"
+    }
+  ],
+  "alternative_game_lft_csvs": [
+    {
+      "path": "data/lft/lft_1069736.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1069736.csv",
+      "bytes": 18458807,
+      "etag": "\"3e04fd2e29d113c562c739466c1fc6c155459456b185c0797248e8f5334c5789\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1071896.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1071896.csv",
+      "bytes": 19197951,
+      "etag": "\"c69a0fb0667ffa8e291ee23f705a336b54bbf53aa0822c9bc423ccbafd8165df\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1071960.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1071960.csv",
+      "bytes": 18544903,
+      "etag": "\"8e4fda59ea562635c92954dac4b3a3c4607ff3317149729a855885cc24a69ab6\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1072133.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1072133.csv",
+      "bytes": 20298677,
+      "etag": "\"0167765b19727632dac3c2c3a4739ed709d00826199a41344ed83a97de3d17ee\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1072135.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1072135.csv",
+      "bytes": 18217391,
+      "etag": "\"0d662d2ca1274d719159e6b578c4b6536a8b58735fee7a70bb4658d267540cc8\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1072153.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1072153.csv",
+      "bytes": 18720299,
+      "etag": "\"8f5153600bcaddb1cbb442cfd4d50216a6eb01890d8f2ee0b3a9e7689ae960be\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500094.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500094.csv",
+      "bytes": 20938973,
+      "etag": "\"3542f9f7520aca1296047d3ae1bed3d263387febed55f71c841ff8becc3aff98\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500118.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500118.csv",
+      "bytes": 16903169,
+      "etag": "\"3305025af98140293addffb848b0c1bc7638f20010debdcdfbbaf60e68f2e0db\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500135.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500135.csv",
+      "bytes": 22465028,
+      "etag": "\"77340cb0af2cf8e9ee992de79f0ef0d39c7a5fdb924f3531a07ff22256c7ea20\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500146.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500146.csv",
+      "bytes": 20672517,
+      "etag": "\"03603181ced0d3446b8e6331916825fad0f0a44c701ee6a7db6b9a2184467fa1\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500161.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500161.csv",
+      "bytes": 18036421,
+      "etag": "\"acd75f6ddd1c7b469613d4dd9e706c30ae9f76a0dd28ab2c3e647a8fef43abf4\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500169.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500169.csv",
+      "bytes": 19141623,
+      "etag": "\"4b9482687b1a25e3afdac6f846f4006d24582249be320a208cd46e375309015d\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500181.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500181.csv",
+      "bytes": 20047254,
+      "etag": "\"0d6df6335d1fc161883a4126e0cb673187edaa8f68fa01b99bbe63abeafdf89e\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500206.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500206.csv",
+      "bytes": 18626130,
+      "etag": "\"566ab482e7b96547205865f7b362c6f11014522063759e6d684f2eb7e650c81d\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500210.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500210.csv",
+      "bytes": 20850660,
+      "etag": "\"7f0f4ff505c6fcab30190d601547145c7f3001ec68f001f383e1794ccc7f4a1a\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500241.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500241.csv",
+      "bytes": 24936425,
+      "etag": "\"bb51070803d46d0ecf630fdf844b325224f320b3c44fe897ec8cc4332e682f26\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500267.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500267.csv",
+      "bytes": 23193768,
+      "etag": "\"84169e856b55924dd3e2583dd28fff138f6aa5c2c499b26bea37e79f84146925\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500278.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500278.csv",
+      "bytes": 20400880,
+      "etag": "\"e221dedf75e3afd71a7eb7a2a9bbbc0214899655dc75190171a53bf2af7734ff\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500289.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500289.csv",
+      "bytes": 21640361,
+      "etag": "\"c0079f67b0dfb972decef410a3eef096b9adc483f319e1e597c83322d8a86fbf\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500305.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500305.csv",
+      "bytes": 21268906,
+      "etag": "\"281eeecd4e325133f7f2397c9ba8c3930e8bd85c07f10fe54ab99bacff18e2f4\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1500316.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1500316.csv",
+      "bytes": 23491304,
+      "etag": "\"3d5eb11af6cbdf61364024c5fdf6e60c8f47cb0be239e37ca49de2c2c3157d40\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1501094.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1501094.csv",
+      "bytes": 17194884,
+      "etag": "\"e4214a9635b1ae08ae450e747e478ac2ac36b3f0a2fa2c601c1dfdbcc84a3f7e\"",
+      "sha256": "531cfeb83895952c8bca75cc7d17308e2ce859425e5f5e45c3c262e4d8799c52"
+    },
+    {
+      "path": "data/lft/lft_1501332.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1501332.csv",
+      "bytes": 22291614,
+      "etag": "\"6835ce60b608d91aa591725aeb3413f8baadaed6221510032b0be993b377da28\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1501351.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1501351.csv",
+      "bytes": 22231421,
+      "etag": "\"c445a70d0cd479bf9318cd2a11cec5569a76d75eb0470f44bc9db0f92c2b76ea\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502044.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502044.csv",
+      "bytes": 19614041,
+      "etag": "\"28e0847869b4b1c9390a781a854fa814a0fdf92b8505cdc8b3ffe893d5e2c6d7\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502070.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502070.csv",
+      "bytes": 17828592,
+      "etag": "\"81bb2edd10107f4bc2effacb90a3b7d5e3c2bdd7eb86536d9c8a0addc34e1fbb\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502101.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502101.csv",
+      "bytes": 18313208,
+      "etag": "\"0994de095c204dd4e316362a3bde33dff19a1be635d7486be4ecf5eac4f86ea8\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502120.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502120.csv",
+      "bytes": 18351406,
+      "etag": "\"aeebcd68ed0bbbaa6588fc0652962390577388ff50aafe0400afc07b415dbff1\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502133.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502133.csv",
+      "bytes": 18821727,
+      "etag": "\"56813a40c1d3fb9604cac26a8f5db148ff881598305bb64ed88f34147b7cd1f8\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502162.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502162.csv",
+      "bytes": 16656246,
+      "etag": "\"76676d2d5dd00a31c16faf7deb2a3d19a3caf6687527dfcf4be2c98839beddd2\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502211.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502211.csv",
+      "bytes": 16320384,
+      "etag": "\"f8050f3c726a76986d461d479c7fbe5dc9e6161dd41e4d967988c1b4d490c933\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502236.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502236.csv",
+      "bytes": 17637987,
+      "etag": "\"45a1ecf95da82f4d70016ae1d98f10520e7738f7e0acc7f3d14b93f3f730633e\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502244.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502244.csv",
+      "bytes": 17568602,
+      "etag": "\"5592a83a30a733bd34c637248acd02922cdeb2e79ab71f232070bdfff946fc02\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502260.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502260.csv",
+      "bytes": 19583194,
+      "etag": "\"3aba62c0deb9c7a81df5ad6b6135a13cf2f82edb4af44cc1038e44356260711f\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502261.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502261.csv",
+      "bytes": 17852923,
+      "etag": "\"0fa9353fc38d026bae814d7b1fdeb6ee2f5cfa0d72698b7abadb4603d517a115\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502262.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502262.csv",
+      "bytes": 17666019,
+      "etag": "\"b03b0ea5fa0c1102d75d50f072054de1d4719f22853d6655b50f7e0404824cba\"",
+      "sha256": null
+    },
+    {
+      "path": "data/lft/lft_1502266.csv",
+      "url": "https://raw.githubusercontent.com/hudl/amf-open-data/0ef19db20d768f34ad0e260c9c19b85c30ab8984/data/lft/lft_1502266.csv",
+      "bytes": 17759808,
+      "etag": "\"cdf6a402ab0c0f44505e47b2137b5e94eafcbab6b81b7b7d3f30e4c0737460af\"",
+      "sha256": null
+    }
+  ],
+  "alternative_season_zips": [
+    {
+      "season": 2016,
+      "url": "https://statsbomb-amf-open-data.s3.eu-west-2.amazonaws.com/tracking/SB_tracking_TB12DB_2016.zip",
+      "bytes": null,
+      "status": "HEAD blocked by executor destination policy; not needed for canonical plan"
+    },
+    {
+      "season": 2017,
+      "url": "https://statsbomb-amf-open-data.s3.eu-west-2.amazonaws.com/tracking/SB_tracking_TB12DB_2017.zip",
+      "bytes": null,
+      "status": "HEAD blocked by executor destination policy; not needed for canonical plan"
+    },
+    {
+      "season": 2018,
+      "url": "https://statsbomb-amf-open-data.s3.eu-west-2.amazonaws.com/tracking/SB_tracking_TB12DB_2018.zip",
+      "bytes": null,
+      "status": "HEAD blocked by executor destination policy; not needed for canonical plan"
+    },
+    {
+      "season": 2019,
+      "url": "https://statsbomb-amf-open-data.s3.eu-west-2.amazonaws.com/tracking/SB_tracking_TB12DB_2019.zip",
+      "bytes": null,
+      "status": "HEAD blocked by executor destination policy; not needed for canonical plan"
+    },
+    {
+      "season": 2020,
+      "url": "https://statsbomb-amf-open-data.s3.eu-west-2.amazonaws.com/tracking/SB_tracking_TB12DB_2020.zip",
+      "bytes": null,
+      "status": "HEAD blocked by executor destination policy; not needed for canonical plan"
+    },
+    {
+      "season": 2021,
+      "url": "https://statsbomb-amf-open-data.s3.eu-west-2.amazonaws.com/tracking/SB_tracking_TB12DB_2021.zip",
+      "bytes": null,
+      "status": "HEAD blocked by executor destination policy; not needed for canonical plan"
+    },
+    {
+      "season": 2022,
+      "url": "https://statsbomb-amf-open-data.s3.eu-west-2.amazonaws.com/tracking/SB_tracking_TB12DB_2022.zip",
+      "bytes": null,
+      "status": "HEAD blocked by executor destination policy; not needed for canonical plan"
+    }
+  ],
+  "format_selection": "Per-game tracking gzip, season play/event CSV, season LFT Parquet. Game LFT CSVs are the documented alternative representation; exact row parity with Parquet awaits post-acquisition validation. No season ZIP plus per-game duplicate download.",
+  "integrity": "Known SHA-256 values calculated from sampled local bytes. Null SHA-256 means not downloaded: immutable commit URL, HEAD size and opaque ETag only. ETag is not treated as a content checksum. Acquisition receipt records first-download SHA-256 for later reuse.",
+  "holdings_scope": "No AMF/Hudl/StatsBomb source references or existing game files found in visible workspace/shared/download locations before this study. Separate Catching executor and other machines not accessible; no global absence claim.",
+  "play_table_coverage": [
+    {
+      "path": "data/plays/tb12_plays_dataset_2017_2018.csv",
+      "rows": 2900,
+      "games": 17,
+      "games_without_hf": [
+        "1074671"
+      ]
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2018_2019.csv",
+      "rows": 3027,
+      "games": 18,
+      "games_without_hf": [
+        "1074285",
+        "1074379"
+      ]
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2019_2020.csv",
+      "rows": 2805,
+      "games": 17,
+      "games_without_hf": []
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2020_2021.csv",
+      "rows": 3142,
+      "games": 19,
+      "games_without_hf": []
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2021_2022.csv",
+      "rows": 3209,
+      "games": 19,
+      "games_without_hf": []
+    },
+    {
+      "path": "data/plays/tb12_plays_dataset_2022_2023.csv",
+      "rows": 3033,
+      "games": 18,
+      "games_without_hf": []
+    }
+  ]
+}

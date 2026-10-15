@@ -1,0 +1,64 @@
+{
+  "schema": "amf-source-review-validation-v1",
+  "date": "2026-10-15",
+  "source_commit": "0ef19db20d768f34ad0e260c9c19b85c30ab8984",
+  "status": "research_prepared_bulk_deferred",
+  "pins": {
+    "scripts/data/amf-acquire.py": {
+      "bytes": 5720,
+      "sha256": "41db355751c1fe296a9324d536dcfdce4138ec5d66caab53bd2d6bafac854ecd"
+    },
+    "scripts/diag/amf-source-audit.py": {
+      "bytes": 12914,
+      "sha256": "417f452434a2548515706ec8d6ecdb15dca339804155eed0de4176aa40143242"
+    },
+    "data/reviews/current/amf-acquisition-manifest.json": {
+      "bytes": 97986,
+      "sha256": "8e9353d63daab1ee17508a27aea1ca21cf4b070817978ef59ff1a979a154a992"
+    },
+    "data/reviews/current/amf-source-audit.json": {
+      "bytes": 11950,
+      "sha256": "c5370a622748d5e5e8c43139187a64c32c29395008917e92e31b60e80befae97"
+    }
+  },
+  "checks": {
+    "source_catalog_matches_124_hf_paths": "passed",
+    "all_183_selected_asset_HEAD_sizes": "passed",
+    "six_play_tables_108_games_18116_rows": "passed",
+    "canonical_manifest_unique_paths_and_total_bytes": "passed",
+    "single_game_audit_identity_event_joins_and_empirical_timebase": "passed",
+    "acquisition_dry_plan_16_verified_reuses_no_downloads": "passed",
+    "small_HTTP_range_resume_then_receipt_reuse_then_tamper_rejection": "passed",
+    "streamed_season_event_reader_preserves_exact_audit_output": "passed"
+  },
+  "latest_audit_cost": {
+    "wall_seconds": 3.999073627999678,
+    "peak_rss_kb": 597132,
+    "engine_imports": 0,
+    "simulations": 0
+  },
+  "transport_smoke": {
+    "source": "pinned README.md",
+    "resumed_from_bytes": 123,
+    "downloaded_payload_bytes": 4906,
+    "sha_initially_unknown": true,
+    "first_acquisition_sha_receipt_written": true,
+    "subsequent_plan_remaining_bytes": 0,
+    "tampered_complete_file_exit": 2,
+    "raw_game_transfers": 0
+  },
+  "bdb_query": "not run; existing available-weeks handoff remains open",
+  "preserved_query_module_sha256": {
+    "scripts/diag/p045-nfl-approach.py": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+    "scripts/mechanics/nfl_bdb2025.py": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c"
+  },
+  "bulk_download_executed": false,
+  "access_gaps": [
+    "Other executors/holdings unavailable here",
+    "S3 season ZIP HEAD blocked by destination policy; canonical GitHub raw path works",
+    "Five older event CSVs not scanned for row-level game coverage",
+    "LFT CSV/Parquet exact row parity unverified before bulk acquisition"
+  ],
+  "rights": "Source licence reviewed; no commercial/product incorporation or raw redistribution performed."
+}

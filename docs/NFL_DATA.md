@@ -120,6 +120,13 @@ licensing and provenance.
 
 ## Worth adding next
 
+The [Hudl/StatsBomb AMF source review](reviews/amf-source-review-2026-10-15.md)
+inventories selected TB12DB games, event-linked tackle/engagement labels and
+30 Hz player tracking. It is an evaluated research source, not an adopted NFL
+reference: missing phases/identities and restrictive commercial/redistribution
+terms remain material. Its bulk acquisition is deferred; sampled raw files stay
+outside this repository. The pending P045 BDB available-weeks query stays separate.
+
 1. **Tackling labels.** Big Data Bowl 2024 (Kaggle `nfl-big-data-bowl-2024`)
    labels tackles and missed tackles for the same 2022 games: real missed-
    tackle rates by approach angle, instead of the broken-contact proxy.
