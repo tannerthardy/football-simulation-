@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Tracking-guided YAC approach investigation
+
+| Item | Owner | Branch | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| P045 coverage/ball approach and post-catch escape versus successful controls | Codex catch/pursuit owner, user requested continued defensive/YAC work | `codex/yac-approach-objective` from accepted `a1b16e6` | Tracking/native diagnostics, fixtures, measurement checks and handoff only. Production engine unchanged. Shared spacing/clearance remains with Do-It-All!; no new helper, physics, capacity, grip, run-fit or arrival policy. PR #58 and #61 remain separate. | 2026-10-15 UTC: [follow-up complete](reviews/yac-tracking-followup.md). 153 NFL catches versus reused accepted/candidate film shows trailing/low-closing-speed geometry. New same-input accepted P046 verifies PR58 transfer: receiver body/recorded ball unchanged through catch, 50.06 YAC TD → −.17 YAC front-form tackle with solved load; P009 side-control adverse +1.16 retained and cached true rear control reused. P045 has real ball opportunities; no forced repair. Diagnostic traffic bypass does not stop TD; corrected gather probe changes neither execution. Three measurement checks pass; no new full games/shared suite. Exact fixtures/receipts supplied to Integration and shared-spacing owner; no acknowledgment or adoption implied. |
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
