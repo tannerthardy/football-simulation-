@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Run-entry Awareness extraction contract, 2026-10-15
+
+Do-It-All owns this dependency plan and proposal artifacts only, based on
+accepted `a1b16e6`. Awareness retains the information store/query/sensing contract;
+Integration owns PlaySim overlap and combined verification. No shared production
+runtime edit, branch merge, behavior tuning or global spacing migration. #63
+already includes the independent gap fix and stays separate. Current admission
+`cfcb7db` requires clarification: zero returned velocity after the prediction cap
+means unknown, while the consumer treats it as stationary. Owner coordination
+and an explicit observation-only extraction are prerequisites, not a live-state
+fallback or license to import the recorded experimental stack.
+
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

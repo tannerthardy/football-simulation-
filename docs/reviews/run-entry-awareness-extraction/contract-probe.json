@@ -1,0 +1,107 @@
+{
+  "schema": "run-entry-awareness-contract-probe-v1",
+  "ownerSource": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+  "moduleSha256": "dac6f5bcf21a14b6022c5a233e499057758fcc44f001511cfb74e941a204d367",
+  "originalSample": {
+    "t": 0,
+    "pos": {
+      "x": 5,
+      "y": 0
+    },
+    "vel": {
+      "x": 0,
+      "y": 1
+    }
+  },
+  "rows": [
+    {
+      "t": 0.3,
+      "picture": {
+        "source": "observed",
+        "pos": {
+          "x": 5,
+          "y": 0.3
+        },
+        "vel": {
+          "x": 0,
+          "y": 1
+        },
+        "sampledAt": 0,
+        "availableAt": 0.30000000000000004,
+        "age": 0.3,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "t": 0.35,
+      "picture": {
+        "source": "observed",
+        "pos": {
+          "x": 5,
+          "y": 0.3
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "sampledAt": 0,
+        "availableAt": 0.30000000000000004,
+        "age": 0.35,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "t": 0.4,
+      "picture": {
+        "source": "remembered",
+        "pos": {
+          "x": 5,
+          "y": 0.3
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "sampledAt": 0,
+        "availableAt": 0.30000000000000004,
+        "age": 0.4,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "t": 1,
+      "picture": {
+        "source": "remembered",
+        "pos": {
+          "x": 5,
+          "y": 0.3
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "sampledAt": 0,
+        "availableAt": 0.30000000000000004,
+        "age": 1,
+        "predictedFor": 0.3
+      }
+    },
+    {
+      "t": 1.05,
+      "picture": {
+        "source": "unavailable"
+      }
+    }
+  ],
+  "findings": [
+    "Source observed means recently delivered, not prediction still valid.",
+    "After prediction cap, vel=(0,0) denotes unknown current speed, not evidence of physical stopping.",
+    "Raw sampled velocity is stored but not exposed in the picture.",
+    "The admission helper uses picture.vel as sampled velocity to undo extrapolation, and treats zero as stationary. Importing the type alone does not satisfy this assumption."
+  ],
+  "queryPurityPreserved": true,
+  "physicalScrimmages": 0,
+  "worldSteps": 0,
+  "completedGames": 0,
+  "elapsedSeconds": 0.0015940689999999905
+}

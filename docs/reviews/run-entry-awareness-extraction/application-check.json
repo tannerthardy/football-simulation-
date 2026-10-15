@@ -1,0 +1,82 @@
+{
+  "schema": "run-entry-awareness-extraction-check-v1",
+  "accepted": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "review63": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+  "owner": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+  "ownerCoreSha256": "dac6f5bcf21a14b6022c5a233e499057758fcc44f001511cfb74e941a204d367",
+  "checks": [
+    {
+      "base": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "temporaryIndexOnly": true,
+      "patches": [
+        {
+          "patch": "01-observation-core-proposal.patch",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "patch": "02-information-risk.patch",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "patch": "03-admission-context-only-proposal.patch",
+          "exitCode": 0,
+          "stderr": ""
+        }
+      ],
+      "proposedTree": "8e076feed8ce6f257d2c007905abc57da508a50b",
+      "changedFiles": [
+        "src/sim/behaviors/carrier.ts",
+        "src/sim/playsim.ts",
+        "src/sim/run-approach.ts",
+        "src/sim/teammate-information.ts",
+        "test/fixtures/run-entry-approach.json",
+        "test/run-entry-approach.test.ts"
+      ],
+      "proposedSourceSha256": "96b825d4c6168c8a6126a816f3407d1022764d8c95b49de009f382204049ab5e",
+      "typecheckProject": "out/run-entry-awareness/proposed-typecheck/tsconfig.json"
+    },
+    {
+      "base": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+      "temporaryIndexOnly": true,
+      "patches": [
+        {
+          "patch": "01b-observation-core-after63-proposal.patch",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "patch": "02-information-risk.patch",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "patch": "03-admission-context-only-proposal.patch",
+          "exitCode": 0,
+          "stderr": ""
+        }
+      ],
+      "proposedTree": "d1098b915b5b70bdc7e221fc4262528b4d31338d",
+      "changedFiles": [
+        "src/sim/behaviors/carrier.ts",
+        "src/sim/playsim.ts",
+        "src/sim/run-approach.ts",
+        "src/sim/teammate-information.ts",
+        "test/fixtures/run-entry-approach.json",
+        "test/run-entry-approach.test.ts"
+      ]
+    }
+  ],
+  "patchSha256": {
+    "01-observation-core-proposal.patch": "dbee4cda7f8113a46c4cdc0d0d5b354278af2085e33d9bbc22a793c592c11728",
+    "01b-observation-core-after63-proposal.patch": "87f791e64f51fdea73695bc12cf85ad58c053b622588945eb7ae5418ddb60069",
+    "02-information-risk.patch": "6e029983024d643129cf11db875d6ad6caa748dbab901641f209d9106915d3ed",
+    "03-admission-context-only-proposal.patch": "2565c1f97fae53433dd7dae0a90abf031353f161a71aa003fa8c67e0dcc3bf98"
+  },
+  "original63ImportConflict": "Accepted-base import context overlaps #63 IncidentalCatchReadiness. The after63 variant preserves that import; same semantic shim and unchanged owner core.",
+  "admissionContextAdaptation": "Preserve accepted four-argument evaluate signature. Do not import recorded-engine assessmentAim change or Behavior.runSurfaceMotion.",
+  "productionRuntimeEdited": false,
+  "newWorldSteps": 0,
+  "semanticApproval": false
+}

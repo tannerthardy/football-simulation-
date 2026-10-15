@@ -1,0 +1,21 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index d2ba912..cc9bd7d 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -93,12 +93,12 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+   for(const p of candidates) {
+     let risk=0;
+     for(const d of sim.opponents(a)) {
+-      if(d.isDown(sim.t)) continue;
+       const s=sim.see(a,d);
+       if(Math.hypot(s.pos.x-p.x,s.pos.y-p.y)>6) continue;
+-      // Visible block posture buys time, not knowledge of a future block win.
+-      const tied=d.engagement ? .25 : 0;
+-      const reach=timeToReach({...s,profile:d.profile,speedScale:d.speedScale},p,d.profile.radius+a.profile.radius)+tied;
++      // Acquired motion already carries a block's observed slowdown. An
++      // engagement flag cannot promise another quarter second of protection.
++      const recovery=observedRecoveryAllowance(s,d.profile.getUp,sim.dt);
++      const reach=timeToReach({...s,profile:d.profile},p,d.profile.radius+a.profile.radius)+recovery;
+       const arrive=Math.hypot(p.x-a.pos.x,p.y-a.pos.y)/Math.max(2,a.speed);
+       risk+=Math.max(0,arrive-reach)*3;
+     }
