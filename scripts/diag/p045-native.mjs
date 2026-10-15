@@ -1,5 +1,6 @@
 /** Exact frozen P006/P010/P045 setups and passive native controller tapes.
  * prepare MANIFEST GAME OUT.json | inspect INPUT OUT.json.gz [primary-only]
+ * flight INPUT OUT.json.gz: same execution, add passive consumed-flight inputs
  * Historical capture is an ignored archive, never a production branch merge.
  */
 import assert from 'node:assert/strict';
@@ -12,6 +13,7 @@ import {Game} from '../../src/game/game.ts';
 import {PlaySim} from '../../src/sim/playsim.ts';
 import {ScoutingReport} from '../../src/sim/recognition.ts';
 import {CoverageScouting} from '../../src/sim/qbmind.ts';
+import {catchSpot} from '../../src/sim/behaviors/receiver.ts';
 import {sourceVersion} from '../source-version.ts';
 
 const copy=x=>structuredClone(x),hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex'),
@@ -29,7 +31,7 @@ function restore(s,record){s=copy(s);const scouting=new ScoutingReport(s.scoutin
 const lean=r=>({...r,frames:undefined,telemetry:undefined});
 function signature(sim,r){return hash({result:lean(r),bodies:sim.agents.map(a=>a.body),intents:sim.intents,
  minds:sim.agents.map(a=>a.mind),rng:sim.rng,perception:sim.perception});}
-function inspect(c,record,model=null,audit=false){const sim=restore(c.setup,record),rows=[],wrapped=new WeakSet();let cues=[],raw=[],world=null;
+function inspect(c,record,model=null,audit=false,flight=false){const sim=restore(c.setup,record),rows=[],wrapped=new WeakSet();let cues=[],raw=[],world=null;
  const catchAudit={draws:[],chances:[],ratings:[]};
  if(audit){
   const actors={};let index=0;
@@ -59,10 +61,15 @@ function inspect(c,record,model=null,audit=false){const sim=restore(c.setup,reco
  const see=sim.see.bind(sim);sim.see=(a,b,...rest)=>{const picture=see(a,b,...rest);
   if(record&&[18,19,20].includes(a.idx))cues.push({actor:a.idx,target:b.idx,args:rest,picture:copy(picture)});return picture;};
  function wrap(b){if(wrapped.has(b))return b;wrapped.add(b);const update=b.update.bind(b);
-  b.update=(a,s)=>{const start=cues.length,request=update(a,s);
+  b.update=(a,s)=>{const start=cues.length,
+   // Snapshot inputs already available to playBall. catchSpot is a pure
+   // own-body/flight estimate: no see, tags, sensing or random draw.
+   flightInputs=record&&flight&&s.ball.kind==='air'&&[18,19,20].includes(a.idx)
+    ? {path:copy(s.ballPath),spot:copy(catchSpot(a,s)),speedScale:a.speedScale,tagsBefore:[...a.tags]} : undefined,
+   request=update(a,s);
    if(record&&[18,19,20].includes(a.idx))raw.push({actor:a.idx,kind:b.kind,job:b.job??null,target:b.target?.idx??null,
     request:copy(request),rule:b.recordedRule?.(s.t)??null,man:b.recordedMan?.()??b.recordedTechnique?.()??null,
-    cueStart:start,cueEnd:cues.length});return request;};return b;}
+    cueStart:start,cueEnd:cues.length,flight:flightInputs?{...flightInputs,tagsAfter:[...a.tags]}:undefined});return request;};return b;}
  if(record)for(const a of sim.defense){let behavior=wrap(a.behavior);Object.defineProperty(a,'behavior',{get:()=>behavior,set:b=>{behavior=wrap(b);}});}
  const step=sim.world.step.bind(sim.world);sim.world.step=(intents,dt)=>{
   const before=record?sim.agents.map(a=>copy(a.body)):null,applied=record?copy(intents):null,report=step(intents,dt);
@@ -99,11 +106,11 @@ if(mode==='prepare'){
   selection:'User-selected P045, useful P006 tackle and P010 interception. Existing passive prefix lacks restartable initial setups/full prethrow body states; one necessary historical prefix captures them. No full game.',
   physicalScrimmages:physical,restorationCheckExecutions:3,prefixSteps:steps,seconds:(performance.now()-began)/1000,clips});
  console.log(JSON.stringify({out:a3,seconds:(performance.now()-began)/1000,physical,clips:clips.map(c=>({id:c.id,outcome:c.result.outcome,yac:c.result.stats.yac}))}));
-}else if(mode==='inspect'||mode==='audit'){
+}else if(mode==='inspect'||mode==='audit'||mode==='flight'){
  const frozen=read(a1),clips=[];
  assert.ok(!a3||a3==='primary-only','Unknown diagnostic model');
- for(const c of frozen.clips.filter(c=>(!a3&&mode!=='audit')||c.id==='spread-air/P45')){assert.ok(performance.now()-began<30000);const r=inspect(c,mode!=='audit',a3,mode==='audit'),plain=inspect(c,false,a3);
+ for(const c of frozen.clips.filter(c=>(!a3&&mode!=='audit')||c.id==='spread-air/P45')){assert.ok(performance.now()-began<30000);const r=inspect(c,mode!=='audit',a3,mode==='audit',mode==='flight'),plain=inspect(c,false,a3);
   assert.equal(r.signature,plain.signature,'Observer changed native execution');if(!a3&&provenance.sourceSha256===frozen.provenance.sourceSha256)assert.equal(r.signature,c.signature);
   clips.push({...r,observerNeutral:true});console.log(JSON.stringify({id:r.id,yac:r.result.stats.yac,outcome:r.result.outcome,seconds:r.seconds}));}
  assert.equal(sourceVersion(),provenance.sourceSha256);save(a2,{schema:'p045-native-inspection-v1',provenance,model:a3??null,inputSha256:fileHash(a1),seconds:(performance.now()-began)/1000,clips});
-}else throw Error('prepare MANIFEST GAME OUT | inspect INPUT OUT');
+}else throw Error('prepare MANIFEST GAME OUT | inspect/flight INPUT OUT');
