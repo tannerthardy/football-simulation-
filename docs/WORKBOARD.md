@@ -1,5 +1,24 @@
 # Current work ownership
 
+## Spread/air user-film lane review, 2026-10-15
+
+Do-It-All root owns the bounded P009/P011/P033/P037/P039 review on
+`codex/run-lanes` from `6122fb0`, engine `1c4fe7fd…`. Refreshed evidence is
+`codex/experimental-game-checkpoint@4ae667e29b3ce085f43c5cb911b294349cda2b8f`;
+recorded runtime remains `f62511a` / `dd173a3e…`. Read PR57 evidence separately.
+Run Game's current exchange-first claim was checked through its active chat;
+P038/QBHandoff/RunnerToMesh and protection remain theirs. This review claims
+only existing RunBlocker climb/approach regions, carrier lane/detour decisions,
+spacing, their bounded movement-clearance helper and focused diagnostics/tests.
+Teammate information/calls are read-only unless a demonstrated contract gap
+requires coordination. No separate clearance system, hidden peer job/target,
+live future, additional sight or extended memory. Installed responsibility
+can identify an initial job; achieved protection requires acquired geometry and
+actual load, never access to another controller's private changing assignment.
+Own achieved-path previews use existing movement physics. No mesh/World/
+capacity/default/reference change or automatic game/prefix/shared-suite rerun.
+This row acknowledges only this owner's scope, not another worker's acceptance.
+
 ## Continued run-lane execution, 2026-10-15
 
 Final engine candidate `6ac628b` / `1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527`.
