@@ -18,6 +18,14 @@ Both current A044 arms drop, so no postcatch pursuit benefit is measurable.
 Historical legitimate Z/CB blocking stays separate. No full route certificate,
 new perception, private teammate commands, body/physics changes or angle sweep.
 
+Result: one A044/A008 coupled pair only. A044 SS/robber impulse139.003→65.376,
+still contact; SS preserves approach speed, robber receives less forward push.
+A008 all22 bodies/commands/contacts/events/RNG exact. Same target inspected
+earlier at2.05–2.20 does not improve those decisions; no additional coupled
+trial or late maneuver. Hold the research policy from production; #81's narrow
+admission stays separately ready for independent review. See
+[bounded report](reviews/mesh-lateral-approach-2026-10-15.md).
+
 ## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted

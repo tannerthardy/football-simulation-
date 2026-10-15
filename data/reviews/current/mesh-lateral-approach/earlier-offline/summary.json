@@ -1,0 +1,803 @@
+{
+  "question": "Can a retained, momentum-budgeted passing-side target improve the first A044 conflict with both defenders reacting?",
+  "host": "6e19ad2d4aac73e71ae57c1893a9b389074eeaa5",
+  "accepted": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "cases": [
+    {
+      "id": "A044",
+      "until": 3.55
+    },
+    {
+      "id": "A008",
+      "until": 3.4
+    }
+  ],
+  "forecastSteps": 12,
+  "actor": 21,
+  "earlierResidualAdmission": true,
+  "existingBaseline": "data/reviews/current/mesh-motion-admission/current-candidate",
+  "batchWallCapMs": 15000,
+  "productionChange": false,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "provenance": {
+    "sourceSha256": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+    "scriptSha256": "9c17ed0eaa2735e2cd5e2bccb02033984c9b95fe8cba5ecc8f1af07edc9ce562",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "node": "v22.23.3",
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "offline": true,
+  "rows": [
+    {
+      "t": 1.8,
+      "bodySha256": "ae967022f6f18e9387799ef2ea99d784c8700bec89d3f50314e9c1e908ed042d",
+      "peersSha256": "eae2ad651b25a0da7a9644852d2ad8eaaa571b128f2a3703c9b855479dec6637",
+      "result": {
+        "reason": "no-local-conflict"
+      }
+    },
+    {
+      "t": 1.85,
+      "bodySha256": "4548a6d687de26319d41540b9dd4005defdd3267063bfc026353634cd158204d",
+      "peersSha256": "8d44c5edb11dcd2b8c12659233d9e37267fb39ee254e9487819c04910e7df319",
+      "result": {
+        "reason": "no-local-conflict"
+      }
+    },
+    {
+      "t": 1.9,
+      "bodySha256": "d2af9e0522b82e7e3ae89b4217b9b679d12ad40783fa1ad470801227d9bceb4c",
+      "peersSha256": "c4b72d2d290dd56df8499cd770290d18851a67715b06a5f950e0ebd8b04dad09",
+      "result": {
+        "reason": "no-local-conflict"
+      }
+    },
+    {
+      "t": 1.95,
+      "bodySha256": "377efa607bfafe870734b3e18401a45fbaf8fe72eb7ffa3076e404a0a2901a5a",
+      "peersSha256": "f02f35055f09fadfd34e020d9367dfeb7fda2b4c40727e6131430d7130852018",
+      "result": {
+        "reason": "no-local-conflict"
+      }
+    },
+    {
+      "t": 2,
+      "bodySha256": "afc91574646e06444723f870a1bc919b3d00ceb32544b3439150eb9ead5ab8f6",
+      "peersSha256": "6acc2bc70e231880f3d3ba58b0095eb29497e80c7aa9869b9ae9548a0fc7f063",
+      "result": {
+        "reason": "no-local-conflict"
+      }
+    },
+    {
+      "t": 2.05,
+      "bodySha256": "331028bdb4101bbb1821023be4997dbb8754547e069256f595669f7be992a1d3",
+      "peersSha256": "97929de1231fc4276dd3c7bdb12de6d5e82cab285205981ef35e11508ba29567",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.5457249165281544,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.27255242813143316,
+          "target": {
+            "x": 42.11368446130951,
+            "y": 28.43350061390188
+          },
+          "raw": {
+            "vel": {
+              "x": -1.3111927305132491,
+              "y": -8.384688632750105
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -1.3111927305132491,
+              "y": -8.384688632750105
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": 0.44996907399074876,
+              "y": -8.474653838191358
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": 0.5681650770276252,
+          "residualGap": -0.03349512211539929,
+          "chosenGap": 0.5681650770276252,
+          "lateralGap": 0.220252919337384,
+          "chosenProgress": 3.381252220566356,
+          "lateralProgress": 3.328033569766171,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.1,
+      "bodySha256": "d5fa4bfaea24adb22e2916a33a9e1f8caebd05bda30d5f1a0fe9b18eb5414818",
+      "peersSha256": "7ec16593c2547ee51268b616a08ec904ef81f6dcb396ee4e034eeb17f298a285",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.5082434345158532,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.28380408600277424,
+          "target": {
+            "x": 41.97245398251238,
+            "y": 28.34196654669746
+          },
+          "raw": {
+            "vel": {
+              "x": -1.6226892171565341,
+              "y": -8.782436129012831
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -1.6226892171565341,
+              "y": -8.782436129012831
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -0.044511529565989374,
+              "y": -8.930975499876912
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": 0.355560584311009,
+          "residualGap": -0.1150971458202712,
+          "chosenGap": 0.355560584311009,
+          "lateralGap": 0.20001812969044885,
+          "chosenProgress": 3.494104100423276,
+          "lateralProgress": 3.4636344164761304,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.15,
+      "bodySha256": "f913077ae43707bc0a912b912856c18e948ac23d2ef674ee02ef267d861164f9",
+      "peersSha256": "b9677c029f3f54a6022615117f81f459f6eb15a9304f6a4fec464cd1676c9d8e",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.4805229263141637,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.3047174060289699,
+          "target": {
+            "x": 41.82833356889724,
+            "y": 28.267823056409213
+          },
+          "raw": {
+            "vel": {
+              "x": -1.9851464668169516,
+              "y": -9.14005001938908
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -1.9851464668169516,
+              "y": -9.14005001938908
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -0.6390390081894202,
+              "y": -9.331288764027315
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": 0.09606276696758664,
+          "residualGap": -0.1718970767088837,
+          "chosenGap": 0.09606276696758664,
+          "lateralGap": 0.024246765611765198,
+          "chosenProgress": 3.5729095586956308,
+          "lateralProgress": 3.5620442769215623,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.2,
+      "bodySha256": "2b77469e78182c0fe8300be23f25d5d35f953c8a50b4b2cc670bdfa52447bdcc",
+      "peersSha256": "a817c9a791cf6a3f460d2c255eef38a24f8a0ad41cf97246e0db51d1d6659917",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.4462644878368225,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.33265837736236276,
+          "target": {
+            "x": 41.68778797889584,
+            "y": 28.18124297902114
+          },
+          "raw": {
+            "vel": {
+              "x": -2.1040997409670488,
+              "y": -9.214573235224067
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -1.0520498704835244,
+              "y": -4.607286617612034
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -1.2837172447376382,
+              "y": -9.364169245737102
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": -0.006824481545958716,
+          "residualGap": -0.23709129705605358,
+          "chosenGap": 0.29787886776131767,
+          "lateralGap": -0.06998367191654686,
+          "chosenProgress": 2.889201062943132,
+          "lateralProgress": 3.6395868842894035,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.25,
+      "bodySha256": "7d68d31e06003b2a31bb12f569c72a3254c29a1b3eb3a0f5c43c4a61d9fe8dce",
+      "peersSha256": "f47940f229ef33b5d0783f4b880a23cbe6ed0f341870881180e9c50f0cef162e",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.4257307382917301,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.28473676125477865,
+          "target": {
+            "x": 41.618327907581495,
+            "y": 28.100643762604996
+          },
+          "raw": {
+            "vel": {
+              "x": -2.2108591202972163,
+              "y": -9.189542838326831
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -1.1054295601486082,
+              "y": -4.594771419163416
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -1.6947593428210492,
+              "y": -9.29856905105114
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": -0.034856651094401614,
+          "residualGap": -0.23179596024971127,
+          "chosenGap": 0.212168202832429,
+          "lateralGap": -0.07079848121336785,
+          "chosenProgress": 2.8695829369589854,
+          "lateralProgress": 3.5929864335659194,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.3,
+      "bodySha256": "842e6f8da73f8053cb5ba5e578801f8cb1209cf7e28106f3cda24b5072f3aebc",
+      "peersSha256": "ec044ddeeb14a09ba7816899a16649ead21ea7420669cbe11cf75ce7aee4894d",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.40618549108703567,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.23691516488694706,
+          "target": {
+            "x": 41.55110846205825,
+            "y": 28.014744397919067
+          },
+          "raw": {
+            "vel": {
+              "x": -2.314892304898835,
+              "y": -9.16388941683418
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -1.1574461524494175,
+              "y": -4.58194470841709
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -2.084207318685632,
+              "y": -9.219092985754216
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": -0.05316271075649448,
+          "residualGap": -0.2195629482630499,
+          "chosenGap": 0.13346178795751173,
+          "lateralGap": -0.06767086562412489,
+          "chosenProgress": 2.85525902538252,
+          "lateralProgress": 3.549529311428273,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.35,
+      "bodySha256": "6566d819bbcaf88c654587cca827aa3a9dcf90f29ee7c7a5d82ad7cd404a229f",
+      "peersSha256": "0cc501c85a673c576c52f63b2b35f5309f50a1d4c58282b562a8876d97c21343",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.3882252317989057,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.19033823468073374,
+          "target": {
+            "x": 41.48350376320013,
+            "y": 27.92402940073759
+          },
+          "raw": {
+            "vel": {
+              "x": -2.02106891955621,
+              "y": -9.233140096936102
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -2.02106891955621,
+              "y": -9.233140096936102
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -2.4521745246276114,
+              "y": -9.128112385811903
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": -0.08348322577556283,
+          "residualGap": -0.20021338160474494,
+          "chosenGap": -0.08348322577556283,
+          "lateralGap": -0.05906741049264547,
+          "chosenProgress": 3.5213133112297506,
+          "lateralProgress": 3.5221001802255563,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.4,
+      "bodySha256": "9b441fd8e2e95280cf0932a0a7448f5fdac02751ff04f076ee4a71510ec52d51",
+      "peersSha256": "27be2ec43427a7fd70286e757288040868064c837ee5b72fbda3a4daf2816aea",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.35473273926652327,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.21273825506138364,
+          "target": {
+            "x": 41.37103598262455,
+            "y": 27.829626394432964
+          },
+          "raw": {
+            "vel": {
+              "x": -2.0858452694061285,
+              "y": -9.21872253294031
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -2.0858452694061285,
+              "y": -9.21872253294031
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -3.020079158846119,
+              "y": -8.95626694005648
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": -0.15541727222897572,
+          "residualGap": -0.2563596605013624,
+          "chosenGap": -0.15541727222897572,
+          "lateralGap": -0.11044726072815869,
+          "chosenProgress": 3.606308669696468,
+          "lateralProgress": 3.6056771921661017,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.45,
+      "bodySha256": "1186ea96c7e87b639cd3b87f16fbe170e76d5d4851ca62277a41e9ad2e24f61a",
+      "peersSha256": "523011db162d03defbc952a88ff533565523f0a3d0fef795592889dfa9d81b5a",
+      "result": {
+        "reason": "lateral",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "command": {
+          "vel": {
+            "x": -3.741782541148681,
+            "y": -8.6726322291639
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.32077813021877744,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.2617788471746839,
+          "target": {
+            "x": 41.239411553204775,
+            "y": 27.741785617440204
+          },
+          "raw": {
+            "vel": {
+              "x": -2.3639628598591704,
+              "y": -9.14478900602873
+            }
+          },
+          "chosen": {
+            "vel": {
+              "x": -2.3639628598591704,
+              "y": -9.14478900602873
+            }
+          },
+          "alternative": {
+            "vel": {
+              "x": -3.741782541148681,
+              "y": -8.6726322291639
+            }
+          },
+          "rawGap": -0.2119429963722937,
+          "residualGap": -0.305325745094384,
+          "chosenGap": -0.2119429963722937,
+          "lateralGap": -0.15691389573833764,
+          "chosenProgress": 3.6806363016035997,
+          "lateralProgress": 3.673982122364602,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.5,
+      "bodySha256": "d3d879c2b177c93dece098bb26e45dda784cd015076ec1982e6538dbbe746489",
+      "peersSha256": "4d1d6c842578b46cdf952366b30bdcbd40ac38fbdee50358cf0eb15a3544090c",
+      "result": {
+        "reason": "lateral",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "command": {
+          "vel": {
+            "x": -4.3708180224938395,
+            "y": -8.372890547604515
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.2858228381763686,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.28001458330293616,
+          "target": {
+            "x": 41.14609468249309,
+            "y": 27.653088976095997
+          },
+          "raw": {
+            "vel": {
+              "x": -2.263451196875907,
+              "y": -9.169849234708446
+            }
+          },
+          "chosen": {
+            "vel": {
+              "x": -2.263451196875907,
+              "y": -9.169849234708446
+            }
+          },
+          "alternative": {
+            "vel": {
+              "x": -4.3708180224938395,
+              "y": -8.372890547604515
+            }
+          },
+          "rawGap": -0.27448831534443663,
+          "residualGap": -0.34480830768261117,
+          "chosenGap": -0.27448831534443663,
+          "lateralGap": -0.20640884414753374,
+          "chosenProgress": 3.7639141480057026,
+          "lateralProgress": 3.742739987132089,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.55,
+      "bodySha256": "07a14bdfa5c9ea248a70b65827f5d5ab8e09f77572e0cb9fb2970458798e76ee",
+      "peersSha256": "8739503342573c4432a0962e69979a1c68cbaafa8a76c27e2000ede5dac3dbbf",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.154501696006059,
+            "y": -0.9879925232162697
+          },
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.24953300988240906,
+          "normal": {
+            "x": -0.9879925232162697,
+            "y": 0.154501696006059
+          },
+          "stopping": 0.29755718140238685,
+          "target": {
+            "x": 41.06212381201877,
+            "y": 27.56977131563513
+          },
+          "raw": {
+            "vel": {
+              "x": -2.0954019940893347,
+              "y": -9.209361717270017
+            }
+          },
+          "chosen": {
+            "vel": {
+              "x": -3.9334372286464068,
+              "y": -3.0108878834378894
+            }
+          },
+          "alternative": {
+            "vel": {
+              "x": -5.053811150307911,
+              "y": -7.978849892896566
+            }
+          },
+          "rawGap": -0.33099692072319775,
+          "residualGap": -0.3799636271014827,
+          "chosenGap": -0.2113849071413481,
+          "lateralGap": -0.2567903999006601,
+          "chosenProgress": 2.887044283814914,
+          "lateralProgress": 3.7949352036826864,
+          "allUp": true
+        }
+      }
+    }
+  ],
+  "elapsedMs": 112.48525599999999,
+  "cpuMs": 137.767
+}

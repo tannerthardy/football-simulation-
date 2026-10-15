@@ -1,0 +1,265 @@
+{
+  "question": "Can a retained, momentum-budgeted passing-side target improve the first A044 conflict with both defenders reacting?",
+  "host": "6e19ad2d4aac73e71ae57c1893a9b389074eeaa5",
+  "accepted": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "cases": [
+    {
+      "id": "A044",
+      "until": 3.55
+    },
+    {
+      "id": "A008",
+      "until": 3.4
+    }
+  ],
+  "forecastSteps": 12,
+  "actor": 21,
+  "existingBaseline": "data/reviews/current/mesh-motion-admission/current-candidate",
+  "batchWallCapMs": 15000,
+  "productionChange": false,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "provenance": {
+    "sourceSha256": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+    "scriptSha256": "0664179fe36e6758ef1333185c9023ad4a6a503889c25bab3a06eeec55bc1b13",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "node": "v22.23.3",
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "offline": true,
+  "rows": [
+    {
+      "t": 2.2,
+      "bodySha256": "2b77469e78182c0fe8300be23f25d5d35f953c8a50b4b2cc670bdfa52447bdcc",
+      "peersSha256": "a817c9a791cf6a3f460d2c255eef38a24f8a0ad41cf97246e0db51d1d6659917",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.2226148103915077,
+            "y": -0.9749064807428213
+          },
+          "normal": {
+            "x": -0.9749064807428213,
+            "y": 0.2226148103915077
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.4462644878368225,
+          "normal": {
+            "x": -0.9749064807428213,
+            "y": 0.2226148103915077
+          },
+          "stopping": 0.4935769567997185,
+          "target": {
+            "x": 41.54193090732653,
+            "y": 28.274443348212273
+          },
+          "raw": {
+            "vel": {
+              "x": -2.1040997409670488,
+              "y": -9.214573235224067
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -1.0520498704835244,
+              "y": -4.607286617612034
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -1.8710766708142,
+              "y": -9.264700087924066
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": -0.006824481545958716,
+          "chosenGap": 0.29787886776131767,
+          "lateralGap": -0.025043174000387414,
+          "chosenProgress": 2.889201062943132,
+          "lateralProgress": 3.649480732359684,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.35,
+      "bodySha256": "6566d819bbcaf88c654587cca827aa3a9dcf90f29ee7c7a5d82ad7cd404a229f",
+      "peersSha256": "0cc501c85a673c576c52f63b2b35f5309f50a1d4c58282b562a8876d97c21343",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.21383010774403255,
+            "y": -0.9768708640461007
+          },
+          "normal": {
+            "x": -0.9768708640461007,
+            "y": 0.21383010774403255
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.3882252317989057,
+          "normal": {
+            "x": -0.9768708640461007,
+            "y": 0.21383010774403255
+          },
+          "stopping": 0.27732377885185955,
+          "target": {
+            "x": 41.40631600947635,
+            "y": 27.98416330368693
+          },
+          "raw": {
+            "vel": {
+              "x": -2.02106891955621,
+              "y": -9.233140096936102
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "chosen": {
+            "vel": {
+              "x": -2.02106891955621,
+              "y": -9.233140096936102
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "alternative": {
+            "vel": {
+              "x": -2.8493768079009425,
+              "y": -9.01202793126173
+            },
+            "cutSkill": 1.1214285714285714
+          },
+          "rawGap": -0.08348322577556283,
+          "chosenGap": -0.08348322577556283,
+          "lateralGap": -0.036188128508323925,
+          "chosenProgress": 3.5213133112297506,
+          "lateralProgress": 3.521031802991217,
+          "allUp": true
+        }
+      }
+    },
+    {
+      "t": 2.55,
+      "bodySha256": "07a14bdfa5c9ea248a70b65827f5d5ab8e09f77572e0cb9fb2970458798e76ee",
+      "peersSha256": "8739503342573c4432a0962e69979a1c68cbaafa8a76c27e2000ede5dac3dbbf",
+      "result": {
+        "reason": "not-better",
+        "passing": {
+          "peer": 15,
+          "forward": {
+            "x": -0.22185922635238528,
+            "y": -0.9750787064039093
+          },
+          "normal": {
+            "x": -0.9750787064039093,
+            "y": 0.22185922635238528
+          }
+        },
+        "detail": {
+          "peer": 15,
+          "age": 0.05,
+          "at": 0.24953300988240906,
+          "normal": {
+            "x": -0.9750787064039093,
+            "y": 0.22185922635238528
+          },
+          "stopping": 0.41657820489636216,
+          "target": {
+            "x": 40.956494069951496,
+            "y": 27.65055391494433
+          },
+          "raw": {
+            "vel": {
+              "x": -2.0954019940893347,
+              "y": -9.209361717270017
+            }
+          },
+          "chosen": {
+            "vel": {
+              "x": -3.9334372286464068,
+              "y": -3.0108878834378894
+            }
+          },
+          "alternative": {
+            "vel": {
+              "x": -5.7110589564572685,
+              "y": -7.522423701987368
+            }
+          },
+          "rawGap": -0.33099692072319775,
+          "chosenGap": -0.2113849071413481,
+          "lateralGap": -0.23839574829960852,
+          "chosenProgress": 2.887044283814914,
+          "lateralProgress": 3.760592689809598,
+          "allUp": true
+        }
+      }
+    }
+  ],
+  "elapsedMs": 99.37303000000003,
+  "cpuMs": 117.169
+}
