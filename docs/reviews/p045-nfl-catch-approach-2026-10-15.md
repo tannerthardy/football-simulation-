@@ -1,18 +1,21 @@
-# P045 catch approach: saved comparison and blocked NFL witness query
+# P045 catch approach: original comparison and validated NFL return
 
 October 15, 2026 (America/Phoenix).
 
-Resume status: Catching's restoration receipt is now pinned and verified;
-the posted CSV/ZIP paths are on another executor and absent here. The
-[small query-execution handoff](p045-nfl-restoration-handoff-2026-10-15.md)
-reuses this exact study without transferring the archive. The measurements
-below are unchanged; individual NFL witnesses remain pending that execution.
+**Closed:** the returned week-1 query at `481ad18` is validated: one contained
+example, zero qualifying explosive examples. See the
+[closeout and interpretation](p045-nfl-closeout-2026-10-15.md).
+The original local collection below records the initial access gap. Catching
+subsequently fulfilled the remote handoff without transferring the archive;
+the saved P045/control measurements and query filters remain unchanged.
 
 **P045 loses containment before receiver contact.** Its corner falls behind
 during flight; its safety reduces distance while losing downfield support.
 This supports an earlier coverage/approach investigation, not a grip change.
-The NFL portion currently provides **aggregate context only**: individual NFL
-witnesses cannot be selected without Catching's restored tracking and receipt.
+The initial local NFL portion provided **aggregate context only** because
+Catching's restored tracking was unavailable here. The validated remote return
+now supplies one illustrative contained witness; it cannot prescribe P045's
+outcome.
 No NFL trajectories, player IDs or witness results have been invented.
 
 Question: does this escape implicate an earlier decision/achieved approach,
@@ -247,6 +250,6 @@ If an informed, attainable request was already present, use a same-prefix
 movement witness; if the request was wrong, repair its information/football
 decision first. Contact-law/grip attribution cannot be made from P045's absent
 receiver contact. Keep P006's useful tackle, P010's interception and legitimate
-offensive separation/speed wins. Complete the two NFL witness bins when the
-existing restoration is accessible; the broad aggregates alone do not choose
-an engine change.
+offensive separation/speed wins. The [validated return](p045-nfl-closeout-2026-10-15.md)
+closes the NFL query with one contained example and an empty explosive bin.
+Neither the broad aggregates nor this unmatched example chooses an engine change.

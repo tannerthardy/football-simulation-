@@ -3,19 +3,17 @@
 ## Bounded NFL measurement, October 15, 2026 (America/Phoenix)
 
 Measurement owner: `codex/nfl-catch-approach`, from accepted `develop@a1b16e6`.
-Scope: one saved-only P045 catch-approach query/report, reusing the NFL2022
-adapter and common geometry. Coordinate raw-data access with Catching's existing
-restoration through [PR #58](https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199037427).
-No engine changes, new simulation, reference adoption or shared verifier run.
-Raw NFL access is pending; never represent aggregate context as selected NFL witnesses.
-Saved comparison/query and five focused checks are complete. Individual NFL
-witness selection was initially blocked by absent restored CSVs/receipt; see the
-[measurements, controls and exact continuation](reviews/p045-nfl-catch-approach-2026-10-15.md).
-Resume: Catching's `747bb24` receipt is received and verified, but its posted
-CSV/ZIP paths are absent on this executor. The
-[pinned execution handoff](reviews/p045-nfl-restoration-handoff-2026-10-15.md)
-needs only three existing Python modules and a small result JSON return;
-the original query, filters and engine remain unchanged.
+**Closed:** Catching executed the unchanged week-1 query on its verified
+restoration and returned `481ad18`; the 13,975-byte packet, query/receipt pins,
+IDs/events and retained calculations are validated here. One contained witness,
+zero qualifying explosive witnesses; the contained receiver slows/turns.
+[Closeout, count/exclusion limits and week availability](reviews/p045-nfl-closeout-2026-10-15.md).
+The 26 label candidates span all loaded metadata; invalid/converted counters
+can overlap and cannot supply a rejection funnel. The final instruction closes this
+narrow query without a multiweek expansion or engine change. No new raw query,
+simulation, default/reference change or shared verifier run by this owner.
+Original query/control checks and
+[execution handoff](reviews/p045-nfl-restoration-handoff-2026-10-15.md) remain preserved.
 
 ## Current controller integration preparation
 

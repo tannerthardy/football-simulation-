@@ -22,27 +22,40 @@
     "purpose": "Post catch within Y-Cross; illustrative containment/offensive-win controls, not frequency estimates."
   },
   "nfl": {
-    "status": "blocked",
-    "missing_files": [
-      "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/players.csv",
-      "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/plays.csv",
-      "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/player_play.csv",
-      "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/tracking_week_1.csv"
+    "status": "measured_remote_validated",
+    "weeks": [
+      1
     ],
-    "restoration_receipt": {
-      "commit": "747bb24bd2c17c8b4a6f572fcb3ee8e459375fb8",
-      "sha256": "d8e3cdc71461117439f2dafe84f1d87a3c74952d713f7167b436e4d82a53449b",
-      "catalog_archive_sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
-      "published_verification_verified_zip_members": true
+    "counts": {
+      "label_candidates": 26,
+      "converted": 3,
+      "invalid": 3,
+      "geometry_matched": 1,
+      "contained": 1,
+      "offensive_win": 0
     },
-    "reason": "Verified receipt received; posted restored CSVs and ZIP are absent on this separate executor. No NFL query executed.",
-    "original_environment_missing_files": [
-      "/workspace/football-simulation-/data/raw/bdb2025/big-data-bowl-data/players.csv",
-      "/workspace/football-simulation-/data/raw/bdb2025/big-data-bowl-data/plays.csv",
-      "/workspace/football-simulation-/data/raw/bdb2025/big-data-bowl-data/player_play.csv",
-      "/workspace/football-simulation-/data/raw/bdb2025/big-data-bowl-data/tracking_week_1.csv"
+    "result_commit": "481ad18e5d1cd45a1d5008496b9917511d8397b1",
+    "result_path": "data/reviews/current/p045-nfl-week1-return.json",
+    "result_sha256": "7911a33decb4ce9f2dfef768f37c527936e573506664b273d231b6c0d0f7f60c",
+    "result_bytes": 13975,
+    "contained_witness_id": "2022091101-4104",
+    "receiver_id": "52595",
+    "selected_defender_ids": [
+      "46527",
+      "52472"
     ],
-    "access_receipt": "data/reviews/current/p045-nfl-restoration-access.json"
+    "qualifying_explosive_witnesses": 0,
+    "count_interpretation": {
+      "label_candidates_scope": "All loaded metadata after joint label/admission filters; not a week-1 denominator.",
+      "converted_scope": "Week-1 conversion plus required events, before later sample validity/geometry.",
+      "invalid_scope": "Pooled duplicate/conversion/event/validity failures; may overlap converted.",
+      "per_reason_rejections": "Not recorded; cannot reconstruct a disjoint funnel or rank individual filters.",
+      "converted_not_geometry_matches": 2,
+      "explosive_bin_empty": true
+    },
+    "execution_cost_s": 15.492674798006192,
+    "local_raw_directory_visible": false,
+    "closeout": "data/reviews/current/p045-nfl-closeout.json"
   },
   "sim_witnesses": [
     {
@@ -1265,8 +1278,9 @@
   },
   "coordination": {
     "url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199037427",
-    "status": "Receipt received and verified; source bytes accessible only on Catching executor. Prepared unchanged week-1 query execution handoff.",
-    "restoration_handoff_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199579876"
+    "status": "Remote week-1 packet received and validated; narrow query closed. No broader execution requested.",
+    "restoration_handoff_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199579876",
+    "returned_result_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199846750"
   },
   "checks": {
     "focusedTests": 5,
@@ -1283,5 +1297,6 @@
     "Support demand is a hindsight necessary bound to a 1-yd disk at the sampled catch time. It is not a tackle/contact radius, sufficient maneuver, or available cue.",
     "Tracking and saved light telemetry do not establish gaze, grip force, contact work, or the first wrong decision.",
     "Selected opposing witnesses are illustrative and are not matched treatment effects or league rates."
-  ]
+  ],
+  "study_status": "closed_narrow_week1_query"
 }

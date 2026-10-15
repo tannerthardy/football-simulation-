@@ -1,0 +1,165 @@
+{
+  "schema": "p045-nfl-return-validation-v1",
+  "status": "validated_closed",
+  "result_commit": "481ad18e5d1cd45a1d5008496b9917511d8397b1",
+  "result_path": "data/reviews/current/p045-nfl-week1-return.json",
+  "result_bytes": 13975,
+  "result_sha256": "7911a33decb4ce9f2dfef768f37c527936e573506664b273d231b6c0d0f7f60c",
+  "result_blob_sha1": "6d667367847fb6313f20f11f4bb61786bedbbea9",
+  "query_commit": "81e43e7279a26c43f2ae5ea29a2282316f42899c",
+  "counts": {
+    "label_candidates": 26,
+    "converted": 3,
+    "invalid": 3,
+    "geometry_matched": 1,
+    "contained": 1,
+    "offensive_win": 0
+  },
+  "contained_witness": {
+    "id": "2022091101-4104",
+    "receiver_id": "52595",
+    "defender_ids": [
+      "46527",
+      "52472"
+    ],
+    "events": {
+      "pass_forward": 3.1,
+      "pass_arrived": 4.1,
+      "first_contact": 4.3,
+      "catch": 4.2,
+      "end": 5.2
+    },
+    "catch_depth_yd": 15.2,
+    "yac_yd": -2.1999999999999993,
+    "snapshots": [
+      {
+        "phase": "release",
+        "event_t_s": 3.1,
+        "receiver_velocity_yd_s": [
+          5.2500000000000036,
+          -4.0000000000000036
+        ],
+        "receiver_speed_yd_s": 6.600189391222048,
+        "defenders": [
+          {
+            "id": "46527",
+            "separation_yd": 7.955501241279521,
+            "downfield_lead_yd": -2.0,
+            "speed_yd_s": 3.3634060117684283,
+            "momentum_magnitude_kg_m_s": 327.8303190170307
+          },
+          {
+            "id": "52472",
+            "separation_yd": 5.5,
+            "downfield_lead_yd": 5.5,
+            "speed_yd_s": 3.3634060117684252,
+            "momentum_magnitude_kg_m_s": 295.7447984323849
+          }
+        ]
+      },
+      {
+        "phase": "flight_midpoint",
+        "event_t_s": 3.6500000000000004,
+        "receiver_velocity_yd_s": [
+          3.75,
+          -5.2500000000000036
+        ],
+        "receiver_speed_yd_s": 6.451743950281973,
+        "defenders": [
+          {
+            "id": "46527",
+            "separation_yd": 7.200694410957875,
+            "downfield_lead_yd": -3.3000000000000007,
+            "speed_yd_s": 2.7950849718747373,
+            "momentum_magnitude_kg_m_s": 272.43621341082746
+          },
+          {
+            "id": "52472",
+            "separation_yd": 3.712142238654116,
+            "downfield_lead_yd": 3.6999999999999993,
+            "speed_yd_s": 4.506939094329997,
+            "momentum_magnitude_kg_m_s": 396.2958350362349
+          }
+        ]
+      },
+      {
+        "phase": "catch",
+        "event_t_s": 4.2,
+        "receiver_velocity_yd_s": [
+          0.9999999999999964,
+          -4.500000000000002
+        ],
+        "receiver_speed_yd_s": 4.609772228646444,
+        "defenders": [
+          {
+            "id": "46527",
+            "separation_yd": 5.200961449578338,
+            "downfield_lead_yd": -3.1999999999999993,
+            "speed_yd_s": 1.7677669529663675,
+            "momentum_magnitude_kg_m_s": 172.3037902979848
+          },
+          {
+            "id": "52472",
+            "separation_yd": 1.4142135623730971,
+            "downfield_lead_yd": 1.4000000000000021,
+            "speed_yd_s": 5.273755777432245,
+            "momentum_magnitude_kg_m_s": 463.7221417578031
+          }
+        ]
+      }
+    ]
+  },
+  "checks": [
+    "exact result bytes/blob",
+    "pinned modules and runner",
+    "unchanged query",
+    "receipt/catalog/CSV checksum cross-checks",
+    "fixed defender identities",
+    "event frame offsets",
+    "pre-contact windows",
+    "geometry, speeds and momentum consistency",
+    "support demand"
+  ],
+  "boundary": "Return-packet integrity/internal validation; raw sample validity, velocities, masses, counts and hashes were collected on Catching's executor, not independently remeasured here.",
+  "available_week_evidence": {
+    "catalog": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "remote_files_verified_in_receipt": [
+      1
+    ],
+    "queried_and_reused": [
+      1
+    ],
+    "other_restored_weeks_inventoried": false,
+    "posted_directory_visible_here": false
+  },
+  "new_raw_queries": 0,
+  "new_simulations": 0,
+  "remote_query_elapsed_s": 15.492674798006192,
+  "validation_elapsed_s": 0.006605791999845678,
+  "validator_sha256": "ca186277227ccb358864e341195505dfdcb39a1d3e33b1f285a07a44400a93b0",
+  "count_interpretation": {
+    "label_candidates_scope": "All loaded metadata after joint label/admission filters; not a week-1 denominator.",
+    "converted_scope": "Week-1 conversion plus required events, before later sample validity/geometry.",
+    "invalid_scope": "Pooled duplicate/conversion/event/validity failures; may overlap converted.",
+    "per_reason_rejections": "Not recorded; cannot reconstruct a disjoint funnel or rank individual filters.",
+    "converted_not_geometry_matches": 2,
+    "explosive_bin_empty": true
+  },
+  "decision": "Closed: one contained illustration with a slowing/turning receiver; insufficient matching evidence to prescribe P045 outcome or tune engine. No multiweek expansion under final instruction.",
+  "catching_diagnosis": {
+    "commit": "8b47d9e0187574d96fe9bbc8a4955b9af6595881",
+    "url": "https://github.com/tannerthardy/football-simulation-/blob/8b47d9e0187574d96fe9bbc8a4955b9af6595881/docs/reviews/p045-defensive-diagnosis.md",
+    "boundary": "Owner evidence, not rerun here: prethrow request discontinuity at 1.15s; continuity and primary-only probes not integration candidates. Useful ball contests and source-separated P006/P010 controls retained."
+  },
+  "future_comparison_not_executed": "If reopened: inventory existing archive/restored weeks on Catching executor; reuse week1 before any other scans. Keep query across verified weeks first; analyze maintained receiver momentum versus plant/slow strata. No outcome-seeking filter relaxation."
+}

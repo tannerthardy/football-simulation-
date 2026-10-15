@@ -4,6 +4,11 @@ October 15, 2026 (America/Phoenix). The [original study](p045-nfl-catch-approach
 and its week-1 Quarters/POST query remain unchanged at
 `81e43e7279a26c43f2ae5ea29a2282316f42899c`.
 
+**Handoff fulfilled; query closed.** Catching returned the week-1 result at
+`481ad18`; [validation and interpretation](p045-nfl-closeout-2026-10-15.md)
+retain one contained example and zero explosive examples. The instructions
+below preserve the original handoff, not a request for another execution.
+
 ## Verified handoff and actual access
 
 Catching posted the [restoration handoff](https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199579876)
@@ -60,7 +65,7 @@ verification from CSV rehashes on the executing host.
 From Catching's existing repository, after this follow-up is published:
 
 ```sh
-git fetch --no-tags --depth=2 --filter=blob:limit=128k origin codex/nfl-catch-approach
+git fetch --no-tags --filter=blob:limit=128k origin codex/nfl-catch-approach
 mkdir -p out/p045-nfl-handoff
 git show FETCH_HEAD:scripts/diag/p045-nfl-execute-handoff.py > out/p045-nfl-handoff/execute.py
 python3 -I out/p045-nfl-handoff/execute.py --repo . \
@@ -69,8 +74,7 @@ python3 -I out/p045-nfl-handoff/execute.py --repo . \
 sha256sum out/p045-nfl-handoff/nfl-week1-return.json
 ```
 
-This published follow-up directly follows `81e43e7`, so the depth-two fetch
-includes the pinned query commit. If using a later branch tip, verify that
+The original follow-up is `d0ebac7`, directly after `81e43e7`. Verify that
 `81e43e7279a26c43f2ae5ea29a2282316f42899c` is present before executing.
 If the restored directory moved, supply `--data /existing/restored/directory`;
 the expected file hashes stay unchanged. Return the result JSON and checksum
