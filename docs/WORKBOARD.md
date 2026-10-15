@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Standing queue and next controller checkpoint — 2026-10-15
+## Standing queue, accepted controller batch and next game checkpoint — 2026-10-15
 
 Integration owns the existing four shared records, the `integration-ready` GitHub
 queue at resumed/working checkpoints, minimal assembly on accepted develop,
@@ -9,21 +9,24 @@ merges under the user's standing authority. Contributors own fetchable code,
 focused checks and known risks; readiness is not approval. No background monitor
 or user relay is required. [Policy and exclusions](INTEGRATION.md#standing-integration-workflow).
 
-Current boundary: `codex/controller-checkpoint-integration`, from accepted8ca8dee
+Completed runtime boundary: `codex/controller-checkpoint-integration`, from accepted8ca8dee
 plus queue metadata67e9b9b. Extract #69's reviewed `blocking.ts` RunBlocker hunk,
 `collection-approach.ts` and two tests only. Preserve accepted PassProtector and
 carrier risk, no #75/runtime ancestry, transport/navigation or experimental physics.
 Do-It-All's exact cdd55b9 re-review is accepted; reuse focused receipts. Integration
 froze40be568 and completed all four phases once:1,729 TS/146 files,145 Python,
 typecheck/build pass,191.361s,44 flags/components1. [Receipt](../data/reviews/current/controller-checkpoint-integration/final-receipt.json).
-Final ref/tree checks and routine adoption through #78 follow; no unchanged rerun.
+Final ref/tree checks passed; #78 adopted as90edc525 under standing routine authority.
+Entire merged tree equals publicationfed46a1; no unchanged rerun. [Actual merge receipt](../data/reviews/current/pr78-merge.json).
 #75's two back-man assertions stay held with Catching + Run; no assertion edit or
 unchanged rerun. A blocked patch holds itself; do not wait for all agents.
 
 Measurement owns one subsequent game collector/film/results packet; Integration
 freezes the accepted source/settings and coordinates the question/budget with CEO.
 Ceiling four full games/240 launcher seconds,60s per game, existing declared inputs,
-no duplicate collection. [Checkpoint conditions](INTEGRATION.md#accepted-controller-game-checkpoint).
+no duplicate collection. [Exact frozen handoff](../data/reviews/current/accepted-controller-game-checkpoint.json)
+uses the same424 players/four inputs/seeds701–704. Measurement/CEO ownership and
+spend acknowledgement pending; zero new evaluation games. [Conditions](INTEGRATION.md#accepted-controller-game-checkpoint).
 Physical laws/capabilities/defaults, experimental activation, unresolved material
 correctness risks, historical baselines/defaults and destructive cleanup escalate.
 Earlier per-merge authority paragraphs below describe their dated stages.

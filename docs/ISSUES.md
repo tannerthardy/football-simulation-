@@ -3,7 +3,7 @@
 # Master issue register
 
 Updated **2026-10-15 (America/Phoenix)**. Accepted development reference:
-`develop` at `8ca8deebe4afa91c3021bdd119bed8976cf00e47` (merged risk-only #74; #72/#63/#65 retained).
+`develop` at `90edc52530caa71efdebf257f17d954a8a629ea0` (merged #78 / bounded #69; #74/#72/#63/#65 retained).
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
@@ -84,7 +84,8 @@ complete four-file correction preserves installation, acquired torso-loss/cleara
 cadence, own contact and physical hand eligibility. Integration owns extraction
 onto8ca8dee. Exact40be568 passes1,729 TS/146 files,145 Python,typecheck/build
 in191.361s under44 flags/components1;64 focused passes/typecheck reused.
-Routine adoption through #78 awaits only final ref/tree checks, not another suite.
+Adopted through merged #78 as90edc525 after exact ref/tree checks; no suite repeat.
+[Actual merge and owner handoff](../data/reviews/current/pr78-merge.json).
 Controlled collection parks the runner: live arrival/yardage benefit, fast-motion
 clearance and broader RunBlocker information correctness remain unproved. Retain
 rejected variants, expected-red and the three adjudicated #66-host failures with

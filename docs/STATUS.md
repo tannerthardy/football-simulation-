@@ -10,7 +10,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `8ca8deebe4afa91c3021bdd119bed8976cf00e47`**, merged #74 with #72/#63/#65 and prior #12 retained. Historical `4ded6b6` stays separate.
+- **Accepted develop: `90edc52530caa71efdebf257f17d954a8a629ea0`**, merged #78 with reviewed #69 collection; #74/#72/#63/#65/#12 retained. Historical `4ded6b6` stays separate. [Actual merge](../data/reviews/current/pr78-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -36,8 +36,8 @@ Do not use the historical sections below as a current starting-reference pin.
   [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
   #69's corrected production hook now has Do-It-All's focused acceptance;
   Its isolated four-file #78 candidate40be568 passes1,729 TS/145 Python,
-  typecheck/build in191.361s,44 flags/components1. Routine adoption follows
-  final ref/tree checks under standing authority, without an unchanged rerun.
+  typecheck/build in191.361s,44 flags/components1. It is now accepted via90edc525;
+  exact merge/passing-source checks needed no unchanged rerun.
   Physics remains separate.
 - #75's isolated information correction is held at a neighboring run-fit contract.
   The eight new recognition checks pass; one combined run has1,732 TS pass/two
@@ -56,7 +56,9 @@ reconcile only affected accepted contracts at clean checkpoints; see the
 No new games, roster screen or shared-suite rerun is requested by this update.
 The next [accepted-controller game checkpoint](INTEGRATION.md#accepted-controller-game-checkpoint)
 will be coordinated once with Measurement/CEO after disposition of #75 and the
-next ready batch; cap four games/240 launcher seconds,60s per game, no automatic rerun.
+next ready batch; #69 is adopted and #75 individually held. [Frozen handoff](../data/reviews/current/accepted-controller-game-checkpoint.json):
+four existing inputs, one accepted arm, cap four games/240 launcher seconds,60s per
+game. Measurement/CEO acknowledgement pending; zero new evaluation games.
 Documentation-only policy edits use link/ref checks; the ready runtime candidate
 alone triggers its required verification. Believable football remains the goal;
 information correctness and overall football quality are separate claims.
