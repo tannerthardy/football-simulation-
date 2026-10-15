@@ -1,5 +1,9 @@
 # Second-level departure: earlier route comparison
 
+Follow-up: the [continuous-route search](second-level-reachability.md) finds real
+LB access using acquired pictures, with material runner-traffic costs. Neither
+individual exit proposal below is revived; the next question moves upstream.
+
 **Keep the accepted controller. Neither the shorter-exit candidate nor one
 cue-supported continuation of RT's previous arc produces timely LB protection.**
 These reject two proposed actions; they do not prove that no attainable route

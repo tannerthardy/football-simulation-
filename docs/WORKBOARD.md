@@ -2,6 +2,22 @@
 
 ## Physical reachability from A030 release — Run Game
 
+Completed result: [continuous-route reachability](reviews/second-level-reachability.md).
+Two committed windings plus one conditional acquired-information comparison;
+upfield route is late, backfield route earns real RT/LB load at actual runner
+arrival using legitimate cues. LB_M stays off RB, but native traffic reroutes
+and brakes RB (LOS speed4.74→2.99yd/s); DT_S tackles him. No clean protection
+improvement or production selection rule established; stop route trials.
+Opening prefix is byte-exact to accepted: RT first physically eligible keeper
+for RG at.70, RG own security starts.80, RT already secured RG since.60 and
+leaves.85. Next Run question is opening RT takeover quality/inside-guard
+opportunity, not a release delay. Current src/tests/settings remain accepted90.
+Three continuations plus one.90 prefix4.774264 launcher seconds, zero games/
+rosters/suite; exact inputs/flags/commits and97KB witness + static chart saved.
+Integration receives findings directly; Do-It-All owns traffic, Physics unchanged.
+
+Predeclared plan retained below:
+
 User-directed diagnostic, separate from the parked exit tweaks. Pin accepted
 90edc525, A030 release.85, original all22 state/history/RNG. Two predeclared
 continuous routes: around DT_S's outboard/upfield shoulder, or behind RG and
