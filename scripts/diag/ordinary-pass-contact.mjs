@@ -125,7 +125,10 @@ for(const arm of ['accepted','candidate']){
  if(reference){
   assert.equal(retainedStage,3);assert.equal(retained.length,3);
   const native=reference.rows.find(r=>r.arm===arm),fork=retained[0].t;
-  assert.deepEqual(frames.filter(f=>f.t<fork),native.frames.filter(f=>f.t<fork),'Pre-fork World history must remain native');
+  // Persisted JSON omits undefined and encodes the support sentinel -Infinity
+  // as null. Compare the exact serialized representation on both sides.
+  assert.equal(hash(frames.filter(f=>f.t<fork)),hash(native.frames.filter(f=>f.t<fork)),
+   'Pre-fork serialized World history must remain native');
  }
 
  rows.push({arm,comparison:reference?'opposite-first-move-variates':'native',endTime:sim.t,phase:sim.phase,throwAt:sim.throwAt,initial,initialRng,
