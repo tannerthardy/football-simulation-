@@ -1,0 +1,196 @@
+{
+  "kind": "same-own-body free-World diagnostic; recorded peer path is analysis only, not a reacting counterfactual",
+  "sourceSha256": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+  "ordinaryOwnWorldSteps": 72,
+  "nativePlays": 0,
+  "elapsedSeconds": 0.012803404000000001,
+  "cases": [
+    {
+      "id": "ace12-iz_weak-over-s3",
+      "slot": "LG",
+      "peer": "DT_W",
+      "t": 0.45,
+      "capturedSource": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "cue": {
+        "t": 0.45,
+        "observer": 4,
+        "target": 14,
+        "kind": "legacy-see",
+        "picture": {
+          "pos": {
+            "x": 40.9,
+            "y": 27.28132460576002
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "caller": [
+          "at <anonymous> (/workspace/joined-release-transfer/src/sim/behaviors/blocking.ts:1375:21)",
+          "at Array.find (<anonymous>)",
+          "at RunBlocker.readRules (/workspace/joined-release-transfer/src/sim/behaviors/blocking.ts:1374:81)"
+        ]
+      },
+      "forecasts": [
+        {
+          "kind": "saved request",
+          "intent": {
+            "vel": {
+              "x": 7.310934676103942,
+              "y": -1.9392792623069641
+            },
+            "facing": -0.25928619191941926
+          },
+          "acquiredCVMinimumGap": -0.35978772118858987,
+          "analysisRecordedPeerMinimumGap": -0.25837035142004927,
+          "upright": true
+        },
+        {
+          "kind": "gather from identical body",
+          "intent": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "facing": -0.25928619191941926
+          },
+          "acquiredCVMinimumGap": 0.320968114964444,
+          "analysisRecordedPeerMinimumGap": 0.1780592542574847,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "id": "ace12-iz_strong-over-s3",
+      "slot": "RB",
+      "peer": "RG",
+      "t": 2.3,
+      "capturedSource": "325a7156e55531c25e506ce1f8d6aaef634666b84e4d3306e924f9eb51a97a3f",
+      "cue": {
+        "t": 2.3,
+        "observer": 6,
+        "target": 5,
+        "kind": "owned-teammate-information",
+        "picture": {
+          "source": "observed",
+          "pos": {
+            "x": 41.64788340041715,
+            "y": 23.033139430301716
+          },
+          "vel": {
+            "x": 1.4256675178954814,
+            "y": -1.0245124766759244
+          },
+          "sampledAt": 2,
+          "availableAt": 2.3,
+          "age": 0.2999999999999998,
+          "predictedFor": 0.2999999999999998
+        },
+        "caller": [
+          "at spaceTeammates.now (/workspace/run-tempo-climb/src/sim/playsim.ts:604:32)",
+          "at spaceTeammates (/workspace/run-tempo-climb/src/sim/spacing.ts:166:18)",
+          "at PlaySim.tick (/workspace/run-tempo-climb/src/sim/playsim.ts:603:5)"
+        ]
+      },
+      "forecasts": [
+        {
+          "kind": "saved request",
+          "intent": {
+            "vel": {
+              "x": 7.923369686867751,
+              "y": -5.262670016119361
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "acquiredCVMinimumGap": 0.5168615816168303,
+          "analysisRecordedPeerMinimumGap": -0.04347037187852254,
+          "upright": true
+        },
+        {
+          "kind": "gather from identical body",
+          "intent": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "acquiredCVMinimumGap": 0.5604670207801112,
+          "analysisRecordedPeerMinimumGap": 0.09461097999276658,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "id": "ace12-iz_strong-over-s3",
+      "slot": "RB",
+      "peer": "RG",
+      "t": 2.4,
+      "capturedSource": "325a7156e55531c25e506ce1f8d6aaef634666b84e4d3306e924f9eb51a97a3f",
+      "cue": {
+        "t": 2.4,
+        "observer": 6,
+        "target": 5,
+        "kind": "owned-teammate-information",
+        "picture": {
+          "source": "observed",
+          "pos": {
+            "x": 41.769759285346126,
+            "y": 22.860157891006047
+          },
+          "vel": {
+            "x": 1.3641322992760871,
+            "y": -1.2258828601964267
+          },
+          "sampledAt": 2.1,
+          "availableAt": 2.4000000000000004,
+          "age": 0.2999999999999998,
+          "predictedFor": 0.2999999999999998
+        },
+        "caller": [
+          "at spaceTeammates.now (/workspace/run-tempo-climb/src/sim/playsim.ts:604:32)",
+          "at spaceTeammates (/workspace/run-tempo-climb/src/sim/spacing.ts:166:18)",
+          "at PlaySim.tick (/workspace/run-tempo-climb/src/sim/playsim.ts:603:5)"
+        ]
+      },
+      "forecasts": [
+        {
+          "kind": "saved request",
+          "intent": {
+            "vel": {
+              "x": 7.923369686867751,
+              "y": -5.262670016119361
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "acquiredCVMinimumGap": 0.41589936808845374,
+          "analysisRecordedPeerMinimumGap": -0.04347037187852254,
+          "upright": true
+        },
+        {
+          "kind": "gather from identical body",
+          "intent": {
+            "vel": {
+              "x": 0,
+              "y": 0
+            },
+            "cutSkill": 1.0892857142857142,
+            "squeeze": 0
+          },
+          "acquiredCVMinimumGap": 0.42204365400300103,
+          "analysisRecordedPeerMinimumGap": -0.19650954187259784,
+          "upright": true
+        }
+      ]
+    }
+  ]
+}

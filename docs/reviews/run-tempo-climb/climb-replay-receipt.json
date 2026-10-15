@@ -1,0 +1,49 @@
+{
+  "protocol": "run-scheme-replay-v1",
+  "inputs": [
+    {
+      "label": "PR50 reference",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/reference-climb-replay.json.gz",
+      "sha256": "fcb4f77ebe3203e1a20ec6e9e40e814eaccbd9766ca6b146570b817045b0fbaf",
+      "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+      "runtime": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2"
+    },
+    {
+      "label": "Rejected climb-fit trial",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/candidate-wz.json.gz",
+      "sha256": "f92b25eb16d7b4d00b8a3aa62c2eb1b1fa62fd600eff6589516decce8ee22d0a",
+      "revision": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+      "runtime": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb"
+    }
+  ],
+  "output": "/workspace/run-tempo-climb/out/tempo-climb/climb-visual/replay.gif",
+  "bytes": 2357363,
+  "sha256": "157ba8781a6e830695ab8290c26c6052e993dc4f77d3610dd029451ca4dc63c6",
+  "frames": 61,
+  "capturedSecondsShown": 3,
+  "frameDurationMs": 50,
+  "mainView": {
+    "fieldY": [
+      15,
+      35
+    ],
+    "fieldX": [
+      31,
+      46
+    ]
+  },
+  "all22Inset": true,
+  "whistledPoseHolds": [],
+  "heldPoseHasLoadOverlay": false,
+  "snapshots": [
+    "out/tempo-climb/climb-visual/replay-0.50s.png",
+    "out/tempo-climb/climb-visual/replay-1.00s.png",
+    "out/tempo-climb/climb-visual/replay-2.00s.png",
+    "out/tempo-climb/climb-visual/replay-2.50s.png",
+    "out/tempo-climb/climb-visual/replay-2.95s.png",
+    "out/tempo-climb/climb-visual/replay-3.00s.png"
+  ],
+  "scriptSha256": "27b2650efc19a0da4d31e91a28e106b38fc41b3228d046b9f3e38016cb1ab6d3",
+  "newWorldSteps": 0,
+  "seconds": 22.125283035002212
+}

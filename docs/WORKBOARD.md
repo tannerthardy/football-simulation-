@@ -15,6 +15,18 @@ opposing control, then only named short naturally interacting cases. Reuse
 existing evidence, preserve prior blocking gains and reject unexplained harms.
 Experimental parent comparisons do not designate a shared baseline.
 
+Completed: NFL2022 tracking medians and exact saved timing distinguish a slow
+inside stopping mesh from ordinary outside/wide timing and real traffic. Combined
+moving-mesh/near-climb-fit `d65ee5c` passes111 focused checks/typecheck but worsens
+counter traffic and leaves Tite C/weak inside LG misses. Mesh-only `e12e4e1`
+confirms the new strong RG/RB collision. Both runtime changes are reverted;
+`src/` returns exactly to PR52 engine `66e59745…`.11 short openings/656 outer
+steps/31.036s collector time, no full games. Same-own-state diagnostics prove
+LG's consumed DT picture already obstructs his empty-space climb, and show the
+RB's acquired coast differs from the later loaded RG route. No new threshold,
+capacity, physics, sight, memory or nominal-track trial. [Evidence, full-speed
+replays, rejected pins and next concrete route constraint](reviews/run-tempo-climb/README.md).
+
 ## Joined release and run-scheme transfer, 2026-10-15
 
 Root continues PR #50 publication `da6cbce` / tested `0336414`, runtime

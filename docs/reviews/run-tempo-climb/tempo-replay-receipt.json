@@ -1,0 +1,68 @@
+{
+  "protocol": "run-scheme-replay-v1",
+  "inputs": [
+    {
+      "label": "PR52 reference",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/current-zone.json.gz",
+      "sha256": "2a008df287595ec72e52ea7b67621265eb93eadb91a45e4d990d52ced251705b",
+      "revision": "2bf7ed6b2bf23e2b11d82a5bc084f773451c1222",
+      "runtime": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08"
+    },
+    {
+      "label": "Rejected moving mesh",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/mesh-only.json.gz",
+      "sha256": "504db97bed09927ae1fd0058c2ce9d086e10441d1f0679cb121a3dfd503b9991",
+      "revision": "e12e4e15748beb68c9568bc215ba9804a27898a5",
+      "runtime": "325a7156e55531c25e506ce1f8d6aaef634666b84e4d3306e924f9eb51a97a3f"
+    }
+  ],
+  "output": "/workspace/run-tempo-climb/out/tempo-climb/tempo-visual/replay.gif",
+  "bytes": 2210368,
+  "sha256": "fbb77c8212b1832f5ca85f1dcb90c3a31c7c47421561794455a7a106d4ca1fb7",
+  "frames": 61,
+  "capturedSecondsShown": 3,
+  "frameDurationMs": 50,
+  "mainView": {
+    "fieldY": [
+      15,
+      35
+    ],
+    "fieldX": [
+      31,
+      46
+    ]
+  },
+  "all22Inset": true,
+  "whistledPoseHolds": [
+    {
+      "arm": "Rejected moving mesh",
+      "case": "ace12-iz_weak-over-s3",
+      "boundary": 2.9,
+      "end": 2.85
+    },
+    {
+      "arm": "Rejected moving mesh",
+      "case": "ace12-iz_weak-over-s3",
+      "boundary": 2.95,
+      "end": 2.85
+    },
+    {
+      "arm": "Rejected moving mesh",
+      "case": "ace12-iz_weak-over-s3",
+      "boundary": 3.0,
+      "end": 2.85
+    }
+  ],
+  "heldPoseHasLoadOverlay": false,
+  "snapshots": [
+    "out/tempo-climb/tempo-visual/replay-0.50s.png",
+    "out/tempo-climb/tempo-visual/replay-1.00s.png",
+    "out/tempo-climb/tempo-visual/replay-2.00s.png",
+    "out/tempo-climb/tempo-visual/replay-2.50s.png",
+    "out/tempo-climb/tempo-visual/replay-2.95s.png",
+    "out/tempo-climb/tempo-visual/replay-3.00s.png"
+  ],
+  "scriptSha256": "27b2650efc19a0da4d31e91a28e106b38fc41b3228d046b9f3e38016cb1ab6d3",
+  "newWorldSteps": 0,
+  "seconds": 20.372639631998027
+}

@@ -1,0 +1,119 @@
+{
+  "protocol": "run-transfer-bundle-manifest-v1",
+  "captures": [
+    {
+      "label": "rejected-combined-wz",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/candidate-wz.json.gz",
+      "rawSha256": "f92b25eb16d7b4d00b8a3aa62c2eb1b1fa62fd600eff6589516decce8ee22d0a",
+      "revision": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+      "runtime": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "originalGzipBytes": 13951035,
+      "cases": [
+        {
+          "id": "uc12-wz-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "uc12-wz-s3-mirror",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "uc12-wz-weak-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "uc12-wz-s3-tite-fresh",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "rejected-combined-zone",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/candidate-zone-gap.json.gz",
+      "rawSha256": "1c137383051bafdc0dd111c3ae18c5e026b74f1a8dda1d87f4b19421a8594bd2",
+      "revision": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+      "runtime": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "originalGzipBytes": 12783991,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-iz_weak-over-s3",
+          "frames": 59,
+          "stateHashes": 59,
+          "informationHashes": 59
+        },
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-counter-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "rejected-mesh-only",
+      "path": "/workspace/run-tempo-climb/out/tempo-climb/mesh-only.json.gz",
+      "rawSha256": "504db97bed09927ae1fd0058c2ce9d086e10441d1f0679cb121a3dfd503b9991",
+      "revision": "e12e4e15748beb68c9568bc215ba9804a27898a5",
+      "runtime": "325a7156e55531c25e506ce1f8d6aaef634666b84e4d3306e924f9eb51a97a3f",
+      "originalGzipBytes": 9717894,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-iz_weak-over-s3",
+          "frames": 57,
+          "stateHashes": 57,
+          "informationHashes": 57
+        },
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    }
+  ],
+  "bundle": "docs/reviews/run-tempo-climb/evidence.jsonrefs.gz",
+  "bytes": 9094443,
+  "sha256": "f9723d807a88c2fd9f9c286c6a5569dd01b8eece442e43c73f4899bdc1e5eadb",
+  "retainedJsonSha256": "26ad7e1a96c0b3567ccd895759707d6e8db973ca27fecb8a1f10d4c69d2f201a",
+  "roundTripExact": true,
+  "containersVisited": 2514920,
+  "uniqueContainers": 454201,
+  "omitted": [
+    "panel[].writes",
+    "panel[].methods",
+    "panel[].phases",
+    "panel[].frames[].observerState",
+    "panel[].frames[].rngBefore"
+  ],
+  "scriptSha256": "ffb6161fb7bb8ac5064577801e5c41b7173fdb75b3b1107ac3dcc2f1c784e63a",
+  "codecSha256": "837a6de1698a49bc93a3d29ab30edddc8a753f319dcc26e050ab53e8d2997708",
+  "newWorldSteps": 0,
+  "elapsedSeconds": 43.36102080800265
+}

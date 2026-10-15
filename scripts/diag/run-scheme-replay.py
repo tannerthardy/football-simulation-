@@ -66,10 +66,12 @@ def main():
     parser.add_argument('--stop', type=float, default=3)
     parser.add_argument('--cases', required=True, help='Comma-separated input IDs, 1–3 panes per row')
     parser.add_argument('--titles', required=True, help='Comma-separated display titles')
+    parser.add_argument('--before-label', default='Before')
+    parser.add_argument('--candidate-label', default='Candidate')
     args = parser.parse_args()
     cases = args.cases.split(','); titles = args.titles.split(',')
     assert 1 <= len(cases) <= 3 and len(cases) == len(titles)
-    captures = [('Before', args.before, read(args.before)), ('Candidate', args.candidate, read(args.candidate))]
+    captures = [(args.before_label, args.before, read(args.before)), (args.candidate_label, args.candidate, read(args.candidate))]
     for _, _, cap in captures:
         assert cap['from'] == 0 and cap['stop'] >= args.stop and not cap['diagnosticBypass']
         for ident in cases:
