@@ -52,6 +52,16 @@ describe('bounded simultaneous passive hands and legacy ground yaw',()=>{
   const reflected=run(reflectWitness(input),'hands'),restored=reflectWitness({...input,beforeBodies:reflected.bodies});
   expect(stateError(run(input,'hands').bodies,restored.beforeBodies)).toBe(0);
  });
+ it('returns to the split path without stale yaw when normal loading becomes active',()=>{
+  const bodies=structuredClone(input.beforeBodies),world=new World(bodies,{handContact:'patch',groundMovement:'legacy',groundYawCoupling:'hands',substeps:12});world.time=input.t;
+  world.joints=input.jointInputs.map(({a,b,actor,...rest})=>({...rest,a:bodies[a],b:bodies[b],actor:bodies[actor??a]}));
+  world.step(input.intents,input.dt);
+  const normal=world.joints[0];if(normal.kind!=='hands')throw Error('hands fixture');normal.extension=2;
+  const copy=structuredClone(bodies),baseline=new World(copy,{handContact:'patch',groundMovement:'legacy',substeps:12});baseline.time=world.time;
+  baseline.joints=[{...normal,a:copy[0],b:copy[1],actor:copy[0]}];
+  const a=world.step(input.intents,input.dt),b=baseline.step(input.intents,input.dt);
+  expect(bodies).toEqual(copy);expect(a).toEqual(b);
+ });
  it.each(['no-hand','free','normal','material','multiple','torso','strike','falling','response','virtual-foot'] as const)('retains the existing path exactly for unsupported/inactive %s',kind=>{
   function scene(coupling:'split'|'hands'){
    const w=structuredClone(input);
