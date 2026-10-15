@@ -1,0 +1,19 @@
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index e02bd1b..765e65b 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -308,6 +308,13 @@ export class ManCoverage implements Behavior {
+       return track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
+     }
+     const cs = 0.85 + 0.35 * a.r('manCoverage');
+-    return track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') });
++    // Opening the hips requests a turn; it does not instantly complete it.
++    // Keep the pedal's correction while facing against the acquired stem,
++    // then recover ordinary tracking gain as the body turns with that stem.
++    const moving = Math.hypot(seen.vel.x, seen.vel.y) > 0.5;
++    const aligned = !this.press && !o.trail && !o.overTop && moving
++      ? (1 + Math.cos(a.facing - Math.atan2(seen.vel.y, seen.vel.x))) * 0.5 : 1;
++    const gain = 1.6 + (2.0 + a.r('manCoverage') - 1.6) * aligned;
++    return track(a, tgt, seen.vel, { cutSkill: cs, gain });
+   }
+ }

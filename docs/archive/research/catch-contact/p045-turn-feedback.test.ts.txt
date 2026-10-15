@@ -1,0 +1,85 @@
+import { describe, expect, it } from 'vitest';
+import { Rng } from '../src/core/rng.js';
+import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
+import { PASS_BY_ID } from '../src/playbook/concepts.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+import { ManCoverage, type ManOptions } from '../src/sim/behaviors/defense.js';
+import type { Perceived } from '../src/sim/perception.js';
+import { PlaySim } from '../src/sim/playsim.js';
+
+function window(seed = 27101) {
+  const formation = FORMATION_BY_ID.gun_doubles_11;
+  const sim = new PlaySim({
+    offense: pickOffense(generateTeam(new Rng(seed), 'Offense', 'OFF'), formation.personnel),
+    defense: pickDefense(generateTeam(new Rng(seed + 1), 'Defense', 'DEF'), 'nickel'),
+    offCall: { formation, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'vertical control' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover4,
+      pressure: null, zoneStyle: 'match', label: 'Quarters' },
+    los: 38, ballY: 26.667, firstDownX: 48, seed: 812021015,
+  });
+  const a = sim.slot('CB_W')!, r = sim.slot('X')!;
+  sim.t = 1.3;
+  a.recog = null;
+  a.body.pos = { x: 45.565, y: 44.7 };
+  a.body.vel = { x: 4.5, y: .2 };
+  a.body.facing = Math.PI;
+  let cue: Perceived = { pos: { x: 41.965, y: 44.67 }, vel: { x: 5.816, y: 0 },
+    facing: 0, stance: null, pose: 'up', carrying: false, age: .15 };
+  sim.see = (_a, b) => b === r ? structuredClone(cue) : {
+    pos: { x: 32, y: 26.667 }, vel: { x: 0, y: 0 }, facing: 0, stance: null, carrying: true, age: .15,
+  };
+  function behavior(open: boolean, opts: ManOptions = {}, press = false) {
+    const b = new ManCoverage(a, sim, r, press, 'D', 1, { lev: 'outside', ...opts });
+    Object.assign(b, { initialCushion: 6.445998046962835, releaseObserved: true, hipsOpen: open });
+    return b;
+  }
+  return { sim, a, r, behavior, setCue: (next: Partial<Perceived>) => { cue = { ...cue, ...next }; } };
+}
+
+describe('off-man feedback through the physical hip turn', () => {
+  it.each([27101, 63101, 64101])('does not abruptly brake merely because the turn starts, roster %i', seed => {
+    const f = window(seed), closed = f.behavior(false), open = f.behavior(true);
+    const before = closed.update(f.a, f.sim), after = open.update(f.a, f.sim);
+    expect(closed.recordedTechnique().hipsOpen).toBe(false);
+    expect(after.vel.x).toBeCloseTo(before.vel.x, 10);
+    expect(after.vel.y).toBeCloseTo(before.vel.y, 10);
+    expect(before.facing).toBe(Math.PI);
+    expect(after.facing).toBeUndefined();
+  });
+
+  it('changes correction continuously as its own body turns', () => {
+    const f = window();
+    f.a.body.facing = Math.PI / 2 - .0001;
+    const before = f.behavior(true).update(f.a, f.sim);
+    f.a.body.facing = Math.PI / 2 + .0001;
+    const after = f.behavior(true).update(f.a, f.sim);
+    expect(Math.hypot(after.vel.x - before.vel.x, after.vel.y - before.vel.y)).toBeLessThan(.01);
+    expect(Math.hypot(after.vel.x, after.vel.y)).toBeLessThanOrEqual(f.a.profile.vmax);
+  });
+
+  it('keeps hidden motion irrelevant and consumes no additional randomness', () => {
+    const f = window(), first = f.behavior(true), second = f.behavior(true), rng = structuredClone(f.sim.rng);
+    const before = first.update(f.a, f.sim);
+    f.r.body.pos = { x: 90, y: 3 }; f.r.body.vel = { x: -9, y: 7 };
+    expect(second.update(f.a, f.sim)).toEqual(before);
+    expect(structuredClone(f.sim.rng)).toEqual(rng);
+  });
+
+  it('responds to a newly acquired crossing break', () => {
+    const f = window(), climbing = f.behavior(true).update(f.a, f.sim);
+    f.setCue({ vel: { x: 0, y: -5 }, facing: -Math.PI / 2 });
+    const breaking = f.behavior(true).update(f.a, f.sim);
+    expect(breaking.vel.x).toBeLessThan(climbing.vel.x);
+    expect(breaking.vel.y).toBeLessThan(climbing.vel.y);
+  });
+
+  it.each([{ overTop: true }, { trail: true }, { press: true }])('retains the separate technique: %j', options => {
+    const f = window();
+    const opts = 'press' in options ? {} : options;
+    const press = 'press' in options;
+    const before = f.behavior(true, opts, press).update(f.a, f.sim);
+    f.a.body.facing = 0;
+    expect(f.behavior(true, opts, press).update(f.a, f.sim).vel).toEqual(before.vel);
+  });
+});

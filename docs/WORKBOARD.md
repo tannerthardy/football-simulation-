@@ -1,5 +1,11 @@
 # Current work ownership
 
+## P045 cushion-to-turn continuation and PR63 controller review
+
+| Item | Owner | Branch | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Review PR63 recognition contract, then isolate off-man cushion/hip-turn objective | Codex catch/pursuit owner, user assigned 2026-10-15 (America/Phoenix) | `codex/yac-approach-objective`, unchanged accepted `a1b16e6` | #63 review only: reuse combined suite receipt; no integration source/test changes. Corner experiment owns ManCoverage requests only; no shared spacing/helper, sensing, capacity, speed/braking, or physics changes. | [PR63 recognition contract APPROVED](https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200453995) at `0f70bb2`/tested `a862a05`, source hash verified; zero review reruns. [Bounded corner comparison complete](reviews/p045-cushion-turn.md): hip opening adds a second request discontinuity; turn-only/combined improve early position but worsen catch speed/closing, so archived. One stationary flight goal predicts 39 additional commands across all four arms: earlier position reaches arrival braking sooner. P006 exact tackle preserved; current-source P010 completion distinguished from historical INT. 46 focused prototype passes, 12 native executions, 14.99 s launcher time; no fresh/full-game/suite expansion. No required tackle/TD reversal, no new integration candidate; production source unchanged. |
+
 ## P045 earliest actionable defensive failure
 
 | Item | Owner | Branch | Boundary | Status |
