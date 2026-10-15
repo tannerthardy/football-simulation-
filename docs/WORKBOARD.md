@@ -1,5 +1,28 @@
 # Current work ownership
 
+## Independent #75 man-recognition integration — 2026-10-15
+
+**Held after one complete combined run.** Tested
+`0f349ef0735402a79d916cff7c9ad496f9424380`:1,732 TS pass/two preserved back-man
+assertions fail;145 Python,typecheck/build pass;188.094 command seconds. Eight
+new direct contracts pass. Catching + Run Game own the specific insertion/alley
+versus recognized-ball boundary; Integration retains verification ownership.
+[Question and receipt](INTEGRATION.md#man-recognition-review). Existing tests
+remain unchanged; no new panel, unchanged rerun or merge is requested.
+
+The original bounded assembly claim is preserved below:
+
+Integration owns this isolated assembly from accepted8ca8dee, preserving latest
+queue metadatafad1b94. Only ManCoverage continuation, playBall's optional unaware
+fallback and the eight authored direct contracts are extracted from1f2d949.
+Catching retains broader coverage diagnosis and owner questions; no new coverage
+fixes are started. P006/Smash costs and P045 no-contact TD stay preserved with
+original source pins; no overall coverage/YAC benefit is asserted. Upstream
+judgment, recognition timing, capacities, helpers and physics stay unchanged.
+Reuse compatible focused/adverse receipts; one exact all-phase verification
+under44 flags/components=1. No native panel, games or parked P045 variants.
+No merge/default/baseline or branch-deletion authorization.
+
 ## Completed risk-only verification and adoption — 2026-10-15
 
 Integration owns this review branch from accepted4679a3c (#72 merged). Extract

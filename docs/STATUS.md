@@ -29,6 +29,12 @@ Do not use the historical sections below as a current starting-reference pin.
   Observation transport stays deferred until a reviewed consumer needs it.
   [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
   #69 stays with Do-It-All's independent review and physics remains separate.
+- #75's isolated information correction is held at a neighboring run-fit contract.
+  The eight new recognition checks pass; one combined run has1,732 TS pass/two
+  existing back-man failures, with145 Python,typecheck/build passing (188.094s).
+  Catching + Run Game must resolve pre-recognition insertion/alley ownership;
+  assertions and adverse evidence are preserved. [Exact question, candidate and receipt](INTEGRATION.md#man-recognition-review).
+  No unchanged rerun, parked P045 variants or additional game campaign.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 

@@ -37,6 +37,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
 | [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Bounded correction accepted via #72; forecast/contact limits open | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
+| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; adjacent run-fit contracts conflict | #75 isolated verification held: two preserved assertions | Catching + Run Game: acquired insertion/alley before recognition versus recognized-ball priority; Integration owns subsequent verification |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
@@ -107,6 +108,26 @@ and unchanged P019 control on its recorded host. It remains held on the
 Awareness interface and sampled/unknown-motion contract, not part of accepted
 #63. [Exact candidates, review-only extraction and owners](INTEGRATION.md#ready-blocked-experimental).
 No new native replay or shared suite is justified while that contract is open.
+
+<a id="PASS-006"></a>
+### PASS-006 — Man technique before throw recognition
+
+Independent review supports #75's narrow information correction, separately from
+overall coverage quality. Isolated `0f349ef0735402a79d916cff7c9ad496f9424380`
+on accepted8ca8dee retains only the authored defense hunk and eight direct tests.
+[Review, failed combined receipt and exact owner question](INTEGRATION.md#man-recognition-review).
+All eight direct tests pass, but the unchanged insertion/alley fixtures at
+`back-man-run-fit.test.ts:255/390` require generic ball-in-flight ownership while
+the defender has not recognized the throw and still holds a positive runner
+picture. Catching and Run Game must adjudicate that boundary before changing
+assertions or recommending adoption. All four phases ran:1,732 TS pass/two fail,
+145 Python,typecheck/build pass;188.094 command seconds, no extra games/replays.
+
+P006's later contact and Smash's +1.245YAC/changed finishing defender remain
+source-pinned adverse evidence; P045 still scores. The current47-source comeback
+control is a sack, not native plant transfer. No overall coverage improvement,
+new8ca native result or grip conclusion is claimed. Broader PASS-004 findings,
+parked P045 variants and experimental physics remain separate. No merge authority.
 
 <a id="PASS-005"></a>
 ### PASS-005 — Pass tackle station-keeps toward an interception point
