@@ -22,40 +22,37 @@
     "purpose": "Post catch within Y-Cross; illustrative containment/offensive-win controls, not frequency estimates."
   },
   "nfl": {
-    "status": "measured_remote_validated",
+    "status": "expanded_remote_validated",
     "weeks": [
-      1
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
     ],
     "counts": {
       "label_candidates": 26,
-      "converted": 3,
-      "invalid": 3,
-      "geometry_matched": 1,
-      "contained": 1,
-      "offensive_win": 0
+      "converted": 19,
+      "invalid": 7,
+      "geometry_matched": 6,
+      "contained": 4,
+      "offensive_win": 0,
+      "middle_yac": 2
     },
-    "result_commit": "481ad18e5d1cd45a1d5008496b9917511d8397b1",
-    "result_path": "data/reviews/current/p045-nfl-week1-return.json",
-    "result_sha256": "7911a33decb4ce9f2dfef768f37c527936e573506664b273d231b6c0d0f7f60c",
-    "result_bytes": 13975,
-    "contained_witness_id": "2022091101-4104",
-    "receiver_id": "52595",
-    "selected_defender_ids": [
-      "46527",
-      "52472"
-    ],
-    "qualifying_explosive_witnesses": 0,
-    "count_interpretation": {
-      "label_candidates_scope": "All loaded metadata after joint label/admission filters; not a week-1 denominator.",
-      "converted_scope": "Week-1 conversion plus required events, before later sample validity/geometry.",
-      "invalid_scope": "Pooled duplicate/conversion/event/validity failures; may overlap converted.",
-      "per_reason_rejections": "Not recorded; cannot reconstruct a disjoint funnel or rank individual filters.",
-      "converted_not_geometry_matches": 2,
-      "explosive_bin_empty": true
-    },
-    "execution_cost_s": 15.492674798006192,
+    "result_commit": "07bee7413ee02d7e417f046b599682a77dc9e0fc",
+    "result_path": "data/reviews/current/p045-nfl-available-weeks-return.json",
+    "result_sha256": "4a57b09d246587843f9eb8ac3d03e6fcceb25e0276e679b33371cc63138c272d",
+    "result_bytes": 149755,
+    "execution_cost_s": 142.0296637249994,
+    "input_read_bytes": 9257358332,
     "local_raw_directory_visible": false,
-    "closeout": "data/reviews/current/p045-nfl-closeout.json"
+    "validation": "data/reviews/current/p045-nfl-expanded-validation.json",
+    "interpretation": "docs/reviews/p045-nfl-expanded-interpretation-2026-10-15.md",
+    "count_interpretation": "26 global joint-label candidates counted once; new-week exclusion ledger only, week1 reason detail unknown. Converted/invalid original counters can overlap. Zero >=15 YAC matches is not a general football claim."
   },
   "sim_witnesses": [
     {
@@ -1278,10 +1275,11 @@
   },
   "coordination": {
     "url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199037427",
-    "status": "Available-weeks expansion explicitly authorized; original week1 result reused. New inventory/execution pending on Catching data executor.",
+    "status": "Returned available-weeks expansion validated without rerun or filter changes; six matches: four contained, two middle-YAC, zero explosive.",
     "restoration_handoff_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199579876",
     "returned_result_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199846750",
-    "expansion_handoff_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200494647"
+    "expansion_handoff_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200494647",
+    "expanded_result_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200927133"
   },
   "checks": {
     "focusedTests": 5,
@@ -1291,14 +1289,80 @@
     "newSimulationRuns": 0
   },
   "limitations": [
-    "Individual NFL witnesses are blocked: only committed NFL aggregate context was read.",
+    "Expanded return validated from exact pinned JSON; raw CSV sample validity/hashes were collected on Catching executor, not independently remeasured locally.",
     "NFL query uses Quarters and POST labels; neither label proves Quarters MOD rules or exact route ownership.",
     "Shared geometry uses .1-yd quantization and nearest .1-s samples; actual event times are retained separately.",
     "Trailing .4-s momentum windows are distinct from existing central +/- .2-s speed aggregates.",
     "Support demand is a hindsight necessary bound to a 1-yd disk at the sampled catch time. It is not a tackle/contact radius, sufficient maneuver, or available cue.",
     "Tracking and saved light telemetry do not establish gaze, grip force, contact work, or the first wrong decision.",
-    "Selected opposing witnesses are illustrative and are not matched treatment effects or league rates."
+    "Selected opposing witnesses are illustrative and are not matched treatment effects or league rates.",
+    "All four retained contained receivers slow/turn before catch; no matched NFL explosive comparison, no full motion snapshots for two middle-YAC ledger cases. Hudl/StatsBomb excluded."
   ],
-  "study_status": "reopened_available_weeks_expansion_pending_data_executor",
-  "expansion_status": "data/reviews/current/p045-nfl-expansion-status.json"
+  "study_status": "validated_expansion_complete",
+  "expansion_status": "data/reviews/current/p045-nfl-expansion-status.json",
+  "week1_preserved": {
+    "status": "measured_remote_validated",
+    "weeks": [
+      1
+    ],
+    "counts": {
+      "label_candidates": 26,
+      "converted": 3,
+      "invalid": 3,
+      "geometry_matched": 1,
+      "contained": 1,
+      "offensive_win": 0
+    },
+    "result_commit": "481ad18e5d1cd45a1d5008496b9917511d8397b1",
+    "result_path": "data/reviews/current/p045-nfl-week1-return.json",
+    "result_sha256": "7911a33decb4ce9f2dfef768f37c527936e573506664b273d231b6c0d0f7f60c",
+    "result_bytes": 13975,
+    "contained_witness_id": "2022091101-4104",
+    "receiver_id": "52595",
+    "selected_defender_ids": [
+      "46527",
+      "52472"
+    ],
+    "qualifying_explosive_witnesses": 0,
+    "count_interpretation": {
+      "label_candidates_scope": "All loaded metadata after joint label/admission filters; not a week-1 denominator.",
+      "converted_scope": "Week-1 conversion plus required events, before later sample validity/geometry.",
+      "invalid_scope": "Pooled duplicate/conversion/event/validity failures; may overlap converted.",
+      "per_reason_rejections": "Not recorded; cannot reconstruct a disjoint funnel or rank individual filters.",
+      "converted_not_geometry_matches": 2,
+      "explosive_bin_empty": true
+    },
+    "execution_cost_s": 15.492674798006192,
+    "local_raw_directory_visible": false,
+    "closeout": "data/reviews/current/p045-nfl-closeout.json"
+  },
+  "expanded_query": {
+    "weeks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "coverage": "QUARTERS",
+    "official_catcher_route": "POST",
+    "catch_depth_yd": [
+      15,
+      30
+    ],
+    "flight_s": [
+      1,
+      2
+    ],
+    "nearest_at_catch_yd": [
+      1,
+      4
+    ],
+    "witnesses": "Smallest numeric gameId/playId in each bin: YAC <=5; YAC >=15. No automatic widening.",
+    "purpose": "Post catch within Y-Cross; illustrative containment/offensive-win controls, not frequency estimates."
+  }
 }

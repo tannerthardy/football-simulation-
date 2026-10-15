@@ -2,8 +2,11 @@
 
 October 15, 2026 (America/Phoenix).
 
-**Available-weeks expansion reopened:** the user superseded the earlier
-close-query instruction. See the [current bounded expansion](p045-nfl-available-weeks-2026-10-15.md).
+**Available-weeks expansion validated complete:** the user superseded the earlier
+close-query instruction. The unchanged weeks 1–9 return contains four contained,
+two middle-YAC and zero explosive cases. See the
+[expanded interpretation and current decision](p045-nfl-expanded-interpretation-2026-10-15.md)
+and [bounded execution contract](p045-nfl-available-weeks-2026-10-15.md).
 Week 1 at `481ad18` remains validated and reused: one contained example, zero
 qualifying explosive examples. See its preserved
 [closeout and interpretation](p045-nfl-closeout-2026-10-15.md).
@@ -15,9 +18,10 @@ the saved P045/control measurements and query filters remain unchanged.
 during flight; its safety reduces distance while losing downfield support.
 This supports an earlier coverage/approach investigation, not a grip change.
 The initial local NFL portion provided **aggregate context only** because
-Catching's restored tracking was unavailable here. The validated remote return
-now supplies one illustrative contained witness; it cannot prescribe P045's
-outcome.
+Catching's restored tracking was unavailable here. The expanded remote return
+now supplies four contained examples and two middle-YAC ledger cases. No matched
+explosive comparison is available, and none of these cases prescribes P045's
+outcome. The earlier week-1 sections below retain their original scope.
 No NFL trajectories, player IDs or witness results have been invented.
 
 Question: does this escape implicate an earlier decision/achieved approach,

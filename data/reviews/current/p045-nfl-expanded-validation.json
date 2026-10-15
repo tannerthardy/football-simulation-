@@ -1,0 +1,1101 @@
+{
+  "schema": "p045-nfl-expanded-return-validation-v1",
+  "status": "validated_expansion_complete",
+  "return_commit": "07bee7413ee02d7e417f046b599682a77dc9e0fc",
+  "result": {
+    "bytes": 149755,
+    "sha256": "4a57b09d246587843f9eb8ac3d03e6fcceb25e0276e679b33371cc63138c272d",
+    "blob_sha1": "6b49080177653bdef5ef4855f76eb32ebbac77be"
+  },
+  "inventory": {
+    "bytes": 3458,
+    "sha256": "a82783df2d2c4d2f10d0701571bf116f9479165bea076ee99a80e5269acb0a95",
+    "blob_sha1": "bd6940732fa30c1856d8749466ac223965167aa6"
+  },
+  "week1": {
+    "bytes": 13975,
+    "sha256": "7911a33decb4ce9f2dfef768f37c527936e573506664b273d231b6c0d0f7f60c",
+    "blob_sha1": "6d667367847fb6313f20f11f4bb61786bedbbea9"
+  },
+  "query_commit": "81e43e7279a26c43f2ae5ea29a2282316f42899c",
+  "module_sha256": {
+    "scripts/diag/p045-nfl-approach.py": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+    "scripts/mechanics/nfl_bdb2025.py": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c"
+  },
+  "driver_sha256": "a508c8baaea535cb7cc328a396bf20db39df4e52f5171fe4ce948004e355dec3",
+  "weeks": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "reused_weeks": [
+    1
+  ],
+  "new_query_weeks": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "aggregate_counts": {
+    "label_candidates": 26,
+    "converted": 19,
+    "invalid": 7,
+    "geometry_matched": 6,
+    "contained": 4,
+    "offensive_win": 0,
+    "middle_yac": 2
+  },
+  "per_week": [
+    {
+      "week": 1,
+      "status": "reused",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 3,
+        "invalid": 3,
+        "geometry_matched": 1,
+        "contained": 1,
+        "offensive_win": 0
+      },
+      "audit": {
+        "reason_detail": "Legacy week-1 invalid/geometry reasons were not collected; no rescan"
+      }
+    },
+    {
+      "week": 2,
+      "status": "complete",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 7,
+        "invalid": 0,
+        "geometry_matched": 4,
+        "contained": 3,
+        "offensive_win": 0
+      },
+      "audit": {
+        "stream_fragments": 7,
+        "distinct_label_play_ids_seen": 7,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 3
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 3,
+          "separation": 1
+        },
+        "outcome_bins": {
+          "contained": 3,
+          "middle_yac": 1
+        },
+        "reconciles_with_unchanged_query": true
+      }
+    },
+    {
+      "week": 3,
+      "status": "complete",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 2,
+        "invalid": 1,
+        "geometry_matched": 0,
+        "contained": 0,
+        "offensive_win": 0
+      },
+      "audit": {
+        "stream_fragments": 3,
+        "distinct_label_play_ids_seen": 3,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "missing_required_events": 1,
+          "geometry_depth": 2
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 2
+        },
+        "outcome_bins": {},
+        "reconciles_with_unchanged_query": true
+      }
+    },
+    {
+      "week": 4,
+      "status": "complete",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 2,
+        "invalid": 1,
+        "geometry_matched": 1,
+        "contained": 0,
+        "offensive_win": 0
+      },
+      "audit": {
+        "stream_fragments": 3,
+        "distinct_label_play_ids_seen": 3,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "missing_required_events": 1,
+          "geometry_depth": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 1,
+          "flight": 1
+        },
+        "outcome_bins": {
+          "middle_yac": 1
+        },
+        "reconciles_with_unchanged_query": true
+      }
+    },
+    {
+      "week": 5,
+      "status": "complete",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 1,
+        "invalid": 1,
+        "geometry_matched": 0,
+        "contained": 0,
+        "offensive_win": 0
+      },
+      "audit": {
+        "stream_fragments": 2,
+        "distinct_label_play_ids_seen": 2,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 1,
+          "missing_required_events": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 1,
+          "flight": 1
+        },
+        "outcome_bins": {},
+        "reconciles_with_unchanged_query": true
+      }
+    },
+    {
+      "week": 6,
+      "status": "complete",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 1,
+        "invalid": 0,
+        "geometry_matched": 0,
+        "contained": 0,
+        "offensive_win": 0
+      },
+      "audit": {
+        "stream_fragments": 1,
+        "distinct_label_play_ids_seen": 1,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 1,
+          "flight": 1
+        },
+        "outcome_bins": {},
+        "reconciles_with_unchanged_query": true
+      }
+    },
+    {
+      "week": 7,
+      "status": "complete",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 2,
+        "invalid": 1,
+        "geometry_matched": 0,
+        "contained": 0,
+        "offensive_win": 0
+      },
+      "audit": {
+        "stream_fragments": 3,
+        "distinct_label_play_ids_seen": 3,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 2,
+          "missing_required_events": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 2,
+          "separation": 1,
+          "flight": 1
+        },
+        "outcome_bins": {},
+        "reconciles_with_unchanged_query": true
+      }
+    },
+    {
+      "week": 8,
+      "status": "complete",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 1,
+        "invalid": 0,
+        "geometry_matched": 0,
+        "contained": 0,
+        "offensive_win": 0
+      },
+      "audit": {
+        "stream_fragments": 1,
+        "distinct_label_play_ids_seen": 1,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {
+          "geometry_depth": 1
+        },
+        "geometry_failure_memberships_overlap": {
+          "depth": 1,
+          "flight": 1
+        },
+        "outcome_bins": {},
+        "reconciles_with_unchanged_query": true
+      }
+    },
+    {
+      "week": 9,
+      "status": "complete",
+      "counts": {
+        "label_candidates": 26,
+        "converted": 0,
+        "invalid": 0,
+        "geometry_matched": 0,
+        "contained": 0,
+        "offensive_win": 0
+      },
+      "audit": {
+        "stream_fragments": 0,
+        "distinct_label_play_ids_seen": 0,
+        "metadata_candidates_by_week": {
+          "1": 6,
+          "2": 7,
+          "3": 3,
+          "4": 3,
+          "5": 2,
+          "6": 1,
+          "7": 3,
+          "8": 1
+        },
+        "disjoint_first_failure": {},
+        "geometry_failure_memberships_overlap": {},
+        "outcome_bins": {},
+        "reconciles_with_unchanged_query": true
+      }
+    }
+  ],
+  "new_week_disjoint_first_failure": {
+    "geometry_depth": 11,
+    "missing_required_events": 4
+  },
+  "new_week_overlapping_geometry_memberships": {
+    "depth": 11,
+    "separation": 2,
+    "flight": 5
+  },
+  "new_week_depth_failure_sides": {
+    "shallower_than_15": 8,
+    "deeper_than_30": 3
+  },
+  "qualifying_ledger": [
+    {
+      "week": 1,
+      "id": "2022091101-4104",
+      "outcome_bin": "contained",
+      "yac_yd": -2.1999999999999993
+    },
+    {
+      "week": 2,
+      "id": "2022091901-1574",
+      "outcome_bin": "contained",
+      "yac_yd": -0.1999999999999993
+    },
+    {
+      "week": 2,
+      "id": "2022091901-2028",
+      "outcome_bin": "middle_yac",
+      "yac_yd": 8.2
+    },
+    {
+      "week": 2,
+      "id": "2022091812-2171",
+      "outcome_bin": "contained",
+      "yac_yd": 0.5
+    },
+    {
+      "week": 2,
+      "id": "2022091807-2947",
+      "outcome_bin": "contained",
+      "yac_yd": 2.6999999999999993
+    },
+    {
+      "week": 4,
+      "id": "2022100205-680",
+      "outcome_bin": "middle_yac",
+      "yac_yd": 10.600000000000001
+    }
+  ],
+  "contained_measurements": [
+    {
+      "id": "2022091101-4104",
+      "receiver_id": "52595",
+      "defender_ids": [
+        "46527",
+        "52472"
+      ],
+      "depth_yd": 15.2,
+      "yac_yd": -2.1999999999999993,
+      "events": {
+        "pass_forward": 3.1,
+        "pass_arrived": 4.1,
+        "first_contact": 4.3,
+        "catch": 4.2,
+        "end": 5.2
+      },
+      "snapshots": [
+        {
+          "phase": "release",
+          "time_s": 3.1,
+          "receiver_velocity_yd_s": [
+            5.2500000000000036,
+            -4.0000000000000036
+          ],
+          "receiver_speed_yd_s": 6.600189391222048,
+          "nearest_id": "52472",
+          "defenders": [
+            {
+              "id": "46527",
+              "separation_yd": 7.955501241279521,
+              "downfield_lead_yd": -2.0,
+              "speed_yd_s": 3.3634060117684283,
+              "closing_yd_s": 0.6976304611961053,
+              "catch_landmark_demand": {
+                "horizon_s": 1.1,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 4.091735468900023,
+                "peak_accel_required_at_least_yd_s2": 7.905790268711553
+              },
+              "momentum_magnitude_kg_m_s": 327.8303190170307
+            },
+            {
+              "id": "52472",
+              "separation_yd": 5.5,
+              "downfield_lead_yd": 5.5,
+              "speed_yd_s": 3.3634060117684252,
+              "closing_yd_s": 2.7500000000000036,
+              "catch_landmark_demand": {
+                "horizon_s": 1.1,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 4.3761606740904115,
+                "peak_accel_required_at_least_yd_s2": 8.271089383925542
+              },
+              "momentum_magnitude_kg_m_s": 295.7447984323849
+            }
+          ]
+        },
+        {
+          "phase": "flight_midpoint",
+          "time_s": 3.6500000000000004,
+          "receiver_velocity_yd_s": [
+            3.75,
+            -5.2500000000000036
+          ],
+          "receiver_speed_yd_s": 6.451743950281973,
+          "nearest_id": "52472",
+          "defenders": [
+            {
+              "id": "46527",
+              "separation_yd": 7.200694410957875,
+              "downfield_lead_yd": -3.3000000000000007,
+              "speed_yd_s": 2.7950849718747373,
+              "closing_yd_s": 1.2984858773858492,
+              "catch_landmark_demand": {
+                "horizon_s": 0.6000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 7.662201312771017,
+                "peak_accel_required_at_least_yd_s2": 29.113292310297705
+              },
+              "momentum_magnitude_kg_m_s": 272.43621341082746
+            },
+            {
+              "id": "52472",
+              "separation_yd": 3.712142238654116,
+              "downfield_lead_yd": 3.6999999999999993,
+              "speed_yd_s": 4.506939094329997,
+              "closing_yd_s": 3.4279397668268223,
+              "catch_landmark_demand": {
+                "horizon_s": 0.6000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 5.172761509561059,
+                "peak_accel_required_at_least_yd_s2": 10.917861114647492
+              },
+              "momentum_magnitude_kg_m_s": 396.2958350362349
+            }
+          ]
+        },
+        {
+          "phase": "catch",
+          "time_s": 4.2,
+          "receiver_velocity_yd_s": [
+            0.9999999999999964,
+            -4.500000000000002
+          ],
+          "receiver_speed_yd_s": 4.609772228646444,
+          "nearest_id": "52472",
+          "defenders": [
+            {
+              "id": "46527",
+              "separation_yd": 5.200961449578338,
+              "downfield_lead_yd": -3.1999999999999993,
+              "speed_yd_s": 1.7677669529663675,
+              "closing_yd_s": 3.811795221363791,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 172.3037902979848
+            },
+            {
+              "id": "52472",
+              "separation_yd": 1.4142135623730971,
+              "downfield_lead_yd": 1.4000000000000021,
+              "speed_yd_s": 5.273755777432245,
+              "closing_yd_s": 3.712310601229366,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 463.7221417578031
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2022091807-2947",
+      "receiver_id": "54473",
+      "defender_ids": [
+        "38577",
+        "47844",
+        "47862"
+      ],
+      "depth_yd": 19.3,
+      "yac_yd": 2.6999999999999993,
+      "events": {
+        "pass_forward": 3.4,
+        "pass_arrived": 4.4,
+        "first_contact": 5.4,
+        "catch": 4.8,
+        "end": 6.0
+      },
+      "snapshots": [
+        {
+          "phase": "release",
+          "time_s": 3.4,
+          "receiver_velocity_yd_s": [
+            5.0,
+            -5.500000000000007
+          ],
+          "receiver_speed_yd_s": 7.433034373659258,
+          "nearest_id": "47862",
+          "defenders": [
+            {
+              "id": "38577",
+              "separation_yd": 13.562448156582938,
+              "downfield_lead_yd": -7.5,
+              "speed_yd_s": 3.508917211904549,
+              "closing_yd_s": 3.544714010697647,
+              "catch_landmark_demand": {
+                "horizon_s": 1.4000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 7.004297744629847,
+                "peak_accel_required_at_least_yd_s2": 5.310441251363344
+              },
+              "momentum_magnitude_kg_m_s": 352.2008872437839
+            },
+            {
+              "id": "47844",
+              "separation_yd": 7.375635565834309,
+              "downfield_lead_yd": 5.600000000000001,
+              "speed_yd_s": 5.505678886386309,
+              "closing_yd_s": 3.0370264094611885,
+              "catch_landmark_demand": {
+                "horizon_s": 1.4000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 2.900451693965712,
+                "peak_accel_required_at_least_yd_s2": 10.178193708473675
+              },
+              "momentum_magnitude_kg_m_s": 474.9809271456573
+            },
+            {
+              "id": "47862",
+              "separation_yd": 2.1213203435596424,
+              "downfield_lead_yd": 1.5,
+              "speed_yd_s": 6.25,
+              "closing_yd_s": -1.2374368670764633,
+              "catch_landmark_demand": {
+                "horizon_s": 1.4000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 7.013546307381294,
+                "peak_accel_required_at_least_yd_s2": 6.808357183016758
+              },
+              "momentum_magnitude_kg_m_s": 508.0869573318
+            }
+          ]
+        },
+        {
+          "phase": "flight_midpoint",
+          "time_s": 4.1,
+          "receiver_velocity_yd_s": [
+            2.5,
+            -7.000000000000011
+          ],
+          "receiver_speed_yd_s": 7.433034373659263,
+          "nearest_id": "47862",
+          "defenders": [
+            {
+              "id": "38577",
+              "separation_yd": 9.14002188181188,
+              "downfield_lead_yd": -7.299999999999999,
+              "speed_yd_s": 3.913118960624632,
+              "closing_yd_s": 6.063989858743406,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 10.410485345771809,
+                "peak_accel_required_at_least_yd_s2": 19.387976928854066
+              },
+              "momentum_magnitude_kg_m_s": 392.77186852590785
+            },
+            {
+              "id": "47844",
+              "separation_yd": 7.324616030891995,
+              "downfield_lead_yd": 7.300000000000001,
+              "speed_yd_s": 5.533985905294661,
+              "closing_yd_s": -2.310701329410003,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 9.132234044729262,
+                "peak_accel_required_at_least_yd_s2": 38.26346197115537
+              },
+              "momentum_magnitude_kg_m_s": 477.4230045648588
+            },
+            {
+              "id": "47862",
+              "separation_yd": 3.360059523282291,
+              "downfield_lead_yd": 2.0,
+              "speed_yd_s": 6.731456008918122,
+              "closing_yd_s": -1.5996740423066818,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 8.694144993175357,
+                "peak_accel_required_at_least_yd_s2": 14.823476850662137
+              },
+              "momentum_magnitude_kg_m_s": 547.2264003174513
+            }
+          ]
+        },
+        {
+          "phase": "catch",
+          "time_s": 4.8,
+          "receiver_velocity_yd_s": [
+            1.25,
+            -5.749999999999993
+          ],
+          "receiver_speed_yd_s": 5.884301147969903,
+          "nearest_id": "47862",
+          "defenders": [
+            {
+              "id": "38577",
+              "separation_yd": 5.333854141237835,
+              "downfield_lead_yd": -5.300000000000001,
+              "speed_yd_s": 4.930770730829003,
+              "closing_yd_s": 2.0529245288771305,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 494.91672824365736
+            },
+            {
+              "id": "47844",
+              "separation_yd": 8.221921916437786,
+              "downfield_lead_yd": 8.2,
+              "speed_yd_s": 5.220153254455284,
+              "closing_yd_s": -0.3040651596315771,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 450.3483192189966
+            },
+            {
+              "id": "47862",
+              "separation_yd": 2.831960451701259,
+              "downfield_lead_yd": 1.8999999999999986,
+              "speed_yd_s": 7.516648189186454,
+              "closing_yd_s": 1.8008726064434513,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 611.0577452443728
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2022091812-2171",
+      "receiver_id": "40149",
+      "defender_ids": [
+        "43404",
+        "44911",
+        "47804",
+        "54487"
+      ],
+      "depth_yd": 17.5,
+      "yac_yd": 0.5,
+      "events": {
+        "pass_forward": 2.9,
+        "pass_arrived": 3.8,
+        "first_contact": 4.3,
+        "catch": 4.2,
+        "end": 4.8
+      },
+      "snapshots": [
+        {
+          "phase": "release",
+          "time_s": 2.9,
+          "receiver_velocity_yd_s": [
+            6.5000000000000036,
+            1.4999999999999947
+          ],
+          "receiver_speed_yd_s": 6.670832032063169,
+          "nearest_id": "54487",
+          "defenders": [
+            {
+              "id": "43404",
+              "separation_yd": 9.024411338142782,
+              "downfield_lead_yd": -2.0,
+              "speed_yd_s": 2.512468905280223,
+              "closing_yd_s": 0.8199980832791798,
+              "catch_landmark_demand": {
+                "horizon_s": 1.3,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 6.741314086082235,
+                "peak_accel_required_at_least_yd_s2": 7.1219610264006885
+              },
+              "momentum_magnitude_kg_m_s": 241.76344661396257
+            },
+            {
+              "id": "44911",
+              "separation_yd": 6.47610994347687,
+              "downfield_lead_yd": -1.5,
+              "speed_yd_s": 4.5069390943299865,
+              "closing_yd_s": -6.033714736322331,
+              "catch_landmark_demand": {
+                "horizon_s": 1.3,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 8.817804361796458,
+                "peak_accel_required_at_least_yd_s2": 16.964338838219764
+              },
+              "momentum_magnitude_kg_m_s": 390.68787510647593
+            },
+            {
+              "id": "47804",
+              "separation_yd": 11.525623627379128,
+              "downfield_lead_yd": 7.199999999999999,
+              "speed_yd_s": 4.16082924427331,
+              "closing_yd_s": 4.802343178074641,
+              "catch_landmark_demand": {
+                "horizon_s": 1.3,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 3.530899956730365,
+                "peak_accel_required_at_least_yd_s2": 6.0571143189429995
+              },
+              "momentum_magnitude_kg_m_s": 345.1531543999997
+            },
+            {
+              "id": "54487",
+              "separation_yd": 3.635931792539569,
+              "downfield_lead_yd": -3.1000000000000014,
+              "speed_yd_s": 3.5531676008879756,
+              "closing_yd_s": -5.844444068945982,
+              "catch_landmark_demand": {
+                "horizon_s": 1.3,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 7.503129997969964,
+                "peak_accel_required_at_least_yd_s2": 11.844603253806039
+              },
+              "momentum_magnitude_kg_m_s": 353.6949776767549
+            }
+          ]
+        },
+        {
+          "phase": "flight_midpoint",
+          "time_s": 3.55,
+          "receiver_velocity_yd_s": [
+            5.249999999999999,
+            3.000000000000007
+          ],
+          "receiver_speed_yd_s": 6.046693311223915,
+          "nearest_id": "54487",
+          "defenders": [
+            {
+              "id": "43404",
+              "separation_yd": 6.7424031324150295,
+              "downfield_lead_yd": -3.9000000000000004,
+              "speed_yd_s": 3.7499999999999964,
+              "closing_yd_s": 3.159111014527942,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 9.630638418835375,
+                "peak_accel_required_at_least_yd_s2": 18.222398467976753
+              },
+              "momentum_magnitude_kg_m_s": 360.8454309213597
+            },
+            {
+              "id": "44911",
+              "separation_yd": 9.808159868191384,
+              "downfield_lead_yd": -2.799999999999999,
+              "speed_yd_s": 3.8160843806184395,
+              "closing_yd_s": -5.3628815911316785,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 16.524314758584648,
+                "peak_accel_required_at_least_yd_s2": 49.2130851631105
+              },
+              "momentum_magnitude_kg_m_s": 330.80054260473014
+            },
+            {
+              "id": "47804",
+              "separation_yd": 7.017834423809098,
+              "downfield_lead_yd": 4.6,
+              "speed_yd_s": 3.5794552658190937,
+              "closing_yd_s": 7.858549613666441,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 4.130021845241062,
+                "peak_accel_required_at_least_yd_s2": 5.960448733978184
+              },
+              "momentum_magnitude_kg_m_s": 296.9264546800511
+            },
+            {
+              "id": "54487",
+              "separation_yd": 6.529931086925805,
+              "downfield_lead_yd": -5.0,
+              "speed_yd_s": 2.549509756796394,
+              "closing_yd_s": -4.356860680652896,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 12.743116357076318,
+                "peak_accel_required_at_least_yd_s2": 31.99986148278889
+              },
+              "momentum_magnitude_kg_m_s": 253.78729567707765
+            }
+          ]
+        },
+        {
+          "phase": "catch",
+          "time_s": 4.2,
+          "receiver_velocity_yd_s": [
+            3.75,
+            2.2499999999999964
+          ],
+          "receiver_speed_yd_s": 4.373213921133973,
+          "nearest_id": "47804",
+          "defenders": [
+            {
+              "id": "43404",
+              "separation_yd": 4.74130783645188,
+              "downfield_lead_yd": -4.199999999999999,
+              "speed_yd_s": 4.366062299143247,
+              "closing_yd_s": 2.0774858625022716,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 420.1263018036931
+            },
+            {
+              "id": "44911",
+              "separation_yd": 11.795338062132851,
+              "downfield_lead_yd": -3.6999999999999993,
+              "speed_yd_s": 2.7950849718747404,
+              "closing_yd_s": -1.9753566940824776,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 242.2943344802681
+            },
+            {
+              "id": "47804",
+              "separation_yd": 1.4866068747318517,
+              "downfield_lead_yd": 1.0,
+              "speed_yd_s": 3.4003676271838614,
+              "closing_yd_s": 7.26486617516017,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 282.0706026947593
+            },
+            {
+              "id": "54487",
+              "separation_yd": 7.291776189653656,
+              "downfield_lead_yd": -5.4,
+              "speed_yd_s": 4.47213595499958,
+              "closing_yd_s": 0.01714259965595008,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 445.17236574364995
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2022091901-1574",
+      "receiver_id": "53439",
+      "defender_ids": [
+        "38559",
+        "53519",
+        "53554"
+      ],
+      "depth_yd": 16.2,
+      "yac_yd": -0.1999999999999993,
+      "events": {
+        "pass_forward": 2.9,
+        "pass_arrived": 4.0,
+        "first_contact": 4.4,
+        "catch": 4.2,
+        "end": 5.7
+      },
+      "snapshots": [
+        {
+          "phase": "release",
+          "time_s": 2.9,
+          "receiver_velocity_yd_s": [
+            5.750000000000002,
+            4.500000000000002
+          ],
+          "receiver_speed_yd_s": 7.3015409332551195,
+          "nearest_id": "38559",
+          "defenders": [
+            {
+              "id": "38559",
+              "separation_yd": 4.604345773288533,
+              "downfield_lead_yd": 4.599999999999998,
+              "speed_yd_s": 3.605551275463984,
+              "closing_yd_s": 3.6813047574170215,
+              "catch_landmark_demand": {
+                "horizon_s": 1.3,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 5.243084009128963,
+                "peak_accel_required_at_least_yd_s2": 5.917159763313601
+              },
+              "momentum_magnitude_kg_m_s": 320.0275799915243
+            },
+            {
+              "id": "53519",
+              "separation_yd": 4.965883607174054,
+              "downfield_lead_yd": -4.5,
+              "speed_yd_s": 2.657536453183659,
+              "closing_yd_s": -6.373488084633362,
+              "catch_landmark_demand": {
+                "horizon_s": 1.3,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 8.20047498412453,
+                "peak_accel_required_at_least_yd_s2": 14.036010233845643
+              },
+              "momentum_magnitude_kg_m_s": 286.5857132482216
+            },
+            {
+              "id": "53554",
+              "separation_yd": 15.339491516996251,
+              "downfield_lead_yd": 6.899999999999999,
+              "speed_yd_s": 3.816084380618444,
+              "closing_yd_s": 6.9298255344526325,
+              "catch_landmark_demand": {
+                "horizon_s": 1.3,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 5.248986152021121,
+                "peak_accel_required_at_least_yd_s2": 10.078813424365348
+              },
+              "momentum_magnitude_kg_m_s": 308.641654583361
+            }
+          ]
+        },
+        {
+          "phase": "flight_midpoint",
+          "time_s": 3.55,
+          "receiver_velocity_yd_s": [
+            3.0000000000000027,
+            6.000000000000005
+          ],
+          "receiver_speed_yd_s": 6.708203932499375,
+          "nearest_id": "38559",
+          "defenders": [
+            {
+              "id": "38559",
+              "separation_yd": 3.0594117081556713,
+              "downfield_lead_yd": 3.0,
+              "speed_yd_s": 5.755432216610671,
+              "closing_yd_s": 2.647567824365482,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 5.749911157943495,
+                "peak_accel_required_at_least_yd_s2": 7.300378918796714
+              },
+              "momentum_magnitude_kg_m_s": 510.85032589091145
+            },
+            {
+              "id": "53519",
+              "separation_yd": 7.496665925596525,
+              "downfield_lead_yd": -5.4,
+              "speed_yd_s": 2.150581316760659,
+              "closing_yd_s": -4.19519828042724,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 13.747268661814985,
+                "peak_accel_required_at_least_yd_s2": 33.62241445967875
+              },
+              "momentum_magnitude_kg_m_s": 231.91624702788587
+            },
+            {
+              "id": "53554",
+              "separation_yd": 9.651942809610922,
+              "downfield_lead_yd": 5.399999999999999,
+              "speed_yd_s": 3.5089172119045546,
+              "closing_yd_s": 9.412612754971594,
+              "catch_landmark_demand": {
+                "horizon_s": 0.7000000000000001,
+                "radius_yd": 1.0,
+                "speed_cap_required_at_least_yd_s": 7.992421196455741,
+                "peak_accel_required_at_least_yd_s2": 18.34994687446999
+              },
+              "momentum_magnitude_kg_m_s": 283.7982355889999
+            }
+          ]
+        },
+        {
+          "phase": "catch",
+          "time_s": 4.2,
+          "receiver_velocity_yd_s": [
+            0.24999999999999467,
+            5.0
+          ],
+          "receiver_speed_yd_s": 5.006246098625196,
+          "nearest_id": "38559",
+          "defenders": [
+            {
+              "id": "38559",
+              "separation_yd": 1.2649110640673507,
+              "downfield_lead_yd": 1.1999999999999993,
+              "speed_yd_s": 6.041522986797292,
+              "closing_yd_s": 2.766992952647329,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 536.2436513065801
+            },
+            {
+              "id": "53519",
+              "separation_yd": 7.323933369440222,
+              "downfield_lead_yd": -4.199999999999999,
+              "speed_yd_s": 5.367727638395969,
+              "closing_yd_s": 1.0854822946877285,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 578.8496530043985
+            },
+            {
+              "id": "53554",
+              "separation_yd": 3.405877273185281,
+              "downfield_lead_yd": 2.6000000000000014,
+              "speed_yd_s": 4.930770730829003,
+              "closing_yd_s": 8.279805095157313,
+              "catch_landmark_demand": null,
+              "momentum_magnitude_kg_m_s": 398.79653722112886
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "remote_cost": {
+    "wall_seconds": 142.0296637249994,
+    "input_read_bytes": 9257358332,
+    "input_member_reads": 49
+  },
+  "checks": [
+    "exact returned SHA256/Git blobs",
+    "pinned modules/driver and unchanged filters",
+    "exact week1 cache reuse without tracking_week_1 read",
+    "nine-week inventory/completion and 49 complete member reads",
+    "metadata hashes, archive pin, planned/actual read accounting and budget",
+    "global candidates counted once, per-week ledgers/counters and canonical selection",
+    "fixed IDs, event frames, pre-contact windows and measurement arithmetic"
+  ],
+  "boundary": "Returned-packet integrity and arithmetic only. Raw CSV hashes, observed all-22 validity, original velocity/mass derivation and selection were collected on Catching executor, not independently remeasured here. Middle-YAC cases retain IDs/counts/YAC only, not full motion snapshots.",
+  "new_raw_queries": 0,
+  "new_simulations": 0,
+  "validation_elapsed_s": 0.01958457000000635,
+  "validator_sha256": "2d4d6b1a59e48dae9398f8c5846b90d853002a6090b421b8327be76b73854ee3"
+}

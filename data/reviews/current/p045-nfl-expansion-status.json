@@ -1,6 +1,6 @@
 {
   "schema": "p045-nfl-available-weeks-v1",
-  "status": "awaiting_data_executor",
+  "status": "validated_expansion_complete",
   "query_commit": "81e43e7279a26c43f2ae5ea29a2282316f42899c",
   "module_sha256": {
     "scripts/diag/p045-nfl-approach.py": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
@@ -12,13 +12,117 @@
     "wall_seconds": 300,
     "input_read_bytes": 12884901888
   },
-  "simulation_runs": 0,
-  "blocker": "Existing archive is not readable on this executor",
-  "archive": "/workspace/football-yac-angle/data/raw/zips/archive.zip",
-  "available_weeks_inventory": null,
-  "user_instruction": "Available-weeks expansion explicitly supersedes earlier close-query instruction.",
-  "catalog_weeks": [
-    1,
+  "result_commit": "07bee7413ee02d7e417f046b599682a77dc9e0fc",
+  "result_path": "data/reviews/current/p045-nfl-available-weeks-return.json",
+  "result_sha256": "4a57b09d246587843f9eb8ac3d03e6fcceb25e0276e679b33371cc63138c272d",
+  "inventory_sha256": "a82783df2d2c4d2f10d0701571bf116f9479165bea076ee99a80e5269acb0a95",
+  "return_comment": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200927133",
+  "validation": "data/reviews/current/p045-nfl-expanded-validation.json",
+  "interpretation": "docs/reviews/p045-nfl-expanded-interpretation-2026-10-15.md",
+  "available_weeks_inventory": {
+    "archive": "/workspace/football-yac-angle/data/raw/zips/archive.zip",
+    "archive_bytes": 1219840421,
+    "weeks": [
+      {
+        "week": 1,
+        "member": "big-data-bowl-data/tracking_week_1.csv",
+        "bytes": 971403802,
+        "compressed_bytes": 145396262,
+        "crc32": "4fcd608b",
+        "restored_readable": true,
+        "restored_bytes": 971403802
+      },
+      {
+        "week": 2,
+        "member": "big-data-bowl-data/tracking_week_2.csv",
+        "bytes": 916177128,
+        "compressed_bytes": 136838666,
+        "crc32": "d84e8eb1",
+        "restored_readable": true,
+        "restored_bytes": 916177128
+      },
+      {
+        "week": 3,
+        "member": "big-data-bowl-data/tracking_week_3.csv",
+        "bytes": 975586722,
+        "compressed_bytes": 146382515,
+        "crc32": "df993ad4",
+        "restored_readable": true,
+        "restored_bytes": 975586722
+      },
+      {
+        "week": 4,
+        "member": "big-data-bowl-data/tracking_week_4.csv",
+        "bytes": 922169785,
+        "compressed_bytes": 138290619,
+        "crc32": "f7b30ddf",
+        "restored_readable": true,
+        "restored_bytes": 922169785
+      },
+      {
+        "week": 5,
+        "member": "big-data-bowl-data/tracking_week_5.csv",
+        "bytes": 971152971,
+        "compressed_bytes": 145252045,
+        "crc32": "b6a1728b",
+        "restored_readable": true,
+        "restored_bytes": 971152971
+      },
+      {
+        "week": 6,
+        "member": "big-data-bowl-data/tracking_week_6.csv",
+        "bytes": 852375725,
+        "compressed_bytes": 126808453,
+        "crc32": "d70c1251",
+        "restored_readable": true,
+        "restored_bytes": 852375725
+      },
+      {
+        "week": 7,
+        "member": "big-data-bowl-data/tracking_week_7.csv",
+        "bytes": 824474366,
+        "compressed_bytes": 124190306,
+        "crc32": "9a487c78",
+        "restored_readable": true,
+        "restored_bytes": 824474366
+      },
+      {
+        "week": 8,
+        "member": "big-data-bowl-data/tracking_week_8.csv",
+        "bytes": 903573224,
+        "compressed_bytes": 136017766,
+        "crc32": "7e85cafa",
+        "restored_readable": true,
+        "restored_bytes": 903573224
+      },
+      {
+        "week": 9,
+        "member": "big-data-bowl-data/tracking_week_9.csv",
+        "bytes": 774645862,
+        "compressed_bytes": 115446495,
+        "crc32": "84a4740d",
+        "restored_readable": true,
+        "restored_bytes": 774645862
+      }
+    ],
+    "new_weeks": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "outside_catalog_weeks": [],
+    "planned_input_read_bytes": 9257358332,
+    "source_mode": "Existing verified ZIP streams; no extraction or new download"
+  },
+  "reused_weeks": [
+    1
+  ],
+  "new_query_weeks": [
     2,
     3,
     4,
@@ -28,6 +132,25 @@
     8,
     9
   ],
+  "unrun_weeks": [],
+  "aggregate_counts": {
+    "label_candidates": 26,
+    "converted": 19,
+    "invalid": 7,
+    "geometry_matched": 6,
+    "contained": 4,
+    "offensive_win": 0,
+    "middle_yac": 2
+  },
+  "new_week_disjoint_first_failure": {
+    "geometry_depth": 11,
+    "missing_required_events": 4
+  },
+  "new_week_overlapping_geometry_memberships": {
+    "depth": 11,
+    "separation": 2,
+    "flight": 5
+  },
   "week1": {
     "reused": true,
     "result_commit": "481ad18e5d1cd45a1d5008496b9917511d8397b1",
@@ -43,19 +166,62 @@
     "contained_id": "2022091101-4104",
     "exclusion_detail": "Legacy pooled counts; no week1 rescan or invented reasons."
   },
-  "new_week_results": null,
-  "new_week_exclusion_counts": null,
-  "new_week_examples": null,
-  "coordination_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200494647",
-  "driver": "scripts/diag/p045-nfl-expand.py",
-  "tests": {
-    "file": "test/test_p045_nfl_expand.py",
-    "passed": 5,
-    "synthetic_only": true,
-    "seconds": 0.238,
-    "test_comparison_correction": "End-to-end selected-witness equality uses the JSON storage contract (tuples serialize to arrays); assertions and frozen query unchanged."
+  "qualifying_ledger": [
+    {
+      "week": 1,
+      "id": "2022091101-4104",
+      "outcome_bin": "contained",
+      "yac_yd": -2.1999999999999993
+    },
+    {
+      "week": 2,
+      "id": "2022091901-1574",
+      "outcome_bin": "contained",
+      "yac_yd": -0.1999999999999993
+    },
+    {
+      "week": 2,
+      "id": "2022091901-2028",
+      "outcome_bin": "middle_yac",
+      "yac_yd": 8.2
+    },
+    {
+      "week": 2,
+      "id": "2022091812-2171",
+      "outcome_bin": "contained",
+      "yac_yd": 0.5
+    },
+    {
+      "week": 2,
+      "id": "2022091807-2947",
+      "outcome_bin": "contained",
+      "yac_yd": 2.6999999999999993
+    },
+    {
+      "week": 4,
+      "id": "2022100205-680",
+      "outcome_bin": "middle_yac",
+      "yac_yd": 10.600000000000001
+    }
+  ],
+  "full_contained_measurement_ids": [
+    "2022091101-4104",
+    "2022091807-2947",
+    "2022091812-2171",
+    "2022091901-1574"
+  ],
+  "remote_cost": {
+    "wall_seconds": 142.0296637249994,
+    "input_read_bytes": 9257358332,
+    "input_member_reads": 49
   },
-  "source_mode": "Existing verified ZIP streams on Catching executor; no new download or extraction.",
+  "source_mode": "Existing verified ZIP streams; no extraction or new download",
+  "local_raw_directory_visible": false,
+  "validation_boundary": "Returned-packet integrity and arithmetic only. Raw CSV hashes, observed all-22 validity, original velocity/mass derivation and selection were collected on Catching executor, not independently remeasured here. Middle-YAC cases retain IDs/counts/YAC only, not full motion snapshots.",
   "new_raw_queries_on_measurement_executor": 0,
-  "new_simulations": 0
+  "new_simulations": 0,
+  "query_changed": false,
+  "query_rerun_for_validation": false,
+  "hudl_statsbomb_included": false,
+  "next_collection": "None launched; any future broader comparison requires a separate predeclared football question and cohort."
 }

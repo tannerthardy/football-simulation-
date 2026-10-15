@@ -1,19 +1,27 @@
-# P045: available-weeks expansion reopened
+# P045: available-weeks expansion completed
 
 October 15, 2026 (America/Phoenix).
 
-**The available-weeks instruction supersedes the prior close-query instruction.**
+**Current result: validated complete.** Catching returned weeks 1–9 at
+`07bee74`; Measurement validated the returned bytes, pins, accounting and saved
+measurements without rerunning the query. Six qualify: four contained, two
+middle-YAC, zero explosive. See the
+[expanded interpretation and decision](p045-nfl-expanded-interpretation-2026-10-15.md).
+Zero in this filtered sample is not evidence that these plays cannot produce
+explosive YAC. Hudl/StatsBomb remains separate.
+
+**The available-weeks instruction superseded the prior close-query instruction.**
 Reuse the validated week-1 return, inventory the existing ZIP/restored files,
 and run the original query on additional available weeks. Filters, measurement,
 player IDs and event definitions stay unchanged. This is not another P045
 controller experiment or a request to fill an empty bin by changing criteria.
 
-Current blocker: `/workspace/football-yac-angle` and its archive remain absent
-on Measurement's executor; chat listing still disconnects and no cross-chat
-execution tool is exposed. The [inventory/execution coordination](https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200494647)
-targets Catching's existing data executor. **No expanded NFL results are
-available here yet.** The catalog lists weeks 1–9; actual archive/restored-week
-coverage remains pending that executor's inventory, not assumed from the catalog.
+The original access blocker was `/workspace/football-yac-angle` being absent
+on Measurement's executor. The [inventory/execution coordination](https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200494647)
+therefore targeted Catching's existing data executor. Its returned inventory
+now confirms weeks 1–9 in both the archive and readable restored files. Week 1
+was reused and weeks 2–9 executed there. The raw archive is still absent here;
+validation of the small return does not claim a new local raw-data rehash.
 
 ## Bounded execution where the data lives
 
@@ -126,9 +134,11 @@ assertion or source behavior was weakened to handle that representation.
 Original query source, engine, physics, ratings,
 flags, P006/P010 controls and Catching's separate controller findings are unchanged.
 
-The empirical evidence currently remains the validated week-1 contained witness
-`2022091101-4104`, receiver `52595`, defenders `46527`/`52472`, and zero
-qualifying explosive witnesses. Its slowing/turning receiver is not a matched
-template for P045. Await the bounded available-weeks return before drawing any
-expanded coverage, exclusion or example conclusion. This reopened task remains
-pending that data-executor handoff; the historical week-1 closeout stays preserved.
+The execution handoff above is preserved for reproduction, not an instruction
+to rerun compatible evidence. The [validated expanded result](p045-nfl-expanded-interpretation-2026-10-15.md)
+now contains four full contained examples, two middle-YAC ledger cases and no
+qualifying explosive example. All four contained receivers slow/turn before
+catch. New-week exclusions reconcile: 11 depth-first geometry rejections and
+four missing catch events; overlapping flight/separation failures remain separate.
+Cost was 142.030 s / 9,257,358,332 input-read bytes, within both limits. This
+bounded expansion is complete; the historical week-1 closeout remains preserved.

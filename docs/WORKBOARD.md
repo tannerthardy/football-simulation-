@@ -3,14 +3,15 @@
 ## Bounded NFL measurement, October 15, 2026 (America/Phoenix)
 
 Measurement owner: `codex/nfl-catch-approach`, from accepted `develop@a1b16e6`.
-**Reopened:** the user explicitly superseded the close-query instruction with
-the available-weeks expansion. Reuse week 1, inventory the existing ZIP/restored
-weeks, and execute the unchanged query on new available weeks where data lives.
-[Bounded driver and current handoff](reviews/p045-nfl-available-weeks-2026-10-15.md):
-300 seconds / 12 GiB input reads, passive exclusion accounting, up to three
-deterministic examples per original outcome bin; no new download/extraction.
-Five focused checks pass. Actual ZIP/restored-week inventory and new results
-remain pending Catching's executor because the posted data path is absent here.
+**Expansion complete and validated:** Catching returned `07bee74`, actual archive/
+restored coverage weeks 1–9; week 1 reused, weeks 2–9 completed in 142.030 s /
+9,257,358,332 input-read bytes, within the 300-second / 12-GiB bounds. No new
+download/extraction or week-1 rescan. [Interpretation and current decision](reviews/p045-nfl-expanded-interpretation-2026-10-15.md):
+six qualifying plays, four contained, two middle-YAC, zero explosive. New-week
+exclusions reconcile (11 depth-first, four missing catch events); week-1 reason
+detail remains unknown. All four full contained examples have slowing/turning
+receivers. This filtered sample cannot prescribe P045's outcome or imply no
+explosive YAC is possible. No query rerun, filter widening or engine change.
 
 Preserved week-1 stage: Catching executed the unchanged query on its verified
 restoration and returned `481ad18`; the 13,975-byte packet, query/receipt pins,
@@ -35,7 +36,7 @@ games. One HF game and linked labels inspected; raw files remain outside the
 repository. Canonical acquisition is 1.70 GB, with 1.62 GB remaining. Bulk is
 deferred for the acquisition/usage decision: noncommercial research terms,
 redistribution restrictions, identity/visibility gaps. No engine adapter/tuning,
-new BDB query or simulation; the P045 expansion above stays open separately.
+new BDB query or simulation; the independent P045 expansion status is above.
 
 ## Current controller integration preparation
 
