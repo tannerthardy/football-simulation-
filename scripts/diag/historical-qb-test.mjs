@@ -19,8 +19,11 @@ const priorPath='docs/reviews/run-entry-relevance/native.json.gz',priorBytes=rea
 const inputPath='docs/reviews/run-entry-relevance/inputs.json.gz',inputBytes=readFileSync(inputPath),inputs=JSON.parse(gunzipSync(inputBytes));
 assert.equal(process.version,inputs.node);
 assert.deepEqual(Object.fromEntries(Object.keys(inputs.flags).map(k=>[k,process.env[k]??null])),inputs.flags);
-const rows=[];
-for(const saved of inputs.rows){
+const controlsOnly=process.argv.includes('--controls-only');
+const cached=controlsOnly?JSON.parse(gunzipSync(readFileSync(out+'/initial-result.json.gz'))):null;
+if(cached){assert.equal(cached.sourceSha256,sourceVersion());assert.equal(cached.referenceSha256,hash(priorBytes));assert.equal(cached.inputSha256,hash(inputBytes));}
+const rows=cached?.rows??[];
+if(!controlsOnly)for(const saved of inputs.rows){
   const runStart=performance.now(),reference=prior.rows.find(r=>r.play===saved.nativePlay&&r.arm==='portable-admission');
   const roster=team=>Object.fromEntries(saved.input.actors.filter(a=>a.team===team).map(a=>[a.slot,a.player]));
   const sim=new PlaySim({offense:roster('O'),defense:roster('D'),offCall:structuredClone(saved.input.call),
@@ -84,9 +87,9 @@ for(const branch of ['continue','change-motion']){
   const qb=structuredClone(sampleFrame.before[0]),rb=structuredClone(sampleFrame.before[6]),world=new World([qb,rb],{handContact:'center'});
   world.time=picture.sampledAt;
   const observer={idx:6,team:'O',get pos(){return rb.pos;},get vel(){return rb.vel;},get facing(){return rb.facing;},
-    engagement:null,eyes:null,profile:rb.profile,mind:{observationDelay:()=>picture.availableAt-picture.sampledAt},isDown:()=>false};
+    engagement:null,eyes:null,profile:rb.profile,mind:{observationDelay:()=>picture.availableAt-picture.sampledAt},isDown:()=>rb.support?.state!=='up'};
   const teammate={idx:0,team:'O',get pos(){return qb.pos;},get vel(){return qb.vel;},get facing(){return qb.facing;},
-    engagement:null,eyes:null,profile:qb.profile,mind:observer.mind,isDown:()=>false};
+    engagement:null,eyes:null,profile:qb.profile,mind:observer.mind,isDown:()=>qb.support?.state!=='up'};
   const info=new TeammateInformation([observer,teammate],new Map()),samples=[];
   info.sense([observer,teammate],picture.sampledAt,.05);
   const snapshot={...picture,age:0};
@@ -97,7 +100,7 @@ for(const branch of ['continue','change-motion']){
     info.sense([observer,teammate],now,.05);
     const p=info.query(6,0,now,.05),region=historicalRegion(snapshot,qb.profile,elapsed);
     const deviation=Math.hypot(qb.pos.x-region.center.x,qb.pos.y-region.center.y);
-    samples.push({elapsed,pos:{...qb.pos},vel:{...qb.vel},picture:snap(p),regionRadius:region.radius,deviation,
+    samples.push({elapsed,pos:{...qb.pos},vel:{...qb.vel},qbSupport:qb.support?.state,observerSupport:rb.support?.state,picture:snap(p),regionRadius:region.radius,deviation,
       insideOrdinaryBound:deviation<=region.radius+1e-8,contacts:report.contacts});
     assert.equal(report.contacts.length,0,'External contact invalidates this ordinary-motion control');
     assert(deviation<=region.radius+1e-8,'Changed ordinary motion escaped the historical uncertainty bound');
@@ -111,7 +114,8 @@ const decisionSummary=rows.map(r=>({play:r.play,physicalFramesExact:r.physicalFr
     qbGaps:s.entries.flatMap(e=>e.choices.flatMap(c=>c.unknown.filter(p=>p.id===0).map(p=>p.minimumOrdinaryGap)))}))}));
 const result={schema:'historical-qb-test-v1',sourceSha256:sourceVersion(),node:process.version,flags:inputs.flags,worldDefaults:inputs.worldDefaults,
   referenceSha256:hash(priorBytes),inputSha256:hash(inputBytes),collectorSha256:hash(readFileSync(import.meta.filename)),
-  metadataReplayExecutions:2,mechanicalControlBranches:2,completedGames:0,rows,controls,decisionSummary,
+  metadataReplayExecutions:controlsOnly?0:2,mechanicalControlBranches:2,completedGames:0,rows,controls,decisionSummary,
+  cachedMetadataReplays:cached?{executions:2,artifactSha256:hash(readFileSync(out+'/initial-result.json.gz')),collectorSha256:cached.collectorSha256,originalElapsedSeconds:cached.elapsedSeconds}:null,
   historicalSetupLimits:prior.historicalSetupLimits,elapsedSeconds:(performance.now()-start)/1000};
 writeFileSync(out+'/result.json.gz',gzipSync(JSON.stringify(result),{mtime:0}));
 writeFileSync(out+'/summary.json',JSON.stringify({...result,rows:undefined,controls:undefined},null,2)+'\n');
