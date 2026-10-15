@@ -1,5 +1,36 @@
 # Current work ownership
 
+## Portable gap and completed entry-risk trial, 2026-10-15
+
+The narrow `73b9441` correction is independently portable from accepted develop
+`a1b16e6`: implementation `d63bf4504e1a17e2f6a32738009a532838fc5e20`,
+evidence `92566b3b650bb2e855487cbf1eae6a2dbf60918b`, documentation tip
+`132c27a8f1d9ce9a4366b92f0ede0df42a0dac52`, branch
+`codex/departed-center-gap`. Original `badddf4` evidence remains immutable.
+The earlier `6122fb0` zone/Duo stack is published experimental ancestry, not
+adopted into the fetched accepted develop, published Integration bookkeeping
+review or recorded film source. Their proven common ancestor is `a1b16e6`.
+See the portable evidence's ancestry/source proof; publication is not adoption.
+
+One next saved-film entry defect was isolated: `runReadAim` awards a private
+engagement flag .25s of protection. Trial code `cfc2fc9`, exact-parent test tip
+`7f9d9a4`, evidence `4ee0e2cdc8480f271fc3d8e9178f6abd949b3f9e` on
+`codex/run-entry-cues` removes hidden risk inputs. **Rejected for adoption as
+tested:** P032 defensive contact delays2.55→2.90s, but creates69.8136kg·yd/s
+RB/RG collision. P019 bodies/requests/physical reports/load/finish unchanged;
+P033 exact-parent defensive-win entry unchanged. One saved-state diagnostic
+found fragile positive approach clearance against a .30s-old extrapolated RG
+picture while RG carries useful load. Next correction is achievable approach
+admission using acquired teammate uncertainty, with a clear-crossing control.
+No follow-on tuning or expanded batch. Native prefix8.04s,25 physical scrimmages,
+zero completed games;43 unique focused checks via compatible receipts. Exact
+candidate/evidence, failures and reproduction are on the separately published
+trial branch. Current run-lanes runtime is unchanged by this handoff.
+
+Integration owns combined verification. Run Game owns PassProtector/pass cutoff;
+root retains run blocking/climb and carrier/spacing navigation. No new shared
+helper, physics, capacity, sight/TTL, mesh or earlier zone-stack adoption.
+
 ## Spread/air user-film lane review, 2026-10-15
 
 Do-It-All root owns the bounded P009/P011/P033/P037/P039 review on
