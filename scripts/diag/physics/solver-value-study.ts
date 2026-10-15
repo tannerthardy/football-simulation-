@@ -52,7 +52,7 @@ function run(c:any,arm:Intervention,observe=true){
     contacts:report.contacts,falls:report.falls,strikes:report.strikes,workResidual:report.work.residual,
     blocker:engagement?.blocker.slot??null,normal:engagement?.hands?.normalForce??null,tangent:engagement?.hands?.tangentForce??null,
     handActive:!!engagement?.hands&&this.joints.includes(engagement.hands),released:combo.released,
-    ownerFacing:owner.facing,ownerSupport:owner.body.support.state,helperChecked:helper.tags.has('combo-check-climb')});
+    ownerFacing:owner.facing,ownerSupport:owner.body.support!.state,helperChecked:helper.tags.has('combo-check-climb')});
    return report;
   };
  }
@@ -89,8 +89,11 @@ for(const c of cfg.cases){
   const immediate=difference(candidate.steps[index],baseline.steps[index]),last=difference(candidate.steps[common],baseline.steps[common]),
    first=(key:string)=>candidate.steps.slice(0,common+1).find((s,i)=>s[key]!==baseline.steps[i][key])?.t??null,
    at2=candidate.frames[common],base2=baseline.frames[common];
+  const checkpoint=Math.min(common,baseline.frames.findIndex(s=>s.t===cfg.checkpointSeconds));
+  assert(checkpoint>=0);
   comparisons.push({arm:candidate.arm,matchedPrefix:true,firstChangedBodyTick:first('afterHash'),firstChangedCommandTick:first('intentHash'),firstChangedRngTick:first('rngBefore'),
    comparisonStop:at2.t,
+   checkpoint:{t:baseline.frames[checkpoint].t,motion:difference(candidate.steps[checkpoint],baseline.steps[checkpoint]),rbDistance:Math.hypot(candidate.frames[checkpoint].rb.pos.x-baseline.frames[checkpoint].rb.pos.x,candidate.frames[checkpoint].rb.pos.y-baseline.frames[checkpoint].rb.pos.y)},
    immediate,immediateC_NT:difference(candidate.steps[index],baseline.steps[index],['C','NT']),final:last,
    rbDistanceAtStop:Math.hypot(at2.rb.pos.x-base2.rb.pos.x,at2.rb.pos.y-base2.rb.pos.y),
    helperClimbs:candidate.helperClimbs,released:candidate.released,firstContactAt:candidate.firstContactAt,firstContactX:candidate.firstContactX,censored:candidate.censored});

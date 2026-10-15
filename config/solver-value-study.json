@@ -2,7 +2,9 @@
   "protocol": "solver-value-input-v1",
   "question": "Does resolving the first disputed World tick change useful native block behavior enough to justify more solver development?",
   "comparison": "PR77 source; existing World laws, a transient subdivision override for one 50ms tick only, then ordinary execution",
-  "windowSeconds": 2,
+  "windowSeconds": 8,
+  "checkpointSeconds": 2,
+  "extensionReason": "The initial two-second collection censored every carry before runner contact. Continue the same fixed inputs to dead or eight seconds to determine whether later football endings change; retain the original collection.",
   "offenseSeed": 31,
   "defenseSeed": 32,
   "strength": 0.55,
@@ -25,5 +27,5 @@
   ],
   "opposingIntervention": {"case":"tite", "id":"earlier768", "at":0.30, "substeps":768},
   "decision": "Exploratory value/sensitivity study, not a promotion gate or physical reference. A changed ending alone is not a benefit. Preserve adverse, inconclusive and censored cases; compare fine continuations and ordinary-ground control before attributing a benefit.",
-  "budget": "Two existing native fixtures, two seconds each; no full suite or games. Stop kernel development during this study."
+  "budget": "Two existing native fixtures; retain the two-second pilot and continue identical inputs to dead or eight seconds, without new interventions. No full suite or games. Stop kernel development during this study."
 }
