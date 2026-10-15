@@ -62,7 +62,7 @@ describe('minimal run-entry information transport and consumer',()=>{
       get vel(){throw Error('Private teammate velocity');}};
     const rb={idx:6,body:s.body,engagement:null};
     const sim={t:s.t,bond:null,world:{joints:[],handContact:'center'},teammates:()=>[rb,teammate],
-      teammateInformation:vi.fn(()=>({source:'unavailable'})),see(){throw Error('No live/perception fallback');}};
+      teammateInformation:vi.fn((_a:unknown,_b:unknown)=>({source:'unavailable'})),see(){throw Error('No live/perception fallback');}};
     const carrier=new BallCarrier() as unknown as {approach(a:unknown,sim:unknown,command:unknown):ReturnType<typeof chooseRunApproach>};
     const r=carrier.approach(rb,sim,s.command);
     // Identity assertions do not make the test matcher traverse private getters.
