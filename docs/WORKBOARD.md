@@ -2,19 +2,21 @@
 
 ## Acquired runner entry risk, 2026-10-15
 
-Do-It-All root owns only `BallCarrier.runReadAim` risk inputs and its new focused
-fixture/diagnostics on `codex/run-entry-cues`, from portable gap evidence
-`92566b3` (accepted-base gap code `d63bf45`). No `6122fb0` zone/Duo navigation
-is inherited. The saved native zone-reference P032 (collector31)1.95s entry
-changes solely under an unseen defender engagement flag; the .25s protection
-allowance is not established by the consumed picture or actual block load.
-Use acquired opponent motion/recovery and public capacity for this entry risk.
-Preserve the P019 waiting decision and P033 legitimate defensive win. First
-same-cue tests; then one bounded natural continuation plus a contrasting case
-only if needed, reusing PR57 and original film. No new shared-helper behavior,
-PassProtector/pass cutoff, physics, capacity, sight/TTL, mesh or 6122 adoption.
-Integration owns combined verification. A material adverse result receives
-one diagnostic before any further candidate or expanded run.
+Do-It-All root completed the bounded `runReadAim` risk-input trial on
+`codex/run-entry-cues`: code `cfc2fc9`, exact-parent fixture tip `7f9d9a4`, source
+`20252b…`. **Reject for adoption as tested**: hidden-state invariance improved,
+P032 defensive contact moved2.55→2.90s, but a new69.8136kg·yd/s RB/RG impact
+appeared. One saved-state diagnostic found fragile positive clearance against
+an extrapolated .30s-old RG picture. No larger batch or rescue tuning followed.
+The [complete evidence and next approach-contract decision](reviews/run-entry-cues/README.md)
+preserve all failures, naturally reacting control, actual blocking loads and cost.
+
+Portable gap code `d63bf45`, evidence `92566b3` (documentation tip `132c27a`),
+is independent on `codex/departed-center-gap` from accepted `a1b16e6`. Earlier
+`6122fb0` zone/Duo navigation remains separately published experimental ancestry,
+not adopted into the checked accepted/Integration/recorded sources. Integration
+owns combined verification. Run Game owns PassProtector/pass cutoff. No new
+shared helper, spacing/physics/sight/TTL/mesh changes or zone-stack adoption.
 
 ## Current controller integration preparation
 

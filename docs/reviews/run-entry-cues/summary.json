@@ -1,0 +1,545 @@
+{
+  "schema": "run-entry-cues-review-v1",
+  "recommendation": "Reject entry-risk candidate for adoption as tested; keep portable gap fix independent.",
+  "pins": {
+    "portableGap": "d63bf4504e1a17e2f6a32738009a532838fc5e20",
+    "portableGapEvidence": "92566b3b650bb2e855487cbf1eae6a2dbf60918b",
+    "trialCode": "cfc2fc9bdc1bc293d9686e85bf23631a581a5367",
+    "trialWithCorrectParentControls": "7f9d9a4b2e40946129281ae382c8483f717e8c5d",
+    "recordedEngine": "f62511a513f2187884d74ae3b94435835e43309c",
+    "referenceEvidence": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+    "inputs": "4ae667e29b3ce085f43c5cb911b294349cda2b8f"
+  },
+  "sources": {
+    "rootCandidate": "20252b053f7bcb530cfe2983ccf00983dae0776d991e8001498fa51bff943e91",
+    "isolatedDiagnostic": "a8434b906fb0a0dfa66f16b20feaacbce84be8b9e890d30c7900bb6aadfeb18d",
+    "recorded": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba"
+  },
+  "inputs": {
+    "nativeSha256": "2590548f2abf35a49dad870f8d1edd87fe916bb1f08b8c58e64367593ba55fb4",
+    "manifestSha256": "c1c7cef835d143da40c62e6572e6e1d024dff281058a98215ecb78c93e6b5870",
+    "witnessSha256": "4ac59043580ae6a63a4e4295e2f69d7601b377d2aeadbf3f6e919dc010a0bda2",
+    "originalGameSha256": "9043fcb999ab144582292136ac7743f82cb5738a73c23879edfeb96f845bb039",
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "measurement": "Blocking impulses integrate already-resolved pre-step hands-joint normalForce and absolute tangentForce at 50ms samples, t0..2.95. Contacts retain World step timestamps; carrier_contact events use their own recorded timestamps. Do not equate engagement count with load.",
+  "limitations": [
+    "Native diagnostic isolates the exact risk-loop change on the recorded engine; it does not include the portable gap correction or the unadopted 6122 navigation stack.",
+    "The opening intervention stops at 3s. P032 is censored, not a completed snap or yardage claim. P019 returns to original behavior after 3s and retains its recorded finish.",
+    "Same-cue tests cover exact-parent gap-corrected entry decisions, not coupled combined-engine verification. Integration owns that verification.",
+    "Public get-up/reach capacity is a coarse threat model, not empirical NFL calibration. Own arrival remains a distance/current-speed estimate.",
+    "This does not repair all legacy carrier information callers. It changes only runReadAim opponent-risk inputs."
+  ],
+  "cost": {
+    "physicalScrimmages": 25,
+    "matchedEarlierLogEntries": 31,
+    "earlierPrefixMatches": true,
+    "completedGames": 0,
+    "nativeSeconds": 8.039681487,
+    "nativeLauncherSeconds": 8.582424364,
+    "focusedChecks": {
+      "entryCues": 4,
+      "otherCompatiblePassing": 39,
+      "uniquePassing": 43,
+      "allInOneGreenRun": false,
+      "initialCandidateResult": "42/43; contrasting assertion used old-gap expectation. Preserve failure and corrected-parent diagnostic."
+    },
+    "fullSuiteRuns": 0,
+    "typecheckRuns": 0,
+    "newRosters": 0
+  },
+  "cases": [
+    {
+      "nativePlay": 19,
+      "collectorIndex": 18,
+      "call": "Singleback Ace — Outside Zone",
+      "role": "waiting-control",
+      "los": 25.5,
+      "frameCount": 60,
+      "comparison": {
+        "framesCompared": 60,
+        "firstChangedRequest": null,
+        "firstChangedBody": null
+      },
+      "reportsEqual": true,
+      "jointsEqual": true,
+      "before": {
+        "firstCarrierContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 26.51,
+            "y": 27.17
+          },
+          "note": "grasp"
+        },
+        "firstRBBodyCollision": null,
+        "teammateImpacts": [],
+        "losCrossing": 2.6,
+        "rbAt3": {
+          "x": 26.985602462034073,
+          "y": 26.83431435163239
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 13,
+            "normalImpulse": 512.4504865691459,
+            "absoluteTangentImpulse": 405.337247162303,
+            "firstSample": 0.5,
+            "lastSample": 2.9
+          },
+          {
+            "blocker": 1,
+            "defender": 13,
+            "normalImpulse": 707.6393257666389,
+            "absoluteTangentImpulse": 370.23383261391314,
+            "firstSample": 0.55,
+            "lastSample": 2.9
+          },
+          {
+            "blocker": 3,
+            "defender": 14,
+            "normalImpulse": 406.8644031509099,
+            "absoluteTangentImpulse": 276.54809072971375,
+            "firstSample": 0.6,
+            "lastSample": 1.85
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 438.8706289672384,
+            "absoluteTangentImpulse": 338.9025889010636,
+            "firstSample": 0.65,
+            "lastSample": 2.65
+          },
+          {
+            "blocker": 10,
+            "defender": 19,
+            "normalImpulse": 228.73354401113454,
+            "absoluteTangentImpulse": 220.49276166166274,
+            "firstSample": 1.95,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 8,
+            "defender": 18,
+            "normalImpulse": 133.82512733955292,
+            "absoluteTangentImpulse": 48.57429891959323,
+            "firstSample": 2.55,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 9,
+            "defender": 17,
+            "normalImpulse": 70.47250334795487,
+            "absoluteTangentImpulse": 40.840213100904194,
+            "firstSample": 2.65,
+            "lastSample": 2.95
+          }
+        ]
+      },
+      "after": {
+        "firstCarrierContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 26.51,
+            "y": 27.17
+          },
+          "note": "grasp"
+        },
+        "firstRBBodyCollision": null,
+        "teammateImpacts": [],
+        "losCrossing": 2.6,
+        "rbAt3": {
+          "x": 26.985602462034073,
+          "y": 26.83431435163239
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 13,
+            "normalImpulse": 512.4504865691459,
+            "absoluteTangentImpulse": 405.337247162303,
+            "firstSample": 0.5,
+            "lastSample": 2.9
+          },
+          {
+            "blocker": 1,
+            "defender": 13,
+            "normalImpulse": 707.6393257666389,
+            "absoluteTangentImpulse": 370.23383261391314,
+            "firstSample": 0.55,
+            "lastSample": 2.9
+          },
+          {
+            "blocker": 3,
+            "defender": 14,
+            "normalImpulse": 406.8644031509099,
+            "absoluteTangentImpulse": 276.54809072971375,
+            "firstSample": 0.6,
+            "lastSample": 1.85
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 438.8706289672384,
+            "absoluteTangentImpulse": 338.9025889010636,
+            "firstSample": 0.65,
+            "lastSample": 2.65
+          },
+          {
+            "blocker": 10,
+            "defender": 19,
+            "normalImpulse": 228.73354401113454,
+            "absoluteTangentImpulse": 220.49276166166274,
+            "firstSample": 1.95,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 8,
+            "defender": 18,
+            "normalImpulse": 133.82512733955292,
+            "absoluteTangentImpulse": 48.57429891959323,
+            "firstSample": 2.55,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 9,
+            "defender": 17,
+            "normalImpulse": 70.47250334795487,
+            "absoluteTangentImpulse": 40.840213100904194,
+            "firstSample": 2.65,
+            "lastSample": 2.95
+          }
+        ]
+      },
+      "completedControl": {
+        "endedAt": 3.55,
+        "events": [
+          {
+            "t": 3.15,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 27.28,
+              "y": 26.45
+            },
+            "note": "legs"
+          },
+          {
+            "t": 3.4,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 26.64,
+              "y": 25.94
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.5,
+            "type": "tackle",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 26.63,
+              "y": 25.94
+            }
+          }
+        ]
+      },
+      "unfinished": false
+    },
+    {
+      "nativePlay": 32,
+      "collectorIndex": 31,
+      "call": "Pistol Doubles — Wide Zone",
+      "role": "failing-entry",
+      "los": 74.3,
+      "frameCount": 60,
+      "comparison": {
+        "framesCompared": 60,
+        "firstChangedRequest": {
+          "t": 1.95,
+          "sameBodiesBefore": true,
+          "actors": [
+            6
+          ],
+          "originalRaw": {
+            "vel": {
+              "x": 5.636906141939996,
+              "y": -7.771584791953234
+            },
+            "cutSkill": 1.1285714285714286,
+            "squeeze": 0
+          },
+          "candidateRaw": {
+            "vel": {
+              "x": 9.598777914383462,
+              "y": 0.188953914762123
+            },
+            "cutSkill": 1.1285714285714286,
+            "squeeze": 0
+          },
+          "originalFinal": {
+            "vel": {
+              "x": 2.818453070969998,
+              "y": -3.885792395976617
+            },
+            "cutSkill": 1.1285714285714286,
+            "squeeze": 0
+          },
+          "candidateFinal": {
+            "vel": {
+              "x": 9.598777914383462,
+              "y": 0.188953914762123
+            },
+            "cutSkill": 1.1285714285714286,
+            "squeeze": 0
+          }
+        },
+        "firstChangedBody": {
+          "t": 2
+        }
+      },
+      "reportsEqual": false,
+      "jointsEqual": false,
+      "before": {
+        "firstCarrierContact": {
+          "t": 2.55,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 13,
+          "pos": {
+            "x": 73.71,
+            "y": 24.66
+          },
+          "note": "body collision"
+        },
+        "firstRBBodyCollision": {
+          "step": 2.55,
+          "reportedBy": 2.6,
+          "i": 6,
+          "j": 13,
+          "impulse": 40.182538855852954,
+          "closing": 0.8220599494083958
+        },
+        "teammateImpacts": [],
+        "losCrossing": 2.8,
+        "rbAt3": {
+          "x": 74.98393595738617,
+          "y": 22.95200556950067
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 14,
+            "normalImpulse": 1424.8939862909276,
+            "absoluteTangentImpulse": 816.7729724423731,
+            "firstSample": 0.5,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 5,
+            "defender": 13,
+            "normalImpulse": 1443.9640025201516,
+            "absoluteTangentImpulse": 776.4922551961396,
+            "firstSample": 0.5,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 1707.3849157991272,
+            "absoluteTangentImpulse": 392.85150976465246,
+            "firstSample": 0.6,
+            "lastSample": 2.9
+          },
+          {
+            "blocker": 1,
+            "defender": 11,
+            "normalImpulse": 178.43537068355872,
+            "absoluteTangentImpulse": 265.70516186431814,
+            "firstSample": 0.65,
+            "lastSample": 1.85
+          },
+          {
+            "blocker": 2,
+            "defender": 19,
+            "normalImpulse": 1734.8375881301552,
+            "absoluteTangentImpulse": 791.3820391435413,
+            "firstSample": 0.9,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 3,
+            "defender": 15,
+            "normalImpulse": 310.18256570375576,
+            "absoluteTangentImpulse": 87.00617488814986,
+            "firstSample": 2.2,
+            "lastSample": 2.55
+          },
+          {
+            "blocker": 10,
+            "defender": 21,
+            "normalImpulse": 116.90002243124142,
+            "absoluteTangentImpulse": 49.321995974279226,
+            "firstSample": 2.4,
+            "lastSample": 2.95
+          }
+        ]
+      },
+      "after": {
+        "firstCarrierContact": {
+          "t": 2.9,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 75.01,
+            "y": 26.07
+          },
+          "note": "grasp"
+        },
+        "firstRBBodyCollision": null,
+        "teammateImpacts": [
+          {
+            "step": 2.4,
+            "reportedBy": 2.45,
+            "i": 5,
+            "j": 6,
+            "impulse": 69.8135995279234,
+            "closing": 1.1123875500799685
+          }
+        ],
+        "losCrossing": 2.75,
+        "rbAt3": {
+          "x": 75.14836362180178,
+          "y": 25.992359353767934
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 14,
+            "normalImpulse": 1423.7972360960175,
+            "absoluteTangentImpulse": 816.7729724423731,
+            "firstSample": 0.5,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 5,
+            "defender": 13,
+            "normalImpulse": 1443.9640025201516,
+            "absoluteTangentImpulse": 776.4922551961396,
+            "firstSample": 0.5,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 1664.0204142510863,
+            "absoluteTangentImpulse": 309.9843798639077,
+            "firstSample": 0.6,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 1,
+            "defender": 11,
+            "normalImpulse": 178.43537068355872,
+            "absoluteTangentImpulse": 265.70516186431814,
+            "firstSample": 0.65,
+            "lastSample": 1.85
+          },
+          {
+            "blocker": 2,
+            "defender": 19,
+            "normalImpulse": 1900.9753199390443,
+            "absoluteTangentImpulse": 711.1502934328288,
+            "firstSample": 0.9,
+            "lastSample": 2.95
+          },
+          {
+            "blocker": 3,
+            "defender": 15,
+            "normalImpulse": 310.18256570375576,
+            "absoluteTangentImpulse": 68.52355788078219,
+            "firstSample": 2.2,
+            "lastSample": 2.55
+          },
+          {
+            "blocker": 10,
+            "defender": 21,
+            "normalImpulse": 116.98110956955651,
+            "absoluteTangentImpulse": 49.379172802578324,
+            "firstSample": 2.4,
+            "lastSample": 2.95
+          }
+        ]
+      },
+      "completedControl": null,
+      "unfinished": true
+    }
+  ]
+}

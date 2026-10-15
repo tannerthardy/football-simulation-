@@ -1,0 +1,64 @@
+{
+  "worldSteps": 0,
+  "question": "Did the contrast change because of this risk patch or the already corrected gap parent?",
+  "inputSha256": "0a7048f4fbc4769cc59fd288cf2131218bf24ada0c732a1767d300061f91cc48",
+  "rows": [
+    {
+      "id": "failing",
+      "t": 1.95,
+      "recorded": {
+        "x": 74.8,
+        "y": 22.020043756660172
+      },
+      "recordedMatches": true,
+      "parent": {
+        "x": 74.8,
+        "y": 22.020043756660172
+      },
+      "candidate": {
+        "x": 74.93723107164152,
+        "y": 26.78612645565707
+      },
+      "recordedPreferred": 22.282771029387444,
+      "parentPreferred": 22.282771029387444
+    },
+    {
+      "id": "waiting-control",
+      "t": 2.05,
+      "recorded": {
+        "x": 26,
+        "y": 25.93860428572723
+      },
+      "recordedMatches": true,
+      "parent": {
+        "x": 26,
+        "y": 29.458092209826994
+      },
+      "candidate": {
+        "x": 26,
+        "y": 29.458092209826994
+      },
+      "recordedPreferred": 26.98860428572723,
+      "parentPreferred": 30.508092209826994
+    },
+    {
+      "id": "legitimate-win-control",
+      "t": 2,
+      "recorded": {
+        "x": 25.5,
+        "y": 31.30248101612658
+      },
+      "recordedMatches": true,
+      "parent": {
+        "x": 25.5,
+        "y": 31.30248101612658
+      },
+      "candidate": {
+        "x": 25.5,
+        "y": 31.30248101612658
+      },
+      "recordedPreferred": 31.30248101612658,
+      "parentPreferred": 31.30248101612658
+    }
+  ]
+}

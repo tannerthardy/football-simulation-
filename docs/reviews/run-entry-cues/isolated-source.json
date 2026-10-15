@@ -1,0 +1,7 @@
+{
+  "parent": "f62511a513f2187884d74ae3b94435835e43309c",
+  "sourceSha256": "a8434b906fb0a0dfa66f16b20feaacbce84be8b9e890d30c7900bb6aadfeb18d",
+  "oldLoopSha256": "524bbfa6f7cd55d5445f55601e75072531cd6be762d0c82e0081acc14b2089e3",
+  "newProductionLoopSha256": "846fe941b31545710a5bfa91c239e0e3ce341660235b2a00056b578c1f9f303f",
+  "diagnosticGate": "Selected PlaySim through3s; no data from fixture supplied to the controller."
+}
