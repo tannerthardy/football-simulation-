@@ -12,7 +12,9 @@ We build the mechanisms correctly rather than tune outcomes to NFL averages.
   #12 includes the run-contact component and moving-catch repair; merged #63
   adds gap identity, mesh cadence, blocking recognition, bookkeeping and
   incidental catch acquisition. Merged #72 adds the isolated pass-cutoff approach
-  correction and its reviewed replay-kind test contract. The queue pins the exact accepted commit and
+  correction and its reviewed replay-kind test contract. Merged #74 replaces
+  private opponent-state shortcuts in RB entry risk with acquired information;
+  RB pathing and observation transport remain separate. The queue pins the exact accepted commit and
   distinguishes implemented code, review-pending candidates and experiments.
 - **Historical comparisons:** [baseline/profile and known failures](docs/BASELINE.md)
   retain `4ded6b6`; it is not the new-task development starting point.
