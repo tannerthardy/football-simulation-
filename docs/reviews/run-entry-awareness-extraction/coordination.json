@@ -2,12 +2,17 @@
   "originalOwner": "Awareness owner, original PR36",
   "contractSource": "68284671d062dfd4e7e879bcd037bc21dad3e3ac/docs/reviews/teammate-information.md#interface-and-acquisition",
   "reviewSurface": "https://github.com/tannerthardy/football-simulation-/pull/36",
-  "status": "Concrete proposal prepared; scoped review request will be posted with this published evidence pin. No owner acknowledgement claimed.",
+  "status": "Scoped request posted to original owner PR36; no owner acknowledgment observed at final check. Admission held at contract seam.",
   "requestedDecisions": [
     "Confirm observation-only staging with no install/tactile/spacing migration.",
     "Confirm smallest explicit representation of sampled motion/unknown current motion; retain vel, prediction and expiry semantics."
   ],
   "runtimeImplementation": "held",
   "sharedSourceEdits": false,
-  "moreBehaviorTuning": false
+  "moreBehaviorTuning": false,
+  "ownerRequestUrl": "https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200674433",
+  "integrationDeliveryUrl": "https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200681545",
+  "publishedPlan": "94eb22aa396a8a0d5db7338add13437ce1007bf3",
+  "checkedAt": "2026-10-15T19:38:07.113947+00:00",
+  "ownerAcknowledged": false
 }

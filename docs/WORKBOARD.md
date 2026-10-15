@@ -12,6 +12,14 @@ means unknown, while the consumer treats it as stationary. Owner coordination
 and an explicit observation-only extraction are prerequisites, not a live-state
 fallback or license to import the recorded experimental stack.
 
+Plan94eb22a is delivered to Integration on #63; scoped contract review posted
+on original Awareness #36 (comment6200674433), no owner acknowledgment yet.
+Two-file observation/query core proposal plus independent risk/admission patches
+apply on accepted and #63; virtual accepted proposal typechecks11.106s. Only
+review artifacts/docs/scripts changed. Precise hold: current consumer conflates
+unknown velocity after .30s with stationary occupancy. No behavior tuning,
+new World steps or global spacing migration; #63 stays independent.
+
 
 ## Current controller integration preparation
 

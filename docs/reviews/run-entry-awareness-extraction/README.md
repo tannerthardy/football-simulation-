@@ -172,11 +172,24 @@ Awareness retains ownership of sensing/query policy and new shared fields.
 Do-It-All owns admission's consumption and this plan. Integration owns the
 PlaySim overlap and combined review. The original owner's durable coordination
 surface is PR36; no active separate Awareness chat appears in the available task
-catalog, and no send-to-thread tool is exposed. The scoped review request is
-posted there; delivery is not an owner acknowledgment. The final handoff records
-its exact comment URL and whether a reply arrived.
+catalog, and no send-to-thread tool is exposed. The [scoped review request is posted on PR36](https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200674433),
+and the [plan was delivered to Integration](https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200681545).
+No owner acknowledgment was observed at the final check; delivery is not agreement.
+[Exact coordination status](coordination.json).
 
 **Next decision:** owner confirms observation-only staging and the smallest
 explicit stale-motion representation; then implement that agreed contract and
 consumer adaptation in separate commits. Until then, keep admission held at this
 precise semantic seam. Keep #63 progressing independently.
+
+Reproduction, with pinned refs available and dependencies installed:
+
+```sh
+python3 scripts/diag/run-entry-awareness-extraction.py
+node scripts/baseline.mjs --candidate --receipt out/run-entry-awareness/probe-launcher.json -- node --import tsx scripts/diag/run-entry-awareness-contract.mjs
+node scripts/baseline.mjs --candidate --receipt out/run-entry-awareness/proposed-typecheck-launcher.json -- npx tsc --noEmit --project out/run-entry-awareness/proposed-typecheck/tsconfig.json
+```
+
+The patch application/generation check takes under one second, the query-only
+probe0.00185s internally, and the single compiler check11.106s. Zero World steps,
+new football snaps, roster cases or full-game runs. No source/test full suite.
