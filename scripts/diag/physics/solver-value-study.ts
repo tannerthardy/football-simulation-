@@ -27,8 +27,23 @@ function run(c:any,arm:Intervention,observe=true){
  const rng=()=>hash([sim.rng,...sim.agents.map(a=>(a.mind as any).rng)]),
   flatJoints=()=>world.joints.map((j:any)=>{const {a,b,actor,holder,...rest}=j;return {...rest,a:world.indexOf(a),b:world.indexOf(b),...(actor?{actor:world.indexOf(actor)}:{}),...(holder?{holder:world.indexOf(holder)}:{})};}),
   fingerprint=()=>hash({bodies:world.bodies,cmds:Reflect.get(sim,'cmds'),intents:sim.intents,minds:sim.agents.map(a=>a.mind),rng:sim.rng,events:sim.events,phase:sim.phase,t:sim.t,joints:flatJoints(),lastStep:sim.lastStep});
- let switched=0;
+ let switched=0,ledger:any=null;
  if(observe){const step=world.step,couple=world.coupleGroundHandYaw;
+  const rb=sim.slot('RB')!,mass=rb.profile.massKg;
+  // Instrument delivered carrier momentum/translation energy only in native
+  // baselines. Source methods remain unchanged; the plain fingerprint checks
+  // detect observation side effects. This is attribution, not a law oracle.
+  if(arm.id==='native')for(const method of ['feet','pairImpulse','solveContact']){
+   const original=world[method];world[method]=function(...args:any[]){
+    const involved=method==='feet'?args[0]===rb.idx:method==='solveContact'?[args[0].i,args[0].j].includes(rb.idx):[args[0],args[1]].includes(rb.idx);
+    if(!ledger||!involved)return original.apply(this,args);
+    const before={...rb.vel},kind=method==='feet'?'feet':method==='solveContact'?'body-contact':args[5]+(args[5]==='grasps'?(args[6]===false?'-passive':'-active'):''),
+     value=original.apply(this,args),part=ledger.parts[kind]??={x:0,y:0,translationEnergy:0};
+    part.x+=mass*(rb.vel.x-before.x);part.y+=mass*(rb.vel.y-before.y);
+    part.translationEnergy+=.5*mass*(rb.vel.x**2+rb.vel.y**2-before.x**2-before.y**2);
+    return value;
+   };
+  }
   world.coupleGroundHandYaw=function(rows:any[],contacts:any[],h:number){
    let reason='eligible';const r=rows[0];
    if(contacts.length||this.pending.length)reason='impact-or-strike';
@@ -43,29 +58,37 @@ function run(c:any,arm:Intervention,observe=true){
   world.step=function(intents:any[],dt:number){
    const input=hash({bodies:this.bodies,intents,joints:flatJoints()}),rngBefore=rng(),intentHash=hash(intents),saved=this.substeps;
    if(arm.at!==null&&Math.abs(sim.t-arm.at)<1e-9){this.substeps=arm.substeps;switched++;}
+   if(arm.id==='native')ledger={before:{...rb.vel},parts:{}};
    let report:any;const begin=performance.now();
    try{report=step.call(this,intents,dt);}finally{this.substeps=saved;}
+   if(ledger){ledger.after={...rb.vel};const sum=Object.values(ledger.parts) as any[];
+    ledger.momentumResidual=Math.hypot(mass*(rb.vel.x-ledger.before.x)-sum.reduce((s,p)=>s+p.x,0),mass*(rb.vel.y-ledger.before.y)-sum.reduce((s,p)=>s+p.y,0));
+    ledger.translationEnergyResidual=.5*mass*(rb.vel.x**2+rb.vel.y**2-ledger.before.x**2-ledger.before.y**2)-sum.reduce((s,p)=>s+p.translationEnergy,0);
+    assert(ledger.momentumResidual<1e-8&&Math.abs(ledger.translationEnergyResidual)<1e-8);
+   }
    const elapsedMs=performance.now()-begin,engagement=defender.engagement;
-   steps.push({t:sim.t,input,rngBefore,rngAfter:rng(),intentHash,afterHash:hash(this.bodies),reportHash:hash(report),substeps:report.substeps,elapsedMs,
+   steps.push({t:sim.t,input,rngBefore,rngAfter:rng(),intentHash,afterHash:hash(this.bodies),reportHash:hash(report),substeps:report.substeps,elapsedMs,carrierLedger:ledger,
     bodies:this.bodies.map((b:any,i:number)=>({slot:sim.agents[i].slot,pos:{...b.pos},vel:{...b.vel},facing:b.facing,spin:b.spin??0,energy:b.energy,support:b.support.state})),
     selectedPair:sim.t===.35?structuredClone([sim.slot('C')!.body,sim.slot('NT')?.body??defender.body]):undefined,
     contacts:report.contacts,falls:report.falls,strikes:report.strikes,workResidual:report.work.residual,
     blocker:engagement?.blocker.slot??null,normal:engagement?.hands?.normalForce??null,tangent:engagement?.hands?.tangentForce??null,
     handActive:!!engagement?.hands&&this.joints.includes(engagement.hands),released:combo.released,
     ownerFacing:owner.facing,ownerSupport:owner.body.support!.state,helperChecked:helper.tags.has('combo-check-climb')});
-   return report;
+   ledger=null;return report;
   };
  }
  while(sim.t<cfg.windowSeconds&&sim.phase!=='dead'){
   sim.tick();if(observe)frames.push({t:sim.t,rng:rng(),carrier:sim.carrier?.slot??null,
    rb:{pos:{...sim.slot('RB')!.pos},vel:{...sim.slot('RB')!.vel}},
-   firstContactAt:Reflect.get(sim,'firstContactAt'),firstContactX:Reflect.get(sim,'firstContactX'),
+   firstContactAt:sim.events.find(e=>e.type==='carrier_contact')?.t??null,firstContactX:sim.firstContactX,
    released:combo.released,climbs:sim.events.filter(e=>e.type==='block_climb'&&e.a===helper.idx),
    events:sim.events.filter(e=>['carrier_contact','tackle','block_shed','block_climb'].includes(e.type))});
  }
  if(observe)assert.equal(switched,arm.at===null?0:1);
  return {case:c.id,arm,fingerprint:fingerprint(),steps,frames,scope,phase:sim.phase,t:sim.t,censored:sim.phase!=='dead',
-  outcome:sim.outcome,firstContactAt:Reflect.get(sim,'firstContactAt'),firstContactX:Reflect.get(sim,'firstContactX'),
+  outcome:sim.outcome,firstContactAt:sim.events.find(e=>e.type==='carrier_contact')?.t??null,firstContactX:sim.firstContactX,
+  endSpot:sim.endSpot,creditedYards:sim.phase==='dead'?sim.buildResult().yards:null,
+  rbMass:sim.slot('RB')!.profile.massKg,
   released:combo.released,helperChecked:helper.tags.has('combo-check-climb'),helperClimbs:sim.events.filter(e=>e.type==='block_climb'&&e.a===helper.idx),
   finalRb:{pos:{...sim.slot('RB')!.pos},vel:{...sim.slot('RB')!.vel}},elapsedSeconds:(performance.now()-began)/1000};
 }
@@ -96,14 +119,27 @@ for(const c of cfg.cases){
    checkpoint:{t:baseline.frames[checkpoint].t,motion:difference(candidate.steps[checkpoint],baseline.steps[checkpoint]),rbDistance:Math.hypot(candidate.frames[checkpoint].rb.pos.x-baseline.frames[checkpoint].rb.pos.x,candidate.frames[checkpoint].rb.pos.y-baseline.frames[checkpoint].rb.pos.y)},
    immediate,immediateC_NT:difference(candidate.steps[index],baseline.steps[index],['C','NT']),final:last,
    rbDistanceAtStop:Math.hypot(at2.rb.pos.x-base2.rb.pos.x,at2.rb.pos.y-base2.rb.pos.y),
-   helperClimbs:candidate.helperClimbs,released:candidate.released,firstContactAt:candidate.firstContactAt,firstContactX:candidate.firstContactX,censored:candidate.censored});
+   helperClimbs:candidate.helperClimbs,released:candidate.released,firstContactAt:candidate.firstContactAt,firstContactX:candidate.firstContactX,censored:candidate.censored,creditedYards:candidate.creditedYards,endSpot:candidate.endSpot});
  }
  const fineComparisons=[['fine192','fine768'],['fine768','fine3072']].map(([a,b])=>{const x=runs.find(r=>r.arm.id===a)!,y=runs.find(r=>r.arm.id===b)!,common=Math.min(x.steps.length,y.steps.length)-1;assert.equal(x.steps[common].t,y.steps[common].t);return {a,b,comparisonStop:x.frames[common].t,immediate:difference(x.steps[7],y.steps[7]),final:difference(x.steps[common],y.steps[common]),rbDistanceAtStop:Math.hypot(x.frames[common].rb.pos.x-y.frames[common].rb.pos.x,x.frames[common].rb.pos.y-y.frames[common].rb.pos.y),helperClimbs:[x.helperClimbs,y.helperClimbs]};});
  const counts:Record<string,number>={};for(const s of baseline.scope)counts[s.reason]=(counts[s.reason]??0)+1;
  results.push({case:c,baselineFingerprint:baseline.fingerprint,comparisons,fineComparisons,scope:{calls:baseline.scope.length,counts,eligibleTicks:[...new Set(baseline.scope.filter(s=>s.reason==='eligible').map(s=>s.t))]},runs});
 }
+const contactAudits=results.map(c=>{const run=c.runs[0],event=run.frames.at(-1)!.events.find((e:any)=>e.type==='carrier_contact');assert(event);
+ // A new grasp is acquired after this tick's physics. Its first loaded World
+ // interval starts on the next controller tick; don't count acquisition as a
+ // delivered impulse or use proximity as contact.
+ const start=Math.round((event.t+(event.note==='grasp'?.05:0))*100)/100,end=start+.2,
+  steps=run.steps.filter(s=>s.t>=start-1e-9&&s.t<end-1e-9);assert.equal(steps.length,4);
+ const before=steps[0].carrierLedger.before,after=steps.at(-1)!.carrierLedger.after,speed=Math.hypot(before.x,before.y),direction={x:before.x/speed,y:before.y/speed},parts:Record<string,any>={};
+ for(const s of steps)for(const [kind,p] of Object.entries(s.carrierLedger.parts) as [string,any][]){const q=parts[kind]??={x:0,y:0,translationEnergy:0};for(const k of ['x','y','translationEnergy'])q[k]+=p[k];}
+ for(const p of Object.values(parts))p.forwardVelocityChange=(p.x*direction.x+p.y*direction.y)/run.rbMass;
+ return {case:c.case.id,firstContact:event,loadedWindow:{start,end},mass:run.rbMass,before,after,speedBefore:speed,speedAfter:Math.hypot(after.x,after.y),parts,
+  maximumMomentumResidual:Math.max(...steps.map(s=>s.carrierLedger.momentumResidual)),maximumTranslationEnergyResidual:Math.max(...steps.map(s=>Math.abs(s.carrierLedger.translationEnergyResidual))),
+  scope:'Actual native World velocity/translation-energy changes by source method. Not pair dissipation or an independent physical force reference.',initialDirection:direction};
+});
 assert.equal(sourceVersion(),source);
-const result={protocol:'solver-value-study-v1',source,input:{path,sha256:sha(path)},toolSha256:sha('scripts/diag/physics/solver-value-study.ts'),plainChecks,results,
+const result={protocol:'solver-value-study-v1',source,input:{path,sha256:sha(path)},toolSha256:sha('scripts/diag/physics/solver-value-study.ts'),plainChecks,results,contactAudits,
  interpretation:'Self-refinement and continuation sensitivity, not independent physical truth or proof of football benefit. The whole near-contact World tick is refined, including other bodies. No state injection. No solver default changes.',
  elapsedSeconds:(performance.now()-started)/1000,adoptionReady:false};
 writeFileSync(`${root}/result.json`,JSON.stringify(result,null,2)+'\n');
