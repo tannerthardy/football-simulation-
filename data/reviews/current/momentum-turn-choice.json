@@ -781,6 +781,33 @@
     "fullSuite": "node scripts/baseline.mjs --candidate -- npm run test:all",
     "typecheck": "node scripts/baseline.mjs --candidate -- npm run typecheck",
     "build": "node scripts/baseline.mjs --candidate -- npm run build",
-    "python": "node scripts/baseline.mjs --candidate -- npm run test:data"
+    "python": "node scripts/baseline.mjs --candidate -- npm run test:data",
+    "contractClosure": "node scripts/baseline.mjs --candidate --receipt out/momentum-turn-choice/contract-closure-receipt.json -- npx vitest run test/turn-route.test.ts --maxWorkers=1"
+  },
+  "contractClosure": {
+    "revision": "0312539777a2e06401a2851a3853be26fb8e6214",
+    "runtimeSource": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+    "validationSha256": "94fa30a7fb6eb21a3490032eec1125a9ce85f60f945d54d2ae2ac50250b92fe3",
+    "testSha256": "b27fc1ecc3202a381e4a3aa8d6ec7072329363b494eb898eb5b38d819704c845",
+    "receipt": {
+      "path": "out/momentum-turn-choice/contract-closure-receipt.json",
+      "sha256": "cb84e3345616f61e350f075e0ca42294daaeb5f1884e608ce0073502c8c798e5",
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    "node": "v22.23.3",
+    "baselineFlags": "Identical to the runtime evidence meta.flags above; no World defaults changed.",
+    "question": "Equivalent heading representations at and near the antipode with both spin signs; preserve genuine zero-spin equal-cost routes.",
+    "checks": {
+      "testsPassed": 14,
+      "helperEquivalentPairs": 30,
+      "worldPlans": 54,
+      "testBodiesSeconds": 0.181,
+      "vitestSeconds": 1.35,
+      "launcherSeconds": 2.655762156
+    },
+    "result": "No runtime correction required. Nondegenerate choices agree across heading wraps. Exactly half-turn/no-spin retains original input-sign tie. Orientation goal does not encode mandated turn direction.",
+    "scope": "Tests and documentation only; prior mechanics/native/cost/full-suite evidence reused at its recorded revisions. PR56 remains uncombined.",
+    "nextDecision": "Keep default-off. Reduce allocation/tail cost without changing choices before promotion; one existing short-shuttle task is proposed for later capability/request measurement, not started."
   }
 }

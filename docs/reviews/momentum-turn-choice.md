@@ -12,6 +12,21 @@ The PR59 witness straddles the antipode of the requested heading. Instantaneous 
 
 The option is absent under defaults and requires patch yaw. Zero authority or spin outside the forecast's rate scope retains the existing shortest route. Zero-spin ties preserve the original choice. This remains a finite route forecast with constant-load assumptions, not a globally optimal controller under changing contact loads. A branch boundary still exists; it is not a dead band or a guarantee of continuous decisions everywhere.
 
+The behavioral contract is an **orientation goal with a free choice of turn route**. The current `facing` command supplies an orientation, not a mandatory clockwise/counterclockwise path. Under that contract, braking existing spin has a cost worth considering. This is not authority to override an explicit tactical turn direction or a clearance constraint; neither is represented by this option. The deliberate-reversal controls demonstrate response to a changed orientation goal, not preservation of an unrepresented coaching instruction.
+
+The follow-up at `0312539` checks exact and nearby half-turns with both spin signs, five equivalent heading lifts, and independently wrapped body/target headings through actual `World.plan`. Nondegenerate route choices agree. At exactly 180° with zero spin, the two routes have equal cost: retaining the existing input-sign convention can produce opposite directions for equivalent representations. That is an explicitly retained tie, not evidence of different movement capability or a wrapping/accounting defect. Different states on opposite sides of a real decision boundary may still produce valid different histories.
+
+## What the diagnosis establishes
+
+| Category | Evidence and limit |
+| --- | --- |
+| Controller choice | PR59's opposite shortest-angle requests explain the dominant saved support-history gap. Existing spin matters under the stated free-route objective. Reducing the gap is a consequence, not the acceptance test. |
+| Controller forecast error | The rejected motor-cap forecast loses 71.35 ms even after 96/192/384 refinement. The actual servo cruises more slowly; correcting that forecast removes the demonstrated losses. |
+| Accounting or physical law | The unchanged allocated-force, work and sampled grip-reference checks pass. This witness demonstrates no new recovery/grip-law defect and does not certify every contact law or resolve PR56. |
+| Numerical error | Independent route times agree within 1.69e-14 s; retained interval and partition gates pass. Those numerical results do not prove that a constant-load forecast is optimal during changing football contact. |
+
+The bounded turn-choice question is closed as an experimental controller result. Keep the candidate off pending its cost gate and review; do not repair recovery strength to force the saved histories together.
+
 ## Why the first forecast was rejected
 
 The first candidate at `42aaf87` used the physical motor rate cap as a cruise-speed forecast. Its bounded-motion reference calculation was correct, but two newly tested boundary turns settled71.35ms later through the actual yaw controller. Refining96→192→384 substeps preserves that loss. It was a controller-model mismatch, not numerical contact error.
@@ -76,3 +91,13 @@ Typical overhead is about.035–.049ms for22 calls. Every candidate median passe
 The single full preserved suite on `bea90de` records **1952 passed /1 retained failure** (1953 total;331.23s), with no new failure. The existing dry-cap assertion still expects limited0/actual1. All47 focused checks (13 new), typecheck, build and145Python checks pass. Exact command/source receipts are linked; no test expectation or physical accuracy tolerance changed. Existing dry-cap numerical-certificate failure, nine earlier43/52 patch failures, keeper/older.24yd witness and seed5001's inherited earlier-prototype delay stay separate. PR56's force-law scope correction is neither merged nor judged by this controller's tackle outcomes.
 
 Reproduce under Node22 with `node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-route-evidence.ts`; add `--football` or `--benchmark` for separate transfer/cost modes. Focused commands and raw-output hashes are in the receipt. Raw histories/samples stay in ignored `out/momentum-turn-choice/`.
+
+The contract follow-up changes tests/docs only. At `0312539`, all 14 turn-route checks pass (181 ms test bodies; 1.35 s Vitest; 2.656 s launcher wall time). Its receipt records unchanged runtime source `7101eecf…` and unchanged inputs. The prior full-suite result remains pinned to `bea90de`; it was not rerun or relabeled as a check of the new test revision.
+
+## One later movement task: the existing short shuttle
+
+Use **one 20-yard short shuttle (5–10–5)** from the already published [18-fixture movement audit](../../data/reviews/physics-world/position-technique/movement-audit/manifest.json), whose decompressed input hash is `d6e1a492f11326a05b76d298ee86b9c753c6d4f21b6a3d57755fe20b907f2155`. That small subset contains OL shuttle paths: select the lexicographically first `athlete:event` among its `SHORT_SHUTTLE` fixtures before examining performance. This is an inspected development example, not a new holdout or an RB-specific athletic reference.
+
+Reuse the existing [movement-task runner](../../scripts/diag/movement-tasks.ts) and measurement operator. Keep one physical profile, entry state, footing and World settings fixed; compare its existing 0.15 s/0.40 s path-feedback requests. Retain the straight approach as the opposing control and reflect the same path as a mirror. Focus on the first reversal: braking onset, turn location/path error, achieved entry/exit speeds and reversal-to-reacceleration time. Log requests alongside achieved motion and ground-budget usage. Do not change sprint/agility capacities between the controller arms. Testing `arrival-time` later would require the same patch-yaw host in both arms; comparing it against a center-yaw host would confound execution and choice.
+
+If one request sequence executes the same task materially better with the same body, that identifies avoidable controller loss. If both miss, it leaves capability versus two poor request sequences unresolved; require a force/turn reachability bound before blaming capacities. Combine positions do not observe torso-facing intent, and an unloaded OL shuttle cannot validate loaded RB recovery or grip laws. This is a proposed small task only: no fixture extraction, new data pipeline, simulation panel or fitting was started in this follow-up.
