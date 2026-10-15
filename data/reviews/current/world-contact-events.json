@@ -1,0 +1,761 @@
+{
+  "protocol": "world-contact-events-verdict-v1",
+  "question": "Can the frozen event history replace the World contact update with correct moving geometry, exactly-once motion/work/effort, and acceptable net cost?",
+  "verdict": "HOLD: moving force-point consistency blocks the World adapter; application-only correction fails phase passivity",
+  "testedRevision": "0b055c9fe9297a477cdc5bf8744781c7650926b0",
+  "parentPR": {
+    "url": "https://github.com/tannerthardy/football-simulation-/pull/73",
+    "tip": "d786f3efaa7add8f9808d306d112c042b741f4da"
+  },
+  "currentDevelopFetched": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "previousDevelopFetched": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "developPhysicsChangedBetweenFetches": false,
+  "historicalComparisonBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+  "validationSha256": "a0388c4eb9846acea6eb06cdbd799d34532c8b5ab0e59d4f3eb5e29ca9564fba",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "inputs": [
+    {
+      "path": "config/local-slip-work.json",
+      "sha256": "22433a29b481f7c023f593afdd6bf00fa4c1c4d066209016783dce9921e11db8"
+    },
+    {
+      "path": "config/local-slip-motor-reference.json",
+      "sha256": "34135251daed051faee6483d1d9c7e9b0e303174335422815744ac83079c5792"
+    },
+    {
+      "path": "scripts/diag/physics/event-geometry-preflight.ts",
+      "sha256": "67bf55f0d9863a797b99fc736eb5d3b983a6a074672d91632eb7203f7b66e9b6"
+    },
+    {
+      "path": "scripts/diag/physics/event-geometry-reference.py",
+      "sha256": "4d67dad3f1389166e52ed06c23a59fb3d0642c2413f2e3a2d3a77fc802af32c6"
+    }
+  ],
+  "independentReference": {
+    "precision": [
+      70,
+      100
+    ],
+    "generatorSha256": "4d67dad3f1389166e52ed06c23a59fb3d0642c2413f2e3a2d3a77fc802af32c6",
+    "nonzeroDoubleAgreement": true,
+    "referenceZeroTail": 1e-65,
+    "angularUnits": "kg yd^2/s",
+    "workUnits": "kg yd^2/s^2",
+    "prescribedTapeOnly": true,
+    "cases": {
+      "nextField": {
+        "angularResidual": "-0.00146848488664217750461949137581293707452118793471102932001226288674",
+        "geometricResidual": "-0.001468484886642177504619491375812937074521187934711029320012262887108333",
+        "workResidual": "1.12392E-68",
+        "handWork": "-0.0006841917978281381988656670813619639991074013156201113427120425916028392",
+        "chordGeometryContribution": "1.017200929292126314885603425333742278054217007149343119536683189111930E-15",
+        "firstMomentAngularContribution": "-0.001467740075145877089067852818055266516494482093303110662448702901722425",
+        "accelerationAngularContribution": "-7.44811497317616480930684072556161452039583685972874570709328505443776E-7",
+        "controls": {
+          "unequalPhasePartitionResidual": "4.98E-66",
+          "mirrorResidual": "0E-68",
+          "originTranslationResidual": "2.86E-66"
+        },
+        "preservedReferenceEndpointResidual": "0E-68",
+        "movingPointPrescribedTape": {
+          "angularResidual": "2.6E-67",
+          "workResidual": "1.556348E-67",
+          "handWork": "-0.0003324067231115083154630559688364744242781442569436061713195825335532348",
+          "phases": [
+            {
+              "force": "-398.83419955463296",
+              "duration": "0.00005887375724593432392864597290046961507713505373705085134572132424328082",
+              "slipBefore": "0.0033423858037108504350742988618607223769991249743288290149783205746443",
+              "slipAfter": "-0.001107249588335721385197446297792011774613259321502608448604945733425040",
+              "handWork": "-0.00002623897942415391018699632456017453194261863241913902336112519567677297"
+            },
+            {
+              "force": "45.93761389840637810254575851645853206010187426699930798165497514831963",
+              "duration": "0.002883056877586113244333445723343233248214246406943013495202035203783029",
+              "slipBefore": "-0.0011072495883357213851974462977920117746132593215026084486049457334242",
+              "slipAfter": "0.0004813606073483220636614982621504709196365772343235001650738774169678356",
+              "handWork": "-0.00004103005493983997380304275371067763828891941472177863968443269299086721"
+            },
+            {
+              "force": "398.83419955463296",
+              "duration": "0.001224736031834619431737908303756297136708618539319935653452243471973690",
+              "slipBefore": "0.0004813606073483220636614982621504709196365772343235001650738774169663",
+              "slipAfter": "-0.001586056386373244004123135058816092426231788484117609914738953390132503",
+              "handWork": "-0.0002651376887475144314730168905656222540466062098026885082740246448855946"
+            }
+          ]
+        }
+      },
+      "selected": {
+        "angularResidual": "-0.00010754632082917294666038486325392625237901680649893625022846025817",
+        "geometricResidual": "-0.0001075463208291729466603848632539262523790168064989362502284602558243621",
+        "workResidual": "-1.5040354E-67",
+        "handWork": "-0.00004704698454778103987779971869902241773709621821994177541953947891119646",
+        "chordGeometryContribution": "4.108684628441270564284087563573383442980860291865189919974647991442236E-17",
+        "firstMomentAngularContribution": "-0.0001077209525686106216567912627095574746551287513467641104955733954218171",
+        "accelerationAngularContribution": "1.746317393965881501219867499883814004762110133980516641944876982551280E-7",
+        "controls": {
+          "unequalPhasePartitionResidual": "2.92E-66",
+          "mirrorResidual": "0E-68",
+          "originTranslationResidual": "6.07E-66"
+        },
+        "preservedReferenceEndpointResidual": "0E-68",
+        "movingPointPrescribedTape": {
+          "angularResidual": "-2.17E-66",
+          "workResidual": "-6.627412E-68",
+          "handWork": "-0.00001906668992879648550382910579686143925499194050744355553569267543032588",
+          "phases": [
+            {
+              "force": "-398.83419955463296",
+              "duration": "0.00005549542384969593596367547930310738087559104786387448372718477032503955",
+              "slipBefore": "0.0031913981540946781541868312312831516339794519031673451414801537655698",
+              "slipAfter": "-0.001058773781822332099874280340965310027969939302299249430665745195442639",
+              "handWork": "-0.00002359909795228786311127909379293617259261250659230582693723970917059475"
+            },
+            {
+              "force": "45.63112346495671789196306379652752517315620252321599424306508910645452",
+              "duration": "0.004111171242816971064036324520696892619124408952136125516272815229674960",
+              "slipBefore": "-0.0010587737818223320998742803409653100279699393022992494306657451954424",
+              "slipAfter": "0.001093765457464271500923247366606396830542432278271815268260869552675551",
+              "handWork": "0.000004532408023491377607449987996074733337620566084862271401547033740268871"
+            }
+          ]
+        }
+      },
+      "slidingControl": {
+        "angularResidual": "-0.00000250977293791935577740311297710558976477256080379772930908172154",
+        "geometricResidual": "-0.00000250977293791935577740311297710558976477256080379772930908172082483801",
+        "workResidual": "-6.96E-68",
+        "handWork": "-0.9471099790391950384168189361372888515170877439138068028135468066094354",
+        "chordGeometryContribution": "3.427022620199423221725027205903439402557108469277369776534710269840685E-15",
+        "firstMomentAngularContribution": "-0E-86",
+        "accelerationAngularContribution": "-0.000002509772941346378397602536198830616970676000206354837778359090601372496",
+        "controls": {
+          "unequalPhasePartitionResidual": "9.3E-67",
+          "mirrorResidual": "0E-68",
+          "originTranslationResidual": "1.96E-66"
+        },
+        "preservedReferenceEndpointResidual": "0E-68",
+        "movingPointPrescribedTape": {
+          "angularResidual": "-5.4E-67",
+          "workResidual": "-7.94E-68",
+          "handWork": "-0.9471491032795913577228132576677879272304455757381902567233041665259606",
+          "phases": [
+            {
+              "force": "-398.83419955463296",
+              "duration": "0.004166666666666667",
+              "slipBefore": "0.7371808963411269048991391783887434771457132242008180663825837348269718",
+              "slipAfter": "0.4037960966799301680714290796922243907001123758966751212999563970492778",
+              "handWork": "-0.9471491032795913577228132576677879272304455757381902567233041665259606"
+            }
+          ]
+        }
+      },
+      "noHandControl": {
+        "angularResidual": "-6.5E-67",
+        "geometricResidual": "0E-110",
+        "workResidual": "3.000000E-68",
+        "handWork": "0E-74",
+        "chordGeometryContribution": "0E-146",
+        "firstMomentAngularContribution": "-0E-177",
+        "accelerationAngularContribution": "-0E-249",
+        "controls": {
+          "unequalPhasePartitionResidual": "2E-68",
+          "mirrorResidual": "0E-68",
+          "originTranslationResidual": "1.05E-66"
+        },
+        "preservedReferenceEndpointResidual": "0E-68",
+        "movingPointPrescribedTape": {
+          "angularResidual": "-6.5E-67",
+          "workResidual": "3.000000E-68",
+          "handWork": "0E-74",
+          "phases": [
+            {
+              "force": "0",
+              "duration": "0.003231434037001023402574296282732450372171520401978921349371486227607882",
+              "slipBefore": "0.0033423858037108504350742988618607223769991249743288290149783205746443",
+              "slipAfter": "-0.02011433924476137560788508075589162509894784308995478327202024569018053",
+              "handWork": "-0E-74"
+            },
+            {
+              "force": "0",
+              "duration": "0.000935232629665643597425703717267549627828479598021078650628513772392118",
+              "slipBefore": "-0.0201143392447613756078850807558916250989478430899547832720202456901820",
+              "slipAfter": "-0.05577575121467213320952962398218555314489334594670181662758143473654222",
+              "handWork": "-0E-74"
+            }
+          ]
+        }
+      },
+      "stationaryNormalControl": {
+        "angularResidual": "1.00000000000000000000000E-66",
+        "geometricResidual": "-5.237067325791889289429989082727395827928236988602967530983617042715926E-71",
+        "workResidual": "2.98619E-69",
+        "handWork": "-0.00005829280815431904051606844994902553341404387181885215730021679903298619",
+        "chordGeometryContribution": "-5.236428375608387929620660818716880844970578138883634999062624089799476E-71",
+        "firstMomentAngularContribution": "-6.389501835013598093282640105149829576588497193325319209929529164506444E-75",
+        "accelerationAngularContribution": "0E-93",
+        "controls": {
+          "unequalPhasePartitionResidual": "0E-89",
+          "mirrorResidual": "0E-89",
+          "originTranslationResidual": "2.00000000000000000000000E-66"
+        }
+      },
+      "sameImpulseTimingControl": {
+        "impulse": "0.200",
+        "uniformAngularResidual": "0E-78",
+        "reversalAngularResidual": "-0.0006000000000000000000000000000000000000000000000000000000000000000000000",
+        "reversalTimeImpulse": "0.0007000",
+        "midpointTimeImpulse": "0.000400",
+        "controls": {
+          "unequalPhasePartitionResidual": "0E-73",
+          "mirrorResidual": "0E-73",
+          "originTranslationResidual": "1.00000000E-65"
+        }
+      }
+    }
+  },
+  "candidatePreflight": {
+    "protocol": "event-geometry-preflight-v2",
+    "source": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+    "input": {
+      "path": "config/local-slip-work.json",
+      "sha256": "22433a29b481f7c023f593afdd6bf00fa4c1c4d066209016783dce9921e11db8"
+    },
+    "criterion": 1e-09,
+    "cases": [
+      {
+        "key": "nextField",
+        "dt": 0.004166666666666667,
+        "phases": [
+          {
+            "elapsed": 0,
+            "duration": 5.887375724593369e-05,
+            "force": -398.83419955463296,
+            "internalAngularResidual": -0.00010276112934040328
+          },
+          {
+            "elapsed": 5.887375724593369e-05,
+            "duration": 0.002883056877586069,
+            "force": 45.93761389840637,
+            "internalAngularResidual": 0.00016472836974136082
+          },
+          {
+            "elapsed": 0.0029419306348320027,
+            "duration": 0.001224736031834664,
+            "force": 398.83419955463296,
+            "internalAngularResidual": -0.001530452127044506
+          }
+        ],
+        "impulse": 0.5974265007662338,
+        "timeImpulse": 0.0019341794245794504,
+        "temporalMoment": 0.0005550976619465236,
+        "midpointTimeImpulse": 0.001244638543262987,
+        "externalAngularImpulse": 94.70806363726167,
+        "angularResidual": -0.0014684848861890032,
+        "geometricResidual": -0.0014684848866435484,
+        "identityResidual": 4.545452556015128e-13,
+        "motionResidual": 2.220446049250313e-16,
+        "workResidual": 3.5083047578154947e-14,
+        "angularReferenceResidual": 4.5317439037462215e-13,
+        "referenceMotion": 3.552713678800501e-15,
+        "angularGatePassed": false
+      },
+      {
+        "key": "selected",
+        "dt": 0.004166666666666667,
+        "phases": [
+          {
+            "elapsed": 0,
+            "duration": 5.549542384969702e-05,
+            "force": -398.83419955463296,
+            "internalAngularResidual": -9.676158793119717e-05
+          },
+          {
+            "elapsed": 5.549542384969702e-05,
+            "duration": 0.00411117124281697,
+            "force": 45.631123464956715,
+            "internalAngularResidual": -1.0784732897865063e-05
+          }
+        ],
+        "impulse": 0.1654638896165217,
+        "timeImpulse": 0.000395419083023379,
+        "temporalMoment": 0.00029401379037879483,
+        "midpointTimeImpulse": 0.00034471643670108687,
+        "externalAngularImpulse": 93.20785356079756,
+        "angularResidual": -0.00010754632131693143,
+        "geometricResidual": -0.00010754632082906223,
+        "identityResidual": 4.878691987073372e-13,
+        "motionResidual": 3.552713678800501e-15,
+        "workResidual": 8.215650382226158e-15,
+        "angularReferenceResidual": 4.877584745604721e-13,
+        "referenceMotion": 1.1102230246251565e-16,
+        "angularGatePassed": false
+      },
+      {
+        "key": "slidingControl",
+        "dt": 0.004166666666666667,
+        "phases": [
+          {
+            "elapsed": 0,
+            "duration": 0.004166666666666667,
+            "force": -398.83419955463296,
+            "internalAngularResidual": -2.5097729414507097e-06
+          }
+        ],
+        "impulse": -1.6618091648109707,
+        "timeImpulse": -0.003462102426689522,
+        "temporalMoment": -0.003462102426689522,
+        "midpointTimeImpulse": -0.003462102426689522,
+        "externalAngularImpulse": 89.65421491094999,
+        "angularResidual": -2.5097726421563493e-06,
+        "geometricResidual": -2.5097729414507097e-06,
+        "identityResidual": 2.9929436038626366e-13,
+        "motionResidual": 2.220446049250313e-16,
+        "workResidual": -4.6629367034256575e-15,
+        "angularReferenceResidual": 2.9576300633729407e-13,
+        "referenceMotion": 7.105427357601002e-15,
+        "angularGatePassed": false
+      },
+      {
+        "key": "noHandControl",
+        "dt": 0.004166666666666667,
+        "phases": [
+          {
+            "elapsed": 0,
+            "duration": 0.0032314340370009735,
+            "force": 0,
+            "internalAngularResidual": 0
+          },
+          {
+            "elapsed": 0.0032314340370009735,
+            "duration": 0.0009352326296656931,
+            "force": 0,
+            "internalAngularResidual": 0
+          }
+        ],
+        "impulse": 0,
+        "timeImpulse": 0,
+        "temporalMoment": 0,
+        "midpointTimeImpulse": 0,
+        "externalAngularImpulse": 94.3575780211622,
+        "angularResidual": 9.379164112033322e-13,
+        "geometricResidual": 0,
+        "identityResidual": 9.379164112033322e-13,
+        "motionResidual": 3.552713678800501e-15,
+        "workResidual": 4.951594689828198e-14,
+        "angularReferenceResidual": 9.379164112033322e-13,
+        "referenceMotion": 2.609024107869118e-15,
+        "angularGatePassed": true
+      },
+      {
+        "key": "stationaryNormalControl",
+        "dt": 0.004166666666666667,
+        "phases": [
+          {
+            "elapsed": 0,
+            "duration": 6.565482048507567e-05,
+            "force": -398.83419955463296,
+            "internalAngularResidual": 2.0350079118504534e-17
+          },
+          {
+            "elapsed": 6.565482048507567e-05,
+            "duration": 0.004101011846181591,
+            "force": 0,
+            "internalAngularResidual": 0
+          }
+        ],
+        "impulse": -0.02618538777506827,
+        "timeImpulse": -8.595984668521011e-07,
+        "temporalMoment": -0.00010824618392926569,
+        "midpointTimeImpulse": -5.4552891198058895e-05,
+        "externalAngularImpulse": 0,
+        "angularResidual": 1.8189894035458565e-12,
+        "geometricResidual": 2.0350079118504534e-17,
+        "identityResidual": 1.818969053466738e-12,
+        "motionResidual": 3.552713678800501e-15,
+        "workResidual": 5.811343973313038e-15,
+        "angularReferenceResidual": 1.8189894035458565e-12,
+        "referenceMotion": 7.105427357601002e-15,
+        "angularGatePassed": true
+      }
+    ],
+    "reference": {
+      "paths": [
+        {
+          "path": "out/world-events/geometry-reference70.json",
+          "sha256": "29f6b5764d2d4747bf2f3d9213500ec63bfdc8c0d28d23e632160781a7e13739"
+        },
+        {
+          "path": "out/world-events/geometry-reference100.json",
+          "sha256": "2b55cc5afd9660ab25d3d73e5a68a778ef6ff598f972c12b2dc7e8c129f98980"
+        }
+      ],
+      "generatorSha256": "4d67dad3f1389166e52ed06c23a59fb3d0642c2413f2e3a2d3a77fc802af32c6",
+      "precision": [
+        70,
+        100
+      ],
+      "nonzeroDoubleAgreement": true,
+      "referenceZeroTail": 1e-65
+    },
+    "applicationOnlyAblation": {
+      "angularResidual": -2.17e-66,
+      "workResidual": -6.627412e-68,
+      "positivePhaseWork": 4.532408023491377e-06,
+      "passivityCriterion": 1e-14,
+      "applicationOnlyPassivityGatePassed": false
+    },
+    "physicalGatePassed": false,
+    "worldIntegrated": false,
+    "adoptionReady": false
+  },
+  "rawOutputs": [
+    {
+      "path": "out/world-events/geometry-reference70.json",
+      "sha256": "29f6b5764d2d4747bf2f3d9213500ec63bfdc8c0d28d23e632160781a7e13739"
+    },
+    {
+      "path": "out/world-events/geometry-reference100.json",
+      "sha256": "2b55cc5afd9660ab25d3d73e5a68a778ef6ff598f972c12b2dc7e8c129f98980"
+    },
+    {
+      "path": "out/world-events/geometry-preflight.json",
+      "sha256": "665e8ef52736569764f18481598c2ebe0887ddef19d845d51203dbf154978157"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "out/world-events/117d479/geometry-final.receipt.json",
+      "sha256": "b1a8b44e64db06ada10627eb14edd11a2f7daea6da29fcd3164542078661052c",
+      "commit": "117d479ef8e67a79e3119699dafe70b4f25213c6",
+      "validationSha256": "b5fcf5a82a2f70181293ba388a4cd2b0014a8aa07f2ca9f8665abb9893806c88",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/event-geometry-preflight.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.24075015400000002
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/117d479/reference100.receipt.json",
+      "sha256": "14efa1a932e27f12f596a11216a7c39728feda8b2c09ef60c2e343f4bef2c228",
+      "commit": "117d479ef8e67a79e3119699dafe70b4f25213c6",
+      "validationSha256": "b5fcf5a82a2f70181293ba388a4cd2b0014a8aa07f2ca9f8665abb9893806c88",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/diag/physics/event-geometry-reference.py",
+            "out/world-events/geometry-reference100.json",
+            "100"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.060512261
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/117d479/reference70.receipt.json",
+      "sha256": "ef244c2a219c007cac6935f95d77e4af0ff825ad7c9ac96daf2762de065c2019",
+      "commit": "117d479ef8e67a79e3119699dafe70b4f25213c6",
+      "validationSha256": "b5fcf5a82a2f70181293ba388a4cd2b0014a8aa07f2ca9f8665abb9893806c88",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/diag/physics/event-geometry-reference.py",
+            "out/world-events/geometry-reference70.json",
+            "70"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.07806529499999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/e93b306/geometry-final.receipt.json",
+      "sha256": "f1a57992dfcd3c88476d61d9518b7ff545d690e7f5f817700e0d09e839d52baf",
+      "commit": "e93b30699e28da18f603f44e754b01bb2f936d6e",
+      "validationSha256": "6b8725878e833079cb7aa98054ea7e15ac82618871a028368164f134b4a075a0",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/event-geometry-preflight.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.430158768
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/e93b306/reference100.receipt.json",
+      "sha256": "c1f15fcbf8065a2c5f762ade9fa8fed90be3f4f5d12bf86540a41f4a0af0ab5b",
+      "commit": "e93b30699e28da18f603f44e754b01bb2f936d6e",
+      "validationSha256": "6b8725878e833079cb7aa98054ea7e15ac82618871a028368164f134b4a075a0",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/diag/physics/event-geometry-reference.py",
+            "out/world-events/geometry-reference100.json",
+            "100"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.08613641000000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/e93b306/reference70.receipt.json",
+      "sha256": "bbf3dcd7de0dfb8e806f0e608a7babb13520c6bf7b06be8d7a5a47d6fbfce9dd",
+      "commit": "e93b30699e28da18f603f44e754b01bb2f936d6e",
+      "validationSha256": "6b8725878e833079cb7aa98054ea7e15ac82618871a028368164f134b4a075a0",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/diag/physics/event-geometry-reference.py",
+            "out/world-events/geometry-reference70.json",
+            "70"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.08658298100000002
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/e93b306/typecheck.receipt.json",
+      "sha256": "39cf5c356f783e200f83895eab3b6e1818c47e02caa47c286b56299977906e66",
+      "commit": "e93b30699e28da18f603f44e754b01bb2f936d6e",
+      "validationSha256": "6b8725878e833079cb7aa98054ea7e15ac82618871a028368164f134b4a075a0",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.665087689
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/geometry-final.receipt.json",
+      "sha256": "bf914d03e66cc33f2c1964b1b5b3c90d44a0d81d8e394e5cdf66634f12b22f33",
+      "commit": "0b055c9fe9297a477cdc5bf8744781c7650926b0",
+      "validationSha256": "a0388c4eb9846acea6eb06cdbd799d34532c8b5ab0e59d4f3eb5e29ca9564fba",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/event-geometry-preflight.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.240782734
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/geometry.receipt.json",
+      "sha256": "b7f2c4b7b78c3973c705642026e0b4aca8f8d3b1984c7d9a4383317c6dc6c0fc",
+      "commit": "81535a16510373237828e2ea3d750c52bb08e2b2",
+      "validationSha256": "b3b72ac57e04c4f219a8737dbf01ede56a99e4aba95181d703907e771c655a88",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/event-geometry-preflight.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.543845987
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/reference100.receipt.json",
+      "sha256": "ca004d8a9525b1da7b8a85487da4897e5d1877ca9f85e3bb91ffbba52e368037",
+      "commit": "0b055c9fe9297a477cdc5bf8744781c7650926b0",
+      "validationSha256": "a0388c4eb9846acea6eb06cdbd799d34532c8b5ab0e59d4f3eb5e29ca9564fba",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/diag/physics/event-geometry-reference.py",
+            "out/world-events/geometry-reference100.json",
+            "100"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.07395209200000002
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/reference70.receipt.json",
+      "sha256": "f87dfc49a2dfe7ef92c6419fdf4cec6b38aa5d5c84da522bc26ed2cb53106e1c",
+      "commit": "0b055c9fe9297a477cdc5bf8744781c7650926b0",
+      "validationSha256": "a0388c4eb9846acea6eb06cdbd799d34532c8b5ab0e59d4f3eb5e29ca9564fba",
+      "commands": [
+        {
+          "command": [
+            "python3",
+            "scripts/diag/physics/event-geometry-reference.py",
+            "out/world-events/geometry-reference70.json",
+            "70"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.07865880399999998
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/world-events/typecheck.receipt.json",
+      "sha256": "39cf5c356f783e200f83895eab3b6e1818c47e02caa47c286b56299977906e66",
+      "commit": "e93b30699e28da18f603f44e754b01bb2f936d6e",
+      "validationSha256": "6b8725878e833079cb7aa98054ea7e15ac82618871a028368164f134b4a075a0",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.665087689
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  ],
+  "cost": {
+    "newFinalDiagnosticCommandsSeconds": 0.39339363,
+    "typecheckSeconds": 13.665087689,
+    "fullWorldCostMeasured": false,
+    "reason": "No physically valid replacement to benchmark",
+    "unchangedBudgets": {
+      "localMedianMicroseconds": 10,
+      "localP95Microseconds": 25,
+      "pairedWorldMedianRatio": 2
+    },
+    "reusedEvidence": {
+      "path": "data/reviews/current/contact-event-schedule.json",
+      "transitionMedianMicroseconds": [
+        14.071,
+        14.472
+      ],
+      "transitionP95Microseconds": [
+        16.725,
+        16.885
+      ],
+      "allControlsWorstMicroseconds": 563.758,
+      "fullWorldCost": false
+    }
+  },
+  "retainedEvidence": {
+    "parentFocusedChecks": 11,
+    "parentReexecuted": false,
+    "contactExtractionAffectedAssertions": 7,
+    "historicalPatchGateFailures": 9,
+    "fullSuiteRun": false,
+    "gamesRun": 0,
+    "footballBenefitDemonstrated": false
+  },
+  "runtimeChanged": false,
+  "worldIntegrated": false,
+  "adoptionReady": false,
+  "nextDecision": "Include the common moving force point in force/event selection on one saved slip interval and controls before any World adapter; preserve original caps, passive-work and accounting gates."
+}
