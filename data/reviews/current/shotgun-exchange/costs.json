@@ -1,0 +1,249 @@
+{
+  "schema": "shotgun-exchange-cost-v1",
+  "fullGames": 0,
+  "newRosterSeeds": 0,
+  "launchers": [
+    {
+      "path": "receipts/reconstruct-receipt.json",
+      "exitCode": 0,
+      "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 2.267104406,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "out/exchange-repair/reconstruct.mjs"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/reconstruct-correct-stage-receipt.json",
+      "exitCode": 0,
+      "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 2.01132074,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "out/exchange-repair/reconstruct.mjs"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/cadence-only-receipt.json",
+      "exitCode": 0,
+      "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 2.010231498,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "out/exchange-repair/compare.mjs"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/cadence-focused-receipt.json",
+      "exitCode": 0,
+      "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 1.970447909,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/wide-zone-mesh.test.ts",
+          "test/snap-mesh-and-pull.test.ts"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/prepare-receipt.json",
+      "exitCode": 0,
+      "sourceSha256": "5c02a431d668a29c28a183260ec405d505205e7b1df9434d75f4a5f67da8fa46",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 1.536806074,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "out/exchange-repair/prepare.mjs"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/focused-receipt.json",
+      "exitCode": 1,
+      "sourceSha256": "5c02a431d668a29c28a183260ec405d505205e7b1df9434d75f4a5f67da8fa46",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 3.3670166550000005,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/shotgun-exchange.test.ts",
+          "test/wide-zone-mesh.test.ts",
+          "test/snap-mesh-and-pull.test.ts"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/typecheck-receipt.json",
+      "exitCode": 0,
+      "sourceSha256": "5c02a431d668a29c28a183260ec405d505205e7b1df9434d75f4a5f67da8fa46",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 12.358518743,
+      "commands": [
+        [
+          "npm",
+          "run",
+          "typecheck"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/native-launcher.json",
+      "exitCode": 1,
+      "sourceSha256": "5c02a431d668a29c28a183260ec405d505205e7b1df9434d75f4a5f67da8fa46",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 0.8662352489999999,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/exchange-repair.mjs",
+          "out/exchange-repair/final-native"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/native-fixed-launcher.json",
+      "exitCode": 1,
+      "sourceSha256": "5c02a431d668a29c28a183260ec405d505205e7b1df9434d75f4a5f67da8fa46",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 1.3720466889999998,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/exchange-repair.mjs",
+          "out/exchange-repair/final-native"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/native-canonical-launcher.json",
+      "exitCode": 0,
+      "sourceSha256": "5c02a431d668a29c28a183260ec405d505205e7b1df9434d75f4a5f67da8fa46",
+      "commit": "e8a76a7f7cdc19dece85288f93a8d1e1273be0db",
+      "elapsedSeconds": 1.412825486,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/exchange-repair.mjs",
+          "out/exchange-repair/final-native"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/committed-focused.json",
+      "exitCode": 0,
+      "sourceSha256": "5c02a431d668a29c28a183260ec405d505205e7b1df9434d75f4a5f67da8fa46",
+      "commit": "0c4f77b4a3f9c2febd97b44761bcb7ea8b61175e",
+      "elapsedSeconds": 4.324180052000001,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/shotgun-exchange.test.ts",
+          "test/wide-zone-mesh.test.ts",
+          "test/snap-mesh-and-pull.test.ts"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/committed-typecheck.json",
+      "exitCode": 0,
+      "sourceSha256": "5c02a431d668a29c28a183260ec405d505205e7b1df9434d75f4a5f67da8fa46",
+      "commit": "0c4f77b4a3f9c2febd97b44761bcb7ea8b61175e",
+      "elapsedSeconds": 11.893423369,
+      "commands": [
+        [
+          "npm",
+          "run",
+          "typecheck"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/final-native-launcher.json",
+      "exitCode": 0,
+      "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+      "commit": "21d7763882b71028e4d257241b3ea45511a70293",
+      "elapsedSeconds": 2.498080433,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/exchange-repair.mjs",
+          "out/exchange-repair/cadence-final"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/final-focused.json",
+      "exitCode": 0,
+      "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+      "commit": "21d7763882b71028e4d257241b3ea45511a70293",
+      "elapsedSeconds": 4.254342553,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/shotgun-exchange.test.ts",
+          "test/wide-zone-mesh.test.ts",
+          "test/snap-mesh-and-pull.test.ts"
+        ]
+      ]
+    },
+    {
+      "path": "receipts/final-typecheck.json",
+      "exitCode": 0,
+      "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+      "commit": "21d7763882b71028e4d257241b3ea45511a70293",
+      "elapsedSeconds": 12.346942384999998,
+      "commands": [
+        [
+          "npm",
+          "run",
+          "typecheck"
+        ]
+      ]
+    }
+  ],
+  "summedLauncherSeconds": 64.489522241
+}

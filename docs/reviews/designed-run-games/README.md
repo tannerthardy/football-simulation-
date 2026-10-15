@@ -1,5 +1,9 @@
 # Why the ordinary designed run still struggles
 
+**2026-10-15 follow-up:** [one retained shotgun cadence correction and the
+rejected late-QB recovery trial](../shotgun-exchange/README.md). The full-game
+measurements below remain the unchanged recorded-checkpoint diagnosis.
+
 **The largest new confirmed controller error is a missed exchange on shotgun
 stretch runs. The larger, persistent deficit is useful protection and movement
 through entry/collection. Raising strength or fitting average YPC would address

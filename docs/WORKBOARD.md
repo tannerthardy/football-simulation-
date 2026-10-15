@@ -14,6 +14,10 @@ failed-exchange recovery remains a separate blocker. Physical transfer, informat
 capacities and all shared laws remain owned elsewhere. Genuine keepers and
 play action are opposing contracts. No new full-game campaign.
 
+Final tested `21d7763` / source `1ee86101`: P038 physical exchange1.05s,
+tackle4.25s/+4.64yd; P069 full position/event parity. 32 focused checks and
+typecheck pass. [Exact evidence, adverse recovery trial and saved edge timeline](reviews/shotgun-exchange/README.md).
+
 Wide-edge protection is a separate read-only trace investigation. No claim to
 RunBlocker/puller/climber, carrier navigation or final spacing; the proposed
 Do-It-All! routing is not an acknowledgment. Agree on function boundaries
