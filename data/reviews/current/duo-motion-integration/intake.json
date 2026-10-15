@@ -190,7 +190,8 @@
           }
         ]
       }
-    }
+    },
+    "reviewAcknowledged": "https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204470616"
   },
   "pr81": {
     "head": "6e19ad2d4aac73e71ae57c1893a9b389074eeaa5",
