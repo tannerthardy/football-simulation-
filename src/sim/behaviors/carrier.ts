@@ -37,7 +37,7 @@ export interface CarrierOptions {
   qb?: boolean;
   /** Known lead/pull responsibilities on a designed run. */
   follow?: Agent[];
-  run?: { scheme:RunScheme; side:number; readKey?:Agent; kick?:Agent; slice?:Agent };
+  run?: { scheme:RunScheme; side:number; readKey?:Agent; kick?:Agent };
   /** The designed aim as a gap on the line (with the play's offset from that
    * gap's landmark), so it moves with the bodies that form it. */
   aimGap?: { gap: Gap; side: number; offset: number };
@@ -122,7 +122,7 @@ export class BallCarrier implements Behavior {
   private plannedExit = false;
   private boundaryRecovery = false;
   private readDone = false;
-  private spacingRead:{at:number;until:number;slice?:{pos:Vec2;vel:Vec2};threats:Array<{pos:Vec2;vel:Vec2;profile:Agent['profile'];extra:number}>}|null=null;
+  private spacingRead:{at:number;until:number;threats:Array<{pos:Vec2;vel:Vec2;profile:Agent['profile'];extra:number}>}|null=null;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -142,22 +142,9 @@ export class BallCarrier implements Behavior {
         return [{pos:{...seen.pos},vel:{...seen.vel},profile:d.profile,
           extra:observedRecoveryAllowance(seen,d.profile.getUp,sim.dt)}];
       });
-      const slice=this.opts.run.slice?sim.teammateInformation(a,this.opts.run.slice):null;
-      this.spacingRead={at:sim.t,until:sim.t+a.mind.decisionInterval,threats,
-        ...(slice&&slice.source!=='unavailable'?{slice:{pos:{...slice.pos},vel:{...slice.vel}}}:{})};
+      this.spacingRead={at:sim.t,until:sim.t+a.mind.decisionInterval,threats};
     }
     const read=this.spacingRead,elapsed=sim.t-read.at;
-    // A called split-flow slicer crosses the back's track. Yield that crossing
-    // rather than change creases to go around him. This is priority from the
-    // install plus an acquired crossing, never a promised post-mesh route.
-    if(read.slice&&original.length){
-      const end=original.at(-1)!,dx=end.pos.x-a.pos.x,dy=end.pos.y-a.pos.y,length=Math.hypot(dx,dy);
-      if(length>1e-9){
-        const s=read.slice,rx=s.pos.x+s.vel.x*elapsed-a.pos.x,ry=s.pos.y+s.vel.y*elapsed-a.pos.y;
-        const across=(-dy*rx+dx*ry)/length,rate=(-dy*s.vel.x+dx*s.vel.y)/length;
-        if((rx*dx+ry*dy)>0&&across*(across+rate*end.t)<=0)return false;
-      }
-    }
     const margin=(samples:readonly MovementSample[])=>{
       let worst=Infinity;
       for(const s of samples)for(const d of read.threats){

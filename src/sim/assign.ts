@@ -295,12 +295,7 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
   })() : undefined;
   to.behavior = new BallCarrier({ aim, aimGap, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow,
     run:sim.offCall.run ? {scheme:sim.offCall.run.scheme,side:playSideSign(sim,sim.offCall.run),readKey:key,
-      kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap')),
-      // Identify the known slicer from the snap formation, not a live job or
-      // a teammate's actual post-mesh position.
-      slice:sim.offCall.run.scheme==='splitZone'?sim.offense.find(b=>(b.player.position==='TE'||b.player.position==='FB')
-        &&!sim.offAlign.spots[b.slot]?.inline&&Math.abs(sim.offAlign.spots[b.slot]!.pos.y-sim.ballY)<6
-        &&sim.offAlign.spots[b.slot]!.pos.x<sim.los-.9):undefined} : undefined }, to);
+      kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'))} : undefined }, to);
 }
 
 export function onThrow(sim: PlaySim): void {
