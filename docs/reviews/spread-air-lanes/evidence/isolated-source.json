@@ -1,0 +1,7 @@
+{
+  "sourceSha256": "43bf5e3771e7024371d658fb4852cd9c71ca5d894afa1695d87babac5bc5ff5f",
+  "parent": "f62511a513f2187884d74ae3b94435835e43309c",
+  "changedFile": "src/sim/live-gaps.ts",
+  "currentFileMatches": true,
+  "hashMethod": "scripts/source-version.ts: globally sorted path strings, NUL-separated file name/content"
+}

@@ -1,0 +1,189 @@
+{
+  "schema": "spread-air-lanes-artifacts-v1",
+  "codeCommit": "73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee",
+  "candidateSourceSha256": "97e2a7a7bcd2f795df0fb7acf9856bc7700d5642fbbe073a81a584778f6c41b6",
+  "artifacts": [
+    {
+      "path": "README.md",
+      "bytes": 12879,
+      "sha256": "cf1642613d96d003d8c98a29d483110c75926a2f67691f9f870b95a5fe04028b"
+    },
+    {
+      "path": "coupled.jsonrefs.gz",
+      "bytes": 2002610,
+      "sha256": "ab072c9d4400cd3282d20590adca43ec2c2c5b254f7d138bf85b55afdddee655"
+    },
+    {
+      "path": "evidence/gap-coupled-launcher.json",
+      "bytes": 2558,
+      "sha256": "a38f6eca66d9918479fa413f657a5bb7af870e5018d240adc32d67f0b62741ed"
+    },
+    {
+      "path": "evidence/gap-decision-launcher.json",
+      "bytes": 2205,
+      "sha256": "4a47f35225c9ba5c6b2e65615e7452bbc506e8709a72446cad55e94d7b541f03"
+    },
+    {
+      "path": "evidence/gap-decision-original-collector.mjs.txt",
+      "bytes": 4405,
+      "sha256": "bdbf133c135b0ad57d6e6117c568c419d657c1d9189acd44fd824cb1ffec213f"
+    },
+    {
+      "path": "evidence/gap-decision-original-metadata.json",
+      "bytes": 9904,
+      "sha256": "2efa3f2bc12a307b634c75d7f2109a3dc0880dbaf26ce345328e129a5cc5b36a"
+    },
+    {
+      "path": "evidence/gap-decision.json",
+      "bytes": 10220,
+      "sha256": "79b52fd52b2642894970f1da982e7e204558b9dccaefdeca7f6446189e3059ab"
+    },
+    {
+      "path": "evidence/gap-green-launcher.json",
+      "bytes": 2436,
+      "sha256": "bdc09eb59c45aa638c6fe1f72d8e1f10e8c3e0ae57e75a0749afc16316ff70f7"
+    },
+    {
+      "path": "evidence/gap-red-launcher.json",
+      "bytes": 2265,
+      "sha256": "f66ef652bf27315653840978fa4f39488d5b22740e7d0b918044167fc2723b81"
+    },
+    {
+      "path": "evidence/intervention-live-gaps.ts.txt",
+      "bytes": 8221,
+      "sha256": "fa8734eecc6efc3825a8ac98e985b1420a1832374dbb5c677e7bf3f9d99b5bb1"
+    },
+    {
+      "path": "evidence/intervention-source.json",
+      "bytes": 360,
+      "sha256": "63cf200ba552d533447b1b4864ec37cc02800c8bc09bc8e772480e76224d810b"
+    },
+    {
+      "path": "evidence/isolated-source.json",
+      "bytes": 324,
+      "sha256": "48eecf5a8d71e4de6b19e09e85384b79f0ff59060257ef6715b1c64f718d08f3"
+    },
+    {
+      "path": "evidence/p033-isolated-candidate-launcher.json",
+      "bytes": 2469,
+      "sha256": "b0c3bae55bc7ac2ab04f6173f36e6746aa44854ac44d32ad7b95db5bc615d583"
+    },
+    {
+      "path": "evidence/p033-isolated-candidate.json.gz",
+      "bytes": 1279138,
+      "sha256": "51387ba42deaa8ade04543ccd91dda970bac58516effdba849377eb3f20df11a"
+    },
+    {
+      "path": "evidence/p033-isolated-verified-launcher.json",
+      "bytes": 2475,
+      "sha256": "c1d753375bee30b693d1819d970b87d8e448a424f36a1ae69ea8bdf44a26e651"
+    },
+    {
+      "path": "evidence/p033-paired-candidate.json.gz",
+      "bytes": 1279649,
+      "sha256": "7d8a4a2b5b66829a5286496c0b4c4c87267559c20ca78076e8f9bd6fa45dcb1d"
+    },
+    {
+      "path": "evidence/p033-paired-launcher.json",
+      "bytes": 2480,
+      "sha256": "69caf66fb5de85aefec44c2ab0438191913c3eab8397b0bb48cf44c223f47e1a"
+    },
+    {
+      "path": "evidence/p033-prefix-launcher.json",
+      "bytes": 2408,
+      "sha256": "88e0dd6d418b63e92b9059021011c1898a92e1c810956ddd91a0df7c48c031ca"
+    },
+    {
+      "path": "evidence/p033-prefix.json.gz",
+      "bytes": 1248530,
+      "sha256": "7ea690b70385be7662b3142ed948c6e5169925168fead1bf056672642ecb35d1"
+    },
+    {
+      "path": "evidence/p033-reference-launcher.json",
+      "bytes": 2435,
+      "sha256": "a25c002ae6a2e43d011cad2f2394adae05691070a61adafd04c05c00ffbaa53b"
+    },
+    {
+      "path": "evidence/p033-reference.json.gz",
+      "bytes": 946,
+      "sha256": "527c3d9d32f1080635cc9e2265f05fa60ffed31074db65d6d79014fc0f9a402e"
+    },
+    {
+      "path": "evidence/typecheck-launcher.json",
+      "bytes": 2160,
+      "sha256": "876bfee098ee4c330dcc59512e1293534f0e3fedad5d7ee1e5709afcaf24227d"
+    },
+    {
+      "path": "evidence/unpaired-diagnostic.json",
+      "bytes": 4026,
+      "sha256": "c29e7eff6792c93ed8ca155e908dbd050f8af3e97528532604b83502974a5aba"
+    },
+    {
+      "path": "evidence-manifest.json",
+      "bytes": 1528,
+      "sha256": "29d854dd9ce8f51a0b5f3db95a0287078278e5567e47e541330b0144f8a2bfb4"
+    },
+    {
+      "path": "film/decision-2.20.png",
+      "bytes": 32736,
+      "sha256": "cde7689b9d725941eacefa62113fd745a9de08f3223898c43db3effbe609fec8"
+    },
+    {
+      "path": "film/p033-paired.gif",
+      "bytes": 681851,
+      "sha256": "9fced9435ad048261c9c799f07b92d6ec4e3a565e6d12c93ad4e874bb9a6bab0"
+    },
+    {
+      "path": "film/receipt.json",
+      "bytes": 870,
+      "sha256": "4cd783cc85a3fea77bc3444a2d61a7ae82ce0d703f55fcb090a4acbaf8c9081b"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 209326,
+      "sha256": "843eb6fc2b8955efeeedef57075d4e494bc79ebea2a83d62b519efefd61372a3"
+    }
+  ],
+  "reusedOriginalEvidenceHead": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+  "reusedOriginalPaths": [
+    "data/reviews/current/spread-air-film-notes/index.html",
+    "data/reviews/current/spread-air-film-notes/prefix-trace.json.gz",
+    "data/reviews/current/experimental-game-inputs.json",
+    "data/reviews/current/experimental-game-checkpoint/experimental/spread-air/game.json.gz"
+  ],
+  "reusedCurrentControlReference": {
+    "path": "docs/reviews/run-lanes/evidence/final.jsonrefs.gz",
+    "sourceSha256": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527"
+  },
+  "limitations": [
+    "Native prefix snapshots are diagnostic observations, not serialized World restart states.",
+    "The isolated always-on arm is unpaired and is retained only as rejected evidence.",
+    "Paired intervention applies the identical correction only to selected P033; no conditional case gate is in the production change."
+  ],
+  "tools": [
+    {
+      "path": "scripts/diag/prepare-spread-air-runtime.py",
+      "sha256": "68fb246c38ead30cdfe96a7f88ee6aed97d6ac4148d33f584f5ae61ee069261f"
+    },
+    {
+      "path": "scripts/diag/spread-air-gap-decision.mjs",
+      "sha256": "80429124d3c2e152fa4308175e834bdd7877f5de33e14afeedc309fb0cad0109"
+    },
+    {
+      "path": "scripts/diag/spread-air-lane-prefix.mjs",
+      "sha256": "1021ba7f8914de04f465f2d3b61d3c2c061ab616f52b8b95c54f15837165ff1e"
+    },
+    {
+      "path": "scripts/diag/spread-air-lanes-film.py",
+      "sha256": "4f5af76979100e76de0404146774b611d5e50569f3624af21919b87899417946"
+    },
+    {
+      "path": "scripts/diag/spread-air-lanes-report.py",
+      "sha256": "0e345a5f9c4bbddd05582669b9a826eacaaf4d307f86a69307b9845220f59572"
+    },
+    {
+      "path": "scripts/diag/spread-air-lanes.mjs",
+      "sha256": "f639cdb697db2ecc1a5453133786c39d04dcaae26783f4ddc877f1341367480d"
+    }
+  ]
+}

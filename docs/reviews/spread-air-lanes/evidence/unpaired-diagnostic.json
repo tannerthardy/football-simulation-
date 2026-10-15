@@ -1,0 +1,160 @@
+{
+  "physicalWorldSteps": 0,
+  "interpretation": "Correction applied to earlier plays changed inherited inputs. No paired P033 improvement claim.",
+  "changes": [
+    {
+      "slot": "QB",
+      "energyBefore": 0.9999417548149057,
+      "energyAfter": 0.9999417548157967,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "LT",
+      "energyBefore": 0.9999515390018382,
+      "energyAfter": 0.9999515564000216,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "RT",
+      "energyBefore": 0.9998588590552498,
+      "energyAfter": 0.9998588683841099,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "C",
+      "energyBefore": 0.9999194703530506,
+      "energyAfter": 0.9999194699782219,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "LG",
+      "energyBefore": 0.9998937919665051,
+      "energyAfter": 0.9998938032892841,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "RG",
+      "energyBefore": 0.9998156777549191,
+      "energyAfter": 0.9998156538969499,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "RB",
+      "energyBefore": 0.999954711396687,
+      "energyAfter": 0.9999547268544448,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "Y",
+      "energyBefore": 0.9999130290686928,
+      "energyAfter": 0.9999130291952333,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "X",
+      "energyBefore": 0.9999433550976763,
+      "energyAfter": 0.9999433550976576,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "Z",
+      "energyBefore": 0.9999477424988101,
+      "energyAfter": 0.9999477424733229,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "H",
+      "energyBefore": 0.9999399100269584,
+      "energyAfter": 0.9999399087878265,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "DE_W",
+      "energyBefore": 0.9998803908111243,
+      "energyAfter": 0.9998798429460699,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "DE_S",
+      "energyBefore": 0.9999238779904644,
+      "energyAfter": 0.999923877991083,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "DT_S",
+      "energyBefore": 0.9997932829328664,
+      "energyAfter": 0.9997930279094869,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "DT_W",
+      "energyBefore": 0.9998788995865099,
+      "energyAfter": 0.9998789028195847,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "LB_M",
+      "energyBefore": 0.9999310201681803,
+      "energyAfter": 0.9999310344062453,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "LB_W",
+      "energyBefore": 0.9999426330511931,
+      "energyAfter": 0.9999426440940236,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "CB_S",
+      "energyBefore": 0.9999034917640821,
+      "energyAfter": 0.9999034724636331,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "CB_W",
+      "energyBefore": 0.9999320982306409,
+      "energyAfter": 0.9999320973711168,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "NB",
+      "energyBefore": 0.9999389145348232,
+      "energyAfter": 0.9999389145791105,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "FS",
+      "energyBefore": 0.9999428371591619,
+      "energyAfter": 0.999942847238369,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    },
+    {
+      "slot": "SS",
+      "energyBefore": 0.9999100559132855,
+      "energyAfter": 0.9999100553006494,
+      "bodyIdentical": false,
+      "mindIdentical": false
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+/** Same captured P033 decision/body, old and corrected gap bookkeeping.
+ * Free own-body forecasts only; no interacting-play or restart claim.
+ */
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {gunzipSync} from 'node:zlib';
+import {Agent} from '../../src/sim/agent.ts';
+import {alignOffense} from '../../src/playbook/alignment.ts';
+import {runReadAim} from '../../src/sim/behaviors/carrier.ts';
+import {previewFreeMovement} from '../../src/physics/movement-preview.ts';
+import {runReadAim as oldAim} from '../../out/spread-air-lanes/recorded-runtime/src/sim/behaviors/carrier.ts';
+import {sourceVersion} from '../source-version.ts';
+const start=performance.now(),bytes=readFileSync('out/spread-air-lanes/p033-prefix.json.gz');
+const sha=x=>createHash('sha256').update(x).digest('hex'),packet=JSON.parse(gunzipSync(bytes)),r=packet.selected;
+assert(packet.nativeMatches);assert.equal(packet.matchedEntries,33);
+assert.equal(sourceVersion(),'97e2a7a7bcd2f795df0fb7acf9856bc7700d5642fbbe073a81a584778f6c41b6');
+const results=[];
+for(const t of [2,2.2]){
+ const f=r.frames.find(f=>f.t===t),cues=r.cues.filter(c=>c.t===t&&c.observer===6&&c.kind==='see');
+ const pictures=new Map(cues.map(c=>[c.target,c.picture]));
+ const actors=r.input.actors.map(a=>new Agent(a.idx,a.team,a.slot,a.player,a.profile,structuredClone(f.before[a.idx]),{kind:'unused',update:()=>{throw Error('Unexpected controller call');}}));
+ for(const e of f.engagements){const copy=structuredClone(e);for(const a of [e.blocker,e.defender,...e.helpers])actors[a.agent].engagement=copy;}
+ const sim={t,los:r.los,ballY:r.ballY,dt:.05,offCall:r.input.call,
+  offAlign:alignOffense(r.input.call.formation,r.input.call.flip,r.los,r.ballY),
+  offense:actors.filter(a=>a.team==='O'),defense:actors.filter(a=>a.team==='D'),
+  attackDir:()=>1,opponents:a=>actors.filter(b=>a.team!==b.team),
+  see:(_a,b)=>{assert(pictures.has(b.idx),`Missing consumed cue ${b.idx}`);return structuredClone(pictures.get(b.idx));}};
+ const revive=x=>x&&typeof x==='object'?(Object.keys(x).length===1&&'agent'in x?actors[x.agent]:Array.isArray(x)?x.map(revive):Object.fromEntries(Object.entries(x).map(([k,v])=>[k,revive(v)]))):x;
+ const a=actors[6],opts=revive(f.behavior[6].opts),recorded=r.reads.find(e=>e.t===t&&e.actor===6&&e.phase==='aim');
+ const before=oldAim(a,sim,opts),after=runReadAim(a,sim,opts);
+ assert.deepEqual(before,recorded.selected,'Original function must reproduce the exact recorded decision');
+ const command=entry=>{const dx=entry.x-a.pos.x,dy=entry.y-a.pos.y,d=Math.hypot(dx,dy);return {...f.raw[6],vel:{x:dx/d*a.profile.vmax,y:dy/d*a.profile.vmax}};};
+ const beforeCommand=command(before),afterCommand=command(after);
+ assert(Math.hypot(beforeCommand.vel.x-f.raw[6].vel.x,beforeCommand.vel.y-f.raw[6].vel.y)<1e-12);
+ const body=JSON.stringify(a.body),paths={before:previewFreeMovement(a.body,beforeCommand,t,4,'center'),after:previewFreeMovement(a.body,afterCommand,t,4,'center')};
+ assert.equal(JSON.stringify(a.body),body,'Forecast mutated source body');
+ results.push({t,recordedPreferred:recorded.preferred,correctedB:(pictures.get(4).pos.y+pictures.get(1).pos.y)/2,
+  before,after,ownPosition:a.pos,ownVelocity:a.vel,beforeCommand,afterCommand,freeOwnBodyForecasts:paths,
+  originalRaw:f.raw[6],originalFinal:f.final[6]});
+}
+const out={schema:'same-cue-gap-decision-v1',sourceSha256:sourceVersion(),recordedSource:packet.sourceSha256,
+ inputSha256:packet.inputSha256,prefixSha256:sha(bytes),collectorSha256:sha(readFileSync(import.meta.filename)),flags:packet.flags,worldDefaults:packet.worldDefaults,
+ node:process.version,pairedOriginalDecisionsReproduced:2,liveWorldSteps:0,
+ scratchOwnBodyWorldSteps:results.reduce((n,r)=>n+r.freeOwnBodyForecasts.before.length+r.freeOwnBodyForecasts.after.length,0),
+ limitations:['Recorded legacy teammate pictures are reused; this does not unify carrier and spacing sensing.',
+ 'Free-body forecasts exclude other bodies and constraints; no coupled P033 improvement or yardage claim.',
+ 'Existing defender engagement allowance is unchanged; private block state is not a new source added by this patch.'],results,elapsedSeconds:(performance.now()-start)/1000};
+writeFileSync('out/spread-air-lanes/gap-decision.json',JSON.stringify(out,null,2)+'\n');
+console.log(JSON.stringify({pairedOriginalDecisionsReproduced:2,results:results.map(({freeOwnBodyForecasts,...r})=>r),elapsedSeconds:out.elapsedSeconds}));

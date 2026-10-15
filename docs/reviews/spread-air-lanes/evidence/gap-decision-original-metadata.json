@@ -1,0 +1,386 @@
+{
+  "schema": "same-cue-gap-decision-v1",
+  "sourceSha256": "97e2a7a7bcd2f795df0fb7acf9856bc7700d5642fbbe073a81a584778f6c41b6",
+  "recordedSource": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+  "inputSha256": "c1c7cef835d143da40c62e6572e6e1d024dff281058a98215ecb78c93e6b5870",
+  "prefixSha256": "7ea690b70385be7662b3142ed948c6e5169925168fead1bf056672642ecb35d1",
+  "collectorSha256": "bdbf133c135b0ad57d6e6117c568c419d657c1d9189acd44fd824cb1ffec213f",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "pairedOriginalDecisionsReproduced": 2,
+  "liveWorldSteps": 0,
+  "scratchOwnBodyWorldSteps": 32,
+  "limitations": [
+    "Recorded legacy teammate pictures are reused; this does not unify carrier and spacing sensing.",
+    "Free-body forecasts exclude other bodies and constraints; no coupled P033 improvement or yardage claim.",
+    "Existing defender engagement allowance is unchanged; private block state is not a new source added by this patch."
+  ],
+  "results": [
+    {
+      "t": 2,
+      "recordedPreferred": 31.30248101612658,
+      "correctedB": 31.30248101612658,
+      "before": {
+        "x": 25.5,
+        "y": 31.30248101612658
+      },
+      "after": {
+        "x": 25.5,
+        "y": 31.30248101612658
+      },
+      "ownPosition": {
+        "x": 22.53747924129073,
+        "y": 28.85259983354357
+      },
+      "ownVelocity": {
+        "x": 3.6443817191339942,
+        "y": 2.466088995093555
+      },
+      "beforeCommand": {
+        "vel": {
+          "x": 7.404825186709665,
+          "y": 6.123481778787767
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "afterCommand": {
+        "vel": {
+          "x": 7.404825186709665,
+          "y": 6.123481778787767
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "freeOwnBodyForecasts": {
+        "before": [
+          {
+            "t": 0.05,
+            "pos": {
+              "x": 22.72370203302536,
+              "y": 28.979798704719705
+            },
+            "vel": {
+              "x": 3.8045299502513665,
+              "y": 2.6218658519518634
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.1,
+            "pos": {
+              "x": 22.91776058459055,
+              "y": 29.114619483962
+            },
+            "vel": {
+              "x": 3.957812112356138,
+              "y": 2.7709653177398037
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.15000000000000002,
+            "pos": {
+              "x": 23.119319030094918,
+              "y": 29.256735536122868
+            },
+            "vel": {
+              "x": 4.104525707818635,
+              "y": 2.9136767686949705
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.2,
+            "pos": {
+              "x": 23.328056041271612,
+              "y": 29.40583436655187
+            },
+            "vel": {
+              "x": 4.244954739249187,
+              "y": 3.0502764484651084
+            },
+            "support": "up"
+          }
+        ],
+        "after": [
+          {
+            "t": 0.05,
+            "pos": {
+              "x": 22.72370203302536,
+              "y": 28.979798704719705
+            },
+            "vel": {
+              "x": 3.8045299502513665,
+              "y": 2.6218658519518634
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.1,
+            "pos": {
+              "x": 22.91776058459055,
+              "y": 29.114619483962
+            },
+            "vel": {
+              "x": 3.957812112356138,
+              "y": 2.7709653177398037
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.15000000000000002,
+            "pos": {
+              "x": 23.119319030094918,
+              "y": 29.256735536122868
+            },
+            "vel": {
+              "x": 4.104525707818635,
+              "y": 2.9136767686949705
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.2,
+            "pos": {
+              "x": 23.328056041271612,
+              "y": 29.40583436655187
+            },
+            "vel": {
+              "x": 4.244954739249187,
+              "y": 3.0502764484651084
+            },
+            "support": "up"
+          }
+        ]
+      },
+      "originalRaw": {
+        "vel": {
+          "x": 7.404825186709665,
+          "y": 6.123481778787768
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "originalFinal": {
+        "vel": {
+          "x": 7.404825186709665,
+          "y": 6.123481778787768
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      }
+    },
+    {
+      "t": 2.2,
+      "recordedPreferred": 27.96105319915236,
+      "correctedB": 31.652923811167536,
+      "before": {
+        "x": 26.113436614844378,
+        "y": 28.177322662612514
+      },
+      "after": {
+        "x": 25.5,
+        "y": 31.652923811167536
+      },
+      "ownPosition": {
+        "x": 23.328056041271612,
+        "y": 29.40583436655187
+      },
+      "ownVelocity": {
+        "x": 4.244954739249186,
+        "y": 3.0502764484651084
+      },
+      "beforeCommand": {
+        "vel": {
+          "x": 8.791622648167047,
+          "y": -3.877607039542798
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "afterCommand": {
+        "vel": {
+          "x": 6.677922176646691,
+          "y": 6.90896667697319
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "freeOwnBodyForecasts": {
+        "before": [
+          {
+            "t": 0.05,
+            "pos": {
+              "x": 23.544800182665785,
+              "y": 29.550680861739867
+            },
+            "vel": {
+              "x": 4.424810916517763,
+              "y": 2.7435833590548597
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.1,
+            "pos": {
+              "x": 23.770667751237706,
+              "y": 29.680266989372445
+            },
+            "vel": {
+              "x": 4.6098918263590525,
+              "y": 2.439861746248267
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.15000000000000002,
+            "pos": {
+              "x": 24.005958257212974,
+              "y": 29.794885337914632
+            },
+            "vel": {
+              "x": 4.801728412651653,
+              "y": 2.144872195439189
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.2,
+            "pos": {
+              "x": 24.250777873009493,
+              "y": 29.894978408569155
+            },
+            "vel": {
+              "x": 4.991056219209113,
+              "y": 1.8588506307416792
+            },
+            "support": "up"
+          }
+        ],
+        "after": [
+          {
+            "t": 0.05,
+            "pos": {
+              "x": 23.542921258799513,
+              "y": 29.562501471420234
+            },
+            "vel": {
+              "x": 4.349653961866868,
+              "y": 3.21640774626945
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.1,
+            "pos": {
+              "x": 23.762906251603628,
+              "y": 29.72729249416376
+            },
+            "vel": {
+              "x": 4.449745750297663,
+              "y": 3.375233163471552
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.15000000000000002,
+            "pos": {
+              "x": 23.987785949855514,
+              "y": 29.89985055160163
+            },
+            "vel": {
+              "x": 4.545442179777738,
+              "y": 3.5270891340433757
+            },
+            "support": "up"
+          },
+          {
+            "t": 0.2,
+            "pos": {
+              "x": 24.217345611200354,
+              "y": 30.0798351438467
+            },
+            "vel": {
+              "x": 4.636944274015842,
+              "y": 3.672294555759399
+            },
+            "support": "up"
+          }
+        ]
+      },
+      "originalRaw": {
+        "vel": {
+          "x": 8.791622648167047,
+          "y": -3.877607039542799
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "originalFinal": {
+        "vel": {
+          "x": 8.791622648167047,
+          "y": -3.877607039542799
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      }
+    }
+  ],
+  "elapsedSeconds": 0.16775342599999996
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "p033-native-film-v1",
+  "frames": 61,
+  "frameDelayMs": 50,
+  "displaySpeed": 1,
+  "newWorldSteps": 0,
+  "inputs": [
+    {
+      "path": "out/spread-air-lanes/p033-prefix.json.gz",
+      "sha256": "7ea690b70385be7662b3142ed948c6e5169925168fead1bf056672642ecb35d1"
+    },
+    {
+      "path": "out/spread-air-lanes/p033-paired-candidate.json.gz",
+      "sha256": "7d8a4a2b5b66829a5286496c0b4c4c87267559c20ca78076e8f9bd6fa45dcb1d"
+    }
+  ],
+  "rendererSha256": "4f5af76979100e76de0404146774b611d5e50569f3624af21919b87899417946",
+  "limitations": [
+    "Zoom view of actual 22-body simulations. Arrows show requests and achieved velocity, not predicted instant travel.",
+    "Gold uses the preceding resolved hand-joint normal force; no nominal-engagement force is invented.",
+    "No original-runtime-wide or current-branch full-game adoption claim."
+  ]
+}

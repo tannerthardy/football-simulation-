@@ -1,0 +1,6 @@
+{
+  "sourceSha256": "0286a3529c0968c599ac2a60478e39e9cb6898accd3ea3ff612936cbee02effd",
+  "parent": "f62511a513f2187884d74ae3b94435835e43309c",
+  "baseCorrection": "73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee",
+  "diagnosticGate": "Apply the exact correction only to the selected PlaySim; earlier plays run original logic. No hidden state supplied to players."
+}

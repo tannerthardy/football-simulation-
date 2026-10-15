@@ -27,6 +27,19 @@ spot cannot insert another outward lineman and rename B as A. No acquisition,
 forecast, controller job, teammate clock, mesh or movement law changes. Run Game
 retains the exchange/protection regions; no shared full-suite verification here.
 
+Completed at code `73b9441`, source `97e2a7a7…`: exclude only the departed center
+from outward vacancy counting. Exact P033 same-cue/paired intervention removes
+the false2.20 redirect, retaining DT_W's2.20 contact/tackle and the earlier
+349.95 Y/H impact. Before/after current-source IZ Weak and Gun Wing split retain
+all full-state/information hashes and actual loads.52 affected checks/typecheck
+pass. Three25-scrimmage native prefixes include the rejected unpaired arm;
+two short controls;23.409s summed native collector time, no completed game.
+The shared picture mismatch, P037 attainable pull corner and other collection
+limits remain explicit. Recommend adopt this bookkeeping correction only, with
+the integration owner retaining actual combined verification. No publication,
+mesh/physics/information-clock/default/baseline change.
+[Five-play review, full-speed paired film, pins and all failures](reviews/spread-air-lanes/README.md).
+
 ## Continued run-lane execution, 2026-10-15
 
 Final engine candidate `6ac628b` / `1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527`.

@@ -7,8 +7,10 @@ import {readFileSync,writeFileSync,mkdirSync,readdirSync} from 'node:fs';
 import {resolve,dirname,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {gzipSync,gunzipSync} from 'node:zlib';
-const [engineRoot,expectedSource,output]=process.argv.slice(2);
+const [engineRoot,expectedSource,output,mode='reference']=process.argv.slice(2);
 assert(engineRoot&&expectedSource&&output);
+assert(['reference','candidate','intervention'].includes(mode));
+if(mode==='intervention')globalThis.__gapCorrectionCases=new WeakSet();
 const root=resolve(engineRoot),out=resolve(output),start=performance.now();
 const sha=x=>createHash('sha256').update(x).digest('hex'),hash=x=>sha(JSON.stringify(x));
 const source=()=>{const files=p=>readdirSync(join(root,p),{withFileTypes:true}).flatMap(e=>e.isDirectory()?files(join(p,e.name)):[join(p,e.name)]).sort();const h=createHash('sha256');for(const p of files('src'))h.update(p).update('\0').update(readFileSync(join(root,p))).update('\0');return h.digest('hex');};
@@ -33,6 +35,7 @@ const observe=(sim,kind)=>{
  assert.equal(hash(snap(sim.rng)),hash(native.observations[i].seedState),'Native initialization RNG changed');
  if(i!==targetOrdinal)return undefined;
  assert.equal(kind,'scrimmage');
+ if(mode==='intervention')globalThis.__gapCorrectionCases.add(sim);
  selected={play:33,ordinal:i,los:sim.los,ballY:sim.ballY,firstDownX:sim.firstDownX,state:snap(game.state),
   input:{call:snap(sim.offCall),defense:snap(sim.defCall),rng:snap(sim.rng),
    actors:sim.agents.map(a=>({idx:a.idx,slot:a.slot,team:a.team,player:snap(a.player),profile:snap(a.profile),body:snap(a.body),mind:snap(a.mind),behavior:snap(a.behavior)}))},frames:[],cues:[],reads:[]};
@@ -55,11 +58,16 @@ while(!selected){assert(steps<40&&performance.now()-start<15000,'Bounded native 
 const normalize=l=>{const {telemetry,...replay}=l.replay??{};return {...l,...(l.replay?{replay}:{})};};
 const actual=game.result().log.map(normalize),expected=native.log.slice(0,actual.length).map(normalize);
 const nativeMatches=hash(actual)===hash(expected);
+const earlierPrefixMatches=hash(actual.slice(0,32))===hash(expected.slice(0,32));
 selected.replay=game.result().log.find(l=>l.index===32).replay;
 const result={schema:'spread-air-lane-prefix-v1',sourceSha256:source(),recordedRuntime:'f62511a513f2187884d74ae3b94435835e43309c',
  nativeGameSha256:sha(nativeBytes),inputSha256:sha(inputBytes),collectorSha256:sha(readFileSync(import.meta.filename)),node:process.version,
  flags:inputs.flags,worldDefaults:inputs.worldDefaults,physicalScrimmages:physical,completedGames:0,gameSteps:steps,nativeMatches,
- matchedEntries:actual.length,selected,elapsedSeconds:(performance.now()-start)/1000};
+ mode,earlierPrefixMatches,matchedEntries:mode==='reference'?actual.length:32,selected,
+ selectedResult:game.result().log.find(l=>l.index===32),elapsedSeconds:(performance.now()-start)/1000};
 assert.equal(source(),expectedSource);mkdirSync(dirname(out),{recursive:true});writeFileSync(out,gzipSync(JSON.stringify(result)));
-console.log(JSON.stringify({...result,selected:{play:33,frames:selected.frames.length,cues:selected.cues.length,reads:selected.reads.length}}));
-assert(nativeMatches,'Passive prefix changed native stored positions/events/log');
+const {selectedResult,...metadata}=result;
+console.log(JSON.stringify({...metadata,selected:{play:33,frames:selected.frames.length,cues:selected.cues.length,reads:selected.reads.length},
+ result:{yards:selectedResult.yards,duration:selectedResult.duration,outcome:selectedResult.outcome}}));
+assert(earlierPrefixMatches,'Earlier native context changed: P033 would not be a paired encounter');
+if(mode==='reference')assert(nativeMatches,'Passive prefix changed native stored positions/events/log');

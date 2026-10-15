@@ -1,0 +1,45 @@
+{
+  "protocol": "run-transfer-bundle-manifest-v1",
+  "captures": [
+    {
+      "label": "departed-center",
+      "path": "/workspace/run-lanes/out/spread-air-lanes/gap-coupled.json.gz",
+      "rawSha256": "34d9e1a267a793c63c892ddbef0c6d5ad40254e0ca0dddf22a0a2734b4c47a37",
+      "revision": "73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee",
+      "runtime": "97e2a7a7bcd2f795df0fb7acf9856bc7700d5642fbbe073a81a584778f6c41b6",
+      "originalGzipBytes": 6618809,
+      "cases": [
+        {
+          "id": "ace12-iz_weak-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    }
+  ],
+  "bundle": "docs/reviews/spread-air-lanes/coupled.jsonrefs.gz",
+  "bytes": 2002610,
+  "sha256": "ab072c9d4400cd3282d20590adca43ec2c2c5b254f7d138bf85b55afdddee655",
+  "retainedJsonSha256": "8e46bd72af769f5bc371c4ffe7fa615c2b16479717e0ef33b45b8ff79479a6ea",
+  "roundTripExact": true,
+  "containersVisited": 465184,
+  "uniqueContainers": 109721,
+  "omitted": [
+    "panel[].writes",
+    "panel[].methods",
+    "panel[].phases",
+    "panel[].frames[].observerState",
+    "panel[].frames[].rngBefore"
+  ],
+  "scriptSha256": "ffb6161fb7bb8ac5064577801e5c41b7173fdb75b3b1107ac3dcc2f1c784e63a",
+  "codecSha256": "837a6de1698a49bc93a3d29ab30edddc8a753f319dcc26e050ab53e8d2997708",
+  "newWorldSteps": 0,
+  "elapsedSeconds": 7.135113638010807
+}
