@@ -1118,5 +1118,6 @@
       "sha256": "b3874b2ba43db544360ee16436d0ccc54e21cb0f9452e9dc756cfd227ae78af1"
     }
   ],
-  "recommendation": "Ready for review as a bounded default-off experimental transition extension on PR48, not production/full-patch promotion. Next: small matched successful/failed native-contact continuation panel using the same flags, retaining adverse/censored cases; no broad campaign yet."
+  "recommendation": "Ready for review as a bounded default-off experimental transition extension on PR48, not production/full-patch promotion. Next: small matched successful/failed native-contact continuation panel using the same flags, retaining adverse/censored cases; no broad campaign yet.",
+  "pullRequest": "https://github.com/tannerthardy/football-simulation-/pull/51"
 }
