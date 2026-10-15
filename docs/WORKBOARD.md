@@ -1,5 +1,21 @@
 # Current work ownership
 
+## Acquired runner entry risk, 2026-10-15
+
+Do-It-All root owns only `BallCarrier.runReadAim` risk inputs and its new focused
+fixture/diagnostics on `codex/run-entry-cues`, from portable gap evidence
+`92566b3` (accepted-base gap code `d63bf45`). No `6122fb0` zone/Duo navigation
+is inherited. The saved native zone-reference P032 (collector31)1.95s entry
+changes solely under an unseen defender engagement flag; the .25s protection
+allowance is not established by the consumed picture or actual block load.
+Use acquired opponent motion/recovery and public capacity for this entry risk.
+Preserve the P019 waiting decision and P033 legitimate defensive win. First
+same-cue tests; then one bounded natural continuation plus a contrasting case
+only if needed, reusing PR57 and original film. No new shared-helper behavior,
+PassProtector/pass cutoff, physics, capacity, sight/TTL, mesh or 6122 adoption.
+Integration owns combined verification. A material adverse result receives
+one diagnostic before any further candidate or expanded run.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
