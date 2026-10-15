@@ -7,6 +7,7 @@ import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import type { PlaySim } from '../playsim.js';
+import { observeCommand } from '../command-observer.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
 
@@ -18,12 +19,14 @@ export function stand(facing?: number): MoveCommand {
 export function goTo(a: Agent, target: Vec2, opts: { speed?: number; through?: number; facing?: number; cutSkill?: number; effort?: number } = {}): MoveCommand {
   const vmax = a.profile.vmax * (opts.speed ?? 1);
   const t = { x: target.x, y: clamp(target.y, 0.3, FIELD_WIDTH - 0.3) };
-  return {
+  const command = {
     vel: arriveVelocity(a.body, t, vmax, opts.through ?? 0),
     facing: opts.facing,
     cutSkill: opts.cutSkill,
     effort: opts.effort,
   };
+  observeCommand(a, 'objective', { helper: 'goTo', target: t, opts, command });
+  return command;
 }
 
 /** Sprint through a point without slowing. */
@@ -32,7 +35,9 @@ export function runThrough(a: Agent, target: Vec2, opts: { speed?: number; facin
   const dy = target.y - a.pos.y;
   const d = Math.hypot(dx, dy) || 1;
   const s = a.profile.vmax * (opts.speed ?? 1);
-  return { vel: { x: (dx / d) * s, y: (dy / d) * s }, facing: opts.facing, cutSkill: opts.cutSkill };
+  const command = { vel: { x: (dx / d) * s, y: (dy / d) * s }, facing: opts.facing, cutSkill: opts.cutSkill };
+  observeCommand(a, 'objective', { helper: 'runThrough', target, opts, command });
+  return command;
 }
 
 /**
@@ -69,7 +74,9 @@ export function track(a: Agent, target: Vec2, targetVel: Vec2, opts: { facing?: 
     vx *= vmax / sp;
     vy *= vmax / sp;
   }
-  return { vel: { x: vx, y: vy }, facing: opts.facing, cutSkill: opts.cutSkill };
+  const command = { vel: { x: vx, y: vy }, facing: opts.facing, cutSkill: opts.cutSkill };
+  observeCommand(a, 'objective', { helper: 'track', target, targetVel, opts, command });
+  return command;
 }
 
 export function angleTo(from: Vec2, to: Vec2): number {

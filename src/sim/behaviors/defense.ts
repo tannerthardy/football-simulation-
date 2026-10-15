@@ -23,6 +23,7 @@ import { showsBlock } from '../coverage-cues.js';
 import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
+import { observeCommand } from '../command-observer.js';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -309,6 +310,7 @@ export class ManCoverage implements Behavior {
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
+    observeCommand(a, 'man-picture', { peer: R.idx, seen, target: tgt, technique: this.recordedTechnique() });
     if (!this.hipsOpen) {
       // Backpedal facing the QB, keeping the cushion.
       return track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
@@ -803,7 +805,11 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
     const control = 2.2 + 2.5 * (1 - a.r('tackling'));
     const allowed = Math.sqrt(control * control + 2 * a.profile.brake * 0.7 * Math.max(0, d - 0.3));
     const sp = Math.min(a.profile.vmax, allowed);
-    return movingCatchApproach(a,sim,{vel:{x:(dx/d)*sp,y:(dy/d)*sp}},window,spot);
+    const original = {vel:{x:(dx/d)*sp,y:(dy/d)*sp}};
+    const command = movingCatchApproach(a,sim,original,window,spot);
+    observeCommand(a, 'objective', { helper: 'playBall.catch-drive', target: tgt,
+      window: window && { p: window.p, t: window.t, peer: window.receiver.idx, seen: window.seen }, spot, original, command });
+    return command;
   }
   return spot ? runThrough(a, spot.p, { speed: 0.9 }) : stand();
 }
