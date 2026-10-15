@@ -4,17 +4,17 @@
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
 retaining every branch and source/evidence history. [Exact dispositions](INTEGRATION.md#pr-dispositions).
-#63 is accepted and merged as develop `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`;
-#66/#67 remain separately scoped.
+#63 runtime is accepted; documentation-only #65 advances accepted develop to
+`7d1451b2c31786e075550183a6a93bbda23da29b`. #66/#67/#69 stay separately scoped.
 Unclear handover/attention/callback dispositions remain with their owners.
 No contributor must rerun a suite, rebase, stop work or move a branch for this.
 
 Integration in this chat owns [the shared queue](INTEGRATION.md), exact candidate
 verification and accepted-pin publication under existing authority. This
-documentation branch `codex/integration-queue` now includes accepted #63 through
-a normal merge of develop, preserving both documentation histories. Its diff
-against accepted develop changes agent/reference/navigation records and adds a
-merge receipt only. Source, tests, flags, dependencies and existing receipts
+queue branch `codex/integration-queue` includes accepted #65 through a normal
+fast-forward, preserving both documentation histories. Its follow-up diff against
+accepted develop updates only queue/status/ownership and adds new review/merge
+receipts; it is not a further authorized merge. Source, tests, flags, dependencies and existing receipts
 are identical to accepted develop; no worker branch is moved.
 
 Run Game retains exchange and PassProtector/cutoff; Do-It-All! retains run
@@ -28,7 +28,19 @@ Read [safe checkpoint/handoff guidance](INTEGRATION.md#agent-workflow). Existing
 completed-stage and historical claims below retain their own stage/evidence;
 use the current queue and affected owner for live branch/readiness information.
 
-## Independent pass review checkpoint
+## Post-adoption queue ownership — 2026-10-15
+
+Integration records accepted develop7d1451b after documentation-only #65;
+source/tests/settings and prior receipts stay identical to accepted8c891f4.
+The independent #67 reviewer accepts only the replay-kind test filter and
+holds football adoption on the ordinary fixture's unreviewed first-load loss.
+Run Game/pass-controller owner owns that one attribution question; Integration
+retains final composition/verification after disposition. No tests rerun here.
+#69 is queued for an independent controller/Do-It-All! boundary review, with its
+exact pins and witnesses in [the shared queue](INTEGRATION.md#ready-blocked-experimental).
+Physics and entry/Awareness remain separate; no runtime merge authority.
+
+## Earlier independent pass review checkpoint — preserved
 
 Integration reviewed #65 documentation and prepared #67's bounded extraction
 from accepted develop. [Fetchable code, complete failed receipt, adverse evidence
@@ -44,7 +56,7 @@ stays held independently of Physics and entry-admission. No new merge authority.
 | --- | --- | --- |
 | #63 integration | Integration: exact accepted pin, source/test/settings compatibility and publication | Complete. Actual merge equals reviewed publication; existing 1,720-TS/145-Python/typecheck/build receipt reused. No new simulations. |
 | #65 documentation reconciliation | Integration: README, agent guidance, existing integration/status/issues/workboard records and new merge receipt | Preserve newer queue/approval/disposition content and #63's complete detailed history. No additional runtime changes or new merge authority. |
-| Follow-on run entry | Do-It-All!: carrier admission; Awareness: acquired information schema; Integration: PlaySim composition | Held on sampled/unknown-motion contract and explicit observation-only staging review. P032 remains censored at3s; information correction is independent. |
+| Follow-on run entry | Do-It-All!: carrier admission; Awareness: acquired information schema; Integration: PlaySim composition | Owner-approved observation-only/existing-schema scope is recorded in #36 comment6201016808; current navigation benefit is unproved. Keep the information correction independent and unknown peers explicit; earlier P032 clarity is not certified by the corrected semantics. |
 
 See [affected investigations and exact pin](INTEGRATION.md#current-candidate-2026-10-15).
 
