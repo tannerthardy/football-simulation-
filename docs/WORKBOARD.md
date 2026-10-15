@@ -11,6 +11,14 @@ simulation or behavior edit is presumed. Do-It-All retains mesh spacing;
 Run retains blocking-access and Physics retains contact laws. Name and coordinate
 any narrower follow-up before crossing those boundaries.
 
+Completed saved review: [first differences and opposing contact evidence](reviews/a020-a042-first-difference.md)
+at1d048195. A020 first changes through retained off-ball man technique at release;
+A042 first changes through acquired run support, with an explicit later dive and
+arriving helpers. Shared marginal-contact symptom does not establish a shared
+controller/grip defect. Four raw files/identities/hashes checked; zero new native
+executions or behavior changes. A020's unchanged prethrow spacing remains with
+Do-It-All; no separate A042 project or rollback is proposed.
+
 ## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
