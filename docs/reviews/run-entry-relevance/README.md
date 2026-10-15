@@ -1,5 +1,7 @@
 # Entry uncertainty: approved contract, bounded relevance and coupled action
 
+Follow-up complete: [historical-velocity test](../historical-qb-motion/README.md) resolves no useful entry; navigation is parked. The independent information candidate is published separately.
+
 **The coordination blocker is cleared. Advance the independently justified
 information slice; keep complete navigation benefit held.** The corrected
 consumer can keep moving with explicit unknown motion. A distant stale receiver

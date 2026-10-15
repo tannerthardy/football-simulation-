@@ -1,0 +1,66 @@
+[
+  {
+    "play": 19,
+    "t": 2.25,
+    "sampledAt": 1.6,
+    "availableAt": 1.9000000000000001,
+    "age": 0.6499999999999999,
+    "sampledVel": {
+      "x": -0.8118631304538696,
+      "y": 2.7836573178341983
+    },
+    "publicAccelerationCeiling": 8.445074149659867,
+    "oldOrdinarySpeedRadiusAtPreviewEnd": 13.363378336739432,
+    "historicalRadiusAtPreviewEnd": 6.86162274659864,
+    "bestMovingRouteGap": -0.8301685319678231,
+    "supportedEntry": null
+  },
+  {
+    "play": 19,
+    "t": 2.5,
+    "sampledAt": 1.6,
+    "availableAt": 1.9000000000000001,
+    "age": 0.8999999999999999,
+    "sampledVel": {
+      "x": -0.8118631304538696,
+      "y": 2.7836573178341983
+    },
+    "publicAccelerationCeiling": 8.445074149659867,
+    "oldOrdinarySpeedRadiusAtPreviewEnd": 15.518761939439342,
+    "historicalRadiusAtPreviewEnd": 9.817398698979593,
+    "bestMovingRouteGap": -1.984443793762299,
+    "supportedEntry": null
+  },
+  {
+    "play": 32,
+    "t": 1.7,
+    "sampledAt": 1.15,
+    "availableAt": 1.45,
+    "age": 0.55,
+    "sampledVel": {
+      "x": 0.05605230768039715,
+      "y": 0.042222241135452886
+    },
+    "publicAccelerationCeiling": 8.445074149659867,
+    "oldOrdinarySpeedRadiusAtPreviewEnd": 12.501224895659472,
+    "historicalRadiusAtPreviewEnd": 5.827101163265309,
+    "bestMovingRouteGap": -0.8691927071168131,
+    "supportedEntry": null
+  },
+  {
+    "play": 32,
+    "t": 1.95,
+    "sampledAt": 1.15,
+    "availableAt": 1.45,
+    "age": 0.8,
+    "sampledVel": {
+      "x": 0.05605230768039715,
+      "y": 0.042222241135452886
+    },
+    "publicAccelerationCeiling": 8.445074149659867,
+    "oldOrdinarySpeedRadiusAtPreviewEnd": 14.65660849835938,
+    "historicalRadiusAtPreviewEnd": 8.571750261904766,
+    "bestMovingRouteGap": -3.1569279845764227,
+    "supportedEntry": null
+  }
+]

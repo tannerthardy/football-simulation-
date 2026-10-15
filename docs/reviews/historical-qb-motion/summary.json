@@ -1,0 +1,356 @@
+{
+  "schema": "historical-qb-test-v1",
+  "sourceSha256": "83f575d55fe8aa03d65f90fb2c9b51e247a4e3f8dda5e1ef0f9a2367fb4fd39e",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "referenceSha256": "4b086289d5f9fcb623b0711df98779ac981055fad82fb4a486f5e9231424f362",
+  "inputSha256": "66c09e1eeeaf834529794fd36f323dc4444d66cab207ea3e39cd3f54770e88eb",
+  "collectorSha256": "6db4b83455692686b2150d27056664dcc07e15d8bda044c90616b68ab9f84b56",
+  "metadataReplayExecutions": 0,
+  "mechanicalControlBranches": 2,
+  "completedGames": 0,
+  "decisionSummary": [
+    {
+      "play": 19,
+      "physicalFramesExact": true,
+      "decisions": [
+        {
+          "t": 2.25,
+          "entryCount": 6,
+          "supportedEntry": null,
+          "changedDestination": false,
+          "qbGaps": [
+            -0.8301685319678231,
+            -1.297833648002453,
+            -2.3374053595047615,
+            -1.1902707950849416,
+            -1.9998357899540673,
+            -2.3374053595047615,
+            -1.262628533953707,
+            -1.6298002964484446,
+            -2.3374053595047615,
+            -1.609503954518529,
+            -1.8204357150673782,
+            -2.3374053595047615,
+            -1.5521018561848787,
+            -1.7883285465955978,
+            -2.3374053595047615,
+            -1.5026380131150086,
+            -1.7608813745281962,
+            -2.3374053595047615
+          ]
+        },
+        {
+          "t": 2.5,
+          "entryCount": 6,
+          "supportedEntry": null,
+          "changedDestination": false,
+          "qbGaps": [
+            -1.984443793762299,
+            -2.7523737071355994,
+            -3.4014003547628278,
+            -2.8176716413770135,
+            -3.354475830247547,
+            -3.4014003547628278,
+            -2.855947062678693,
+            -3.038405799211917,
+            -3.4014003547628278,
+            -2.868666385991127,
+            -3.0451266045859686,
+            -3.4014003547628278,
+            -2.6922265969867514,
+            -2.954637469603534,
+            -3.4014003547628278,
+            -2.620805716541888,
+            -2.9195980073053107,
+            -3.4014003547628278
+          ]
+        }
+      ]
+    },
+    {
+      "play": 32,
+      "physicalFramesExact": true,
+      "decisions": [
+        {
+          "t": 1.7,
+          "entryCount": 5,
+          "supportedEntry": null,
+          "changedDestination": false,
+          "qbGaps": [
+            -1.4965774601793747,
+            -2.0116646978220505,
+            -2.47115356585335,
+            -0.8691927071168131,
+            -1.4012611128160308,
+            -2.47115356585335,
+            -2.0632875131550286,
+            -2.276229365972325,
+            -2.47115356585335,
+            -0.9418677405669715,
+            -1.524809740864457,
+            -2.47115356585335,
+            -1.1100705190347548,
+            -1.7669806454324923,
+            -2.47115356585335
+          ]
+        },
+        {
+          "t": 1.95,
+          "entryCount": 5,
+          "supportedEntry": null,
+          "changedDestination": false,
+          "qbGaps": [
+            -3.1569279845764227,
+            -3.5972018813329907,
+            -4.861698182980211,
+            -3.7390911197005297,
+            -4.309671225031725,
+            -4.861698182980211,
+            -3.1927824309922173,
+            -3.6943987163350265,
+            -4.861698182980211,
+            -4.030273667995565,
+            -4.4902366679611285,
+            -4.861698182980211,
+            -3.3603810277437294,
+            -3.9571814321111862,
+            -4.861698182980211
+          ]
+        },
+        {
+          "t": 2.2,
+          "entryCount": 5,
+          "supportedEntry": null,
+          "changedDestination": false,
+          "qbGaps": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "t": 2.45,
+          "entryCount": 5,
+          "supportedEntry": null,
+          "changedDestination": false,
+          "qbGaps": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "t": 2.7,
+          "entryCount": 5,
+          "supportedEntry": null,
+          "changedDestination": false,
+          "qbGaps": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "cachedMetadataReplays": {
+    "executions": 2,
+    "artifactSha256": "1fb19863412a5b6307ae8359d0a28db6d827f91e04a2d70f602974dae4d4678e",
+    "collectorSha256": "ad7feb051e4e57d581eb58908b70af7fd2896da088268b6256462aa84b4e34eb",
+    "originalElapsedSeconds": 0.9970464210000001
+  },
+  "historicalSetupLimits": [
+    "Game scouting/coverage scouting object state",
+    "pre-call man-matchup preferences",
+    "audible input before the recorded final call",
+    "Original pre-constructor energy/mind state and pre-snap recognition history are not serialized"
+  ],
+  "elapsedSeconds": 0.25936387,
+  "cost": {
+    "newLauncherSeconds": 16.326391037,
+    "byGroup": {
+      "support-control-launcher": 0.6506344220000001,
+      "typecheck-launcher": 10.509806963,
+      "initial-probe-launcher": 1.289696961,
+      "core-launcher": 0.953032559,
+      "control-launcher": 0.511203626,
+      "initial-core-launcher": 2.412016506
+    },
+    "metadataNativeReplays": 2,
+    "mechanicalControlExecutionsIncludingObserverCorrections": 6,
+    "completedGames": 0,
+    "rosterCases": 0,
+    "newPolicyInterventions": 0,
+    "initialFailure": "One strict .3 delivery assertion encountered .30000000000000004; corrected only the time comparison at12 decimal places. Source policy unchanged; prior12 consumer controls passed in that run."
+  },
+  "decision": {
+    "navigation": "parked",
+    "supportedMovingEntries": 0,
+    "entryCandidates": 37,
+    "informationOnlyCode": "60223a863a8431e85d5027c879191f3527ed10b8",
+    "informationOnlyEvidence": "80c9fa4db36ebcd4b81edda110e9a451882d8291",
+    "blocker": "Historical sample still allows ordinary changed QB motion to overlap every achievable moving route; cue later expires. Narrower uncertainty does not demonstrate a useful alternate entry. No policy tuning or coupled behavior intervention earned."
+  },
+  "controlSummary": [
+    {
+      "branch": "continue",
+      "firstDeliveryVelocity": {
+        "x": 0.05605230768039715,
+        "y": 0.042222241135452886
+      },
+      "firstDeliveryPicture": {
+        "source": "observed",
+        "pos": {
+          "x": 70.03873496107288,
+          "y": 29.514774360021534
+        },
+        "vel": {
+          "x": 0.05605230768039715,
+          "y": 0.042222241135452886
+        },
+        "sampledAt": 1.15,
+        "availableAt": 1.45,
+        "age": 0.30000000000000004,
+        "predictedFor": 0.3,
+        "sampledVel": {
+          "x": 0.05605230768039715,
+          "y": 0.042222241135452886
+        }
+      },
+      "allInsideBound": true,
+      "maxBoundFraction": 4.1628661145700726e-12,
+      "observerSupports": [
+        "up"
+      ],
+      "qbSupports": [
+        "up"
+      ]
+    },
+    {
+      "branch": "change-motion",
+      "firstDeliveryVelocity": {
+        "x": -0.19178721207209437,
+        "y": -1.5516404462949707
+      },
+      "firstDeliveryPicture": {
+        "source": "observed",
+        "pos": {
+          "x": 70.03873496107288,
+          "y": 29.514774360021534
+        },
+        "vel": {
+          "x": 0.05605230768039715,
+          "y": 0.042222241135452886
+        },
+        "sampledAt": 1.15,
+        "availableAt": 1.45,
+        "age": 0.30000000000000004,
+        "predictedFor": 0.3,
+        "sampledVel": {
+          "x": 0.05605230768039715,
+          "y": 0.042222241135452886
+        }
+      },
+      "allInsideBound": true,
+      "maxBoundFraction": 0.5649892328598293,
+      "observerSupports": [
+        "up"
+      ],
+      "qbSupports": [
+        "up"
+      ]
+    }
+  ]
+}
