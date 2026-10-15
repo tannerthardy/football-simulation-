@@ -1,0 +1,29 @@
+{
+  "protocol": "solver-value-input-v1",
+  "question": "Does resolving the first disputed World tick change useful native block behavior enough to justify more solver development?",
+  "comparison": "PR77 source; existing World laws, a transient subdivision override for one 50ms tick only, then ordinary execution",
+  "windowSeconds": 2,
+  "offenseSeed": 31,
+  "defenseSeed": 32,
+  "strength": 0.55,
+  "playSeed": 3,
+  "formation": "gun_wing_12",
+  "concept": "split_zone",
+  "coverage": "cover3",
+  "handContact": "patch",
+  "groundMovement": "legacy",
+  "cases": [
+    {"id":"tite", "front":"tite", "personnel":"base34", "owner":"Y", "helper":"RT", "defender":"DE_S"},
+    {"id":"under", "front":"under", "personnel":"base43", "owner":"RT", "helper":"RG", "defender":"DE_S"}
+  ],
+  "interventions": [
+    {"id":"native", "at":null, "substeps":null},
+    {"id":"null12", "at":0.35, "substeps":12},
+    {"id":"fine192", "at":0.35, "substeps":192},
+    {"id":"fine768", "at":0.35, "substeps":768},
+    {"id":"fine3072", "at":0.35, "substeps":3072}
+  ],
+  "opposingIntervention": {"case":"tite", "id":"earlier768", "at":0.30, "substeps":768},
+  "decision": "Exploratory value/sensitivity study, not a promotion gate or physical reference. A changed ending alone is not a benefit. Preserve adverse, inconclusive and censored cases; compare fine continuations and ordinary-ground control before attributing a benefit.",
+  "budget": "Two existing native fixtures, two seconds each; no full suite or games. Stop kernel development during this study."
+}
