@@ -1,0 +1,33 @@
+{
+  "protocol": "designed-run-game-diagnosis-v1",
+  "sourceCommit": "404d3366d92449c30aedcba1957812fe5ea8b9aa",
+  "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+  "originalManifest": "data/reviews/current/experimental-game-inputs.json",
+  "originalManifestSha256": "c1c7cef835d143da40c62e6572e6e1d024dff281058a98215ecb78c93e6b5870",
+  "referenceRoot": "data/reviews/current/experimental-game-checkpoint",
+  "maxGameSeconds": 240,
+  "games": [
+    {
+      "id": "zone-reference",
+      "plays": [
+        14,
+        18,
+        31,
+        58
+      ]
+    },
+    {
+      "id": "power-zone",
+      "plays": [
+        8,
+        34,
+        48,
+        115
+      ]
+    }
+  ],
+  "selection": "Retrospective targeted mechanism diagnosis, not a random error-rate sample. Selected before enhanced native traces: poor ordinary Ace/pistol/I zone, failed draw, and successful duo/counter/outside-zone controls. Full games retain every normal play; detailed sinks only observe these8 plays. No changed policy/commands, sensing, RNG, physics or future runner path.",
+  "newGames": 2,
+  "acceptedParentGamesReused": 4,
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1"
+}

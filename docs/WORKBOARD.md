@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Designed-run full-game diagnosis, 2026-10-14
+
+Run-game owns `codex/designed-run-game-diagnosis` from PR #54 publication
+`404d3366` / runtime `dd173a3e`. User requests full games and an explanation of
+the poor median designed carry. Reuse all eight completed checkpoint games and
+the four-season NFL benchmark. Replay only zone-reference701 and power-zone703
+with passive diagnostics: eight selected poor/successful plays in the frozen
+manifest. Preserve full recorded log/film/telemetry, score and final-state parity;
+these are two diagnostic replays, not two new independent talent samples.
+Only new diagnostic scripts/config/report change. No controller, solver, ratings,
+information, calls, yielding or baseline promotion. Do not edit inputs/source/HEAD
+while the two declared collectors execute. Integration's full suite is reused.
+
 ## Experimental full-game checkpoint
 
 | Item | Owner | Branch | Boundary | Status |
