@@ -1,5 +1,31 @@
 # Current work ownership
 
+## Standing queue and next controller checkpoint — 2026-10-15
+
+Integration owns the existing four shared records, the `integration-ready` GitHub
+queue at resumed/working checkpoints, minimal assembly on accepted develop,
+independent-review reconciliation, one exact combined verification and routine
+merges under the user's standing authority. Contributors own fetchable code,
+focused checks and known risks; readiness is not approval. No background monitor
+or user relay is required. [Policy and exclusions](INTEGRATION.md#standing-integration-workflow).
+
+Current boundary: `codex/controller-checkpoint-integration`, from accepted8ca8dee
+plus queue metadata67e9b9b. Extract #69's reviewed `blocking.ts` RunBlocker hunk,
+`collection-approach.ts` and two tests only. Preserve accepted PassProtector and
+carrier risk, no #75/runtime ancestry, transport/navigation or experimental physics.
+Do-It-All's exact cdd55b9 re-review is accepted; reuse focused receipts. Integration
+will verify this exact ready candidate once and publish its actual adopted pin.
+#75's two back-man assertions stay held with Catching + Run; no assertion edit or
+unchanged rerun. A blocked patch holds itself; do not wait for all agents.
+
+Measurement owns one subsequent game collector/film/results packet; Integration
+freezes the accepted source/settings and coordinates the question/budget with CEO.
+Initial ceiling four full games/600 launcher seconds, existing declared inputs,
+no duplicate collection. [Checkpoint conditions](INTEGRATION.md#accepted-controller-game-checkpoint).
+Physical laws/capabilities/defaults, experimental activation, unresolved material
+correctness risks, historical baselines/defaults and destructive cleanup escalate.
+Earlier per-merge authority paragraphs below describe their dated stages.
+
 ## Independent #75 man-recognition integration — 2026-10-15
 
 **Held after one complete combined run.** Tested

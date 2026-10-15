@@ -22,6 +22,16 @@ for candidate/receipt decisions, and [WORKBOARD](WORKBOARD.md) before shared edi
 - **Research:** evidence applies to the declared experimental model, not production.
 - **Resolved:** only the stated scope is complete; related limitations remain open.
 
+Contributors publish their own fetchable focused evidence and known risks to the
+single `integration-ready` GitHub queue. That label requests independent review,
+not self-approval. Integration processes it at working checkpoints, may merge
+routine independently reviewed/verified corrections under standing user authority,
+and owns one exact combined check. Blocked items keep their owner/return condition
+here and hold only themselves. Reuse compatible evidence; no per-edit full suite.
+Physical-law/capability/default changes, experimental activation, unresolved
+material correctness risks, historical baselines/default branches and destructive
+cleanup require escalation. [Current policy](INTEGRATION.md#standing-integration-workflow).
+
 Label evidence **confirmed defect**, **failed contract**, **observed limitation**,
 **hypothesis**, or **enhancement**. A changed gain, tackle or ending alone is not
 a defect. Historical/experimental witnesses must retain their source and settings.
@@ -33,6 +43,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
 | [RUN-006](#RUN-006) | Riding back leaves before the installed mesh window | Confirmed cadence defect | Resolved in accepted #63 | Integration + Run Game; real-reach transfer and same-source success control |
 | [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Active bounded owner follow-up | Do-It-All! + Run Game; no earlier zone/Duo/detour ancestry imported |
+| [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 corrected scope independently accepted; exact verification next | Integration; preserve #72/#74 and stationary-runner/approximate-clearance limits; no Physics dependency |
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
@@ -61,6 +72,21 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [REPO-002](#REPO-002) | Legacy PR/branch retirement and external evidence preservation | Historical cleanup holds; current disposition needs recheck | Parked | Integration + affected owners; refreshed preservation manifest |
 
 ## Accepted corrections and retained failures
+
+<a id="RUN-008"></a>
+### RUN-008 — Acquired lost-owner collection
+
+Do-It-All's [independent re-review](https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6202748101)
+accepts controller/test `cdd55b955421744ae6ba688de5f73ab87d13b8ab`, evidence
+`084122c16264962801fab963bcc35023d3104a64`. The public production-hook regression
+now covers the previously missed private `target.engagement` dependency. The
+complete four-file correction preserves installation, acquired torso-loss/clearance,
+cadence, own contact and physical hand eligibility. Integration owns extraction
+onto8ca8dee and one combined verification; reuse64 focused passes/typecheck.
+Controlled collection parks the runner: live arrival/yardage benefit, fast-motion
+clearance and broader RunBlocker information correctness remain unproved. Retain
+rejected variants, expected-red and the three adjudicated #66-host failures with
+their exact source. Neither #75's hold nor experimental Physics blocks this item.
 
 The [integration ledger](INTEGRATION.md#ready-blocked-experimental) pins all
 five independently assessed contributions accepted through merged #63.
