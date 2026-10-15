@@ -18,7 +18,8 @@ const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
 /** Fixed ordinary profiles and a legal two-blocker contact. Only positions
  * and the installed jobs are controlled. First hands, control and support
  * come from sim.engage and the real World, rather than a declared block win. */
-function fixture(side = 1, poorAngle = false, reverseInstallation = false, seed = 11, recognition?: number) {
+function fixture(side = 1, poorAngle = false, reverseInstallation = false, seed = 11, recognition?: number,
+  run = RUN_BY_ID.iz_strong) {
   const formation = FORMATION_BY_ID.ace_11;
   const personnel = pickOffense(offense, formation.personnel);
   if (recognition !== undefined) personnel.C = { ...personnel.C, ratings: {
@@ -26,7 +27,7 @@ function fixture(side = 1, poorAngle = false, reverseInstallation = false, seed 
   } };
   const sim = new PlaySim({
     offense: personnel, defense: pickDefense(defense, 'base43'),
-    offCall: { formation, flip: side > 0, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'combo transfer' },
+    offCall: { formation, flip: side > 0, kind: 'run', run, label: 'combo transfer' },
     defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3,
       pressure: null, label: 'Over' },
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed,
@@ -379,5 +380,48 @@ describe('a combo responds to the filling backer that the observer actually saw'
     readCombination(f.primary, f.sim, f.combination);
     expect(f.combination.released).toBe(true);
     expect(f.sim.events.filter(e => e.type === 'block_climb')).toHaveLength(1);
+  });
+});
+
+describe('Duo keeps the surface while its acquired backer belongs to the other half', () => {
+  it.each([-1, 1])('retains the double instead of sending a climber across its covered half, side %s', side => {
+    const f = ready(fixture(side, false, false, 11, undefined, RUN_BY_ID.duo), 'helper');
+    const hands = f.engagement.hands!, helperHands = f.engagement.helperHands!.get(f.helper)!;
+    const bodies = f.sim.agents.map(a => structuredClone(a.body)), rng = JSON.stringify(f.sim.rng);
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(false);
+    expect(f.engagement.hands).toBe(hands);
+    expect(f.engagement.helperHands!.get(f.helper)).toBe(helperHands);
+    expect(f.sim.world.joints).toContain(hands);
+    expect(f.sim.world.joints).toContain(helperHands);
+    expect(f.sim.agents.map(a => a.body)).toEqual(bodies);
+    expect(JSON.stringify(f.sim.rng)).toBe(rng);
+    budget(f, step(f));
+  });
+
+  it.each([-1, 1])('still admits the near-half climber around a real down-body obstruction, side %s', side => {
+    const f = fixture(side, false, false, 11, undefined, RUN_BY_ID.duo);
+    f.backer.body.pos.y = CENTER_Y + side * 1.2; f.observe(); ready(f, 'helper');
+    const hands = f.engagement.hands!;
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(true);
+    expect((f.helper.behavior as RunBlocker).plan.departure).toBeDefined();
+    expect((f.helper.behavior as RunBlocker).target).toBe(f.backer);
+    expect(f.engagement.hands).toBe(hands);
+    budget(f, step(f, true));
+  });
+
+  it('changes the admission only after the production hook acquires the changed backer half', () => {
+    const f = ready(fixture(1, false, false, 11, undefined, RUN_BY_ID.duo), 'helper');
+    const seen = f.sim.see(f.helper, f.backer);
+    f.backer.body.pos.y = CENTER_Y + 1.2;
+    expect(f.sim.see(f.helper, f.backer)).toEqual(seen);
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(false);
+    f.observe();
+    while (f.sim.t + 1e-9 < nextRead(f, f.helper)) step(f);
+    expect(f.sim.see(f.helper, f.backer).pos.y).toBeGreaterThan(CENTER_Y);
+    readCombination(f.helper, f.sim, f.combination);
+    expect(f.combination.released).toBe(true);
   });
 });
