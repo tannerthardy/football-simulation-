@@ -604,12 +604,14 @@ export class QBHandoff implements Behavior {
     private readonly pitchRange = 1.3,
     private readonly keeper = false,
     private readonly ride = false,
+    private readonly fakeSide?: number,
   ) {}
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (this.handed || sim.carrier !== a) {
       // Carry out the fake away from the play.
-      const away = a.pos.y + Math.sign(a.pos.y - this.mesh.y || 1) * 4;
+      // Crossing the exchange landmark does not reverse the installed fake.
+      const away = a.pos.y + (this.fakeSide ?? Math.sign(a.pos.y - this.mesh.y || 1)) * 4;
       return goTo(a, { x: sim.los - 6, y: away }, { speed: 0.4 });
     }
     if (this.keeper && sim.t >= this.meshTime) {

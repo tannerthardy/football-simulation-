@@ -124,7 +124,8 @@ export function assignBehaviors(sim: PlaySim): void {
     qb.behavior = new QBHandoff(mesh.qb, 1.0, null, 0, true);
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
-    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ride);
+    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ride,
+      mesh.ride ? -playSideSign(sim, concept) : undefined);
     if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride);
   }
   for (const a of sim.offense) {

@@ -31,6 +31,7 @@ import { goTo, runThrough, stand, track } from './common.js';
 import { clearStretchDeparture, stretchHelpOpportunity } from '../stretch-help.js';
 import { TEAMMATE_INFORMATION_LIMITS } from '../teammate-information.js';
 import { planStretchFeet, type StretchFootPlan } from '../stretch-footwork.js';
+import { stretchDepartureStep, type DeparturePeer } from '../stretch-departure.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -367,7 +368,7 @@ export interface CombinationProposal {
   phi: number;
   cost: number;
   /** The reader's first achievable step off the double, not a promised block. */
-  departure?: { exit: Vec2 | null; flow: Vec2; backer: Perceived };
+  departure?: { exit: Vec2 | null; flow: Vec2; backer: Perceived; peers?: DeparturePeer[] };
 }
 
 export interface CombinationRead {
@@ -740,7 +741,7 @@ export class RunBlocker implements Behavior {
   private pullRead: { target: Agent; seen: Perceived; clearanceX: number; nextRead: number } | null = null;
   private pullCleared = false;
   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
-    flow: Vec2; backer: Perceived } | null = null;
+    flow: Vec2; backer: Perceived; peers?: DeparturePeer[] } | null = null;
   /** A personally consumed near-gap emergency, held through the normal beat. */
   private presentationThreat: Agent | null = null;
   /** Native technique read, retained between the player's ordinary decisions. */
@@ -1102,7 +1103,8 @@ export class RunBlocker implements Behavior {
     if (!picture.exit) return;
     this.plan.departure = { defender, keeper, backer };
     this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
-      exit: { ...picture.exit }, flow: { ...picture.flow }, backer: structuredClone(picture.backer) };
+      exit: { ...picture.exit }, flow: { ...picture.flow }, backer: structuredClone(picture.backer),
+      ...(picture.peers ? { peers: structuredClone(picture.peers) } : {}) };
   }
 
   private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {
@@ -1110,9 +1112,10 @@ export class RunBlocker implements Behavior {
     if (!this.departureRead || sim.t >= this.departureRead.nextRead) {
       const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper);
       const backer = sim.see(a, departure.backer);
-      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer);
+      const route = climbRoute(a, sim, departure.defender, down, departure.keeper, keeper, backer);
       this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
-        exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
+        exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer,
+        ...(route?.peers ? { peers: route.peers } : {}) };
       // Only a personally observed clear route ends the departure. A blocked
       // first step waits for another read; it cannot tunnel through the old DL.
       if (route && !route.exit) {
@@ -1126,6 +1129,13 @@ export class RunBlocker implements Behavior {
     const dt = sim.t - read.at;
     const goal = { x: read.exit.x + read.flow.x * dt,
       y: read.exit.y + read.flow.y * dt + a.mind.placementError * (1 - .5 * a.r('runBlock')) };
+    if (read.peers) {
+      const peers = read.peers.map(peer => ({ ...peer,
+        pos: { x: peer.pos.x + peer.vel.x * dt, y: peer.pos.y + peer.vel.y * dt } }));
+      return stretchDepartureStep(a.body, goal,
+        Math.atan2(read.backer.pos.y-a.pos.y, read.backer.pos.x-a.pos.x), peers,
+        sim.t, Math.max(.05, read.nextRead - sim.t), sim.world.handContact) ?? stand();
+    }
     return track(a, goal, read.flow, { speed: 1, gain: 3,
       facing: Math.atan2(read.backer.pos.y-a.pos.y, read.backer.pos.x-a.pos.x) });
   }
@@ -1486,10 +1496,13 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
 /** A short step off the observed surface. This is navigation, not a claim
  * that the whole climb or linebacker block will succeed. Check the DL and
  * partner through the next read; a moving or mistaken picture can still lose. */
-function climbRoute(a: Agent, defender: Agent, down: Perceived,
-  partner: Agent, covered: Perceived, backer: Perceived): { exit: Vec2 | null; flow: Vec2 } | null {
+function climbRoute(a: Agent, sim: PlaySim, defender: Agent, down: Perceived,
+  partner: Agent, covered: Perceived, backer: Perceived): { exit: Vec2 | null; flow: Vec2; peers?: DeparturePeer[] } | null {
   const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },
     { seen: covered, radius: a.profile.radius + partner.profile.radius }];
+  const stretch = sim.offCall.run?.scheme === 'wideZone' || sim.offCall.run?.scheme === 'outsideZone';
+  const peers = bodies.map(({ seen, radius }) => ({ pos: { ...seen.pos }, vel: { ...seen.vel },
+    radius: radius - a.profile.radius }));
   const clear = (goal: Vec2, flow: Vec2): boolean => bodies.every(({ seen, radius }) => {
     for (const dt of [0, a.mind.decisionInterval]) {
       const point = { x: seen.pos.x + seen.vel.x * dt, y: seen.pos.y + seen.vel.y * dt };
@@ -1520,8 +1533,13 @@ function climbRoute(a: Agent, defender: Agent, down: Perceived,
       const radius = Math.max(body.radius+.15,distance);
       const exit = { x: body.seen.pos.x + (relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
         y: body.seen.pos.y + (relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
-      if (exit.y >= .5 && exit.y <= FIELD_WIDTH-.5 && clear(exit,body.seen.vel))
-        return { exit, flow: body.seen.vel };
+      if (exit.y >= .5 && exit.y <= FIELD_WIDTH-.5 && clear(exit,body.seen.vel)) {
+        const placedExit = { x: exit.x, y: exit.y + a.mind.placementError * (1 - .5 * a.r('runBlock')) };
+        if (stretch && !stretchDepartureStep(a.body, placedExit,
+          Math.atan2(backer.pos.y-a.pos.y, backer.pos.x-a.pos.x), peers,
+          sim.t, a.mind.decisionInterval, sim.world.handContact)) continue;
+        return { exit, flow: body.seen.vel, ...(stretch ? { peers } : {}) };
+      }
     }
   }
   return null;
@@ -1622,7 +1640,7 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
   if (!filling && !arriving) return;
-  const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
+  const route = climbRoute(observer, sim, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
   const cost = route.exit ? Math.hypot(route.exit.x-observer.pos.x,route.exit.y-observer.pos.y)
     + Math.hypot(backer.pos.x-route.exit.x,backer.pos.y-route.exit.y)

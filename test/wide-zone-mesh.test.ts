@@ -20,10 +20,10 @@ function stage(ride:boolean,side=1) {
   const sim=new PlaySim({
     offense:pickOffense(generateTeam(new Rng(31),'O','O',{strength:.55}),'12'),
     defense:pickDefense(generateTeam(new Rng(32),'D','D',{strength:.55}),'base43'),
-    offCall:{formation:FORMATION_BY_ID.ace_12,flip:side<0,kind:'run',run:RUN_BY_ID.wz_strong,label:'mesh'},
+    offCall:{formation:FORMATION_BY_ID.ace_12,flip:false,kind:'run',run:side<0?RUN_BY_ID.wz_weak:RUN_BY_ID.wz_strong,label:'mesh'},
     defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'mesh'},
     los:40,ballY:26.666666666666668,firstDownX:50,seed:3});
-  const qb=sim.qb,rb=sim.slot('RB')!;
+  const qb=sim.qb,rb=sim.slot('RB')!,installed=qb.behavior;
   for(const a of [qb,rb]) {
     a.body=structuredClone(row.actors[a.idx].initialBody);a.body.support!.since=-Infinity;
     if(side<0) {a.body.pos.y=2*sim.ballY-a.pos.y;a.body.vel.y=-a.vel.y;a.body.facing=-a.facing;}
@@ -31,10 +31,10 @@ function stage(ride:boolean,side=1) {
   const old=row.actors[0].initialBehavior,back=row.actors[6].initialBehavior;
   const point=(p:{x:number;y:number})=>({x:p.x,y:side<0?2*sim.ballY-p.y:p.y});
   const mesh=point(old.mesh),target=point(back.mesh),aim=point(back.aim);
-  qb.behavior=new QBHandoff(mesh,old.meshTime,rb,old.pitchRange,old.keeper,ride);
+  qb.behavior=new QBHandoff(mesh,old.meshTime,rb,old.pitchRange,old.keeper,ride,ride?side:undefined);
   rb.behavior=new RunnerToMesh(target,back.meshTime,aim,back.ride);
   const world=new World([qb.body,rb.body]);
-  return {sim,qb,rb,world,mesh,target};
+  return {sim,qb,rb,world,mesh,target,installed};
 }
 function exchange(ride:boolean,side=1,interrupted=false) {
   const {sim,qb,rb,world}=stage(ride,side),frames:any[]=[];
@@ -144,5 +144,25 @@ describe('wide-zone exchange uses a moving QB landmark',()=>{
     sim.teammateInformation=()=>({source:'unavailable'});
     rb.body.pos={x:qb.pos.x+.8,y:qb.pos.y};
     qb.behavior.update(qb,sim);expect(sim.carrier).toBe(rb);
+  });
+
+  it.each([-1,1])('keeps the installed opposite-playside fake after crossing the mesh in reflection %s',side=>{
+    const {sim,qb,rb,mesh,installed}=stage(true,side);sim.t=1.5;
+    qb.behavior=installed;sim.ball={kind:'held',carrier:rb};
+    for(const offset of [-.1,.1]) {
+      qb.body.pos={x:mesh.x+.4,y:mesh.y+offset};qb.body.vel={x:-.4,y:-side*3};
+      const before=structuredClone(qb.body),request=qb.behavior.update(qb,sim);
+      expect(request.vel.y*side).toBeGreaterThan(0);
+      expect(qb.body).toEqual(before); // The new direction is requested, not awarded.
+    }
+  });
+
+  it('preserves the original fake for a non-riding handoff',()=>{
+    const {sim,qb,rb,mesh}=stage(false);sim.t=1.5;sim.ball={kind:'held',carrier:rb};
+    for(const offset of [-.1,.1]) {
+      qb.body.pos={x:mesh.x+.4,y:mesh.y+offset};
+      const away=qb.pos.y+Math.sign(offset)*4;
+      expect(qb.behavior.update(qb,sim)).toEqual(goTo(qb,{x:sim.los-6,y:away},{speed:.4}));
+    }
   });
 });
