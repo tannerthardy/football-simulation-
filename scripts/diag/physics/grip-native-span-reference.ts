@@ -13,9 +13,9 @@ const referenceReel:ReelProvider=(q,g)=>{
   return wanted>Math.min(q.capacity,q.armCapacity)?Math.min(q.capacity,q.armCapacity):wanted;
 };
 import {spanReferenceForce} from './grip-mixed-span-reference-force.js';
-export function nativeSpanReference(input:ActiveGripInput,n:number){
+export function nativeSpanReference(input:ActiveGripInput,n:number,field?:ReturnType<typeof nativeSpanModel>){
   if(!Number.isInteger(n)||n<1||n>4096)throw new RangeError('Span event reference budget');
-  const m=nativeSpanModel(input,spanReferenceForce,referenceReel,6*n+1024),floor=1e-9/(128*input.duration),
+  const m=field??nativeSpanModel(input,spanReferenceForce,referenceReel,6*n+1024),floor=1e-9/(128*input.duration),
     events:Array<{time:number;residual:number}>=[];
   let y=m.initial.slice(),sign=Math.sign(m.frame(y).tangent),roots=0,atRoot=false;
   const step=(z:number[],h:number)=>{

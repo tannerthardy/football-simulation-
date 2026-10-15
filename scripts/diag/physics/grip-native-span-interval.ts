@@ -8,8 +8,8 @@ import {SPAN} from './grip-mixed-span-model.js';
 import {nativeSpanModel} from './grip-native-span-model.js';
 import {spanEventForce} from './grip-span-event-force.js';
 import {spanKernelTrial} from './grip-span-kernel-trial.js';
-export function nativeSpanInterval(input:ActiveGripInput){
-  const m=nativeSpanModel(input,spanEventForce(1/input.a.mass+1/input.b.mass)),H=input.duration,floor=1e-9/(128*H),
+export function nativeSpanInterval(input:ActiveGripInput,field?:ReturnType<typeof nativeSpanModel>){
+  const m=field??nativeSpanModel(input,spanEventForce(1/input.a.mass+1/input.b.mass)),H=input.duration,floor=1e-9/(128*H),
     events:Array<{time:number;residual:number}>=[],refusals:Array<{time:number;width:number;reason:string}>=[];
   let y=m.initial.slice(),start=m.derivative(y),h=H,errorSum=0,pieces=0,roots=0,rejections=0,sign=Math.sign(start[SPAN.TJ]),atRoot=false;
   while(y[SPAN.TIME]<H-1e-17){

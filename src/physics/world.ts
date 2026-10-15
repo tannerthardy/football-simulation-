@@ -40,6 +40,7 @@ import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supp
 import { resolveGripInterval, type GripTimingReport } from './grip-timing.js';
 import {passiveGripResultValid,type PassiveGripInput,type PassiveGripResult,type PassiveGripSolver,type PassiveGripReport} from './passive-grip.js';
 import {activeGripResultValid,type ActiveGripInput,type ActiveGripResult,type ActiveGripSolver} from './active-grip.js';
+import {correctiveGripResultValid,type CorrectiveGripInput,type CorrectiveGripResult,type CorrectiveGripSolver} from './corrective-grip.js';
 import { LEG_SLIDE } from './grip-sliding.js';
 import { resolveFastGripInterval, commitGripTrial } from './grip-fast.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
@@ -168,6 +169,7 @@ export interface StepReport {
   /** Explicit experimental callback only; absent under production defaults. */
   passiveGrip?:PassiveGripReport;
   activeGrip?:PassiveGripReport & {armCost:number;reelDose:number};
+  correctiveGrip?:PassiveGripReport & {armCost:number;reelDose:number};
   /** Experimental grip integration only; absent from unchanged default reports. */
   gripTiming?: GripTimingReport;
   /** Substeps used by the contact island (1 when nobody was near contact). */
@@ -384,6 +386,7 @@ export class World {
   /** Experimental material transport ownership; absent retains legacy path. */
   declare readonly materialTransport?:'owned';
   declare readonly activeGrip?:ActiveGripSolver;
+  declare readonly correctiveGrip?:CorrectiveGripSolver;
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -451,7 +454,7 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast'; materialTransport?:'owned'; passiveGrip?:PassiveGripSolver; activeGrip?:ActiveGripSolver } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast'; materialTransport?:'owned'; passiveGrip?:PassiveGripSolver; activeGrip?:ActiveGripSolver;correctiveGrip?:CorrectiveGripSolver } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
@@ -459,6 +462,7 @@ export class World {
     this.gripTiming = opts.gripTiming ?? 'midpoint';
     if(opts.passiveGrip)this.passiveGrip=opts.passiveGrip;
     if(opts.activeGrip)this.activeGrip=opts.activeGrip;
+    if(opts.correctiveGrip)this.correctiveGrip=opts.correctiveGrip;
     if(opts.materialTransport)this.materialTransport=opts.materialTransport;
     if (this.handContact === 'patch' && this.handIntegration !== 'centered')
       throw new RangeError('Common hand patches require centered force integration');
@@ -473,6 +477,8 @@ export class World {
       throw new RangeError('Passive grip callback requires owned material, bounded patch, midpoint and per-solve work');
     if(this.activeGrip&&(this.passiveGrip||this.handContact!=='patch'||this.gripTiming!=='midpoint'||!this.boundedAttachment||this.constraintWork!=='per-solve'||this.materialTransport!=='owned'))
       throw new RangeError('Active grip callback requires sole callback, owned material, bounded patch, midpoint and per-solve work');
+    if(this.correctiveGrip&&(this.passiveGrip||this.activeGrip||this.handContact!=='patch'||this.gripTiming!=='midpoint'||!this.boundedAttachment||this.constraintWork!=='per-solve'||this.materialTransport!=='owned'))
+      throw new RangeError('Corrective grip callback requires sole callback, owned material, bounded patch, midpoint and per-solve work');
     const n = (this.n = bodies.length);
     bodies.forEach((b, i) => {
       this.index.set(b, i);
@@ -1057,9 +1063,9 @@ export class World {
   private integrateInterval(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
     report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean, swept = true): void {
     const bs = this.bodies;
-    const passiveStarts=(this.passiveGrip||this.activeGrip)&&contact?ids.map(i=>({mass:this.mass[i],inertia:this.inertia[i],
+    const passiveStarts=(this.passiveGrip||this.activeGrip||this.correctiveGrip)&&contact?ids.map(i=>({mass:this.mass[i],inertia:this.inertia[i],
       pos:{...bs[i].pos},vel:{...bs[i].vel},facing:bs[i].facing,spin:bs[i].spin??0})):undefined;
-    const groundStarts=this.activeGrip&&contact?ids.map(i=>({work:report.groundWork[i],yawWork:report.groundYawWork[i],yawImpulse:report.groundYawImpulse[i]})):undefined;
+    const groundStarts=(this.activeGrip||this.correctiveGrip)&&contact?ids.map(i=>({work:report.groundWork[i],yawWork:report.groundYawWork[i],yawImpulse:report.groundYawImpulse[i]})):undefined;
     this.syncHeldSupport();
     this.reels.clear();
     for (const i of ids) {
@@ -1102,7 +1108,7 @@ export class World {
     }
     // Complete the declared passive contact once, then retain the native load,
     // support, release and tick-fatigue lifecycle below. Refusal commits nothing.
-    const passive=passiveStarts?(this.activeGrip?this.tryActiveGrip(ids,passiveStarts,plans,h,report,groundStarts!):this.tryPassiveGrip(ids,passiveStarts,h,report)):undefined;
+    const passive=passiveStarts?(this.activeGrip||this.correctiveGrip?this.tryActiveGrip(ids,passiveStarts,plans,h,report,groundStarts!):this.tryPassiveGrip(ids,passiveStarts,h,report)):undefined;
 
     // Strikes develop over the controller tick, sharing arm force with all
     // hand actions. A distant target cannot receive a remote shove.
@@ -1480,7 +1486,8 @@ export class World {
    * support, release and fatigue still run once in their existing lifecycle. */
   private tryActiveGrip(ids:number[],starts:PassiveGripInput['a'][],plans:Plan[],h:number,report:StepReport,
     groundStarts:Array<{work:number;yawWork:number;yawImpulse:number}>):{joint:GraspJoint;slideIntegrated?:boolean}|undefined{
-    const audit=report.activeGrip??={accepted:0,fallbacks:0,reasons:{},dose:0,bodyWork:0,motorWork:0,armCost:0,reelDose:0},
+    const corrective=this.correctiveGrip,
+      audit=report[corrective?'correctiveGrip':'activeGrip']??={accepted:0,fallbacks:0,reasons:{},dose:0,bodyWork:0,motorWork:0,armCost:0,reelDose:0},
       refuse=(reason:string)=>{audit.fallbacks++;audit.reasons[reason]=(audit.reasons[reason]??0)+1;return undefined;};
     if(this.materialTransport!=='owned'||this.handContact!=='patch'||this.gripTiming!=='midpoint'||!this.boundedAttachment||this.constraintWork!=='per-solve')return refuse('scope:host');
     if(h<=0||h>.05/12||ids.length!==2||this.joints.length!==1||this.pending.length)return refuse('scope:graph/time');
@@ -1489,7 +1496,7 @@ export class World {
     const i=this.indexOf(jt.a),j=this.indexOf(jt.b),a=jt.a,b=jt.b,attachment=this.attachments.get(jt),foot=b.support!.foot,ia=ids.indexOf(i),ib=ids.indexOf(j);
     if(ia<0||ib<0||a.support!.state!=='up'||b.support!.state!=='up'||a.support!.foot
       ||!attachment?.bounded||!attachment.material||!foot||attachment.foot!==foot)return refuse('scope:attachment/support');
-    if(foot.desired.x!==0||foot.desired.y!==0||!(foot.mobility>0))return refuse('scope:recovery-command');
+    if(!corrective&&(foot.desired.x!==0||foot.desired.y!==0)||!(foot.mobility>0))return refuse('scope:recovery-command');
     const capacity=this.gripCapacity(jt),R=CONTACT_SCALE*1.12*(a.profile.radius+b.profile.radius),
       travel=Math.hypot(starts[ib].vel.x-starts[ia].vel.x,starts[ib].vel.y-starts[ia].vel.y)*h
         +.5*(capacity*(1/this.mass[i]+1/this.mass[j])+Math.hypot(this.amx[j]-this.amx[i],this.amy[j]-this.amy[i]))*h*h;
@@ -1506,9 +1513,10 @@ export class World {
       ground:[ground(i,starts[ia]),ground(j,starts[ib])],tickDuration:this.tickDt,armCapacity:this.armCap[i]*this.armScale[i],
       armWorkRemaining:Math.max(0,report.armWorkLimit[i]-report.armWork[i])};
     let r:ActiveGripResult|undefined;
-    try{r=this.activeGrip!(structuredClone(input));}catch(e){if(e instanceof RangeError)return refuse(`solver:${e.message}`);throw e;}
+    const corrected:CorrectiveGripInput|undefined=corrective?{...input,reelStopDistance:CONTACT_SCALE*(a.profile.radius+b.profile.radius),footCapacity:foot.capacity}:undefined;
+    try{r=corrective?corrective(structuredClone(corrected!)):this.activeGrip!(structuredClone(input));}catch(e){if(e instanceof RangeError)return refuse(`solver:${e.message}`);throw e;}
     if(!r)return refuse('solver:unsupported');
-    try{if(!activeGripResultValid(input,r))return refuse('solver:invalid-result');}
+    try{if(corrective?!correctiveGripResultValid(corrected!,r as CorrectiveGripResult):!activeGripResultValid(input,r))return refuse('solver:invalid-result');}
     catch(e){if(e instanceof RangeError||e instanceof TypeError)return refuse('solver:invalid-result');throw e;}
     if(r.tangentSlip&&LEG_BRACE)return refuse('scope:sliding-leg-brace');
     if(r.tangentSlip&&jt.height===undefined&&this.comHeight[j]>Math.min(a.profile.heightYd,b.profile.heightYd))return refuse('scope:sliding-height-clamp');
@@ -1517,7 +1525,8 @@ export class World {
       const old=groundStarts[ids.indexOf(idx)];report.groundWork[idx]=old.work+r.groundWork[k];
       report.groundYawWork[idx]=old.yawWork+r.groundYawWork[k];report.groundYawImpulse[idx]=old.yawImpulse+r.groundYawImpulse[k];
     }
-    this.footImpulseX[j]=(r.footOffset.x-input.footOffset.x)/input.mobility;this.footImpulseY[j]=(r.footOffset.y-input.footOffset.y)/input.mobility;
+    this.footImpulseX[j]=(r.footOffset.x-input.footOffset.x-(corrective?input.desired.x*h:0))/input.mobility;
+    this.footImpulseY[j]=(r.footOffset.y-input.footOffset.y-(corrective?input.desired.y*h:0))/input.mobility;
     foot.offset={...r.footOffset};attachment.material={...r.material};attachment.geometry=undefined;
     if(r.tangentSlip&&jt.height===undefined){
       // Height changes while sliding. Integrate z*F, rather than applying the
