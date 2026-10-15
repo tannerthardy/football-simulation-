@@ -145,7 +145,8 @@ const receipt={schema:'ordinary-pass-contact-v2',commit:execFileSync('git',['rev
  flags:Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),worldDefaults:profile.worldDefaults,
  testSourceSha256:hash(testSource),setupSourceSha256:hash(setupCode),acceptedMethodSha256:hash(method),
  collectorSha256:hash(readFileSync(import.meta.filename)),fixtureSha256:hash(setup('pass','full')),
- actors:setup('pass','full').offense.map((p,i)=>({idx:i,team:'O',slot:p.slot??null,id:p.player?.id??p.id})).concat(setup('pass','full').defense.map((p,i)=>({idx:i+11,team:'D',slot:p.slot??null,id:p.player?.id??p.id}))),
+ actors:Object.entries(setup('pass','full').offense).map(([slot,p])=>({team:'O',slot,id:p.id}))
+  .concat(Object.entries(setup('pass','full').defense).map(([slot,p])=>({team:'D',slot,id:p.id}))),
  retainedReferenceSha256:referencePath?hash(readFileSync(referencePath)):null,
  qualification:'Same existing roster generation seeds21/22, strength.6, GunDoubles/FourVerts vs Over/Cover4Palms, playseed5; all22 normal. Existing recorder fixture; no new roster or game. No deliberate QB mutation.',
  fullGames:0,nativeSegments:rows.length,elapsedSeconds:(performance.now()-started)/1000};
