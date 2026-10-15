@@ -77,8 +77,8 @@ three adjudicated #66-host results retain their sources. Historical comparison
 stays `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`; GitHub's default, physical
 laws/capacities and experimental settings are unchanged. No branch was deleted.
 
-The snapshot's [full pins and dependencies](../data/reviews/current/integration-queue.json)
-are an audit of this update, not another accepted reference. Recheck mutable
+The [historical inventory](../data/reviews/current/integration-queue.json)
+retains its dated pins/dependencies; the current record is above. Recheck mutable
 refs and PR review state before acting. An unaccepted remote push does not
 silently become approval; investigate a disagreement with this ledger.
 
@@ -190,6 +190,10 @@ are published, reusing all424 original players and seeds701–704 without regene
 teams. One accepted arm only. Measurement/CEO ownership/question/spend acknowledgement
 is pending at their working checkpoint; no background monitor or duplicate collector.
 The old experimental outputs remain historical context, not isolated-PR evidence.
+These four inputs have been reviewed before; they are not untouched holdouts.
+[One shared accepted-pin, owner and evaluation handoff](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618).
+The incorporated contribution #69 is closed with its exact disposition; its
+branch and all evidence remain available.
 
 <a id="run-entry-information-review"></a>
 ### Information-only acceptance decision

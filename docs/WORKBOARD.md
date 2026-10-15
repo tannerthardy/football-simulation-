@@ -30,6 +30,8 @@ spend acknowledgement pending; zero new evaluation games. [Conditions](INTEGRATI
 Physical laws/capabilities/defaults, experimental activation, unresolved material
 correctness risks, historical baselines/defaults and destructive cleanup escalate.
 Earlier per-merge authority paragraphs below describe their dated stages.
+[Consolidated accepted-pin and Measurement/CEO handoff](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618)
+is posted; contributor #69 is closed as incorporated and its branch is preserved.
 
 ## Independent #75 man-recognition integration — 2026-10-15
 

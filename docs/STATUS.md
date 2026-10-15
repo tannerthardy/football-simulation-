@@ -35,7 +35,7 @@ Do not use the historical sections below as a current starting-reference pin.
   Observation transport stays deferred until a reviewed consumer needs it.
   [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
   #69's corrected production hook now has Do-It-All's focused acceptance;
-  Its isolated four-file #78 candidate40be568 passes1,729 TS/145 Python,
+  its isolated four-file #78 candidate40be568 passes1,729 TS/145 Python,
   typecheck/build in191.361s,44 flags/components1. It is now accepted via90edc525;
   exact merge/passing-source checks needed no unchanged rerun.
   Physics remains separate.
@@ -62,6 +62,7 @@ game. Measurement/CEO acknowledgement pending; zero new evaluation games.
 Documentation-only policy edits use link/ref checks; the ready runtime candidate
 alone triggers its required verification. Believable football remains the goal;
 information correctness and overall football quality are separate claims.
+[One accepted-pin/owner/evaluation handoff](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618).
 
 <details>
 <summary>Pre-merge #63 status, tracking priorities and earlier history — preserved</summary>

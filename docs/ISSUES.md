@@ -86,6 +86,8 @@ onto8ca8dee. Exact40be568 passes1,729 TS/146 files,145 Python,typecheck/build
 in191.361s under44 flags/components1;64 focused passes/typecheck reused.
 Adopted through merged #78 as90edc525 after exact ref/tree checks; no suite repeat.
 [Actual merge and owner handoff](../data/reviews/current/pr78-merge.json).
+Contribution #69 is closed as incorporated through #78, with original branch,
+focused evidence and adverse history preserved. [Consolidated handoff](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618).
 Controlled collection parks the runner: live arrival/yardage benefit, fast-motion
 clearance and broader RunBlocker information correctness remain unproved. Retain
 rejected variants, expected-red and the three adjudicated #66-host failures with
