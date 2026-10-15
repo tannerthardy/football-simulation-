@@ -1,0 +1,137 @@
+[
+  {
+    "id": "A018",
+    "matchup": "technique-elusive",
+    "concept": "duo",
+    "seed": 71002,
+    "kind": "run",
+    "front": "wide9",
+    "coverageCalled": "cover4",
+    "coverageResolved": "cover4",
+    "pressure": null,
+    "status": "complete",
+    "inputSha256": "2b3d2f1616c7af44728dcc4e8f15e2d761ee706ebea61e99b431b7e9f6231ed1",
+    "sha256": "72d6d9b5837d74fc469411a46c73936509cc6f739c32cc316354f1ceae6f0c42",
+    "bytes": 11498785,
+    "outcome": "tackle",
+    "possession": "O",
+    "offenseYards": 1.79,
+    "endX": 36.78590409427589,
+    "duration": 3.5,
+    "stats": {
+      "tacklers": [
+        "S74D-LB1"
+      ],
+      "completed": false,
+      "attempted": false,
+      "sacked": false,
+      "scramble": false,
+      "throwaway": false,
+      "pressured": false,
+      "brokenTackles": 0,
+      "missedTackles": 1,
+      "dropped": false,
+      "qbRead": {
+        "pre": "cover4",
+        "actual": "cover4"
+      },
+      "rusher": "S74O-RB1",
+      "yardsBeforeContact": 0.6019478777414733
+    },
+    "max25SecondsCensored": false,
+    "frameCount": 70,
+    "wallMs": 190.72434900000007,
+    "cpuMs": 251.465,
+    "rawPath": "out/accepted-broad-audit/cases/A018.json"
+  },
+  {
+    "id": "A027",
+    "matchup": "ordinary",
+    "concept": "wz_strong",
+    "seed": 71001,
+    "kind": "run",
+    "front": "wide9",
+    "coverageCalled": "cover4",
+    "coverageResolved": "cover4",
+    "pressure": null,
+    "status": "complete",
+    "inputSha256": "804bffd02cb7aa9b8978d45b4cce245b991fb8368594cb0262cb96651f9ce403",
+    "sha256": "40ad8eb8ac8a0da88c193615abaedd736f47c5933cbe0e9d92e32dbe06cddadc",
+    "bytes": 14237672,
+    "outcome": "tackle",
+    "possession": "O",
+    "offenseYards": 0.33,
+    "endX": 35.332529264498774,
+    "duration": 4.35,
+    "stats": {
+      "tacklers": [
+        "S88D-LB2"
+      ],
+      "completed": false,
+      "attempted": false,
+      "sacked": false,
+      "scramble": false,
+      "throwaway": false,
+      "pressured": false,
+      "brokenTackles": 0,
+      "missedTackles": 1,
+      "dropped": false,
+      "qbRead": {
+        "pre": "cover4",
+        "actual": "cover4"
+      },
+      "rusher": "S88O-RB2",
+      "yardsBeforeContact": 0.18125531870665412
+    },
+    "max25SecondsCensored": false,
+    "frameCount": 87,
+    "wallMs": 255.405119,
+    "cpuMs": 364.108,
+    "rawPath": "out/accepted-broad-audit/cases/A027.json"
+  },
+  {
+    "id": "A030",
+    "matchup": "ordinary",
+    "concept": "duo",
+    "seed": 71002,
+    "kind": "run",
+    "front": "wide9",
+    "coverageCalled": "cover4",
+    "coverageResolved": "cover4",
+    "pressure": null,
+    "status": "complete",
+    "inputSha256": "17e60c1492aee67a48c56ac5897a22c095d6c116f9439b751a29325054d73f62",
+    "sha256": "7d60bf3e23dd5b023b7dfe7a2f9071168776181983e2fbe517b58f8b8cb05dd1",
+    "bytes": 11474767,
+    "outcome": "tackle",
+    "possession": "O",
+    "offenseYards": 2.01,
+    "endX": 37.00863433868411,
+    "duration": 3.5,
+    "stats": {
+      "tacklers": [
+        "S88D-LB2"
+      ],
+      "completed": false,
+      "attempted": false,
+      "sacked": false,
+      "scramble": false,
+      "throwaway": false,
+      "pressured": false,
+      "brokenTackles": 0,
+      "missedTackles": 0,
+      "dropped": false,
+      "qbRead": {
+        "pre": "cover4",
+        "actual": "cover4"
+      },
+      "rusher": "S88O-RB2",
+      "yardsBeforeContact": 0.535912931127605
+    },
+    "max25SecondsCensored": false,
+    "frameCount": 70,
+    "wallMs": 184.29774999999972,
+    "cpuMs": 214.745,
+    "rawPath": "out/accepted-broad-audit/cases/A030.json"
+  }
+]

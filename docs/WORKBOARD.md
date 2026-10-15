@@ -1,5 +1,15 @@
 # Current work ownership
 
+## Second-level access investigation — Run Game
+
+Pinned accepted90edc525 (#69 already incorporated); preselect saved A018/A030
+and achieved-block/defensive-recovery contrast A027 from audit58303d6. Trace
+installed job, acquired takeover/release and native departure/interception through
+contact/spacing and actual runner arrival. Older archive is outside this executor;
+reconstruct only these three exact inputs on8ca8dee and accepted90edc52. No new
+roster, broad audit, force/release tuning or Physics change. Provide #75 installed
+insertion/alley contract to Catching; Catching retains implementation/tests.
+
 ## Standing queue and next controller checkpoint — 2026-10-15
 
 Integration owns the existing four shared records, the `integration-ready` GitHub
