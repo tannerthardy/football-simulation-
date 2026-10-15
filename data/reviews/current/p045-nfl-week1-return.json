@@ -1,0 +1,425 @@
+{
+  "schema": "p045-nfl-execution-handoff-v1",
+  "query_commit": "81e43e7279a26c43f2ae5ea29a2282316f42899c",
+  "receipt": {
+    "commit": "747bb24bd2c17c8b4a6f572fcb3ee8e459375fb8",
+    "sha256": "d8e3cdc71461117439f2dafe84f1d87a3c74952d713f7167b436e4d82a53449b",
+    "catalog_archive_sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+    "published_verification_verified_zip_members": true
+  },
+  "module_sha256": {
+    "scripts/diag/p045-nfl-approach.py": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+    "scripts/mechanics/nfl_bdb2025.py": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c"
+  },
+  "access": {
+    "players.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/players.csv",
+      "readable": true,
+      "expected_bytes": 104749,
+      "expected_sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    },
+    "plays.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/plays.csv",
+      "readable": true,
+      "expected_bytes": 6892353,
+      "expected_sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    "player_play.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/player_play.csv",
+      "readable": true,
+      "expected_bytes": 52533762,
+      "expected_sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+    },
+    "tracking_week_1.csv": {
+      "path": "/workspace/football-yac-angle/data/raw/bdb2025/big-data-bowl-data/tracking_week_1.csv",
+      "readable": true,
+      "expected_bytes": 971403802,
+      "expected_sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c",
+      "bytes": 971403802,
+      "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+    }
+  },
+  "simulation_runs": 0,
+  "nfl": {
+    "status": "measured",
+    "counts": {
+      "label_candidates": 26,
+      "converted": 3,
+      "invalid": 3,
+      "geometry_matched": 1,
+      "contained": 1,
+      "offensive_win": 0
+    },
+    "witnesses": {
+      "contained": {
+        "id": "2022091101-4104",
+        "events": {
+          "pass_forward": 3.1,
+          "pass_arrived": 4.1,
+          "first_contact": 4.3,
+          "catch": 4.2,
+          "end": 5.2
+        },
+        "target_id": "52595",
+        "receiver_id": "52595",
+        "endpoint": "catch",
+        "selected_defender_ids": [
+          "46527",
+          "52472"
+        ],
+        "catch_depth_yd": 15.2,
+        "yac_yd": -2.1999999999999993,
+        "player_ids_by_common_index": [
+          "41264",
+          "42347",
+          "43380",
+          "44841",
+          "44870",
+          "44898",
+          "46235",
+          "52418",
+          "52595",
+          "53520",
+          "53539",
+          "42368",
+          "42436",
+          "45004",
+          "46124",
+          "46205",
+          "46527",
+          "47799",
+          "52417",
+          "52446",
+          "52472",
+          "53437"
+        ],
+        "frame_provenance": {
+          "snap_frame": 32,
+          "original_event_frames": {
+            "ball_snap": 32,
+            "pass_forward": 63,
+            "pass_arrived": 73,
+            "pass_outcome_caught": 74,
+            "first_contact": 75,
+            "tackle": 84
+          }
+        },
+        "native_stats": null,
+        "snapshots": [
+          {
+            "phase": "release",
+            "event_t_s": 3.1,
+            "position_sample_t_s": 3.1,
+            "receiver_xy": [
+              12.3,
+              35.0
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                5.2500000000000036,
+                -4.0000000000000036
+              ],
+              "sample_window_s": [
+                2.7,
+                3.1
+              ]
+            },
+            "nearest_id": "52472",
+            "defenders": [
+              {
+                "id": "46527",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 7.955501241279521,
+                "relative_xy_yd": [
+                  -2.0,
+                  -7.699999999999999
+                ],
+                "downfield_lead_yd": -2.0,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.250000000000001,
+                    -2.5
+                  ],
+                  "sample_window_s": [
+                    2.7,
+                    3.1
+                  ]
+                },
+                "speed_yd_s": 3.3634060117684283,
+                "closing_yd_s": 0.6976304611961053,
+                "momentum_kg_m_s": [
+                  219.30692137893007,
+                  -243.6743570877
+                ],
+                "lead_along_receiver_motion_yd": 3.0756693174589955,
+                "lateral_to_receiver_motion_yd": 7.336910674775951,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.1,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 4.091735468900023,
+                  "peak_accel_required_at_least_yd_s2": 7.905790268711553
+                }
+              },
+              {
+                "id": "52472",
+                "index": 20,
+                "slot": null,
+                "separation_yd": 5.5,
+                "relative_xy_yd": [
+                  5.5,
+                  0.0
+                ],
+                "downfield_lead_yd": 5.5,
+                "motion": {
+                  "velocity_yd_s": [
+                    2.5,
+                    -2.2499999999999964
+                  ],
+                  "sample_window_s": [
+                    2.7,
+                    3.1
+                  ]
+                },
+                "speed_yd_s": 3.3634060117684252,
+                "closing_yd_s": 2.7500000000000036,
+                "momentum_kg_m_s": [
+                  219.82537745784,
+                  -197.8428397120557
+                ],
+                "lead_along_receiver_motion_yd": 4.374874460178742,
+                "lateral_to_receiver_motion_yd": 3.3332376839457094,
+                "catch_landmark_demand": {
+                  "horizon_s": 1.1,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 4.3761606740904115,
+                  "peak_accel_required_at_least_yd_s2": 8.271089383925542
+                }
+              }
+            ]
+          },
+          {
+            "phase": "flight_midpoint",
+            "event_t_s": 3.6500000000000004,
+            "position_sample_t_s": 3.6,
+            "receiver_xy": [
+              14.3,
+              32.5
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                3.75,
+                -5.2500000000000036
+              ],
+              "sample_window_s": [
+                3.2,
+                3.6
+              ]
+            },
+            "nearest_id": "52472",
+            "defenders": [
+              {
+                "id": "46527",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 7.200694410957875,
+                "relative_xy_yd": [
+                  -3.3000000000000007,
+                  -6.399999999999999
+                ],
+                "downfield_lead_yd": -3.3000000000000007,
+                "motion": {
+                  "velocity_yd_s": [
+                    1.25,
+                    -2.5
+                  ],
+                  "sample_window_s": [
+                    3.2,
+                    3.6
+                  ]
+                },
+                "speed_yd_s": 2.7950849718747373,
+                "closing_yd_s": 1.2984858773858492,
+                "momentum_kg_m_s": [
+                  121.83717854385,
+                  -243.6743570877
+                ],
+                "lead_along_receiver_motion_yd": 3.2898081764500864,
+                "lateral_to_receiver_motion_yd": 6.405244894784441,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.6000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 7.662201312771017,
+                  "peak_accel_required_at_least_yd_s2": 29.113292310297705
+                }
+              },
+              {
+                "id": "52472",
+                "index": 20,
+                "slot": null,
+                "separation_yd": 3.712142238654116,
+                "relative_xy_yd": [
+                  3.6999999999999993,
+                  0.29999999999999716
+                ],
+                "downfield_lead_yd": 3.6999999999999993,
+                "motion": {
+                  "velocity_yd_s": [
+                    0.25000000000000355,
+                    -4.500000000000011
+                  ],
+                  "sample_window_s": [
+                    3.2,
+                    3.6
+                  ]
+                },
+                "speed_yd_s": 4.506939094329997,
+                "closing_yd_s": 3.4279397668268223,
+                "momentum_kg_m_s": [
+                  21.982537745784313,
+                  -395.68567942411295
+                ],
+                "lead_along_receiver_motion_yd": 1.906461275398637,
+                "lateral_to_receiver_motion_yd": 3.1851853015806464,
+                "catch_landmark_demand": {
+                  "horizon_s": 0.6000000000000001,
+                  "radius_yd": 1.0,
+                  "speed_cap_required_at_least_yd_s": 5.172761509561059,
+                  "peak_accel_required_at_least_yd_s2": 10.917861114647492
+                }
+              }
+            ]
+          },
+          {
+            "phase": "catch",
+            "event_t_s": 4.2,
+            "position_sample_t_s": 4.2,
+            "receiver_xy": [
+              15.2,
+              29.8
+            ],
+            "receiver_motion": {
+              "velocity_yd_s": [
+                0.9999999999999964,
+                -4.500000000000002
+              ],
+              "sample_window_s": [
+                3.8,
+                4.2
+              ]
+            },
+            "nearest_id": "52472",
+            "defenders": [
+              {
+                "id": "46527",
+                "index": 16,
+                "slot": null,
+                "separation_yd": 5.200961449578338,
+                "relative_xy_yd": [
+                  -3.1999999999999993,
+                  -4.100000000000001
+                ],
+                "downfield_lead_yd": -3.1999999999999993,
+                "motion": {
+                  "velocity_yd_s": [
+                    1.7499999999999982,
+                    -0.25000000000000355
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "speed_yd_s": 1.7677669529663675,
+                "closing_yd_s": 3.811795221363791,
+                "momentum_kg_m_s": [
+                  170.5720499613898,
+                  -24.367435708770348
+                ],
+                "lead_along_receiver_motion_yd": 3.3081894817345114,
+                "lateral_to_receiver_motion_yd": 4.0132134696451365,
+                "catch_landmark_demand": null
+              },
+              {
+                "id": "52472",
+                "index": 20,
+                "slot": null,
+                "separation_yd": 1.4142135623730971,
+                "relative_xy_yd": [
+                  1.4000000000000021,
+                  0.1999999999999993
+                ],
+                "downfield_lead_yd": 1.4000000000000021,
+                "motion": {
+                  "velocity_yd_s": [
+                    -2.7499999999999947,
+                    -4.500000000000002
+                  ],
+                  "sample_window_s": [
+                    3.8,
+                    4.2
+                  ]
+                },
+                "speed_yd_s": 5.273755777432245,
+                "closing_yd_s": 3.712310601229366,
+                "momentum_kg_m_s": [
+                  -241.80791520362357,
+                  -395.68567942411215
+                ],
+                "lead_along_receiver_motion_yd": 0.1084652289093281,
+                "lateral_to_receiver_motion_yd": 1.4100479758212672,
+                "catch_landmark_demand": null
+              }
+            ]
+          }
+        ],
+        "labels": {
+          "gameId": "2022091101",
+          "playId": "4104",
+          "pff_passCoverage": "Quarters",
+          "routeRan": "POST",
+          "official_target_had_reception": true,
+          "all_22_positions_observed_snap_through_endpoint": true
+        }
+      }
+    }
+  },
+  "archive": {
+    "path": "/workspace/football-yac-angle/data/raw/zips/archive.zip",
+    "readable": true,
+    "expected_bytes": 1219840421,
+    "expected_sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+    "rehashed_here": true
+  },
+  "query": {
+    "weeks": [
+      1
+    ],
+    "coverage": "QUARTERS",
+    "official_catcher_route": "POST",
+    "catch_depth_yd": [
+      15,
+      30
+    ],
+    "flight_s": [
+      1,
+      2
+    ],
+    "nearest_at_catch_yd": [
+      1,
+      4
+    ],
+    "witnesses": "Smallest numeric gameId/playId in each bin: YAC <=5; YAC >=15. No automatic widening.",
+    "purpose": "Post catch within Y-Cross; illustrative containment/offensive-win controls, not frequency estimates."
+  },
+  "query_executed": true,
+  "elapsed_s": 15.492674798006192,
+  "runner_sha256": "cf489afef2f55182146178cd8544263fc292554b8bfbbb4db849005e71e9ee45"
+}
