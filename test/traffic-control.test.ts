@@ -25,7 +25,7 @@ describe('shared teammate traffic control',()=>{
       a.body.facing=direction===1?0:Math.PI;b.body.pos={x:50+6*direction,y:CENTER_Y};b.body.vel={x:0,y:0};
       const profiles=[{...a.profile},{...b.profile}],positions=[{...a.pos},{...b.pos}];
       const intents:Intent[]=[{vel:{x:9*direction,y:0}},{vel:{x:0,y:0}}];
-      spaceTeammates([a,b],intents);
+      spaceTeammates([a,b],intents,(_observer,target)=>target);
       expect(intents[0].vel.x*direction).toBeLessThan(9);
       expect(intents[0].vel.x*direction).toBeGreaterThan(0);
       expect([a.profile,b.profile]).toEqual(profiles);
@@ -37,7 +37,7 @@ describe('shared teammate traffic control',()=>{
       const {a,b}=stage();a.body.pos={x:50,y:CENTER_Y};a.body.vel={x:5,y:0};
       a.body.facing=0;b.body.pos={x:51,y:CENTER_Y+side};b.body.vel={x:0,y:0};
       const intents:Intent[]=[{vel:{x:5,y:0}},{vel:{x:0,y:0}}];
-      spaceTeammates([a,b],intents);expect(intents[0].vel).toEqual({x:5,y:0});
+      spaceTeammates([a,b],intents,(_observer,target)=>target);expect(intents[0].vel).toEqual({x:5,y:0});
     }
   });
   it('responds to the observed teammate picture rather than his unseen new position',()=>{

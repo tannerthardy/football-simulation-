@@ -15,7 +15,7 @@
  * margins; accuracy turns into a miss distance on the actual throw.
  */
 import { FIELD_WIDTH } from '../../core/field.js';
-import { clamp, logistic, type Vec2, type Vec3 } from '../../core/vec.js';
+import { angleDiff, clamp, logistic, type Vec2, type Vec3 } from '../../core/vec.js';
 import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -28,6 +28,9 @@ import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
 import type { ReplayTelemetryFrame } from '../types.js';
+import type { Perceived } from '../perception.js';
+import { atStickDecision, observedStickBranch, predictStick, readStick,
+  type StickBranch, type StickInstall, type StickRead } from '../option-route.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -40,6 +43,17 @@ interface ThrowEval {
   intRisk: number;
   value: number;
   depth: number;
+}
+
+interface OptionMemory {
+  install: StickInstall;
+  picture: Perceived;
+  observedAt: number;
+  attemptedAt: number;
+  branch: StickBranch;
+  committed: boolean;
+  evidence: 'install' | 'key' | 'motion';
+  read: StickRead | null;
 }
 
 function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
@@ -63,6 +77,7 @@ function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): 
 }
 
 export class QBPass implements Behavior {
+  private readonly optionMemories = new Map<Agent, OptionMemory>();
   readonly kind = 'qb-pass';
   private phase: 'snap' | 'drop' | 'set' | 'windup' = 'snap';
   private readonly snapAt: number;
@@ -125,6 +140,13 @@ export class QBPass implements Behavior {
       }
     }
     this.reads = this.orderReads(sim, this.reads);
+    for (const r of this.reads) {
+      const install = r.behavior instanceof RouteRunner ? r.behavior.stickInstall : null;
+      if (install) this.optionMemories.set(r, { install, picture: {
+        pos: { ...install.origin }, vel: { x: 0, y: 0 }, facing: 0,
+        stance: null, pose: 'up', carrying: false, age: 0,
+      }, observedAt: 0, attemptedAt: -1, branch: 'sit', committed: false, evidence: 'install', read: null });
+    }
   }
 
   /**
@@ -183,6 +205,9 @@ export class QBPass implements Behavior {
 
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
     this.mind.observe(this.gazePoint(sim));
+    const attention = this.phase === 'windup' ? this.pending?.target
+      : this.lookOff && t < this.lookOff.until ? this.lookOff.decoy : this.reads[this.readIdx];
+    if (attention) this.observeStick(a, sim, attention);
     if (this.mind.justIdentified && this.readIdx === 0) this.reads = this.orderReads(sim, this.reads);
 
     if (this.phase === 'snap') {
@@ -316,7 +341,53 @@ export class QBPass implements Behavior {
     const read = this.reads[this.readIdx];
     // During the drop: the key (middle-of-field safety); quick game eyes the first read.
     if ((this.phase === 'snap' || this.phase === 'drop') && this.concept.family !== 'quick') return { x: sim.los + 12, y: sim.ballY };
+    if (read && this.optionMemories.has(read)) return this.knownStickPoint(sim, read, 0);
     return read ? read.pos : { x: sim.los + 10, y: sim.ballY };
+  }
+
+  /** An intended look does not reveal an off-screen live receiver. Use the
+   * same clear-cone dimensions as QBMind, with delayed sector membership.
+   * Emergency scans of other options retain their previous/installed picture.
+   */
+  private observeStick(a: Agent, sim: PlaySim, r: Agent): void {
+    const m = this.optionMemories.get(r);
+    if (!m || m.attemptedAt === sim.t) return;
+    const looking = this.phase === 'windup' ? this.pending?.target === r
+      : this.lookOff && sim.t < this.lookOff.until ? this.lookOff.decoy === r
+      : this.reads[this.readIdx] === r && (this.concept.family === 'quick' || this.phase === 'set');
+    if (!looking) return;
+    m.attemptedAt = sim.t;
+    const gaze = this.gazePoint(sim), seen = sim.see(a, r);
+    const dir = angleTo(a.pos, gaze), ang = Math.abs(angleDiff(angleTo(a.pos, seen.pos), dir));
+    const cone = (.33 + .22 * a.r('awareness')) * (.65 + .35 * a.mind.focus);
+    if (ang > cone) return;
+    m.picture = { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } };
+    m.observedAt = sim.t;
+    const motion = observedStickBranch(m.install, m.picture);
+    if (motion) { m.branch = motion; m.committed = true; m.evidence = 'motion'; }
+    else if (!m.committed) {
+      m.read = readStick(m.install, sim.defense.map(d => ({ i: d.idx, ...this.mind.estimate(d) })));
+      m.branch = m.read.branch; m.evidence = 'key';
+      m.committed = atStickDecision(m.install, m.picture.pos);
+    }
+  }
+
+  private knownStickPoint(sim: PlaySim, r: Agent, ahead: number): Vec2 {
+    const m = this.optionMemories.get(r)!;
+    return predictStick(m.install, m.branch, m.picture, r.profile, ahead,
+      Math.max(0, sim.t - m.observedAt), sim.dt);
+  }
+
+  /** Called-route anticipation and the QB's own evidence. The receiver's
+   * private path/index/commitment cannot reveal a Stick conversion at release.
+   */
+  private receiverPrediction(a: Agent, sim: PlaySim, r: Agent, ahead: number): Vec2 {
+    if (this.optionMemories.has(r)) {
+      this.observeStick(a, sim, r);
+      return this.knownStickPoint(sim, r, ahead);
+    }
+    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
+    return rr ? rr.predict(r, ahead) : { x: r.pos.x + r.vel.x * ahead, y: r.pos.y + r.vel.y * ahead };
   }
 
   private ready(r: Agent, sim: PlaySim): boolean {
@@ -360,18 +431,22 @@ export class QBPass implements Behavior {
   }
 
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
-    if (r.isDown(sim.t) || r.engagement) return null;
-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
+    const option = this.optionMemories.get(r);
+    if (option) {
+      this.observeStick(a, sim, r);
+      if (option.picture.pose === 'down' || option.picture.pose === 'rising') return null;
+    } else if (r.isDown(sim.t) || r.engagement) return null;
     const wind = this.windup(a);
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
-    const predict = (dt: number): Vec2 => (rr ? rr.predict(r, dt) : { x: r.pos.x + r.vel.x * dt, y: r.pos.y + r.vel.y * dt });
+    const predict = (dt: number): Vec2 => this.receiverPrediction(a, sim, r, dt);
     // Natural throw: the flight time real QBs use at this distance (2023
     // tracking: ~0.6 s under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35,
     // 2.5 s at 45), never faster than his arm allows. Stronger arms get there
     // a little sooner.
     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
     const natural = (d: number) => (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
-    let range = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
+    const current = option ? this.knownStickPoint(sim, r, 0) : r.pos;
+    let range = Math.hypot(current.x - a.pos.x, current.y - a.pos.y);
     let T = Math.max(0.3, natural(range));
     let Tmin = T;
     let pt = predict(wind + T);
@@ -489,8 +564,8 @@ export class QBPass implements Behavior {
     const r = ev.target;
     const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     let point = ev.point;
-    if (rr) {
-      const p = rr.predict(r, ev.T);
+    if (rr || this.optionMemories.has(r)) {
+      const p = this.receiverPrediction(a, sim, r, ev.T);
       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
     }
     const dist = Math.hypot(point.x - from.x, point.y - from.y);
@@ -603,12 +678,15 @@ export class QBHandoff implements Behavior {
     private readonly rb: Agent | null,
     private readonly pitchRange = 1.3,
     private readonly keeper = false,
+    private readonly ride = false,
+    private readonly fakeSide?: number,
   ) {}
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (this.handed || sim.carrier !== a) {
       // Carry out the fake away from the play.
-      const away = a.pos.y + Math.sign(a.pos.y - this.mesh.y || 1) * 4;
+      // Crossing the exchange landmark does not reverse the installed fake.
+      const away = a.pos.y + (this.fakeSide ?? Math.sign(a.pos.y - this.mesh.y || 1)) * 4;
       return goTo(a, { x: sim.los - 6, y: away }, { speed: 0.4 });
     }
     if (this.keeper && sim.t >= this.meshTime) {
@@ -629,14 +707,29 @@ export class QBHandoff implements Behavior {
       }
     }
     if (sim.t < 0.05) return stand();
+    // A stretch exchange is on the move for both players. The back already
+    // rides at this installed tempo; asking the QB to stop at his landmark
+    // applies arrival braking from his very first opening step.
+    const through = this.ride ? a.profile.vmax * .55 : 0;
     // Quick reverse pivot / step to the mesh. Once the back is already on it
     // and riding past, ride with him: put the ball where he is going.
-    if (rb && sim.t >= this.meshTime - 0.3 && Math.hypot(rb.pos.x - this.mesh.x, rb.pos.y - this.mesh.y) < 1.2) {
-      const seen = sim.see(a, rb), lead = { x: seen.pos.x + seen.vel.x * .2, y: seen.pos.y + seen.vel.y * .2 };
-      return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through: 0 });
+    if (rb && sim.t >= this.meshTime - 0.3) {
+      const picture = sim.teammateInformation(a, rb);
+      if (picture.source !== 'unavailable' && Math.hypot(picture.pos.x - this.mesh.x, picture.pos.y - this.mesh.y) < 1.2) {
+        const dt = picture.source === 'called' ? Math.min(.2, Math.max(0, picture.forecast?.validFor ?? 0)) : .2;
+        let lead = { x: picture.pos.x + picture.vel.x * dt, y: picture.pos.y + picture.vel.y * dt };
+        const path = picture.source === 'called' ? picture.forecast?.samples : undefined;
+        if (path && path.length > 1) {
+          const t = Math.min(dt, path.at(-1)!.t), k = path.findIndex(s => s.t >= t - 1e-9);
+          const hi = path[k], lo = path[Math.max(0, k - 1)];
+          const u = hi.t > lo.t ? clamp((t - lo.t) / (hi.t - lo.t), 0, 1) : 0;
+          lead = { x: lo.pos.x + (hi.pos.x - lo.pos.x) * u, y: lo.pos.y + (hi.pos.y - lo.pos.y) * u };
+        }
+        return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through });
+      }
     }
     const facing = angleTo(a.pos, this.mesh);
-    return goTo(a, this.mesh, { speed: 1, facing, through: 0 });
+    return goTo(a, this.mesh, { speed: 1, facing, through });
   }
 }
 

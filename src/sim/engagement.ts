@@ -36,6 +36,7 @@ import { availability, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { contactMotion } from './contact-motion.js';
+import { projectStretchFeet } from './stretch-footwork.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { runContactObservers } from './run-contact-observer.js';
@@ -1080,6 +1081,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   let blockVel = RUN_CONTACT_COMPONENTS && stretch ? contactMotion(drive, lat, forward, lateral)
     : { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  const surfaceFeet = b.behavior.runSurfaceMotion?.(b);
+  if (surfaceFeet) {
+    // This player's held acquired fit supplies only his feet. Keep the
+    // acquired hand frame/control, normal/tangent request limits and anchor.
+    blockVel = projectStretchFeet(surfaceFeet.vel, axis, 2.4, mirror);
+    lateral = blockVel.x * lat.x + blockVel.y * lat.y;
+  }
   const preAnchor = blockVel;
   let anchored = false;
   // Anchor against the normal threat only (lost depth), and keep the
@@ -1111,7 +1119,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   intents[b.idx] = {
     vel: blockVel,
-    facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
+    facing: surfaceFeet?.facing ?? Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     posture: 0.85,
     cutSkill: 0.8 + 0.3 * tb.feet,
@@ -1119,7 +1127,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   runContactObservers.get(sim)?.(e, 'movement', { axis, lat, drive, stretch, forward,
     dLat, feltCue, feedback, correction, mirror, offset, wantOffset, seal,
     sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, lateral, preAnchor,
-    anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
+    anchored, surfaceFeet, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
     blockerVel: b.vel, defenderVel: d.vel, facing: b.facing, support: b.body.support,
     defensiveAim: read.aim, reading: read.reading, declared: read.declared,
     heldFlow: read.stack?.flow, fit: d.runFit });
@@ -1277,6 +1285,13 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
   for (const h of e.helpers) {
     const recovery = e.type === 'run' ? helperFit(sim,e,h,axis) : null;
     if (recovery) { intents[h.idx] = recovery; continue; }
+    const surfaceFeet = e.type === 'run' ? h.behavior.runSurfaceMotion?.(h) : null;
+    if (surfaceFeet) {
+      const th = traits(h, 'run'), mirror = th.lateral * (0.75 + 0.35 * th.feet);
+      intents[h.idx] = { vel: projectStretchFeet(surfaceFeet.vel, axis, 2.2, mirror),
+        facing: surfaceFeet.facing ?? h.facing, push: 1, posture: .75 };
+      continue;
+    }
     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
     const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
     const toSpot = sub(spot, h.pos);

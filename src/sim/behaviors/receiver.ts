@@ -12,6 +12,7 @@ import type { HandJoint } from '../../physics/world.js';
 import type { RouteDef, RoutePoint } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
+import { atStickDecision, readStick, type StickInstall, type StickRead } from '../option-route.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 
 interface PathPoint {
@@ -42,6 +43,9 @@ export class RouteRunner implements Behavior {
   private pressContact: PressContact | null = null;
   private readonly releasedCorners = new Set<Agent>();
   private converted = false;
+  private optionDecision: StickRead | null = null;
+  /** Rehearsed call shared with teammates, never this runner's live choice. */
+  readonly stickInstall: StickInstall | null;
   private readAt: number;
   private readonly start: Vec2;
   /** Time at which the route's final break is expected (for QB timing). */
@@ -60,6 +64,9 @@ export class RouteRunner implements Behavior {
     this.start = { ...a.pos };
     const base: Record<string, number> = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
     this.effort = clamp((base[route.family] ?? 0.85) + 0.04 * (a.r('routeRunning') - 0.5), 0.7, 0.98);
+    this.stickInstall = route.id === 'stick' && route.vsMan ? {
+      origin: { ...a.pos }, los: sim.los, outside, route, effort: this.effort, routeSkill: a.r('routeRunning'),
+    } : null;
     this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
     this.readAt = 0.55 + 0.6 * (1 - a.r('awareness'));
     // Break time ≈ distance to the last speed-controlled point at ~85% speed.
@@ -122,8 +129,18 @@ export class RouteRunner implements Behavior {
       if (cmd) return { ...cmd, effort: 0.55 };
     }
 
-    // Option routes read the coverage once.
-    if (!this.converted && sim.t >= this.readAt && this.route.end === 'sitVsZone') {
+    // This installed Stick reads observable leverage at its physical decision
+    // region. The other legacy option family is outside this bounded repair.
+    if (!this.converted && this.stickInstall && atStickDecision(this.stickInstall, a.pos)) {
+      this.optionDecision = readStick(this.stickInstall,
+        sim.defense.map(d => ({ i: d.idx, ...sim.see(a, d) })));
+      this.converted = true;
+      if (this.optionDecision.branch === 'out') {
+        this.path = this.buildPath(this.start, this.route.vsMan!, true);
+        this.idx = 0;
+        this.skipPassed(a);
+      }
+    } else if (!this.converted && !this.stickInstall && sim.t >= this.readAt && this.route.end === 'sitVsZone') {
       this.converted = true;
       const misread = sim.rng.chance(0.15 * (1 - a.r('awareness')));
       const isMan = sim.defAlign.coverage.man !== misread;
@@ -225,15 +242,23 @@ export class RouteRunner implements Behavior {
     let spot = last;
     if (this.route.end === 'sitVsZone') {
       let best: Agent | null = null;
+      let bestPos: Vec2 | null = null;
       let bd = Infinity;
       for (const d of sim.defense) {
-        const dd = Math.hypot(d.pos.x - last.x, d.pos.y - last.y);
+        const seen = this.stickInstall ? sim.see(a, d) : null;
+        if (seen?.pose === 'down' || seen?.pose === 'rising') continue;
+        const pos = seen?.pos ?? d.pos;
+        const dd = Math.hypot(pos.x - last.x, pos.y - last.y);
         if (dd < bd) {
           bd = dd;
           best = d;
+          bestPos = pos;
         }
       }
-      if (best && bd < 4) spot = { x: last.x, y: clamp(last.y + Math.sign(last.y - best.pos.y || 1) * (4 - bd) * 0.5, 1.5, FIELD_WIDTH - 1.5) };
+      if (best && bestPos && bd < 4) {
+        const pos = bestPos;
+        spot = { x: last.x, y: clamp(last.y + Math.sign(last.y - pos.y || 1) * (4 - bd) * 0.5, 1.5, FIELD_WIDTH - 1.5) };
+      }
     }
     return goTo(a, spot, { speed: 0.6, facing: angleTo(a.pos, sim.qb.pos) });
   }

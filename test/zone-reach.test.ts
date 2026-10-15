@@ -101,7 +101,7 @@ describe('the narrow zone acquisition controller preserves other installed jobs'
     expect(advance(f.blocker.body, command)).toEqual(advance(f.blocker.body, expected));
   });
 
-  it('preserves the shared surface of a live planned double', () => {
+  it('preserves the shared surface while a live double uses its own moving half fit', () => {
     const f = fixture(), helper = f.sim.slot('LG')!;
     helper.body.pos = { x: 40, y: CENTER_Y + .6 };
     const combination: Combination = { members: [f.blocker, helper], defender: f.defender,
@@ -115,7 +115,12 @@ describe('the narrow zone acquisition controller preserves other installed jobs'
     expect(f.behavior.plan.combination).toBe(combination);
     expect(combination.released).toBe(false);
     expect(f.behavior.plan.drive).toEqual(f.stretch);
-    expect(command).toEqual(expected);
+    expect(command).not.toEqual(expected);
+    expect(f.behavior.stretchFootRead?.target).toBe(f.defender.idx);
+    const halfDirection = f.behavior.stretchFootRead!.choice.aim.y - f.blocker.pos.y;
+    const moved = advance(f.blocker.body, command, 2);
+    expect((moved.pos.y - f.blocker.pos.y) * halfDirection).toBeGreaterThan(0);
+    expect(f.sim.world.joints).toHaveLength(0);
   });
 
   it('leaves a body with a foreign physical hand constraint under its existing controller', () => {

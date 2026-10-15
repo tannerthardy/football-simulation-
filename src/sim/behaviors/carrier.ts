@@ -159,7 +159,7 @@ export class BallCarrier implements Behavior {
       // Only abandon the design early if the aiming point is clearly closed.
       if (sim.t >= this.nextEval) {
         this.nextEval = sim.t + a.mind.decisionInterval;
-        const best = this.evaluate(a, sim, dir, true);
+        const best = this.evaluate(a, sim, dir, true, aim);
         if (best && best.aimBlocked && best.score > best.aimScore + 0.5 + 0.5 * a.r('patience')) this.opts.aimUntil = sim.t;
       }
       const lead = this.opts.follow?.filter((b) => !b.isDown(sim.t) && !b.engagement)
@@ -272,7 +272,7 @@ export class BallCarrier implements Behavior {
     return { vel, cutSkill, squeeze };
   }
 
-  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
+  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean, assessmentAim = this.opts.aim): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
     const vision = a.r('vision');
     const range = 7 + 22 * vision;
     const p = a.pos;
@@ -305,7 +305,7 @@ export class BallCarrier implements Behavior {
     const spread = designed ? 0.9 : 1.55;
     for (let k = -8; k <= 8; k++) cands.push(base + (k / 8) * spread);
     cands.push(cur);
-    const aimHeading = this.opts.aim ? angleOfPoint(p, this.opts.aim) : base;
+    const aimHeading = assessmentAim ? angleOfPoint(p, assessmentAim) : base;
     if (designed) cands.push(aimHeading);
 
     let best: { heading: number; score: number; blocked: boolean; exits: boolean } | null = null;
@@ -400,7 +400,7 @@ export class BallCarrier implements Behavior {
       // Lateral movement without gain is worth little; going backwards is bad.
       const lat = Math.abs(lastQ.y - p.y);
       score -= (lastQ.x - p.x) * dir < 0 ? 2 + lat * 0.2 : 0;
-      if (designed && this.opts.aim) score -= Math.abs(angleDiff(angleOf({ x: this.opts.aim.x - p.x, y: this.opts.aim.y - p.y }), h)) * 2.5;
+      if (designed && assessmentAim) score -= Math.abs(angleDiff(angleOf({ x: assessmentAim.x - p.x, y: assessmentAim.y - p.y }), h)) * 2.5;
       if (hurry) {
         const toSide = hy > 0 ? FIELD_WIDTH - p.y : p.y;
         if (Math.abs(hy) > 0.5 && toSide < 12) score += 2.5;

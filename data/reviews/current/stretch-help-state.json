@@ -1,0 +1,972 @@
+{
+  "protocol": "stretch-unjoined-help-acquired-state-v1",
+  "sourceCommit": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+  "sourceRuntime": "60120551f0ad09415b47150f5edd9cdbd179955010a33d557af817fec31a01f1",
+  "sourcePacket": "/workspace/wz-execution-evidence/out/wz-execution/before.json.gz",
+  "sourcePacketSha256": "8e607e1059d81d71e13f71f761868f84af558410f57fed7564d628e6061084ba",
+  "scope": "Exact own RT physical state and already queried observer-owned pictures from BEFORE601 at .75s. Not a serialized PlaySim; tests isolate controller decisions, not a native late restart. Other actors are represented only by public identities/traits from the frozen roster plus copied acquired pictures. No remote body/support/control/hand state is retained.",
+  "actor": {
+    "idx": 2,
+    "slot": "RT",
+    "team": "O",
+    "player": {
+      "id": "O-OT2",
+      "firstName": "Adrian",
+      "lastName": "Ross",
+      "jersey": 75,
+      "position": "OT",
+      "age": 27,
+      "experience": 5,
+      "measurables": {
+        "heightIn": 78.7,
+        "weightLb": 318,
+        "armIn": 35.9,
+        "handIn": 10.8,
+        "forty": 5.17,
+        "tenSplit": 1.75,
+        "shuttle": 4.78,
+        "threeCone": 7.67,
+        "vertical": 29.8,
+        "broad": 106,
+        "bench": 22
+      },
+      "ratings": {
+        "strength": 71,
+        "stamina": 76,
+        "balance": 70,
+        "toughness": 47,
+        "throwPower": 23,
+        "accShort": 23,
+        "accMid": 28,
+        "accDeep": 31,
+        "release": 12,
+        "throwOnRun": 24,
+        "touch": 33,
+        "pocketPresence": 35,
+        "vision": 30,
+        "elusiveness": 28,
+        "breakTackle": 30,
+        "ballSecurity": 28,
+        "patience": 34,
+        "routeRunning": 16,
+        "releaseVsPress": 50,
+        "hands": 33,
+        "contestedCatch": 29,
+        "ballTracking": 46,
+        "passBlock": 64,
+        "runBlock": 72,
+        "handTechnique": 65,
+        "leadBlock": 24,
+        "passRushPower": 29,
+        "passRushFinesse": 37,
+        "blockShedding": 35,
+        "tackling": 29,
+        "hitPower": 46,
+        "pursuit": 34,
+        "manCoverage": 22,
+        "zoneCoverage": 17,
+        "press": 17,
+        "ballSkills": 19,
+        "kickPower": 3,
+        "kickAccuracy": 24,
+        "puntPower": 31,
+        "puntAccuracy": 28,
+        "awareness": 58,
+        "playRecognition": 67,
+        "decisionMaking": 77,
+        "composure": 68,
+        "discipline": 65,
+        "anticipation": 37,
+        "consistency": 50,
+        "workRate": 45
+      },
+      "familiarity": {
+        "OG": 0.75,
+        "C": 0.4
+      },
+      "archetype": "Mauler"
+    }
+  },
+  "cases": [
+    {
+      "id": "uc12-wz-s3",
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "entry": 0.75,
+      "ownBody": {
+        "pos": {
+          "x": 39.699846383889955,
+          "y": 23.59898631132682
+        },
+        "vel": {
+          "x": 0.26194951109284215,
+          "y": -1.715192978348893
+        },
+        "facing": -1.1669809985746007,
+        "energy": 0.9952534355686419,
+        "profile": {
+          "vmax": 7.583522306970652,
+          "tau": 1.271162260701725,
+          "brake": 5.078582766439909,
+          "lateral": 5.480619047619049,
+          "turnRate": 6.415555555555556,
+          "backpedal": 0.6342857142857143,
+          "shuffle": 0.5852,
+          "massKg": 144.24237366,
+          "heightYd": 2.1861111111111113,
+          "radius": 0.3654545454545455,
+          "reach": 1.0976388888888888,
+          "maxCatchHeight": 3.569750000000001,
+          "reactReach": 3.1558611111111112,
+          "reactionTime": 0.24608163265306127,
+          "power": 150.57873507435,
+          "balance": 0.7040816326530612,
+          "bend": 0.19681632653061223,
+          "stepSpeed": 2.7822267573696147,
+          "getUp": 1.2190555555555556
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.6991540272795745,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 1.8192550142369188,
+            "y": -4.150885762282759
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": -0.7488085065720362,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -1.4605463790516742
+      },
+      "homeY": 24.066666666666666,
+      "ownOrigin": {
+        "x": 39.45,
+        "y": 24.066666666666666
+      },
+      "playSide": -1,
+      "side": 1,
+      "owner": {
+        "idx": 7,
+        "slot": "Y",
+        "radius": 0.30272727272727273,
+        "reach": 1.1681818181818182,
+        "origin": {
+          "x": 39.4,
+          "y": 22.76666666666667
+        }
+      },
+      "defender": {
+        "idx": 12,
+        "slot": "DE_S",
+        "radius": 0.35545454545454547
+      },
+      "backer": {
+        "idx": 17,
+        "slot": "LB_S",
+        "radius": 0.29545454545454547
+      },
+      "drive": {
+        "x": 0.485642931178632,
+        "y": -0.8741572761215376
+      },
+      "nextReadHorizon": 0.20465795939907794,
+      "ownBehaviorBefore": {
+        "kind": "run-block",
+        "pullIdx": 0,
+        "retarget": 0,
+        "homeY": 24.066666666666666,
+        "firstStep": {
+          "x": 39.63,
+          "y": 23.58588016479982
+        },
+        "nextRuleRead": 0.7032767648337007,
+        "soloKind": "reach",
+        "soloDrive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "pullRead": null,
+        "pullCleared": false,
+        "departureRead": null,
+        "presentationThreat": null,
+        "zoneRead": null,
+        "climbRead": null,
+        "track": {
+          "x": 0,
+          "y": -3.4125850381367933
+        }
+      },
+      "requestedBefore": {
+        "vel": {
+          "x": 0.6074088804045807,
+          "y": -7.583522306970652
+        },
+        "facing": -1.1978076840162208,
+        "cutSkill": 1.0173469387755103,
+        "posture": 0.7
+      },
+      "deliveredBefore": {
+        "vel": {
+          "x": 0.6074088804045807,
+          "y": -7.583522306970652
+        },
+        "facing": -1.1978076840162208,
+        "cutSkill": 1.0173469387755103,
+        "posture": 0.7
+      },
+      "perceived": {
+        "15": {
+          "pos": {
+            "x": 44.78243333059514,
+            "y": 26.066208046838344
+          },
+          "vel": {
+            "x": -0.7362639558916738,
+            "y": 0.06826747570905015
+          },
+          "stance": null,
+          "facing": 3.159347110151523,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "16": {
+          "pos": {
+            "x": 44.323837155123954,
+            "y": 28.499547161755718
+          },
+          "vel": {
+            "x": -0.8322568092431338,
+            "y": 0.32240718524616907
+          },
+          "stance": null,
+          "facing": 3.3558507468718677,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "17": {
+          "pos": {
+            "x": 43.90425971890194,
+            "y": 23.312475493827524
+          },
+          "vel": {
+            "x": -0.6848557380373858,
+            "y": 0.175113799912439
+          },
+          "stance": null,
+          "facing": 2.696558150799408,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "18": {
+          "pos": {
+            "x": 47.533175058830246,
+            "y": 7.952715702473539
+          },
+          "vel": {
+            "x": 1.3056769973579496,
+            "y": 0.37568454682640445
+          },
+          "stance": null,
+          "facing": 1.7128682527949564,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "19": {
+          "pos": {
+            "x": 47.68150866816536,
+            "y": 45.266624902182045
+          },
+          "vel": {
+            "x": 1.5607538425366811,
+            "y": -0.4356982447776498
+          },
+          "stance": null,
+          "facing": 4.794051704949669,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "20": {
+          "pos": {
+            "x": 53.18159280195653,
+            "y": 26.580445092026984
+          },
+          "vel": {
+            "x": 0.12130010732805863,
+            "y": 0.18976798596704775
+          },
+          "stance": null,
+          "facing": 3.142960575912368,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "21": {
+          "pos": {
+            "x": 47.08397256034403,
+            "y": 19.820949159772525
+          },
+          "vel": {
+            "x": -1.1127753248192254,
+            "y": 0.10626248201496191
+          },
+          "stance": null,
+          "facing": 2.252897129497688,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "12": {
+          "pos": {
+            "x": 40.66371902696088,
+            "y": 22.372448360698158
+          },
+          "vel": {
+            "x": -0.6427969473626964,
+            "y": -0.7667961455746255
+          },
+          "stance": null,
+          "facing": 3.648215433654037,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      "teammates": {
+        "0": {
+          "source": "unavailable"
+        },
+        "1": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.530157338202905,
+            "y": 29.244537469084886
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "3": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.469113434705875,
+            "y": 26.631096870921212
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "4": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.470662156865096,
+            "y": 27.92778374253633
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "5": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.47434601448576,
+            "y": 25.30196775736284
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "6": {
+          "source": "called",
+          "pos": {
+            "x": 34.325,
+            "y": 24.916666666666668
+          },
+          "vel": {
+            "x": 1.4999999999999978,
+            "y": -2.333333333333334
+          },
+          "sampledAt": 0,
+          "availableAt": 0,
+          "age": 0.75,
+          "predictedFor": 0.75,
+          "label": "installed approximate mesh arrival"
+        },
+        "7": {
+          "source": "observed",
+          "pos": {
+            "x": 40.454543120385196,
+            "y": 22.328219179200527
+          },
+          "vel": {
+            "x": 2.0669237016680264,
+            "y": -0.6920365991597991
+          },
+          "sampledAt": 0.45,
+          "availableAt": 0.75,
+          "age": 0.3,
+          "predictedFor": 0.3
+        },
+        "8": {
+          "source": "remembered",
+          "pos": {
+            "x": 38.91137164473047,
+            "y": 44.67923905223221
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "9": {
+          "source": "observed",
+          "pos": {
+            "x": 40.03797848821271,
+            "y": 8.504028493497259
+          },
+          "vel": {
+            "x": 2.4208151448698696,
+            "y": -0.3333435773269189
+          },
+          "sampledAt": 0.45,
+          "availableAt": 0.75,
+          "age": 0.3,
+          "predictedFor": 0.3
+        },
+        "10": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.475566505992575,
+            "y": 30.50195315733952
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        }
+      }
+    },
+    {
+      "id": "uc12-wz-s3-mirror",
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "entry": 0.75,
+      "ownBody": {
+        "pos": {
+          "x": 39.6878877172028,
+          "y": 23.61653902188311
+        },
+        "vel": {
+          "x": -0.09162342142743063,
+          "y": -1.5865872734100108
+        },
+        "facing": -1.1781811149000851,
+        "energy": 0.9954128000653166,
+        "profile": {
+          "vmax": 7.583522306970652,
+          "tau": 1.271162260701725,
+          "brake": 5.078582766439909,
+          "lateral": 5.480619047619049,
+          "turnRate": 6.415555555555556,
+          "backpedal": 0.6342857142857143,
+          "shuffle": 0.5852,
+          "massKg": 144.24237366,
+          "heightYd": 2.1861111111111113,
+          "radius": 0.3654545454545455,
+          "reach": 1.0976388888888888,
+          "maxCatchHeight": 3.569750000000001,
+          "reactReach": 3.1558611111111112,
+          "reactionTime": 0.24608163265306127,
+          "power": 150.57873507435,
+          "balance": 0.7040816326530612,
+          "bend": 0.19681632653061223,
+          "stepSpeed": 2.7822267573696147,
+          "getUp": 1.2190555555555556
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.6991818327814642,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": -0.3418073639945334,
+            "y": -3.9888447081627083
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": -0.6795560628358555,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -1.4626659081244777
+      },
+      "homeY": 24.066666666666666,
+      "ownOrigin": {
+        "x": 39.45,
+        "y": 24.066666666666666
+      },
+      "playSide": -1,
+      "side": 1,
+      "owner": {
+        "idx": 10,
+        "slot": "H",
+        "radius": 0.3018181818181818,
+        "reach": 1.1497727272727272,
+        "origin": {
+          "x": 39.4,
+          "y": 22.76666666666667
+        }
+      },
+      "defender": {
+        "idx": 12,
+        "slot": "DE_S",
+        "radius": 0.35545454545454547
+      },
+      "backer": {
+        "idx": 17,
+        "slot": "LB_S",
+        "radius": 0.29545454545454547
+      },
+      "drive": {
+        "x": 0.485642931178632,
+        "y": -0.8741572761215376
+      },
+      "nextReadHorizon": 0.20465451712594973,
+      "ownBehaviorBefore": {
+        "kind": "run-block",
+        "pullIdx": 0,
+        "retarget": 0,
+        "homeY": 24.066666666666666,
+        "firstStep": {
+          "x": 39.63,
+          "y": 23.58588016479982
+        },
+        "nextRuleRead": 0.7032770518886506,
+        "soloKind": "reach",
+        "soloDrive": {
+          "x": 0.485642931178632,
+          "y": -0.8741572761215376
+        },
+        "pullRead": null,
+        "pullCleared": false,
+        "departureRead": null,
+        "presentationThreat": null,
+        "zoneRead": null,
+        "climbRead": null,
+        "track": {
+          "x": 0,
+          "y": -3.4125850381367933
+        }
+      },
+      "requestedBefore": {
+        "vel": {
+          "x": 0.7869218039344439,
+          "y": -7.583522306970652
+        },
+        "facing": -1.170073611757619,
+        "cutSkill": 1.0173469387755103,
+        "posture": 0.7
+      },
+      "deliveredBefore": {
+        "vel": {
+          "x": 0.7869218039344439,
+          "y": -7.583522306970652
+        },
+        "facing": -1.170073611757619,
+        "cutSkill": 1.0173469387755103,
+        "posture": 0.7
+      },
+      "perceived": {
+        "15": {
+          "pos": {
+            "x": 44.78243333059514,
+            "y": 26.066208046838344
+          },
+          "vel": {
+            "x": -0.7362639558916738,
+            "y": 0.06826747570905015
+          },
+          "stance": null,
+          "facing": 3.159347110151523,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "16": {
+          "pos": {
+            "x": 44.32391322659481,
+            "y": 28.499606451257467
+          },
+          "vel": {
+            "x": -0.8320619687042199,
+            "y": 0.3225914741045665
+          },
+          "stance": null,
+          "facing": 3.3558492422726007,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "17": {
+          "pos": {
+            "x": 43.90425926052291,
+            "y": 23.312473755480756
+          },
+          "vel": {
+            "x": -0.6848574319140721,
+            "y": 0.17510878110563893
+          },
+          "stance": null,
+          "facing": 2.6965582282843883,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "18": {
+          "pos": {
+            "x": 47.533175058830246,
+            "y": 7.952715702473539
+          },
+          "vel": {
+            "x": 1.3056769973579496,
+            "y": 0.37568454682640445
+          },
+          "stance": null,
+          "facing": 1.7128682527949564,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "19": {
+          "pos": {
+            "x": 47.68150866816536,
+            "y": 45.266624902182045
+          },
+          "vel": {
+            "x": 1.5607538425366811,
+            "y": -0.4356982447776498
+          },
+          "stance": null,
+          "facing": 4.794051704949669,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "20": {
+          "pos": {
+            "x": 53.18159280195653,
+            "y": 26.580445092026984
+          },
+          "vel": {
+            "x": 0.12130010732805863,
+            "y": 0.18976798596704775
+          },
+          "stance": null,
+          "facing": 3.142960575912368,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "21": {
+          "pos": {
+            "x": 47.08291171973357,
+            "y": 19.822913285342995
+          },
+          "vel": {
+            "x": -1.1148513336331654,
+            "y": 0.11142611266180275
+          },
+          "stance": null,
+          "facing": 2.252807466130888,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "12": {
+          "pos": {
+            "x": 40.723565529685665,
+            "y": 22.382056850410226
+          },
+          "vel": {
+            "x": -0.4238279340846259,
+            "y": -0.7541747033255143
+          },
+          "stance": null,
+          "facing": 3.645791652017704,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      "teammates": {
+        "0": {
+          "source": "unavailable"
+        },
+        "1": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.530157338202905,
+            "y": 29.244537469084886
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "3": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.469113434705875,
+            "y": 26.631096870921212
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "4": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.470662156865096,
+            "y": 27.92778374253633
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "5": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.47434601448576,
+            "y": 25.30196775736284
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "6": {
+          "source": "called",
+          "pos": {
+            "x": 34.325,
+            "y": 24.916666666666668
+          },
+          "vel": {
+            "x": 1.4999999999999978,
+            "y": -2.333333333333334
+          },
+          "sampledAt": 0,
+          "availableAt": 0,
+          "age": 0.75,
+          "predictedFor": 0.75,
+          "label": "installed approximate mesh arrival"
+        },
+        "7": {
+          "source": "remembered",
+          "pos": {
+            "x": 39.47705451995165,
+            "y": 30.492166994719334
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "8": {
+          "source": "observed",
+          "pos": {
+            "x": 40.008570199190245,
+            "y": 8.509811536498322
+          },
+          "vel": {
+            "x": 2.362283331813459,
+            "y": -0.31916175344533254
+          },
+          "sampledAt": 0.45,
+          "availableAt": 0.75,
+          "age": 0.3,
+          "predictedFor": 0.3
+        },
+        "9": {
+          "source": "remembered",
+          "pos": {
+            "x": 38.913770271163806,
+            "y": 44.67950982542964
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "sampledAt": 0.1,
+          "availableAt": 0.4,
+          "age": 0.65,
+          "predictedFor": 0.3
+        },
+        "10": {
+          "source": "observed",
+          "pos": {
+            "x": 40.422216109141026,
+            "y": 22.416230564989167
+          },
+          "vel": {
+            "x": 2.001380492152445,
+            "y": -0.5887192250606326
+          },
+          "sampledAt": 0.45,
+          "availableAt": 0.75,
+          "age": 0.3,
+          "predictedFor": 0.3
+        }
+      }
+    }
+  ]
+}

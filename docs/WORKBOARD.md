@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Experimental full-game checkpoint
+
+| Item | Owner | Branch | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| User-requested recent-work integration and full games/film | Codex integration owner in this chat | `codex/experimental-game-checkpoint` from accepted `a1b16e6` | Experimental run stack #36/#47/#50/#52 plus minimal #29, #13 and Stick-only extraction. Preserve accepted moving catch. Exclude parked coverage, rejected controller trials, disabled attention pilot and experimental physics. | Preparing one exact combined runtime and matched bounded checkpoint. No merge/baseline/default change; evidence and all adverse outcomes retained. |
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

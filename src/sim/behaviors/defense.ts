@@ -11,7 +11,7 @@ import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js'
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
-import type { Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
+import { OL_SLOTS, type Gap, type ZoneId, type ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
@@ -23,6 +23,7 @@ import { showsBlock } from '../coverage-cues.js';
 import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
+import { readLocalBlock, type InstalledBlockKey, type LocalBlockResponse } from '../local-block-response.js';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -58,6 +59,9 @@ export class PassRusher implements Behavior {
   private readonly getOff: number;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
+  /** Public primary block key and installed gap, independent of the run call. */
+  private readonly blockKey: { target: Agent; installation: InstalledBlockKey } | null;
+  private blockRead: { nextRead: number; response: LocalBlockResponse | null } | null = null;
   constructor(
     a: Agent,
     sim: PlaySim,
@@ -71,6 +75,17 @@ export class PassRusher implements Behavior {
     const fi = 0.3 + a.r('passRushFinesse');
     const sp = edge ? 0.2 + burst * 1.2 + traits(a).bend * 0.5 : 0;
     this.plan = sim.rng.weighted(['power', 'finesse', 'speed'] as const, [pw, fi, sp]);
+    const firstLevel = a.runFit?.kind === 'interior' || a.runFit?.kind === 'edge';
+    const lineSlot = ['DE', 'DT', 'NT'].includes(a.slot.split('_')[0]);
+    const surface = firstLevel && lineSlot ? sim.offense.filter(o =>
+      OL_SLOTS.includes(o.slot as typeof OL_SLOTS[number]) || sim.offAlign.spots[o.slot]?.inline)
+      .sort((p, q) => Math.abs(sim.offAlign.spots[p.slot].pos.y - a.pos.y)
+        - Math.abs(sim.offAlign.spots[q.slot].pos.y - a.pos.y) || p.idx - q.idx) : [];
+    const target = surface[0];
+    this.blockKey = target ? { target, installation: {
+      home: { ...sim.offAlign.spots[target.slot].pos }, radius: target.profile.radius,
+      gapY: gapY(sim.offAlign, gap, gapSign), attackDirection: sim.attackDir(a.team),
+    } } : null;
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -87,6 +102,21 @@ export class PassRusher implements Behavior {
     // (on play action, that's being fooled).
     if (c && c.team !== a.team && (c !== sim.qb || sim.scrambled)) return runFit(a, sim, this.gap, this.gapSign);
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
+
+    // A reach/down step is a block problem before it is proof of run. Answer
+    // only the personally acquired primary key while still unsure. A pass
+    // declaration, contact or own constraint keeps its ordinary controller.
+    if (a.recog?.read === 'unsure' && this.blockKey
+      && !sim.world.joints.some(j => j.a === a.body || j.b === a.body)) {
+      if (!this.blockRead || sim.t >= this.blockRead.nextRead) {
+        this.blockRead = { nextRead: sim.t + a.mind.decisionInterval,
+          response: readLocalBlock(a, sim.see(a, this.blockKey.target), this.blockKey.installation, sim.t) };
+      }
+      if (this.blockRead.response) {
+        a.tags.add(`dl-key-${this.blockRead.response.kind}`);
+        return this.blockRead.response.command;
+      }
+    } else this.blockRead = null;
 
     // Rush lane by plan: power rushers go through the blocker's chest at the
     // QB; finesse rushers attack a shoulder through their gap; speed rushers

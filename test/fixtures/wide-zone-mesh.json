@@ -1,0 +1,184 @@
+{
+  "protocol": "wide-zone-mesh-initial-state-v1",
+  "sourceCommit": "ccbbe47b217333dd7800c65890fa87a26a9877c7",
+  "sourceSha256": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96",
+  "packet": "docs/reviews/wide-zone-help-read/candidate.json.gz",
+  "packetSha256": "1e99176803c45234c623c6f3cb246c33664ee6561c75496cbb3bd28479c2e091",
+  "input": {
+    "id": "uc12-wz-s3",
+    "concept": "wz_strong",
+    "kind": "run",
+    "seed": 3,
+    "flip": false,
+    "o": 31,
+    "d": 32,
+    "front": "over",
+    "formation": "ace_12"
+  },
+  "actors": {
+    "0": {
+      "initialBody": {
+        "pos": {
+          "x": 38.4,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 8.621534410799635,
+          "tau": 1.4356242500070433,
+          "brake": 6.445725623582765,
+          "lateral": 6.496210884353744,
+          "turnRate": 8.935555555555556,
+          "backpedal": 0.5336734693877552,
+          "shuffle": 0.5116,
+          "massKg": 107.95498406,
+          "heightYd": 2.0472222222222225,
+          "radius": 0.2927272727272727,
+          "reach": 0.9677777777777777,
+          "maxCatchHeight": 3.271694444444445,
+          "reactReach": 2.928638888888889,
+          "reactionTime": 0.20946938775510207,
+          "power": 76.14681911375001,
+          "balance": 0.2755102040816326,
+          "bend": 0.6111020408163265,
+          "stepSpeed": 3.573083900226757,
+          "getUp": 0.9170555555555556
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "initialBehavior": {
+        "kind": "qb-handoff",
+        "handed": false,
+        "mesh": {
+          "x": 35.6,
+          "y": 24.566666666666666
+        },
+        "meshTime": 1.2,
+        "rb": {
+          "agent": 6
+        },
+        "pitchRange": 0,
+        "keeper": false
+      }
+    },
+    "6": {
+      "initialBody": {
+        "pos": {
+          "x": 33.2,
+          "y": 26.666666666666668
+        },
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "facing": 0,
+        "energy": 1,
+        "profile": {
+          "vmax": 9.511860117418491,
+          "tau": 1.302841021221677,
+          "brake": 6.728083900226757,
+          "lateral": 6.805221088435378,
+          "turnRate": 8.711111111111112,
+          "backpedal": 0.55,
+          "shuffle": 0.528,
+          "massKg": 99.33672903,
+          "heightYd": 1.9555555555555557,
+          "radius": 0.27545454545454545,
+          "reach": 1.0220833333333335,
+          "maxCatchHeight": 3.2831111111111118,
+          "reactReach": 2.8567222222222224,
+          "reactionTime": 0.25465306122448983,
+          "power": 101.13087199309287,
+          "balance": 0.7959183673469388,
+          "bend": 0.7445170068027213,
+          "stepSpeed": 3.9037732426303857,
+          "getUp": 0.9029444444444443
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.3,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0
+        },
+        "spin": 0
+      },
+      "initialBehavior": {
+        "kind": "mesh",
+        "passed": false,
+        "mesh": {
+          "x": 35,
+          "y": 23.866666666666667
+        },
+        "meshTime": 1.2,
+        "aim": {
+          "x": 40.6,
+          "y": 22.06666666666667
+        },
+        "ride": true
+      }
+    }
+  }
+}
