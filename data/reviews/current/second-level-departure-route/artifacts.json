@@ -1,0 +1,42 @@
+{
+  "data/reviews/current/second-level-departure-route/A030-first-choice.json.gz": {
+    "sha256": "464e687bb68c3bfc34e14ffdc15c63f8285a8fd4e46e8497d1ce68ab7308b805",
+    "bytes": 48834
+  },
+  "data/reviews/current/second-level-departure-route/a018-a027.json.gz": {
+    "sha256": "da35c5d90e4c850125d4c3dbb6f4d70bbf9693f11e5eaba49d18fe71af84c574",
+    "bytes": 2611901
+  },
+  "data/reviews/current/second-level-departure-route/a030.json.gz": {
+    "sha256": "1f6ecca549d348976c8c15e35baadd1f95ebb44b07dd47434d9a480004340777",
+    "bytes": 1316366
+  },
+  "data/reviews/current/second-level-departure-route/receipts/a018-a027.json": {
+    "sha256": "310f7897b916cecd8b7ffc6f77f5786cb4316e15d18a33b6de44c999d5c1463c",
+    "bytes": 2310
+  },
+  "data/reviews/current/second-level-departure-route/receipts/a030.json": {
+    "sha256": "8f1940b9d37f02d2b13da2ef52ae845199e52b16f6c6d89a631eb38caa336347",
+    "bytes": 2307
+  },
+  "data/reviews/current/second-level-departure-route/receipts/turn-probe.json": {
+    "sha256": "664b4721b17e4fbe3677bcee0f634245451e1c6bbf5320c22dceef5c11a6e8cf",
+    "bytes": 2286
+  },
+  "data/reviews/current/second-level-departure-route/rejected/compare-clear-exits.patch": {
+    "sha256": "8bb0768ff9f3983ca42be3b6b54df59661af7df16bfb40f09c6bb9a6eecc5e2e",
+    "bytes": 3458
+  },
+  "data/reviews/current/second-level-departure-route/summary.json": {
+    "sha256": "0e5294c08d60e38afdc13a81b4e317a0f9784518edf963c5e0b7ef0b5fee326f",
+    "bytes": 18075
+  },
+  "data/reviews/current/second-level-departure-route/turn-action.json": {
+    "sha256": "805ab638728b27def7ebf8c0a6676c0fba56b0ae6ddd8346ef78a5a596579507",
+    "bytes": 5295
+  },
+  "data/reviews/current/second-level-departure-route/turn-probe.json.gz": {
+    "sha256": "062bda73a8313cf99a6549380f8a6a5321075436660e7d2b2c896aaa3dcd639f",
+    "bytes": 1339131
+  }
+}

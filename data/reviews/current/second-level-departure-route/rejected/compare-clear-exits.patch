@@ -1,0 +1,56 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 2209ee4..309abb0 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1029,7 +1029,7 @@ export class RunBlocker implements Behavior {
+     if (!this.departureRead || sim.t >= this.departureRead.nextRead) {
+       const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper);
+       const backer = sim.see(a, departure.backer);
+-      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer);
++      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer, true);
+       this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
+         exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
+       // Only a personally observed clear route ends the departure. A blocked
+@@ -1398,7 +1398,7 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
+  * that the whole climb or linebacker block will succeed. Check the DL and
+  * partner through the next read; a moving or mistaken picture can still lose. */
+ function climbRoute(a: Agent, defender: Agent, down: Perceived,
+-  partner: Agent, covered: Perceived, backer: Perceived): { exit: Vec2 | null; flow: Vec2 } | null {
++  partner: Agent, covered: Perceived, backer: Perceived, compareExits = false): { exit: Vec2 | null; flow: Vec2 } | null {
+   const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },
+     { seen: covered, radius: a.profile.radius + partner.profile.radius }];
+   const clear = (goal: Vec2, flow: Vec2): boolean => bodies.every(({ seen, radius }) => {
+@@ -1418,6 +1418,8 @@ function climbRoute(a: Agent, defender: Agent, down: Perceived,
+     return true;
+   });
+   if (clear(backer.pos, backer.vel)) return { exit: null, flow: backer.vel };
++  let best: { exit: Vec2; flow: Vec2 } | null = null;
++  let bestDistance = Infinity;
+   for (const body of bodies) {
+     const relative = sub(a.pos, body.seen.pos), goal = sub(backer.pos, body.seen.pos);
+     const distance = Math.hypot(relative.x,relative.y);
+@@ -1431,11 +1433,21 @@ function climbRoute(a: Agent, defender: Agent, down: Perceived,
+       const radius = Math.max(body.radius+.15,distance);
+       const exit = { x: body.seen.pos.x + (relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
+         y: body.seen.pos.y + (relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
+-      if (exit.y >= .5 && exit.y <= FIELD_WIDTH-.5 && clear(exit,body.seen.vel))
+-        return { exit, flow: body.seen.vel };
++      if (exit.y >= .5 && exit.y <= FIELD_WIDTH-.5 && clear(exit,body.seen.vel)) {
++        if (!compareExits) return { exit, flow: body.seen.vel };
++        // Rank only the already-clear short steps from this acquired picture.
++        // This estimate does not certify the remaining route or its timing;
++        // ordinary movement, traffic and the next read still own execution.
++        const distance = Math.hypot(exit.x-a.pos.x, exit.y-a.pos.y)
++          + Math.hypot(backer.pos.x-exit.x, backer.pos.y-exit.y);
++        if (distance < bestDistance) {
++          best = { exit, flow: body.seen.vel };
++          bestDistance = distance;
++        }
++      }
+     }
+   }
+-  return null;
++  return best;
+ }
+ 
+ /** A shared physical fit is eligibility, not either member's perception. */

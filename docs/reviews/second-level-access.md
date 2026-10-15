@@ -1,5 +1,9 @@
 # Second-level access: selected accepted-build diagnosis
 
+Follow-up: the [earlier departure-route comparison](second-level-departure-route.md)
+rejects exit-distance ranking and one prior-arc continuation; accepted code remains.
+The original diagnosis and adverse evidence below are preserved.
+
 **Keep accepted controllers. Park the first-strike-only trial: it changes the
 assessment but does not produce protection before the runner arrives.** The
 next concrete question is an *earlier departure route*, not an earlier release:

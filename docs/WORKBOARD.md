@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Second-level departure follow-up — Run Game (2026-10-15)
+
+[Earlier-route report](reviews/second-level-departure-route.md): reject45bc8e6's
+post-release clear-exit distance ranking. A018/A027 all physical/request/RNG
+history and results remain exact; A030 RT/LB distance at2.75 improves1.931→1.685yd
+without any RT/LB block (2.01→1.96yd). Same22/cues/RNG first change RT1.85;
+first changed draws2.80. One acquired prior-arc continuation at1.60 (e4314e6,
+accepted runtime) also produces no RT/LB block; ordinary decisions resume1.85.
+This rejects those actions, not every continuous route or legitimate defender win.
+Runtime/tests/settings restored byte-for-byte to accepted90edc525 (458bf32).
+Four native executions3.610540 launcher seconds, zero games/rosters/full suites;
+prior accepted/reference evidence reused. No production candidate, no suite or
+merge requested. The precise remaining Run question is a continuously attainable
+acquired route around the pair before1.60 that protects through runner arrival;
+local clear/short-step labels do not demonstrate it. Do-It-All keeps spacing/
+carrier ownership, Physics unchanged. Exact settings, inputs, matched cues,
+48KB witness, rejected patch and qualified one-read reproduction are published.
+
 ## Second-level access investigation — Run Game
 
 [Focused selected-case report](reviews/second-level-access.md): A018/A030/A027
