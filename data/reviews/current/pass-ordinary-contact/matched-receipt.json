@@ -1,0 +1,186 @@
+{
+  "schema": "ordinary-pass-contact-v2",
+  "commit": "bb9f04795ebdb95c524879f13970489340d442e7",
+  "acceptedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "acceptedDocsOnlyDevelop": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "testSourceSha256": "895d9892907717f17dfb5364fd416b06d0f540ac9d3f085b56691f0141f2088b",
+  "setupSourceSha256": "564230b23ceec50a698eef09ac12e59c5425be0845f0eb662fd86486ab05a51f",
+  "acceptedMethodSha256": "8ffe1576311932213253df4184f0a742960d36a457ad929596a56016e051b93e",
+  "collectorSha256": "676c72d27a552004f25d1268e5ee52505132000db74d7bf5383103b24f22067b",
+  "fixtureSha256": "7014f96fd349dc292e5d5c5c00bb69b42e0cd2ee4dc74727132e15627fae0602",
+  "actors": [
+    {
+      "team": "O",
+      "slot": "QB",
+      "id": "OFF-QB1"
+    },
+    {
+      "team": "O",
+      "slot": "LT",
+      "id": "OFF-OT1"
+    },
+    {
+      "team": "O",
+      "slot": "RT",
+      "id": "OFF-OT4"
+    },
+    {
+      "team": "O",
+      "slot": "C",
+      "id": "OFF-C1"
+    },
+    {
+      "team": "O",
+      "slot": "LG",
+      "id": "OFF-OG2"
+    },
+    {
+      "team": "O",
+      "slot": "RG",
+      "id": "OFF-OG1"
+    },
+    {
+      "team": "O",
+      "slot": "RB",
+      "id": "OFF-RB1"
+    },
+    {
+      "team": "O",
+      "slot": "Y",
+      "id": "OFF-TE1"
+    },
+    {
+      "team": "O",
+      "slot": "X",
+      "id": "OFF-WR1"
+    },
+    {
+      "team": "O",
+      "slot": "Z",
+      "id": "OFF-WR6"
+    },
+    {
+      "team": "O",
+      "slot": "H",
+      "id": "OFF-WR4"
+    },
+    {
+      "team": "D",
+      "slot": "DE_W",
+      "id": "DEF-EDGE5"
+    },
+    {
+      "team": "D",
+      "slot": "DE_S",
+      "id": "DEF-EDGE2"
+    },
+    {
+      "team": "D",
+      "slot": "DT_S",
+      "id": "DEF-DT5"
+    },
+    {
+      "team": "D",
+      "slot": "DT_W",
+      "id": "DEF-DT2"
+    },
+    {
+      "team": "D",
+      "slot": "LB_M",
+      "id": "DEF-LB2"
+    },
+    {
+      "team": "D",
+      "slot": "LB_W",
+      "id": "DEF-LB1"
+    },
+    {
+      "team": "D",
+      "slot": "CB_S",
+      "id": "DEF-CB3"
+    },
+    {
+      "team": "D",
+      "slot": "CB_W",
+      "id": "DEF-CB2"
+    },
+    {
+      "team": "D",
+      "slot": "NB",
+      "id": "DEF-S2"
+    },
+    {
+      "team": "D",
+      "slot": "FS",
+      "id": "DEF-S1"
+    },
+    {
+      "team": "D",
+      "slot": "SS",
+      "id": "DEF-CB1"
+    }
+  ],
+  "retainedReferenceSha256": "ab7e12dec4bda6cdadcd62fa6ed5afe067bacbdb169f833d23f760e5d679eece",
+  "qualification": "Same existing roster generation seeds21/22, strength.6, GunDoubles/FourVerts vs Over/Cover4Palms, playseed5; all22 normal. Existing recorder fixture; no new roster or game. No deliberate QB mutation.",
+  "fullGames": 0,
+  "nativeSegments": 2,
+  "elapsedSeconds": 0.527528323
+}

@@ -1,0 +1,522 @@
+{
+  "schema": "ordinary-pass-contact-adjudication-v1",
+  "recommendation": "Support bounded #67 adoption after Integration installs reviewed kind-specific test repair and verifies exact final candidate; no controller edit justified by this fixture.",
+  "runtimeSourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "comparisonBaseline": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "currentAcceptedDocsOnly": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "firstRequestDifference": {
+    "t": 0.05,
+    "actors": [
+      1,
+      2
+    ],
+    "sameIncomingBodies": true,
+    "acceptedLT": {
+      "vel": {
+        "x": 0.9639824072135283,
+        "y": -0.21248720123221432
+      },
+      "facing": 0.31258185028894664,
+      "cutSkill": 1.049591836734694
+    },
+    "candidateLT": {
+      "vel": {
+        "x": 5.505212188029898,
+        "y": -1.2134942725825413
+      },
+      "facing": 0.31258185028894664,
+      "cutSkill": 1.049591836734694
+    }
+  },
+  "initialPunchDrawsIdentical": true,
+  "initialFourDriftDrawsIdentical": true,
+  "initialPunchDraws": [
+    [
+      "range",
+      [
+        0.35,
+        0.6
+      ],
+      0.4903265813132748
+    ],
+    [
+      "normal",
+      [
+        0,
+        0.08
+      ],
+      -0.09250900627266294
+    ],
+    [
+      "normal",
+      [
+        0,
+        0.18
+      ],
+      -0.1070408807445842
+    ],
+    [
+      "weighted",
+      [
+        [
+          "speed"
+        ],
+        [
+          1.7967065410779697
+        ]
+      ],
+      "speed"
+    ],
+    [
+      "normal",
+      [
+        0,
+        0.18
+      ],
+      0.06937986586409148
+    ]
+  ],
+  "initialDriftDraws": [
+    -0.29475184259408266,
+    -9.806645674683197e-05,
+    -0.12601505627855625,
+    -0.004753996444175404
+  ],
+  "integrationNativeEventParityBefore225": true,
+  "rows": [
+    {
+      "arm": "accepted",
+      "comparison": "native",
+      "engagementAcquisition": 0.45,
+      "firstLoadedTime": 0.5,
+      "acquisitionPhi": 0.06489257778614736,
+      "firstLoadAchievedPhi": 0.0463125730402126,
+      "acquisitionBVelocity": {
+        "x": 0.6490537745686821,
+        "y": 0.14509248250993803
+      },
+      "acquisitionDVelocity": {
+        "x": -0.6895249243282071,
+        "y": 0.5464881834817363
+      },
+      "firstLoadBPosition": {
+        "x": 39.63573911656814,
+        "y": 29.269666608132987
+      },
+      "firstLoadDPosition": {
+        "x": 40.8202789578087,
+        "y": 29.79082906654965
+      },
+      "firstLoadBVelocity": {
+        "x": 0.6099366139240568,
+        "y": 0.3187234418686966
+      },
+      "firstLoadDVelocity": {
+        "x": -1.1106577902642512,
+        "y": 0.57597964178007
+      },
+      "firstNormalForce": 0,
+      "firstLateralForce": -30.851879023287978,
+      "initialControl": -0.5,
+      "firstDecision": {
+        "t": 0.65,
+        "move": "longarm",
+        "moveWeights": [
+          [
+            "bull",
+            "longarm",
+            "rip",
+            "club",
+            "swim",
+            "snatch"
+          ],
+          [
+            0.9581632653061225,
+            0.24897959183673474,
+            0.4571428571428572,
+            0.39387755102040817,
+            0.5285714285714286,
+            0.1693877551020408
+          ]
+        ],
+        "successProbability": 0.04755412720888097,
+        "landed": false,
+        "intervalVariateResult": 0.34390345414867624
+      },
+      "ltShed": null,
+      "leftPressure": null,
+      "endTime": 2.25,
+      "phase": "live",
+      "endDEWToQB": 4.883491826078805,
+      "ltEngagedAtCensor": true,
+      "endLTPhi": 0.33876447838875834,
+      "endLTNormalForce": 387.65453961345816,
+      "endLTLateralForce": 181.70587966530712,
+      "ltTeammateImpacts": [],
+      "retained": []
+    },
+    {
+      "arm": "candidate",
+      "comparison": "native",
+      "engagementAcquisition": 0.35,
+      "firstLoadedTime": 0.4,
+      "acquisitionPhi": 0.0759029461382029,
+      "firstLoadAchievedPhi": 0.0613970626176132,
+      "acquisitionBVelocity": {
+        "x": 1.1623430972225948,
+        "y": -0.1579022064861408
+      },
+      "acquisitionDVelocity": {
+        "x": 0,
+        "y": 0
+      },
+      "firstLoadBPosition": {
+        "x": 39.687544961490076,
+        "y": 29.25265794649903
+      },
+      "firstLoadDPosition": {
+        "x": 40.889878678552144,
+        "y": 29.73663347178919
+      },
+      "firstLoadBVelocity": {
+        "x": 1.1027521760506704,
+        "y": -0.03752904069494643
+      },
+      "firstLoadDVelocity": {
+        "x": -0.4052165458858839,
+        "y": 0.05552459101177539
+      },
+      "firstNormalForce": 0,
+      "firstLateralForce": -30.851879023287978,
+      "initialControl": -0.5,
+      "firstDecision": {
+        "t": 0.55,
+        "move": "swim",
+        "moveWeights": [
+          [
+            "bull",
+            "longarm",
+            "rip",
+            "club",
+            "swim",
+            "snatch"
+          ],
+          [
+            0.9581632653061225,
+            0.24897959183673474,
+            0.4571428571428572,
+            0.39387755102040817,
+            0.5285714285714286,
+            0.1693877551020408
+          ]
+        ],
+        "successProbability": 0.06802245695842872,
+        "landed": true,
+        "intervalVariateResult": 0.14234860584838316
+      },
+      "ltShed": 1.2,
+      "leftPressure": 2.15,
+      "endTime": 2.25,
+      "phase": "live",
+      "endDEWToQB": 1.9049729114727947,
+      "ltEngagedAtCensor": false,
+      "endLTPhi": null,
+      "endLTNormalForce": null,
+      "endLTLateralForce": null,
+      "ltTeammateImpacts": [],
+      "retained": []
+    },
+    {
+      "arm": "accepted",
+      "comparison": "opposite-first-move-variates",
+      "engagementAcquisition": 0.45,
+      "firstLoadedTime": 0.5,
+      "acquisitionPhi": 0.06489257778614736,
+      "firstLoadAchievedPhi": 0.0463125730402126,
+      "acquisitionBVelocity": {
+        "x": 0.6490537745686821,
+        "y": 0.14509248250993803
+      },
+      "acquisitionDVelocity": {
+        "x": -0.6895249243282071,
+        "y": 0.5464881834817363
+      },
+      "firstLoadBPosition": {
+        "x": 39.63573911656814,
+        "y": 29.269666608132987
+      },
+      "firstLoadDPosition": {
+        "x": 40.8202789578087,
+        "y": 29.79082906654965
+      },
+      "firstLoadBVelocity": {
+        "x": 0.6099366139240568,
+        "y": 0.3187234418686966
+      },
+      "firstLoadDVelocity": {
+        "x": -1.1106577902642512,
+        "y": 0.57597964178007
+      },
+      "firstNormalForce": 0,
+      "firstLateralForce": -30.851879023287978,
+      "initialControl": -0.5,
+      "firstDecision": {
+        "t": 0.65,
+        "move": "swim",
+        "moveWeights": [
+          [
+            "bull",
+            "longarm",
+            "rip",
+            "club",
+            "swim",
+            "snatch"
+          ],
+          [
+            0.9581632653061225,
+            0.24897959183673474,
+            0.4571428571428572,
+            0.39387755102040817,
+            0.5285714285714286,
+            0.1693877551020408
+          ]
+        ],
+        "successProbability": 0.06802245695842872,
+        "landed": true,
+        "intervalVariateResult": 0.14234860584838316
+      },
+      "ltShed": 1.3,
+      "leftPressure": 2.2,
+      "endTime": 2.25,
+      "phase": "live",
+      "endDEWToQB": 2.2354405103383095,
+      "ltEngagedAtCensor": false,
+      "endLTPhi": null,
+      "endLTNormalForce": null,
+      "endLTLateralForce": null,
+      "ltTeammateImpacts": [],
+      "retained": [
+        {
+          "t": 0.65,
+          "kind": "weighted",
+          "actual": "longarm",
+          "delivered": "swim",
+          "args": [
+            [
+              "bull",
+              "longarm",
+              "rip",
+              "club",
+              "swim",
+              "snatch"
+            ],
+            [
+              0.9581632653061225,
+              0.24897959183673474,
+              0.4571428571428572,
+              0.39387755102040817,
+              0.5285714285714286,
+              0.1693877551020408
+            ]
+          ],
+          "referenceArm": "candidate",
+          "referenceTime": 0.55,
+          "uniform": 0.8582068590912968,
+          "qualification": "Only first subsequent LT/DE_W move-choice, execution and interval variates. Current weights/probability and native timing/geometry. Native calls consumed; later draws remain native and coupled."
+        },
+        {
+          "t": 0.65,
+          "kind": "chance",
+          "actual": false,
+          "delivered": true,
+          "args": [
+            0.06802245695842872
+          ],
+          "referenceArm": "candidate",
+          "referenceTime": 0.55,
+          "uniform": 0.02580803632736206,
+          "qualification": "Only first subsequent LT/DE_W move-choice, execution and interval variates. Current weights/probability and native timing/geometry. Native calls consumed; later draws remain native and coupled."
+        },
+        {
+          "t": 0.65,
+          "kind": "range",
+          "actual": 0.34390345414867624,
+          "delivered": 0.14234860584838316,
+          "args": [
+            0,
+            0.45
+          ],
+          "referenceArm": "candidate",
+          "referenceTime": 0.55,
+          "uniform": 0.31633023521862924,
+          "qualification": "Only first subsequent LT/DE_W move-choice, execution and interval variates. Current weights/probability and native timing/geometry. Native calls consumed; later draws remain native and coupled."
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "comparison": "opposite-first-move-variates",
+      "engagementAcquisition": 0.35,
+      "firstLoadedTime": 0.4,
+      "acquisitionPhi": 0.0759029461382029,
+      "firstLoadAchievedPhi": 0.0613970626176132,
+      "acquisitionBVelocity": {
+        "x": 1.1623430972225948,
+        "y": -0.1579022064861408
+      },
+      "acquisitionDVelocity": {
+        "x": 0,
+        "y": 0
+      },
+      "firstLoadBPosition": {
+        "x": 39.687544961490076,
+        "y": 29.25265794649903
+      },
+      "firstLoadDPosition": {
+        "x": 40.889878678552144,
+        "y": 29.73663347178919
+      },
+      "firstLoadBVelocity": {
+        "x": 1.1027521760506704,
+        "y": -0.03752904069494643
+      },
+      "firstLoadDVelocity": {
+        "x": -0.4052165458858839,
+        "y": 0.05552459101177539
+      },
+      "firstNormalForce": 0,
+      "firstLateralForce": -30.851879023287978,
+      "initialControl": -0.5,
+      "firstDecision": {
+        "t": 0.55,
+        "move": "longarm",
+        "moveWeights": [
+          [
+            "bull",
+            "longarm",
+            "rip",
+            "club",
+            "swim",
+            "snatch"
+          ],
+          [
+            0.9581632653061225,
+            0.24897959183673474,
+            0.4571428571428572,
+            0.39387755102040817,
+            0.5285714285714286,
+            0.1693877551020408
+          ]
+        ],
+        "successProbability": 0.04755412720888097,
+        "landed": false,
+        "intervalVariateResult": 0.34390345414867624
+      },
+      "ltShed": null,
+      "leftPressure": null,
+      "endTime": 2.25,
+      "phase": "live",
+      "endDEWToQB": 5.535054165489504,
+      "ltEngagedAtCensor": true,
+      "endLTPhi": 0.5031873701073085,
+      "endLTNormalForce": -117.8741668377817,
+      "endLTLateralForce": 460.7655456421799,
+      "ltTeammateImpacts": [],
+      "retained": [
+        {
+          "t": 0.55,
+          "kind": "weighted",
+          "actual": "swim",
+          "delivered": "longarm",
+          "args": [
+            [
+              "bull",
+              "longarm",
+              "rip",
+              "club",
+              "swim",
+              "snatch"
+            ],
+            [
+              0.9581632653061225,
+              0.24897959183673474,
+              0.4571428571428572,
+              0.39387755102040817,
+              0.5285714285714286,
+              0.1693877551020408
+            ]
+          ],
+          "referenceArm": "accepted",
+          "referenceTime": 0.65,
+          "uniform": 0.36096306750550866,
+          "qualification": "Only first subsequent LT/DE_W move-choice, execution and interval variates. Current weights/probability and native timing/geometry. Native calls consumed; later draws remain native and coupled."
+        },
+        {
+          "t": 0.55,
+          "kind": "chance",
+          "actual": true,
+          "delivered": false,
+          "args": [
+            0.04755412720888097
+          ],
+          "referenceArm": "accepted",
+          "referenceTime": 0.65,
+          "uniform": 0.5088214243296534,
+          "qualification": "Only first subsequent LT/DE_W move-choice, execution and interval variates. Current weights/probability and native timing/geometry. Native calls consumed; later draws remain native and coupled."
+        },
+        {
+          "t": 0.55,
+          "kind": "range",
+          "actual": 0.14234860584838316,
+          "delivered": 0.34390345414867624,
+          "args": [
+            0,
+            0.45
+          ],
+          "referenceArm": "accepted",
+          "referenceTime": 0.65,
+          "uniform": 0.7642298981081694,
+          "qualification": "Only first subsequent LT/DE_W move-choice, execution and interval variates. Current weights/probability and native timing/geometry. Native calls consumed; later draws remain native and coupled."
+        }
+      ]
+    }
+  ],
+  "costs": [
+    {
+      "file": "native-launcher.json",
+      "commit": "31c682b916e3a10388947ac9846c7810cc7fead3",
+      "exitCode": 0,
+      "seconds": 1.691610431
+    },
+    {
+      "file": "matched-harness-failure.json",
+      "commit": "6db489c5e572ab421633c4385e399f2436e8c8d0",
+      "exitCode": 1,
+      "seconds": 2.551348617
+    },
+    {
+      "file": "matched-metadata-failure.json",
+      "commit": "86da5bea0ba387b471066134fc636f89bbd5f371",
+      "exitCode": 1,
+      "seconds": 1.633165313
+    },
+    {
+      "file": "matched-launcher.json",
+      "commit": "bb9f04795ebdb95c524879f13970489340d442e7",
+      "exitCode": 0,
+      "seconds": 1.766355312
+    }
+  ],
+  "totalCommandSeconds": 7.6424796729999995,
+  "successfulNativeSegments": 4,
+  "discardedHarnessSegments": 3,
+  "uniqueExistingFixtures": 1,
+  "fullGames": 0,
+  "limits": [
+    "Only three first-response variates exchanged. Later shared randomness remains coupled.",
+    "Earlier geometry/contact age still differ. Success probabilities and weights are evaluated normally, never forced.",
+    "All arms live at 2.25; no ending or later mutated-QB tick is interpreted.",
+    "Current center-hand law limitations and forecast optimism remain. No new physical-law certificate."
+  ]
+}

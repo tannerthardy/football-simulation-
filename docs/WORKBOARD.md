@@ -1,5 +1,22 @@
 # Current work ownership
 
+## #67 ordinary-fixture adverse review — 2026-10-15
+
+Run Game recommends clearing the ordinary LT/pressure hold on the unchanged
+Integration extraction `be6225436498a43d8d98437a69069434e51565aa`, source
+`1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7`.
+[Contact/execution adjudication](reviews/pass-ordinary-contact.md) retains the
+native earlier LT loss. Initial punch/four drift draws are identical; first
+later response differs (successful swim versus failed long-arm). A reciprocal
+three-variate comparison transfers the loss to accepted and removes it from
+candidate. All22 normal, same existing fixture, live2.25s censor, no QB copy-test
+mutation. Native diagnostic `31c682b`; matched `bb9f047`; 7.642480s launcher
+wall including two retained harness failures. No production/test/settings edit,
+new games/rosters or repeated suite. Reuse compatible17 focused checks.
+Integration owns the separately reviewed coverage-kind filter and exact final
+verification. Do not import this diagnostic branch as production. #69 remains
+separate; no shared movement, contact law, capacity or default change.
+
 ## Independent #67 portability review — 2026-10-15
 
 Integration owns `codex/pass-cutoff-integration-review` from accepted develop
