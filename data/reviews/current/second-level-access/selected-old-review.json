@@ -1,0 +1,653 @@
+[
+  {
+    "caseId": "A018",
+    "matchup": "technique-elusive",
+    "concept": "duo",
+    "raw": {
+      "path": "out/accepted-broad-audit/cases/A018.json",
+      "bytes": 11498785,
+      "sha256": "72d6d9b5837d74fc469411a46c73936509cc6f739c32cc316354f1ceae6f0c42"
+    },
+    "sequenceReviewed": "all native frames/events/full telemetry and all-22 trajectory plot, manifest order; no outcome filters",
+    "sequence": "Duo mesh1.45 develops after early RT/LG climbs(.80/1.10). DT_S misses2.40; RT fails to achieve LB_M access and the fitter wraps2.75.",
+    "outcome": {
+      "outcome": "tackle",
+      "yards": 1.79,
+      "duration": 3.5,
+      "turnover": false,
+      "yardsBeforeContactNative": 0.6019478777414733,
+      "holdingEvents": [],
+      "censoring": {
+        "wallBudget": false,
+        "max25Seconds": false
+      }
+    },
+    "phaseEvents": {
+      "handoff": {
+        "t": 1.45,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 31.71,
+          "y": 26.2
+        },
+        "aId": "S74O-QB1",
+        "bId": "S74O-RB1"
+      },
+      "firstCarrierContact": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 35.6,
+          "y": 24.84
+        },
+        "note": "grasp",
+        "aId": "S74O-RB1",
+        "bId": "S74D-LB1"
+      },
+      "finish": {
+        "t": 3.45,
+        "type": "tackle",
+        "a": 15,
+        "b": 6,
+        "pos": {
+          "x": 37.1,
+          "y": 25.61
+        },
+        "aId": "S74D-LB1",
+        "bId": "S74O-RB1"
+      }
+    },
+    "concerns": [
+      {
+        "category": "blocking_access",
+        "label": "planned_second_level_job_not_achieved",
+        "causeClass": "unknown",
+        "firstConcerningTick": 1.5,
+        "actors": [
+          {
+            "idx": 2,
+            "id": "S74O-OT3",
+            "team": "O",
+            "slot": "RT",
+            "name": "T.Robinson",
+            "jersey": 74,
+            "position": "OT"
+          },
+          {
+            "idx": 7,
+            "id": "S74O-FB1",
+            "team": "O",
+            "slot": "Y",
+            "name": "C.Ward",
+            "jersey": 43,
+            "position": "FB"
+          },
+          {
+            "idx": 15,
+            "id": "S74D-LB1",
+            "team": "D",
+            "slot": "LB_M",
+            "name": "H.Lindqvist",
+            "jersey": 52,
+            "position": "LB"
+          }
+        ],
+        "observed": "RT is assigned the LB_M climb at 0.80 but at 1.50 requests[.47,-1.37] from[35.4,23.8] while LB_M is[37.3,26.2]. It never achieves that block before RB contact 2.75.",
+        "consequence": "Local access remains available to a fitter; a causal loss in yards and a safe attainable alternative are not established.",
+        "alternative": "A controlled departure and other traffic can delay access. No matched alternative proves an attainable block; RT/RB collision3.35 occurs after the initial loss.",
+        "demonstratedFact": "Recorded planned LB_M job does not become an achieved LB_M block before the initial carrier contact; this is not by itself a demonstrated wrong decision or weak physics.",
+        "nextDiscriminant": "Use this saved encounter to separate keeper security, departure route/request and moving backer access; require a safe attainable alternative before fixing it."
+      },
+      {
+        "category": "coverage_recognition",
+        "label": "run_cue_while_receiver_tracking_request_returns",
+        "causeClass": "plausible",
+        "firstConcerningTick": 1.7,
+        "actors": [
+          {
+            "idx": 20,
+            "id": "S74D-S1",
+            "team": "D",
+            "slot": "FS",
+            "name": "K.Thompson",
+            "jersey": 36,
+            "position": "S"
+          },
+          {
+            "idx": 6,
+            "id": "S74O-RB1",
+            "team": "O",
+            "slot": "RB",
+            "name": "E.Dawson",
+            "jersey": 37,
+            "position": "RB"
+          },
+          {
+            "idx": 8,
+            "id": "S74O-WR3",
+            "team": "O",
+            "slot": "X",
+            "name": "T.Wright",
+            "jersey": 87,
+            "position": "WR"
+          }
+        ],
+        "observed": "Run belief and an actual acquired RB carrying=true picture coexist with man:X and an upfield/outward final movement request. At2.00 the achieved FS velocity still points inward; do not call this achieved retreat.",
+        "evidenceAt2s": {
+          "t": 2,
+          "FSposition": [
+            45.1,
+            31.7
+          ],
+          "FSachievedVelocity": [
+            -0.66,
+            -1.16
+          ],
+          "FSfinalIntent": [
+            1.73,
+            8.98
+          ],
+          "FSjob": "man:X",
+          "FSbelief": {
+            "read": "run",
+            "passProbability": 0.01
+          },
+          "RBposition": [
+            32.4,
+            24.8
+          ],
+          "recordedCues": [
+            {
+              "a": 20,
+              "b": 6,
+              "t": 2,
+              "source": "see",
+              "position": [
+                32.05,
+                24.89
+              ],
+              "velocity": [
+                3.13,
+                -1.68
+              ],
+              "age": 0.2,
+              "pose": "up",
+              "carrying": true
+            },
+            {
+              "a": 20,
+              "b": 8,
+              "t": 2,
+              "source": "see",
+              "position": [
+                40.78,
+                43.53
+              ],
+              "velocity": [
+                3.47,
+                -0.56
+              ],
+              "age": 0.35,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        },
+        "observedWindow": {
+          "firstTick": 1.7,
+          "lastTick": 2,
+          "samples": 7
+        },
+        "consequence": "A transient request reversal delays/supports a concern about continuous run leverage; exact lost time, achievable alternative and effect on final yards are unmeasured.",
+        "alternative": "Preserving an alley roof through a deep mesh can be legitimate. The observed request reversal, not the continued job label alone, needs adjudication. Rob/Wall techniques do fit run even while their recorded job label stays receiver-named.",
+        "demonstratedFact": "Current ManCoverage only shortcuts to a personally marked carrying back before LOS; generic pursueIfLive waits until the acquired carrier is past LOS, and the X receiver can still be read as a vertical stem. The code branch is established; whole-play causal importance is not.",
+        "sourceLocations": [
+          "src/sim/behaviors/defense.ts:42",
+          "src/sim/behaviors/defense.ts:214",
+          "src/sim/behaviors/defense.ts:237",
+          "src/sim/coverage/techniques.ts:29"
+        ],
+        "nextDiscriminant": "One saved state preserving RNG/cues can compare coherent roof/run support with receiver tracking; preserve play-action and actual blocking/receiver danger before any correction."
+      }
+    ],
+    "preservedUsefulFootball": {
+      "offense": "Early releases and an evasive interior encounter remain visible; do not erase the runner win over DT_S.",
+      "defense": "LB_M gathers and finishes3.45. RT/RB collision3.35 is post-wrap and supplies no evidence of the initial cause."
+    },
+    "descriptiveScreens": {
+      "carrierSpeedBelow1ydsNativeTicksBetweenHandoffAndFirstContactEvent": [],
+      "sameTeamOffenseContactsWithClosingAtLeast1yds": [
+        {
+          "a": 2,
+          "b": 6,
+          "closing": 1.49,
+          "impulse": 131.39,
+          "t": 3.35,
+          "aId": "S74O-OT3",
+          "bId": "S74O-RB1",
+          "aSlot": "RT",
+          "bSlot": "RB",
+          "beforeFirstCarrierContactEvent": false
+        }
+      ]
+    },
+    "confirmedWrongDecision": false,
+    "confirmedPhysicalLawDefect": false
+  },
+  {
+    "caseId": "A027",
+    "matchup": "ordinary",
+    "concept": "wz_strong",
+    "raw": {
+      "path": "out/accepted-broad-audit/cases/A027.json",
+      "bytes": 14237672,
+      "sha256": "40ad8eb8ac8a0da88c193615abaedd736f47c5933cbe0e9d92e32dbe06cddadc"
+    },
+    "sequenceReviewed": "all native frames/events/full telemetry and all-22 trajectory plot, manifest order; no outcome filters",
+    "sequence": "Wide-zone handoff1.60 develops late Y release2.15. Y actually reaches LB_M2.70 with useful model load/control; LB_M misses3.00 then makes body contact3.20/wrap3.50.",
+    "outcome": {
+      "outcome": "tackle",
+      "yards": 0.33,
+      "duration": 4.35,
+      "turnover": false,
+      "yardsBeforeContactNative": 0.18125531870665412,
+      "holdingEvents": [],
+      "censoring": {
+        "wallBudget": false,
+        "max25Seconds": false
+      }
+    },
+    "phaseEvents": {
+      "handoff": {
+        "t": 1.6,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 31.32,
+          "y": 24.56
+        },
+        "aId": "S88O-QB2",
+        "bId": "S88O-RB2"
+      },
+      "firstCarrierContact": {
+        "t": 3.2,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 35.18,
+          "y": 20.23
+        },
+        "note": "body collision",
+        "aId": "S88O-RB2",
+        "bId": "S88D-LB2"
+      },
+      "finish": {
+        "t": 4.3,
+        "type": "tackle",
+        "a": 15,
+        "b": 6,
+        "pos": {
+          "x": 35.62,
+          "y": 19.14
+        },
+        "aId": "S88D-LB2",
+        "bId": "S88O-RB2"
+      }
+    },
+    "concerns": [
+      {
+        "category": "coverage_recognition",
+        "label": "run_cue_while_receiver_tracking_request_returns",
+        "causeClass": "plausible",
+        "firstConcerningTick": 1.85,
+        "actors": [
+          {
+            "idx": 20,
+            "id": "S88D-S1",
+            "team": "D",
+            "slot": "FS",
+            "name": "K.Mitchell",
+            "jersey": 34,
+            "position": "S"
+          },
+          {
+            "idx": 6,
+            "id": "S88O-RB2",
+            "team": "O",
+            "slot": "RB",
+            "name": "M.Delgado",
+            "jersey": 29,
+            "position": "RB"
+          },
+          {
+            "idx": 8,
+            "id": "S88O-WR1",
+            "team": "O",
+            "slot": "X",
+            "name": "A.Warren",
+            "jersey": 80,
+            "position": "WR"
+          }
+        ],
+        "observed": "Run belief and an actual acquired RB carrying=true picture coexist with man:X and an upfield/outward final movement request. At2.00 the achieved FS velocity still points inward; do not call this achieved retreat.",
+        "evidenceAt2s": {
+          "t": 2,
+          "FSposition": [
+            45.5,
+            31.8
+          ],
+          "FSachievedVelocity": [
+            -0.4,
+            -1.15
+          ],
+          "FSfinalIntent": [
+            2.53,
+            8.96
+          ],
+          "FSjob": "man:X",
+          "FSbelief": {
+            "read": "run",
+            "passProbability": 0.01
+          },
+          "RBposition": [
+            32.5,
+            22.1
+          ],
+          "recordedCues": [
+            {
+              "a": 20,
+              "b": 6,
+              "t": 2,
+              "source": "see",
+              "position": [
+                32.4,
+                22.35
+              ],
+              "velocity": [
+                3.62,
+                -2.9
+              ],
+              "age": 0.2,
+              "pose": "up",
+              "carrying": true
+            },
+            {
+              "a": 20,
+              "b": 8,
+              "t": 2,
+              "source": "see",
+              "position": [
+                40.61,
+                43.41
+              ],
+              "velocity": [
+                3.55,
+                -1.01
+              ],
+              "age": 0.35,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        },
+        "observedWindow": {
+          "firstTick": 1.85,
+          "lastTick": 2.1,
+          "samples": 6
+        },
+        "consequence": "A transient request reversal delays/supports a concern about continuous run leverage; exact lost time, achievable alternative and effect on final yards are unmeasured.",
+        "alternative": "Preserving an alley roof through a deep mesh can be legitimate. The observed request reversal, not the continued job label alone, needs adjudication. Rob/Wall techniques do fit run even while their recorded job label stays receiver-named.",
+        "demonstratedFact": "Current ManCoverage only shortcuts to a personally marked carrying back before LOS; generic pursueIfLive waits until the acquired carrier is past LOS, and the X receiver can still be read as a vertical stem. The code branch is established; whole-play causal importance is not.",
+        "sourceLocations": [
+          "src/sim/behaviors/defense.ts:42",
+          "src/sim/behaviors/defense.ts:214",
+          "src/sim/behaviors/defense.ts:237",
+          "src/sim/coverage/techniques.ts:29"
+        ],
+        "nextDiscriminant": "One saved state preserving RNG/cues can compare coherent roof/run support with receiver tracking; preserve play-action and actual blocking/receiver danger before any correction."
+      }
+    ],
+    "preservedUsefulFootball": {
+      "offense": "Preserve the achieved Y\u2192LB_M block: control about.6 and normal force about720 kg\u00b7yd/s\u00b2 at 3.00. It is opposing evidence to treating every WZ climb as absent.",
+      "defense": "LB_M remains in reach through a real blocker contest and recovers from a miss to finish4.30. This alone cannot establish bad contact physics."
+    },
+    "descriptiveScreens": {
+      "carrierSpeedBelow1ydsNativeTicksBetweenHandoffAndFirstContactEvent": [],
+      "sameTeamOffenseContactsWithClosingAtLeast1yds": []
+    },
+    "confirmedWrongDecision": false,
+    "confirmedPhysicalLawDefect": false
+  },
+  {
+    "caseId": "A030",
+    "matchup": "ordinary",
+    "concept": "duo",
+    "raw": {
+      "path": "out/accepted-broad-audit/cases/A030.json",
+      "bytes": 11474767,
+      "sha256": "7d60bf3e23dd5b023b7dfe7a2f9071168776181983e2fbe517b58f8b8cb05dd1"
+    },
+    "sequenceReviewed": "all native frames/events/full telemetry and all-22 trajectory plot, manifest order; no outcome filters",
+    "sequence": "Duo handoff1.45 develops after early RT/C climbs(.85/.85). C reaches LB_W1.80; RT does not reach LB_M before2.75.",
+    "outcome": {
+      "outcome": "tackle",
+      "yards": 2.01,
+      "duration": 3.5,
+      "turnover": false,
+      "yardsBeforeContactNative": 0.535912931127605,
+      "holdingEvents": [],
+      "censoring": {
+        "wallBudget": false,
+        "max25Seconds": false
+      }
+    },
+    "phaseEvents": {
+      "handoff": {
+        "t": 1.45,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 31.79,
+          "y": 26.22
+        },
+        "aId": "S88O-QB2",
+        "bId": "S88O-RB2"
+      },
+      "firstCarrierContact": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 35.54,
+          "y": 24.47
+        },
+        "note": "grasp",
+        "aId": "S88O-RB2",
+        "bId": "S88D-LB2"
+      },
+      "finish": {
+        "t": 3.45,
+        "type": "tackle",
+        "a": 15,
+        "b": 6,
+        "pos": {
+          "x": 37.4,
+          "y": 25.16
+        },
+        "aId": "S88D-LB2",
+        "bId": "S88O-RB2"
+      }
+    },
+    "concerns": [
+      {
+        "category": "blocking_access",
+        "label": "planned_second_level_job_not_achieved",
+        "causeClass": "unknown",
+        "firstConcerningTick": 1.5,
+        "actors": [
+          {
+            "idx": 2,
+            "id": "S88O-OT4",
+            "team": "O",
+            "slot": "RT",
+            "name": "Q.Rice",
+            "jersey": 73,
+            "position": "OT"
+          },
+          {
+            "idx": 7,
+            "id": "S88O-TE1",
+            "team": "O",
+            "slot": "Y",
+            "name": "C.Banks",
+            "jersey": 89,
+            "position": "TE"
+          },
+          {
+            "idx": 15,
+            "id": "S88D-LB2",
+            "team": "D",
+            "slot": "LB_M",
+            "name": "D.Allen",
+            "jersey": 46,
+            "position": "LB"
+          }
+        ],
+        "observed": "RT climbs toward LB_M at 0.85 but at 1.50 requests[1.30,-1.65] from[35.4,24.0] while LB_M is[37.4,26.0]. No achieved LB_M block before RB contact 2.75.",
+        "consequence": "Local access remains available to a fitter; a causal loss in yards and a safe attainable alternative are not established.",
+        "alternative": "The leave-combination geometry or the moving backer may deny access; a safe achievable alternative has not been demonstrated.",
+        "demonstratedFact": "Recorded planned LB_M job does not become an achieved LB_M block before the initial carrier contact; this is not by itself a demonstrated wrong decision or weak physics.",
+        "nextDiscriminant": "Use this saved encounter to separate keeper security, departure route/request and moving backer access; require a safe attainable alternative before fixing it."
+      },
+      {
+        "category": "coverage_recognition",
+        "label": "run_cue_while_receiver_tracking_request_returns",
+        "causeClass": "plausible",
+        "firstConcerningTick": 1.7,
+        "actors": [
+          {
+            "idx": 20,
+            "id": "S88D-S1",
+            "team": "D",
+            "slot": "FS",
+            "name": "K.Mitchell",
+            "jersey": 34,
+            "position": "S"
+          },
+          {
+            "idx": 6,
+            "id": "S88O-RB2",
+            "team": "O",
+            "slot": "RB",
+            "name": "M.Delgado",
+            "jersey": 29,
+            "position": "RB"
+          },
+          {
+            "idx": 8,
+            "id": "S88O-WR1",
+            "team": "O",
+            "slot": "X",
+            "name": "A.Warren",
+            "jersey": 80,
+            "position": "WR"
+          }
+        ],
+        "observed": "Run belief and an actual acquired RB carrying=true picture coexist with man:X and an upfield/outward final movement request. At2.00 the achieved FS velocity still points inward; do not call this achieved retreat.",
+        "evidenceAt2s": {
+          "t": 2,
+          "FSposition": [
+            45,
+            31.5
+          ],
+          "FSachievedVelocity": [
+            -0.67,
+            -1.25
+          ],
+          "FSfinalIntent": [
+            2.34,
+            8.98
+          ],
+          "FSjob": "man:X",
+          "FSbelief": {
+            "read": "run",
+            "passProbability": 0.01
+          },
+          "RBposition": [
+            32.3,
+            24.7
+          ],
+          "recordedCues": [
+            {
+              "a": 20,
+              "b": 6,
+              "t": 2,
+              "source": "see",
+              "position": [
+                32.03,
+                24.86
+              ],
+              "velocity": [
+                3.01,
+                -1.84
+              ],
+              "age": 0.2,
+              "pose": "up",
+              "carrying": true
+            },
+            {
+              "a": 20,
+              "b": 8,
+              "t": 2,
+              "source": "see",
+              "position": [
+                40.55,
+                43.24
+              ],
+              "velocity": [
+                3.46,
+                -1.06
+              ],
+              "age": 0.35,
+              "pose": "up",
+              "carrying": false
+            }
+          ]
+        },
+        "observedWindow": {
+          "firstTick": 1.7,
+          "lastTick": 2,
+          "samples": 7
+        },
+        "consequence": "A transient request reversal delays/supports a concern about continuous run leverage; exact lost time, achievable alternative and effect on final yards are unmeasured.",
+        "alternative": "Preserving an alley roof through a deep mesh can be legitimate. The observed request reversal, not the continued job label alone, needs adjudication. Rob/Wall techniques do fit run even while their recorded job label stays receiver-named.",
+        "demonstratedFact": "Current ManCoverage only shortcuts to a personally marked carrying back before LOS; generic pursueIfLive waits until the acquired carrier is past LOS, and the X receiver can still be read as a vertical stem. The code branch is established; whole-play causal importance is not.",
+        "sourceLocations": [
+          "src/sim/behaviors/defense.ts:42",
+          "src/sim/behaviors/defense.ts:214",
+          "src/sim/behaviors/defense.ts:237",
+          "src/sim/coverage/techniques.ts:29"
+        ],
+        "nextDiscriminant": "One saved state preserving RNG/cues can compare coherent roof/run support with receiver tracking; preserve play-action and actual blocking/receiver danger before any correction."
+      }
+    ],
+    "preservedUsefulFootball": {
+      "offense": "One side achieves a real second-level block and RB progresses to contact. Do not count both doubles as ineffective.",
+      "defense": "LB_M closes through its remaining access, hits/wraps2.75 and finishes3.45."
+    },
+    "descriptiveScreens": {
+      "carrierSpeedBelow1ydsNativeTicksBetweenHandoffAndFirstContactEvent": [],
+      "sameTeamOffenseContactsWithClosingAtLeast1yds": []
+    },
+    "confirmedWrongDecision": false,
+    "confirmedPhysicalLawDefect": false
+  }
+]

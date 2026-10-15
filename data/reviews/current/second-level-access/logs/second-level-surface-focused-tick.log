@@ -1,0 +1,18 @@
+Profile candidate: run-game-2026-10-13, commit f1a9743277deec4eab0855c74066fce4a260b8a9, source 1627538cd19553c1e317838ba1c9fdcc98bc935937d7638378c838a432e26323
+Running node node_modules/vitest/vitest.mjs run --project core test/second-level-access.test.ts test/combo-transfer.test.ts test/combo-attention.test.ts test/run-combo-retarget.test.ts --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-second-level-access
+
+ ✓ |core| test/second-level-access.test.ts (2 tests) 480ms
+ ✓ |core| test/combo-attention.test.ts (20 tests) 1894ms
+   ✓ joined pair proposals resolve before ordinary movement > resolves an equal-cost surface consistently and honors a real cost advantage, backer shift 0  713ms
+   ✓ joined pair proposals resolve before ordinary movement > resolves an equal-cost surface consistently and honors a real cost advantage, backer shift -0.5  615ms
+ ✓ |core| test/combo-transfer.test.ts (22 tests) 483ms
+ ✓ |core| test/run-combo-retarget.test.ts (17 tests) 115ms
+
+ Test Files  4 passed (4)
+      Tests  61 passed (61)
+   Start at  22:14:15
+   Duration  4.92s (transform 779ms, setup 0ms, collect 1.32s, tests 2.97s, environment 0ms, prepare 192ms)
+
+Validation receipt: out/second-level-access/surface-focused-tick.json; exit 0

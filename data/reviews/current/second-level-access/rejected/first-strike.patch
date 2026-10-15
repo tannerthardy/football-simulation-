@@ -1,0 +1,90 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 2209ee4..b325a70 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1029,7 +1029,11 @@ export class RunBlocker implements Behavior {
+     if (!this.departureRead || sim.t >= this.departureRead.nextRead) {
+       const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper);
+       const backer = sim.see(a, departure.backer);
+-      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer);
++      // Once released, he needs access to the first possible backer strike,
++      // not a walk through that defender's center beyond useful contact.
++      const strike = a.profile.radius + departure.backer.profile.radius + .1
++        + a.player.measurables.armIn / 36 * .45;
++      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer, strike);
+       this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
+         exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
+       // Only a personally observed clear route ends the departure. A blocked
+@@ -1398,7 +1402,7 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
+  * that the whole climb or linebacker block will succeed. Check the DL and
+  * partner through the next read; a moving or mistaken picture can still lose. */
+ function climbRoute(a: Agent, defender: Agent, down: Perceived,
+-  partner: Agent, covered: Perceived, backer: Perceived): { exit: Vec2 | null; flow: Vec2 } | null {
++  partner: Agent, covered: Perceived, backer: Perceived, strike = 0): { exit: Vec2 | null; flow: Vec2 } | null {
+   const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },
+     { seen: covered, radius: a.profile.radius + partner.profile.radius }];
+   const clear = (goal: Vec2, flow: Vec2): boolean => bodies.every(({ seen, radius }) => {
+@@ -1417,7 +1421,10 @@ function climbRoute(a: Agent, defender: Agent, down: Perceived,
+     }
+     return true;
+   });
+-  if (clear(backer.pos, backer.vel)) return { exit: null, flow: backer.vel };
++  const ray = sub(backer.pos, a.pos), distance = Math.hypot(ray.x, ray.y);
++  const through = Math.max(0, distance - strike) / Math.max(distance, 1e-12);
++  const first = strike > 0 ? { x: a.pos.x + ray.x * through, y: a.pos.y + ray.y * through } : backer.pos;
++  if (clear(first, backer.vel)) return { exit: null, flow: backer.vel };
+   for (const body of bodies) {
+     const relative = sub(a.pos, body.seen.pos), goal = sub(backer.pos, body.seen.pos);
+     const distance = Math.hypot(relative.x,relative.y);
+diff --git a/test/second-level-access.test.ts b/test/second-level-access.test.ts
+new file mode 100644
+index 0000000..b1bae9b
+--- /dev/null
++++ b/test/second-level-access.test.ts
+@@ -0,0 +1,46 @@
++import {describe,expect,it,vi} from 'vitest';
++import {readFileSync} from 'node:fs';
++import {gunzipSync} from 'node:zlib';
++import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
++import {RunBlocker} from '../src/sim/behaviors/blocking.js';
++
++const inputs=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/second-level-access.json.gz',import.meta.url))).toString()) as
++ {rows:Array<{id:string;setup:PlaySetup}>};
++function stage(id:string,t:number){
++ const sim=new PlaySim(structuredClone(inputs.rows.find(r=>r.id===id)!.setup));
++ while(sim.phase==='live'&&sim.t<t-1e-9)sim.tick();
++ const rt=sim.slot('RT')!,controller=rt.behavior as RunBlocker;
++ expect(controller.plan.kind).toBe('climb');expect(controller.plan.departure).toBeDefined();
++ expect(rt.engagement).toBeNull();expect(controller.target).toBe(sim.slot('LB_M'));
++ return {sim,rt,controller};
++}
++describe('an earned departure hands off to the attainable near second-level surface',()=>{
++ it('does not require walking through the linebacker center beyond first strike',()=>{
++  const {sim,rt,controller}=stage('A018',2.4),keeper=sim.slot('RG')!;
++  const hands=keeper.engagement!.hands;
++  const interceptor=vi.spyOn(controller as unknown as {plannedClimb:(...args:unknown[])=>unknown},'plannedClimb');
++  const update=controller.update;
++  const decision=vi.spyOn(controller,'update').mockImplementation((a,s)=>{
++   const bodies=s.agents.map(a=>structuredClone(a.body)),rng=JSON.stringify(s.rng);
++   const request=update.call(controller,a,s);
++   expect(s.agents.map(a=>a.body)).toEqual(bodies);expect(JSON.stringify(s.rng)).toBe(rng);
++   return request;
++  });
++  // Tick supplies the normal new perception frame and mind/read cadence.
++  // Calling update directly here would consume the previous tick's picture.
++  sim.tick();
++  expect(controller.plan.departure).toBeUndefined();
++  expect(interceptor).toHaveBeenCalledOnce();
++  expect(keeper.engagement!.hands).toBe(hands);expect(sim.world.joints).toContain(hands);
++  expect(sim.events.find(e=>e.type==='block_climb'&&e.a===rt.idx)?.t).toBe(.8);
++  interceptor.mockRestore();decision.mockRestore();
++ });
++ it('retains the departure when the keeper obstructs the approach before first strike',()=>{
++  const {sim,rt,controller}=stage('A030',2.35);
++  const interceptor=vi.spyOn(controller as unknown as {plannedClimb:(...args:unknown[])=>unknown},'plannedClimb');
++  sim.tick();
++  expect(controller.plan.departure).toBeDefined();expect(interceptor).not.toHaveBeenCalled();
++  expect(controller.target).toBe(sim.slot('LB_M'));expect(rt.engagement).toBeNull();
++  interceptor.mockRestore();
++ });
++});

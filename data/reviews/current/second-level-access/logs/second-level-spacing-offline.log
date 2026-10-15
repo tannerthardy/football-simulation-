@@ -1,0 +1,62 @@
+Profile candidate: run-game-2026-10-13, commit 6aa8697e2d01ff3ddeb2ea412ffc82752939d795, source 1627538cd19553c1e317838ba1c9fdcc98bc935937d7638378c838a432e26323
+Running node --import tsx scripts/diag/second-level-spacing.mjs
+[
+  {
+    "t": 2.4,
+    "original": {
+      "x": -1.41199187432553,
+      "y": 2.309712720358445
+    },
+    "delivered": {
+      "x": 2.530066960038905,
+      "y": 0.39973122957414375
+    },
+    "peers": [
+      {
+        "slot": "RB",
+        "gap": 1.4558836076258523,
+        "closing": 6.940593006003532,
+        "allowed": 2.5601983721001758
+      }
+    ]
+  },
+  {
+    "t": 2.45,
+    "original": {
+      "x": -1.53157491669729,
+      "y": 2.293219899286332
+    },
+    "delivered": {
+      "x": 2.4578896796805942,
+      "y": 0.08274927975948287
+    },
+    "peers": [
+      {
+        "slot": "RB",
+        "gap": 1.2641426541172618,
+        "closing": 6.894375819742319,
+        "allowed": 2.3334539693326932
+      }
+    ]
+  },
+  {
+    "t": 2.5,
+    "original": {
+      "x": -1.663672924544554,
+      "y": 2.2630138205724384
+    },
+    "delivered": {
+      "x": 2.1021780261264134,
+      "y": -0.12121068054525397
+    },
+    "peers": [
+      {
+        "slot": "RB",
+        "gap": 1.104859735159411,
+        "closing": 6.565198945107982,
+        "allowed": 2.108051891846295
+      }
+    ]
+  }
+]
+Validation receipt: out/second-level-access/spacing-offline-launcher.json; exit 0

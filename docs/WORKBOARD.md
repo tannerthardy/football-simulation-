@@ -2,13 +2,22 @@
 
 ## Second-level access investigation — Run Game
 
-Pinned accepted90edc525 (#69 already incorporated); preselect saved A018/A030
-and achieved-block/defensive-recovery contrast A027 from audit58303d6. Trace
-installed job, acquired takeover/release and native departure/interception through
-contact/spacing and actual runner arrival. Older archive is outside this executor;
-reconstruct only these three exact inputs on8ca8dee and accepted90edc52. No new
-roster, broad audit, force/release tuning or Physics change. Provide #75 installed
-insertion/alley contract to Catching; Catching retains implementation/tests.
+[Focused selected-case report](reviews/second-level-access.md): A018/A030/A027
+transfer exactly from audit8ca8dee to accepted90edc525 after #69. RT's earned
+.80/.85 releases become repeated escape arcs; an earlier attainable route by
+RB arrival remains unproved. A027 achieves real Y/LB load and retains defensive
+recovery. The first-strike-only post-release trial f1a9743 passes61 focused checks
+and typecheck but gains no timely LB protection; A0181.79→1.75, A030/A027 exact.
+It is parked; publication restores accepted source/tests. At2.40 the new free
+intercept already forecasts2.85 versus contact2.75. Native spacing then cuts
+against the acquired RB; this is not demonstrated unjustified avoidance.
+20KB RT/RB reproduction and full raw/cost packets are preserved; 34.252982s
+launcher wall incl failures, zero games/new rosters/broad audit. No production
+patch ready or shared suite requested. Run retains earlier departure-route
+feasibility; Do-It-All retains shared traffic/carrier changes. #75 installed
+insertion/alley contract delivered to Catching in6203244219, no duplicate patch.
+Publish the precise blocker directly to Integration; no force/release/physics
+change or automatic follow-on experiment.
 
 ## Standing queue and next controller checkpoint — 2026-10-15
 

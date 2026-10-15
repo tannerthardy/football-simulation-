@@ -1,0 +1,37 @@
+Profile candidate: run-game-2026-10-13, commit 435283cf15b81ccb87599d321640a897d845b07a, source 7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b
+Running node node_modules/vitest/vitest.mjs run --project core test/second-level-access.test.ts --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-second-level-access
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/second-level-access.test.ts [ test/second-level-access.test.ts ]
+Error: Transform failed with 1 error:
+/workspace/football-second-level-access/test/second-level-access.test.ts:8:4: ERROR: Expected ";" but found "{"
+  Plugin: vite:esbuild
+  File: /workspace/football-second-level-access/test/second-level-access.test.ts:8:4
+  
+  Expected ";" but found "{"
+  6  |  
+  7  |  const inputs=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/second-level-access.json.gz',import.meta.url))).t...
+  8  |   as {rows:Array<{id:string;setup:PlaySetup}>};
+     |      ^
+  9  |  function stage(id:string,t:number){
+  10 |   const sim=new PlaySim(structuredClone(inputs.rows.find(r=>r.id===id)!.setup));
+  
+ ❯ failureErrorWithLog ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:1752:15
+ ❯ ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:1019:50
+ ❯ responseCallbacks.<computed> ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:886:9
+ ❯ handleIncomingPacket ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:941:12
+ ❯ Socket.readFromStdout ../football-simulation-/node_modules/vite/node_modules/esbuild/lib/main.js:864:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  22:12:20
+   Duration  174ms (transform 17ms, setup 0ms, collect 0ms, tests 0ms, environment 0ms, prepare 52ms)
+
+Validation receipt: out/second-level-access/surface-red.json; exit 1
