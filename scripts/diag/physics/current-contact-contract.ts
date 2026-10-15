@@ -12,6 +12,7 @@ import {RUN_BY_ID} from '../../../src/playbook/concepts.js';
 import {FRONT_BY_ID,COVERAGE_BY_ID} from '../../../src/playbook/defense.js';
 import {PlaySim} from '../../../src/sim/playsim.js';
 import {sourceVersion} from '../../source-version.js';
+import {supportParams} from '../../../src/physics/support.js';
 const root='out/contact-law-current',hash=(x:unknown)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');mkdirSync(root,{recursive:true});
 const source=sourceVersion(),start=performance.now();
 function run(mode:'center'|'patch',observe:boolean){
@@ -29,19 +30,23 @@ function run(mode:'center'|'patch',observe:boolean){
   w.integrateSubstep=function(ids:number[],...args:any[]){active=ids;return integrate.call(this,ids,...args);};
   w.jointRows=function(h:number){const result=rows.call(this,h);for(const r of result){
    if(!active.includes(r.i)||!active.includes(r.j)||r.joint.kind!=='hands')continue;
-   if(![r.joint.a,r.joint.b].includes(owner.body)||![r.joint.a,r.joint.b].includes(defender.body))continue;
+   const target=[r.joint.a,r.joint.b].includes(owner.body)&&[r.joint.a,r.joint.b].includes(defender.body);
+   if(!target&&sim.t>=.5)continue;
    const a=this.bodies[r.i],b=this.bodies[r.j],com=(b.vel.x-a.vel.x)*-r.ny+(b.vel.y-a.vel.y)*r.nx,
     yaw=-(r.ri??0)*(a.spin??0)-(r.rj??0)*(b.spin??0);
-   frames.push({row:r,h,mode:r.mode,c:r.c,comSlip:com,yawSlip:yaw,pointSlip:com+yaw,normalCapacity:r.pushLim,steerCapacity:r.steerLim});
+   frames.push({row:r,slots:[sim.agents[r.i].slot,sim.agents[r.j].slot],target,h,mode:r.mode,c:r.c,comSlip:com,yawSlip:yaw,pointSlip:com+yaw,normalCapacity:r.pushLim,steerCapacity:r.steerLim});
   }return result;};
   w.step=function(intents:any[],dt:number){
    const inputHash=hash({bodies:this.bodies,intents,joints:this.joints.map((j:any)=>{const {a,b,actor,holder,...rest}=j;return {...rest,a:this.indexOf(a),b:this.indexOf(b),actor:actor?this.indexOf(actor):null,holder:holder?this.indexOf(holder):null};})}),
-    beforeHash=hash(this.bodies),intentHash=hash(intents),before=structuredClone([owner.body,defender.body]);frames=[];
+    beforeHash=hash(this.bodies),intentHash=hash(intents),before=structuredClone([owner.body,defender.body]),
+    earlyBefore=sim.t<.5?structuredClone(this.bodies):undefined;frames=[];
    const report=step.call(this,intents,dt),joint=combo.defender.engagement?.hands;
    steps.push({t:sim.t,inputHash,beforeHash,intentHash,afterHash:hash(this.bodies),before,after:structuredClone([owner.body,defender.body]),
     requested:[intents[owner.idx],intents[defender.idx]],normal:joint?.normalForce??null,tangent:joint?.tangentForce??null,
     moments:joint?[joint.momentOnA,joint.momentOnB]:[],groundYaw:[report.groundYawImpulse[owner.idx],report.groundYawImpulse[defender.idx]],
     workResidual:report.work.residual,contacts:report.contacts,strikes:report.strikes,
+    earlyBodies:earlyBefore?{before:earlyBefore,after:structuredClone(this.bodies),groundYaw:report.groundYawImpulse,
+      joints:this.joints.map((j:any)=>({kind:j.kind,i:this.indexOf(j.a),j:this.indexOf(j.b),normal:j.normalForce,tangent:j.tangentForce,moments:[j.momentOnA??0,j.momentOnB??0]}))}:undefined,
     frames:frames.map(({row,...f})=>({...f,normalImpulse:row.ln,tangentImpulse:row.lt,normalWork:row.normalWork?.net??0,tangentWork:row.tangentWork?.net??0}))});
    return report;
   };
@@ -63,8 +68,20 @@ const runs=(['center','patch'] as const).map(mode=>{const plain=run(mode,false),
  firstZero=runs[1].predicates.find(r=>r.normal!==null&&r.normal<=0),
  earliest={time:runs[0].steps[firstBody]?.t,identicalInput:runs[0].steps[firstBody]?.inputHash===runs[1].steps[firstBody]?.inputHash,
   firstChangedCommandTime:runs[0].steps[firstCommand]?.t,zeroCompressionPredicate:firstZero};
+const ledgers=runs.map(run=>{
+ const step=run.steps[firstBody],early=step.earlyBodies;
+ assert(early&&step.contacts.length===0&&step.strikes.length===0&&early.joints.every((j:any)=>j.kind==='hands'));
+ const rows=early.after.map((body:any,i:number)=>{
+  const spinImpulse=supportParams(body.profile).yawInertia*((body.spin??0)-(early.before[i].spin??0)),
+   handImpulse=early.joints.reduce((sum:number,j:any)=>sum+(j.i===i?j.moments[0]:0)*.05+(j.j===i?j.moments[1]:0)*.05,0),
+   groundImpulse=early.groundYaw[i],residual=spinImpulse-handImpulse-groundImpulse;
+  // Center's omitted hand torque is the known defect. Test the isolated law.
+  if(run.mode==='patch')assert(Math.abs(residual)<1e-10);
+  return {slot:run.steps[firstBody].earlyBodies.after[i]&&i,spinImpulse,handImpulse,groundImpulse,residual};
+ });return {mode:run.mode,time:step.t,joints:early.joints,rows};
+});
 assert.equal(sourceVersion(),source);
 const result={source,toolSha256:createHash('sha256').update(readFileSync('scripts/diag/physics/current-contact-contract.ts')).digest('hex'),
  input:{O:31,D:32,strength:.55,seed:3,formation:'gun_wing_12',concept:'split_zone',front:'tite',coverage:'cover3',flip:false,windowSeconds:2},
- settings:{groundMovement:'legacy',handContact:'center versus patch',components:process.env.RUN_CONTACT_COMPONENTS,experimentalSolvers:'absent'},earliest,runs,elapsedSeconds:(performance.now()-start)/1000};
+ settings:{groundMovement:'legacy',handContact:'center versus patch',components:process.env.RUN_CONTACT_COMPONENTS,experimentalSolvers:'absent'},earliest,ledgers,runs,elapsedSeconds:(performance.now()-start)/1000};
 writeFileSync(`${root}/tite-contract.json`,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({earliest,runs:runs.map(r=>({mode:r.mode,observerNeutral:r.observerNeutral,climbs:r.climbs,released:r.released})),elapsedSeconds:result.elapsedSeconds}));
