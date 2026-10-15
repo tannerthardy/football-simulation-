@@ -12,6 +12,12 @@ forecast and own-travel estimate are optimistic, but the measured-speed and
 acceleration-aware replacements lose P019's useful edge block. Full evidence,
 rejected arms, exact flags/inputs and Integration's next decision are in
 [the pass-set report](reviews/pass-set-opening/README.md).
+Portable evidence is `eba1b61756d7a85b3b8c39dc73196244e7eef719`, published in
+[draft PR #64](https://github.com/tannerthardy/football-simulation-/pull/64),
+stacked on #57 to keep the cadence handoff separate. Integration: no new pass
+runtime patch is recommended; review the loaded foot-objective contract before
+an engagement change. Its inferred tangent contribution is an open question,
+not an established controller or contact-law defect.
 13 completed opening segments plus failed harness/probe attempts cost39.64s;
 zero games/prefix replays. No broad suite or shared engagement edit.
 Only new diagnostic files: exact-source method instrumentation,
