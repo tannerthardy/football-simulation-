@@ -24,7 +24,7 @@ stretch/zone implementation or physics dependency is required by this patch.
 
 ## Evidence and adverse results
 
-[Author evidence audit](../../../data/reviews/current/pass-cutoff-integration/author-evidence-review.json)
+[Author evidence audit](../../data/reviews/current/pass-cutoff-integration/author-evidence-review.json)
 verifies 47 artifact hashes and the original runtime hash. Reuse its native
 P020 transfer and retained-initial RT/RG diagnostics for their original source;
 they do not certify current-develop trajectories. The shared code suite from
@@ -59,9 +59,9 @@ remain. This supports changed execution ordering as the traffic cause rather
 than a new direct C/LG approach defect. It is not a production RNG fix, full
 retained-randomness comparison or certificate of unit-wide protection.
 
-[Compact outcomes and interpretation](../../../data/reviews/current/pass-cutoff-integration/adverse-review.json)
-link [paired raw capture](../../../data/reviews/current/pass-cutoff-integration/paired-native.json.gz)
-and [single diagnostic](../../../data/reviews/current/pass-cutoff-integration/traffic-diagnostic-native.json.gz).
+[Compact outcomes and interpretation](../../data/reviews/current/pass-cutoff-integration/adverse-review.json)
+link [paired raw capture](../../data/reviews/current/pass-cutoff-integration/paired-native.json.gz)
+and [single diagnostic](../../data/reviews/current/pass-cutoff-integration/traffic-diagnostic-native.json.gz).
 P019 and candidate P040 remain live at3.50s; no endings are inferred. No new
 games, rosters, P020 replay or matrix was added. The original report's forecast
 deadlines remain unproven: approaching its point better does not validate the
@@ -76,10 +76,10 @@ metadata-label corrections were derived offline; original capture is retained.
 The one exact combined attempt at `be6225436498a43d8d98437a69069434e51565aa`
 passes typecheck/build and1,723 TypeScript checks across144 files, with one
 failure; Python is explicitly skipped by fail-fast. No full green pass is
-claimed. [Complete failed receipt](../../../data/reviews/current/pass-cutoff-integration/combined-failure.json)
-and [log](../../../data/reviews/current/pass-cutoff-integration/combined-failure.log)
+claimed. [Complete failed receipt](../../data/reviews/current/pass-cutoff-integration/combined-failure.json)
+and [log](../../data/reviews/current/pass-cutoff-integration/combined-failure.log)
 remain unchanged. All new command times, including diagnostic harness failures,
-are in the [review receipt](../../../data/reviews/current/pass-cutoff-integration/review.json).
+are in the [review receipt](../../data/reviews/current/pass-cutoff-integration/review.json).
 
 The failed assertion at `test/replay-telemetry.test.ts:55` assumes every
 recorded decision belongs to CoverageDefender. The existing fixture now also
@@ -98,7 +98,7 @@ The diagnostic establishes the recording-kind mismatch, not universal blocking
 improvement or full realism of the changed execution.
 
 Smallest proposed contract repair: filter `coverage-job` entries before the
-coverage-specific assertions. The [one-line patch](../../../data/reviews/current/pass-cutoff-integration/telemetry-contract-proposal.patch)
+coverage-specific assertions. The [one-line patch](../../data/reviews/current/pass-cutoff-integration/telemetry-contract-proposal.patch)
 is **uninstalled** and applies cleanly; no existing assertion, seed, threshold
 or runtime was changed. Run Game's handoff owner and Catching/replay reviewer
 should accept or reject that scope. Integration then freezes the final candidate
@@ -122,7 +122,7 @@ on #67; this packet adds current-source evidence without replacing them.
 ## Adoption boundary
 
 #65's exact reconciled documentation is independently recommended by the
-[documentation review](../../../data/reviews/current/pass-cutoff-integration/pr65-review.json).
+[documentation review](../../data/reviews/current/pass-cutoff-integration/pr65-review.json).
 Its source, tests, tooling/settings and88 existing receipt files match accepted
 develop; merge preview matches its reviewed tree. No runtime check is needed
 for that adoption. It requires explicit merge approval.
