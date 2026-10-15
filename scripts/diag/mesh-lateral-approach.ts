@@ -33,22 +33,27 @@ function encounter(body: Body, samples: MovementSample[], p: Peer) {
   }
   return {gap:minimum,at};
 }
-function choose(body: Body, raw: Intent, chosen: Intent, peers: Peer[], now: number, passing?: Passing) {
+function choose(body: Body, raw: Intent, chosen: Intent, peers: Peer[], now: number, passing?: Passing, earlier=false) {
   const speed=Math.hypot(raw.vel.x,raw.vel.y);
   if(speed<1e-9||peers.length!==10||peers.some(p=>!Number.isFinite(p.seen.age)
     ||![p.seen.pos.x,p.seen.pos.y,p.seen.vel.x,p.seen.vel.y].every(Number.isFinite)))return {reason:'unknown-picture',passing:undefined};
   const rawPath=previewFreeMovement(body,raw,now,steps);
   const worst=peers.map(p=>({p,...encounter(body,rawPath,p)})).sort((a,b)=>a.gap-b.gap)[0];
+  // Earlier control: the same maneuver, admitted when the held achieved
+  // velocity already forecasts a conflict. No knowledge of a later collision.
+  const residual=earlier?previewFreeMovement(body,{...raw,vel:{...body.vel}},now,steps):rawPath;
+  const residualWorst=peers.map(p=>({p,...encounter(body,residual,p)})).sort((a,b)=>a.gap-b.gap)[0];
   if(passing){
     const p=peers.find(p=>p.idx===passing.peer)!;
     if(dot({x:p.seen.pos.x-body.pos.x,y:p.seen.pos.y-body.pos.y},passing.forward)<=0)passing=undefined;
   }
   if(!passing){
-    if(worst.gap>=0)return {reason:'no-local-conflict',passing:undefined};
+    if(worst.gap>=0&&residualWorst.gap>=0)return {reason:'no-local-conflict',passing:undefined};
+    const conflict=worst.gap<0?worst:residualWorst;
     const forward={x:raw.vel.x/speed,y:raw.vel.y/speed},normal={x:-forward.y,y:forward.x};
-    const toward=dot(normal,{x:worst.p.seen.pos.x-body.pos.x,y:worst.p.seen.pos.y-body.pos.y});
+    const toward=dot(normal,{x:conflict.p.seen.pos.x-body.pos.x,y:conflict.p.seen.pos.y-body.pos.y});
     if(toward>0){normal.x=-normal.x;normal.y=-normal.y;}
-    passing={peer:worst.p.idx,forward,normal};
+    passing={peer:conflict.p.idx,forward,normal};
   }
   const p=peers.find(p=>p.idx===passing!.peer)!,n=passing.normal;
   const meet=encounter(body,rawPath,p),at=Math.max(.05,Math.min(horizon,meet.at));
@@ -72,16 +77,17 @@ function choose(body: Body, raw: Intent, chosen: Intent, peers: Peer[], now: num
     &&(previous<0?minimum>previous+.05:minimum>=0&&advance>oldAdvance);
   return {reason:accepted?'lateral':'not-better',passing,command:accepted?command:undefined,
     detail:{peer:p.idx,age:p.seen.age,at,normal:n,stopping,target,raw:structuredClone(raw),chosen:structuredClone(chosen),
-      alternative:command,rawGap:worst.gap,chosenGap:previous,lateralGap:minimum,chosenProgress:oldAdvance,lateralProgress:advance,
+      alternative:command,rawGap:worst.gap,residualGap:residualWorst.gap,chosenGap:previous,lateralGap:minimum,chosenProgress:oldAdvance,lateralProgress:advance,
       allUp:path.every(s=>s.support==='up')}};
 }
 const args=process.argv.slice(2),outIndex=args.indexOf('--out'),out=outIndex<0?'out/mesh-lateral/v1':args[outIndex+1];
+const earlier=args.includes('--earlier');
 const root='data/reviews/current/mesh-motion-admission/current-candidate';
 const source='data/reviews/current/mesh-command-attribution',input=`${source}/flex-windows.json.gz`;
 const plan={question:'Can a retained, momentum-budgeted passing-side target improve the first A044 conflict with both defenders reacting?',
   host:'6e19ad2d4aac73e71ae57c1893a9b389074eeaa5',accepted:'7eb2554f5dbb497cff169f386704a5b0f4cf43fe',
   cases:[{id:'A044',until:3.55},{id:'A008',until:3.4}],forecastSteps:steps,actor:21,
-  existingBaseline:root,batchWallCapMs:15000,productionChange:false,fullGames:0,generatedRosters:0};
+  earlierResidualAdmission:earlier,existingBaseline:root,batchWallCapMs:15000,productionChange:false,fullGames:0,generatedRosters:0};
 if(!args.includes('--offline')&&!args.includes('--run')){console.log(JSON.stringify(plan,null,2));process.exit(0);}
 if(createHash('sha256').update(readFileSync(input)).digest('hex')!=='11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191')throw Error('Input mismatch');
 const saved=read(input),profile=JSON.parse(readFileSync('config/baseline.json','utf8'));
@@ -94,13 +100,14 @@ writeFileSync(`${out}/plan.json`,JSON.stringify({...plan,provenance},null,2)+'\n
 const start=performance.now(),cpu=process.cpuUsage(),rows:any[]=[];
 if(args.includes('--offline')){
   const d=read(`${root}/A044.json.gz`),meta=read(`${source}/capture-v1/A044.json.gz`);
-  for(const t of [2.2,2.35,2.55]){
+  let passing:Passing|undefined;
+  for(const t of earlier?[1.8,1.85,1.9,1.95,2,2.05,2.1,2.15,2.2,2.25,2.3,2.35,2.4,2.45,2.5,2.55]:[2.2,2.35,2.55]){
     const observations:CommandObservation[]=d.stages.filter((e:CommandObservation)=>e.actor===21&&e.t===t);
     const original=observations.find(e=>e.stage==='behavior')!,body=original.body as Body,raw=original.command as Intent;
     const chosen=observations.find(e=>e.stage==='spacing')!.command as Intent;
     const peers:Peer[]=observations.filter(e=>e.stage==='spacing-picture').map(e=>({idx:e.peer as number,seen:e.used as Perceived,
       touch:.9*(body.profile.radius+meta.actors[e.peer as number].profile.radius)}));
-    const before=hash(body),result=choose(body,raw,chosen,peers,t);
+    const before=hash(body),result=choose(body,raw,chosen,peers,t,earlier?passing:undefined,earlier);passing=result.passing;
     if(hash(body)!==before)throw Error('Preview mutated body');
     rows.push({t,bodySha256:before,peersSha256:hash(peers),result});
   }
@@ -122,7 +129,7 @@ if(args.includes('--offline')){
       if(rawEvent){
         const peers:Peer[]=own.filter(e=>e.stage==='spacing-picture').map(e=>({idx:e.peer as number,seen:e.used as Perceived,
           touch:.9*(a.profile.radius+sim.agents[e.peer as number].profile.radius)}));
-        const result=choose(a.body,rawEvent.command as Intent,command,peers,sim.t,passing);passing=result.passing;
+        const result=choose(a.body,rawEvent.command as Intent,command,peers,sim.t,passing,earlier);passing=result.passing;
         if(result.detail)decisions.push({t:sim.t,reason:result.reason,passing:structuredClone(passing),detail:result.detail});
         if(result.command){if(intents!==sim.intents)throw Error('Wrong command array');intents[a.idx]=result.command;}
       }
