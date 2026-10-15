@@ -1,0 +1,122 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 14228,
+      "sha256": "e2de34e82a6a66c6fe3eb867b6b2583caf88eaff0b0981fd3415b1d84039b02a"
+    },
+    "candidate-h.jsonrefs.gz": {
+      "bytes": 973947,
+      "sha256": "84e5dcaab9a165d5cbebb54dd57383709aeeecc9e0721647e4f1b327c9510062"
+    },
+    "candidate-tite.jsonrefs.gz": {
+      "bytes": 1022698,
+      "sha256": "887805173f62f58697533f0e596269bd143ee9fd0fd85c4eaebc362b57fb4442"
+    },
+    "candidate.jsonrefs.gz": {
+      "bytes": 2005967,
+      "sha256": "91ebe628d0d7c24bf8d795721e4380120dbd6762e51ecf0dc329e4b06a0f025c"
+    },
+    "costs.json": {
+      "bytes": 946,
+      "sha256": "83ab000220083db1d8db8f5981288cd3f5c3ae383f4d12ace9fc59efa7652cc1"
+    },
+    "departure-comparison.png": {
+      "bytes": 227681,
+      "sha256": "73b8c7fc89fbd15544ca4d023bbdec885d2115229656a946f1a4172c22bd7446"
+    },
+    "departure-comparison.svg": {
+      "bytes": 127510,
+      "sha256": "5cd0eed8865cc563a2ffcfc1eecd2cb13ea62b3dfe3e4b7ab0fdb28e371c0185"
+    },
+    "first-actions.json.gz": {
+      "bytes": 223578,
+      "sha256": "037b1d496e18e9f492a80da115014543948253675cdf9e25f1da59eb05156bb1"
+    },
+    "receipts/checks-first.json": {
+      "bytes": 2376,
+      "sha256": "e005c18d200c1db1680408d483a55d15b93b88a009ca28c61571aadce38a632f"
+    },
+    "receipts/checks-gather.json": {
+      "bytes": 2375,
+      "sha256": "35ada8b6a53acfb11ae287268aa80f4c5d2aeb51c43d15a105786a8eed76fae8"
+    },
+    "receipts/checks-veto-diagnosis.json": {
+      "bytes": 2537,
+      "sha256": "ad859297c20b111caed7224b2a2192e896570a5c76b874c584cde25816c98194"
+    },
+    "receipts/encode-candidate-h.json": {
+      "bytes": 751,
+      "sha256": "9eb2856c643b7432a916d95ab50bc6e58a01ceb800d397d02dbafa6046f5d86a"
+    },
+    "receipts/encode-candidate-tite.json": {
+      "bytes": 758,
+      "sha256": "ba6d579eca3ae528e48cbef0ad6547dd74d989986a5eb22effd961bf15a2ddb3"
+    },
+    "receipts/encode-candidate.json": {
+      "bytes": 750,
+      "sha256": "4a4aea95bbdd38df02e100c56bc247a02d93be1a66e5af263b465ea1c361ef8b"
+    },
+    "receipts/encode-transfer-candidate.json": {
+      "bytes": 767,
+      "sha256": "43cdd5eeff66392799aad6b17dee1f1da8ee3edab8ac05ab238a5607f9c20c00"
+    },
+    "receipts/encode-transfer-parent.json": {
+      "bytes": 766,
+      "sha256": "b43528a03b106c11a7a817c084eb1e295f4e8397a7fca8c3ce6d799a1c786d64"
+    },
+    "receipts/native-gather.json": {
+      "bytes": 2503,
+      "sha256": "7b5335b7bac7840cb1a1c88ffc29f4fcb05433e4eda03ce72cb1746a9c352437"
+    },
+    "receipts/native-h.json": {
+      "bytes": 2495,
+      "sha256": "5ed60e91a09bc18d528b6bab7cc57f0c47da489c20bce410b8e968fb0e3db109"
+    },
+    "receipts/native-tite.json": {
+      "bytes": 2470,
+      "sha256": "7df414b72b06c1cdf5febf32a92b8e04d38950038487e8ced8cc728d9d086aba"
+    },
+    "receipts/restoration.json": {
+      "bytes": 404,
+      "sha256": "19be4d0daa270c687a1e7ef0df23cc5dfa4134f03d254220721c575ecc26b256"
+    },
+    "receipts/transfer-candidate.json": {
+      "bytes": 2533,
+      "sha256": "2b21b23ed5964eea34c87e6fe2d0c20bae0d13450e9bf28476eb4555e40f1b8f"
+    },
+    "receipts/transfer-parent.json": {
+      "bytes": 2490,
+      "sha256": "9c0b63f89a541de6e057f2ea0a311483e356df2bd84508835f60706e6f2cf16f"
+    },
+    "receipts/typecheck.json": {
+      "bytes": 2182,
+      "sha256": "6fa45527675d1738fe7e4d728d5a11010150166013c591a84ac2e06f0c743a08"
+    },
+    "receipts/veto-diagnosis.log": {
+      "bytes": 17277,
+      "sha256": "62eeb16440755a84180a049646172ed241d6008c75cf190820c340411106f568"
+    },
+    "settings.json": {
+      "bytes": 4185,
+      "sha256": "8cbe780f89e7171b59d7fe838083203fa9047b8688b4d3b677067e0c066f8123"
+    },
+    "summary.json": {
+      "bytes": 51622,
+      "sha256": "2c890d97babeb8cb230f8e4fb7ef14932859ca0332a7b325fcb58c084665a622"
+    },
+    "timeline.csv": {
+      "bytes": 212160,
+      "sha256": "96d3a4b2a7e1b373d2b73dd2292d2fb2183734b7c49fb592a80217df3abff442"
+    },
+    "transfer-candidate.jsonrefs.gz": {
+      "bytes": 1000759,
+      "sha256": "33041d3f1b652ba5468be1f7b6ab5026e58a3024cbaeae56739cce48898090f5"
+    },
+    "transfer-parent.jsonrefs.gz": {
+      "bytes": 1000881,
+      "sha256": "0b2be505e4bd96c6c8c01227269788c48c0b7857566700da69b26870122fc810"
+    }
+  },
+  "newWorldSteps": 0,
+  "productionSrcDiffIsEmpty": true
+}

@@ -1,0 +1,7 @@
+{
+  "comparedWith": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+  "restoredSourceSha256": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+  "productionSrcDiffIsEmpty": true,
+  "newSimulations": 0,
+  "validationReuse": "PR #50 exact src tree; candidate-only59 checks/typecheck remain archived with candidate revision. No integration suite requested for diagnostic-only publication."
+}

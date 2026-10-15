@@ -1,0 +1,41 @@
+{
+  "native": {
+    "plays": 6,
+    "outerWorldTicks": 357,
+    "games": 0,
+    "collectorSeconds": 15.072195546,
+    "parentNativeBaselinesRerun": 0,
+    "insideZoneParentInstances": 1
+  },
+  "checks": {
+    "checks-first": [
+      {
+        "exitCode": 1,
+        "seconds": 4.7657584900000005
+      }
+    ],
+    "typecheck": [
+      {
+        "exitCode": 0,
+        "seconds": 10.244500641999998
+      }
+    ],
+    "checks-veto-diagnosis": [
+      {
+        "exitCode": 1,
+        "seconds": 2.8624461199999995
+      }
+    ],
+    "checks-gather": [
+      {
+        "exitCode": 0,
+        "seconds": 4.591226509999999
+      }
+    ]
+  },
+  "offline": {
+    "reportSeconds": 5.622341959999176,
+    "encodeSeconds": 28.815869981001015
+  },
+  "limitations": "Collector seconds include passive instrumentation. This is measured batch cost, not total investigator elapsed time. Native captures are 3s prefixes or earlier whistles, not full games."
+}

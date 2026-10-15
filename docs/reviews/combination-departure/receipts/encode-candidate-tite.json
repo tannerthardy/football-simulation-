@@ -1,0 +1,16 @@
+{
+  "input": "/workspace/football-combination-departure/out/combination-departure/candidate-tite.json.gz",
+  "mode": "core",
+  "originalGzipBytes": 3461558,
+  "retainedRawBytes": 21018244,
+  "referenceTableGzipBytes": 1022698,
+  "containersVisited": 232839,
+  "uniqueContainers": 56823,
+  "output": "/workspace/football-combination-departure/docs/reviews/combination-departure/candidate-tite.jsonrefs.gz",
+  "outputSha256": "887805173f62f58697533f0e596269bd143ee9fd0fd85c4eaebc362b57fb4442",
+  "sourceSha256": "b76b4f112b22e5f968c3ea9ad28dfa899a88a0f17615f7144ad92b11549e479b",
+  "retainedJsonSha256": "1c038742700109de40752f3cbf09ad53010abe2b11dcc4bc1e49e0f4c217d673",
+  "roundTripExact": true,
+  "newWorldSteps": 0,
+  "elapsedSeconds": 4.805234275991097
+}

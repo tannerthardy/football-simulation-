@@ -1,0 +1,1669 @@
+{
+  "protocol": "combination-departure-report-v1",
+  "captures": {
+    "parent": {
+      "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+      "sourceSha256": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+      "manifestSha256": "6c94335c1b489de06095113a9d331ea34134ee1a471367de0e629721161a1a30",
+      "collectorSha256": "e375db161759fb54eff69ffc2973816042400b726735fa4e2cef3e9035f21385",
+      "lockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "node": "v22.23.3",
+      "newWorldSteps": 177,
+      "elapsedSeconds": 6.927139435999999,
+      "packetSha256": "60c8791ebbb83fdfc7b8f36304b5ec82107e316fcc63375c8a3571ab86f02b9a"
+    },
+    "candidate": {
+      "revision": "d22f0835d6b1cbeb6effb76ffd7687e5a51bd57b",
+      "sourceSha256": "ccb0a466d060060086f0704bd5fa4176c393d49ea61748718c124bcaa0f20b86",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+      "manifestSha256": "6c94335c1b489de06095113a9d331ea34134ee1a471367de0e629721161a1a30",
+      "collectorSha256": "e375db161759fb54eff69ffc2973816042400b726735fa4e2cef3e9035f21385",
+      "lockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "node": "v22.23.3",
+      "newWorldSteps": 120,
+      "elapsedSeconds": 4.750555515,
+      "packetSha256": "94f48130eba26ca656963476255f14a1f4fa38ed703c039cdb4b4c0e959ddfd8"
+    },
+    "candidate-h": {
+      "revision": "b42b5a5a0dc206cfff908ad797eacfaf354a6b29",
+      "sourceSha256": "ccb0a466d060060086f0704bd5fa4176c393d49ea61748718c124bcaa0f20b86",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+      "manifestSha256": "6c94335c1b489de06095113a9d331ea34134ee1a471367de0e629721161a1a30",
+      "collectorSha256": "31a864355a5f491f3d6c9fdd25739ac2a127a7b61d18f924d1738b87006c6a69",
+      "lockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "node": "v22.23.3",
+      "newWorldSteps": 57,
+      "elapsedSeconds": 2.322446349,
+      "packetSha256": "8ebb7df4377e6a13b8355e57ba9f8eb33b671a1ec1e612ec442402808b8404d4"
+    },
+    "parent-tite": {
+      "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+      "sourceSha256": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+      "manifestSha256": "6c94335c1b489de06095113a9d331ea34134ee1a471367de0e629721161a1a30",
+      "collectorSha256": "e375db161759fb54eff69ffc2973816042400b726735fa4e2cef3e9035f21385",
+      "lockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "node": "v22.23.3",
+      "newWorldSteps": 60,
+      "elapsedSeconds": 2.480316675,
+      "packetSha256": "7b209faeefdff6ea6b9e6a8e90e29749c5b03255c581e3e9b3bd893fca51dc87"
+    },
+    "candidate-tite": {
+      "revision": "b42b5a5a0dc206cfff908ad797eacfaf354a6b29",
+      "sourceSha256": "ccb0a466d060060086f0704bd5fa4176c393d49ea61748718c124bcaa0f20b86",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+      "manifestSha256": "6c94335c1b489de06095113a9d331ea34134ee1a471367de0e629721161a1a30",
+      "collectorSha256": "31a864355a5f491f3d6c9fdd25739ac2a127a7b61d18f924d1738b87006c6a69",
+      "lockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "node": "v22.23.3",
+      "newWorldSteps": 60,
+      "elapsedSeconds": 2.886248954,
+      "packetSha256": "b76b4f112b22e5f968c3ea9ad28dfa899a88a0f17615f7144ad92b11549e479b"
+    },
+    "transfer-parent": {
+      "revision": "024502dd994b40564c12b035b075dca260266473",
+      "sourceSha256": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+      "manifestSha256": "cbacfb5098b96d6efa4b70c697596f061c9cc72e02e1650139983c61cb29a754",
+      "collectorSha256": "31a864355a5f491f3d6c9fdd25739ac2a127a7b61d18f924d1738b87006c6a69",
+      "lockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "node": "v22.23.3",
+      "newWorldSteps": 60,
+      "elapsedSeconds": 2.2963413810000004,
+      "packetSha256": "03f1f479b1a7ab697ab6ba035237883ebcb1bdf5efc5c39920fd25d13ee1447d"
+    },
+    "transfer-candidate": {
+      "revision": "b42b5a5a0dc206cfff908ad797eacfaf354a6b29",
+      "sourceSha256": "ccb0a466d060060086f0704bd5fa4176c393d49ea61748718c124bcaa0f20b86",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "initialization": "Native PlaySim from original snap; owner-installed copied expectations, empty seen/pending/touch maps and once-per-tick sensing. No body-only observer restore.",
+      "manifestSha256": "cbacfb5098b96d6efa4b70c697596f061c9cc72e02e1650139983c61cb29a754",
+      "collectorSha256": "31a864355a5f491f3d6c9fdd25739ac2a127a7b61d18f924d1738b87006c6a69",
+      "lockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "node": "v22.23.3",
+      "newWorldSteps": 60,
+      "elapsedSeconds": 2.816603347,
+      "packetSha256": "9bce08dcc2e9b475b288ae1ea4192ff8f23fcc6455e6c7f8e6959f3d99b1d1ac"
+    }
+  },
+  "cases": [
+    {
+      "label": "strong-Y",
+      "input": {
+        "id": "uc12-wz-s3",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "climber": 4,
+      "down": 14,
+      "keeper": 1,
+      "assignedBacker": 15,
+      "arms": {
+        "parent": {
+          "handoffAt": 1.45,
+          "end": 3,
+          "censored": true,
+          "releaseEvents": [
+            {
+              "t": 0.75,
+              "type": "block_climb",
+              "a": 2,
+              "b": 17,
+              "pos": {
+                "x": 39.9,
+                "y": 23.37
+              },
+              "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+            },
+            {
+              "t": 1.15,
+              "type": "block_climb",
+              "a": 4,
+              "b": 15,
+              "pos": {
+                "x": 39.98,
+                "y": 27.46
+              },
+              "note": "secured DT_W; C stays"
+            }
+          ],
+          "climberDownContacts": [],
+          "climberDownImpulse": 0,
+          "firstClimberDownImpulse": 0,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "4:14": {
+              "normalImpulse": 234.34318515803477,
+              "tangentImpulse": 127.85781854270513,
+              "firstEntry": 0.7,
+              "lastBoundary": 1.15
+            },
+            "1:16": {
+              "normalImpulse": 1334.5193441945298,
+              "tangentImpulse": 916.491759079348,
+              "firstEntry": 1.4,
+              "lastBoundary": 3
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 4.050255949848522,
+            "boundary": 1.35
+          },
+          "runnerContacts": [],
+          "runnerFinalPosition": {
+            "x": 40.47386119679674,
+            "y": 17.064111903866205
+          },
+          "keeperFinalPosition": {
+            "x": 44.008850809272126,
+            "y": 24.887058464302623
+          },
+          "downFinalPosition": {
+            "x": 38.10660109423678,
+            "y": 25.80606881225568
+          },
+          "maxAbsWorkResidual": 7.30882021571233e-12,
+          "maxPenetration": 0.0037029230697391835,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 7.105427357601002e-15,
+          "maxArmWorkOverLimit": -76.55660972030142
+        },
+        "candidate": {
+          "handoffAt": 1.45,
+          "end": 3,
+          "censored": true,
+          "releaseEvents": [
+            {
+              "t": 0.75,
+              "type": "block_climb",
+              "a": 2,
+              "b": 17,
+              "pos": {
+                "x": 39.9,
+                "y": 23.37
+              },
+              "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+            },
+            {
+              "t": 1.15,
+              "type": "block_climb",
+              "a": 4,
+              "b": 15,
+              "pos": {
+                "x": 39.98,
+                "y": 27.46
+              },
+              "note": "secured DT_W; C stays"
+            }
+          ],
+          "climberDownContacts": [],
+          "climberDownImpulse": 0,
+          "firstClimberDownImpulse": 0,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "4:14": {
+              "normalImpulse": 234.34318515803477,
+              "tangentImpulse": 127.85781854270513,
+              "firstEntry": 0.7,
+              "lastBoundary": 1.15
+            },
+            "1:16": {
+              "normalImpulse": 1334.5193441945298,
+              "tangentImpulse": 916.491759079348,
+              "firstEntry": 1.4,
+              "lastBoundary": 3
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 4.050255949848522,
+            "boundary": 1.35
+          },
+          "runnerContacts": [],
+          "runnerFinalPosition": {
+            "x": 40.47386119679674,
+            "y": 17.064111903866205
+          },
+          "keeperFinalPosition": {
+            "x": 44.008850809272126,
+            "y": 24.887058464302623
+          },
+          "downFinalPosition": {
+            "x": 38.10660109423678,
+            "y": 25.80606881225568
+          },
+          "maxAbsWorkResidual": 7.30882021571233e-12,
+          "maxPenetration": 0.0037029230697391835,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 7.105427357601002e-15,
+          "maxArmWorkOverLimit": -76.55660972030142
+        }
+      },
+      "identicalExecutedBodiesAndFinalCommands": true,
+      "firstChangedFinalCommand": null,
+      "maxRunnerSeparation": 0.0,
+      "firstChangedRunnerRawRequest": null
+    },
+    {
+      "label": "strong-H",
+      "input": {
+        "id": "uc12-wz-s3-mirror",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": true,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "climber": 3,
+      "down": 14,
+      "keeper": 4,
+      "assignedBacker": 15,
+      "arms": {
+        "parent": {
+          "handoffAt": 1.45,
+          "end": 2.85,
+          "censored": false,
+          "releaseEvents": [
+            {
+              "t": 0.75,
+              "type": "block_climb",
+              "a": 2,
+              "b": 17,
+              "pos": {
+                "x": 39.9,
+                "y": 23.37
+              },
+              "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+            },
+            {
+              "t": 1.05,
+              "type": "block_climb",
+              "a": 3,
+              "b": 15,
+              "pos": {
+                "x": 39.99,
+                "y": 26.47
+              },
+              "note": "secured DT_W; LG stays"
+            }
+          ],
+          "climberDownContacts": [
+            {
+              "entry": 0.8,
+              "i": 3,
+              "j": 14,
+              "impulse": 127.21830240811883,
+              "closing": 1.8413706829588072
+            }
+          ],
+          "climberDownImpulse": 127.21830240811883,
+          "firstClimberDownImpulse": 127.21830240811883,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "3:14": {
+              "normalImpulse": 204.62227665239163,
+              "tangentImpulse": 145.0830093548028,
+              "firstEntry": 0.6,
+              "lastBoundary": 1.05
+            },
+            "4:14": {
+              "normalImpulse": 1264.8638593215564,
+              "tangentImpulse": 692.8650203063142,
+              "firstEntry": 0.7,
+              "lastBoundary": 2.85
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 3.0063345571454416,
+            "boundary": 2.1
+          },
+          "runnerContacts": [
+            {
+              "entry": 2.35,
+              "i": 6,
+              "j": 12,
+              "impulse": 181.9410865033348,
+              "closing": 2.846299701912287
+            },
+            {
+              "entry": 2.4,
+              "i": 6,
+              "j": 12,
+              "impulse": 71.95844630068709,
+              "closing": 0.011345636185458502
+            },
+            {
+              "entry": 2.45,
+              "i": 6,
+              "j": 12,
+              "impulse": 30.54461122627174,
+              "closing": 0.007030005281002463
+            },
+            {
+              "entry": 2.5,
+              "i": 6,
+              "j": 12,
+              "impulse": 3.0205944457603837,
+              "closing": 0
+            },
+            {
+              "entry": 2.55,
+              "i": 6,
+              "j": 12,
+              "impulse": 0.16957188461872438,
+              "closing": 0
+            },
+            {
+              "entry": 2.6,
+              "i": 6,
+              "j": 12,
+              "impulse": 0,
+              "closing": 0
+            },
+            {
+              "entry": 2.65,
+              "i": 6,
+              "j": 12,
+              "impulse": 0,
+              "closing": 0
+            }
+          ],
+          "runnerFinalPosition": {
+            "x": 38.69697219946338,
+            "y": 19.74046019506761
+          },
+          "keeperFinalPosition": {
+            "x": 38.798600409527566,
+            "y": 27.073812194267614
+          },
+          "downFinalPosition": {
+            "x": 38.29370046499695,
+            "y": 26.56098029138305
+          },
+          "maxAbsWorkResidual": 6.256328788367682e-12,
+          "maxPenetration": 0.007300574927451731,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 1.4210854715202004e-14,
+          "maxArmWorkOverLimit": -76.55772093162199
+        },
+        "candidate": {
+          "handoffAt": 1.45,
+          "end": 2.85,
+          "censored": false,
+          "releaseEvents": [
+            {
+              "t": 0.75,
+              "type": "block_climb",
+              "a": 2,
+              "b": 17,
+              "pos": {
+                "x": 39.9,
+                "y": 23.37
+              },
+              "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+            },
+            {
+              "t": 1.05,
+              "type": "block_climb",
+              "a": 3,
+              "b": 15,
+              "pos": {
+                "x": 39.99,
+                "y": 26.47
+              },
+              "note": "secured DT_W; LG stays"
+            }
+          ],
+          "climberDownContacts": [
+            {
+              "entry": 0.8,
+              "i": 3,
+              "j": 14,
+              "impulse": 127.21830240811883,
+              "closing": 1.8413706829588072
+            }
+          ],
+          "climberDownImpulse": 127.21830240811883,
+          "firstClimberDownImpulse": 127.21830240811883,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "3:14": {
+              "normalImpulse": 204.62227665239163,
+              "tangentImpulse": 145.0830093548028,
+              "firstEntry": 0.6,
+              "lastBoundary": 1.05
+            },
+            "4:14": {
+              "normalImpulse": 1264.8638593215564,
+              "tangentImpulse": 692.8650203063142,
+              "firstEntry": 0.7,
+              "lastBoundary": 2.85
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 3.0063345571454416,
+            "boundary": 2.1
+          },
+          "runnerContacts": [
+            {
+              "entry": 2.35,
+              "i": 6,
+              "j": 12,
+              "impulse": 181.9410865033348,
+              "closing": 2.846299701912287
+            },
+            {
+              "entry": 2.4,
+              "i": 6,
+              "j": 12,
+              "impulse": 71.95844630068709,
+              "closing": 0.011345636185458502
+            },
+            {
+              "entry": 2.45,
+              "i": 6,
+              "j": 12,
+              "impulse": 30.54461122627174,
+              "closing": 0.007030005281002463
+            },
+            {
+              "entry": 2.5,
+              "i": 6,
+              "j": 12,
+              "impulse": 3.0205944457603837,
+              "closing": 0
+            },
+            {
+              "entry": 2.55,
+              "i": 6,
+              "j": 12,
+              "impulse": 0.16957188461872438,
+              "closing": 0
+            },
+            {
+              "entry": 2.6,
+              "i": 6,
+              "j": 12,
+              "impulse": 0,
+              "closing": 0
+            },
+            {
+              "entry": 2.65,
+              "i": 6,
+              "j": 12,
+              "impulse": 0,
+              "closing": 0
+            }
+          ],
+          "runnerFinalPosition": {
+            "x": 38.69697219946338,
+            "y": 19.74046019506761
+          },
+          "keeperFinalPosition": {
+            "x": 38.798600409527566,
+            "y": 27.073812194267614
+          },
+          "downFinalPosition": {
+            "x": 38.29370046499695,
+            "y": 26.56098029138305
+          },
+          "maxAbsWorkResidual": 6.256328788367682e-12,
+          "maxPenetration": 0.007300574927451731,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 1.4210854715202004e-14,
+          "maxArmWorkOverLimit": -76.55772093162199
+        }
+      },
+      "identicalExecutedBodiesAndFinalCommands": true,
+      "firstChangedFinalCommand": null,
+      "maxRunnerSeparation": 0.0,
+      "firstChangedRunnerRawRequest": null
+    },
+    {
+      "label": "weak-H",
+      "input": {
+        "id": "uc12-wz-weak-s3",
+        "concept": "wz_weak",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "climber": 2,
+      "down": 13,
+      "keeper": 5,
+      "assignedBacker": 17,
+      "arms": {
+        "parent": {
+          "handoffAt": 1.45,
+          "end": 3,
+          "censored": true,
+          "releaseEvents": [
+            {
+              "t": 0.9,
+              "type": "block_climb",
+              "a": 2,
+              "b": 17,
+              "pos": {
+                "x": 39.98,
+                "y": 24.79
+              },
+              "note": "secured DT_S; RG stays"
+            },
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": 10,
+              "b": 16,
+              "pos": {
+                "x": 40.06,
+                "y": 30.6
+              },
+              "note": "secured DE_W; LT stays"
+            }
+          ],
+          "climberDownContacts": [
+            {
+              "entry": 0.9,
+              "i": 2,
+              "j": 13,
+              "impulse": 79.8735422029471,
+              "closing": 1.2446322300757087
+            },
+            {
+              "entry": 0.95,
+              "i": 2,
+              "j": 13,
+              "impulse": 18.725567076216358,
+              "closing": 0.02184036283572767
+            },
+            {
+              "entry": 1,
+              "i": 2,
+              "j": 13,
+              "impulse": 15.65040286770637,
+              "closing": 0.01568579815425189
+            },
+            {
+              "entry": 1.05,
+              "i": 2,
+              "j": 13,
+              "impulse": 9.764549494353139,
+              "closing": 0.007586171785795737
+            }
+          ],
+          "climberDownImpulse": 124.01406164122298,
+          "firstClimberDownImpulse": 79.8735422029471,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "5:13": {
+              "normalImpulse": 1251.7425013646566,
+              "tangentImpulse": 543.94056619414,
+              "firstEntry": 0.55,
+              "lastBoundary": 3
+            },
+            "2:13": {
+              "normalImpulse": 82.15608431748107,
+              "tangentImpulse": 35.962517506793894,
+              "firstEntry": 0.75,
+              "lastBoundary": 0.9
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 1.9839092244215204,
+            "boundary": 1.9
+          },
+          "runnerContacts": [
+            {
+              "entry": 2.85,
+              "i": 6,
+              "j": 17,
+              "impulse": 225.2124773310136,
+              "closing": 4.309618999918664
+            },
+            {
+              "entry": 2.9,
+              "i": 6,
+              "j": 17,
+              "impulse": 26.817780588689065,
+              "closing": 0.054390155306211746
+            },
+            {
+              "entry": 2.95,
+              "i": 6,
+              "j": 17,
+              "impulse": 51.33897370867791,
+              "closing": 0.06154824602459105
+            }
+          ],
+          "runnerFinalPosition": {
+            "x": 41.8767464503692,
+            "y": 32.94937433364145
+          },
+          "keeperFinalPosition": {
+            "x": 39.71663225747721,
+            "y": 26.46042893892949
+          },
+          "downFinalPosition": {
+            "x": 39.6209915553146,
+            "y": 25.864113764769368
+          },
+          "maxAbsWorkResidual": 7.146283564907208e-12,
+          "maxPenetration": 0.003756572496076749,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 0.0,
+          "maxArmWorkOverLimit": -76.54650686117708
+        },
+        "candidate": {
+          "handoffAt": 1.45,
+          "end": 3,
+          "censored": true,
+          "releaseEvents": [
+            {
+              "t": 0.9,
+              "type": "block_climb",
+              "a": 2,
+              "b": 17,
+              "pos": {
+                "x": 39.98,
+                "y": 24.79
+              },
+              "note": "secured DT_S; RG stays"
+            },
+            {
+              "t": 0.95,
+              "type": "block_climb",
+              "a": 10,
+              "b": 16,
+              "pos": {
+                "x": 40.06,
+                "y": 30.6
+              },
+              "note": "secured DE_W; LT stays"
+            }
+          ],
+          "climberDownContacts": [
+            {
+              "entry": 0.9,
+              "i": 2,
+              "j": 13,
+              "impulse": 76.61113682014789,
+              "closing": 1.2238258590101776
+            },
+            {
+              "entry": 1.05,
+              "i": 2,
+              "j": 13,
+              "impulse": 10.580731794976675,
+              "closing": 0.1977293932025788
+            }
+          ],
+          "climberDownImpulse": 87.19186861512456,
+          "firstClimberDownImpulse": 76.61113682014789,
+          "teammateImpacts": [
+            {
+              "entry": 2.85,
+              "i": 5,
+              "j": 7,
+              "impulse": 78.88469586743814,
+              "closing": 1.138193561409505
+            }
+          ],
+          "handLoadsByActualPair": {
+            "5:13": {
+              "normalImpulse": 1262.0254841501658,
+              "tangentImpulse": 451.66364006589373,
+              "firstEntry": 0.55,
+              "lastBoundary": 3
+            },
+            "2:13": {
+              "normalImpulse": 82.15608431748107,
+              "tangentImpulse": 35.962517506793894,
+              "firstEntry": 0.75,
+              "lastBoundary": 0.9
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 1.9902632391909092,
+            "boundary": 1.9
+          },
+          "runnerContacts": [
+            {
+              "entry": 2.85,
+              "i": 6,
+              "j": 17,
+              "impulse": 226.3304094067232,
+              "closing": 4.331130748150218
+            },
+            {
+              "entry": 2.9,
+              "i": 6,
+              "j": 17,
+              "impulse": 34.16913327333706,
+              "closing": 0
+            },
+            {
+              "entry": 2.95,
+              "i": 6,
+              "j": 17,
+              "impulse": 27.850164691947203,
+              "closing": 0.06178228035432912
+            }
+          ],
+          "runnerFinalPosition": {
+            "x": 41.873372972550925,
+            "y": 32.95044024207686
+          },
+          "keeperFinalPosition": {
+            "x": 38.078204369102785,
+            "y": 26.85659829334197
+          },
+          "downFinalPosition": {
+            "x": 38.29526598358076,
+            "y": 26.20485786670568
+          },
+          "maxAbsWorkResidual": 6.656897255652439e-12,
+          "maxPenetration": 0.003756572496076749,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": -7.105427357601002e-15,
+          "maxArmWorkOverLimit": -76.54650686117708
+        }
+      },
+      "identicalExecutedBodiesAndFinalCommands": false,
+      "firstChangedFinalCommand": 0.9,
+      "maxRunnerSeparation": 0.0035378684801791777,
+      "firstChangedRunnerRawRequest": null,
+      "equalBodiesBeforeFirstChange": true
+    },
+    {
+      "label": "Tite",
+      "input": {
+        "id": "uc12-wz-s3-tite-fresh",
+        "concept": "wz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "tite",
+        "formation": "ace_12",
+        "purpose": "Frozen before any native candidate: same roster/seed, reduced interior challenge to covered/uncovered and DL keys. Run once only after mechanism and original controls support candidate; preserve adverse result."
+      },
+      "climber": 3,
+      "down": 13,
+      "keeper": 5,
+      "assignedBacker": 17,
+      "arms": {
+        "parent": {
+          "handoffAt": 1.45,
+          "end": 3,
+          "censored": true,
+          "releaseEvents": [
+            {
+              "t": 0.85,
+              "type": "block_climb",
+              "a": 3,
+              "b": 17,
+              "pos": {
+                "x": 39.8,
+                "y": 25.99
+              },
+              "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+            }
+          ],
+          "climberDownContacts": [],
+          "climberDownImpulse": 0,
+          "firstClimberDownImpulse": 0,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "5:13": {
+              "normalImpulse": 241.78899851890412,
+              "tangentImpulse": 450.64206517037843,
+              "firstEntry": 0.5,
+              "lastBoundary": 3
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 1.2994566051103513,
+            "boundary": 2.2
+          },
+          "runnerContacts": [
+            {
+              "entry": 2.75,
+              "i": 6,
+              "j": 15,
+              "impulse": 327.84794559205613,
+              "closing": 6.134721459143886
+            },
+            {
+              "entry": 2.8,
+              "i": 6,
+              "j": 15,
+              "impulse": 69.16705345815419,
+              "closing": 0.07752760588313139
+            },
+            {
+              "entry": 2.85,
+              "i": 6,
+              "j": 15,
+              "impulse": 43.85379559086631,
+              "closing": 0.06905908404071558
+            },
+            {
+              "entry": 2.9,
+              "i": 6,
+              "j": 15,
+              "impulse": 42.35282728400057,
+              "closing": 0.06521610861526204
+            },
+            {
+              "entry": 2.95,
+              "i": 6,
+              "j": 15,
+              "impulse": 41.867900923550835,
+              "closing": 0.0649365132166046
+            }
+          ],
+          "runnerFinalPosition": {
+            "x": 40.45311072993372,
+            "y": 17.618880053640584
+          },
+          "keeperFinalPosition": {
+            "x": 38.78586769685582,
+            "y": 20.738988639046642
+          },
+          "downFinalPosition": {
+            "x": 38.57769856728094,
+            "y": 21.455008211797093
+          },
+          "maxAbsWorkResidual": 5.433875571725366e-12,
+          "maxPenetration": 0.0038457667160578524,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 2.1316282072803006e-14,
+          "maxArmWorkOverLimit": -76.56805773881241
+        },
+        "candidate": {
+          "handoffAt": 1.45,
+          "end": 3,
+          "censored": true,
+          "releaseEvents": [
+            {
+              "t": 0.85,
+              "type": "block_climb",
+              "a": 3,
+              "b": 17,
+              "pos": {
+                "x": 39.8,
+                "y": 25.99
+              },
+              "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+            }
+          ],
+          "climberDownContacts": [],
+          "climberDownImpulse": 0,
+          "firstClimberDownImpulse": 0,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "5:13": {
+              "normalImpulse": 241.78899851890412,
+              "tangentImpulse": 450.64206517037843,
+              "firstEntry": 0.5,
+              "lastBoundary": 3
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 1.2994566051103513,
+            "boundary": 2.2
+          },
+          "runnerContacts": [
+            {
+              "entry": 2.75,
+              "i": 6,
+              "j": 15,
+              "impulse": 327.84794559205613,
+              "closing": 6.134721459143886
+            },
+            {
+              "entry": 2.8,
+              "i": 6,
+              "j": 15,
+              "impulse": 69.16705345815419,
+              "closing": 0.07752760588313139
+            },
+            {
+              "entry": 2.85,
+              "i": 6,
+              "j": 15,
+              "impulse": 43.85379559086631,
+              "closing": 0.06905908404071558
+            },
+            {
+              "entry": 2.9,
+              "i": 6,
+              "j": 15,
+              "impulse": 42.35282728400057,
+              "closing": 0.06521610861526204
+            },
+            {
+              "entry": 2.95,
+              "i": 6,
+              "j": 15,
+              "impulse": 41.867900923550835,
+              "closing": 0.0649365132166046
+            }
+          ],
+          "runnerFinalPosition": {
+            "x": 40.45311072993372,
+            "y": 17.618880053640584
+          },
+          "keeperFinalPosition": {
+            "x": 38.78586769685582,
+            "y": 20.738988639046642
+          },
+          "downFinalPosition": {
+            "x": 38.57769856728094,
+            "y": 21.455008211797093
+          },
+          "maxAbsWorkResidual": 5.433875571725366e-12,
+          "maxPenetration": 0.0038457667160578524,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 2.1316282072803006e-14,
+          "maxArmWorkOverLimit": -76.56805773881241
+        }
+      },
+      "identicalExecutedBodiesAndFinalCommands": true,
+      "firstChangedFinalCommand": null,
+      "maxRunnerSeparation": 0.0,
+      "firstChangedRunnerRawRequest": null
+    },
+    {
+      "label": "inside-zone",
+      "input": {
+        "id": "uc12-iz-s3-transfer",
+        "concept": "iz_strong",
+        "kind": "run",
+        "seed": 3,
+        "flip": false,
+        "o": 31,
+        "d": 32,
+        "front": "over",
+        "formation": "ace_12"
+      },
+      "climber": 3,
+      "down": 14,
+      "keeper": 4,
+      "assignedBacker": 16,
+      "arms": {
+        "parent": {
+          "handoffAt": 1.5,
+          "end": 3,
+          "censored": true,
+          "releaseEvents": [
+            {
+              "t": 0.85,
+              "type": "block_climb",
+              "a": 3,
+              "b": 16,
+              "pos": {
+                "x": 40.02,
+                "y": 26.69
+              },
+              "note": "secured DT_W; LG stays"
+            }
+          ],
+          "climberDownContacts": [
+            {
+              "entry": 1,
+              "i": 3,
+              "j": 14,
+              "impulse": 67.48545105348207,
+              "closing": 0.8959550877779983
+            },
+            {
+              "entry": 1.05,
+              "i": 3,
+              "j": 14,
+              "impulse": 34.84307519401753,
+              "closing": 0.04843167457343017
+            },
+            {
+              "entry": 1.1,
+              "i": 3,
+              "j": 14,
+              "impulse": 42.93614813661075,
+              "closing": 0.05414515563814779
+            },
+            {
+              "entry": 1.15,
+              "i": 3,
+              "j": 14,
+              "impulse": 42.79862412889505,
+              "closing": 0.04985306084242568
+            },
+            {
+              "entry": 1.2,
+              "i": 3,
+              "j": 14,
+              "impulse": 40.33562310418327,
+              "closing": 0.03970017851020978
+            },
+            {
+              "entry": 1.25,
+              "i": 3,
+              "j": 14,
+              "impulse": 19.01887588710996,
+              "closing": 0.01730265804776926
+            },
+            {
+              "entry": 1.3,
+              "i": 3,
+              "j": 14,
+              "impulse": 24.519790219054727,
+              "closing": 0.01836188653730167
+            },
+            {
+              "entry": 1.35,
+              "i": 3,
+              "j": 14,
+              "impulse": 21.55782948485327,
+              "closing": 0.010251237630601567
+            },
+            {
+              "entry": 1.4,
+              "i": 3,
+              "j": 14,
+              "impulse": 17.133245132480116,
+              "closing": 0.0020656907675682956
+            }
+          ],
+          "climberDownImpulse": 310.62866234068673,
+          "firstClimberDownImpulse": 67.48545105348207,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "4:14": {
+              "normalImpulse": 1279.8498569305868,
+              "tangentImpulse": 606.0806559218277,
+              "firstEntry": 0.55,
+              "lastBoundary": 3
+            },
+            "3:14": {
+              "normalImpulse": 148.04649906496218,
+              "tangentImpulse": 66.91352389967682,
+              "firstEntry": 0.7,
+              "lastBoundary": 0.85
+            },
+            "3:15": {
+              "normalImpulse": 920.3986647174789,
+              "tangentImpulse": 394.95669567127055,
+              "firstEntry": 1.85,
+              "lastBoundary": 3
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 2.6414102365788965,
+            "boundary": 1.4
+          },
+          "runnerContacts": [],
+          "runnerFinalPosition": {
+            "x": 40.94261484376611,
+            "y": 22.957509718613476
+          },
+          "keeperFinalPosition": {
+            "x": 41.35478386975818,
+            "y": 25.397667910857283
+          },
+          "downFinalPosition": {
+            "x": 40.6087316748305,
+            "y": 24.894968137693002
+          },
+          "maxAbsWorkResidual": 5.4569682106375694e-12,
+          "maxPenetration": 0.005701163937584797,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 1.4210854715202004e-14,
+          "maxArmWorkOverLimit": -76.54558258654654
+        },
+        "candidate": {
+          "handoffAt": 1.5,
+          "end": 3,
+          "censored": true,
+          "releaseEvents": [
+            {
+              "t": 0.85,
+              "type": "block_climb",
+              "a": 3,
+              "b": 16,
+              "pos": {
+                "x": 40.02,
+                "y": 26.69
+              },
+              "note": "secured DT_W; LG stays"
+            }
+          ],
+          "climberDownContacts": [
+            {
+              "entry": 1,
+              "i": 3,
+              "j": 14,
+              "impulse": 45.740948370360414,
+              "closing": 0.652581186443104
+            },
+            {
+              "entry": 1.05,
+              "i": 3,
+              "j": 14,
+              "impulse": 33.99208719197931,
+              "closing": 0.046355723823998135
+            },
+            {
+              "entry": 1.1,
+              "i": 3,
+              "j": 14,
+              "impulse": 44.69018824126539,
+              "closing": 0.055514098294859704
+            },
+            {
+              "entry": 1.15,
+              "i": 3,
+              "j": 14,
+              "impulse": 43.082899351905525,
+              "closing": 0.05015714443104434
+            },
+            {
+              "entry": 1.2,
+              "i": 3,
+              "j": 14,
+              "impulse": 40.99612506267102,
+              "closing": 0.038986253500007124
+            },
+            {
+              "entry": 1.25,
+              "i": 3,
+              "j": 14,
+              "impulse": 31.70161097352816,
+              "closing": 0.02943235287186169
+            },
+            {
+              "entry": 1.3,
+              "i": 3,
+              "j": 14,
+              "impulse": 28.365058346856536,
+              "closing": 0.01991542641553326
+            },
+            {
+              "entry": 1.35,
+              "i": 3,
+              "j": 14,
+              "impulse": 23.86899364694752,
+              "closing": 0.010125545668045272
+            },
+            {
+              "entry": 1.4,
+              "i": 3,
+              "j": 14,
+              "impulse": 23.04969562291257,
+              "closing": 0.0036440299023517697
+            }
+          ],
+          "climberDownImpulse": 315.48760680842645,
+          "firstClimberDownImpulse": 45.740948370360414,
+          "teammateImpacts": [],
+          "handLoadsByActualPair": {
+            "4:14": {
+              "normalImpulse": 1249.3467255331964,
+              "tangentImpulse": 647.3217212766066,
+              "firstEntry": 0.55,
+              "lastBoundary": 3
+            },
+            "3:14": {
+              "normalImpulse": 148.04649906496218,
+              "tangentImpulse": 66.91352389967682,
+              "firstEntry": 0.7,
+              "lastBoundary": 0.85
+            },
+            "3:15": {
+              "normalImpulse": 919.9094798333796,
+              "tangentImpulse": 391.077319078796,
+              "firstEntry": 1.85,
+              "lastBoundary": 3
+            }
+          },
+          "assignedBackerNearest": {
+            "distance": 2.664399501761564,
+            "boundary": 1.4
+          },
+          "runnerContacts": [],
+          "runnerFinalPosition": {
+            "x": 41.13044181678871,
+            "y": 23.1537226693311
+          },
+          "keeperFinalPosition": {
+            "x": 41.302619947773124,
+            "y": 25.383068973324022
+          },
+          "downFinalPosition": {
+            "x": 40.40467279579104,
+            "y": 24.966182990961705
+          },
+          "maxAbsWorkResidual": 5.774936084890214e-12,
+          "maxPenetration": 0.002750115490199656,
+          "supportIntegrationFailures": 0,
+          "maxArmImpulseOverLimit": 1.4210854715202004e-14,
+          "maxArmWorkOverLimit": -76.54487360311789
+        }
+      },
+      "identicalExecutedBodiesAndFinalCommands": false,
+      "firstChangedFinalCommand": 1,
+      "maxRunnerSeparation": 0.27162196859633736,
+      "firstChangedRunnerRawRequest": 1.75,
+      "equalBodiesBeforeFirstChange": true,
+      "equalObserverBeforeFirstChange": true,
+      "equalRngBeforeFirstChange": true
+    }
+  ],
+  "newWorldSteps": 0,
+  "elapsedSeconds": 5.622341959999176,
+  "scriptSha256": "adab78476b4f182008a84a53d3030f70cb561bfa0dd8dde73b1d6b98e80434ec"
+}

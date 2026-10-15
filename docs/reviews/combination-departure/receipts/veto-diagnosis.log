@@ -1,0 +1,231 @@
+
+> gridiron-engine@0.1.0 baseline:run
+> node scripts/baseline.mjs --candidate --receipt out/combination-departure/checks-veto-diagnosis.json -- npx vitest run test/combination-departure.test.ts test/combo-transfer.test.ts test/combo-attention.test.ts --maxWorkers=1 -t uses the executed|does not promote|keeps a newer fill|requires fresh personal|holds while a newly
+
+Profile candidate: run-game-2026-10-13, commit c61dd8ca8ca609595c0656d28289b6a5f4fc3c15, source 5ae1c878186643cd708e64dbf5d4b8db1f559e34d4ab962ec3058826cc5c38cf
+Running npx vitest run test/combination-departure.test.ts test/combo-transfer.test.ts test/combo-attention.test.ts --maxWorkers=1 -t uses the executed|does not promote|keeps a newer fill|requires fresh personal|holds while a newly
+
+ RUN  v3.2.4 /workspace/football-combination-departure
+
+stderr | test/combo-attention.test.ts > a joined lineman reads for his own possible departure > keeps a newer fill private to the faster reader, side -1
+departure diagnostic: clearance { x: 40.35994920899309, y: 26.31292426985678 } { x: 1.2239400272394232, y: 0.2265029189128444 } { x: 0.44547021460953445, y: -0.7107289621553878 } {
+  peer: { x: 40.84794826090177, y: 26.768083225460288 },
+  peerVelocity: { x: 0.16768645855190423, y: 0.2881975681280781 },
+  floor: 0.6504545454545454,
+  distance: 0.6348218171851798,
+  t: 0.05
+}
+
+stderr | test/combo-attention.test.ts > a joined lineman reads for his own possible departure > keeps a newer fill private to the faster reader, side 1
+departure diagnostic: clearance { x: 40.35994920899309, y: 27.020409063476556 } { x: 1.2239400272394232, y: -0.2265029189128444 } { x: 0.4454702146095342, y: 0.6500154847317623 } {
+  peer: { x: 40.84794826090177, y: 26.565250107873048 },
+  peerVelocity: { x: 0.16768645855190403, y: -0.2881975681280779 },
+  floor: 0.6504545454545454,
+  distance: 0.6348598214324854,
+  t: 0.05
+}
+
+stderr | test/combo-attention.test.ts > a joined lineman reads for his own possible departure > requires fresh personal confirmation after the observer goes down and regains his feet, side -1
+departure diagnostic: clearance { x: 40.35994920899309, y: 26.31292426985678 } { x: 1.2239400272394232, y: 0.2265029189128444 } { x: 0.4871137929719098, y: -0.6758071736203617 } {
+  peer: { x: 40.856332583829364, y: 26.782493103866692 },
+  peerVelocity: { x: 0.16768645855190423, y: 0.2881975681280781 },
+  floor: 0.6504545454545454,
+  distance: 0.6287265182865489,
+  t: 0.1
+}
+
+stderr | test/combo-attention.test.ts > a joined lineman reads for his own possible departure > requires fresh personal confirmation after the observer goes down and regains his feet, side 1
+departure diagnostic: clearance { x: 40.35994920899309, y: 27.020409063476556 } { x: 1.2239400272394232, y: -0.2265029189128444 } { x: 0.4871137929719096, y: 0.6150936961967359 } {
+  peer: { x: 40.856332583829364, y: 26.550840229466644 },
+  peerVelocity: { x: 0.16768645855190403, y: -0.2881975681280779 },
+  floor: 0.6504545454545454,
+  distance: 0.6288031580057516,
+  t: 0.1
+}
+
+ ❯ |core| test/combo-attention.test.ts (20 tests | 4 failed | 16 skipped) 192ms
+   ↓ a joined lineman reads for his own possible departure > never orders an unread poorly fitted partner to climb, side -1
+   ↓ a joined lineman reads for his own possible departure > never orders an unread poorly fitted partner to climb, side 1
+   ↓ a joined lineman reads for his own possible departure > a faster partner consumes his own due reads rather than borrowing the slower first member clock
+   × a joined lineman reads for his own possible departure > keeps a newer fill private to the faster reader, side -1 80ms
+     → expected false to be true // Object.is equality
+   × a joined lineman reads for his own possible departure > keeps a newer fill private to the faster reader, side 1 47ms
+     → expected false to be true // Object.is equality
+   ↓ a joined lineman reads for his own possible departure > one player losing his delayed keeper picture leaves his partner confirmation and cadence intact
+   × a joined lineman reads for his own possible departure > requires fresh personal confirmation after the observer goes down and regains his feet, side -1 36ms
+     → expected false to be true // Object.is equality
+   × a joined lineman reads for his own possible departure > requires fresh personal confirmation after the observer goes down and regains his feet, side 1 28ms
+     → expected false to be true // Object.is equality
+   ↓ joined pair proposals resolve before ordinary movement > chooses the same loaded keeper when deferred read order reverses, side -1
+   ↓ joined pair proposals resolve before ordinary movement > chooses the same loaded keeper when deferred read order reverses, side 1
+   ↓ joined pair proposals resolve before ordinary movement > the batch consumes both players once and ordinary same-tick updates do not reschedule them
+   ↓ joined pair proposals resolve before ordinary movement > resolves an equal-cost surface consistently and honors a real cost advantage, backer shift 0
+   ↓ joined pair proposals resolve before ordinary movement > resolves an equal-cost surface consistently and honors a real cost advantage, backer shift -0.5
+   ↓ joined pair proposals resolve before ordinary movement > a snap-delayed member cannot consume a read while his ready partner can
+   ↓ joined pair proposals resolve before ordinary movement > expired proposals cannot authorize a future departure without a newly consumed read
+   ↓ joined pair proposals resolve before ordinary movement > losing actual keeper hands between the personal proposal and resolution vetoes that release
+   ↓ a stale shared fit is not a fallback permission to choose somebody else > rejects newer-plan even with old common secure time already earned
+   ↓ a stale shared fit is not a fallback permission to choose somebody else > rejects new-target even with old common secure time already earned
+   ↓ a stale shared fit is not a fallback permission to choose somebody else > rejects down-observer even with old common secure time already earned
+   ↓ a stale shared fit is not a fallback permission to choose somebody else > a nonmember cannot use the pair control to order either member uphill
+stderr | test/combo-transfer.test.ts > a combination release asks whether the actual remaining blocker can keep contact > does not promote a preferred helper who is recovering his support, side -1
+departure diagnostic: support { x: 40.05457009968354, y: 26.26928073277886 } { x: 0.4788502442097988, y: -0.06899490839841273 } { x: 0.39630282559258495, y: -0.8379040138483768 } [ 'up', 'falling', 'falling', 'falling' ]
+
+stderr | test/combo-transfer.test.ts > a combination release asks whether the actual remaining blocker can keep contact > does not promote a preferred helper who is recovering his support, side 1
+departure diagnostic: support { x: 40.05457009968354, y: 27.064052600554476 } { x: 0.4788502442097988, y: 0.06899490839841273 } { x: 0.39630282559258484, y: 0.7771905364247509 } [ 'up', 'falling', 'falling', 'falling' ]
+
+stderr | test/combo-transfer.test.ts > a combo responds to the filling backer that the observer actually saw > holds while a newly arriving backer is still outside the delayed picture, side -1
+departure diagnostic: clearance { x: 40.245815995094965, y: 26.298122688380875 } { x: 1.0317741440239698, y: 0.24792947813652708 } { x: 0.40184643364104455, y: -0.7867975588239791 } {
+  peer: { x: 40.82676900957061, y: 26.715770725718393 },
+  peerVelocity: { x: 0.1319108729152389, y: 0.15518718429122041 },
+  floor: 0.6504545454545454,
+  distance: 0.6497007574383441,
+  t: 0.1
+}
+
+stderr | test/combo-transfer.test.ts > a combo responds to the filling backer that the observer actually saw > holds while a newly arriving backer is still outside the delayed picture, side 1
+departure diagnostic: clearance { x: 40.245815995094965, y: 27.03521064495246 } { x: 1.0317741440239698, y: -0.24792947813652708 } { x: 0.40184643364104444, y: 0.7260840814003533 } {
+  peer: { x: 40.82676900957061, y: 26.617562607614943 },
+  peerVelocity: { x: 0.13191087291523884, y: -0.15518718429122025 },
+  floor: 0.6504545454545454,
+  distance: 0.6499727069895911,
+  t: 0.1
+}
+
+ ❯ |core| test/combo-transfer.test.ts (22 tests | 4 failed | 18 skipped) 154ms
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > lets an insecure primary leave when his partner has earned the keeping contact, side -1
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > lets an insecure primary leave when his partner has earned the keeping contact, side 1
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > lets a poorly fitted helper climb while the secure primary stays, side -1
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > lets a poorly fitted helper climb while the secure primary stays, side 1
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > does not leave an insecure primary with a poorly fitted helper, side -1
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > does not leave an insecure primary with a poorly fitted helper, side 1
+   × a combination release asks whether the actual remaining blocker can keep contact > does not promote a preferred helper who is recovering his support, side -1 59ms
+     → expected false to be true // Object.is equality
+   × a combination release asks whether the actual remaining blocker can keep contact > does not promote a preferred helper who is recovering his support, side 1 32ms
+     → expected false to be true // Object.is equality
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > does not transfer contact when neither proposed keeper has a live physical hand joint
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > does not certify separated keeper hands from their old positive load and delayed picture
+   ↓ a combination release asks whether the actual remaining blocker can keep contact > keeps the real primary when the preferred helper has only a stale joint reference
+   ↓ promoting a real helper preserves the existing physical hand state > requests a clear first step off the observed double and executes it through World, side -1
+   ↓ promoting a real helper preserves the existing physical hand state > requests a clear first step off the observed double and executes it through World, side 1
+   ↓ promoting a real helper preserves the existing physical hand state > retains the same solved joint across the assignment read and following sync, side -1
+   ↓ promoting a real helper preserves the existing physical hand state > retains the same solved joint across the assignment read and following sync, side 1
+   ↓ promoting a real helper preserves the existing physical hand state > does not give a promoted helper the former primary's cloth-grab capacity or erase the call
+   ↓ promoting a real helper preserves the existing physical hand state > retains the original primary's hold when that player keeps the block
+   ↓ a combo responds to the filling backer that the observer actually saw > lets better recognition act on a changing fill earlier with the same strength and movement envelope
+   × a combo responds to the filling backer that the observer actually saw > holds while a newly arriving backer is still outside the delayed picture, side -1 38ms
+     → expected false to be true // Object.is equality
+   × a combo responds to the filling backer that the observer actually saw > holds while a newly arriving backer is still outside the delayed picture, side 1 25ms
+     → expected false to be true // Object.is equality
+   ↓ a combo responds to the filling backer that the observer actually saw > can commit to a fill that has disappeared from the current world, side -1
+   ↓ a combo responds to the filling backer that the observer actually saw > can commit to a fill that has disappeared from the current world, side 1
+stderr | test/combination-departure.test.ts > achieved combination departure before ending first-level work > uses the executed climb command without acquiring another picture or mutating an existing read
+departure diagnostic: clearance { x: 39.984064423108585, y: 24.794730850145232 } { x: -0.030192911384909597, y: 1.2540430260081028 } { x: 4.73423342741334, y: -0.6863026964875383 } {
+  peer: { x: 40.152911578441994, y: 25.441627811235605 },
+  peerVelocity: { x: -1.5179755894948825, y: 0.49277612172556173 },
+  floor: 0.5956363636363637,
+  distance: 0.574694840957711,
+  t: 0.1
+}
+
+ ✓ |core| test/combination-departure.test.ts (4 tests | 3 skipped) 93ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/combo-attention.test.ts > a joined lineman reads for his own possible departure > keeps a newer fill private to the faster reader, side -1
+ FAIL  |core| test/combo-attention.test.ts > a joined lineman reads for his own possible departure > keeps a newer fill private to the faster reader, side 1
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/combo-attention.test.ts:202:32
+    200|       expect(f.combo.released).toBe(false);
+    201|       read(f, f.helper); resolve(f);
+    202|       expect(f.combo.released).toBe(true);
+       |                                ^
+    203|       expect(f.helper.tags.has('combo-climb')).toBe(true);
+    204|       expect(f.primary.tags.has('combo-climb')).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  |core| test/combo-attention.test.ts > a joined lineman reads for his own possible departure > requires fresh personal confirmation after the observer goes down and regains his feet, side -1
+ FAIL  |core| test/combo-attention.test.ts > a joined lineman reads for his own possible departure > requires fresh personal confirmation after the observer goes down and regains his feet, side 1
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/combo-attention.test.ts:253:30
+    251|     due(f, [f.helper]);
+    252|     readCombination(f.helper, f.sim, f.combo);
+    253|     expect(f.combo.released).toBe(true);
+       |                              ^
+    254|     expect(f.helper.tags.has('combo-climb')).toBe(true);
+    255|     expect(f.engagement.hands).toBe(keeperHands);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  |core| test/combo-transfer.test.ts > a combination release asks whether the actual remaining blocker can keep contact > does not promote a preferred helper who is recovering his support, side -1
+ FAIL  |core| test/combo-transfer.test.ts > a combination release asks whether the actual remaining blocker can keep contact > does not promote a preferred helper who is recovering his support, side 1
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/combo-transfer.test.ts:184:36
+    182|     expect(sup.state).toBe('up');
+    183|     readCombination(f.reader, f.sim, f.combination);
+    184|     expect(f.combination.released).toBe(true);
+       |                                    ^
+    185|     expect(f.engagement.blocker).toBe(f.primary);
+    186|     expect(f.primary.tags.has('combo-climb')).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  |core| test/combo-transfer.test.ts > a combo responds to the filling backer that the observer actually saw > holds while a newly arriving backer is still outside the delayed picture, side -1
+ FAIL  |core| test/combo-transfer.test.ts > a combo responds to the filling backer that the observer actually saw > holds while a newly arriving backer is still outside the delayed picture, side 1
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/combo-transfer.test.ts:370:36
+    368|     expect(f.sim.see(f.helper, f.backer).pos.x).toBe(42);
+    369|     readCombination(f.helper, f.sim, f.combination);
+    370|     expect(f.combination.released).toBe(true);
+       |                                    ^
+    371|   });
+    372|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  8 failed | 1 passed | 37 skipped (46)
+   Start at  00:35:14
+   Duration  2.14s (transform 742ms, setup 0ms, collect 1.18s, tests 440ms, environment 1ms, prepare 176ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.4 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/combination-departure/checks-veto-diagnosis.json; exit 1
+npm notice
+npm notice New major version of npm available! 10.9.4 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

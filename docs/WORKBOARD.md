@@ -7,20 +7,26 @@ Run-game owns `codex/combination-departure-execution` from PR #50 publication
 contact-circle geometry, DL acquired-key response and riding mesh. Accepted
 developa1b16e6 and historical4ded6b6 stay separate; no promotion or merge.
 
-One question: does a joined release authorize a maneuver that its selected
-climber cannot execute clear of the acquired DL/keeper through its next read?
-Use the saved weak RT momentum witness and existing successful transfers.
-Root claims `behaviors/blocking.ts` plus one small departure-clearance helper
-and focused tests. Preserve role ranking, keeper contact, current acquired
-information and ordinary read cadence; no earlier-release timer, route graph,
-member substitution, strength, capacity, sensing, QB/DL or shared physics edit.
-Check before contact/ownership mutation; a veto keeps ordinary combination work.
+Completed question: does accounting for the departing blocker's own momentum
+improve the complete block? The hard pre-release clearance veto is rejected:
+it breaks eight existing valid release controls. The replacement finite gather
+preserves release choice/timing but is also rejected for production. It reduces
+weak RT/DT_S impact124.01→87.19, yet earns no assigned-LB collection and creates
+one RG/Y impact78.88 at2.85; keeper depth is about1.54yd worse there. Similar hand
+load does not establish preserved protection. No new native trial was launched
+to tune away the adverse result.
 
-After local controls, compare weak/Y with saved PR #50 evidence. Predeclare
-same-roster ace12 `iz_strong` / Over / seed3 as cross-concept transfer before
-results; collect only one matched short parent/candidate pair if local work
-supports it. Fresh Tite is already observed and not a new holdout. Broaden only
-for a specific adverse cause. Integration owns the final combined suite.
+Compared weak/Y with saved PR #50 evidence. The same-roster ace12 `iz_strong` /
+Over / seed3 transfer was predeclared before results. The inside-zone pair is
+mixed: first C/DT_W impact67.49→45.74 but total
+310.63→315.49; assigned collection remains absent. Y/H/Tite execute identically.
+Six short native instances cost15.07s;59 focused candidate checks/typecheck pass.
+The candidate is retained at `b42b5a5` / runtimeccb0a466 for exact replay; the
+published diagnostic restores the exact PR #50 runtimeafb8a307. No production
+controller, capacities, sensing, shared movement/physics or defaults change.
+The repeated exit-arc issue remains a separate demonstrated next target; do not
+turn contact minimization into a general OL/DL rule. Integration owns any later
+combined suite. [Evidence and rejected alternatives](reviews/combination-departure/README.md).
 
 ## Continuous wide-zone interaction, 2026-10-14
 
