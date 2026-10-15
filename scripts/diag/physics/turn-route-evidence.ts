@@ -28,13 +28,13 @@ for(const p of ['src/physics/actuation.ts','src/physics/yaw-response.ts','src/ph
 const start=performance.now(),raw:any[]=[],meta={commit,source,flags,hashes,node:process.version,cpu:cpus()[0].model,timestamp:new Date().toISOString(),
   parent:'4db2ffa77298a00dd475a6565c4f427cabb03634',baseline:'4ded6b600fd3785e65034aa5623d7a9f8f3c5db1',
   settings:{turnChoice:'arrival-time only in candidate arms; absent otherwise',handContact:'patch',gripTiming:'midpoint',constraintWork:'per-solve',materialTransport:'owned',nativeSubsteps:96,correctiveGrip:'same PR55 callback only; earlier active/tangent callback absent'},
-  interpretation:'Reach requested orientation and settle under existing limits. Estimated bang-bang time is a route-ranking surrogate, not the existing servo finish time. No guaranteed speed, matched trajectories or football win.'};
+  interpretation:'Reach requested orientation and settle under existing limits. Route ranking uses a bounded-motion surrogate with cruise derived from the existing short-target servo, not its motor rate cap. This is not a predicted exact servo finish time, guaranteed speed, matched trajectory or football win.'};
 let payload:any;
 if(mode==='tasks'){
   let referenceError=0;for(const D of [-6.4,-3.14,-.1,0,.1,3.14,6.4])for(const w of [-3,-1.3,0,1.3,3])for(const A of [5,60])
     referenceError=Math.max(referenceError,Math.abs(boundedArrival(D,w,A,8)-arrivalReference(D,w,A,8)));
   assert(referenceError<1e-12);
-  const fresh:TurnTask[]=[];for(const e of [-.25,-.1,.1,.25])for(const spin of [-2.5,-.5,.5,2.5])fresh.push({id:`fresh-${e}-${spin}`,facing:-Math.PI+e,spin,target:0});
+  const fresh:TurnTask[]=[];for(const e of [-.25,-.1,.1,.25,.18,-.18])for(const spin of [-2.5,-.5,.5,2.5])fresh.push({id:`fresh-${e}-${spin}`,facing:-Math.PI+e,spin,target:0});
   const rows=[];
   for(const c of [...turnTasks,...fresh]){
     const arms=[];for(const arm of ['shortest','arrival'] as const){const r=turnTask(c,arm);raw.push(r);assert(Math.abs(r.energyResidual)<1e-9);

@@ -1,6 +1,14 @@
 /** Experimental controller route objective only: minimum time to a heading at rest for a
  * bounded angular double integrator. No new torque or execution law. */
 export function signedAngle(delta:number){let d=delta%(2*Math.PI);if(d>Math.PI)d-=2*Math.PI;if(d< -Math.PI)d+=2*Math.PI;return d;}
+/** Mean cruise of the existing unsaturated critical servo when each control
+ * tick resets its target rate*tick radians ahead. This is a forecast speed,
+ * not a new physical rate cap. Derived from the periodic critical flow. */
+export function servoCruiseRate(rate:number,tick:number,response:number){
+  if(![rate,tick,response].every(Number.isFinite)||rate<0||tick<=0||response<=0)throw new RangeError('Turn cruise forecast scope');
+  const u=tick/response,change=-Math.expm1(-u),decay=Math.exp(-u);
+  return rate*change*change/(change+u*decay);
+}
 export function boundedArrival(displacement:number,spin:number,acceleration:number,rate:number){
   if(![displacement,spin,acceleration,rate].every(Number.isFinite)||acceleration<=0||rate<=0||Math.abs(spin)>rate)throw new RangeError('Turn-route estimator scope');
   let best=Infinity;

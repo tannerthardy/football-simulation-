@@ -1,9 +1,17 @@
 import {describe,it,expect} from 'vitest';
-import {boundedArrival,turnRoute,signedAngle,arrivalReference} from '../scripts/diag/physics/turn-route-model.js';
+import {boundedArrival,turnRoute,signedAngle,arrivalReference,servoCruiseRate} from '../scripts/diag/physics/turn-route-model.js';
+import {integrateYaw} from '../src/physics/yaw-response.js';
 import {turnTask,turnTasks} from '../scripts/diag/physics/turn-route-task.js';
 import {recoveryFixture} from '../scripts/diag/physics/grip-recovery-input.js';
 import {World} from '../src/physics/world.js';
 describe('experimental minimum-time orientation route, unchanged yaw law',()=>{
+  it('forecasts the existing servo cruise from its periodic flow, without lowering the executed rate cap',()=>{
+    for(const h of [.01,.05,.1]){
+      let spin=0,total=0;for(let k=0;k<200;k++){const r=integrateYaw(8*h,spin,h,.05,1e6,8);spin=r.spin;if(k>=150)total+=r.angleDelta;}
+      expect(servoCruiseRate(8,h,.05)).toBeCloseTo(total/(50*h),12);
+    }
+    expect(servoCruiseRate(8,.05,.05)).toBeCloseTo(8*(1-1/Math.E)**2,13);
+  });
   it('matches an independent reachable-velocity envelope across acceleration, reversal and rate phases',()=>{
     for(const d of [-6.4,-3.14,-.1,0,.1,3.14,6.4])for(const w of [-3,-1.3,0,1.3,3])for(const a of [5,60])
       expect(Math.abs(boundedArrival(d,w,a,8)-arrivalReference(d,w,a,8))).toBeLessThan(1e-12);
@@ -23,6 +31,10 @@ describe('experimental minimum-time orientation route, unchanged yaw law',()=>{
       expect(r.finish).not.toBeNull();expect(r.finish!).toBeLessThan(old.finish!);expect(r.absoluteWork).toBeLessThan(old.absoluteWork);
       expect(Math.abs(r.energyResidual)).toBeLessThan(1e-10);
     }
+  });
+  it.each([-1,1])('retains the adverse boundary control after forecasting servo cruise, side %s',side=>{
+    const c={id:'retained adverse',facing:side*(-Math.PI+.25),spin:side*-2.5,target:0},a=turnTask(c,'shortest'),b=turnTask(c,'arrival');
+    expect(b.finish).toBe(a.finish);expect(b.absoluteWork).toBe(a.absoluteWork);expect(b.final).toEqual(a.final);
   });
   it.each(['normal','incoming-toward','deliberate-reversal','changed-command','near-target','saved-transition'])('preserves the opposing controller task exactly: %s',id=>{
     const c=turnTasks.find(c=>c.id===id)!,a=turnTask(c,'shortest'),b=turnTask(c,'arrival');

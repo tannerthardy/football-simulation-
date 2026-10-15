@@ -1,6 +1,6 @@
 /** Fixed-load yaw task under the existing motor. Instrumented diagnostic,
  * not a new movement/contact/recovery law or game runtime benchmark. */
-import {turnRoute,signedAngle} from './turn-route-model.js';
+import {turnRoute,signedAngle,servoCruiseRate} from './turn-route-model.js';
 import {turnBodyResponse,YAW_RESPONSE} from '../../../src/physics/actuation.js';
 import {supportParams,baseRadiusAt} from '../../../src/physics/support.js';
 import {recoveryFixture} from './grip-recovery-input.js';
@@ -19,7 +19,7 @@ export function turnTask(c:TurnTask,mode:'shortest'|'arrival',substeps=96){
     trace:any[]=[],h=.05/substeps;let totalWork=0,absoluteWork=0,peak=0,held=0,finish:number|null=null,reversalTime:number|null=null;
   for(let k=0;k<100;k++){
     const time=k*.05,target=(c.reverseAt!==undefined&&time>=c.reverseAt?c.reverseTarget!:c.target)*mirror,
-      route=turnRoute(target-b.facing,b.spin??0,A,rate),d=mode==='arrival'?route.delta:route.shortest,
+      route=turnRoute(target-b.facing,b.spin??0,A,servoCruiseRate(rate,.05,YAW_RESPONSE)),d=mode==='arrival'?route.delta:route.shortest,
       requested=b.facing+Math.min(rate*.05,Math.max(-rate*.05,d));
     trace.push({time,facing:b.facing,spin:b.spin,target,delta:d,route});
     for(let j=0;j<substeps;j++){

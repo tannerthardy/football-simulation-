@@ -41,7 +41,7 @@ import { resolveGripInterval, type GripTimingReport } from './grip-timing.js';
 import {passiveGripResultValid,type PassiveGripInput,type PassiveGripResult,type PassiveGripSolver,type PassiveGripReport} from './passive-grip.js';
 import {activeGripResultValid,type ActiveGripInput,type ActiveGripResult,type ActiveGripSolver} from './active-grip.js';
 import {correctiveGripResultValid,type CorrectiveGripInput,type CorrectiveGripResult,type CorrectiveGripSolver} from './corrective-grip.js';
-import {turnRoute} from './turn-route.js';
+import {turnRoute,servoCruiseRate} from './turn-route.js';
 import { LEG_SLIDE } from './grip-sliding.js';
 import { resolveFastGripInterval, commitGripTrial } from './grip-fast.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
@@ -983,7 +983,9 @@ export class World {
       const sp=this.sp[i],force=Math.hypot(this.amx[i],this.amy[i])*this.mass[i],
         torque=Math.sqrt(Math.max(0,(sp.traction*a)**2-force*force))*baseRadiusAt(sp,sup.posture),
         acceleration=Math.min(tr/YAW_RESPONSE*(.3+.7*a),torque/sp.yawInertia),
-        route=turnRoute(delta,b.spin??0,acceleration,tr);
+        // Forecast the servo's sustained travel, not travel at its rate cap.
+        // This never changes the rate/torque limits used by turnBodyResponse.
+        route=turnRoute(delta,b.spin??0,acceleration,servoCruiseRate(tr,dt,YAW_RESPONSE));
       if(route.delta!==route.shortest)facing=b.facing+clamp(route.delta,-tr*dt,tr*dt);
     }
     // Pad level costs a little speed when he plays low.

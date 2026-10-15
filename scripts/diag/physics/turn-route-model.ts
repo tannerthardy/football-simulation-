@@ -1,5 +1,5 @@
 /** Independent diagnostic reference; production defaults do not use route selection. */
-export {signedAngle,boundedArrival,turnRoute} from '../../../src/physics/turn-route.js';
+export {signedAngle,boundedArrival,turnRoute,servoCruiseRate} from '../../../src/physics/turn-route.js';
 
 /** Independent reachable-displacement envelope. Integrate min/max affine
  * velocity bounds exactly, then bisect time. No candidate times/controls. */
