@@ -1,5 +1,23 @@
 # Current work ownership
 
+## RB local traffic — 2026-10-15
+
+Do-It-All owns `codex/rb-local-traffic`, directly from accepted #72 merge
+`4679a3c260188143bcc66f6f20534327c78d7eaa` (actual acceptance in #72
+comment6202138165, resolving the ledger's earlier7d1451b snapshot).
+Question: does radial spacing brake against a requested straight ray even when
+this carrier's achievable motion already clears the acquired teammate picture?
+Boundary: a carrier-only radial-restriction override in `spaceTeammates`, using
+its existing movement preview, observation callback and free-body exclusions;
+focused saved-body and naturally reacting saved-input controls. Public APIs,
+all non-carrier spacing, gap selection, PassProtector, #69 collection, Awareness
+policy, physics, capacities and collision geometry stay outside this change.
+Shared ownership notices: #65 comment6202226861 and #69 comment6202285219.
+Existing WORKBOARD assigns carrier/spacing navigation to Do-It-All; no shared
+movement/preview API edit or other owner's function is proposed. Integration
+owns exact combined verification. Earlier entry-admission stack remains parked.
+
+
 ## Independent #67 portability review — 2026-10-15
 
 Integration owns `codex/pass-cutoff-integration-review` from accepted develop

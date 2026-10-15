@@ -31,6 +31,8 @@ export interface SpacingContext {
   now: number;
   /** Own tactile constraint state, never a teammate's unobserved intention. */
   constrained?: ReadonlySet<Body>;
+  /** Opt in only the possessing carrier on an installed run. */
+  runCarrier?: Body;
 }
 
 interface PeerPicture {
@@ -99,6 +101,24 @@ function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], c
   return gather;
 }
 
+/** A radial headway cut uses the requested ray. Before imposing it on a free
+ * carrier, check the motion his current momentum and ordinary feet achieve.
+ * This only retains an already chosen football request; it neither chooses
+ * another gap nor promises that the rest of the play will remain open. */
+function retainAchievableCarrierRequest(a:Agent, original:Intent, spaced:Intent,
+  peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+  const s=a.body.support;
+  if(spaced===original||a.behavior.kind!=='carrier'||!context||context.runCarrier!==a.body||!Number.isFinite(context.now)
+    ||a.isDown(context.now)||a.engagement||context.constrained?.has(a.body)
+    ||original.free||original.dive||original.lunge||(original.push??0)>1e-6
+    ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
+    ||!s||s.state!=='up'||s.foot||s.strike
+    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return spaced;
+  const path=previewFreeMovement(a.body,original,context.now,TURN_STEPS);
+  return path.every(sample=>sample.support==='up')
+    &&peers.every(peer=>sweptClearance(a,path,peer)>=0)?original:spaced;
+}
+
 export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
   observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> = (_a,b)=>b,
   context?:SpacingContext): void {
@@ -150,6 +170,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
     }
+    spaced=retainAchievableCarrierRequest(a,ia,spaced,peers,context);
     intents[i]=gatherForTurn(a,spaced,peers,context);
   }
 }

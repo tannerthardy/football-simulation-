@@ -590,7 +590,7 @@ export class PlaySim {
       if (!called) return seen;
       const age = seen.age ?? 0;
       return { ...seen, pos: { x: seen.pos.x + (called.x - seen.vel.x) * age, y: seen.pos.y + (called.y - seen.vel.y) * age }, vel: called };
-    },{now:t,constrained});
+    },{now:t,constrained,runCarrier:this.offCall.kind==='run'?this.carrier?.body:undefined});
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
