@@ -1,5 +1,5 @@
 /** Existing replay-telemetry fixture only; no controller/physics edits.
- * Native pair first. Optional single-arm initial-LT-execution diagnostic.
+ * Native pair first. Optional reciprocal first-LT-move variate comparison.
  * The deliberate QB mutation in the copy test is never applied here. */
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
@@ -53,20 +53,43 @@ const cleanRep=e=>{const {hands,...r}=rep({...e,hands:undefined});
  r.hands=e.hands?Object.fromEntries(Object.entries(e.hands).filter(([k])=>!['a','b'].includes(k))):null;
  return structuredClone(r);};
 const reference=referencePath?JSON.parse(gunzipSync(readFileSync(referencePath))):null;
-const originalLT=reference?.rows.find(r=>r.arm==='accepted').engagementStarts.find(e=>e.b===1&&e.d===11);
-if(reference)assert(originalLT);
 const rows=[],started=performance.now();
-for(const arm of reference?['candidate-retain-LT-initial']:['accepted','candidate']){
+function firstMoveTape(row){
+ const j=row.rngCalls.findIndex(c=>c.kind==='weighted'&&c.site.some(s=>s.includes('chooseMove')));
+ assert(j>=0);const calls=row.rngCalls.slice(j,j+3);
+ assert.deepEqual(calls.map(c=>c.kind),['weighted','chance','range']);
+ assert.equal(calls[0].reps[0].b,1);assert.equal(calls[0].reps[0].d,11);
+ return {referenceTime:calls[0].t,calls,uniforms:calls.map(c=>Object.assign(new Rng(0),c.rngBefore).next())};
+}
+for(const arm of ['accepted','candidate']){
  const sim=new PlaySim(setup('pass','full'));
  const initial=sim.agents.map(snapshot),initialRng={...sim.rng};
  const frames=[],requests=[],engagementStarts=[],rngCalls=[],retained=[];
- let engagePair=null;
+ const opposite=reference?.rows.find(r=>r.arm===(arm==='accepted'?'candidate':'accepted'));
+ const tape=opposite?firstMoveTape(opposite):null;
+ let engagePair=null,retainedStage=0;
  const nativeRng=Object.fromEntries(['normal','range','weighted','chance'].map(k=>[k,sim.rng[k].bind(sim.rng)]));
  for(const k of Object.keys(nativeRng))sim.rng[k]=(...args)=>{
   const rngBefore=structuredClone(Object.fromEntries(Object.entries(sim.rng).filter(([,v])=>typeof v!=='function')));
-  const result=nativeRng[k](...args);
-  rngCalls.push({t:sim.t,kind:k,args:structuredClone(args),result,pair:engagePair,
-   site:new Error().stack.split('\n').slice(2,6).map(s=>s.trim().replace(process.cwd(),'$ROOT')),
+  const actual=nativeRng[k](...args);
+  const site=new Error().stack.split('\n').slice(2,6).map(s=>s.trim().replace(process.cwd(),'$ROOT'));
+  let result=actual;
+  const lt=sim.agents[1].engagement;
+  if(tape&&retainedStage===0&&k==='weighted'&&site.some(s=>s.includes('chooseMove'))){
+   assert(lt&&lt.blocker.idx===1&&lt.defender.idx===11&&sim.t>=lt.nextMoveAt);
+   const [items,weights]=args;let u=tape.uniforms[0]*weights.reduce((s,w)=>s+Math.max(0,w),0);
+   result=items.at(-1);for(let i=0;i<items.length;i++){u-=Math.max(0,weights[i]);if(u<=0){result=items[i];break;}}
+   retainedStage=1;
+  }else if(tape&&retainedStage===1&&k==='chance'&&site.some(s=>s.includes('resolveMove'))){
+   result=tape.uniforms[1]<args[0];retainedStage=2;
+  }else if(tape&&retainedStage===2&&k==='range'&&site.some(s=>s.includes('resolveMove'))){
+   result=args[0]+(args[1]-args[0])*tape.uniforms[2];retainedStage=3;
+  }
+  const retainedNow=tape&&((retainedStage===1&&k==='weighted')||(retainedStage===2&&k==='chance')||(retainedStage===3&&k==='range'&&retained.length===2));
+  if(retainedNow)retained.push({t:sim.t,kind:k,actual,delivered:result,args:structuredClone(args),
+   referenceArm:opposite.arm,referenceTime:tape.referenceTime,uniform:tape.uniforms[retained.length],
+   qualification:'Only first subsequent LT/DE_W move-choice, execution and interval variates. Current weights/probability and native timing/geometry. Native calls consumed; later draws remain native and coupled.'});
+  rngCalls.push({t:sim.t,kind:k,args:structuredClone(args),result,actual,pair:engagePair,site,
    rngBefore,rngAfter:structuredClone(Object.fromEntries(Object.entries(sim.rng).filter(([,v])=>typeof v!=='function'))),
    reps:sim.engagements.map(cleanRep)});
   return result;
@@ -83,26 +106,7 @@ for(const arm of reference?['candidate-retain-LT-initial']:['accepted','candidat
  sim.engage=(b,d,...rest)=>{
   const had=b.engagement,rngBefore=structuredClone(Object.fromEntries(Object.entries(sim.rng).filter(([,v])=>typeof v!=='function')));
   const rngStart=rngCalls.length;engagePair=[b.idx,d.idx];let e;
-  if(originalLT&&!had&&b.idx===1&&d.idx===11&&!retained.length){
-   const tapeRng=Object.assign(new Rng(0),originalLT.rngBefore);
-   const tape={rangeU:tapeRng.next(),normalZ:[tapeRng.gaussian(),tapeRng.gaussian()],planU:tapeRng.next()};
-   tape.normalZ.push(tapeRng.gaussian());assert.deepEqual({...tapeRng},originalLT.rngAfter);
-   const captureRng=Object.fromEntries(['normal','range','weighted'].map(k=>[k,sim.rng[k]]));
-   let normals=0,ranges=0,plans=0;const delivered=[];
-   sim.rng.normal=(m,sd)=>{const actual=captureRng.normal(m,sd);assert(normals<3);
-    const v=m+sd*tape.normalZ[normals++];delivered.push({kind:'normal',actual,delivered:v});return v;};
-   sim.rng.range=(lo,hi)=>{const actual=captureRng.range(lo,hi);assert.equal(ranges++,0);
-    const v=lo+(hi-lo)*tape.rangeU;delivered.push({kind:'range',actual,delivered:v});return v;};
-   sim.rng.weighted=(items,weights)=>{const actual=captureRng.weighted(items,weights);assert.equal(plans++,0);
-    let u=tape.planU*weights.reduce((s,w)=>s+Math.max(0,w),0),v=items.at(-1);
-    for(let i=0;i<items.length;i++){u-=Math.max(0,weights[i]);if(u<=0){v=items[i];break;}}
-    delivered.push({kind:'weighted',actual,delivered:v,items,weights});return v;};
-   try{e=engage(b,d,...rest);}finally{Object.assign(sim.rng,captureRng);}
-   if(e){assert.equal(normals,3);assert.equal(ranges,1);assert.equal(plans,1);
-    retained.push({t:sim.t,referenceTime:originalLT.t,tape,delivered,
-     qualification:'Initial LT/DE_W variates only; current weights and physical geometry. Native calls still consumed; subsequent execution remains native and coupled.'});}
-   else assert.equal(delivered.length,0);
-  }else e=engage(b,d,...rest);
+  e=engage(b,d,...rest);
   engagePair=null;
   if(e&&!had)engagementStarts.push({t:sim.t,b:b.idx,d:d.idx,rngBefore,
    rngAfter:structuredClone(Object.fromEntries(Object.entries(sim.rng).filter(([,v])=>typeof v!=='function'))),
@@ -118,7 +122,13 @@ for(const arm of reference?['candidate-retain-LT-initial']:['accepted','candidat
  const start=performance.now();
  // Same 45 native ticks as the existing recorder check, before its QB mutation.
  for(let i=0;i<45&&sim.phase==='live';i++)sim.tick();
- rows.push({arm,endTime:sim.t,phase:sim.phase,throwAt:sim.throwAt,initial,initialRng,
+ if(reference){
+  assert.equal(retainedStage,3);assert.equal(retained.length,3);
+  const native=reference.rows.find(r=>r.arm===arm),fork=retained[0].t;
+  assert.deepEqual(frames.filter(f=>f.t<fork),native.frames.filter(f=>f.t<fork),'Pre-fork World history must remain native');
+ }
+
+ rows.push({arm,comparison:reference?'opposite-first-move-variates':'native',endTime:sim.t,phase:sim.phase,throwAt:sim.throwAt,initial,initialRng,
   events:sim.events,decisions:sim.trace.data.decisions,frames,requests,engagementStarts,rngCalls,retained,
   film:sim.frames,telemetry:sim.trace.data,elapsedSeconds:(performance.now()-start)/1000});
  console.log(JSON.stringify({arm,endTime:sim.t,events:sim.events.filter(e=>['block_contact','shed','pressure','throw','sack'].includes(e.type)),
@@ -127,12 +137,12 @@ for(const arm of reference?['candidate-retain-LT-initial']:['accepted','candidat
 PassProtector.prototype.update=nativeUpdate;
 if(!reference){assert.deepEqual(rows[0].initial,rows[1].initial);assert.deepEqual(rows[0].initialRng,rows[1].initialRng);}
 const profile=JSON.parse(readFileSync('config/baseline.json'));
-const receipt={schema:'ordinary-pass-contact-v1',commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
+const receipt={schema:'ordinary-pass-contact-v2',commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
  acceptedDevelop:base,acceptedDocsOnlyDevelop:'7d1451b2c31786e075550183a6a93bbda23da29b',sourceSha256:sourceVersion(),node:process.version,
  flags:Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),worldDefaults:profile.worldDefaults,
  testSourceSha256:hash(testSource),setupSourceSha256:hash(setupCode),acceptedMethodSha256:hash(method),
  collectorSha256:hash(readFileSync(import.meta.filename)),fixtureSha256:hash(setup('pass','full')),
- actors:rows[0].initial.map((_,i)=>({idx:i})),
+ actors:setup('pass','full').offense.map((p,i)=>({idx:i,team:'O',slot:p.slot??null,id:p.player?.id??p.id})).concat(setup('pass','full').defense.map((p,i)=>({idx:i+11,team:'D',slot:p.slot??null,id:p.player?.id??p.id}))),
  retainedReferenceSha256:referencePath?hash(readFileSync(referencePath)):null,
  qualification:'Same existing roster generation seeds21/22, strength.6, GunDoubles/FourVerts vs Over/Cover4Palms, playseed5; all22 normal. Existing recorder fixture; no new roster or game. No deliberate QB mutation.',
  fullGames:0,nativeSegments:rows.length,elapsedSeconds:(performance.now()-started)/1000};
