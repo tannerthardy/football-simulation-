@@ -62,7 +62,7 @@ function run(mode:'center'|'patch',observe:boolean){
   }
  }
  return {fingerprint:hash({bodies:w.bodies,cmds:Reflect.get(sim,'cmds'),intents:sim.intents,minds:sim.agents.map(a=>a.mind),rng:sim.rng,events:sim.events,phase:sim.phase,t:sim.t}),
-  slots:sim.agents.map(a=>a.slot),steps,predicates,climbs:sim.events.filter(e=>e.type==='block_climb'&&e.a===helper.idx),tags:[...helper.tags],released:combo.released};
+  slots:sim.agents.map(a=>a.slot),steps,predicates,phase:sim.phase,t:sim.t,climbs:sim.events.filter(e=>e.type==='block_climb'&&e.a===helper.idx),tags:[...helper.tags],released:combo.released};
 }
 const runs=(['center','patch'] as const).map(mode=>{const plain=run(mode,false),recorded=run(mode,true);assert.equal(plain.fingerprint,recorded.fingerprint);return {mode,observerNeutral:true,...recorded};}),
  firstBody=runs[0].steps.findIndex((r,i)=>r.afterHash!==runs[1].steps[i]?.afterHash),
@@ -97,9 +97,16 @@ const difference=(a:any[],b:any[])=>({position:Math.max(...a.map((q,i)=>Math.hyp
  velocity:Math.max(...a.map((q,i)=>Math.hypot(q.vel.x-b[i].vel.x,q.vel.y-b[i].vel.y))),
  spin:Math.max(...a.map((q,i)=>Math.abs(q.spin-b[i].spin))),facing:Math.max(...a.map((q,i)=>Math.abs(q.facing-b[i].facing)))}),
  localComparison={errors,law:difference(isolated.bodies,center.bodies),refinement:difference(isolated.bodies,refined.bodies)};
-writeFileSync(`${root}/first-interval.json`,JSON.stringify({source,witness,expectedIsolated,localComparison},null,2)+'\n');
+let previous=isolated.bodies;
+const refinementSeries=[12,48,192,768].map(substeps=>{
+ const a=substeps===12?center:replayKeeper(witness,'center',{substeps}),
+  b=substeps===12?isolated:substeps===48?refined:replayKeeper(witness,'patch',{groundMovement:'legacy',substeps}),
+  row={substeps,law:difference(b.bodies,a.bodies),refinement:substeps===12?null:difference(b.bodies,previous),workResidual:b.reports[0].work.residual};
+ previous=b.bodies;return row;
+});
+writeFileSync(`${root}/first-interval.json`,JSON.stringify({source,witness,expectedIsolated,localComparison,refinementSeries},null,2)+'\n');
 assert.equal(sourceVersion(),source);
 const result={source,toolSha256:createHash('sha256').update(readFileSync('scripts/diag/physics/current-contact-contract.ts')).digest('hex'),
  input:{O:31,D:32,strength:.55,seed:3,formation:'gun_wing_12',concept:'split_zone',front:'tite',coverage:'cover3',flip:false,windowSeconds:2},
- settings:{groundMovement:'legacy',handContact:'center versus patch',components:process.env.RUN_CONTACT_COMPONENTS,experimentalSolvers:'absent'},earliest,ledgers,localComparison,runs,elapsedSeconds:(performance.now()-start)/1000};
+ settings:{groundMovement:'legacy',handContact:'center versus patch',components:process.env.RUN_CONTACT_COMPONENTS,experimentalSolvers:'absent'},earliest,ledgers,localComparison,refinementSeries,runs,elapsedSeconds:(performance.now()-start)/1000};
 writeFileSync(`${root}/tite-contract.json`,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({earliest,runs:runs.map(r=>({mode:r.mode,observerNeutral:r.observerNeutral,climbs:r.climbs,released:r.released})),elapsedSeconds:result.elapsedSeconds}));
