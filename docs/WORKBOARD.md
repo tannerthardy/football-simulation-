@@ -3,6 +3,9 @@
 ## Bounded first-level collection candidate, 2026-10-15 (America/Phoenix)
 
 Run Game owns the user-assigned #66 collection correction; #67 remains separate.
+[Draft PR #69](https://github.com/tannerthardy/football-simulation-/pull/69)
+is the independent accepted-base controller review; final handoffs are posted
+to Physics #66 and Integration/Do-It-All #65.
 Accepted-base code/test pin `3b4ea698819074640626a215bf2f06af2735f25a` on
 `codex/helper-collection-current`, from develop `8c891f4`; source
 `f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67`.

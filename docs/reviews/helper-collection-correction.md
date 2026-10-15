@@ -1,5 +1,7 @@
 # Collect the available first-level surface
 
+[Draft PR #69](https://github.com/tannerthardy/football-simulation-/pull/69).
+
 **Candidate for independent controller review.** Both saved lost-contact sides
 now establish loaded helper contact by2.60s and retain a reachable upright
 connection through3.40s, without the former-owner collision. Both successful
