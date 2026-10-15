@@ -43,3 +43,6 @@ data/reviews/**/*.txt
 !data/reviews/current/accepted-audit-handoff/nfl-support-geometry.json
 !data/reviews/current/accepted-audit-handoff/source-preservation.json
 !data/reviews/current/accepted-audit-handoff/reference-validation.json
+!data/reviews/current/accepted-audit-handoff/artifact-publication.json
+!data/reviews/current/accepted-audit-handoff/coordination.json
+!data/reviews/current/accepted-audit-handoff/run-artifact-publication.json

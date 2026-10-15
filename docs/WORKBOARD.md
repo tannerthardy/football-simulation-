@@ -14,6 +14,22 @@ general coverage-motion packet or AMF/NFL query expansion. Existing NFL and
 isolated AMF evidence stays byte-identical. Missing discarded request stages
 belong to Flex's passive observer; final intents cannot reconstruct them.
 
+Delivered: immutable data-only artifact30285db contains the exact four raw cases
+plus original manifest/receipts (2,543,148bytes, SHA6082578e...). Fresh shallow
+remote fetch and all four native hashes verified; original40.56MB archive and
+all48 members verified. No raw files enter the simulator source branch. Run's named A018/A030 plus
+A027/A042 contrast is also delivered in data-only artifact2c52a3d (1,947,618bytes,
+SHA9941dd11...), independently shallow-fetched and original hashes verified;
+direct #75 comment6203533533. Neither artifact tree is a runtime candidate. Flex has
+fetched the215KB named-window reference; its new stage capture reports spacing
+attribution, with source/prefix agreement still owned by Flex. Direct consumer
+posts: #75 comments6203405043/6203410202/6203472804. NFL fixed-ID geometry uses
+completed return only;11 completed NFL/AMF files match410a369 unchanged.
+Integration coordination #78 comment6203477642 reconciles latest6203355802:
+one frozen48 comparison after a meaningful accepted batch (90s/5s caps); the
+four-game packet is CEO-triggered separately. No evaluation starts now, no new
+simulation or raw NFL query. [Full delivery and comparison contract](reviews/accepted-audit-consumer-handoff-2026-10-15.md).
+
 
 ## Accepted-build broad football diagnosis — 2026-10-15
 

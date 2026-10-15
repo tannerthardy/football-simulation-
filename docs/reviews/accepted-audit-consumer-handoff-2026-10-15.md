@@ -6,8 +6,9 @@ until a consumer names the comparison, source, actors, phase and opposing contro
 There is no new simulation, raw NFL query, expanded filter or AMF analysis here.
 
 Freshly fetched develop is `90edc52530caa71efdebf257f17d954a8a629ea0` (#78),
-matching Integration's canonical queue publication
-`4bca2313e89b9c05142de192deffad54d6130305`. The accepted engine source is
+matching Integration's canonical queue (initial publication
+`4bca2313e89b9c05142de192deffad54d6130305`, latest scope reconciliation
+`255d1c4d3b82b51805d1ae17f8084c53919e5d08`). The accepted engine source is
 `7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b`.
 This research branch deliberately remains on the saved audit runtime
 `8ca8deebe4afa91c3021bdd119bed8976cf00e47`, source
@@ -41,15 +42,36 @@ manifest still declares 48 plays; only four native files are present. Do not run
 the original 48-file validator on the four-file subset and label the other 44
 plays invalid or excluded. Preserve existing output before extraction.
 
-**Raw asset delivery is blocked.** `gh api .../releases` receives `Forbidden` at
-`api.github.com`; that host is absent from the configured restricted allowlist, and no
-supported artifact-upload tool is exposed. No release or asset was created.
-The complete archives remain outside the repository. An owner with an allowed
-artifact uploader needs only the 2.54-MB subset to unblock this investigation;
-there is no reason to download the NFL archive or rerun native cases. Record the
-receiving asset URL, expected byte count/hash and a recipient verification receipt.
+**Raw delivery is now verified through the existing Git remote.** The release API
+initially returned `Forbidden` at `api.github.com`, which is absent from the
+configured restricted allowlist; no release asset was created. The working Git
+transport provides an isolated named artifact tree, outside the simulation source
+branch: [immutable four-case archive](https://github.com/tannerthardy/football-simulation-/blob/30285db48245e662f9785c331820b7564ea02f9b/accepted-8ca8dee-flex-A008-A020-A032-A044.tar.gz),
+[artifact receipt](https://github.com/tannerthardy/football-simulation-/blob/30285db48245e662f9785c331820b7564ea02f9b/receipt.json).
 
-Meanwhile, a **215,187-byte fetchable reference** is published:
+Ref `codex/accepted-audit-flex-evidence-v1`, commit
+`30285db48245e662f9785c331820b7564ea02f9b`, contains **one commit and three files**
+(archive,receipt,README). It is data, not a runtime/dependency branch; never merge
+this tree into develop. Preserve the immutable artifact/ref with the audit;
+there is no automatic deletion policy. A fresh shallow remote fetch verified the
+received byte count/hash and all four original native member hashes in1.08s.
+[Remote receipt](../../data/reviews/current/accepted-audit-handoff/artifact-publication.json).
+The 40.56-MB full archive remains outside the source repository; this2.54-MB
+transfer supplies every original byte requested by the immediate consumer.
+
+```sh
+git fetch --no-tags --depth=1 origin codex/accepted-audit-flex-evidence-v1
+git show 30285db48245e662f9785c331820b7564ea02f9b:accepted-8ca8dee-flex-A008-A020-A032-A044.tar.gz > /tmp/accepted-audit-flex.tar.gz
+sha256sum /tmp/accepted-audit-flex.tar.gz
+mkdir -p out/audit-four-received
+tar -xzf /tmp/accepted-audit-flex.tar.gz -C out/audit-four-received
+```
+
+Verify the subset SHA above before extraction. Retain any prior extraction and
+compare original native member hashes against the included summary. No original
+runtime history, full NFL archive or native recollection is needed.
+
+A **215,187-byte fetchable reading reference** is also published:
 [flex-windows.json.gz](../../data/reviews/current/accepted-audit-handoff/flex-windows.json.gz),
 SHA-256 `11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191`.
 This is a compact selected-window extract, explicitly not the complete original
@@ -64,6 +86,39 @@ Windows: A008 1.80–3.35 s; A020 1.95–3.75; A032 2.00–4.30; A044 1.95–3.4
 Use `git show <published-handoff-commit>:data/reviews/current/accepted-audit-handoff/flex-windows.json.gz`
 after fetching this branch; Python `gzip.open`/`json.load` reads it without any
 engine import or simulation. Full raw member hashes remain attached to each case.
+
+
+## Run's now-named departure comparison
+
+Integration6203355802 names **A018/A030 with useful access contrasts**. That
+specific comparison now also has an exact raw transfer, independently of the
+Flex subset:
+
+- Cases **A018,A027,A030,A042**, complete original bytes plus full source manifest,
+  summary and launcher receipts.
+- [Archive](https://github.com/tannerthardy/football-simulation-/blob/2c52a3d100978cde17905102e574f7d169b19aa7/accepted-8ca8dee-run-A018-A027-A030-A042.tar.gz)
+  **1,947,618 bytes**, SHA-256
+  `9941dd1103186ff98e1d726971650138bbb1aaeb1ff763c1f243835714af2e77`.
+- Ref `codex/accepted-audit-run-evidence-v1`, immutable data-only commit
+  `2c52a3d100978cde17905102e574f7d169b19aa7`. Same shallow-fetch/git-show recipe
+  as above with this ref/commit/filename. Never merge the artifact tree; retain
+  it with the audit.
+- [Publication and fresh remote verification](../../data/reviews/current/accepted-audit-handoff/run-artifact-publication.json):
+  one artifact commit, received size/hash and all four original native case hashes
+  checked. Packaging2.50s; independent remote validation0.91s. Zero simulations.
+
+[Direct Run/Catching delivery](https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203533533).
+A027 retains achieved Y/LB_M work, and A042 the useful climb/crease and eventual
+supported defensive finish. These are contrasts for the unachieved A018/A030
+jobs, not merely low-gain/high-gain bins. They also expose four of the original
+Quarters support sequences to Catching without starting a general coverage packet.
+#78 changed RunBlocker, so compatibility with the old8ca8dee input/trajectory must
+be checked before current-build causal claims.
+
+Together the two transfers expose eight original cases, selected for named
+mechanisms/controls. They do not replace the48-case panel or exclude its other40
+members. Package hashes are separate from original raw member hashes and from
+the full40.56-MB archive. No new cohort or outcome search was created.
 
 ## Flex owns the missing-stage capture
 
@@ -158,26 +213,52 @@ uses only stored geometry/IDs/event times. An NFL stored-speed/direction study
 would require Catching's minimal source-row export for named plays, not a new
 full archive download. No such new query was launched.
 
-## One post-batch checkpoint with Integration
+## One post-batch panel comparison with Integration
 
-Measurement claims the single evidence collector/publication role for the
-[existing Integration plan](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618).
-The proposed default is that already prepared **four-game, one accepted-arm**
-checkpoint, not a second 48-snap recollection. Integration freezes the actual
-accepted pin/settings; CEO's question/spend acknowledgement remains pending in
-the published handoff. Ceiling: four original fixtures/seeds701–704,240 launcher
-seconds total/60 per game, unchanged424 players, no baseline rerun/extra seeds or
-automatic retries. No evaluation is launched by this evidence-delivery task.
+The latest [Integration scope](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203355802)
+supersedes the earlier generic next-game timing. Measurement acknowledged the
+updated split [directly on #78](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203477642):
 
-One comparison publication should include each team's mechanism assessment,
-relevant opportunity/exposure counts, adverse/clean examples, failed/unrun tail
-and the exact collection/measurement settings. Historical experimental games
-retain their source and are context, not an isolated #69 before/after. The
-48-snap audit supplies named mechanism questions and successful controls; its
-selected incidence cannot become the denominator for four-game statistics.
-Any request for a matched repeat of the 48 instead must be explicitly reconciled
-with Integration's single evaluation plan before collection; do not silently run
-both. Measurement does not repeat Integration's combined suite.
+1. After a meaningful **accepted controller batch**, Integration/Measurement
+   coordinate **one comparison on the frozen48-case panel**, reusing the saved
+   baseline where compatible. Existing90-second batch/five-second-per-case ceiling,
+   same four lineups/calls/seeds, no baseline rerun or extra seeds. Integration
+   freezes the actual accepted source/settings/timing; Measurement owns the single
+   collector and comparison publication. No comparison starts from this handoff.
+2. The separately prepared four-game packet remains available **only for a
+   CEO-called game-context evaluation**: original fixtures/seeds701–704,424 players,
+   four games/240 launcher seconds/60s per game. It is not an automatic companion
+   to the48 comparison and does not replace it by default. Neither is a per-patch gate.
+
+At the accepted freeze, verify source/input/toolchain/settings compatibility and
+publish the measurement hash before collection. A future collector adaptation to
+admit the new accepted source must preserve the original48 input hashes, events,
+recording and measurement definitions; the historical collector's8ca8dee guard
+must not be silently disabled. Save the new source/measurement receipt separately.
+Use the existing combined engine verification where compatible, never a contributor
+shared-suite repeat. Complete/invalid/censored/unrun cases remain explicit, with
+no replacement cases or favorable stopping.
+
+Compare the same case IDs and assess **offense and defense independently**:
+installed/available job, cue and age, original request if actually recorded,
+modifiers, achieved velocity, useful shielding/arrival and contact timing, legitimate
+opponent win, concern resolved/new/adverse/unknown. Gain is context, not the verdict.
+Keep24run/24called-pass planned exposure and actual possession/contact opportunity
+denominators separate. Preserve category overlaps; do not require the original9/8/2
+counts to remain or call their changes simulator-wide defect rates. A changed
+request can legitimately change later reactions and RNG histories, so an ending
+alone does not establish the cause. No post-batch collection has run here.
+
+Flex reports that it fetched the compact reference and resolved a new command-stage
+attribution in [6203420541](https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203420541):
+A020's original man request survives containment/contact/bond; spacing chooses the
+zero request. It reports observer/plain motion/events/RNG and perception/draw parity
+for four prefixes. **Exact source/observer pins and saved-prefix agreement remain
+its evidence to publish/validate**; this report is not a retrospective inference
+from old final intents or Measurement's independent certification of that capture.
+The full original raw cases are now directly delivered in
+[6203472804](https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203472804).
+The general coverage-motion packet remains deferred.
 
 ## Reproduction and preservation
 

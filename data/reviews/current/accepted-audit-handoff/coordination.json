@@ -1,0 +1,45 @@
+{
+  "sourceEvidenceCommit": "c98f10a898bece24ed8e5d67c98c5abdb09c5657",
+  "artifactCommit": "30285db48245e662f9785c331820b7564ea02f9b",
+  "consumers": {
+    "Flex_saved_windows": "https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203405043",
+    "Catching_NFL_geometry": "https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203410202",
+    "Flex_original_raw_cases": "https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203472804",
+    "Integration_final48_comparison": "https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203477642",
+    "Run_named_departure_comparison": "https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203533533"
+  },
+  "latestIntegrationScope": "https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203355802",
+  "consumerAcknowledgement": {
+    "Flex_fetched_reference": true,
+    "source": "https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203420541",
+    "Flex_original_saved_prefix_agreement": "pending consumer publication; raw bytes now available",
+    "Flex_new_stage_attribution": "consumer reports spacing producer; not independently certified from final-only archive"
+  },
+  "evaluation": {
+    "default": "one frozen48-case comparison after meaningful accepted controller batch",
+    "batchSeconds": 90,
+    "caseSeconds": 5,
+    "savedBaselineReused": true,
+    "separateFourGamePlan": "CEO-called context evaluation only; not automatic companion",
+    "newPanelRuns": 0,
+    "newGames": 0,
+    "rawNFLQueries": 0
+  },
+  "deferred": "general coverage-motion packet until owner names comparison",
+  "initialReleaseApiBlockResolvedForRawDelivery": "dedicated one-commit data-only Git artifact; verified fresh shallow remote fetch",
+  "RunArtifactCommit": "2c52a3d100978cde17905102e574f7d169b19aa7",
+  "namedTransfers": {
+    "Flex": [
+      "A008",
+      "A020",
+      "A032",
+      "A044"
+    ],
+    "Run": [
+      "A018",
+      "A027",
+      "A030",
+      "A042"
+    ]
+  }
+}

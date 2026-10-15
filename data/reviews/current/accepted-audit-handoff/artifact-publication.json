@@ -1,0 +1,64 @@
+{
+  "ref": "refs/heads/codex/accepted-audit-flex-evidence-v1",
+  "artifactCommit": "30285db48245e662f9785c331820b7564ea02f9b",
+  "tree": "6fce0e87f46b3064a865605751dc91013ad50d77",
+  "blobs": {
+    "accepted-8ca8dee-flex-A008-A020-A032-A044.tar.gz": "eebc8979201ff8b3fdddca23e7da65be70ba4e75",
+    "receipt.json": "c81a759a76d3021b36a9f2a0980c52c759280308",
+    "README.md": "d2286b8ef4bfa0fc7df4b146ff3f5539c44d2f36"
+  },
+  "bytes": 2543148,
+  "subsetSha256": "6082578ebf476e4975f51585c958eea31894a0cfc2aa03fe1ac271e31804a5cc",
+  "runtimeSourceTreeChanged": false,
+  "retention": "Preserve this immutable commit/ref with the audit evidence; no automatic deletion. Never merge this data-only tree into develop.",
+  "verifiedRemoteCommit": "30285db48245e662f9785c331820b7564ea02f9b",
+  "freshShallowFetch": true,
+  "artifactHistoryCommits": 1,
+  "receivedBytes": 2543148,
+  "receivedSubsetSha256": "6082578ebf476e4975f51585c958eea31894a0cfc2aa03fe1ac271e31804a5cc",
+  "receivedMembers": [
+    {
+      "path": "accepted-broad-audit/cases/A008.json",
+      "bytes": 10624983,
+      "sha256": "6d068579a58470c9d0de710bd4d9b094d4723e1b2ae02b440d3cbd14200cbdd4"
+    },
+    {
+      "path": "accepted-broad-audit/cases/A020.json",
+      "bytes": 16777002,
+      "sha256": "f504c46e2844555aa3621a1cca49618951afe7768b8060b2da7e526848613db8"
+    },
+    {
+      "path": "accepted-broad-audit/cases/A032.json",
+      "bytes": 13678159,
+      "sha256": "8bc7691123387e127bc8b92e39a42eff21fcd9aae6a290cdee2f0c62292c25e4"
+    },
+    {
+      "path": "accepted-broad-audit/cases/A044.json",
+      "bytes": 36353213,
+      "sha256": "385853b69c07e1188585874dabb82fba99e5cdd10843238c0f45fd1a6b6cbbd0"
+    },
+    {
+      "path": "accepted-broad-audit/manifest.json",
+      "bytes": 2657415,
+      "sha256": "c4285b3bd9ab6834b3849fd76be0bc081629687048b6a751597d24007fb1b416"
+    },
+    {
+      "path": "accepted-broad-audit/plan-receipt.json",
+      "bytes": 2230,
+      "sha256": "13bdeb94e535eb987922795bfa7dab0afffffe27cd23dcc52e273fd13dc95139"
+    },
+    {
+      "path": "accepted-broad-audit/run-receipt.json",
+      "bytes": 2400,
+      "sha256": "a623ce28b16985e9a3b4e63841b01e472fe2a903c807f265bedbf726d66b3f00"
+    },
+    {
+      "path": "accepted-broad-audit/summary.json",
+      "bytes": 367908,
+      "sha256": "161b9916080f4fe9a519d28fbbdc0acca61d3dc1d52d213ee0db7afa2f4b88cc"
+    }
+  ],
+  "wallSeconds": 1.083420818000377,
+  "url": "https://github.com/tannerthardy/football-simulation-/blob/30285db48245e662f9785c331820b7564ea02f9b/accepted-8ca8dee-flex-A008-A020-A032-A044.tar.gz",
+  "rawUrl": "https://github.com/tannerthardy/football-simulation-/raw/30285db48245e662f9785c331820b7564ea02f9b/accepted-8ca8dee-flex-A008-A020-A032-A044.tar.gz"
+}
