@@ -1,5 +1,26 @@
 # Current work ownership
 
+## Duo release admission — Run Game candidate for independent review
+
+Code/tests freeze aebb0abb3a9e96ec6561274b9fdd4e8e76ce7173 on
+codex/duo-surface-release, based on accepted7eb2554 (#82). Protected
+src/tests/settings are byte-identical to tested8d4b868; source dcebbee4.
+Only readJoinedCombination17lines + seven native-hook controls in the existing
+combo-transfer fixture. Retain an obstructed Duo double when the acquired
+backer stays on the partner's half; preserve original security/cadence/forces.
+66 focused checks/typecheck pass. A030 improves real first/second-level
+protection through faster RB arrival; A018 improves surface but LB still wins
+later. WZ A027 and preselected Under front entire histories/results exact.
+No movement/carrier/physics/default or experimental policy edit. Integration
+owns independent review and final exact combined suite/adoption; candidate is
+not self-approved. Historical4ded6b6 remains the historical comparison.
+[Immutable report, raw receipts, pins and limitations](https://github.com/tannerthardy/football-simulation-/blob/70ed238a2246cd89d3c4108d647245baf5ff70bb/docs/reviews/combo-football-surface.md).
+Evidence branch codex/combo-football-surface must not be merged as the feature.
+Eight short native executions8.115282s, all launchers23.393741s incl expected
+red/initial checks; no games/new rosters/full suite. Do-It-All retains shared
+spacing/carrier/local-approach work, Physics sole shared-solver ownership.
+
+
 ## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
