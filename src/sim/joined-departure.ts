@@ -4,7 +4,7 @@
 import type { Vec2 } from '../core/vec.js';
 import type { Body } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
-import type { Intent } from '../physics/world.js';
+import { CONTACT_SCALE, type Intent } from '../physics/world.js';
 
 export interface DeparturePicture { pos: Vec2; vel: Vec2; radius: number }
 
@@ -17,7 +17,7 @@ export function checkJoinedDeparture(body: Body, command: Intent,
     let x = body.pos.x-peer.pos.x, y = body.pos.y-peer.pos.y;
     // Existing touching/overlap is not invented separation. A free exit may
     // move out of it, but may not rely on deepening it to clear the surface.
-    const bound = Math.min(body.profile.radius+peer.radius, Math.hypot(x,y));
+    const bound = Math.min(CONTACT_SCALE*(body.profile.radius+peer.radius), Math.hypot(x,y));
     for (const sample of path) {
       const nx = sample.pos.x-peer.pos.x-peer.vel.x*sample.t;
       const ny = sample.pos.y-peer.pos.y-peer.vel.y*sample.t;

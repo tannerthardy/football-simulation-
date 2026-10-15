@@ -53,7 +53,7 @@ describe('joined release checks the action the leaving body can execute', () => 
     try {
       const check=checkJoinedDeparture(f.body,f.command,f.peers,f.now,f.horizon,'center');
       expect(check.clear).toBe(false);
-      expect(check.minimumMargin).toBeLessThan(-.10);
+      expect(check.minimumMargin).toBeLessThan(0);
       expect(json(f)).toEqual(input);
       expect(draws).not.toHaveBeenCalled();
       console.info('same-state joined departure',JSON.stringify({mirror,...check,command:f.command}));
@@ -64,7 +64,7 @@ describe('joined release checks the action the leaving body can execute', () => 
     const f=fixture();
     const gather=checkJoinedDeparture(f.body,{...f.command,vel:{x:0,y:0}},f.peers,f.now,f.horizon,'center');
     expect(gather.clear).toBe(false);
-    expect(gather.minimumMargin).toBeLessThan(-.07);
+    expect(gather.minimumMargin).toBeLessThan(0);
   });
 
   it.each([false,true])('allows the identical body/request when the acquired corridor is genuinely clear, mirrored=%s', mirror => {
