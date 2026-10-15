@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Bounded mesh lateral approach research — 2026-10-15
+
+Do-It-All owns `scripts/diag/mesh-lateral-approach.ts` and its new evidence/report
+on `codex/mesh-lateral-approach`, deliberately pinned to #81 host6e19ad2
+(accepted develop7eb2554 plus passive observer and pending f27456b admission).
+Keep #81's production correction and review head stable. No production spacing,
+coverage, blocking or physics edits in this research. Run/Catching/Integration
+were notified on #76/#75/#82 before edits; Run's blocking/collection boundaries
+and Catching's coverage objective remain theirs.
+
+Question: can one geometry-derived local lateral approach preserve useful
+motion through A044's first forecast conflict with naturally reacting defenders?
+Reuse exact saved current-candidate/reference captures, test one bounded option
+and A008 control; move earlier only if the first stage is physically too late.
+Both current A044 arms drop, so no postcatch pursuit benefit is measurable.
+Historical legitimate Z/CB blocking stays separate. No full route certificate,
+new perception, private teammate commands, body/physics changes or angle sweep.
+
 ## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
