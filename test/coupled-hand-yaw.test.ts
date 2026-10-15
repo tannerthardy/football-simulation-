@@ -54,7 +54,7 @@ describe('bounded simultaneous passive hands and legacy ground yaw',()=>{
  });
  it('returns to the split path without stale yaw when normal loading becomes active',()=>{
   const bodies=structuredClone(input.beforeBodies),world=new World(bodies,{handContact:'patch',groundMovement:'legacy',groundYawCoupling:'hands',substeps:12});world.time=input.t;
-  world.joints=input.jointInputs.map(({a,b,actor,...rest})=>({...rest,a:bodies[a],b:bodies[b],actor:bodies[actor??a]}));
+  world.joints=input.jointInputs.map(({a,b,actor,holder,...rest})=>({...rest,a:bodies[a],b:bodies[b],actor:bodies[actor??a],...(holder===undefined?{}:{holder:bodies[holder]})}));
   world.step(input.intents,input.dt);
   const normal=world.joints[0];if(normal.kind!=='hands')throw Error('hands fixture');normal.extension=2;
   const copy=structuredClone(bodies),baseline=new World(copy,{handContact:'patch',groundMovement:'legacy',substeps:12});baseline.time=world.time;
@@ -68,7 +68,7 @@ describe('bounded simultaneous passive hands and legacy ground yaw',()=>{
    if(kind==='no-hand')for(const j of w.jointInputs)j.push=j.hold=j.steer=0;
    if(kind==='free')w.intents=w.beforeBodies.map(()=>({vel:{x:0,y:0},free:true}));
    if(kind==='normal')w.jointInputs[0].extension=2;
-   if(kind==='material')w.jointInputs[0].contact={on:'b',local:{x:.1,y:0}};
+   if(kind==='material')w.jointInputs[0]={...w.jointInputs[0],contact:{on:'b',local:{x:.1,y:0}}};
    if(kind==='multiple'){const extra=structuredClone(w.beforeBodies[1]);extra.pos.y+=8;w.beforeBodies.push(extra);w.intents.push({vel:{x:0,y:0},free:true});w.jointInputs.push({...w.jointInputs[0],a:1,b:2});}
    if(kind==='torso')w.beforeBodies[1].pos={x:w.beforeBodies[0].pos.x+.4,y:w.beforeBodies[0].pos.y};
    if(kind==='falling'){w.beforeBodies[1].support!.state='falling';w.beforeBodies[1].support!.since=w.t;}
