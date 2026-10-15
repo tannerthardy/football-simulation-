@@ -1,0 +1,141 @@
+{
+  "schema": "rb-local-traffic-compatibility-v1",
+  "acceptedBase": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "candidate": "289b655ae1d9a1d578cb285f92ed283c1144c56a",
+  "sourceSha256": "9d42f362a9b96ecc93418037554edc0f6e1e8c0c179f65371ea14835e7735ab2",
+  "settings": "44 baseline flags/components=1; center hands/legacy ground, no defaults changed",
+  "newOpeningExecutions": 20,
+  "finalCapture": {
+    "new": 4,
+    "cached": 4
+  },
+  "completeGames": 0,
+  "gamePrefixes": 0,
+  "freshRosters": 0,
+  "receipts": [
+    {
+      "file": "receipts/blocked-corrected.receipt.json",
+      "commit": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+      "sourceSha256": "ca498cc3f1794e18e6d25bd96e1335a2967ecb22d5536b822d06f1c1170f2aa4",
+      "exitCode": 0,
+      "seconds": 0.9465948519999999
+    },
+    {
+      "file": "receipts/blocked.receipt.json",
+      "commit": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+      "sourceSha256": "ca498cc3f1794e18e6d25bd96e1335a2967ecb22d5536b822d06f1c1170f2aa4",
+      "exitCode": 1,
+      "seconds": 0.9187119029999999
+    },
+    {
+      "file": "receipts/final-corrected-focused.receipt.json",
+      "commit": "8d9632fecf11eaf4a3a425327a2e3e2da5aaf271",
+      "sourceSha256": "62ecd2eb369cedc0200d85007eacdcd8bf822ee418dd681a02e659fa9ee0f220",
+      "exitCode": 0,
+      "seconds": 0.9743933050000001
+    },
+    {
+      "file": "receipts/final-corrected-typecheck.receipt.json",
+      "commit": "8d9632fecf11eaf4a3a425327a2e3e2da5aaf271",
+      "sourceSha256": "62ecd2eb369cedc0200d85007eacdcd8bf822ee418dd681a02e659fa9ee0f220",
+      "exitCode": 0,
+      "seconds": 12.051275828999998
+    },
+    {
+      "file": "receipts/final-focused.receipt.json",
+      "commit": "740af7320430f186137f96f3d09521c386aa6fbf",
+      "sourceSha256": "62ecd2eb369cedc0200d85007eacdcd8bf822ee418dd681a02e659fa9ee0f220",
+      "exitCode": 1,
+      "seconds": 3.420316913
+    },
+    {
+      "file": "receipts/final-native.receipt.json",
+      "commit": "8d9632fecf11eaf4a3a425327a2e3e2da5aaf271",
+      "sourceSha256": "62ecd2eb369cedc0200d85007eacdcd8bf822ee418dd681a02e659fa9ee0f220",
+      "exitCode": 0,
+      "seconds": 4.156833518
+    },
+    {
+      "file": "receipts/final-typecheck.receipt.json",
+      "commit": "740af7320430f186137f96f3d09521c386aa6fbf",
+      "sourceSha256": "62ecd2eb369cedc0200d85007eacdcd8bf822ee418dd681a02e659fa9ee0f220",
+      "exitCode": 0,
+      "seconds": 11.496117488999998
+    },
+    {
+      "file": "receipts/focused.receipt.json",
+      "commit": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+      "sourceSha256": "ca498cc3f1794e18e6d25bd96e1335a2967ecb22d5536b822d06f1c1170f2aa4",
+      "exitCode": 0,
+      "seconds": 2.5431867519999996
+    },
+    {
+      "file": "receipts/native.receipt.json",
+      "commit": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+      "sourceSha256": "ca498cc3f1794e18e6d25bd96e1335a2967ecb22d5536b822d06f1c1170f2aa4",
+      "exitCode": 0,
+      "seconds": 4.486303611
+    },
+    {
+      "file": "receipts/observed-focused.receipt.json",
+      "commit": "b788273c51b96069b4e56d68788d374a449bf30c",
+      "sourceSha256": "78d9b7dbae505a21ef3e81483ec77e50036823a4408a2f9c30ec547942e0bf0a",
+      "exitCode": 0,
+      "seconds": 0.9455561819999999
+    },
+    {
+      "file": "receipts/probe.receipt.json",
+      "commit": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+      "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+      "exitCode": 0,
+      "seconds": 0.3123066279999999
+    },
+    {
+      "file": "receipts/reviewed-focused.receipt.json",
+      "commit": "289b655ae1d9a1d578cb285f92ed283c1144c56a",
+      "sourceSha256": "9d42f362a9b96ecc93418037554edc0f6e1e8c0c179f65371ea14835e7735ab2",
+      "exitCode": 0,
+      "seconds": 2.614984747
+    },
+    {
+      "file": "receipts/reviewed-native.receipt.json",
+      "commit": "289b655ae1d9a1d578cb285f92ed283c1144c56a",
+      "sourceSha256": "9d42f362a9b96ecc93418037554edc0f6e1e8c0c179f65371ea14835e7735ab2",
+      "exitCode": 0,
+      "seconds": 3.4473565139999995
+    },
+    {
+      "file": "receipts/reviewed-typecheck.receipt.json",
+      "commit": "289b655ae1d9a1d578cb285f92ed283c1144c56a",
+      "sourceSha256": "9d42f362a9b96ecc93418037554edc0f6e1e8c0c179f65371ea14835e7735ab2",
+      "exitCode": 0,
+      "seconds": 11.062036914
+    },
+    {
+      "file": "receipts/typecheck.receipt.json",
+      "commit": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+      "sourceSha256": "ca498cc3f1794e18e6d25bd96e1335a2967ecb22d5536b822d06f1c1170f2aa4",
+      "exitCode": 0,
+      "seconds": 11.084995286
+    }
+  ],
+  "launcherSeconds": 70.460970443,
+  "initialPhysicalTapesEqualFinal": true,
+  "optinPhysicalTapesEqualFinal": true,
+  "duplicateTapeOmission": "Initial/opt-in complete frames, bodies, commands and reports equal final8 tapes; final native.json.gz preserves every physical frame. Initial summaries and all launcher receipts are retained, redundant raw packets remain in local out/rb-local-traffic. Initial cache raw SHA256 is recorded in final packet.",
+  "checkFailures": [
+    {
+      "receipt": "receipts/blocked.receipt.json",
+      "cause": "New blocked-control assertion incorrectly demanded zero contact. Existing yielding produced one brush; corrected contract requires less actual impulse than charging, no passage through the wall and upright support. Runtime unchanged."
+    },
+    {
+      "receipt": "receipts/final-focused.receipt.json",
+      "cause": "No-opt-in test observer supplied only RB-owned cues, then mistakenly updated the unrelated QB; absent RB cue threw. Mark QB inertial/free in this spacing-only control. Runtime unchanged."
+    }
+  ],
+  "reconstructionLimits": [
+    "Saved calls/players/post-constructor physical bodies and RNG, current constructor recognition/scouting in both arms; not an exact original game replay.",
+    "No mid-play state reset, no future-frame or private intent supplied to any controller.",
+    "Default accepted center contact; no experimental physics."
+  ]
+}

@@ -1,0 +1,524 @@
+{
+  "schema": "rb-local-traffic-coupled-v1",
+  "fixtureSha256": "10454c0f5e735e683e208597a3f009e0a11d65197c73a6b6bc80cd03ef79ecc0",
+  "collectorSha256": "b39a943a20f77ece7e9f0a2e776a7cd713bef08363d82d559cc251fe5eb2062e",
+  "node": "v22.23.3",
+  "comparisons": [
+    {
+      "play": 15,
+      "call": "I-Form Twins — Draw",
+      "initialStatesEqual": true,
+      "allFramesEqual": false,
+      "firstDifference": {
+        "t": 2.55,
+        "sameBodies": true,
+        "actors": [
+          6
+        ],
+        "old": {
+          "vel": {
+            "x": 0.06503400381141144,
+            "y": 1.548879033832696
+          },
+          "cutSkill": 1.175,
+          "squeeze": 0
+        },
+        "next": {
+          "vel": {
+            "x": 6.2244769343726585,
+            "y": -0.1877522974200247
+          },
+          "cutSkill": 1.175,
+          "squeeze": 0
+        },
+        "raw": {
+          "vel": {
+            "x": 6.2244769343726585,
+            "y": -0.1877522974200247
+          },
+          "cutSkill": 1.175,
+          "squeeze": 0
+        }
+      },
+      "before": {
+        "end": 3.25,
+        "censored": false,
+        "los": null,
+        "spacingSlowSeconds": 0.35,
+        "spacingStopSeconds": 0,
+        "rbTeammateContacts": 0,
+        "rbTeammateImpulse": 0,
+        "offensiveNormalImpulse": 3957.17153946011,
+        "rbPosition": {
+          "x": 58.36566836318265,
+          "y": 28.466537434893517
+        },
+        "rbSpeed": 1.1740070628690107,
+        "support": "down",
+        "events": [
+          {
+            "t": 2.3,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 59.66,
+              "y": 28.91
+            }
+          },
+          {
+            "t": 2.6,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 11,
+            "pos": {
+              "x": 58.4,
+              "y": 29.13
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.8,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 58.44,
+              "y": 28.98
+            },
+            "note": "legs"
+          },
+          {
+            "t": 3.2,
+            "type": "tackle",
+            "a": 11,
+            "b": 6,
+            "pos": {
+              "x": 58.25,
+              "y": 28.97
+            }
+          }
+        ]
+      },
+      "after": {
+        "end": 3.25,
+        "censored": false,
+        "los": null,
+        "spacingSlowSeconds": 0.3,
+        "spacingStopSeconds": 0,
+        "rbTeammateContacts": 0,
+        "rbTeammateImpulse": 0,
+        "offensiveNormalImpulse": 3957.17153946011,
+        "rbPosition": {
+          "x": 58.34341361154216,
+          "y": 28.528500867442304
+        },
+        "rbSpeed": 1.0428617095146133,
+        "support": "down",
+        "events": [
+          {
+            "t": 2.3,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 59.66,
+              "y": 28.91
+            }
+          },
+          {
+            "t": 2.6,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 11,
+            "pos": {
+              "x": 58.43,
+              "y": 29.12
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.8,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 58.46,
+              "y": 29
+            },
+            "note": "legs"
+          },
+          {
+            "t": 3.2,
+            "type": "tackle",
+            "a": 11,
+            "b": 6,
+            "pos": {
+              "x": 58.2,
+              "y": 29.02
+            }
+          }
+        ]
+      }
+    },
+    {
+      "play": 19,
+      "call": "Singleback Ace — Outside Zone",
+      "initialStatesEqual": true,
+      "allFramesEqual": true,
+      "firstDifference": null,
+      "before": {
+        "end": 3.5,
+        "censored": true,
+        "los": 2.5,
+        "spacingSlowSeconds": 0,
+        "spacingStopSeconds": 0,
+        "rbTeammateContacts": 0,
+        "rbTeammateImpulse": 0,
+        "offensiveNormalImpulse": 1742.5668659215205,
+        "rbPosition": {
+          "x": 32.082195960836486,
+          "y": 32.31590405604788
+        },
+        "rbSpeed": 6.2562645573615185,
+        "support": "up",
+        "events": [
+          {
+            "t": 1.6,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 21.96,
+              "y": 25.95
+            }
+          },
+          {
+            "t": 3.3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 16,
+            "pos": {
+              "x": 31.11,
+              "y": 31.95
+            },
+            "note": "grasp"
+          }
+        ]
+      },
+      "after": {
+        "end": 3.5,
+        "censored": true,
+        "los": 2.5,
+        "spacingSlowSeconds": 0,
+        "spacingStopSeconds": 0,
+        "rbTeammateContacts": 0,
+        "rbTeammateImpulse": 0,
+        "offensiveNormalImpulse": 1742.5668659215205,
+        "rbPosition": {
+          "x": 32.082195960836486,
+          "y": 32.31590405604788
+        },
+        "rbSpeed": 6.2562645573615185,
+        "support": "up",
+        "events": [
+          {
+            "t": 1.6,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 21.96,
+              "y": 25.95
+            }
+          },
+          {
+            "t": 3.3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 16,
+            "pos": {
+              "x": 31.11,
+              "y": 31.95
+            },
+            "note": "grasp"
+          }
+        ]
+      }
+    },
+    {
+      "play": 32,
+      "call": "Pistol Doubles — Wide Zone",
+      "initialStatesEqual": true,
+      "allFramesEqual": false,
+      "firstDifference": {
+        "t": 2.35,
+        "sameBodies": true,
+        "actors": [
+          6
+        ],
+        "old": {
+          "vel": {
+            "x": 3.282476668196243,
+            "y": -5.414141634136531
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "next": {
+          "vel": {
+            "x": 4.025554529384797,
+            "y": -8.71591370783977
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "raw": {
+          "vel": {
+            "x": 4.025554529384797,
+            "y": -8.71591370783977
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        }
+      },
+      "before": {
+        "end": 3.5,
+        "censored": true,
+        "los": 2.65,
+        "spacingSlowSeconds": 0.25,
+        "spacingStopSeconds": 0,
+        "rbTeammateContacts": 0,
+        "rbTeammateImpulse": 0,
+        "offensiveNormalImpulse": 4670.074230914102,
+        "rbPosition": {
+          "x": 76.48696123012567,
+          "y": 19.382178407288524
+        },
+        "rbSpeed": 2.7713569510528875,
+        "support": "falling",
+        "events": [
+          {
+            "t": 1.05,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 70.01,
+              "y": 29.51
+            }
+          },
+          {
+            "t": 2.5,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 74.07,
+              "y": 23.25
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3.1,
+            "type": "fall",
+            "a": 12,
+            "pos": {
+              "x": 74.62,
+              "y": 21.72
+            },
+            "note": "dive"
+          },
+          {
+            "t": 3.15,
+            "type": "fall",
+            "a": 17,
+            "pos": {
+              "x": 76.37,
+              "y": 19.89
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.3,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 76.23,
+              "y": 19.74
+            },
+            "note": "legs"
+          }
+        ]
+      },
+      "after": {
+        "end": 3.5,
+        "censored": true,
+        "los": 2.5999999999999996,
+        "spacingSlowSeconds": 0.25,
+        "spacingStopSeconds": 0,
+        "rbTeammateContacts": 0,
+        "rbTeammateImpulse": 0,
+        "offensiveNormalImpulse": 4630.494828432277,
+        "rbPosition": {
+          "x": 76.50763210036709,
+          "y": 19.085242865045522
+        },
+        "rbSpeed": 2.616398694080207,
+        "support": "falling",
+        "events": [
+          {
+            "t": 1.05,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 70.01,
+              "y": 29.51
+            }
+          },
+          {
+            "t": 2.5,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 74.13,
+              "y": 23.22
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3.1,
+            "type": "fall",
+            "a": 17,
+            "pos": {
+              "x": 76.54,
+              "y": 19.82
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.25,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 76.33,
+              "y": 19.63
+            },
+            "note": "legs"
+          }
+        ]
+      }
+    },
+    {
+      "play": 45,
+      "call": "Gun Trey (TE attached) — Wide Zone Weak",
+      "initialStatesEqual": true,
+      "allFramesEqual": true,
+      "firstDifference": null,
+      "before": {
+        "end": 3,
+        "censored": true,
+        "los": 2.8,
+        "spacingSlowSeconds": 0,
+        "spacingStopSeconds": 0,
+        "rbTeammateContacts": 0,
+        "rbTeammateImpulse": 0,
+        "offensiveNormalImpulse": 3790.553857437491,
+        "rbPosition": {
+          "x": 83.56257657455635,
+          "y": 31.239393575993272
+        },
+        "rbSpeed": 7.179479507191933,
+        "support": "up",
+        "events": [
+          {
+            "t": 1.05,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 77.74,
+              "y": 23.59
+            }
+          },
+          {
+            "t": 1.55,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 86.84,
+              "y": 21.87
+            },
+            "note": "contact"
+          },
+          {
+            "t": 2.9,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 11,
+            "pos": {
+              "x": 83.39,
+              "y": 30.92
+            },
+            "note": "grasp"
+          }
+        ]
+      },
+      "after": {
+        "end": 3,
+        "censored": true,
+        "los": 2.8,
+        "spacingSlowSeconds": 0,
+        "spacingStopSeconds": 0,
+        "rbTeammateContacts": 0,
+        "rbTeammateImpulse": 0,
+        "offensiveNormalImpulse": 3790.553857437491,
+        "rbPosition": {
+          "x": 83.56257657455635,
+          "y": 31.239393575993272
+        },
+        "rbSpeed": 7.179479507191933,
+        "support": "up",
+        "events": [
+          {
+            "t": 1.05,
+            "type": "handoff",
+            "a": 0,
+            "b": 6,
+            "pos": {
+              "x": 77.74,
+              "y": 23.59
+            }
+          },
+          {
+            "t": 1.55,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 86.84,
+              "y": 21.87
+            },
+            "note": "contact"
+          },
+          {
+            "t": 2.9,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 11,
+            "pos": {
+              "x": 83.39,
+              "y": 30.92
+            },
+            "note": "grasp"
+          }
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "Saved calls/players/post-constructor physical bodies and RNG, current constructor recognition/scouting in both arms; not an exact original game replay.",
+    "No mid-play state reset, no future-frame or private intent supplied to any controller.",
+    "Default accepted center contact; no experimental physics."
+  ],
+  "elapsedSeconds": 3.4434057810000005
+}
