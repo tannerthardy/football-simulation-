@@ -60,6 +60,8 @@ export function packReplayPlay(p: PlayLog, game: number) {
     call: p.call, def: p.defense, text: p.text, yds: r2(p.yards), score: p.score, kindLabel: KIND_LABEL[p.kind],
     read: p.stats?.qbRead, plan: p.plan, concept: replayConcept(p), outcome: p.outcome,
     nullified: !!p.nullified, firstDown: !!p.firstDown,
+    targetId: p.stats?.target, receiverId: p.stats?.receiver, rusherId: p.stats?.rusher,
+    retainedSnap: p.stats?.retainedSnap, segments: p.segments,
     flags: {
       td: !p.nullified && p.outcome === 'touchdown',
       to: !p.nullified && !!(p.stats?.interceptedBy || p.stats?.fumbleLost),
@@ -79,6 +81,7 @@ export function packReplayPlay(p: PlayLog, game: number) {
   const stats: Record<string, number | boolean> = {};
   if (s?.timeToThrow !== undefined) stats.ttt = r2(s.timeToThrow);
   if (s?.airYards !== undefined) stats.air = r2(s.airYards);
+  if (s?.completedAirYards !== undefined && s.completed) stats.completedAir = r2(s.completedAirYards);
   if (s?.yac !== undefined && s.completed) stats.yac = r2(s.yac);
   if (s?.separation !== undefined && s.completed) stats.sep = r2(s.separation);
   if (s?.yardsBeforeContact !== undefined && s.rusher) stats.ybc = r2(s.yardsBeforeContact);

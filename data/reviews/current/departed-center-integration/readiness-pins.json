@@ -1,0 +1,51 @@
+{
+  "approved": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "gapImplementation": "73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee",
+  "gapEvidence": "badddf495fa9ff7cfa6579709dec853dc449974e",
+  "actualGapImplementationParent": "2df3edb39f92b6d01d3a36076097e719c1f04d95",
+  "earlierGapEngineParent": "6122fb03c7104c0f9d762591d737cf2cf6a49067",
+  "prs": [
+    {
+      "pr": 57,
+      "head": "1f11e4546bc75ed6c5d139d3ac75fd09d214eb51",
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24"
+    },
+    {
+      "pr": 58,
+      "head": "cb73b08177ba796b3963c91f7afc53beafe77cf8",
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "latestPublication": "f597cec3983e73ac5538f1f68a1ef7db4c49fa43"
+    },
+    {
+      "pr": 60,
+      "head": "987056fe5b6dec61d8377834c5b277600685cbcd",
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24"
+    },
+    {
+      "pr": 61,
+      "head": "351dcff82b96713b5abbc7602d9a051567d1b00a",
+      "mergeBase": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24"
+    }
+  ],
+  "newSourceSha256": "2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad",
+  "authority": "Prepare/review broader candidate; preserve gap conditional integration authority and required review. No broad merge, baseline/default or branch deletion implied.",
+  "gapMergeBaseWithApproved": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "earlierZoneDuo": {
+    "code": "6ac628b9cd017fb475c477d41904264d463a6a46",
+    "publication": "6122fb03c7104c0f9d762591d737cf2cf6a49067",
+    "sourceSha256": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527",
+    "requires": "Separate review of navigation/information dependencies including teammateInformation; not required by the gap correction, not tested as current develop, not imported.",
+    "report": "https://github.com/tannerthardy/football-simulation-/blob/badddf495fa9ff7cfa6579709dec853dc449974e/docs/reviews/run-lanes/README.md"
+  },
+  "pr58Movement": "Docs-only17-line evidence-link addition; runtime/test/tooling unchanged from reviewed cb73b08. No suite repeat needed.",
+  "verifiedCandidate": "a862a05713d0b8bbd22683ce8a70d5ac16eb18e2",
+  "latestGapHandoff": {
+    "runLanesHead": "4da1c3aa82352e9dc4a953f11be494626b96d8eb",
+    "movement": "WORKBOARD-only documentation; original implementation/evidence unchanged.",
+    "portableBranch": "codex/departed-center-gap",
+    "portableHead": "132c27a8f1d9ce9a4366b92f0ede0df42a0dac52",
+    "portableImplementation": "d63bf4504e1a17e2f6a32738009a532838fc5e20",
+    "portableEvidence": "92566b3b650bb2e855487cbf1eae6a2dbf60918b",
+    "threeExtractedFilesByteIdentical": true
+  }
+}

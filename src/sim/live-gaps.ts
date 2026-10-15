@@ -85,6 +85,9 @@ export function linePicture(sim: PlaySim, observer: Agent): LinePicture {
   // vacancy at the same fraction of the space between them now.
   const homeCenter = centerBody?.home ?? sim.ballY;
   for (const g of gone) {
+    // The center is already the origin of the gap count. His departure
+    // cannot insert another outward boundary and rename B as A.
+    if (g.agent.slot === 'C') continue;
     const side = g.home >= homeCenter ? 1 : -1;
     const present = surface.filter((b) => b !== centerBody && (b.home - homeCenter) * side > 0)
       .sort((p, q) => (p.home - q.home) * side);

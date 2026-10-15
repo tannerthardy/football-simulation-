@@ -1,0 +1,165 @@
+diff --git a/src/sim/coverage-cues.ts b/src/sim/coverage-cues.ts
+index 1224bbc..2e880fa 100644
+--- a/src/sim/coverage-cues.ts
++++ b/src/sim/coverage-cues.ts
+@@ -3,7 +3,8 @@ import type { Agent } from './agent.js';
+ import type { Perceived } from './perception.js';
+ import type { PlaySim } from './playsim.js';
+ 
+-export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = sim.see(a, r)): boolean {
++export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = sim.see(a, r),
++  contactTargets: readonly Agent[] = sim.defense): boolean {
+   if (cue.pos.x - sim.los > 2) return false;
+   // Pads and hand-contact geometry are observable. Never inspect the route,
+   // offensive call or engagement bookkeeping to infer intent.
+@@ -11,7 +12,7 @@ export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = si
+   // Speed alone does not erase his low pads or visible contact; otherwise
+   // his marker alternates between run fit and coverage as he accelerates.
+   if (cue.stance === 'low' && cue.vel.x > 0.4) return true;
+-  return sim.defense.some(d => {
++  return contactTargets.some(d => {
+     const other = d === a ? { pos: a.pos } : sim.see(a, d);
+     const dx = other.pos.x - cue.pos.x, dy = other.pos.y - cue.pos.y;
+     const distance = Math.hypot(dx, dy);
+diff --git a/src/sim/recognition.ts b/src/sim/recognition.ts
+index 07fcae0..a3d67ae 100644
+--- a/src/sim/recognition.ts
++++ b/src/sim/recognition.ts
+@@ -16,6 +16,7 @@ import { OL_SLOTS, type PersonnelId, type QBAlignment } from '../playbook/types.
+ import { r01, type Player } from '../players/types.js';
+ import type { Agent } from './agent.js';
+ import type { PlaySim } from './playsim.js';
++import { showsBlock } from './coverage-cues.js';
+ 
+ // ------------------------------------------------------------ expectations
+ 
+@@ -326,10 +327,12 @@ export class Recognition {
+       }
+       if (best) {
+         const s = sim.see(a, best);
+-        const sp = Math.hypot(s.vel.x, s.vel.y);
+-        const gap = Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y);
+-        // Nothing to read until he's had time to release.
+-        const stalk = sim.t > 0.6 && gap < 5 && sp < 3;
++        // A slow release or a stopped route is not a block declaration.
++        // Use the same acquired pad/contact evidence as coverage technique;
++        // never infer the receiver's intent from his private assignment.
++        // Own contact needs no remote teammate positions. General teammate
++        // perception remains a separate migration; do not expand its use here.
++        const stalk = sim.t > 0.6 && showsBlock(a, sim, best, s, [a]);
+         if (stalk) add(-1, w.wr);
+         else if (s.vel.x > 3.5) add(clamp((s.vel.x - 3.5) / 3, 0, 1), w.wr);
+         else if (sim.t > 0.6) add(0, w.wr * 0.5);
+diff --git a/test/recognition.test.ts b/test/recognition.test.ts
+index 4cc6348..9e10322 100644
+--- a/test/recognition.test.ts
++++ b/test/recognition.test.ts
+@@ -1,4 +1,4 @@
+-import { describe, expect, it } from 'vitest';
++import { describe, expect, it, vi } from 'vitest';
+ import { HASH_LEFT_Y } from '../src/core/field.js';
+ import { Rng } from '../src/core/rng.js';
+ import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
+@@ -8,7 +8,8 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+ import type { DefensivePlayCall, OffensivePlayCall } from '../src/playbook/types.js';
+ import { PlaySim } from '../src/sim/playsim.js';
+ import { CoverageScouting } from '../src/sim/qbmind.js';
+-import { ScoutingReport, gameSense, leaguePassLogOdds, type SnapContext } from '../src/sim/recognition.js';
++import { Recognition, ScoutingReport, gameSense, leaguePassLogOdds, type SnapContext } from '../src/sim/recognition.js';
++import type { Perceived } from '../src/sim/perception.js';
+ 
+ const home = generateTeam(new Rng(31), 'Home', 'HOM', { strength: 0.6 });
+ const away = generateTeam(new Rng(32), 'Away', 'AWY', { strength: 0.6 });
+@@ -54,3 +55,45 @@ describe('expectations and learning', () => {
+     expect(scout.disguiseRate()).toBeGreaterThan(0.5);
+   });
+ });
++
++describe('receiver blocking evidence', () => {
++  function pictureRead(kind: 'slow' | 'low-pads' | 'contact', hidden = false) {
++    const sim = new PlaySim({ offense, defense,
++      offCall: { formation, flip: false, kind: 'pass', pass: PASS_BY_ID.hitches, label: 'picture' },
++      defCall, los: 40, ballY: HASH_LEFT_Y, firstDownX: 50, seed: 77 });
++    const d = sim.slot('CB_W')!, wr = sim.slot('X')!;
++    d.body.pos = { x: 42, y: 6 };
++    const pictures = new Map(sim.offense.map(o => [o, {
++      pos: { x: sim.snapX[o.idx], y: 25 }, vel: { x: 0, y: 0 },
++      stance: null, facing: 0, age: .25,
++    } as Perceived]));
++    pictures.set(sim.qb, { pos: { x: 36.4, y: 25 }, vel: { x: 0, y: 0 }, stance: null, facing: 0 });
++    pictures.set(wr, { pos: { x: kind === 'contact' ? 41.4 : 39, y: 6 },
++      vel: { x: kind === 'low-pads' ? 1 : 0, y: 0 },
++      stance: kind === 'low-pads' ? 'low' : null, facing: 0, age: .25 });
++    for (const o of sim.offense) if (o !== wr && o !== sim.qb) pictures.get(o)!.pos.y = 35;
++    vi.spyOn(sim, 'see').mockImplementation((_a, target) => {
++      const p = pictures.get(target);
++      if (!p) throw Error('Receiver recognition must not query remote teammate contact');
++      return structuredClone(p);
++    });
++    if (hidden) {
++      wr.body.pos = { x: 80, y: 40 }; wr.body.vel = { x: 9, y: -2 }; wr.stance = 'low';
++      for (const other of sim.defense) if (other !== d) other.body.pos = { x: 39, y: 6 };
++      sim.offCall = { ...sim.offCall, kind: 'run', pass: undefined, run: RUN_BY_ID.oz_strong };
++    }
++    const recognition = new Recognition(d, sim, 0);
++    for (let k = 0; k < 14; k++) { sim.t = .7 + k * sim.dt; recognition.update(d, sim); }
++    return { read: recognition.read, probability: recognition.pPass() };
++  }
++  it('does not declare run from a nearby slow upright receiver', () => {
++    expect(pictureRead('slow').read).not.toBe('run');
++  });
++  it.each(['low-pads', 'contact'] as const)('retains observable blocking evidence: %s', kind => {
++    expect(pictureRead(kind).read).toBe('run');
++    expect(pictureRead(kind).probability).toBeLessThan(pictureRead('slow').probability);
++  });
++  it.each(['slow', 'low-pads', 'contact'] as const)('uses the acquired picture, independent of hidden call/motion: %s', kind => {
++    expect(pictureRead(kind, true)).toEqual(pictureRead(kind));
++  });
++});
+diff --git a/test/defensive-awareness-contact.test.ts b/test/defensive-awareness-contact.test.ts
+index a72ca0b..19249a4 100644
+--- a/test/defensive-awareness-contact.test.ts
++++ b/test/defensive-awareness-contact.test.ts
+@@ -150,7 +150,8 @@ describe('engaged defenders preserve known duties and delayed runner pictures',
+   });
+ });
+ 
+-function keyRecognition(nearSpeed: number, keySpeed: number, man = true) {
++function keyRecognition(nearSpeed: number, keySpeed: number, man = true,
++  nearCue: 'upright' | 'low-pads' | 'own-contact' = 'upright') {
+   const { sim } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60 });
+   const a = sim.slot('CB_S')!, target = sim.slot('X')!, near = sim.slot('Y')!;
+   a.body.pos = { x: 42, y: 35 };
+@@ -162,10 +163,10 @@ function keyRecognition(nearSpeed: number, keySpeed: number, man = true) {
+     if (r === this.qb) pos = { x: 36.5, y: 20 };
+     else if (r.slot === 'RB') pos = { x: 34, y: 20 };
+     else if (r === target) { pos = { x: 41, y: 43 }; vel = { x: keySpeed, y: 0 }; }
+-    else if (r === near) { pos = { x: 41, y: 35.5 }; vel = { x: nearSpeed, y: 0 }; }
++    else if (r === near) { pos = nearCue === 'own-contact' ? { x: 41.4, y: 35 } : { x: 41, y: 35.5 }; vel = { x: nearSpeed, y: 0 }; }
+     else if (!['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) pos = { x: 41, y: 15 };
+     if (observer === a) targets.push(r.slot);
+-    return { pos, vel, facing: 0, stance: null, pose: 'up', age: .25 };
++    return { pos, vel, facing: 0, stance: r === near && nearCue === 'low-pads' ? 'low' : null, pose: 'up', age: .25 };
+   };
+   const trajectory = [];
+   for (let k = 0; k < 16; k++) {
+@@ -190,11 +191,17 @@ describe('defensive recognition reads a known job without inventing tactile know
+     expect(stalk.a.recog!.read).toBe('unsure');
+     expect(stalk.a.recog!.pPass()).toBeLessThan(release.a.recog!.pPass() - .3);
+   });
+-  it('zone players retain the existing local-key policy', () => {
++  it('zone players retain their local key without declaring a slow upright receiver a blocker', () => {
+     const still = keyRecognition(0, 6, false), release = keyRecognition(6, 6, false);
+-    expect(still.a.recog!.read).toBe('run');
++    expect(still.a.recog!.read).toBe('unsure');
++    expect(still.trajectory).toEqual(keyRecognition(0, 0, false).trajectory);
+     expect(release.a.recog!.read).toBe('pass');
+   });
++  it.each(['low-pads', 'own-contact'] as const)('zone players still recognise their local blocker from %s', cue => {
++    const block = keyRecognition(cue === 'low-pads' ? 1 : 0, 6, false, cue);
++    expect(block.a.recog!.read).toBe('run');
++    expect(block.a.recog!.pPass()).toBeLessThan(keyRecognition(0, 6, false).a.recog!.pPass());
++  });
+   it('unknown pad presentation conveys no run/pass category from the engagement label', () => {
+     const compare = (type: 'pass' | 'run', stance: 'high' | 'low' | null) => {
+       const f = contact(); f.engagement.type = type; f.blocker.stance = stance;

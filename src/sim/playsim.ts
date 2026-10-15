@@ -26,6 +26,7 @@ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, 
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
+import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
@@ -112,6 +113,7 @@ export class PlaySim {
   readonly events: PlayEvent[] = [];
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
+  readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   readonly trace: ReplayTrace;
   private readonly record: boolean;
   private readonly recordEvery: number;
@@ -547,6 +549,7 @@ export class PlaySim {
       }
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
+    this.incidentalCatchReadiness.sense(this);
     for (const d of this.defense) d.recog?.update(d, this);
 
     this.prepareJoinedRunBlocks();
@@ -838,6 +841,7 @@ export class PlaySim {
     if (s.completed && this.catchAt >= 0) {
       const caught = segs.find((g) => g.how === 'catch');
       const catchX = caught?.startX ?? this.catchX;
+      s.completedAirYards = catchX - this.los;
       const endX = offTD ? OPP_GOAL_X : turnover ? (caught?.endX ?? catchX) : spot.x;
       s.yac = endX - catchX;
     }
@@ -846,6 +850,13 @@ export class PlaySim {
       s.returnYards = this.scoreKind === 'TD' ? takeaway.startX - OWN_GOAL_X : takeaway.startX - spot.x;
     }
     if (!this.isPass || this.scrambled) {
+      // An unexchanged snap is still an actual rush by its possessor. Do not
+      // infer a handoff, fumble, scramble, or a successful keeper decision.
+      const snap = segs.length === 1 ? segs[0] : undefined;
+      if (!s.rusher && !this.isPass && snap?.team === 'O' && snap.how === 'snap' && snap.end === 'dead') {
+        s.rusher = snap.carrier;
+        s.retainedSnap = true;
+      }
       if (this.firstContactX !== null) s.yardsBeforeContact = this.firstContactX - this.los;
     }
     const clockStops = this.outcome === 'incomplete' || this.outcome === 'oob' || this.outcome === 'touchdown' || this.outcome === 'safety' || this.outcome === 'touchback' || turnover;

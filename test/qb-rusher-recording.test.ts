@@ -43,6 +43,36 @@ function observedRun(sim: PlaySim) {
 }
 
 describe('recording the actual rushing player', () => {
+  it('attributes an unexchanged snap from its actual segment without inventing a fumble or scramble', () => {
+    const sim = fixture(0, true);
+    sim.qb.body.pos.x = sim.los - 5;
+    sim.t = 25;
+    sim.whistle('timeout', sim.qb.pos);
+    const rng = { ...sim.rng }, events = structuredClone(sim.events);
+    const result = sim.buildResult();
+    expect(result).toMatchObject({ kind: 'run', yards: -5, offenseYards: -5, outcome: 'timeout', duration: 25,
+      stats: { rusher: sim.qb.player.id, retainedSnap: true, attempted: false, scramble: false, sacked: false } });
+    expect(result.stats.fumbledBy).toBeUndefined();
+    expect(result.segments).toEqual([expect.objectContaining({ team: 'O', carrier: sim.qb.player.id, how: 'snap', end: 'dead' })]);
+    expect(sim.rng).toEqual(rng);
+    expect(result.events).toEqual(events);
+  });
+
+  it('records achieved catch depth without replacing the intended target or aim depth', () => {
+    const sim = fixture(1), qb = sim.qb, target = sim.slot('X')!, catcher = sim.slot('RB')!;
+    sim.t = 1;
+    sim.throwBall(qb, target, { x: 15, y: 0, z: 0 }, { x: sim.los + 7, y: 26, z: 1 }, 2);
+    catcher.body.pos.x = sim.los - 4;
+    sim.t = 1.2;
+    sim.possess(catcher, 'catch');
+    catcher.body.pos.x = sim.los + 11;
+    sim.whistle('tackle', catcher.pos);
+    const result = sim.buildResult();
+    expect(result.stats).toMatchObject({ target: target.player.id, receiver: catcher.player.id, airYards: 7, completedAirYards: -4, yac: 15 });
+    expect(result.stats.rusher).toBeUndefined();
+    expect(result.offenseYards).toBe(11);
+  });
+
   it('records a native pass-call scramble without changing movement, observations or randomness', () => {
     // This unmodified 11-on-11 fixture naturally scrambles. No forced QB
     // phase, private transition invocation or mocked football decision.
@@ -84,5 +114,6 @@ describe('recording the actual rushing player', () => {
     expect(result.stats.scramble).toBe(false);
     expect(result.stats.rusher).toBe(back.player.id);
     expect(result.stats.rusher).not.toBe(sim.qb.player.id);
+    expect(result.stats.retainedSnap).toBeUndefined();
   });
 });

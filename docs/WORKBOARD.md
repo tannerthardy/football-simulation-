@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Departed-center gap integration — 2026-10-15
+
+| Item | Owner | Branch / reference | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Gap identity and earliest coherent candidate | Codex integration owner in this chat, explicitly authorized by user | `codex/departed-center-integration` from accepted `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | Three-line gap fix plus independently reviewed minimal #57 cadence, #58 recognition, #60 bookkeeping and #61 acquisition deltas; directly affected fixtures/tests and existing status/issue/integration records. | Verified at `a862a05`: 1,720 TS/145 Python/typecheck/build pass. [Exact ledger and receipt](INTEGRATION.md#current-candidate-2026-10-15). Reuse source evidence `badddf4`, including rejected unpaired trials and retained DT tackle. Exclude all earlier zone/Duo/detour work, #54 ancestry and experimental physics. One exact combined verification only when coherent. Preserve review and gap's existing conditional merge authority; no broader merge/reference/default/deletion authority inferred. |
+
+Latest author-only handoff: [portable gap branch and rejected entry-risk trial](https://github.com/tannerthardy/football-simulation-/blob/4da1c3aa82352e9dc4a953f11be494626b96d8eb/docs/WORKBOARD.md).
+The portable gap implementation is byte-identical to our three-file extraction.
+The rejected trial remains outside this candidate; Run Game retains pass
+protection/cutoff and Do-It-All! retains run-blocking/climb and carrier/spacing
+navigation. This record coordinates boundaries without moving worker branches.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
