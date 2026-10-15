@@ -1,0 +1,49 @@
+Profile candidate: run-game-2026-10-13, commit a159f82d4821f03082e5a110c190a5ef1396df60, source f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67
+Running node node_modules/vitest/vitest.mjs run --project core test/collection-approach.test.ts -t production approach --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-helper-collection-current
+
+ ❯ |core| test/collection-approach.test.ts (3 tests | 1 failed | 2 skipped) 37ms
+   ↓ free collection respects observed teammate obstruction > brakes through ordinary movement when its near strike surfaces are genuinely blocked
+   × free collection respects observed teammate obstruction > keeps the production approach and held read when only a remote engagement flag changes 36ms
+     → expected { vel: { …(2) }, …(3) } to deeply equal { vel: { x: +0, y: +0 }, …(2) }
+   ↓ free collection respects observed teammate obstruction > keeps a still-facing owner outside lost-contact collection and consumes no hidden peer state
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/collection-approach.test.ts > free collection respects observed teammate obstruction > keeps the production approach and held read when only a remote engagement flag changes
+AssertionError: expected { vel: { …(2) }, …(3) } to deeply equal { vel: { x: +0, y: +0 }, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "facing": -0.5448639154515428,
++   "cutSkill": undefined,
++   "facing": undefined,
+    "posture": 0.7,
+    "vel": {
+-     "x": 0,
+-     "y": 0,
++     "x": 6.987816766036305,
++     "y": -2.9970264374626763,
+    },
+  }
+
+ ❯ test/collection-approach.test.ts:86:41
+     84| 
+     85|   defender.engagement=oldRep;
+     86|   expect(controller.update(helper,sim)).toEqual(request);
+       |                                         ^
+     87|   expect(Reflect.get(controller,'collectionRead')).toBe(held);
+     88|   // A first read must also be independent of the remote flag, rather …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  21:23:27
+   Duration  1.02s (transform 631ms, setup 0ms, collect 808ms, tests 37ms, environment 0ms, prepare 55ms)
+
+Validation receipt: out/collection-information/red.json; exit 1

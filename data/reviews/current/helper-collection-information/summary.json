@@ -1,0 +1,170 @@
+{
+  "schema": "collection-information-review-v1",
+  "testedController": "cdd55b955421744ae6ba688de5f73ab87d13b8ab",
+  "controllerSource": "cf8d726d81b1d562fd4c2a959f3bff3ed9c3b0f60fcf2587481386db9394e08a",
+  "lawHost": "72cfe3d1f31159753e2b53286fc366a60bb17403",
+  "lawSource": "355d14b11d3f53e700689a9ed80d5e1cac01507f61d484da755f4becca642c47",
+  "regression": "Public RunBlocker.update exercises original attack hook; remote flag alone changed held brake into (6.987817,-2.997026)yd/s before fix.",
+  "correction": "Remove only the remote-engagement route gate. Installation, acquired torso-loss/clearance, own contact and cadence remain; physical engagement eligibility unchanged.",
+  "productionHookChecks": [
+    "Original attack called, held choice retained across hidden flag change",
+    "Fresh selection with nonempty hidden flag equals empty-flag request",
+    "Same acquired pictures/body/RNG, no physical hands or climb",
+    "Newly delivered facing cue changes next ordinary read"
+  ],
+  "focusedChecks": 64,
+  "typecheck": "pass",
+  "controlParity": [
+    {
+      "mode": "center",
+      "scenario": "recovery",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": null,
+      "censor": 1.7500000000000007
+    },
+    {
+      "mode": "center",
+      "scenario": "loss-minus",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": null,
+      "censor": 3.399999999999996
+    },
+    {
+      "mode": "center",
+      "scenario": "loss-plus",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": null,
+      "censor": 3.399999999999996
+    },
+    {
+      "mode": "center",
+      "scenario": "under",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": "7d5bdf1d10a33e7188596425ec01c34682290c1009b47b04d542d6cc4bde4c3c",
+      "censor": 2
+    },
+    {
+      "mode": "center",
+      "scenario": "tite",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": "57d060cd3d83dc0eab6e930069900e5d64bc560ffa83d932c3796333ceaf92b4",
+      "censor": 2
+    },
+    {
+      "mode": "patch",
+      "scenario": "recovery",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": null,
+      "censor": 2.1000000000000005
+    },
+    {
+      "mode": "patch",
+      "scenario": "loss-minus",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": null,
+      "censor": 3.399999999999996,
+      "firstCompletedLoadedStep": 2.5999999999999988,
+      "formerOwnerImpacts": 0,
+      "finalHands": {
+        "active": true,
+        "normal": 534.6542329305071,
+        "tangent": 0.5472363615281209,
+        "extension": 0.87240647411745,
+        "distance": 0.6504631710920814,
+        "off": -0.08630695660332766
+      }
+    },
+    {
+      "mode": "patch",
+      "scenario": "loss-plus",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": null,
+      "censor": 3.399999999999996,
+      "firstCompletedLoadedStep": 2.5999999999999988,
+      "formerOwnerImpacts": 0,
+      "finalHands": {
+        "active": true,
+        "normal": 534.6542329305071,
+        "tangent": 0.382205029076187,
+        "extension": 0.87240647411745,
+        "distance": 0.6504632446657753,
+        "off": -0.009522255210913128
+      }
+    },
+    {
+      "mode": "patch",
+      "scenario": "under",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": "50389d453622812dfdd58ce3b18c78cb3bc6555105d3eee657a9cef464559b48",
+      "censor": 2
+    },
+    {
+      "mode": "patch",
+      "scenario": "tite",
+      "identicalBodiesRequestsReportsEvents": true,
+      "nativeFingerprintExact": "06d160c6853d22da8784c5533d1b703f7998467cc457e55adc1b057daf73e525",
+      "censor": 2
+    }
+  ],
+  "priorTraceSha256": "464108d693d706fdcaf80a4689c82369bc2660789c3f319f8d70313909cc5808",
+  "currentTraceSha256": "127fb91db88d3e9c1b82746579f5204105d34d65bfc6e43e04b0380ee952e42e",
+  "fixtureSha256": "78ab0d502e4925e9359f5b1f3edd7af837558ccad2feb15e024591427ddb2d6a",
+  "collectorSha256": "00a2e69ca832e67c1879a2a570f5dafc7a7e0a3974040d856da5c7bd31c0f29d",
+  "productionTestSha256": "a8a787e1e161830343c68adf280b0c2c6db6ba2201d80b79502031a7d4b8039a",
+  "compatibility": {
+    "acceptedDevelop": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+    "resultingTree": "cddd8ee326df33bf52fe3ff34e7d8ae18e466d06",
+    "resultingSourceSha256": "7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b",
+    "patchApplies": true,
+    "onlyChangedFiles": [
+      "src/sim/behaviors/blocking.ts",
+      "src/sim/collection-approach.ts",
+      "test/collection-approach.test.ts",
+      "test/zone-helper-check.test.ts"
+    ],
+    "acceptedPassProtectorPreserved": true,
+    "acceptedCarrierRiskPreserved": true,
+    "runtimeVerified": false,
+    "qualification": "Static application only; Integration owns exact combined verification."
+  },
+  "receipts": [
+    {
+      "name": "red",
+      "commit": "a159f82d4821f03082e5a110c190a5ef1396df60",
+      "source": "f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67",
+      "exitCode": 1,
+      "wallSeconds": 1.3934244089999999
+    },
+    {
+      "name": "focused",
+      "commit": "cdd55b955421744ae6ba688de5f73ab87d13b8ab",
+      "source": "cf8d726d81b1d562fd4c2a959f3bff3ed9c3b0f60fcf2587481386db9394e08a",
+      "exitCode": 0,
+      "wallSeconds": 3.412355421
+    },
+    {
+      "name": "typecheck",
+      "commit": "cdd55b955421744ae6ba688de5f73ab87d13b8ab",
+      "source": "cf8d726d81b1d562fd4c2a959f3bff3ed9c3b0f60fcf2587481386db9394e08a",
+      "exitCode": 0,
+      "wallSeconds": 10.171604056
+    },
+    {
+      "name": "law-controls",
+      "commit": "72cfe3d1f31159753e2b53286fc366a60bb17403",
+      "source": "355d14b11d3f53e700689a9ed80d5e1cac01507f61d484da755f4becca642c47",
+      "exitCode": 0,
+      "wallSeconds": 3.267164217
+    }
+  ],
+  "newLauncherSeconds": 18.244548103,
+  "fullGames": 0,
+  "controlledLawSegments": 6,
+  "nativeControlSegments": 8,
+  "limits": [
+    "Controlled collection runner remains parked; no native runner-arrival or yardage claim.",
+    "The counterfactual uses a detached real rep as hidden-state poison; it is a no-step information test, not a claimed physical continuation.",
+    "Existing broader target-selection/join/release live-state contracts are not rewritten or certified by this narrow hook fix.",
+    "Physics, three adjudicated law-host failures, history and accuracy limits remain separate."
+  ]
+}

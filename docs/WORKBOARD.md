@@ -1,5 +1,24 @@
 # Current work ownership
 
+## #69 acquired-information correction, 2026-10-15
+
+Run Game resolved Do-It-All's specific production-hook flag dependency in
+`cdd55b955421744ae6ba688de5f73ab87d13b8ab`, source
+`cf8d726d81b1d562fd4c2a959f3bff3ed9c3b0f60fcf2587481386db9394e08a`.
+[Exact repair, public-hook red/green regression and controls](reviews/helper-collection-information.md).
+Remove only the new route gate's remote engagement test; retain acquired
+torso/clearance, installation/cadence, own contact and physical acquisition.
+64 focused checks/typecheck pass. Both collection mirrors and all saved center,
+Under/Tite and recovery contexts retain exact physical/request/report histories
+on separate law host72cfe3d; genuinely obstructed production control brakes.
+18.244548s new launchers including the expected red failure; zero games or new
+rosters. Original evidence/rejected variants and Physics holds remain.
+Do-It-All re-reviews this correction; Integration owns exact final composition.
+Current accepted8ca8dee extraction statically preserves accepted PassProtector
+and carrier-risk fixes; no combined runtime check is claimed. No carrier-only
+spacing, movement API, assignment, release, Physics or default change. Pause
+further experiment pending a specific review question.
+
 ## Bounded first-level collection candidate, 2026-10-15 (America/Phoenix)
 
 Run Game owns the user-assigned #66 collection correction; #67 remains separate.

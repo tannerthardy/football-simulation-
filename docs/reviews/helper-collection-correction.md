@@ -2,6 +2,14 @@
 
 [Draft PR #69](https://github.com/tannerthardy/football-simulation-/pull/69).
 
+**Follow-up:** the independent reviewer found a private-engagement dependency
+in the production approach gate that the original geometry-only control missed.
+[The corrected production-hook candidate](helper-collection-information.md)
+is `cdd55b9` (64 focused checks/typecheck pass); saved collection/control
+histories remain exact. The pins and63-check evidence below describe the
+original candidate and are retained as historical evidence, not a claim that
+its full production path met the information contract.
+
 **Candidate for independent controller review.** Both saved lost-contact sides
 now establish loaded helper contact by2.60s and retain a reachable upright
 connection through3.40s, without the former-owner collision. Both successful

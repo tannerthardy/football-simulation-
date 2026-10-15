@@ -1,0 +1,54 @@
+{
+  "controller-and-tests.patch": {
+    "bytes": 17822,
+    "sha256": "8cfc231cd65a6d65e803eeb2b31556805b8b429b28f6fe17946441b0492b57e2"
+  },
+  "focused.json": {
+    "bytes": 2421,
+    "sha256": "6ec4399090ef1a7230219731542d1811c088aba5c477b4330162dbae7b25334e"
+  },
+  "focused.log": {
+    "bytes": 914,
+    "sha256": "7dd333be4a220295bc36d1654d14690d30c0d88d7195e44d7c3dd32053997b80"
+  },
+  "information-only-followup.patch": {
+    "bytes": 4208,
+    "sha256": "b5535730d7a5709f6daaa3ebc96e3cf29c5f83af1e3a68956bd154db69a5c601"
+  },
+  "law-controls.json": {
+    "bytes": 2322,
+    "sha256": "491b78b0da513e0485309f868db9a066702f93d5dc3ef08d975011b9a7d6b118"
+  },
+  "law-controls.json.gz": {
+    "bytes": 4803561,
+    "sha256": "127fb91db88d3e9c1b82746579f5204105d34d65bfc6e43e04b0380ee952e42e"
+  },
+  "law-controls.log": {
+    "bytes": 2575,
+    "sha256": "0c55bfb1cbeb6a07ae192fbab56eed0fa8b04980ef70e4399d10d8bce0f5839a"
+  },
+  "red.json": {
+    "bytes": 2392,
+    "sha256": "c63faa32f4f1ebc90098a01b3076cd02ac5d9f5d89f48c33647bbca157be5625"
+  },
+  "red.log": {
+    "bytes": 2310,
+    "sha256": "16555cba1c1d45a21e1b7ad0077f37d16ee5a67aeb8daec321bab27a961d4120"
+  },
+  "runtime.patch": {
+    "bytes": 7542,
+    "sha256": "b060320f50c6d7998556a894324ae17bcf7071c8032873972b248df86366c8b4"
+  },
+  "summary.json": {
+    "bytes": 6531,
+    "sha256": "c53611310602d6b91b30168e58f76ed20a4c9f2cddd61ccda29548628eea0047"
+  },
+  "typecheck.json": {
+    "bytes": 2170,
+    "sha256": "b5670889e25a96116b1e97772c3c237dff27d318bf6057b6cc611e9043066c93"
+  },
+  "typecheck.log": {
+    "bytes": 533,
+    "sha256": "2f553324c9caa6bc70e38e81c703e0d6d2f681b569fbc5303d091f7728ccbf01"
+  }
+}

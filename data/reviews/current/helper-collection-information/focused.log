@@ -1,0 +1,16 @@
+Profile candidate: run-game-2026-10-13, commit cdd55b955421744ae6ba688de5f73ab87d13b8ab, source cf8d726d81b1d562fd4c2a959f3bff3ed9c3b0f60fcf2587481386db9394e08a
+Running node node_modules/vitest/vitest.mjs run --project core test/collection-approach.test.ts test/zone-helper-check.test.ts test/run-block-fit.test.ts test/run-combo-retarget.test.ts --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-helper-collection-current
+
+ ✓ |core| test/collection-approach.test.ts (3 tests) 68ms
+ ✓ |core| test/zone-helper-check.test.ts (22 tests) 853ms
+ ✓ |core| test/run-block-fit.test.ts (22 tests) 198ms
+ ✓ |core| test/run-combo-retarget.test.ts (17 tests) 110ms
+
+ Test Files  4 passed (4)
+      Tests  64 passed (64)
+   Start at  21:24:17
+   Duration  3.04s (transform 664ms, setup 0ms, collect 1.17s, tests 1.23s, environment 1ms, prepare 214ms)
+
+Validation receipt: out/collection-information/focused.json; exit 0
