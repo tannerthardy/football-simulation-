@@ -1,0 +1,2996 @@
+{
+  "protocol": "native-leg-grasp-evidence-v1",
+  "decision": "Preserve the tackle; no demonstrated restraint/accounting defect in this window.",
+  "testedRevision": "2bf21884f2e129f22c3534d38bec08209ac420b2",
+  "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+  "runtimeChanged": false,
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "baselineWorldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "explicitWorldOverrides": {
+    "handContact": "patch",
+    "groundMovement": "legacy"
+  },
+  "environment": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "inputs": {
+    "path": "config/native-leg-grasp.json",
+    "sha256": "558bc97ac4fa95c2d1052a087b4424d9b089ab86a18173eece79076133842e35",
+    "parent": "config/solver-value-study.json",
+    "parentSha256": "3a79ad6c660e687364858112d9ccfa0801f59a615f4f8080b904918c02e9015e",
+    "raw": "out/native-leg-grasp/result.json",
+    "rawSha256": "36c31800e01cb4eaf4b3aa60d5461605b9ebb757d97d2b39030a7b9c48a8c93b",
+    "collectorSha256": "a4542e03e2f5bced9f2ad039a7e01c68b92e833e9f2ece62922eec0b9e4caa01",
+    "reducerSha256": "d01b7f90fd25d5e60bcfb2c361a92404ab226210ce35ee4f3efda8ec1e206895"
+  },
+  "receipt": {
+    "path": "out/native-leg-grasp/audit-ground.receipt.json",
+    "sha256": "8ab8a956b53360106081753093c940069e4d800cad7a4e3404f54aa2dc0c9c23",
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/native-leg-grasp",
+    "commit": "2bf21884f2e129f22c3534d38bec08209ac420b2",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "failFast": false,
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+    "validationSha256": "dbf4b7cc2ea636de94c05a9352448140e53a3029f61277b6a6c49013808e297e",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [],
+    "startedAt": "2026-10-15T22:43:52.235Z",
+    "commands": [
+      {
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/physics/native-leg-grasp.ts"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 2.5394947979999998
+      }
+    ],
+    "skippedCommands": [],
+    "finishedAt": "2026-10-15T22:43:54.778Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "runs": [
+    {
+      "variant": {
+        "id": "native",
+        "case": "tite",
+        "scale": 1,
+        "substeps": null,
+        "finish": true
+      },
+      "prefix": "ab74a3f053b7b9c7ed860b040d48970e1c74895171b8c016d2a619a4398e8587",
+      "acquisition": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 14,
+        "pos": {
+          "x": 41.06,
+          "y": 22.26
+        },
+        "note": "grasp"
+      },
+      "acquiredJoint": {
+        "kind": "grasp",
+        "reach": 1.570818181818182,
+        "capacity": 3381.5916637787336,
+        "legs": 0.01385084940010664,
+        "pull": 2.020408163265306,
+        "hold": 0.7011540389825319,
+        "origin": "block",
+        "a": 14,
+        "b": 6
+      },
+      "interval": [
+        2.8,
+        3
+      ],
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "massKg": 139.70644996000001,
+          "before": {
+            "pos": {
+              "x": 41.52979823148357,
+              "y": 22.779530888297742
+            },
+            "vel": {
+              "x": -1.5908924588358215,
+              "y": -1.6561529764892935
+            },
+            "spin": -2.300911377036545,
+            "facing": 1.4412839717137502,
+            "support": {
+              "xi": {
+                "x": -0.06490063736211325,
+                "y": 0.09446979287176707
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.39099428224286,
+              "y": 22.208304304417105
+            },
+            "vel": {
+              "x": 0.6044738319069488,
+              "y": -3.904614646659361
+            },
+            "spin": 6.644524291788171,
+            "facing": 2.9890398376843317,
+            "support": {
+              "xi": {
+                "x": 0.14513911606218471,
+                "y": -0.12723609542810912
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 2.296471531962683,
+          "finalSpeed": 3.9511269471338277,
+          "parts": {
+            "supported-grasp-active": {
+              "x": 46.585739742610706,
+              "y": -223.98234249147876,
+              "l": 1.7245411082921444e-15,
+              "work": 658.7599617848499,
+              "projectedDeltaSpeed": 1.3464693650899748
+            },
+            "supported-grasp-passive": {
+              "x": 189.71286842748657,
+              "y": -281.29523271853503,
+              "l": 73.4436055695624,
+              "work": 1101.5287744637844,
+              "projectedDeltaSpeed": 2.3715578524600356
+            },
+            "ground": {
+              "x": 70.40822267142849,
+              "y": 191.15297739942082,
+              "l": -33.76606665267536,
+              "work": -952.0005199204919,
+              "projectedDeltaSpeed": -0.5776998279869652
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000024,
+            "minAvailability": 1,
+            "maxTranslationForce": 1390.4538331836134,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        },
+        {
+          "slot": "RB",
+          "massKg": 99.33672903,
+          "before": {
+            "pos": {
+              "x": 41.05938839264963,
+              "y": 22.259596690624857
+            },
+            "vel": {
+              "x": 5.00925761446709,
+              "y": -4.7637800239710915
+            },
+            "spin": 4.739170599850761,
+            "facing": -0.7481369132149657,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.97369708735188,
+              "y": 21.762802278811535
+            },
+            "vel": {
+              "x": 3.572956784824245,
+              "y": -0.37405100082147025
+            },
+            "spin": -1.3071482042397942,
+            "facing": -0.25749603219711176,
+            "support": {
+              "xi": {
+                "x": 0.03162097340246032,
+                "y": 0.3003655311427261
+              },
+              "state": "up",
+              "feetLock": 0,
+              "foot": {
+                "anchor": {
+                  "x": 41.897358474869584,
+                  "y": 21.96420878348756
+                },
+                "offset": {
+                  "x": -0.07633861248229466,
+                  "y": 0.20140650467602675
+                },
+                "target": {
+                  "x": 41.90241261998607,
+                  "y": 22.098417014921115
+                },
+                "desired": {
+                  "x": 0.13731460299080475,
+                  "y": 1.1622012504790935
+                },
+                "achieved": {
+                  "x": -0.8318936370131474,
+                  "y": 1.9496083040513688
+                },
+                "force": {
+                  "x": -269.277908153925,
+                  "y": 218.76756253199335
+                },
+                "capacity": 604.1378777977972,
+                "mobility": 0.0035992861302603855,
+                "state": "placing"
+              }
+            }
+          },
+          "initialSpeed": 6.91276080628301,
+          "finalSpeed": 3.5924830323102643,
+          "parts": {
+            "supported-grasp-active": {
+              "x": -46.585739742610706,
+              "y": 223.98234249147876,
+              "l": 0.3765885888874969,
+              "work": -748.9302272971859,
+              "projectedDeltaSpeed": -1.8936646778434352
+            },
+            "supported-grasp-passive": {
+              "x": -189.71286842748657,
+              "y": 281.29523271853503,
+              "l": 0.6674605075533062,
+              "work": -1525.6148722091962,
+              "projectedDeltaSpeed": -3.3353416372497304
+            },
+            "ground": {
+              "x": 93.62118185030133,
+              "y": -69.21625272227327,
+              "l": -12.437119818132137,
+              "work": 522.5456355679854,
+              "projectedDeltaSpeed": 1.1631193147597918
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000007,
+            "minAvailability": 0.9577976981740334,
+            "maxTranslationForce": 900.759154629629,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 1.0000000000000007,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 1.0002377964174252,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 48,
+            "maxForce": 382.3023355780866,
+            "maxAbsoluteVelocityDeficit": 1.3760154940123588,
+            "maxOffset": 0.2153884023840103,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 1.1102230246251565e-16,
+            "motorWork": -67.25585110482712,
+            "motorWorkLimit": 76.40965812271587
+          }
+        }
+      ],
+      "grip": {
+        "selectedRowCount": 48,
+        "maxSharedCapacityFraction": 1.0000000000000002,
+        "maxCapacityExcess": 1.7763568394002505e-15,
+        "maxDoseResidual": 5.617333549722722e-15,
+        "firstSlippingTick": null,
+        "firstBrokenTick": null,
+        "trace": [
+          {
+            "t": 2.8,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 3381.5916637787336,
+            "legs": 0.06714287323566687,
+            "slipping": false,
+            "broken": false,
+            "force": 2240.9696431475572
+          },
+          {
+            "t": 2.85,
+            "capacity": 3552.3340951424548,
+            "actualCapacity": 3552.3340951424548,
+            "legs": 0.09269898199911658,
+            "slipping": false,
+            "broken": false,
+            "force": 3015.1252591059015
+          },
+          {
+            "t": 2.9,
+            "capacity": 3703.790564666659,
+            "actualCapacity": 3703.790564666659,
+            "legs": 0.1175549678001201,
+            "slipping": false,
+            "broken": false,
+            "force": 3363.495779951359
+          },
+          {
+            "t": 2.95,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.1175549678001201,
+            "slipping": false,
+            "broken": false,
+            "force": 3138.1847866995736
+          },
+          {
+            "t": 3,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.1175549678001201,
+            "slipping": false,
+            "broken": false,
+            "force": 2517.1158027264282
+          },
+          {
+            "t": 3.05,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.1175549678001201,
+            "slipping": false,
+            "broken": false,
+            "force": 2269.735468052372
+          },
+          {
+            "t": 3.1,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.1175549678001201,
+            "slipping": false,
+            "broken": false,
+            "force": 1958.1197872320224
+          },
+          {
+            "t": 3.15,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.1175549678001201,
+            "slipping": false,
+            "broken": false,
+            "force": 1507.5403298813553
+          }
+        ]
+      },
+      "checks": {
+        "maxMomentumResidual": 3.8265546616179853e-13,
+        "maxSpinImpulseResidual": 3.552713678800501e-14,
+        "maxWorkResidual": 1.7053025658242404e-12,
+        "maxMotorWorkResidual": 3.552713678800501e-15,
+        "maxGroundResidual": 0,
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxMotorWorkExcess": 0
+      },
+      "outcome": {
+        "t": 4.35,
+        "phase": "dead",
+        "censored": false,
+        "yards": 4.04,
+        "fingerprint": "e19a0367242a88d66ed28ab3f03f077adea61b6bee1468a461dc7f43998f7d50",
+        "exactSavedNativeEnding": true
+      }
+    },
+    {
+      "variant": {
+        "id": "successful-control",
+        "case": "under",
+        "scale": 1,
+        "substeps": null,
+        "finish": true
+      },
+      "prefix": "5af8695b1437ac0a45e12ec4db11953874a868ea33c79216f058755617d53dcd",
+      "acquisition": {
+        "t": 2.9,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 16,
+        "pos": {
+          "x": 41.15,
+          "y": 21.7
+        },
+        "note": "grasp"
+      },
+      "acquiredJoint": {
+        "kind": "grasp",
+        "reach": 1.5001818181818178,
+        "capacity": 1439.8688906740447,
+        "legs": 0.8265420457426301,
+        "pull": 2.204081632653061,
+        "hold": 1.0223377139489798,
+        "origin": "form+behind",
+        "a": 16,
+        "b": 6
+      },
+      "interval": [
+        2.95,
+        3.1500000000000004
+      ],
+      "bodies": [
+        {
+          "slot": "LB_W",
+          "massKg": 112.94450013000001,
+          "before": {
+            "pos": {
+              "x": 41.621651161135176,
+              "y": 22.609096532290643
+            },
+            "vel": {
+              "x": 0.3881712809672999,
+              "y": -4.008671349303069
+            },
+            "spin": 1.623018371842446,
+            "facing": 4.222849287910145,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.64880416275506,
+              "y": 21.598605210513906
+            },
+            "vel": {
+              "x": -0.6062609534141391,
+              "y": -4.838941349317361
+            },
+            "spin": 2.361098675035207,
+            "facing": 4.454739475375757,
+            "support": {
+              "xi": {
+                "x": -0.08516893495541192,
+                "y": 0.528222033899316
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 4.027421374786984,
+          "finalSpeed": 4.876772060058574,
+          "parts": {
+            "supported-grasp-active": {
+              "x": -37.55422092139487,
+              "y": -100.90072652243046,
+              "l": 3.884191346150374e-16,
+              "work": 510.88530876013596,
+              "projectedDeltaSpeed": 0.7001835117722739
+            },
+            "supported-grasp-passive": {
+              "x": 23.121764334748516,
+              "y": -8.392859824907205,
+              "l": 19.534209373530018,
+              "work": 64.5539272817189,
+              "projectedDeltaSpeed": 0.14648259249652215
+            },
+            "ground": {
+              "x": -16.25748341010615,
+              "y": -67.0835375886895,
+              "l": -23.64705125157194,
+              "work": 253.62841284460146,
+              "projectedDeltaSpeed": 0.494800421791646
+            },
+            "body-contact": {
+              "x": -81.62571162861805,
+              "y": 82.60269381147825,
+              "l": 6.022747067211262,
+              "work": -398.17564475066973,
+              "projectedDeltaSpeed": -0.9510127632953139
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000009,
+            "minAvailability": 0.7918539769844319,
+            "maxTranslationForce": 1332.4233381669414,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        },
+        {
+          "slot": "RB",
+          "massKg": 99.33672903,
+          "before": {
+            "pos": {
+              "x": 41.15149512312903,
+              "y": 21.701281737693865
+            },
+            "vel": {
+              "x": 1.6486275088336892,
+              "y": -4.016280112216632
+            },
+            "spin": -8.711111111111112,
+            "facing": -0.050670278610384555,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.41745795429844,
+              "y": 20.93233916670713
+            },
+            "vel": {
+              "x": 1.4546873479820777,
+              "y": -3.0552710255493762
+            },
+            "spin": -6.137728476082942,
+            "facing": -1.7043031038046506,
+            "support": {
+              "xi": {
+                "x": -0.04578509031692157,
+                "y": -0.6498643364295036
+              },
+              "state": "up",
+              "feetLock": 0.7061080041808268,
+              "foot": {
+                "anchor": {
+                  "x": 41.419229229397786,
+                  "y": 21.04978272609743
+                },
+                "offset": {
+                  "x": 0.001771275099345642,
+                  "y": 0.1174435593902994
+                },
+                "target": {
+                  "x": 41.37262069854176,
+                  "y": 20.571594605576337
+                },
+                "desired": {
+                  "x": -0.23919020671863303,
+                  "y": -2.7841742425220137
+                },
+                "achieved": {
+                  "x": -0.4762999964678186,
+                  "y": -0.7833664668728724
+                },
+                "force": {
+                  "x": -65.87689368614664,
+                  "y": 555.8901691165063
+                },
+                "capacity": 776.3844677787947,
+                "mobility": 0.0035992861302603855,
+                "state": "placing"
+              }
+            }
+          },
+          "initialSpeed": 4.341483456454719,
+          "finalSpeed": 3.3839025281382837,
+          "parts": {
+            "supported-grasp-active": {
+              "x": 96.75864077759311,
+              "y": 119.51440136678202,
+              "l": 3.359085830980039,
+              "work": -362.2419960501106,
+              "projectedDeltaSpeed": -0.7431197942375063
+            },
+            "supported-grasp-passive": {
+              "x": -59.78080398297159,
+              "y": 34.9686242650973,
+              "l": 2.1889039271829707,
+              "work": -222.12505252544983,
+              "projectedDeltaSpeed": -0.5541789416280476
+            },
+            "ground": {
+              "x": -95.4456320538326,
+              "y": -104.68471783476875,
+              "l": 0.9353362561760106,
+              "work": 271.4760522110473,
+              "projectedDeltaSpeed": 0.6100345691915282
+            },
+            "body-contact": {
+              "x": 39.202414052659734,
+              "y": 45.66519144052268,
+              "l": -1.6343044352894271,
+              "work": -90.54095561132165,
+              "projectedDeltaSpeed": -0.2754060377868516
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000009,
+            "minAvailability": 0.723532118556641,
+            "maxTranslationForce": 841.2389421228145,
+            "minCorrectiveCapacity": 591.1921040466136,
+            "maxStructuralGroundAndCorrectiveFraction": 1.0000000000000002,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 1.3558851986972589,
+            "maxCorrectiveCommandExcess": 2.2737367544323206e-13
+          },
+          "correctiveSupport": {
+            "sampled": 48,
+            "maxForce": 724.3304647426238,
+            "maxAbsoluteVelocityDeficit": 2.607072595473185,
+            "maxOffset": 0.12774001574191535,
+            "maxLockFraction": 1,
+            "maxVelocityLawResidual": 2.7755575615628914e-17,
+            "motorWork": -50.51816722856645,
+            "motorWorkLimit": 312.8045260563879
+          }
+        }
+      ],
+      "grip": {
+        "selectedRowCount": 48,
+        "maxSharedCapacityFraction": 0.5874979954299566,
+        "maxCapacityExcess": 0,
+        "maxDoseResidual": 4.695944831791985e-16,
+        "firstSlippingTick": null,
+        "firstBrokenTick": null,
+        "trace": [
+          {
+            "t": 2.95,
+            "capacity": 1439.8688906740447,
+            "actualCapacity": 1439.8688906740447,
+            "legs": 0.8265420457426301,
+            "slipping": false,
+            "broken": false,
+            "force": 417.6177149110181
+          },
+          {
+            "t": 3,
+            "capacity": 1458.667868777229,
+            "actualCapacity": 1458.667868777229,
+            "legs": 0.8265420457426301,
+            "slipping": false,
+            "broken": false,
+            "force": 466.31808530004946
+          },
+          {
+            "t": 3.05,
+            "capacity": 1501.1616604099333,
+            "actualCapacity": 1501.1616604099333,
+            "legs": 0.8265420457426301,
+            "slipping": false,
+            "broken": false,
+            "force": 593.4160385913128
+          },
+          {
+            "t": 3.1,
+            "capacity": 1537.6868701663063,
+            "actualCapacity": 1537.6868701663063,
+            "legs": 0.8265420457426301,
+            "slipping": false,
+            "broken": false,
+            "force": 765.2406807888589
+          },
+          {
+            "t": 3.15,
+            "capacity": 1568.9948466292753,
+            "actualCapacity": 1568.9948466292753,
+            "legs": 0.8265420457426301,
+            "slipping": false,
+            "broken": false,
+            "force": 780.7262655962861
+          },
+          {
+            "t": 3.2,
+            "capacity": 1595.7696683180125,
+            "actualCapacity": 1595.7696683180125,
+            "legs": 0.8265420457426301,
+            "slipping": false,
+            "broken": false,
+            "force": 927.3907525431912
+          },
+          {
+            "t": 3.25,
+            "capacity": 1618.624597703654,
+            "actualCapacity": 1133.0372183925576,
+            "legs": 0.8265420457426301,
+            "slipping": false,
+            "broken": false,
+            "force": 314.9061144091677
+          },
+          {
+            "t": 3.3,
+            "capacity": 1638.1030618154953,
+            "actualCapacity": 1146.6721432708466,
+            "legs": 0.8265420457426301,
+            "slipping": false,
+            "broken": false,
+            "force": 217.3410881539896
+          }
+        ]
+      },
+      "checks": {
+        "maxMomentumResidual": 8.891176158959282e-13,
+        "maxSpinImpulseResidual": 1.0685896612017132e-14,
+        "maxWorkResidual": 2.9949376312288223e-12,
+        "maxMotorWorkResidual": 3.552713678800501e-15,
+        "maxGroundResidual": 0,
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxMotorWorkExcess": 0
+      },
+      "outcome": {
+        "t": 3.65,
+        "phase": "dead",
+        "censored": false,
+        "yards": 1.57,
+        "fingerprint": "97cbd7de7c3520eda312acd14d5618191cc3067f6c902fa251b2346b93a6b3d0",
+        "exactSavedNativeEnding": true
+      }
+    },
+    {
+      "variant": {
+        "id": "weak",
+        "case": "tite",
+        "scale": 0.05,
+        "substeps": null
+      },
+      "prefix": "ab74a3f053b7b9c7ed860b040d48970e1c74895171b8c016d2a619a4398e8587",
+      "acquisition": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 14,
+        "pos": {
+          "x": 41.06,
+          "y": 22.26
+        },
+        "note": "grasp"
+      },
+      "acquiredJoint": {
+        "kind": "grasp",
+        "reach": 1.570818181818182,
+        "capacity": 3381.5916637787336,
+        "legs": 0.01385084940010664,
+        "pull": 2.020408163265306,
+        "hold": 0.7011540389825319,
+        "origin": "block",
+        "a": 14,
+        "b": 6
+      },
+      "interval": [
+        2.8,
+        3
+      ],
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "massKg": 139.70644996000001,
+          "before": {
+            "pos": {
+              "x": 41.52979823148357,
+              "y": 22.779530888297742
+            },
+            "vel": {
+              "x": -1.5908924588358215,
+              "y": -1.6561529764892935
+            },
+            "spin": -2.300911377036545,
+            "facing": 1.4412839717137502,
+            "support": {
+              "xi": {
+                "x": -0.06490063736211325,
+                "y": 0.09446979287176707
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.271135793400916,
+              "y": 22.501235434453157
+            },
+            "vel": {
+              "x": -0.8613801510412752,
+              "y": -1.195935036746246
+            },
+            "spin": -1.7951024918910057,
+            "facing": 1.6865258542833663,
+            "support": {
+              "xi": {
+                "x": -0.04634849468739754,
+                "y": 0.0738658958438998
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 2.296471531962683,
+          "finalSpeed": 1.4738508665143617,
+          "parts": {
+            "supported-grasp-active": {
+              "x": 4.958603766098724,
+              "y": -31.83152593486952,
+              "l": 6.8497261341378816e-18,
+              "work": 40.30031972739543,
+              "projectedDeltaSpeed": 0.1827346438185498
+            },
+            "supported-grasp-passive": {
+              "x": 0.500027709068709,
+              "y": -0.43375540060289625,
+              "l": 0.4613020932930531,
+              "work": -0.9841013325857331,
+              "projectedDeltaSpeed": 0.004733159206641739
+            },
+            "ground": {
+              "x": 96.64357457531719,
+              "y": 99.09408513962323,
+              "l": 2.0496935180815647,
+              "work": -264.05989599989834,
+              "projectedDeltaSpeed": 0.012477398723677606
+            },
+            "body-contact": {
+              "x": -0.18463132638169805,
+              "y": -2.5333892347445097,
+              "l": -0.2674769647857532,
+              "work": 3.4960067790592264,
+              "projectedDeltaSpeed": 0.01153876183880143
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000007,
+            "minAvailability": 1,
+            "maxTranslationForce": 818.4494761814207,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        },
+        {
+          "slot": "RB",
+          "massKg": 99.33672903,
+          "before": {
+            "pos": {
+              "x": 41.05938839264963,
+              "y": 22.259596690624857
+            },
+            "vel": {
+              "x": 5.00925761446709,
+              "y": -4.7637800239710915
+            },
+            "spin": 4.739170599850761,
+            "facing": -0.7481369132149657,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 42.12771991311598,
+              "y": 21.357519938580104
+            },
+            "vel": {
+              "x": 5.605032869786463,
+              "y": -4.308855231827176
+            },
+            "spin": -3.1496509020637693,
+            "facing": -0.3874907884343363,
+            "support": {
+              "xi": {
+                "x": 0.02286432069897689,
+                "y": -0.057278713979467266
+              },
+              "state": "up",
+              "feetLock": 0,
+              "foot": {
+                "anchor": {
+                  "x": 42.116334914603094,
+                  "y": 21.389422847875913
+                },
+                "offset": {
+                  "x": -0.011384998512887644,
+                  "y": 0.03190290929581062
+                },
+                "target": {
+                  "x": 42.09376725886054,
+                  "y": 21.406358618703134
+                },
+                "desired": {
+                  "x": 0,
+                  "y": 0
+                },
+                "achieved": {
+                  "x": -0.18339122907603728,
+                  "y": 0.24600712304471364
+                },
+                "force": {
+                  "x": -50.95211173521514,
+                  "y": 68.34886534206065
+                },
+                "capacity": 1020.6331523813478,
+                "mobility": 0.0035992861302603855,
+                "state": "supported"
+              }
+            }
+          },
+          "initialSpeed": 6.91276080628301,
+          "finalSpeed": 7.069839240055681,
+          "parts": {
+            "supported-grasp-active": {
+              "x": -4.958603766098724,
+              "y": 31.83152593486952,
+              "l": 0.028042564469710797,
+              "work": -172.1957169359871,
+              "projectedDeltaSpeed": -0.2569966680187824
+            },
+            "supported-grasp-passive": {
+              "x": -0.500027709068709,
+              "y": 0.43375540060289625,
+              "l": 0,
+              "work": -4.574040836707987,
+              "projectedDeltaSpeed": -0.006656680528062356
+            },
+            "ground": {
+              "x": 64.64099657560757,
+              "y": 12.925459470756929,
+              "l": -14.892938742505482,
+              "work": 274.04558835591365,
+              "projectedDeltaSpeed": 0.3818738569510264
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000007,
+            "minAvailability": 1,
+            "maxTranslationForce": 366.9572158974714,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 1.0000000000000007,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 1.0000000000000007,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 48,
+            "maxForce": 85.25071896368374,
+            "maxAbsoluteVelocityDeficit": 0.30684173036071294,
+            "maxOffset": 0.03387349720172356,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": -2.18238363681698,
+            "motorWorkLimit": 0
+          }
+        }
+      ],
+      "grip": {
+        "selectedRowCount": 48,
+        "maxSharedCapacityFraction": 1,
+        "maxCapacityExcess": 0,
+        "maxDoseResidual": 0,
+        "firstSlippingTick": 2.8,
+        "firstBrokenTick": 3,
+        "trace": [
+          {
+            "t": 2.8,
+            "capacity": 169.07958318893668,
+            "actualCapacity": 169.07958318893668,
+            "legs": 0.16524276600078794,
+            "slipping": true,
+            "broken": false,
+            "force": 169.0795831889367
+          },
+          {
+            "t": 2.85,
+            "capacity": 177.61670475712276,
+            "actualCapacity": 177.61670475712276,
+            "legs": 0.2933932566994287,
+            "slipping": true,
+            "broken": false,
+            "force": 177.61670475712273
+          },
+          {
+            "t": 2.9,
+            "capacity": 185.18952823333296,
+            "actualCapacity": 185.18952823333296,
+            "legs": 0.40187030511159283,
+            "slipping": true,
+            "broken": false,
+            "force": 185.18952823333296
+          },
+          {
+            "t": 2.95,
+            "capacity": 175.21002095741085,
+            "actualCapacity": 175.21002095741085,
+            "legs": 0.4936941441625642,
+            "slipping": true,
+            "broken": false,
+            "force": 175.21002095741088
+          },
+          {
+            "t": 3,
+            "capacity": 77.81056218602194,
+            "actualCapacity": 0,
+            "legs": 0.5341761252426478,
+            "slipping": true,
+            "broken": true,
+            "force": 38.90528109301096
+          },
+          {
+            "t": 3.05,
+            "capacity": 3.8905281093010973,
+            "actualCapacity": 0,
+            "legs": 0.5341761252426478,
+            "slipping": true,
+            "broken": true,
+            "force": 38.90528109301096
+          },
+          {
+            "t": 3.1,
+            "capacity": 0.19452640546505487,
+            "actualCapacity": 0,
+            "legs": 0.5341761252426478,
+            "slipping": true,
+            "broken": true,
+            "force": 38.90528109301096
+          },
+          {
+            "t": 3.15,
+            "capacity": 0.009726320273252743,
+            "actualCapacity": 0,
+            "legs": 0.5341761252426478,
+            "slipping": true,
+            "broken": true,
+            "force": 38.90528109301096
+          }
+        ]
+      },
+      "checks": {
+        "maxMomentumResidual": 2.598160991577936e-13,
+        "maxSpinImpulseResidual": 5.329070518200751e-15,
+        "maxWorkResidual": 1.3535839116229909e-12,
+        "maxMotorWorkResidual": 5.551115123125783e-17,
+        "maxGroundResidual": 1.262177448353619e-29,
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxMotorWorkExcess": 0
+      },
+      "outcome": {
+        "t": 3.2,
+        "phase": "live",
+        "censored": true,
+        "yards": null,
+        "fingerprint": "6b3190da79fbb49c105bd834c6b56c9f44604b9fd5ca20f1a20b85db64ca30a3",
+        "exactSavedNativeEnding": false
+      }
+    },
+    {
+      "variant": {
+        "id": "tiny",
+        "case": "tite",
+        "scale": 0.001,
+        "substeps": null
+      },
+      "prefix": "ab74a3f053b7b9c7ed860b040d48970e1c74895171b8c016d2a619a4398e8587",
+      "acquisition": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 14,
+        "pos": {
+          "x": 41.06,
+          "y": 22.26
+        },
+        "note": "grasp"
+      },
+      "acquiredJoint": {
+        "kind": "grasp",
+        "reach": 1.570818181818182,
+        "capacity": 3381.5916637787336,
+        "legs": 0.01385084940010664,
+        "pull": 2.020408163265306,
+        "hold": 0.7011540389825319,
+        "origin": "block",
+        "a": 14,
+        "b": 6
+      },
+      "interval": [
+        2.8,
+        3
+      ],
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "massKg": 139.70644996000001,
+          "before": {
+            "pos": {
+              "x": 41.52979823148357,
+              "y": 22.779530888297742
+            },
+            "vel": {
+              "x": -1.5908924588358215,
+              "y": -1.6561529764892935
+            },
+            "spin": -2.300911377036545,
+            "facing": 1.4412839717137502,
+            "support": {
+              "xi": {
+                "x": -0.06490063736211325,
+                "y": 0.09446979287176707
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.27191947777923,
+              "y": 22.51200377498983
+            },
+            "vel": {
+              "x": -0.8999644682777836,
+              "y": -1.0786937970700436
+            },
+            "spin": -2.165147383382121,
+            "facing": 1.6294838771326994,
+            "support": {
+              "xi": {
+                "x": -0.04239062213890644,
+                "y": 0.06576141243045569
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 2.296471531962683,
+          "finalSpeed": 1.4048189748148698,
+          "parts": {
+            "supported-grasp-active": {
+              "x": 0.08434137603187387,
+              "y": -0.6401160838347064,
+              "l": -2.7452855108780033e-18,
+              "work": 0.7964334207542908,
+              "projectedDeltaSpeed": 0.0035949611720745792
+            },
+            "supported-grasp-passive": {
+              "x": 0,
+              "y": 0,
+              "l": 0,
+              "work": 0,
+              "projectedDeltaSpeed": 0
+            },
+            "body-contact": {
+              "x": -0.65829525712693,
+              "y": -12.227465453773043,
+              "l": -1.2517933274232924,
+              "work": 17.39759955513496,
+              "projectedDeltaSpeed": 0.05689978916567397
+            },
+            "ground": {
+              "x": 97.10105061995495,
+              "y": 93.54235349108598,
+              "l": 1.853975416833272,
+              "work": -250.07288694915735,
+              "projectedDeltaSpeed": 0.042235231803348997
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000009,
+            "minAvailability": 1,
+            "maxTranslationForce": 805.0324358292415,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        },
+        {
+          "slot": "RB",
+          "massKg": 99.33672903,
+          "before": {
+            "pos": {
+              "x": 41.05938839264963,
+              "y": 22.259596690624857
+            },
+            "vel": {
+              "x": 5.00925761446709,
+              "y": -4.7637800239710915
+            },
+            "spin": 4.739170599850761,
+            "facing": -0.7481369132149657,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 42.12652488363851,
+              "y": 21.32829569443884
+            },
+            "vel": {
+              "x": 5.644598126418511,
+              "y": -4.548969591407162
+            },
+            "spin": -3.1729148087096046,
+            "facing": -0.38749999655424966,
+            "support": {
+              "xi": {
+                "x": 0.00043037059561670127,
+                "y": -0.0011331045987114552
+              },
+              "state": "up",
+              "feetLock": 0,
+              "foot": {
+                "anchor": {
+                  "x": 42.126310924918236,
+                  "y": 21.328927821652556
+                },
+                "offset": {
+                  "x": -0.00021395872027047148,
+                  "y": 0.0006321272137172295
+                },
+                "target": {
+                  "x": 42.10283190865052,
+                  "y": 21.347871075562647
+                },
+                "desired": {
+                  "x": 0,
+                  "y": 0
+                },
+                "achieved": {
+                  "x": -0.0034264429389133416,
+                  "y": 0.004792960022958912
+                },
+                "force": {
+                  "x": -0.9519784798730242,
+                  "y": 1.3316418449377827
+                },
+                "capacity": 1037.831456154843,
+                "mobility": 0.0035992861302603855,
+                "state": "supported"
+              }
+            }
+          },
+          "initialSpeed": 6.91276080628301,
+          "finalSpeed": 7.249456003888459,
+          "parts": {
+            "supported-grasp-active": {
+              "x": -0.08434137603187387,
+              "y": 0.6401160838347064,
+              "l": 0.00001059594688689121,
+              "work": -3.477609168720152,
+              "projectedDeltaSpeed": -0.005055927127849181
+            },
+            "supported-grasp-passive": {
+              "x": 0,
+              "y": 0,
+              "l": 0,
+              "work": 0,
+              "projectedDeltaSpeed": 0
+            },
+            "ground": {
+              "x": 63.19698965353274,
+              "y": 20.698449648586696,
+              "l": -14.90874292326071,
+              "work": 228.6383301738136,
+              "projectedDeltaSpeed": 0.31741660474899125
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000009,
+            "minAvailability": 1,
+            "maxTranslationForce": 352.53267989528047,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 1.0000000000000009,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 1.0000000000000009,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 48,
+            "maxForce": 1.6369279242931423,
+            "maxAbsoluteVelocityDeficit": 0.005891771974144229,
+            "maxOffset": 0.0006673553388575578,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": -0.0008385249556598741,
+            "motorWorkLimit": 0
+          }
+        }
+      ],
+      "grip": {
+        "selectedRowCount": 48,
+        "maxSharedCapacityFraction": 1,
+        "maxCapacityExcess": 0,
+        "maxDoseResidual": 0,
+        "firstSlippingTick": 2.8,
+        "firstBrokenTick": 3,
+        "trace": [
+          {
+            "t": 2.8,
+            "capacity": 3.3815916637787335,
+            "actualCapacity": 3.3815916637787335,
+            "legs": 0.16524276600078794,
+            "slipping": true,
+            "broken": false,
+            "force": 3.3815916637787327
+          },
+          {
+            "t": 2.85,
+            "capacity": 3.552334095142455,
+            "actualCapacity": 3.552334095142455,
+            "legs": 0.2933932566994287,
+            "slipping": true,
+            "broken": false,
+            "force": 3.5523340951424536
+          },
+          {
+            "t": 2.9,
+            "capacity": 3.7037905646666593,
+            "actualCapacity": 3.7037905646666593,
+            "legs": 0.40187030511159283,
+            "slipping": true,
+            "broken": false,
+            "force": 3.7037905646666602
+          },
+          {
+            "t": 2.95,
+            "capacity": 3.3639212148266724,
+            "actualCapacity": 3.3639212148266724,
+            "legs": 0.4936941441625642,
+            "slipping": true,
+            "broken": false,
+            "force": 3.363921214826671
+          },
+          {
+            "t": 3,
+            "capacity": 1.4124744835158645,
+            "actualCapacity": 0,
+            "legs": 0.5210551815076339,
+            "slipping": true,
+            "broken": true,
+            "force": 0.4708248278386215
+          },
+          {
+            "t": 3.05,
+            "capacity": 0.0014124744835158644,
+            "actualCapacity": 0,
+            "legs": 0.5210551815076339,
+            "slipping": true,
+            "broken": true,
+            "force": 0.4708248278386215
+          },
+          {
+            "t": 3.1,
+            "capacity": 0.0000014124744835158646,
+            "actualCapacity": 0,
+            "legs": 0.5210551815076339,
+            "slipping": true,
+            "broken": true,
+            "force": 0.4708248278386215
+          },
+          {
+            "t": 3.15,
+            "capacity": 1.4124744835158647e-9,
+            "actualCapacity": 0,
+            "legs": 0.5210551815076339,
+            "slipping": true,
+            "broken": true,
+            "force": 0.4708248278386215
+          }
+        ]
+      },
+      "checks": {
+        "maxMomentumResidual": 7.553637635446914e-13,
+        "maxSpinImpulseResidual": 8.881784197001252e-15,
+        "maxWorkResidual": 1.6675549829869851e-12,
+        "maxMotorWorkResidual": 3.3881317890172014e-20,
+        "maxGroundResidual": 1.262177448353619e-29,
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxMotorWorkExcess": 0
+      },
+      "outcome": {
+        "t": 3.2,
+        "phase": "live",
+        "censored": true,
+        "yards": null,
+        "fingerprint": "f6bbe288b52c59c78cfc368ced47bc5ced56fab963e3226e4e93f61dfa233c1a",
+        "exactSavedNativeEnding": false
+      }
+    },
+    {
+      "variant": {
+        "id": "zero",
+        "case": "tite",
+        "scale": 0,
+        "substeps": null
+      },
+      "prefix": "ab74a3f053b7b9c7ed860b040d48970e1c74895171b8c016d2a619a4398e8587",
+      "acquisition": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 14,
+        "pos": {
+          "x": 41.06,
+          "y": 22.26
+        },
+        "note": "grasp"
+      },
+      "acquiredJoint": {
+        "kind": "grasp",
+        "reach": 1.570818181818182,
+        "capacity": 3381.5916637787336,
+        "legs": 0.01385084940010664,
+        "pull": 2.020408163265306,
+        "hold": 0.7011540389825319,
+        "origin": "block",
+        "a": 14,
+        "b": 6
+      },
+      "interval": [
+        2.8,
+        3
+      ],
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "massKg": 139.70644996000001,
+          "before": {
+            "pos": {
+              "x": 41.52979823148357,
+              "y": 22.779530888297742
+            },
+            "vel": {
+              "x": -1.5908924588358215,
+              "y": -1.6561529764892935
+            },
+            "spin": -2.300911377036545,
+            "facing": 1.4412839717137502,
+            "support": {
+              "xi": {
+                "x": -0.06490063736211325,
+                "y": 0.09446979287176707
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.24505919242579,
+              "y": 22.45808257030888
+            },
+            "vel": {
+              "x": -1.285195963957846,
+              "y": -1.523443083106126
+            },
+            "spin": -1.8844451068345887,
+            "facing": 1.6142299279718848,
+            "support": {
+              "xi": {
+                "x": -0.04817160024111707,
+                "y": 0.05790764621205855
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 2.296471531962683,
+          "finalSpeed": 1.9931401087824798,
+          "parts": {
+            "body-contact": {
+              "x": 0.05281376515755908,
+              "y": -8.50364530682455,
+              "l": -0.9102069226560181,
+              "work": 12.450198394193697,
+              "projectedDeltaSpeed": 0.04221977363774844
+            },
+            "ground": {
+              "x": 73.5517430782625,
+              "y": 65.76798765387915,
+              "l": 3.2554337582839814,
+              "work": -199.7549824700099,
+              "projectedDeltaSpeed": 0.05709033199878028
+            },
+            "hands": {
+              "x": -30.89678477880277,
+              "y": -38.72391426792203,
+              "l": -0.4979879469624193,
+              "work": 92.54790701485916,
+              "projectedDeltaSpeed": 0.030755403759387994
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000009,
+            "minAvailability": 1,
+            "maxTranslationForce": 1193.3857459239257,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        },
+        {
+          "slot": "RB",
+          "massKg": 99.33672903,
+          "before": {
+            "pos": {
+              "x": 41.05938839264963,
+              "y": 22.259596690624857
+            },
+            "vel": {
+              "x": 5.00925761446709,
+              "y": -4.7637800239710915
+            },
+            "spin": 4.739170599850761,
+            "facing": -0.7481369132149657,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 42.12602924862496,
+              "y": 21.32699294940439
+            },
+            "vel": {
+              "x": 5.635947234328954,
+              "y": -4.5690365119307055
+            },
+            "spin": -5.46701259978167,
+            "facing": -0.36809942884586433,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 6.91276080628301,
+          "finalSpeed": 7.25534257464774,
+          "parts": {
+            "ground": {
+              "x": 62.25329695413149,
+              "y": 19.345183485906816,
+              "l": -19.23149783522542,
+              "work": 248.07577105419614,
+              "projectedDeltaSpeed": 0.3199205874061878
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000013,
+            "minAvailability": 1,
+            "maxTranslationForce": 352.53267989528047,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        }
+      ],
+      "grip": {
+        "selectedRowCount": 0,
+        "maxSharedCapacityFraction": 0,
+        "maxCapacityExcess": 0,
+        "maxDoseResidual": 0,
+        "firstSlippingTick": null,
+        "firstBrokenTick": 2.8,
+        "trace": [
+          {
+            "t": 2.8,
+            "capacity": 0,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true,
+            "force": 0
+          },
+          {
+            "t": 2.85,
+            "capacity": 0,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true,
+            "force": 0
+          },
+          {
+            "t": 2.9,
+            "capacity": 0,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true,
+            "force": 0
+          },
+          {
+            "t": 2.95,
+            "capacity": 0,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true,
+            "force": 0
+          },
+          {
+            "t": 3,
+            "capacity": 0,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true,
+            "force": 0
+          },
+          {
+            "t": 3.05,
+            "capacity": 0,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true,
+            "force": 0
+          },
+          {
+            "t": 3.1,
+            "capacity": 0,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true,
+            "force": 0
+          },
+          {
+            "t": 3.15,
+            "capacity": 0,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true,
+            "force": 0
+          }
+        ]
+      },
+      "checks": {
+        "maxMomentumResidual": 6.915716726979932e-13,
+        "maxSpinImpulseResidual": 4.884981308350689e-15,
+        "maxWorkResidual": 2.1955770534987096e-12,
+        "maxMotorWorkResidual": 0,
+        "maxGroundResidual": 1.7763568394002505e-15,
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxMotorWorkExcess": 0
+      },
+      "outcome": {
+        "t": 3.2,
+        "phase": "live",
+        "censored": true,
+        "yards": null,
+        "fingerprint": "6b7b1602b839547f616a37cfd319ba0d76b40df2ff231e283405d484ffd47c0f",
+        "exactSavedNativeEnding": false
+      }
+    },
+    {
+      "variant": {
+        "id": "removed",
+        "case": "tite",
+        "scale": 1,
+        "substeps": null,
+        "remove": true
+      },
+      "prefix": "ab74a3f053b7b9c7ed860b040d48970e1c74895171b8c016d2a619a4398e8587",
+      "acquisition": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 14,
+        "pos": {
+          "x": 41.06,
+          "y": 22.26
+        },
+        "note": "grasp"
+      },
+      "acquiredJoint": {
+        "kind": "grasp",
+        "reach": 1.570818181818182,
+        "capacity": 3381.5916637787336,
+        "legs": 0.01385084940010664,
+        "pull": 2.020408163265306,
+        "hold": 0.7011540389825319,
+        "origin": "block",
+        "a": 14,
+        "b": 6
+      },
+      "interval": [
+        2.8,
+        3
+      ],
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "massKg": 139.70644996000001,
+          "before": {
+            "pos": {
+              "x": 41.52979823148357,
+              "y": 22.779530888297742
+            },
+            "vel": {
+              "x": -1.5908924588358215,
+              "y": -1.6561529764892935
+            },
+            "spin": -2.300911377036545,
+            "facing": 1.4412839717137502,
+            "support": {
+              "xi": {
+                "x": -0.06490063736211325,
+                "y": 0.09446979287176707
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.24505919242579,
+              "y": 22.45808257030888
+            },
+            "vel": {
+              "x": -1.285195963957846,
+              "y": -1.523443083106126
+            },
+            "spin": -1.8844451068345887,
+            "facing": 1.6142299279718848,
+            "support": {
+              "xi": {
+                "x": -0.04817160024111707,
+                "y": 0.05790764621205855
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 2.296471531962683,
+          "finalSpeed": 1.9931401087824798,
+          "parts": {
+            "body-contact": {
+              "x": 0.05281376515755908,
+              "y": -8.50364530682455,
+              "l": -0.9102069226560181,
+              "work": 12.450198394193697,
+              "projectedDeltaSpeed": 0.04221977363774844
+            },
+            "ground": {
+              "x": 73.5517430782625,
+              "y": 65.76798765387915,
+              "l": 3.2554337582839814,
+              "work": -199.7549824700099,
+              "projectedDeltaSpeed": 0.05709033199878028
+            },
+            "hands": {
+              "x": -30.89678477880277,
+              "y": -38.72391426792203,
+              "l": -0.4979879469624193,
+              "work": 92.54790701485916,
+              "projectedDeltaSpeed": 0.030755403759387994
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000009,
+            "minAvailability": 1,
+            "maxTranslationForce": 1193.3857459239257,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        },
+        {
+          "slot": "RB",
+          "massKg": 99.33672903,
+          "before": {
+            "pos": {
+              "x": 41.05938839264963,
+              "y": 22.259596690624857
+            },
+            "vel": {
+              "x": 5.00925761446709,
+              "y": -4.7637800239710915
+            },
+            "spin": 4.739170599850761,
+            "facing": -0.7481369132149657,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 42.12602924862496,
+              "y": 21.32699294940439
+            },
+            "vel": {
+              "x": 5.635947234328954,
+              "y": -4.5690365119307055
+            },
+            "spin": -5.46701259978167,
+            "facing": -0.36809942884586433,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 6.91276080628301,
+          "finalSpeed": 7.25534257464774,
+          "parts": {
+            "ground": {
+              "x": 62.25329695413149,
+              "y": 19.345183485906816,
+              "l": -19.23149783522542,
+              "work": 248.07577105419614,
+              "projectedDeltaSpeed": 0.3199205874061878
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000013,
+            "minAvailability": 1,
+            "maxTranslationForce": 352.53267989528047,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        }
+      ],
+      "grip": {
+        "selectedRowCount": 0,
+        "maxSharedCapacityFraction": 0,
+        "maxCapacityExcess": 0,
+        "maxDoseResidual": 0,
+        "firstSlippingTick": null,
+        "firstBrokenTick": 2.8,
+        "trace": [
+          {
+            "t": 2.8,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true
+          },
+          {
+            "t": 2.85,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true
+          },
+          {
+            "t": 2.9,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true
+          },
+          {
+            "t": 2.95,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true
+          },
+          {
+            "t": 3,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true
+          },
+          {
+            "t": 3.05,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true
+          },
+          {
+            "t": 3.1,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true
+          },
+          {
+            "t": 3.15,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 0,
+            "legs": 0.01385084940010664,
+            "broken": true
+          }
+        ]
+      },
+      "checks": {
+        "maxMomentumResidual": 6.915716726979932e-13,
+        "maxSpinImpulseResidual": 4.884981308350689e-15,
+        "maxWorkResidual": 2.1955770534987096e-12,
+        "maxMotorWorkResidual": 0,
+        "maxGroundResidual": 1.7763568394002505e-15,
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxMotorWorkExcess": 0
+      },
+      "outcome": {
+        "t": 3.2,
+        "phase": "live",
+        "censored": true,
+        "yards": null,
+        "fingerprint": "6b7b1602b839547f616a37cfd319ba0d76b40df2ff231e283405d484ffd47c0f",
+        "exactSavedNativeEnding": false
+      }
+    },
+    {
+      "variant": {
+        "id": "refine48",
+        "case": "tite",
+        "scale": 1,
+        "substeps": 48
+      },
+      "prefix": "ab74a3f053b7b9c7ed860b040d48970e1c74895171b8c016d2a619a4398e8587",
+      "acquisition": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 14,
+        "pos": {
+          "x": 41.06,
+          "y": 22.26
+        },
+        "note": "grasp"
+      },
+      "acquiredJoint": {
+        "kind": "grasp",
+        "reach": 1.570818181818182,
+        "capacity": 3381.5916637787336,
+        "legs": 0.01385084940010664,
+        "pull": 2.020408163265306,
+        "hold": 0.7011540389825319,
+        "origin": "block",
+        "a": 14,
+        "b": 6
+      },
+      "interval": [
+        2.8,
+        3
+      ],
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "massKg": 139.70644996000001,
+          "before": {
+            "pos": {
+              "x": 41.52979823148357,
+              "y": 22.779530888297742
+            },
+            "vel": {
+              "x": -1.5908924588358215,
+              "y": -1.6561529764892935
+            },
+            "spin": -2.300911377036545,
+            "facing": 1.4412839717137502,
+            "support": {
+              "xi": {
+                "x": -0.06490063736211325,
+                "y": 0.09446979287176707
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.392071276061024,
+              "y": 22.20709284134751
+            },
+            "vel": {
+              "x": 0.6217506577309435,
+              "y": -3.9418781388353623
+            },
+            "spin": 6.696180804264819,
+            "facing": 2.989507319879919,
+            "support": {
+              "xi": {
+                "x": 0.15678199708608853,
+                "y": -0.14146877305997277
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 2.296471531962683,
+          "finalSpeed": 3.9906111238527116,
+          "parts": {
+            "supported-grasp-active": {
+              "x": 46.85544108211009,
+              "y": -223.48485658613959,
+              "l": 2.9567101552330946e-16,
+              "work": 665.9389215184019,
+              "projectedDeltaSpeed": 1.3454143278053137
+            },
+            "supported-grasp-passive": {
+              "x": 192.16577048740197,
+              "y": -287.0720081417453,
+              "l": 73.19092570205129,
+              "work": 1119.0271509627405,
+              "projectedDeltaSpeed": 2.412775772172367
+            },
+            "ground": {
+              "x": 70.09930327446125,
+              "y": 191.22631671227165,
+              "l": -33.28426398332615,
+              "work": -953.2454417082566,
+              "projectedDeltaSpeed": -0.5796639128048494
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.0000000000000109,
+            "minAvailability": 0.9959554156300646,
+            "maxTranslationForce": 1390.076726808074,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        },
+        {
+          "slot": "RB",
+          "massKg": 99.33672903,
+          "before": {
+            "pos": {
+              "x": 41.05938839264963,
+              "y": 22.259596690624857
+            },
+            "vel": {
+              "x": 5.00925761446709,
+              "y": -4.7637800239710915
+            },
+            "spin": 4.739170599850761,
+            "facing": -0.7481369132149657,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.971900846154504,
+              "y": 21.765248635734785
+            },
+            "vel": {
+              "x": 3.548913819276465,
+              "y": -0.32129177739107073
+            },
+            "spin": -1.156492809544081,
+            "facing": -0.25339640518510603,
+            "support": {
+              "xi": {
+                "x": 0.005827754225792459,
+                "y": 0.3286562317874153
+              },
+              "state": "up",
+              "feetLock": 0,
+              "foot": {
+                "anchor": {
+                  "x": 41.901206832203655,
+                  "y": 21.9605126034555
+                },
+                "offset": {
+                  "x": -0.07069401395085022,
+                  "y": 0.19526396772071142
+                },
+                "target": {
+                  "x": 41.90201700649389,
+                  "y": 22.13033467614469
+                },
+                "desired": {
+                  "x": 0.026041685111094975,
+                  "y": 1.1627086895882572
+                },
+                "achieved": {
+                  "x": -0.6485560165425027,
+                  "y": 1.811052740311827
+                },
+                "force": {
+                  "x": -187.42541638521936,
+                  "y": 180.13128916668433
+                },
+                "capacity": 595.5742473216145,
+                "mobility": 0.0035992861302603855,
+                "state": "placing"
+              }
+            }
+          },
+          "initialSpeed": 6.91276080628301,
+          "finalSpeed": 3.563427802393446,
+          "parts": {
+            "supported-grasp-active": {
+              "x": -46.85544108211009,
+              "y": 223.48485658613959,
+              "l": 0.333602598794167,
+              "work": -736.6690030780215,
+              "projectedDeltaSpeed": -1.8921808811143228
+            },
+            "supported-grasp-passive": {
+              "x": -192.16577048740197,
+              "y": 287.0720081417453,
+              "l": 0.6302480069392136,
+              "work": -1542.5608048214017,
+              "projectedDeltaSpeed": -3.3933102183976667
+            },
+            "ground": {
+              "x": 93.95543569601905,
+              "y": -69.25461355840503,
+              "l": -12.073041561572593,
+              "work": 516.5537758495741,
+              "projectedDeltaSpeed": 1.1658237423399047
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.000000000000004,
+            "minAvailability": 0.9438185484182336,
+            "maxTranslationForce": 906.4441218113793,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 1.000000000000004,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 1.0003805477726457,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 192,
+            "maxForce": 348.1338283121038,
+            "maxAbsoluteVelocityDeficit": 1.2530332597182057,
+            "maxOffset": 0.20766718734195358,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 1.5700924586837752e-16,
+            "motorWork": -58.75891194713263,
+            "motorWorkLimit": 73.9012585470452
+          }
+        }
+      ],
+      "grip": {
+        "selectedRowCount": 192,
+        "maxSharedCapacityFraction": 1.0000000000000002,
+        "maxCapacityExcess": 4.440892098500626e-16,
+        "maxDoseResidual": 1.9860273225978185e-15,
+        "firstSlippingTick": 2.85,
+        "firstBrokenTick": null,
+        "trace": [
+          {
+            "t": 2.8,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 3381.5916637787336,
+            "legs": 0.07680969950962842,
+            "slipping": false,
+            "broken": false,
+            "force": 2242.0276768114877
+          },
+          {
+            "t": 2.85,
+            "capacity": 3552.3340951424548,
+            "actualCapacity": 3552.3340951424548,
+            "legs": 0.08954315554744106,
+            "slipping": true,
+            "broken": false,
+            "force": 3024.0155540103597
+          },
+          {
+            "t": 2.9,
+            "capacity": 3703.790564666659,
+            "actualCapacity": 3703.790564666659,
+            "legs": 0.09897785663161393,
+            "slipping": false,
+            "broken": false,
+            "force": 3419.1274493716087
+          },
+          {
+            "t": 2.95,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.09897785663161393,
+            "slipping": false,
+            "broken": false,
+            "force": 3192.7496803610165
+          },
+          {
+            "t": 3,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.09897785663161393,
+            "slipping": false,
+            "broken": false,
+            "force": 2494.214046233932
+          },
+          {
+            "t": 3.05,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.09897785663161393,
+            "slipping": false,
+            "broken": false,
+            "force": 2290.623554536293
+          },
+          {
+            "t": 3.1,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.09897785663161393,
+            "slipping": false,
+            "broken": false,
+            "force": 1999.8906269364866
+          },
+          {
+            "t": 3.15,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.09897785663161393,
+            "slipping": false,
+            "broken": false,
+            "force": 1577.3789506941716
+          }
+        ]
+      },
+      "checks": {
+        "maxMomentumResidual": 8.669786122180565e-13,
+        "maxSpinImpulseResidual": 9.592326932761353e-14,
+        "maxWorkResidual": 3.0127011996228248e-12,
+        "maxMotorWorkResidual": 2.6645352591003757e-15,
+        "maxGroundResidual": 0,
+        "maxArmImpulseExcess": 1.4210854715202004e-14,
+        "maxArmWorkExcess": 0,
+        "maxMotorWorkExcess": 0
+      },
+      "outcome": {
+        "t": 3.2,
+        "phase": "live",
+        "censored": true,
+        "yards": null,
+        "fingerprint": "65b6ad4eb81ab5f52eb0ba85cd6435bbfc8be52f5571c2cc99afb788f32f4cd1",
+        "exactSavedNativeEnding": false
+      }
+    },
+    {
+      "variant": {
+        "id": "refine192",
+        "case": "tite",
+        "scale": 1,
+        "substeps": 192
+      },
+      "prefix": "ab74a3f053b7b9c7ed860b040d48970e1c74895171b8c016d2a619a4398e8587",
+      "acquisition": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 14,
+        "pos": {
+          "x": 41.06,
+          "y": 22.26
+        },
+        "note": "grasp"
+      },
+      "acquiredJoint": {
+        "kind": "grasp",
+        "reach": 1.570818181818182,
+        "capacity": 3381.5916637787336,
+        "legs": 0.01385084940010664,
+        "pull": 2.020408163265306,
+        "hold": 0.7011540389825319,
+        "origin": "block",
+        "a": 14,
+        "b": 6
+      },
+      "interval": [
+        2.8,
+        3
+      ],
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "massKg": 139.70644996000001,
+          "before": {
+            "pos": {
+              "x": 41.52979823148357,
+              "y": 22.779530888297742
+            },
+            "vel": {
+              "x": -1.5908924588358215,
+              "y": -1.6561529764892935
+            },
+            "spin": -2.300911377036545,
+            "facing": 1.4412839717137502,
+            "support": {
+              "xi": {
+                "x": -0.06490063736211325,
+                "y": 0.09446979287176707
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.39289066021728,
+              "y": 22.20625176427335
+            },
+            "vel": {
+              "x": 0.6280978165095343,
+              "y": -3.9562643893684237
+            },
+            "spin": 6.703843910056604,
+            "facing": 2.9881350121882,
+            "support": {
+              "xi": {
+                "x": 0.16336908114766066,
+                "y": -0.15099971538203807
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "initialSpeed": 2.296471531962683,
+          "finalSpeed": 4.005812624885087,
+          "parts": {
+            "supported-grasp-active": {
+              "x": 46.78121979767438,
+              "y": -223.41596660924185,
+              "l": 1.5443052064236227e-16,
+              "work": 668.8002148009479,
+              "projectedDeltaSpeed": 1.3446895388230853
+            },
+            "supported-grasp-passive": {
+              "x": 193.27418206847761,
+              "y": -289.11681646003626,
+              "l": 73.51811657064329,
+              "work": 1128.159259824837,
+              "projectedDeltaSpeed": 2.42861136214993
+            },
+            "ground": {
+              "x": 69.95185199811135,
+              "y": 191.19238306345434,
+              "l": -33.577465095630046,
+              "work": -956.5199186203345,
+              "projectedDeltaSpeed": -0.5802613393087632
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.000000000000046,
+            "minAvailability": 0.9920257806387702,
+            "maxTranslationForce": 1390.4120792664194,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 0,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 0,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 0,
+            "maxForce": 0,
+            "maxAbsoluteVelocityDeficit": 0,
+            "maxOffset": 0,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 0,
+            "motorWork": 0,
+            "motorWorkLimit": 0
+          }
+        },
+        {
+          "slot": "RB",
+          "massKg": 99.33672903,
+          "before": {
+            "pos": {
+              "x": 41.05938839264963,
+              "y": 22.259596690624857
+            },
+            "vel": {
+              "x": 5.00925761446709,
+              "y": -4.7637800239710915
+            },
+            "spin": 4.739170599850761,
+            "facing": -0.7481369132149657,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "feetLock": 0
+            }
+          },
+          "after": {
+            "pos": {
+              "x": 41.97069339170091,
+              "y": 21.766565362453477
+            },
+            "vel": {
+              "x": 3.539418010767598,
+              "y": -0.3003635183979708
+            },
+            "spin": -1.0664961360164809,
+            "facing": -0.2507678072841415,
+            "support": {
+              "xi": {
+                "x": -0.012449837604218167,
+                "y": 0.3572551310596852
+              },
+              "state": "up",
+              "feetLock": 0,
+              "foot": {
+                "anchor": {
+                  "x": 41.90544474747876,
+                  "y": 21.95440742622866
+                },
+                "offset": {
+                  "x": -0.06524864422215353,
+                  "y": 0.18784206377518206
+                },
+                "target": {
+                  "x": 41.89789778409195,
+                  "y": 22.155332809066685
+                },
+                "desired": {
+                  "x": -0.04050117927119425,
+                  "y": 1.201183616158742
+                },
+                "achieved": {
+                  "x": -0.6249350927054281,
+                  "y": 1.761418677627197
+                },
+                "force": {
+                  "x": -162.37495222197126,
+                  "y": 155.6517156995033
+                },
+                "capacity": 599.8806580583739,
+                "mobility": 0.0035992861302603855,
+                "state": "placing"
+              }
+            }
+          },
+          "initialSpeed": 6.91276080628301,
+          "finalSpeed": 3.552139932228243,
+          "parts": {
+            "supported-grasp-active": {
+              "x": -46.78121979767438,
+              "y": 223.41596660924185,
+              "l": 0.2894086404033144,
+              "work": -731.9353105846698,
+              "projectedDeltaSpeed": -1.8911615431849786
+            },
+            "supported-grasp-passive": {
+              "x": -193.27418206847761,
+              "y": 289.11681646003626,
+              "l": 0.5731932912938159,
+              "work": -1548.9438690963266,
+              "projectedDeltaSpeed": -3.415581276448304
+            },
+            "ground": {
+              "x": 94.04634343589426,
+              "y": -69.1515871071308,
+              "l": -11.802212271720418,
+              "work": 514.0253163080492,
+              "projectedDeltaSpeed": 1.1657721688375438
+            }
+          },
+          "ground": {
+            "modes": [
+              "stance"
+            ],
+            "maxStanceDemandFraction": 1.000000000000023,
+            "minAvailability": 0.9284366633097593,
+            "maxTranslationForce": 903.5999259221778,
+            "minCorrectiveCapacity": 0,
+            "maxStructuralGroundAndCorrectiveFraction": 1.000000000000023,
+            "maxAvailabilityScaledGroundAndCorrectiveFraction": 1.0007389351751084,
+            "maxCorrectiveCommandExcess": 0
+          },
+          "correctiveSupport": {
+            "sampled": 768,
+            "maxForce": 310.69852641262037,
+            "maxAbsoluteVelocityDeficit": 1.1182928968092845,
+            "maxOffset": 0.19885177016096373,
+            "maxLockFraction": 0,
+            "maxVelocityLawResidual": 1.5700924586837752e-16,
+            "motorWork": -51.16321646823692,
+            "motorWorkLimit": 72.5015031408146
+          }
+        }
+      ],
+      "grip": {
+        "selectedRowCount": 768,
+        "maxSharedCapacityFraction": 1.0000000000000002,
+        "maxCapacityExcess": 1.1102230246251565e-16,
+        "maxDoseResidual": 6.280369834735101e-16,
+        "firstSlippingTick": null,
+        "firstBrokenTick": null,
+        "trace": [
+          {
+            "t": 2.8,
+            "capacity": 3381.5916637787336,
+            "actualCapacity": 3381.5916637787336,
+            "legs": 0.08000966267973109,
+            "slipping": false,
+            "broken": false,
+            "force": 2250.2080962517393
+          },
+          {
+            "t": 2.85,
+            "capacity": 3552.3340951424548,
+            "actualCapacity": 3552.3340951424548,
+            "legs": 0.08319853413420097,
+            "slipping": false,
+            "broken": false,
+            "force": 3016.028742477977
+          },
+          {
+            "t": 2.9,
+            "capacity": 3703.790564666659,
+            "actualCapacity": 3703.790564666659,
+            "legs": 0.086376352319152,
+            "slipping": false,
+            "broken": false,
+            "force": 3456.7644574052456
+          },
+          {
+            "t": 2.95,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.086376352319152,
+            "slipping": false,
+            "broken": false,
+            "force": 3200.2989346990285
+          },
+          {
+            "t": 3,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.086376352319152,
+            "slipping": false,
+            "broken": false,
+            "force": 2480.5524829426213
+          },
+          {
+            "t": 3.05,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.086376352319152,
+            "slipping": false,
+            "broken": false,
+            "force": 2291.971982462262
+          },
+          {
+            "t": 3.1,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.086376352319152,
+            "slipping": false,
+            "broken": false,
+            "force": 2003.940098617343
+          },
+          {
+            "t": 3.15,
+            "capacity": 3817.3437211139058,
+            "actualCapacity": 3817.3437211139058,
+            "legs": 0.086376352319152,
+            "slipping": false,
+            "broken": false,
+            "force": 1619.2460201366603
+          }
+        ]
+      },
+      "checks": {
+        "maxMomentumResidual": 1.2092594033393202e-12,
+        "maxSpinImpulseResidual": 1.652011860642233e-13,
+        "maxWorkResidual": 5.229594535194337e-12,
+        "maxMotorWorkResidual": 2.6645352591003757e-15,
+        "maxGroundResidual": 0,
+        "maxArmImpulseExcess": 2.7000623958883807e-13,
+        "maxArmWorkExcess": 0,
+        "maxMotorWorkExcess": 0
+      },
+      "outcome": {
+        "t": 3.2,
+        "phase": "live",
+        "censored": true,
+        "yards": null,
+        "fingerprint": "03e14b517156ab99830d86b4679fee984005b804d0d90a6c657d979c7ff0d9ba",
+        "exactSavedNativeEnding": false
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "left": "native",
+      "right": "refine48",
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "positionDifference": 0.0016209745381594559,
+          "velocityDifference": 0.04107379407485442,
+          "speedDifference": 0.03948417671888382,
+          "facingDifference": 0.0004674821955874542,
+          "correctiveSupportDifference": 0.018388197059780804
+        },
+        {
+          "slot": "RB",
+          "positionDifference": 0.00303498676028195,
+          "velocityDifference": 0.05797930535381186,
+          "speedDifference": 0.029055229916818526,
+          "facingDifference": 0.004099627012005724,
+          "correctiveSupportDifference": 0.03828385950322987
+        }
+      ]
+    },
+    {
+      "left": "refine48",
+      "right": "refine192",
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "positionDifference": 0.0011742235903800535,
+          "velocityDifference": 0.015724205193288862,
+          "speedDifference": 0.01520150103237583,
+          "facingDifference": 0.0013723076917191435,
+          "correctiveSupportDifference": 0.011585704034747011
+        },
+        {
+          "slot": "RB",
+          "positionDifference": 0.0017865372957807143,
+          "velocityDifference": 0.022981784171803167,
+          "speedDifference": 0.011287870165202829,
+          "facingDifference": 0.0026285979009645355,
+          "correctiveSupportDifference": 0.0339406452898278
+        }
+      ]
+    },
+    {
+      "left": "tiny",
+      "right": "zero",
+      "bodies": [
+        {
+          "slot": "DT_S",
+          "positionDifference": 0.0602409432488648,
+          "velocityDifference": 0.5883920739553712,
+          "speedDifference": 0.58832113396761,
+          "facingDifference": 0.015253949160814573,
+          "correctiveSupportDifference": 0.009751992187828854
+        },
+        {
+          "slot": "RB",
+          "positionDifference": 0.001393843137316168,
+          "velocityDifference": 0.021852213463248414,
+          "speedDifference": 0.005886570759281007,
+          "facingDifference": 0.01940056770838533,
+          "correctiveSupportDifference": 0.0012120828689460644
+        }
+      ]
+    }
+  ],
+  "powerlessVersusRemoved": {
+    "selectedBodiesAndSupportExactlyEqualThroughSeconds": 0.4
+  },
+  "runtime": {
+    "finalCollectorInternalSeconds": 2.027088342,
+    "attempts": [
+      {
+        "revision": "cb639126abf4b48a1cb486e11882a59c8d2977ff",
+        "path": "out/native-leg-grasp/audit.receipt.json",
+        "exitCode": 0,
+        "seconds": 2.6191418669999997
+      },
+      {
+        "revision": "9046c2ed5e9617072f8df9c40381b5cbaf90dbd8",
+        "path": "out/native-leg-grasp/audit-ground-initial.receipt.json",
+        "exitCode": 0,
+        "seconds": 2.53020724
+      },
+      {
+        "revision": "c0570ebe6eb8dc6a4e753ff558ec128e583335bd",
+        "path": "out/native-leg-grasp/audit-typed.receipt.json",
+        "exitCode": 0,
+        "seconds": 2.7782186689999997
+      },
+      {
+        "revision": "2bf21884f2e129f22c3534d38bec08209ac420b2",
+        "path": "out/native-leg-grasp/audit-ground.receipt.json",
+        "exitCode": 0,
+        "seconds": 2.5394947979999998
+      }
+    ],
+    "scope": "Instrumented replay cost, not an uninstrumented native-runtime benchmark."
+  },
+  "units": {
+    "position": "yd",
+    "velocity": "yd/s",
+    "impulse": "kg yd/s",
+    "angularImpulse": "kg yd²/s",
+    "force": "kg yd/s²",
+    "work": "kg yd²/s²; body energy transfer is not pair dissipation or joules"
+  },
+  "limits": [
+    "Patch contact override on pinned PR79 host; not a current-develop combined validation or default activation.",
+    "Full .2s loaded interval; weak/refined continuations censored at .4s, no eventual gain claim.",
+    "Timestep self-refinement retains the large braking but does not establish a converged independent force-law reference.",
+    "Support placement and slip history remain timestep-sensitive; no tolerance was relaxed and no recovery rule was retuned.",
+    "Finite shared grip capacity and support mobility are existing model assumptions, not validated human grip/leg calibration.",
+    "This local momentum/spin/work ledger does not clear prior global angular-law or moving-geometry failures.",
+    "World replacement remains HOLD; no adapter, universal exactly-once World/fallback/native-cost claim.",
+    "Seven extraction assertions, nine historical patch failures, and older dry-cap budget failure remain separately retained."
+  ]
+}

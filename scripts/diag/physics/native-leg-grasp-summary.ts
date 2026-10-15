@@ -1,7 +1,7 @@
 /** Reduce the saved native audit; this script simulates zero additional plays. */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 const rawPath = 'out/native-leg-grasp/result.json';
 const receiptPath = 'out/native-leg-grasp/audit-ground.receipt.json';
@@ -131,7 +131,7 @@ const result = {
   runtime: {
     finalCollectorInternalSeconds: raw.elapsedSeconds,
     attempts: ['out/native-leg-grasp/audit.receipt.json', 'out/native-leg-grasp/audit-ground-initial.receipt.json',
-      'out/native-leg-grasp/audit-typed.receipt.json', receiptPath].map(path => {
+      'out/native-leg-grasp/audit-typed.receipt.json', receiptPath].filter(existsSync).map(path => {
       const r = read(path);
       return { revision: r.commit, path, exitCode: r.exitCode, seconds: sum(r.commands.map((c: any) => c.elapsedSeconds)) };
     }),
