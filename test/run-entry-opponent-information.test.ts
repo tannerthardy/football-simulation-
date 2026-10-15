@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {describe,expect} from 'vitest';
+import {describe,expect,it} from 'vitest';
 import {alignOffense} from '../src/playbook/alignment.js';
 import {Agent} from '../src/sim/agent.js';
 import {runReadAim} from '../src/sim/behaviors/carrier.js';
