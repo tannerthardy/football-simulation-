@@ -1,0 +1,91 @@
+Profile candidate: run-game-2026-10-13, commit 961415f459420dd393604eb5f5f59a62ac269f2b, source 0ca846c7b495058e65525cb4dedba0027fa6157668c396da0c7fa180b1314eac
+Running node node_modules/vitest/vitest.mjs run --config scripts/diag/contact-law-current-vitest.config.ts test/zone-helper-check.test.ts --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-helper-collection
+
+ ❯ test/zone-helper-check.test.ts (22 tests | 3 failed) 2397ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side -1 197ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side 1 132ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > keeps the helper reading independently of his supported owner's ordinary earlier update 55ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > requires a stable helper check instead of inheriting an owner's historical secure time 39ms
+   × the original inside-zone helper may check a supported owner before climbing > an unjoined helper who loses his footing must confirm the owner again after recovering 175ms
+     → expected false to be true // Object.is equality
+   ✓ a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side -1 265ms
+   ✓ a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side 1 201ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects down despite the owner's stale visible up pose 28ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects unbalanced despite the owner's stale visible up pose 31ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects missing-hands despite the owner's stale visible up pose 59ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects foreign-hands despite the owner's stale visible up pose 28ms
+   ✓ a check does not bypass a physical or near-level responsibility > retains assistance when the owned defender approaches the helper's near hip 40ms
+   ✓ a check does not bypass a physical or near-level responsibility > does not ignore another unengaged near-level penetrator in the helper corridor 31ms
+   ✓ a check does not bypass a physical or near-level responsibility > keeps a physically restrained helper from being treated as a free climber 41ms
+   ✓ a check does not bypass a physical or near-level responsibility > does not send the installed covered owner uphill to manufacture optional help 48ms
+   ✓ helper decisions consume delayed visible responsibility cues > does not climb through a near hip still in his picture merely because the hidden DL has moved away 76ms
+   ✓ helper decisions consume delayed visible responsibility cues > does not anticipate a filling backer whose delayed picture is still far from the helper 21ms
+   ✓ optional inside-zone help respects other concepts and real double teams > retains sustained help for Duo, gap schemes, stretch zone, Draw and Toss 114ms
+   ✓ optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path 34ms
+   × a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands 434ms
+     → expected [] to have a length of 1 but got +0
+   × the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands 118ms
+     → expected 0 to be greater than 0
+   ✓ optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help 226ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/zone-helper-check.test.ts > the original inside-zone helper may check a supported owner before climbing > an unjoined helper who loses his footing must confirm the owner again after recovering
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/zone-helper-check.test.ts:175:24
+    173|     expect(f.engagement.hands).toBe(hands);
+    174|     readUntil(f);
+    175|     expect(checked(f)).toBe(true);
+       |                        ^
+    176|     expect(f.engagement.hands).toBe(hands);
+    177|     expect(f.engagement.helpers).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  test/zone-helper-check.test.ts > a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ test/zone-helper-check.test.ts:396:25
+    394|     };
+    395|     while (!transitions.length && sim.t < 2 && sim.phase !== 'dead') s…
+    396|     expect(transitions).toHaveLength(1);
+       |                         ^
+    397|     const transition = transitions[0];
+    398|     expect(transition.t).toBeLessThan(1.5);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  test/zone-helper-check.test.ts > the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands
+AssertionError: expected 0 to be greater than 0
+ ❯ test/zone-helper-check.test.ts:483:83
+    481|         expect(off / (Math.PI / 2)).toBeLessThan(1.1);
+    482|         expect(owner.body.support!.state).toBe('up');
+    483|         expect(sim.world.joints).toContain(e.hands); expect(e.hands!.n…
+       |                                                                                   ^
+    484|         expect(e.helpers).toEqual([]); retainedReach++;
+    485|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 19 passed (22)
+   Start at  20:00:28
+   Duration  5.25s (transform 1.63s, setup 584ms, collect 1.84s, tests 2.40s, environment 0ms, prepare 133ms)
+
+Validation receipt: out/collection-correction/law-affected.receipt.json; exit 1

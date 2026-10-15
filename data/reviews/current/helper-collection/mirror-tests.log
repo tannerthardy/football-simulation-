@@ -1,0 +1,56 @@
+Profile candidate: run-game-2026-10-13, commit 4f90b6428b98224774bbd63a4adad6bb3e354b53, source 7bde0e32e17435a3c5ec93e0810dedb90621f08a9b7a8aec78f9426d0ef31f7c
+Running node node_modules/vitest/vitest.mjs run --config scripts/diag/contact-law-current-vitest.config.ts --maxWorkers=1 --testNamePattern genuinely lost loaded contact
+
+ RUN  v3.2.4 /workspace/football-helper-collection
+
+ ❯ test/zone-helper-check.test.ts (22 tests | 2 failed | 20 skipped) 186ms
+   ↓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side -1
+   ↓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side 1
+   ↓ the original inside-zone helper may check a supported owner before climbing > keeps the helper reading independently of his supported owner's ordinary earlier update
+   ↓ the original inside-zone helper may check a supported owner before climbing > requires a stable helper check instead of inheriting an owner's historical secure time
+   ↓ the original inside-zone helper may check a supported owner before climbing > an unjoined helper who loses his footing must confirm the owner again after recovering
+   × a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side -1 120ms
+     → expected 0 to be greater than 0
+   × a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side 1 65ms
+     → expected 0 to be greater than 0
+   ↓ a check does not bypass a physical or near-level responsibility > rejects down despite the owner's stale visible up pose
+   ↓ a check does not bypass a physical or near-level responsibility > rejects unbalanced despite the owner's stale visible up pose
+   ↓ a check does not bypass a physical or near-level responsibility > rejects missing-hands despite the owner's stale visible up pose
+   ↓ a check does not bypass a physical or near-level responsibility > rejects foreign-hands despite the owner's stale visible up pose
+   ↓ a check does not bypass a physical or near-level responsibility > retains assistance when the owned defender approaches the helper's near hip
+   ↓ a check does not bypass a physical or near-level responsibility > does not ignore another unengaged near-level penetrator in the helper corridor
+   ↓ a check does not bypass a physical or near-level responsibility > keeps a physically restrained helper from being treated as a free climber
+   ↓ a check does not bypass a physical or near-level responsibility > does not send the installed covered owner uphill to manufacture optional help
+   ↓ helper decisions consume delayed visible responsibility cues > does not climb through a near hip still in his picture merely because the hidden DL has moved away
+   ↓ helper decisions consume delayed visible responsibility cues > does not anticipate a filling backer whose delayed picture is still far from the helper
+   ↓ optional inside-zone help respects other concepts and real double teams > retains sustained help for Duo, gap schemes, stretch zone, Draw and Toss
+   ↓ optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path
+   ↓ a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands
+   ↓ the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands
+   ↓ optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help
+ ↓ test/helper-fit.test.ts (12 tests | 12 skipped)
+ ↓ test/run-hand-control.test.ts (14 tests | 14 skipped)
+ ↓ test/scenario-pack.test.ts (4 tests | 4 skipped)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/zone-helper-check.test.ts > a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side -1
+ FAIL  test/zone-helper-check.test.ts > a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side 1
+AssertionError: expected 0 to be greater than 0
+ ❯ test/zone-helper-check.test.ts:203:43
+    201|     for (let k = 0; k < 4; k++) step(f, true);
+    202|     expect(f.sim.world.joints).toContain(collected!.hands);
+    203|     expect(collected!.hands!.normalForce).toBeGreaterThan(0);
+       |                                           ^
+    204|     expect(f.combination.released).toBe(false); expect(checked(f)).toB…
+    205|     expect(f.sim.events.some(e => e.type === 'block_climb')).toBe(fals…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 3 skipped (4)
+      Tests  2 failed | 50 skipped (52)
+   Start at  19:52:35
+   Duration  1.96s (transform 642ms, setup 266ms, collect 872ms, tests 186ms, environment 1ms, prepare 214ms)
+
+Validation receipt: out/collection-correction/mirrors-focused.receipt.json; exit 1

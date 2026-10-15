@@ -1,0 +1,38 @@
+--- a/src/sim/collection-approach.ts
++++ b/src/sim/collection-approach.ts
+@@ -28,15 +28,6 @@
+   if(off/(Math.PI/2)<1.1)return null;
+   const side=Math.sign(a.pos.y-partner.seen.pos.y)||1;
+   const half={x:down.pos.x-direction*.35,y:down.pos.y+side*.55+placementError};
+-  // The half-man landmark lies beyond first strike. A teammate behind that
+-  // entry need not obstruct collection: don't demand travel through the whole
+-  // landmark when the ordinary controller can acquire hands beforehand.
+-  const ray={x:half.x-a.pos.x,y:half.y-a.pos.y},length2=ray.x*ray.x+ray.y*ray.y;
+-  const relative={x:down.pos.x-a.pos.x,y:down.pos.y-a.pos.y};
+-  const along=relative.x*ray.x+relative.y*ray.y;
+-  const discriminant=along*along-length2*(relative.x*relative.x+relative.y*relative.y-contact*contact);
+-  const entry=length2>1e-12&&discriminant>=0?Math.max(0,(along-Math.sqrt(discriminant))/length2):1;
+-  const strike=entry<1?{x:a.pos.x+entry*ray.x,y:a.pos.y+entry*ray.y}:half;
+   const clear=(goal:Vec2,obstacle:CollectionObstacle)=>[0,horizon].every(dt=>{
+     const point={x:obstacle.seen.pos.x+obstacle.seen.vel.x*dt,y:obstacle.seen.pos.y+obstacle.seen.vel.y*dt};
+     const end={x:goal.x+down.vel.x*dt,y:goal.y+down.vel.y*dt};
+@@ -44,7 +35,7 @@
+     return distanceToSegment(point,a.pos,end)>=Math.min(initial,radius)-1e-9
+       && (initial>=radius||Math.hypot(end.x-point.x,end.y-point.y)>initial);
+   });
+-  if(clear(strike,partner))return null;
++  if(clear(half,partner))return null;
+   // The first strike already permits this extension. Search only the near,
+   // backfield half of that existing envelope, never an upfield shortcut.
+   const dx=a.pos.x-down.pos.x,dy=a.pos.y-down.pos.y,n=Math.hypot(dx,dy)||1;
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1106,7 +1106,7 @@
+     // An unjoined helper collecting the original first-level responsibility
+     // may find its old half occupied by the former owner. Use acquired body
+     // pictures to choose a free strike surface; real hands still require reach.
+-    const combo=plan.kind==='combo'&&plan.combination?.helpPolicy?.kind==='check'?plan.combination:null;
++    const combo=plan.kind==='combo'?plan.combination:null;
+     if(combo&&!combo.released&&combo.members[1]===a&&combo.defender===target&&!target.engagement
+       && !sim.world.joints.some(j=>j.a===a.body||j.b===a.body)){
+       const partner=combo.members[0],read=this.collectionRead;

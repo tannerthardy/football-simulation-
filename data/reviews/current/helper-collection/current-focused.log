@@ -1,0 +1,18 @@
+Profile candidate: run-game-2026-10-13, commit 3b4ea698819074640626a215bf2f06af2735f25a, source f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67
+Running node node_modules/vitest/vitest.mjs run --project core test/collection-approach.test.ts test/zone-helper-check.test.ts test/run-block-fit.test.ts test/run-combo-retarget.test.ts --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-helper-collection-current
+
+ ✓ |core| test/zone-helper-check.test.ts (22 tests) 1957ms
+   ✓ the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands  400ms
+   ✓ optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help  301ms
+ ✓ |core| test/run-block-fit.test.ts (22 tests) 335ms
+ ✓ |core| test/run-combo-retarget.test.ts (17 tests) 121ms
+ ✓ |core| test/collection-approach.test.ts (2 tests) 57ms
+
+ Test Files  4 passed (4)
+      Tests  63 passed (63)
+   Start at  20:00:27
+   Duration  6.42s (transform 1.72s, setup 0ms, collect 2.90s, tests 2.47s, environment 1ms, prepare 300ms)
+
+Validation receipt: out/collection-correction/current-focused.receipt.json; exit 0
