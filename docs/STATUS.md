@@ -23,9 +23,9 @@ Do not use the historical sections below as a current starting-reference pin.
   `4679a3c260188143bcc66f6f20534327c78d7eaa`. Its actual tree equals reviewed1675478;
   reuse1,724 TS/145 Python/typecheck/build passing verification. No reruns.
   Native adverse outcomes and forecast/contact limits remain; [merge receipt](../data/reviews/current/pr72-merge.json).
-- Information-only60223a8 review recommends the isolated opponent-risk correction
-  first, with observation transport deferred until a reviewed consumer needs it.
-  Three selected checks/typecheck pass; full combined verification remains due.
+- User accepted the risk-only information scope. Frozen86a8816 passes
+  1,726 TS/145 Python/typecheck/build; explicit merge authorization remains pending.
+  Observation transport stays deferred until a reviewed consumer needs it.
   [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
   #69 stays with Do-It-All's independent review and physics remains separate.
 - New work starts from accepted develop. Existing owners check relevant

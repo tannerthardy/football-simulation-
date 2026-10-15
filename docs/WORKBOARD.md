@@ -10,13 +10,15 @@ physics, #69 or new flag. Question: can the active information fix compose with
 accepted develop without unused teammate transport? Reuse the author packet;
 run the two extracted contracts, existing Duo declaration control and typecheck.
 User accepted risk-only scope. Three selected checks/typecheck at71d98fc are
-reused; Integration now freezes this identical runtime/tests with current
-tracking and runs all four combined phases once under44 flags/components=1. The initial missing
+reused; Integration froze identical runtime/tests at86a8816 with current tracking.
+All four phases pass:1,726 TS/145 Python/typecheck/build,44 flags/components=1,
+no skipped phases/input drift,188.504s.
+[Final receipt](../data/reviews/current/run-entry-information-review/final-receipt.json). The initial missing
 it import and both failed receipts are retained. No World steps, full suite
 or games for scope selection. No extra game campaign or repeated focused
 loop for the final run. Verification approval does not authorize merging.
 
-## Completed information-only dependency/scope review — 2026-10-15
+## Earlier information-only dependency/scope review — completed stage
 
 Integration reviewed original60223a8/evidence80c9fa4 independently of #72/#69/Physics.
 Recommend risk-only71d98fc on accepted4679a3c; byte-identical carrier hunk, two
@@ -24,9 +26,9 @@ original controls/fixture plus existing Duo control. Three selected checks and
 typecheck pass; retained initial missing-it-import failures;23.675s total,
 zero World steps/games/shared suite. [Published review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
 Observation-only transport is separately portable and already owner-approved;
-no production consumer yet. Navigation is parked. Next decision is the risk-only
-integration scope, followed by one exact combined verification before separate
-merge authorization. Do-It-All supplies independent #69 controller review;
+no production consumer yet. Navigation is parked. This earlier scope decision
+is now accepted by user and all combined phases pass at86a8816; merge
+authorization remains separate. Do-It-All supplies independent #69 controller review;
 no additional candidate was appended to #67/#72 verification.
 
 ## Completed #67 portability review — accepted via #72
