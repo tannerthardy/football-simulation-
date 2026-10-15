@@ -1105,9 +1105,10 @@ export class RunBlocker implements Behavior {
     }
     // An unjoined helper collecting the original first-level responsibility
     // may find its old half occupied by the former owner. Use acquired body
-    // pictures to choose a free strike surface; real hands still require reach.
+    // pictures to choose a free strike surface, never the defender's private
+    // engagement flag. Real hands still require separate physical eligibility.
     const combo=plan.kind==='combo'&&plan.combination?.helpPolicy?.kind==='check'?plan.combination:null;
-    if(combo&&!combo.released&&combo.members[1]===a&&combo.defender===target&&!target.engagement
+    if(combo&&!combo.released&&combo.members[1]===a&&combo.defender===target
       && !sim.world.joints.some(j=>j.a===a.body||j.b===a.body)){
       const partner=combo.members[0],read=this.collectionRead;
       if(!read||read.target!==target||read.partner!==partner||sim.t>=read.nextRead){

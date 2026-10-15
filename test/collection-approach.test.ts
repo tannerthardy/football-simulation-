@@ -66,6 +66,47 @@ describe('free collection respects observed teammate obstruction',()=>{
   expect(sim.events.some(e=>e.type==='block_climb')).toBe(false);
  });
 
+ it('keeps the production approach and held read when only a remote engagement flag changes',()=>{
+  const {sim,helper,owner,defender,combo}=obstruction();
+  // Retain a real former rep as the private-state poison, with no current
+  // joint, new picture or helper contact. Only the remote flag varies below.
+  const oldRep=sim.engage(owner,defender,'run',{x:1,y:0});
+  expect(oldRep).not.toBeNull();sim.disengage(oldRep!);
+  const controller=helper.behavior as RunBlocker;
+  const attack=vi.spyOn(controller as unknown as {attack: (...args:unknown[])=>Intent},'attack');
+  const physical=structuredClone(helper.body),rng=JSON.stringify(sim.rng);
+  const ownerPicture=sim.see(helper,owner),downPicture=sim.see(helper,defender);
+  const request=controller.update(helper,sim);
+  expect(attack).toHaveBeenCalledWith(helper,sim,defender);
+  expect(request.vel).toEqual({x:0,y:0});
+  const held=Reflect.get(controller,'collectionRead');
+  expect(held.choice.goal).toBeNull();
+
+  defender.engagement=oldRep;
+  expect(controller.update(helper,sim)).toEqual(request);
+  expect(Reflect.get(controller,'collectionRead')).toBe(held);
+  // A first read must also be independent of the remote flag, rather than
+  // only retaining a previously admitted choice across a private transition.
+  const fresh=new RunBlocker({kind:'combo',target:defender,drive:{x:1,y:0},combination:combo});
+  helper.behavior=fresh;
+  expect(fresh.update(helper,sim)).toEqual(request);
+  expect(Reflect.get(fresh,'collectionRead').choice).toEqual(held.choice);
+  expect(sim.see(helper,owner)).toEqual(ownerPicture);
+  expect(sim.see(helper,defender)).toEqual(downPicture);
+  expect(helper.body).toEqual(physical);expect(JSON.stringify(sim.rng)).toBe(rng);
+  expect(helper.engagement).toBeNull();expect(sim.world.joints).toHaveLength(0);
+  expect(combo.released).toBe(false);expect(fresh.target).toBe(defender);
+
+  // A genuinely acquired facing change is allowed to change the route on
+  // the next ordinary read; this is not an unconditional stop policy.
+  owner.body.facing=Math.atan2(downPicture.pos.y-owner.pos.y,downPicture.pos.x-owner.pos.x);
+  for(let k=0;k<24;k++)sim.perception.record(sim.agents);
+  sim.t+=helper.mind.decisionInterval;
+  expect(Math.hypot(...Object.values(fresh.update(helper,sim).vel))).toBeGreaterThan(0);
+  expect(Reflect.get(fresh,'collectionRead').choice).toBeNull();
+  attack.mockRestore();
+ });
+
  it('keeps a still-facing owner outside lost-contact collection and consumes no hidden peer state',()=>{
   const {sim,helper,owner,defender,wall,contact}=obstruction();
   const covered=sim.see(helper,owner),down=sim.see(helper,defender),other=sim.see(helper,wall);
