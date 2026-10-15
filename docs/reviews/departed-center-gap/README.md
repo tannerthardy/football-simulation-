@@ -29,7 +29,7 @@ unchanged helper extraction. Integration owns combined verification.
 `6122fb03c7104c0f9d762591d737cf2cf6a49067` is a documentation/validation tip;
 its final runtime code is `6ac628b9cd017fb475c477d41904264d463a6a46`, source
 `1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527`.
-That stack descends from PR52 publication `377d375…` and ultimately from
+That stack descends from PR52-equivalent evidence parent `377d375…` and ultimately from
 accepted `a1b16e6`. Its retained runtime changes span six files: movement
 clearance, RunBlocker climb, carrier detour veto, spacing, Behavior's interface
 and PlaySim's hook. It is not a one-commit gap fix. The original gap/evidence
