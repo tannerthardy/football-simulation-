@@ -1,4 +1,5 @@
 import {describe,expect,it,vi} from 'vitest';
+import {readFileSync} from 'node:fs';
 import {Rng} from '../src/core/rng.js';
 import {generateTeam,pickDefense,pickOffense} from '../src/league/team.js';
 import {previewFreeMovement} from '../src/physics/movement-preview.js';
@@ -43,4 +44,23 @@ describe('spacing detours remain football decisions',()=>{
   expect(s.carrier.allowSpacingDetour(s.a,s.sim,s.detour,s.original)).toBe(true);
   expect(s.see.mock.calls.length).toBeGreaterThan(calls);
  });
+ it('yields the exact acquired split-flow crossing, with hidden and observed controls',()=>{
+  const s=stage(),f=JSON.parse(readFileSync('test/fixtures/slice-crossing-priority.json','utf8'));
+  s.a.body=f.body;s.a.body.support!.since=-Infinity;s.sim.t=f.t;
+  const h=s.sim.slot('H')!;let picture=f.slicePicture;
+  vi.spyOn(s.sim,'teammateInformation').mockImplementation((_a,b)=>b===h?structuredClone(picture):{source:'unavailable'});
+  s.see.mockImplementation(()=>({pos:{x:80,y:50},vel:{x:0,y:0},facing:0,stance:null,pose:'up'}));
+  const carrier=new BallCarrier({run:{scheme:'splitZone',side:-1,slice:h}},s.a);
+  const original=previewFreeMovement(s.a.body,f.command,f.t,12),detour=previewFreeMovement(s.a.body,
+   {...f.command,vel:{x:3.062778107357078,y:-5.444401481122492}},f.t,12);
+  expect(carrier.allowSpacingDetour(s.a,s.sim,detour,original)).toBe(false);
+  h.body.pos={x:80,y:50};h.body.vel={x:9,y:0};
+  expect(carrier.allowSpacingDetour(s.a,s.sim,detour,original)).toBe(false);
+  s.sim.t+=s.a.mind.decisionInterval;
+  picture={...picture,pos:{x:s.a.pos.x-2,y:s.a.pos.y+3},vel:{x:0,y:3}};
+  expect(carrier.allowSpacingDetour(s.a,s.sim,detour,original)).toBe(true);
+  const ordinary=new BallCarrier({run:{scheme:'splitZone',side:-1}},s.a);
+  expect(ordinary.allowSpacingDetour(s.a,s.sim,detour,original)).toBe(true);
+ });
+
 });
