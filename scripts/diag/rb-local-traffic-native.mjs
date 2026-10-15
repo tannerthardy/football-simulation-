@@ -13,7 +13,7 @@ if(cached){
  assert.equal(cached.fixtureSha256,sha(fixture));assert.equal(cached.node,process.version);
  const receipt=JSON.parse(readFileSync('out/rb-local-traffic/native.receipt.json'));
  assert.deepEqual(Object.fromEntries(Object.keys(receipt.flags).map(k=>[k,process.env[k]??null])),receipt.flags);
- for(const row of cached.rows.filter(r=>r.arm==='accepted')){assert.equal(row.sourceSha256,'1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7');rows.push(row);}
+ for(const row of cached.rows.filter(r=>r.arm==='accepted')){assert.equal(row.sourceSha256,'c4927e58844fb0234a1539593952af318fedc8a3d89a74d510e525e29879267d');rows.push(row);}
  assert.equal(rows.length,4,'Require complete compatible baseline before any new simulation');
 }
 
