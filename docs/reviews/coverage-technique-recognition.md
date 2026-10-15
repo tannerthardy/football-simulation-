@@ -156,11 +156,13 @@ Candidate source:
 `d41b6b19e84846ff7c2a2af00fefe1aaef88935ce01b59db785112d7f7384aa2`.
 
 Checkpoint: accepted develop advanced to
-`4679a3c260188143bcc66f6f20534327c78d7eaa` through user-authorized [#72](https://github.com/tannerthardy/football-simulation-/pull/72#issuecomment-6202014834).
+`4679a3c260188143bcc66f6f20534327c78d7eaa` through user-authorized [#72](https://github.com/tannerthardy/football-simulation-/pull/72).
 The merge changes free pass-cutoff requests and their reviewed tests, not these
 coverage functions. Initial evidence above stays pinned to its original source.
-Current-source reconciliation/transfer is recorded separately below; no initial
-receipt is relabeled or invalidated by a source change.
+The ledger in that merge still names 7d1451b, but #72's explicit acceptance and
+merge receipt establish 4679a3c as the new accepted runtime. Current-source
+reconciliation/transfer is recorded separately below; no initial receipt is
+relabeled or invalidated by a source change.
 
 All 44 accepted flags/components=1, ordinary World defaults and capacities are
 fixed. Node 22.23.3/Linux x64, lock, inputs, collectors, source/test fingerprints
@@ -205,4 +207,55 @@ npm run baseline:run -- --candidate -- python3 scripts/diag/man-recognition-revi
   --pair out/p045-assigned-man/fresh-accepted-native.json.gz out/man-recognition/reused-transfer-candidate.json.gz \
   --pair out/man-recognition/untouched-baseline.json.gz out/man-recognition/untouched-candidate.json.gz \
   --out out/your-review/comparison.json
+```
+
+## Current accepted-source checkpoint
+
+Accepted #72 was merged normally into this research branch. Both workboard
+claims are preserved; there is no production conflict. The only owned runtime
+diff against `4679a3c260188143bcc66f6f20534327c78d7eaa` remains the 14-line man
+continuation extraction/callback. Accepted PassProtector code is byte-identical.
+
+Exact tested merge candidate: `d81cdbaae6784658b1e6306ca6b64e6f3bb74c8a`.
+Current accepted engine SHA256:
+`1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7`.
+Current candidate engine SHA256:
+`c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051`.
+The subsequent publication only changes documentation/measurement handling;
+it does not change the tested engine or direct tests.
+
+All eight direct recognition/World contracts pass on this combined source.
+The two fixed transfer inputs were compared afresh on unchanged current
+accepted source and candidate, recorded/plain in each arm:
+
+| Current-source case | Accepted | Candidate | Interpretation |
+| --- | --- | --- | --- |
+| Untouched vertical/trail | Tackle,7.154575 YAC | Tackle,7.154956 YAC | Five man defenders actively exercise unrecognized-flight continuity; same incoming bodies at the first fork. Valid offense and tackle retained. |
+| Untouched comeback/off | Sack | Identical native signature/sack | No throw, no actual catcher and no YAC. This is an unaffected opposing control, not current native plant transfer. The acquired-plant World/controller contract passes separately. |
+
+No replacement was selected to manufacture an active or favorable ending.
+The older incomplete comeback and all nine original-source cases retain their
+own source-specific meaning. Initial 44 checks/typecheck remain initial-source
+evidence; no exact combined full-suite pass is claimed for this candidate.
+Integration remains the designated combined-verification owner.
+
+[Current comparison](../../data/reviews/current/man-recognition-current-comparison.json)
+SHA256: `4db2c88fa4fb15207eef25ef1bb57358bc23a013150507d6b854a7872a6b3b7c`.
+[Checkpoint receipts](../../data/reviews/current/man-recognition-current-receipts.json)
+record eight additional native executions and 9.680 additional launcher seconds.
+**Task total: 30 new native executions; 47.065 launcher seconds.**
+
+Two saved-data collector attempts failed on the sack's terminal tick: controller
+requests existed but no World step ran. The final operator verifies the matched
+requests/cues exactly and explicitly records that unstepped tick instead of
+inventing body movement. A differing unstepped request still fails for missing
+incoming-body evidence. Those failed receipts are preserved; no engine/native
+rerun or relaxed comparison of differing data was used to resolve the issue.
+
+```sh
+npm run baseline:run -- --candidate -- python3 scripts/diag/man-recognition-review.py \
+  --baseline-source 1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7 \
+  --candidate-source c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051 \
+  --pair out/man-recognition/current-baseline.json.gz out/man-recognition/current-candidate.json.gz \
+  --out out/your-review/current-comparison.json
 ```

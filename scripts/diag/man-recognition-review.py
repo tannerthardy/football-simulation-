@@ -129,6 +129,13 @@ def first_differences(base, cand):
     all_first, first_man = None, {}
     for t in sorted(set(b_rows) & set(c_rows)):
         br, cr = b_rows[t], c_rows[t]
+        # A native terminal tick can run controllers, then whistle before
+        # World. Retain/verify those requests; do not invent a body sample.
+        if br.get("world") is None or cr.get("world") is None:
+            assert br.get("world") is None and cr.get("world") is None
+            assert br["raw"] == cr["raw"] and br["cues"] == cr["cues"], \
+                "Unstepped differing requests need their incoming body state recorded"
+            continue
         bm, cm = raw_map(br), raw_map(cr)
         assert set(bm) == set(cm), f"Recorded actor scope changed at {base['id']} {t}"
         changed = [a for a in bm if bm[a]["request"] != cm[a]["request"]]
@@ -246,6 +253,8 @@ def arm(clip, measured):
     # event provides stronger explicit evidence than duration/last frame alone.
     status = "completed outcome" if terminal else "unconfirmed terminal/censored"
     return {"signature": clip["signature"], "observerNeutral": clip.get("observerNeutral"),
+            "unsteppedControllerTicks": [{"at": r["t"], "recordedRequests": len(r["raw"])}
+                                         for r in clip["rows"] if r.get("world") is None],
             "outcome": result["outcome"], "completionStatus": status, "completedPass": bool(stats.get("completed")),
             "sacked": bool(stats.get("sacked")), "yac": stats.get("yac") if stats.get("completed") else None,
             "end": {k: result[k] for k in ("endX", "endY", "duration")},
