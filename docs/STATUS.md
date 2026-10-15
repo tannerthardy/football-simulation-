@@ -47,7 +47,10 @@ Do not use the historical sections below as a current starting-reference pin.
   and the original failed #75 receipt remain. No overall coverage-quality claim.
 - **Current ready intake: #84 Duo admission and #81 achievable-motion spacing.**
   Both have independent acceptance on7eb2554: Do-It-All for #84, Run for #81.
-  The exact five-file candidate gets one combined verification; focused evidence reused.
+  Exact #85 freezebbc4f82 completed all phases:1,761 TS pass/one zero-preview
+  assertion fails;145 Python/typecheck/build pass. 202.275s;no input drift/skips.
+  Hold adoption for Run/Do-It-All cost-contract disposition and one targeted
+  diagnostic; no automatic assertion edit, new panel or unchanged suite rerun.
   #81 excludes observer/lateral/low-speed research and does not repair A044's collision.
 - #76 stays parked/frozen pending Do-It-All's explicit live-objective/closure
   disposition. It is no dependency and is not adopted/rejected. Lateral trial and

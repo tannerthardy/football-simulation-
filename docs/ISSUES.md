@@ -148,7 +148,11 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 <a id="PASS-007"></a>
 ### PASS-007 — Mesh approach coordination and request attribution
 
-Current: Run independently accepts #81's exact admission-only scope:
+Current: Run independently accepts #81's exact admission-only scope, but exact
+#85 combined verification exposes the preserved fast-straight zero-preview
+assertion at traffic-turning.test.ts:212.1,761 TS pass/one fail;145 Python and
+typecheck/build pass. Run consults Do-It-All on cost versus movement behavior;
+no automatic assertion update or adoption. Independent accepted scope remains:
 f27456b/edad309/head6e19ad2 on accepted7eb2554. Exact spacing/test/fixture patch
 is portable; it removes the requested-turn shortcut using existing reachable
 tube/World preview, without low-speed expansion, observer or carrier override.

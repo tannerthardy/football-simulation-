@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Active #84/#81 exact verification boundary — 2026-10-15
+## Held #85 exact verification — shared #81 forecast-cost contract — 2026-10-15
 
 Integration starts from accepted `7eb2554f5dbb497cff169f386704a5b0f4cf43fe`,
 preserving queue metadata0e7af86 in `codex/duo-motion-integration`.
@@ -10,7 +10,10 @@ Both owner reviews are published and user confirmed the gate is clear. Extract o
 `test/combo-transfer.test.ts`, and #81's `src/sim/spacing.ts`,
 `test/spacing-residual-motion.test.ts` and its fixture. The already checked portable patches
 are unchanged; no observer/lateral or review ancestry is imported.
-Integration owns one exact combined verification for compatible approved scope.
+Integration completed all phases once atbbc4f82:1,761 TS pass/one preserved
+zero-preview assertion fails;145 Python/typecheck/build pass;202.275s.
+Hold adoption; Run + Do-It-All disposition and one targeted diagnostic next.
+No source/test assertion changes or further full suite before contract resolution.
 No source editing overlaps Run's or Do-It-All's research checkouts.
 Lateral/low-speed trials, passive observer, #76 carrier override and experimental
 Physics remain excluded. #76 author disposition is requested separately;

@@ -170,9 +170,15 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 
 Accepted develop remains **7eb2554**. Ready queue now contains **#84 and #81**;
 both have independent acceptance against unchanged accepted7eb2554. The exact
-five-file patches are now assembled for one frozen combined verification; [exact intake, artifact hashes and portable patches](../data/reviews/current/duo-motion-integration/intake.json)
-are published together. Do-It-All accepts #84 and Run accepts #81; Integration owns one exact
-all-phase verification, with focused evidence reused and no new native panel.
+five-file patches completed one frozen combined run; #85 is HELD on one
+existing shared-spacing cost assertion; [exact intake, artifact hashes and portable patches](../data/reviews/current/duo-motion-integration/intake.json)
+are published together. Do-It-All accepts #84 and Run accepts #81; Integration completed all phases once atbbc4f82:1,761 TS pass/one fail,145
+Python/typecheck/build pass, 202.275s. Inputs unchanged, no phases skipped.
+[Failed combined receipt](../data/reviews/current/duo-motion-integration/review-receipt.json).
+The zero-preview assertion for passable straight lanes conflicts with #81
+forecast admission. Run, consulting Do-It-All, owns the cost/behavior contract
+disposition; one targeted diagnostic precedes any further suite. No merge. #84
+is independently accepted; it is not rejected by this #81 contract conflict.
 
 | Item | Exact scope / pins | Independent decision and owner |
 | --- | --- | --- |
