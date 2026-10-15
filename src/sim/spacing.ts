@@ -43,7 +43,6 @@ export interface SpacingContext {
 export interface SpacingPicture extends Pick<Perceived, 'pos' | 'vel'> {
   source?: 'called' | 'observed' | 'remembered' | 'tactile';
   forecast?: TeammateForecast;
-  predictedFor?: number;
 }
 
 interface PeerPicture extends SpacingPicture {
@@ -52,7 +51,6 @@ interface PeerPicture extends SpacingPicture {
   touch: number;
   radius: number;
   maxSpeed: number;
-  tau:number;
 }
 
 function peerAt(peer:PeerPicture,t:number,route:boolean):{x:number;y:number} {
@@ -173,7 +171,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       if (!seen) continue; // Unavailable information is not a live-body fallback.
       const touch = TOUCH * (a.profile.radius + b.profile.radius);
       peers.push({pos:seen.pos,vel:seen.vel,source:seen.source,forecast:seen.forecast,touch,
-        predictedFor:seen.predictedFor,radius:b.profile.radius,maxSpeed:b.profile.vmax,tau:b.profile.tau});
+        radius:b.profile.radius,maxSpeed:b.profile.vmax});
     }
     // A free runner can choose space around a teammate instead of repeating a
     // requested straight ray followed by a speed-only correction. Test the
@@ -187,7 +185,6 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const choice=clearMovementStep(a.body,ia,{x:a.pos.x+ia.vel.x,y:a.pos.y+ia.vel.y},
         peers.map((p,id)=>({id,pos:p.pos,vel:p.vel,radius:p.radius,maxSpeed:p.maxSpeed,
           mayStop:p.source!=='called',
-          pace:{tau:p.tau,predictedFor:p.predictedFor??0},
           ...(p.source==='called'?{route:p.forecast?.samples,validFor:p.forecast?.validFor??0}:{})})),
         context.now,TURN_HORIZON,Math.sign(ia.vel.y)||1,context.handContact??'center');
       ia=choice.command;

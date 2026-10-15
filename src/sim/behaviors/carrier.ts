@@ -103,7 +103,6 @@ export function planRunEntry(a: Agent, sim: PlaySim, opts: CarrierOptions) {
   for(const end of [surface[0],surface.at(-1)!]) candidates.push({x:Math.max(sim.los+.5,end.pos.x+.5),y:end.pos.y+Math.sign(end.pos.y-sim.ballY)*(end.radius+a.profile.radius+.4)});
   const peers:MovementObstacle[]=acquired.map(({agent:b,seen})=>({id:b.idx,pos:seen.pos,vel:seen.vel,
     radius:b.profile.radius,maxSpeed:b.profile.vmax,mayStop:seen.source!=='called',
-    pace:{tau:b.profile.tau,predictedFor:seen.predictedFor},
     ...(seen.source==='called'?{route:seen.forecast?.samples,validFor:seen.forecast?.validFor??0}:{})}));
   const threats=sim.opponents(a).map(d=>({profile:d.profile,seen:sim.see(a,d)}));
   const support=a.body.support;
@@ -322,7 +321,6 @@ export class BallCarrier implements Behavior {
       const seen=sim.teammateInformation(a,b);
       return seen.source==='unavailable'?[]:[{id:b.idx,pos:seen.pos,vel:seen.vel,radius:b.profile.radius,
         maxSpeed:b.profile.vmax,mayStop:seen.source!=='called',
-        pace:{tau:b.profile.tau,predictedFor:seen.predictedFor},
         ...(seen.source==='called'?{route:seen.forecast?.samples,validFor:seen.forecast?.validFor??0}:{})}];
     }):[];
     const own=a.body.support;
