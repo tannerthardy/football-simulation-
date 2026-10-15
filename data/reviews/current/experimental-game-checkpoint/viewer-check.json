@@ -1,0 +1,74 @@
+{
+  "schema": "experimental-film-viewer-check-v1",
+  "browser": "154.0.8037.57",
+  "offline": true,
+  "externalRequestsBlocked": true,
+  "checks": [
+    {
+      "arm": "accepted",
+      "id": "zone-reference",
+      "source": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "filmedPlays": 124,
+      "frames": 6422,
+      "loadAndSeekSeconds": 0.7843502989999251
+    },
+    {
+      "arm": "accepted",
+      "id": "spread-air",
+      "source": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "filmedPlays": 133,
+      "frames": 6436,
+      "loadAndSeekSeconds": 0.5483263339992845
+    },
+    {
+      "arm": "accepted",
+      "id": "power-zone",
+      "source": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "filmedPlays": 139,
+      "frames": 7142,
+      "loadAndSeekSeconds": 0.5962065150088165
+    },
+    {
+      "arm": "accepted",
+      "id": "west-spread",
+      "source": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+      "filmedPlays": 149,
+      "frames": 7626,
+      "loadAndSeekSeconds": 0.6533553670014953
+    },
+    {
+      "arm": "experimental",
+      "id": "zone-reference",
+      "source": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+      "filmedPlays": 126,
+      "frames": 6341,
+      "loadAndSeekSeconds": 0.6921649829891976
+    },
+    {
+      "arm": "experimental",
+      "id": "spread-air",
+      "source": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+      "filmedPlays": 141,
+      "frames": 6442,
+      "loadAndSeekSeconds": 0.5592252530041151
+    },
+    {
+      "arm": "experimental",
+      "id": "power-zone",
+      "source": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+      "filmedPlays": 140,
+      "frames": 7672,
+      "loadAndSeekSeconds": 0.6002789909980493
+    },
+    {
+      "arm": "experimental",
+      "id": "west-spread",
+      "source": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+      "filmedPlays": 131,
+      "frames": 6810,
+      "loadAndSeekSeconds": 0.5736303939920617
+    }
+  ],
+  "pageErrors": [],
+  "simulation": false
+}

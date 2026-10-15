@@ -1,0 +1,176 @@
+Profile candidate: run-game-2026-10-13, commit 4d0a3ac25169b72c33b1ca87558b51e28687bab6, source dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba
+Running npx vitest run --project core test/teammate-information.test.ts test/teammate-information-loop.test.ts test/traffic-control.test.ts test/zone-opening-spacing.test.ts test/inline-zone-role.test.ts test/stretch-help-read.test.ts test/stretch-contact-depth.test.ts test/wide-zone-loaded-flow.test.ts test/local-block-response.test.ts test/wide-zone-mesh.test.ts test/run-base.test.ts test/zone-reach.test.ts test/stalk-visual-request.test.ts test/carrier-live-assessment.test.ts test/option-agreement.test.ts test/qb-memory-awareness.test.ts test/pass-installation.test.ts test/press-contact.test.ts test/catch-phase-control.test.ts
+
+ RUN  v3.2.4 /workspace/football-experimental-games
+
+ ✓ |core| test/teammate-information.test.ts (12 tests) 342ms
+ ✓ |core| test/inline-zone-role.test.ts (20 tests) 338ms
+ ✓ |core| test/zone-reach.test.ts (18 tests) 362ms
+stdout | test/zone-opening-spacing.test.ts > installed opening routes may veto only a false radial restriction > keeps anticipatory braking for a stationary observed obstruction six yards ahead
+observed obstruction control {"legacy":[{"t":1.0000000000000002,"contacts":[{"i":0,"j":1,"impulse":163.54328076413577,"closing":2.8326730234565143}]}],"fullStop":[{"t":1.0000000000000002,"contacts":[{"i":0,"j":1,"impulse":163.54328076413583,"closing":2.832673023456515}]}]}
+
+ ✓ |core| test/zone-opening-spacing.test.ts (18 tests) 149ms
+ ✓ |core| test/option-agreement.test.ts (19 tests) 134ms
+ ✓ |core| test/local-block-response.test.ts (21 tests) 167ms
+ ✓ |core| test/stretch-help-read.test.ts (20 tests) 221ms
+stdout | test/wide-zone-mesh.test.ts > wide-zone exchange uses a moving QB landmark > achieves a reachable earlier exchange in reflection -1
+{"wideZoneMesh":-1,"old":{"time":1.6,"distance":1.1761590261572028,"qb":{"x":36.2821780357717,"y":28.902607684535006},"rb":{"x":36.11702876222924,"y":30.067114349290282},"qbVelocity":{"x":-1.217512117632952,"y":2.6346765258737843},"rbVelocity":{"x":4.1343659992903525,"y":1.4835640468662752},"firstRBPress":1.1500000000000001},"next":{"time":1.4000000000000001,"distance":1.1873088271541599,"qb":{"x":35.99240206449479,"y":28.665026191819447},"rb":{"x":35.35836087541308,"y":29.668865831197188},"qbVelocity":{"x":-2.3576341341080806,"y":3.3529511485908303},"rbVelocity":{"x":3.4049420494860434,"y":2.4640544760691547},"firstRBPress":1.1500000000000001}}
+
+stdout | test/wide-zone-mesh.test.ts > wide-zone exchange uses a moving QB landmark > achieves a reachable earlier exchange in reflection 1
+{"wideZoneMesh":1,"old":{"time":1.6,"distance":1.1761590261572028,"qb":{"x":36.2821780357717,"y":24.43072564879833},"rb":{"x":36.11702876222924,"y":23.266218984043054},"qbVelocity":{"x":-1.217512117632952,"y":-2.6346765258737843},"rbVelocity":{"x":4.1343659992903525,"y":-1.4835640468662752},"firstRBPress":1.1500000000000001},"next":{"time":1.4000000000000001,"distance":1.1873088271527108,"qb":{"x":35.99240206450004,"y":24.66830714150886},"rb":{"x":35.35836087541308,"y":23.664467502136148},"qbVelocity":{"x":-2.3576341340826117,"y":-3.352951148608504},"rbVelocity":{"x":3.4049420494860434,"y":-2.4640544760691547},"firstRBPress":1.1500000000000001}}
+
+ ✓ |core| test/wide-zone-mesh.test.ts (15 tests) 279ms
+ ✓ |core| test/run-base.test.ts (22 tests) 367ms
+ ✓ |core| test/press-contact.test.ts (15 tests) 204ms
+stdout | test/wide-zone-loaded-flow.test.ts > the published loaded combination has a reproducible physical counterfactual > 'uc12-wz-s3@0.55' changes only working feet from the last genuinely acquired cue
+saved loaded feet {"t":0.55,"phase":"collect","remaining":-0.05994736889005381,"baselineRequest":{"x":3.327483970997539,"y":-0.8968991648201223},"candidateRequest":{"x":2.499999999999999,"y":0.20814266132219328},"baselineDy":-0.024404203368568744,"candidateDy":-0.023883195770629584,"hands":[{"kind":"hands","extension":0.9182026501260296,"push":819.9480345146497,"hold":0,"steer":416.34255449297893,"actor":14,"normalForce":0,"tangentForce":416.3425544929788,"a":4,"b":14}]}
+
+stdout | test/wide-zone-loaded-flow.test.ts > the published loaded combination has a reproducible physical counterfactual > 'uc12-wz-s3@0.6' changes only working feet from the last genuinely acquired cue
+saved loaded feet {"t":0.6,"phase":"collect","remaining":-0.08435157225862255,"baselineRequest":{"x":3.34966267693138,"y":-0.8845776615235437},"candidateRequest":{"x":2.4837597337675743,"y":0.3037370114399913},"baselineDy":-0.01900615176617748,"candidateDy":-0.018523318152652735,"hands":[{"kind":"hands","extension":0.9172123420717999,"push":813.7429207487197,"hold":0,"steer":412.5240229447144,"normalForce":0,"tangentForce":412.5240229447144,"actor":14,"a":4,"b":14}]}
+
+stdout | test/wide-zone-loaded-flow.test.ts > the published loaded combination has a reproducible physical counterfactual > 'uc12-wz-s3-mirror@0.55' changes only working feet from the last genuinely acquired cue
+saved loaded feet {"t":0.55,"phase":"collect","remaining":-0.05994736889005381,"baselineRequest":{"x":3.327483970997539,"y":-0.8968991648201223},"candidateRequest":{"x":2.499999999999999,"y":0.20814266132219328},"baselineDy":-0.024404203368568744,"candidateDy":-0.023883195770629584,"hands":[{"kind":"hands","extension":0.9182026501260296,"push":819.9480345146497,"hold":0,"steer":416.34255449297893,"actor":14,"normalForce":0,"tangentForce":416.3425544929788,"a":4,"b":14}]}
+
+stdout | test/wide-zone-loaded-flow.test.ts > the published loaded combination has a reproducible physical counterfactual > 'uc12-wz-s3-mirror@0.6' changes only working feet from the last genuinely acquired cue
+saved loaded feet {"t":0.6,"phase":"collect","remaining":-0.08435157225862255,"baselineRequest":{"x":3.34966267693138,"y":-0.8845776615235437},"candidateRequest":{"x":2.4837597337675743,"y":0.3037370114399913},"baselineDy":-0.01900615176617748,"candidateDy":-0.018523318152652735,"hands":[{"kind":"hands","extension":0.9172123420717999,"push":813.7429207487197,"hold":0,"steer":412.5240229447144,"normalForce":0,"tangentForce":412.5240229447144,"actor":14,"a":4,"b":14}]}
+
+stdout | test/stretch-contact-depth.test.ts > a shared half-man fit retains normal contact depth > C requests the actual circle from the same state, mirrored=false
+same-body stretch contact depth {"slot":"C","mirror":false,"oldRequest":{"x":-0.9913148037339721,"y":-7.472456642303561},"newRequest":{"x":-0.5115597815192332,"y":-7.520546516121069},"oldX":39.79003779528392,"newX":39.79022682715282,"oldVx":0.10438536476995357,"newVx":0.11194663952586187,"phase":"stretch"}
+
+stdout | test/stretch-contact-depth.test.ts > a shared half-man fit retains normal contact depth > C requests the actual circle from the same state, mirrored=true
+same-body stretch contact depth {"slot":"C","mirror":true,"oldRequest":{"x":-0.9913148037339721,"y":7.472456642303561},"newRequest":{"x":-0.5115597815192332,"y":7.520546516121069},"oldX":39.79003779528392,"newX":39.79022682715282,"oldVx":0.10438536476995357,"newVx":0.11194663952586187,"phase":"stretch"}
+
+stdout | test/stretch-contact-depth.test.ts > a shared half-man fit retains normal contact depth > RT requests the actual circle from the same state, mirrored=false
+same-body stretch contact depth {"slot":"RT","mirror":false,"oldRequest":{"x":-0.9914175957335326,"y":-7.518437452768456},"newRequest":{"x":-0.14401502247469294,"y":-7.582154723666822},"oldX":39.82504933394329,"newX":39.82537371260376,"oldVx":-0.07833368795014026,"newVx":-0.06535854153124868,"phase":"stretch"}
+
+stdout | test/stretch-contact-depth.test.ts > a shared half-man fit retains normal contact depth > RT requests the actual circle from the same state, mirrored=true
+same-body stretch contact depth {"slot":"RT","mirror":true,"oldRequest":{"x":-0.9914175957335326,"y":7.518437452768456},"newRequest":{"x":-0.14401502247469294,"y":7.582154723666822},"oldX":39.82504933394329,"newX":39.82537371260376,"oldVx":-0.07833368795014026,"newVx":-0.06535854153124868,"phase":"stretch"}
+
+ ✓ |core| test/stretch-contact-depth.test.ts (7 tests) 27ms
+ ✓ |core| test/wide-zone-loaded-flow.test.ts (16 tests) 144ms
+ ✓ |core| test/catch-phase-control.test.ts (7 tests) 103ms
+ ✓ |core| test/traffic-control.test.ts (3 tests) 73ms
+ ✓ |core| test/qb-memory-awareness.test.ts (14 tests) 74ms
+ ✓ |core| test/carrier-live-assessment.test.ts (2 tests) 67ms
+ ✓ |core| test/pass-installation.test.ts (6 tests) 65ms
+ ❯ |core| test/stalk-visual-request.test.ts (7 tests | 6 failed) 60ms
+   × actual stalk movement from acquired information > does not change a far request when only the hidden target changes 13ms
+     → Cannot read properties of undefined (reading 'spots')
+   × actual stalk movement from acquired information > responds to a visible quarter-yard target change while the hidden body stays fixed 1ms
+     → Cannot read properties of undefined (reading 'spots')
+   × actual stalk movement from acquired information > exactly preserves the recorded native request when the acquired picture is fresh 1ms
+     → Cannot read properties of undefined (reading 'spots')
+   × actual stalk movement from acquired information > retains the adverse held-picture lateral speed loss instead of rescuing it from live coordinates 1ms
+     → Cannot read properties of undefined (reading 'spots')
+   × actual stalk movement from acquired information > does not advance an already projected picture again using its age 0ms
+     → Cannot read properties of undefined (reading 'spots')
+   × actual stalk movement from acquired information > preserves physical engage eligibility even if the visual picture is old 0ms
+     → Cannot read properties of undefined (reading 'spots')
+   ✓ actual stalk movement from acquired information > keeps an actual generated Agent/PlaySim stalk request independent of a hidden far shift 42ms
+ ✓ |core| test/teammate-information-loop.test.ts (2 tests) 374ms
+   ✓ teammate information at native loop boundaries > preserves actual native state and all RNG with full recording and extra information queries  323ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/stalk-visual-request.test.ts > actual stalk movement from acquired information > does not change a far request when only the hidden target changes
+TypeError: Cannot read properties of undefined (reading 'spots')
+ ❯ isZoneLineBlocker src/sim/behaviors/blocking.ts:44:37
+     42| export function isZoneLineBlocker(a: Agent, sim: PlaySim, plan: RunBlo…
+     43|   const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.off…
+     44|   return isOL(a) || (!!sim.offAlign.spots[a.slot]?.inline && stretch
+       |                                     ^
+     45|     && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(plan.kin…
+     46| }
+ ❯ RunBlocker.update src/sim/behaviors/blocking.ts:827:22
+ ❯ stalkRequest test/support/stalk-visual-request.ts:40:28
+ ❯ test/stalk-visual-request.test.ts:17:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |core| test/stalk-visual-request.test.ts > actual stalk movement from acquired information > responds to a visible quarter-yard target change while the hidden body stays fixed
+TypeError: Cannot read properties of undefined (reading 'spots')
+ ❯ isZoneLineBlocker src/sim/behaviors/blocking.ts:44:37
+     42| export function isZoneLineBlocker(a: Agent, sim: PlaySim, plan: RunBlo…
+     43|   const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.off…
+     44|   return isOL(a) || (!!sim.offAlign.spots[a.slot]?.inline && stretch
+       |                                     ^
+     45|     && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(plan.kin…
+     46| }
+ ❯ RunBlocker.update src/sim/behaviors/blocking.ts:827:22
+ ❯ stalkRequest test/support/stalk-visual-request.ts:40:28
+ ❯ test/stalk-visual-request.test.ts:22:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |core| test/stalk-visual-request.test.ts > actual stalk movement from acquired information > exactly preserves the recorded native request when the acquired picture is fresh
+TypeError: Cannot read properties of undefined (reading 'spots')
+ ❯ isZoneLineBlocker src/sim/behaviors/blocking.ts:44:37
+     42| export function isZoneLineBlocker(a: Agent, sim: PlaySim, plan: RunBlo…
+     43|   const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.off…
+     44|   return isOL(a) || (!!sim.offAlign.spots[a.slot]?.inline && stretch
+       |                                     ^
+     45|     && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(plan.kin…
+     46| }
+ ❯ RunBlocker.update src/sim/behaviors/blocking.ts:827:22
+ ❯ stalkRequest test/support/stalk-visual-request.ts:40:28
+ ❯ test/stalk-visual-request.test.ts:27:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |core| test/stalk-visual-request.test.ts > actual stalk movement from acquired information > retains the adverse held-picture lateral speed loss instead of rescuing it from live coordinates
+TypeError: Cannot read properties of undefined (reading 'spots')
+ ❯ isZoneLineBlocker src/sim/behaviors/blocking.ts:44:37
+     42| export function isZoneLineBlocker(a: Agent, sim: PlaySim, plan: RunBlo…
+     43|   const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.off…
+     44|   return isOL(a) || (!!sim.offAlign.spots[a.slot]?.inline && stretch
+       |                                     ^
+     45|     && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(plan.kin…
+     46| }
+ ❯ RunBlocker.update src/sim/behaviors/blocking.ts:827:22
+ ❯ stalkRequest test/support/stalk-visual-request.ts:40:28
+ ❯ test/stalk-visual-request.test.ts:30:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |core| test/stalk-visual-request.test.ts > actual stalk movement from acquired information > does not advance an already projected picture again using its age
+TypeError: Cannot read properties of undefined (reading 'spots')
+ ❯ isZoneLineBlocker src/sim/behaviors/blocking.ts:44:37
+     42| export function isZoneLineBlocker(a: Agent, sim: PlaySim, plan: RunBlo…
+     43|   const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.off…
+     44|   return isOL(a) || (!!sim.offAlign.spots[a.slot]?.inline && stretch
+       |                                     ^
+     45|     && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(plan.kin…
+     46| }
+ ❯ RunBlocker.update src/sim/behaviors/blocking.ts:827:22
+ ❯ stalkRequest test/support/stalk-visual-request.ts:40:28
+ ❯ test/stalk-visual-request.test.ts:37:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |core| test/stalk-visual-request.test.ts > actual stalk movement from acquired information > preserves physical engage eligibility even if the visual picture is old
+TypeError: Cannot read properties of undefined (reading 'spots')
+ ❯ isZoneLineBlocker src/sim/behaviors/blocking.ts:44:37
+     42| export function isZoneLineBlocker(a: Agent, sim: PlaySim, plan: RunBlo…
+     43|   const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.off…
+     44|   return isOL(a) || (!!sim.offAlign.spots[a.slot]?.inline && stretch
+       |                                     ^
+     45|     && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(plan.kin…
+     46| }
+ ❯ RunBlocker.update src/sim/behaviors/blocking.ts:827:22
+ ❯ stalkRequest test/support/stalk-visual-request.ts:40:28
+ ❯ test/stalk-visual-request.test.ts:40:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed | 18 passed (19)
+      Tests  6 failed | 238 passed (244)
+   Start at  01:25:33
+   Duration  5.05s (transform 1.30s, setup 0ms, collect 6.52s, tests 3.55s, environment 5ms, prepare 1.43s)
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/experimental-games/focused-verification.json; exit 1

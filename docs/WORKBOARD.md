@@ -4,7 +4,7 @@
 
 | Item | Owner | Branch | Boundary | Status |
 | --- | --- | --- | --- | --- |
-| User-requested recent-work integration and full games/film | Codex integration owner in this chat | `codex/experimental-game-checkpoint` from accepted `a1b16e6` | Experimental run stack #36/#47/#50/#52 plus minimal #29, #13 and Stick-only extraction. Preserve accepted moving catch. Exclude parked coverage, rejected controller trials, disabled attention pilot and experimental physics. | Preparing one exact combined runtime and matched bounded checkpoint. No merge/baseline/default change; evidence and all adverse outcomes retained. |
+| User-requested recent-work integration and full games/film | Codex integration owner in this chat | `codex/experimental-game-checkpoint` from accepted `a1b16e6` | Experimental run stack #36/#47/#50/#52 plus minimal #29, #13 and Stick-only extraction. Preserve accepted moving catch. Exclude parked coverage, rejected controller trials, disabled attention pilot and experimental physics. | Completed on frozen `f62511a513f2187884d74ae3b94435835e43309c`: 1,850 TS/145 Python/type/build pass. Four experimental/four accepted full games,424 players,1,083 filmed scrimmages. [Results/film](reviews/experimental-game-checkpoint-2026-10-14.md), [shared receipt](../data/reviews/current/experimental-game-checkpoint/receipt.json). **Experimental only: run success worsens, INT rises and teammate contact increases; no adoption recommendation.** Initial test-observer failures and all adverse evidence preserved. No merge/baseline/default change. |
 
 ## Current controller integration preparation
 

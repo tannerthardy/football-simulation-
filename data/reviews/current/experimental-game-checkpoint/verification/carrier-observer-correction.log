@@ -1,0 +1,20 @@
+Profile candidate: run-game-2026-10-13, commit f62511a513f2187884d74ae3b94435835e43309c, source dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba
+Running npx vitest run --project core test/carrier-recovery-cue.test.ts test/carrier-live-assessment.test.ts
+
+ RUN  v3.2.4 /workspace/football-experimental-games
+
+ ✓ |core| test/carrier-live-assessment.test.ts (2 tests) 56ms
+ ✓ |core| test/carrier-recovery-cue.test.ts (10 tests) 1001ms
+   ✓ carrier recovery is a bounded visible-pose estimate > observes finite decisions without changing either fixed native run  911ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  01:31:40
+   Duration  2.14s (transform 722ms, setup 0ms, collect 1.81s, tests 1.06s, environment 0ms, prepare 127ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/experimental-games/carrier-observer-correction.json; exit 0

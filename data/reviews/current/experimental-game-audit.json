@@ -1,0 +1,112 @@
+{
+  "schema": "experimental-game-integration-audit-v1",
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "purpose": "User-authorized separate experimental simulation and bounded full-game checkpoint, not promotion/merge/default change.",
+  "alreadyIntegrated": [
+    {
+      "pr": 12,
+      "reason": "Reviewed run contact component and moving-catch repair are already in accepted develop."
+    }
+  ],
+  "included": [
+    {
+      "pr": 13,
+      "head": "d5447c274e63952c023a171b177a1bd79aa72d6b",
+      "branch": "codex/rb-live-aim-assessment",
+      "title": "Correct designed RB assessment reference; preserve three Ace controls",
+      "scope": "Only four-line RB acquired assessment-reference consistency correction."
+    },
+    {
+      "pr": 29,
+      "head": "b8e4d86866a9880c59e2e3f0809114b7667c058b",
+      "branch": "codex/stalk-visual-request",
+      "title": "Use acquired defender position for the stalk movement request",
+      "scope": "Only acquired defender position for far stalk movement."
+    },
+    {
+      "pr": 36,
+      "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "branch": "codex/teammate-information",
+      "title": "Use observer-owned teammate information for spacing",
+      "scope": "Observer-owned teammate information; historical promotion hold and adverse evidence remain. Included here only for the explicitly requested experimental game study."
+    },
+    {
+      "pr": 42,
+      "head": "f2dd5611bff80ff7e4415ea9777848218f4c01e0",
+      "branch": "codex/wide-zone-opening",
+      "title": "Trace wide-zone opening and hand off the traffic forecast blocker",
+      "scope": "Source-equivalent diagnostic parent of supported run stack; no independent code added."
+    },
+    {
+      "pr": 47,
+      "head": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "branch": "codex/wide-zone-help-read",
+      "title": "Correct wide-zone help reads, attached technique and opening forecasts",
+      "scope": "Supported bounded run correction; source copied from final PR52 runtime without branch ancestry."
+    },
+    {
+      "pr": 50,
+      "head": "da6cbce827806d80af5e7fbbdcc41c57f6f8ba84",
+      "branch": "codex/wide-zone-flow",
+      "title": "Sustain wide-zone combination footwork and correct the moving mesh",
+      "scope": "Supported bounded run correction; source copied from final PR52 runtime without branch ancestry."
+    },
+    {
+      "pr": 52,
+      "head": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "branch": "codex/joined-release-transfer",
+      "title": "Keep inside-zone TEs in their physical base and document release transfer limits",
+      "scope": "Supported bounded run correction; source copied from final PR52 runtime without branch ancestry."
+    }
+  ],
+  "stick": {
+    "head": "f77b54010e3a6c233eacba0320e41f81844ca15f",
+    "scope": "Stick-only option-route, receiver and QB changes plus 19 contracts. Separate QBHandoff mesh edits preserved. No seam descendant or diagnostic draw restoration."
+  },
+  "excluded": [
+    {
+      "work": "Coverage #34",
+      "reason": "Two preserved contracts remain blocked/parked. No ZoneCoverage cue changes included."
+    },
+    {
+      "work": "Attention pilot #41",
+      "reason": "Default-off research without fresh transfer; no imports just because disabled."
+    },
+    {
+      "work": "Rejected #45/#53 and staged departure/gather/post-mesh trials",
+      "reason": "Adverse controls or failed hypotheses; preserved on original branches."
+    },
+    {
+      "work": "RB gather-release follow-up fb505d0",
+      "reason": "Coupled Y contact remains adverse and promotion held."
+    },
+    {
+      "work": "Seam/post and QB-pressure research",
+      "reason": "Not ready runtime policies; no new menu or global pressure change."
+    },
+    {
+      "work": "Experimental grip/patch/ownership solvers through #51",
+      "reason": "Default-off incomplete law/cost/reference gates; no physics promotion."
+    }
+  ],
+  "unchangedBoundaries": [
+    "src/physics",
+    "src/players",
+    "src/game",
+    "src/league",
+    "src/playbook",
+    "src/sim/catch-approach.ts",
+    "config/baseline.json",
+    "package.json",
+    "package-lock.json"
+  ],
+  "experimentalSourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+  "notes": [
+    "Run stack exact source matched PR52 SHA256 66e59745 before minimal additions.",
+    "Stalk patch's adjacent withBase signature changed in run stack; only its two information lines were inserted, preserving new signature.",
+    "Minimal historical Stick and RB patches applied without importing older runtime or experimental ancestry.",
+    "Equal strength .55 is the generator setting, not a claim of equal starters or matchup quality.",
+    "Docs-only priorities #37 and awareness audit #44 informed selection; their research/owner holds were not treated as adopted runtime."
+  ]
+}

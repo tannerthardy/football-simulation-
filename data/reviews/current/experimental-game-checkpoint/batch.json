@@ -1,0 +1,148 @@
+{
+  "schema": "experimental-game-batch-v1",
+  "startedAt": "2026-10-15T01:35:29.942798+00:00",
+  "planned": [
+    [
+      "zone-reference",
+      "accepted"
+    ],
+    [
+      "zone-reference",
+      "experimental"
+    ],
+    [
+      "spread-air",
+      "accepted"
+    ],
+    [
+      "spread-air",
+      "experimental"
+    ],
+    [
+      "power-zone",
+      "accepted"
+    ],
+    [
+      "power-zone",
+      "experimental"
+    ],
+    [
+      "west-spread",
+      "accepted"
+    ],
+    [
+      "west-spread",
+      "experimental"
+    ]
+  ],
+  "completed": [
+    {
+      "id": "zone-reference",
+      "arm": "accepted",
+      "score": {
+        "home": 38,
+        "away": 33
+      },
+      "simulationSeconds": 15.839336122,
+      "commandWallSeconds": 17.349897199994302,
+      "receipt": "/workspace/football-experimental-controls/out/experimental-games/accepted-zone-reference-launcher.json",
+      "log": "/workspace/football-experimental-games/out/experimental-games/checkpoint/accepted-zone-reference.log"
+    },
+    {
+      "id": "zone-reference",
+      "arm": "experimental",
+      "score": {
+        "home": 31,
+        "away": 30
+      },
+      "simulationSeconds": 17.601485371000003,
+      "commandWallSeconds": 19.07237447499938,
+      "receipt": "/workspace/football-experimental-games/out/experimental-games/experimental-zone-reference-launcher.json",
+      "log": "/workspace/football-experimental-games/out/experimental-games/checkpoint/experimental-zone-reference.log"
+    },
+    {
+      "id": "spread-air",
+      "arm": "accepted",
+      "score": {
+        "home": 38,
+        "away": 21
+      },
+      "simulationSeconds": 16.273297959,
+      "commandWallSeconds": 17.721420945003047,
+      "receipt": "/workspace/football-experimental-controls/out/experimental-games/accepted-spread-air-launcher.json",
+      "log": "/workspace/football-experimental-games/out/experimental-games/checkpoint/accepted-spread-air.log"
+    },
+    {
+      "id": "spread-air",
+      "arm": "experimental",
+      "score": {
+        "home": 26,
+        "away": 38
+      },
+      "simulationSeconds": 17.487882969999998,
+      "commandWallSeconds": 19.155843629006995,
+      "receipt": "/workspace/football-experimental-games/out/experimental-games/experimental-spread-air-launcher.json",
+      "log": "/workspace/football-experimental-games/out/experimental-games/checkpoint/experimental-spread-air.log"
+    },
+    {
+      "id": "power-zone",
+      "arm": "accepted",
+      "score": {
+        "home": 52,
+        "away": 42
+      },
+      "simulationSeconds": 17.795214965,
+      "commandWallSeconds": 19.407631708992994,
+      "receipt": "/workspace/football-experimental-controls/out/experimental-games/accepted-power-zone-launcher.json",
+      "log": "/workspace/football-experimental-games/out/experimental-games/checkpoint/accepted-power-zone.log"
+    },
+    {
+      "id": "power-zone",
+      "arm": "experimental",
+      "score": {
+        "home": 51,
+        "away": 36
+      },
+      "simulationSeconds": 21.291612949,
+      "commandWallSeconds": 22.956869601010112,
+      "receipt": "/workspace/football-experimental-games/out/experimental-games/experimental-power-zone-launcher.json",
+      "log": "/workspace/football-experimental-games/out/experimental-games/checkpoint/experimental-power-zone.log"
+    },
+    {
+      "id": "west-spread",
+      "arm": "accepted",
+      "score": {
+        "home": 77,
+        "away": 53
+      },
+      "simulationSeconds": 19.23927884,
+      "commandWallSeconds": 20.859259483011556,
+      "receipt": "/workspace/football-experimental-controls/out/experimental-games/accepted-west-spread-launcher.json",
+      "log": "/workspace/football-experimental-games/out/experimental-games/checkpoint/accepted-west-spread.log"
+    },
+    {
+      "id": "west-spread",
+      "arm": "experimental",
+      "score": {
+        "home": 47,
+        "away": 37
+      },
+      "simulationSeconds": 18.750577956,
+      "commandWallSeconds": 20.26172267300717,
+      "receipt": "/workspace/football-experimental-games/out/experimental-games/experimental-west-spread-launcher.json",
+      "log": "/workspace/football-experimental-games/out/experimental-games/checkpoint/experimental-west-spread.log"
+    }
+  ],
+  "failures": [],
+  "unrun": [],
+  "budget": {
+    "gamesPerArm": 4,
+    "totalGames": 8,
+    "maxGameSeconds": 240,
+    "maxCombinedGameSeconds": 1200,
+    "maxGameSteps": 600
+  },
+  "elapsedSeconds": 156.79189958699862,
+  "finishedAt": "2026-10-15T01:38:06.734703+00:00",
+  "complete": true
+}
