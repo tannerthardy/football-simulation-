@@ -83,7 +83,7 @@
     "question": "Is forecast invocation for the three passable lanes a justified admission change, an unacceptable cost regression or a movement regression? Preserve movement/contact/far-clear/contact-load controls; do not automatically weaken the assertion."
   },
   "decision": "HOLD #85; no merge or new baseline. Independent #84 remains supported; failure belongs to shared #81 admission/cost contract.",
-  "nextDecision": "One targeted diagnostic of all three existing lanes, forecast counts/runtime and movement/contact invariants, then named-owner contract disposition. No broader batch or unchanged suite rerun.",
+  "nextDecision": "Hold #81 for Run + Do-It-All cost-contract disposition; progress independently accepted #84-only candidate, with one exact verification of its materially different runtime tree.",
   "cost": {
     "combinedCommandSeconds": 202.275426376,
     "commands": [
@@ -144,5 +144,50 @@
       "sha256": "37d4ccd3b9f7f33c29a7483d7ba5f84bcfd2ed685b70446faa8e92818fe874dc",
       "bytes": 89649
     }
+  },
+  "targetedDiagnostic": {
+    "operator": "traffic-lanes-diagnostic.test.ts.txt",
+    "config": "traffic-lanes-diagnostic.config.ts.txt",
+    "results": "traffic-lanes-diagnostic.json",
+    "launcher": "traffic-lanes-diagnostic-launcher.json",
+    "mechanicalWorldSteps": 48,
+    "nativeFootballContinuations": 0,
+    "launcherSeconds": 1.451017638,
+    "rows": [
+      {
+        "kind": "original straight",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 57.2000000000001,
+        "previewCalls": 15,
+        "previewMilliseconds": 11.60696500000006,
+        "totalMilliseconds": 22.413005999999996
+      },
+      {
+        "kind": "parallel",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 57.200000000000045,
+        "previewCalls": 0,
+        "previewMilliseconds": 0,
+        "totalMilliseconds": 4.022623999999951
+      },
+      {
+        "kind": "close passable",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 54.00000000000014,
+        "previewCalls": 14,
+        "previewMilliseconds": 6.672929999999951,
+        "totalMilliseconds": 15.563411000000087
+      }
+    ],
+    "decision": "Original movement/contact/budget controls hold in all3 existing cases. New preview cost remains an owner-adjudicated contract; no assertion was edited."
   }
 }
