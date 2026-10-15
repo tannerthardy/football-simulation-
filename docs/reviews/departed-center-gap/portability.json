@@ -1,0 +1,56 @@
+{
+  "schema": "departed-center-portability-v1",
+  "checkedAt": "2026-10-15T18:16:17.065269+00:00",
+  "pins": {
+    "accepted": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+    "integrationReview": "987056fe5b6dec61d8377834c5b277600685cbcd",
+    "recorded": "f62511a513f2187884d74ae3b94435835e43309c",
+    "zoneDuo": "6122fb03c7104c0f9d762591d737cf2cf6a49067",
+    "oldImplementation": "73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee",
+    "oldEvidence": "badddf495fa9ff7cfa6579709dec853dc449974e",
+    "portableImplementation": "d63bf4504e1a17e2f6a32738009a532838fc5e20"
+  },
+  "checks": [
+    {
+      "reference": "accepted",
+      "commit": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "containsZoneDuo6122": false,
+      "commonAncestorWithZoneDuo": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "hasMovementClearanceModule": false
+    },
+    {
+      "reference": "integrationReview",
+      "commit": "987056fe5b6dec61d8377834c5b277600685cbcd",
+      "containsZoneDuo6122": false,
+      "commonAncestorWithZoneDuo": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "hasMovementClearanceModule": false
+    },
+    {
+      "reference": "recorded",
+      "commit": "f62511a513f2187884d74ae3b94435835e43309c",
+      "containsZoneDuo6122": false,
+      "commonAncestorWithZoneDuo": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+      "hasMovementClearanceModule": false
+    },
+    {
+      "reference": "oldEvidence",
+      "commit": "badddf495fa9ff7cfa6579709dec853dc449974e",
+      "containsZoneDuo6122": true,
+      "commonAncestorWithZoneDuo": "6122fb03c7104c0f9d762591d737cf2cf6a49067",
+      "hasMovementClearanceModule": true
+    }
+  ],
+  "portableChangedFiles": [
+    "src/sim/live-gaps.ts",
+    "test/departed-center-gap.test.ts",
+    "test/fixtures/p033-gap-decision.json"
+  ],
+  "portableGapHelperExactlyMatches73b9441": true,
+  "adoption": "6122fb0 is published experimental ancestry on codex/run-lanes. It is absent in ancestry and actual runtime from all three fetched integration/accepted/recorded references. No adoption or merge is inferred from publication.",
+  "sharedVerificationOwner": "Integration",
+  "newGames": 0,
+  "newNativeFootballSteps": 0,
+  "focusedTests": 9,
+  "fixtureSha256": "7540f33b8c133dfb4148a0bb2c9bc98512b1b5602314c434608235971fcc5450",
+  "focusedReceiptSha256": "35e8427ea9acf961f11d678f32cf253aed1e9c92d676b9fbdf619e6b60eeff58"
+}
