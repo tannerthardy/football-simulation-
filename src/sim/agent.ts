@@ -10,6 +10,7 @@ import type { PhysicalProfile } from '../players/physical.js';
 import type { Player, RatingKey } from '../players/types.js';
 import { r01 } from '../players/types.js';
 import type { PlaySim } from './playsim.js';
+import type {MovementSample} from '../physics/movement-preview.js';
 import type { Recognition } from './recognition.js';
 import { SnapMind } from './mind.js';
 import { Rng } from '../core/rng.js';
@@ -24,6 +25,9 @@ export interface Behavior {
    * This is a job contract, not current openness or readiness to catch. */
   readonly passOption?: boolean;
   update(a: Agent, sim: PlaySim): MoveCommand;
+  /** A football controller may veto a navigation detour using its own read.
+   * Spacing retains physical separation; this supplies no teammate intent. */
+  allowSpacingDetour?(a:Agent,sim:PlaySim,path:readonly MovementSample[],original:readonly MovementSample[]):boolean;
   /** Motion his teammates know from the call itself (a rehearsed track on the
    * snap count), not his private live decision; null when there is none. */
   calledMotion?(): Vec2 | null;

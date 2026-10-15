@@ -3,7 +3,7 @@
  * win, a new view of the front, or a promise about future contact forces. */
 import type { Vec2 } from '../core/vec.js';
 import { followAccel, type Body } from '../physics/kinematics.js';
-import { previewFreeMovement } from '../physics/movement-preview.js';
+import { previewFreeMovement,type MovementSample } from '../physics/movement-preview.js';
 import { CONTACT_SCALE, type Intent } from '../physics/world.js';
 
 export interface MovementObstacle {
@@ -68,7 +68,8 @@ function segmentGap(a:Vec2,b:Vec2,c:Vec2,d:Vec2):number {
  * Only the first held read-beat is certified, in empty space. */
 export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
   peers: readonly MovementObstacle[], now: number, horizon: number,
-  playSide: number, handContact: 'center' | 'patch'): MovementStep {
+  playSide: number, handContact: 'center' | 'patch',
+  allowDetour?:(path:readonly MovementSample[],original:readonly MovementSample[])=>boolean): MovementStep {
   const steps = Math.max(1, Math.ceil(horizon / .05));
   const evaluate = (command: Intent) => {
     const path = previewFreeMovement(body, command, now, steps, handContact);
@@ -95,7 +96,7 @@ export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
       return gap;
     });
     const end = path.at(-1)!;
-    return { command, gaps, gap: Math.min(...gaps), up: path.every(s => s.support === 'up'),
+    return { command, path, gaps, gap: Math.min(...gaps), up: path.every(s => s.support === 'up'),
       progress: Math.hypot(goal.x - body.pos.x, goal.y - body.pos.y) - Math.hypot(goal.x - end.pos.x, goal.y - end.pos.y) };
   };
   const baseline = evaluate(original);
@@ -114,6 +115,7 @@ export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
         y: original.vel.x * Math.sin(turn) + original.vel.y * Math.cos(turn) } };
       const candidate = evaluate(command);
       if (speed > 1e-9 && candidate.up && candidate.gap >= 0
+        &&(!allowDetour||allowDetour(candidate.path,baseline.path))
         && (!best || candidate.progress > best.progress + 1e-9)) best = candidate;
     }
   }

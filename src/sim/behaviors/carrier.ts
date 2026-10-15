@@ -16,6 +16,7 @@ import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, type Vec2 } from '../../core/vec.js';
 import { DT } from '../../core/units.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
+import type {MovementSample} from '../../physics/movement-preview.js';
 import { sprintTime, timeToReach } from '../../physics/reach.js';
 import { squeezeForGap } from '../../physics/bodyshape.js';
 import type { Agent, Behavior } from '../agent.js';
@@ -121,12 +122,39 @@ export class BallCarrier implements Behavior {
   private plannedExit = false;
   private boundaryRecovery = false;
   private readDone = false;
+  private spacingRead:{at:number;until:number;threats:Array<{pos:Vec2;vel:Vec2;profile:Agent['profile'];extra:number}>}|null=null;
 
   constructor(
     private readonly opts: CarrierOptions = {},
     a?: Agent,
   ) {
     this.visionNoise = a ? 1 - a.r('vision') : 0.5;
+  }
+
+  allowSpacingDetour(a:Agent,sim:PlaySim,path:readonly MovementSample[],original:readonly MovementSample[]):boolean {
+    if(!this.opts.run)return true;
+    if(!this.spacingRead||sim.t>=this.spacingRead.until){
+      const dir=sim.attackDir(a.team),vision=a.r('vision'),range=7+22*vision;
+      const threats=sim.opponents(a).flatMap(d=>{
+        const seen=sim.see(a,d,.7);
+        if(Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)>range
+          ||(seen.pos.x-a.pos.x)*dir< -1.5&&a.mind.focus<.35+.5*(1-vision))return [];
+        return [{pos:{...seen.pos},vel:{...seen.vel},profile:d.profile,
+          extra:observedRecoveryAllowance(seen,d.profile.getUp,sim.dt)}];
+      });
+      this.spacingRead={at:sim.t,until:sim.t+a.mind.decisionInterval,threats};
+    }
+    const read=this.spacingRead,elapsed=sim.t-read.at;
+    const margin=(samples:readonly MovementSample[])=>{
+      let worst=Infinity;
+      for(const s of samples)for(const d of read.threats){
+        const pos={x:d.pos.x+d.vel.x*elapsed,y:d.pos.y+d.vel.y*elapsed};
+        worst=Math.min(worst,timeToReach({pos,vel:d.vel,profile:d.profile},s.pos,
+          a.profile.radius+d.profile.radius+d.profile.reach*.75)+Math.max(0,d.extra-elapsed)-s.t);
+      }
+      return worst;
+    };
+    return margin(path)>=margin(original)-1e-9;
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {

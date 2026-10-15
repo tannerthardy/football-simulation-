@@ -38,6 +38,7 @@ export interface SpacingContext {
   /** Own post-exchange run duty. This carries no peer intentions. */
   runCarrier?: Body;
   handContact?: 'center' | 'patch';
+  allowDetour?:(a:Agent,path:readonly MovementSample[],original:readonly MovementSample[])=>boolean;
 }
 
 export interface SpacingPicture extends Pick<Perceived, 'pos' | 'vel'> {
@@ -186,7 +187,8 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
         peers.map((p,id)=>({id,pos:p.pos,vel:p.vel,radius:p.radius,maxSpeed:p.maxSpeed,
           mayStop:p.source!=='called',
           ...(p.source==='called'?{route:p.forecast?.samples,validFor:p.forecast?.validFor??0}:{})})),
-        context.now,TURN_HORIZON,Math.sign(ia.vel.y)||1,context.handContact??'center');
+        context.now,TURN_HORIZON,Math.sign(ia.vel.y)||1,context.handContact??'center',
+        context.allowDetour?(path,original)=>context.allowDetour!(a,path,original):undefined);
       ia=choice.command;
     }
     let vx = ia.vel.x, vy = ia.vel.y;
