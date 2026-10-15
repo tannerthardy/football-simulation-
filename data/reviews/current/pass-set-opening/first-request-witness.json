@@ -1,0 +1,677 @@
+{
+  "schema": "pass-cutoff-first-request-v1",
+  "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+  "id": "spread-air",
+  "index": 39,
+  "play": 40,
+  "firstRequest": {
+    "t": 0.05,
+    "a": 1,
+    "slot": "LT",
+    "before": {
+      "pos": {
+        "x": 80.85000000000001,
+        "y": 30.001000564129683
+      },
+      "vel": {
+        "x": 0,
+        "y": 0
+      },
+      "facing": 0,
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.6932890060481885,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": 0,
+          "y": 0
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    "profile": {
+      "vmax": 7.768482847543257,
+      "tau": 1.4415968591882835,
+      "brake": 4.79111111111111,
+      "lateral": 5.47698979591837,
+      "turnRate": 6.4444444444444455,
+      "backpedal": 0.6628571428571428,
+      "shuffle": 0.588,
+      "massKg": 144.69596603,
+      "heightYd": 2.1555555555555554,
+      "radius": 0.36636363636363634,
+      "reach": 1.0527777777777776,
+      "maxCatchHeight": 3.504666666666667,
+      "reactReach": 3.1060555555555553,
+      "reactionTime": 0.2564897959183674,
+      "power": 159.734011070975,
+      "balance": 0.5,
+      "bend": 0.18466666666666698,
+      "stepSpeed": 2.6495555555555557,
+      "getUp": 1.222111111111111
+    },
+    "cutoff": {
+      "tau": 0.39999999999999997,
+      "tReach": 0.36398634002035296,
+      "inside": {
+        "x": 80.9108629826889,
+        "y": 31.114036814487463
+      },
+      "rusherPoint": {
+        "x": 81.50861724642863,
+        "y": 31.606067554190524
+      },
+      "contact": 1.2903535353535354
+    },
+    "steering": {
+      "kind": "track",
+      "target": {
+        "x": 80.9108629826889,
+        "y": 31.114036814487463
+      },
+      "arguments": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "facing": 0.9996451353651091,
+          "cutSkill": 1.0656043956043955,
+          "gain": 2.5
+        }
+      ],
+      "command": {
+        "vel": {
+          "x": 0.1521574567222217,
+          "y": 2.78259062589445
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      }
+    },
+    "raw": {
+      "vel": {
+        "x": 0.1521574567222217,
+        "y": 2.78259062589445
+      },
+      "facing": 0.9996451353651091,
+      "cutSkill": 1.0656043956043955
+    },
+    "target": 11,
+    "rusher": {
+      "pos": {
+        "x": 82.30000000000001,
+        "y": 32.25748012495478
+      },
+      "vel": {
+        "x": 0,
+        "y": 0
+      },
+      "facing": 3.141592653589793,
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.6940350035193633,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": 0,
+          "y": 0
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    "rusherPlan": "speed",
+    "probe": {
+      "qualification": "Own unloaded body, held current request; future resampling/contact unknown",
+      "sprintReach": 0.729447643167763,
+      "path": [
+        {
+          "t": 0.05,
+          "pos": {
+            "x": 80.85016349777865,
+            "y": 30.003990541722782
+          },
+          "vel": {
+            "x": 0.006539911145949643,
+            "y": 0.11959910372400705
+          },
+          "support": "up"
+        },
+        {
+          "t": 0.1,
+          "pos": {
+            "x": 80.8506539911146,
+            "y": 30.012960474502083
+          },
+          "vel": {
+            "x": 0.013079822291899287,
+            "y": 0.23919820744801412
+          },
+          "support": "up"
+        },
+        {
+          "t": 0.15000000000000002,
+          "pos": {
+            "x": 80.85147148000785,
+            "y": 30.027910362467583
+          },
+          "vel": {
+            "x": 0.01961973343784893,
+            "y": 0.3587973111720212
+          },
+          "support": "up"
+        },
+        {
+          "t": 0.2,
+          "pos": {
+            "x": 80.85256724486462,
+            "y": 30.047949242482627
+          },
+          "vel": {
+            "x": 0.02421086083321023,
+            "y": 0.4427578894297268
+          },
+          "support": "up"
+        },
+        {
+          "t": 0.25,
+          "pos": {
+            "x": 80.85388858871984,
+            "y": 30.07211341494133
+          },
+          "vel": {
+            "x": 0.028642893375520923,
+            "y": 0.5238090089184496
+          },
+          "support": "up"
+        },
+        {
+          "t": 0.30000000000000004,
+          "pos": {
+            "x": 80.85542769467799,
+            "y": 30.100259927794777
+          },
+          "vel": {
+            "x": 0.0329213449500925,
+            "y": 0.6020515052193698
+          },
+          "support": "up"
+        },
+        {
+          "t": 0.35000000000000003,
+          "pos": {
+            "x": 80.85717701676231,
+            "y": 30.13225078344115
+          },
+          "vel": {
+            "x": 0.03705153842300641,
+            "y": 0.6775827206355352
+          },
+          "support": "up"
+        },
+        {
+          "t": 0.4,
+          "pos": {
+            "x": 80.85912927052901,
+            "y": 30.1679527670812
+          },
+          "vel": {
+            "x": 0.04103861224530789,
+            "y": 0.7504966249664615
+          },
+          "support": "up"
+        }
+      ],
+      "distanceAtDeadline": 0.9474974415429616
+    }
+  },
+  "actualRusherAtForecastDeadline": {
+    "x": 82.21386501098054,
+    "y": 32.29687897314352
+  },
+  "rusherForecastError": 0.9872156937373533,
+  "initialization": {
+    "error": 0,
+    "iterations": 0,
+    "seed": 3311129951,
+    "ballY": 27.40100056412968,
+    "ballYSource": "recorded center installed pass-set lane",
+    "call": {
+      "formation": {
+        "id": "gun_spread_10",
+        "name": "Gun Spread",
+        "personnel": "10",
+        "qb": "gun",
+        "tags": [
+          "spread",
+          "2x2",
+          "four-wide"
+        ],
+        "slots": {
+          "X": {
+            "side": "L",
+            "split": "wide",
+            "depth": 0.6
+          },
+          "Y": {
+            "side": "L",
+            "split": "slot",
+            "depth": 1.2
+          },
+          "Z": {
+            "side": "R",
+            "split": "wide",
+            "depth": 0.6
+          },
+          "H": {
+            "side": "R",
+            "split": "slot",
+            "depth": 1.2
+          },
+          "RB": {
+            "side": "L",
+            "split": 1.6,
+            "depth": 5.2
+          }
+        }
+      },
+      "flip": false,
+      "kind": "pass",
+      "pass": {
+        "id": "y_cross",
+        "name": "Y-Cross",
+        "family": "dropback",
+        "drop": "five",
+        "strong": {
+          "1": "go",
+          "2": "cross",
+          "3": "flat"
+        },
+        "weak": {
+          "1": "post",
+          "2": "hook"
+        },
+        "back": "check",
+        "progression": [
+          "S2",
+          "S3",
+          "W1",
+          "B"
+        ],
+        "beats": [
+          "cover3",
+          "man"
+        ]
+      },
+      "label": "Gun Spread \u2014 Y-Cross"
+    },
+    "defense": {
+      "personnel": "nickel",
+      "front": {
+        "id": "wide9",
+        "name": "Wide-9 Nickel",
+        "personnel": [
+          "nickel",
+          "dime"
+        ],
+        "slots": {
+          "DE_S": {
+            "tech": "w9",
+            "side": "S",
+            "depth": 0.9
+          },
+          "DT_S": {
+            "tech": "3",
+            "side": "S",
+            "depth": 0.9
+          },
+          "DT_W": {
+            "tech": "2i",
+            "side": "W",
+            "depth": 0.9
+          },
+          "DE_W": {
+            "tech": "w9",
+            "side": "W",
+            "depth": 0.9
+          },
+          "LB_M": {
+            "tech": "2",
+            "side": "S",
+            "depth": 4.8999999999999995
+          },
+          "LB_W": {
+            "tech": "2",
+            "side": "W",
+            "depth": 4.6
+          }
+        }
+      },
+      "coverage": {
+        "id": "cover3_match",
+        "name": "Cover 3 Match (Rip/Liz)",
+        "family": "cover3",
+        "shell": "one-high",
+        "man": false,
+        "press": false,
+        "note": "Curl-flat players match #2 vertical to 12, corners carry #1 deep and zone off unders, hooks carry #3.",
+        "roles": {
+          "CB_S": {
+            "kind": "zone",
+            "zone": "deep_third_s",
+            "rule": "c3_corner"
+          },
+          "CB_W": {
+            "kind": "zone",
+            "zone": "deep_third_w",
+            "rule": "c3_corner"
+          },
+          "FS": {
+            "kind": "zone",
+            "zone": "deep_mid"
+          }
+        },
+        "underneath": [
+          {
+            "zone": "curl_flat_s",
+            "rule": "c3_curl_flat"
+          },
+          {
+            "zone": "curl_flat_w",
+            "rule": "c3_curl_flat"
+          },
+          {
+            "zone": "hook_s",
+            "rule": "c3_hook"
+          },
+          {
+            "zone": "hook_w",
+            "rule": "c3_hook"
+          },
+          {
+            "zone": "hook_mid",
+            "rule": "mike_3"
+          }
+        ],
+        "checks": {
+          "3x1": [
+            "cover3_mable"
+          ]
+        }
+      },
+      "pressure": null,
+      "zoneStyle": "match",
+      "checkPick": 0,
+      "runPolicy": {
+        "edge": "box",
+        "linebacker": "stack"
+      },
+      "label": "Wide-9 Nickel Cover 3 Match (Rip/Liz) (match)"
+    },
+    "energy": [
+      [
+        "H2-QB1",
+        0.9861756910128398
+      ],
+      [
+        "H2-OT2",
+        0.9664450302409429
+      ],
+      [
+        "H2-OT4",
+        0.9389283844134475
+      ],
+      [
+        "H2-C1",
+        0.9537848832110303
+      ],
+      [
+        "H2-OG1",
+        0.960826148945421
+      ],
+      [
+        "H2-OG4",
+        0.9662428365933311
+      ],
+      [
+        "H2-RB1",
+        0.9851602144398346
+      ],
+      [
+        "H2-WR1",
+        0.9901714965520355
+      ],
+      [
+        "H2-WR3",
+        0.9471578995027424
+      ],
+      [
+        "H2-WR6",
+        0.9587450241012062
+      ],
+      [
+        "H2-WR2",
+        0.9999999968885921
+      ],
+      [
+        "A2-EDGE2",
+        0.970175017596817
+      ],
+      [
+        "A2-LB2",
+        0.9643508135278673
+      ],
+      [
+        "A2-DT2",
+        0.9636742176244812
+      ],
+      [
+        "A2-DT3",
+        0.9781628083357412
+      ],
+      [
+        "A2-LB3",
+        0.9834013443270277
+      ],
+      [
+        "A2-LB5",
+        0.9810474733560421
+      ],
+      [
+        "A2-CB2",
+        0.9756954180987465
+      ],
+      [
+        "A2-CB1",
+        0.9735570429921024
+      ],
+      [
+        "A2-CB3",
+        0.9750227357407846
+      ],
+      [
+        "A2-S2",
+        0.9843768678643849
+      ],
+      [
+        "A2-S1",
+        0.9694738412245536
+      ]
+    ],
+    "manPrefs": {},
+    "hurry": false,
+    "scouting": {
+      "cells": [
+        [
+          "s:1st",
+          {
+            "n": 7,
+            "passes": 4,
+            "expected": 4.502379839733528
+          }
+        ],
+        [
+          "f:12/gun",
+          {
+            "n": 4,
+            "passes": 3,
+            "expected": 2.396910693881178
+          }
+        ],
+        [
+          "f:10/gun",
+          {
+            "n": 3,
+            "passes": 3,
+            "expected": 2.433929011433535
+          }
+        ],
+        [
+          "s:red-zone",
+          {
+            "n": 5,
+            "passes": 5,
+            "expected": 3.487712271416761
+          }
+        ],
+        [
+          "f:11/gun",
+          {
+            "n": 9,
+            "passes": 6,
+            "expected": 6.812472642119155
+          }
+        ],
+        [
+          "s:2nd-long",
+          {
+            "n": 5,
+            "passes": 3,
+            "expected": 3.8665724932002434
+          }
+        ],
+        [
+          "s:late-long",
+          {
+            "n": 2,
+            "passes": 2,
+            "expected": 1.8624865614351909
+          }
+        ],
+        [
+          "f:11/under",
+          {
+            "n": 3,
+            "passes": 2,
+            "expected": 2.0758388183518557
+          }
+        ],
+        [
+          "s:goal-to-go",
+          {
+            "n": 1,
+            "passes": 0,
+            "expected": 0.39411613341626106
+          }
+        ],
+        [
+          "f:12/pistol",
+          {
+            "n": 1,
+            "passes": 0,
+            "expected": 0.39411613341626106
+          }
+        ]
+      ],
+      "strength": 10
+    },
+    "coverageScouting": {
+      "counts": {
+        "cover1": 9,
+        "cover2": 2,
+        "cover3": 3
+      },
+      "n": 14,
+      "disguised": 1,
+      "strength": 12
+    }
+  },
+  "qualification": "Diagnostic witness, not a serialized World restart. Reconstruct through saved-native-play.mjs with the original roster/input manifest. The free-body probe holds one request; it is not a reachable-set oracle."
+}

@@ -1,0 +1,17 @@
+{
+  "nativeReplays": 0,
+  "checks": [
+    "two cached native position/event parity controls",
+    "all 13 complete opening segments have 22 actors and one identical flag/source profile",
+    "both held probes preserve native body and RNG (executed assertion)",
+    "reported punching gate conclusion agrees with probe",
+    "13-case summary/cost agrees with original receipts",
+    "all local report links resolve",
+    "three Node script syntax checks; Python compile",
+    "git diff --check; zero src/config/lockfile delta"
+  ],
+  "result": "pass",
+  "reusedCadenceEvidence": "PR57 source unchanged; not a new pass runtime validation",
+  "launcherCommandWallSeconds": 39.638035036,
+  "nativeLoopSeconds": 3.214531574
+}

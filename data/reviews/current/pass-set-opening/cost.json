@@ -1,0 +1,403 @@
+{
+  "schema": "pass-set-cost-v1",
+  "fullGames": 0,
+  "prefixReplays": 0,
+  "newRosters": 0,
+  "completedOpeningSegments": 13,
+  "failedCompletedOpeningSegments": 1,
+  "probeAttempts": 2,
+  "commandWallSeconds": 39.638035036,
+  "nativeLoopSeconds": 3.214531574,
+  "attempts": [
+    {
+      "file": "accel-lt-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/accelerating-lt",
+            "accelerating-lt",
+            "39"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.3716930229999997
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:05:56.774Z",
+      "finishedAt": "2026-10-15T18:05:59.148Z"
+    },
+    {
+      "file": "accel-p019-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/accelerating-p019",
+            "accelerating-reach",
+            "18"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.436892764
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:10:06.317Z",
+      "finishedAt": "2026-10-15T18:10:08.756Z"
+    },
+    {
+      "file": "accel-p040-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/accelerating-p040",
+            "accelerating-reach",
+            "39"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.4062122720000003
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:04:29.366Z",
+      "finishedAt": "2026-10-15T18:04:31.774Z"
+    },
+    {
+      "file": "baseline-lane-launcher.json",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/baseline",
+            "baseline",
+            "39"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 3.272758748
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:03:26.620Z",
+      "finishedAt": "2026-10-15T18:03:29.895Z"
+    },
+    {
+      "file": "baseline-launcher.json",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/baseline",
+            "baseline",
+            "39"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.5054277409999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:01:36.398Z",
+      "finishedAt": "2026-10-15T18:01:37.906Z"
+    },
+    {
+      "file": "baseline-p019-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/baseline-p019",
+            "baseline",
+            "18"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.631587079
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:09:57.580Z",
+      "finishedAt": "2026-10-15T18:10:00.216Z"
+    },
+    {
+      "file": "baseline-parity-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/baseline",
+            "baseline",
+            "39"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.404465311
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:03:49.470Z",
+      "finishedAt": "2026-10-15T18:03:51.878Z"
+    },
+    {
+      "file": "baseline-precise-launcher.json",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/baseline",
+            "baseline",
+            "39"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.936679259
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:02:41.492Z",
+      "finishedAt": "2026-10-15T18:02:43.431Z"
+    },
+    {
+      "file": "contact-frame-lt-launcher.json",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/contact-frame-lt",
+            "contact-frame-lt",
+            "39"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.885777662
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:19:02.677Z",
+      "finishedAt": "2026-10-15T18:19:04.566Z"
+    },
+    {
+      "file": "contact-reach-p040-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/contact-reach-p040",
+            "contact-reach",
+            "39"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.45540302
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:16:23.467Z",
+      "finishedAt": "2026-10-15T18:16:25.925Z"
+    },
+    {
+      "file": "downfield-seed-p040-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/downfield-seed-p040",
+            "downfield-seed",
+            "39"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.1842947259999996
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:21:08.297Z",
+      "finishedAt": "2026-10-15T18:21:10.485Z"
+    },
+    {
+      "file": "first-request-probe-launcher.json",
+      "exitCode": 1,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/pass-set-opening/first-request-probe.mjs"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.241806063
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:26:06.968Z",
+      "finishedAt": "2026-10-15T18:26:08.212Z"
+    },
+    {
+      "file": "first-request-probe-serialized-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-cutoff-probe.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.175580323
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:29:26.361Z",
+      "finishedAt": "2026-10-15T18:29:27.539Z"
+    },
+    {
+      "file": "installed-set-p040-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/installed-set-p040",
+            "installed-set",
+            "39"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.177914046
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:07:17.673Z",
+      "finishedAt": "2026-10-15T18:07:19.854Z"
+    },
+    {
+      "file": "measured-seed-pair-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/measured-seed-pair",
+            "measured-seed",
+            "39,18"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.756206721
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:24:40.068Z",
+      "finishedAt": "2026-10-15T18:24:42.833Z"
+    },
+    {
+      "file": "measured-speed-p019-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/measured-speed-p019",
+            "measured-speed",
+            "18"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.3574452839999998
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:22:45.153Z",
+      "finishedAt": "2026-10-15T18:22:47.513Z"
+    },
+    {
+      "file": "measured-speed-p040-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/measured-speed-p040",
+            "measured-speed",
+            "39"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.144436933
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:21:54.175Z",
+      "finishedAt": "2026-10-15T18:21:56.322Z"
+    },
+    {
+      "file": "stationary-p040-launcher.json",
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/pass-set-opening.mjs",
+            "out/pass-set-opening/stationary-p040",
+            "stationary-fallback",
+            "39"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.293454061
+        }
+      ],
+      "inputsUnchanged": true,
+      "startedAt": "2026-10-15T18:06:17.274Z",
+      "finishedAt": "2026-10-15T18:06:19.570Z"
+    }
+  ]
+}

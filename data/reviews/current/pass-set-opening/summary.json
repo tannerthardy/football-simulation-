@@ -1,0 +1,919 @@
+{
+  "schema": "pass-set-opening-summary-v1",
+  "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+  "fullGames": 0,
+  "retainedRuntimeChanges": 0,
+  "decision": "Reject the tested replacements; preserve the forecast witness",
+  "rows": [
+    {
+      "name": "baseline",
+      "play": 40,
+      "arm": "baseline",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": true,
+      "nativeEventParity": true,
+      "contacts": [
+        {
+          "t": 1.25,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.4817357702376287
+        },
+        {
+          "t": 1.45,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.5837566965058238
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.75,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.13,
+            "y": 32.36
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.39999999999999997,
+        "tReach": 0.36398634002035296,
+        "inside": {
+          "x": 80.9108629826889,
+          "y": 31.114036814487463
+        },
+        "rusherPoint": {
+          "x": 81.50861724642863,
+          "y": 31.606067554190524
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": 0.1521574567222217,
+          "y": 2.78259062589445
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.9872156937373533,
+      "edgeDistancesToQbAtEnd": [
+        4.782585711702506,
+        5.5287490599578595
+      ],
+      "elapsedSeconds": 0.256741636
+    },
+    {
+      "name": "accelerating-p040",
+      "play": 40,
+      "arm": "accelerating-reach",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1.3,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.4641821175420278
+        },
+        {
+          "t": 1.5,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.5546261655451792
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.7,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.25,
+            "y": 23.07
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 1.85,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 76.62,
+            "y": 32.22
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.6,
+        "tReach": 0.5947145929603422,
+        "inside": {
+          "x": 80.39935949562441,
+          "y": 30.69300186021301
+        },
+        "rusherPoint": {
+          "x": 80.99711375936414,
+          "y": 31.18503259991607
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": -1.1266012609389975,
+          "y": 1.7300032402083154
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 1.5372930752200535,
+      "edgeDistancesToQbAtEnd": [
+        5.108663779558038,
+        4.703178683543533
+      ],
+      "elapsedSeconds": 0.23477240600000004
+    },
+    {
+      "name": "accelerating-lt",
+      "play": 40,
+      "arm": "accelerating-lt",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1.25,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.4817357702376287
+        },
+        {
+          "t": 1.5,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.5535304321476282
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.85,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 76.65,
+            "y": 32.32
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.6,
+        "tReach": 0.5947145929603422,
+        "inside": {
+          "x": 80.39935949562441,
+          "y": 30.69300186021301
+        },
+        "rusherPoint": {
+          "x": 80.99711375936414,
+          "y": 31.18503259991607
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": -1.1266012609389975,
+          "y": 1.7300032402083154
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 1.5372930752200535,
+      "edgeDistancesToQbAtEnd": [
+        5.265533471812316,
+        5.5300546704308555
+      ],
+      "elapsedSeconds": 0.2841299359999998
+    },
+    {
+      "name": "stationary-p040",
+      "play": 40,
+      "arm": "stationary-fallback",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1.35,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.49584507512586123
+        },
+        {
+          "t": 1.55,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.528731529491931
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.85,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 76.53,
+            "y": 32.08
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.5499999999999999,
+        "tReach": 0.5405202181989547,
+        "inside": {
+          "x": 80.26173472360873,
+          "y": 31.758678868111737
+        },
+        "rusherPoint": {
+          "x": 80.77660998755218,
+          "y": 32.33687249589652
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": -1.4412434800116576,
+          "y": 3.947895146607622
+        },
+        "facing": 0.9754844969627933,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.5777365382430643,
+      "edgeDistancesToQbAtEnd": [
+        4.800450889469992,
+        5.16434616001547
+      ],
+      "elapsedSeconds": 0.19098726899999996
+    },
+    {
+      "name": "installed-set-p040",
+      "play": 40,
+      "arm": "installed-set",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1.3,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.46634009292020234
+        },
+        {
+          "t": 1.45,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.4834199017236682
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.65,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.49,
+            "y": 23.12
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 1.8,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 76.87,
+            "y": 32.34
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.39999999999999997,
+        "tReach": 0.36398634002035296,
+        "inside": {
+          "x": 80.9108629826889,
+          "y": 31.114036814487463
+        },
+        "rusherPoint": {
+          "x": 81.50861724642863,
+          "y": 31.606067554190524
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": -3.9223245995650293,
+          "y": 1.3946043020675674
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.9872156937373533,
+      "edgeDistancesToQbAtEnd": [
+        5.167048571820658,
+        4.549849829962802
+      ],
+      "elapsedSeconds": 0.2080239690000001
+    },
+    {
+      "name": "baseline-p019",
+      "play": 19,
+      "arm": "baseline",
+      "endTime": 3,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": true,
+      "nativeEventParity": true,
+      "contacts": [
+        {
+          "t": 0.6,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.08437975536389608
+        },
+        {
+          "t": 1.15,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.3881091671441025
+        }
+      ],
+      "sheds": [],
+      "teammateImpactCount": 26,
+      "teammateImpactImpulse": 686.9944782021828,
+      "firstLtCutoff": {
+        "tau": 0.2,
+        "tReach": 0.13353518248986385,
+        "inside": {
+          "x": 32.83230042200989,
+          "y": 29.491184749154115
+        },
+        "rusherPoint": {
+          "x": 33.500706545726715,
+          "y": 29.881873451844143
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": 0.9557510550247095,
+          "y": 0.561295206218615
+        },
+        "facing": 0.5294953393817309,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.46250000000000296,
+      "edgeDistancesToQbAtEnd": [
+        6.459097093479264,
+        6.335926531705074
+      ],
+      "elapsedSeconds": 0.35638952599999996
+    },
+    {
+      "name": "accelerating-p019",
+      "play": 19,
+      "arm": "accelerating-reach",
+      "endTime": 3,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.38135890216356705
+        },
+        {
+          "t": 1.75,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.5582706435383804
+        }
+      ],
+      "sheds": [
+        {
+          "t": 2,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 27.97,
+            "y": 30.94
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.15,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 27.77,
+            "y": 21.19
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 0,
+      "teammateImpactImpulse": 0,
+      "firstLtCutoff": {
+        "tau": 0.25,
+        "tReach": 0.24212290377909101,
+        "inside": {
+          "x": 32.71898741471612,
+          "y": 29.424952393933708
+        },
+        "rusherPoint": {
+          "x": 33.387393538432946,
+          "y": 29.815641096623736
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": 0.6724685367902872,
+          "y": 0.39571431816759706
+        },
+        "facing": 0.5294953393817309,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.5889611175867379,
+      "edgeDistancesToQbAtEnd": [
+        2.064735343557789,
+        2.8829159539051976
+      ],
+      "elapsedSeconds": 0.2930521489999999
+    },
+    {
+      "name": "contact-reach-p040",
+      "play": 40,
+      "arm": "contact-reach",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1.3,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.500431669974703
+        },
+        {
+          "t": 1.45,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.5558344172683365
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.65,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.51,
+            "y": 23.14
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 1.75,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.15,
+            "y": 32.37
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.44999999999999996,
+        "tReach": 0.4367730260415613,
+        "inside": {
+          "x": 80.7902253678152,
+          "y": 31.01473611772462
+        },
+        "rusherPoint": {
+          "x": 81.38797963155493,
+          "y": 31.50676685742768
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": -0.14943658046203012,
+          "y": 2.5343388839873437
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 1.1184141291473229,
+      "edgeDistancesToQbAtEnd": [
+        4.937356011506591,
+        4.526592804105281
+      ],
+      "elapsedSeconds": 0.21999281599999995
+    },
+    {
+      "name": "downfield-seed-p040",
+      "play": 40,
+      "arm": "downfield-seed",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1.25,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.4774180460782004
+        },
+        {
+          "t": 1.45,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.5481424101495267
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.75,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.14,
+            "y": 32.38
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.49999999999999994,
+        "tReach": 0.43301801021754743,
+        "inside": {
+          "x": 80.49460958352195,
+          "y": 31.26789812876157
+        },
+        "rusherPoint": {
+          "x": 81.05748801579709,
+          "y": 31.799473409517976
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": -0.8659457840582016,
+          "y": 3.0869279363201825
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 1.156104739238126,
+      "edgeDistancesToQbAtEnd": [
+        4.944253389858884,
+        5.538972497845473
+      ],
+      "elapsedSeconds": 0.20131193599999983
+    },
+    {
+      "name": "measured-speed-p040",
+      "play": 40,
+      "arm": "measured-speed",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1.25,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.5112353016244643
+        },
+        {
+          "t": 1.4,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.595720860847115
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.7,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.42,
+            "y": 32.49
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.5499999999999999,
+        "tReach": 0.5286176984388935,
+        "inside": {
+          "x": 81.38376243299375,
+          "y": 31.50329554579782
+        },
+        "rusherPoint": {
+          "x": 81.98151669673348,
+          "y": 31.99532628550088
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": 1.1685014233885074,
+          "y": 3.288792383875425
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.4144834416130816,
+      "edgeDistancesToQbAtEnd": [
+        4.942484645546116,
+        5.445542271510744
+      ],
+      "elapsedSeconds": 0.20990401199999997
+    },
+    {
+      "name": "measured-speed-p019",
+      "play": 19,
+      "arm": "measured-speed",
+      "endTime": 3,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 0.55,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.05565986164505948
+        },
+        {
+          "t": 1.15,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.3903278897376081
+        }
+      ],
+      "sheds": [
+        {
+          "t": 2.1,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.71,
+            "y": 24.35
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.6,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 27.81,
+            "y": 31.33
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 18,
+      "teammateImpactImpulse": 561.2038853135983,
+      "firstLtCutoff": {
+        "tau": 0.3,
+        "tReach": 0.24724235964592767,
+        "inside": {
+          "x": 33.1182808689894,
+          "y": 29.65834259804372
+        },
+        "rusherPoint": {
+          "x": 33.78668699270623,
+          "y": 30.04903130073375
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": 1.6707021724734972,
+          "y": 0.979189828442628
+        },
+        "facing": 0.5294953393817309,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.11815691684419694,
+      "edgeDistancesToQbAtEnd": [
+        4.776219283713696,
+        6.222488912236852
+      ],
+      "elapsedSeconds": 0.32399734600000013
+    },
+    {
+      "name": "measured-seed-pair-p040",
+      "play": 40,
+      "arm": "measured-seed",
+      "endTime": 2,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 1.3,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.5196810878012895
+        },
+        {
+          "t": 1.4,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.5974825068674959
+        }
+      ],
+      "sheds": [
+        {
+          "t": 1.7,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.33,
+            "y": 23.21
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 1.7,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.36,
+            "y": 32.45
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpactImpulse": 43.43244958407927,
+      "firstLtCutoff": {
+        "tau": 0.5499999999999999,
+        "tReach": 0.5286176984388935,
+        "inside": {
+          "x": 81.38376243299375,
+          "y": 31.50329554579782
+        },
+        "rusherPoint": {
+          "x": 81.98151669673348,
+          "y": 31.99532628550088
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": 1.1685014233885074,
+          "y": 3.288792383875425
+        },
+        "facing": 0.9996451353651091,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.4144834416130816,
+      "edgeDistancesToQbAtEnd": [
+        4.7316115371751355,
+        4.6074163096378316
+      ],
+      "elapsedSeconds": 0.21939749200000006
+    },
+    {
+      "name": "measured-seed-pair-p019",
+      "play": 19,
+      "arm": "measured-seed",
+      "endTime": 3,
+      "censoring": "Opening only; no ending inferred",
+      "nativeFilmParity": false,
+      "nativeEventParity": false,
+      "contacts": [
+        {
+          "t": 0.55,
+          "blocker": 1,
+          "defender": 11,
+          "phi": -0.052720874472989517
+        },
+        {
+          "t": 1.15,
+          "blocker": 2,
+          "defender": 12,
+          "phi": 0.3524748886851746
+        }
+      ],
+      "sheds": [
+        {
+          "t": 2.1,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.71,
+            "y": 24.35
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.55,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 27.95,
+            "y": 31.29
+          },
+          "note": "pass: turned the corner"
+        }
+      ],
+      "teammateImpactCount": 18,
+      "teammateImpactImpulse": 564.1872600292312,
+      "firstLtCutoff": {
+        "tau": 0.3,
+        "tReach": 0.24724235964592767,
+        "inside": {
+          "x": 33.1182808689894,
+          "y": 29.65834259804372
+        },
+        "rusherPoint": {
+          "x": 33.78668699270623,
+          "y": 30.04903130073375
+        },
+        "contact": 1.2903535353535354
+      },
+      "firstLtCommand": {
+        "vel": {
+          "x": 1.6707021724734972,
+          "y": 0.979189828442628
+        },
+        "facing": 0.5294953393817309,
+        "cutSkill": 1.0656043956043955
+      },
+      "firstForecastError": 0.11815691684419694,
+      "edgeDistancesToQbAtEnd": [
+        4.638243279119587,
+        6.655802059421872
+      ],
+      "elapsedSeconds": 0.21583108100000026
+    }
+  ]
+}

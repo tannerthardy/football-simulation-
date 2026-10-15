@@ -1,5 +1,37 @@
 # Current work ownership
 
+## Opening pass-set investigation, 2026-10-15
+
+Run-game owns `codex/pass-set-opening-diagnosis` from PR #57 `1f11e45` /
+cadence source `1ee86101`. This is a separate diagnostic branch.
+First decision: does the cutoff estimator select an opening point that the
+tackle cannot reach under his normal acceleration/direction constraints?
+Primary saved P040; opposing P019; P012 adverse contact remains visible.
+Completed: no pass runtime correction recommended. The low-speed rusher
+forecast and own-travel estimate are optimistic, but the measured-speed and
+acceleration-aware replacements lose P019's useful edge block. Full evidence,
+rejected arms, exact flags/inputs and Integration's next decision are in
+[the pass-set report](reviews/pass-set-opening/README.md).
+13 completed opening segments plus failed harness/probe attempts cost39.64s;
+zero games/prefix replays. No broad suite or shared engagement edit.
+Only new diagnostic files: exact-source method instrumentation,
+normal snap reconstruction, internal steering/cutoff and raw/final execution
+traces. No new game-prefix replay. User confirms the boundary: PassProtector
+and pass-specific cutOffPoint only. It has one pass caller and no run callers.
+Do-It-All! owns run blocking/carrier/spacing in
+https://chatgpt.com/c/01a13c14-0283-71f8-a264-088ca6ae100f ; user-reported
+local candidate `6122fb0` is unavailable in this checkout and not a verified
+current HEAD. Any future scope here is limited to PassProtector/cutOffPoint;
+run controllers, spacing, information and physics
+are outside this claim. Keep the tested shotgun cadence correction separate.
+
+Latest user-reported lane correction: code `73b9441`, evidence `badddf4`;
+stable B-gap identity after C climbs removes the P033 false redirect while
+retaining the DT tackle. User reports 52 focused tests/typecheck and two exact
+coupled controls. Neither commit is available locally; GitHub cannot resolve
+`badddf4` at this checkpoint. These are reported, not independently verified
+here, and no lane/spacing implementation is duplicated or imported.
+
 ## Exchange integrity follow-up, 2026-10-15
 
 Run-game continues PR #57 on `codex/designed-run-game-diagnosis`. Recorded

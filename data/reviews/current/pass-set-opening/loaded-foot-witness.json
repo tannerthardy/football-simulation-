@@ -1,0 +1,160 @@
+{
+  "schema": "pass-loaded-foot-accounting-v1",
+  "t": 1.4,
+  "qualification": "Algebraic projection of an existing request. Not proof that field-x give-ground is wrong; no contact-controller change tested.",
+  "blocker": 1,
+  "defender": 11,
+  "qb": 0,
+  "axis": [
+    -0.5928731398729488,
+    -0.8052958711040253
+  ],
+  "tangent": [
+    0.8052958711040253,
+    -0.5928731398729488
+  ],
+  "requested": {
+    "vel": {
+      "x": -5.42681137577946,
+      "y": 1.7270256243589959
+    },
+    "facing": 1.7837161606450092,
+    "push": 1,
+    "posture": 0.6,
+    "cutSkill": 1.0656043956043955
+  },
+  "entry": {
+    "pos": {
+      "x": 79.15683926287667,
+      "y": 31.559198109408513
+    },
+    "vel": {
+      "x": -3.237764649870209,
+      "y": 1.9681048038471005
+    },
+    "facing": 2.930016848246372,
+    "support": {
+      "xi": {
+        "x": 0,
+        "y": 0
+      },
+      "state": "up",
+      "since": null,
+      "posture": 0.19080455073158029,
+      "lean": {
+        "x": 0,
+        "y": 0
+      },
+      "load": {
+        "x": 0,
+        "y": 0
+      },
+      "felt": {
+        "x": 0,
+        "y": 0
+      },
+      "feetLock": 0,
+      "feetVel": {
+        "x": 0,
+        "y": 0
+      },
+      "fall": {
+        "x": 0,
+        "y": 0
+      },
+      "peak": 0,
+      "out": 0,
+      "feltTip": {
+        "x": 0,
+        "y": 0
+      },
+      "causes": {
+        "contact": 0,
+        "legs": 0,
+        "overspeed": 0
+      },
+      "accel": {
+        "x": -3.4013116293848906,
+        "y": -0.42726402412238734
+      },
+      "tipAccel": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "achieved": {
+    "pos": {
+      "x": 78.98693281210072,
+      "y": 31.653523683060918
+    },
+    "vel": {
+      "x": -3.5584666690483053,
+      "y": 1.8030430586566228
+    },
+    "facing": 2.991727674470037,
+    "support": {
+      "xi": {
+        "x": -0.023245926868381752,
+        "y": -0.006681869016154103
+      },
+      "state": "up",
+      "since": null,
+      "posture": 0.31580455073158037,
+      "lean": {
+        "x": 0,
+        "y": 0
+      },
+      "load": {
+        "x": -417.53615964149145,
+        "y": -20.954062770898076
+      },
+      "felt": {
+        "x": -298.14121474666354,
+        "y": -6.623503436041823
+      },
+      "feetLock": 0,
+      "feetVel": {
+        "x": 0,
+        "y": 0
+      },
+      "fall": {
+        "x": 0,
+        "y": 0
+      },
+      "peak": 0.023782866281978805,
+      "out": 0,
+      "feltTip": {
+        "x": -0.9217364642675197,
+        "y": -0.019073164827570453
+      },
+      "causes": {
+        "contact": 0.024289518500076917,
+        "legs": 0,
+        "overspeed": 0
+      },
+      "accel": {
+        "x": -5.550621441810848,
+        "y": -2.494120703684078
+      },
+      "tipAccel": {
+        "x": -0.4638934445221015,
+        "y": -0.017084944853567572
+      }
+    }
+  },
+  "inferredMirrorTerm": -2.912976669391859,
+  "inferredFieldXKick": 3.0810032912958403,
+  "actualNormalRequest": 1.8266440952694545,
+  "actualTangentRequest": -5.394095898730312,
+  "extraTangentFromFieldX": -2.4811192293384527,
+  "rawBehaviorRequest": {
+    "vel": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "finalIncludesTechniqueAndSpacing": true,
+  "source": "src/sim/engagement.ts:stepPassRep",
+  "nextQuestion": "Is field-x kick intentional under the contact-relative mirror budget? Review before any replacement; retain P019."
+}
