@@ -9,7 +9,10 @@ a separately preserved patch; no navigation, sampledVel, spacing, capacities,
 physics, #69 or new flag. Question: can the active information fix compose with
 accepted develop without unused teammate transport? Reuse the author packet;
 run the two extracted contracts, existing Duo declaration control and typecheck.
-No full suite or games merely to select this scope. No merge authorization.
+Three selected checks and typecheck pass at71d98fc; full combined verification
+remains due only after choosing this integration scope. The initial missing
+it import and both failed receipts are retained. No World steps, full suite
+or games for scope selection. No merge authorization.
 
 ## Independent #67 portability review — 2026-10-15
 
