@@ -148,7 +148,10 @@ Capture only the named windows/control prefixes. No extra sensing, rejected-opti
 evaluation, RNG draws, changed decisions or broad recording framework. Validate
 plain/observed state and RNG parity, and source-compatible prefix agreement
 before attributing a change. A short new capture is new evidence on its recorded
-source, never a retrospective repair of the old archive. Flex coordinates any
+source, never a retrospective repair of the old archive. The original raw cases save final
+RNG state, not an every-tick RNG tape; intermediate agreement is limited to
+recorded fields, while observer/plain RNG neutrality belongs to the new capture.
+Flex coordinates any
 coverage change with Catching; Run can reuse an appropriate boundary after naming
 its own missing comparison. The general packet remains deferred.
 
@@ -259,6 +262,18 @@ from old final intents or Measurement's independent certification of that captur
 The full original raw cases are now directly delivered in
 [6203472804](https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203472804).
 The general coverage-motion packet remains deferred.
+
+Run has since published its selected-case disposition at
+[9d816154](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203532113):
+three reconstructed reference inputs/current continuations reportedly agree,
+with early departure exit-arc ownership and a later RB-spacing cut distinguished.
+Its surface-only trial remains parked and no production correction is ready.
+Measurement delivered original bytes directly at
+[6203573044](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203573044)
+for offline comparison with those already saved runs. This does not independently
+validate the new Run packet or certify the other45 audit cases; no repeat of its
+baseline is requested. Original audit uncertainty is not rewritten by a later
+source-specific finding.
 
 ## Reproduction and preservation
 
