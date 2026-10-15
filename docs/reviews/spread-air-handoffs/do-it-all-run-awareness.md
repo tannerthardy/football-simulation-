@@ -1,0 +1,37 @@
+# Copy to “Do-It-All!”
+
+This handoff concerns the user's first-45-play review of the **experimental spread versus air-raid game**, home/away final **26–38**, roster seeds **27101/27102**, game seed **702**. It does not concern the accepted comparison's 38–21 game.
+
+Pin the recorded runtime: commit `f62511a513f2187884d74ae3b94435835e43309c`, source SHA256 `dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba`. Original film/audit already exists at evidence publication `3617df38070f23aa0a813e8f5014225b77dd7210` on [PR #54](https://github.com/tannerthardy/football-simulation-/pull/54). The new user-note packet is published on `codex/experimental-game-checkpoint`; refresh it read-only and pin its current head before citing new files. Do not reset your worktree or import the branch's runtime merely to read its evidence. Compare your current source with the recorded source before claiming a finding is still present.
+
+**Where to watch and inspect, relative to any repository clone:**
+
+- Complete original film: `data/reviews/current/experimental-game-checkpoint/experimental/spread-air/film.html`. Open the self-contained HTML in the film room and select `G1-P002`, etc. Play number is `log.index+1`, including kicks.
+- Annotated user clips, with direct time links: `data/reviews/current/spread-air-film-notes/index.html#w=p004&t=2.35`. Change the dropdown for all 21 notes.
+- Complete original native data: `data/reviews/current/experimental-game-checkpoint/experimental/spread-air/game.json.gz`; input and roster manifest: `data/reviews/current/experimental-game-inputs.json`.
+- User observations versus verified facts: `data/reviews/current/spread-air-film-notes/review.json`; index: `docs/reviews/spread-air-film-notes-2026-10-14.md`.
+- New missing-state evidence: `data/reviews/current/spread-air-film-notes/prefix-trace.json.gz` and `prefix-receipt.json`. The successful replay through P045 matches all 45 native log entries, positions and events, with 35 physical scrimmages. It supplies full replay telemetry plus passive catch/ball snapshots. These are diagnostic observations, not serialized World restart states. Reuse them; do not automatically replay the prefix.
+- Shared existing failure inventory: `docs/reviews/experimental-film-audit-2026-10-15.md`.
+
+In the integration workspace, prefix those paths with `/workspace/football-experimental-games/`. GitHub renders HTML as source; obtain the HTML locally to watch it.
+
+The original and replay use Node **22.23.3**, **44 recorded flags including RUN_CONTACT_COMPONENTS=1**, and accepted center hands / centered integration / legacy support / per-solve work / speculative impacts / mean support / bounded attachments / adaptive contact substeps. Read the exact flag map from the receipt; do not rely on inherited environment values. Accepted comparator is `develop@a1b16e666a9ee7d1bc1d2aecba141fc535863b24`; historical comparison stays `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`. No merge, reference adoption, default switch or experimental mechanics promotion is authorized by this handoff.
+
+
+**Use these native film annotations to evaluate your existing run-lanes, climber and football-aware detour work.** Do not start a duplicate movement-clearance system or re-run the broad roster/game diagnosis. Run Game's [PR #57](https://github.com/tannerthardy/football-simulation-/pull/57) already supplies exact game replays and an information-compatibility diagnosis. Your latest work on the smallest clear detour and a defender-risk veto is separate from this older experimental runtime; compare pins before claiming a fix is present or absent.
+
+The bounded question is **where the runner's acquired lane decision, a blocker’s actual assignment and the final spacing/traffic request first disagree**. User witnesses:
+
+- **P009 Outside Zone, −.19 yd:** C starts reach on DT_W and LG combos DT_W; C climbs to LB_M at 1.80 s after a 1.00-s handoff. User sees two cutback defenders and doubts C's execution. Verify the assigned keeper, acquisition, declared lane and protection through runner arrival.
+- **P011 Trap, +.63 yd:** RG is the pulling trap blocker on DT_S; LG starts combo on DT_W, climbs toward LB_W at 2.40 s, and LB_M later sheds LG at 3.65 s. The user thinks a guard “has the Will” while RB undercuts toward him. Establish which guard and whether that protection is achieved, not merely planned.
+- **P033 Inside Zone Weak, −1.17 yd:** C/RG share DT_S; C climbs at 2.00 s. User sees an inside seal while RB bounces. Separate true-state apparent space from the runner’s consumed picture, attainable turn and final applied traffic request.
+- **P037 Power, +45.51 yd:** LG is the installed puller targeting NB. RT/Y share DE_S, RT climbs to SS at 1.20 s. The guard looks lost despite a breakaway. Track installed pull path → acquired target → actual footwork/contact; do not reward the repair solely for preserving this gain.
+- **P039 Inside Zone, −1.50 yd:** DT makes the tackle, but no explicit shed event is recorded. Distinguish penetration while engaged from a released block before diagnosing shedding. Preserve plausible defensive wins.
+
+For each nominated case, first reuse the saved evidence. Trace **one first divergence** through public install, information source/age/forecast, candidate route, chosen request, spacing override, achieved body motion and contact. The new detailed prefix includes P037/P038; P009/P011/P033/P039 retain their original standard film plus your and #57's compatible evidence. It does not expose all rejected lane scores. If one missing decision changes what you would implement, collect that one decision/short encounter rather than another full game.
+
+Read `src/sim/behaviors/carrier.ts`, `src/sim/behaviors/blocking.ts` only in your already-claimed RunBlocker/climb regions, `src/sim/spacing.ts`, `src/sim/teammate-information.ts`, `src/sim/teammate-calls.ts` and your branch's movement-clearance code. Do not inspect a teammate’s private target or live future to “know the guard has him.” A valid teammate avoidance can still choose a poor football path; an apparent open gap may be unattainable before contact. Preserve useful waiting, earned transfers, legitimate failed runs and the existing split-zone adverse control.
+
+**Ownership:** Run Game owns the P038 exchange fix and its bounded pass-protection follow-up. Supply any information/spacing evidence they need, but do not retime the mesh or change QBHandoff as part of a detour patch. Coordinate a minimal information contract before layering another correction. Physics owns World/kinematics/load/recovery/grip laws. Do not change capacities, force a handover, erase a collision or import a held solver to improve the film.
+
+**Cost and delivery:** follow `docs/TESTING_COSTS.md`. Name one decision first, inspect compatible saved evidence, then use the smallest failing case and one relevant opposing control if a new check is necessary. A material adverse result gets one discriminating diagnostic, not a larger batch. No automatic roster screen, full games or shared-suite rerun. One integration owner verifies an actual combined runtime candidate once. Return: question/change; evidence for and against with exact source/input/measurement/settings pins; unresolved risk; elapsed runtime; next decision. Keep adverse outcomes and plausible offensive/defensive wins. Check the workboard and claim a bounded file/function scope before implementation; do not treat this proposed routing as another worker's acknowledgment.

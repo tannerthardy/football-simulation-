@@ -1,0 +1,135 @@
+{
+  "schema": "spread-air-notes-viewer-check-v1",
+  "browser": "154.0.8037.57",
+  "simulationRuns": 0,
+  "checks": [
+    {
+      "id": "p002",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 27
+    },
+    {
+      "id": "p003",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 26
+    },
+    {
+      "id": "p004",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 35
+    },
+    {
+      "id": "p005",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 31
+    },
+    {
+      "id": "p006",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 27
+    },
+    {
+      "id": "p009",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 30
+    },
+    {
+      "id": "p010",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 26
+    },
+    {
+      "id": "p011",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 33
+    },
+    {
+      "id": "p012",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 34
+    },
+    {
+      "id": "p018",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 23
+    },
+    {
+      "id": "p022",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 25
+    },
+    {
+      "id": "p023",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 27
+    },
+    {
+      "id": "p024",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 35
+    },
+    {
+      "id": "p033",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 25
+    },
+    {
+      "id": "p034",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 22
+    },
+    {
+      "id": "p037",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 50
+    },
+    {
+      "id": "p038",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 70
+    },
+    {
+      "id": "p039",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 24
+    },
+    {
+      "id": "p040",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 22
+    },
+    {
+      "id": "p043",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 19
+    },
+    {
+      "id": "p045",
+      "selectedAndSeeked": true,
+      "actorRows": 22,
+      "events": 42
+    }
+  ],
+  "pageErrors": [],
+  "elapsedSeconds": 3.3787452440010384
+}

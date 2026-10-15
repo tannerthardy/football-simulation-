@@ -1,0 +1,262 @@
+{
+  "schema": "spread-air-user-film-notes-receipt-v1",
+  "createdAt": "2026-10-15T03:33:11.140170+00:00",
+  "publicationParent": "3617df38070f23aa0a813e8f5014225b77dd7210",
+  "recordedRuntimeCommit": "f62511a513f2187884d74ae3b94435835e43309c",
+  "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+  "runtimeUnchanged": true,
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "inputSha256": "c1c7cef835d143da40c62e6572e6e1d024dff281058a98215ecb78c93e6b5870",
+  "nativeGameSha256": "15e553e26449ff44806293f1611bffd3362cbf2e4dd80d3f1447f0264681057f",
+  "originalAuditReceiptSha256": "bb55aa3dd4eb77a72eaa5cdad75830e1693ccce2db6b73b4e635c44d7d3116d2",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "flagMapSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "hashEncoding": "Flag/default hashes use UTF-8 Python JSON sorted keys, compact separators; artifact hashes use original bytes.",
+  "scope": {
+    "userObservations": 21,
+    "shareablePrompts": 6,
+    "detailedPrefixPlays": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      10,
+      12,
+      18,
+      22,
+      23,
+      24,
+      34,
+      37,
+      38,
+      40,
+      43,
+      45
+    ],
+    "allNativeLogMatches": 45,
+    "newRosters": 0,
+    "diagnosticPrefixAttempts": 2,
+    "physicalScrimmagesAcrossAttempts": 70,
+    "completedFullGames": 0,
+    "sharedSuiteReruns": 0,
+    "messagesSentToOtherAgents": 0
+  },
+  "attempts": [
+    {
+      "path": "data/reviews/current/spread-air-film-notes/prefix-launcher.json",
+      "exitCode": 1,
+      "startedAt": "2026-10-15T03:14:40.918Z",
+      "finishedAt": "2026-10-15T03:14:48.323Z",
+      "wallSeconds": 7.405,
+      "physicalScrimmages": 35,
+      "completedFullGames": 0
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/prefix-launcher-normalized.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-15T03:17:05.150Z",
+      "finishedAt": "2026-10-15T03:17:13.913Z",
+      "wallSeconds": 8.763,
+      "physicalScrimmages": 35,
+      "completedFullGames": 0
+    }
+  ],
+  "runtimeSeconds": {
+    "totalLauncherWall": 16.168,
+    "successfulInternalReplay": 7.538290772,
+    "offlineAndViewerValidation": 5.137555384993902
+  },
+  "checks": {
+    "all21ClipsExactlyMatchOriginals": true,
+    "allOriginalAuditArtifactsAndInputsUnchanged": true,
+    "prefixInputSourceCollectorTraceHashesMatch": true,
+    "pythonAndJavaScriptSyntax": true,
+    "runtimeMatchesRecordedSource": true,
+    "localDocumentationAndHtmlLinks": 14,
+    "all21SelectionsAndSeeks": true,
+    "directHashSelection": true,
+    "viewerPageErrors": [],
+    "recordedFlags": 44,
+    "runContactComponents": "1",
+    "detailedPlayNumbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      10,
+      12,
+      18,
+      22,
+      23,
+      24,
+      34,
+      37,
+      38,
+      40,
+      43,
+      45
+    ],
+    "elapsedSeconds": 5.137555384993902,
+    "viewerSeconds": 3.3787452440010384
+  },
+  "limitations": [
+    "User notes nominate questions; not every clip is a confirmed defect.",
+    "P009/P011/P033/P039 use original standard film and compatible owner evidence; the new detailed prefix does not include them.",
+    "First attempt rejected JS undefined/signed-zero differences against JSON; corrected comparison uses the exact native JSON contract. Failed launcher receipt is preserved.",
+    "Candidate telemetry is diagnostic and does not serialize a complete restartable World.",
+    "Owner routing is proposed; no acknowledgment, runtime integration, reference adoption or default switch occurred.",
+    "No full games or shared suite were repeated for documentation. Existing #57/#58 evidence should be reused where compatible."
+  ],
+  "artifacts": [
+    {
+      "path": "data/reviews/current/spread-air-film-notes/index.html",
+      "bytes": 660221,
+      "sha256": "80d54ca54f3b37b86a81bdd102f7e7f3f64ea6e8f99a4ce611a959254e8b83e7"
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/prefix-launcher-normalized.json",
+      "bytes": 2273,
+      "sha256": "e7d3bd22f50be310e44481680f9fd6a1873ef022bdb67c40c2b502e738df84d4"
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/prefix-launcher.json",
+      "bytes": 2260,
+      "sha256": "db00308afdb9c189c1269468c6cea0fd8e49d4729047e7e08ce7c2445f599ef9"
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/prefix-receipt.json",
+      "bytes": 2464,
+      "sha256": "7fe40687ae9f1eb6d5f2d440536d43f32b549466c416db0a03fff73513b44d70"
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/prefix-trace.json.gz",
+      "bytes": 2109218,
+      "sha256": "ea08eb684c0408fff4a83acfef9e51ec3f9639aea7224b76ae1491a051efe4bb"
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/review.json",
+      "bytes": 15170,
+      "sha256": "5df320d1251f5dc5f1592aca9b1d5dad52b61fd25cf936b930f3adfac122edd0"
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/viewer-check.json",
+      "bytes": 2450,
+      "sha256": "62a9ad388337eebaf558f2b2d648a8fd798b700c85377b8dced78d0fdbf8c299"
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/witnesses.json.gz",
+      "bytes": 488900,
+      "sha256": "59a0195538c1f485965f0e4883c91a1ac3c2268273c6bd653fca19c1087b9c78"
+    },
+    {
+      "path": "docs/reviews/spread-air-film-notes-2026-10-14.md",
+      "bytes": 12974,
+      "sha256": "2ab3d20f7b4a80ff1a3ac3872036ef5b7dc212de1c199700a12cbb25ba281095"
+    },
+    {
+      "path": "docs/reviews/spread-air-handoffs/catching-and-defensive-pursuit.md",
+      "bytes": 8009,
+      "sha256": "82232a7eb51959e754952373a80e3676889f143fcd7d2d9d280a2eb628577b41"
+    },
+    {
+      "path": "docs/reviews/spread-air-handoffs/ceo-football-assignment-contracts.md",
+      "bytes": 7067,
+      "sha256": "517b7e7de551472447f27e61a9bfb8a44928e743dbee781eb99cbd836812d60b"
+    },
+    {
+      "path": "docs/reviews/spread-air-handoffs/do-it-all-run-awareness.md",
+      "bytes": 7543,
+      "sha256": "39001354d9dc9006eaf9510b720a8e5d89c2a5da7ea73177068be09d8604a19a"
+    },
+    {
+      "path": "docs/reviews/spread-air-handoffs/integration-rules-and-credit.md",
+      "bytes": 7340,
+      "sha256": "dd76d32c6e973b922834ec40a37f63554ca54ead2cf893c1c24f46efe0cf5083"
+    },
+    {
+      "path": "docs/reviews/spread-air-handoffs/physics-conditional-escalation.md",
+      "bytes": 6236,
+      "sha256": "47e18e26dba90fd978d523db7f77b17b6b7dbff44251205551ce64041d3458c5"
+    },
+    {
+      "path": "docs/reviews/spread-air-handoffs/run-game.md",
+      "bytes": 7461,
+      "sha256": "24716cf4588b73f55aa91ee4ecd0b0b8d5f4629ce701c2d464cacbd9cb730997"
+    },
+    {
+      "path": "scripts/diag/spread-air-film-notes.py",
+      "bytes": 11498,
+      "sha256": "595ad42738634d8002862fa32263a0b9a6bf0e85777c205a7cadc752a58f4e7a"
+    },
+    {
+      "path": "scripts/diag/spread-air-notes-trace.mjs",
+      "bytes": 6440,
+      "sha256": "eaaf7b3927336819c291084b31ff42f440fb96d6fc7a660db310b4a4446ebe26"
+    },
+    {
+      "path": "docs/WORKBOARD.md",
+      "bytes": 67352,
+      "sha256": "3067122ba2094b77b8efd6f06a737a53425225eae5c57a2671cc2fac1e2dbb7d"
+    }
+  ]
+}
