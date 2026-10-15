@@ -65,7 +65,7 @@ describe('retain a carrier request when radial spacing misreads achievable motio
   const other=state('P015-2.60');other.a.behavior={kind:'pursuit',update:()=>({vel:{x:0,y:0}})};
   expect(request(other)).toEqual(request(other,false));
   // No implicit opt-in for receivers/returners or other shared callers.
-  const unopted=state('P015-2.60'),plain=[structuredClone(unopted.f.raw[6]),{vel:{x:0,y:0}}];
+  const unopted=state('P015-2.60'),plain=[structuredClone(unopted.f.raw[6]),{vel:{x:0,y:0},free:true}];
   const legacy=structuredClone(plain);const peers=[unopted.a,unopted.agents[0]];
   spaceTeammates(peers,plain,(_a,b)=>unopted.pictures[b.idx],{now:unopted.f.t});
   spaceTeammates(peers,legacy,(_a,b)=>unopted.pictures[b.idx]);expect(plain).toEqual(legacy);
