@@ -1,4 +1,589 @@
 {
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "runtimeRevision": "c45412d620ef4ff26b46a04e99f9cb0edc09fa80",
+  "runtimeSource": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+  "diagnosticsRevision": "57fa3618c8427d72c60055951155a9be7b5ff0c3",
+  "referenceRevision": "0eb6fc56afba7590e8a26616b5ff8d30a1d60d3d",
+  "referenceSource": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "node": "v22.23.3",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "settings": {
+    "scope": "Planning only; 22 frozen bodies alternate the two saved profiles, tick .05s. No whole-World or game runtime inference. Shortest arm is same patch host with turnChoice absent, not production center physics.",
+    "physical": "Existing yaw/contact/support/recovery laws and all capacities unchanged; PR56 uncombined.",
+    "native": {
+      "handContact": "patch",
+      "substeps": 96,
+      "materialTransport": "owned",
+      "correctiveGrip": "PR55 only; PR56 uncombined",
+      "turnChoice": "arrival-time only in enabled arms"
+    },
+    "medianBudgetMs": 0.1,
+    "p95BudgetMs": 0.25
+  },
+  "correctness": {
+    "routesExactlyMatched": 101848,
+    "completePlansExactlyMatched": 4006,
+    "focusedPassed": 49,
+    "turnRouteTests": 15,
+    "taskReceiptKeysExactlyMatched": [
+      "referenceError",
+      "taskOperator",
+      "rows",
+      "loaded",
+      "refs",
+      "partition"
+    ],
+    "nativeCompleteResultsExactlyMatched": 6,
+    "nativeInputs": [
+      {
+        "name": "front patch",
+        "cell": {
+          "angle": 0,
+          "speed": 3,
+          "cut": false,
+          "difficulty": "ordinary"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-0-3-0-3001-1"
+      },
+      {
+        "name": "fresh angled",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 4001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-4001-1"
+      },
+      {
+        "id": "patch-45-8-0-6001-1",
+        "name": "declared fresh angle",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "side": 1,
+        "seed": 6001
+      }
+    ],
+    "newFullSuite": false,
+    "historicalFullSuite": "bea90de, source7101eecf…:1952pass/1old dry-cap failure; not relabeled as this revision."
+  },
+  "profile": {
+    "revision": "0eb6fc56afba7590e8a26616b5ff8d30a1d60d3d",
+    "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+    "calls": 440000,
+    "samples": 1378,
+    "arrivalSamples": 155,
+    "gcSamples": 105,
+    "instrumented": true,
+    "limit": "Inlining affects attribution; not a causal decomposition of allocations or runtime tails."
+  },
+  "originalScreen": {
+    "warmups": 11,
+    "repeats": 101,
+    "scope": "22 frozen-body World.plan calls, preparation outside clock, no physical World stepping",
+    "runs": [
+      {
+        "name": "before-clock-a",
+        "revision": "0eb6fc56afba7590e8a26616b5ff8d30a1d60d3d",
+        "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+        "rows": [
+          {
+            "id": "loaded-half-turn",
+            "enabled": false,
+            "median": 0.01633500000002641,
+            "p95": 0.08051100000000133,
+            "maximum": 0.12666000000001532
+          },
+          {
+            "id": "loaded-half-turn",
+            "enabled": true,
+            "median": 0.05490199999997003,
+            "p95": 0.18764199999998254,
+            "maximum": 0.30518899999992755
+          },
+          {
+            "id": "normal",
+            "enabled": false,
+            "median": 0.017275999999924352,
+            "p95": 0.08417599999995673,
+            "maximum": 0.11284899999998288
+          },
+          {
+            "id": "normal",
+            "enabled": true,
+            "median": 0.04906400000004396,
+            "p95": 0.18890400000009322,
+            "maximum": 0.3520689999999149
+          }
+        ]
+      },
+      {
+        "name": "before-clock-b",
+        "revision": "0eb6fc56afba7590e8a26616b5ff8d30a1d60d3d",
+        "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+        "rows": [
+          {
+            "id": "loaded-half-turn",
+            "enabled": false,
+            "median": 0.023795999999947526,
+            "p95": 0.13944000000003598,
+            "maximum": 0.2923489999999447
+          },
+          {
+            "id": "loaded-half-turn",
+            "enabled": true,
+            "median": 0.08316500000000815,
+            "p95": 0.34001100000000406,
+            "maximum": 1.5182509999999638
+          },
+          {
+            "id": "normal",
+            "enabled": false,
+            "median": 0.023695999999972628,
+            "p95": 0.14416700000003857,
+            "maximum": 0.6383289999999988
+          },
+          {
+            "id": "normal",
+            "enabled": true,
+            "median": 0.0796100000000024,
+            "p95": 0.2849179999999478,
+            "maximum": 1.3281860000000734
+          }
+        ]
+      },
+      {
+        "name": "after-clock-a",
+        "revision": "c45412d620ef4ff26b46a04e99f9cb0edc09fa80",
+        "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+        "rows": [
+          {
+            "id": "loaded-half-turn",
+            "enabled": false,
+            "median": 0.023695999999972628,
+            "p95": 0.7514799999999013,
+            "maximum": 2.9783780000000206
+          },
+          {
+            "id": "loaded-half-turn",
+            "enabled": true,
+            "median": 0.0860290000000532,
+            "p95": 0.7191860000000361,
+            "maximum": 7.1470790000003035
+          },
+          {
+            "id": "normal",
+            "enabled": false,
+            "median": 0.02130200000010518,
+            "p95": 0.3578979999999774,
+            "maximum": 1.2101789999999255
+          },
+          {
+            "id": "normal",
+            "enabled": true,
+            "median": 0.023265000000037617,
+            "p95": 0.27185800000006566,
+            "maximum": 0.81924099999992
+          }
+        ]
+      },
+      {
+        "name": "after-clock-b",
+        "revision": "c45412d620ef4ff26b46a04e99f9cb0edc09fa80",
+        "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+        "rows": [
+          {
+            "id": "loaded-half-turn",
+            "enabled": false,
+            "median": 0.026729999999929532,
+            "p95": 0.30252500000005966,
+            "maximum": 1.868227999999931
+          },
+          {
+            "id": "loaded-half-turn",
+            "enabled": true,
+            "median": 0.07951900000000478,
+            "p95": 0.435654999999997,
+            "maximum": 3.3488150000000587
+          },
+          {
+            "id": "normal",
+            "enabled": false,
+            "median": 0.027872000000115804,
+            "p95": 0.38033199999995304,
+            "maximum": 1.3433390000000145
+          },
+          {
+            "id": "normal",
+            "enabled": true,
+            "median": 0.024646999999959007,
+            "p95": 0.2035359999999855,
+            "maximum": 1.615167999999926
+          }
+        ]
+      }
+    ],
+    "decision": "Loaded original-screen p95 worsens and fails in both candidate processes. Normal p95 fails one. Shortest controls also worsen; no attribution or promotion from this screen."
+  },
+  "pairedScreen": {
+    "warmups": 2500,
+    "repeats": 5001,
+    "scope": "22 frozen-body World.plan calls, rotating three arms, fixtures prepared once, no physical stepping or profiler; original cold/preparation-heavy screen retained separately",
+    "runs": [
+      {
+        "name": "paired-a",
+        "revision": "5be715522abdec4212ae569ed4ce5622234bec7b",
+        "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+        "rows": [
+          {
+            "id": "loaded",
+            "arm": "default",
+            "median": 0.008653000000094835,
+            "p95": 0.016705000000001746,
+            "maximum": 0.298699000000056
+          },
+          {
+            "id": "loaded",
+            "arm": "prior",
+            "median": 0.013629999999920983,
+            "p95": 0.06616000000008171,
+            "maximum": 2.4152900000000272
+          },
+          {
+            "id": "loaded",
+            "arm": "scalar",
+            "median": 0.01128700000003846,
+            "p95": 0.03773599999999533,
+            "maximum": 0.7568579999999656
+          },
+          {
+            "id": "normal",
+            "arm": "default",
+            "median": 0.008233000000018365,
+            "p95": 0.016635000000064792,
+            "maximum": 1.1439700000000812
+          },
+          {
+            "id": "normal",
+            "arm": "prior",
+            "median": 0.013320000000021537,
+            "p95": 0.056874999999990905,
+            "maximum": 0.9705689999998413
+          },
+          {
+            "id": "normal",
+            "arm": "scalar",
+            "median": 0.008171999999831314,
+            "p95": 0.01577399999996487,
+            "maximum": 6.777989000000048
+          }
+        ]
+      },
+      {
+        "name": "paired-b",
+        "revision": "5be715522abdec4212ae569ed4ce5622234bec7b",
+        "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+        "rows": [
+          {
+            "id": "loaded",
+            "arm": "default",
+            "median": 0.008933000000070024,
+            "p95": 0.03269900000009329,
+            "maximum": 2.2478590000000622
+          },
+          {
+            "id": "loaded",
+            "arm": "prior",
+            "median": 0.014051999999992404,
+            "p95": 0.09415100000001075,
+            "maximum": 3.495484000000033
+          },
+          {
+            "id": "loaded",
+            "arm": "scalar",
+            "median": 0.011897999999973763,
+            "p95": 0.06793199999992794,
+            "maximum": 2.1929959999999937
+          },
+          {
+            "id": "normal",
+            "arm": "default",
+            "median": 0.008493000000044049,
+            "p95": 0.02665999999999258,
+            "maximum": 2.495591000000104
+          },
+          {
+            "id": "normal",
+            "arm": "prior",
+            "median": 0.013670000000047366,
+            "p95": 0.07989999999995234,
+            "maximum": 2.2626209999998537
+          },
+          {
+            "id": "normal",
+            "arm": "scalar",
+            "median": 0.008533000000170432,
+            "p95": 0.03181799999993018,
+            "maximum": 2.1349390000000312
+          }
+        ]
+      }
+    ],
+    "decision": "Loaded median15.3–17.2% lower; normal37.6–38.6% lower in process pairs. Retain maximum6.777989ms; warmup/fixture reuse changed together, does not replace original cost gate."
+  },
+  "retained": [
+    "Original candidate cold/preparation-heavy tails up to7.147079ms",
+    "Warmed scalar-normal maximum6.777989ms",
+    "Seed4001+.543732yard/+.10s versus shortest unchanged",
+    "Old dry-cap numerical certificate",
+    "Nine earlier43/52 experimental patch failures",
+    "Keeper/older support history witnesses",
+    "PR56 separately reviewable and uncombined"
+  ],
+  "recommendation": "Preserve cost-only correction for experimental review; default-off. Stop helper micro-tuning. Measure planner within one saved native World loop and separate startup/fixture/runtime costs before another optimization or budget decision. No new mechanics or data pipeline.",
+  "validation": {
+    "focused": {
+      "path": "out/turn-planner-cost/focused.receipt.json",
+      "sha256": "db289837ec0b23669233191827e150692b02aec8b1be3140158ab33ddfb2ba27",
+      "revision": "c45412d620ef4ff26b46a04e99f9cb0edc09fa80",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 4.918534406999999
+    },
+    "equivalence": {
+      "path": "out/turn-planner-cost/final-equivalence.receipt.json",
+      "sha256": "471fb54b1308d68b213cee3ae0050094faa56f9f7d407337ed55812c77c57648",
+      "revision": "614ac764ffe65c9e57d36e7f1382c6ed5b9669bf",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 1.599181455
+    },
+    "native": {
+      "path": "out/turn-planner-cost/portable-native.receipt.json",
+      "sha256": "a3a05a40abfe221145b779e2e7007c6f1d102699705dae7e952f3626888885f7",
+      "revision": "57fa3618c8427d72c60055951155a9be7b5ff0c3",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 3.9377052050000003
+    },
+    "tasks": {
+      "path": "out/turn-planner-cost/tasks.receipt.json",
+      "sha256": "8dc2018b0436dadee8fd712298f5282ea1945ccc8ad2ba85f3a10fd5653a0090",
+      "revision": "c45412d620ef4ff26b46a04e99f9cb0edc09fa80",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 3.491755827
+    },
+    "typecheck": {
+      "path": "out/turn-planner-cost/final-typecheck.receipt.json",
+      "sha256": "7d6b7a1172873a4029336319b53a9951ff09a45c54bb0437e4ee4a4dc93091a1",
+      "revision": "614ac764ffe65c9e57d36e7f1382c6ed5b9669bf",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 21.905193405
+    },
+    "build": {
+      "path": "out/turn-planner-cost/build.receipt.json",
+      "sha256": "81f419401f75fb88c6f4739b0189c928b235ee6d6ff38a382e8fcb59199d8c1f",
+      "revision": "614ac764ffe65c9e57d36e7f1382c6ed5b9669bf",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 21.827922299
+    },
+    "beforeA": {
+      "path": "out/turn-planner-cost/before-clock-a.receipt.json",
+      "sha256": "2874a0ee5f5a24d1dbcb4bfabd7a519221000aa207163a8366e792ef2c64417e",
+      "revision": "0eb6fc56afba7590e8a26616b5ff8d30a1d60d3d",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 0.9999260150000001
+    },
+    "beforeB": {
+      "path": "out/turn-planner-cost/before-clock-b.receipt.json",
+      "sha256": "3d328f49d7536fc609acb8d90ccfd964cf4f272277170efd4718a0679c3aa7e6",
+      "revision": "0eb6fc56afba7590e8a26616b5ff8d30a1d60d3d",
+      "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 1.074426337
+    },
+    "afterA": {
+      "path": "out/turn-planner-cost/after-clock-a.receipt.json",
+      "sha256": "87ade3eb0a9b023a255672a3f5e1bce72753790799ab7596d2eacf0863199a75",
+      "revision": "c45412d620ef4ff26b46a04e99f9cb0edc09fa80",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 2.1894839299999997
+    },
+    "afterB": {
+      "path": "out/turn-planner-cost/after-clock-b.receipt.json",
+      "sha256": "62de0a7bcea3fd5405fe35accfee6a2609dfa29fd9d09eeba559355c726b17a3",
+      "revision": "c45412d620ef4ff26b46a04e99f9cb0edc09fa80",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 1.467429209
+    },
+    "pairedA": {
+      "path": "out/turn-planner-cost/paired-a.receipt.json",
+      "sha256": "ecd23920187381d32710b34c80944377f77885444fe250de414db2715be9d6db",
+      "revision": "5be715522abdec4212ae569ed4ce5622234bec7b",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 1.367740889
+    },
+    "pairedB": {
+      "path": "out/turn-planner-cost/paired-b.receipt.json",
+      "sha256": "1d15e3e27e1e438d7b0487575395278e101692fddf1e0d7b8de1f2a5c481136c",
+      "revision": "5be715522abdec4212ae569ed4ce5622234bec7b",
+      "source": "b925f586d97f9b2257b2ca46c8d7d8486b00c592c567ddea7085005bcd2289eb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "seconds": 1.616554206
+    }
+  },
+  "evidence": [
+    {
+      "path": "out/turn-planner-cost/profile.ts",
+      "sha256": "fe52eec2926a47c1ef3ac0a650946d929ced2da45eecdb8c97ccade5f26051cc"
+    },
+    {
+      "path": "out/turn-planner-cost/before.cpuprofile",
+      "sha256": "50dd61fd1528bd13ab44077019229d90290418df6a0452118e409dc98f8015a3"
+    },
+    {
+      "path": "out/turn-planner-cost/profile-summary.json",
+      "sha256": "25bab5b47f02a666460faeb6e840fb9be216c5f0f7fadd89ba5ddce268f1a2b6"
+    },
+    {
+      "path": "out/turn-planner-cost/equivalence.json",
+      "sha256": "4bc3df2c99e1a68d0974f628015df45812582553c3dc0ef9feba0b9af42e25f8"
+    },
+    {
+      "path": "out/turn-planner-cost/native.json",
+      "sha256": "d3a83361d607935de8af05d1ac9e52c68561490392b6fcebd3899792b107be9b"
+    },
+    {
+      "path": "out/turn-planner-cost/tasks.json",
+      "sha256": "98990dbaeb0b42cc1193e1567c63474b006f6191e5ef0393f6ada9892a3e91ab"
+    },
+    {
+      "path": "out/turn-planner-cost/tasks.raw.json",
+      "sha256": "5d1c30d91689763a291a35487a9302237d07357b3604253f7995f79e41dadda9"
+    },
+    {
+      "path": "out/turn-planner-cost/before-clock-a.json",
+      "sha256": "0099389c0d43dcd03a9427cfbad9c0d7892153dc352024faa9c98d54d3b87ae5"
+    },
+    {
+      "path": "out/turn-planner-cost/before-clock-a.raw.json",
+      "sha256": "ed83eca10e5a96eddef0375d2941b189329b22469de9ef1a7f26bc66181c0b68"
+    },
+    {
+      "path": "out/turn-planner-cost/before-clock-b.json",
+      "sha256": "c86a301a3fff2d57e6bb26a066ba3fbd6e8e33523179ca1eaa32e8321fa13a69"
+    },
+    {
+      "path": "out/turn-planner-cost/before-clock-b.raw.json",
+      "sha256": "59d868b09c8bf10ff57350816f4afd220325c46ab3759bb67cd436eb5600e259"
+    },
+    {
+      "path": "out/turn-planner-cost/after-clock-a.json",
+      "sha256": "d0d740464518afee7d4617c42df2aa5f316a742cc7db9a5758066d678185cc0d"
+    },
+    {
+      "path": "out/turn-planner-cost/after-clock-a.raw.json",
+      "sha256": "5fb968bae8e6f97eab83275219d2312ab1ae35ad48398e0cb7c32923f0d1ad62"
+    },
+    {
+      "path": "out/turn-planner-cost/after-clock-b.json",
+      "sha256": "a11483708df4be4a4e52eaced29b87d594778f9d76a8ca703202219c9d10becc"
+    },
+    {
+      "path": "out/turn-planner-cost/after-clock-b.raw.json",
+      "sha256": "29c275bfd29454a290c5b814e70946ea62592ad592ce1add9771dc61b714b096"
+    },
+    {
+      "path": "out/turn-planner-cost/paired-a.json",
+      "sha256": "539549f7480882ae8fe794304c3b66fee9d0258f7116d6af836ee51ec0fd4209"
+    },
+    {
+      "path": "out/turn-planner-cost/paired-a.raw.json",
+      "sha256": "bad295af030bf381303c7530d2037ac3e38db44d9a37f33b2870d2bebeec1da4"
+    },
+    {
+      "path": "out/turn-planner-cost/paired-b.json",
+      "sha256": "389164a598293971a72e27e323ea30d444f54802cd0e87bd2212cad3795556ce"
+    },
+    {
+      "path": "out/turn-planner-cost/paired-b.raw.json",
+      "sha256": "3bd87465b8ba06555b186a8c91c125afe9c350ffb2379c284a5025e3a92b4d6c"
+    }
+  ],
   "nativeReference": {
     "revision": "b4bc3a1c3787d9c9d42a58ad4b29af662b9ae54a",
     "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
@@ -320,5 +905,13 @@
         }
       }
     ]
+  },
+  "commands": {
+    "equivalence": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-planner-cost.ts",
+    "originalClock": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-route-evidence.ts --benchmark --output=out/turn-planner-cost/clock.json",
+    "pairedClock": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-planner-cost.ts --benchmark --output=out/turn-planner-cost/paired.json",
+    "native": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-planner-cost.ts --native",
+    "tasks": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-route-evidence.ts --output=out/turn-planner-cost/tasks.json",
+    "focused": "node scripts/baseline.mjs --candidate -- npx vitest run test/turn-route.test.ts test/yaw-motor.test.ts test/yaw-response.test.ts test/support-command-audit.test.ts --maxWorkers=1"
   }
 }

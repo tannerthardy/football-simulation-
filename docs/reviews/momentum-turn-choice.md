@@ -1,5 +1,9 @@
 # Existing angular motion can improve a loaded half-turn choice
 
+Cost follow-up: [the scalar planner](turn-planner-cost.md) preserves the choices
+and improves warmed planning cost, but the original tail screen remains open.
+The measurements below retain their original revision pins.
+
 **Keep this controller candidate experimental.** It improves five of34 isolated turn tasks and preserves29, including normal turns and deliberate reversals. The saved previous-history turn settles36.46ms sooner with less absolute motor work. Six native contact inputs retain all endings, but seed4001 allows+.544yd/+.10s. Planning medians pass the declared budget; all candidate p95 screens fail it. This is narrow motion evidence, not established football or full-patch benefit.
 
 Runtime/diagnostics `b4bc3a1`, source `7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3`, from PR59 `4db2ffa`. Full validation freezes the same runtime at the documentation-only owner pin `bea90de`. Baseline remains `4ded6b6`; primary `862258c`. [The receipt](../../data/reviews/current/momentum-turn-choice.json) pins exact flags, input/file hashes, successful/adverse evidence and commands. PR56 remains separate and uncombined.
