@@ -42,6 +42,12 @@ function make(saved){
     firstDownX:Math.min(110,saved.los+saved.state.distance),down:saved.state.down,
     seed:saved.input.rng.key,energy:new Map(saved.input.actors.map(a=>[a.player.id,a.body.energy])),
     record:false});
+  // The fixture is post-constructor: P019 already paid its pre-snap stem's
+  // energy/work, and the recorded RNG already includes pre-snap checks. Restore
+  // those initial conditions once, rather than charging the stem a second time.
+  // These are physics/test initialization, never future inputs to a controller.
+  for(const a of sim.agents)Object.assign(a.body,structuredClone(saved.input.actors[a.idx].body),{profile:a.profile});
+  Object.assign(sim.rng,saved.input.rng);
   return sim;
 }
 for(const saved of inputs.rows){
@@ -54,6 +60,7 @@ for(const saved of inputs.rows){
     const row={play:saved.nativePlay,role:saved.role,arm,initialHash:hash(initial),
       savedInitialBodiesEqual:hash(initial.bodies)===hash(saved.input.actors.map(a=>a.body)),
       savedPostConstructorRngEqual:hash(initial.rng)===hash(saved.input.rng),frames,reads};rows.push(row);
+    assert(row.savedInitialBodiesEqual&&row.savedPostConstructorRngEqual,'Saved physical/RNG initialization must match');
     runReadObservers.set(sim,e=>{if(e.actor===6)reads.push(snap(e));});
     const query=sim.teammateInformation.bind(sim);
     sim.teammateInformation=(a,b)=>{const picture=query(a,b);if(a.idx===6)cues.set(sim.t+':'+b.idx,{t:sim.t,target:b.idx,picture:snap(picture)});return picture;};
@@ -92,7 +99,8 @@ for(const play of [...new Set(rows.map(r=>r.play))]){
 }
 const report={schema:'run-entry-relevance-coupled-v1',sourceSha256:sourceVersion(),inputSha256:hash(bytes),collectorSha256:hash(readFileSync(import.meta.filename)),
   node:process.version,flags:inputs.flags,worldDefaults:inputs.worldDefaults,diagnostic,comparisons,rows,
-  historicalSetupLimits:inputs.missingHistoricalSetup,method:inputs.staging,
+  historicalSetupLimits:[...inputs.missingHistoricalSetup,'Original pre-constructor energy/mind state and pre-snap recognition history are not serialized'],
+  method:'Saved final calls/players/down/distance/LOS/ballY; default scouting/matchup/mind setup. Restore all22 saved post-constructor physical bodies and RNG once at t=0. No subsequent frame injection.',
   intervention:'Information correction in both arms. Baseline bypasses only BallCarrier.approach, so original entry ranking/request remains. Candidate uses portable production admission. All22 players react; no old-frame injection or game prefix.',
   physicalExecutions:4,completedGames:0,elapsedSeconds:(performance.now()-start)/1000};
 writeFileSync(out+'/native.json.gz',gzipSync(JSON.stringify(report),{mtime:0}));
