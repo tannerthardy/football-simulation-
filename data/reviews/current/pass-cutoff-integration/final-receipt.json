@@ -1,0 +1,190 @@
+{
+  "schema": "pass-cutoff-final-integration-verification-v1",
+  "acceptedDevelop": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "testedCommit": "64177487272b7e0b2d51460e23ccdb6447508e39",
+  "branch": "codex/pass-cutoff-integration-review",
+  "runtimeExtraction": "b405a0e15efc5163bf9c435d50b35013e3e9883a",
+  "authoredCandidate": "81b908586416070145b5b89ee9517380c4fe09fe",
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "validationSha256": "ccd339bb899afb10f98e64e44c2da9b15903fbb73e0009664d5aad76930ba37c",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "hashEncoding": "Flag/World fingerprints: SHA256 of UTF-8 JSON with sorted keys and compact separators; source/validation use scripts/baseline.mjs path-NUL-content-NUL digest.",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1724,
+    "typescriptFiles": 144,
+    "pythonPassed": 145,
+    "skippedPhases": [],
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "exitCode": 0
+  },
+  "decision": "Recommend bounded merge of this isolated candidate after explicit merge authorization. Original stacked PR67 ancestry must not be merged. Verification approval does not authorize merge, baseline or default changes.",
+  "testRepair": "One-line coverage-job filter; all prior coverage-history, nonempty, source-copy, unavailable-cause, perception and QB assertions preserved. No seed, threshold, setup or inspection-window changes.",
+  "scope": [
+    "src/sim/behaviors/blocking.ts",
+    "test/fixtures/pass-cutoff-inputs.json.gz",
+    "test/pass-cutoff-approach.test.ts",
+    "test/replay-telemetry.test.ts"
+  ],
+  "reusedEvidence": {
+    "focused17": "focused.json",
+    "currentP040P019": "paired-native.json.gz",
+    "centerExecutionDiagnostic": "traffic-diagnostic-native.json.gz",
+    "adverseOutcomes": "adverse-review.json",
+    "originalAuthorHashes": "author-evidence-review.json",
+    "runAdjudication": "f430360d9e5a6a151a3851843d6a917a94bd0964",
+    "runAdjudicationComment": "https://github.com/tannerthardy/football-simulation-/pull/67#issuecomment-6201827323",
+    "runArtifactsVerified": 12,
+    "runArtifactManifestSha256": "9978e318791513a577a604c517025fd3676e830364f443f045684212dc7b5b63",
+    "runProductionSourceUnchanged": true
+  },
+  "adverseEvidenceAndLimits": [
+    "Native P040 RT earlier shed and P019 RG loss remain; initial execution diagnostics support bounded draw-order attribution, not universal protection improvement.",
+    "Native P019 C/LG sustained contact3/35.996 to16/662.856 positive samples/kg*yd/s remains. One retained-initial-C diagnostic reduces to2/22.667; later randomness remains coupled.",
+    "Ordinary existing fixture candidate LT shed1.20/pressure2.15 versus accepted no loss before2.25 remains. Run reciprocal three-response-variate comparison makes both swim arms lose0.85s after acquisition and both failed-long-arm arms protect through2.25. This supports an execution/contact-clock tradeoff; it is not a full common-randomness or zero-geometry-effect proof.",
+    "Original P020 transfer belongs to authored experimental source; not rerun or represented as current-develop evidence.",
+    "P019/P040 current comparisons are censored3.50s; ordinary fixture2.25s. Deliberate QB-copy mutation events are not native football evidence.",
+    "Cutoff forecast optimism and center-hand contact realism remain unresolved; no predictor, loaded-policy, contact-law or capacity correction is claimed.",
+    "No league win-rate, all-protection or full-game realism claim."
+  ],
+  "cost": {
+    "thisFinalVerificationCommandSeconds": 200.23366581999997,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.206387781000002
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 12.834942877
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 175.35095511699998
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.8413800449999981
+      }
+    ],
+    "priorIntegrationReviewCommandSeconds": 209.463496815,
+    "reusedRunAdjudicationCommandSeconds": 7.64248,
+    "extraStandaloneGames": 0,
+    "extraStandaloneReplays": 0,
+    "extraRosterScreens": 0,
+    "suiteGameAssertions": "Existing full-suite game assertions ran; no additional game campaign."
+  },
+  "preservation": {
+    "priorFailedCombined": "combined-failure.json",
+    "priorFailedCombinedLog": "combined-failure.log",
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "acceptedDevelopUnchanged": true,
+    "originalBranchesAndEvidenceRetained": true
+  },
+  "excluded": [
+    "#69 collection",
+    "#66 and experimental contact physics",
+    "entry-admission",
+    "experimental original #67 ancestry",
+    "#64 predictor/loaded-coordinate trials"
+  ],
+  "artifacts": {
+    "final-combined.json": {
+      "bytes": 2635,
+      "sha256": "18329ccb365c47f85cbfd469b0a7cfa90886485a82eed05489878e4d9f8db1b7"
+    },
+    "final-combined.log": {
+      "bytes": 15302,
+      "sha256": "581034caf48abf20e5cbbccd1477e175d64a745942869b30ef39ed2d8b606ffe"
+    },
+    "final-candidate.patch": {
+      "bytes": 18820,
+      "sha256": "0c2cc9b185cef85c58257472deda43ea3fd84ed5bbb99a845d33671e4fbf1ffe"
+    },
+    "final-preflight.json": {
+      "bytes": 1827,
+      "sha256": "2baf61f283fd92e2cfece30de3790a241aeaf6aedf91948ff591a34925ec8045"
+    }
+  },
+  "nextDecision": "Authorize the exact isolated integration candidate merge into develop; no additional suite or simulations for an unchanged candidate."
+}

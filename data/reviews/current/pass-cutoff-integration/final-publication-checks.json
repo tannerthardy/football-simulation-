@@ -1,0 +1,41 @@
+{
+  "schema": "pass-cutoff-final-publication-checks-v1",
+  "checkedAt": "2026-10-15T20:50:37.581447+00:00",
+  "testedCommit": "64177487272b7e0b2d51460e23ccdb6447508e39",
+  "acceptedDevelop": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "newerTrackingReconciled": "72cacd09493f69517026f03eadda39110e28bdd4",
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "validationSha256": "ccd339bb899afb10f98e64e44c2da9b15903fbb73e0009664d5aad76930ba37c",
+  "runtimeTestsToolingSettingsIdenticalToTestedCommit": true,
+  "sourceSettingsPhysicsUnchangedOutsideIsolatedHunk": true,
+  "changedProtectedPaths": [
+    "src/sim/behaviors/blocking.ts",
+    "test/fixtures/pass-cutoff-inputs.json.gz",
+    "test/pass-cutoff-approach.test.ts",
+    "test/replay-telemetry.test.ts"
+  ],
+  "existingReceiptFilesPreservedByRef": {
+    "7d1451b2c31786e075550183a6a93bbda23da29b": 93,
+    "48bbfe77df0b64798ff0dde1e6d1ea69f1d9a752": 115,
+    "72cacd09493f69517026f03eadda39110e28bdd4": 96
+  },
+  "publicationOnlyPathsChanged": [
+    "data/reviews/current/pass-cutoff-independent-review.json",
+    "data/reviews/current/pass-cutoff-integration/final-candidate.patch",
+    "data/reviews/current/pass-cutoff-integration/final-combined.json",
+    "data/reviews/current/pass-cutoff-integration/final-combined.log",
+    "data/reviews/current/pass-cutoff-integration/final-receipt.json",
+    "data/reviews/current/post-pr65-queue-check.json",
+    "data/reviews/current/pr65-adoption-merged.json",
+    "docs/INTEGRATION.md",
+    "docs/ISSUES.md",
+    "docs/STATUS.md",
+    "docs/WORKBOARD.md",
+    "docs/reviews/pass-cutoff-integration.md"
+  ],
+  "checkedLocalDocumentationPaths": 90,
+  "brokenLinks": [],
+  "portablePatchChecks": "final-candidate.patch applies to accepted7d1451b using a separate temporary index; no checkout/index/worktree reset",
+  "additionalTestsOrSimulations": 0,
+  "mergeAuthorized": false
+}
