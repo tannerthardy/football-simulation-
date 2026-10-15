@@ -8,7 +8,7 @@
 import type { MoveCommand } from '../../physics/kinematics.js';
 import type { Gap, MatchRule, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
-import { ManCoverage, ZoneCoverage } from '../behaviors/defense.js';
+import { believesRun, ManCoverage, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
@@ -22,6 +22,7 @@ export class CoverageDefender implements Behavior {
   private readonly side: 'S' | 'W';
   private sub: Behavior;
   private subKey = '';
+  private supportRecorded = false;
   /** What he is doing now, for film and diagnostics ("zone:hook_s", "man:Y", "trap:H"). */
   job = '';
   /** Every job he has taken this play, with the time he took it. */
@@ -94,6 +95,28 @@ export class CoverageDefender implements Behavior {
         options: [...new Set([directiveKey(primary), key])],
         detail: `Observed rule inputs: ${this.reader.recordedReads(sim.t).map(r => `${r.r.slot}=${r.release} at ${r.depth.toFixed(1)} yd`).join(', ') || 'none'}. Causal trigger is not exposed.` });
       a.tags.add(`cov-${d.t}`);
+    }
+    // A match changes the receiver responsibility, not the installed run
+    // support. A personally acquired runner can still activate that support
+    // while the new man is a different receiver. Recheck belief and picture
+    // each tick; recognized flight retains the ordinary ball priority.
+    if (this.sub instanceof ManCoverage && believesRun(sim, a)
+      && (a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley')
+      && (sim.ball.kind !== 'air' || !sawThrow(a, sim, this.sub.target))) {
+      for (const back of sim.offense) {
+        if (!sim.offAlign.spots[back.slot]?.backfield
+          || (back.player.position !== 'RB' && back.player.position !== 'FB')) continue;
+        const cue = sim.see(a, back);
+        if (cue.carrying !== true) continue;
+        if (!this.supportRecorded) {
+          this.supportRecorded = true;
+          if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-run-fit',
+            chose: `keyed-fit:${back.slot}`, cue: `${back.slot} carrying=true in consumed picture; current run belief`,
+            options: [this.job, `keyed-fit:${back.slot}`],
+            detail: `Installed ${a.runFit.kind} ${a.runFit.gap}-gap side ${a.runFit.side} survives ${this.job}; picture age ${cue.age ?? 'unknown'} s. No live-possession confirmation.` });
+        }
+        return runFit(a, sim, this.gap, this.gapSign, { target: back, cue });
+      }
     }
     return this.sub.update(a, sim);
   }
