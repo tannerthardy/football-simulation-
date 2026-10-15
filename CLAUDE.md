@@ -15,6 +15,8 @@ stated. Ongoing feature owners reconcile relevant accepted changes at clean
 checkpoints; do not force rebases or abandon valid dependency stacks.
 
 Commit coherent steps on the assigned feature branch and push only that branch.
+Continue the same PR for its candidate/objective; new runs/receipts normally
+update it. A new PR needs an independent review or integration boundary.
 Read [work ownership](docs/WORKBOARD.md) and claim bounded files/functions before
 crossing another owner's boundary. Preserve all branch and evidence history;
 do not reset/clean another checkout or force-push. Primary retains physics

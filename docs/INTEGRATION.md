@@ -3,7 +3,7 @@
 Updated **2026-10-15 (America/Phoenix)**. Integration in this chat owns queue
 triage, exact combined verification and publication. This page is the canonical
 accepted-reference and readiness record; [STATUS](STATUS.md) is a signpost and
-[WORKBOARD](WORKBOARD.md) records edit boundaries. The [detailed issue register](https://github.com/tannerthardy/football-simulation-/blob/0f70bb2a4205497d7df8ed1ed59391d87084c603/docs/ISSUES.md)
+[WORKBOARD](WORKBOARD.md) records edit boundaries. The [detailed issue register](ISSUES.md)
 retains individual mechanisms, adverse evidence and return conditions. Earlier
 stages remain below.
 
@@ -120,6 +120,11 @@ its diff/dependencies. Do not convert every "behind" count into a new test job.
 - Read new/changed handoffs and reviews; pin the actual heads, base and flag
   intent. Update an existing row, not a second competing queue. Classify ready,
   review-pending, blocked with a named owner, rejected or experimental.
+- Continue the same PR for the same candidate/objective; a new run or receipt
+  updates that PR. Create another only for an independently reviewable change
+  or a genuinely different integration boundary. Completed/superseded research
+  PRs can close with immutable findings/evidence and a successor while their
+  branches stay available to active children.
 - Prepare the smallest useful coherent candidate from accepted develop;
   do not wait for every owner. If one item is blocked, progress another
   independent item. This queue/agent-doc correction proceeds independently

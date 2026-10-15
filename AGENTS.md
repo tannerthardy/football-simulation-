@@ -23,6 +23,9 @@ Codex and other coding agents; old task paragraphs are historical snapshots.
   and opposing control, compatible evidence reuse. Integration in this chat
   owns verification of the exact combined candidate; contributors do not
   repeat it. No automatic roster matrix, game campaign or per-push full suite.
+- Continue the same PR for the same candidate/objective, including new receipts.
+  Use a new PR for an independently reviewable change or different integration
+  boundary. Closed research retains its branch, evidence and explicit successor.
 - Publish fetchable code/evidence with exact base, dependencies, flag intent,
   failures, runtime and next decision. Integration updates the shared queue
   and accepted pin only after required acceptance under existing authority.
