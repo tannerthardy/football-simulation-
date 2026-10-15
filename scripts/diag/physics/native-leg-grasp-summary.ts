@@ -119,7 +119,8 @@ const result = {
   powerlessVersusRemoved: { selectedBodiesAndSupportExactlyEqualThroughSeconds: cfg.weakContinuationSeconds },
   runtime: {
     finalCollectorInternalSeconds: raw.elapsedSeconds,
-    attempts: ['out/native-leg-grasp/audit.receipt.json', 'out/native-leg-grasp/audit-ground-initial.receipt.json', receiptPath].map(path => {
+    attempts: ['out/native-leg-grasp/audit.receipt.json', 'out/native-leg-grasp/audit-ground-initial.receipt.json',
+      'out/native-leg-grasp/audit-typed.receipt.json', receiptPath].map(path => {
       const r = read(path);
       return { revision: r.commit, path, exitCode: r.exitCode, seconds: sum(r.commands.map((c: any) => c.elapsedSeconds)) };
     }),

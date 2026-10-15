@@ -82,7 +82,7 @@ function run(v:any){
   }
   for(let k=0;k<ids.length;k++){const i=ids[k],residual=report.supportMotorWork[i]-old[k]-(phase.motor[i]??0);audit.maxMotorWorkResidual=Math.max(audit.maxMotorWorkResidual,Math.abs(residual));assert(Math.abs(residual)<cfg.checks.work);
    const b=this.bodies[i],f=b.support.foot;
-   if(f)placement.push({t:sim.t,time:phase.time+h,h,slot:sim.agents[i].slot,state:b.support.state,xi:{...b.support.xi},feetLock:b.support.feetLock,
+   if(f&&args[0].includes(i))placement.push({t:sim.t,time:phase.time+h,h,slot:sim.agents[i].slot,state:b.support.state,xi:{...b.support.xi},feetLock:b.support.feetLock,
     desired:{...f.desired},achieved:{...f.achieved},force:{...f.force},capacity:f.capacity,mobility:f.mobility,offset:{...f.offset},
     velocityResidual:Math.hypot(f.achieved.x-f.desired.x-f.mobility*f.force.x,f.achieved.y-f.desired.y-f.mobility*f.force.y)});
   }
