@@ -1,0 +1,1653 @@
+{
+  "protocol": "local-slip-motor-evidence-v1",
+  "decision": {
+    "localMechanicsClosed": true,
+    "worldIntegrated": false,
+    "adoptionReady": false,
+    "runtimeGatePassed": false,
+    "recommendation": "Retain as local diagnostic reference. Stop arithmetic micro-tuning; measure event-selection versus body/accounting cost before choosing a different integration interface. No World adapter under current evidence."
+  },
+  "branch": "codex/slip-motor-event",
+  "testedRevision": "cbe8a8818be2638758adbbebf7374a50f52f0622",
+  "source": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+  "initialKernelRevision": "9ab771ff0f942159c1d21011844189b0aba4f899",
+  "initialSource": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
+  "rejectedRefactorRevision": "1406664f0b3fc188f4bce03912a5f7a2350cc66e",
+  "rejectedRefactorSource": "db22087bb5015057347a71eda2d22183f0eba9a927e3c7dfc255b78272b5ca7d",
+  "parentPR": 70,
+  "parentRevision": "1ee42fefda89e969998da64283573206c8c852b6",
+  "parentSource": "89cda7c5847606b961aee7f1babd4e9397ddad2f3ff4b3c215b7282291f187eb",
+  "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "acceptedDevelopFetched": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "acceptedPhysicsTreeChangedFromA1b16e6": false,
+  "settings": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "extractionPin": {
+    "source": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+    "worldOptions": {
+      "handContact": "patch",
+      "groundMovement": "legacy",
+      "groundYawCoupling": "hands",
+      "substeps": 12
+    },
+    "parentPacket": {
+      "path": "config/current-contact-first-interval.json",
+      "sha256": "32e83a3d8f6bb6a5b65a8f4e44bd45995c9027e064fc9e518945b509eeb39edb"
+    },
+    "observationNeutral": "Reuse PR70 body/report-identical native12 extraction; no re-extraction or new plays this pass."
+  },
+  "input": {
+    "path": "config/local-slip-work.json",
+    "sha256": "22433a29b481f7c023f593afdd6bf00fa4c1c4d066209016783dce9921e11db8"
+  },
+  "inputManifest": [
+    {
+      "case": "nextField",
+      "time": 0.36666666666666664,
+      "duration": 0.004166666666666667
+    },
+    {
+      "case": "selected",
+      "time": 0.36249999999999993,
+      "duration": 0.004166666666666667
+    },
+    {
+      "case": "slidingControl",
+      "time": 0.35,
+      "duration": 0.004166666666666667
+    },
+    {
+      "case": "noHandControl",
+      "derivedFrom": "nextField",
+      "override": {
+        "forceLimit": 0
+      }
+    }
+  ],
+  "reference": {
+    "path": "config/local-slip-motor-reference.json",
+    "sha256": "34135251daed051faee6483d1d9c7e9b0e303174335422815744ac83079c5792",
+    "generatorSha256": "4398c223da7795065a23e3a840cc288f439865376b5f4be963472e26c9c2f50e",
+    "precision": [
+      70,
+      100
+    ],
+    "nonzeroDoubleAgreement": true,
+    "referenceZeroTail": 2.108e-67,
+    "savedContactReferenceCommittedBeforeKernel": "2ef35e8353c64f05d3e0d87246a91aeba49221e1",
+    "reference100": {
+      "path": "out/slip-motor/reference100.json",
+      "sha256": "70ff12c58267a73dd41dd64b781593778a73675df92a0d2e426d36b71be82d05"
+    },
+    "scope": "Independent Decimal bisection force/time roots plus analytic coordinates/work; imports no engine. Meaningful quantities round identically at70/100 digits; numerical-zero tails compared below1e-60, no change to1e-11 physical gates."
+  },
+  "tools": [
+    {
+      "path": "src/physics/local-slip-motor.ts",
+      "sha256": "24575e45be35d426146e6877878e3a8f5f8aae8f4403269de4adebffbd09bc11"
+    },
+    {
+      "path": "scripts/diag/physics/local-slip-motor-reference.py",
+      "sha256": "4398c223da7795065a23e3a840cc288f439865376b5f4be963472e26c9c2f50e"
+    },
+    {
+      "path": "scripts/diag/physics/local-slip-motor.ts",
+      "sha256": "fedbba923064a3b16fc40dd758d5eeb8992b3e08fa44c0caf88df5628cf58730"
+    },
+    {
+      "path": "scripts/diag/physics/compiled-slip-motor-cost.mjs",
+      "sha256": "c119a73b7a5c4ca759f472440b2f0c4f719147104ba487cf61743634e3b5de9b"
+    },
+    {
+      "path": "test/local-slip-motor.test.ts",
+      "sha256": "471cd065bb7ca07880a61764178b09d883b092b72e13eecb60d1a46c0abf4897"
+    },
+    {
+      "path": "scripts/source-version.ts",
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    {
+      "path": "scripts/baseline.mjs",
+      "sha256": "f8eb76b92e4e3e9ca980e2ed6e6c88947b91b95ee88e95efe9107ecbdf967c37"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+    }
+  ],
+  "scope": "Frozen two-body tangent frame, fixed moment arms, constant saved ground leg force and original ground/tangent limits. Continuous bounded limit of heading/remaining-tick motor. No World import, moving contact frame, material attachment, normal/shared-budget reallocation, multiple row, support/recovery or fatigue application.",
+  "mechanics": [
+    {
+      "key": "nextField",
+      "referenceResiduals": {
+        "impulse": 3.419486915845482e-14,
+        "temporalMoment": 4.2500725161431774e-17,
+        "absoluteImpulse": 3.3639757646142243e-14,
+        "handWork": 6.516055056637882e-17,
+        "energyChange": 2.6645352591003757e-14,
+        "groundYawImpulse": 4.4575454438700035e-14,
+        "groundYawTemporalMoment": 5.4643789493269423e-17,
+        "absoluteGroundYawImpulse": 0,
+        "groundYawWork": 1.6778245459647678e-14,
+        "legWork": 4.440892098500626e-16,
+        "motion": 5.495603971894525e-15
+      },
+      "partitions": [
+        {
+          "weights": [
+            0.23,
+            0.41,
+            0.36
+          ],
+          "residual": 7.105427357601002e-15
+        },
+        {
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "residual": 5.684341886080802e-14
+        },
+        {
+          "weights": [
+            0.7,
+            0.2,
+            0.1
+          ],
+          "residual": 3.186340080674199e-14
+        }
+      ],
+      "phases": [
+        {
+          "duration": 5.887375724593369e-05,
+          "force": -398.83419955463296,
+          "groundAcceleration": [
+            66.84590123478817,
+            -52.62145051809873
+          ],
+          "slipBefore": 0.004452315822477182,
+          "slipAfter": 0,
+          "work": -5.2272119718022215e-05
+        },
+        {
+          "duration": 0.0028830568775860175,
+          "force": 45.93761389840637,
+          "groundAcceleration": [
+            66.84590123478817,
+            -52.62145051809873
+          ],
+          "slipBefore": -2.7755575615628914e-17,
+          "slipAfter": -4.824092682714833e-17,
+          "work": -5.032517030650949e-18
+        },
+        {
+          "duration": 0.0012247360318347156,
+          "force": 398.83419955463296,
+          "groundAcceleration": [
+            66.84590123478817,
+            52.62145051809873
+          ],
+          "slipBefore": 8.326672684688674e-17,
+          "slipAfter": -0.0025873607685980163,
+          "work": -0.0006319196781101761
+        }
+      ],
+      "impulse": 0.597426500766252,
+      "temporalMoment": 0.0005550976619465458,
+      "absoluteImpulse": 0.6443882364581635,
+      "handWork": -0.0006841917978282034,
+      "groundYawImpulse": [
+        1.330552231296489,
+        -0.39746107181692397
+      ],
+      "groundYawTemporalMoment": [
+        0.0027719838152010187,
+        -0.0016620130929407978
+      ],
+      "absoluteGroundYawImpulse": [
+        1.330552231296489,
+        0.9644147473714424
+      ],
+      "groundYawWork": [
+        1.13582933414048,
+        0.10511079737274986
+      ],
+      "legWork": [
+        1.0165249389411717,
+        -1.7178976080822588
+      ],
+      "energyChange": 0.5388832705743596,
+      "workResidual": 4.5075054799781356e-14
+    },
+    {
+      "key": "selected",
+      "referenceResiduals": {
+        "impulse": 4.996003610813204e-16,
+        "temporalMoment": 2.0057740190981832e-18,
+        "absoluteImpulse": 3.885780586188048e-16,
+        "handWork": 1.4325021203964727e-17,
+        "energyChange": 8.174017018802715e-15,
+        "groundYawImpulse": 2.220446049250313e-16,
+        "groundYawTemporalMoment": 0,
+        "absoluteGroundYawImpulse": 2.220446049250313e-16,
+        "groundYawWork": 1.1102230246251565e-16,
+        "legWork": 2.220446049250313e-16,
+        "motion": 3.552713678800501e-15
+      },
+      "partitions": [
+        {
+          "weights": [
+            0.23,
+            0.41,
+            0.36
+          ],
+          "residual": 7.105427357601002e-15
+        },
+        {
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "residual": 2.220446049250313e-16
+        },
+        {
+          "weights": [
+            0.7,
+            0.2,
+            0.1
+          ],
+          "residual": 2.842170943040401e-14
+        }
+      ],
+      "phases": [
+        {
+          "duration": 5.549542384969702e-05,
+          "force": -398.83419955463296,
+          "groundAcceleration": [
+            66.53667359995978,
+            -52.4012904420741
+          ],
+          "slipBefore": 0.004251206726931661,
+          "slipAfter": 0,
+          "work": -4.7046984547782876e-05
+        },
+        {
+          "duration": 0.00411117124281697,
+          "force": 45.631123464956715,
+          "groundAcceleration": [
+            66.53667359995978,
+            -52.4012904420741
+          ],
+          "slipBefore": -6.657001339060997e-17,
+          "slipAfter": -6.657001339060997e-17,
+          "work": -1.2488358938099059e-17
+        }
+      ],
+      "impulse": 0.1654638896165217,
+      "temporalMoment": 0.00029401379037879483,
+      "absoluteImpulse": 0.2097308355165997,
+      "handWork": -4.7046984547795365e-05,
+      "groundYawImpulse": [
+        1.324397126616932,
+        -0.9603797840245553
+      ],
+      "groundYawTemporalMoment": [
+        0.002759160680451942,
+        -0.0020007912167178234
+      ],
+      "absoluteGroundYawImpulse": [
+        1.324397126616932,
+        0.9603797840245553
+      ],
+      "groundYawWork": [
+        0.8009514782021686,
+        0.11668976429480264
+      ],
+      "legWork": [
+        0.9651418041257616,
+        -1.792415155630671
+      ],
+      "energyChange": 0.09032084400752183,
+      "workResidual": 7.993605777301127e-15
+    },
+    {
+      "key": "slidingControl",
+      "referenceResiduals": {
+        "impulse": 0,
+        "temporalMoment": 4.336808689942018e-19,
+        "absoluteImpulse": 0,
+        "handWork": 0,
+        "energyChange": 2.3092638912203256e-14,
+        "groundYawImpulse": 2.220446049250313e-16,
+        "groundYawTemporalMoment": 4.336808689942018e-19,
+        "absoluteGroundYawImpulse": 2.220446049250313e-16,
+        "groundYawWork": 1.1102230246251565e-16,
+        "legWork": 3.3306690738754696e-16,
+        "motion": 7.105427357601002e-15
+      },
+      "partitions": [
+        {
+          "weights": [
+            0.23,
+            0.41,
+            0.36
+          ],
+          "residual": 2.842170943040401e-14
+        },
+        {
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "residual": 2.842170943040401e-14
+        },
+        {
+          "weights": [
+            0.7,
+            0.2,
+            0.1
+          ],
+          "residual": 2.842170943040401e-14
+        }
+      ],
+      "phases": [
+        {
+          "duration": 0.004166666666666667,
+          "force": -398.83419955463296,
+          "groundAcceleration": [
+            65.60899069547455,
+            -51.798543924501544
+          ],
+          "slipBefore": 0.7356891497659769,
+          "slipAfter": 0.4041649310687836,
+          "work": -0.947109979039195
+        }
+      ],
+      "impulse": -1.6618091648109707,
+      "temporalMoment": -0.003462102426689522,
+      "absoluteImpulse": 1.6618091648109707,
+      "handWork": -0.947109979039195,
+      "groundYawImpulse": [
+        1.3059318125782595,
+        -0.9493330032013274
+      ],
+      "groundYawTemporalMoment": [
+        0.0027206912762047075,
+        -0.0019777770900027652
+      ],
+      "absoluteGroundYawImpulse": [
+        1.3059318125782595,
+        0.9493330032013274
+      ],
+      "groundYawWork": [
+        -0.7466464845176284,
+        -0.15065197975444963
+      ],
+      "legWork": [
+        0.7651690294671266,
+        -1.9400296389705842
+      ],
+      "energyChange": -3.019269052814707,
+      "workResidual": 2.375877272697835e-14
+    },
+    {
+      "key": "noHandControl",
+      "referenceResiduals": {
+        "impulse": 0,
+        "temporalMoment": 0,
+        "absoluteImpulse": 0,
+        "handWork": 0,
+        "energyChange": 4.474198789239381e-14,
+        "groundYawImpulse": 1.1435297153639112e-14,
+        "groundYawTemporalMoment": 1.0625181290357943e-17,
+        "absoluteGroundYawImpulse": 1.1435297153639112e-14,
+        "groundYawWork": 4.746203430272544e-15,
+        "legWork": 4.440892098500626e-16,
+        "motion": 3.552713678800501e-15
+      },
+      "partitions": [
+        {
+          "weights": [
+            0.23,
+            0.41,
+            0.36
+          ],
+          "residual": 2.3314683517128287e-14
+        },
+        {
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "residual": 5.329070518200751e-15
+        },
+        {
+          "weights": [
+            0.7,
+            0.2,
+            0.1
+          ],
+          "residual": 2.930988785010413e-14
+        }
+      ],
+      "phases": [
+        {
+          "duration": 0.0032314340370009735,
+          "force": 0,
+          "groundAcceleration": [
+            66.84590123478817,
+            -52.62145051809873
+          ],
+          "slipBefore": 0.004452315822477182,
+          "slipAfter": -0.02078776154861567,
+          "work": 0
+        },
+        {
+          "duration": 0.0009352326296656931,
+          "force": 0,
+          "groundAcceleration": [
+            66.84590123478817,
+            0
+          ],
+          "slipBefore": -0.02078776154861564,
+          "slipAfter": -0.05713902939476668,
+          "work": 0
+        }
+      ],
+      "impulse": 0,
+      "temporalMoment": 0,
+      "absoluteImpulse": 0,
+      "handWork": 0,
+      "groundYawImpulse": [
+        1.3305522312964888,
+        -0.7479462337060259
+      ],
+      "groundYawTemporalMoment": [
+        0.0027719838152010182,
+        -0.001907973181719606
+      ],
+      "absoluteGroundYawImpulse": [
+        1.3305522312964888,
+        0.7479462337060259
+      ],
+      "groundYawWork": [
+        1.158289914383959,
+        0.24571754102975765
+      ],
+      "legWork": [
+        1.0183227237730084,
+        -1.7205800538086065
+      ],
+      "energyChange": 0.7017501253781688,
+      "workResidual": 5.040412531798211e-14
+    }
+  ],
+  "existingEndpointRefinement": [
+    {
+      "key": "nextField",
+      "grids": [
+        {
+          "n": 1,
+          "motion": 0.010792823472067448,
+          "impulse": 0.08517784919690741,
+          "temporalMoment": 0.0008669947338100364,
+          "absoluteImpulse": 0.038216113504995985,
+          "handWork": 0.002203776871744576
+        },
+        {
+          "n": 256,
+          "motion": 1.5027253283617092e-05,
+          "impulse": 0.00011859631703647899,
+          "temporalMoment": 1.683670215453601e-07,
+          "absoluteImpulse": 0.0004538239677613909,
+          "handWork": 4.263534153066948e-06
+        },
+        {
+          "n": 4096,
+          "motion": 1.614381373804541e-06,
+          "impulse": 1.2740830836799333e-05,
+          "temporalMoment": 1.5629509961213525e-08,
+          "absoluteImpulse": 1.0824344599535962e-06,
+          "handWork": 3.120978325239082e-07
+        }
+      ]
+    },
+    {
+      "key": "noHandControl",
+      "grids": [
+        {
+          "n": 1,
+          "motion": 0.008242228771141169,
+          "impulse": 0,
+          "temporalMoment": 0,
+          "absoluteImpulse": 0,
+          "handWork": 0
+        },
+        {
+          "n": 256,
+          "motion": 5.759528071136444e-08,
+          "impulse": 0,
+          "temporalMoment": 0,
+          "absoluteImpulse": 0,
+          "handWork": 0
+        },
+        {
+          "n": 4096,
+          "motion": 2.0607515693882306e-10,
+          "impulse": 0,
+          "temporalMoment": 0,
+          "absoluteImpulse": 0,
+          "handWork": 0
+        }
+      ]
+    }
+  ],
+  "guardCorrection": {
+    "witness": {
+      "bodyHeading": "pi-.004",
+      "spin": 1,
+      "headingTarget": 0,
+      "turnRate": 10,
+      "yawAccelerationLimit": 100,
+      "duration": 0.05,
+      "remaining": 1,
+      "forceLimit": 0,
+      "legAcceleration": 0
+    },
+    "oldAccepted": true,
+    "peakHeading": 3.142592653589793,
+    "branchLimit": 3.141592653589793,
+    "newResult": {
+      "ok": false,
+      "reason": "heading-branch"
+    },
+    "inputUnchanged": true,
+    "nativeFieldsUnchanged": true
+  },
+  "checks": {
+    "distinctFocusedPassed": 44,
+    "newLocal": 15,
+    "unchangedPR70": 11,
+    "unchangedPR68": 18,
+    "finalChosenLocalPassed": 15,
+    "typecheckPassed": true,
+    "fullSuites": 0,
+    "games": 0,
+    "newFootballCollections": 0,
+    "historicalFailures": "PR66 seven affected assertions and nine historical patch-gate failures retained separately, not rerun or relabeled fixed."
+  },
+  "cost": {
+    "budget": {
+      "medianUs": 10,
+      "p95Us": 25,
+      "scope": "per local field only, not World"
+    },
+    "measurement": "Same container, no competing collectors; compiled TypeScript5.9.3 ES2022 without TSX.1000 warmups per case/kernel then two interleaved101-call passes. Calls include validation/state copies/result construction. Benchmark explicitly retains other variants and exact revisions.",
+    "runs": [
+      {
+        "label": "initial",
+        "protocol": "compiled-slip-motor-cost-v1",
+        "revision": "62e420f3b1f667ebf23c4fef64def631b1011484",
+        "node": "v22.23.3",
+        "compiler": "5.9.3",
+        "flags": {
+          "target": "ES2022",
+          "module": "ES2022"
+        },
+        "kernelSha256": "11df682adef26185151fd195d893cf0e30c013fbcb718c5c714a6c5bb0cd7fc8",
+        "previousRevision": "1ee42fefda89e969998da64283573206c8c852b6",
+        "passes": [
+          {
+            "pass": 0,
+            "cases": [
+              {
+                "case": "nextField",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 15.77299999985371,
+                "p95Us": 18.068000000084794,
+                "maxUs": 51.11699999997654
+              },
+              {
+                "case": "selected",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 11.426999999912368,
+                "p95Us": 12.879999999995562,
+                "maxUs": 695.4339999999775
+              },
+              {
+                "case": "selected",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 4.235999999991691,
+                "p95Us": 5.658000000039465,
+                "maxUs": 36.696000000119966
+              },
+              {
+                "case": "slidingControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 6.48999999998523,
+                "p95Us": 7.942000000184635,
+                "maxUs": 312.4390000000403
+              },
+              {
+                "case": "slidingControl",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 3.936000000066997,
+                "p95Us": 4.946999999901891,
+                "maxUs": 215.3939999998329
+              },
+              {
+                "case": "noHandControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 10.275000000092405,
+                "p95Us": 13.991000000032727,
+                "maxUs": 157.52599999996164
+              }
+            ]
+          },
+          {
+            "pass": 1,
+            "cases": [
+              {
+                "case": "nextField",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 18.066999999973632,
+                "p95Us": 43.34500000004482,
+                "maxUs": 1629.8370000001796
+              },
+              {
+                "case": "selected",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 13.009000000010928,
+                "p95Us": 16.274999999950523,
+                "maxUs": 573.2199999999921
+              },
+              {
+                "case": "selected",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 4.376000000092972,
+                "p95Us": 9.403999999904045,
+                "maxUs": 112.11899999989328
+              },
+              {
+                "case": "slidingControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 7.110000000011496,
+                "p95Us": 8.612999999968451,
+                "maxUs": 90.94699999991462
+              },
+              {
+                "case": "slidingControl",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 3.9959999999155116,
+                "p95Us": 4.937000000154512,
+                "maxUs": 33.83099999996375
+              },
+              {
+                "case": "noHandControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 11.106000000154381,
+                "p95Us": 12.770000000045911,
+                "maxUs": 74.00099999995291
+              }
+            ]
+          }
+        ],
+        "budget": {
+          "medianUs": 10,
+          "p95Us": 25,
+          "scope": "local single field only; no World timing guarantee"
+        },
+        "budgetMet": false
+      },
+      {
+        "label": "rejected-refactor",
+        "protocol": "compiled-slip-motor-cost-v1",
+        "revision": "1406664f0b3fc188f4bce03912a5f7a2350cc66e",
+        "node": "v22.23.3",
+        "compiler": "5.9.3",
+        "flags": {
+          "target": "ES2022",
+          "module": "ES2022"
+        },
+        "kernelSha256": "b99f3f6f4e68769a671acf887bedc90aeabc2cea17bca59bace4d171193c18f5",
+        "physicsBitExactWithInitial": true,
+        "initialMotorRevision": "62e420f3b1f667ebf23c4fef64def631b1011484",
+        "previousRevision": "1ee42fefda89e969998da64283573206c8c852b6",
+        "passes": [
+          {
+            "pass": 0,
+            "cases": [
+              {
+                "case": "nextField",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 16.033999999990556,
+                "p95Us": 28.904000000011365,
+                "maxUs": 147.33199999977842
+              },
+              {
+                "case": "nextField",
+                "mode": "initialMotor",
+                "samples": 101,
+                "medianUs": 16.89499999997679,
+                "p95Us": 39.879999999811844,
+                "maxUs": 168.54299999999967
+              },
+              {
+                "case": "selected",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 11.637999999948079,
+                "p95Us": 17.747000000099433,
+                "maxUs": 1296.057000000019
+              },
+              {
+                "case": "selected",
+                "mode": "initialMotor",
+                "samples": 101,
+                "medianUs": 12.297999999873355,
+                "p95Us": 22.61399999997593,
+                "maxUs": 113.69100000001708
+              },
+              {
+                "case": "selected",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 4.777000000103726,
+                "p95Us": 8.974000000080196,
+                "maxUs": 224.64799999988827
+              },
+              {
+                "case": "slidingControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 6.881000000021231,
+                "p95Us": 12.47800000010102,
+                "maxUs": 59.71900000008645
+              },
+              {
+                "case": "slidingControl",
+                "mode": "initialMotor",
+                "samples": 101,
+                "medianUs": 7.0109999999203865,
+                "p95Us": 8.39300000006915,
+                "maxUs": 88.32200000006196
+              },
+              {
+                "case": "slidingControl",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 4.166000000168424,
+                "p95Us": 5.74800000003961,
+                "maxUs": 108.201999999892
+              },
+              {
+                "case": "noHandControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 10.796000000027561,
+                "p95Us": 12.469000000010055,
+                "maxUs": 101.02200000005723
+              },
+              {
+                "case": "noHandControl",
+                "mode": "initialMotor",
+                "samples": 101,
+                "medianUs": 10.966999999936888,
+                "p95Us": 14.661999999816544,
+                "maxUs": 411.4479999998366
+              }
+            ]
+          },
+          {
+            "pass": 1,
+            "cases": [
+              {
+                "case": "nextField",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 15.703000000030443,
+                "p95Us": 38.94900000000234,
+                "maxUs": 2420.2549999999974
+              },
+              {
+                "case": "nextField",
+                "mode": "initialMotor",
+                "samples": 101,
+                "medianUs": 16.695000000026994,
+                "p95Us": 43.184999999994034,
+                "maxUs": 469.49499999982436
+              },
+              {
+                "case": "selected",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 11.437000000114494,
+                "p95Us": 15.87399999993977,
+                "maxUs": 102.23299999984192
+              },
+              {
+                "case": "selected",
+                "mode": "initialMotor",
+                "samples": 101,
+                "medianUs": 11.977999999999156,
+                "p95Us": 20.700999999917258,
+                "maxUs": 85.6180000000677
+              },
+              {
+                "case": "selected",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 4.486999999926411,
+                "p95Us": 9.043000000019674,
+                "maxUs": 44.926999999916006
+              },
+              {
+                "case": "slidingControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 6.799999999884676,
+                "p95Us": 10.586000000103013,
+                "maxUs": 143.62499999992906
+              },
+              {
+                "case": "slidingControl",
+                "mode": "initialMotor",
+                "samples": 101,
+                "medianUs": 6.7400000000361615,
+                "p95Us": 9.544000000005326,
+                "maxUs": 44.23599999995531
+              },
+              {
+                "case": "slidingControl",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 4.015999999865016,
+                "p95Us": 5.789000000049782,
+                "maxUs": 314.54199999984667
+              },
+              {
+                "case": "noHandControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 10.626000000002023,
+                "p95Us": 25.49900000008165,
+                "maxUs": 261.3929999999982
+              },
+              {
+                "case": "noHandControl",
+                "mode": "initialMotor",
+                "samples": 101,
+                "medianUs": 10.676000000103159,
+                "p95Us": 17.235999999911655,
+                "maxUs": 37.88699999995515
+              }
+            ]
+          }
+        ],
+        "budget": {
+          "medianUs": 10,
+          "p95Us": 25,
+          "scope": "local single field only; no World timing guarantee"
+        },
+        "budgetMet": false
+      },
+      {
+        "label": "restored-before-guard",
+        "protocol": "compiled-slip-motor-cost-v1",
+        "revision": "5d267d72f7673e6d9586d0ee802adf8bf920ca24",
+        "node": "v22.23.3",
+        "compiler": "5.9.3",
+        "flags": {
+          "target": "ES2022",
+          "module": "ES2022"
+        },
+        "kernelSha256": "11df682adef26185151fd195d893cf0e30c013fbcb718c5c714a6c5bb0cd7fc8",
+        "physicsBitExactWithRefactor": true,
+        "rejectedRefactorRevision": "1406664f0b3fc188f4bce03912a5f7a2350cc66e",
+        "previousRevision": "1ee42fefda89e969998da64283573206c8c852b6",
+        "passes": [
+          {
+            "pass": 0,
+            "cases": [
+              {
+                "case": "nextField",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 9.544000000005326,
+                "p95Us": 10.806999999999789,
+                "maxUs": 36.9549999999208
+              },
+              {
+                "case": "nextField",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 9.073999999941407,
+                "p95Us": 10.145000000079563,
+                "maxUs": 14.030999999931737
+              },
+              {
+                "case": "selected",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 7.0200000000113505,
+                "p95Us": 8.261999999945147,
+                "maxUs": 290.7069999999976
+              },
+              {
+                "case": "selected",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 6.750000000010914,
+                "p95Us": 7.732000000032713,
+                "maxUs": 14.32199999999284
+              },
+              {
+                "case": "selected",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 2.6040000000193686,
+                "p95Us": 3.875999999991109,
+                "maxUs": 7.42200000001958
+              },
+              {
+                "case": "slidingControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 4.105999999978849,
+                "p95Us": 5.147999999962849,
+                "maxUs": 42.49399999991965
+              },
+              {
+                "case": "slidingControl",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 4.226000000016938,
+                "p95Us": 5.017999999950007,
+                "maxUs": 41.05200000003606
+              },
+              {
+                "case": "slidingControl",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 2.392999999983658,
+                "p95Us": 3.214999999954671,
+                "maxUs": 48.522999999931926
+              },
+              {
+                "case": "noHandControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 6.370000000060827,
+                "p95Us": 7.340999999996711,
+                "maxUs": 259.270000000015
+              },
+              {
+                "case": "noHandControl",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 6.23900000005051,
+                "p95Us": 6.921000000033928,
+                "maxUs": 12.279000000035012
+              }
+            ]
+          },
+          {
+            "pass": 1,
+            "cases": [
+              {
+                "case": "nextField",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 16.224999999963075,
+                "p95Us": 20.951999999965665,
+                "maxUs": 43.84600000003047
+              },
+              {
+                "case": "nextField",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 15.753000000017892,
+                "p95Us": 18.679000000020096,
+                "maxUs": 63.53500000000167
+              },
+              {
+                "case": "selected",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 11.688000000049215,
+                "p95Us": 14.572000000043772,
+                "maxUs": 45.69900000001326
+              },
+              {
+                "case": "selected",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 11.456999999950312,
+                "p95Us": 13.391000000069653,
+                "maxUs": 397.31699999993
+              },
+              {
+                "case": "selected",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 4.015999999978703,
+                "p95Us": 7.210999999983869,
+                "maxUs": 41.55300000002171
+              },
+              {
+                "case": "slidingControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 6.59999999993488,
+                "p95Us": 7.681999999931577,
+                "maxUs": 172.91999999997643
+              },
+              {
+                "case": "slidingControl",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 6.771000000071581,
+                "p95Us": 7.930999999985033,
+                "maxUs": 11.347000000000662
+              },
+              {
+                "case": "slidingControl",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 3.6649999999553984,
+                "p95Us": 5.308000000013635,
+                "maxUs": 38.136999999892396
+              },
+              {
+                "case": "noHandControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 10.51499999994121,
+                "p95Us": 11.858000000074753,
+                "maxUs": 18.278000000009342
+              },
+              {
+                "case": "noHandControl",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 10.695999999938977,
+                "p95Us": 11.867999999935819,
+                "maxUs": 38.47799999994095
+              }
+            ]
+          }
+        ],
+        "budget": {
+          "medianUs": 10,
+          "p95Us": 25,
+          "scope": "local single field only; no World timing guarantee"
+        },
+        "budgetMet": false
+      },
+      {
+        "label": "final-guarded",
+        "protocol": "compiled-slip-motor-cost-v1",
+        "revision": "cbe8a8818be2638758adbbebf7374a50f52f0622",
+        "node": "v22.23.3",
+        "compiler": "5.9.3",
+        "flags": {
+          "target": "ES2022",
+          "module": "ES2022"
+        },
+        "kernelSha256": "24575e45be35d426146e6877878e3a8f5f8aae8f4403269de4adebffbd09bc11",
+        "physicsBitExactWithRefactor": true,
+        "rejectedRefactorRevision": "1406664f0b3fc188f4bce03912a5f7a2350cc66e",
+        "previousRevision": "1ee42fefda89e969998da64283573206c8c852b6",
+        "passes": [
+          {
+            "pass": 0,
+            "cases": [
+              {
+                "case": "nextField",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 11.297000000013213,
+                "p95Us": 21.672999999964304,
+                "maxUs": 751.8700000000536
+              },
+              {
+                "case": "nextField",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 9.233999999992193,
+                "p95Us": 21.322000000054686,
+                "maxUs": 223.2850000000326
+              },
+              {
+                "case": "selected",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 8.34199999997054,
+                "p95Us": 27.732000000014523,
+                "maxUs": 449.1450000000441
+              },
+              {
+                "case": "selected",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 6.8609999999580396,
+                "p95Us": 73.4300000000303,
+                "maxUs": 2036.7699999999331
+              },
+              {
+                "case": "selected",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 2.884999999992033,
+                "p95Us": 8.081999999944856,
+                "maxUs": 371.17799999998624
+              },
+              {
+                "case": "slidingControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 4.51599999996688,
+                "p95Us": 8.523000000081993,
+                "maxUs": 399.03000000003885
+              },
+              {
+                "case": "slidingControl",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 4.30699999992612,
+                "p95Us": 8.282000000008338,
+                "maxUs": 33.10900000008132
+              },
+              {
+                "case": "slidingControl",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 2.563000000009197,
+                "p95Us": 5.587999999988824,
+                "maxUs": 25.63800000007177
+              },
+              {
+                "case": "noHandControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 7.852000000070802,
+                "p95Us": 54.32100000007267,
+                "maxUs": 741.4340000000266
+              },
+              {
+                "case": "noHandControl",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 6.559999999922184,
+                "p95Us": 13.390000000072177,
+                "maxUs": 836.6469999999708
+              }
+            ]
+          },
+          {
+            "pass": 1,
+            "cases": [
+              {
+                "case": "nextField",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 18.747999999959575,
+                "p95Us": 50.02500000000509,
+                "maxUs": 1072.131000000013
+              },
+              {
+                "case": "nextField",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 15.944000000104097,
+                "p95Us": 21.873000000027787,
+                "maxUs": 213.600999999926
+              },
+              {
+                "case": "selected",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 13.500000000021828,
+                "p95Us": 22.654000000102315,
+                "maxUs": 3078.196999999932
+              },
+              {
+                "case": "selected",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 11.667000000102234,
+                "p95Us": 21.301999999991494,
+                "maxUs": 85.92899999996462
+              },
+              {
+                "case": "selected",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 4.786999999964792,
+                "p95Us": 9.082999999918684,
+                "maxUs": 674.2930000000342
+              },
+              {
+                "case": "slidingControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 7.201000000009117,
+                "p95Us": 9.475000000065847,
+                "maxUs": 223.0459999999539
+              },
+              {
+                "case": "slidingControl",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 6.831000000033782,
+                "p95Us": 10.645999999951528,
+                "maxUs": 71.51699999997163
+              },
+              {
+                "case": "slidingControl",
+                "mode": "previous",
+                "samples": 101,
+                "medianUs": 3.8459999999531647,
+                "p95Us": 6.248999999911575,
+                "maxUs": 680.3320000000213
+              },
+              {
+                "case": "noHandControl",
+                "mode": "motor",
+                "samples": 101,
+                "medianUs": 11.74700000001394,
+                "p95Us": 16.115000000013424,
+                "maxUs": 123.34500000008575
+              },
+              {
+                "case": "noHandControl",
+                "mode": "rejectedRefactor",
+                "samples": 101,
+                "medianUs": 10.685999999964224,
+                "p95Us": 12.689000000023043,
+                "maxUs": 77.32599999997092
+              }
+            ]
+          }
+        ],
+        "budget": {
+          "medianUs": 10,
+          "p95Us": 25,
+          "scope": "local single field only; no World timing guarantee"
+        },
+        "budgetMet": false
+      }
+    ],
+    "boundedOptimizationVerdict": "Paired pre-guard refactor improves transition median about5-6%, preserves compared saved outputs bit-exact, still fails budget. Restore simpler method. Final-source guard is a separate correctness change; do not compare missing-guard refactor as a complete replacement.",
+    "profile": {
+      "path": "out/slip-motor/motor.cpuprofile",
+      "script": {
+        "path": "out/slip-motor/profile.mjs",
+        "sha256": "87a0ac0bb39510ade31b5a7029069563460c16f94ebad42f174f8a400fe4f2ed"
+      },
+      "calls": 100000,
+      "totalSamples": 549,
+      "garbageCollectorSamples": 55,
+      "interpretation": "Phase processing and about10%GC; no single dominant removable cost or individual tail cause proven. Not an uninstrumented timing run."
+    },
+    "finalGatePassed": false,
+    "finalNextField": {
+      "medianUs": [
+        11.297000000013213,
+        18.747999999959575
+      ],
+      "p95Us": [
+        21.672999999964304,
+        50.02500000000509
+      ],
+      "maxUs": 1072.131000000013
+    },
+    "finalAllCasesMaximumUs": 3078.196999999932,
+    "tailCaveat": "Small-sample noisy observations, no worst-case bound. All passes retained, including faster initial final-pass observations and large adverse tails."
+  },
+  "receipts": [
+    {
+      "path": "out/slip-motor/first-tests.receipt.json",
+      "commit": "2ef35e8353c64f05d3e0d87246a91aeba49221e1",
+      "sourceSha256": "f32f3955cf38dc95aa257a9136a93417c498f8f94b3d08f6e1624d5509a567a0",
+      "validationSha256": "b29958ea088df2fd5fa87f86d0bfc8095a728af27299f198328f87cfff32d90f",
+      "startedAt": "2026-10-15T20:36:51.299Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/local-slip-motor.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.6553192650000002
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/focused-tests.receipt.json",
+      "commit": "9ab771ff0f942159c1d21011844189b0aba4f899",
+      "sourceSha256": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
+      "validationSha256": "be45ad102c860f3e6901d2b717593d1c77794765c9915225908a17c3ae3d310f",
+      "startedAt": "2026-10-15T20:37:49.507Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/local-slip-motor.test.ts",
+            "test/local-slip-work.test.ts",
+            "test/coupled-hand-yaw.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.4266036520000003
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/typecheck.receipt.json",
+      "commit": "9ab771ff0f942159c1d21011844189b0aba4f899",
+      "sourceSha256": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
+      "validationSha256": "be45ad102c860f3e6901d2b717593d1c77794765c9915225908a17c3ae3d310f",
+      "startedAt": "2026-10-15T20:38:10.846Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 19.306262644
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/validation.receipt.json",
+      "commit": "6e55a8b301a5baa83c8fa09439937f122132e35e",
+      "sourceSha256": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
+      "validationSha256": "87636be5ce74e02d99702a7ff56d1b3b5017b6652f2dede7cebcdfbaca4c9333",
+      "startedAt": "2026-10-15T20:39:15.489Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/local-slip-motor.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.43496913099999995
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/cost-first.receipt.json",
+      "commit": "62e420f3b1f667ebf23c4fef64def631b1011484",
+      "sourceSha256": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
+      "validationSha256": "2e2300dc740678e30bac11a14c8cae9a460b68d2c4fe59fc4cb597b0e2220267",
+      "startedAt": "2026-10-15T20:39:50.099Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "scripts/diag/physics/compiled-slip-motor-cost.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.263135798
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/profile.receipt.json",
+      "commit": "62e420f3b1f667ebf23c4fef64def631b1011484",
+      "sourceSha256": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
+      "validationSha256": "2e2300dc740678e30bac11a14c8cae9a460b68d2c4fe59fc4cb597b0e2220267",
+      "startedAt": "2026-10-15T20:40:25.031Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--cpu-prof",
+            "--cpu-prof-dir=out/slip-motor",
+            "--cpu-prof-name=motor.cpuprofile",
+            "out/slip-motor/profile.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.719422858
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/cost-refactor.receipt.json",
+      "commit": "1406664f0b3fc188f4bce03912a5f7a2350cc66e",
+      "sourceSha256": "db22087bb5015057347a71eda2d22183f0eba9a927e3c7dfc255b78272b5ca7d",
+      "validationSha256": "8928a39e1fa90a9000baa43e254c3c2830921f0e6465dddd4c32e4d3627578c9",
+      "startedAt": "2026-10-15T20:41:38.893Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "scripts/diag/physics/compiled-slip-motor-cost.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.250961822
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/final-typecheck.receipt.json",
+      "commit": "5d267d72f7673e6d9586d0ee802adf8bf920ca24",
+      "sourceSha256": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
+      "validationSha256": "681180b0a7c8a08c07ef109db1f6c8393e560cc0d315f7bee0d0132c161d65e6",
+      "startedAt": "2026-10-15T20:42:37.839Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.360095606000002
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/cost-final.receipt.json",
+      "commit": "5d267d72f7673e6d9586d0ee802adf8bf920ca24",
+      "sourceSha256": "5d8933c5b469a72eb5a7a1d06b9fa0754f9e9f4eb757b0cb17824f6d4867f781",
+      "validationSha256": "681180b0a7c8a08c07ef109db1f6c8393e560cc0d315f7bee0d0132c161d65e6",
+      "startedAt": "2026-10-15T20:43:11.463Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "scripts/diag/physics/compiled-slip-motor-cost.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.90046878
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/guard-tests.receipt.json",
+      "commit": "cbe8a8818be2638758adbbebf7374a50f52f0622",
+      "sourceSha256": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+      "validationSha256": "9906ee4096749e450bfd30466c6a04176b56d519b4a0cba6f0bf4d95d81caa5b",
+      "startedAt": "2026-10-15T20:44:37.547Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/local-slip-motor.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.974495882
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/guard-validation.receipt.json",
+      "commit": "cbe8a8818be2638758adbbebf7374a50f52f0622",
+      "sourceSha256": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+      "validationSha256": "9906ee4096749e450bfd30466c6a04176b56d519b4a0cba6f0bf4d95d81caa5b",
+      "startedAt": "2026-10-15T20:44:53.116Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/local-slip-motor.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.4014914620000001
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/guard-typecheck.receipt.json",
+      "commit": "cbe8a8818be2638758adbbebf7374a50f52f0622",
+      "sourceSha256": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+      "validationSha256": "9906ee4096749e450bfd30466c6a04176b56d519b4a0cba6f0bf4d95d81caa5b",
+      "startedAt": "2026-10-15T20:44:53.669Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.181244077999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/slip-motor/guard-cost.receipt.json",
+      "commit": "cbe8a8818be2638758adbbebf7374a50f52f0622",
+      "sourceSha256": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+      "validationSha256": "9906ee4096749e450bfd30466c6a04176b56d519b4a0cba6f0bf4d95d81caa5b",
+      "startedAt": "2026-10-15T20:45:14.958Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "scripts/diag/physics/compiled-slip-motor-cost.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.046344347
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  ],
+  "indexedLauncherSeconds": 57.920815325,
+  "unreceiptedDevelopment": "Independent Python generation, an initial failed literal-zero-tail equality assertion and old-guard witness inspection are outside launcher subtotal, as are report/Git work. No physical tolerance was changed and no simulations omitted.",
+  "nextDecision": "Measure event-selection versus body/accounting application cost on the same fields. Decide whether a schedule-only interface reusing existing World updates can meet unchanged gates; do not assume copy removal suffices, broaden mechanics, or promote the reference."
+}
