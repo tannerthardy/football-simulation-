@@ -772,5 +772,15 @@
       "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
       "inputsUnchanged": true
     }
+  },
+  "commands": {
+    "tasks": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-route-evidence.ts",
+    "native": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-route-evidence.ts --football",
+    "cost": "node scripts/baseline.mjs --candidate -- node --import tsx scripts/diag/physics/turn-route-evidence.ts --benchmark",
+    "focused": "node scripts/baseline.mjs --candidate -- npx vitest run test/turn-route.test.ts test/yaw-motor.test.ts test/yaw-response.test.ts test/support-command-audit.test.ts --maxWorkers=1",
+    "fullSuite": "node scripts/baseline.mjs --candidate -- npm run test:all",
+    "typecheck": "node scripts/baseline.mjs --candidate -- npm run typecheck",
+    "build": "node scripts/baseline.mjs --candidate -- npm run build",
+    "python": "node scripts/baseline.mjs --candidate -- npm run test:data"
   }
 }

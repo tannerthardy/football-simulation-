@@ -60,7 +60,7 @@ The final candidate changes one runner-facing request in each of4001 and5001, fi
 
 ## Runtime and adoption decision
 
-Two serial processes on Node22.23.3, AMD EPYC9V74, each use11 warmups and101 rotating samples per arm. Clocks include22 frozen-body `World.plan` calls; preparation is outside the clock. They are not full World/game timings. Budgets declared before measurement: median≤.10ms, p95≤.25ms.
+Two serial processes on Node22.23.3, AMD EPYC9V74, each use11 warmups and101 rotating samples per arm. Clocks include22 frozen-body `World.plan` calls using copies of the two saved profiles; preparation is outside the clock. They are not full World/game timings. Budgets declared before measurement: median≤.10ms, p95≤.25ms.
 
 | Planning task/arm | Median range, ms | p95 range, ms | Worst observed, ms |
 | --- | --- | --- | --- |
