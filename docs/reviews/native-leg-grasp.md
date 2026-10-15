@@ -12,7 +12,8 @@ calibration or a cleared global contact law. Solver expansion remains parked.
 Collected revision `2bf21884f2e129f22c3534d38bec08209ac420b2`, unchanged engine
 source `5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565`,
 from [PR79](https://github.com/tannerthardy/football-simulation-/pull/79)
-`4254655`. Reducer/typecheck revision `90f8eee`. Historical comparison baseline
+`4254655`. Full typecheck revision `90f8eee`; final reducer `85b80f5` also passes
+its focused TypeScript check. Historical comparison baseline
 `4ded6b6` stays unchanged. This is the pinned experimental host, not a combined
 current-develop validation. The fetched develop tip was `90edc52`; no controller
 or physics work from it was imported here.
@@ -152,8 +153,9 @@ improvement or regression from a runtime candidate because none was changed.
 
 Final instrumented collection:2.027s internally,2.539s including launcher.
 Four incremental audit collections cost10.467s total. Final typecheck passes
-in14.656s; all four typechecks cost51.597s, including one initial missing-type
-failure that was corrected. No full suite, new input panel or games. These
+in14.656s; all four full typechecks cost51.597s, including one initial missing-type
+failure that was corrected. The final reducer-only check adds1.324s. No full
+suite, new input panel or games. These
 are audit costs, not an uninstrumented production solver benchmark.
 
 **Recommendation:** close this witness without weakening its earned restraint
