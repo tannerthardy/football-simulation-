@@ -11,6 +11,7 @@ load = lambda name: json.loads(gzip.decompress((root / name).read_bytes()))
 native, route = load('trace.json.gz'), load('route.json.gz')
 body = lambda f, slot: f['bodies'][f['slots'].index(slot)]
 distance = lambda a, b: math.hypot(a['x'] - b['x'], a['y'] - b['y'])
+compact = lambda b: {k: b[k] for k in ('pos', 'vel', 'facing', 'spin')} | {'support': b['support']['state']}
 
 def physical_history(run):
     return [{'before': s['before']['bodies'], 'after': s['after']['bodies'],
@@ -72,24 +73,34 @@ for r in native['runs']:
     for t in [.75, 1., 1.25, 1.35, 2.]:
         f = min([s['before'] for s in r['steps']] + [r['final']], key=lambda f: abs(f['t'] - t))
         selected.append({'t': f['t'], 'state': f['state'], 'released': f['released'],
-                         'runner': body(f, 'RB'), 'owner': body(f, r['slots']['owner']),
-                         'helper': body(f, r['slots']['helper']), 'defender': body(f, r['slots']['defender'])})
+                         'runner': compact(body(f, 'RB')), 'owner': compact(body(f, r['slots']['owner'])),
+                         'helper': compact(body(f, r['slots']['helper'])), 'defender': compact(body(f, r['slots']['defender']))})
     reads = [{'t': d['t'], 'actualPhi': d['before']['state']['phi'], 'consumedPhi': cue_phi(d, r['slots']),
               'checkBefore': d['before'].get('checkSince'), 'checkAfter': d['after'].get('checkSince'),
-              'pictures': d['pictures']} for d in r['reads'] if d['before']['state'] and
+              'pictures': [p for p in d['pictures'] if p['target'] in (*r['slots'].values(), 'RB')]}
+             for d in r['reads'] if d['before']['state'] and
              d['before']['t'] + 1e-8 >= (d['before'].get('checkNextRead') or 0)]
     summary['native'].append({'mode': r['mode'], 'scenario': r['scenario'], 'observerNeutral': True,
                              'firstJoinWorldStart': first_join(r), 'finalTime': r['final']['t'],
                              'phase': r['final']['phase'], 'samples': selected, 'reads': reads})
 
 # A final observer-only measurement correction must not change physical evidence.
+physical_hash = lambda run: hashlib.sha256(json.dumps(physical_history(run), sort_keys=True).encode()).hexdigest()
+parity_path = root / 'measurement-parity.json'
+parity = json.loads(parity_path.read_text()) if parity_path.exists() else {}
 for name in ('trace', 'route'):
     old_path = root / f'{name}.initial.json.gz'
     if old_path.exists():
         old, final = load(f'{name}.initial.json.gz'), load(f'{name}.json.gz')
+        rows = []
         for a, b in zip(old['runs'], final['runs']):
             assert a['events'] == b['events'] and physical_history(a) == physical_history(b)
-        summary[f'{name}MeasurementCorrectionPhysicalParity'] = True
+            rows.append({'mode': a['mode'], 'scenario': a['scenario'], 'old': physical_hash(a), 'final': physical_hash(b)})
+        parity[name] = {'originalCollectorSha256': old['toolSha256'], 'finalCollectorSha256': final['toolSha256'], 'runs': rows}
+    for saved, final in zip(parity[name]['runs'], load(f'{name}.json.gz')['runs']):
+        assert saved['old'] == saved['final'] == physical_hash(final)
+    summary[f'{name}MeasurementCorrectionPhysicalParity'] = True
+parity_path.write_text(json.dumps(parity, indent=2) + '\n')
 
 receipts = []
 for p in sorted((root / 'receipts').glob('*.json')):

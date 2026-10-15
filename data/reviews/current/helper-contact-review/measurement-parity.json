@@ -1,0 +1,86 @@
+{
+  "trace": {
+    "originalCollectorSha256": "a02b7de49e2ec998ced0ff91eeedcddcc65b5bf2f1ddb4d493d16056dbf63944",
+    "finalCollectorSha256": "4113d7c8a3ae78540f5380ca4ccfed2f5056c1337eb6f6c9cfe5887afa506c4d",
+    "runs": [
+      {
+        "mode": "center",
+        "scenario": "recovery",
+        "old": "6f30f19c761ebfa157419d6d4aacbf14c99172f390f414fcec97b2cf7237f236",
+        "final": "6f30f19c761ebfa157419d6d4aacbf14c99172f390f414fcec97b2cf7237f236"
+      },
+      {
+        "mode": "center",
+        "scenario": "loss-minus",
+        "old": "dc44365229ef628967669eb15e590fd8acc1aefccb22bac29dd873ae83522c2e",
+        "final": "dc44365229ef628967669eb15e590fd8acc1aefccb22bac29dd873ae83522c2e"
+      },
+      {
+        "mode": "center",
+        "scenario": "loss-plus",
+        "old": "0961ceafb0b2f7b11a9c5614d5552bece3b64c34083b80269b0b633d7a05c0cd",
+        "final": "0961ceafb0b2f7b11a9c5614d5552bece3b64c34083b80269b0b633d7a05c0cd"
+      },
+      {
+        "mode": "center",
+        "scenario": "under",
+        "old": "c668caa6f161984f006b3609d51c2e6a5f6553168c56793c27356c989d80d855",
+        "final": "c668caa6f161984f006b3609d51c2e6a5f6553168c56793c27356c989d80d855"
+      },
+      {
+        "mode": "center",
+        "scenario": "tite",
+        "old": "7d926ed146cca52cc75538f4383f7dc902290f6fac9ef1562494f701d656277d",
+        "final": "7d926ed146cca52cc75538f4383f7dc902290f6fac9ef1562494f701d656277d"
+      },
+      {
+        "mode": "patch",
+        "scenario": "recovery",
+        "old": "201f1868bad54465850bbd178d082ffe8a7fc1333db9a64724ef8fbc5ef349ff",
+        "final": "201f1868bad54465850bbd178d082ffe8a7fc1333db9a64724ef8fbc5ef349ff"
+      },
+      {
+        "mode": "patch",
+        "scenario": "loss-minus",
+        "old": "528418614967802a3e7f8ef8904f940cc8ec6f07db426ce0ff91cfe4307e958d",
+        "final": "528418614967802a3e7f8ef8904f940cc8ec6f07db426ce0ff91cfe4307e958d"
+      },
+      {
+        "mode": "patch",
+        "scenario": "loss-plus",
+        "old": "60befb309fe4ec7cf692754ce626e9e6193a7cbc98deac3cbfe7d545c8bd82b2",
+        "final": "60befb309fe4ec7cf692754ce626e9e6193a7cbc98deac3cbfe7d545c8bd82b2"
+      },
+      {
+        "mode": "patch",
+        "scenario": "under",
+        "old": "8bf1376fa927b535a846f33bc4a990cb85f8f6fe8638ff20eedee00dc594fb74",
+        "final": "8bf1376fa927b535a846f33bc4a990cb85f8f6fe8638ff20eedee00dc594fb74"
+      },
+      {
+        "mode": "patch",
+        "scenario": "tite",
+        "old": "c8316b87a11db3dbfd2c72a7bc9e398cb03c06cfeaad599c9e57254fd3844bbb",
+        "final": "c8316b87a11db3dbfd2c72a7bc9e398cb03c06cfeaad599c9e57254fd3844bbb"
+      }
+    ]
+  },
+  "route": {
+    "originalCollectorSha256": "ca9e3293b5c5bd264cbe35bd847167ae231fc58983e92a40c752ae840c3f69af",
+    "finalCollectorSha256": "4113d7c8a3ae78540f5380ca4ccfed2f5056c1337eb6f6c9cfe5887afa506c4d",
+    "runs": [
+      {
+        "mode": "patch",
+        "scenario": "loss-minus",
+        "old": "6a78e997db07e95bbcc744ba159d813d4c861012b3d3a9831dd784a6b730a992",
+        "final": "6a78e997db07e95bbcc744ba159d813d4c861012b3d3a9831dd784a6b730a992"
+      },
+      {
+        "mode": "patch",
+        "scenario": "loss-plus",
+        "old": "e4d04b3d0676d393d0a4e6c8c174dbb772ca321911710d0d3c43af2d10159464",
+        "final": "e4d04b3d0676d393d0a4e6c8c174dbb772ca321911710d0d3c43af2d10159464"
+      }
+    ]
+  }
+}

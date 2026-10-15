@@ -1,0 +1,14 @@
+{
+  "five-original-failures.log": "d9becb1a0956bb6496474b7dec401cff9785e99ec6bacb68c8c646a4e62d4162",
+  "measurement-parity.json": "2ecdda962cf4b6cb0eea41c102c36a5604061bc00dcf693cd409690bfec3dd53",
+  "receipts/five-assertions.receipt.json": "a96bb26f9f82da755c481afcbb39f4f840c8deb5419888e969af0e5026cdd18c",
+  "receipts/route.initial.receipt.json": "4fc37df3d46ae0eedc26631a735eab7de1f351b95e1b84fb3ee67ef9189360a3",
+  "receipts/route.receipt.json": "0f0e4e167cf080399aeded92911aca33b07d043eddb872291bdf72baa84b000f",
+  "receipts/trace.initial.receipt.json": "0f56901d04fddf5f97c5f2d0d149775359f35e0f710f44567e88b6242a22e331",
+  "receipts/trace.receipt.json": "7ff3696ba0c7336f5752192d605658fa3bf2d11a42a7b5857e8416b8fb6f1591",
+  "receipts/typecheck.receipt.json": "3a80c7cbb1b89b89d5857d982c362e2c84f7652b147a63e975a180e48bea679c",
+  "route.json.gz": "a7be12647f1d4ef87e004f8a47d5203879fc1c85f23cd490112f2173b36dae9a",
+  "summary.json": "df134cc1cbac30b775321b6e6c3219b1a88eb32f2e84e493a05fc0ffc4620244",
+  "trace.json.gz": "76435eca628cc27c34c742092ac36083207382237b9d8484aca3d063f2f1303d",
+  "typecheck.log": "cb79d05ee8b990c0dba4cc71a8e0b68ad6b33f2ec4de8a99ad2032f2f4827774"
+}
