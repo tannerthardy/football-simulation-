@@ -1,0 +1,1442 @@
+{
+  "meta": {
+    "commit": "a713347999f69b7588eab11dff062fed48e11832",
+    "source": "c03b45d5b285e0cd364ad1bdd4f8b5cbe859508fdb8977ce6ea25cd20d96d6cd",
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "hashes": {
+      "scripts/diag/physics/support-command-audit.ts": "67260a1fbb5fdf2bfba61973ebf181d4353839751023097b60ce9ed7ba4ad267",
+      "scripts/diag/physics/support-command-evidence.ts": "234e563d5da17d77ce628da07f566feaae8696bd35ef6e5619d5113fa25a18a6",
+      "test/support-command-audit.test.ts": "641d4d7f0f9bf681c50e1d8326096da2c7273145a7e4db60c70c1c0c20d26c23",
+      "config/grip-native-support-packets.json": "96c96ec4c7c414b2d72c320346b60c721a8593b1a7edec85284b7e80061fe358",
+      "data/reviews/current/grip-recovery-work.json": "9d179031778836974bf8df9f099c5c0389fdd49270f79ee10cfc3c5bedf2e65a"
+    },
+    "timestamp": "2026-10-15T03:23:29.722Z",
+    "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "parent": "1986d92a1abd1c9218b6e8bd69193a4038687c93",
+    "settings": {
+      "handContact": "patch",
+      "materialTransport": "owned",
+      "gripTiming": "midpoint",
+      "constraintWork": "per-solve",
+      "correctiveGrip": "same validated recoverySpanInterval",
+      "interval": 0.0005208333333333333,
+      "intervals": 96,
+      "elapsed": 0.05
+    },
+    "note": "Explicit diagnostic state/target swaps, not candidate controller rules. World/capacities/recovery/defaults unchanged. Prior mechanical/cost/native receipts reused; no new game or runtime-speed claim.",
+    "instrumentedSeconds": 2.140488588
+  },
+  "originalGap": {
+    "xi": 0.07306823324668067,
+    "position": 0.002600763067949627,
+    "initialXi": 0.0038165892481708758
+  },
+  "witness": [
+    {
+      "history": "previous",
+      "heading": -3.1241396052144004,
+      "spin": -1.285821997968372,
+      "antipodeMargin": 0.017453048375392743,
+      "requestedTurn": 0.3931111111111112,
+      "command": 0,
+      "rate": 7.862222222222221,
+      "periodic": [
+        {
+          "shift": 0,
+          "requestedError": 0.3931111111111112,
+          "command": 0,
+          "target": -2.731028494103289
+        },
+        {
+          "shift": 6.283185307179586,
+          "requestedError": 0.3931111111111112,
+          "command": 0,
+          "target": 3.552156813076297
+        },
+        {
+          "shift": -6.283185307179586,
+          "requestedError": 0.39311111111111074,
+          "command": 0,
+          "target": -9.014213801282876
+        }
+      ]
+    },
+    {
+      "history": "transition",
+      "heading": -3.145421824822402,
+      "spin": -1.3434360059257384,
+      "antipodeMargin": -0.0038291712326090632,
+      "requestedTurn": -0.3931111111111112,
+      "command": 0,
+      "rate": 7.862222222222221,
+      "periodic": [
+        {
+          "shift": 0,
+          "requestedError": -0.3931111111111112,
+          "command": 0,
+          "target": -3.5385329359335134
+        },
+        {
+          "shift": 6.283185307179586,
+          "requestedError": -0.3931111111111112,
+          "command": 0,
+          "target": 2.744652371246073
+        },
+        {
+          "shift": -6.283185307179586,
+          "requestedError": -0.39311111111111074,
+          "command": 0,
+          "target": -9.8217182431131
+        }
+      ]
+    }
+  ],
+  "observer": [
+    {
+      "history": "previous",
+      "exact": true
+    },
+    {
+      "history": "transition",
+      "exact": true
+    }
+  ],
+  "forceFirstFivePercent": {
+    "phase": 2,
+    "time": 4.101562500000001,
+    "xi": 0.0034010323185853257,
+    "command": 0.012729078234720165,
+    "force": 54.6504624306881,
+    "achieved": 0.17571955946829496,
+    "commandScale": 2.8279011492959407,
+    "forceScale": 947.515566827744
+  },
+  "commandFirstFivePercent": {
+    "phase": 44,
+    "time": 4.123437500000018,
+    "xi": 0.026847995982747376,
+    "command": 0.14837306436950295,
+    "force": 147.66998235058125,
+    "achieved": 0.5651310820380686,
+    "commandScale": 2.798956074946432,
+    "forceScale": 937.8172403724598
+  },
+  "xiFirstCentiyard": {
+    "phase": 23,
+    "time": 4.11250000000001,
+    "xi": 0.010021085394347226,
+    "command": 0.034391348841407585,
+    "force": 185.7885343891674,
+    "achieved": 0.5211823358063703,
+    "commandScale": 2.784376952810431,
+    "forceScale": 932.9323648251008
+  },
+  "snapshots": [
+    {
+      "phase": 0,
+      "time": 4.100520833333333,
+      "xi": 0.0037684898102679446,
+      "command": 0.013405086111466409,
+      "force": 11.531935439091404,
+      "achieved": 0.04769812806807717,
+      "commandScale": 2.8292667406657803,
+      "forceScale": 947.9731213929631,
+      "histories": [
+        {
+          "history": "previous",
+          "xi": {
+            "x": 0.6615964213686177,
+            "y": -0.010332013271562239
+          },
+          "turnTarget": -2.731028494103289,
+          "spinBefore": -1.285821997968372,
+          "spinAfterGround": -1.25556254892718,
+          "ground": {
+            "x": 208.62087735806014,
+            "y": 100.81617412361709
+          },
+          "reserve": 947.9731213929631,
+          "command": {
+            "x": 2.8289095796946766,
+            "y": -0.04495419612513671
+          },
+          "footForce": {
+            "x": -106.32348190441668,
+            "y": -33.71538764768005
+          },
+          "achieved": {
+            "x": 2.511582553943228,
+            "y": -0.14557922732862494
+          }
+        },
+        {
+          "history": "transition",
+          "xi": {
+            "x": 0.6653233309462889,
+            "y": -0.009773747698598897
+          },
+          "turnTarget": -3.5385329359335134,
+          "spinBefore": -1.3434360059257384,
+          "spinAfterGround": -1.3735408149529438,
+          "ground": {
+            "x": 208.00854102370755,
+            "y": 100.12217549636424
+          },
+          "reserve": 952.3709750093203,
+          "command": {
+            "x": 2.842075564427196,
+            "y": -0.04243364466188592
+          },
+          "footForce": {
+            "x": -95.49025844742545,
+            "y": -29.762312325571056
+          },
+          "achieved": {
+            "x": 2.557080762163295,
+            "y": -0.13126055176270413
+          }
+        }
+      ]
+    },
+    {
+      "phase": 1,
+      "time": 4.101041666666667,
+      "xi": 0.003625580702040307,
+      "command": 0.013235942770240242,
+      "force": 34.60506059451428,
+      "achieved": 0.1164113100287211,
+      "commandScale": 2.828593794596602,
+      "forceScale": 947.7476443191481,
+      "histories": [
+        {
+          "history": "previous",
+          "xi": {
+            "x": 0.6614014119124191,
+            "y": -0.01014757269592124
+          },
+          "turnTarget": -2.731028494103289,
+          "spinBefore": -1.2863248695586689,
+          "spinAfterGround": -1.2560582749040274,
+          "ground": {
+            "x": 208.68158724110688,
+            "y": 100.98191417889377
+          },
+          "reserve": 947.7476443191481,
+          "command": {
+            "x": 2.828248933047091,
+            "y": -0.04416817347813784
+          },
+          "footForce": {
+            "x": -106.27722279735308,
+            "y": -33.74105768890684
+          },
+          "achieved": {
+            "x": 2.5110599695994296,
+            "y": -0.14486981802881438
+          }
+        },
+        {
+          "history": "transition",
+          "xi": {
+            "x": 0.6649921206819678,
+            "y": -0.009645929436928212
+          },
+          "turnTarget": -3.5385329359335134,
+          "spinBefore": -1.400769624801517,
+          "spinAfterGround": -1.4308835868502934,
+          "ground": {
+            "x": 208.0689489574987,
+            "y": 100.28166556675262
+          },
+          "reserve": 952.0942965469754,
+          "command": {
+            "x": 2.8412600068213245,
+            "y": -0.041738741392540815
+          },
+          "footForce": {
+            "x": -73.4115901638027,
+            "y": -22.90775669860323
+          },
+          "achieved": {
+            "x": 2.622159944021405,
+            "y": -0.11010793105414862
+          }
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "time": 4.102083333333335,
+      "xi": 0.0031067982344557274,
+      "command": 0.01193172105560715,
+      "force": 72.0727273644556,
+      "achieved": 0.22689383632881605,
+      "commandScale": 2.8272079145073996,
+      "forceScale": 947.2832918227381,
+      "histories": [
+        {
+          "history": "previous",
+          "xi": {
+            "x": 0.661010956870955,
+            "y": -0.00977886658344383
+          },
+          "turnTarget": -2.731028494103289,
+          "spinBefore": -1.2872782792767923,
+          "spinAfterGround": -1.2569969080718677,
+          "ground": {
+            "x": 208.8026715316889,
+            "y": 101.31199823369307
+          },
+          "reserve": 947.2832918227381,
+          "command": {
+            "x": 2.8268870089794365,
+            "y": -0.04259613030046602
+          },
+          "footForce": {
+            "x": -106.20212016382636,
+            "y": -33.797650136163504
+          },
+          "achieved": {
+            "x": 2.509922192586558,
+            "y": -0.14346667745521735
+          }
+        },
+        {
+          "history": "transition",
+          "xi": {
+            "x": 0.664103268824434,
+            "y": -0.009479196678401766
+          },
+          "turnTarget": -3.5385329359335134,
+          "spinBefore": -1.4974128707209,
+          "spinAfterGround": -1.5275567990436816,
+          "ground": {
+            "x": 208.1905644504212,
+            "y": 100.59826229316619
+          },
+          "reserve": 951.2256039911236,
+          "command": {
+            "x": 2.838680899563319,
+            "y": -0.04078778513313076
+          },
+          "footForce": {
+            "x": -37.582807257582374,
+            "y": -11.755238153212938
+          },
+          "achieved": {
+            "x": 2.7265133874312397,
+            "y": -0.07587180131981341
+          }
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "time": 4.103125000000002,
+      "xi": 0.0023547485839323853,
+      "command": 0.009640530647812985,
+      "force": 100.41692825556504,
+      "achieved": 0.30908381937831625,
+      "commandScale": 2.825820181978532,
+      "forceScale": 946.8183186485437,
+      "histories": [
+        {
+          "history": "previous",
+          "xi": {
+            "x": 0.6606201475294478,
+            "y": -0.009410306453805887
+          },
+          "turnTarget": -2.731028494103289,
+          "spinBefore": -1.2881746160130176,
+          "spinAfterGround": -1.2578784550242534,
+          "ground": {
+            "x": 208.92331550494862,
+            "y": 101.64023807004543
+          },
+          "reserve": 946.8183186485437,
+          "command": {
+            "x": 2.8255223737395325,
+            "y": -0.041024582563411224
+          },
+          "footForce": {
+            "x": -106.1588129677301,
+            "y": -33.86401922861279
+          },
+          "achieved": {
+            "x": 2.5086868095446135,
+            "y": -0.14209321114224238
+          }
+        },
+        {
+          "history": "transition",
+          "xi": {
+            "x": 0.6629748933660692,
+            "y": -0.009406709448716091
+          },
+          "turnTarget": -3.5385329359335134,
+          "spinBefore": -1.5750278709780663,
+          "spinAfterGround": -1.6052135697831666,
+          "ground": {
+            "x": 208.3142884130925,
+            "y": 100.91077592990155
+          },
+          "reserve": 950.0355801735974,
+          "command": {
+            "x": 2.8351357996621696,
+            "y": -0.040302174644440386
+          },
+          "footForce": {
+            "x": -10.508096625244843,
+            "y": -3.2944274182414466
+          },
+          "achieved": {
+            "x": 2.803773931251996,
+            "y": -0.050134535619266174
+          }
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "time": 4.105729166666671,
+      "xi": 0.0010310091579041336,
+      "command": 0.00360735484916485,
+      "force": 145.04760201773243,
+      "achieved": 0.4331503884126121,
+      "commandScale": 2.8223479075657862,
+      "forceScale": 945.6548996021626,
+      "histories": [
+        {
+          "history": "previous",
+          "xi": {
+            "x": 0.6596428706344817,
+            "y": -0.008489050716878822
+          },
+          "turnTarget": -2.731028494103289,
+          "spinBefore": -1.2902689567732482,
+          "spinAfterGround": -1.2599358274593955,
+          "ground": {
+            "x": 209.22304342921996,
+            "y": 102.45291475229645
+          },
+          "reserve": 945.6548996021626,
+          "command": {
+            "x": 2.822104115600039,
+            "y": -0.037095445196027484
+          },
+          "footForce": {
+            "x": -106.14482094482734,
+            "y": -34.05875517732267
+          },
+          "achieved": {
+            "x": 2.505310311202038,
+            "y": -0.1387452716279025
+          }
+        },
+        {
+          "history": "transition",
+          "xi": {
+            "x": 0.6594530608537704,
+            "y": -0.009502437183548144
+          },
+          "turnTarget": -3.5385329359335134,
+          "spinBefore": -1.7136759206138974,
+          "spinAfterGround": -1.7440002477459757,
+          "ground": {
+            "x": 208.6383184122025,
+            "y": 101.66897248229844
+          },
+          "reserve": 946.1123861983473,
+          "command": {
+            "x": 2.8234235149996363,
+            "y": -0.040452854052889425
+          },
+          "footForce": {
+            "x": 32.01703857091887,
+            "y": 10.1012655002733
+          },
+          "achieved": {
+            "x": 2.91897975000154,
+            "y": -0.010305190713486564
+          }
+        }
+      ]
+    },
+    {
+      "phase": 23,
+      "time": 4.11250000000001,
+      "xi": 0.010021085394347226,
+      "command": 0.034391348841407585,
+      "force": 185.7885343891674,
+      "achieved": 0.5211823358063703,
+      "commandScale": 2.784376952810431,
+      "forceScale": 932.9323648251008,
+      "histories": [
+        {
+          "history": "previous",
+          "xi": {
+            "x": 0.657110582160158,
+            "y": -0.006090952322159898
+          },
+          "turnTarget": -2.731028494103289,
+          "spinBefore": -1.2955491965306447,
+          "spinAfterGround": -1.2651204983772264,
+          "ground": {
+            "x": 209.99020430625868,
+            "y": 104.51520024605222
+          },
+          "reserve": 942.6372048801366,
+          "command": {
+            "x": 2.813213249652527,
+            "y": -0.026859327909161988
+          },
+          "footForce": {
+            "x": -106.4086493020764,
+            "y": -34.65418825851224
+          },
+          "achieved": {
+            "x": 2.4956320381228636,
+            "y": -0.13028625009922304
+          }
+        },
+        {
+          "history": "transition",
+          "xi": {
+            "x": 0.6481634330768127,
+            "y": -0.010604340823185633
+          },
+          "turnTarget": -3.5385329359335134,
+          "spinBefore": -1.9087105092266714,
+          "spinAfterGround": -1.9395048016196257,
+          "ground": {
+            "x": 208.7836535652074,
+            "y": 102.75120381130543
+          },
+          "reserve": 932.9323648251008,
+          "command": {
+            "x": 2.7840128400902153,
+            "y": -0.04502800855814288
+          },
+          "footForce": {
+            "x": 70.34342133409942,
+            "y": 22.58290667387549
+          },
+          "achieved": {
+            "x": 2.993955820448946,
+            "y": 0.02237165216859794
+          }
+        }
+      ]
+    },
+    {
+      "phase": 48,
+      "time": 4.125520833333353,
+      "xi": 0.02965150034484718,
+      "command": 0.3362184748304344,
+      "force": 117.82563661423741,
+      "achieved": 0.666962953053983,
+      "commandScale": 2.7962450126626144,
+      "forceScale": 936.9088727949027,
+      "histories": [
+        {
+          "history": "previous",
+          "xi": {
+            "x": 0.652309696444779,
+            "y": -0.0014570958916883625
+          },
+          "turnTarget": -2.731028494103289,
+          "spinBefore": -1.3076407170267421,
+          "spinAfterGround": -1.2770321095886967,
+          "ground": {
+            "x": 211.41856824105787,
+            "y": 108.29480074010868
+          },
+          "reserve": 936.9088727949027,
+          "command": {
+            "x": 2.7962361472800588,
+            "y": -0.007041270121025231
+          },
+          "footForce": {
+            "x": -107.2845688589076,
+            "y": -35.890089123427586
+          },
+          "achieved": {
+            "x": 2.476040715986443,
+            "y": -0.11415679184302972
+          }
+        },
+        {
+          "history": "transition",
+          "xi": {
+            "x": 0.6249541097100362,
+            "y": -0.01289752189330367
+          },
+          "turnTarget": -3.5385329359335134,
+          "spinBefore": -2.205950602645194,
+          "spinAfterGround": -2.2317223422027515,
+          "ground": {
+            "x": 201.90032120244643,
+            "y": 100.45466742059807
+          },
+          "reserve": 1048.1245148453859,
+          "command": {
+            "x": 3.127507783641299,
+            "y": -0.06450400378250046
+          },
+          "footForce": {
+            "x": 4.456065764778358,
+            "y": 1.485186359787758
+          },
+          "achieved": {
+            "x": 3.140807104453245,
+            "y": -0.060071400920023166
+          }
+        }
+      ]
+    },
+    {
+      "phase": 95,
+      "time": 4.150000000000039,
+      "xi": 0.07306823324668067,
+      "command": 0.7487594789076792,
+      "force": 118.90128364832965,
+      "achieved": 1.0761272866400575,
+      "commandScale": 2.7652101432876393,
+      "forceScale": 926.5103403516538,
+      "histories": [
+        {
+          "history": "previous",
+          "xi": {
+            "x": 0.6435989485721558,
+            "y": 0.0073386072478512625
+          },
+          "turnTarget": -2.731028494103289,
+          "spinBefore": -1.3424600729157299,
+          "spinAfterGround": -1.3115304178716405,
+          "ground": {
+            "x": 213.94518292444326,
+            "y": 114.84404455552574
+          },
+          "reserve": 926.5103403516538,
+          "command": {
+            "x": 2.7650395838820843,
+            "y": 0.030712149160185418
+          },
+          "footForce": {
+            "x": -109.12512185634164,
+            "y": -38.15736706535109
+          },
+          "achieved": {
+            "x": 2.439350942641312,
+            "y": -0.08317016154366641
+          }
+        },
+        {
+          "history": "transition",
+          "xi": {
+            "x": 0.5732570298830464,
+            "y": -0.012434636920115882
+          },
+          "turnTarget": -3.5385329359335134,
+          "spinBefore": -2.693337673975147,
+          "spinAfterGround": -2.6960956054859007,
+          "ground": {
+            "x": 180.82780077943,
+            "y": 92.6951558837927
+          },
+          "reserve": 1175.0466207777667,
+          "command": {
+            "x": 3.5061534574877413,
+            "y": -0.07601640186210477
+          },
+          "footForce": {
+            "x": 3.107366941073108,
+            "y": 1.1030928346388666
+          },
+          "achieved": {
+            "x": 3.5154275283859797,
+            "y": -0.07272417363486924
+          }
+        }
+      ]
+    }
+  ],
+  "interventions": [
+    {
+      "history": "previous",
+      "action": "xi",
+      "fromBase": {
+        "xi": 0.0037050802180567228,
+        "position": 8.570039790138767e-06,
+        "initialXi": 0.0038165892481708758
+      },
+      "toOtherOriginal": {
+        "xi": 0.07673998379166769,
+        "position": 0.0026093328612143136,
+        "initialXi": 0
+      },
+      "audit": {
+        "accepted": 96,
+        "fallbacks": 0,
+        "reasons": {},
+        "dose": 12.365412069162442,
+        "bodyWork": 13.154886740714042,
+        "motorWork": 13.15488674071405,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 1.8189894035458565e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 1.4304896245381992e-17,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": -461332.7514201619,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "previous",
+      "action": "held-yaw",
+      "fromBase": {
+        "xi": 0.0758637710797464,
+        "position": 0.0037349706786333242,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.0032844237218076664,
+        "position": 0.0011428287850514425,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 95,
+        "fallbacks": 1,
+        "reasons": {
+          "solver:Native correction geometry event": 1
+        },
+        "dose": 5.279624488154675,
+        "bodyWork": -5.497975598916551,
+        "motorWork": -5.497975598916551,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 2.2737367544323206e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 4.577566798522237e-16,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": 4.656612873077393e-10,
+        "tractionExcess": 2.3283064365386963e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "previous",
+      "action": "holder-yaw",
+      "fromBase": {
+        "xi": 0.00013978810005475808,
+        "position": 1.280829995733227e-05,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07293600722638277,
+        "position": 0.002588066726260307,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 96,
+        "fallbacks": 0,
+        "reasons": {},
+        "dose": 12.340883172225727,
+        "bodyWork": 13.05843586409618,
+        "motorWork": 13.05843586409618,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 2.2737367544323206e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 1.3877787807814457e-17,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": -469686.03614220675,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "previous",
+      "action": "material",
+      "fromBase": {
+        "xi": 0.002187653524986631,
+        "position": 0.00015940039913152297,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07382892661251625,
+        "position": 0.0026930946384087578,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 96,
+        "fallbacks": 0,
+        "reasons": {},
+        "dose": 12.445603565606746,
+        "bodyWork": 13.518813339112317,
+        "motorWork": 13.518813339112311,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 1.8189894035458565e-12,
+        "support": 1.1102569054260746e-16,
+        "filter": 5.551792708129603e-17,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": -469686.03614220675,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "previous",
+      "action": "filters",
+      "fromBase": {
+        "xi": 2.1145134062810324e-05,
+        "position": 1.4059716724130727e-05,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07308926754632093,
+        "position": 0.0026124316210349883,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 96,
+        "fallbacks": 0,
+        "reasons": {},
+        "dose": 12.385264884878554,
+        "bodyWork": 13.096051653633607,
+        "motorWork": 13.096051653633607,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 2.2737367544323206e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 1.3877787807814457e-17,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": -470265.33818334294,
+        "tractionExcess": 2.3283064365386963e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "previous",
+      "action": "body-pose",
+      "fromBase": {
+        "xi": 0.001916071984403069,
+        "position": 0.0006387068462678503,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07257497786856912,
+        "position": 0.0031739914940999486,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 96,
+        "fallbacks": 0,
+        "reasons": {},
+        "dose": 12.381753274827473,
+        "bodyWork": 12.712986886508764,
+        "motorWork": 12.712986886508766,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 1.8189894035458565e-12,
+        "support": 1.1102569054260746e-16,
+        "filter": 7.244417918960238e-17,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": -469686.4157788978,
+        "tractionExcess": 2.3283064365386963e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "previous",
+      "action": "body-velocity",
+      "fromBase": {
+        "xi": 0.00032586192322336114,
+        "position": 0.00021363990724498897,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07339334383503081,
+        "position": 0.0028067121753600605,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 96,
+        "fallbacks": 0,
+        "reasons": {},
+        "dose": 12.469525418551465,
+        "bodyWork": 13.178884599147736,
+        "motorWork": 13.178884599147741,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 1.8189894035458565e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 1.4304896245381992e-17,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": -469685.0708689552,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "transition",
+      "action": "xi",
+      "fromBase": {
+        "xi": 0.004222989520057993,
+        "position": 2.1837430068698117e-05,
+        "initialXi": 0.0038165892481708758
+      },
+      "toOtherOriginal": {
+        "xi": 0.0772499257213929,
+        "position": 0.002622599758559069,
+        "initialXi": 0
+      },
+      "audit": {
+        "accepted": 95,
+        "fallbacks": 1,
+        "reasons": {
+          "solver:Native correction geometry event": 1
+        },
+        "dose": 3.958825965271457,
+        "bodyWork": -3.9375039948062036,
+        "motorWork": -3.937503994806205,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 2.2737367544323206e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 4.47545209131181e-16,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": 4.656612873077393e-10,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "transition",
+      "action": "held-yaw",
+      "fromBase": {
+        "xi": 0.0768565317295203,
+        "position": 0.0034432746924174694,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.0038617226402550015,
+        "position": 0.0008500795422374829,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 96,
+        "fallbacks": 0,
+        "reasons": {},
+        "dose": 12.36574462827898,
+        "bodyWork": 13.218812771173434,
+        "motorWork": 13.218812771173436,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 2.2737367544323206e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 1.4304896245381992e-17,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": -461723.1692551549,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "transition",
+      "action": "holder-yaw",
+      "fromBase": {
+        "xi": 0.0001939735715049638,
+        "position": 2.399433508351144e-05,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07289003555780821,
+        "position": 0.0025767823721133207,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 95,
+        "fallbacks": 1,
+        "reasons": {
+          "solver:Native correction geometry event": 1
+        },
+        "dose": 3.8566555643491407,
+        "bodyWork": -3.7697170760565073,
+        "motorWork": -3.769717076056506,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 1.8189894035458565e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 3.895680680159941e-16,
+        "reserve": 3.410605131648481e-13,
+        "strengthExcess": 4.656612873077393e-10,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "transition",
+      "action": "material",
+      "fromBase": {
+        "xi": 0.0016463075370497606,
+        "position": 0.00023075397310985113,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.0741471199806837,
+        "position": 0.0028247902397319897,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 95,
+        "fallbacks": 1,
+        "reasons": {
+          "solver:Native correction geometry event": 1
+        },
+        "dose": 4.33014462530566,
+        "bodyWork": -4.69415487806143,
+        "motorWork": -4.694154878061433,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 2.2737367544323206e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 4.440892098500626e-16,
+        "reserve": 3.410605131648481e-13,
+        "strengthExcess": 4.656612873077393e-10,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "transition",
+      "action": "filters",
+      "fromBase": {
+        "xi": 1.0492912290472328e-05,
+        "position": 1.3818883629068123e-05,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07307092139864892,
+        "position": 0.0026122615942815565,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 95,
+        "fallbacks": 1,
+        "reasons": {
+          "solver:Native correction geometry event": 1
+        },
+        "dose": 3.94051745952601,
+        "bodyWork": -3.907247318416228,
+        "motorWork": -3.9072473184162275,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 3.637978807091713e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 4.0815798435103034e-16,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": 4.656612873077393e-10,
+        "tractionExcess": 2.3283064365386963e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "transition",
+      "action": "body-pose",
+      "fromBase": {
+        "xi": 0.002122368770699474,
+        "position": 0.0007282415378512202,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07119204708914592,
+        "position": 0.003313154778226664,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 95,
+        "fallbacks": 1,
+        "reasons": {
+          "solver:Native correction geometry event": 1
+        },
+        "dose": 4.997668307054267,
+        "bodyWork": -4.783517871573381,
+        "motorWork": -4.783517871573382,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 7.275957614183426e-12,
+        "support": 2.220513810852149e-16,
+        "filter": 3.9739936517281115e-16,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": 4.656612873077393e-10,
+        "tractionExcess": 2.3283064365386963e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    },
+    {
+      "history": "transition",
+      "action": "body-velocity",
+      "fromBase": {
+        "xi": 0.0004269422212209998,
+        "position": 0.0002408047096140293,
+        "initialXi": 0
+      },
+      "toOtherOriginal": {
+        "xi": 0.07343856641411119,
+        "position": 0.0028350715823525227,
+        "initialXi": 0.0038165892481708758
+      },
+      "audit": {
+        "accepted": 95,
+        "fallbacks": 1,
+        "reasons": {
+          "solver:Native correction geometry event": 1
+        },
+        "dose": 4.059366841798271,
+        "bodyWork": -4.187766196740367,
+        "motorWork": -4.187766196740365,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "accounting": {
+        "energy": 2.2737367544323206e-12,
+        "support": 1.1103585416259206e-16,
+        "filter": 4.965068306494546e-16,
+        "reserve": 2.2737367544323206e-13,
+        "strengthExcess": 4.656612873077393e-10,
+        "tractionExcess": 4.656612873077393e-10,
+        "commandExcess": 4.440892098500626e-16
+      }
+    }
+  ],
+  "perturbations": [
+    {
+      "history": "previous",
+      "epsilon": 0.001,
+      "xi": 0.0009700721517869929,
+      "position": 2.009908323294129e-06,
+      "initialXi": 0.0010000000000000009,
+      "gain": 0.9700721517869929
+    },
+    {
+      "history": "previous",
+      "epsilon": 0.0001,
+      "xi": 9.699920642077343e-05,
+      "position": 2.0133236859822346e-07,
+      "initialXi": 9.999999999998899e-05,
+      "gain": 0.9699920642077342
+    },
+    {
+      "history": "previous",
+      "epsilon": 1e-05,
+      "xi": 9.699840542476274e-06,
+      "position": 2.0136678229738735e-08,
+      "initialXi": 9.99999999995449e-06,
+      "gain": 0.9699840542476272
+    },
+    {
+      "history": "previous",
+      "epsilon": 1e-06,
+      "xi": 9.699832854856733e-07,
+      "position": 2.013529385180822e-09,
+      "initialXi": 1.0000000000287557e-06,
+      "gain": 0.9699832854856734
+    },
+    {
+      "history": "previous",
+      "epsilon": -1e-06,
+      "xi": 9.699830556721781e-07,
+      "position": 2.013668696415689e-09,
+      "initialXi": 1.0000000000287557e-06,
+      "gain": 0.9699830556721781
+    },
+    {
+      "history": "transition",
+      "epsilon": 0.001,
+      "xi": 0.0011067161167903925,
+      "position": 5.1726731609331115e-06,
+      "initialXi": 0.0010000000000000009,
+      "gain": 1.1067161167903925
+    },
+    {
+      "history": "transition",
+      "epsilon": 0.0001,
+      "xi": 0.00011066001155235128,
+      "position": 5.175763601651317e-07,
+      "initialXi": 9.999999999998899e-05,
+      "gain": 1.1066001155235128
+    },
+    {
+      "history": "transition",
+      "epsilon": 1e-05,
+      "xi": 1.1065884982477927e-05,
+      "position": 5.1760544704205474e-08,
+      "initialXi": 9.99999999995449e-06,
+      "gain": 1.1065884982477925
+    },
+    {
+      "history": "transition",
+      "epsilon": 1e-06,
+      "xi": 1.1065873674065099e-06,
+      "position": 5.175815976743691e-09,
+      "initialXi": 1.0000000000287557e-06,
+      "gain": 1.1065873674065099
+    },
+    {
+      "history": "transition",
+      "epsilon": -1e-06,
+      "xi": 1.106587074254456e-06,
+      "position": 5.176237487055622e-09,
+      "initialXi": 1.0000000000287557e-06,
+      "gain": 1.106587074254456
+    }
+  ],
+  "references": [
+    {
+      "history": "previous",
+      "phase": 0,
+      "error": 0.00022545260931573302,
+      "refinement": 5.175738405482582e-05,
+      "bodyWork": 0.12271235940054855,
+      "motorWork": 0.12271235940054834
+    },
+    {
+      "history": "previous",
+      "phase": 23,
+      "error": 0.0006425661234307613,
+      "refinement": 9.385325350593584e-06,
+      "bodyWork": -0.10971355335799865,
+      "motorWork": -0.10971355335799854
+    },
+    {
+      "history": "transition",
+      "phase": 0,
+      "error": 0.000606198246169902,
+      "refinement": 1.9789302068763357e-05,
+      "bodyWork": 0.1387095232698235,
+      "motorWork": 0.1387095232698234
+    },
+    {
+      "history": "transition",
+      "phase": 23,
+      "error": 0.0005126111701403758,
+      "refinement": 7.105427357601001e-06,
+      "bodyWork": 0.13721420045389507,
+      "motorWork": 0.13721420045389526
+    }
+  ],
+  "accounting": [
+    {
+      "history": "previous",
+      "audit": {
+        "accepted": 96,
+        "fallbacks": 0,
+        "reasons": {},
+        "dose": 12.379495154323974,
+        "bodyWork": 13.090618286042767,
+        "motorWork": 13.090618286042767,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "energy": 1.8189894035458565e-12,
+      "support": 1.1102569054260746e-16,
+      "filter": 1.3877787807814457e-17,
+      "reserve": 2.2737367544323206e-13,
+      "strengthExcess": -469686.03614220675,
+      "tractionExcess": 2.3283064365386963e-10,
+      "commandExcess": 4.440892098500626e-16
+    },
+    {
+      "history": "transition",
+      "audit": {
+        "accepted": 95,
+        "fallbacks": 1,
+        "reasons": {
+          "solver:Native correction geometry event": 1
+        },
+        "dose": 3.934499117437658,
+        "bodyWork": -3.8972168360738424,
+        "motorWork": -3.897216836073842,
+        "armCost": 0,
+        "reelDose": 0
+      },
+      "energy": 3.183231456205249e-12,
+      "support": 1.1103585416259206e-16,
+      "filter": 3.510833468576701e-16,
+      "reserve": 2.2737367544323206e-13,
+      "strengthExcess": 4.656612873077393e-10,
+      "tractionExcess": 4.656612873077393e-10,
+      "commandExcess": 4.440892098500626e-16
+    }
+  ],
+  "conclusion": "Dominant gap follows opposite shortest-turn plans across the antipode, not xi-only recovery amplification. No unjustified recovery/force-accounting difference found in this supported phase; no runtime correction or strength change justified. Both turn choices are permitted by the current policy. Physical/behavioral preference remains unvalidated.",
+  "raw": {
+    "path": "out/support-command-audit/causal.raw.json",
+    "sha256": "9b14f147fe9012ccfe694593155447d2e3c762651e28b2e06c0360f83a067d71"
+  },
+  "evidence": {
+    "path": "out/support-command-audit/causal.json",
+    "sha256": "2d96e1b7a57b003c8a5ae8391c80ea47bb7b94483e7d11933c45a2e70e884732"
+  },
+  "validation": {
+    "focused": {
+      "passed": 20,
+      "new": 4,
+      "seconds": 2.31,
+      "receipt": "out/baseline/run-1792034426831-332995.json",
+      "compatibility": "Same executable diagnostic/test behavior; a subsequent diagnostic-only array type annotation is covered by final build on a713347."
+    },
+    "typecheck": {
+      "passed": true,
+      "receipt": "out/baseline/run-1792034531446-333226.json"
+    },
+    "references": {
+      "newIntervals": 4,
+      "maximumError": 0.0006425661234307613,
+      "maximumRefinement": 5.175738405482582e-05,
+      "unchangedAllowance": 0.0625
+    },
+    "fullSuite": "Not repeated: diagnostics only. PR55 1935pass/1retained dry-cap,145Python reused as historical default evidence, not a new combined pass.",
+    "build": {
+      "passed": true,
+      "receipt": "out/baseline/run-1792034620252-333544.json"
+    }
+  },
+  "retained": [
+    "Old dry-cap certificate failure",
+    "Nine earlier43/52 experimental patch failures",
+    "Keeper and old.24yd support history remain separate",
+    "Seed5001 inherited+.95s delay not diagnosed here",
+    "PR56 guard remains independent; no source/branch merge or outcome-based promotion"
+  ],
+  "retainedTapeTimeline": {
+    "note": "Recorded headings from reused PR51 tapes; sign derived with the existing shortest-angle rule. Native4.1 plans also reproduced directly by the portable witness.",
+    "rows": [
+      {
+        "history": "previous",
+        "path": "out/grip-native-football/patch-45-8-0-4001-1-previous.json",
+        "sha256": "5dabd7f91b6eff77d3d0be200bf697e665f9eb09c1237b53bb6b0b678c9a9cae",
+        "states": [
+          {
+            "time": 4.05,
+            "heading": -3.0594578854505414,
+            "spin": -1.3071108529105184,
+            "derivedShortestTurnSign": 1
+          },
+          {
+            "time": 4.1,
+            "heading": -3.1241396052144004,
+            "spin": -1.285821997968372,
+            "derivedShortestTurnSign": 1
+          },
+          {
+            "time": 4.15,
+            "heading": -3.1894607702142097,
+            "spin": -1.3389531603357254,
+            "derivedShortestTurnSign": -1
+          }
+        ]
+      },
+      {
+        "history": "transition",
+        "path": "out/grip-native-football/patch-45-8-0-4001-1-transition.json",
+        "sha256": "7dea9a12e3ae84880d2781a319ed96bc671bf8b71fd4e0cbc5d6b27b400758b6",
+        "states": [
+          {
+            "time": 4.05,
+            "heading": -3.078095327322623,
+            "spin": -1.3550489917012811,
+            "derivedShortestTurnSign": 1
+          },
+          {
+            "time": 4.1,
+            "heading": -3.145421824822402,
+            "spin": -1.3434360059257384,
+            "derivedShortestTurnSign": -1
+          },
+          {
+            "time": 4.15,
+            "heading": -3.256208335255826,
+            "spin": -2.6948911654472196,
+            "derivedShortestTurnSign": -1
+          }
+        ]
+      }
+    ]
+  }
+}
