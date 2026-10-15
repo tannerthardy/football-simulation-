@@ -1,15 +1,15 @@
 # Current work ownership
 
-## Active #84/#81 intake boundary — 2026-10-15
+## Active #84/#81 exact verification boundary — 2026-10-15
 
 Integration starts from accepted `7eb2554f5dbb497cff169f386704a5b0f4cf43fe`,
 preserving queue metadata0e7af86 in `codex/duo-motion-integration`.
-Do-It-All is requested for independent #84 review; Run is requested for #81.
-Readiness is not approval. The bounded potential extraction is
+Do-It-All accepted exact #84 head4af71ac; Run accepted exact #81 head6e19ad2.
+Both owner reviews are published and user confirmed the gate is clear. Extract only
 `readJoinedCombination` in `src/sim/behaviors/blocking.ts` plus
 `test/combo-transfer.test.ts`, and #81's `src/sim/spacing.ts`,
-`test/spacing-residual-motion.test.ts` and its fixture. Stage portable patches
-and evidence first; do not run combined verification before scope is approved.
+`test/spacing-residual-motion.test.ts` and its fixture. The already checked portable patches
+are unchanged; no observer/lateral or review ancestry is imported.
 Integration owns one exact combined verification for compatible approved scope.
 No source editing overlaps Run's or Do-It-All's research checkouts.
 Lateral/low-speed trials, passive observer, #76 carrier override and experimental

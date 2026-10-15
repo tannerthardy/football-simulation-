@@ -169,17 +169,26 @@ results; final intents cannot reconstruct discarded producer stages/every-tick R
 ### Current intake — 2026-10-15
 
 Accepted develop remains **7eb2554**. Ready queue now contains **#84 and #81**;
-neither has independent approval yet. Both minimal patches apply to the accepted
-tree; [exact intake, artifact hashes and portable patches](../data/reviews/current/duo-motion-integration/intake.json)
-are published together. Integration will combine compatible approved scope for
-one exact verification, not run a suite to compensate for missing review.
+both have independent acceptance against unchanged accepted7eb2554. The exact
+five-file patches are now assembled for one frozen combined verification; [exact intake, artifact hashes and portable patches](../data/reviews/current/duo-motion-integration/intake.json)
+are published together. Do-It-All accepts #84 and Run accepts #81; Integration owns one exact
+all-phase verification, with focused evidence reused and no new native panel.
 
 | Item | Exact scope / pins | Independent decision and owner |
 | --- | --- | --- |
-| #84 Duo surface release | Head `4af71ac8a8f320456e87a027579200469a0c1ee0`, clean code/tests `aebb0abb3a9e96ec6561274b9fdd4e8e76ce7173`, evidence `70ed238a2246cd89d3c4108d647245baf5ff70bb`; joined Duo admission + existing combo-transfer tests only | [Do-It-All review requested](https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204470008): own acquired surface, necessary climb/crossing-fill controls and preserved defensive wins.66 focused/typecheck and published native evidence reused; A018 missed LB, A030 changed C release and execution-draw limits remain. |
-| #81 achievable-motion admission | Minimal `f27456b5f4cd7e5d628417662a77e4ede5b85bfc`, reconciled `edad30904780523896092f592f4c30f1686cc764`, head/evidence `6e19ad2d4aac73e71ae57c1893a9b389074eeaa5`; spacing.ts + residual-motion test/fixture only | [Run review requested](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204470898): attainable tube/World preview, acquired peer data and shared spacing contracts.13 focused/typecheck reused. A044 collision/drop/result unchanged; A008 exact. No avoidance/mesh benefit claim; observer excluded. |
+| #84 Duo surface release | Head `4af71ac8a8f320456e87a027579200469a0c1ee0`, clean code/tests `aebb0abb3a9e96ec6561274b9fdd4e8e76ce7173`, evidence `70ed238a2246cd89d3c4108d647245baf5ff70bb`; joined Duo admission + existing combo-transfer tests only | [Do-It-All ACCEPT](https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204563280): own acquired surface, necessary climb/crossing-fill controls and preserved defensive wins.66 focused/typecheck and published native evidence reused; A018 missed LB, A030 changed C release and execution-draw limits remain. |
+| #81 achievable-motion admission | Minimal `f27456b5f4cd7e5d628417662a77e4ede5b85bfc`, reconciled `edad30904780523896092f592f4c30f1686cc764`, head/evidence `6e19ad2d4aac73e71ae57c1893a9b389074eeaa5`; spacing.ts + residual-motion test/fixture only | [Run ACCEPT](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204555966): attainable tube/World preview, acquired peer data and shared spacing contracts.13 focused/typecheck reused. A044 collision/drop/result unchanged; A008 exact. No avoidance/mesh benefit claim; observer excluded. |
 | #76 parked/frozen disposition | Unchanged head `4cf253efead2cac450abe0bc74aa5e0db0306126`, code `2e1dfa343a77f142b02a3a23fa49a88c0b40ef13`, base8ca8dee | [Do-It-All confirmation requested](https://github.com/tannerthardy/football-simulation-/pull/76#issuecomment-6204471833): close as preserved parked research, or name a live objective/current-tree next action. No #81/#84 dependency; not adopted or rejected. No new tests for bookkeeping. |
 | Separate lateral trial | `codex/mesh-lateral-approach@498b36ea36fc08e6dad5686244e75e6de79c6df8` | HOLD, not a production candidate. A044 impulse falls but collision persists/robber position worsens; A008 exact. Earlier alternatives remain unproved. Low-speed expansion, observer, #76 carrier override and experimental Physics excluded from this batch. |
+
+[Independent #84 receipt](../data/reviews/current/duo-motion-integration/pr84-independent-review.json)
+and [independent #81 receipt](../data/reviews/current/duo-motion-integration/pr81-independent-review.json)
+retain exact pins, byte checks, football rationale and limitations. No review
+ancestry, observer, #76 carrier override, lateral policy or low-speed trial is
+included. #84 preserves simultaneously loaded DT/LB work without extra information
+or a capability boost; A018 still misses the LB. #81 adds the missing attainable
+forecast without repairing current A044's collision. No blanket football benefit
+or unchanged per-case randomness claim.
 
 **Measurement's requested #82 comparison is complete**, not awaiting collection.
 [Immutable report and full-arm distribution](https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/docs/reviews/panel-pr82-comparison.md).

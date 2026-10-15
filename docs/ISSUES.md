@@ -148,7 +148,7 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 <a id="PASS-007"></a>
 ### PASS-007 — Mesh approach coordination and request attribution
 
-Current: #81 is now ready for Run's independent admission-only review:
+Current: Run independently accepts #81's exact admission-only scope:
 f27456b/edad309/head6e19ad2 on accepted7eb2554. Exact spacing/test/fixture patch
 is portable; it removes the requested-turn shortcut using existing reachable
 tube/World preview, without low-speed expansion, observer or carrier override.
@@ -192,8 +192,8 @@ Archive distribution is Measurement's job; [exact checksum/access status](../dat
 ### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
 
 Current: #84 head4af71ac/codeaebb0ab/evidence70ed238 is a ready Duo-only
-surface-admission candidate on accepted7eb2554. Do-It-All independent review
-requested: necessary climb suppression versus acquired across-surface detour.
+surface-admission candidate on accepted7eb2554. Do-It-All independent review accepts the exact correction: preserved near-half/
+crossing/Under detours settle the necessary-climb question within this scope.
 A030 guard loads LB before runner arrival while RT keeps real DT load; A018
 still misses LB. A030 C release/execution draws also change. Current A027 WZ
 and preselected Under full histories/results are exact. No league/yardage or

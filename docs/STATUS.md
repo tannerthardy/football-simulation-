@@ -46,8 +46,8 @@ Do not use the historical sections below as a current starting-reference pin.
   P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
   and the original failed #75 receipt remain. No overall coverage-quality claim.
 - **Current ready intake: #84 Duo admission and #81 achievable-motion spacing.**
-  Both are portable to accepted7eb2554; Do-It-All/Run independent reviews requested,
-  respectively. Compatible approved scope gets one exact combined verification.
+  Both have independent acceptance on7eb2554: Do-It-All for #84, Run for #81.
+  The exact five-file candidate gets one combined verification; focused evidence reused.
   #81 excludes observer/lateral/low-speed research and does not repair A044's collision.
 - #76 stays parked/frozen pending Do-It-All's explicit live-objective/closure
   disposition. It is no dependency and is not adopted/rejected. Lateral trial and

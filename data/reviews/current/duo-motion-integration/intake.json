@@ -13,7 +13,7 @@
     ],
     "reviewOwner": "Do-It-All",
     "reviewRequested": "https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204470008",
-    "decision": "pending independent owner review",
+    "decision": "ACCEPT exact minimal scope; independent combined verification pending",
     "artifactHashesVerified": [
       {
         "path": "data/reviews/current/combo-football-surface/A030-protection-witness.json.gz",
@@ -191,7 +191,9 @@
         ]
       }
     },
-    "reviewAcknowledged": "https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204470616"
+    "reviewAcknowledged": "https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204470616",
+    "independentApproval": "https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204563280",
+    "independentReviewCommit": "7b550026e4e63543f9ff91b7912d69b908831c11"
   },
   "pr81": {
     "head": "6e19ad2d4aac73e71ae57c1893a9b389074eeaa5",
@@ -207,7 +209,7 @@
     ],
     "reviewOwner": "Run",
     "reviewRequested": "https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204470898",
-    "decision": "pending independent owner review",
+    "decision": "ACCEPT exact three-file scope; independent combined verification pending",
     "scope": "Behavior three-file patch only; no observer, #76, low-speed or lateral policy.",
     "nativeLimits": "Current A044 impact/drop/result unchanged; A008 trajectory/events/RNG exact; historical block load separately pinned.",
     "publishedHashesVerified": [
@@ -392,7 +394,9 @@
         "bytes": 1047555
       }
     ],
-    "authorLocalOrAbsentArtifactsNotClaimedVerified": []
+    "authorLocalOrAbsentArtifactsNotClaimedVerified": [],
+    "independentApproval": "https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204555966",
+    "independentReviewCommit": "58e8bb7c853d399b140adc4ddd671cdc4f9234dd"
   },
   "pr76": {
     "head": "4cf253efead2cac450abe0bc74aa5e0db0306126",
@@ -467,7 +471,7 @@
   "newTests": 0,
   "newNativeExecutions": 0,
   "newCodeSuiteRuns": 0,
-  "nextDecision": "Await named independent contract review; batch compatible approved corrections and verify exact combined candidate once.",
+  "nextDecision": "Freeze only independently approved exact five-file composition and run all required phases once.",
   "completedMeasurementCheckpoint": {
     "acceptedDevelop": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
     "evidence": "40af332f3c988b5abe19d9236b49a43bde27200c",
