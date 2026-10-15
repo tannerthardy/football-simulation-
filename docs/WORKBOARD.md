@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Run adjudication of PR #66
+
+Run owner, 2026-10-15 UTC: [five-assertion decision report](reviews/helper-contact-adjudication.md)
+on `codex/helper-contact-adjudication`, based on #66 `2c2410b`, observed with
+`4304910`; runtime source `8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3`.
+Recovery re-confirmation passes its safety invariant; its obligatory later climb,
+Under's obligatory climb and Tite's positive-compression/old-climb expectations
+are invalid under the changed achieved geometry. Both controlled lost-contact
+sides demonstrate a **missed feasible collection route**: ordinary movement
+around the observed C acquires physically loaded hands by3.20 without C/LG
+impact. Native/diagnostic scope and live censored outcomes are explicit.
+No runtime/test expectation changes; original five failures remain. Run/climb
+controller dependency goes to Do-It-All; Physics retains shared law/yaw ownership,
+Integration owns compatibility and final combined verification. Hold promotion
+for that dependency. Pass-protection branch is separately checkpointed `e33ac76`;
+no #67 runtime enters this review. New launchers21.99s, zero games/new inputs;
+reuse #66's compatible mechanics/default/control receipts.
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
