@@ -1,0 +1,42 @@
+{
+  "schema": "pass-cutoff-final-queue-decision-v1",
+  "recordedAt": "2026-10-15T20:52:33.488604+00:00",
+  "acceptedDevelop": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "integrationPR": 72,
+  "originalPR": 67,
+  "testedCommit": "64177487272b7e0b2d51460e23ccdb6447508e39",
+  "publishedCandidate": "167547807a23052e04af2199104fc16b9850a501",
+  "mergePreview": "51ab21da1f5eda0c6f8fc465210d0bfaaf717b56",
+  "mergePreviewEntireTreeMatchesPublication": true,
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "validationSha256": "ccd339bb899afb10f98e64e44c2da9b15903fbb73e0009664d5aad76930ba37c",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1724,
+    "typescriptFiles": 144,
+    "pythonPassed": 145,
+    "skippedPhases": [],
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "exitCode": 0
+  },
+  "receipt": "https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json",
+  "receiptSha256": "1ddef3346b125373fc6e50e24714963d531d99808d05184df0d85b1b897ee28a",
+  "decisionComment": "https://github.com/tannerthardy/football-simulation-/pull/67#issuecomment-6202031551",
+  "decision": "Recommend explicit merge approval for isolated PR72; no merge authorized or performed. All earlier adverse evidence and held/failed decisions remain historical records.",
+  "extraQueueTestsOrSimulations": 0,
+  "excluded": [
+    "#69",
+    "entry-admission",
+    "experimental physics",
+    "original #67 experimental ancestry"
+  ],
+  "documentationChecks": {
+    "checkedLocalPaths": 75,
+    "brokenLinks": [],
+    "existingCurrentReceiptsUnchanged": 96,
+    "runtimeTestsToolingSettingsUnchanged": true
+  }
+}

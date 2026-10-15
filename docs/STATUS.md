@@ -19,14 +19,13 @@ Do not use the historical sections below as a current starting-reference pin.
   Neither is accepted runtime; the information-only correction stays separate.
 - Prior PR bookkeeping closed 43 finished/superseded PRs, leaving 23 open at
   that snapshot before #63 merged. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
-- #66 remains held after Run-owner adjudication (mirrored feasible collection
-  still missed; two center-history compatibility questions remain Integration's).
-  #67 is portable on accepted develop, but its one combined attempt has a
-  replay-test decision-kind failure (1,723 pass/one fail; Python skipped).
-  Independent review accepts the one-line coverage-kind filter, but the ordinary
-  fixture LT/pressure loss remains an unexplained material adverse result and
-  blocks adoption. #69 is queued for a separate controller review. Neither
-  runtime candidate is included in develop; #65 docs are merged.
+- #66 remains held independently. #67's isolated final candidate at
+  `64177487272b7e0b2d51460e23ccdb6447508e39` passes **1,724 TS/145 Python,
+  typecheck/build** with all44 flags/components=1, no skipped phases or drift.
+  User accepted Run's ordinary-fixture adjudication; native adverse outcomes
+  and forecast/contact limitations remain. [Final receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json).
+  Recommend bounded merge **after explicit authorization**; accepted develop
+  remains7d1451b. #69 remains a separate queued controller review.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 

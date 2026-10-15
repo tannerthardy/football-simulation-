@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Independent #67 portability review — 2026-10-15
+
+Integration owns `codex/pass-cutoff-integration-review` from accepted develop
+`7d1451b2c31786e075550183a6a93bbda23da29b` after the docs-only #65 merge. Boundary: the authored free-cutoff
+PassProtector action only, its existing four checks and portable saved inputs;
+no run-controller, forecast, spacing, engagement, physics, flags or capacities.
+User accepted Run's ordinary-fixture adjudication at `f430360d9e5a6a151a3851843d6a917a94bd0964`.
+Completed: reviewed coverage-job assertion filter, frozen6417748, and all
+typecheck/build/TS/Python phases pass with components=1. Preserve the failed
+first receipt, native RT/RG/LT losses, traffic and forecast limits. #69 and
+experimental physics remain separate. Verification approval grants no merge,
+reference, default or historical-baseline authority.
+
 ## Current queue ownership — 2026-10-15
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
@@ -32,10 +45,13 @@ use the current queue and affected owner for live branch/readiness information.
 
 Integration records accepted develop7d1451b after documentation-only #65;
 source/tests/settings and prior receipts stay identical to accepted8c891f4.
-The independent #67 reviewer accepts only the replay-kind test filter and
-holds football adoption on the ordinary fixture's unreviewed first-load loss.
-Run Game/pass-controller owner owns that one attribution question; Integration
-retains final composition/verification after disposition. No tests rerun here.
+User accepted Run's #67 ordinary-fixture adjudication. Integration installed
+only the approved coverage-job test filter and froze `6417748` on accepted7d1451b.
+All phases passed:1,724 TS/145 Python/typecheck/build,44 flags/components=1,
+no skips/input drift,200.234s. [Final receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json).
+No runtime changed after that freeze. Preserve native losses, traffic,
+forecast/contact limitations and every failed receipt. Next: explicit merge
+decision for the isolated candidate; no further verification spend required.
 #69 is queued for an independent controller/Do-It-All! boundary review, with its
 exact pins and witnesses in [the shared queue](INTEGRATION.md#ready-blocked-experimental).
 Physics and entry/Awareness remain separate; no runtime merge authority.
