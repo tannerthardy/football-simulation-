@@ -1,0 +1,304 @@
+{
+  "question": "Does attainable-motion spacing admission improve the reacting A044 approach while preserving A008 and Z/CB_S load?",
+  "cases": [
+    {
+      "id": "A044",
+      "until": 5.6
+    },
+    {
+      "id": "A008",
+      "until": 3.4
+    }
+  ],
+  "nativeExecutions": 2,
+  "baseline": "cb3823ee749a50ab51e4024b3cdc0dd4ce45341c",
+  "baselineDirectory": "data/reviews/current/mesh-command-attribution",
+  "batchWallCapMs": 15000,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "physicsAndFlags": "Unchanged accepted defaults; use baseline:run --candidate.",
+  "provenance": {
+    "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "node": "v22.23.3",
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "rows": [
+    {
+      "caseId": "A044",
+      "stoppedAt": 5.6,
+      "firstDifference": {
+        "t": 3.6,
+        "actors": [
+          0
+        ]
+      },
+      "compatibleBaselineWindowsEqual": false,
+      "teammateImpacts": [
+        {
+          "t": 2.7,
+          "i": 15,
+          "j": 21,
+          "impulse": 173.92153974265005,
+          "closing": 3.494879852572515
+        },
+        {
+          "t": 2.75,
+          "i": 15,
+          "j": 21,
+          "impulse": 0,
+          "closing": 0
+        }
+      ],
+      "catchAndTackle": [
+        {
+          "t": 2.9,
+          "type": "catch",
+          "a": 10,
+          "pos": {
+            "x": 40.12,
+            "y": 24.35
+          }
+        }
+      ],
+      "zCornerBlock": [
+        {
+          "t": 5,
+          "a": 9,
+          "b": 17,
+          "normalForce": 0,
+          "tangentForce": 203.1547567370476,
+          "blockerVelocity": {
+            "x": -1.9346402926437256,
+            "y": 5.912203221016224
+          },
+          "defenderVelocity": {
+            "x": 1.7614534597056906,
+            "y": 3.6560529550859497
+          },
+          "type": "run",
+          "actualContact": false
+        },
+        {
+          "t": 5.05,
+          "a": 9,
+          "b": 17,
+          "normalForce": 0,
+          "tangentForce": 202.06622708608415,
+          "blockerVelocity": {
+            "x": -1.6051909909048336,
+            "y": 5.569652216975818
+          },
+          "defenderVelocity": {
+            "x": 1.4418672746175871,
+            "y": 3.5236511516367734
+          },
+          "type": "run",
+          "actualContact": false
+        },
+        {
+          "t": 5.1,
+          "a": 9,
+          "b": 17,
+          "normalForce": 0,
+          "tangentForce": 205.9726543895656,
+          "blockerVelocity": {
+            "x": -1.2953370790188836,
+            "y": 5.203084204272933
+          },
+          "defenderVelocity": {
+            "x": 1.1324314581035924,
+            "y": 3.409679227422648
+          },
+          "type": "run",
+          "actualContact": false
+        },
+        {
+          "t": 5.15,
+          "a": 9,
+          "b": 17,
+          "normalForce": 0,
+          "tangentForce": 206.1096135762267,
+          "blockerVelocity": {
+            "x": -1.0046488139172502,
+            "y": 4.823722629797078
+          },
+          "defenderVelocity": {
+            "x": 0.8446814116601622,
+            "y": 3.2911516747170007
+          },
+          "type": "run",
+          "actualContact": false
+        },
+        {
+          "t": 5.2,
+          "a": 9,
+          "b": 17,
+          "normalForce": 0,
+          "tangentForce": 207.3997326721846,
+          "blockerVelocity": {
+            "x": -0.7286248655963148,
+            "y": 4.4375609471133695
+          },
+          "defenderVelocity": {
+            "x": 0.8978397302455133,
+            "y": 3.0805448347471804
+          },
+          "type": "run",
+          "actualContact": false
+        },
+        {
+          "t": 5.25,
+          "a": 9,
+          "b": 17,
+          "normalForce": 0,
+          "tangentForce": 206.83610933455728,
+          "blockerVelocity": {
+            "x": -0.4642998524566961,
+            "y": 4.049310028846915
+          },
+          "defenderVelocity": {
+            "x": 0.9638736712544427,
+            "y": 2.873471596466061
+          },
+          "type": "run",
+          "actualContact": false
+        },
+        {
+          "t": 5.3,
+          "a": 9,
+          "b": 17,
+          "normalForce": 0,
+          "tangentForce": 210.20982964427807,
+          "blockerVelocity": {
+            "x": -0.20826551238958332,
+            "y": 3.6590819808326365
+          },
+          "defenderVelocity": {
+            "x": 1.0382939352011422,
+            "y": 2.6677598458261302
+          },
+          "type": "run",
+          "actualContact": false
+        },
+        {
+          "t": 5.35,
+          "a": 9,
+          "b": 17,
+          "normalForce": 0,
+          "tangentForce": 208.58434890463835,
+          "blockerVelocity": {
+            "x": 0.04134579656849736,
+            "y": 3.2713267622374467
+          },
+          "defenderVelocity": {
+            "x": 1.1178454003585767,
+            "y": 2.4566922802894116
+          },
+          "type": "run",
+          "actualContact": false
+        }
+      ],
+      "elapsedMs": 1066.070946,
+      "sha256": "970fee2e4cc4bafbb86de90139e2715b90b8f0220dd1fcf712f866e894642910"
+    },
+    {
+      "caseId": "A008",
+      "stoppedAt": 3.4,
+      "firstDifference": null,
+      "compatibleBaselineWindowsEqual": true,
+      "teammateImpacts": [],
+      "catchAndTackle": [
+        {
+          "t": 2.45,
+          "type": "catch",
+          "a": 7,
+          "pos": {
+            "x": 38.5,
+            "y": 27.94
+          }
+        },
+        {
+          "t": 2.45,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 7,
+          "pos": {
+            "x": 39.24,
+            "y": 27.38
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3.35,
+          "type": "tackle",
+          "a": 19,
+          "b": 7,
+          "pos": {
+            "x": 39.25,
+            "y": 32.52
+          }
+        }
+      ],
+      "zCornerBlock": [],
+      "elapsedMs": 625.3177839999998,
+      "sha256": "3e8c62cc0b57ba69fd96d916b28c2d1ec3c7d25735b8d78e428041501ca89a7d"
+    }
+  ],
+  "elapsedMs": 1693.132655,
+  "cpuMs": 2987.065
+}

@@ -1,0 +1,1070 @@
+{
+  "candidate": "f27456b5f4cd7e5d628417662a77e4ede5b85bfc",
+  "acceptedBase": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "priorEvidence": "cb3823ee749a50ab51e4024b3cdc0dd4ce45341c",
+  "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571",
+  "decision": "Narrow admission correction is reviewable; A044 navigation benefit is unproved. Broader low-speed variant rejected.",
+  "broaderVariantFirstFork": {
+    "tick": 0.3,
+    "actor": 7,
+    "stage": "spacing",
+    "raw": {
+      "vel": {
+        "x": 6.699933663691162,
+        "y": 4.322537847542677
+      },
+      "cutSkill": 1.1387755102040817
+    },
+    "old": {
+      "vel": {
+        "x": 6.699933663691162,
+        "y": 4.322537847542677
+      },
+      "cutSkill": 1.1387755102040817
+    },
+    "broadVariant": {
+      "vel": {
+        "x": 0,
+        "y": 0
+      },
+      "cutSkill": 1.1387755102040817
+    },
+    "body": {
+      "pos": {
+        "x": 34.46125379136856,
+        "y": 22.806185241743165
+      },
+      "vel": {
+        "x": 0.8015881869330813,
+        "y": 0.5171536689890797
+      },
+      "facing": 0.5459750883073199,
+      "energy": 0.9983890448380344,
+      "profile": {
+        "vmax": 9.337750716565843,
+        "tau": 1.202322925674148,
+        "brake": 6.829478458049885,
+        "lateral": 6.880574829931975,
+        "turnRate": 9.564444444444444,
+        "backpedal": 0.5306122448979592,
+        "shuffle": 0.5384000000000001,
+        "massKg": 109.31576117,
+        "heightYd": 2.1666666666666665,
+        "radius": 0.29545454545454547,
+        "reach": 1.0456944444444445,
+        "maxCatchHeight": 3.6416666666666675,
+        "reactReach": 3.166666666666667,
+        "reactionTime": 0.20236734693877553,
+        "power": 100.56492294164643,
+        "balance": 0.25510204081632654,
+        "bend": 0.6210204081632654,
+        "stepSpeed": 3.7292834467120177,
+        "getUp": 0.8764444444444445
+      },
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.19974809912100894,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 0,
+          "y": 0
+        },
+        "felt": {
+          "x": 0,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": 5.07020110238492,
+          "y": 3.2710974854095562
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "spin": 6.281469822316819,
+      "squeeze": 0,
+      "sprintLoad": 0,
+      "squeezeHeading": 0.5729661428887055
+    },
+    "consumedPeers": [
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 0,
+        "seen": {
+          "pos": {
+            "x": 30,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 0,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": true
+        },
+        "used": {
+          "pos": {
+            "x": 30,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 0,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": true
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 1,
+        "seen": {
+          "pos": {
+            "x": 34.46015441491671,
+            "y": 29.383157740655815
+          },
+          "vel": {
+            "x": 0.03723955082220318,
+            "y": 0.7981029667882679
+          },
+          "stance": "high",
+          "facing": 0.9423967158162335,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 34.46015441491671,
+            "y": 29.383157740655815
+          },
+          "vel": {
+            "x": 0.03723955082220318,
+            "y": 0.7981029667882679
+          },
+          "stance": "high",
+          "facing": 0.9423967158162335,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 2,
+        "seen": {
+          "pos": {
+            "x": 34.56974243602041,
+            "y": 24.004794030465625
+          },
+          "vel": {
+            "x": 0.8178798335479851,
+            "y": -0.38680363008342905
+          },
+          "stance": "high",
+          "facing": -0.668487660899773,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 34.56974243602041,
+            "y": 24.004794030465625
+          },
+          "vel": {
+            "x": 0.8178798335479851,
+            "y": -0.38680363008342905
+          },
+          "stance": "high",
+          "facing": -0.668487660899773,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 3,
+        "seen": {
+          "pos": {
+            "x": 34.373570786864164,
+            "y": 26.625588580090007
+          },
+          "vel": {
+            "x": -0.4658815717387134,
+            "y": -0.2503954018778217
+          },
+          "stance": "high",
+          "facing": -0.38068415410810064,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 34.373570786864164,
+            "y": 26.625588580090007
+          },
+          "vel": {
+            "x": -0.4658815717387134,
+            "y": -0.2503954018778217
+          },
+          "stance": "high",
+          "facing": -0.38068415410810064,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 4,
+        "seen": {
+          "pos": {
+            "x": 34.371583378721304,
+            "y": 27.96626900669277
+          },
+          "vel": {
+            "x": -0.4704818458285287,
+            "y": -0.002385869162436989
+          },
+          "stance": "high",
+          "facing": 0.6515159209943587,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 34.371583378721304,
+            "y": 27.96626900669277
+          },
+          "vel": {
+            "x": -0.4704818458285287,
+            "y": -0.002385869162436989
+          },
+          "stance": "high",
+          "facing": 0.6515159209943587,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 5,
+        "seen": {
+          "pos": {
+            "x": 34.37877188881457,
+            "y": 25.366666666666667
+          },
+          "vel": {
+            "x": -0.46210384074909305,
+            "y": 0
+          },
+          "stance": "high",
+          "facing": 0,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 34.37877188881457,
+            "y": 25.366666666666667
+          },
+          "vel": {
+            "x": -0.46210384074909305,
+            "y": 0
+          },
+          "stance": "high",
+          "facing": 0,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 6,
+        "seen": {
+          "pos": {
+            "x": 29.881886145375205,
+            "y": 28.355192229234458
+          },
+          "vel": {
+            "x": 0.6475249838553115,
+            "y": 0.7000270095733074
+          },
+          "stance": null,
+          "facing": 0.7653697704433056,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 29.881886145375205,
+            "y": 28.355192229234458
+          },
+          "vel": {
+            "x": 0.6475249838553115,
+            "y": 0.7000270095733074
+          },
+          "stance": null,
+          "facing": 0.7653697704433056,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 8,
+        "seen": {
+          "pos": {
+            "x": 34.622554379436146,
+            "y": 44.69569549876703
+          },
+          "vel": {
+            "x": 1.4583594949594871,
+            "y": 0.19022080369028188
+          },
+          "stance": null,
+          "facing": 0.13780894572815705,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 34.622554379436146,
+            "y": 44.69569549876703
+          },
+          "vel": {
+            "x": 1.4583594949594871,
+            "y": 0.19022080369028188
+          },
+          "stance": null,
+          "facing": 0.13780894572815705,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 9,
+        "seen": {
+          "pos": {
+            "x": 33.99543113538665,
+            "y": 8.666666666666668
+          },
+          "vel": {
+            "x": 1.2836781441030753,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 0,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 33.99543113538665,
+            "y": 8.666666666666668
+          },
+          "vel": {
+            "x": 1.2836781441030753,
+            "y": 0
+          },
+          "stance": null,
+          "facing": 0,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      {
+        "t": 0.3,
+        "actor": 7,
+        "behavior": "route",
+        "stage": "spacing-picture",
+        "peer": 10,
+        "seen": {
+          "pos": {
+            "x": 33.9839323787732,
+            "y": 35.179079819631795
+          },
+          "vel": {
+            "x": 1.2042456708041231,
+            "y": -0.5734503194307131
+          },
+          "stance": null,
+          "facing": -0.6807633461937042,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "used": {
+          "pos": {
+            "x": 33.9839323787732,
+            "y": 35.179079819631795
+          },
+          "vel": {
+            "x": 1.2042456708041231,
+            "y": -0.5734503194307131
+          },
+          "stance": null,
+          "facing": -0.6807633461937042,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      }
+    ]
+  },
+  "comparisons": [
+    {
+      "caseId": "A044",
+      "comparedFrames": 73,
+      "actorDifferenceClocks": {
+        "0": [
+          3.6,
+          3.65,
+          3.7,
+          3.75,
+          3.8,
+          3.85,
+          3.9,
+          3.95,
+          4,
+          4.05,
+          4.1,
+          4.15,
+          4.2,
+          4.25,
+          4.3,
+          4.35,
+          4.4,
+          4.45,
+          4.5,
+          4.55,
+          4.6,
+          4.65,
+          4.7,
+          4.75,
+          4.8,
+          4.85,
+          4.9,
+          4.95,
+          5,
+          5.05,
+          5.1,
+          5.15,
+          5.2,
+          5.25,
+          5.3,
+          5.35,
+          5.4,
+          5.45,
+          5.5,
+          5.55
+        ],
+        "1": [
+          4.1,
+          4.15,
+          4.2,
+          4.25,
+          4.3,
+          4.35,
+          4.4,
+          4.45,
+          4.5,
+          4.55,
+          4.6,
+          4.65,
+          4.7,
+          4.75,
+          4.8,
+          4.85,
+          4.9,
+          4.95,
+          5,
+          5.05,
+          5.1,
+          5.15,
+          5.2,
+          5.25,
+          5.3,
+          5.35,
+          5.4,
+          5.45,
+          5.5,
+          5.55
+        ],
+        "3": [
+          4.25,
+          4.3,
+          4.35,
+          4.4,
+          4.45,
+          4.5,
+          4.55,
+          4.6,
+          4.65,
+          4.7,
+          4.75,
+          4.8,
+          4.85,
+          4.9,
+          4.95,
+          5,
+          5.05,
+          5.1,
+          5.15,
+          5.2,
+          5.25,
+          5.3,
+          5.35,
+          5.4,
+          5.45,
+          5.5,
+          5.55
+        ],
+        "14": [
+          4.25,
+          4.3,
+          4.35,
+          4.4,
+          4.45,
+          4.5,
+          4.55,
+          4.6,
+          4.65,
+          4.7,
+          4.75,
+          4.8,
+          4.85,
+          4.9,
+          4.95,
+          5,
+          5.05,
+          5.1,
+          5.15,
+          5.2,
+          5.25,
+          5.3,
+          5.35,
+          5.4,
+          5.45,
+          5.5,
+          5.55
+        ],
+        "5": [
+          4.4,
+          4.45,
+          4.5,
+          4.55,
+          4.6,
+          4.65,
+          4.7,
+          4.75,
+          4.8,
+          4.85,
+          4.9,
+          4.95,
+          5,
+          5.05,
+          5.1,
+          5.15,
+          5.2,
+          5.25,
+          5.3,
+          5.35,
+          5.4,
+          5.45,
+          5.5,
+          5.55
+        ],
+        "15": [
+          4.65,
+          4.7,
+          4.75,
+          4.8,
+          4.85,
+          4.9,
+          4.95,
+          5,
+          5.05,
+          5.1,
+          5.15,
+          5.2,
+          5.25,
+          5.3,
+          5.35,
+          5.4,
+          5.45,
+          5.5,
+          5.55
+        ],
+        "7": [
+          4.75,
+          4.8,
+          4.85,
+          4.9,
+          4.95,
+          5,
+          5.05,
+          5.1,
+          5.15,
+          5.2,
+          5.25,
+          5.3,
+          5.35,
+          5.4,
+          5.45,
+          5.5,
+          5.55
+        ]
+      },
+      "eventsExactlyEqual": false,
+      "mainRngExactlyEqual": true,
+      "zCornerLoad": [
+        {
+          "tick": 5,
+          "normal": 0,
+          "tangent": 203.1547567370476,
+          "exact": true
+        },
+        {
+          "tick": 5.05,
+          "normal": 0,
+          "tangent": 202.06622708608415,
+          "exact": true
+        },
+        {
+          "tick": 5.1,
+          "normal": 0,
+          "tangent": 205.9726543895656,
+          "exact": true
+        },
+        {
+          "tick": 5.15,
+          "normal": 0,
+          "tangent": 206.1096135762267,
+          "exact": true
+        },
+        {
+          "tick": 5.2,
+          "normal": 0,
+          "tangent": 207.3997326721846,
+          "exact": true
+        },
+        {
+          "tick": 5.25,
+          "normal": 0,
+          "tangent": 206.83610933455728,
+          "exact": true
+        },
+        {
+          "tick": 5.3,
+          "normal": 0,
+          "tangent": 210.20982964427807,
+          "exact": true
+        },
+        {
+          "tick": 5.35,
+          "normal": 0,
+          "tangent": 208.58434890463835,
+          "exact": true
+        }
+      ],
+      "summary": {
+        "caseId": "A044",
+        "stoppedAt": 5.6,
+        "firstDifference": {
+          "t": 3.6,
+          "actors": [
+            0
+          ]
+        },
+        "compatibleBaselineWindowsEqual": false,
+        "teammateImpacts": [
+          {
+            "t": 2.7,
+            "i": 15,
+            "j": 21,
+            "impulse": 173.92153974265005,
+            "closing": 3.494879852572515
+          },
+          {
+            "t": 2.75,
+            "i": 15,
+            "j": 21,
+            "impulse": 0,
+            "closing": 0
+          }
+        ],
+        "catchAndTackle": [
+          {
+            "t": 2.9,
+            "type": "catch",
+            "a": 10,
+            "pos": {
+              "x": 40.12,
+              "y": 24.35
+            }
+          }
+        ],
+        "zCornerBlock": [
+          {
+            "t": 5,
+            "a": 9,
+            "b": 17,
+            "normalForce": 0,
+            "tangentForce": 203.1547567370476,
+            "blockerVelocity": {
+              "x": -1.9346402926437256,
+              "y": 5.912203221016224
+            },
+            "defenderVelocity": {
+              "x": 1.7614534597056906,
+              "y": 3.6560529550859497
+            },
+            "type": "run",
+            "actualContact": false
+          },
+          {
+            "t": 5.05,
+            "a": 9,
+            "b": 17,
+            "normalForce": 0,
+            "tangentForce": 202.06622708608415,
+            "blockerVelocity": {
+              "x": -1.6051909909048336,
+              "y": 5.569652216975818
+            },
+            "defenderVelocity": {
+              "x": 1.4418672746175871,
+              "y": 3.5236511516367734
+            },
+            "type": "run",
+            "actualContact": false
+          },
+          {
+            "t": 5.1,
+            "a": 9,
+            "b": 17,
+            "normalForce": 0,
+            "tangentForce": 205.9726543895656,
+            "blockerVelocity": {
+              "x": -1.2953370790188836,
+              "y": 5.203084204272933
+            },
+            "defenderVelocity": {
+              "x": 1.1324314581035924,
+              "y": 3.409679227422648
+            },
+            "type": "run",
+            "actualContact": false
+          },
+          {
+            "t": 5.15,
+            "a": 9,
+            "b": 17,
+            "normalForce": 0,
+            "tangentForce": 206.1096135762267,
+            "blockerVelocity": {
+              "x": -1.0046488139172502,
+              "y": 4.823722629797078
+            },
+            "defenderVelocity": {
+              "x": 0.8446814116601622,
+              "y": 3.2911516747170007
+            },
+            "type": "run",
+            "actualContact": false
+          },
+          {
+            "t": 5.2,
+            "a": 9,
+            "b": 17,
+            "normalForce": 0,
+            "tangentForce": 207.3997326721846,
+            "blockerVelocity": {
+              "x": -0.7286248655963148,
+              "y": 4.4375609471133695
+            },
+            "defenderVelocity": {
+              "x": 0.8978397302455133,
+              "y": 3.0805448347471804
+            },
+            "type": "run",
+            "actualContact": false
+          },
+          {
+            "t": 5.25,
+            "a": 9,
+            "b": 17,
+            "normalForce": 0,
+            "tangentForce": 206.83610933455728,
+            "blockerVelocity": {
+              "x": -0.4642998524566961,
+              "y": 4.049310028846915
+            },
+            "defenderVelocity": {
+              "x": 0.9638736712544427,
+              "y": 2.873471596466061
+            },
+            "type": "run",
+            "actualContact": false
+          },
+          {
+            "t": 5.3,
+            "a": 9,
+            "b": 17,
+            "normalForce": 0,
+            "tangentForce": 210.20982964427807,
+            "blockerVelocity": {
+              "x": -0.20826551238958332,
+              "y": 3.6590819808326365
+            },
+            "defenderVelocity": {
+              "x": 1.0382939352011422,
+              "y": 2.6677598458261302
+            },
+            "type": "run",
+            "actualContact": false
+          },
+          {
+            "t": 5.35,
+            "a": 9,
+            "b": 17,
+            "normalForce": 0,
+            "tangentForce": 208.58434890463835,
+            "blockerVelocity": {
+              "x": 0.04134579656849736,
+              "y": 3.2713267622374467
+            },
+            "defenderVelocity": {
+              "x": 1.1178454003585767,
+              "y": 2.4566922802894116
+            },
+            "type": "run",
+            "actualContact": false
+          }
+        ],
+        "elapsedMs": 1066.070946,
+        "sha256": "970fee2e4cc4bafbb86de90139e2715b90b8f0220dd1fcf712f866e894642910"
+      }
+    },
+    {
+      "caseId": "A008",
+      "comparedFrames": 32,
+      "actorDifferenceClocks": {},
+      "eventsExactlyEqual": true,
+      "mainRngExactlyEqual": true,
+      "zCornerLoad": [],
+      "summary": {
+        "caseId": "A008",
+        "stoppedAt": 3.4,
+        "firstDifference": null,
+        "compatibleBaselineWindowsEqual": true,
+        "teammateImpacts": [],
+        "catchAndTackle": [
+          {
+            "t": 2.45,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 38.5,
+              "y": 27.94
+            }
+          },
+          {
+            "t": 2.45,
+            "type": "tackle_wrap",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 39.24,
+              "y": 27.38
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.35,
+            "type": "tackle",
+            "a": 19,
+            "b": 7,
+            "pos": {
+              "x": 39.25,
+              "y": 32.52
+            }
+          }
+        ],
+        "zCornerBlock": [],
+        "elapsedMs": 625.3177839999998,
+        "sha256": "3e8c62cc0b57ba69fd96d916b28c2d1ec3c7d25735b8d78e428041501ca89a7d"
+      }
+    }
+  ],
+  "nativeExecutions": 5,
+  "maxNativeClock": 5.6,
+  "newRosters": 0,
+  "fullGames": 0,
+  "receipts": [
+    {
+      "file": "before-mechanism.json",
+      "sourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b",
+      "exitCode": 1,
+      "seconds": 1.836699713
+    },
+    {
+      "file": "final-focused.json",
+      "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571",
+      "exitCode": 0,
+      "seconds": 1.854971935
+    },
+    {
+      "file": "focused-pass.json",
+      "sourceSha256": "60f5627fe4939741349e145c924e3d4fba975b1f44371d5483e26b7784c9fcb3",
+      "exitCode": 0,
+      "seconds": 1.804517785
+    },
+    {
+      "file": "mechanism-tests.json",
+      "sourceSha256": "60f5627fe4939741349e145c924e3d4fba975b1f44371d5483e26b7784c9fcb3",
+      "exitCode": 1,
+      "seconds": 1.831610134
+    },
+    {
+      "file": "narrow-native-receipt.json",
+      "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571",
+      "exitCode": 0,
+      "seconds": 2.000681808
+    },
+    {
+      "file": "narrow-tests.json",
+      "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571",
+      "exitCode": 0,
+      "seconds": 1.803805969
+    },
+    {
+      "file": "native-receipt.json",
+      "sourceSha256": "60f5627fe4939741349e145c924e3d4fba975b1f44371d5483e26b7784c9fcb3",
+      "exitCode": 0,
+      "seconds": 2.133025556
+    },
+    {
+      "file": "reference-mechanism.json",
+      "sourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b",
+      "exitCode": 1,
+      "seconds": 1.64186616
+    },
+    {
+      "file": "reference-opening-receipt.json",
+      "sourceSha256": "426135d5e19ea013f73b99244d33fbd64bfed6ba426d0704e5eb561234dc0d6b",
+      "exitCode": 0,
+      "seconds": 0.9355505810000001
+    },
+    {
+      "file": "typecheck.json",
+      "sourceSha256": "6f7d2e7d51ab3aa32accfb03c408d8665ab84eb27a4b9e874f43a8ec3b6a4571",
+      "exitCode": 0,
+      "seconds": 11.312733294
+    }
+  ],
+  "launcherSeconds": 27.155462935,
+  "nativeLauncherSeconds": 5.069257945,
+  "files": {
+    "narrow-native-receipt.json": "824ac06a49c80bc4171439405191911833e83b0318d6a08d6c5742eeb5fe4735",
+    "before-mechanism.json": "32e0450225a7891a54544a10a1228e44eea89b1087f631555ca78fdfa1aedef6",
+    "typecheck.json": "8d48f3177552af645249a6be40fbb26255fbe096a6d549aa2430b0b7d91b690e",
+    "mechanism-tests.json": "6aadea5da39f56d1111c5ea528b4b6e3945f1757290954998990b0114c2f3cdd",
+    "focused-pass.json": "e055027e7e4ec9e7e4412d70241066b61b16c1c953192c00d25921d641e9bdba",
+    "portable.patch": "929c3b1a424173de2989c2c63c11f7a910adbfefa8c78ea824ab1ca664ea4cc5",
+    "final-focused.json": "3f8fe5a07a213357701502ce8604ee2297d58b66e411a4297edece59b00326e9",
+    "rejected-low-speed.patch": "81152539787cd2059ab463f6d64fb28a05838cbc994fee330f2151b8c0cfa978",
+    "reference-opening-receipt.json": "de5c9d456c5596dda97c7f786b154da07c71b0082cbbe32a3fd6d96359aabb16",
+    "narrow-tests.json": "b8d2d2464541721c6d01b6223c3c3d2374dc010cf320fb7a7a2a17070494fbab",
+    "reference-mechanism.json": "156f08c9c542aeaa131b13c0a79466d19e1930a48a130f824a0b34f29d491322",
+    "native-receipt.json": "80cefd67c5b541a3878b5478efd3b826b3e54d2f39726acc6ef3dc32d0523d6a",
+    "native-v2/plan.json": "555e287aac214324af0f2f53d71459e6bbbb829062f8ed9f7427ffb21dbabc5f",
+    "native-v2/A008.json.gz": "3e8c62cc0b57ba69fd96d916b28c2d1ec3c7d25735b8d78e428041501ca89a7d",
+    "native-v2/summary.json": "880bd75d29f1d8f3f994decd5c1a5b86150fb79a6938dde339b722d32836376f",
+    "native-v2/A044.json.gz": "970fee2e4cc4bafbb86de90139e2715b90b8f0220dd1fcf712f866e894642910",
+    "native-v1/plan.json": "6e29d681f3e10b8fa5b4a8d8fabe114245cba8555def573abbbd30d6360fbfe2",
+    "native-v1/A008.json.gz": "b25f5c763723c299233a20bcf06dbc828dbd3e1a6736c1af0306df0611f4eebc",
+    "native-v1/summary.json": "4be0bd1681a7503262bd9af389ebb690260d580cb5c0d211492ac9cf8a8213e8",
+    "native-v1/A044.json.gz": "a5ab8ad832a5ec3a6bf98ae317fc26c45fa232a2580adf1dbf146ace61182352",
+    "reference-opening/plan.json": "29cf338cd9dbb73bd295d833356509c4115fff671db407345e0242db564cc636",
+    "reference-opening/summary.json": "07abc1ada3e3cba22e3ff8ff06cb56f10dc166366bc6a3aa78b3a94ad9992371",
+    "reference-opening/A044.json.gz": "40bdb18e5426691d4ed6658328be9238ed537d8506f459893b81094194ebbe24"
+  }
+}

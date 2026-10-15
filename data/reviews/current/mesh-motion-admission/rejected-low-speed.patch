@@ -1,0 +1,19 @@
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -58,13 +58,13 @@
+  * not a contact solve or knowledge of their next decisions. Replan next tick.
+  */
+ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+-  const s=a.body.support,speed=Math.hypot(a.vel.x,a.vel.y);
+-  if(!context||!Number.isFinite(context.now)||speed<2||a.isDown(context.now)
++  const s=a.body.support;
++  if(!context||!Number.isFinite(context.now)||a.isDown(context.now)
+     ||a.engagement||context.constrained?.has(a.body)||original.free||original.dive||original.lunge
+     ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
+     ||(original.push??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike
+     ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return original;
+-  // A nearly aligned request does not remove momentum.
++  // A nearly aligned request, or a low speed, does not remove momentum.
+   // Admit by the attainable tube below, then evaluate the actual held-command
+   // movement rather than assuming the body immediately adopts its request.
+   // In an empty World, every COM acceleration is bounded by traction/mass

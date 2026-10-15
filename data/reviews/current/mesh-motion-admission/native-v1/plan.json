@@ -1,0 +1,80 @@
+{
+  "question": "Does attainable-motion spacing admission improve the reacting A044 approach while preserving A008 and Z/CB_S load?",
+  "cases": [
+    {
+      "id": "A044",
+      "until": 5.6
+    },
+    {
+      "id": "A008",
+      "until": 3.4
+    }
+  ],
+  "nativeExecutions": 2,
+  "baseline": "cb3823ee749a50ab51e4024b3cdc0dd4ce45341c",
+  "baselineDirectory": "data/reviews/current/mesh-command-attribution",
+  "batchWallCapMs": 15000,
+  "fullGames": 0,
+  "generatedRosters": 0,
+  "physicsAndFlags": "Unchanged accepted defaults; use baseline:run --candidate.",
+  "provenance": {
+    "sourceSha256": "60f5627fe4939741349e145c924e3d4fba975b1f44371d5483e26b7784c9fcb3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "node": "v22.23.3",
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  }
+}

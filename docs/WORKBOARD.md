@@ -830,3 +830,24 @@ behavior. Catching wrapper/keyed-fit and Run PassProtector scopes are separate;
 #76 stays frozen and broad RB-jam tuning stays deferred. Three focused observer
 checks/four neutral pairs/final typecheck pass;20 short native executions,
 zero games/new rosters, no shared suite. Integration owns review/adoption.
+
+## Do-It-All #81 attainable-motion continuation — 2026-10-15
+
+Continue codex/mesh-command-attribution from #81 cb3823e on verified accepted
+90edc525 (queue255d1c4). Own spacing.ts gatherForTurn eligibility/release,
+focused spacing tests and the A044/A008 diagnostic. Replace requested-turn
+admission using existing achieved-motion forecasts and acquired pictures; no
+radial/headway or #76 carrier-override import. Run keeps RunBlocker.leaveCombination
+and climbRoute; Catching keeps coverage wrapper/keyed fits. Coordination posted
+on #81/#76/#75 before editing. First prove same-state residual-motion mechanism,
+then short reacting A044/A008 and Z/CB_S physical load. No coverage, information,
+physics, ratings or broad RB-jam expansion; Integration owns combined checks.
+
+#81 continuation result: code f27456b; requested-turn shortcut removed in favor
+of existing attainable tube/World preview. Existing low-speed scope retained after
+a rejected broader trial's first Y-release fork.13 focused checks/typecheck pass;
+A008 useful defense and A044 actual Z/CB_S loads exact, but A044's collision remains.
+[Report](reviews/mesh-motion-admission-2026-10-15.md). Five short native executions,
+27.155 launcher seconds including failures. Minimal three-file patch applies to
+accepted90edc525; no #76 import. Review the narrow mechanical correction separately
+from unproved navigation benefit. Integration owns final review/combined checks.
