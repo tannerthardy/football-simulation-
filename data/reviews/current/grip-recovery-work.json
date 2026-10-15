@@ -1,0 +1,1481 @@
+{
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "runtimeRevision": "3f71feae59f17cb7e91ad86e512e1d90a966c6f3",
+  "runtimeSource": "c03b45d5b285e0cd364ad1bdd4f8b5cbe859508fdb8977ce6ea25cd20d96d6cd",
+  "meta": {
+    "commit": "3f71feae59f17cb7e91ad86e512e1d90a966c6f3",
+    "source": "c03b45d5b285e0cd364ad1bdd4f8b5cbe859508fdb8977ce6ea25cd20d96d6cd",
+    "hashes": {
+      "src/physics/world.ts": "a16f5a8602e1c18c79086fd1636ba8b2b10de4952cb201fc7b33a3536f1dae9d",
+      "src/physics/corrective-grip.ts": "f08d54cd9b7457ed0706b5f704a6b7239ff6ff7cf5753ba7bb2577df5e3ab3d7",
+      "scripts/diag/physics/grip-native-span-model.ts": "b04f7c67074b559a9c0c4345a211ae51501cb8f94e61a58b63ba378f56bf09ec",
+      "scripts/diag/physics/grip-native-span-interval.ts": "e79a1c8a2481998ba0df1fedeb2a6be5d34a58302a3084397af1e2f56ac8e23e",
+      "scripts/diag/physics/grip-native-span-reference.ts": "dbc10e01e6b4b3cf738067cf224e242b870f149775f2da6725d25038136710bf",
+      "scripts/diag/physics/grip-recovery-input.ts": "8d43eba40f9404f68e84c3fadedd2acdad194d754fbd2c9252bc31c616e5bd25",
+      "scripts/diag/physics/grip-recovery-force.ts": "7aba27247f49a0e8a3bdd30cca1505710931be688e3dc24c540495d4fb0ccb49",
+      "scripts/diag/physics/grip-recovery-span.ts": "8eb70d72130d8cf3760eab67baa627165b8d7a20325a4575bad0dfc814c4b859",
+      "scripts/diag/physics/grip-recovery-evidence.ts": "cd562c47eac28eaf312a76f4fde930b44cb31421a29125a03cc4d7dd6b043056",
+      "test/grip-recovery-work.test.ts": "0830c37ca3ab92ee8188d5e12d7275b90b093aa9b7b2540ec1b9ae4a273faa38",
+      "config/grip-native-support-packets.json": "96c96ec4c7c414b2d72c320346b60c721a8593b1a7edec85284b7e80061fe358"
+    },
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "node": "v22.23.3",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "timestamp": "2026-10-15T02:05:30.452Z",
+    "parent": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+    "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "settings": {
+      "handContact": "patch",
+      "gripTiming": "midpoint",
+      "constraintWork": "per-solve",
+      "materialTransport": "owned",
+      "correctiveGrip": "explicit only",
+      "nativeSubsteps": 96
+    },
+    "costBudgetMilliseconds": {
+      "median": 2,
+      "p95": 5,
+      "fallbackScreen": 10
+    },
+    "accuracyAllowance": 0.0625
+  },
+  "mechanical": [
+    {
+      "history": "previous",
+      "phase": 0,
+      "zero": false,
+      "error": 0.00013258523261647524,
+      "convergence": 4.4867737897900866e-05,
+      "motorWork": 0.13652705197122145,
+      "correctionWork": 0.15586659810267967,
+      "viscousWork": -0.019339546131458326,
+      "positiveMotorWork": 0.13652705197122145,
+      "budget": 0.34922771138049935,
+      "evaluations": 15,
+      "energyResidual": -4.596323321948148e-14
+    },
+    {
+      "history": "previous",
+      "phase": 0,
+      "zero": true,
+      "error": 0.0002389657253142437,
+      "convergence": 5.972380756925966e-05,
+      "motorWork": -0.8151671363928262,
+      "correctionWork": 0,
+      "viscousWork": -0.8151671363928253,
+      "positiveMotorWork": 0,
+      "budget": 0,
+      "evaluations": 15,
+      "energyResidual": 8.215650382226158e-15
+    },
+    {
+      "history": "previous",
+      "phase": 23,
+      "zero": false,
+      "error": 0.00026448975258092414,
+      "convergence": 1.8805749242502805e-05,
+      "motorWork": 0.13743663389274005,
+      "correctionWork": 0.15740241646112718,
+      "viscousWork": -0.01996578256838727,
+      "positiveMotorWork": 0.13743663389274005,
+      "budget": 0.34526913715154645,
+      "evaluations": 15,
+      "energyResidual": 6.566969190657801e-13
+    },
+    {
+      "history": "previous",
+      "phase": 23,
+      "zero": true,
+      "error": 0.0012939184440739478,
+      "convergence": 1.5888218580782547e-05,
+      "motorWork": -0.8011264098918339,
+      "correctionWork": 0,
+      "viscousWork": -0.8011264098918348,
+      "positiveMotorWork": 0,
+      "budget": 0,
+      "evaluations": 15,
+      "energyResidual": 3.1361056825480693e-13
+    },
+    {
+      "history": "transition",
+      "phase": 0,
+      "zero": false,
+      "error": 0.0007194311623378951,
+      "convergence": 1.6008110949399966e-05,
+      "motorWork": 0.12506166868616547,
+      "correctionWork": 0.14069146186910236,
+      "viscousWork": -0.01562979318293679,
+      "positiveMotorWork": 0.12506166868616547,
+      "budget": 0.3524755142882895,
+      "evaluations": 15,
+      "energyResidual": -1.0491052471195417e-12
+    },
+    {
+      "history": "transition",
+      "phase": 0,
+      "zero": true,
+      "error": 0.0013142219976757937,
+      "convergence": 2.4360479098411633e-05,
+      "motorWork": -0.8558128925415747,
+      "correctionWork": 0,
+      "viscousWork": -0.8558128925415748,
+      "positiveMotorWork": 0,
+      "budget": 0,
+      "evaluations": 15,
+      "energyResidual": 5.985212325754219e-13
+    },
+    {
+      "history": "transition",
+      "phase": 23,
+      "zero": false,
+      "error": 0.000293004516695414,
+      "convergence": 1.228331614639238e-05,
+      "motorWork": -0.10548097012538474,
+      "correctionWork": -0.09762687879159779,
+      "viscousWork": -0.007854091333787012,
+      "positiveMotorWork": 0,
+      "budget": 0.3381644003910997,
+      "evaluations": 15,
+      "energyResidual": 4.775067571979283e-13
+    },
+    {
+      "history": "transition",
+      "phase": 23,
+      "zero": true,
+      "refused": "same existing shared cap boundary"
+    }
+  ],
+  "nativeLawLimit": [
+    {
+      "history": "previous",
+      "phase": 0,
+      "limits": [
+        {
+          "h": 1e-05,
+          "normal": 0,
+          "tangent": 243.43451282744925,
+          "target": 243.4930961310204,
+          "error": 0.05858330357114028,
+          "limited": 0,
+          "powerResidual": 0
+        },
+        {
+          "h": 1e-07,
+          "normal": 0,
+          "tangent": 243.49250842804287,
+          "target": 243.49309613102074,
+          "error": 0.0005877029778673659,
+          "limited": 0,
+          "powerResidual": 0
+        },
+        {
+          "h": 1e-09,
+          "normal": 0,
+          "tangent": 243.49309025376735,
+          "target": 243.49309613102074,
+          "error": 5.877253386188386e-06,
+          "limited": 0,
+          "powerResidual": 0
+        }
+      ]
+    },
+    {
+      "history": "previous",
+      "phase": 23,
+      "limits": [
+        {
+          "h": 1e-05,
+          "normal": 0,
+          "tangent": 247.61724245721868,
+          "target": 247.6847715596323,
+          "error": 0.06752910241362997,
+          "limited": 0,
+          "powerResidual": 0
+        },
+        {
+          "h": 1e-07,
+          "normal": 0,
+          "tangent": 247.6840940501918,
+          "target": 247.6847715596323,
+          "error": 0.0006775094405213622,
+          "limited": 0,
+          "powerResidual": 0
+        },
+        {
+          "h": 1e-09,
+          "normal": 0,
+          "tangent": 247.68476478433988,
+          "target": 247.6847715596323,
+          "error": 6.775292433758295e-06,
+          "limited": 0,
+          "powerResidual": 0
+        }
+      ]
+    },
+    {
+      "history": "transition",
+      "phase": 0,
+      "limits": [
+        {
+          "h": 1e-05,
+          "normal": 0,
+          "tangent": 244.10464611006594,
+          "target": 245.2709230824173,
+          "error": 1.166276972351369,
+          "limited": 0,
+          "powerResidual": -5.684341886080802e-14
+        },
+        {
+          "h": 1e-07,
+          "normal": 0,
+          "tangent": 245.25922758711727,
+          "target": 245.2709230824173,
+          "error": 0.011695495300045877,
+          "limited": 0,
+          "powerResidual": -5.684341886080802e-14
+        },
+        {
+          "h": 1e-09,
+          "normal": 0,
+          "tangent": 245.2708061241811,
+          "target": 245.27092308241762,
+          "error": 0.00011695823653212756,
+          "limited": 0,
+          "powerResidual": 5.684341886080802e-14
+        }
+      ]
+    },
+    {
+      "history": "transition",
+      "phase": 23,
+      "limits": [
+        {
+          "h": 1e-05,
+          "normal": 0,
+          "tangent": -154.1737092728782,
+          "target": -154.07008395084293,
+          "error": 0.10362532203527053,
+          "limited": 0,
+          "powerResidual": 2.842170943040401e-14
+        },
+        {
+          "h": 1e-07,
+          "normal": 0,
+          "tangent": -154.07112285302293,
+          "target": -154.07008395084293,
+          "error": 0.001038902179999468,
+          "limited": 0,
+          "powerResidual": 2.842170943040401e-14
+        },
+        {
+          "h": 1e-09,
+          "normal": 0,
+          "tangent": -154.07009434012411,
+          "target": -154.0700839508426,
+          "error": 1.0389281527523053e-05,
+          "limited": 0,
+          "powerResidual": 2.842170943040401e-14
+        }
+      ]
+    }
+  ],
+  "nativeLedger": [
+    {
+      "history": "previous",
+      "phase": 0,
+      "accounting": {
+        "bodyWork": 0.13360927361294306,
+        "motorWork": 0.13502125421216657,
+        "passiveWork": -0.0014119805992235364,
+        "reportedBody": 0.13360927361294306,
+        "reportedMotor": 0.1350212542121665,
+        "reportedPassive": -0.0014119805992234532,
+        "bodyLedgerResidual": 0,
+        "motorLedgerResidual": -5.551115123125783e-17,
+        "passiveLedgerResidual": 8.326672684688674e-17,
+        "kineticResidual": 1.5853984791647235e-13,
+        "normalDose": 0,
+        "tangentDose": 0.12546495916805028,
+        "reelDose": 0,
+        "dose": 0.12546495916805028,
+        "actualDose": 0.12546495916805028,
+        "doseResidual": 0,
+        "maximumCapExcess": 0,
+        "separateMotorWork": 0.13502125421216657,
+        "commonMotorCrossWork": 0,
+        "zeroLoadSteps": 0,
+        "moment": 0,
+        "startSpan": [
+          {
+            "inverseMass": 0.018803945852731645,
+            "stiffness": 75581.10648092549,
+            "damping": 3207.7617868784473,
+            "distance": 0.16425508094776625,
+            "extension": 0,
+            "energy": 0
+          }
+        ],
+        "endSpan": [
+          {
+            "inverseMass": 0.018803945852731645,
+            "stiffness": 75581.10648092549,
+            "damping": 3207.7617868784473,
+            "distance": 0.16373280433984866,
+            "extension": 0,
+            "energy": 0
+          }
+        ],
+        "spanEnergyChange": 0,
+        "energyBalance": -0.0014119805990649714
+      }
+    },
+    {
+      "history": "previous",
+      "phase": 23,
+      "accounting": {
+        "bodyWork": 0.13436684411752697,
+        "motorWork": 0.13580585182349694,
+        "passiveWork": -0.001439007705969969,
+        "reportedBody": 0.13436684411752697,
+        "reportedMotor": 0.13580585182349703,
+        "reportedPassive": -0.0014390077059700246,
+        "bodyLedgerResidual": 0,
+        "motorLedgerResidual": 8.326672684688674e-17,
+        "passiveLedgerResidual": -5.551115123125783e-17,
+        "kineticResidual": 8.089084957418891e-13,
+        "normalDose": 0,
+        "tangentDose": 0.12744057976908052,
+        "reelDose": 0,
+        "dose": 0.12744057976908052,
+        "actualDose": 0.12744057976908074,
+        "doseResidual": 2.220446049250313e-16,
+        "maximumCapExcess": 0,
+        "separateMotorWork": 0.13580585182349694,
+        "commonMotorCrossWork": 0,
+        "zeroLoadSteps": 0,
+        "moment": 0,
+        "startSpan": [
+          {
+            "inverseMass": 0.018803945852731645,
+            "stiffness": 75581.10648092549,
+            "damping": 3207.7617868784473,
+            "distance": 0.15247498985540217,
+            "extension": 0,
+            "energy": 0
+          }
+        ],
+        "endSpan": [
+          {
+            "inverseMass": 0.018803945852731645,
+            "stiffness": 75581.10648092549,
+            "damping": 3207.7617868784473,
+            "distance": 0.15197394377099102,
+            "extension": 0,
+            "energy": 0
+          }
+        ],
+        "spanEnergyChange": 0,
+        "energyBalance": -0.0014390077051610606
+      }
+    },
+    {
+      "history": "transition",
+      "phase": 0,
+      "accounting": {
+        "bodyWork": 0.11098966819436785,
+        "motorWork": 0.1118767536248222,
+        "passiveWork": -0.0008870854304543864,
+        "reportedBody": 0.11098966819436785,
+        "reportedMotor": 0.11187675362482215,
+        "reportedPassive": -0.000887085430454317,
+        "bodyLedgerResidual": 0,
+        "motorLedgerResidual": -5.551115123125783e-17,
+        "passiveLedgerResidual": 6.938893903907228e-17,
+        "kineticResidual": 2.913641550250645e-13,
+        "normalDose": 0,
+        "tangentDose": 0.10008936808755005,
+        "reelDose": 0,
+        "dose": 0.10008936808755005,
+        "actualDose": 0.10008936808755005,
+        "doseResidual": 0,
+        "maximumCapExcess": 0,
+        "separateMotorWork": 0.1118767536248222,
+        "commonMotorCrossWork": 0,
+        "zeroLoadSteps": 0,
+        "moment": 0,
+        "startSpan": [
+          {
+            "inverseMass": 0.018803945852731645,
+            "stiffness": 75581.10648092549,
+            "damping": 3207.7617868784473,
+            "distance": 0.1678785422220857,
+            "extension": 0,
+            "energy": 0
+          }
+        ],
+        "endSpan": [
+          {
+            "inverseMass": 0.018803945852731645,
+            "stiffness": 75581.10648092549,
+            "damping": 3207.7617868784473,
+            "distance": 0.16737019664341382,
+            "extension": 0,
+            "energy": 0
+          }
+        ],
+        "spanEnergyChange": 0,
+        "energyBalance": -0.0008870854301629844
+      }
+    },
+    {
+      "history": "transition",
+      "phase": 23,
+      "accounting": {
+        "bodyWork": -0.10878150220964895,
+        "motorWork": -0.10818507051829644,
+        "passiveWork": -0.0005964316913525154,
+        "reportedBody": -0.10878150220964888,
+        "reportedMotor": -0.1081850705182964,
+        "reportedPassive": -0.0005964316913525157,
+        "bodyLedgerResidual": 6.938893903907228e-17,
+        "motorLedgerResidual": 4.163336342344337e-17,
+        "passiveLedgerResidual": -3.2526065174565133e-19,
+        "kineticResidual": -5.422745585903499e-13,
+        "normalDose": 0,
+        "tangentDose": 0.0827325714918332,
+        "reelDose": 0,
+        "dose": 0.0827325714918332,
+        "actualDose": 0.08273257149183322,
+        "doseResidual": 1.3877787807814457e-17,
+        "maximumCapExcess": 0,
+        "separateMotorWork": -0.10818507051829644,
+        "commonMotorCrossWork": 0,
+        "zeroLoadSteps": 0,
+        "moment": 0,
+        "startSpan": [
+          {
+            "inverseMass": 0.018803945852731645,
+            "stiffness": 75581.10648092549,
+            "damping": 3207.7617868784473,
+            "distance": 0.1572574074325587,
+            "extension": 0,
+            "energy": 0
+          }
+        ],
+        "endSpan": [
+          {
+            "inverseMass": 0.018803945852731645,
+            "stiffness": 75581.10648092549,
+            "damping": 3207.7617868784473,
+            "distance": 0.15683301115176004,
+            "extension": 0,
+            "energy": 0
+          }
+        ],
+        "spanEnergyChange": 0,
+        "energyBalance": -0.000596431691894786
+      }
+    }
+  ],
+  "continuation": [
+    {
+      "history": "previous",
+      "accuracy": {
+        "position": 8.533911106286719e-14,
+        "support": 2.996446189099401e-14,
+        "bodyWork": 3.3288927170360694e-12,
+        "motorWork": 3.3288927170360694e-12,
+        "worstInterval": 0.0013615591273542804
+      },
+      "convergence": {
+        "position": 1.464821375527116e-14,
+        "support": 7.853529047890725e-15,
+        "bodyWork": 8.828493491819245e-13,
+        "motorWork": 8.810729923425242e-13,
+        "worstInterval": 0.00038902214782865485
+      },
+      "variants": [
+        {
+          "n": -1,
+          "xi": {
+            "x": 0.6435565544647857,
+            "y": 0.007454110939719597
+          },
+          "refusals": []
+        },
+        {
+          "n": 0,
+          "audit": {
+            "accepted": 96,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 12.379495154323974,
+            "bodyWork": 13.090618286042767,
+            "motorWork": 13.090618286042767,
+            "armCost": 0,
+            "reelDose": 0
+          },
+          "xi": {
+            "x": 0.6435989485721558,
+            "y": 0.0073386072478512625
+          },
+          "refusals": []
+        },
+        {
+          "n": 1024,
+          "audit": {
+            "accepted": 96,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 12.379495154326039,
+            "bodyWork": 13.090618286046979,
+            "motorWork": 13.090618286046977,
+            "armCost": 0,
+            "reelDose": 0
+          },
+          "xi": {
+            "x": 0.6435989485721763,
+            "y": 0.007338607247842615
+          },
+          "refusals": []
+        },
+        {
+          "n": 2048,
+          "audit": {
+            "accepted": 96,
+            "fallbacks": 0,
+            "reasons": {},
+            "dose": 12.379495154325005,
+            "bodyWork": 13.090618286046096,
+            "motorWork": 13.090618286046096,
+            "armCost": 0,
+            "reelDose": 0
+          },
+          "xi": {
+            "x": 0.6435989485721829,
+            "y": 0.007338607247838455
+          },
+          "refusals": []
+        }
+      ]
+    },
+    {
+      "history": "transition",
+      "accuracy": {
+        "position": 2.1292584142104967e-13,
+        "support": 6.938219412806417e-14,
+        "bodyWork": 2.3651303138194635e-11,
+        "motorWork": 2.3649526781355235e-11,
+        "worstInterval": 0.006523337425790032
+      },
+      "convergence": {
+        "position": 1.2809491335957509e-14,
+        "support": 4.9324814950013295e-14,
+        "bodyWork": 7.894129794294713e-12,
+        "motorWork": 7.894573883504563e-12,
+        "worstInterval": 0.015425827282200542
+      },
+      "variants": [
+        {
+          "n": -1,
+          "xi": {
+            "x": 0.5732521713676497,
+            "y": -0.012518501567419996
+          },
+          "refusals": []
+        },
+        {
+          "n": 0,
+          "audit": {
+            "accepted": 95,
+            "fallbacks": 1,
+            "reasons": {
+              "solver:Native correction geometry event": 1
+            },
+            "dose": 3.934499117437658,
+            "bodyWork": -3.8972168360738424,
+            "motorWork": -3.897216836073842,
+            "armCost": 0,
+            "reelDose": 0
+          },
+          "xi": {
+            "x": 0.5732570298830464,
+            "y": -0.012434636920115882
+          },
+          "refusals": [
+            {
+              "time": 4.140104166666698,
+              "reason": "RangeError: Native correction geometry event"
+            }
+          ]
+        },
+        {
+          "n": 1024,
+          "audit": {
+            "accepted": 95,
+            "fallbacks": 1,
+            "reasons": {
+              "solver:Native correction geometry event": 1
+            },
+            "dose": 3.9344991174192545,
+            "bodyWork": -3.897216836042494,
+            "motorWork": -3.897216836042494,
+            "armCost": 0,
+            "reelDose": 0
+          },
+          "xi": {
+            "x": 0.5732570298831585,
+            "y": -0.012434636920080103
+          },
+          "refusals": [
+            {
+              "time": 4.140104166666698,
+              "reason": "RangeError: Native correction geometry event"
+            }
+          ]
+        },
+        {
+          "n": 2048,
+          "audit": {
+            "accepted": 95,
+            "fallbacks": 1,
+            "reasons": {
+              "solver:Native correction geometry event": 1
+            },
+            "dose": 3.934499117415572,
+            "bodyWork": -3.8972168360504478,
+            "motorWork": -3.8972168360504478,
+            "armCost": 0,
+            "reelDose": 0
+          },
+          "xi": {
+            "x": 0.5732570298831098,
+            "y": -0.012434636920087684
+          },
+          "refusals": [
+            {
+              "time": 4.140104166666698,
+              "reason": "RangeError: Native correction geometry event"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "cost": [
+    {
+      "run": "cost-a",
+      "meta": {
+        "commit": "3f71feae59f17cb7e91ad86e512e1d90a966c6f3",
+        "source": "c03b45d5b285e0cd364ad1bdd4f8b5cbe859508fdb8977ce6ea25cd20d96d6cd",
+        "hashes": {
+          "src/physics/world.ts": "a16f5a8602e1c18c79086fd1636ba8b2b10de4952cb201fc7b33a3536f1dae9d",
+          "src/physics/corrective-grip.ts": "f08d54cd9b7457ed0706b5f704a6b7239ff6ff7cf5753ba7bb2577df5e3ab3d7",
+          "scripts/diag/physics/grip-native-span-model.ts": "b04f7c67074b559a9c0c4345a211ae51501cb8f94e61a58b63ba378f56bf09ec",
+          "scripts/diag/physics/grip-native-span-interval.ts": "e79a1c8a2481998ba0df1fedeb2a6be5d34a58302a3084397af1e2f56ac8e23e",
+          "scripts/diag/physics/grip-native-span-reference.ts": "dbc10e01e6b4b3cf738067cf224e242b870f149775f2da6725d25038136710bf",
+          "scripts/diag/physics/grip-recovery-input.ts": "8d43eba40f9404f68e84c3fadedd2acdad194d754fbd2c9252bc31c616e5bd25",
+          "scripts/diag/physics/grip-recovery-force.ts": "7aba27247f49a0e8a3bdd30cca1505710931be688e3dc24c540495d4fb0ccb49",
+          "scripts/diag/physics/grip-recovery-span.ts": "8eb70d72130d8cf3760eab67baa627165b8d7a20325a4575bad0dfc814c4b859",
+          "scripts/diag/physics/grip-recovery-evidence.ts": "cd562c47eac28eaf312a76f4fde930b44cb31421a29125a03cc4d7dd6b043056",
+          "test/grip-recovery-work.test.ts": "0830c37ca3ab92ee8188d5e12d7275b90b093aa9b7b2540ec1b9ae4a273faa38",
+          "config/grip-native-support-packets.json": "96c96ec4c7c414b2d72c320346b60c721a8593b1a7edec85284b7e80061fe358"
+        },
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "node": "v22.23.3",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "timestamp": "2026-10-15T02:07:03.256Z",
+        "parent": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+        "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+        "settings": {
+          "handContact": "patch",
+          "gripTiming": "midpoint",
+          "constraintWork": "per-solve",
+          "materialTransport": "owned",
+          "correctiveGrip": "explicit only",
+          "nativeSubsteps": 96
+        },
+        "costBudgetMilliseconds": {
+          "median": 2,
+          "p95": 5,
+          "fallbackScreen": 10
+        },
+        "accuracyAllowance": 0.0625
+      },
+      "scope": "One native.520833ms interval in portable two-body World, not prior22-body clocks or game cost.",
+      "warm": 11,
+      "repeats": 101,
+      "rows": [
+        {
+          "history": "previous",
+          "phase": 0,
+          "prepare": 0,
+          "enabled": false,
+          "median": 0.05232900000009977,
+          "p95": 0.1732809999998608,
+          "p99": 0.443456999999853,
+          "maximum": 0.6990619999999126,
+          "pass": true
+        },
+        {
+          "history": "previous",
+          "phase": 0,
+          "prepare": 0,
+          "enabled": true,
+          "median": 0.09464200000002165,
+          "p95": 0.20683099999996557,
+          "p99": 0.2974869999998191,
+          "maximum": 0.3918489999996382,
+          "pass": true
+        },
+        {
+          "history": "previous",
+          "phase": 23,
+          "prepare": 0,
+          "enabled": false,
+          "median": 0.02542800000014722,
+          "p95": 0.06694100000004255,
+          "p99": 0.1384579999999005,
+          "maximum": 0.38182400000005146,
+          "pass": true
+        },
+        {
+          "history": "previous",
+          "phase": 23,
+          "prepare": 0,
+          "enabled": true,
+          "median": 0.08691099999987273,
+          "p95": 0.19216000000005806,
+          "p99": 0.5088960000000498,
+          "maximum": 0.6983600000000934,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 0,
+          "prepare": 0,
+          "enabled": false,
+          "median": 0.04471699999999146,
+          "p95": 0.13177799999994022,
+          "p99": 0.19929899999988265,
+          "maximum": 0.24786300000005212,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 0,
+          "prepare": 0,
+          "enabled": true,
+          "median": 0.08973499999956402,
+          "p95": 0.25965999999993983,
+          "p99": 0.5439890000002379,
+          "maximum": 0.7197530000003098,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 23,
+          "prepare": 0,
+          "enabled": false,
+          "median": 0.025208000000020547,
+          "p95": 0.07224899999982881,
+          "p99": 0.12072099999977581,
+          "maximum": 0.22143300000016097,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 23,
+          "prepare": 0,
+          "enabled": true,
+          "median": 0.09010600000010527,
+          "p95": 0.20422700000017358,
+          "p99": 0.3063110000000506,
+          "maximum": 0.36997600000017883,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 0,
+          "prepare": 77,
+          "enabled": false,
+          "median": 0.04235400000015943,
+          "p95": 0.13288999999986117,
+          "p99": 0.1588689999998678,
+          "maximum": 0.3251989999998841,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 0,
+          "prepare": 77,
+          "enabled": true,
+          "median": 0.16046200000005229,
+          "p95": 0.3119400000000496,
+          "p99": 0.4167970000000878,
+          "maximum": 0.4815939999998591,
+          "pass": true
+        }
+      ],
+      "samples": {
+        "path": "out/grip-recovery-work/cost-a.samples.json",
+        "sha256": "416a87336b29744616d0b96f34a191245e818b86d11662fb25a13fe5686c1df8"
+      }
+    },
+    {
+      "run": "cost-b",
+      "meta": {
+        "commit": "3f71feae59f17cb7e91ad86e512e1d90a966c6f3",
+        "source": "c03b45d5b285e0cd364ad1bdd4f8b5cbe859508fdb8977ce6ea25cd20d96d6cd",
+        "hashes": {
+          "src/physics/world.ts": "a16f5a8602e1c18c79086fd1636ba8b2b10de4952cb201fc7b33a3536f1dae9d",
+          "src/physics/corrective-grip.ts": "f08d54cd9b7457ed0706b5f704a6b7239ff6ff7cf5753ba7bb2577df5e3ab3d7",
+          "scripts/diag/physics/grip-native-span-model.ts": "b04f7c67074b559a9c0c4345a211ae51501cb8f94e61a58b63ba378f56bf09ec",
+          "scripts/diag/physics/grip-native-span-interval.ts": "e79a1c8a2481998ba0df1fedeb2a6be5d34a58302a3084397af1e2f56ac8e23e",
+          "scripts/diag/physics/grip-native-span-reference.ts": "dbc10e01e6b4b3cf738067cf224e242b870f149775f2da6725d25038136710bf",
+          "scripts/diag/physics/grip-recovery-input.ts": "8d43eba40f9404f68e84c3fadedd2acdad194d754fbd2c9252bc31c616e5bd25",
+          "scripts/diag/physics/grip-recovery-force.ts": "7aba27247f49a0e8a3bdd30cca1505710931be688e3dc24c540495d4fb0ccb49",
+          "scripts/diag/physics/grip-recovery-span.ts": "8eb70d72130d8cf3760eab67baa627165b8d7a20325a4575bad0dfc814c4b859",
+          "scripts/diag/physics/grip-recovery-evidence.ts": "cd562c47eac28eaf312a76f4fde930b44cb31421a29125a03cc4d7dd6b043056",
+          "test/grip-recovery-work.test.ts": "0830c37ca3ab92ee8188d5e12d7275b90b093aa9b7b2540ec1b9ae4a273faa38",
+          "config/grip-native-support-packets.json": "96c96ec4c7c414b2d72c320346b60c721a8593b1a7edec85284b7e80061fe358"
+        },
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "node": "v22.23.3",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "timestamp": "2026-10-15T02:07:41.236Z",
+        "parent": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+        "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+        "settings": {
+          "handContact": "patch",
+          "gripTiming": "midpoint",
+          "constraintWork": "per-solve",
+          "materialTransport": "owned",
+          "correctiveGrip": "explicit only",
+          "nativeSubsteps": 96
+        },
+        "costBudgetMilliseconds": {
+          "median": 2,
+          "p95": 5,
+          "fallbackScreen": 10
+        },
+        "accuracyAllowance": 0.0625
+      },
+      "scope": "One native.520833ms interval in portable two-body World, not prior22-body clocks or game cost.",
+      "warm": 11,
+      "repeats": 101,
+      "rows": [
+        {
+          "history": "previous",
+          "phase": 0,
+          "prepare": 0,
+          "enabled": false,
+          "median": 0.04894400000011956,
+          "p95": 0.12045100000000275,
+          "p99": 0.1505369999999857,
+          "maximum": 0.22189299999990908,
+          "pass": true
+        },
+        {
+          "history": "previous",
+          "phase": 0,
+          "prepare": 0,
+          "enabled": true,
+          "median": 0.0936699999999746,
+          "p95": 0.20085199999994074,
+          "p99": 0.29123799999979383,
+          "maximum": 0.3787600000000566,
+          "pass": true
+        },
+        {
+          "history": "previous",
+          "phase": 23,
+          "prepare": 0,
+          "enabled": false,
+          "median": 0.024216999999907785,
+          "p95": 0.057766999999785185,
+          "p99": 0.09694500000000517,
+          "maximum": 0.3380580000000464,
+          "pass": true
+        },
+        {
+          "history": "previous",
+          "phase": 23,
+          "prepare": 0,
+          "enabled": true,
+          "median": 0.08686100000022634,
+          "p95": 0.19525399999997717,
+          "p99": 0.3067919999999731,
+          "maximum": 0.3068109999999251,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 0,
+          "prepare": 0,
+          "enabled": false,
+          "median": 0.0422240000000329,
+          "p95": 0.10270399999990332,
+          "p99": 0.15663499999982378,
+          "maximum": 0.18929400000001806,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 0,
+          "prepare": 0,
+          "enabled": true,
+          "median": 0.09068600000000515,
+          "p95": 0.24342599999999948,
+          "p99": 0.30009100000006583,
+          "maximum": 0.5742129999998724,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 23,
+          "prepare": 0,
+          "enabled": false,
+          "median": 0.024887999999918975,
+          "p95": 0.06905299999993986,
+          "p99": 0.15776699999969424,
+          "maximum": 0.34364700000014636,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 23,
+          "prepare": 0,
+          "enabled": true,
+          "median": 0.08807299999989482,
+          "p95": 0.1754240000000209,
+          "p99": 0.700984999999946,
+          "maximum": 0.7545050000003357,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 0,
+          "prepare": 77,
+          "enabled": false,
+          "median": 0.04163199999993594,
+          "p95": 0.11944899999980407,
+          "p99": 0.17340100000001257,
+          "maximum": 0.21670599999970364,
+          "pass": true
+        },
+        {
+          "history": "transition",
+          "phase": 0,
+          "prepare": 77,
+          "enabled": true,
+          "median": 0.14469699999972363,
+          "p95": 0.2617640000000847,
+          "p99": 0.3565659999999298,
+          "maximum": 0.6030160000000251,
+          "pass": true
+        }
+      ],
+      "samples": {
+        "path": "out/grip-recovery-work/cost-b.samples.json",
+        "sha256": "54cdbadab94294fa4d045afb816fc772615e865de8e4a4425c920b90f55cad65"
+      }
+    }
+  ],
+  "football": [
+    {
+      "input": {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-3001-1"
+      },
+      "result": {
+        "ending": "censored",
+        "endWhy": "time limit",
+        "finish": "censored",
+        "advanceAfterGrip": 24.19973073779981,
+        "contactToEnd": 4.4,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "contactImpulse": 0,
+        "peakClosing": 0,
+        "carrierState": "up"
+      },
+      "calls": {
+        "accepted": 0,
+        "fallbacks": 8448,
+        "reasons": {
+          "scope:graph/time": 96,
+          "solver:Recovery reel-stop event": 865,
+          "scope:attachment/support": 7487
+        }
+      },
+      "ownershipOnly": {
+        "ending": "censored",
+        "endWhy": "time limit",
+        "finish": "censored",
+        "advanceAfterGrip": 24.19973073779981,
+        "contactToEnd": 4.4,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "contactImpulse": 0,
+        "peakClosing": 0,
+        "carrierState": "up"
+      },
+      "deltaVsOwnership": {
+        "advance": 0.0,
+        "seconds": 0.0
+      }
+    },
+    {
+      "input": {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": -1,
+        "id": "patch-45-8-0-3001--1"
+      },
+      "result": {
+        "ending": "censored",
+        "endWhy": "time limit",
+        "finish": "censored",
+        "advanceAfterGrip": 24.19973073779981,
+        "contactToEnd": 4.4,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "contactImpulse": 0,
+        "peakClosing": 0,
+        "carrierState": "up"
+      },
+      "calls": {
+        "accepted": 0,
+        "fallbacks": 8448,
+        "reasons": {
+          "scope:graph/time": 96,
+          "solver:Recovery reel-stop event": 865,
+          "scope:attachment/support": 7487
+        }
+      },
+      "ownershipOnly": {
+        "ending": "censored",
+        "endWhy": "time limit",
+        "finish": "censored",
+        "advanceAfterGrip": 24.19973073779981,
+        "contactToEnd": 4.4,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "contactImpulse": 0,
+        "peakClosing": 0,
+        "carrierState": "up"
+      },
+      "deltaVsOwnership": {
+        "advance": 0.0,
+        "seconds": 0.0
+      }
+    },
+    {
+      "input": {
+        "name": "front patch",
+        "cell": {
+          "angle": 0,
+          "speed": 3,
+          "cut": false,
+          "difficulty": "ordinary"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-0-3-0-3001-1"
+      },
+      "result": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "advanceAfterGrip": 0.4490624833227841,
+        "contactToEnd": 0.8500000000000001,
+        "firstGrip": {
+          "t": 2.7,
+          "x": 52.09999999999998
+        },
+        "contactImpulse": 1277.0215484760395,
+        "peakClosing": 5.111145693739703,
+        "carrierState": "down"
+      },
+      "calls": {
+        "accepted": 0,
+        "fallbacks": 1536,
+        "reasons": {
+          "solver:Recovery reel-stop event": 149,
+          "scope:possible-impact": 586,
+          "scope:attachment/support": 801
+        }
+      },
+      "ownershipOnly": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "advanceAfterGrip": 0.4490624833227841,
+        "contactToEnd": 0.8500000000000001,
+        "firstGrip": {
+          "t": 2.7,
+          "x": 52.09999999999998
+        },
+        "contactImpulse": 1277.0215484760395,
+        "peakClosing": 5.111145693739703,
+        "carrierState": "down"
+      },
+      "deltaVsOwnership": {
+        "advance": 0.0,
+        "seconds": 0.0
+      }
+    },
+    {
+      "input": {
+        "name": "fresh angled",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 4001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-4001-1"
+      },
+      "result": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "advanceAfterGrip": 14.405070747703945,
+        "contactToEnd": 2.9,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "contactImpulse": 59.595704552338745,
+        "peakClosing": 1.069177994076341,
+        "carrierState": "down"
+      },
+      "calls": {
+        "accepted": 1197,
+        "fallbacks": 4371,
+        "reasons": {
+          "scope:graph/time": 96,
+          "solver:Recovery reel-stop event": 2056,
+          "solver:Native correction geometry event": 2,
+          "solver:Mixed span cap/target/power scope": 2,
+          "solver:Recovery normal-tension event": 1322,
+          "scope:possible-impact": 122,
+          "scope:attachment/support": 771
+        }
+      },
+      "ownershipOnly": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "advanceAfterGrip": 14.405496953324146,
+        "contactToEnd": 2.9,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "contactImpulse": 58.19813065428681,
+        "peakClosing": 1.0686139922782734,
+        "carrierState": "down"
+      },
+      "deltaVsOwnership": {
+        "advance": -0.00042620562020090347,
+        "seconds": 0.0
+      }
+    },
+    {
+      "input": {
+        "id": "patch-45-8-0-5001-1",
+        "name": "declared new angle",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "side": 1,
+        "seed": 5001
+      },
+      "result": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "advanceAfterGrip": 11.675658647315743,
+        "contactToEnd": 3.15,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "contactImpulse": 1265.0687703448095,
+        "peakClosing": 1.4953142686027425,
+        "carrierState": "down"
+      },
+      "calls": {
+        "accepted": 861,
+        "fallbacks": 5187,
+        "reasons": {
+          "scope:graph/time": 96,
+          "solver:Recovery reel-stop event": 2188,
+          "solver:Native correction geometry event": 1,
+          "scope:possible-impact": 2099,
+          "scope:attachment/support": 803
+        }
+      },
+      "ownershipOnly": {
+        "ending": "tackled",
+        "endWhy": "down",
+        "finish": "physical fall",
+        "advanceAfterGrip": 11.66884922938705,
+        "contactToEnd": 3.15,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "contactImpulse": 1256.301993741517,
+        "peakClosing": 1.4952404577216647,
+        "carrierState": "down"
+      },
+      "deltaVsOwnership": {
+        "advance": 0.006809417928693051,
+        "seconds": 0.0
+      }
+    }
+  ],
+  "validation": {
+    "fullSuite": {
+      "passed": 1935,
+      "failed": 1,
+      "total": 1936,
+      "retainedFailure": "test/grip-fast.test.ts old dry cap-stop numerical certificate",
+      "seconds": 265.68,
+      "receipt": "out/baseline/run-1792030085558-325213.json"
+    },
+    "python": {
+      "passed": 145,
+      "receipt": "out/baseline/run-1792030700238-329111.json"
+    },
+    "build": {
+      "passed": true,
+      "receipt": "out/baseline/run-1792030700234-329120.json"
+    },
+    "focused": {
+      "newTests": 16,
+      "includedInFullSuite": true
+    }
+  },
+  "retained": [
+    "Old dry-cap phase certificate",
+    "Nine earlier 43/52 experimental patch failures",
+    "Keeper angular-law witness and older .24-yard support history",
+    "Original .073086-yard support-history gap: new candidate .073068",
+    "Older active helper omitted native reel stop; isolated on codex/grip-reel-stop",
+    "Seed5001 previous helper vs ownership +.95s delay, unexplained by reel-stop audit"
+  ],
+  "recommendation": "Review narrow experimental corrective boundary independently. No default/full-patch promotion and no football-benefit claim. Primary should diagnose earlier support request/load amplification with these inputs and fixed validated contact.",
+  "evidence": [
+    {
+      "path": "out/grip-recovery-work/accuracy-final.json",
+      "sha256": "d052068d57adcfa51857ec44d6ec7df207988ded7de1f060f125b82fc916e1ef"
+    },
+    {
+      "path": "out/grip-recovery-work/accuracy-final.raw.json",
+      "sha256": "b27171991342a711c4897425aa027dbcc9cf59f3aeee120da73f43f1bf033164"
+    },
+    {
+      "path": "out/grip-recovery-work/cost-a.json",
+      "sha256": "6a2d9cb554705f6b1e36e296b06dbfab4e94f8f9dcc937d12a4a15524e213eb6"
+    },
+    {
+      "path": "out/grip-recovery-work/cost-a.samples.json",
+      "sha256": "416a87336b29744616d0b96f34a191245e818b86d11662fb25a13fe5686c1df8"
+    },
+    {
+      "path": "out/grip-recovery-work/cost-b.json",
+      "sha256": "0b9df80c17f90efe2d9ec19406afe8dae1fd7326359ce89bb23fc07a51dbab99"
+    },
+    {
+      "path": "out/grip-recovery-work/cost-b.samples.json",
+      "sha256": "54cdbadab94294fa4d045afb816fc772615e865de8e4a4425c920b90f55cad65"
+    },
+    {
+      "path": "out/grip-recovery-work/football.json",
+      "sha256": "ed71d2a7821633cc91fb361272560f294c1d118e2c703673a109a65cc8e7db26"
+    },
+    {
+      "path": "out/grip-recovery-work/full-suite.log",
+      "sha256": "1c7cb785b3caf84c2be0e25354be9fd65abe213ebe5f8b2142f6381bbab19e83"
+    },
+    {
+      "path": "out/grip-recovery-work/python.log",
+      "sha256": "a27162d3fb452cdf24b3dd9e82f8a42ef8e871f9bbfa656d16c9d1c6d8bedc7d"
+    },
+    {
+      "path": "out/grip-recovery-work/build.log",
+      "sha256": "668042364cbef9aec07cd147443da7b8415b3a313f16340268f2bef6f94307f4"
+    },
+    {
+      "path": "out/grip-recovery-work/old-stop-audit.json",
+      "sha256": "0ef3528d1a272315d26c3925bd87e01f898f0b2f90af2d63c2b0193b4e88a007"
+    }
+  ]
+}
