@@ -202,6 +202,17 @@ new replay, panel or evaluation games; preserved game assertions ran in the suit
 The large four-game input JSON is unchanged from the previously published queue
 packet, not a new collection or execution.
 
+Delivered contributor PRs #75/#80 are closed as incorporated by minimal extraction,
+with every branch/research/evidence history retained; their full ancestry was not
+merged. [#75 disposition](https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203899518),
+[#80 disposition](https://github.com/tannerthardy/football-simulation-/pull/80#issuecomment-6203900417).
+[Consolidated accepted-pin/owner handoff](https://github.com/tannerthardy/football-simulation-/pull/82#issuecomment-6203895704)
+and [Measurement follow-up](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203903194)
+are posted. Measurement acknowledgement/collection is pending; Integration did not
+run the panel. This aggregate8ca8dee→7eb2554 comparison includes #69+#75+#80,
+so its outcome cannot isolate any one repair. No other code review or evaluation
+is required merely to distribute this handoff.
+
 <a id="man-recognition-review"></a>
 ### #75 — technique continuity and acquired back-man ownership
 
