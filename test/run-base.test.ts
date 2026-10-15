@@ -9,16 +9,17 @@ import { RunBlocker, type RunBlockKind } from '../src/sim/behaviors/blocking.js'
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Intent } from '../src/physics/world.js';
 
-const formation = FORMATION_BY_ID.ace_11;
-function setup(kind: RunBlockKind = 'drive', targetPresent = true) {
+function setup(kind: RunBlockKind = 'drive', targetPresent = true,
+  slot: 'C' | 'Y' = 'C', concept = 'iz_strong') {
+  const formation = concept === 'split_zone' ? FORMATION_BY_ID.gun_wing_12 : FORMATION_BY_ID.ace_11;
   const sim = new PlaySim({
     offense: pickOffense(generateTeam(new Rng(31), 'Offense', 'O', { strength: .55 }), formation.personnel),
     defense: pickDefense(generateTeam(new Rng(32), 'Defense', 'D', { strength: .55 }), 'base43'),
-    offCall: { formation, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'Inside zone' },
+    offCall: { formation, flip: false, kind: 'run', run: RUN_BY_ID[concept], label: 'Run-base fixture' },
     defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over' },
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3,
   });
-  const blocker = sim.slot('C')!, defender = sim.slot('DT_S')!;
+  const blocker = sim.slot(slot)!, defender = sim.slot('DT_S')!;
   // An actual approach with no early collision; do not change physical traits.
   for (const agent of sim.agents) {
     agent.behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 }, facing: agent.facing }) };
@@ -107,5 +108,33 @@ describe('run-block approach uses the existing physical base', () => {
     receiver.behavior = new RunBlocker({ kind: 'drive', target: defender, drive: { x: 1, y: 0 } });
     for (let k = 0; k < 16; k++) sim.perception.record(sim.agents);
     expect((receiver.behavior.update(receiver, sim) as Intent).posture).toBeUndefined();
+  });
+});
+
+describe('an attached inside-zone first-level job keeps its physical base', () => {
+  it.each(['iz_strong','split_zone'])('lowers the TE through the same finite law on %s', concept => {
+    const {sim,blocker}=setup('drive',true,'Y',concept);
+    const before=structuredClone(blocker.body), command=blocker.behavior.update(blocker,sim);
+    expect(command.posture).toBe(.7);
+    expect(blocker.body).toEqual(before);
+    expect(before.support!.posture).toBeLessThan(.7);
+    sim.tick();
+    expect(blocker.body.support!.posture).toBeGreaterThan(before.support!.posture);
+    expect(blocker.body.support!.posture).toBeLessThan(.7);
+    for(let k=0;k<4;k++)sim.tick();
+    expect(blocker.engagement).toBeNull();
+    expect(blocker.body.support!.state).toBe('up');
+    expect(blocker.body.support!.posture).toBeGreaterThan(.65);
+    expect(Math.abs(sim.lastStep!.work.residual)).toBeLessThan(1e-8);
+  });
+
+  it.each(['climb','pull','stalk'] as RunBlockKind[])('does not impose the base on a TE %s job', kind => {
+    const {sim,blocker}=setup(kind,true,'Y');
+    expect(blocker.behavior.update(blocker,sim).posture).toBeUndefined();
+  });
+
+  it.each(['counter','trap'])('leaves %s technique outside this zone-only correction', concept => {
+    const {sim,blocker}=setup('drive',true,'Y',concept);
+    expect(blocker.behavior.update(blocker,sim).posture).toBeUndefined();
   });
 });

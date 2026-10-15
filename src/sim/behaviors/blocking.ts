@@ -1092,7 +1092,9 @@ export class RunBlocker implements Behavior {
     // existing snap base through a first-level OL approach; World supplies
     // finite posture changes, the movement cost and actual balance. Running
     // pullers, climbs, unassigned movement and contact techniques own theirs.
-    return isZoneLineBlocker(a, sim, this.plan) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
+    const interiorZone = sim.offCall.run?.scheme === 'insideZone' || sim.offCall.run?.scheme === 'splitZone';
+    const lineRole = isZoneLineBlocker(a, sim, this.plan) || (interiorZone && !!sim.offAlign.spots[a.slot]?.inline);
+    return lineRole && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
       ? { ...command, posture: .7 } : command;
   }
 
