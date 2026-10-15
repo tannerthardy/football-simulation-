@@ -92,13 +92,14 @@ for(const branch of ['continue','change-motion']){
     engagement:null,eyes:null,profile:qb.profile,mind:observer.mind,isDown:()=>qb.support?.state!=='up'};
   const info=new TeammateInformation([observer,teammate],new Map()),samples=[];
   info.sense([observer,teammate],picture.sampledAt,.05);
-  const snapshot={...picture,age:0};
   for(let tick=1;tick<=20;tick++){
     const toward={x:rb.pos.x-qb.pos.x,y:rb.pos.y-qb.pos.y},d=Math.hypot(toward.x,toward.y);
     const command=branch==='continue'?{vel:{...picture.sampledVel}}:{vel:{x:qb.profile.vmax*toward.x/d,y:qb.profile.vmax*toward.y/d},cutSkill:1.3};
     const report=world.step([command,{vel:{x:rb.profile.vmax,y:0}}],.05),elapsed=tick*.05,now=picture.sampledAt+elapsed;
     info.sense([observer,teammate],now,.05);
-    const p=info.query(6,0,now,.05),region=historicalRegion(snapshot,qb.profile,elapsed);
+    // Re-express the mechanical control's elapsed-since-sample clock relative
+    // to the ORIGINAL decision age. No observation timestamp/age is reset.
+    const p=info.query(6,0,now,.05),region=historicalRegion(picture,qb.profile,elapsed-picture.age);
     const deviation=Math.hypot(qb.pos.x-region.center.x,qb.pos.y-region.center.y);
     samples.push({elapsed,pos:{...qb.pos},vel:{...qb.vel},qbSupport:qb.support?.state,observerSupport:rb.support?.state,picture:snap(p),regionRadius:region.radius,deviation,
       insideOrdinaryBound:deviation<=region.radius+1e-8,contacts:report.contacts});
