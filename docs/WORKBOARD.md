@@ -1,6 +1,19 @@
 # Current work ownership
 
-## Independent #67 portability review — 2026-10-15
+## Completed information-only dependency/scope review — 2026-10-15
+
+Integration reviewed original60223a8/evidence80c9fa4 independently of #72/#69/Physics.
+Recommend risk-only71d98fc on accepted4679a3c; byte-identical carrier hunk, two
+original controls/fixture plus existing Duo control. Three selected checks and
+typecheck pass; retained initial missing-it-import failures;23.675s total,
+zero World steps/games/shared suite. [Published review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
+Observation-only transport is separately portable and already owner-approved;
+no production consumer yet. Navigation is parked. Next decision is the risk-only
+integration scope, followed by one exact combined verification before separate
+merge authorization. Do-It-All supplies independent #69 controller review;
+no additional candidate was appended to #67/#72 verification.
+
+## Completed #67 portability review — accepted via #72
 
 Integration owns `codex/pass-cutoff-integration-review` from accepted develop
 `7d1451b2c31786e075550183a6a93bbda23da29b` after the docs-only #65 merge. Boundary: the authored free-cutoff

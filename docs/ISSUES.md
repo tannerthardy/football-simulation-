@@ -41,7 +41,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
 | [INFO-002](#INFO-002) | Call-based anticipation can expose hidden live state | Confirmed limitation; #36 copied installed prior prepared | Active with INFO-001 | Awareness + Run Game; bounded installed expectations without hidden updates |
-| [INFO-003](#INFO-003) | Other controller reads still need scoped information review | Known information debt; scope varies | Parked migration | Awareness + affected controller owner; after first reusable boundary passes |
+| [INFO-003](#INFO-003) | Other controller reads still need scoped information review | Known information debt; scope varies | Risk-only scope reviewed; broader migration parked | Awareness + affected controller owner; after first reusable boundary passes |
 | [STALK-001](#STALK-001) | Far stalk request reads hidden defender position | Confirmed defect; isolated correction prepared | Integration review | Integration + Run Game; #29-only verification or a repaired combined candidate |
 | [COV-001](#COV-001) | Match/spot seam-gap contract fails | Failed contract; cause not adjudicated | Parked / blocks coverage | Pass Game, currently helping awareness; resume when available |
 | [COV-002](#COV-002) | Scramble-recording fixture now throws | Failed fixture precondition; recorder defect unproved | Parked / blocks coverage | Pass Game + recording-contract owner; resume when available |
@@ -233,6 +233,15 @@ installed call and acquired cues, without exposing live private branches.
 
 <a id="INFO-003"></a>
 ### INFO-003 — Related consumers, not a global AI rewrite
+
+Current bounded correction: `runReadAim` opponent risk reads acquired pose/motion
+and public capability, removing private current-down/fatigue/engagement shortcuts.
+Recommend the risk-only71d98fc scope on accepted4679a3c; [review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
+Three selected checks/typecheck pass; full combined verification and separate
+merge authority remain outstanding. Teammate query transport is independently
+approved but has no current production consumer, so defer it until needed.
+No navigation tuning or claim that all legacy carrier callers are fixed.
+Original information-only collision and uncertainty evidence remain preserved.
 
 Combination/runner reads share the teammate shortcut. General opponent `see()`
 also largely models latency rather than acquisition, while QB has a distinct
