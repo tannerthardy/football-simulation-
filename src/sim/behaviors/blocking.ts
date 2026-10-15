@@ -965,18 +965,8 @@ export class RunBlocker implements Behavior {
       return { ...r.clearance.command, vel: { ...r.clearance.command.vel } };
     const capacity = a.body.support
       ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
-    const command = { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
+    return { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
       facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
-    // The meeting-point sprint ends at the existing near-strike region.
-    // Collect on the moving shoulder there; a long climb and a deliberate
-    // first-level clearance retain their ordinary requests. Applying this
-    // controller's much broader approach envelope to the whole climb was
-    // already rejected by the coupled counter control.
-    const seen = picture ?? sim.see(a, target), bodyContact = a.profile.radius + target.profile.radius;
-    if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= strike + bodyContact)
-      return secondLevelBlockApproach(a, seen, this.plan.drive, r.meet,
-        a.mind.placementError * (1 - .5 * a.r('runBlock')), strike, bodyContact, command, sim.t);
-    return command;
   }
 
   private climbObstacles(a: Agent, sim: PlaySim, target: Agent): ClimbObstacle[] {
