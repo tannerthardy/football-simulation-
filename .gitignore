@@ -36,3 +36,7 @@ data/reviews/**/*.txt
 # Keep these bounded aggregate references available to current diagnostics.
 !data/reviews/rushing-benchmark/reference/nfl-benchmark.json.gz
 !data/reviews/rushing-benchmark/concepts/report.json.gz
+
+# Compact frozen-panel receipts; native traces remain outside tracked source.
+!data/reviews/current/panel-pr82/
+!data/reviews/current/panel-pr82/*.json
