@@ -13,6 +13,7 @@ import {FRONT_BY_ID,COVERAGE_BY_ID} from '../../../src/playbook/defense.js';
 import {PlaySim} from '../../../src/sim/playsim.js';
 import {sourceVersion} from '../../source-version.js';
 import {supportParams} from '../../../src/physics/support.js';
+import {replayKeeper,stateError,type KeeperWitness} from './keeper-contact-law.js';
 const root='out/contact-law-current',hash=(x:unknown)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');mkdirSync(root,{recursive:true});
 const source=sourceVersion(),start=performance.now();
 function run(mode:'center'|'patch',observe:boolean){
@@ -37,7 +38,8 @@ function run(mode:'center'|'patch',observe:boolean){
    frames.push({row:r,slots:[sim.agents[r.i].slot,sim.agents[r.j].slot],target,h,mode:r.mode,c:r.c,comSlip:com,yawSlip:yaw,pointSlip:com+yaw,normalCapacity:r.pushLim,steerCapacity:r.steerLim});
   }return result;};
   w.step=function(intents:any[],dt:number){
-   const inputHash=hash({bodies:this.bodies,intents,joints:this.joints.map((j:any)=>{const {a,b,actor,holder,...rest}=j;return {...rest,a:this.indexOf(a),b:this.indexOf(b),actor:actor?this.indexOf(actor):null,holder:holder?this.indexOf(holder):null};})}),
+   const jointInputs=this.joints.map((j:any)=>{const {a,b,actor,holder,...rest}=j;return {...rest,a:this.indexOf(a),b:this.indexOf(b),...(actor?{actor:this.indexOf(actor)}:{}),...(holder?{holder:this.indexOf(holder)}:{})};}),
+    inputHash=hash({bodies:this.bodies,intents,joints:jointInputs}),
     beforeHash=hash(this.bodies),intentHash=hash(intents),before=structuredClone([owner.body,defender.body]),
     earlyBefore=sim.t<.5?structuredClone(this.bodies):undefined;frames=[];
    const report=step.call(this,intents,dt),joint=combo.defender.engagement?.hands;
@@ -45,7 +47,7 @@ function run(mode:'center'|'patch',observe:boolean){
     requested:[intents[owner.idx],intents[defender.idx]],normal:joint?.normalForce??null,tangent:joint?.tangentForce??null,
     moments:joint?[joint.momentOnA,joint.momentOnB]:[],groundYaw:[report.groundYawImpulse[owner.idx],report.groundYawImpulse[defender.idx]],
     workResidual:report.work.residual,contacts:report.contacts,strikes:report.strikes,
-    earlyBodies:earlyBefore?{before:earlyBefore,after:structuredClone(this.bodies),groundYaw:report.groundYawImpulse,
+    earlyBodies:earlyBefore?{before:earlyBefore,after:structuredClone(this.bodies),groundYaw:report.groundYawImpulse,intents:structuredClone(intents),jointInputs,
       joints:this.joints.map((j:any)=>({kind:j.kind,i:this.indexOf(j.a),j:this.indexOf(j.b),normal:j.normalForce,tangent:j.tangentForce,moments:[j.momentOnA??0,j.momentOnB??0]}))}:undefined,
     frames:frames.map(({row,...f})=>({...f,normalImpulse:row.ln,tangentImpulse:row.lt,normalWork:row.normalWork?.net??0,tangentWork:row.tangentWork?.net??0}))});
    return report;
@@ -60,7 +62,7 @@ function run(mode:'center'|'patch',observe:boolean){
   }
  }
  return {fingerprint:hash({bodies:w.bodies,cmds:Reflect.get(sim,'cmds'),intents:sim.intents,minds:sim.agents.map(a=>a.mind),rng:sim.rng,events:sim.events,phase:sim.phase,t:sim.t}),
-  steps,predicates,climbs:sim.events.filter(e=>e.type==='block_climb'&&e.a===helper.idx),tags:[...helper.tags],released:combo.released};
+  slots:sim.agents.map(a=>a.slot),steps,predicates,climbs:sim.events.filter(e=>e.type==='block_climb'&&e.a===helper.idx),tags:[...helper.tags],released:combo.released};
 }
 const runs=(['center','patch'] as const).map(mode=>{const plain=run(mode,false),recorded=run(mode,true);assert.equal(plain.fingerprint,recorded.fingerprint);return {mode,observerNeutral:true,...recorded};}),
  firstBody=runs[0].steps.findIndex((r,i)=>r.afterHash!==runs[1].steps[i]?.afterHash),
@@ -77,11 +79,27 @@ const ledgers=runs.map(run=>{
    groundImpulse=early.groundYaw[i],residual=spinImpulse-handImpulse-groundImpulse;
   // Center's omitted hand torque is the known defect. Test the isolated law.
   if(run.mode==='patch')assert(Math.abs(residual)<1e-10);
-  return {slot:run.steps[firstBody].earlyBodies.after[i]&&i,spinImpulse,handImpulse,groundImpulse,residual};
+  return {slot:run.slots[i],spinImpulse,handImpulse,groundImpulse,residual};
  });return {mode:run.mode,time:step.t,joints:early.joints,rows};
 });
+// This first interval has one graph-closed hand pair and no impacts. Reuse the
+// existing two-body replay; do not refine a whole play or invoke a new solver.
+const first=runs[0].steps[firstBody],early=first.earlyBodies,pair=early.joints[0];assert.equal(early.joints.length,1);
+const ids=[pair.i,pair.j],local=(i:number)=>{const k=ids.indexOf(i);assert(k>=0);return k;},
+ witness:KeeperWitness={t:first.t,dt:.05,slots:ids.map(i=>runs[0].slots[i]),beforeBodies:ids.map(i=>early.before[i]),
+  intents:ids.map(i=>early.intents[i]),jointInputs:early.jointInputs.map(({a,b,actor,holder,...rest}:any)=>({...rest,a:local(a),b:local(b),...(actor===undefined?{}:{actor:local(actor)}),...(holder===undefined?{}:{holder:local(holder)})})),
+  pending:[],expectedAfter:ids.map(i=>early.after[i]),worldSha256:createHash('sha256').update(readFileSync('src/physics/world.ts')).digest('hex')},
+ center=replayKeeper(witness,'center',{substeps:12}),isolated=replayKeeper(witness,'patch',{groundMovement:'legacy',substeps:12}),
+ refined=replayKeeper(witness,'patch',{groundMovement:'legacy',substeps:48}),expectedIsolated=ids.map(i=>runs[1].steps[firstBody].earlyBodies.after[i]),
+ errors={center:stateError(center.bodies,witness.expectedAfter),isolated:stateError(isolated.bodies,expectedIsolated)};
+assert(errors.center<1e-12&&errors.isolated<1e-12,'Reduced pair must reproduce the actual native interval');
+const difference=(a:any[],b:any[])=>({position:Math.max(...a.map((q,i)=>Math.hypot(q.pos.x-b[i].pos.x,q.pos.y-b[i].pos.y))),
+ velocity:Math.max(...a.map((q,i)=>Math.hypot(q.vel.x-b[i].vel.x,q.vel.y-b[i].vel.y))),
+ spin:Math.max(...a.map((q,i)=>Math.abs(q.spin-b[i].spin))),facing:Math.max(...a.map((q,i)=>Math.abs(q.facing-b[i].facing)))}),
+ localComparison={errors,law:difference(isolated.bodies,center.bodies),refinement:difference(isolated.bodies,refined.bodies)};
+writeFileSync(`${root}/first-interval.json`,JSON.stringify({source,witness,expectedIsolated,localComparison},null,2)+'\n');
 assert.equal(sourceVersion(),source);
 const result={source,toolSha256:createHash('sha256').update(readFileSync('scripts/diag/physics/current-contact-contract.ts')).digest('hex'),
  input:{O:31,D:32,strength:.55,seed:3,formation:'gun_wing_12',concept:'split_zone',front:'tite',coverage:'cover3',flip:false,windowSeconds:2},
- settings:{groundMovement:'legacy',handContact:'center versus patch',components:process.env.RUN_CONTACT_COMPONENTS,experimentalSolvers:'absent'},earliest,ledgers,runs,elapsedSeconds:(performance.now()-start)/1000};
+ settings:{groundMovement:'legacy',handContact:'center versus patch',components:process.env.RUN_CONTACT_COMPONENTS,experimentalSolvers:'absent'},earliest,ledgers,localComparison,runs,elapsedSeconds:(performance.now()-start)/1000};
 writeFileSync(`${root}/tite-contract.json`,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({earliest,runs:runs.map(r=>({mode:r.mode,observerNeutral:r.observerNeutral,climbs:r.climbs,released:r.released})),elapsedSeconds:result.elapsedSeconds}));
