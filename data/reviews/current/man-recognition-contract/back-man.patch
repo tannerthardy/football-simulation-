@@ -1,0 +1,71 @@
+diff --git a/test/back-man-run-fit.test.ts b/test/back-man-run-fit.test.ts
+index 108c750..4c07993 100644
+--- a/test/back-man-run-fit.test.ts
++++ b/test/back-man-run-fit.test.ts
+@@ -9,7 +9,7 @@ import { PASS_BY_ID } from '../src/playbook/concepts.js';
+ import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../src/playbook/defense.js';
+ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+ import type { Gap } from '../src/playbook/types.js';
+-import { ManCoverage, playBall } from '../src/sim/behaviors/defense.js';
++import { ManCoverage, playBall, sawThrow } from '../src/sim/behaviors/defense.js';
+ import { chase } from '../src/sim/behaviors/common.js';
+ import { PlaySim } from '../src/sim/playsim.js';
+ import type { Perceived } from '../src/sim/perception.js';
+@@ -243,8 +243,8 @@ describe('inside man players insert from their acquired back possession', () =>
+     expect(f.update()).toEqual(chase(expected.sim, expected.a, expected.r));
+   });
+ 
+-  it('lets the existing ball-in-flight technique own an old positive runner picture', () => {
+-    const f = stage(), expected = stage();
++  it.each([-1, 1])('retains acquired insertion until throw recognition then transfers to the ball, side=%s', side => {
++    const held = stage(true, side), f = stage(true, side), expected = stage(true, side);
+     for (const item of [f, expected]) {
+       item.sim.throwAt = 1.4;
+       item.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
+@@ -252,6 +252,13 @@ describe('inside man players insert from their acquired back possession', () =>
+         intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
+       item.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
+     }
++    // The fixtures' old .20-second flight is still unrecognized. Hidden
++    // release does not cancel positive acquired possession and run belief.
++    expect(sawThrow(f.a, f.sim, f.r)).toBe(false);
++    expect(f.update()).toEqual(held.update());
++    expect(f.sim.rng).toEqual(held.sim.rng);
++    f.sim.throwAt = expected.sim.throwAt = .1;
++    expect(sawThrow(f.a, f.sim, f.r)).toBe(true);
+     expect(f.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
+     expect(f.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
+   });
+@@ -369,7 +376,7 @@ describe('back man markers preserve their installed alley support instead of rec
+     expect(split.update()).toEqual(unknown.update());
+   });
+ 
+-  it('supports a known backfield FB without reading live possession, and lets an airborne ball retain ownership', () => {
++  it('supports a known backfield FB without reading live possession', () => {
+     const one = alleyStage(true, 1, 'run', 'F', 'i_pro_21'), two = alleyStage(true, 1, 'run', 'F', 'i_pro_21');
+     expect(one.r.player.position).toBe('FB');
+     expect(one.a.runFit!.kind).toBe('alley');
+@@ -379,7 +386,10 @@ describe('back man markers preserve their installed alley support instead of rec
+     two.r.body.pos = { x: 75, y: 2 }; two.r.body.vel = { x: -8, y: 0 };
+     expect(one.update()).toEqual(two.update());
+     expect(one.sim.rng.nextU32()).toBe(two.sim.rng.nextU32());
+-    const air = alleyStage(), expected = alleyStage();
++  });
++
++  it.each([-1, 1])('retains acquired alley support until throw recognition then transfers to the ball, side=%s', side => {
++    const held = alleyStage(true, side), air = alleyStage(true, side), expected = alleyStage(true, side);
+     for (const f of [air, expected]) {
+       f.sim.throwAt = 1.1;
+       f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
+@@ -387,6 +397,11 @@ describe('back man markers preserve their installed alley support instead of rec
+         intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
+       f.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
+     }
++    expect(sawThrow(air.a, air.sim, air.r)).toBe(false);
++    expect(air.update()).toEqual(held.update());
++    expect(air.sim.rng).toEqual(held.sim.rng);
++    air.sim.throwAt = expected.sim.throwAt = .1;
++    expect(sawThrow(air.a, air.sim, air.r)).toBe(true);
+     expect(air.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
+     expect(air.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
+   });
