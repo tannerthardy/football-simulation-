@@ -1,0 +1,318 @@
+{
+  "schema": "man-recognition-integration-evidence-review-v1",
+  "reviewedHead": "1f2d949409aad9615da2b52df8fddd174e04b2aa",
+  "actualAuthorBase": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "acceptedDevelop": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "productionChanges": [
+    "src/sim/behaviors/defense.ts"
+  ],
+  "acceptedDefenseByteIdenticalToAuthorBase": true,
+  "authorSourceSha256": "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+  "authorComparisonHashesVerified": 2,
+  "receiptSettingsVerified": 15,
+  "receipts": [
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad",
+      "validationSha256": "e01842f9eddda612dd3e833d81a4a434b0b27c1c16e70bd825eba1c859e583eb",
+      "exitCode": 1,
+      "commandSeconds": 1.8096832749999998,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/man-throw-recognition.test.ts"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad",
+      "validationSha256": "8b955e699d41db406e317e5a99745bb12db29502c03428c51bab30bd5d644ee2",
+      "exitCode": 1,
+      "commandSeconds": 1.8616528780000001,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/man-throw-recognition.test.ts"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "d41b6b19e84846ff7c2a2af00fefe1aaef88935ce01b59db785112d7f7384aa2",
+      "validationSha256": "96e8b7098a81fb4125a917a0c1531069e2d6677d08d4e6eae276f2c49879dae9",
+      "exitCode": 0,
+      "commandSeconds": 2.884059757,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/man-throw-recognition.test.ts",
+          "test/catch-phase-control.test.ts",
+          "test/catch-reach.test.ts",
+          "test/coverage-mechanics.test.ts",
+          "test/coverage-rules.test.ts"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "d41b6b19e84846ff7c2a2af00fefe1aaef88935ce01b59db785112d7f7384aa2",
+      "validationSha256": "96e8b7098a81fb4125a917a0c1531069e2d6677d08d4e6eae276f2c49879dae9",
+      "exitCode": 0,
+      "commandSeconds": 3.617987775,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/p045-native.mjs",
+          "flight",
+          "data/reviews/current/p045-defensive-inputs.json",
+          "out/man-recognition/selected-candidate.json.gz"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "d41b6b19e84846ff7c2a2af00fefe1aaef88935ce01b59db785112d7f7384aa2",
+      "validationSha256": "96e8b7098a81fb4125a917a0c1531069e2d6677d08d4e6eae276f2c49879dae9",
+      "exitCode": 0,
+      "commandSeconds": 4.592567426,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/p045-native.mjs",
+          "transfer",
+          "/tmp/yac-compatible-fresh-inputs.json",
+          "out/man-recognition/reused-transfer-candidate.json.gz"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "d41b6b19e84846ff7c2a2af00fefe1aaef88935ce01b59db785112d7f7384aa2",
+      "validationSha256": "9092f89c0d8f320d44870b5cb93662b9e2b4694dbe0d26f74a67487efa963630",
+      "exitCode": 0,
+      "commandSeconds": 2.806590901,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/p045-native.mjs",
+          "transfer",
+          "data/reviews/current/man-recognition-fresh-inputs.json",
+          "out/man-recognition/untouched-candidate.json.gz"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad",
+      "validationSha256": "9092f89c0d8f320d44870b5cb93662b9e2b4694dbe0d26f74a67487efa963630",
+      "exitCode": 0,
+      "commandSeconds": 2.4754377830000003,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/p045-native.mjs",
+          "transfer",
+          "data/reviews/current/man-recognition-fresh-inputs.json",
+          "out/man-recognition/untouched-baseline.json.gz"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "d41b6b19e84846ff7c2a2af00fefe1aaef88935ce01b59db785112d7f7384aa2",
+      "validationSha256": "9092f89c0d8f320d44870b5cb93662b9e2b4694dbe0d26f74a67487efa963630",
+      "exitCode": 0,
+      "commandSeconds": 11.766669494,
+      "commands": [
+        [
+          "npm",
+          "run",
+          "typecheck"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-receipts.json",
+      "sourceSha256": "d41b6b19e84846ff7c2a2af00fefe1aaef88935ce01b59db785112d7f7384aa2",
+      "validationSha256": "2f3aef4298764d0b9edcc45327424ca418a58cfd1c05a0d6af85ea2655c678cb",
+      "exitCode": 0,
+      "commandSeconds": 5.570585603,
+      "commands": [
+        [
+          "python3",
+          "scripts/diag/man-recognition-review.py",
+          "--pair",
+          "out/p045-assigned-man/accepted-native.json.gz",
+          "out/man-recognition/selected-candidate.json.gz",
+          "--pair",
+          "out/p045-assigned-man/fresh-accepted-native.json.gz",
+          "out/man-recognition/reused-transfer-candidate.json.gz",
+          "--pair",
+          "out/man-recognition/untouched-baseline.json.gz",
+          "out/man-recognition/untouched-candidate.json.gz",
+          "--out",
+          "data/reviews/current/man-recognition-comparison.json"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-current-receipts.json",
+      "sourceSha256": "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+      "validationSha256": "4470e0f5cf65dbb823c758d6831ea6fe74c50e2fa17570f624cbbc626ca28fd3",
+      "exitCode": 0,
+      "commandSeconds": 1.873125468,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/man-throw-recognition.test.ts"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-current-receipts.json",
+      "sourceSha256": "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+      "validationSha256": "4470e0f5cf65dbb823c758d6831ea6fe74c50e2fa17570f624cbbc626ca28fd3",
+      "exitCode": 0,
+      "commandSeconds": 2.137865854,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/p045-native.mjs",
+          "transfer",
+          "data/reviews/current/man-recognition-fresh-inputs.json",
+          "out/man-recognition/current-candidate.json.gz"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-current-receipts.json",
+      "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+      "validationSha256": "4470e0f5cf65dbb823c758d6831ea6fe74c50e2fa17570f624cbbc626ca28fd3",
+      "exitCode": 0,
+      "commandSeconds": 2.141133335,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/p045-native.mjs",
+          "transfer",
+          "data/reviews/current/man-recognition-fresh-inputs.json",
+          "out/man-recognition/current-baseline.json.gz"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-current-receipts.json",
+      "sourceSha256": "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+      "validationSha256": "4470e0f5cf65dbb823c758d6831ea6fe74c50e2fa17570f624cbbc626ca28fd3",
+      "exitCode": 1,
+      "commandSeconds": 1.2121038680000003,
+      "commands": [
+        [
+          "python3",
+          "scripts/diag/man-recognition-review.py",
+          "--baseline-source",
+          "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+          "--candidate-source",
+          "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+          "--pair",
+          "out/man-recognition/current-baseline.json.gz",
+          "out/man-recognition/current-candidate.json.gz",
+          "--out",
+          "data/reviews/current/man-recognition-current-comparison.json"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-current-receipts.json",
+      "sourceSha256": "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+      "validationSha256": "316b9c82406a36fba89e87dd46702fd1f520453bbc5e50c53cb4865bb2dcead2",
+      "exitCode": 1,
+      "commandSeconds": 1.232405125,
+      "commands": [
+        [
+          "python3",
+          "scripts/diag/man-recognition-review.py",
+          "--baseline-source",
+          "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+          "--candidate-source",
+          "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+          "--pair",
+          "out/man-recognition/current-baseline.json.gz",
+          "out/man-recognition/current-candidate.json.gz",
+          "--out",
+          "data/reviews/current/man-recognition-current-comparison.json"
+        ]
+      ]
+    },
+    {
+      "packet": "man-recognition-current-receipts.json",
+      "sourceSha256": "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+      "validationSha256": "3d6565de96710718469f9e21435f4d42f3a89563a20ec4fca9f14f230912b18a",
+      "exitCode": 0,
+      "commandSeconds": 1.0831873170000001,
+      "commands": [
+        [
+          "python3",
+          "scripts/diag/man-recognition-review.py",
+          "--baseline-source",
+          "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+          "--candidate-source",
+          "c237b8c9764f41a1bc54b25b7cd276ace665ac56e44ef0373ee41d52b599b051",
+          "--pair",
+          "out/man-recognition/current-baseline.json.gz",
+          "out/man-recognition/current-candidate.json.gz",
+          "--out",
+          "data/reviews/current/man-recognition-current-comparison.json"
+        ]
+      ]
+    }
+  ],
+  "reusedNativeExecutions": 30,
+  "reusedLauncherSeconds": 47.065055859,
+  "rawTapeLimit": "Full raw tapes are ignored out/ artifacts in original environment; immutable compact comparisons contain first-fork acquired cues/requests, achieved/contact/load/support detail and exact raw hashes. No access to the raw tapes is claimed. Exact reproducible input fixtures/collectors are published on the author branch.",
+  "decision": "Accept narrow technique-until-recognition contract for isolated integration verification. P006/Smash are explained geometry/acquisition costs of retaining the taught action, not evidence that hidden release should discard technique. No general coverage/YAC improvement claim.",
+  "adverse": {
+    "P006": "At1.75 identical incoming bodies/unrecognized throw: generic fallback vs retained press/history/0.65 delayScale. First contact3.35->3.55, tackle retained; old-source evidence.",
+    "Smash": "At1.85 identical incoming body/unrecognized throw: generic fallback vs retained off-man/history. SS misses after changed entry/runner motion, FS tackles;YAC4.406273->5.651768. No identical-entry grip-law inference; old-source evidence.",
+    "P045": "No-contact49.503836-YAC TD persists; does not veto information correction or diagnose grip law.",
+    "currentVertical": "Author base47 pair actively exercises continuity and preserves tackle7.154575->7.154956YAC.",
+    "currentComeback": "Both current47 arms are identical sacks; native plant transfer remains unmeasured, direct acquired-plant contract passes."
+  },
+  "scopeLimits": [
+    "CoverageJudgment global airborne override freeze remains unchanged and separate.",
+    "Recognition still uses existing reaction/facing approximation, not full gaze/occlusion.",
+    "Cushion/target quality, crosser/deep-bend leverage, help/containment and contact issues remain separate findings; no new fixes initiated.",
+    "No #74 rollback; no parked assigned-man/primary-only variants, helper changes, transport/navigation,#69 or experimental physics."
+  ],
+  "verificationPlan": "Freeze accepted8ca8dee plus exact authored defense hunk and8 direct tests. Reuse focused evidence; one full integration verification under accepted44flags/components1; no new native panel/games.",
+  "mergeAuthorized": false
+}

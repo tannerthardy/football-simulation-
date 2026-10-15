@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Independent #75 man-recognition integration — 2026-10-15
+
+Integration owns this isolated assembly from accepted8ca8dee, preserving latest
+queue metadatafad1b94. Only ManCoverage continuation, playBall's optional unaware
+fallback and the eight authored direct contracts are extracted from1f2d949.
+Catching retains broader coverage diagnosis and owner questions; no new coverage
+fixes are started. P006/Smash costs and P045 no-contact TD stay preserved with
+original source pins; no overall coverage/YAC benefit is asserted. Upstream
+judgment, recognition timing, capacities, helpers and physics stay unchanged.
+Reuse compatible focused/adverse receipts; one exact all-phase verification
+under44 flags/components=1. No native panel, games or parked P045 variants.
+No merge/default/baseline or branch-deletion authorization.
+
 ## Completed risk-only verification and adoption — 2026-10-15
 
 Integration owns this review branch from accepted4679a3c (#72 merged). Extract
