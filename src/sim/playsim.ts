@@ -28,6 +28,7 @@ import { createEngagement, releaseJoints, updateEngagements } from './engagement
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
+import { observeCommand } from './command-observer.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { ReplayTrace } from './telemetry.js';
@@ -326,6 +327,7 @@ export class PlaySim {
     if (observer.team === target.team) {
       const seen = this.perception.perceive(target.idx, 0.05);
       this.trace.observe(observer, target, seen, this.t);
+      observeCommand(observer, 'picture', { peer: target.idx, delayScale, seen });
       return seen;
     }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
@@ -336,6 +338,7 @@ export class PlaySim {
     if (observer.eyes && !observer.eyes.keys.includes(target)) delay += observer.eyes.peripheral;
     const seen = this.perception.perceive(target.idx, delay);
     this.trace.observe(observer, target, seen, this.t);
+    observeCommand(observer, 'picture', { peer: target.idx, delayScale, seen });
     return seen;
   }
 
@@ -559,7 +562,9 @@ export class PlaySim {
       const a = this.agents[i];
       // Reaction delays control, not collisions: he can still be pushed.
       const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
+      observeCommand(a, 'behavior', { command, body: a.body, snapDelayed: t < a.snapReadyAt });
       this.cmds[i] = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      observeCommand(a, 'containment', { command: this.cmds[i] });
     }
 
     // Intents: the decisions, refined by the techniques that own contact.
@@ -571,7 +576,9 @@ export class PlaySim {
     this.dives.clear();
     this.lunges.clear();
     updateEngagements(this, this.intents);
+    for (const a of this.agents) observeCommand(a, 'engagement', { command: this.intents[a.idx] });
     if (this.bond) updateBond(this, this.bond, this.intents);
+    for (const a of this.agents) observeCommand(a, 'bond', { command: this.intents[a.idx] });
     // Constraint ownership and last-step touch are felt by the actor. Free
     // movement forecasts must not pretend these loads or joints are absent.
     const constrained=new Set(this.world.joints.filter(j=>j.kind!=='grasp'||!j.broken)
@@ -587,10 +594,16 @@ export class PlaySim {
     // rehearsed track on the snap count); predict him from the call there.
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
-      if (!called) return seen;
+      if (!called) {
+        observeCommand(a, 'spacing-picture', { peer: b.idx, seen, used: seen });
+        return seen;
+      }
       const age = seen.age ?? 0;
-      return { ...seen, pos: { x: seen.pos.x + (called.x - seen.vel.x) * age, y: seen.pos.y + (called.y - seen.vel.y) * age }, vel: called };
+      const used = { ...seen, pos: { x: seen.pos.x + (called.x - seen.vel.x) * age, y: seen.pos.y + (called.y - seen.vel.y) * age }, vel: called };
+      observeCommand(a, 'spacing-picture', { peer: b.idx, seen, called, used });
+      return used;
     },{now:t,constrained});
+    for (const a of this.agents) observeCommand(a, 'spacing', { command: this.intents[a.idx] });
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
@@ -600,6 +613,7 @@ export class PlaySim {
     // Physics: feet, contacts, holds and balance, in substeps.
     if (this.phase === 'live') {
       this.world.time = t;
+      for (const a of this.agents) observeCommand(a, 'world-input', { command: this.intents[a.idx], body: a.body });
       const report = this.world.step(this.intents, this.dt);
       this.lastStep = report;
       this.afterPhysics(report);
