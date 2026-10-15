@@ -2,7 +2,7 @@
 
 **The older experimental active helper omitted a native reel-stop condition.** This bounded repair refuses those proposals and lets World run its existing native law. It changes no World code, capacity, recovery law, default or test expectation. Baseline remains `4ded6b6`.
 
-Tested helper/diagnostics `b9e5ec2`, from PR51 `337be32`; runtime source is unchanged `de1b4a43a98f547950357c0a5699023e4a878969790724b387f70d899831868b`. [Receipt](../../data/reviews/current/grip-native-reel-stop.json) records flags, inputs, hashes, controls and adverse results. This branch is independent of the corrective-foot World prototype on `codex/grip-recovery-work`.
+Tested helper/diagnostics `b9e5ec2`, from PR51 `337be32`; runtime source is unchanged `de1b4a43a98f547950357c0a5699023e4a878969790724b387f70d899831868b`. [Receipt](../../data/reviews/current/grip-native-reel-stop.json) records flags, inputs, hashes, controls and adverse results. This branch is independent of the corrective-foot World prototype in [draft PR #55](https://github.com/tannerthardy/football-simulation-/pull/55).
 
 ## Demonstrated cause and bounded repair
 
