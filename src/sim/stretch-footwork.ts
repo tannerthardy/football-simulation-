@@ -33,9 +33,10 @@ export function planStretchFeet(body: Body, seen: Pick<Perceived, 'pos' | 'vel'>
   const relative = { x: body.pos.x - seen.pos.x, y: body.pos.y - seen.pos.y };
   const distance = Math.hypot(relative.x, relative.y);
   const clearance = bodyContact + .15;
-  // Keep the opening track's normal contact depth. The extra clearance
-  // belongs to an obstructed recovery arc, not a retreat from working hands.
-  let offset = { x: -bodyContact, y: half };
+  // The half-man landmark lies on the contact circle. Adding a lateral
+  // offset to the full normal radius would withdraw from working contact.
+  // Extra clearance belongs only to the obstructed recovery arc below.
+  let offset = { x: -Math.sqrt(Math.max(0, bodyContact * bodyContact - half * half)), y: half };
   let phase: StretchFootPlan['phase'] = remaining > 0 ? 'stretch' : 'collect';
   const ex = offset.x - relative.x, ey = offset.y - relative.y;
   const along = clamp(-(relative.x * ex + relative.y * ey) / Math.max(1e-12, ex * ex + ey * ey), 0, 1);
