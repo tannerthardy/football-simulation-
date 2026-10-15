@@ -2,6 +2,11 @@
 
 October 15, 2026 (America/Phoenix).
 
+**Historical week-1 closeout.** A later explicit user instruction reopened the
+[available-weeks expansion](p045-nfl-available-weeks-2026-10-15.md), superseding
+the closing instruction quoted below. This week-1 validation remains intact
+and is reused; it is not a reason to stop the newly authorized expansion.
+
 **One qualifying contained example, zero qualifying explosive examples.** The
 returned week-1 packet is valid against its published checksum, pinned query,
 restoration receipt and internal measurement definitions. This closes the

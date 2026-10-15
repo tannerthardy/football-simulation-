@@ -4,7 +4,9 @@ October 15, 2026 (America/Phoenix). The [original study](p045-nfl-catch-approach
 and its week-1 Quarters/POST query remain unchanged at
 `81e43e7279a26c43f2ae5ea29a2282316f42899c`.
 
-**Handoff fulfilled; query closed.** Catching returned the week-1 result at
+**Week-1 handoff fulfilled; available-weeks expansion reopened.** Use the
+[current bounded expansion handoff](p045-nfl-available-weeks-2026-10-15.md).
+Catching returned the week-1 result at
 `481ad18`; [validation and interpretation](p045-nfl-closeout-2026-10-15.md)
 retain one contained example and zero explosive examples. The instructions
 below preserve the original handoff, not a request for another execution.

@@ -2,8 +2,10 @@
 
 October 15, 2026 (America/Phoenix).
 
-**Closed:** the returned week-1 query at `481ad18` is validated: one contained
-example, zero qualifying explosive examples. See the
+**Available-weeks expansion reopened:** the user superseded the earlier
+close-query instruction. See the [current bounded expansion](p045-nfl-available-weeks-2026-10-15.md).
+Week 1 at `481ad18` remains validated and reused: one contained example, zero
+qualifying explosive examples. See its preserved
 [closeout and interpretation](p045-nfl-closeout-2026-10-15.md).
 The original local collection below records the initial access gap. Catching
 subsequently fulfilled the remote handoff without transferring the archive;

@@ -3,14 +3,23 @@
 ## Bounded NFL measurement, October 15, 2026 (America/Phoenix)
 
 Measurement owner: `codex/nfl-catch-approach`, from accepted `develop@a1b16e6`.
-**Closed:** Catching executed the unchanged week-1 query on its verified
+**Reopened:** the user explicitly superseded the close-query instruction with
+the available-weeks expansion. Reuse week 1, inventory the existing ZIP/restored
+weeks, and execute the unchanged query on new available weeks where data lives.
+[Bounded driver and current handoff](reviews/p045-nfl-available-weeks-2026-10-15.md):
+300 seconds / 12 GiB input reads, passive exclusion accounting, up to three
+deterministic examples per original outcome bin; no new download/extraction.
+Five focused checks pass. Actual ZIP/restored-week inventory and new results
+remain pending Catching's executor because the posted data path is absent here.
+
+Preserved week-1 stage: Catching executed the unchanged query on its verified
 restoration and returned `481ad18`; the 13,975-byte packet, query/receipt pins,
 IDs/events and retained calculations are validated here. One contained witness,
 zero qualifying explosive witnesses; the contained receiver slows/turns.
 [Closeout, count/exclusion limits and week availability](reviews/p045-nfl-closeout-2026-10-15.md).
 The 26 label candidates span all loaded metadata; invalid/converted counters
-can overlap and cannot supply a rejection funnel. The final instruction closes this
-narrow query without a multiweek expansion or engine change. No new raw query,
+can overlap and cannot supply a rejection funnel. Its earlier closure is now
+superseded for expansion scope, not erased from provenance. No new raw query,
 simulation, default/reference change or shared verifier run by this owner.
 Original query/control checks and
 [execution handoff](reviews/p045-nfl-restoration-handoff-2026-10-15.md) remain preserved.

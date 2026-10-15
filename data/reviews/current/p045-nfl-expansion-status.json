@@ -1,0 +1,61 @@
+{
+  "schema": "p045-nfl-available-weeks-v1",
+  "status": "awaiting_data_executor",
+  "query_commit": "81e43e7279a26c43f2ae5ea29a2282316f42899c",
+  "module_sha256": {
+    "scripts/diag/p045-nfl-approach.py": "c1ef6d08a1e6b736341dee096116799d437f23b6b26694830db3abadd9471f86",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
+    "scripts/mechanics/nfl_bdb2025.py": "a964af05d205f094126f08bdbbfb8788190f21fa7df003fbd0a5936446f5235c"
+  },
+  "driver_sha256": "a508c8baaea535cb7cc328a396bf20db39df4e52f5171fe4ce948004e355dec3",
+  "budget": {
+    "wall_seconds": 300,
+    "input_read_bytes": 12884901888
+  },
+  "simulation_runs": 0,
+  "blocker": "Existing archive is not readable on this executor",
+  "archive": "/workspace/football-yac-angle/data/raw/zips/archive.zip",
+  "available_weeks_inventory": null,
+  "user_instruction": "Available-weeks expansion explicitly supersedes earlier close-query instruction.",
+  "catalog_weeks": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "week1": {
+    "reused": true,
+    "result_commit": "481ad18e5d1cd45a1d5008496b9917511d8397b1",
+    "sha256": "7911a33decb4ce9f2dfef768f37c527936e573506664b273d231b6c0d0f7f60c",
+    "counts": {
+      "label_candidates": 26,
+      "converted": 3,
+      "invalid": 3,
+      "geometry_matched": 1,
+      "contained": 1,
+      "offensive_win": 0
+    },
+    "contained_id": "2022091101-4104",
+    "exclusion_detail": "Legacy pooled counts; no week1 rescan or invented reasons."
+  },
+  "new_week_results": null,
+  "new_week_exclusion_counts": null,
+  "new_week_examples": null,
+  "coordination_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200494647",
+  "driver": "scripts/diag/p045-nfl-expand.py",
+  "tests": {
+    "file": "test/test_p045_nfl_expand.py",
+    "passed": 5,
+    "synthetic_only": true,
+    "seconds": 0.238,
+    "test_comparison_correction": "End-to-end selected-witness equality uses the JSON storage contract (tuples serialize to arrays); assertions and frozen query unchanged."
+  },
+  "source_mode": "Existing verified ZIP streams on Catching executor; no new download or extraction.",
+  "new_raw_queries_on_measurement_executor": 0,
+  "new_simulations": 0
+}

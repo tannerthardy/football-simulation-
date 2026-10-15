@@ -1278,9 +1278,10 @@
   },
   "coordination": {
     "url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199037427",
-    "status": "Remote week-1 packet received and validated; narrow query closed. No broader execution requested.",
+    "status": "Available-weeks expansion explicitly authorized; original week1 result reused. New inventory/execution pending on Catching data executor.",
     "restoration_handoff_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199579876",
-    "returned_result_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199846750"
+    "returned_result_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199846750",
+    "expansion_handoff_url": "https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6200494647"
   },
   "checks": {
     "focusedTests": 5,
@@ -1298,5 +1299,6 @@
     "Tracking and saved light telemetry do not establish gaze, grip force, contact work, or the first wrong decision.",
     "Selected opposing witnesses are illustrative and are not matched treatment effects or league rates."
   ],
-  "study_status": "closed_narrow_week1_query"
+  "study_status": "reopened_available_weeks_expansion_pending_data_executor",
+  "expansion_status": "data/reviews/current/p045-nfl-expansion-status.json"
 }
