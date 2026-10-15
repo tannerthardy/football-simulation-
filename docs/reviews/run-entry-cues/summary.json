@@ -1,6 +1,6 @@
 {
   "schema": "run-entry-cues-review-v1",
-  "recommendation": "Reject entry-risk candidate for adoption as tested; keep portable gap fix independent.",
+  "recommendation": "Hold as a complete navigation improvement pending achievable-approach work; information correction independently justified. Gap fix advances independently.",
   "pins": {
     "portableGap": "d63bf4504e1a17e2f6a32738009a532838fc5e20",
     "portableGapEvidence": "92566b3b650bb2e855487cbf1eae6a2dbf60918b",
@@ -108,7 +108,7 @@
     {
       "nativePlay": 19,
       "collectorIndex": 18,
-      "call": "Singleback Ace — Outside Zone",
+      "call": "Singleback Ace \u2014 Outside Zone",
       "role": "waiting-control",
       "los": 25.5,
       "frameCount": 60,
@@ -315,7 +315,7 @@
     {
       "nativePlay": 32,
       "collectorIndex": 31,
-      "call": "Pistol Doubles — Wide Zone",
+      "call": "Pistol Doubles \u2014 Wide Zone",
       "role": "failing-entry",
       "los": 74.3,
       "frameCount": 60,
@@ -541,5 +541,6 @@
       "completedControl": null,
       "unfinished": true
     }
-  ]
+  ],
+  "classificationCorrection": "An impact alone is not proof of bad football. Impact plus fragile forecast supports the hold; slower/gather previews did not demonstrate coupled avoidance."
 }

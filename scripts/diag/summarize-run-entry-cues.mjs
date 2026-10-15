@@ -24,7 +24,7 @@ const cases=n.rows.map(row=>{const index=row.nativePlay-1,ref=refs.find(r=>r.ind
   after:{firstCarrierContact:row.events.find(e=>e.type==='carrier_contact'&&e.a===6)??null,firstRBBodyCollision:contacts(row.frames,false)[0]??null,teammateImpacts:offAfter,losCrossing:crossing(row.frames,row.los),rbAt3:row.frames.at(-1).after[6].pos,blockingLoad:loads(row.frames)},
   completedControl:row.completedResult?{endedAt:row.end,events:row.events.filter(e=>['tackle','fall','climb'].includes(e.type))}:null,
   unfinished:row.censored};});
-const result={schema:'run-entry-cues-review-v1',recommendation:'Reject entry-risk candidate for adoption as tested; keep portable gap fix independent.',
+const result={schema:'run-entry-cues-review-v1',recommendation:'Hold complete navigation improvement; information correction independently justified; gap fix independent.',
  pins:{portableGap:'d63bf4504e1a17e2f6a32738009a532838fc5e20',portableGapEvidence:'92566b3b650bb2e855487cbf1eae6a2dbf60918b',
   trialCode:'cfc2fc9bdc1bc293d9686e85bf23631a581a5367',trialWithCorrectParentControls:'7f9d9a4b2e40946129281ae382c8483f717e8c5d',
   recordedEngine:'f62511a513f2187884d74ae3b94435835e43309c',referenceEvidence:'e8a76a7f7cdc19dece85288f93a8d1e1273be0db',inputs:'4ae667e29b3ce085f43c5cb911b294349cda2b8f'},

@@ -1,13 +1,19 @@
-# Runner entry risk: reject the isolated trial for adoption
+# Runner entry risk: information correction; complete navigation improvement held
 
-**Keep the departed-center gap fix available for Integration. Do not integrate
-this entry-risk trial as a football improvement.** The information defect is
-real: a private engagement flag adds .25s of apparent protection to an acquired
-image. Removing it changes the saved P032 entry without changing the runner's
-body or consumed pictures. The isolated native continuation delays defensive
-contact, but creates a new RB/RG collision. One saved-state diagnostic identifies
-an approach prediction accepting millimetric clearance from an extrapolated
-teammate picture. No further play tuning or transfer batch followed.
+**Keep the independently justified information correction separate from the
+held approach-selection work. Advance the departed-center gap fix independently.**
+The original report overclaimed that impact alone was sufficient for rejection.
+The new RB/RG impact plus its fragile forecast supports holding this as a complete
+navigation improvement; collision by itself does not establish bad football.
+The slower/gather previews did not prove avoidance in a reacting play. Removing
+private engagement/fatigue/down shortcuts remains justified regardless of that
+outcome. Original traces and the earlier classification remain immutable at
+`4ee0e2cdc8480f271fc3d8e9178f6abd949b3f9e`; this clarification changes no runtime.
+
+One bounded continuation will compare achievable fast/slower/gather approaches
+at the first changed entry using acquired teammate uncertainty, and retain a
+genuinely clear-route control. It will not add a universal clearance bubble,
+force the loaded guard to yield, or delay the independent gap review.
 
 ## Exact, separate handoffs
 
@@ -17,7 +23,7 @@ teammate picture. No further play tuning or transfer batch followed.
 | Portable gap evidence | `92566b3b650bb2e855487cbf1eae6a2dbf60918b` | Nine focused passes, ancestry proof and immutable reuse links to original `73b9441` / `badddf4`. Branch's later documentation tip `132c27a8f1d9ce9a4366b92f0ede0df42a0dac52` only clarifies the older evidence parent's label. |
 | Original gap / evidence | `73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee` / `badddf495fa9ff7cfa6579709dec853dc449974e` | Published on `codex/run-lanes`; includes older navigation ancestry. Do not import that entire branch to take the gap fix. |
 | Entry-risk runtime trial | `cfc2fc9bdc1bc293d9686e85bf23631a581a5367` | Only new runtime change is runReadAim opponent-risk inputs in carrier.ts. |
-| Entry trial with corrected-parent controls | `7f9d9a4b2e40946129281ae382c8483f717e8c5d`, `codex/run-entry-cues` | **Rejected for adoption as tested.** Parent is portable gap evidence `92566b3`; source `20252b053f7bcb530cfe2983ccf00983dae0776d991e8001498fa51bff943e91`. This evidence commit adds no runtime edits. |
+| Entry trial with corrected-parent controls | `7f9d9a4b2e40946129281ae382c8483f717e8c5d`, `codex/run-entry-cues` | **Held as a complete navigation improvement; information correction independently justified.** Parent is portable gap evidence `92566b3`; source `20252b053f7bcb530cfe2983ccf00983dae0776d991e8001498fa51bff943e91`. This evidence commit adds no runtime edits. |
 | Older zone/Duo stack | `6122fb03c7104c0f9d762591d737cf2cf6a49067` | Documentation/validation tip; final code `6ac628b9cd017fb475c477d41904264d463a6a46`, source `1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527`. Published experimental, absent in actual source and ancestry from the three checked accepted/Integration/recorded references. |
 
 The verified older-stack common ancestor is accepted
@@ -120,8 +126,8 @@ movement preview treats a fragile positive clearance as clear.
 
 [Adverse diagnostic](adverse-diagnostic.json) preserves raw, executed, half and
 gather forecasts from the same saved bodies/cues at five moments. It runs240
-scratch one-body preview steps, zero play continuations. The continuation's
-actual impact is sufficient to reject this isolated trial; it does not prove a
+scratch one-body preview steps, zero play continuations. The impact together with the fragile forecast holds the complete navigation
+improvement for further work; neither establishes a particular
 particular margin, gather or alternative entry fixes the fully reacting play.
 
 **Next concrete correction:** in run navigation, evaluate candidate approaches
@@ -139,7 +145,7 @@ For the entry trial,39 other directly affected tests passed at unchanged source
 `20252b…`; its four scene checks pass after the exact-parent control correction.
 The initial42/43 result and red receipt are retained in [validation](validation).
 This is43 unique compatible passes, not an invented all-green43-test invocation.
-No full suite or typecheck was run here; rejection makes combined verification
+No full suite or typecheck was run here; the held navigation question makes combined verification
 premature. Integration owns checks for any candidate it elects to combine.
 
 New football execution: one bounded native prefix,25 physical scrimmages to

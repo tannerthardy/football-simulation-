@@ -4,7 +4,8 @@
 
 Do-It-All root completed the bounded `runReadAim` risk-input trial on
 `codex/run-entry-cues`: code `cfc2fc9`, exact-parent fixture tip `7f9d9a4`, source
-`20252b…`. **Reject for adoption as tested**: hidden-state invariance improved,
+`20252b…`. **Hold complete navigation improvement; information correction independently
+justified**: hidden-state invariance improved,
 P032 defensive contact moved2.55→2.90s, but a new69.8136kg·yd/s RB/RG impact
 appeared. One saved-state diagnostic found fragile positive clearance against
 an extrapolated .30s-old RG picture. No larger batch or rescue tuning followed.
