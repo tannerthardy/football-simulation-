@@ -1,0 +1,65 @@
+diff --git a/test/catch-phase-control.test.ts b/test/catch-phase-control.test.ts
+index 3bdb70f..6e92978 100644
+--- a/test/catch-phase-control.test.ts
++++ b/test/catch-phase-control.test.ts
+@@ -105,0 +106,60 @@ describe('running phase at an observed receiver catch', () => {
++
++describe('assigned man when the observed ball contest is infeasible', () => {
++  function lateBall() {
++    const s = stage();
++    // No receiver can reach this flight sample from an acquired picture.
++    // The defender also cannot get there; it is not a ball opportunity.
++    s.sim.ballPath = [{ t: 2.1, x: 70, y: 5, z: 1.2 }];
++    return s;
++  }
++
++  it('keeps achieved movement with the acquired assigned man instead of driving at the impossible landmark', () => {
++    const { sim, r, d } = lateBall(), body = structuredClone(d.body);
++    const command = playBall(d, sim, r);
++    expect(command.vel.x).toBeGreaterThan(7);
++    expect(command.vel.y).toBeGreaterThan(-1);
++    const world = new World([d.body]);
++    for (let i = 0; i < 6; i++) world.step([command], .05);
++    expect(d.body.support!.state).toBe('up');
++    expect(Math.abs(Math.atan2(d.vel.y, d.vel.x) - Math.atan2(1, 8))).toBeLessThan(.15);
++    expect(d.body.pos.x).toBeGreaterThan(body.pos.x + 2);
++  });
++
++  it('reuses acquired evidence, with no hidden target shortcut, extra sighting or request draw', () => {
++    const { sim, r, d } = lateBall(), see = sim.see.bind(sim), calls: number[] = [];
++    sim.see = (observer, target, ...rest) => { calls.push(target.idx); return see(observer, target, ...rest); };
++    const state = JSON.stringify(sim.rng), command = playBall(d, sim, r);
++    expect(calls.filter(idx => idx === r.idx)).toHaveLength(1);
++    expect(JSON.stringify(sim.rng)).toBe(state);
++    if (sim.ball.kind !== 'air') throw new Error('Expected flight');
++    sim.ball.target = sim.slot('H')!;
++    r.body.pos = { x: 80, y: 4 }; r.body.vel = { x: 0, y: -8 };
++    expect(playBall(d, sim, r)).toEqual(command);
++  });
++
++  it('changes the request for an acquired plant rather than continuing a held velocity on a timer', () => {
++    const { sim, r, d } = lateBall(), before = playBall(d, sim, r);
++    r.body.pos = { x: 50, y: CENTER_Y }; r.body.vel = { x: 0, y: -4 };
++    for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
++    const after = playBall(d, sim, r);
++    expect(after.vel.x).toBeLessThan(before.vel.x);
++    expect(after.vel.y).toBeLessThan(before.vel.y);
++  });
++
++  it('preserves a reachable ball when the assigned man supplies no receiver catch window', () => {
++    const { sim, r, d } = stage();
++    d.body.pos = { x: 49.2, y: CENTER_Y + .5 };
++    sim.ballPath = [{ t: 2.05, x: 48.5, y: CENTER_Y + .5, z: 1.5 }];
++    expect(playBall(d, sim, r).vel.x).toBeLessThan(0);
++  });
++
++  it('preserves a genuine receiver window even when a different man is assigned', () => {
++    const { sim, d } = stage(), original = playBall(d, sim, null);
++    expect(playBall(d, sim, sim.slot('H')!)).toEqual(original);
++  });
++
++  it('leaves unassigned defenders on their existing fallback objective', () => {
++    const { sim, d } = lateBall(), command = playBall(d, sim, null);
++    expect(command.vel.y).toBeLessThan(-4);
++  });
++});

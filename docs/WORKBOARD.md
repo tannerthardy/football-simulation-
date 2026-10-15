@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Acquired assigned-man native candidate — 2026-10-15
+
+| Item | Owner | Branch / reference | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Retain acquired assigned man when no attainable ball contest or observed receiver window exists | Codex Catching, explicitly assigned by user | `codex/yac-assigned-man-native` from accepted `8c891f4cf887b54297efbbc4c7993ba5e2f318b5` | `defense.ts` playBall request only, affected tests and selected native diagnostics. Preserve genuine windows/ball contests; no helper, sensing, speed/braking, roster, grip or physics changes. | [Native test complete; prototype parked](reviews/p045-assigned-man-native.md). P045 catch speed +1.08 yd/s but heading error 2.04→12.59° and gap 2.485→2.697 yd; better later closing, still no contact/TD. P006/current P010 exact signatures preserved. Four predeclared fresh inputs preserve two tackles and sack; only changed fresh Y-Cross ending has identical safety entry but different execution/leg draws, so no approach credit. 42 affected passes; 32 native executions / 25.316 launcher s, no games/prefix/full suite. Source/tests restored exactly to accepted hash2402; no integration candidate. Exact source/flags/input/grip/load evidence retained; no required TD reversal or claim of grip failure without contact. |
+
 ## Departed-center gap integration — 2026-10-15
 
 | Item | Owner | Branch / reference | Boundary | Status |
