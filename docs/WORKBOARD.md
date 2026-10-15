@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Departed-center gap integration — 2026-10-15
+
+| Item | Owner | Branch / reference | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Gap identity and earliest coherent candidate | Codex integration owner in this chat, explicitly authorized by user | `codex/departed-center-integration` from accepted `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | Three-line gap fix plus independently reviewed minimal #57 cadence, #58 recognition, #60 bookkeeping and #61 acquisition deltas; directly affected fixtures/tests and existing status/issue/integration records. | Preparing a small portability/interaction check before freezing. Reuse source evidence `badddf4`, including rejected unpaired trials and retained DT tackle. Exclude all earlier zone/Duo/detour work, #54 ancestry and experimental physics. One exact combined verification only when coherent. Preserve review and gap's existing conditional merge authority; no broader merge/reference/default/deletion authority inferred. |
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original

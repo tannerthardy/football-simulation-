@@ -254,9 +254,11 @@ export class RunnerToMesh implements Behavior {
     // until the QB actually gives him the ball; onHandoff installs the run.
     // Running through an expired landmark used to strand him yards away.
     if (this.ride) {
-      // A stretch back takes the ball on the move: arrive running, then keep
-      // riding the track toward the aiming point until the QB puts it in.
-      if (d < .7) this.passed = true;
+      // Being close to the landmark is not permission to leave before the
+      // installed exchange window. Gun backs can start almost on the mesh.
+      // Keep approaching it until the QB can actually put the ball in, then
+      // ride through at the existing tempo (possession still comes from him).
+      if (d < .7 && sim.t >= this.meshTime - .15) this.passed = true;
       if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });
       return goTo(a, this.mesh, { speed, through: a.profile.vmax * .55 });
     }

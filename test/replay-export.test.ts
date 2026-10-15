@@ -98,4 +98,19 @@ describe('replay export', () => {
       frames: [{ t: 0, agents: [], ball: [35, 26, 1], carrier: -1 }],
     } }), 0)).not.toHaveProperty('frames');
   });
+
+  it('exports distinct intended/achieved air depth and recipient identities', () => {
+    const replay: NonNullable<PlayLog['replay']> = {
+      los: 35, firstDownX: 45, flip: false, players: [], events: [],
+      frames: [{ t: 0, agents: [], ball: [35, 26, 1], carrier: -1 }, { t: 1, agents: [], ball: [31, 26, 1], carrier: -1 }],
+    };
+    const p = packReplayPlay(play({ kind: 'pass', stats: {
+      target: 'intended-X', receiver: 'actual-RB', attempted: true, completed: true,
+      airYards: 7, completedAirYards: -4, yac: 15,
+    } as NonNullable<PlayLog['stats']>, replay }), 0);
+    expect(p).toMatchObject({ targetId: 'intended-X', receiverId: 'actual-RB', stats: { air: 7, completedAir: -4, yac: 15 } });
+    const legacy = packReplayPlay(play({ stats: { airYards: 7, completed: true } as NonNullable<PlayLog['stats']>, replay }), 0);
+    expect(legacy).toMatchObject({ stats: { air: 7 } });
+    expect('stats' in legacy && legacy.stats).not.toHaveProperty('completedAir');
+  });
 });

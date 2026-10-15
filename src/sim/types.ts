@@ -205,6 +205,8 @@ export interface PlayStats {
   target?: string;
   receiver?: string;
   rusher?: string;
+  /** A called run ended with only its snap possession; not a fumble or proof of an intended keeper. */
+  retainedSnap?: boolean;
   interceptedBy?: string;
   sackedBy?: string[];
   tacklers: string[];
@@ -216,7 +218,10 @@ export interface PlayStats {
   sacked: boolean;
   scramble: boolean;
   throwaway: boolean;
+  /** Intended LOS-to-aim-point depth; may differ from the actual catch depth or receiver. */
   airYards?: number;
+  /** Achieved LOS-to-catch depth of the actual receiver, separate from intended airYards. */
+  completedAirYards?: number;
   yac?: number;
   timeToThrow?: number;
   pressured: boolean;

@@ -1,3 +1,124 @@
+# Integration ledger
+
+<a id="current-candidate-2026-10-15"></a>
+## Current candidate — 2026-10-15
+
+**Accepted develop remains `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`.**
+Integration owns `codex/departed-center-integration` directly from that commit.
+The five contributions below are being prepared as one coherent candidate,
+not merged experimental stacks. [Current priorities](STATUS.md),
+[issue decisions](ISSUES.md), [ownership](WORKBOARD.md).
+
+| Contribution / exact publication | Independent readiness and smallest portable extraction | Real dependency / excluded ancestry |
+| --- | --- | --- |
+| Gap `73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee`, evidence `badddf495fa9ff7cfa6579709dec853dc449974e` | Accepted for the candidate: 3-line C-vacancy exclusion, saved-cue test and 96KB fixture. 28 artifacts/6 tools and all source-arm hashes verified; first changed request RB at2.20 with identical preceding bodies/joints and retained DT tackle. | Actual implementation parent `2df3edb`, earlier runtime parent `6122fb0`; same original mapper bytes on accepted develop. Earlier zone/Duo/clearance/detour code is **not** required and is excluded. Coupled controls apply to the author's branch, not this combined tree. |
+| [#57](https://github.com/tannerthardy/football-simulation-/pull/57) `1f11e4546bc75ed6c5d139d3ac75fd09d214eb51`, tested `21d7763` | Minimal `RunnerToMesh` departure-window condition plus portable saved-input helper/fixture/tests. Riding mesh and installed time already exist on develop. P038 reaches a real handoff in the combined-source preflight. | PR is stacked on #54's evidence branch; **do not merge its ancestry**. Rejected late-QB chase and all other run/awareness code are excluded. Old experimental P069 film hashes are historical; a same-current-source cadence rollback pair preserves positions/events/stats exactly. Keeper tripwire is installed without requiring the parent's awareness API. |
+| [#58](https://github.com/tannerthardy/football-simulation-/pull/58) `cb73b08177ba796b3963c91f7afc53beafe77cf8`, tested `dc0f104` | Two production files and recognition tests, already based on accepted develop. Reuse 66 focused checks/typecheck and selected game/native receipts. | No dependency on #61, #54 or pursuit pilots. Preserve power rushing6.82→1.17 and the matched92→25.31-yard containment evidence; not league calibration. P045 NFL tracking access/research is separate, not a runtime prerequisite. |
+| [#60](https://github.com/tannerthardy/football-simulation-/pull/60) `987056fe5b6dec61d8377834c5b277600685cbcd`, tested `d3ea55c` | Three production files, replay fields and directly affected tests. Reuse 56 checks/typecheck and saved holding-boundary receipt. | No cadence dependency: other retained snaps still need actual credit. P022's corrected enforcement still accepts under the coarse heuristic; policy quality remains open. No physics or historical-box rewrite. |
+| [#61](https://github.com/tannerthardy/football-simulation-/pull/61) `351dcff82b96713b5abbc7602d9a051567d1b00a`, tested `28018cf` | New incidental acquisition module, one once-per-tick hook, catch filter, saved-window fixture/tests; based on develop. Reuse 29 focused checks/typecheck and red evidence. | Independent of #58. Its tick hook and #60's final-stat edits share a file but not a mechanism/hunk. Body-facing approximation, missing occlusion and privileged targeted TrackBall remain explicit limitations. No claim to repair P023's complete interception ending. |
+
+The first portability screen has **92 passes and one source-specific P069
+historical-trajectory mismatch**. The single targeted current-source
+cadence-rollback diagnostic passes with complete frame/event/stat equality.
+The original fixture and upstream assertion remain preserved; the extracted
+regression protects the matching current-source control. No accepted existing
+assertion is removed or relaxed. Exact receipts and per-path patches will be
+published with the frozen candidate.
+
+One full combined verification is pending. It will use Node22.23.3, all44
+accepted flags including `RUN_CONTACT_COMPONENTS=1`, and existing center hands /
+centered integration / legacy support / per-solve work / speculative impacts /
+mean support / bounded attachment / adaptive substeps. Settings, dependencies,
+historical profile and unrelated runtime files stay unchanged.
+
+The user's existing conditional gap integration authority is retained. Preparing
+this broader candidate does not infer permission to merge unrelated PRs or
+bypass required review. Publication, a passing receipt, merge, baseline adoption,
+GitHub default and branch retirement remain distinct actions. No fresh full-game
+campaign is justified by this local integration question. Follow
+[TESTING_COSTS](TESTING_COSTS.md).
+
+<details>
+<summary>Published 2026-10-14 integration ledger and prior receipts — preserved</summary>
+
+# Integration ledger
+
+Updated **2026-10-14 (America/Phoenix)**. [Priorities](STATUS.md),
+[issue/blocker details](ISSUES.md), [file ownership](WORKBOARD.md).
+
+## Accepted reference and verification ownership
+
+`develop` at **a1b16e666a9ee7d1bc1d2aecba141fc535863b24** contains merged
+[#12](https://github.com/tannerthardy/football-simulation-/pull/12).
+Historical `4ded6b6` remains a comparison, not the development starting point.
+The designated **Integration owner** freezes candidates and owns one combined
+verification. Contributors supply compatible focused receipts.
+
+The accepted #12 code was tested at `46a833dd006850a2c83a937bd3444181d8b10588`:
+**1,684 TypeScript / 145 Python checks, typecheck/build pass**, 180.530 s,
+44 flags/components=1. [Exact receipt](../data/reviews/current/controller-combined-verification.json),
+[scope and adverse evidence](reviews/controller-integration.md).
+Publication/merge commits are distinct from the tested commit; reuse depends on
+source/test/input/settings/measurement compatibility, not PR state alone.
+
+## Candidate dispositions
+
+| Work / exact publication snapshot | Disposition | Remaining decision |
+| --- | --- | --- |
+| #12 accepted run/catch + shared policy/tooling; develop `a1b16e6` | Integrated | Maintain known limitations; no new baseline designation in this documentation pass |
+| [#29](https://github.com/tannerthardy/football-simulation-/pull/29) `b8e4d86`; tested `ce93c3b` | Ready for isolated integration review; **not yet fully verified/merged** | [STALK-001](ISSUES.md#STALK-001): preserve two-line scope and complete required verification, independently if coverage stays parked |
+| [#34](https://github.com/tannerthardy/football-simulation-/pull/34) `306579f`; tested `cb240d2` | **Blocked; follow-up parked while Pass Game helps awareness** | [COV-001/002](ISSUES.md#COV-001): supported controller/test-contract adjudication, then one revised combined pass including Python |
+| [#36](https://github.com/tannerthardy/football-simulation-/pull/36) `6828467`; tested engine/tests `98411ef` | Focused candidate; **promotion held for Run Game review**, no full-suite claim | [INFO-001/002](ISSUES.md#INFO-001): real rear collision and bounded post-mesh coordination; preserve unchanged yielding/physics |
+| [#35](https://github.com/tannerthardy/football-simulation-/pull/35) `fed330a` | Diagnostic preparation, not a runtime feature | D01/Y domain comparison for #36; preserve original incomplete-memory disclosure |
+| [#17/#18](https://github.com/tannerthardy/football-simulation-/pull/17) `92743c0` / `b30284c` | Experimental contact correction/evidence; unpromoted | [PHY-001](ISSUES.md#PHY-001); retention review permits bounded controller work, not package adoption |
+| Physics #3/#7/#15–#21/#25/#31/#33; latest #33 `abf0e1c` | Research, not a combined production candidate | Local correctness/composition, cost, and named transfer; [PHY-002](ISSUES.md#PHY-002) |
+| #23/#27/#28 TE studies/intervention | Diagnostics and parked intervention; do not merge ancestry | [RUN-003](ISSUES.md#RUN-003): adverse transfer retained |
+| #22/#26/#30/#32 run audits/reference/rejected alternatives | Evidence, not production changes | Reuse exact references; no automatic campaign or runtime merge |
+| #13 RB assessment; #4/#5 hands/handover/helper experiments; Stick/seam/post/QB-pressure prototypes | Separate review/research; excluded from #34 | A named independent question before extraction; no broader candidate by collection |
+
+Relevant #6/#8/#9/#10 code/evidence is incorporated through accepted #12 even
+when the older draft PR remains open. Do not confuse code inclusion with PR
+closure, or close/delete historical refs from this ledger alone.
+
+## Parked coverage receipt — not a passing verification
+
+[#34 exact receipt](https://github.com/tannerthardy/football-simulation-/blob/306579fda9d496d45606445fd542239cf2f5acf4/data/reviews/current/pass-controller-combined-verification.json):
+**1,698 passed / two failed; Python skipped**. Typecheck/build and 94 affected
+checks pass. Combined runtime 205.662 s; candidate `cb240d2`, publication `306579f`.
+The [register](ISSUES.md#COV-001) preserves numeric failures, intended contracts,
+next actions and owner return condition. Existing diagnostics do not clear them.
+Do not rerun the same failed source or treat that receipt as covering #29 alone.
+
+## Promotion path
+
+1. Identify the smallest independently useful correction and opposing contract.
+2. Resolve named blockers with saved/focused evidence. A changed ending is not
+   automatically a defect; an assertion change needs a supported contract.
+3. Integration freezes exact source, tests, inputs, flags/model choices and dependencies.
+4. One owner performs the required combined verification; every phase must pass.
+   Fail-fast skips remain skips, not inherited passes.
+5. Publish exact receipt, remaining risks and final decision. Merge/reference
+   changes remain separately reviewed; a draft or focused pass is not approval.
+
+Use [TESTING_COSTS](TESTING_COSTS.md). No automatic mode/roster matrices or games.
+For current development, use the historical launcher in candidate mode; it still
+guards the original historical source hash:
+
+```sh
+npm run baseline:info -- --candidate
+# Integration owner only, for a reviewed exact combined candidate:
+npm run baseline:verify -- --candidate --fail-fast
+```
+
+Use Node22.23.3 and preserve accepted resolved settings. Do not edit the historical
+profile/source pin simply to make the launcher label current development a baseline.
+
+<details>
+<summary>Historical #6 / #12 preparation and original receipts</summary>
+
+The following original records describe their own stage. Then-current ownership,
+43-flag and adoption-pending statements are historical, superseded above.
+
 # Current integration ownership and evidence
 
 Current task: [reviewed run/catch controller integration](reviews/controller-integration.md),
@@ -118,3 +239,7 @@ fingerprint `2636006bf58c4d30db9ff67049b18d4d33059ff7f0bf49c51e3e50617a0c9597`, 
 The publication follow-up adds only docs/evidence; it is not represented as
 another tested commit. Runtime and validation fingerprints must match this
 receipt at publication. `4ded6b6` remains the historical comparison pin.
+
+</details>
+
+</details>

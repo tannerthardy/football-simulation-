@@ -48,6 +48,10 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3): 
     if (a.team === 'O' && INELIGIBLE.has(a.slot)) continue;
     const batWindow = a.team === 'D' && tAir < 0.4 && !!a.engagement;
     if (a.engagement && !batWindow) continue;
+    // Existing targeted tracking is a separate controller contract. Everyone
+    // else on offense must have acquired this flight before reaching for it;
+    // legal eligibility or an installed outlet alone does not provide eyes.
+    if (a.team === 'O' && !a.tags.has('onBall') && !sim.incidentalCatchReadiness.query(a, sim.t)) continue;
     let s = sl2 > 1e-9 ? ((a.pos.x - prev.x) * sx + (a.pos.y - prev.y) * sy) / sl2 : 0;
     s = clamp(s, 0, 1);
     const px = prev.x + sx * s;

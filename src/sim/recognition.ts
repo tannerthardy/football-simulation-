@@ -16,6 +16,7 @@ import { OL_SLOTS, type PersonnelId, type QBAlignment } from '../playbook/types.
 import { r01, type Player } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { showsBlock } from './coverage-cues.js';
 
 // ------------------------------------------------------------ expectations
 
@@ -326,10 +327,12 @@ export class Recognition {
       }
       if (best) {
         const s = sim.see(a, best);
-        const sp = Math.hypot(s.vel.x, s.vel.y);
-        const gap = Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y);
-        // Nothing to read until he's had time to release.
-        const stalk = sim.t > 0.6 && gap < 5 && sp < 3;
+        // A slow release or a stopped route is not a block declaration.
+        // Use the same acquired pad/contact evidence as coverage technique;
+        // never infer the receiver's intent from his private assignment.
+        // Own contact needs no remote teammate positions. General teammate
+        // perception remains a separate migration; do not expand its use here.
+        const stalk = sim.t > 0.6 && showsBlock(a, sim, best, s, [a]);
         if (stalk) add(-1, w.wr);
         else if (s.vel.x > 3.5) add(clamp((s.vel.x - 3.5) / 3, 0, 1), w.wr);
         else if (sim.t > 0.6) add(0, w.wr * 0.5);
