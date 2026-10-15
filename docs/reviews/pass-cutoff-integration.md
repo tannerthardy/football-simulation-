@@ -122,7 +122,7 @@ on #67; this packet adds current-source evidence without replacing them.
 ## Adoption boundary
 
 #65's exact reconciled documentation is independently recommended by the
-[documentation review](../../data/reviews/current/pass-cutoff-integration/pr65-review.json).
+[documentation review](../../data/reviews/current/pass-cutoff-integration/pr65-adoption-review.json).
 Its source, tests, tooling/settings and88 existing receipt files match accepted
 develop; merge preview matches its reviewed tree. No runtime check is needed
 for that adoption. It requires explicit merge approval.
