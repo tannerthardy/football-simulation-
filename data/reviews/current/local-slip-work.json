@@ -1,0 +1,1039 @@
+{
+  "protocol": "local-slip-work-evidence-v1",
+  "decision": {
+    "localMechanicsClosed": true,
+    "worldIntegrated": false,
+    "adoptionReady": false,
+    "recommendation": "Preserve the local proof. Resolve the next saved ground-motor regime transition before considering a World adapter; PR68 full-interval work hold remains."
+  },
+  "branch": "codex/slip-work-interval",
+  "testedRevision": "a4c0333691bbbcade05915e91fa1f61759ac123b",
+  "initialKernelRevision": "e06ec62e6094f2d8b2dc11b03bf2bfdf335d5252",
+  "source": "89cda7c5847606b961aee7f1babd4e9397ddad2f3ff4b3c215b7282291f187eb",
+  "rejectedLiftedSource": "cfe86ea3b381ca9d400819b9137a82b71f54c493efd715dcb97b218471241a10",
+  "rejectedLiftedRevision": "e0f502d91a0d420b843a3c3e1483430ac3ae9da0",
+  "parentPR": 68,
+  "parentRevision": "41f06673ec0c4575ecde125114abaa85ba1b000f",
+  "parentSource": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+  "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "acceptedDevelopFetched": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "acceptedPhysicsTreeChangedFromA1b16e6": false,
+  "settings": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "extractionWorldOptions": {
+    "handContact": "patch",
+    "groundMovement": "legacy",
+    "groundYawCoupling": "hands",
+    "substeps": 12
+  },
+  "scope": "Exactly two bodies; one frozen tangent frame and fixed moment arms; constant saved ground leg accelerations and saturated ground yaw motors checked throughout each phase. No World import, material attachments, moving-frame update, active normal load, multiple contacts, support allocation or fatigue application.",
+  "input": {
+    "path": "config/local-slip-work.json",
+    "sha256": "22433a29b481f7c023f593afdd6bf00fa4c1c4d066209016783dce9921e11db8",
+    "source": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9"
+  },
+  "parentInput": {
+    "path": "config/current-contact-first-interval.json",
+    "sha256": "32e83a3d8f6bb6a5b65a8f4e44bd45995c9027e064fc9e518945b509eeb39edb"
+  },
+  "observationNeutral": true,
+  "reference": {
+    "path": "config/local-slip-work-reference.json",
+    "sha256": "caa1c8ffb0cc79f4085a1a06d034955bd3fcbb4238c15587c08e7af95c2047e3",
+    "precision": [
+      70,
+      100
+    ],
+    "doublePrecisionAgreement": true,
+    "generator": "scripts/diag/physics/local-slip-reference.py",
+    "generatorSha256": "59559013f794da2bbeedf00790d938ad86629bebdca68b1c5003a7eceb9d00ab",
+    "scope": "Closed-form scalar Coulomb event and analytic coordinate/work integrals; independent Decimal arithmetic, no engine imports.",
+    "referenceCommittedBeforeKernel": "d90993d6cfebc29ce1dfe27f39c1e97229f9645e",
+    "reference100": {
+      "path": "out/slip-work/reference100.json",
+      "sha256": "2d3331c750f820f9f98ae355fae91ea9e812c7b563002d0e15e183d604e012e9"
+    }
+  },
+  "tools": [
+    {
+      "path": "scripts/diag/physics/save-slip-field.ts",
+      "sha256": "f1aa970df7c4856fc9a776d80fc3183ad81529d21ea4ecd992c6093dff70679a"
+    },
+    {
+      "path": "scripts/diag/physics/local-slip-reference.py",
+      "sha256": "59559013f794da2bbeedf00790d938ad86629bebdca68b1c5003a7eceb9d00ab"
+    },
+    {
+      "path": "scripts/diag/physics/local-slip-work.ts",
+      "sha256": "e5c4248b39e585aad597549f25a36c1aaecec9954ca09468c8c3d6306a3f697f"
+    },
+    {
+      "path": "scripts/diag/physics/compiled-slip-cost.mjs",
+      "sha256": "ad8808e96c2618f2ce0a3dd07bc86f04bb3560d3b0886b08b653f122576bc712"
+    },
+    {
+      "path": "test/local-slip-work.test.ts",
+      "sha256": "fbe25985d3b4e7b027ca1462b924e7ffd270b662295a053d9fabef555cddf54f"
+    },
+    {
+      "path": "scripts/baseline.mjs",
+      "sha256": "f8eb76b92e4e3e9ca980e2ed6e6c88947b91b95ee88e95efe9107ecbdf967c37"
+    },
+    {
+      "path": "scripts/source-version.ts",
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+    }
+  ],
+  "mechanics": [
+    {
+      "case": "selected",
+      "phases": [
+        {
+          "duration": 5.549542384969701e-05,
+          "force": -398.83419955463296,
+          "slipBefore": 0.004251206726931661,
+          "slipAfter": 0,
+          "work": -4.704698454778286e-05
+        },
+        {
+          "duration": 0.00411117124281697,
+          "force": 45.63112346495673,
+          "slipBefore": 0,
+          "slipAfter": 0,
+          "work": 0
+        }
+      ],
+      "impulse": 0.16546388961652175,
+      "temporalMoment": 0.00029401379037879494,
+      "absoluteImpulse": 0.20973083551659977,
+      "handWork": -4.704698454778286e-05,
+      "groundWork": [
+        1.7660932823279303,
+        -1.6757253913358685
+      ],
+      "energyChange": 0.09032084400752183,
+      "workResidual": 7.838259934774688e-15,
+      "referenceResiduals": {
+        "impulse": 4.440892098500626e-16,
+        "temporalMoment": 1.8973538018496328e-18,
+        "absoluteImpulse": 4.440892098500626e-16,
+        "handWork": 1.8228149024912543e-18,
+        "energyChange": 8.174017018802715e-15,
+        "groundWork": 3.3306690738754696e-16,
+        "motion": 3.552713678800501e-15
+      },
+      "partitions": [
+        {
+          "weights": [
+            0.23,
+            0.41,
+            0.36
+          ],
+          "residual": 7.105427357601002e-15
+        },
+        {
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "residual": 6.661338147750939e-16
+        },
+        {
+          "weights": [
+            0.01,
+            0.09,
+            0.9
+          ],
+          "residual": 7.105427357601002e-15
+        }
+      ],
+      "nativeComparison": {
+        "beforeSlip": 0.004251206726931661,
+        "afterSlip": -2.7755575615628914e-17,
+        "selectedImpulse": 0.16546388961652211,
+        "orderedWork": -0.002359356843454375,
+        "frozenFrameWork": 0.000351710600301016
+      }
+    },
+    {
+      "case": "slidingControl",
+      "phases": [
+        {
+          "duration": 0.004166666666666667,
+          "force": -398.83419955463296,
+          "slipBefore": 0.7356891497659769,
+          "slipAfter": 0.4041649310687836,
+          "work": -0.947109979039195
+        }
+      ],
+      "impulse": -1.6618091648109707,
+      "temporalMoment": -0.003462102426689522,
+      "absoluteImpulse": 1.6618091648109707,
+      "handWork": -0.947109979039195,
+      "groundWork": [
+        0.01852254494949812,
+        -2.090681618725034
+      ],
+      "energyChange": -3.019269052814707,
+      "workResidual": 2.4202861936828413e-14,
+      "referenceResiduals": {
+        "impulse": 0,
+        "temporalMoment": 4.336808689942018e-19,
+        "absoluteImpulse": 0,
+        "handWork": 0,
+        "energyChange": 2.353672812205332e-14,
+        "groundWork": 8.881784197001252e-16,
+        "motion": 7.105427357601002e-15
+      },
+      "partitions": [
+        {
+          "weights": [
+            0.23,
+            0.41,
+            0.36
+          ],
+          "residual": 7.105427357601002e-15
+        },
+        {
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "residual": 7.105427357601002e-15
+        },
+        {
+          "weights": [
+            0.01,
+            0.09,
+            0.9
+          ],
+          "residual": 7.105427357601002e-15
+        }
+      ],
+      "nativeComparison": {
+        "beforeSlip": 0.7356891497659769,
+        "afterSlip": 0.4041649310687837,
+        "selectedImpulse": -1.6618091648109707,
+        "orderedWork": -0.9193524851134335,
+        "frozenFrameWork": -0.9471099790391951
+      }
+    }
+  ],
+  "nextSavedField": {
+    "time": 0.36666666666666664,
+    "result": {
+      "ok": false,
+      "reason": "ground-motor-transition"
+    }
+  },
+  "checks": {
+    "distinctFocusedPassed": 29,
+    "newLocal": 11,
+    "unchangedParentCoupling": 18,
+    "finalChosenLocalPassed": 11,
+    "typecheckPassed": true,
+    "fullSuites": 0,
+    "newGames": 0,
+    "newFootballContacts": 0,
+    "failedDevelopmentChecks": "Three initial test-table invocation failures (parts is not iterable), corrected without changing physical expectations/tolerances. No original tests changed.",
+    "historicalFailures": "Original seven affected assertions and nine patch-gate failures remain retained, not rerun or relabeled fixed."
+  },
+  "cost": {
+    "budget": {
+      "medianUs": 10,
+      "p95Us": 25,
+      "scope": "local single interval only; World integration not measured"
+    },
+    "benchmarkMethod": "Same container/Node22.23.3, no competing collectors; 1000 warmups per case/kernel, 101 alternating individual calls per case/kernel per pass. Compiled TS5.9.3 target/module ES2022, no TSX. Two separate 2-pass compiled runs. Calls include validation/copy/results; not World.",
+    "compiledBitExactAcrossVariants": true,
+    "compiledMeasurements": [
+      {
+        "run": "first",
+        "pass": 0,
+        "case": "selected",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 4.015999999978703,
+        "p95Us": 4.767000000015287,
+        "maxUs": 56.67500000004111
+      },
+      {
+        "run": "first",
+        "pass": 0,
+        "case": "selected",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 4.207000000064909,
+        "p95Us": 5.438000000026477,
+        "maxUs": 26.65999999999258
+      },
+      {
+        "run": "first",
+        "pass": 0,
+        "case": "slidingControl",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.82600000000366,
+        "p95Us": 5.068000000051143,
+        "maxUs": 56.77500000001601
+      },
+      {
+        "run": "first",
+        "pass": 0,
+        "case": "slidingControl",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 4.115999999953601,
+        "p95Us": 5.407999999988533,
+        "maxUs": 33.06900000006863
+      },
+      {
+        "run": "first",
+        "pass": 0,
+        "case": "noHand",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.6659999999528736,
+        "p95Us": 4.386999999951513,
+        "maxUs": 19.629000000009
+      },
+      {
+        "run": "first",
+        "pass": 0,
+        "case": "noHand",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 3.9960000000291984,
+        "p95Us": 4.407000000014705,
+        "maxUs": 10.184999999978572
+      },
+      {
+        "run": "first",
+        "pass": 1,
+        "case": "selected",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 4.156000000079985,
+        "p95Us": 5.118000000038592,
+        "maxUs": 13.649999999984175
+      },
+      {
+        "run": "first",
+        "pass": 1,
+        "case": "selected",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 4.2560000000548825,
+        "p95Us": 4.897000000028129,
+        "maxUs": 381.6540000000259
+      },
+      {
+        "run": "first",
+        "pass": 1,
+        "case": "slidingControl",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.875999999991109,
+        "p95Us": 4.627000000027692,
+        "maxUs": 10.365999999976339
+      },
+      {
+        "run": "first",
+        "pass": 1,
+        "case": "slidingControl",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 4.195999999978994,
+        "p95Us": 4.697000000078333,
+        "maxUs": 7.942000000070948
+      },
+      {
+        "run": "first",
+        "pass": 1,
+        "case": "noHand",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.754999999955544,
+        "p95Us": 4.475999999954183,
+        "maxUs": 5.717999999887979
+      },
+      {
+        "run": "first",
+        "pass": 1,
+        "case": "noHand",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 4.115999999953601,
+        "p95Us": 4.7870000000784785,
+        "maxUs": 37.70699999995486
+      },
+      {
+        "run": "final",
+        "pass": 0,
+        "case": "selected",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 4.0559999999914,
+        "p95Us": 5.078000000025895,
+        "maxUs": 32.53899999992882
+      },
+      {
+        "run": "final",
+        "pass": 0,
+        "case": "selected",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 4.177000000026965,
+        "p95Us": 4.938000000038301,
+        "maxUs": 9.193999999979496
+      },
+      {
+        "run": "final",
+        "pass": 0,
+        "case": "slidingControl",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.8359999999784122,
+        "p95Us": 4.286999999976615,
+        "maxUs": 87.18099999998685
+      },
+      {
+        "run": "final",
+        "pass": 0,
+        "case": "slidingControl",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 4.146999999989021,
+        "p95Us": 4.877000000078624,
+        "maxUs": 44.39700000000357
+      },
+      {
+        "run": "final",
+        "pass": 0,
+        "case": "noHand",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.676000000041313,
+        "p95Us": 4.216000000042186,
+        "maxUs": 6.5600000000358705
+      },
+      {
+        "run": "final",
+        "pass": 0,
+        "case": "noHand",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 3.9960000000291984,
+        "p95Us": 5.088000000000648,
+        "maxUs": 48.40300000000752
+      },
+      {
+        "run": "final",
+        "pass": 1,
+        "case": "selected",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.875999999991109,
+        "p95Us": 4.487000000040098,
+        "maxUs": 46.58000000006268
+      },
+      {
+        "run": "final",
+        "pass": 1,
+        "case": "selected",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 3.9959999999155116,
+        "p95Us": 4.65699999995195,
+        "maxUs": 8.331999999995787
+      },
+      {
+        "run": "final",
+        "pass": 1,
+        "case": "slidingControl",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.68500000001859,
+        "p95Us": 4.535999999916385,
+        "maxUs": 131.54799999995248
+      },
+      {
+        "run": "final",
+        "pass": 1,
+        "case": "slidingControl",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 3.906000000029053,
+        "p95Us": 5.038000000013199,
+        "maxUs": 6.558999999924708
+      },
+      {
+        "run": "final",
+        "pass": 1,
+        "case": "noHand",
+        "mode": "closures",
+        "samples": 101,
+        "medianUs": 3.5360000000537184,
+        "p95Us": 4.087000000026819,
+        "maxUs": 11.196999999924628
+      },
+      {
+        "run": "final",
+        "pass": 1,
+        "case": "noHand",
+        "mode": "lifted",
+        "samples": 101,
+        "medianUs": 3.7950000000819273,
+        "p95Us": 4.166999999938525,
+        "maxUs": 6.11900000001242
+      }
+    ],
+    "chosenCompiledBudgetMetAllCasesAndPasses": true,
+    "tsx": [
+      {
+        "implementation": "chosen closures",
+        "source": "89cda7c5847606b961aee7f1babd4e9397ddad2f3ff4b3c215b7282291f187eb",
+        "cost": [
+          {
+            "pass": 0,
+            "cases": [
+              {
+                "name": "selected",
+                "samples": 101,
+                "medianUs": 11.29699999995637,
+                "p95Us": 19.18799999998555,
+                "maxUs": 49.204000000031556
+              },
+              {
+                "name": "slidingControl",
+                "samples": 101,
+                "medianUs": 8.58299999998735,
+                "p95Us": 10.515999999995529,
+                "maxUs": 24.656999999990603
+              },
+              {
+                "name": "noHand",
+                "samples": 101,
+                "medianUs": 8.381999999983236,
+                "p95Us": 10.17500000000382,
+                "maxUs": 31.647000000020853
+              }
+            ]
+          },
+          {
+            "pass": 1,
+            "cases": [
+              {
+                "name": "selected",
+                "samples": 101,
+                "medianUs": 11.096000000009099,
+                "p95Us": 12.498999999991156,
+                "maxUs": 32.13799999997491
+              },
+              {
+                "name": "slidingControl",
+                "samples": 101,
+                "medianUs": 8.462999999949261,
+                "p95Us": 9.934999999984484,
+                "maxUs": 41.681999999980235
+              },
+              {
+                "name": "noHand",
+                "samples": 101,
+                "medianUs": 8.442999999999756,
+                "p95Us": 10.605999999995674,
+                "maxUs": 304.9179999999865
+              }
+            ]
+          }
+        ],
+        "budgetMet": false
+      },
+      {
+        "implementation": "rejected lifted, first run",
+        "source": "cfe86ea3b381ca9d400819b9137a82b71f54c493efd715dcb97b218471241a10",
+        "cost": [
+          {
+            "pass": 0,
+            "cases": [
+              {
+                "name": "selected",
+                "samples": 101,
+                "medianUs": 5.468000000007578,
+                "p95Us": 33.2000000000221,
+                "maxUs": 3381.0300000000097
+              },
+              {
+                "name": "slidingControl",
+                "samples": 101,
+                "medianUs": 4.577000000040243,
+                "p95Us": 20.792000000028565,
+                "maxUs": 254.11299999996118
+              },
+              {
+                "name": "noHand",
+                "samples": 101,
+                "medianUs": 4.557000000033895,
+                "p95Us": 11.777999999992517,
+                "maxUs": 298.6909999999625
+              }
+            ]
+          },
+          {
+            "pass": 1,
+            "cases": [
+              {
+                "name": "selected",
+                "samples": 101,
+                "medianUs": 2.6840000000447617,
+                "p95Us": 3.875999999991109,
+                "maxUs": 205.30999999999722
+              },
+              {
+                "name": "slidingControl",
+                "samples": 101,
+                "medianUs": 2.5229999999965003,
+                "p95Us": 3.4150000000181535,
+                "maxUs": 52.66999999997779
+              },
+              {
+                "name": "noHand",
+                "samples": 101,
+                "medianUs": 2.4240000000190776,
+                "p95Us": 3.1850000000304135,
+                "maxUs": 4.427000000021053
+              }
+            ]
+          }
+        ],
+        "budgetMet": false
+      },
+      {
+        "implementation": "rejected lifted, later run",
+        "source": "cfe86ea3b381ca9d400819b9137a82b71f54c493efd715dcb97b218471241a10",
+        "cost": [
+          {
+            "pass": 0,
+            "cases": [
+              {
+                "name": "selected",
+                "samples": 101,
+                "medianUs": 2.904000000000906,
+                "p95Us": 5.088000000000648,
+                "maxUs": 17.67699999999195
+              },
+              {
+                "name": "slidingControl",
+                "samples": 101,
+                "medianUs": 2.774000000044907,
+                "p95Us": 5.178000000000793,
+                "maxUs": 133.57100000001765
+              },
+              {
+                "name": "noHand",
+                "samples": 101,
+                "medianUs": 2.7140000000258624,
+                "p95Us": 4.8469999999838365,
+                "maxUs": 11.167000000000371
+              }
+            ]
+          },
+          {
+            "pass": 1,
+            "cases": [
+              {
+                "name": "selected",
+                "samples": 101,
+                "medianUs": 2.8839999999945576,
+                "p95Us": 5.167999999969197,
+                "maxUs": 336.1560000000168
+              },
+              {
+                "name": "slidingControl",
+                "samples": 101,
+                "medianUs": 2.724000000000615,
+                "p95Us": 4.866999999990185,
+                "maxUs": 14.190999999982523
+              },
+              {
+                "name": "noHand",
+                "samples": 101,
+                "medianUs": 2.66399999998157,
+                "p95Us": 4.916999999977634,
+                "maxUs": 572.8310000000079
+              }
+            ]
+          }
+        ],
+        "budgetMet": true
+      }
+    ],
+    "optimizationDecision": "Reject helper lift: it reduces TSX naming overhead but has no compiled performance benefit; keep simpler original source. All tails retained, no hard maximum claimed.",
+    "tailCaveat": "Selected chosen compiled max56.675us; all chosen compiled cases max131.548us. Rejected lift compiled max381.654us; TSX rejected max3381.030us. Small samples, unexplained tails; no whole-World cost certificate."
+  },
+  "receipts": [
+    {
+      "commit": "41f06673ec0c4575ecde125114abaa85ba1b000f",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "bbd8ade96581f06e1a06da931966d668f3c5e40ba00e289bf973d54b91e5184f",
+      "startedAt": "2026-10-15T20:05:22.365Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/save-slip-field.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.37282333900000003
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/extract.receipt.json"
+    },
+    {
+      "commit": "41f06673ec0c4575ecde125114abaa85ba1b000f",
+      "sourceSha256": "91ae4d680e6d29c3ea5b5bedf90e0cb1d3d01a49ccc61dc7eb4dfb594d5b0dc9",
+      "validationSha256": "4edf3a347c986e93b69ad182c0596f6d9dcd050bc5caf7c573c69fe545b3253a",
+      "startedAt": "2026-10-15T20:06:45.834Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/save-slip-field.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.35069012999999993
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/extract-final.receipt.json"
+    },
+    {
+      "commit": "d90993d6cfebc29ce1dfe27f39c1e97229f9645e",
+      "sourceSha256": "4424e2ba76020fa1d4fc434330267833007636babae13b920609ceb0a49143ae",
+      "validationSha256": "028aeca8f5e304e4c3310b201ec979550d5a56b675d16369904fad8a20ed3b14",
+      "startedAt": "2026-10-15T20:10:51.288Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/local-slip-work.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.78072794
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 1,
+      "path": "out/slip-work/local-tests.receipt.json"
+    },
+    {
+      "commit": "d90993d6cfebc29ce1dfe27f39c1e97229f9645e",
+      "sourceSha256": "4424e2ba76020fa1d4fc434330267833007636babae13b920609ceb0a49143ae",
+      "validationSha256": "b2bc5d8b27a11d8917fd81a510eceaf28f4a3b30dc5202549577499ae5ac0bbd",
+      "startedAt": "2026-10-15T20:12:07.720Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/local-slip-work.test.ts",
+            "test/coupled-hand-yaw.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.287040094
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/correctness.receipt.json"
+    },
+    {
+      "commit": "e06ec62e6094f2d8b2dc11b03bf2bfdf335d5252",
+      "sourceSha256": "89cda7c5847606b961aee7f1babd4e9397ddad2f3ff4b3c215b7282291f187eb",
+      "validationSha256": "8226cde67cf9d00251c11cfe5a0236c6bde8c8aeaa6d40e65f5e2c0595fabe96",
+      "startedAt": "2026-10-15T20:14:27.116Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/local-slip-work.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.44200448100000006
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/validation.receipt.json"
+    },
+    {
+      "commit": "e06ec62e6094f2d8b2dc11b03bf2bfdf335d5252",
+      "sourceSha256": "89cda7c5847606b961aee7f1babd4e9397ddad2f3ff4b3c215b7282291f187eb",
+      "validationSha256": "8226cde67cf9d00251c11cfe5a0236c6bde8c8aeaa6d40e65f5e2c0595fabe96",
+      "startedAt": "2026-10-15T20:15:22.170Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--cpu-prof",
+            "--cpu-prof-dir=out/slip-work",
+            "--cpu-prof-name=kernel.cpuprofile",
+            "--import",
+            "tsx",
+            "out/slip-work/profile.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.887309195
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/profile.receipt.json"
+    },
+    {
+      "commit": "e06ec62e6094f2d8b2dc11b03bf2bfdf335d5252",
+      "sourceSha256": "cfe86ea3b381ca9d400819b9137a82b71f54c493efd715dcb97b218471241a10",
+      "validationSha256": "8226cde67cf9d00251c11cfe5a0236c6bde8c8aeaa6d40e65f5e2c0595fabe96",
+      "startedAt": "2026-10-15T20:16:35.806Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/local-slip-work.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.38525136299999996
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/optimized-validation.receipt.json"
+    },
+    {
+      "commit": "e0f502d91a0d420b843a3c3e1483430ac3ae9da0",
+      "sourceSha256": "cfe86ea3b381ca9d400819b9137a82b71f54c493efd715dcb97b218471241a10",
+      "validationSha256": "8226cde67cf9d00251c11cfe5a0236c6bde8c8aeaa6d40e65f5e2c0595fabe96",
+      "startedAt": "2026-10-15T20:17:56.874Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/local-slip-work.test.ts",
+            "test/coupled-hand-yaw.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.244978526
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/final-tests.receipt.json"
+    },
+    {
+      "commit": "e0f502d91a0d420b843a3c3e1483430ac3ae9da0",
+      "sourceSha256": "cfe86ea3b381ca9d400819b9137a82b71f54c493efd715dcb97b218471241a10",
+      "validationSha256": "8226cde67cf9d00251c11cfe5a0236c6bde8c8aeaa6d40e65f5e2c0595fabe96",
+      "startedAt": "2026-10-15T20:17:58.153Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.496352589
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/typecheck.receipt.json"
+    },
+    {
+      "commit": "e0f502d91a0d420b843a3c3e1483430ac3ae9da0",
+      "sourceSha256": "cfe86ea3b381ca9d400819b9137a82b71f54c493efd715dcb97b218471241a10",
+      "validationSha256": "8226cde67cf9d00251c11cfe5a0236c6bde8c8aeaa6d40e65f5e2c0595fabe96",
+      "startedAt": "2026-10-15T20:19:25.348Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/local-slip-work.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.365313634
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/final-validation.receipt.json"
+    },
+    {
+      "commit": "e0f502d91a0d420b843a3c3e1483430ac3ae9da0",
+      "sourceSha256": "cfe86ea3b381ca9d400819b9137a82b71f54c493efd715dcb97b218471241a10",
+      "validationSha256": "8226cde67cf9d00251c11cfe5a0236c6bde8c8aeaa6d40e65f5e2c0595fabe96",
+      "startedAt": "2026-10-15T20:21:21.432Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "out/slip-work/compiled-cost.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.900707879
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/compiled-cost.receipt.json"
+    },
+    {
+      "commit": "a4c0333691bbbcade05915e91fa1f61759ac123b",
+      "sourceSha256": "89cda7c5847606b961aee7f1babd4e9397ddad2f3ff4b3c215b7282291f187eb",
+      "validationSha256": "c2fd3c974c7daee8f6c01a99f61d4b48c008fbb3db00ce4d8e5a06f5b741adbd",
+      "startedAt": "2026-10-15T20:22:25.578Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/local-slip-work.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.545810368
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/chosen-tests.receipt.json"
+    },
+    {
+      "commit": "a4c0333691bbbcade05915e91fa1f61759ac123b",
+      "sourceSha256": "89cda7c5847606b961aee7f1babd4e9397ddad2f3ff4b3c215b7282291f187eb",
+      "validationSha256": "c2fd3c974c7daee8f6c01a99f61d4b48c008fbb3db00ce4d8e5a06f5b741adbd",
+      "startedAt": "2026-10-15T20:22:26.750Z",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 15.663846852
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/chosen-typecheck.receipt.json"
+    },
+    {
+      "commit": "a4c0333691bbbcade05915e91fa1f61759ac123b",
+      "sourceSha256": "89cda7c5847606b961aee7f1babd4e9397ddad2f3ff4b3c215b7282291f187eb",
+      "validationSha256": "c2fd3c974c7daee8f6c01a99f61d4b48c008fbb3db00ce4d8e5a06f5b741adbd",
+      "startedAt": "2026-10-15T20:23:29.572Z",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "scripts/diag/physics/compiled-slip-cost.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.020129413
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0,
+      "path": "out/slip-work/compiled-cost-final.receipt.json"
+    }
+  ],
+  "indexedLauncherSeconds": 41.742985803,
+  "costExclusions": "Python independent-reference generation, report preparation and Git operations are outside launcher subtotal. No other simulations were run.",
+  "nextDecision": "Integrate the existing motor law through the saved .366666667s ground-motor regime change, retaining these references and the sliding control. No recovery retune, historical solver import or football campaign."
+}
