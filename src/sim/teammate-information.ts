@@ -27,8 +27,7 @@ export interface InstalledTeammateExpectation {
   label: string;
 }
 
-export type TeammatePicture = {
-  source: 'observed' | 'remembered' | 'called' | 'tactile';
+interface PictureFields {
   pos: Vec2;
   vel: Vec2;
   sampledAt: number;
@@ -36,7 +35,13 @@ export type TeammatePicture = {
   age: number;
   predictedFor: number;
   label?: string;
-} | { source: 'unavailable' };
+}
+
+export type TeammatePicture = (PictureFields & {
+  source: 'observed' | 'remembered';
+  /** Historical delivered sighting velocity, never a current-motion promise. */
+  sampledVel: Vec2;
+}) | (PictureFields & { source: 'called' | 'tactile' }) | { source: 'unavailable' };
 
 interface Sighting {
   pos: Vec2;
@@ -135,10 +140,12 @@ export class TeammateInformation {
   private picture(sample: Sighting, now: number, source: 'observed' | 'remembered' | 'tactile'): TeammatePicture {
     const age = Math.max(0, now - sample.sampledAt);
     const predictedFor = Math.min(age, TEAMMATE_INFORMATION_LIMITS.prediction);
-    return { source, pos: { x: sample.pos.x + sample.vel.x * predictedFor,
+    const fields = { pos: { x: sample.pos.x + sample.vel.x * predictedFor,
       y: sample.pos.y + sample.vel.y * predictedFor },
       // Beyond the prediction horizon we know a location, not current speed.
       vel: age <= TEAMMATE_INFORMATION_LIMITS.prediction + 1e-9 ? { ...sample.vel } : { x: 0, y: 0 },
       sampledAt: sample.sampledAt, availableAt: sample.availableAt, age, predictedFor };
+    if (source === 'tactile') return { source, ...fields };
+    return { source, ...fields, sampledVel: { ...sample.vel } };
   }
 }
