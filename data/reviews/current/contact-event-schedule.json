@@ -1,0 +1,860 @@
+{
+  "protocol": "contact-event-schedule-v1",
+  "branch": "codex/contact-event-schedule",
+  "decision": {
+    "mechanicalGatesPassed": true,
+    "worldIntegrated": false,
+    "adoptionReady": false,
+    "runtimeGatePassedReliably": false,
+    "recommendation": "Preserve the faster event schedule and PR71 reference. Stop small optimizations. Define/measure one incremental World insertion budget including replaced work and support/effort boundaries before a different method or explicit budget decision."
+  },
+  "runtimeRevision": "c3d90fb529c6b6d6cb9060dc6d0ab04f8afb4b8b",
+  "testedDiagnosticRevision": "af2eeb9e867932d430aa7a2a7f3644d44432c916",
+  "source": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+  "parentPR": 71,
+  "parentRevision": "a33ddc4f0f8700805ae3c30363bd472735d8754e",
+  "parentSource": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+  "unpreparedRevision": "b40ea7b8c9f389fbcd5fbc79dc313ff9033e3594",
+  "unpreparedSource": "796b4068e11edd32e8ba4a98fcf9d303953e972dd1196739ea87246ac3d8223a",
+  "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "acceptedDevelopFetched": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "settings": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "input": {
+    "path": "config/local-slip-work.json",
+    "sha256": "22433a29b481f7c023f593afdd6bf00fa4c1c4d066209016783dce9921e11db8"
+  },
+  "inputManifest": [
+    {
+      "case": "nextField",
+      "time": 0.36666666666666664,
+      "duration": 0.004166666666666667
+    },
+    {
+      "case": "selected",
+      "time": 0.36249999999999993,
+      "duration": 0.004166666666666667
+    },
+    {
+      "case": "slidingControl",
+      "time": 0.35,
+      "duration": 0.004166666666666667
+    },
+    {
+      "case": "noHandControl",
+      "derivedFrom": "nextField",
+      "override": {
+        "forceLimit": 0
+      }
+    }
+  ],
+  "reference": {
+    "path": "config/local-slip-motor-reference.json",
+    "sha256": "34135251daed051faee6483d1d9c7e9b0e303174335422815744ac83079c5792",
+    "generatorSha256": "4398c223da7795065a23e3a840cc288f439865376b5f4be963472e26c9c2f50e",
+    "precision": [70, 100],
+    "nonzeroDoubleAgreement": true,
+    "referenceZeroTail": 2.108e-67,
+    "reference100": {
+      "path": "out/event-schedule/reference100.json",
+      "sha256": "70ff12c58267a73dd41dd64b781593778a73675df92a0d2e426d36b71be82d05"
+    }
+  },
+  "criteria": {
+    "motionAndIntegralAgreement": 1e-11,
+    "energyAndWorkClosure": 1e-11,
+    "phasePassiveWorkMaximum": 1e-14,
+    "cost": {
+      "medianUs": 10,
+      "p95Us": 25,
+      "scope": "complete local single-field call, not World"
+    }
+  },
+  "tools": [
+    {
+      "path": "src/physics/motor-event-schedule.ts",
+      "sha256": "b2bcb9f91b222b27a11a91df85216d7cc537b4403a90856027d6d620000ea5c6"
+    },
+    {
+      "path": "src/physics/local-slip-motor.ts",
+      "sha256": "24575e45be35d426146e6877878e3a8f5f8aae8f4403269de4adebffbd09bc11"
+    },
+    {
+      "path": "scripts/diag/physics/motor-stage-cost.mjs",
+      "sha256": "b3cd8124d38b1083cf78de2b91cd3e2179f4e585c0cfce5954e96879e2e2e7b2"
+    },
+    {
+      "path": "scripts/diag/physics/event-schedule-cost.mjs",
+      "sha256": "07e760ed73d8d2de0faab2f7db0086d09d9ddfa3c5a132380e3aaa4c612ac18f"
+    },
+    {
+      "path": "scripts/diag/physics/event-schedule-accuracy.ts",
+      "sha256": "772339243be7dceecbc589579dcbff1d90859bc480554fc7dba4148ab6cb5542"
+    },
+    {
+      "path": "test/motor-event-schedule.test.ts",
+      "sha256": "dcf3ffd51eb5749c4ee3f1877f2a472d3e9c0f551c8eb8bd42a9e3d0b7c15615"
+    },
+    {
+      "path": "scripts/diag/physics/local-slip-motor-reference.py",
+      "sha256": "4398c223da7795065a23e3a840cc288f439865376b5f4be963472e26c9c2f50e"
+    },
+    {
+      "path": "scripts/source-version.ts",
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    {
+      "path": "scripts/baseline.mjs",
+      "sha256": "f8eb76b92e4e3e9ca980e2ed6e6c88947b91b95ee88e95efe9107ecbdf967c37"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+    }
+  ],
+  "scope": "One frozen two-body tangent field; fixed arms, leg accelerations and capacities; small unwrapped heading branch. Owned initial snapshot, reduced slip/angular state, phase force/work/effort, one endpoint reconstruction. No World import, moving force point, material attachments, normal/shared-budget reallocation, multiple rows, support allocation or actual fatigue charging.",
+  "mechanics": [
+    {
+      "key": "nextField",
+      "referenceResiduals": {
+        "impulse": 1.5987211554602254e-14,
+        "temporalMoment": 2.0274580625478933e-17,
+        "absoluteImpulse": 1.5432100042289676e-14,
+        "handWork": 5.898059818321144e-17,
+        "energyChange": 2.6645352591003757e-14,
+        "groundYawImpulse": 2.0650148258027912e-14,
+        "groundYawTemporalMoment": 2.5153490401663703e-17,
+        "absoluteGroundYawImpulse": 1.1102230246251565e-16,
+        "groundYawWork": 7.771561172376096e-15,
+        "legWork": 2.220446049250313e-16,
+        "motion": 3.552713678800501e-15
+      },
+      "priorResiduals": {
+        "impulse": 1.8207657603852567e-14,
+        "temporalMoment": 2.222614453595284e-17,
+        "absoluteImpulse": 1.8207657603852567e-14,
+        "handWork": 6.179952383167375e-18,
+        "energyChange": 0,
+        "groundYawImpulse": 2.3925306180672123e-14,
+        "groundYawTemporalMoment": 2.949029909160572e-17,
+        "absoluteGroundYawImpulse": 1.1102230246251565e-16,
+        "groundYawWork": 9.006684287271582e-15,
+        "legWork": 2.220446049250313e-16,
+        "motion": 2.942091015256665e-15
+      },
+      "partitions": [
+        {
+          "weights": [0.23, 0.41, 0.36],
+          "residual": 2.842170943040401e-14
+        },
+        {
+          "weights": [0.5, 0.5],
+          "residual": 2.842170943040401e-14
+        },
+        {
+          "weights": [0.7, 0.2, 0.1],
+          "residual": 7.93809462606987e-15
+        }
+      ],
+      "phases": [
+        {
+          "duration": 5.887375724593369e-05,
+          "force": -398.83419955463296,
+          "groundAcceleration": [66.84590123478817, -52.62145051809873],
+          "slipBefore": 0.004452315822477182,
+          "slipAfter": 0,
+          "work": -5.2272119718022215e-05
+        },
+        {
+          "duration": 0.002883056877586069,
+          "force": 45.93761389840637,
+          "groundAcceleration": [66.84590123478817, -52.62145051809873],
+          "slipBefore": 0,
+          "slipAfter": -2.0485351211519778e-17,
+          "work": -1.3565476770258816e-18
+        },
+        {
+          "duration": 0.001224736031834664,
+          "force": 398.83419955463296,
+          "groundAcceleration": [66.84590123478817, 52.62145051809873],
+          "slipBefore": -2.0485351211519778e-17,
+          "slipAfter": -0.002587360768598011,
+          "work": -0.0006319196781101736
+        }
+      ],
+      "impulse": 0.5974265007662338,
+      "temporalMoment": 0.0005550976619465236,
+      "absoluteImpulse": 0.6443882364581452,
+      "handWork": -0.0006841917978281972,
+      "groundYawImpulse": [1.330552231296489, -0.3974610718169479],
+      "groundYawTemporalMoment": [0.0027719838152010187, -0.0016620130929408273],
+      "absoluteGroundYawImpulse": [1.330552231296489, 0.9644147473714425],
+      "groundYawWork": [1.135829334140481, 0.10511079737275887],
+      "legWork": [1.0165249389411717, -1.717897608082259],
+      "energyChange": 0.5388832705743596,
+      "workResidual": 3.5083047578154947e-14
+    },
+    {
+      "key": "selected",
+      "referenceResiduals": {
+        "impulse": 4.996003610813204e-16,
+        "temporalMoment": 2.0057740190981832e-18,
+        "absoluteImpulse": 3.885780586188048e-16,
+        "handWork": 1.836367429647323e-18,
+        "energyChange": 8.174017018802715e-15,
+        "groundYawImpulse": 2.220446049250313e-16,
+        "groundYawTemporalMoment": 0,
+        "absoluteGroundYawImpulse": 2.220446049250313e-16,
+        "groundYawWork": 1.1102230246251565e-16,
+        "legWork": 0,
+        "motion": 1.1102230246251565e-16
+      },
+      "priorResiduals": {
+        "impulse": 0,
+        "temporalMoment": 0,
+        "absoluteImpulse": 0,
+        "handWork": 1.2488653774317404e-17,
+        "energyChange": 0,
+        "groundYawImpulse": 0,
+        "groundYawTemporalMoment": 0,
+        "absoluteGroundYawImpulse": 0,
+        "groundYawWork": 0,
+        "legWork": 2.220446049250313e-16,
+        "motion": 3.552713678800501e-15
+      },
+      "partitions": [
+        {
+          "weights": [0.23, 0.41, 0.36],
+          "residual": 7.105427357601002e-15
+        },
+        {
+          "weights": [0.5, 0.5],
+          "residual": 2.842170943040401e-14
+        },
+        {
+          "weights": [0.7, 0.2, 0.1],
+          "residual": 7.105427357601002e-15
+        }
+      ],
+      "phases": [
+        {
+          "duration": 5.549542384969702e-05,
+          "force": -398.83419955463296,
+          "groundAcceleration": [66.53667359995978, -52.4012904420741],
+          "slipBefore": 0.004251206726931661,
+          "slipAfter": 0,
+          "work": -4.7046984547782876e-05
+        },
+        {
+          "duration": 0.00411117124281697,
+          "force": 45.631123464956715,
+          "groundAcceleration": [66.53667359995978, -52.4012904420741],
+          "slipBefore": 0,
+          "slipAfter": 0,
+          "work": 0
+        }
+      ],
+      "impulse": 0.1654638896165217,
+      "temporalMoment": 0.00029401379037879483,
+      "absoluteImpulse": 0.2097308355165997,
+      "handWork": -4.7046984547782876e-05,
+      "groundYawImpulse": [1.324397126616932, -0.9603797840245553],
+      "groundYawTemporalMoment": [0.002759160680451942, -0.0020007912167178234],
+      "absoluteGroundYawImpulse": [1.324397126616932, 0.9603797840245553],
+      "groundYawWork": [0.8009514782021686, 0.11668976429480264],
+      "legWork": [0.9651418041257614, -1.7924151556306713],
+      "energyChange": 0.09032084400752183,
+      "workResidual": 8.215650382226158e-15
+    },
+    {
+      "key": "slidingControl",
+      "referenceResiduals": {
+        "impulse": 0,
+        "temporalMoment": 4.336808689942018e-19,
+        "absoluteImpulse": 0,
+        "handWork": 0,
+        "energyChange": 5.329070518200751e-15,
+        "groundYawImpulse": 2.220446049250313e-16,
+        "groundYawTemporalMoment": 4.336808689942018e-19,
+        "absoluteGroundYawImpulse": 2.220446049250313e-16,
+        "groundYawWork": 1.1102230246251565e-16,
+        "legWork": 3.3306690738754696e-16,
+        "motion": 7.105427357601002e-15
+      },
+      "priorResiduals": {
+        "impulse": 0,
+        "temporalMoment": 0,
+        "absoluteImpulse": 0,
+        "handWork": 0,
+        "energyChange": 2.842170943040401e-14,
+        "groundYawImpulse": 0,
+        "groundYawTemporalMoment": 0,
+        "absoluteGroundYawImpulse": 0,
+        "groundYawWork": 0,
+        "legWork": 0,
+        "motion": 2.220446049250313e-16
+      },
+      "partitions": [
+        {
+          "weights": [0.23, 0.41, 0.36],
+          "residual": 7.105427357601002e-15
+        },
+        {
+          "weights": [0.5, 0.5],
+          "residual": 8.526512829121202e-14
+        },
+        {
+          "weights": [0.7, 0.2, 0.1],
+          "residual": 2.842170943040401e-14
+        }
+      ],
+      "phases": [
+        {
+          "duration": 0.004166666666666667,
+          "force": -398.83419955463296,
+          "groundAcceleration": [65.60899069547455, -51.798543924501544],
+          "slipBefore": 0.7356891497659769,
+          "slipAfter": 0.4041649310687836,
+          "work": -0.947109979039195
+        }
+      ],
+      "impulse": -1.6618091648109707,
+      "temporalMoment": -0.003462102426689522,
+      "absoluteImpulse": 1.6618091648109707,
+      "handWork": -0.947109979039195,
+      "groundYawImpulse": [1.3059318125782595, -0.9493330032013274],
+      "groundYawTemporalMoment": [0.0027206912762047075, -0.0019777770900027652],
+      "absoluteGroundYawImpulse": [1.3059318125782595, 0.9493330032013274],
+      "groundYawWork": [-0.7466464845176284, -0.15065197975444963],
+      "legWork": [0.7651690294671266, -1.9400296389705842],
+      "energyChange": -3.0192690528147352,
+      "workResidual": -4.6629367034256575e-15
+    },
+    {
+      "key": "noHandControl",
+      "referenceResiduals": {
+        "impulse": 0,
+        "temporalMoment": 0,
+        "absoluteImpulse": 0,
+        "handWork": 0,
+        "energyChange": 4.474198789239381e-14,
+        "groundYawImpulse": 1.1435297153639112e-14,
+        "groundYawTemporalMoment": 1.0625181290357943e-17,
+        "absoluteGroundYawImpulse": 1.1435297153639112e-14,
+        "groundYawWork": 4.746203430272544e-15,
+        "legWork": 0,
+        "motion": 2.609024107869118e-15
+      },
+      "priorResiduals": {
+        "impulse": 0,
+        "temporalMoment": 0,
+        "absoluteImpulse": 0,
+        "handWork": 0,
+        "energyChange": 0,
+        "groundYawImpulse": 0,
+        "groundYawTemporalMoment": 0,
+        "absoluteGroundYawImpulse": 0,
+        "groundYawWork": 0,
+        "legWork": 4.440892098500626e-16,
+        "motion": 3.552713678800501e-15
+      },
+      "partitions": [
+        {
+          "weights": [0.23, 0.41, 0.36],
+          "residual": 2.3314683517128287e-14
+        },
+        {
+          "weights": [0.5, 0.5],
+          "residual": 5.329070518200751e-15
+        },
+        {
+          "weights": [0.7, 0.2, 0.1],
+          "residual": 2.930988785010413e-14
+        }
+      ],
+      "phases": [
+        {
+          "duration": 0.0032314340370009735,
+          "force": 0,
+          "groundAcceleration": [66.84590123478817, -52.62145051809873],
+          "slipBefore": 0.004452315822477182,
+          "slipAfter": -0.02078776154861567,
+          "work": 0
+        },
+        {
+          "duration": 0.0009352326296656931,
+          "force": 0,
+          "groundAcceleration": [66.84590123478817, 0],
+          "slipBefore": -0.02078776154861567,
+          "slipAfter": -0.057139029394766706,
+          "work": 0
+        }
+      ],
+      "impulse": 0,
+      "temporalMoment": 0,
+      "absoluteImpulse": 0,
+      "handWork": 0,
+      "groundYawImpulse": [1.3305522312964888, -0.7479462337060259],
+      "groundYawTemporalMoment": [0.0027719838152010182, -0.001907973181719606],
+      "absoluteGroundYawImpulse": [1.3305522312964888, 0.7479462337060259],
+      "groundYawWork": [1.158289914383959, 0.24571754102975765],
+      "legWork": [1.0183227237730088, -1.720580053808606],
+      "energyChange": 0.7017501253781688,
+      "workResidual": 4.951594689828198e-14
+    }
+  ],
+  "checks": {
+    "newFocusedPassed": 11,
+    "typecheckPassed": true,
+    "parentFocusedReused": 44,
+    "reuseReason": "All prior source/test/fixture files are byte-identical; only a new unimported module and diagnostics/tests added. Parent reference module hash24575e45 retained.",
+    "fullSuites": 0,
+    "games": 0,
+    "newFootballCollections": 0,
+    "contracts": "Mirrors, equivalent headings, interior wrap/deadline rejection, zero/tiny loads, owned snapshot, pure repeat application, original sliding/unloaded/slip references and all three unequal partitions retained.",
+    "historicalFailures": "Seven prior affected assertions and nine historical patch failures retained separately; no football benefit or repair claimed."
+  },
+  "stageMeasurement": {
+    "referenceKernelSha256": "24575e45be35d426146e6877878e3a8f5f8aae8f4403269de4adebffbd09bc11",
+    "observationNeutral": true,
+    "caveat": "Stage clocks/JIT effects perturb costs; do not subtract these medians or compare their sums as uninstrumented cost. Full return-object construction is outside finalEnergy stage.",
+    "columns": ["pass", "case", "stage", "samples", "medianUs", "p95Us", "maxUs"],
+    "rows": [
+      [0, "nextField", "uninstrumented", 101, 10.856999999987238, 33.9209999999639, 411.53800000006413],
+      [0, "nextField", "setup", 101, 1.0610000000497166, 1.7220000000861546, 4.006000000003951],
+      [0, "nextField", "selection", 101, 4.777999999873828, 6.459000000063497, 145.98899999998594],
+      [0, "nextField", "application", 101, 4.247000000191292, 5.488000000013926, 7.410999999933665],
+      [0, "nextField", "finalEnergy", 101, 0.07099999993442907, 0.15099999995982216, 0.32999999996263796],
+      [0, "selected", "uninstrumented", 101, 7.822000000032858, 15.72400000009111, 111.43800000002102],
+      [0, "selected", "setup", 101, 1.1319999999841457, 2.212999999983367, 67.21100000004299],
+      [0, "selected", "selection", 101, 3.375000000005457, 6.348999999886473, 6.880000000023756],
+      [0, "selected", "application", 101, 2.9749999998784915, 5.277999999975691, 11.807000000089829],
+      [0, "selected", "finalEnergy", 101, 0.08000000002539309, 0.13000000001284207, 0.18099999999776628],
+      [0, "slidingControl", "uninstrumented", 101, 7.240000000024338, 8.491999999932887, 13.259999999945649],
+      [0, "slidingControl", "setup", 101, 1.7630000000963264, 2.132999999957974, 86.60999999995056],
+      [0, "slidingControl", "selection", 101, 2.4939999999560314, 3.4549999999171632, 282.9460000000381],
+      [0, "slidingControl", "application", 101, 2.543000000059692, 3.044999999929132, 30.92700000001969],
+      [0, "slidingControl", "finalEnergy", 101, 0.12000000003808964, 0.16000000005078618, 0.29099999994741665],
+      [0, "noHandControl", "uninstrumented", 101, 11.157000000025619, 13.180000000033942, 45.707999999990534],
+      [0, "noHandControl", "setup", 101, 1.852999999982785, 2.384000000006381, 3.4650000000056025],
+      [0, "noHandControl", "selection", 101, 4.336999999964064, 5.068000000051143, 6.390000000010332],
+      [0, "noHandControl", "application", 101, 4.935999999929663, 5.299000000036358, 35.52300000001196],
+      [0, "noHandControl", "finalEnergy", 101, 0.12000000003808964, 0.14999999996234692, 0.18999999997504347],
+      [1, "nextField", "uninstrumented", 101, 17.61599999997543, 23.144999999999527, 461.06399999996484],
+      [1, "nextField", "setup", 101, 1.9330000000081782, 2.6240000000825603, 6.03000000000975],
+      [1, "nextField", "selection", 101, 8.320999999909873, 14.463000000091597, 38.96799999995437],
+      [1, "nextField", "application", 101, 7.402000000070075, 8.282999999892127, 38.196999999968284],
+      [1, "nextField", "finalEnergy", 101, 0.12000000003808964, 0.151000000073509, 0.18000000000029104],
+      [1, "selected", "uninstrumented", 101, 12.087999999948806, 13.920999999982087, 42.40299999992203],
+      [1, "selected", "setup", 101, 1.8019999999978609, 2.132999999957974, 2.8839999999945576],
+      [1, "selected", "selection", 101, 7.060000000024047, 7.700999999997293, 429.52599999989616],
+      [1, "selected", "application", 101, 4.875999999967462, 5.4390000000239525, 31.947999999943022],
+      [1, "selected", "finalEnergy", 101, 0.1199999999244028, 0.14999999996234692, 0.23000000010142685],
+      [1, "slidingControl", "uninstrumented", 101, 6.589999999960128, 7.28100000003451, 26.921000000015738],
+      [1, "slidingControl", "setup", 101, 1.6620000000102664, 1.9429999999829306, 30.47500000002401],
+      [1, "slidingControl", "selection", 101, 2.7340000000322107, 3.1339999999318024, 4.487000000040098],
+      [1, "slidingControl", "application", 101, 2.41300000004685, 2.714000000082706, 3.7459999999782667],
+      [1, "slidingControl", "finalEnergy", 101, 0.1199999999244028, 0.1399999999875945, 0.15000000007603376],
+      [1, "noHandControl", "uninstrumented", 101, 10.84600000001501, 13.028999999960433, 43.756000000030326],
+      [1, "noHandControl", "setup", 101, 1.7619999999851643, 2.1440000000438886, 20.461000000068452],
+      [1, "noHandControl", "selection", 101, 5.128000000013344, 5.769000000100277, 9.594000000106462],
+      [1, "noHandControl", "application", 101, 4.87699999985125, 5.6690000000116925, 343.255999999883],
+      [1, "noHandControl", "finalEnergy", 101, 0.1199999999244028, 0.1399999999875945, 0.5309999999099091]
+    ]
+  },
+  "profile": {
+    "path": "out/event-schedule/selector.cpuprofile",
+    "script": {
+      "path": "out/event-schedule/profile-selector.mjs",
+      "sha256": "950d5c31a1b4948a15ec740a71128893f03d42e36d1e481da3ba575e4780ab86"
+    },
+    "calls": 100000,
+    "fields": 4,
+    "totalSamples": 305,
+    "gcSamples": 49,
+    "interpretation": "Preparation, event processing and16%GC. Not an uninstrumented cost estimate or proof of a unique dominant arithmetic/tail cause."
+  },
+  "cost": {
+    "compiler": "5.9.3",
+    "method": {
+      "target": "ES2022",
+      "module": "ES2022",
+      "warmupsPerCase": 1000,
+      "passes": 2,
+      "samplesPerPass": 101
+    },
+    "columns": ["pass", "case", "mode", "samples", "medianUs", "p95Us", "maxUs"],
+    "runs": [
+      {
+        "name": "first-unprepared",
+        "output": {
+          "path": "out/event-schedule/cost-first.json",
+          "sha256": "50233316577ba4c250de3d6b9720a83bcb4f714662335ce9eb9011681ebbf36c"
+        },
+        "revision": "8300616e1dfae9d1910598f5c78e87b024d96ab5",
+        "hashes": {
+          "candidate": "315874bb54ff530523dbd4407b191921fe6da2af82f9b0aa3d2f4b7357b1ec06",
+          "reference": "24575e45be35d426146e6877878e3a8f5f8aae8f4403269de4adebffbd09bc11"
+        },
+        "budgetMet": false,
+        "rows": [
+          [0, "nextField", "candidate", 101, 14.200999999957276, 16.574999999988904, 42.26399999993191],
+          [0, "nextField", "reference", 101, 17.1659999999747, 19.179000000008273, 43.895999999904234],
+          [0, "nextField", "selectOnly", 101, 13.850999999931446, 15.142999999966378, 398.04800000001705],
+          [0, "nextField", "applySelected", 101, 0.6309999999984939, 0.9209999999484353, 2.5239999999939755],
+          [0, "selected", "candidate", 101, 10.855999999989763, 38.31800000000385, 87.6220000000103],
+          [0, "selected", "reference", 101, 12.639000000035594, 14.330999999970118, 58.908999999971456],
+          [0, "selected", "selectOnly", 101, 10.516000000052372, 11.597000000051594, 455.0040000000308],
+          [0, "selected", "applySelected", 101, 0.6309999999984939, 0.8810000000494256, 1.8630000000712243],
+          [0, "slidingControl", "candidate", 101, 6.820999999945343, 7.820999999921696, 44.37700000005407],
+          [0, "slidingControl", "reference", 101, 7.040999999958331, 8.00200000003315, 37.33599999998205],
+          [0, "slidingControl", "selectOnly", 101, 6.640000000061264, 7.471000000009553, 8.773000000019238],
+          [0, "slidingControl", "applySelected", 101, 0.6209999999100546, 0.9719999999333595, 1.6419999999470747],
+          [0, "noHandControl", "candidate", 101, 9.864999999990687, 11.126999999987675, 42.68400000000838],
+          [0, "noHandControl", "reference", 101, 11.196999999924628, 12.599000000022897, 72.73900000006961],
+          [0, "noHandControl", "selectOnly", 101, 9.545000000002801, 11.207000000013068, 42.06299999998464],
+          [0, "noHandControl", "applySelected", 101, 0.5909999999857973, 0.9509999999863794, 4.0559999999914],
+          [1, "nextField", "candidate", 101, 13.940999999931591, 15.663000000017746, 325.40900000003603],
+          [1, "nextField", "reference", 101, 17.01500000001488, 20.97100000003138, 50.194999999916945],
+          [1, "nextField", "selectOnly", 101, 13.671000000044842, 18.157999999971253, 37.877000000094085],
+          [1, "nextField", "applySelected", 101, 0.431000000048698, 0.9310000000368746, 1.3820000000350774],
+          [1, "selected", "candidate", 101, 10.466000000064923, 12.157999999999447, 71.62699999992128],
+          [1, "selected", "reference", 101, 12.419000000022606, 14.081000000032873, 546.5510000000222],
+          [1, "selected", "selectOnly", 101, 10.235999999963497, 11.717999999973472, 19.04899999999543],
+          [1, "selected", "applySelected", 101, 0.4610000000866421, 0.8219999999710126, 10.134999999991123],
+          [1, "slidingControl", "candidate", 101, 6.669999999985521, 8.34199999997054, 36.0840000000735],
+          [1, "slidingControl", "reference", 101, 6.759999999985666, 7.662000000095759, 10.776000000078056],
+          [1, "slidingControl", "selectOnly", 101, 6.3589999999749125, 7.181000000059612, 28.703000000064094],
+          [1, "slidingControl", "applySelected", 101, 0.431000000048698, 0.7410000000618311, 0.9320000000343498],
+          [1, "noHandControl", "candidate", 101, 9.463999999979933, 10.356000000001586, 11.427000000026055],
+          [1, "noHandControl", "reference", 101, 10.966999999936888, 12.257999999974345, 13.881000000083077],
+          [1, "noHandControl", "selectOnly", 101, 9.304000000042834, 10.765999999989617, 47.311000000036074],
+          [1, "noHandControl", "applySelected", 101, 0.431000000048698, 0.7510000000365835, 1.3320000000476284]
+        ]
+      },
+      {
+        "name": "prepared-favorable",
+        "output": {
+          "path": "out/event-schedule/cost-prepared.json",
+          "sha256": "6eb13f1a342b7fbc301629ccc62b04f37eb62050906645353a6cb46104589d6b"
+        },
+        "revision": "c3d90fb529c6b6d6cb9060dc6d0ab04f8afb4b8b",
+        "hashes": {
+          "candidate": "b2bcb9f91b222b27a11a91df85216d7cc537b4403a90856027d6d620000ea5c6",
+          "reference": "24575e45be35d426146e6877878e3a8f5f8aae8f4403269de4adebffbd09bc11"
+        },
+        "budgetMet": true,
+        "rows": [
+          [0, "nextField", "candidate", 101, 9.022999999956482, 23.40500000002521, 110.35500000002685],
+          [0, "nextField", "reference", 101, 10.785999999939122, 34.26200000001245, 98.987999999963],
+          [0, "nextField", "selectOnly", 101, 8.943000000044776, 16.934999999989486, 43.626000000017484],
+          [0, "nextField", "applySelected", 101, 0.40100000001075387, 0.781999999958316, 22.49400000005153],
+          [0, "selected", "candidate", 101, 6.9109999999454885, 11.868000000049506, 12.649000000010346],
+          [0, "selected", "reference", 101, 7.871000000022832, 14.712000000031367, 75.15300000000025],
+          [0, "selected", "selectOnly", 101, 6.750000000010914, 12.098000000037246, 337.2069999999212],
+          [0, "selected", "applySelected", 101, 0.4109999999855063, 0.7319999999708671, 1.7329999999446954],
+          [0, "slidingControl", "candidate", 101, 4.516000000080567, 7.9019999999445645, 32.15799999998126],
+          [0, "slidingControl", "reference", 101, 4.335999999966589, 7.331000000021959, 80.2209999999377],
+          [0, "slidingControl", "selectOnly", 101, 4.336999999964064, 7.471000000009553, 9.794999999940046],
+          [0, "slidingControl", "applySelected", 101, 0.4109999999855063, 0.6609999999227512, 0.8510000000114815],
+          [0, "noHandControl", "candidate", 101, 6.240000000047985, 11.416999999937616, 355.48400000004676],
+          [0, "noHandControl", "reference", 101, 6.710999999995693, 28.83299999996325, 109.13399999992635],
+          [0, "noHandControl", "selectOnly", 101, 5.99899999997433, 12.239000000022315, 102.82500000005257],
+          [0, "noHandControl", "applySelected", 101, 0.4109999999855063, 0.8209999999735373, 4.767000000015287],
+          [1, "nextField", "candidate", 101, 7.9519999999320135, 14.731999999980872, 116.504999999961],
+          [1, "nextField", "reference", 101, 9.794999999940046, 27.391000000079657, 139.09899999998743],
+          [1, "nextField", "selectOnly", 101, 7.820999999921696, 16.083999999978005, 59.38900000001013],
+          [1, "nextField", "applySelected", 101, 0.26099999990947254, 0.7509999999228967, 1.3719999999466381],
+          [1, "selected", "candidate", 101, 6.2300000000732325, 11.056999999937034, 44.67699999997876],
+          [1, "selected", "reference", 101, 7.210000000100081, 14.641999999980726, 65.7490000000962],
+          [1, "selected", "selectOnly", 101, 6.058999999936532, 11.186999999949876, 395.88500000002114],
+          [1, "selected", "applySelected", 101, 0.27000000000043656, 0.6210000000237414, 2.1929999999201755],
+          [1, "slidingControl", "candidate", 101, 4.236999999989166, 7.219999999961146, 10.215000000016516],
+          [1, "slidingControl", "reference", 101, 4.085999999915657, 8.933000000070024, 158.828000000085],
+          [1, "slidingControl", "selectOnly", 101, 4.046000000016647, 7.241000000021813, 59.41900000004807],
+          [1, "slidingControl", "applySelected", 101, 0.2709999999979118, 0.661000000036438, 0.9810000000243235],
+          [1, "noHandControl", "candidate", 101, 5.737999999951171, 10.345000000029358, 27.181000000041422],
+          [1, "noHandControl", "reference", 101, 6.379000000038104, 12.108000000011998, 388.89400000005026],
+          [1, "noHandControl", "selectOnly", 101, 5.478000000039174, 9.995000000003529, 38.969000000065535],
+          [1, "noHandControl", "applySelected", 101, 0.25100000004840695, 0.6210000000237414, 0.8510000000114815]
+        ]
+      },
+      {
+        "name": "final-paired",
+        "output": {
+          "path": "out/event-schedule/cost.json",
+          "sha256": "9f73f2a2cd9732fcb1593df4eccb815259f9117e609bc23b583f77f38bc927a8"
+        },
+        "revision": "96fa537417ea856223543c3273f6dffc6bbba25e",
+        "hashes": {
+          "candidate": "b2bcb9f91b222b27a11a91df85216d7cc537b4403a90856027d6d620000ea5c6",
+          "reference": "24575e45be35d426146e6877878e3a8f5f8aae8f4403269de4adebffbd09bc11"
+        },
+        "budgetMet": false,
+        "rows": [
+          [0, "nextField", "candidate", 101, 14.471999999955187, 16.885000000002037, 249.79499999994914],
+          [0, "nextField", "reference", 101, 17.84700000007433, 20.189999999956854, 43.364999999994325],
+          [0, "nextField", "unprepared", 101, 16.094000000066444, 18.538000000035026, 62.65500000006341],
+          [0, "nextField", "selectOnly", 101, 14.170999999919331, 15.884000000028209, 51.41700000001492],
+          [0, "nextField", "applySelected", 101, 0.6210000000237414, 0.9709999999358843, 1.3519999999971333],
+          [0, "selected", "candidate", 101, 11.277000000063708, 13.010000000008404, 491.9790000000148],
+          [0, "selected", "reference", 101, 13.208999999960724, 22.403000000053908, 59.90000000008422],
+          [0, "selected", "unprepared", 101, 12.089000000059968, 16.143999999940206, 471.740000000068],
+          [0, "selected", "selectOnly", 101, 10.856999999987238, 12.819000000035885, 40.68099999994956],
+          [0, "selected", "applySelected", 101, 0.6109999999353022, 1.011999999946056, 1.2719999999717402],
+          [0, "slidingControl", "candidate", 101, 7.3510000000851505, 9.34400000005553, 42.33299999998508],
+          [0, "slidingControl", "reference", 101, 7.270999999946071, 9.41499999998996, 61.863000000016655],
+          [0, "slidingControl", "unprepared", 101, 7.290000000011787, 9.08300000003237, 14.782999999965796],
+          [0, "slidingControl", "selectOnly", 101, 6.979999999998654, 8.332999999993262, 44.60699999992812],
+          [0, "slidingControl", "applySelected", 101, 0.611000000048989, 0.9210000000621221, 1.542999999969652],
+          [0, "noHandControl", "candidate", 101, 10.255000000029213, 12.157999999999447, 149.23400000009224],
+          [0, "noHandControl", "reference", 101, 11.437999999998283, 13.2099999999582, 22.163999999975204],
+          [0, "noHandControl", "unprepared", 101, 10.385000000042055, 11.806999999976142, 13.600999999994201],
+          [0, "noHandControl", "selectOnly", 101, 9.855000000015934, 10.836000000040258, 12.50799999991159],
+          [0, "noHandControl", "applySelected", 101, 0.5509999999731008, 0.8609999999862339, 5.708000000026914],
+          [1, "nextField", "candidate", 101, 14.07100000005812, 16.72499999995125, 54.79200000013407],
+          [1, "nextField", "reference", 101, 17.45600000003833, 38.29800000016803, 45.737999999801104],
+          [1, "nextField", "unprepared", 101, 15.723999999863736, 44.83800000002702, 495.8449999999175],
+          [1, "nextField", "selectOnly", 101, 13.54999999989559, 15.153000000054817, 43.28500000008262],
+          [1, "nextField", "applySelected", 101, 0.43099999993501115, 0.9310000000368746, 2.1940000000313375],
+          [1, "selected", "candidate", 101, 10.645999999951528, 12.989000000061424, 563.7580000000071],
+          [1, "selected", "reference", 101, 12.689999999906831, 14.391999999929794, 15.543999999863445],
+          [1, "selected", "unprepared", 101, 11.576999999988402, 13.038999999935186, 14.11099999995713],
+          [1, "selected", "selectOnly", 101, 10.345000000143045, 11.917999999923268, 115.87499999995998],
+          [1, "selected", "applySelected", 101, 0.45999999997548, 0.7510000000365835, 3.0549999999038846],
+          [1, "slidingControl", "candidate", 101, 6.929999999897518, 8.301999999957843, 38.74900000005255],
+          [1, "slidingControl", "reference", 101, 6.930000000011205, 8.29199999998309, 15.562999999929161],
+          [1, "slidingControl", "unprepared", 101, 7.029999999986103, 8.713000000170723, 30.535999999983687],
+          [1, "slidingControl", "selectOnly", 101, 6.589999999960128, 7.241000000021813, 9.134000000130982],
+          [1, "slidingControl", "applySelected", 101, 0.43000000005122274, 0.7310000000870787, 0.8910000001378648],
+          [1, "noHandControl", "candidate", 101, 9.863999999879525, 10.776000000078056, 118.42799999999443],
+          [1, "noHandControl", "reference", 101, 11.216000000104032, 13.709999999946376, 69.11399999989953],
+          [1, "noHandControl", "unprepared", 101, 10.115999999925407, 12.498000000050524, 60.84099999998216],
+          [1, "noHandControl", "selectOnly", 101, 9.463999999979933, 10.835999999926571, 40.019999999913125],
+          [1, "noHandControl", "applySelected", 101, 0.42100000007394556, 0.7610000000113359, 7.461000000148488]
+        ]
+      }
+    ],
+    "physicsBitExactBetweenScheduleRepresentations": true,
+    "gateVerdict": "Favorable prepared run passes; final paired run fails median target. Do not infer readiness from one faster environmental/JIT regime; reference also became faster. Collector exit0 is not gate acceptance.",
+    "pairedDifficultMedianRatio": [0.8108925869835217, 0.8060838680125586],
+    "pairedCoefficientPreparationGain": [0.10078290046629557, 0.10512592214576066],
+    "opposingCostRegression": "Sliding control candidate0-1.1% slower median in final paired run. Retain it; not a football regression because World unused.",
+    "observedAllCompleteCandidateMaximumUs": 563.7580000000071,
+    "tailCaveat": "Observed small-sample maxima, no hard bound or demonstrated cause. Selection-only, application-only and complete-call medians need not add."
+  },
+  "worldBoundary": {
+    "file": "src/physics/world.ts",
+    "point": "integrateSubstep immediately after jointRows / before current coupleGroundHandYaw and solveHands for an explicitly supported row. Not an additional solver after them.",
+    "requirements": ["Reconcile provisional feet ground yaw, velocity and work exactly once.", "Replace ordinary hand solve and centered yaw/travel transport for the selected history; consume actual temporal moments in the shared position path.", "Keep signed force feedback separate from absolute charged force/torque amounts.", "Reserve recovery traction from actual phase/peak torque, not net torque; keep metabolic application once per controller tick.", "Reject unsupported rows/geometry/support before mutation."],
+    "implemented": false
+  },
+  "receipts": [
+    {
+      "path": "out/event-schedule/stages.receipt.json",
+      "commit": "e529455b008a85ecfea577c68ce010f7912a84de",
+      "sourceSha256": "dedb8290bdbab5db520f927f1f7d5ee08e5325695e4a2221df4482e53a6575fa",
+      "validationSha256": "75eee0d890046cb9cc0328c9aff92f235f83a6eaace4c4fc57a4a9fefca860df",
+      "startedAt": "2026-10-15T20:53:11.360Z",
+      "commands": [
+        {
+          "command": ["node", "scripts/diag/physics/motor-stage-cost.mjs"],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9594489139999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/event-schedule/first-tests.receipt.json",
+      "commit": "b40ea7b8c9f389fbcd5fbc79dc313ff9033e3594",
+      "sourceSha256": "796b4068e11edd32e8ba4a98fcf9d303953e972dd1196739ea87246ac3d8223a",
+      "validationSha256": "00fc049df76cbdb764997279f4734155ac2e9466d84bbf30f29d37859ff401c4",
+      "startedAt": "2026-10-15T20:55:34.766Z",
+      "commands": [
+        {
+          "command": ["npx", "vitest", "run", "test/motor-event-schedule.test.ts", "--maxWorkers=1"],
+          "exitCode": 0,
+          "elapsedSeconds": 1.453894384
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/event-schedule/cost-first.receipt.json",
+      "commit": "8300616e1dfae9d1910598f5c78e87b024d96ab5",
+      "sourceSha256": "796b4068e11edd32e8ba4a98fcf9d303953e972dd1196739ea87246ac3d8223a",
+      "validationSha256": "4648f0432da0f8b29eb943c75594ab6a07636e515f36dbecddbbab298b4eca77",
+      "startedAt": "2026-10-15T20:57:00.607Z",
+      "commands": [
+        {
+          "command": ["node", "scripts/diag/physics/event-schedule-cost.mjs"],
+          "exitCode": 0,
+          "elapsedSeconds": 0.95929768
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/event-schedule/selector-profile.receipt.json",
+      "commit": "8300616e1dfae9d1910598f5c78e87b024d96ab5",
+      "sourceSha256": "796b4068e11edd32e8ba4a98fcf9d303953e972dd1196739ea87246ac3d8223a",
+      "validationSha256": "4648f0432da0f8b29eb943c75594ab6a07636e515f36dbecddbbab298b4eca77",
+      "startedAt": "2026-10-15T20:58:00.406Z",
+      "commands": [
+        {
+          "command": ["node", "--cpu-prof", "--cpu-prof-dir=out/event-schedule", "--cpu-prof-name=selector.cpuprofile", "out/event-schedule/profile-selector.mjs"],
+          "exitCode": 0,
+          "elapsedSeconds": 0.394865659
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/event-schedule/prepared-tests.receipt.json",
+      "commit": "c3d90fb529c6b6d6cb9060dc6d0ab04f8afb4b8b",
+      "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+      "validationSha256": "4648f0432da0f8b29eb943c75594ab6a07636e515f36dbecddbbab298b4eca77",
+      "startedAt": "2026-10-15T20:59:29.245Z",
+      "commands": [
+        {
+          "command": ["npx", "vitest", "run", "test/motor-event-schedule.test.ts", "--maxWorkers=1"],
+          "exitCode": 0,
+          "elapsedSeconds": 1.6539929789999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/event-schedule/cost-prepared.receipt.json",
+      "commit": "c3d90fb529c6b6d6cb9060dc6d0ab04f8afb4b8b",
+      "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+      "validationSha256": "4648f0432da0f8b29eb943c75594ab6a07636e515f36dbecddbbab298b4eca77",
+      "startedAt": "2026-10-15T20:59:47.275Z",
+      "commands": [
+        {
+          "command": ["node", "scripts/diag/physics/event-schedule-cost.mjs"],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9217378039999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/event-schedule/cost-paired.receipt.json",
+      "commit": "96fa537417ea856223543c3273f6dffc6bbba25e",
+      "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+      "validationSha256": "2b5c80e580ffd4de08b041dd4b2e18d3975a6402b2ec2ef74b90679cff0a6b4a",
+      "startedAt": "2026-10-15T21:00:57.300Z",
+      "commands": [
+        {
+          "command": ["node", "scripts/diag/physics/event-schedule-cost.mjs"],
+          "exitCode": 0,
+          "elapsedSeconds": 1.066954062
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/event-schedule/accuracy.receipt.json",
+      "commit": "af2eeb9e867932d430aa7a2a7f3644d44432c916",
+      "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+      "validationSha256": "fbb70fb8fd057989093aa54835ad9486264328661a3237523f47f91f82563b47",
+      "startedAt": "2026-10-15T21:03:24.966Z",
+      "commands": [
+        {
+          "command": ["node", "--import", "tsx", "scripts/diag/physics/event-schedule-accuracy.ts"],
+          "exitCode": 0,
+          "elapsedSeconds": 0.315115367
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/event-schedule/typecheck.receipt.json",
+      "commit": "af2eeb9e867932d430aa7a2a7f3644d44432c916",
+      "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+      "validationSha256": "fbb70fb8fd057989093aa54835ad9486264328661a3237523f47f91f82563b47",
+      "startedAt": "2026-10-15T21:03:25.400Z",
+      "commands": [
+        {
+          "command": ["npm", "run", "typecheck"],
+          "exitCode": 0,
+          "elapsedSeconds": 13.497101749
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  ],
+  "indexedLauncherSeconds": 21.222408598,
+  "costExclusions": "Independent Python reference generation and report/Git work excluded from launcher subtotal. No other simulations.",
+  "nextDecision": "Measure/design the incremental World insertion budget at the recorded boundary, including work replaced and support/effort needs. Choose another event-selection method or explicitly reconsider allocation; no silent10us gate change and no World adoption."
+}
