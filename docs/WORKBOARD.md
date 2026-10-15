@@ -1,5 +1,27 @@
 # Current work ownership
 
+## General combination departure execution, 2026-10-14
+
+Run-game owns `codex/combination-departure-execution` from PR #50 publication
+`da6cbce` / tested0336414, runtimeafb8a307. Preserve PR #50's moving fit,
+contact-circle geometry, DL acquired-key response and riding mesh. Accepted
+developa1b16e6 and historical4ded6b6 stay separate; no promotion or merge.
+
+One question: does a joined release authorize a maneuver that its selected
+climber cannot execute clear of the acquired DL/keeper through its next read?
+Use the saved weak RT momentum witness and existing successful transfers.
+Root claims `behaviors/blocking.ts` plus one small departure-clearance helper
+and focused tests. Preserve role ranking, keeper contact, current acquired
+information and ordinary read cadence; no earlier-release timer, route graph,
+member substitution, strength, capacity, sensing, QB/DL or shared physics edit.
+Check before contact/ownership mutation; a veto keeps ordinary combination work.
+
+After local controls, compare weak/Y with saved PR #50 evidence. Predeclare
+same-roster ace12 `iz_strong` / Over / seed3 as cross-concept transfer before
+results; collect only one matched short parent/candidate pair if local work
+supports it. Fresh Tite is already observed and not a new holdout. Broaden only
+for a specific adverse cause. Integration owns the final combined suite.
+
 ## Continuous wide-zone interaction, 2026-10-14
 
 The user explicitly authorizes continuing the entire wide-zone correction,
