@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Active #75/#80 integration boundary — 2026-10-15
+## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
 `90edc52530caa71efdebf257f17d954a8a629ea0` plus queue metadata255d1c4.
@@ -9,7 +9,8 @@ Extract only #75's `src/sim/behaviors/defense.ts`,
 `src/sim/coverage/defender.ts`, `test/coverage-run-support.test.ts`.
 Independent review accepts these exact extractions and their recognition/support
 priority; Integration owns one frozen combined verification, with existing
-focused evidence reused. Catching retains diagnosis and Run's agreed contract
+focused evidence reused. Frozen e788ccc completed 1,753 TS/148 files, 145 Python, typecheck/build pass; 192.061s.
+Final ref/adoption checks remain; no unchanged rerun. Catching retains diagnosis and Run's agreed contract
 context. No extra native cases or games. #76 stays frozen; #81 is diagnosis,
 with its behavioral trial rejected; transport/navigation/P045 variants and
 experimental Physics remain separate. Update these four shared records and

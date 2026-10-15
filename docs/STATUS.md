@@ -41,7 +41,8 @@ Do not use the historical sections below as a current starting-reference pin.
   Physics remains separate.
 - #75's Catching/Run contract reconciliation and #80's acquired run-support
   continuity have independent controller acceptance for the minimal five files.
-  Integration owns one exact combined verification; reuse44/53 focused checks.
+  Exact freezee788ccc passes 1,753 TS/148 files, 145 Python, typecheck/build pass; 192.061s.
+  Focused evidence reused; no unchanged rerun to publish/merge.
   P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
   and the original failed #75 receipt remain. No overall coverage-quality claim.
 - #76 stays parked/frozen per Flex; no independent current-tree adoption approval.
@@ -57,7 +58,9 @@ Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
 source remains8ca8dee; accepted develop remains90edc525. Measurement published/delivered the two data-only subsets; Integration verified
 all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
 The access blocker is resolved. No panel recollection, #69 re-review or new games.
-Only the exact #75/#80 candidate receives the required combined code verification.
+The exact #75/#80 candidate completed combined verification once.
+[Final receipt](../data/reviews/current/coverage-contract-integration/final-receipt.json);
+final adoption/ref checks pending, no extra game evaluation.
 
 After a meaningful accepted controller batch, coordinate [one frozen-panel
 comparison](INTEGRATION.md#frozen-panel-comparison), reusing the saved baseline

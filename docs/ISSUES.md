@@ -47,10 +47,10 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
-| [COV-003](#COV-003) | Quarters zone→man replacement reverses established run-support request | Demonstrated routing mechanism; football/outcome consequence unisolated | Independent #80 acceptance; exact combined verification pending | Integration + Catching/Run; current acquired support, no permanent run latch |
+| [COV-003](#COV-003) | Quarters zone→man replacement reverses established run-support request | Demonstrated routing mechanism; football/outcome consequence unisolated | Independent #80 acceptance; #82 combined verification passes | Integration + Catching/Run; current acquired support, no permanent run latch |
 | [PASS-007](#PASS-007) | Mesh prethrow stop and converging man/robber approach | Saved observations; producing stage and avoidability unresolved | Diagnosis published in #81; tested bend rejected | Flex/Do-It-All; next feasible approach/continuation question, no ready behavioral fix |
 | [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Bounded correction accepted via #72; forecast/contact limits open | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
-| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; Catching/Run contracts reconciled | Independent #75 acceptance; exact combined verification pending | Integration verifies composition with #80 once; preserve adverse evidence and original failed receipt |
+| [PASS-006](#PASS-006) | Unrecognized throw discards installed man technique/history | Confirmed information fork; Catching/Run contracts reconciled | Independent #75 acceptance; #82 combined verification passes | Integration verifies composition with #80 once; preserve adverse evidence and original failed receipt |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
@@ -128,8 +128,8 @@ preserves complete frames/events/stats. Rejected late-QB chase remains excluded.
 Current: #80 head25a73a3/code5e18fac has independent acceptance for only the
 wrapper and nine existing controls. Requires current run belief, installed
 insert/alley and positive personally acquired backfield RB/FB carrying on each
-decision; recognized flight wins. Compatible with reconciled #75; one combined
-verification pending. The Gun Trey first whole-play fork is CB_W at1.30, not
+decision; recognized flight wins. Compatible with reconciled #75; exact #82 combined
+verification passes. The Gun Trey first whole-play fork is CB_W at1.30, not
 LB_W's later1.70 reassignment. Earlier LB_M fall is unchanged; opposing SS gap
 worsens2.806→2.894. Both native windows are unfinished. No gain/tackle benefit
 is established. [Exact review](../data/reviews/current/coverage-contract-integration/independent-review.json).
@@ -202,7 +202,7 @@ No new native replay or shared suite is justified while that contract is open.
 
 Current: Catching and Run agreed ec4a3a1's mirrored held/unrecognized equivalence
 and recognized-ball priority contracts. Independent review accepts the exact
-three-file #75 extraction with #80; current combined verification pending.
+three-file #75 extraction with #80; exact #82 combined verification passes.
 The original failed receipt below stays failed and unchanged; its former
 contract blocker is resolved by explicit owner adjudication, not weakening
 opposing football controls. No overall coverage improvement is claimed.
