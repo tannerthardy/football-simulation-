@@ -1,6 +1,6 @@
 # Current work ownership
 
-## Independent opponent-information extraction — 2026-10-15
+## Approved risk-only final verification — 2026-10-15
 
 Integration owns this review branch from accepted4679a3c (#72 merged). Extract
 only Do-It-All's byte-identical carrier opponent-risk correction and its two
@@ -9,12 +9,27 @@ a separately preserved patch; no navigation, sampledVel, spacing, capacities,
 physics, #69 or new flag. Question: can the active information fix compose with
 accepted develop without unused teammate transport? Reuse the author packet;
 run the two extracted contracts, existing Duo declaration control and typecheck.
-Three selected checks and typecheck pass at71d98fc; full combined verification
-remains due only after choosing this integration scope. The initial missing
+User accepted risk-only scope. Three selected checks/typecheck at71d98fc are
+reused; Integration now freezes this identical runtime/tests with current
+tracking and runs all four combined phases once under44 flags/components=1. The initial missing
 it import and both failed receipts are retained. No World steps, full suite
-or games for scope selection. No merge authorization.
+or games for scope selection. No extra game campaign or repeated focused
+loop for the final run. Verification approval does not authorize merging.
 
-## Independent #67 portability review — 2026-10-15
+## Completed information-only dependency/scope review — 2026-10-15
+
+Integration reviewed original60223a8/evidence80c9fa4 independently of #72/#69/Physics.
+Recommend risk-only71d98fc on accepted4679a3c; byte-identical carrier hunk, two
+original controls/fixture plus existing Duo control. Three selected checks and
+typecheck pass; retained initial missing-it-import failures;23.675s total,
+zero World steps/games/shared suite. [Published review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
+Observation-only transport is separately portable and already owner-approved;
+no production consumer yet. Navigation is parked. Next decision is the risk-only
+integration scope, followed by one exact combined verification before separate
+merge authorization. Do-It-All supplies independent #69 controller review;
+no additional candidate was appended to #67/#72 verification.
+
+## Completed #67 portability review — accepted via #72
 
 Integration owns `codex/pass-cutoff-integration-review` from accepted develop
 `7d1451b2c31786e075550183a6a93bbda23da29b` after the docs-only #65 merge. Boundary: the authored free-cutoff
@@ -24,22 +39,22 @@ User accepted Run's ordinary-fixture adjudication at `f430360d9e5a6a151a3851843d
 Completed: reviewed coverage-job assertion filter, frozen6417748, and all
 typecheck/build/TS/Python phases pass with components=1. Preserve the failed
 first receipt, native RT/RG/LT losses, traffic and forecast limits. #69 and
-experimental physics remain separate. Verification approval grants no merge,
-reference, default or historical-baseline authority.
+experimental physics remain separate. The later explicit user merge authorization was exercised for #72 only;
+no other merge, reference, default or historical-baseline authority follows.
 
 ## Current queue ownership — 2026-10-15
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
 retaining every branch and source/evidence history. [Exact dispositions](INTEGRATION.md#pr-dispositions).
-#63 runtime is accepted; documentation-only #65 advances accepted develop to
-`7d1451b2c31786e075550183a6a93bbda23da29b`. #66/#67/#69 stay separately scoped.
+#63 runtime and #65 documentation remain included; user-authorized #72 advances
+accepted develop to `4679a3c260188143bcc66f6f20534327c78d7eaa`. #69 and physics remain separate.
 Unclear handover/attention/callback dispositions remain with their owners.
 No contributor must rerun a suite, rebase, stop work or move a branch for this.
 
 Integration in this chat owns [the shared queue](INTEGRATION.md), exact candidate
 verification and accepted-pin publication under existing authority. This
-queue branch `codex/integration-queue` includes accepted #65 through a normal
-fast-forward, preserving both documentation histories. Its follow-up diff against
+queue branch `codex/integration-queue` includes accepted #72 through a normal
+merge, preserving newer tracking and reviewed evidence histories. Its follow-up diff against
 accepted develop updates only queue/status/ownership and adds new review/merge
 receipts; it is not a further authorized merge. Source, tests, flags, dependencies and existing receipts
 are identical to accepted develop; no worker branch is moved.
@@ -57,15 +72,15 @@ use the current queue and affected owner for live branch/readiness information.
 
 ## Post-adoption queue ownership — 2026-10-15
 
-Integration records accepted develop7d1451b after documentation-only #65;
-source/tests/settings and prior receipts stay identical to accepted8c891f4.
+Integration records accepted develop4679a3c after user-authorized #72;
+source/tests/settings and prior receipts match reviewed publication1675478.
 User accepted Run's #67 ordinary-fixture adjudication. Integration installed
 only the approved coverage-job test filter and froze `6417748` on accepted7d1451b.
 All phases passed:1,724 TS/145 Python/typecheck/build,44 flags/components=1,
-no skips/input drift,200.234s. [Final receipt](../data/reviews/current/pass-cutoff-integration/final-receipt.json).
+no skips/input drift,200.234s. [Final receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json).
 No runtime changed after that freeze. Preserve native losses, traffic,
-forecast/contact limitations and every failed receipt. Next: explicit merge
-decision for the isolated candidate; no further verification spend required.
+forecast/contact limitations and every failed receipt. User-authorized merge completed as4679a3c. No future merge authority or
+additional verification spend is implied.
 #69 is queued for an independent controller/Do-It-All! boundary review, with its
 exact pins and witnesses in [the shared queue](INTEGRATION.md#ready-blocked-experimental).
 Physics and entry/Awareness remain separate; no runtime merge authority.

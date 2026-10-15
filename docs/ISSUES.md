@@ -3,7 +3,7 @@
 # Master issue register
 
 Updated **2026-10-15 (America/Phoenix)**. Accepted development reference:
-`develop` at `7d1451b2c31786e075550183a6a93bbda23da29b` (docs-only #65; #63 runtime unchanged).
+`develop` at `4679a3c260188143bcc66f6f20534327c78d7eaa` (merged isolated #72; #63/#65 retained).
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
@@ -36,12 +36,12 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
-| [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Isolated #67 verified; explicit merge decision pending | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
+| [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Bounded correction accepted via #72; forecast/contact limits open | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
 | [INFO-002](#INFO-002) | Call-based anticipation can expose hidden live state | Confirmed limitation; #36 copied installed prior prepared | Active with INFO-001 | Awareness + Run Game; bounded installed expectations without hidden updates |
-| [INFO-003](#INFO-003) | Other controller reads still need scoped information review | Known information debt; scope varies | Parked migration | Awareness + affected controller owner; after first reusable boundary passes |
+| [INFO-003](#INFO-003) | Other controller reads still need scoped information review | Known information debt; scope varies | Risk-only scope reviewed; broader migration parked | Awareness + affected controller owner; after first reusable boundary passes |
 | [STALK-001](#STALK-001) | Far stalk request reads hidden defender position | Confirmed defect; isolated correction prepared | Integration review | Integration + Run Game; #29-only verification or a repaired combined candidate |
 | [COV-001](#COV-001) | Match/spot seam-gap contract fails | Failed contract; cause not adjudicated | Parked / blocks coverage | Pass Game, currently helping awareness; resume when available |
 | [COV-002](#COV-002) | Scramble-recording fixture now throws | Failed fixture precondition; recorder defect unproved | Parked / blocks coverage | Pass Game + recording-contract owner; resume when available |
@@ -113,12 +113,12 @@ No new native replay or shared suite is justified while that contract is open.
 
 #67's isolated extraction changes only the free edge-cutoff approach, through
 the same predicted point at its existing .75*vmax budget. Candidate6417748 on
-accepted7d1451b passes all four verification phases; [receipt](../data/reviews/current/pass-cutoff-integration/final-receipt.json).
+accepted7d1451b passed all four verification phases; [receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json).
 User accepted [Run's ordinary-fixture adjudication](https://github.com/tannerthardy/football-simulation-/pull/67#issuecomment-6201827323):
 reciprocal response variates transfer the supported swim win to either approach;
 earlier contact moves the rep clock. Native P040 RT/P019 RG/ordinary LT losses,
-C/LG traffic and imperfect cutoff forecasts remain. This is a bounded merge
-recommendation, not adoption, a contact-law fix or general protection validation.
+C/LG traffic and imperfect cutoff forecasts remain. The bounded correction is now accepted via #72 at4679a3c. Forecast accuracy,
+contact law and general protection realism remain open.
 #69 remains independent; future shared-file extraction must preserve this
 PassProtector hunk if it is accepted. No additional game campaign is requested.
 
@@ -233,6 +233,15 @@ installed call and acquired cues, without exposing live private branches.
 
 <a id="INFO-003"></a>
 ### INFO-003 — Related consumers, not a global AI rewrite
+
+Current bounded correction: `runReadAim` opponent risk reads acquired pose/motion
+and public capability, removing private current-down/fatigue/engagement shortcuts.
+Recommend the risk-only71d98fc scope on accepted4679a3c; [review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
+Three selected checks/typecheck pass; full combined verification and separate
+merge authority remain outstanding. Teammate query transport is independently
+approved but has no current production consumer, so defer it until needed.
+No navigation tuning or claim that all legacy carrier callers are fixed.
+Original information-only collision and uncertainty evidence remain preserved.
 
 Combination/runner reads share the teammate shortcut. General opponent `see()`
 also largely models latency rather than acquisition, while QB has a distinct
