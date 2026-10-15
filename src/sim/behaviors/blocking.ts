@@ -31,6 +31,7 @@ import { goTo, runThrough, stand, track } from './common.js';
 import { clearStretchDeparture, stretchHelpOpportunity } from '../stretch-help.js';
 import { TEAMMATE_INFORMATION_LIMITS } from '../teammate-information.js';
 import { planStretchFeet, type StretchFootPlan } from '../stretch-footwork.js';
+import { clearClimbStep, climbLookahead, type ClimbObstacle, type ClimbStep } from '../climb-clearance.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -746,7 +747,8 @@ export class RunBlocker implements Behavior {
   /** Native technique read, retained between the player's ordinary decisions. */
   zoneRead: ZoneReachRead | null = null;
   /** Held climb plan from one acquired picture of the backer. */
-  private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
+  private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2;
+    clearance?: ClimbStep } | null = null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
   /** Own acquired half-man fit, retained across approach and actual contact. */
@@ -934,17 +936,59 @@ export class RunBlocker implements Behavior {
       }
       this.climbRead = { target, nextRead: sim.t + a.mind.decisionInterval, meet: best!.meet,
         through: Math.hypot(seen.vel.x, seen.vel.y), attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
+      // Look past the down surface before choosing the first step toward a
+      // backer. Only this player's free body and acquired pictures enter the
+      // preview; a loaded body cannot be certified by an empty-space solve.
+      const own = a.body.support;
+      if (!a.engagement && own?.state === 'up' && !own.foot && !own.strike
+        && Math.hypot(own.load.x, own.load.y) < 1e-6
+        && !sim.world.joints.some(j => j.a === a.body || j.b === a.body)) {
+        const r = this.climbRead;
+        const command = { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
+          facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
+        r.clearance = clearClimbStep(a.body, command, r.meet, this.climbObstacles(a, sim, target),
+          sim.t, climbLookahead(a.body, command, a.mind.decisionInterval, capacity), playSideSign(sim, run), sim.world.handContact);
+        if (r.clearance.kind !== 'direct') r.attainable = false;
+      }
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
-        chose: this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
-        cue: 'one acquired picture of the backer, previewed with own free movement',
-        options: ['attainable meeting point', 'closest approach (no attainable fit)'],
-        detail: `meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd` });
+        chose: this.climbRead.clearance && this.climbRead.clearance.kind !== 'direct' ? `first-level ${this.climbRead.clearance.kind}`
+          : this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
+        cue: 'acquired backer/front and teammate pictures, previewed with own free movement',
+        options: ['attainable meeting point', 'closest approach (no attainable fit)', 'first-level around', 'first-level gather', 'first-level blocked'],
+        detail: `free meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd; first-level ${this.climbRead.clearance?.kind ?? 'loaded, not forecast'}` });
     }
     const r = this.climbRead!;
+    // Hold a deliberate clearance action through the ordinary decision beat.
+    // Releasing it mid-beat because a shorter preview clears was the same
+    // residual-momentum mistake as an early gather release.
+    if (r.clearance && r.clearance.kind !== 'direct')
+      return { ...r.clearance.command, vel: { ...r.clearance.command.vel } };
     const capacity = a.body.support
       ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
     return { vel: movingArrivalVelocity(a.body, r.meet, r.seenVel, a.profile.vmax, .1, r.through, 1, capacity),
       facing: Math.atan2(r.meet.y - a.pos.y, r.meet.x - a.pos.x) };
+  }
+
+  private climbObstacles(a: Agent, sim: PlaySim, target: Agent): ClimbObstacle[] {
+    const peers: ClimbObstacle[] = [];
+    for (const d of sim.defense) {
+      const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
+      // Installed front membership is public. Locate that body only through
+      // this climber's delayed picture, never live depth or engagement state.
+      if (d === target || !spot || spot.pos.x - sim.los > 2) continue;
+      const seen = sim.see(a, d);
+      peers.push({ id: d.idx, pos: { ...seen.pos }, vel: { ...seen.vel }, radius: d.profile.radius });
+    }
+    for (const b of sim.offense) {
+      if (b === a) continue;
+      const seen = sim.teammateInformation(a, b);
+      if (seen.source === 'unavailable') continue;
+      peers.push({ id: b.idx, pos: { ...seen.pos }, vel: { ...seen.vel }, radius: b.profile.radius, maxSpeed: b.profile.vmax,
+        horizon: a.mind.decisionInterval,
+        ...(seen.source === 'called' ? { route: seen.forecast?.samples,
+          validFor: Math.max(0, seen.forecast?.validFor ?? 0) } : {}) });
+    }
+    return peers;
   }
 
   /** The uncovered player's own near-gap read. It changes his job only; it

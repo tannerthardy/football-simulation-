@@ -1,5 +1,20 @@
 # Current work ownership
 
+## Continued run-lane execution, 2026-10-15
+
+Root continues at `377d375` on `codex/run-lanes`, engine `66e59745…`.
+Only root is active. Root owns `behaviors/blocking.ts`, a new bounded climb
+clearance/route helper, affected tests and exact coupled validation. Root also
+owns RB/mesh/spacing decision regions if the saved strong mesh collision
+demonstrates a correction there; information interfaces and physics retain
+their current contracts. First repair the known acquired-DL obstruction in
+weak LG's .45s state, preserving a clear long climb and neighboring routes.
+Then short natural controls must show actual block work/position and no
+unexplained harms before changing exchange tempo. Existing rejected near-fit,
+joined-release and nominal-track experiments are evidence, not starting code.
+No capacity/physics, hidden player data, broader sensing or longer memory.
+Freeze all execution inputs/HEAD for receipts. Retain exact pins and failures.
+
 ## RB timing and second-level collection, 2026-10-15
 
 Root owns this continuation on `codex/run-tempo-climb`, starting from PR52
