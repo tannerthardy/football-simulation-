@@ -11,6 +11,7 @@ to apply cleanly without importing unrelated branch content here.
 
 | Current item | Owner | Branch | Files / boundary | Claimed | Status |
 | --- | --- | --- | --- | --- | --- |
+| Isolated contact-law correction on current develop | Physics Codex, user review assignment; Integration owns combined verification | `codex/contact-law-current`, from approved develop `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | Extract PR17 contact/ground selection and PR49 required material ownership guard. World/PlaySim API plumbing plus existing movement-preview selector; no controller policy, solver, active-hands, capacity, recovery or default changes. | 2026-10-15 (America/Phoenix) | In progress: confirm coherent common-point response on current accepted controllers; retain ordinary no-contact movement, independent law/work checks and current affected football contracts. PR62 parked on historical host at `1f071b9`; no further helper optimization/native cost study. Historical comparison `4ded6b6` unchanged. Deliver a minimal default-off candidate and named blockers/owners, not a merge of physics branches. |
 | Reviewed run/catch controller integration | Codex integration owner, explicitly assigned by user and #8 controller review | `codex/controller-integration-review`, tested `46a833d` from approved `c98c2fa` | Minimal catch helper/defense hook/contract, reviewed #10 run correction and historical worksheet pin. No unrelated research ancestry, hands/grip/helper rules or capacity/law changes. | 2026-10-13 (America/Phoenix) | Preparation/verification complete, final review pending: catch-only `b3a55ac` passed 59 checks/15 frozen states; #10 run-only and compatible retained-draw receipts reused. Combined 49 affected checks/three saved histories, then one 1,684-TS/140-file, 145-Python, typecheck/build pass in 180.530 s; no skips/worker errors/input drift. [Exact receipt](../data/reviews/current/controller-combined-verification.json), [scope/adverse evidence](reviews/controller-integration.md#published-combined-verification). 44 flags/components=1. No merge or baseline designation. |
 
 ## Approved-reference ownership history
@@ -637,3 +638,13 @@ Edit only your own rows and requests so board merges stay trivial.
   games and assertions pass with the original 60 s allocated per game.
   PR #2 stays draft. Preserve known physical/football failures and adverse
   flag controls; a new baseline needs an explicit profile/pin and validation.
+
+- 2026-10-15 (America/Phoenix), Physics Codex -> Integration and Run owners:
+  user review assigns isolated common-point contact on approved develop
+  `a1b16e6`, branch `codex/contact-law-current`. PR17's existing climb-preview
+  selector must follow the resolved ground model so patch contacts can retain
+  legacy movement. I will extract that one routing line with World/PlaySim
+  plumbing, preserving current blocking policy, components=1 and capabilities.
+  Review PR49's patch-only material ownership guard; no solver/turn/active-hands
+  or recovery package. Supply focused mechanical/current-football evidence;
+  Integration retains exact combined checks and adoption. PR62 is parked.
