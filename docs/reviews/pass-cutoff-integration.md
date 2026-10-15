@@ -1,6 +1,36 @@
 # Independent #67 extraction on accepted develop
 
-## Final verification preparation — 2026-10-15
+**Final recommendation: approve the isolated candidate for merge. Nothing has
+been merged.** Tested commit `64177487272b7e0b2d51460e23ccdb6447508e39`
+contains accepted develop7d1451b, the original narrow PassProtector extraction,
+four existing focused checks/fixture, and the approved one-line replay-kind filter.
+**1,724 TypeScript tests across144 files,145 Python tests,typecheck/build pass.**
+All44 flags/components=1 and World defaults match the reviewed evidence; no
+skipped phases, worker errors or input drift. Final command time200.233666s.
+No extra standalone replay, game or roster campaign. [Final receipt](../../data/reviews/current/pass-cutoff-integration/final-receipt.json),
+[raw launcher receipt](../../data/reviews/current/pass-cutoff-integration/final-combined.json),
+[log](../../data/reviews/current/pass-cutoff-integration/final-combined.log),
+[four-path portable patch](../../data/reviews/current/pass-cutoff-integration/final-candidate.patch).
+
+Source SHA256 remains1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7;
+validation SHA256 isccd339bb899afb10f98e64e44c2da9b15903fbb73e0009664d5aad76930ba37c.
+The publication adds only documentation/evidence and reconciles the newer queue
+history from72cacd0; source/tests/tooling/settings remain the exact tested tree.
+
+Run's accepted adjudication clears the ordinary-fixture controller hold, while
+preserving the native protection loss. The early contact clock changes which
+execution draws reach the rep; reciprocal swim/long-arm variates let both
+approaches lose or protect. Geometry and later draws still differ. All RT/RG/LT
+losses, traffic, censoring, forecast optimism and center-hand limits below remain
+scope limits; this is not league-wide protection or physics approval.
+
+If accepted, Run's forecast/loaded-policy work and #69's independent shared-file
+extraction should preserve the accepted free-cutoff hunk at clean checkpoints.
+Physics keeps its separate law/dependency review; original research remains
+valid for its pinned source. Accepted develop stays7d1451b until an explicitly
+authorized merge. No new baseline/default or branch deletion is proposed.
+
+## Final preparation snapshot — completed 2026-10-15
 
 User accepted [Run's bounded ordinary-fixture adjudication](https://github.com/tannerthardy/football-simulation-/blob/f430360d9e5a6a151a3851843d6a917a94bd0964/docs/reviews/pass-ordinary-contact.md).
 The prior ordinary-fixture hold is cleared; native losses remain adverse evidence.
@@ -8,7 +38,7 @@ Reciprocal response-variate diagnostics transfer the successful swim and early
 pressure to the accepted approach; each approach protects through2.25s with
 the failed long-arm execution. This supports a contact-clock/execution tradeoff,
 not universal improvement, zero geometry effect, or validation of contact law.
-All13 Run artifact hashes are verified and reused without another replay.
+All12 Run artifact hashes are verified and reused without another replay.
 
 The final candidate includes current accepted develop
 `7d1451b2c31786e075550183a6a93bbda23da29b` through a normal merge, preserving
