@@ -1,0 +1,54 @@
+{
+  "schema": "controller-portable-patch-check-v1",
+  "base": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "testedTarget": "47e0da138454a6ae4ffd0647b9afbcf62a95f9f2",
+  "eachPatchAppliesIndependently": true,
+  "combinedPatchesExactlyMatchTestedSourceTestsScripts": true,
+  "verifiedPaths": [
+    "scripts/diag/saved-exchange.ts",
+    "scripts/replay-data.ts",
+    "src/game/game.ts",
+    "src/sim/assign.ts",
+    "src/sim/catch-readiness.ts",
+    "src/sim/catching.ts",
+    "src/sim/coverage-cues.ts",
+    "src/sim/live-gaps.ts",
+    "src/sim/playsim.ts",
+    "src/sim/recognition.ts",
+    "src/sim/types.ts",
+    "test/departed-center-gap.test.ts",
+    "test/fixtures/incidental-catch-windows.json",
+    "test/fixtures/p033-gap-decision.json",
+    "test/fixtures/shotgun-exchange.json.gz",
+    "test/game-rules.test.ts",
+    "test/incidental-catch-readiness.test.ts",
+    "test/qb-rusher-recording.test.ts",
+    "test/recognition.test.ts",
+    "test/replay-export.test.ts",
+    "test/shotgun-exchange.test.ts"
+  ],
+  "patches": [
+    {
+      "path": "data/reviews/current/departed-center-integration/patches/gap-identity.patch",
+      "sha256": "4090fd77a21cfad1766dd3ac912a4a2aa5ed84e5e7aa17b6100cd46faf43b9f2"
+    },
+    {
+      "path": "data/reviews/current/departed-center-integration/patches/cadence.patch",
+      "sha256": "c5054406894a5ecebf26c167ce985c78c38e16eba9118d09c07ac79c1ecd39d4"
+    },
+    {
+      "path": "data/reviews/current/departed-center-integration/patches/blocking-recognition.patch",
+      "sha256": "597a28e78aeec1d44e8d9f6e3dab53ca722d0b4b09d0a14b65a37ae6b50504d0"
+    },
+    {
+      "path": "data/reviews/current/departed-center-integration/patches/bookkeeping.patch",
+      "sha256": "1ee2b71fe7eded48cdb663edb7e45a5eab09f98e6ba9f616c80c79814e82086e"
+    },
+    {
+      "path": "data/reviews/current/departed-center-integration/patches/incidental-acquisition.patch",
+      "sha256": "0690ce4611dad5bbf86d1e166425f48474cd62111024c497e730cbf41b5f812b"
+    }
+  ],
+  "newSimulations": 0,
+  "elapsedSeconds": 0.5592966030235402
+}

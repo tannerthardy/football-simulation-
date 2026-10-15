@@ -1,0 +1,14 @@
+Profile candidate: run-game-2026-10-13, commit 47e0da138454a6ae4ffd0647b9afbcf62a95f9f2, source 2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad
+Running node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/defensive-awareness-contact.test.ts test/recognition.test.ts
+
+ RUN  v3.2.4 /workspace/football-gap-integration
+
+ ✓ |core| test/defensive-awareness-contact.test.ts (20 tests) 153ms
+ ✓ |core| test/recognition.test.ts (10 tests) 44ms
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  18:34:21
+   Duration  1.53s (transform 622ms, setup 0ms, collect 955ms, tests 197ms, environment 0ms, prepare 119ms)
+
+Validation receipt: out/controller-integration/zone-key-contract-focused.json; exit 0

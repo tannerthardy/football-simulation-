@@ -42,6 +42,31 @@ GitHub default and branch retirement remain distinct actions. No fresh full-game
 campaign is justified by this local integration question. Follow
 [TESTING_COSTS](TESTING_COSTS.md).
 
+### Explicit zone-key contract review
+
+The frozen `47e0da1` run passed typecheck/build and **1,717/1,718 TypeScript
+checks**; Python was skipped by fail-fast. Its sole failure was the accepted
+zone-key assertion that a stationary upright nearby receiver must produce a
+`run` declaration (`defensive-awareness-contact.test.ts`, original line195).
+That is the very speed-only blocking inference #58 removes.
+
+Independent contract evidence is the accepted `showsBlock` helper: merely
+waiting at the line is not blocking; delayed low pads/forward movement or
+personally visible contact are evidence. The zone test's purpose is preserving
+which local receiver is keyed, not assigning knowledge of his hidden job.
+The [matched diagnostic](../data/reviews/current/departed-center-integration/zone-key-diagnostic.json)
+reuses the same fixture and delayed cues with approved versus candidate
+Recognition. It runs zero World steps: upright stationary `run→unsure`, release
+`pass→pass`, low pads `run→run`, own-contact `run→run`. A different distant X
+does not affect the current zone trajectory. No new endpoint is used as truth.
+
+**Reviewed contract repair:** retain the local-key/release assertions, require
+ambiguity for the upright cue, and add low-pad/own-contact run controls. Other
+man-key/tactile/privacy checks remain. No numeric threshold or runtime changes.
+The original failed assertion, full failed receipt and diagnostic remain
+published. This explicit test-contract revision requires a refrozen combined
+verification; it does not convert the failed run into a pass.
+
 <details>
 <summary>Published 2026-10-14 integration ledger and prior receipts — preserved</summary>
 

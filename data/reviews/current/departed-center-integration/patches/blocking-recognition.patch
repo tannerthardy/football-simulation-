@@ -116,3 +116,50 @@ index 4cc6348..9e10322 100644
 +    expect(pictureRead(kind, true)).toEqual(pictureRead(kind));
 +  });
 +});
+diff --git a/test/defensive-awareness-contact.test.ts b/test/defensive-awareness-contact.test.ts
+index a72ca0b..19249a4 100644
+--- a/test/defensive-awareness-contact.test.ts
++++ b/test/defensive-awareness-contact.test.ts
+@@ -150,7 +150,8 @@ describe('engaged defenders preserve known duties and delayed runner pictures',
+   });
+ });
+ 
+-function keyRecognition(nearSpeed: number, keySpeed: number, man = true) {
++function keyRecognition(nearSpeed: number, keySpeed: number, man = true,
++  nearCue: 'upright' | 'low-pads' | 'own-contact' = 'upright') {
+   const { sim } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60 });
+   const a = sim.slot('CB_S')!, target = sim.slot('X')!, near = sim.slot('Y')!;
+   a.body.pos = { x: 42, y: 35 };
+@@ -162,10 +163,10 @@ function keyRecognition(nearSpeed: number, keySpeed: number, man = true) {
+     if (r === this.qb) pos = { x: 36.5, y: 20 };
+     else if (r.slot === 'RB') pos = { x: 34, y: 20 };
+     else if (r === target) { pos = { x: 41, y: 43 }; vel = { x: keySpeed, y: 0 }; }
+-    else if (r === near) { pos = { x: 41, y: 35.5 }; vel = { x: nearSpeed, y: 0 }; }
++    else if (r === near) { pos = nearCue === 'own-contact' ? { x: 41.4, y: 35 } : { x: 41, y: 35.5 }; vel = { x: nearSpeed, y: 0 }; }
+     else if (!['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) pos = { x: 41, y: 15 };
+     if (observer === a) targets.push(r.slot);
+-    return { pos, vel, facing: 0, stance: null, pose: 'up', age: .25 };
++    return { pos, vel, facing: 0, stance: r === near && nearCue === 'low-pads' ? 'low' : null, pose: 'up', age: .25 };
+   };
+   const trajectory = [];
+   for (let k = 0; k < 16; k++) {
+@@ -190,11 +191,17 @@ describe('defensive recognition reads a known job without inventing tactile know
+     expect(stalk.a.recog!.read).toBe('unsure');
+     expect(stalk.a.recog!.pPass()).toBeLessThan(release.a.recog!.pPass() - .3);
+   });
+-  it('zone players retain the existing local-key policy', () => {
++  it('zone players retain their local key without declaring a slow upright receiver a blocker', () => {
+     const still = keyRecognition(0, 6, false), release = keyRecognition(6, 6, false);
+-    expect(still.a.recog!.read).toBe('run');
++    expect(still.a.recog!.read).toBe('unsure');
++    expect(still.trajectory).toEqual(keyRecognition(0, 0, false).trajectory);
+     expect(release.a.recog!.read).toBe('pass');
+   });
++  it.each(['low-pads', 'own-contact'] as const)('zone players still recognise their local blocker from %s', cue => {
++    const block = keyRecognition(cue === 'low-pads' ? 1 : 0, 6, false, cue);
++    expect(block.a.recog!.read).toBe('run');
++    expect(block.a.recog!.pPass()).toBeLessThan(keyRecognition(0, 6, false).a.recog!.pPass());
++  });
+   it('unknown pad presentation conveys no run/pass category from the engagement label', () => {
+     const compare = (type: 'pass' | 'run', stance: 'high' | 'low' | null) => {
+       const f = contact(); f.engagement.type = type; f.blocker.stance = stance;
