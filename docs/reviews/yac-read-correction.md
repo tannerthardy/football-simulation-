@@ -139,6 +139,23 @@ whole-game histories diverge. Run population balance remains a Run Game
 follow-up; the matched controls do not certify it. Candidate recording neutrality
 also matches the plain P94 result/body/perception/RNG signature.
 
+## New tracking-guided transfer
+
+The [pinned follow-up and reproducible native inputs](https://github.com/tannerthardy/football-simulation-/blob/17699ab/docs/reviews/yac-tracking-followup.md)
+add a new accepted-game witness without changing this runtime. Same-input
+power-zone P046 goes from **50.06 YAC / TD to −.17 / tackle**: the actual
+receiver's full body history is identical through catch and recorded ball
+positions match. Avoiding the unsupported run commitment puts the corner into
+a front form tackle before the receiver turns upfield. The ordinary P009 side
+tackle remains adverse at **6.35 → 7.51 YAC**; the separately verified rear
+control is reused. PR61 alone preserves both baseline native executions, but
+**the #58/#61 combination remains untested**. Three offline measurement checks
+pass; no new full games or shared-suite runs. NFL tracking and Big Data Bowl
+research support measuring opportunity creation separately from conversion.
+Traffic-stop and approach probes supplied no additional supported production
+fix. Shared spacing/clearance remains with Do-It-All!; no helper or physics
+change is included here.
+
 ## Handoff and evidence reuse
 
 **Ready for the Integration owner's combined check as a recognition correction.**
