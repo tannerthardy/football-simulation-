@@ -1,0 +1,82 @@
+import { describe, expect, it } from 'vitest';
+import { Rng } from '../src/core/rng.js';
+import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
+import { PASS_BY_ID } from '../src/playbook/concepts.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+import { ManCoverage } from '../src/sim/behaviors/defense.js';
+import type { Perceived } from '../src/sim/perception.js';
+import { PlaySim } from '../src/sim/playsim.js';
+
+function encounter(seed = 27101) {
+  const formation = FORMATION_BY_ID.gun_doubles_11;
+  const sim = new PlaySim({
+    offense: pickOffense(generateTeam(new Rng(seed), 'Offense', 'OFF'), formation.personnel),
+    defense: pickDefense(generateTeam(new Rng(seed + 1), 'Defense', 'DEF'), 'nickel'),
+    offCall: { formation, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'vertical control' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover4,
+      pressure: null, zoneStyle: 'match', label: 'Quarters' },
+    los: 38, ballY: 26.667, firstDownX: 48, seed: 812021015,
+  });
+  const a = sim.slot('CB_W')!, r = sim.slot('X')!;
+  sim.t = 1.2;
+  a.body.pos = { x: 45, y: 45.2 };
+  a.body.vel = { x: 2.2, y: .8 };
+  a.body.facing = Math.PI;
+  a.recog = null;
+  let cue: Perceived = { pos: { x: 41, y: 44.67 }, vel: { x: 5.5, y: 0 },
+    facing: 0, stance: null, pose: 'up', carrying: false, age: .15 };
+  const qbCue: Perceived = { pos: { x: 32, y: 26.667 }, vel: { x: 0, y: 0 },
+    facing: 0, stance: null, pose: 'up', carrying: true, age: .15 };
+  sim.see = (_a, b) => b === r ? structuredClone(cue) : structuredClone(qbCue);
+  function request(opts: { overTop?: boolean; trail?: boolean; press?: boolean } = {}, hidden?: () => void) {
+    const behavior = new ManCoverage(a, sim, r, !!opts.press, 'D', 1,
+      { lev: 'outside', overTop: opts.overTop, trail: opts.trail });
+    // A known, observed release and a fixed original off-man alignment.
+    Object.assign(behavior, { initialCushion: 6.445998046962835, releaseObserved: true });
+    hidden?.();
+    return behavior.update(a, sim);
+  }
+  return { sim, a, r, request, setCue: (next: Partial<Perceived>) => { cue = { ...cue, ...next }; } };
+}
+
+describe('off-man vertical cushion objective', () => {
+  it.each([27101, 63101, 64101])('is continuous across the three-yard observed depth on roster %i', seed => {
+    const c = encounter(seed);
+    c.setCue({ pos: { x: c.sim.los + 3 - .0001, y: 44.67 } });
+    const before = c.request();
+    c.setCue({ pos: { x: c.sim.los + 3 + .0001, y: 44.67 } });
+    const after = c.request();
+    expect(Math.hypot(after.vel.x - before.vel.x, after.vel.y - before.vel.y)).toBeLessThan(.01);
+  });
+
+  it('uses the acquired picture rather than hidden receiver motion and adds no random draw', () => {
+    const c = encounter(), rng = structuredClone(c.sim.rng);
+    const before = c.request();
+    const after = c.request({}, () => {
+      c.r.body.pos = { x: 90, y: 5 };
+      c.r.body.vel = { x: -8, y: 6 };
+    });
+    expect(after).toEqual(before);
+    expect(structuredClone(c.sim.rng)).toEqual(rng);
+  });
+
+  it('responds to an acquired plant and crossing break', () => {
+    const c = encounter(), climbing = c.request();
+    c.setCue({ pos: { x: 41, y: 44.67 }, vel: { x: 0, y: 5 }, facing: Math.PI / 2 });
+    const crossing = c.request();
+    expect(crossing.vel.x).toBeLessThan(climbing.vel.x);
+    expect(crossing.vel.y).toBeGreaterThan(climbing.vel.y);
+  });
+
+  it('preserves continuous press and top objectives across the off-man boundary', () => {
+    const c = encounter();
+    for (const opts of [{ press: true }, { overTop: true }]) {
+      c.setCue({ pos: { x: 41 - .0001, y: 44.67 } });
+      const before = c.request(opts);
+      c.setCue({ pos: { x: 41 + .0001, y: 44.67 } });
+      const after = c.request(opts);
+      expect(Math.hypot(after.vel.x - before.vel.x, after.vel.y - before.vel.y)).toBeLessThan(.01);
+    }
+  });
+});

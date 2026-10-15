@@ -1,0 +1,19 @@
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index e02bd1b..33a7049 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -280,7 +280,13 @@ export class ManCoverage implements Behavior {
+       const developing = clamp(deep / 4, 0, 1);
+       tx += this.initialCushion * (1 - developing) + 0.6 * developing;
+     }
+-    else if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
++    else if (vx > 3 && deep > 3) {
++      // Narrow the moving cushion continuously as the stem develops. Cutting
++      // it in half at three yards asks an already turning corner to brake
++      // while the observed receiver is still accelerating past him.
++      const narrow = clamp((deep - 3) / 5, 0, 1);
++      tx = seen.pos.x + cushion * (1 - 0.5 * narrow);
++    }
+     else if (!this.hipsOpen) {
+       // Before the release, hold the off-man cushion rather than charging a
+       // stationary back. Once his observed stem moves, close excess cushion:
