@@ -1,0 +1,101 @@
+diff --git a/test/catch-phase-control.test.ts b/test/catch-phase-control.test.ts
+index 3bdb70f..6759de2 100644
+--- a/test/catch-phase-control.test.ts
++++ b/test/catch-phase-control.test.ts
+@@ -10 +10,2 @@ import { PlaySim } from '../src/sim/playsim.js';
+-import { playBall } from '../src/sim/behaviors/defense.js';
++import { ManCoverage, playBall } from '../src/sim/behaviors/defense.js';
++import type { RouteObservation } from '../src/sim/coverage-read.js';
+@@ -105,0 +107,92 @@ describe('running phase at an observed receiver catch', () => {
++
++describe('assigned man when the observed ball contest is infeasible', () => {
++  function lateBall() {
++    const s = stage();
++    // No receiver can reach this flight sample from an acquired picture.
++    // The defender also cannot get there; it is not a ball opportunity.
++    s.sim.ballPath = [{ t: 2.1, x: 70, y: 5, z: 1.2 }];
++    return s;
++  }
++
++  it('keeps achieved movement with the acquired assigned man instead of driving at the impossible landmark', () => {
++    const { sim, r, d } = lateBall(), body = structuredClone(d.body);
++    const command = playBall(d, sim, r);
++    expect(command.vel.x).toBeGreaterThan(7);
++    expect(command.vel.y).toBeGreaterThan(-1);
++    const world = new World([d.body]);
++    for (let i = 0; i < 6; i++) world.step([command], .05);
++    expect(d.body.support!.state).toBe('up');
++    expect(Math.abs(Math.atan2(d.vel.y, d.vel.x) - Math.atan2(1, 8))).toBeLessThan(.15);
++    expect(d.body.pos.x).toBeGreaterThan(body.pos.x + 2);
++  });
++
++  it('reuses acquired evidence, with no hidden target shortcut, extra sighting or request draw', () => {
++    const { sim, r, d } = lateBall(), see = sim.see.bind(sim), calls: number[] = [];
++    sim.see = (observer, target, ...rest) => { calls.push(target.idx); return see(observer, target, ...rest); };
++    const state = JSON.stringify(sim.rng), command = playBall(d, sim, r);
++    expect(calls.filter(idx => idx === r.idx)).toHaveLength(1);
++    expect(JSON.stringify(sim.rng)).toBe(state);
++    if (sim.ball.kind !== 'air') throw new Error('Expected flight');
++    sim.ball.target = sim.slot('H')!;
++    r.body.pos = { x: 80, y: 4 }; r.body.vel = { x: 0, y: -8 };
++    expect(playBall(d, sim, r)).toEqual(command);
++  });
++
++  it('changes the request for an acquired plant rather than continuing a held velocity on a timer', () => {
++    const { sim, r, d } = lateBall(), before = playBall(d, sim, r);
++    r.body.pos = { x: 50, y: CENTER_Y }; r.body.vel = { x: 0, y: -4 };
++    for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
++    const after = playBall(d, sim, r);
++    expect(after.vel.x).toBeLessThan(before.vel.x);
++    expect(after.vel.y).toBeLessThan(before.vel.y);
++  });
++
++  it('preserves a reachable ball when the assigned man supplies no receiver catch window', () => {
++    const { sim, r, d } = stage();
++    d.body.pos = { x: 49.2, y: CENTER_Y + .5 };
++    sim.ballPath = [{ t: 2.05, x: 48.5, y: CENTER_Y + .5, z: 1.5 }];
++    expect(playBall(d, sim, r).vel.x).toBeLessThan(0);
++  });
++
++  it('preserves a genuine receiver window even when a different man is assigned', () => {
++    const { sim, d } = stage(), original = playBall(d, sim, null);
++    expect(playBall(d, sim, sim.slot('H')!)).toEqual(original);
++  });
++
++  it('leaves unassigned defenders on their existing fallback objective', () => {
++    const { sim, d } = lateBall(), command = playBall(d, sim, null);
++    expect(command.vel.y).toBeLessThan(-4);
++  });
++
++  it('updates the existing reader from an acquired image before throw recognition without changing that movement branch', () => {
++    const { sim, r, d } = lateBall(), man = new ManCoverage(d, sim, r, false, 'D', 1);
++    d.behavior = man;
++    const reader = Reflect.get(man, 'observation') as RouteObservation;
++    const read = reader.read.bind(reader), inputs: Parameters<RouteObservation['read']>[] = [];
++    reader.read = (...args) => { inputs.push(args); return read(...args); };
++    sim.throwAt = sim.t;
++    const before = playBall(d, sim, r), command = man.update(d, sim);
++    expect(command).toEqual(before);
++    expect(inputs).toHaveLength(1);
++    expect(inputs[0][0]).toEqual(sim.see(d, r));
++    expect(inputs[0][1]).toBe(sim.t);
++    expect(inputs[0][3]).toBe(d.profile.reactionTime);
++    expect(inputs[0][4]).toBe(d.r('anticipation') * d.r('manCoverage') * d.mind.focus);
++  });
++
++  it('uses the acquired hip turn in the native man controller and ignores later hidden facing or route changes', () => {
++    const request = (facing: number, hiddenFacing: number) => {
++      const { sim, r, d } = lateBall(), man = new ManCoverage(d, sim, r, false, 'D', 1);
++      d.behavior = man;
++      r.body.facing = facing;
++      for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
++      r.body.pos = { x: 90, y: 2 }; r.body.vel = { x: -7, y: 6 }; r.body.facing = hiddenFacing;
++      if (sim.ball.kind !== 'air') throw new Error('Expected flight');
++      sim.ball.target = sim.slot('H')!;
++      return man.update(d, sim);
++    };
++    const bent = request(-.8, 2.4);
++    expect(request(-.8, -2.1)).toEqual(bent);
++    expect(bent.vel.y).toBeLessThan(request(Math.atan2(1, 8), -2.1).vel.y);
++  });
++});

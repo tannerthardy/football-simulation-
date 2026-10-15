@@ -1,5 +1,11 @@
 # Current work ownership
 
+## Bounded observed-turn assigned-man test — 2026-10-15
+
+| Item | Owner | Branch / reference | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| One existing bounded hip/plant interpretation in the no-contest assigned-man branch | Codex Catching, explicitly assigned by user | `codex/yac-observed-turn-native` from fetched `7d1451b2c31786e075550183a6a93bbda23da29b`; accepted runtime `8c891f4` is byte-identical | Archived `ManCoverage` / `playBall` prototype and affected tests; active source/tests restored. No sensing, physics, helper, capacity or grip change. | Stopped / no integration candidate. Acquired plant/hip cues verified in time; bounded read partly improves plain tracking but still trades speed against catch angle/across-route leverage. About2.4yd receiver-relative trail remains; no receiver contact. P006/current P010 exact;44 focused passes,6 new native executions,15.828 launcher seconds. [Objective conflict and evidence](reviews/p045-observed-turn-objective-conflict.md). No further variant or transfer batch. |
+
 ## Current queue ownership — 2026-10-15
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while

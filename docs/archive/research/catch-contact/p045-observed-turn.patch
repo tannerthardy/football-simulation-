@@ -1,0 +1,37 @@
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index e02bd1b..dbc95fd 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -216 +216,3 @@ export class ManCoverage implements Behavior {
+-    if (sim.ball.kind === 'air') return playBall(a, sim, R);
++    if (sim.ball.kind === 'air') return playBall(a, sim, R, cue => this.observation.read(
++      cue, sim.t, R.profile, a.profile.reactionTime,
++      a.r('anticipation') * a.r('manCoverage') * a.mind.focus));
+@@ -737 +739,2 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+-export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand {
++export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
++  observeMan?: (cue: Perceived) => Perceived): MoveCommand {
+@@ -743,0 +747,3 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
++      // Maintain the existing observation history on this acquired image;
++      // throw recognition still owns when the movement objective changes.
++      observeMan?.(s);
+@@ -751 +757,5 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
+-  const window = observedCatchWindow(a, sim);
++  const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
++    .map(r => ({ r, seen: sim.see(a, r) }));
++  const manCue = receivers.find(r => r.r === man)?.seen;
++  const interpretedMan = manCue ? observeMan?.(manCue) ?? manCue : undefined;
++  const window = observedCatchWindow(sim, receivers);
+@@ -779,0 +790,7 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
++  // With no receiver window and no attainable ball play, the assigned man
++  // remains our coverage objective. A late flight landmark is not a reason
++  // to abandon that acquired motion. Reuse the same picture, not a new read
++  // or knowledge of the intended target; a fresh window/contest wins above.
++  if (!window && spot && man) {
++    if (interpretedMan) return track(a, interpretedMan.pos, interpretedMan.vel);
++  }
+@@ -804,3 +821 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand
+-function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
+-  const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
+-    .map(r => ({ r, seen: sim.see(a, r) }));
++function observedCatchWindow(sim: PlaySim, receivers: readonly { r: Agent; seen: Perceived }[]): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
