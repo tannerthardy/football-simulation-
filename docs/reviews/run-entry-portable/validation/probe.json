@@ -1,0 +1,1349 @@
+{
+  "schema": "run-entry-portable-consumer-v1",
+  "acceptedBase": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "priorConsumer": "cfcb7db0ba17c978fd02fb179c61f4e8b1d66752",
+  "priorModuleSha256": "65e463f5ee0cfa61f5ce9b31273415de0c1671fb5f0e7f6a57e11d787e83fe95",
+  "fixtureSha256": "bc8a4dbd8c7f85ccd98c11e5956c87368e8ac17843389181c793c30aab1e8a86",
+  "ownPreviewPathsIdentical": true,
+  "rows": [
+    {
+      "name": "saved P032 obstruction",
+      "before": {
+        "kind": "gather",
+        "status": "implicit numeric clearance",
+        "minimumGap": 0.4988462991698386,
+        "knownMinimumGap": null,
+        "unknownPeers": [],
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "implicit numeric clearance",
+            "minimumGap": -0.5719090909090909,
+            "finalPos": {
+              "x": 74.5374985241794,
+              "y": 26.06472867868799
+            },
+            "finalVel": {
+              "x": 6.293366999263258,
+              "y": -0.7766787913728507
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": 2.8666541527997604
+              },
+              {
+                "id": 1,
+                "gap": 3.7190843716721087
+              },
+              {
+                "id": 2,
+                "gap": 0.858807458495069
+              },
+              {
+                "id": 3,
+                "gap": 0.6163968939066623
+              },
+              {
+                "id": 4,
+                "gap": 2.3758274952766754
+              },
+              {
+                "id": 5,
+                "gap": -0.5719090909090909
+              },
+              {
+                "id": 7,
+                "gap": 2.4915573307485763
+              },
+              {
+                "id": 8,
+                "gap": 18.786090962034667
+              },
+              {
+                "id": 9,
+                "gap": 9.794696147082867
+              },
+              {
+                "id": 10,
+                "gap": 8.418081118261359
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "implicit numeric clearance",
+            "minimumGap": -0.37868434996146805,
+            "finalPos": {
+              "x": 74.01575840691926,
+              "y": 26.59201358797396
+            },
+            "finalVel": {
+              "x": 4.505463417439102,
+              "y": 0.0886909725539187
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": 2.8666541527997604
+              },
+              {
+                "id": 1,
+                "gap": 3.424262718324967
+              },
+              {
+                "id": 2,
+                "gap": 1.569596528641128
+              },
+              {
+                "id": 3,
+                "gap": 0.5343569188738214
+              },
+              {
+                "id": 4,
+                "gap": 1.9760820360296623
+              },
+              {
+                "id": 5,
+                "gap": -0.37868434996146805
+              },
+              {
+                "id": 7,
+                "gap": 2.82486550155378
+              },
+              {
+                "id": 8,
+                "gap": 18.655699826368746
+              },
+              {
+                "id": 9,
+                "gap": 10.381003718514123
+              },
+              {
+                "id": 10,
+                "gap": 8.178610001906218
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.4988462991698386,
+            "finalPos": {
+              "x": 72.59977893539474,
+              "y": 26.274169087008108
+            },
+            "finalVel": {
+              "x": 0.0454864971089215,
+              "y": -0.016676620011934068
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": 2.8666541527997604
+              },
+              {
+                "id": 1,
+                "gap": 4.470613141407434
+              },
+              {
+                "id": 2,
+                "gap": 2.3737847547882067
+              },
+              {
+                "id": 3,
+                "gap": 1.8554405534464298
+              },
+              {
+                "id": 4,
+                "gap": 2.333063434217245
+              },
+              {
+                "id": 5,
+                "gap": 0.4988462991698386
+              },
+              {
+                "id": 7,
+                "gap": 2.564923699970927
+              },
+              {
+                "id": 8,
+                "gap": 18.786090962034667
+              },
+              {
+                "id": 9,
+                "gap": 10.363863711696144
+              },
+              {
+                "id": 10,
+                "gap": 9.20026692942706
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "kind": "gather",
+        "status": "unknown",
+        "minimumGap": null,
+        "knownMinimumGap": 0.4988462991698386,
+        "unknownPeers": [
+          0,
+          8
+        ],
+        "command": {
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "blocked",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 74.5374985241794,
+              "y": 26.06472867868799
+            },
+            "finalVel": {
+              "x": 6.293366999263258,
+              "y": -0.7766787913728507
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": null
+              },
+              {
+                "id": 1,
+                "gap": 3.7190843716721087
+              },
+              {
+                "id": 2,
+                "gap": 0.858807458495069
+              },
+              {
+                "id": 3,
+                "gap": 0.6163968939066623
+              },
+              {
+                "id": 4,
+                "gap": 2.3758274952766754
+              },
+              {
+                "id": 5,
+                "gap": -0.5719090909090909
+              },
+              {
+                "id": 7,
+                "gap": 2.4915573307485763
+              },
+              {
+                "id": 8,
+                "gap": null
+              },
+              {
+                "id": 9,
+                "gap": 9.794696147082867
+              },
+              {
+                "id": 10,
+                "gap": 8.418081118261359
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "blocked",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 74.01575840691926,
+              "y": 26.59201358797396
+            },
+            "finalVel": {
+              "x": 4.505463417439102,
+              "y": 0.0886909725539187
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": null
+              },
+              {
+                "id": 1,
+                "gap": 3.424262718324967
+              },
+              {
+                "id": 2,
+                "gap": 1.569596528641128
+              },
+              {
+                "id": 3,
+                "gap": 0.5343569188738214
+              },
+              {
+                "id": 4,
+                "gap": 1.9760820360296623
+              },
+              {
+                "id": 5,
+                "gap": -0.37868434996146805
+              },
+              {
+                "id": 7,
+                "gap": 2.82486550155378
+              },
+              {
+                "id": 8,
+                "gap": null
+              },
+              {
+                "id": 9,
+                "gap": 10.381003718514123
+              },
+              {
+                "id": 10,
+                "gap": 8.178610001906218
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 72.59977893539474,
+              "y": 26.274169087008108
+            },
+            "finalVel": {
+              "x": 0.0454864971089215,
+              "y": -0.016676620011934068
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": null
+              },
+              {
+                "id": 1,
+                "gap": 4.470613141407434
+              },
+              {
+                "id": 2,
+                "gap": 2.3737847547882067
+              },
+              {
+                "id": 3,
+                "gap": 1.8554405534464298
+              },
+              {
+                "id": 4,
+                "gap": 2.333063434217245
+              },
+              {
+                "id": 5,
+                "gap": 0.4988462991698386
+              },
+              {
+                "id": 7,
+                "gap": 2.564923699970927
+              },
+              {
+                "id": 8,
+                "gap": null
+              },
+              {
+                "id": 9,
+                "gap": 10.363863711696144
+              },
+              {
+                "id": 10,
+                "gap": 9.20026692942706
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "saved P019 clear route",
+      "before": {
+        "kind": "fast",
+        "status": "implicit numeric clearance",
+        "minimumGap": 0.29388857259678247,
+        "knownMinimumGap": null,
+        "unknownPeers": [],
+        "command": {
+          "vel": {
+            "x": 7.814185789168365,
+            "y": -5.57770037595413
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.29388857259678247,
+            "finalPos": {
+              "x": 26.50200679228255,
+              "y": 27.432192226694674
+            },
+            "finalVel": {
+              "x": 5.657975336105765,
+              "y": -1.757060057972398
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": 2.2375591470451957
+              },
+              {
+                "id": 1,
+                "gap": 0.29388857259678247
+              },
+              {
+                "id": 2,
+                "gap": 8.312176451586843
+              },
+              {
+                "id": 3,
+                "gap": 2.8782200986678905
+              },
+              {
+                "id": 4,
+                "gap": 1.8514711292567219
+              },
+              {
+                "id": 5,
+                "gap": 6.118722359911713
+              },
+              {
+                "id": 7,
+                "gap": 3.5492527301608767
+              },
+              {
+                "id": 8,
+                "gap": 22.79176480483962
+              },
+              {
+                "id": 9,
+                "gap": 15.681975618345454
+              },
+              {
+                "id": 10,
+                "gap": 6.634223550181431
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.18774113129748848,
+            "finalPos": {
+              "x": 25.88805019993997,
+              "y": 27.164319636211985
+            },
+            "finalVel": {
+              "x": 3.5329086339468456,
+              "y": -2.5186141490331435
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": 2.2375591470451957
+              },
+              {
+                "id": 1,
+                "gap": 0.18774113129748848
+              },
+              {
+                "id": 2,
+                "gap": 8.312176451586843
+              },
+              {
+                "id": 3,
+                "gap": 2.8966480090945197
+              },
+              {
+                "id": 4,
+                "gap": 1.4205831174796475
+              },
+              {
+                "id": 5,
+                "gap": 6.504353555962093
+              },
+              {
+                "id": 7,
+                "gap": 3.5686130001527783
+              },
+              {
+                "id": 8,
+                "gap": 22.68869770507567
+              },
+              {
+                "id": 9,
+                "gap": 16.041583279654795
+              },
+              {
+                "id": 10,
+                "gap": 6.500342908561537
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.478978470530268,
+            "finalPos": {
+              "x": 24.82294775467438,
+              "y": 28.07595203967643
+            },
+            "finalVel": {
+              "x": 0.13299353008655596,
+              "y": 0.03949088950451328
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": 2.2375591470451957
+              },
+              {
+                "id": 1,
+                "gap": 0.478978470530268
+              },
+              {
+                "id": 2,
+                "gap": 8.312176451586843
+              },
+              {
+                "id": 3,
+                "gap": 4.210744400210649
+              },
+              {
+                "id": 4,
+                "gap": 2.240053036745801
+              },
+              {
+                "id": 5,
+                "gap": 7.882676143615487
+              },
+              {
+                "id": 7,
+                "gap": 3.282519472402451
+              },
+              {
+                "id": 8,
+                "gap": 23.693673042131177
+              },
+              {
+                "id": 9,
+                "gap": 15.771109456487544
+              },
+              {
+                "id": 10,
+                "gap": 7.691919390119451
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "kind": "fast",
+        "status": "unknown",
+        "minimumGap": null,
+        "knownMinimumGap": 0.29388857259678247,
+        "unknownPeers": [
+          0
+        ],
+        "command": {
+          "vel": {
+            "x": 7.814185789168365,
+            "y": -5.57770037595413
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 26.50200679228255,
+              "y": 27.432192226694674
+            },
+            "finalVel": {
+              "x": 5.657975336105765,
+              "y": -1.757060057972398
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": null
+              },
+              {
+                "id": 1,
+                "gap": 0.29388857259678247
+              },
+              {
+                "id": 2,
+                "gap": 8.312176451586843
+              },
+              {
+                "id": 3,
+                "gap": 2.8782200986678905
+              },
+              {
+                "id": 4,
+                "gap": 1.8514711292567219
+              },
+              {
+                "id": 5,
+                "gap": 6.118722359911713
+              },
+              {
+                "id": 7,
+                "gap": 3.5492527301608767
+              },
+              {
+                "id": 8,
+                "gap": 22.79176480483962
+              },
+              {
+                "id": 9,
+                "gap": 15.681975618345454
+              },
+              {
+                "id": 10,
+                "gap": 6.634223550181431
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 25.88805019993997,
+              "y": 27.164319636211985
+            },
+            "finalVel": {
+              "x": 3.5329086339468456,
+              "y": -2.5186141490331435
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": null
+              },
+              {
+                "id": 1,
+                "gap": 0.18774113129748848
+              },
+              {
+                "id": 2,
+                "gap": 8.312176451586843
+              },
+              {
+                "id": 3,
+                "gap": 2.8966480090945197
+              },
+              {
+                "id": 4,
+                "gap": 1.4205831174796475
+              },
+              {
+                "id": 5,
+                "gap": 6.504353555962093
+              },
+              {
+                "id": 7,
+                "gap": 3.5686130001527783
+              },
+              {
+                "id": 8,
+                "gap": 22.68869770507567
+              },
+              {
+                "id": 9,
+                "gap": 16.041583279654795
+              },
+              {
+                "id": 10,
+                "gap": 6.500342908561537
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 24.82294775467438,
+              "y": 28.07595203967643
+            },
+            "finalVel": {
+              "x": 0.13299353008655596,
+              "y": 0.03949088950451328
+            },
+            "gaps": [
+              {
+                "id": 0,
+                "gap": null
+              },
+              {
+                "id": 1,
+                "gap": 0.478978470530268
+              },
+              {
+                "id": 2,
+                "gap": 8.312176451586843
+              },
+              {
+                "id": 3,
+                "gap": 4.210744400210649
+              },
+              {
+                "id": 4,
+                "gap": 2.240053036745801
+              },
+              {
+                "id": 5,
+                "gap": 7.882676143615487
+              },
+              {
+                "id": 7,
+                "gap": 3.282519472402451
+              },
+              {
+                "id": 8,
+                "gap": 23.693673042131177
+              },
+              {
+                "id": 9,
+                "gap": 15.771109456487544
+              },
+              {
+                "id": 10,
+                "gap": 7.691919390119451
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "known stationary, 0.02 yd outside physical contact",
+      "before": {
+        "kind": "fast",
+        "status": "implicit numeric clearance",
+        "minimumGap": 0.02000000000000024,
+        "knownMinimumGap": null,
+        "unknownPeers": [],
+        "command": {
+          "vel": {
+            "x": 9.600637532557911,
+            "y": 0
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.02000000000000024,
+            "finalPos": {
+              "x": 72.6615503157976,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 3.891767918215322,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.02000000000000024
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.12348398030411278,
+            "finalPos": {
+              "x": 72.02866168028986,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 1.9493142243456583,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.12348398030411278
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.5901392608821874,
+            "finalPos": {
+              "x": 71.39364818906861,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 0,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.5901392608821874
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "kind": "fast",
+        "status": "clear",
+        "minimumGap": 0.02000000000000024,
+        "knownMinimumGap": 0.02000000000000024,
+        "unknownPeers": [],
+        "command": {
+          "vel": {
+            "x": 9.600637532557911,
+            "y": 0
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "clear",
+            "minimumGap": 0.02000000000000024,
+            "finalPos": {
+              "x": 72.6615503157976,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 3.891767918215322,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.02000000000000024
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "clear",
+            "minimumGap": 0.12348398030411278,
+            "finalPos": {
+              "x": 72.02866168028986,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 1.9493142243456583,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.12348398030411278
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "clear",
+            "minimumGap": 0.5901392608821874,
+            "finalPos": {
+              "x": 71.39364818906861,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 0,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.5901392608821874
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "same body and zero velocity, stale observed",
+      "before": {
+        "kind": "fast",
+        "status": "implicit numeric clearance",
+        "minimumGap": 0.02000000000000024,
+        "knownMinimumGap": null,
+        "unknownPeers": [],
+        "command": {
+          "vel": {
+            "x": 9.600637532557911,
+            "y": 0
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.02000000000000024,
+            "finalPos": {
+              "x": 72.6615503157976,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 3.891767918215322,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.02000000000000024
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.12348398030411278,
+            "finalPos": {
+              "x": 72.02866168028986,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 1.9493142243456583,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.12348398030411278
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.5901392608821874,
+            "finalPos": {
+              "x": 71.39364818906861,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 0,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.5901392608821874
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "kind": "fast",
+        "status": "unknown",
+        "minimumGap": null,
+        "knownMinimumGap": null,
+        "unknownPeers": [
+          5
+        ],
+        "command": {
+          "vel": {
+            "x": 9.600637532557911,
+            "y": 0
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 72.6615503157976,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 3.891767918215322,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": null
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 72.02866168028986,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 1.9493142243456583,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": null
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 71.39364818906861,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 0,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "same body and zero velocity, stale remembered",
+      "before": {
+        "kind": "fast",
+        "status": "implicit numeric clearance",
+        "minimumGap": 0.02000000000000024,
+        "knownMinimumGap": null,
+        "unknownPeers": [],
+        "command": {
+          "vel": {
+            "x": 9.600637532557911,
+            "y": 0
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.02000000000000024,
+            "finalPos": {
+              "x": 72.6615503157976,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 3.891767918215322,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.02000000000000024
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.12348398030411278,
+            "finalPos": {
+              "x": 72.02866168028986,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 1.9493142243456583,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.12348398030411278
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "implicit numeric clearance",
+            "minimumGap": 0.5901392608821874,
+            "finalPos": {
+              "x": 71.39364818906861,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 0,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": 0.5901392608821874
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "kind": "fast",
+        "status": "unknown",
+        "minimumGap": null,
+        "knownMinimumGap": null,
+        "unknownPeers": [
+          5
+        ],
+        "command": {
+          "vel": {
+            "x": 9.600637532557911,
+            "y": 0
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 72.6615503157976,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 3.891767918215322,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": null
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 72.02866168028986,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 1.9493142243456583,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": null
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 71.39364818906861,
+              "y": 26.716370298788092
+            },
+            "finalVel": {
+              "x": 0,
+              "y": 0
+            },
+            "gaps": [
+              {
+                "id": 5,
+                "gap": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "unavailable has no motion fields",
+      "before": {
+        "kind": "fast",
+        "status": "implicit numeric clearance",
+        "minimumGap": null,
+        "knownMinimumGap": null,
+        "unknownPeers": [],
+        "command": {
+          "vel": {
+            "x": 7.814185789168365,
+            "y": -5.57770037595413
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "implicit numeric clearance",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 26.50200679228255,
+              "y": 27.432192226694674
+            },
+            "finalVel": {
+              "x": 5.657975336105765,
+              "y": -1.757060057972398
+            },
+            "gaps": []
+          },
+          {
+            "kind": "slower",
+            "status": "implicit numeric clearance",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 25.88805019993997,
+              "y": 27.164319636211985
+            },
+            "finalVel": {
+              "x": 3.5329086339468456,
+              "y": -2.5186141490331435
+            },
+            "gaps": []
+          },
+          {
+            "kind": "gather",
+            "status": "implicit numeric clearance",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 24.82294775467438,
+              "y": 28.07595203967643
+            },
+            "finalVel": {
+              "x": 0.13299353008655596,
+              "y": 0.03949088950451328
+            },
+            "gaps": []
+          }
+        ]
+      },
+      "after": {
+        "kind": "fast",
+        "status": "unknown",
+        "minimumGap": null,
+        "knownMinimumGap": null,
+        "unknownPeers": [
+          99
+        ],
+        "command": {
+          "vel": {
+            "x": 7.814185789168365,
+            "y": -5.57770037595413
+          },
+          "cutSkill": 1.1285714285714286,
+          "squeeze": 0
+        },
+        "choices": [
+          {
+            "kind": "fast",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 26.50200679228255,
+              "y": 27.432192226694674
+            },
+            "finalVel": {
+              "x": 5.657975336105765,
+              "y": -1.757060057972398
+            },
+            "gaps": [
+              {
+                "id": 99,
+                "gap": null
+              }
+            ]
+          },
+          {
+            "kind": "slower",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 25.88805019993997,
+              "y": 27.164319636211985
+            },
+            "finalVel": {
+              "x": 3.5329086339468456,
+              "y": -2.5186141490331435
+            },
+            "gaps": [
+              {
+                "id": 99,
+                "gap": null
+              }
+            ]
+          },
+          {
+            "kind": "gather",
+            "status": "unknown",
+            "minimumGap": null,
+            "finalPos": {
+              "x": 24.82294775467438,
+              "y": 28.07595203967643
+            },
+            "finalVel": {
+              "x": 0.13299353008655596,
+              "y": 0.03949088950451328
+            },
+            "gaps": [
+              {
+                "id": 99,
+                "gap": null
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "node": "v22.23.3",
+  "elapsedSeconds": 0.046433087,
+  "newNativeTicks": 0,
+  "newFullSnaps": 0,
+  "completedGames": 0
+}

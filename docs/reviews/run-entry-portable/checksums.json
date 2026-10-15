@@ -1,0 +1,13 @@
+{
+  "README.md": "51d2f647686a56bab88077691a6e38fb4f7c94231d6c9326fd3cfb1102b8822f",
+  "application-check.json": "5d866aa536506105adde87478da35b8bf9ac584bb15179c459066f9b43a23924",
+  "candidate.patch": "e51a79b6752927e9462e4ca6ee6fad95b7cb24c17f58ca4245bc96b6030e9e70",
+  "summary.json": "f209062c86901e4483d7df375415e7da069ddf3d995b821834b7ad28de33fbce",
+  "validation/final-focused-launcher.json": "88e652ed4482fb7f9c077210c13f52e9bd75038ae1d4ee926987b9b06362a305",
+  "validation/final-focused-results.json": "61bb2a1bf97c7117cebd4d817f90a06baa0dbb22bf91ffaf38da93b97c4f8735",
+  "validation/initial-focused-launcher.json": "d5fa84266b7dcfe93bd197701cc0a6a17107c4f2b8a26c2402a2fcfb928d547c",
+  "validation/initial-focused-results.json": "cf09274b9a785a939b10aea5e8b0f2600308091ad210c33c915256c5c60a25d8",
+  "validation/probe-launcher.json": "1f4334009d89d23602131dd59510a5fec9c99be4b2ce9335dcaa5c555e5fe46c",
+  "validation/probe.json": "f85adb81e087cd7123c749fa41ff92eb8398c55106033ad40bb3e578e7e863f4",
+  "validation/typecheck-launcher.json": "d1d65b4f599e807d2a413e3b5104232446d5b71fb16110fbd95d4080a3ecb6f7"
+}

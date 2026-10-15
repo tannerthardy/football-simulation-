@@ -1,0 +1,80 @@
+{
+  "schema": "run-entry-portable-v1",
+  "acceptedBase": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "candidate": "f93840e428e8f8795020f400faf75e1792f5751b",
+  "branch": "codex/run-entry-admission-portable",
+  "sourceSha256": "bf044ce72a98a9aa6dcbebf31d61b5f8754b56dc8b5e848283b27f4aa60887f8",
+  "validationSha256": "1fb2f726f47272c8302d30f996710f1e8cc48be7a847fc90abe3c956f94f1a37",
+  "ownerCore": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+  "coreByteIdentical": true,
+  "coordination": [
+    "https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200674433",
+    "https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200885111"
+  ],
+  "ownerAcknowledgmentObserved": false,
+  "schemaPolicyChanged": false,
+  "gapAlreadyAccepted": true,
+  "priorNativeEvidence": "75dbf46b12a4d186a7da6ebc463b9fba228f0b50",
+  "priorNativeEvidenceCertifiesThisCandidate": false,
+  "changedSourceTestScriptFiles": [
+    {
+      "path": "scripts/diag/run-entry-portable-probe.mjs",
+      "sha256": "9d2df0f01e58bae2bafae0c74cdb1b5471990f8e11f249d79dd9d9648e19a1f6"
+    },
+    {
+      "path": "src/sim/behaviors/carrier.ts",
+      "sha256": "47e358ff359833e74dade13467cffcecac6b6fb65e254e6747472fff43fb20e4"
+    },
+    {
+      "path": "src/sim/playsim.ts",
+      "sha256": "47a78161b1cc8c5c7b806ca95b2d43fb061424cdad3fd4c566070c4ee1cc0661"
+    },
+    {
+      "path": "src/sim/run-approach.ts",
+      "sha256": "e374a5ccb08681668f55d264841fc202c1fd4816b190ead8a4990d23a402160b"
+    },
+    {
+      "path": "src/sim/teammate-information.ts",
+      "sha256": "dac6f5bcf21a14b6022c5a233e499057758fcc44f001511cfb74e941a204d367"
+    },
+    {
+      "path": "test/fixtures/run-entry-approach.json",
+      "sha256": "bc8a4dbd8c7f85ccd98c11e5956c87368e8ac17843389181c793c30aab1e8a86"
+    },
+    {
+      "path": "test/run-entry-approach.test.ts",
+      "sha256": "f64aed30f6ef5afe2d21e8173b088fa8c756ec4704056c53851905c2f92295a3"
+    },
+    {
+      "path": "test/run-entry-information.test.ts",
+      "sha256": "53a4b2134fe19122c8da8a131a5f02e48d7b6e828353e29b37a28c42858bc779"
+    }
+  ],
+  "newChecks": {
+    "finalConsumerTransport": 12,
+    "unchangedCatchReadiness": 13,
+    "unchangedCarrierRecovery": 10,
+    "typecheck": true,
+    "initialFocused": {
+      "passed": 30,
+      "failed": 5,
+      "reason": "Four old clearance/reranking assertions ignored real stale peers; one matcher traversed poison getters. Runtime unchanged; assertions revised to explicit unknown and identity calls."
+    }
+  },
+  "runtimeSeconds": {
+    "initial-focused": 3.3837000780000004,
+    "final-focused": 1.8112875130000001,
+    "typecheck": 8.821796695000002,
+    "probe": 0.320720405
+  },
+  "totalLauncherSeconds": 14.337504691000001,
+  "simulationScope": {
+    "newFullGames": 0,
+    "newRosterCases": 0,
+    "explicitTransportOuterTicks": 2,
+    "existingCarrierRegressionNativeExecutions": 4,
+    "description": "Initial focused run included the existing carrier recovery observational-equivalence test (two fixed native calls, inspected/plain each). Final focused recheck runs only the two changed test files, including one PlaySim outer tick. Own-body empty-World forecasts occur in tests/probe. No P032/P019 coupled continuation or whole-game collector."
+  },
+  "recommendation": "Advance portable consumer/transport for contract review; hold complete entry-admission behavior promotion. Stale QB/receiver memories now correctly block certification of the earlier reranking. Integration owns combined verification and owner staging disposition.",
+  "nextDecision": "Agree a bounded treatment of route-relevant unknown teammates using legitimate evidence, before more football tuning. Do not remove unknown peers or restore private state to recover prior P032 ending."
+}

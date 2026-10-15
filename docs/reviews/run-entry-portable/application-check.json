@@ -1,0 +1,12 @@
+{
+  "schema": "run-entry-portable-application-v1",
+  "base": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "candidate": "f93840e428e8f8795020f400faf75e1792f5751b",
+  "temporaryIndexOnly": true,
+  "appliedTree": "eedf9be1717ab93886bd4b9627d0b7ad23d3270d",
+  "sourceTestScriptsEqualCandidate": true,
+  "initialUnchangedControlCompatibility": true,
+  "unchangedPhysicsBlockingSpacingCatchReadinessConfigDependencies": true,
+  "byteIdenticalOwnerCore": true,
+  "elapsedSeconds": 0.044674122997093946
+}
