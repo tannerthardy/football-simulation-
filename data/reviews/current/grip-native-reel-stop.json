@@ -1,0 +1,1171 @@
+{
+  "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "testedRevision": "b9e5ec20407ed166cdee402a6971109558c3368c",
+  "source": "de1b4a43a98f547950357c0a5699023e4a878969790724b387f70d899831868b",
+  "meta": {
+    "commit": "b9e5ec20407ed166cdee402a6971109558c3368c",
+    "source": "de1b4a43a98f547950357c0a5699023e4a878969790724b387f70d899831868b",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "node": "v22.23.3",
+    "timestamp": "2026-10-15T02:23:30.304Z",
+    "baseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "parent": "337be328dc8d00f13ad8db7d7004dc7c6f501793",
+    "hashes": {
+      "scripts/diag/physics/grip-native-span-model.ts": "88cd89513cb4977b7846a97701a8be4c353da13f6e5276f9d35f104051bc5a66",
+      "scripts/diag/physics/grip-native-span-reference.ts": "15a5b10eb86457ef9bf8d851e2ccc27136c4f983f3a6b566f5e0fe77777c043c",
+      "scripts/diag/physics/grip-native-reel-reference.ts": "a7cb2746311ee4bcc75beb41bcd6f6b413fd8a9e832afd156337ffa9c760163c",
+      "scripts/diag/physics/grip-native-reel-stop-evidence.ts": "ccb29942c3d9e5d698f6b1c19cb8fb26eef8e946b2214d9c87c3e29f0af6299b",
+      "config/grip-native-reel-stop-inputs.json": "f0283d67eba5c783e7f17ff588a3d39e66d38a1e8e28ccb683ad8b77e2c64f56"
+    },
+    "settings": {
+      "handContact": "patch",
+      "gripTiming": "midpoint",
+      "constraintWork": "per-solve",
+      "substeps": 96,
+      "materialTransport": "owned",
+      "activeGrip": "guarded nativeTransitionInterval only"
+    },
+    "prior": {
+      "path": "data/reviews/current/grip-native-football.json",
+      "sha256": "68cea0b75c385e612f940b8e62d8fd2010fecd314a879971dc93bbf2502c66a1"
+    },
+    "note": "Existing input manifest; guarded helper alone. Instrumented elapsed times are not benchmark cost. Two censored cases are not completed tackles."
+  },
+  "inputManifest": "config/grip-native-reel-stop-inputs.json",
+  "audit": [
+    {
+      "id": "patch-45-8-0-3001-1",
+      "mode": "previous",
+      "positiveReelCalls": 245,
+      "belowStopCalls": 0,
+      "first": null
+    },
+    {
+      "id": "patch-45-8-0-3001-1",
+      "mode": "transition",
+      "positiveReelCalls": 244,
+      "belowStopCalls": 0,
+      "first": null
+    },
+    {
+      "id": "patch-45-8-0-3001--1",
+      "mode": "previous",
+      "positiveReelCalls": 245,
+      "belowStopCalls": 0,
+      "first": null
+    },
+    {
+      "id": "patch-45-8-0-3001--1",
+      "mode": "transition",
+      "positiveReelCalls": 244,
+      "belowStopCalls": 0,
+      "first": null
+    },
+    {
+      "id": "patch-0-3-0-3001-1",
+      "mode": "previous",
+      "positiveReelCalls": 0,
+      "belowStopCalls": 0,
+      "first": null
+    },
+    {
+      "id": "patch-0-3-0-3001-1",
+      "mode": "transition",
+      "positiveReelCalls": 0,
+      "belowStopCalls": 0,
+      "first": null
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "mode": "previous",
+      "positiveReelCalls": 498,
+      "belowStopCalls": 359,
+      "first": {
+        "time": 4.326041666666687,
+        "distance": 0.03387968019467058,
+        "touch": 0.522,
+        "reelDose": 0.325634770377609
+      }
+    },
+    {
+      "id": "patch-45-8-0-4001-1",
+      "mode": "transition",
+      "positiveReelCalls": 501,
+      "belowStopCalls": 361,
+      "first": {
+        "time": 4.286458333333362,
+        "distance": 0.06409300432166558,
+        "touch": 0.522,
+        "reelDose": 0.307418111620408
+      }
+    },
+    {
+      "id": "patch-45-8-0-5001-1",
+      "mode": "previous",
+      "positiveReelCalls": 166,
+      "belowStopCalls": 0,
+      "first": null
+    },
+    {
+      "id": "patch-45-8-0-5001-1",
+      "mode": "transition",
+      "positiveReelCalls": 166,
+      "belowStopCalls": 0,
+      "first": null
+    }
+  ],
+  "rows": [
+    {
+      "input": {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-3001-1"
+      },
+      "result": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 3001,
+        "ending": "censored",
+        "endWhy": "time limit",
+        "attempts": [
+          {
+            "t": 2.65,
+            "kind": "grip",
+            "origin": "reach",
+            "capacity": 2267.004730607681,
+            "legs": 0.17062513395125756,
+            "peakForce": 2094.0282537361713,
+            "heldFor": 4.399999999999992,
+            "broke": false,
+            "meanForce": 814.0094757390287
+          }
+        ],
+        "afterContact": 24.192990279284714,
+        "contactToEnd": 4.4,
+        "contactImpulse": 0,
+        "peakClosing": 0,
+        "tacklerDown": true,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "advanceAfterGrip": 24.192990279284714,
+        "finish": "censored",
+        "carrierState": "up"
+      },
+      "calls": {
+        "accepted": 253,
+        "fallbacks": 8195,
+        "reasons": {
+          "scope:graph/time": 96,
+          "solver:Native span evaluation budget": 2,
+          "solver:Native span cap/target/power scope": 4,
+          "scope:recovery-command": 606,
+          "scope:attachment/support": 7487
+        }
+      },
+      "prior": [
+        {
+          "id": "patch-45-8-0-3001-1",
+          "mode": "owned",
+          "ending": "censored",
+          "endWhy": "time limit",
+          "finish": "censored",
+          "advanceAfterGrip": 24.19973073779981,
+          "contactToEnd": 4.4,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [
+            "ending",
+            "finish",
+            "advanceAfterGrip",
+            "afterContact",
+            "contactToEnd",
+            "contactImpulse",
+            "peakClosing",
+            "carrierState"
+          ],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-3001-1-owned.json",
+            "sha256": "c3bff8e32d32f7ebbf77533a85d3950a688ee03b61e628310d72ce94938cabfa"
+          }
+        },
+        {
+          "id": "patch-45-8-0-3001-1",
+          "mode": "previous",
+          "ending": "censored",
+          "endWhy": "time limit",
+          "finish": "censored",
+          "advanceAfterGrip": 24.203259005386215,
+          "contactToEnd": 4.4,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 249,
+            "fallbacks": 8199,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Mixed span cap/target/power scope": 5,
+              "solver:Native span evaluation budget": 2,
+              "solver:Native span cap/target/power scope": 4,
+              "scope:recovery-command": 605,
+              "scope:attachment/support": 7487
+            }
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [
+            "ending",
+            "finish",
+            "advanceAfterGrip",
+            "afterContact",
+            "contactToEnd",
+            "contactImpulse",
+            "peakClosing",
+            "carrierState"
+          ],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-3001-1-previous.json",
+            "sha256": "e8294cc50da9eca658319840edb2361a34b6b785b88340bda0fb8cb0a97879ab"
+          }
+        },
+        {
+          "id": "patch-45-8-0-3001-1",
+          "mode": "transition",
+          "ending": "censored",
+          "endWhy": "time limit",
+          "finish": "censored",
+          "advanceAfterGrip": 24.192990279284714,
+          "contactToEnd": 4.4,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 253,
+            "fallbacks": 8195,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Native span evaluation budget": 2,
+              "solver:Native span cap/target/power scope": 4,
+              "scope:recovery-command": 606,
+              "scope:attachment/support": 7487
+            }
+          },
+          "newTangentCalls": 5,
+          "newEvents": [
+            {
+              "kind": "cap",
+              "time": 2.652295758650597
+            },
+            {
+              "kind": "slide",
+              "time": 2.652298523927942
+            }
+          ],
+          "reusedFieldsReproduced": [],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-3001-1-transition.json",
+            "sha256": "8afd724c4d07fdb5f82f218c2279b911ba0361c3775ba825818fb7955de359a1"
+          }
+        }
+      ],
+      "instrumentedSeconds": 0.7137223290000001,
+      "delta": {
+        "advance": 0,
+        "time": 0
+      }
+    },
+    {
+      "input": {
+        "name": "angled acquired",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": -1,
+        "id": "patch-45-8-0-3001--1"
+      },
+      "result": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": -1,
+        "seed": 3001,
+        "ending": "censored",
+        "endWhy": "time limit",
+        "attempts": [
+          {
+            "t": 2.65,
+            "kind": "grip",
+            "origin": "reach",
+            "capacity": 2267.004730607681,
+            "legs": 0.17062513395125756,
+            "peakForce": 2094.028253736455,
+            "heldFor": 4.399999999999992,
+            "broke": false,
+            "meanForce": 814.0094757299346
+          }
+        ],
+        "afterContact": 24.192990279329365,
+        "contactToEnd": 4.4,
+        "contactImpulse": 0,
+        "peakClosing": 0,
+        "tacklerDown": true,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "advanceAfterGrip": 24.192990279329365,
+        "finish": "censored",
+        "carrierState": "up"
+      },
+      "calls": {
+        "accepted": 253,
+        "fallbacks": 8195,
+        "reasons": {
+          "scope:graph/time": 96,
+          "solver:Native span evaluation budget": 2,
+          "solver:Native span cap/target/power scope": 4,
+          "scope:recovery-command": 606,
+          "scope:attachment/support": 7487
+        }
+      },
+      "prior": [
+        {
+          "id": "patch-45-8-0-3001--1",
+          "mode": "owned",
+          "ending": "censored",
+          "endWhy": "time limit",
+          "finish": "censored",
+          "advanceAfterGrip": 24.19973073779981,
+          "contactToEnd": 4.4,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [
+            "ending",
+            "finish",
+            "advanceAfterGrip",
+            "afterContact",
+            "contactToEnd",
+            "contactImpulse",
+            "peakClosing",
+            "carrierState"
+          ],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-3001--1-owned.json",
+            "sha256": "9e59653ba84b0663919d21b2833846395f312118f3d8b9238e10d74c118630b6"
+          }
+        },
+        {
+          "id": "patch-45-8-0-3001--1",
+          "mode": "previous",
+          "ending": "censored",
+          "endWhy": "time limit",
+          "finish": "censored",
+          "advanceAfterGrip": 24.203259005386215,
+          "contactToEnd": 4.4,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 249,
+            "fallbacks": 8199,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Mixed span cap/target/power scope": 5,
+              "solver:Native span evaluation budget": 2,
+              "solver:Native span cap/target/power scope": 4,
+              "scope:recovery-command": 605,
+              "scope:attachment/support": 7487
+            }
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [
+            "ending",
+            "finish",
+            "advanceAfterGrip",
+            "afterContact",
+            "contactToEnd",
+            "contactImpulse",
+            "peakClosing",
+            "carrierState"
+          ],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-3001--1-previous.json",
+            "sha256": "187d563da617a62783bec1c2e0c41a303627f3c73da27567eaacb704d98b2f07"
+          }
+        },
+        {
+          "id": "patch-45-8-0-3001--1",
+          "mode": "transition",
+          "ending": "censored",
+          "endWhy": "time limit",
+          "finish": "censored",
+          "advanceAfterGrip": 24.192990279329365,
+          "contactToEnd": 4.4,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "carrierState": "up",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 253,
+            "fallbacks": 8195,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Native span evaluation budget": 2,
+              "solver:Native span cap/target/power scope": 4,
+              "scope:recovery-command": 606,
+              "scope:attachment/support": 7487
+            }
+          },
+          "newTangentCalls": 5,
+          "newEvents": [
+            {
+              "kind": "cap",
+              "time": 2.652295758650597
+            },
+            {
+              "kind": "slide",
+              "time": 2.652298523927942
+            }
+          ],
+          "reusedFieldsReproduced": [],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-3001--1-transition.json",
+            "sha256": "9df9a5ebcd166004a5748ad4158cb688e491eac3f79226b7f31594469e0dfc79"
+          }
+        }
+      ],
+      "instrumentedSeconds": 0.47651587999999995,
+      "delta": {
+        "advance": 0,
+        "time": 0
+      }
+    },
+    {
+      "input": {
+        "name": "front patch",
+        "cell": {
+          "angle": 0,
+          "speed": 3,
+          "cut": false,
+          "difficulty": "ordinary"
+        },
+        "seed": 3001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-0-3-0-3001-1"
+      },
+      "result": {
+        "angle": 0,
+        "speed": 3,
+        "cut": false,
+        "difficulty": "ordinary",
+        "side": 1,
+        "seed": 3001,
+        "ending": "tackled",
+        "endWhy": "down",
+        "attempts": [
+          {
+            "t": 2.7,
+            "kind": "grip",
+            "origin": "form",
+            "capacity": 2267.004730607681,
+            "legs": 0.2705178936866569,
+            "peakForce": 2179.3955636854103,
+            "heldFor": 0.8500000000000002,
+            "broke": false,
+            "meanForce": 902.7040676756103
+          }
+        ],
+        "afterContact": 0.4490624833242123,
+        "contactToEnd": 0.8500000000000001,
+        "contactImpulse": 1277.0215484769205,
+        "peakClosing": 5.111145693739596,
+        "tacklerDown": false,
+        "firstGrip": {
+          "t": 2.7,
+          "x": 52.09999999999998
+        },
+        "advanceAfterGrip": 0.4490624833242123,
+        "finish": "physical fall",
+        "carrierState": "down"
+      },
+      "calls": {
+        "accepted": 149,
+        "fallbacks": 1387,
+        "reasons": {
+          "scope:possible-impact": 51,
+          "scope:recovery-command": 535,
+          "scope:attachment/support": 801
+        }
+      },
+      "prior": [
+        {
+          "id": "patch-0-3-0-3001-1",
+          "mode": "owned",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 0.4490624833227841,
+          "contactToEnd": 0.8500000000000001,
+          "firstGrip": {
+            "t": 2.7,
+            "x": 52.09999999999998
+          },
+          "contactImpulse": 1277.0215484760395,
+          "peakClosing": 5.111145693739703,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [
+            "ending",
+            "finish",
+            "advanceAfterGrip",
+            "afterContact",
+            "contactToEnd",
+            "contactImpulse",
+            "peakClosing",
+            "carrierState"
+          ],
+          "raw": {
+            "path": "out/grip-native-football/patch-0-3-0-3001-1-owned.json",
+            "sha256": "e5ac416bab0f72505460fbaafe3ffe4954650dcc6ca8a13e4719bc53068c4d56"
+          }
+        },
+        {
+          "id": "patch-0-3-0-3001-1",
+          "mode": "previous",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 0.4490624833242123,
+          "contactToEnd": 0.8500000000000001,
+          "firstGrip": {
+            "t": 2.7,
+            "x": 52.09999999999998
+          },
+          "contactImpulse": 1277.0215484769205,
+          "peakClosing": 5.111145693739596,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 149,
+            "fallbacks": 1387,
+            "reasons": {
+              "scope:possible-impact": 51,
+              "scope:recovery-command": 535,
+              "scope:attachment/support": 801
+            }
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [
+            "ending",
+            "finish",
+            "advanceAfterGrip",
+            "afterContact",
+            "contactToEnd",
+            "contactImpulse",
+            "peakClosing",
+            "carrierState"
+          ],
+          "raw": {
+            "path": "out/grip-native-football/patch-0-3-0-3001-1-previous.json",
+            "sha256": "d1badfc855b2126664d977159217e282c3e11676a6b6e05270a92aee6c270e4e"
+          }
+        },
+        {
+          "id": "patch-0-3-0-3001-1",
+          "mode": "transition",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 0.4490624833242123,
+          "contactToEnd": 0.8500000000000001,
+          "firstGrip": {
+            "t": 2.7,
+            "x": 52.09999999999998
+          },
+          "contactImpulse": 1277.0215484769205,
+          "peakClosing": 5.111145693739596,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 149,
+            "fallbacks": 1387,
+            "reasons": {
+              "scope:possible-impact": 51,
+              "scope:recovery-command": 535,
+              "scope:attachment/support": 801
+            }
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [],
+          "raw": {
+            "path": "out/grip-native-football/patch-0-3-0-3001-1-transition.json",
+            "sha256": "818248cb44a886679487b7a7d5c039d7a9ecc6a7b18c6da4d463eb193a7b7691"
+          }
+        }
+      ],
+      "instrumentedSeconds": 0.3084417549999998,
+      "delta": {
+        "advance": 0,
+        "time": 0
+      }
+    },
+    {
+      "input": {
+        "name": "fresh angled",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "seed": 4001,
+        "mode": "patch",
+        "side": 1,
+        "id": "patch-45-8-0-4001-1"
+      },
+      "result": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 4001,
+        "ending": "tackled",
+        "endWhy": "down",
+        "attempts": [
+          {
+            "t": 2.65,
+            "kind": "grip",
+            "origin": "reach",
+            "capacity": 1388.9671732395248,
+            "legs": 0.12882357439678976,
+            "peakForce": 1455.3577930341185,
+            "heldFor": 2.8999999999999977,
+            "broke": false,
+            "meanForce": 452.40105690014485
+          }
+        ],
+        "afterContact": 14.381375513260878,
+        "contactToEnd": 2.9,
+        "contactImpulse": 60.67834667301163,
+        "peakClosing": 1.1120675817616876,
+        "tacklerDown": false,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "advanceAfterGrip": 14.381375513260878,
+        "finish": "physical fall",
+        "carrierState": "down"
+      },
+      "calls": {
+        "accepted": 149,
+        "fallbacks": 5419,
+        "reasons": {
+          "scope:graph/time": 96,
+          "solver:Native span evaluation budget": 2,
+          "solver:Native span cap/target/power scope": 19,
+          "solver:Mixed span cap/target/power scope": 94,
+          "scope:recovery-command": 3947,
+          "solver:Native reel-stop scope": 492,
+          "scope:attachment/support": 769
+        }
+      },
+      "prior": [
+        {
+          "id": "patch-45-8-0-4001-1",
+          "mode": "owned",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 14.405496953324146,
+          "contactToEnd": 2.9,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 58.19813065428681,
+          "peakClosing": 1.0686139922782734,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [
+            "ending",
+            "finish",
+            "advanceAfterGrip",
+            "afterContact",
+            "contactToEnd",
+            "contactImpulse",
+            "peakClosing",
+            "carrierState"
+          ],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-4001-1-owned.json",
+            "sha256": "2f2bd0987e1f48a2fb74062a2a6ca4b30da064bc01428ffe0de3d27267b27bcd"
+          }
+        },
+        {
+          "id": "patch-45-8-0-4001-1",
+          "mode": "previous",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 13.787722669937338,
+          "contactToEnd": 2.7499999999999996,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 50.51179171925435,
+          "peakClosing": 0.924861900214362,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 499,
+            "fallbacks": 4781,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Mixed span cap/target/power scope": 105,
+              "solver:Native span evaluation budget": 9,
+              "solver:Native span cap/target/power scope": 20,
+              "scope:recovery-command": 3707,
+              "solver:Span event retry budget": 4,
+              "solver:Span event piece budget": 1,
+              "scope:attachment/support": 839
+            }
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [
+            "ending",
+            "finish",
+            "advanceAfterGrip",
+            "afterContact",
+            "contactToEnd",
+            "contactImpulse",
+            "peakClosing",
+            "carrierState"
+          ],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-4001-1-previous.json",
+            "sha256": "5dabd7f91b6eff77d3d0be200bf697e665f9eb09c1237b53bb6b0b678c9a9cae"
+          }
+        },
+        {
+          "id": "patch-45-8-0-4001-1",
+          "mode": "transition",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 13.61086159828352,
+          "contactToEnd": 2.6999999999999997,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 70.99817879050362,
+          "peakClosing": 0.9006977698396731,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 510,
+            "fallbacks": 4674,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Native span evaluation budget": 6,
+              "solver:Native span cap/target/power scope": 20,
+              "solver:Mixed span cap/target/power scope": 95,
+              "scope:recovery-command": 3655,
+              "solver:Span event retry budget": 4,
+              "scope:attachment/support": 798
+            }
+          },
+          "newTangentCalls": 8,
+          "newEvents": [
+            {
+              "kind": "cap",
+              "time": 2.6539161889421425
+            },
+            {
+              "kind": "slide",
+              "time": 2.653917945301801
+            }
+          ],
+          "reusedFieldsReproduced": [],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-4001-1-transition.json",
+            "sha256": "7dea9a12e3ae84880d2781a319ed96bc671bf8b71fd4e0cbc5d6b27b400758b6"
+          }
+        }
+      ],
+      "instrumentedSeconds": 0.40690401899999984,
+      "delta": {
+        "advance": 0.7705139149773572,
+        "time": 0.20000000000000018
+      }
+    },
+    {
+      "input": {
+        "id": "patch-45-8-0-5001-1",
+        "name": "declared new angle",
+        "cell": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult"
+        },
+        "side": 1,
+        "seed": 5001
+      },
+      "result": {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 5001,
+        "ending": "tackled",
+        "endWhy": "down",
+        "attempts": [
+          {
+            "t": 2.65,
+            "kind": "grip",
+            "origin": "reach",
+            "capacity": 1636.204709122777,
+            "legs": 0.2404536163546444,
+            "peakForce": 1714.715836923403,
+            "heldFor": 4.099999999999993,
+            "broke": false,
+            "meanForce": 546.1819751218079
+          }
+        ],
+        "afterContact": 13.652420570492993,
+        "contactToEnd": 4.1,
+        "contactImpulse": 1741.4889519425456,
+        "peakClosing": 1.4922509268317024,
+        "tacklerDown": false,
+        "firstGrip": {
+          "t": 2.65,
+          "x": 55.2000000000003
+        },
+        "advanceAfterGrip": 13.652420570492993,
+        "finish": "physical fall",
+        "carrierState": "down"
+      },
+      "calls": {
+        "accepted": 175,
+        "fallbacks": 7697,
+        "reasons": {
+          "scope:graph/time": 96,
+          "solver:Native span evaluation budget": 4,
+          "solver:Native span cap/target/power scope": 29,
+          "scope:recovery-command": 5529,
+          "scope:possible-impact": 1219,
+          "scope:attachment/support": 820
+        }
+      },
+      "prior": [
+        {
+          "id": "patch-45-8-0-5001-1",
+          "mode": "owned",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 11.66884922938705,
+          "contactToEnd": 3.15,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 1256.301993741517,
+          "peakClosing": 1.4952404577216647,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 0,
+            "fallbacks": 0,
+            "reasons": {}
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-5001-1-owned.json",
+            "sha256": "02080688c7398d0354025785051c71729fb64eb8ddb138423d3064cac11afe6a"
+          }
+        },
+        {
+          "id": "patch-45-8-0-5001-1",
+          "mode": "previous",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 13.603060333959135,
+          "contactToEnd": 4.1,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 1702.741315084038,
+          "peakClosing": 1.4919457154544964,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 168,
+            "fallbacks": 7704,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Mixed span cap/target/power scope": 7,
+              "solver:Native span evaluation budget": 4,
+              "solver:Native span cap/target/power scope": 29,
+              "scope:recovery-command": 5521,
+              "scope:possible-impact": 1239,
+              "scope:attachment/support": 808
+            }
+          },
+          "newTangentCalls": 0,
+          "newEvents": [],
+          "reusedFieldsReproduced": [],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-5001-1-previous.json",
+            "sha256": "d596e5557fedefbdb1436d3c8cd27121683d58b963c1047df040142987ec05fa"
+          }
+        },
+        {
+          "id": "patch-45-8-0-5001-1",
+          "mode": "transition",
+          "ending": "tackled",
+          "endWhy": "down",
+          "finish": "physical fall",
+          "advanceAfterGrip": 13.652420570492993,
+          "contactToEnd": 4.1,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "contactImpulse": 1741.4889519425456,
+          "peakClosing": 1.4922509268317024,
+          "carrierState": "down",
+          "attemptKinds": [
+            "grip"
+          ],
+          "calls": {
+            "accepted": 175,
+            "fallbacks": 7697,
+            "reasons": {
+              "scope:graph/time": 96,
+              "solver:Native span evaluation budget": 4,
+              "solver:Native span cap/target/power scope": 29,
+              "scope:recovery-command": 5529,
+              "scope:possible-impact": 1219,
+              "scope:attachment/support": 820
+            }
+          },
+          "newTangentCalls": 6,
+          "newEvents": [
+            {
+              "kind": "cap",
+              "time": 2.653114441640743
+            },
+            {
+              "kind": "slide",
+              "time": 2.65311991452512
+            }
+          ],
+          "reusedFieldsReproduced": [],
+          "raw": {
+            "path": "out/grip-native-football/patch-45-8-0-5001-1-transition.json",
+            "sha256": "6d1937d97f64bb4598fb6a872beb6273552dee09fe846efd0a0eb22a28950502"
+          }
+        }
+      ],
+      "instrumentedSeconds": 0.37153185600000005,
+      "delta": {
+        "advance": 0,
+        "time": 0
+      }
+    }
+  ],
+  "validation": {
+    "focused": {
+      "passed": 32,
+      "new": 4,
+      "receipt": "out/baseline/run-1792030937578-329602.json",
+      "note": "Guard and existing 28 mechanical contracts; collector null handling subsequently fixed, no guard/test changes."
+    },
+    "typecheck": {
+      "passed": true,
+      "receipt": "out/baseline/run-1792031100569-330022.json"
+    },
+    "football": {
+      "passed": true,
+      "receipt": "out/baseline/run-1792031007553-329924.json"
+    },
+    "fullSuite": "Not repeated for this diagnostic-only scope guard. World/source/defaults unchanged from PR51."
+  },
+  "retained": [
+    "Old dry-cap certificate failure",
+    "Nine earlier 43/52 experimental failures",
+    "Seed5001 inherited +.95s delay; guarded result unchanged",
+    "Support history xi amplification at4.1125s predates first stop omission at4.286458s",
+    "Prior worst runtime6.573ms; no new benchmark claim"
+  ],
+  "recommendation": "Review this native-law scope guard independently before combining active/corrective callbacks. It removes unsupported reel proposals; no football-benefit or general solver promotion claim.",
+  "evidence": {
+    "path": "out/grip-native-reel-stop/football.json",
+    "sha256": "31482c43959b2f4100d2fa493d4b76c2357d7a4e14eb40b114da44e22f7b7394"
+  }
+}
