@@ -1,0 +1,23 @@
+{
+  "schema": "accepted-panel-pr82-consumer-handoff-v1",
+  "comparisonPublication": "40af332f3c988b5abe19d9236b49a43bde27200c",
+  "acceptedRuntime": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "integration": "https://github.com/tannerthardy/football-simulation-/pull/82#issuecomment-6204135585",
+  "flex": "https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204136508",
+  "run": "https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6204137216",
+  "catching": "https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6204137944",
+  "newSimulationBatches": 1,
+  "candidateCases": 48,
+  "baselineRecollections": 0,
+  "completedNFLQueries": "Preserved without re-execution or filter changes.",
+  "AMF": "Isolated restricted research preserved, no reads/downloads/calibration in this task.",
+  "finalSavedDataChecks": {
+    "pythonCompile": "pass",
+    "diffWhitespace": "pass",
+    "engineTestsSettingsFixtureLockUnchanged": "git diff7eb2554 empty on all named runtime/test/settings/fixture/lock paths",
+    "nineAccessWitnessHelperAudit": "All18 original/current cases checked for RT/Y as helpers as well as primary blockers on LB_M through first carrier contact; zero helper engagements. Does not label absence a defect.",
+    "extractSha256": "1753b7cbdd9e6f80cd834c259ffc6903365f0ac74c2e051e2d81cd268cf3bf4b",
+    "extractOperatorSha256": "ae7a209bf9995424cf7a9abdb69edc4efef8fa3c0055a49363e81109683448b4"
+  },
+  "nextDecision": "Support continuity supported; overall pass positioning/containment unproved. Existing owners use saved adverse sequences for their next discriminant; no automatic new panel/general packet."
+}
