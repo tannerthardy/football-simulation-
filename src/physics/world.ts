@@ -41,6 +41,7 @@ import { resolveGripInterval, type GripTimingReport } from './grip-timing.js';
 import {passiveGripResultValid,type PassiveGripInput,type PassiveGripResult,type PassiveGripSolver,type PassiveGripReport} from './passive-grip.js';
 import {activeGripResultValid,type ActiveGripInput,type ActiveGripResult,type ActiveGripSolver} from './active-grip.js';
 import {correctiveGripResultValid,type CorrectiveGripInput,type CorrectiveGripResult,type CorrectiveGripSolver} from './corrective-grip.js';
+import {turnRoute} from './turn-route.js';
 import { LEG_SLIDE } from './grip-sliding.js';
 import { resolveFastGripInterval, commitGripTrial } from './grip-fast.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
@@ -387,6 +388,8 @@ export class World {
   declare readonly materialTransport?:'owned';
   declare readonly activeGrip?:ActiveGripSolver;
   declare readonly correctiveGrip?:CorrectiveGripSolver;
+  /** Experimental controller objective only; absent retains shortest-angle choice. */
+  declare readonly turnChoice?:'arrival-time';
   /** Numerical row accounting; per-update remains only for comparison. */
   readonly constraintWork: 'per-update' | 'per-solve';
   /** Research-only onset handling; production keeps speculative contacts. */
@@ -454,7 +457,7 @@ export class World {
   private report!: StepReport;
   private tickDt = .05;
 
-  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast'; materialTransport?:'owned'; passiveGrip?:PassiveGripSolver; activeGrip?:ActiveGripSolver;correctiveGrip?:CorrectiveGripSolver } = {}) {
+  constructor(bodies: Body[], opts: { substeps?: number; supportModel?: 'legacy' | 'virtual-foot'; constraintWork?: 'per-update' | 'per-solve'; impactTiming?: 'speculative' | 'local-sweep'; supportIntegration?: 'mean' | 'integrated'; boundedAttachment?: boolean; handIntegration?: 'end' | 'centered'; handContact?: 'center' | 'patch'; gripTiming?: 'midpoint' | 'resolved' | 'fast'; materialTransport?:'owned'; passiveGrip?:PassiveGripSolver; activeGrip?:ActiveGripSolver;correctiveGrip?:CorrectiveGripSolver;turnChoice?:'arrival-time' } = {}) {
     this.bodies = bodies;
     this.substeps = opts.substeps;
     this.handIntegration = opts.handIntegration ?? 'centered';
@@ -463,6 +466,8 @@ export class World {
     if(opts.passiveGrip)this.passiveGrip=opts.passiveGrip;
     if(opts.activeGrip)this.activeGrip=opts.activeGrip;
     if(opts.correctiveGrip)this.correctiveGrip=opts.correctiveGrip;
+    if(opts.turnChoice)this.turnChoice=opts.turnChoice;
+    if(this.turnChoice&&this.handContact!=='patch')throw new RangeError('Arrival-time turn choice requires patch yaw');
     if(opts.materialTransport)this.materialTransport=opts.materialTransport;
     if (this.handContact === 'patch' && this.handIntegration !== 'centered')
       throw new RangeError('Common hand patches require centered force integration');
@@ -969,7 +974,18 @@ export class World {
     const a = availability(sup, this.sp[i], this.fat[i]);
     updateSqueeze(b, intent, dt);
     const tr = turnRateOf(b);
-    const facing = b.facing + clamp(this.facingDelta(b.facing, commandFacing(b, intent)), -tr * dt, tr * dt);
+    const delta=this.facingDelta(b.facing,commandFacing(b,intent));
+    let facing = b.facing + clamp(delta, -tr * dt, tr * dt);
+    if(this.turnChoice){
+      // Forecast from the body's own last delivered ground force. This only
+      // chooses an orientation route; feet still allocates and executes the
+      // current shared force/torque budget, with no promised displacement.
+      const sp=this.sp[i],force=Math.hypot(this.amx[i],this.amy[i])*this.mass[i],
+        torque=Math.sqrt(Math.max(0,(sp.traction*a)**2-force*force))*baseRadiusAt(sp,sup.posture),
+        acceleration=Math.min(tr/YAW_RESPONSE*(.3+.7*a),torque/sp.yawInertia),
+        route=turnRoute(delta,b.spin??0,acceleration,tr);
+      if(route.delta!==route.shortest)facing=b.facing+clamp(route.delta,-tr*dt,tr*dt);
+    }
     // Pad level costs a little speed when he plays low.
     const low = 1 - 0.12 * Math.max(0, sup.posture - 0.3);
     const cmd = low < 1 ? { ...intent, effort: (intent.effort ?? 1) * low } : intent;
