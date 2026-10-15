@@ -148,6 +148,25 @@ contract disposition explicit. [Pinned diagnosis and access](INTEGRATION.md#audi
 <a id="PASS-007"></a>
 ### PASS-007 — Mesh approach coordination and request attribution
 
+Current: #81 is now ready for Run's independent admission-only review:
+f27456b/edad309/head6e19ad2 on accepted7eb2554. Exact spacing/test/fixture patch
+is portable; it removes the requested-turn shortcut using existing reachable
+tube/World preview, without low-speed expansion, observer or carrier override.
+Current A044 collision/drop/result are unchanged; A008 exact. This is a missing
+forecast correction, not demonstrated mesh navigation. Lateral research498b36e
+stays HOLD: lower impulse but collision persists/robber position worsens. #76
+parked disposition is separately requested, not a dependency. Old failed bend
+and low-speed attempts remain evidence. No new simulation for intake.
+
+Measurement's complete #82 panel40af332 preserves A020's adverse long TD,
+A042's worse finish despite useful acquired support, and A044's catch→drop
+without proven coverage repair. Catching's saved-only first-difference review
+1d048195 distinguishes legitimate retained man positioning in A020 from acquired
+support in A042; it does not justify restoring hidden-flight decisions or
+starting a separate grip project. No new behavior/test/settings in that diagnosis.
+
+Historical diagnosis retained:
+
 Current: shared subsets are delivered and independently byte-verified; access
 is resolved. #81 headcb3823e supplies producer-stage diagnosis and a rejected
 behavioral bend (A020 gap4.608→4.843; A044 impact173.922→191.556). No ready
@@ -171,6 +190,17 @@ Archive distribution is Measurement's job; [exact checksum/access status](../dat
 
 <a id="RUN-007"></a>
 ### RUN-007 — Second-level access; earlier lane/spacing boundaries retained
+
+Current: #84 head4af71ac/codeaebb0ab/evidence70ed238 is a ready Duo-only
+surface-admission candidate on accepted7eb2554. Do-It-All independent review
+requested: necessary climb suppression versus acquired across-surface detour.
+A030 guard loads LB before runner arrival while RT keeps real DT load; A018
+still misses LB. A030 C release/execution draws also change. Current A027 WZ
+and preselected Under full histories/results are exact. No league/yardage or
+physics claim. Reuse66 focused/typecheck checks; Integration owns any approved
+batch's one exact combined verification. [Intake](INTEGRATION.md#ready-blocked-experimental).
+
+Earlier diagnosis retained:
 
 Run Game now prioritizes saved A018/A030 and a successful access contrast. Trace
 installed job→takeover security→release cue→original interception→later modifiers

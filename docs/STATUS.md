@@ -45,9 +45,13 @@ Do not use the historical sections below as a current starting-reference pin.
   Focused evidence reused; no unchanged rerun to publish/merge.
   P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
   and the original failed #75 receipt remain. No overall coverage-quality claim.
-- #76 stays parked/frozen per Flex; no independent current-tree adoption approval.
-  #81 supplies mesh stage diagnosis and a rejected bend trial, not a ready
-  behavioral fix. Neither is included; experimental Physics remains separate.
+- **Current ready intake: #84 Duo admission and #81 achievable-motion spacing.**
+  Both are portable to accepted7eb2554; Do-It-All/Run independent reviews requested,
+  respectively. Compatible approved scope gets one exact combined verification.
+  #81 excludes observer/lateral/low-speed research and does not repair A044's collision.
+- #76 stays parked/frozen pending Do-It-All's explicit live-objective/closure
+  disposition. It is no dependency and is not adopted/rejected. Lateral trial and
+  experimental Physics remain separate. [Exact pins/review owners](INTEGRATION.md#ready-blocked-experimental).
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
@@ -58,8 +62,10 @@ Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
 source remains8ca8dee; accepted develop is7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
 all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
 The access blocker is resolved. No panel recollection, #69 re-review or new evaluation games.
-Measurement owns the one frozen48 comparison now that #82 is accepted;90s/5s
-ceilings, preserved baseline, no duplicate collector. Four games require CEO call.
+Measurement completed/published the one frozen48 comparison at40af332; no
+duplicate collector or automatic second panel. Eight selected FS support witnesses
+improved continuity/movement; A020 TD/A042 adverse finish/A044 drop remain.
+No general coverage/YAC realism established. Four games require CEO call.
 The exact #75/#80 candidate completed combined verification once.
 [Final receipt](../data/reviews/current/coverage-contract-integration/final-receipt.json);
 actual #82 merge equals verified publication, no extra game evaluation.

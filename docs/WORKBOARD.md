@@ -1,5 +1,21 @@
 # Current work ownership
 
+## Active #84/#81 intake boundary — 2026-10-15
+
+Integration starts from accepted `7eb2554f5dbb497cff169f386704a5b0f4cf43fe`,
+preserving queue metadata0e7af86 in `codex/duo-motion-integration`.
+Do-It-All is requested for independent #84 review; Run is requested for #81.
+Readiness is not approval. The bounded potential extraction is
+`readJoinedCombination` in `src/sim/behaviors/blocking.ts` plus
+`test/combo-transfer.test.ts`, and #81's `src/sim/spacing.ts`,
+`test/spacing-residual-motion.test.ts` and its fixture. Stage portable patches
+and evidence first; do not run combined verification before scope is approved.
+Integration owns one exact combined verification for compatible approved scope.
+No source editing overlaps Run's or Do-It-All's research checkouts.
+Lateral/low-speed trials, passive observer, #76 carrier override and experimental
+Physics remain excluded. #76 author disposition is requested separately;
+that question does not hold an independent approved correction.
+
 ## Completed #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
@@ -26,8 +42,8 @@ bounded continuity correction at7eb2554. Source edit ownership above is released
 | --- | --- | --- |
 | Run Game | Second-level blocking access | A018/A030 plus useful successful contrast; installation/security/release/original intercept/modifiers/achieved protection. Reconcile relevant accepted #69 and #82 effects before current-build claims. No automatic earlier release or added force. |
 | Catching, consulting Run | Remaining support/leverage and recognition questions | Coverage subtechnique replacement / existing man/zone run responsibility. Preserve acquired support, PA uncertainty, alley leverage and vertical duty. Catching/Run reconciled #75; #75/#80 adopted via #82. Next support/leverage claims use accepted7eb2554 or state older source limits. |
-| Flex/Do-It-All | Mesh approach attribution | Saved A020/A044 versus A008/A032. Identify producing request stage before behavior edits; coordinate coverage functions with Catching and a minimal observation-only diagnostic with Run only if needed. Broad RB-jam work is deferred. |
-| Measurement | Saved subset distribution completed; checkpoint comparison owner | Both immutable Flex/Run subsets delivered; Integration independently verified archive hashes and all eight original raw case hashes. No recollection. Full48 archive remains local. After accepted #75/#80 batch, coordinate one frozen-panel comparison under existing budget; four games require a separate CEO call. |
+| Flex/Do-It-All | Independent #84 review; mesh approach ownership | Saved A020/A044 versus A008/A032. Identify producing request stage before behavior edits; coordinate coverage functions with Catching and a minimal observation-only diagnostic with Run only if needed. Broad RB-jam work is deferred. |
+| Measurement | Saved subset distribution completed; checkpoint comparison owner | Both immutable Flex/Run subsets delivered; Integration independently verified archive hashes and all eight original raw case hashes. No recollection. Both full48 arms now published; #82 frozen-panel comparison completed at40af332, no duplicate collection; four games require a separate CEO call. |
 
 These are task/coordination boundaries, not a blanket claim over each source
 file; owners name their actual functions before edits and preserve active work.
@@ -36,8 +52,8 @@ independent of these controller investigations. Direct ready submissions,
 independent review, compatible checkpoint batches and one exact combined check
 remain unchanged. [Cases, owner questions and archive status](INTEGRATION.md#audit-priorities-and-access).
 
-After a meaningful accepted controller batch, Integration/Measurement coordinate
-one frozen-panel comparison using compatible saved baseline evidence. The separate
+The requested #82 frozen-panel comparison is completed/published at40af332.
+Do not automatically repeat it for this intake; name any remaining transfer risk first. The separate
 four-game packet is available only for a CEO-called context evaluation. Neither
 runs per patch; no evaluation or new code suite starts for this documentation pass.
 
