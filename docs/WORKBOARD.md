@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Latest bounded entry continuation, 2026-10-15
+
+The previous information-only trial is held as a complete navigation improvement,
+not rejected because collision invalidates its information correction. New
+information extraction `f8ce858`, clean approach code `cfcb7db`, evidence
+`75dbf46` on `codex/run-entry-admission`: independent gap review stays unblocked.
+Pacing-only adverse preserved; diagnosed destination/approach separation corrected.
+P032 brief gather, usable moving entry, LOS2.85s, no teammate impact through3s.
+P019 opening/finish identical, legitimate defensive win preserved.40 focused
+checks/typecheck;20.619s native prefix collector time,0 completed games. Integration
+owns existing Awareness interface combination and combined verification. No
+baseline promotion. [Full record](https://github.com/tannerthardy/football-simulation-/tree/75dbf46b12a4d186a7da6ebc463b9fba228f0b50/docs/reviews/run-entry-admission).
+
 ## Acquired runner entry risk, 2026-10-15
 
 Do-It-All root completed the bounded `runReadAim` risk-input trial on

@@ -15,6 +15,16 @@ at the first changed entry using acquired teammate uncertainty, and retain a
 genuinely clear-route control. It will not add a universal clearance bubble,
 force the loaded guard to yield, or delay the independent gap review.
 
+The bounded continuation is now complete: separate information extraction
+`f8ce858adf7a3859b10307520000f4eb3172d344`, clean approach admission
+`cfcb7db0ba17c978fd02fb179c61f4e8b1d66752`, evidence
+[`75dbf46b12a4d186a7da6ebc463b9fba228f0b50`](https://github.com/tannerthardy/football-simulation-/tree/75dbf46b12a4d186a7da6ebc463b9fba228f0b50/docs/reviews/run-entry-admission).
+It preserves the pacing-only adverse and diagnostic, then admits moving
+approaches before ranking destinations. P032 gather0.15s, LOS2.85s, no teammate
+impact through3s; P019 complete result unchanged. Advance that separate mechanism
+for Integration review with its existing information interface. This older trial
+and its traces remain historical evidence, not a complete navigation approval.
+
 ## Exact, separate handoffs
 
 | Item | Pin / branch | Meaning |
@@ -85,7 +95,7 @@ Integration retains combined verification ownership.
 | Offensive teammate impacts through3s | 0 | 1: RG/RB,69.8136 kg·yd/s |
 | RB position at3s | `(74.9839,22.9520)` | `(75.1484,25.9924)` |
 | RG→DT_S resolved normal load integral | 1443.9640 kg·yd/s | 1443.9640 kg·yd/s |
-| RT→NB resolved normal load integral | 1742.5404 kg·yd/s | 1908.6781 kg·yd/s |
+| RT→NB resolved normal load integral | 1742.5404 kg·yd/s | 1900.9753 kg·yd/s |
 | Y→DE_S resolved normal load integral | 1707.3849 kg·yd/s | 1664.0204 kg·yd/s |
 
 Load is the 50ms integral of already-resolved pre-step hands-joint force samples,
