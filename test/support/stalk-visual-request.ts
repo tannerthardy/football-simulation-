@@ -30,7 +30,8 @@ export function stalkRequest(f:StalkWitness,opts:{hiddenY?:number;visibleY?:numb
     get pos(){return other.pos;},get vel(){return other.vel;},get facing(){return other.facing;},
     isDown:()=>false}as unknown as Agent;
   let visualCalls=0,engageCalls=0;
-  const sim={t:f.controllerT,offCall:{kind:'run',run:{scheme:'wideZone'}},
+  const sim={t:f.controllerT,offAlign:{spots:{[f.actor.slot]:{inline:false}}},
+    offCall:{kind:'run',run:{scheme:'wideZone'}},
     see:(a:Agent,d:Agent)=>{assert.equal(a,actor);assert.equal(d,target);visualCalls++;return structuredClone(picture);},
     engage:(a:Agent,d:Agent,kind:string,drive:unknown)=>{
       assert.equal(a,actor);assert.equal(d,target);assert.equal(kind,'run');assert.deepEqual(drive,f.installedDrive);
