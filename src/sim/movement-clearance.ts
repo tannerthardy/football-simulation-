@@ -66,11 +66,10 @@ function segmentGap(a:Vec2,b:Vec2,c:Vec2,d:Vec2):number {
 /** Keep an ordinary clear request exact. A detour must clear every acquired
  * neighbor together and make the most progress toward the read meeting point.
  * Only the first held read-beat is certified, in empty space. */
-export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
+export function previewMovementStep(body: Body, command: Intent,
   peers: readonly MovementObstacle[], now: number, horizon: number,
-  playSide: number, handContact: 'center' | 'patch'): MovementStep {
+  handContact: 'center' | 'patch') {
   const steps = Math.max(1, Math.ceil(horizon / .05));
-  const evaluate = (command: Intent) => {
     const path = previewFreeMovement(body, command, now, steps, handContact);
     const gaps = peers.map(peer => {
       const touch = CONTACT_SCALE * (body.profile.radius + peer.radius);
@@ -94,9 +93,15 @@ export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
       }
       return gap;
     });
-    const end = path.at(-1)!;
-    return { command, gaps, gap: Math.min(...gaps), up: path.every(s => s.support === 'up'),
-      progress: Math.hypot(goal.x - body.pos.x, goal.y - body.pos.y) - Math.hypot(goal.x - end.pos.x, goal.y - end.pos.y) };
+    return { command, path, gaps, gap: Math.min(...gaps), up: path.every(s => s.support === 'up') };
+}
+
+export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
+  peers: readonly MovementObstacle[], now: number, horizon: number,
+  playSide: number, handContact: 'center' | 'patch'): MovementStep {
+  const evaluate = (command: Intent) => {
+    const result=previewMovementStep(body,command,peers,now,horizon,handContact),end=result.path.at(-1)!;
+    return {...result,progress:Math.hypot(goal.x-body.pos.x,goal.y-body.pos.y)-Math.hypot(goal.x-end.pos.x,goal.y-end.pos.y)};
   };
   const baseline = evaluate(original);
   const blockedBy = peers.filter((_, i) => baseline.gaps[i] < 0).map(p => p.id);

@@ -27,6 +27,7 @@ import { contactCost } from '../contact-choice.js';
 import type { Perceived } from '../perception.js';
 import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
 import { observeRunRead, runReadObservers } from '../run-read-observer.js';
+import {clearMovementStep,previewMovementStep,type MovementObstacle} from '../movement-clearance.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -64,12 +65,24 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
 /** Read the current surface, rather than a two-second forecast through it.
  * Entry points are between moving blockers, or outside a kick/log. */
 export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
+  return planRunEntry(a,sim,opts)?.entry??null;
+}
+
+export function planRunEntry(a: Agent, sim: PlaySim, opts: CarrierOptions) {
   if (!opts.run || !opts.aim) return null;
   const side=opts.run.side;
-  const surface=sim.offense.filter((b)=>['LT','LG','C','RG','RT'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)
-    .map((b)=>({...sim.see(a,b),radius:b.profile.radius})).sort((p,q)=>p.pos.y-q.pos.y);
-  if (surface.length<5) return null;
-  let preferred=liveAim(a,sim,opts)!.y;
+  const acquired=sim.teammates(a).filter(b=>b!==a).flatMap(b=>{
+    const seen=sim.teammateInformation(a,b);
+    return seen.source==='unavailable'?[]:[{agent:b,seen}];
+  });
+  const surface=acquired.filter(({agent:b,seen})=>(['LT','LG','C','RG','RT'].includes(b.slot)||sim.offAlign.spots[b.slot]?.inline)
+    &&Math.abs(seen.pos.x-sim.offAlign.spots[b.slot]!.pos.x)<=1.5)
+    .map(({agent:b,seen})=>({...seen,radius:b.profile.radius})).sort((p,q)=>p.pos.y-q.pos.y);
+  // A known climber/puller may leave the surface. An unavailable line body
+  // is different: do not infer an outside edge from a partial picture.
+  if (acquired.filter(({agent:b})=>['LT','LG','C','RG','RT'].includes(b.slot)).length<5||surface.length<2) return null;
+  // The installed aiming point is a preference, not a fresh teammate feed.
+  let preferred=opts.aim.y;
   if (opts.run.scheme === 'duo' && opts.run.readKey) {
     const key=sim.see(a,opts.run.readKey);
     // Press the inside double. A declaring MIKE closes his insertion side;
@@ -78,8 +91,8 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   }
   const kick=opts.run.kick;
   if (kick) {
-    const s=sim.see(a,kick);
-    if (s.pos.x>sim.los-1.5) preferred=s.pos.y+(kick.tags.has('block-log') ? side*.85 : -side*.85);
+    const s=sim.teammateInformation(a,kick);
+    if (s.source!=='unavailable'&&s.pos.x>sim.los-1.5) preferred=s.pos.y-side*.85;
   }
   const candidates:Vec2[]=[];
   for(let i=1;i<surface.length;i++) {
@@ -88,26 +101,45 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
     if(width>a.profile.radius*1.4) candidates.push({x:Math.max(sim.los+.5,(l.pos.x+r.pos.x)/2+.6),y:(l.pos.y+r.pos.y)/2});
   }
   for(const end of [surface[0],surface.at(-1)!]) candidates.push({x:Math.max(sim.los+.5,end.pos.x+.5),y:end.pos.y+Math.sign(end.pos.y-sim.ballY)*(end.radius+a.profile.radius+.4)});
-  let best:Vec2|null=null,cost=Infinity;
-  const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
+  const peers:MovementObstacle[]=acquired.map(({agent:b,seen})=>({id:b.idx,pos:seen.pos,vel:seen.vel,
+    radius:b.profile.radius,maxSpeed:b.profile.vmax,mayStop:seen.source!=='called',
+    ...(seen.source==='called'?{route:seen.forecast?.samples,validFor:seen.forecast?.validFor??0}:{})}));
+  const threats=sim.opponents(a).map(d=>({profile:d.profile,seen:sim.see(a,d)}));
+  const support=a.body.support;
+  const free=!!support&&support.state==='up'&&!support.foot&&!support.strike&&!a.engagement
+    &&Math.hypot(support.load.x,support.load.y)<1e-6
+    &&!sim.world.joints.some(j=>j.a===a.body||j.b===a.body);
+  let best:Vec2|null=null,cost=Infinity,bestClear=false,bestGap=-Infinity;
+  const measurements: Array<{ entry: Vec2; risk: number; score: number; clearance:number|null }> = [];
   for(const p of candidates) {
+    const h=angleOfPoint(a.pos,p);
+    const preview=free?previewMovementStep(a.body,{vel:{x:Math.cos(h)*a.profile.vmax,y:Math.sin(h)*a.profile.vmax},
+      cutSkill:.85+.35*a.r('elusiveness')},peers,sim.t,1.3,sim.world.handContact):null;
+    const arrival=preview?.path.reduce((best,s)=>Math.hypot(s.pos.x-p.x,s.pos.y-p.y)<Math.hypot(best.pos.x-p.x,best.pos.y-p.y)?s:best);
+    const arrive=arrival?.t??Math.hypot(p.x-a.pos.x,p.y-a.pos.y)/Math.max(2,a.speed);
+    const clear=preview?preview.up&&preview.gap>=0:true,gap=preview?.gap??0;
     let risk=0;
-    for(const d of sim.opponents(a)) {
-      if(d.isDown(sim.t)) continue;
-      const s=sim.see(a,d);
+    for(const {profile,seen:s} of threats) {
       if(Math.hypot(s.pos.x-p.x,s.pos.y-p.y)>6) continue;
-      // Visible block posture buys time, not knowledge of a future block win.
-      const tied=d.engagement ? .25 : 0;
-      const reach=timeToReach({...s,profile:d.profile,speedScale:d.speedScale},p,d.profile.radius+a.profile.radius)+tied;
-      const arrive=Math.hypot(p.x-a.pos.x,p.y-a.pos.y)/Math.max(2,a.speed);
+      const reach=timeToReach({...s,profile},p,profile.radius+a.profile.radius)
+        +observedRecoveryAllowance(s,profile.getUp,sim.dt);
       risk+=Math.max(0,arrive-reach)*3;
     }
     const score=Math.abs(p.y-preferred)*.65+Math.abs(p.y-a.pos.y)*.12+risk;
-    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
-    if(score<cost) {cost=score;best=p;}
+    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score,clearance:preview?.gap??null });
+    if(!best||(clear&&!bestClear)||(clear===bestClear&&(clear?score<cost:gap>bestGap+1e-9||Math.abs(gap-bestGap)<1e-9&&score<cost))) {
+      cost=score;best=p;bestClear=clear;bestGap=gap;
+    }
   }
   if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface });
-  return best;
+  if(!best)return null;
+  const h=angleOfPoint(a.pos,best),command={vel:{x:Math.cos(h)*a.profile.vmax,y:Math.sin(h)*a.profile.vmax},
+    cutSkill:.85+.35*a.r('elusiveness'),squeeze:0};
+  // When no full-speed crease is executable, do not label the least bad
+  // sprint open. Choose a physically previewed first action and hold it on
+  // this same ordinary read beat, including a gather when turning is too late.
+  const choice=free&&!bestClear?clearMovementStep(a.body,command,best,peers,sim.t,1.3,side,sim.world.handContact):null;
+  return {entry:best,command:choice?.command??command,clearance:choice?.minimumGap??bestGap};
 }
 
 const SAMPLES = [0.25, 0.5, 0.75, 1.0, 1.3, 1.6, 2.0];
@@ -121,6 +153,7 @@ export class BallCarrier implements Behavior {
   private plannedExit = false;
   private boundaryRecovery = false;
   private readDone = false;
+  private entryCommand:MoveCommand|null=null;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -209,12 +242,14 @@ export class BallCarrier implements Behavior {
       // This holds a chosen action through one processing interval; movement,
       // real contact and boundary recovery still execute on every native tick.
       this.nextEval = sim.t + a.mind.decisionInterval;
-      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
+      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? planRunEntry(a,sim,this.opts) : null;
       const best = entry ? null : this.evaluate(a, sim, dir, false);
-      if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
+      this.entryCommand=entry?.command??null;
+      if(entry) { this.heading=angleOf(entry.command.vel); a.tags.add('run-crease-read'); }
       else if (best) { this.heading = best.heading; this.plannedExit = best.exits; }
       else if (this.heading === null) this.heading = dir > 0 ? 0 : Math.PI;
     }
+    if(this.entryCommand)return {...this.entryCommand,vel:{...this.entryCommand.vel}};
     const h = this.heading!;
     return this.command(a, sim, h, a.profile.vmax, cutSkill);
   }
