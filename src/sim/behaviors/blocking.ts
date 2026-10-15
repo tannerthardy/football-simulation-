@@ -1029,11 +1029,7 @@ export class RunBlocker implements Behavior {
     if (!this.departureRead || sim.t >= this.departureRead.nextRead) {
       const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper);
       const backer = sim.see(a, departure.backer);
-      // Once released, he needs access to the first possible backer strike,
-      // not a walk through that defender's center beyond useful contact.
-      const strike = a.profile.radius + departure.backer.profile.radius + .1
-        + a.player.measurables.armIn / 36 * .45;
-      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer, strike);
+      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer);
       this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
         exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
       // Only a personally observed clear route ends the departure. A blocked
@@ -1402,7 +1398,7 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
  * that the whole climb or linebacker block will succeed. Check the DL and
  * partner through the next read; a moving or mistaken picture can still lose. */
 function climbRoute(a: Agent, defender: Agent, down: Perceived,
-  partner: Agent, covered: Perceived, backer: Perceived, strike = 0): { exit: Vec2 | null; flow: Vec2 } | null {
+  partner: Agent, covered: Perceived, backer: Perceived): { exit: Vec2 | null; flow: Vec2 } | null {
   const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },
     { seen: covered, radius: a.profile.radius + partner.profile.radius }];
   const clear = (goal: Vec2, flow: Vec2): boolean => bodies.every(({ seen, radius }) => {
@@ -1421,10 +1417,7 @@ function climbRoute(a: Agent, defender: Agent, down: Perceived,
     }
     return true;
   });
-  const ray = sub(backer.pos, a.pos), distance = Math.hypot(ray.x, ray.y);
-  const through = Math.max(0, distance - strike) / Math.max(distance, 1e-12);
-  const first = strike > 0 ? { x: a.pos.x + ray.x * through, y: a.pos.y + ray.y * through } : backer.pos;
-  if (clear(first, backer.vel)) return { exit: null, flow: backer.vel };
+  if (clear(backer.pos, backer.vel)) return { exit: null, flow: backer.vel };
   for (const body of bodies) {
     const relative = sub(a.pos, body.seen.pos), goal = sub(backer.pos, body.seen.pos);
     const distance = Math.hypot(relative.x,relative.y);
