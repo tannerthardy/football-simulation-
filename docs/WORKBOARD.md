@@ -4,6 +4,9 @@
 
 **Tested candidate ready for bounded review:** `81b908586416070145b5b89ee9517380c4fe09fe`,
 source `0eb4c7652f49c420c25535f4932bdc6abe24443ba05163f8ac2d999a7f6bee56`.
+Published in [draft PR #67](https://github.com/tannerthardy/football-simulation-/pull/67),
+evidence `3f6e3d8`. Integration handoff is posted on #63 for separate review;
+this candidate is not inserted into that frozen combined source automatically.
 PassProtector now approaches through its selected cutoff at the forecast's
 existing .75*vmax instead of station-keeping on it. P040 LT load1.45→1.20,
 shed1.75→2.60; throw3.00 replaces the sack. P019 retains both edges through its
