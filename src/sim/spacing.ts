@@ -184,6 +184,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       &&Math.hypot(s.lean.x,s.lean.y)<1e-6&&Math.hypot(s.load.x,s.load.y)<1e-6){
       const choice=clearMovementStep(a.body,ia,{x:a.pos.x+ia.vel.x,y:a.pos.y+ia.vel.y},
         peers.map((p,id)=>({id,pos:p.pos,vel:p.vel,radius:p.radius,maxSpeed:p.maxSpeed,
+          mayStop:p.source!=='called',
           ...(p.source==='called'?{route:p.forecast?.samples,validFor:p.forecast?.validFor??0}:{})})),
         context.now,TURN_HORIZON,Math.sign(ia.vel.y)||1,context.handContact??'center');
       ia=choice.command;

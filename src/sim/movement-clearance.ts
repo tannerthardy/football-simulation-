@@ -19,6 +19,9 @@ export interface MovementObstacle {
   /** Neighbors are reconsidered on the ordinary read beat. Down-surface
    * geometry also constrains the stopping-distance part of the approach. */
   horizon?: number;
+  /** An observed teammate can stop clearing the lane. Do not require him to
+   * maintain speed to make our request safe. Installed calls stay separate. */
+  mayStop?: boolean;
 }
 
 export interface MovementStep {
@@ -49,6 +52,17 @@ function peerAt(peer: MovementObstacle, t: number): Vec2 {
   return { x: lo.pos.x + (hi.pos.x - lo.pos.x) * u, y: lo.pos.y + (hi.pos.y - lo.pos.y) * u };
 }
 
+function pointSegment(p:Vec2,a:Vec2,b:Vec2):number {
+  const dx=b.x-a.x,dy=b.y-a.y;
+  const u=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/Math.max(1e-12,dx*dx+dy*dy)));
+  return Math.hypot(p.x-a.x-u*dx,p.y-a.y-u*dy);
+}
+function segmentGap(a:Vec2,b:Vec2,c:Vec2,d:Vec2):number {
+  const cross=(p:Vec2,q:Vec2,r:Vec2)=>(q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x);
+  if(cross(a,b,c)*cross(a,b,d)<0&&cross(c,d,a)*cross(c,d,b)<0)return 0;
+  return Math.min(pointSegment(a,c,d),pointSegment(b,c,d),pointSegment(c,a,b),pointSegment(d,a,b));
+}
+
 /** Keep an ordinary clear request exact. A detour must clear every acquired
  * neighbor together and make the most progress toward the read meeting point.
  * Only the first held read-beat is certified, in empty space. */
@@ -61,6 +75,7 @@ export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
     const gaps = peers.map(peer => {
       const touch = CONTACT_SCALE * (body.profile.radius + peer.radius);
       let x = body.pos.x - peer.pos.x, y = body.pos.y - peer.pos.y;
+      let own=body.pos;
       let gap = Math.hypot(x, y) - touch;
       for (const sample of path) {
         if (sample.t > (peer.horizon ?? horizon) + 1e-9) break;
@@ -73,6 +88,8 @@ export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
         const dx = nx - x, dy = ny - y;
         const u = Math.max(0, Math.min(1, -(x * dx + y * dy) / Math.max(1e-12, dx * dx + dy * dy)));
         gap = Math.min(gap, Math.hypot(x + u * dx, y + u * dy) - touch - uncertainty);
+        if(peer.mayStop)gap=Math.min(gap,segmentGap(own,sample.pos,peer.pos,p)-touch);
+        own=sample.pos;
         x = nx; y = ny;
       }
       return gap;

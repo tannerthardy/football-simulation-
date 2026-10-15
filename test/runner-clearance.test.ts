@@ -23,15 +23,15 @@ function select(f:ReturnType<typeof fixture>,hiddenShift=0,constrained=false,ena
  return intents[0];
 }
 /** Actual unloaded World motion, with independent relative swept geometry. */
-function execute(f:ReturnType<typeof fixture>,command:Intent){
+function execute(f:ReturnType<typeof fixture>,command:Intent,peerTravel=(t:number)=>t){
  const body=structuredClone(f.body),world=new World([body]);world.time=f.t;
  let previous={...body.pos},gap=Infinity;
  for(let k=0;k<12;k++){
   const r=world.step([command],.05);expect(Math.abs(r.work.residual)).toBeLessThan(1e-7);
   expect(r.armImpulse[0]).toBe(0);expect(body.support!.state).toBe('up');
   for(const peer of f.peers){
-   const p=peer.picture,t=k*.05,rx=previous.x-p.pos.x-p.vel.x*t,ry=previous.y-p.pos.y-p.vel.y*t;
-   const dx=body.pos.x-p.pos.x-p.vel.x*(t+.05)-rx,dy=body.pos.y-p.pos.y-p.vel.y*(t+.05)-ry;
+   const p=peer.picture,t=k*.05,rx=previous.x-p.pos.x-p.vel.x*peerTravel(t),ry=previous.y-p.pos.y-p.vel.y*peerTravel(t);
+   const dx=body.pos.x-p.pos.x-p.vel.x*peerTravel(t+.05)-rx,dy=body.pos.y-p.pos.y-p.vel.y*peerTravel(t+.05)-ry;
    const u=Math.max(0,Math.min(1,-(rx*dx+ry*dy)/Math.max(1e-12,dx*dx+dy*dy)));
    gap=Math.min(gap,Math.hypot(rx+u*dx,ry+u*dy)-CONTACT_SCALE*(body.profile.radius+peer.radius));
   }
@@ -54,6 +54,10 @@ describe('post-exchange runner navigation uses achievable motion',()=>{
   expect(index===1?speed>2:speed<2).toBe(true);
   const choice=select(f);expect(Math.hypot(choice.vel.x,choice.vel.y)).toBeGreaterThan(2);
   expect(execute(f,choice).gap).toBeGreaterThanOrEqual(0);
+ });
+ it.each([0,.2,.4])('does not rely on a teammate maintaining speed after %s seconds',stop=>{
+  const f=fixture(),choice=select(f);
+  expect(execute(f,choice,t=>Math.min(t,stop)).gap).toBeGreaterThanOrEqual(0);
  });
  it('leaves ordinary clear-path acceleration and its achieved movement exact',()=>{
   const f=fixture();for(const p of f.peers)p.picture={...p.picture,pos:{x:80,y:45},vel:{x:0,y:0}};
