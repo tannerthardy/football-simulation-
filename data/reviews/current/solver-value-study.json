@@ -1,0 +1,1361 @@
+{
+  "protocol": "solver-value-decision-v1",
+  "decision": "Park passive-hands integrator expansion; validate actual first support-coupled leg-grasp braking next",
+  "testedRevision": "69716a67faad84b162d4e4541eea49c7ca25abe0",
+  "sourceSha256": "5fe694911cda2806e5c4392e5f5d97aaf09abb593d8f98a106fa80fab88a7565",
+  "validationSha256": "7a2b21be79f99b326078134628b77b4d7bb0069826981d9cadd3d4badf6f3218",
+  "parent": {
+    "pr": "https://github.com/tannerthardy/football-simulation-/pull/77",
+    "tip": "25787e0a75a05fd8aa8a1df2403564a60331281d"
+  },
+  "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "currentDevelopChecked": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "currentDevelopMerged": false,
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "settings": {
+    "handContact": "patch",
+    "groundMovement": "legacy",
+    "groundYawCoupling": "split",
+    "intervention": "one .35-.40 tick at 192/768/3072 subdivisions then restore ordinary stepping",
+    "nativeNull": 12,
+    "opposingIntervention": "Tite .30-.35 tick at768",
+    "fullWorldTickRefined": true,
+    "bodyOrStateInjection": false
+  },
+  "inputs": [
+    {
+      "path": "config/solver-value-study.json",
+      "sha256": "3a79ad6c660e687364858112d9ccfa0801f59a615f4f8080b904918c02e9015e"
+    },
+    {
+      "path": "scripts/diag/physics/solver-value-study.ts",
+      "sha256": "197fa35abe9bea99278d1f1645409b821ee424fc53b95298765aa7c6f99932a2"
+    },
+    {
+      "path": "src/physics/world.ts",
+      "sha256": "150f903b9251a521f5ff2d4dffb903caeb905b4cdc8c8c3757f498bfcba9f2c9"
+    }
+  ],
+  "plainObserverChecks": [
+    {
+      "case": "tite",
+      "exact": true,
+      "seconds": 0.4733356319999998
+    },
+    {
+      "case": "under",
+      "exact": true,
+      "seconds": 0.2815145899999998
+    }
+  ],
+  "uniqueNativeInputs": 2,
+  "observedFinalExecutions": 11,
+  "plainFinalExecutions": 2,
+  "finalCensoredExecutions": 0,
+  "cases": [
+    {
+      "input": {
+        "id": "tite",
+        "front": "tite",
+        "personnel": "base34",
+        "owner": "Y",
+        "helper": "RT",
+        "defender": "DE_S"
+      },
+      "initialWorldInputSha256": "51b91a3011a22390a8d0965782da9cdfe6b8f05eeb7c123b05614e7a1a3b1b05",
+      "initialRngSha256": "5625e0178566d00ee2b54cc1da6c3683357ca147c902c2ddacb65a503c1215a9",
+      "scope": {
+        "calls": 960,
+        "counts": {
+          "eligible": 24,
+          "multiple-rows": 43,
+          "impact-or-strike": 893
+        },
+        "eligibleTicks": [
+          0.35,
+          0.4
+        ],
+        "eligibleFraction": 0.025,
+        "upperBoundOnly": true,
+        "kernelInvocationsMeasured": false
+      },
+      "outcomes": [
+        {
+          "arm": {
+            "id": "native",
+            "at": null,
+            "substeps": null
+          },
+          "fingerprint": "e19a0367242a88d66ed28ab3f03f077adea61b6bee1468a461dc7f43998f7d50",
+          "t": 4.35,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.04237860310904,
+            "y": 20.20474491630867
+          },
+          "firstContactAt": 2.75,
+          "firstContactX": 41.05938839264963,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.994917758
+        },
+        {
+          "arm": {
+            "id": "null12",
+            "at": 0.35,
+            "substeps": 12
+          },
+          "fingerprint": "e19a0367242a88d66ed28ab3f03f077adea61b6bee1468a461dc7f43998f7d50",
+          "t": 4.35,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.04237860310904,
+            "y": 20.20474491630867
+          },
+          "firstContactAt": 2.75,
+          "firstContactX": 41.05938839264963,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.6178786929999999
+        },
+        {
+          "arm": {
+            "id": "fine192",
+            "at": 0.35,
+            "substeps": 192
+          },
+          "fingerprint": "40d0a5e2ee89c86c7504de3381e803016ef6738f16c7b37fc9eb4319eb591cb6",
+          "t": 4.35,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.041139314631266,
+            "y": 20.186554405551995
+          },
+          "firstContactAt": 2.75,
+          "firstContactX": 41.05851424177456,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.4775199980000002
+        },
+        {
+          "arm": {
+            "id": "fine768",
+            "at": 0.35,
+            "substeps": 768
+          },
+          "fingerprint": "5f54d9ffcea8913d3115dd17f8f13bf693596246f50d98deced5af0f29b3f8c7",
+          "t": 4.35,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.04143548576762,
+            "y": 20.18668234170721
+          },
+          "firstContactAt": 2.75,
+          "firstContactX": 41.058498108876194,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.32267778599999974
+        },
+        {
+          "arm": {
+            "id": "fine3072",
+            "at": 0.35,
+            "substeps": 3072
+          },
+          "fingerprint": "809327eb1bad083d7b0da56d10d9c4be64302082f5f8a9c2c6d54057aa15e19d",
+          "t": 4.35,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.042104339819765,
+            "y": 20.187718247531794
+          },
+          "firstContactAt": 2.75,
+          "firstContactX": 41.0584260587601,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.4124199450000001
+        },
+        {
+          "arm": {
+            "case": "tite",
+            "id": "earlier768",
+            "at": 0.3,
+            "substeps": 768
+          },
+          "fingerprint": "e19a0367242a88d66ed28ab3f03f077adea61b6bee1468a461dc7f43998f7d50",
+          "t": 4.35,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.04237860310904,
+            "y": 20.20474491630867
+          },
+          "firstContactAt": 2.75,
+          "firstContactX": 41.05938839264963,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.3642335619999999
+        }
+      ],
+      "comparisons": [
+        {
+          "arm": {
+            "id": "null12",
+            "at": 0.35,
+            "substeps": 12
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": null,
+          "firstChangedCommandTick": null,
+          "firstChangedRngTick": null,
+          "comparisonStop": 4.35,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0,
+              "velocity": 0,
+              "facing": 0,
+              "spin": 0
+            },
+            "rbDistance": 0
+          },
+          "immediate": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "immediateC_NT": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "final": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "rbDistanceAtStop": 0,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.75,
+          "firstContactX": 41.05938839264963,
+          "censored": false,
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.04237860310904,
+            "y": 20.20474491630867
+          }
+        },
+        {
+          "arm": {
+            "id": "fine192",
+            "at": 0.35,
+            "substeps": 192
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": 0.35,
+          "firstChangedCommandTick": 0.4,
+          "firstChangedRngTick": 3.5,
+          "comparisonStop": 4.35,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0.030490364924759063,
+              "velocity": 0.12781222752652646,
+              "facing": 0.14732676245455623,
+              "spin": 0.34037979961423837
+            },
+            "rbDistance": 0.0006485934151466678
+          },
+          "immediate": {
+            "position": 0.00015551134173890133,
+            "velocity": 0.006051019662700335,
+            "facing": 0.004397865845412241,
+            "spin": 0.15870968296646304
+          },
+          "immediateC_NT": {
+            "position": 0.00015551134173890133,
+            "velocity": 0.006051019662700335,
+            "facing": 0.004397865845412241,
+            "spin": 0.15870968296646304
+          },
+          "final": {
+            "position": 2.0667372521800114,
+            "velocity": 3.7074809752958013,
+            "facing": 2.9677170126897736,
+            "spin": 3.397453524606439
+          },
+          "rbDistanceAtStop": 0.018224849119216444,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.75,
+          "firstContactX": 41.05851424177456,
+          "censored": false,
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.041139314631266,
+            "y": 20.186554405551995
+          }
+        },
+        {
+          "arm": {
+            "id": "fine768",
+            "at": 0.35,
+            "substeps": 768
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": 0.35,
+          "firstChangedCommandTick": 0.4,
+          "firstChangedRngTick": 3.3,
+          "comparisonStop": 4.35,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0.021513013673199702,
+              "velocity": 0.13535973539957144,
+              "facing": 0.028362829814601916,
+              "spin": 0.26937628301207495
+            },
+            "rbDistance": 0.0006605646391074689
+          },
+          "immediate": {
+            "position": 0.00016608787256235167,
+            "velocity": 0.006394383205992351,
+            "facing": 0.004422229630016705,
+            "spin": 0.13693379173607784
+          },
+          "immediateC_NT": {
+            "position": 0.00016608787256235167,
+            "velocity": 0.006394383205992351,
+            "facing": 0.004422229630016705,
+            "spin": 0.13693379173607784
+          },
+          "final": {
+            "position": 1.5965071980381607,
+            "velocity": 2.399612115724725,
+            "facing": 1.658340018659755,
+            "spin": 4.62950443522754
+          },
+          "rbDistanceAtStop": 0.018117867941901622,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.75,
+          "firstContactX": 41.058498108876194,
+          "censored": false,
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.04143548576762,
+            "y": 20.18668234170721
+          }
+        },
+        {
+          "arm": {
+            "id": "fine3072",
+            "at": 0.35,
+            "substeps": 3072
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": 0.35,
+          "firstChangedCommandTick": 0.4,
+          "firstChangedRngTick": 3.9,
+          "comparisonStop": 4.35,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0.022626776946156,
+              "velocity": 0.10792375951098432,
+              "facing": 0.037790907644621896,
+              "spin": 0.28840100700084337
+            },
+            "rbDistance": 0.0007140290532449688
+          },
+          "immediate": {
+            "position": 0.00016877927993078464,
+            "velocity": 0.006481028043126461,
+            "facing": 0.0044236392662670996,
+            "spin": 0.12857752349513557
+          },
+          "immediateC_NT": {
+            "position": 0.00016877927993078464,
+            "velocity": 0.006481028043126461,
+            "facing": 0.0044236392662670996,
+            "spin": 0.12857752349513557
+          },
+          "final": {
+            "position": 2.0632447348923226,
+            "velocity": 3.3871580851325547,
+            "facing": 0.3511396813806442,
+            "spin": 7.152399118531552
+          },
+          "rbDistanceAtStop": 0.017153641364385283,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.75,
+          "firstContactX": 41.0584260587601,
+          "censored": false,
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.042104339819765,
+            "y": 20.187718247531794
+          }
+        },
+        {
+          "arm": {
+            "case": "tite",
+            "id": "earlier768",
+            "at": 0.3,
+            "substeps": 768
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": null,
+          "firstChangedCommandTick": null,
+          "firstChangedRngTick": null,
+          "comparisonStop": 4.35,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0,
+              "velocity": 0,
+              "facing": 0,
+              "spin": 0
+            },
+            "rbDistance": 0
+          },
+          "immediate": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "immediateC_NT": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "final": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "rbDistanceAtStop": 0,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.75,
+          "firstContactX": 41.05938839264963,
+          "censored": false,
+          "creditedYards": 4.04,
+          "endSpot": {
+            "x": 44.04237860310904,
+            "y": 20.20474491630867
+          }
+        }
+      ],
+      "fineComparisons": [
+        {
+          "a": "fine192",
+          "b": "fine768",
+          "comparisonStop": 4.35,
+          "immediate": {
+            "position": 1.0576534967678209e-05,
+            "velocity": 0.0003433635588066555,
+            "facing": 0.00020164254023984085,
+            "spin": 0.021775891230385203
+          },
+          "final": {
+            "position": 0.668015379581893,
+            "velocity": 2.445549293524283,
+            "facing": 1.3093769940300186,
+            "spin": 7.68378351550105
+          },
+          "rbDistanceAtStop": 0.0003226220727439546,
+          "helperClimbs": [
+            [],
+            []
+          ]
+        },
+        {
+          "a": "fine768",
+          "b": "fine3072",
+          "comparisonStop": 4.35,
+          "immediate": {
+            "position": 2.691408910702053e-06,
+            "velocity": 8.664485961941289e-05,
+            "facing": 5.134323925770623e-05,
+            "spin": 0.008356268240942266
+          },
+          "final": {
+            "position": 2.6448185348331688,
+            "velocity": 2.268462507111013,
+            "facing": 1.547508486634468,
+            "spin": 7.677186526157489
+          },
+          "rbDistanceAtStop": 0.001233072025663806,
+          "helperClimbs": [
+            [],
+            []
+          ]
+        }
+      ],
+      "nativeCarrierLedgerMaximumResiduals": {
+        "momentum": 5.1544966085781526e-14,
+        "translationEnergy": 2.8421709430404007e-12
+      }
+    },
+    {
+      "input": {
+        "id": "under",
+        "front": "under",
+        "personnel": "base43",
+        "owner": "RT",
+        "helper": "RG",
+        "defender": "DE_S"
+      },
+      "initialWorldInputSha256": "a5ce22330eda9fc4900a661dbc8a2e3c4291d79bc46d203702579dcc9dd8defd",
+      "initialRngSha256": "4368ddbf3eab46d8e93bcbfff4db48de0bf2c745ed893ac75304c80138dfab13",
+      "scope": {
+        "calls": 792,
+        "counts": {
+          "no-row": 24,
+          "eligible": 9,
+          "normal-load": 3,
+          "multiple-rows": 84,
+          "impact-or-strike": 672
+        },
+        "eligibleTicks": [
+          0.45
+        ],
+        "eligibleFraction": 0.011363636363636364,
+        "upperBoundOnly": true,
+        "kernelInvocationsMeasured": false
+      },
+      "outcomes": [
+        {
+          "arm": {
+            "id": "native",
+            "at": null,
+            "substeps": null
+          },
+          "fingerprint": "97cbd7de7c3520eda312acd14d5618191cc3067f6c902fa251b2346b93a6b3d0",
+          "t": 3.65,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.57098133355331,
+            "y": 19.524186041681997
+          },
+          "firstContactAt": 2.9,
+          "firstContactX": 41.15149512312903,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.3395033829999993
+        },
+        {
+          "arm": {
+            "id": "null12",
+            "at": 0.35,
+            "substeps": 12
+          },
+          "fingerprint": "97cbd7de7c3520eda312acd14d5618191cc3067f6c902fa251b2346b93a6b3d0",
+          "t": 3.65,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.57098133355331,
+            "y": 19.524186041681997
+          },
+          "firstContactAt": 2.9,
+          "firstContactX": 41.15149512312903,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.2550580060000002
+        },
+        {
+          "arm": {
+            "id": "fine192",
+            "at": 0.35,
+            "substeps": 192
+          },
+          "fingerprint": "d86327ddec08bc88f855f8453a627a72bbe466c46f51e00fe22e3c009454ec95",
+          "t": 3.65,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.57113162845212,
+            "y": 19.52376433738307
+          },
+          "firstContactAt": 2.9,
+          "firstContactX": 41.151496656156375,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.26138722899999994
+        },
+        {
+          "arm": {
+            "id": "fine768",
+            "at": 0.35,
+            "substeps": 768
+          },
+          "fingerprint": "1c0de39058b0380aad420f318da54be0c34ca8fefb02a14e7b29ea309fd19224",
+          "t": 3.65,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.571122350600504,
+            "y": 19.523758880876798
+          },
+          "firstContactAt": 2.9,
+          "firstContactX": 41.15149711902533,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.27586941399999976
+        },
+        {
+          "arm": {
+            "id": "fine3072",
+            "at": 0.35,
+            "substeps": 3072
+          },
+          "fingerprint": "6925d4c70e86f9c027e08ded484701ec9de838781e023574ab253167347a22d3",
+          "t": 3.65,
+          "phase": "dead",
+          "censored": false,
+          "outcome": "tackle",
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.57100856045652,
+            "y": 19.524118433597888
+          },
+          "firstContactAt": 2.9,
+          "firstContactX": 41.151497233562594,
+          "released": false,
+          "helperChecked": false,
+          "helperClimbs": [],
+          "elapsedSeconds": 0.30502715400000036
+        }
+      ],
+      "comparisons": [
+        {
+          "arm": {
+            "id": "null12",
+            "at": 0.35,
+            "substeps": 12
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": null,
+          "firstChangedCommandTick": null,
+          "firstChangedRngTick": null,
+          "comparisonStop": 3.65,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0,
+              "velocity": 0,
+              "facing": 0,
+              "spin": 0
+            },
+            "rbDistance": 0
+          },
+          "immediate": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "immediateC_NT": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "final": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "rbDistanceAtStop": 0,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.9,
+          "firstContactX": 41.15149512312903,
+          "censored": false,
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.57098133355331,
+            "y": 19.524186041681997
+          }
+        },
+        {
+          "arm": {
+            "id": "fine192",
+            "at": 0.35,
+            "substeps": 192
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": 0.35,
+          "firstChangedCommandTick": 0.4,
+          "firstChangedRngTick": null,
+          "comparisonStop": 3.65,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0.00010750253762288453,
+              "velocity": 0.0015439300349254573,
+              "facing": 0.04530093717065187,
+              "spin": 0.9036840318763208
+            },
+            "rbDistance": 5.995194994213527e-07
+          },
+          "immediate": {
+            "position": 7.944109290391274e-15,
+            "velocity": 1.6653345369377348e-14,
+            "facing": 0.0001682308794017651,
+            "spin": 0.006536322869077793
+          },
+          "immediateC_NT": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "final": {
+            "position": 0.002480033273736604,
+            "velocity": 0.0043706321505229155,
+            "facing": 0.00476402477097615,
+            "spin": 0.03365773805531358
+          },
+          "rbDistanceAtStop": 0.0008172136599892963,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.9,
+          "firstContactX": 41.151496656156375,
+          "censored": false,
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.57113162845212,
+            "y": 19.52376433738307
+          }
+        },
+        {
+          "arm": {
+            "id": "fine768",
+            "at": 0.35,
+            "substeps": 768
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": 0.35,
+          "firstChangedCommandTick": 0.4,
+          "firstChangedRngTick": null,
+          "comparisonStop": 3.65,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0.00010602796623949814,
+              "velocity": 0.0013116060709038016,
+              "facing": 0.0550085557929616,
+              "spin": 1.0981017583882875
+            },
+            "rbDistance": 5.27328252999153e-07
+          },
+          "immediate": {
+            "position": 1.464821375527116e-14,
+            "velocity": 4.6386069275127054e-14,
+            "facing": 0.00017641901390286208,
+            "spin": 0.006863139012542874
+          },
+          "immediateC_NT": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "final": {
+            "position": 0.0021217687390637937,
+            "velocity": 0.0043819292331147295,
+            "facing": 0.004749060871797273,
+            "spin": 0.04075134893610355
+          },
+          "rbDistanceAtStop": 0.0008273878088977382,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.9,
+          "firstContactX": 41.15149711902533,
+          "censored": false,
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.571122350600504,
+            "y": 19.523758880876798
+          }
+        },
+        {
+          "arm": {
+            "id": "fine3072",
+            "at": 0.35,
+            "substeps": 3072
+          },
+          "matchedPrefix": true,
+          "firstChangedBodyTick": 0.35,
+          "firstChangedCommandTick": 0.4,
+          "firstChangedRngTick": null,
+          "comparisonStop": 3.65,
+          "checkpoint": {
+            "t": 2,
+            "motion": {
+              "position": 0.00010563970298290904,
+              "velocity": 0.0012112082574501353,
+              "facing": 0.058941041553027596,
+              "spin": 1.1768884769465444
+            },
+            "rbDistance": 4.91862328911221e-07
+          },
+          "immediate": {
+            "position": 1.2079226507921703e-13,
+            "velocity": 3.147164073116552e-13,
+            "facing": 0.0001784627229683977,
+            "spin": 0.006944843048449556
+          },
+          "immediateC_NT": {
+            "position": 0,
+            "velocity": 0,
+            "facing": 0,
+            "spin": 0
+          },
+          "final": {
+            "position": 0.0019634545497506715,
+            "velocity": 0.0009512992324447163,
+            "facing": 0.0027928965753512003,
+            "spin": 0.052411892408537275
+          },
+          "rbDistanceAtStop": 0.000133589755169574,
+          "helperClimbs": [],
+          "released": false,
+          "firstContactAt": 2.9,
+          "firstContactX": 41.151497233562594,
+          "censored": false,
+          "creditedYards": 1.57,
+          "endSpot": {
+            "x": 41.57100856045652,
+            "y": 19.524118433597888
+          }
+        }
+      ],
+      "fineComparisons": [
+        {
+          "a": "fine192",
+          "b": "fine768",
+          "comparisonStop": 3.65,
+          "immediate": {
+            "position": 7.105427357601002e-15,
+            "velocity": 6.029155041345697e-14,
+            "facing": 8.18813450109701e-06,
+            "spin": 0.0003268161434650807
+          },
+          "final": {
+            "position": 0.00036308487071911737,
+            "velocity": 0.0010464982264485772,
+            "facing": 0.0021667445697239884,
+            "spin": 0.04407348944947942
+          },
+          "rbDistanceAtStop": 1.017696653464018e-05,
+          "helperClimbs": [
+            [],
+            []
+          ]
+        },
+        {
+          "a": "fine768",
+          "b": "fine3072",
+          "comparisonStop": 3.65,
+          "immediate": {
+            "position": 1.1374233532693354e-13,
+            "velocity": 3.4191819513767135e-13,
+            "facing": 2.043709065535637e-06,
+            "spin": 8.170403590668229e-05
+          },
+          "final": {
+            "position": 0.0006938092487701297,
+            "velocity": 0.003930491346088093,
+            "facing": 0.004128161668863317,
+            "spin": 0.03158271155432235
+          },
+          "rbDistanceAtStop": 0.0006938092487701297,
+          "helperClimbs": [
+            [],
+            []
+          ]
+        }
+      ],
+      "nativeCarrierLedgerMaximumResiduals": {
+        "momentum": 5.17282919736354e-14,
+        "translationEnergy": 1.261923898709938e-11
+      }
+    }
+  ],
+  "contactAudits": [
+    {
+      "case": "tite",
+      "firstContact": {
+        "t": 2.75,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 14,
+        "pos": {
+          "x": 41.06,
+          "y": 22.26
+        },
+        "note": "grasp"
+      },
+      "loadedWindow": {
+        "start": 2.8,
+        "end": 3
+      },
+      "mass": 99.33672903,
+      "before": {
+        "x": 5.00925761446709,
+        "y": -4.7637800239710915
+      },
+      "after": {
+        "x": 3.572956784824245,
+        "y": -0.37405100082147025
+      },
+      "speedBefore": 6.91276080628301,
+      "speedAfter": 3.5924830323102643,
+      "parts": {
+        "feet": {
+          "x": 93.62118185030127,
+          "y": -69.21625272227328,
+          "translationEnergy": 540.3132452170189,
+          "forwardVelocityChange": 1.1631193147597914
+        },
+        "supported-grasp-active": {
+          "x": -46.58573974261042,
+          "y": 223.98234249147873,
+          "translationEnergy": -748.0172628954604,
+          "forwardVelocityChange": -1.8936646778434327
+        },
+        "supported-grasp-passive": {
+          "x": -189.7128684274864,
+          "y": 281.2952327185351,
+          "translationEnergy": -1524.7448093241373,
+          "forwardVelocityChange": -3.33534163724973
+        }
+      },
+      "maximumMomentumResidual": 2.847716647714797e-14,
+      "maximumTranslationEnergyResidual": 2.8421709430404007e-12,
+      "scope": "Actual native World velocity/translation-energy changes by source method. Not pair dissipation or an independent physical force reference.",
+      "initialDirection": {
+        "x": 0.7246392222792051,
+        "y": -0.689128433265229
+      }
+    },
+    {
+      "case": "under",
+      "firstContact": {
+        "t": 2.9,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 16,
+        "pos": {
+          "x": 41.15,
+          "y": 21.7
+        },
+        "note": "grasp"
+      },
+      "loadedWindow": {
+        "start": 2.95,
+        "end": 3.1500000000000004
+      },
+      "mass": 99.33672903,
+      "before": {
+        "x": 1.6486275088336892,
+        "y": -4.016280112216632
+      },
+      "after": {
+        "x": 1.4546873479820777,
+        "y": -3.0552710255493762
+      },
+      "speedBefore": 4.341483456454719,
+      "speedAfter": 3.3839025281382837,
+      "parts": {
+        "feet": {
+          "x": -95.44563205383258,
+          "y": -104.68471783476889,
+          "translationEnergy": 274.1179161426305,
+          "forwardVelocityChange": 0.6100345691915295
+        },
+        "supported-grasp-active": {
+          "x": 96.75864077759314,
+          "y": 119.51440136678178,
+          "translationEnergy": -336.8567828555885,
+          "forwardVelocityChange": -0.7431197942375039
+        },
+        "supported-grasp-passive": {
+          "x": -59.78080398297145,
+          "y": 34.96862426509736,
+          "translationEnergy": -204.1814742215672,
+          "forwardVelocityChange": -0.5541789416280477
+        },
+        "body-contact": {
+          "x": 39.20241405265972,
+          "y": 45.66519144052267,
+          "translationEnergy": -100.5104392502433,
+          "forwardVelocityChange": -0.27540603778685147
+        }
+      },
+      "maximumMomentumResidual": 1.5888218580782548e-14,
+      "maximumTranslationEnergyResidual": 1.261923898709938e-11,
+      "scope": "Actual native World velocity/translation-energy changes by source method. Not pair dissipation or an independent physical force reference.",
+      "initialDirection": {
+        "x": 0.37973829115543106,
+        "y": -0.9250939575147776
+      }
+    }
+  ],
+  "cost": {
+    "collectorSeconds": 5.390903497,
+    "finalCollectorLauncherSeconds": 6.208893736,
+    "finalTypecheckSeconds": 15.542331441,
+    "allUniqueRecordedLauncherSeconds": 77.130096408,
+    "productionRuntimeBenchmark": false,
+    "scope": "Instrumented research and validation cost; no new uninstrumented runtime claim",
+    "reusedKernelCost": {
+      "evidence": "data/reviews/current/contact-event-schedule.json",
+      "medianMicroseconds": [
+        14.071,
+        14.472
+      ],
+      "medianTargetMicroseconds": 10,
+      "allControlsWorstMicroseconds": 563.758,
+      "fullWorldReplacementMeasured": false
+    }
+  },
+  "receipts": [
+    {
+      "path": "out/solver-value/audit-a6f2e3d/audit-missing-source.receipt.json",
+      "aliases": [
+        "out/solver-value/audit-missing-source.receipt.json"
+      ],
+      "sha256": "b813041db212132af67d34fe8645d0ef647eb5a13a06c3e3c3f621ec974a39a5",
+      "commit": "a6f2e3dcc2b9f5a03e526bdcb748a5f6c45aa5b7",
+      "validationSha256": "a39fe988a499a735b7cf75c7646badc9c2a027d37ff2f427aa0427ffca5327f6",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/solver-value-study.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.9293794179999999
+        }
+      ],
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "trackedChanges": [
+        "scripts/diag/physics/solver-value-study.ts"
+      ]
+    },
+    {
+      "path": "out/solver-value/audit-a6f2e3d/study.receipt.json",
+      "aliases": [],
+      "sha256": "618692cb5e340d7224aef1c79df910f3a2c9b6091ff161d3511c4d07854176e7",
+      "commit": "a6f2e3dcc2b9f5a03e526bdcb748a5f6c45aa5b7",
+      "validationSha256": "b46d9183cdd036ee783b8ecd5a86a22a35beaf352154c72c3312951bce01f89f",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/solver-value-study.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.170067751
+        }
+      ],
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "trackedChanges": []
+    },
+    {
+      "path": "out/solver-value/audit-a6f2e3d/typecheck.receipt.json",
+      "aliases": [],
+      "sha256": "29e3c257db4a598739eb90c0e4fa78291277c4a741c6a8160b7cb6948c7fa275",
+      "commit": "a6f2e3dcc2b9f5a03e526bdcb748a5f6c45aa5b7",
+      "validationSha256": "b46d9183cdd036ee783b8ecd5a86a22a35beaf352154c72c3312951bce01f89f",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 15.016338635
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "trackedChanges": []
+    },
+    {
+      "path": "out/solver-value/continuation-a44091b/study.receipt.json",
+      "aliases": [],
+      "sha256": "c8c85f0970cdd3173761f549aab3c2a578c2903df41cc7a399235c12f7731516",
+      "commit": "a44091bc1d179de514983d956969f917099112a7",
+      "validationSha256": "a249bdf03312cbbc5474408d2b97ee67389b23fc23e84d7efbd02bf0901f55ba",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/solver-value-study.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 6.0190279989999995
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "trackedChanges": []
+    },
+    {
+      "path": "out/solver-value/continuation-a44091b/typecheck.receipt.json",
+      "aliases": [],
+      "sha256": "9b8eae5a3f91e2dd13199ae28e2d3a718955f924fc947cbfa84712af922b5d39",
+      "commit": "a44091bc1d179de514983d956969f917099112a7",
+      "validationSha256": "a249bdf03312cbbc5474408d2b97ee67389b23fc23e84d7efbd02bf0901f55ba",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 15.485546357999999
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "trackedChanges": []
+    },
+    {
+      "path": "out/solver-value/pilot-6554ce3/study.receipt.json",
+      "aliases": [],
+      "sha256": "1dc5666166f6322fd8f33ae9771c22e476279a6fc17ff53129ef3ced1ee71716",
+      "commit": "6554ce3d82b6d371dc70d88f385eb05b7772e07c",
+      "validationSha256": "cb364252f387d97fae663c07bcb2f60163fa1d4ade990b26a3c939225aedd65d",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/solver-value-study.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.155389966
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "trackedChanges": []
+    },
+    {
+      "path": "out/solver-value/pilot-6554ce3/typecheck.receipt.json",
+      "aliases": [],
+      "sha256": "ec9aa06e9520a04840e6fb4558eaed4cd2cfb063c7947a9fdd4c21c102253961",
+      "commit": "6554ce3d82b6d371dc70d88f385eb05b7772e07c",
+      "validationSha256": "cb364252f387d97fae663c07bcb2f60163fa1d4ade990b26a3c939225aedd65d",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 2,
+          "elapsedSeconds": 13.603121104
+        }
+      ],
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "trackedChanges": []
+    },
+    {
+      "path": "out/solver-value/study.receipt.json",
+      "aliases": [],
+      "sha256": "c719115a3848213b496d2e9407163b414364ed183cce374d1cbc259713196c41",
+      "commit": "69716a67faad84b162d4e4541eea49c7ca25abe0",
+      "validationSha256": "7a2b21be79f99b326078134628b77b4d7bb0069826981d9cadd3d4badf6f3218",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/solver-value-study.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 6.208893736
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "trackedChanges": []
+    },
+    {
+      "path": "out/solver-value/typecheck.receipt.json",
+      "aliases": [],
+      "sha256": "9dbf9fd2d7d7791f9c00f5236812024071a27edaf4bedd88be1e652907af1e02",
+      "commit": "69716a67faad84b162d4e4541eea49c7ca25abe0",
+      "validationSha256": "7a2b21be79f99b326078134628b77b4d7bb0069826981d9cadd3d4badf6f3218",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 15.542331441
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "trackedChanges": []
+    }
+  ],
+  "rawResult": {
+    "path": "out/solver-value/result.json",
+    "sha256": "cbefb4f1a29ba7ed4844d300104766da3b359c510023b5ae97a91d978d530d5d"
+  },
+  "retainedAdverse": {
+    "pilot": "out/solver-value/pilot-6554ce3/result.json",
+    "initialTypecheck": "Missing support non-null annotation; corrected without emitted runtime change",
+    "auditFailures": "Carrier attribution initially omitted the existing supportImpulse force path. Preserved failed receipts/log, added observation of that path; no physics changes or tolerance relaxation.",
+    "laterTiteBodyAndRngDivergence": "Unadjudicated, not described as harmless or improvement",
+    "sevenExtractionAssertions": 7,
+    "nineHistoricalPatchFailures": 9,
+    "existingMotorAccuracyAndGeometryHolds": "Unchanged; this is not a gate waiver"
+  },
+  "relatedRunReview": {
+    "commit": "4f90b6428b98224774bbd63a4adad6bb3e354b53",
+    "path": "docs/reviews/helper-contact-adjudication.md",
+    "githubBlob": "28900e33919d3f299737dab807c5ce7c36a6a1bd",
+    "verifiedViaGitHub": true
+  },
+  "limitations": [
+    "Two existing native fixtures, no population or NFL efficacy inference",
+    "Self-refinement, not an independent continuous physical reference",
+    "Whole World tick includes other bodies; no pair-only causal claim",
+    "Native carrier momentum audit is not full pair/support energy validation",
+    "Higher resolution did not demonstrate a football benefit, but this does not rule out benefits for other mechanisms"
+  ],
+  "nextQuestion": "In the saved native Tite first .2s leg-grasp interval, is dominant active reel/passive restraint braking legitimate, a force/work/shared-budget defect, or consequential native timestep error? Preserve the acquired prefix and Under collision control.",
+  "runtimeChanged": false,
+  "productionDefaultsChanged": false,
+  "fullSuiteRun": false,
+  "gamesRun": 0,
+  "baselineChanged": false,
+  "adoptionReady": false
+}
