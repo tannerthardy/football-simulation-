@@ -3,7 +3,8 @@ import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 
-export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = sim.see(a, r)): boolean {
+export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = sim.see(a, r),
+  contactTargets: readonly Agent[] = sim.defense): boolean {
   if (cue.pos.x - sim.los > 2) return false;
   // Pads and hand-contact geometry are observable. Never inspect the route,
   // offensive call or engagement bookkeeping to infer intent.
@@ -11,7 +12,7 @@ export function showsBlock(a: Agent, sim: PlaySim, r: Agent, cue: Perceived = si
   // Speed alone does not erase his low pads or visible contact; otherwise
   // his marker alternates between run fit and coverage as he accelerates.
   if (cue.stance === 'low' && cue.vel.x > 0.4) return true;
-  return sim.defense.some(d => {
+  return contactTargets.some(d => {
     const other = d === a ? { pos: a.pos } : sim.see(a, d);
     const dx = other.pos.x - cue.pos.x, dy = other.pos.y - cue.pos.y;
     const distance = Math.hypot(dx, dy);

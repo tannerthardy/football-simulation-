@@ -268,6 +268,32 @@ describe('holding during a play', () => {
     expect(g.state.possession).toBe('away');
   });
 
+  it('declines the P022-style sack after enforcing a behind-line hold from the previous spot', () => {
+    let qb = '';
+    const { g } = run({
+      state: { yardline: 35 },
+      play: (sim) => {
+        qb = id(sim, 'QB');
+        return { kind: 'pass', yards: -8, stats: { sacked: true, sackedBy: [defender(sim, 'DE').player.id] },
+          penalty: { kind: 'holding', against: 'O', playerId: id(sim, 'LG'), yards: 10, autoFirst: false, spotX: sim.los - 4.04966946421048 } };
+      },
+    });
+    expect(scrimmageLog(g)[0].foul?.accepted).toBe(false);
+    expect(g.state).toMatchObject({ down: 2, distance: 18, yardline: 27 });
+    expect(line(g, qb)).toMatchObject({ att: 0, sacked: 1, sackYds: 8 });
+    expect(box(g, home)).toMatchObject({ passYds: -8, totalYds: -8, penalties: 0 });
+  });
+
+  it('uses the previous spot for a run hold behind the line, with half-distance at that spot', () => {
+    const { g } = run({
+      state: { yardline: 6 },
+      play: (sim) => ({ yards: 3, stats: { rusher: id(sim, 'RB') },
+        penalty: { kind: 'holding', against: 'O', playerId: id(sim, 'LG'), yards: 10, autoFirst: false, spotX: sim.los - 2 } }),
+    });
+    expect(g.state).toMatchObject({ down: 1, distance: 13, yardline: 3 });
+    expect(box(g, home)).toMatchObject({ penaltyYds: 3, penalties: 1, totalYds: 0 });
+  });
+
   it('is declined when the play stopped a third down short', () => {
     const { g } = run({
       state: { down: 3, distance: 10 },
@@ -375,5 +401,36 @@ describe('fumble after a catch', () => {
       ['O', 'handoff', 'fumble'],
       ['D', 'recovery', 'dead'],
     ]);
+  });
+});
+
+describe('actual possession credit', () => {
+  it('credits a retained-snap loss to the QB while keeping the failed exchange visible', () => {
+    let qb = '';
+    const { g } = run({ play: (sim) => {
+      qb = id(sim, 'QB');
+      return { yards: -5, outcome: 'timeout', duration: 25,
+        segments: [{ team: 'O', carrier: qb, how: 'snap', startX: sim.los - 5, endX: sim.los - 5, end: 'dead' }],
+        stats: { rusher: qb, retainedSnap: true } };
+    } });
+    expect(line(g, qb)).toMatchObject({ rushAtt: 1, rushYds: -5, sacked: 0, fumbles: 0 });
+    expect(box(g, home)).toMatchObject({ rushYds: -5, totalYds: -5 });
+    expect(scrimmageLog(g)[0]).toMatchObject({ segments: [{ carrier: qb, how: 'snap' }], stats: { retainedSnap: true } });
+    expect(scrimmageLog(g)[0].text).toContain('(snap retained; no exchange)');
+    expect(scrimmageLog(g)[0].text).not.toContain('?');
+  });
+
+  it('keeps intended target separate while crediting an incidental completion to its actual receiver', () => {
+    let qb = '', target = '', receiver = '';
+    const { g } = run({ play: (sim) => {
+      qb = id(sim, 'QB'); target = id(sim, 'X'); receiver = id(sim, 'RB');
+      return { kind: 'pass', yards: 11,
+        stats: { passer: qb, target, receiver, attempted: true, completed: true, airYards: 7, completedAirYards: -4, yac: 15 } };
+    } });
+    expect(line(g, qb)).toMatchObject({ att: 1, cmp: 1, passYds: 11 });
+    expect(line(g, target)).toMatchObject({ targets: 1, rec: 0 });
+    expect(line(g, receiver)).toMatchObject({ targets: 0, rec: 1, recYds: 11, yac: 15 });
+    expect(scrimmageLog(g)[0].stats).toMatchObject({ target, receiver, airYards: 7, completedAirYards: -4 });
+    expect(scrimmageLog(g)[0].text).toContain('(-4 air, 15 YAC)');
   });
 });

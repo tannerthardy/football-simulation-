@@ -4,27 +4,162 @@ Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- Accepted develop includes merged #12; historical `4ded6b6` stays separate.
-- #63's five narrow corrections are verified, with controller contract approval
-  recorded; final integration/merge decision remains. They are not merged. Reuse its exact receipt; no suite rerun is requested.
+- **Accepted develop: `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`**, merged #63 and prior #12. Historical `4ded6b6` stays separate.
+- #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
+  blocking recognition, bookkeeping and incidental catch acquisition. The actual
+  merge matches the verified publication exactly. Reuse its exact receipt;
+  no suite rerun is requested.
 - The gap correction is portable; earlier zone/Duo work and the rejected
   entry-risk trial remain separate. Its latest information-versus-navigation
   clarification is recorded without promoting it. #34 coverage and #36 awareness retain
   their named blockers/owners. #54 and physics packages remain experimental.
-- New entry-admission work has a real owned-information interface dependency;
-  it stays separate from #63 pending Awareness/Run Game review.
-- PR bookkeeping: 43 finished/superseded PRs closed; 23 remain open after #67
-  arrived. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
-- #66 has seven contract failures to adjudicate; new #67 stays separate from
-  frozen #63. Neither is promoted by cleanup.
+- Entry-admission remains held on the Awareness interface and explicit
+  sampled/unknown-motion contract. Observation-only extraction is a review
+  artifact, not accepted runtime. Its information-only correction stays separate.
+- Prior PR bookkeeping closed 43 finished/superseded PRs, leaving 23 open at
+  that snapshot before #63 merged. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
+- #66 remains held after Run-owner adjudication (mirrored feasible collection
+  still missed; two center-history compatibility questions remain Integration's).
+  #67 pass approach remains separately queued. Neither is included in develop.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
-<details>
-<summary>Historical status retained from accepted develop a1b16e6</summary>
 
-The original source/counts and then-current instructions below are preserved.
-The queue above supersedes their live-status claims.
+Current priorities remain bounded run-entry/collection, P045 coverage technique
+and secondary support, and independent minimal ready controller reviews. Owners
+reconcile only affected accepted contracts at clean checkpoints; see the
+[specific investigation handoff](INTEGRATION.md#current-candidate-2026-10-15).
+No new games, roster screen or shared-suite rerun is requested by this update.
+
+<details>
+<summary>Pre-merge #63 status, tracking priorities and earlier history — preserved</summary>
+
+These are the original dated tracking records. Their then-current accepted pin
+and pending-review statements are historical; the queue above is authoritative.
+
+# Project status and priorities
+
+Updated **2026-10-15 (America/Phoenix)**. This page and [ISSUES](ISSUES.md)
+are the existing shared records, refreshed from published tracking commit
+`0b6c35317c3d89e99265e93a756ece5053e71e77`; earlier content remains below.
+
+## Accepted tree versus pending candidate
+
+- **Accepted:** `develop@a1b16e666a9ee7d1bc1d2aecba141fc535863b24`, merged #12.
+- **Verified candidate, review pending:** [PR #63](https://github.com/tannerthardy/football-simulation-/pull/63),
+  `codex/departed-center-integration`, tested `a862a05`, directly from that tree.
+  Only gap identity plus minimal #57 cadence, #58 blocking recognition,
+  #60 bookkeeping and #61 incidental acquisition. See the
+  [current integration ledger](INTEGRATION.md#current-candidate-2026-10-15).
+  1,720 TS / 145 Python checks, typecheck/build pass. This is not a merge
+  or new reference designation.
+- **Historical comparison:** `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`.
+  The historical profile is unchanged. Current candidates explicitly use
+  44 accepted flags/components=1 and existing World defaults.
+- **Separate:** #54's full experimental stack/games, earlier zone/Duo/detour
+  work on run-lanes, coverage #34, and all experimental physics. No default
+  switch, new baseline designation, branch deletion or forced worker rebase.
+
+## Current priorities
+
+| Priority | Owner | Next decision and evidence |
+| --- | --- | --- |
+| Exact coherent candidate | Integration in this chat | Review the verified narrow five-contribution tree and explicit zone-key contract repair; reuse its one final passing receipt. [Readiness and dependencies](INTEGRATION.md#current-candidate-2026-10-15). |
+| Remaining run execution | Run Game and Do-It-All!, independent scopes | [RUN-007](ISSUES.md#RUN-007): inconsistent lane/spacing pictures, late Will protection and P037 puller collection. P038 defensive recovery and wide-rush cutoff remain separate. Earlier trials are not dependencies merely because they share a branch. |
+| Coverage and awareness follow-up | Catching And Defensive Pursuit / measurement and coaching owners | [PASS-004](ISSUES.md#PASS-004): P045 Quarters approach/secondary support; retain P006/P010 and plausible P003 PA. #58 does not claim to solve this mechanism. |
+
+The author gap evidence is at [badddf4](https://github.com/tannerthardy/football-simulation-/commit/badddf495fa9ff7cfa6579709dec853dc449974e).
+It removes the 2.20-second false redirect while preserving DT's tackle;
+the four-centimeter result difference is not the acceptance measure.
+
+## Ready, held and parked
+
+- **Verified together, ready for required review:** gap-only extraction; #57's minimal
+  cadence condition; isolated #58, #60 and #61. No experimental parent is
+  required. The exact combined receipt is published in the ledger; original
+  focused receipts remain source-specific. Promotion/review remains separate.
+- **Held from this candidate:** #54, earlier zone/Duo/clearance/detour code,
+  rejected late-QB chase, coverage #34, seam/post/QB-pressure bundles,
+  stronger grip/helper/hands experiments. Existing #34 blockers remain blockers.
+- **Research/parked:** prior information/TE/contact/recovery/calibration and
+  repository-retirement items retain their original issue IDs and return
+  conditions below. No blanket new testing assignments are made here.
+
+Use [INTEGRATION](INTEGRATION.md), [ISSUES](ISSUES.md), [WORKBOARD](WORKBOARD.md)
+and [TESTING_COSTS](TESTING_COSTS.md). Contributors link focused receipts;
+only the integration owner runs the exact combined suite. Additional games
+need a named unresolved interaction, not a checklist or another handoff.
+
+<details>
+<summary>Published 2026-10-14 tracking snapshot and older history — preserved</summary>
+
+
+Updated **2026-10-14 (America/Phoenix)**. Start here for the current project;
+older chronological material is preserved in the collapsed section below.
+
+## One place for each question
+
+| Question | Canonical record |
+| --- | --- |
+| What should we work on next? | This page: three active priorities |
+| What bugs, limitations and parked work remain? | [Master issue register](ISSUES.md) |
+| What is integrated, reviewable or blocked? | [Integration ledger](INTEGRATION.md) |
+| Who owns shared files? | [Workboard](WORKBOARD.md) |
+| Where is the evidence? | Linked receipts/reviews, [data guide](../data/README.md) |
+| How much testing is appropriate? | [Testing costs](TESTING_COSTS.md) and [behavior review](BEHAVIOR_REVIEW.md) |
+| What can eventually be cleaned up? | [Preservation/branch record](BRANCHES.md) |
+
+## Accepted reference
+
+- **Development:** `develop` at `a1b16e666a9ee7d1bc1d2aecba141fc535863b24`.
+  [PR #12](https://github.com/tannerthardy/football-simulation-/pull/12) is merged.
+  Its reviewed run-contact component and moving-catch corrections are included.
+- **Comparison history:** `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` remains the
+  historical reference, not the current development tree. [Reproduction](BASELINE.md).
+- **Settings at the development pin:** 44 accepted flags/components=1;
+  center/centered hands, legacy/mean support. Experimental physics remains separate.
+- **Navigation limitation:** GitHub still defaults to `claude/football-sim-engine`.
+  Follow `develop`; changing that default remains [REPO-001](ISSUES.md#REPO-001).
+
+## Three active priorities
+
+| Priority | Owner | Concrete next action | Dependency / boundary |
+| --- | --- | --- | --- |
+| 1. Review honest teammate information — [INFO-001/002](ISSUES.md#INFO-001) | Pass Game/Pursuit awareness owner + Run Game | Review #36's information repair, real rear collision and bounded post-mesh coordination using #35 D01/Y | 37 focused checks/typecheck reported; promotion held. Preserve yielding/contact/capabilities and honest observer initialization. |
+| 2. Independently useful stalk correction — [STALK-001](ISSUES.md#STALK-001) | Integration + Run Game | Decide a #29-only candidate while coverage is parked, then complete required exact verification | Focused review found no blocker, but no standalone full pass/merge is claimed. Coordinate shared API changes; do not adopt diagnostic ancestry. |
+| 3. Bounded grip composition — [PHY-002](ISSUES.md#PHY-002) | Primary Physics | #33's named saved World-interval question: normal/tangent group work and span-energy accounting | Research only; practical cost is still a gate. Keep support history, contact-law promotion and awareness independent. |
+
+These streams may proceed in parallel within their ownership boundaries.
+Architecture owns ordering; Integration owns exact combined verification.
+No row requires a new suite, game campaign or architectural approval by itself.
+
+## Important parked / blocked work
+
+- **Coverage #34:** [COV-001](ISSUES.md#COV-001) seam-gap requirement and
+  [COV-002](ISSUES.md#COV-002) scramble-recording fixture remain unresolved.
+  Preserve the failed receipt. Pass Game is currently helping awareness; return
+  when that owner is available. #34 cannot merge while these are parked.
+- **D01 policy and RT recovery:** [RUN-001](ISSUES.md#RUN-001), after the honest
+  information comparison. Two #32 alternatives are rejected; do not stack more.
+- **TE base:** [RUN-003](ISSUES.md#RUN-003), parked after adverse production transfer.
+- **Live center-hand angular defect:** [PHY-001](ISSUES.md#PHY-001) remains known;
+  the accounting correction is experimental and unpromoted.
+- **Long-hold recovery history:** [PHY-003](ISSUES.md#PHY-003), separate saved-tape work.
+- **Branch cleanup, calibration and richer anatomy:** recorded return conditions
+  in [the register](ISSUES.md); no deletion, tuning campaign or rewrite is assigned.
+
+## Keep the board current
+
+Owners include an issue ID and proposed state change in their normal handoff.
+Architecture/Integration update the master rows on meaningful status changes,
+preserving exact evidence and failures. WORKBOARD records edit ownership, not a
+second competing bug list. Completed diagnostics are not automatically mergeable.
+
+<details>
+<summary>Historical chronological status retained from develop a1b16e6</summary>
+
+The following text retains its original source/counts and then-current guidance.
+It is historical; the reference and priorities above supersede its live-status claims.
 
 # Current status
 
@@ -277,5 +412,9 @@ random-film review, the two-attempt stopping rule and the future untouched exam.
 Research probes stay outside production/default tests; generated films and
 traces go to ignored `out/`. Old large evidence remains recoverable at `663193d`
 through [the retrieval guide](../data/README.md). History was not rewritten.
+
+</details>
+
+</details>
 
 </details>

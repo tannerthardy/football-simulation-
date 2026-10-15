@@ -39,6 +39,8 @@ export interface PlayLog {
   kind: 'run' | 'pass' | 'punt' | 'fg' | 'xp' | 'kickoff' | 'kneel' | 'penalty' | 'two';
   /** Raw play stats for scrimmage plays (analysis/calibration). */
   stats?: PlayResult['stats'];
+  /** Actual possession history; optional for older recordings. */
+  segments?: PlayResult['segments'];
   /**
    * An accepted foul wiped the play out. `stats` then describe what physically
    * happened; nothing from the play enters the box score, and official
@@ -578,6 +580,7 @@ export class Game {
     const text = describe(sim, r, offTeam, defTeam);
     const logEntry = this.entry(r.kind, text, r.turnover ? r.offenseYards : r.yards, ranCall.label, defCall.label);
     logEntry.stats = r.stats;
+    logEntry.segments = r.segments;
     logEntry.outcome = r.outcome;
     logEntry.duration = r.duration;
     logEntry.firstDown = converted;
@@ -753,8 +756,9 @@ export class Game {
    * score of its own, declines when the play already stopped a third or
    * fourth down short, and otherwise takes the penalty unless the play lost
    * nearly as much. Pass plays enforce from the previous spot; running plays
-   * from the spot of the foul when it was behind the end of the run (beyond
-   * the line, the end of the run is the basic spot). A hold in the offense's
+   * from the spot of the foul when it was behind the end of the run. The
+   * previous spot is the enforcement floor (NFL 14-3-6, exceptions 1/3),
+   * including a sack without a forward pass. A hold in the offense's
    * own end zone is a safety.
    */
   private holdingDecision(r: PlayResult, los: number, down: number, dist: number): { playerId: string; yards: number; accepted: boolean; safety: boolean; newYard: number } | null {
@@ -764,7 +768,7 @@ export class Game {
     const foulX = p.spotX ?? los;
     const passPlay = r.stats.attempted;
     const basicX = passPlay ? los : Math.max(los, r.endX);
-    const fromX = passPlay ? los : Math.min(basicX, foulX);
+    const fromX = passPlay ? los : Math.max(los, Math.min(basicX, foulX));
     const safety = foulX <= OWN_GOAL_X;
     const yards = safety ? 0 : Math.min(10, (fromX - OWN_GOAL_X) / 2);
     const newYard = Math.max(0.5, fromX - yards - 10);
@@ -1119,13 +1123,18 @@ function describe(sim: PlaySim, r: PlayResult, off: Team, def: Team): string {
     const qb = name(st.passer ?? sim.qb.player.id);
     if (st.throwaway) t = `${qb} throws it away`;
     else if (st.interceptedBy) t = `${qb} pass INTERCEPTED by ${name(st.interceptedBy)}${st.returnYards ? `, returned ${yds(st.returnYards)}` : ''}`;
-    else if (st.completed) t = `${qb} pass complete to ${name(st.receiver)} for ${yds(r.yards)} (${Math.round(st.airYards ?? 0)} air, ${Math.round(st.yac ?? 0)} YAC)${tk}`;
+    else if (st.completed) {
+      const air = st.completedAirYards;
+      const depth = air === undefined ? `${Math.round(st.airYards ?? 0)} intended air` : `${Math.round(air)} air`;
+      t = `${qb} pass complete to ${name(st.receiver)} for ${yds(r.yards)} (${depth}, ${Math.round(st.yac ?? 0)} YAC)${tk}`;
+    }
     else if (st.dropped) t = `${qb} pass to ${name(st.target)} DROPPED`;
     else if (st.passDefendedBy) t = `${qb} pass to ${name(st.target)} broken up by ${name(st.passDefendedBy)}`;
     else if (!st.attempted) t = `${qb} pass play — ${r.outcome}`;
     else t = `${qb} pass to ${name(st.target)} incomplete`;
   } else {
     t = `${name(st.rusher)} runs for ${yds(r.yards)}${tk}`;
+    if (st.retainedSnap) t += ' (snap retained; no exchange)';
     if (st.brokenTackles) t += `, breaks ${st.brokenTackles} tackle${st.brokenTackles > 1 ? 's' : ''}`;
   }
   if (st.fumbledBy) t += `, FUMBLE by ${name(st.fumbledBy)}${st.fumbleLost ? ` recovered by ${def.abbr}` : ', recovered by offense'}`;

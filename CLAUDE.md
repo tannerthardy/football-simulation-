@@ -23,8 +23,9 @@ do not reset/clean another checkout or force-push. Primary retains physics
 promotion; main and legacy PRs #1/#2 remain outside routine integration authority.
 
 Integration in this chat owns queue triage, minimal extraction and exact combined
-verification. Contributors supply compatible focused receipts. Current #63 is
-verified and review-pending, not adopted. See the queue rather than an old task
+verification. Contributors supply compatible focused receipts. #63 is accepted
+and merged; its actual develop pin and compatible receipt are in the queue.
+See the queue rather than an old task
 paragraph for current pins, included code, flags and remaining decisions.
 Historical comparison, GitHub default, experimental promotion and merge authority
 remain separate. This instruction change does not grant additional authority.

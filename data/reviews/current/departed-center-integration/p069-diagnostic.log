@@ -1,0 +1,14 @@
+Profile candidate: run-game-2026-10-13, commit a1b16e666a9ee7d1bc1d2aecba141fc535863b24, source 2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad
+Running node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/shotgun-exchange.test.ts -t P069
+
+ RUN  v3.2.4 /workspace/football-gap-integration
+
+ ✓ |core| test/shotgun-exchange.test.ts (5 tests | 4 skipped) 760ms
+   ✓ saved shotgun exchange coordination > P069 preserves its complete current-source trajectory against only the cadence rollback  758ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  18:20:57
+   Duration  1.82s (transform 640ms, setup 0ms, collect 857ms, tests 760ms, environment 0ms, prepare 63ms)
+
+Validation receipt: out/controller-readiness/p069-diagnostic.json; exit 0

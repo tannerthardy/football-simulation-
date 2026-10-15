@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { HASH_LEFT_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
@@ -8,7 +8,8 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { DefensivePlayCall, OffensivePlayCall } from '../src/playbook/types.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { CoverageScouting } from '../src/sim/qbmind.js';
-import { ScoutingReport, gameSense, leaguePassLogOdds, type SnapContext } from '../src/sim/recognition.js';
+import { Recognition, ScoutingReport, gameSense, leaguePassLogOdds, type SnapContext } from '../src/sim/recognition.js';
+import type { Perceived } from '../src/sim/perception.js';
 
 const home = generateTeam(new Rng(31), 'Home', 'HOM', { strength: 0.6 });
 const away = generateTeam(new Rng(32), 'Away', 'AWY', { strength: 0.6 });
@@ -52,5 +53,47 @@ describe('expectations and learning', () => {
     for (let i = 0; i < 20; i++) scout.observe(call);
     expect(scout.frequencies().cover1).toBeGreaterThan(base + 0.3);
     expect(scout.disguiseRate()).toBeGreaterThan(0.5);
+  });
+});
+
+describe('receiver blocking evidence', () => {
+  function pictureRead(kind: 'slow' | 'low-pads' | 'contact', hidden = false) {
+    const sim = new PlaySim({ offense, defense,
+      offCall: { formation, flip: false, kind: 'pass', pass: PASS_BY_ID.hitches, label: 'picture' },
+      defCall, los: 40, ballY: HASH_LEFT_Y, firstDownX: 50, seed: 77 });
+    const d = sim.slot('CB_W')!, wr = sim.slot('X')!;
+    d.body.pos = { x: 42, y: 6 };
+    const pictures = new Map(sim.offense.map(o => [o, {
+      pos: { x: sim.snapX[o.idx], y: 25 }, vel: { x: 0, y: 0 },
+      stance: null, facing: 0, age: .25,
+    } as Perceived]));
+    pictures.set(sim.qb, { pos: { x: 36.4, y: 25 }, vel: { x: 0, y: 0 }, stance: null, facing: 0 });
+    pictures.set(wr, { pos: { x: kind === 'contact' ? 41.4 : 39, y: 6 },
+      vel: { x: kind === 'low-pads' ? 1 : 0, y: 0 },
+      stance: kind === 'low-pads' ? 'low' : null, facing: 0, age: .25 });
+    for (const o of sim.offense) if (o !== wr && o !== sim.qb) pictures.get(o)!.pos.y = 35;
+    vi.spyOn(sim, 'see').mockImplementation((_a, target) => {
+      const p = pictures.get(target);
+      if (!p) throw Error('Receiver recognition must not query remote teammate contact');
+      return structuredClone(p);
+    });
+    if (hidden) {
+      wr.body.pos = { x: 80, y: 40 }; wr.body.vel = { x: 9, y: -2 }; wr.stance = 'low';
+      for (const other of sim.defense) if (other !== d) other.body.pos = { x: 39, y: 6 };
+      sim.offCall = { ...sim.offCall, kind: 'run', pass: undefined, run: RUN_BY_ID.oz_strong };
+    }
+    const recognition = new Recognition(d, sim, 0);
+    for (let k = 0; k < 14; k++) { sim.t = .7 + k * sim.dt; recognition.update(d, sim); }
+    return { read: recognition.read, probability: recognition.pPass() };
+  }
+  it('does not declare run from a nearby slow upright receiver', () => {
+    expect(pictureRead('slow').read).not.toBe('run');
+  });
+  it.each(['low-pads', 'contact'] as const)('retains observable blocking evidence: %s', kind => {
+    expect(pictureRead(kind).read).toBe('run');
+    expect(pictureRead(kind).probability).toBeLessThan(pictureRead('slow').probability);
+  });
+  it.each(['slow', 'low-pads', 'contact'] as const)('uses the acquired picture, independent of hidden call/motion: %s', kind => {
+    expect(pictureRead(kind, true)).toEqual(pictureRead(kind));
   });
 });

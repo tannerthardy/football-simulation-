@@ -4,16 +4,18 @@
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
 retaining every branch and source/evidence history. [Exact dispositions](INTEGRATION.md#pr-dispositions).
-#63 now has controller contract approval; #66/#67 remain separately scoped.
+#63 is accepted and merged as develop `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`;
+#66/#67 remain separately scoped.
 Unclear handover/attention/callback dispositions remain with their owners.
 No contributor must rerun a suite, rebase, stop work or move a branch for this.
 
 Integration in this chat owns [the shared queue](INTEGRATION.md), exact candidate
 verification and accepted-pin publication under existing authority. This
-separate documentation branch `codex/integration-queue` starts at accepted
-develop `a1b16e6`; it changes agent/reference/navigation records only. PR #63
-remains an independently verified, review-pending runtime candidate. No source,
-test, flag, dependency, worker branch or receipt is changed by this doc pass.
+documentation branch `codex/integration-queue` now includes accepted #63 through
+a normal merge of develop, preserving both documentation histories. Its diff
+against accepted develop changes agent/reference/navigation records and adds a
+merge receipt only. Source, tests, flags, dependencies and existing receipts
+are identical to accepted develop; no worker branch is moved.
 
 Run Game retains exchange and PassProtector/cutoff; Do-It-All! retains run
 blocking/climb and carrier/spacing navigation; Catching/Pursuit owns recognition
@@ -26,7 +28,36 @@ Read [safe checkpoint/handoff guidance](INTEGRATION.md#agent-workflow). Existing
 completed-stage and historical claims below retain their own stage/evidence;
 use the current queue and affected owner for live branch/readiness information.
 
-## Current controller integration preparation
+## Accepted #63 and current follow-up
+
+| Item | Owner / boundary | State |
+| --- | --- | --- |
+| #63 integration | Integration: exact accepted pin, source/test/settings compatibility and publication | Complete. Actual merge equals reviewed publication; existing 1,720-TS/145-Python/typecheck/build receipt reused. No new simulations. |
+| #65 documentation reconciliation | Integration: README, agent guidance, existing integration/status/issues/workboard records and new merge receipt | Preserve newer queue/approval/disposition content and #63's complete detailed history. No additional runtime changes or new merge authority. |
+| Follow-on run entry | Do-It-All!: carrier admission; Awareness: acquired information schema; Integration: PlaySim composition | Held on sampled/unknown-motion contract and explicit observation-only staging review. P032 remains censored at3s; information correction is independent. |
+
+See [affected investigations and exact pin](INTEGRATION.md#current-candidate-2026-10-15).
+
+<details>
+<summary>Pre-merge #63 preparation ownership — completed stage, preserved</summary>
+
+## Departed-center gap integration — 2026-10-15
+
+| Item | Owner | Branch / reference | Boundary | Status |
+| --- | --- | --- | --- | --- |
+| Gap identity and earliest coherent candidate | Codex integration owner in this chat, explicitly authorized by user | `codex/departed-center-integration` from accepted `a1b16e666a9ee7d1bc1d2aecba141fc535863b24` | Three-line gap fix plus independently reviewed minimal #57 cadence, #58 recognition, #60 bookkeeping and #61 acquisition deltas; directly affected fixtures/tests and existing status/issue/integration records. | Verified at `a862a05`: 1,720 TS/145 Python/typecheck/build pass. [Exact ledger and receipt](INTEGRATION.md#current-candidate-2026-10-15). Reuse source evidence `badddf4`, including rejected unpaired trials and retained DT tackle. Exclude all earlier zone/Duo/detour work, #54 ancestry and experimental physics. One exact combined verification only when coherent. Preserve review and gap's existing conditional merge authority; no broader merge/reference/default/deletion authority inferred. |
+
+Latest author-only handoff: [portable gap branch and rejected entry-risk trial](https://github.com/tannerthardy/football-simulation-/blob/4da1c3aa82352e9dc4a953f11be494626b96d8eb/docs/WORKBOARD.md).
+The portable gap implementation is byte-identical to our three-file extraction.
+The rejected trial remains outside this candidate; Run Game retains pass
+protection/cutoff and Do-It-All! retains run-blocking/climb and carrier/spacing
+navigation. This record coordinates boundaries without moving worker branches.
+
+
+</details>
+
+## Completed #12 controller integration preparation — historical
+
 
 This bounded ownership row records the current reviewed candidate. Original
 ownership rows below retain their approved-reference content and evidence;
