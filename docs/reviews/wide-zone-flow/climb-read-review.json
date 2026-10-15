@@ -1,0 +1,220 @@
+{
+  "kind": "read-only saved-state controller/own-World diagnostic; no native continuation",
+  "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+  "sourceSha256": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+  "captures": [
+    "out/wide-zone-flow/circle.json.gz",
+    "out/wide-zone-flow/fresh-circle.json.gz"
+  ],
+  "parentCaptures": [
+    "/workspace/wide-zone-help-read/out/wide-zone-flow/before.json.gz",
+    "/workspace/wide-zone-help-read/out/wide-zone-flow/fresh-before.json.gz"
+  ],
+  "method": {
+    "ownBody": "Copy saved beforeBodies[actor], preserve all profile/physical/support fields; restore support.since:null as -Infinity. No remote bodies, joints or RNG in diagnostic World.",
+    "opponent": "Use latest legacy-see cue at queried saved read; pos already estimated at query clock. Carry acquired velocity once from this clock. No extra age propagation and no actual future opponent state used for decisions/forecast.",
+    "held": "previewFreeMovement(saved own body, recorded requested Intent, t,26,center)",
+    "recomputedHeldMeet": "26 ordinary .05-second World steps. At each tick issue movingArrivalVelocity toward saved climbRead.meet with saved seenVel, current own capacity, radius .1, throughSpeed=saved through; ordinary facing to saved meet. No new target reads.",
+    "workingReach": "own radius + public LB radius + .1 + own measured armIn/36*.45",
+    "sweep": "For weak RT .90, 5 own-World .05 ticks per command. Compute continuous minimum segment clearance against acquired DT CV using full summed profile radii .6618181818181819. These circular forecasts are safety estimates, not a replacement physical contact law."
+  },
+  "cost": {
+    "ordinaryOwnWorldSteps": 587,
+    "breakdown": "11 read states * (26 held +26 recomputed) +3 commands *5 prefix ticks",
+    "nativePlays": 0,
+    "newCoupledContinuations": 0,
+    "diagnosticCommandWallSeconds": [
+      1.6,
+      1.2
+    ],
+    "runtimeNote": "Wall times returned by exec; include process/import/output overhead and are not isolated solver CPU times. Physics substep count was not collected."
+  },
+  "acquiredCVResults": [
+    {
+      "case": "fresh C",
+      "t": 0.85,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 1.25,
+      "recomputedFirstReachAfter": 1.25,
+      "heldMinReachMargin": -0.0948468394690134,
+      "recomputedMinReachMargin": -0.27312022436690586
+    },
+    {
+      "case": "fresh C",
+      "t": 1.05,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 0.9,
+      "recomputedFirstReachAfter": 0.9
+    },
+    {
+      "case": "fresh C",
+      "t": 1.25,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 0.55,
+      "recomputedFirstReachAfter": 0.55
+    },
+    {
+      "case": "fresh C",
+      "t": 1.45,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 0.3,
+      "recomputedFirstReachAfter": 0.3
+    },
+    {
+      "case": "fresh C",
+      "t": 1.65,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 0.25,
+      "recomputedFirstReachAfter": 0.25
+    },
+    {
+      "case": "fresh C",
+      "t": 1.85,
+      "attainableLabel": false,
+      "heldMinReachMargin": 0.31576453993455544,
+      "recomputedMinReachMargin": 0.31589011252893817
+    },
+    {
+      "case": "weak RT",
+      "t": 0.9,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 0.95,
+      "recomputedFirstReachAfter": 0.95,
+      "heldMinReachMargin": -0.3206515881812593,
+      "recomputedMinReachMargin": -0.7820454938417216
+    },
+    {
+      "case": "weak RT",
+      "t": 1.15,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 0.65,
+      "recomputedFirstReachAfter": 0.65
+    },
+    {
+      "case": "weak RT",
+      "t": 1.4,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 0.65,
+      "recomputedFirstReachAfter": 0.65
+    },
+    {
+      "case": "weak RT",
+      "t": 1.65,
+      "attainableLabel": true,
+      "heldFirstReachAfter": 1.05,
+      "recomputedFirstReachAfter": 1.0
+    },
+    {
+      "case": "weak RT",
+      "t": 1.9,
+      "attainableLabel": false,
+      "heldMinReachMargin": 0.2465506022240893,
+      "recomputedMinReachMargin": 0.1681515250615231
+    }
+  ],
+  "weakDeparture": {
+    "t": 0.9,
+    "ownPos": {
+      "x": 39.984064423108585,
+      "y": 24.794730850145232
+    },
+    "ownVel": {
+      "x": -0.030192911384909597,
+      "y": 1.2540430260081028
+    },
+    "acquiredDT": {
+      "pos": {
+        "x": 40.152911578441994,
+        "y": 25.441627811235605
+      },
+      "vel": {
+        "x": -1.5179755894948825,
+        "y": 0.49277612172556173
+      },
+      "age": 0.25
+    },
+    "initialCircularClearance": 0.006751216323959142,
+    "commands": [
+      {
+        "kind": "recorded climb",
+        "vel": {
+          "x": 4.73423342741334,
+          "y": -0.6863026964875383
+        },
+        "minClearance": -0.10547274354986091,
+        "atAfter": 0.15,
+        "endOwnPos": {
+          "x": 40.15836058102445,
+          "y": 25.073322941024262
+        }
+      },
+      {
+        "kind": "ordinary gather control",
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "minClearance": -0.08101635399222251,
+        "atAfter": 0.15
+      },
+      {
+        "kind": "continue lateral control",
+        "vel": {
+          "x": 0,
+          "y": 3
+        },
+        "minClearance": -0.2230624352322002,
+        "atAfter": 0.25
+      }
+    ],
+    "nativeActualDTImpulses": [
+      {
+        "t": 0.9,
+        "impulse": 79.8735422029471
+      },
+      {
+        "t": 0.95,
+        "impulse": 18.725567076216358
+      },
+      {
+        "t": 1,
+        "impulse": 15.65040286770637
+      },
+      {
+        "t": 1.05,
+        "impulse": 9.764549494353139
+      }
+    ],
+    "proofLimit": "All three tested requests remain unsafe under acquired DT coast. No safe release alternative or improved coupled load is demonstrated. Actual hidden DT state appears only in descriptive native outcome checks."
+  },
+  "nativeMisses": {
+    "freshC": {
+      "firstMaterialApproachDivergence": 0.75,
+      "newRequest": {
+        "x": -0.518355419378926,
+        "y": -7.520081181104978
+      },
+      "acquiredDLVel": {
+        "x": -1.4094181196838558,
+        "y": 0.7154109314655436
+      },
+      "climbTimeBoth": 0.85,
+      "parentClimbEntryVx": 0.6798,
+      "candidateClimbEntryVx": 0.1784483817088301,
+      "minimumActualLBDistance": 1.2994566051103513,
+      "minimumAt": 2.2,
+      "end3Distance": 1.5909114289673763,
+      "interpretation": "First-level fit changes entry momentum, then LB accelerates laterally beyond acquired CV. This is causal divergence, not proof that the new fit request itself is wrong."
+    },
+    "weakRT": {
+      "climbTimeBoth": 0.9,
+      "parentClimbEntryVx": 1.6838,
+      "candidateClimbEntryVx": -0.030192911384909597,
+      "minimumActualLBDistance": 1.9839092244215204,
+      "minimumAt": 1.9,
+      "end3Distance": 2.6009935196039926,
+      "interpretation": "Brief actual DT contact delays departure; subsequent acquired LB lateral speed grows beyond CV estimates. Late spacing attenuation begins2.50 after pursuit is already unattainable in tested forecasts."
+    }
+  },
+  "conclusion": "Retain corrected circle/mesh scope. No demonstrated need to alter helper recovery, read cadence, vision or memory. Joined release/navigation is a demonstrated remaining local deficiency: line-to-goal clearance can approve while own residual motion intersects acquired near DL. Next bounded correction would validate achieved departure prefixes against acquired DL+keeper and preserve honest blocked/contact outcomes; this diagnostic does not establish a safe alternative or recovered LB load."
+}

@@ -22,6 +22,17 @@ or forced lateral success. No native simulations until root freezes every
 source/test/script/config input and HEAD. Start with matched mechanism and
 real opposing controls, then short natural all-22 continuations/openings.
 
+Completed this continuation at tested code `0336414`, runtime `afb8a307…`:
+active-combination moving feet, continuous contact projection, corrected
+contact-circle depth, bounded acquired local DL response and moving mesh /
+installed QB fake. Final56 focused checks and typecheck pass; all3 Ace openings
+and the frozen Tite front run naturally to3s/earlier whistle with0 teammate
+impacts. Recommend adopting the bounded correction; second-level misses and
+finite delayed pursuit remain explicit. The complete departure experiment
+`f10eac9` is rejected and absent from runtime after weak RT/Y impacts.
+[Final replay, load/position evidence, exact pins and cost](reviews/wide-zone-flow/README.md).
+No baseline promotion or broader perception/memory change.
+
 ## Wide-zone football help/read correction, 2026-10-14
 
 The user renewed end-to-end ownership: study actual wide-zone coaching/film,

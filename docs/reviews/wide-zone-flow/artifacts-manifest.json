@@ -1,0 +1,395 @@
+{
+  "protocol": "wide-zone-flow-portable-artifacts-v1",
+  "codec": {
+    "path": "scripts/diag/wz-flow-evidence.py",
+    "sha256": "837a6de1698a49bc93a3d29ab30edddc8a753f319dcc26e050ab53e8d2997708",
+    "dependencies": "Python standard library only"
+  },
+  "selectionContract": "Core captures preserve all22 before/after bodies, raw/final requests, behavior/engagement/joint state, pending impulses, full StepReport, all consumed cues, actor profiles, installed information and original state/information hashes. Only listed debug duplication and observer/RNG snapshots are omitted. They reconstruct offline reports/replay, not a native restart. Selected historical diagnostic frames retain every original frame field and cue history through the last selected entry.",
+  "losslessness": "Reference-table encoding reconstructs exact compact JSON of all retained fields, including primitive types/numbers and key order. SHA256 of the original source capture gzip is distinct from retained compact JSON SHA256. Original whitespace is not retained.",
+  "artifacts": [
+    {
+      "label": "before",
+      "path": "docs/reviews/wide-zone-flow/before.jsonrefs.gz",
+      "gzipBytes": 2693464,
+      "sha256": "226de8fa2fda759ab064048c493056561369f1d4cd9067b054e83381b8faac51",
+      "encoding": "json-container-table-v1",
+      "mode": "core",
+      "rawSource": {
+        "path": "/workspace/wide-zone-help-read/out/wide-zone-flow/before.json.gz",
+        "sha256": "48af73e0e95817f48c566f2d7369ac7783c3b044047349012378aae96f95f670",
+        "revision": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+        "runtime": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96",
+        "protocol": "wide-zone-opening-capture-v1"
+      },
+      "retainedJsonSha256": "f660dcfc4cd4dc633cb5c79adb48d9c70dbd9e2e625d42a0723321b559c48786",
+      "omittedFields": [
+        "panel[].writes",
+        "panel[].methods",
+        "panel[].phases",
+        "panel[].frames[].observerState",
+        "panel[].frames[].rngBefore"
+      ],
+      "encodeRoundTripExact": true,
+      "decodeDigestVerified": true,
+      "encodeSeconds": 10.626655183001276,
+      "exactOriginalVsDecodedMeasurements": [
+        {
+          "case": "uc12-wz-s3",
+          "physicalRows": 420,
+          "exactMetricsSha256": "5ef11f8f3a57ad0dcec171559849c1c4e72688afad972f57c9d24cc5d3713e04",
+          "opponentLoadSha256": "6b473efea2ac9c7cd72e5c5324897606b181604aab3d263433ab01fd5e16bdda",
+          "consumedCueSha256": "ee9762e0eb3b2907eeda1e471b34ae0b6272c8fce606bbb6917856a05f4ae58f",
+          "stateHashCount": 60,
+          "informationHashCount": 60,
+          "initializedInformationSha256": "618df6ee332b0689ea90ad3e58cd5ad7a537ceaa32bcb054158343c121cec556"
+        },
+        {
+          "case": "uc12-wz-s3-mirror",
+          "physicalRows": 420,
+          "exactMetricsSha256": "58ae5270ae8416d13572232294a7716ddbdffe197caee56a0d4b282904906f15",
+          "opponentLoadSha256": "6b5dddcaff4aa53139c3151161963db74ccaef86265cbc068de596765a4f4f88",
+          "consumedCueSha256": "0d3deb25b4a8d1ec694ae62103a00d881e884a32b30da77c2c7267355c434c9b",
+          "stateHashCount": 60,
+          "informationHashCount": 60,
+          "initializedInformationSha256": "01ddafd0cea2de888c335935e85a7f3e95eff5a7e1218880c9a2d559a88109c9"
+        },
+        {
+          "case": "uc12-wz-weak-s3",
+          "physicalRows": 420,
+          "exactMetricsSha256": "a4b62b53e7633d0ab1b5ec0be18ede2fc44d4af9c019debe4d3561f557aab90f",
+          "opponentLoadSha256": "416a547f7bc521825058e73f008957a0f0171e2ee3b15c6971fe10f639c6fe3c",
+          "consumedCueSha256": "7910ea7f9f748c0e6f4f8ffa40f6e5a6fb003db67cecfef57153c87e72922972",
+          "stateHashCount": 60,
+          "informationHashCount": 60,
+          "initializedInformationSha256": "2436901dbd8b9c4d1912ae9023fc9a237bade769d2f1a36baadea7b64c2340b4"
+        }
+      ]
+    },
+    {
+      "label": "final",
+      "path": "docs/reviews/wide-zone-flow/final.jsonrefs.gz",
+      "gzipBytes": 2803697,
+      "sha256": "453928967be100cd7a01087e639ec7f064dd981349f5fc7d7642f8035f74120d",
+      "encoding": "json-container-table-v1",
+      "mode": "core",
+      "rawSource": {
+        "path": "/workspace/wide-zone-flow/out/wide-zone-flow/circle.json.gz",
+        "sha256": "483a0ccb600b6d7038ba3672278b14be200f571fc1ac50d8c977f6fa7b2df87f",
+        "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+        "runtime": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+        "protocol": "wide-zone-opening-capture-v1"
+      },
+      "retainedJsonSha256": "43e1b5e0341deca46d45f926886661c8a34ea1c4d3db78ae26c984782e927816",
+      "omittedFields": [
+        "panel[].writes",
+        "panel[].methods",
+        "panel[].phases",
+        "panel[].frames[].observerState",
+        "panel[].frames[].rngBefore"
+      ],
+      "encodeRoundTripExact": true,
+      "decodeDigestVerified": true,
+      "encodeSeconds": 10.570544332000281,
+      "exactOriginalVsDecodedMeasurements": [
+        {
+          "case": "uc12-wz-s3",
+          "physicalRows": 420,
+          "exactMetricsSha256": "db0e1f9eb1ca97d0d383b2cd5da430c8700b9e09da239803e74341e2293854ee",
+          "opponentLoadSha256": "90acd1e98a62c5774579e74c592228d295f0f99e539a5d38dc25327dcf0a47c2",
+          "consumedCueSha256": "d63ad4f724744aaa707c26815bfddbe80e812941d0c431c3e877a5a7deb52ceb",
+          "stateHashCount": 60,
+          "informationHashCount": 60,
+          "initializedInformationSha256": "618df6ee332b0689ea90ad3e58cd5ad7a537ceaa32bcb054158343c121cec556"
+        },
+        {
+          "case": "uc12-wz-s3-mirror",
+          "physicalRows": 399,
+          "exactMetricsSha256": "c422c820546d337a691a0c815a5225f6b7b494347046b302c41e8af69eff5920",
+          "opponentLoadSha256": "bdf89872e79273bddf513efef66f162c87dd8f1e9346856d17de78e6345d6824",
+          "consumedCueSha256": "ada32f1a5a064289fc5edc7c7b8c5bd999db07385c6ae66855154a24bd6dfa8c",
+          "stateHashCount": 57,
+          "informationHashCount": 57,
+          "initializedInformationSha256": "01ddafd0cea2de888c335935e85a7f3e95eff5a7e1218880c9a2d559a88109c9"
+        },
+        {
+          "case": "uc12-wz-weak-s3",
+          "physicalRows": 420,
+          "exactMetricsSha256": "c715b21c7f7199e43611067ad5aabae2ab847fd31ae449c71a06aab58187ee2d",
+          "opponentLoadSha256": "4b6fea88df0d531b60755c491002ce578cfccad1808f82659f463e800878d7ad",
+          "consumedCueSha256": "77869382b183aa51cbd66f03139b1109419a5dbb6da4f03cc7cc93154535466e",
+          "stateHashCount": 60,
+          "informationHashCount": 60,
+          "initializedInformationSha256": "2436901dbd8b9c4d1912ae9023fc9a237bade769d2f1a36baadea7b64c2340b4"
+        }
+      ]
+    },
+    {
+      "label": "fresh-before",
+      "path": "docs/reviews/wide-zone-flow/fresh-before.jsonrefs.gz",
+      "gzipBytes": 1026571,
+      "sha256": "12fcb06f2d269a31c27292b0fac7038f1bfe018299743f9d19e402e9bf6ff492",
+      "encoding": "json-container-table-v1",
+      "mode": "core",
+      "rawSource": {
+        "path": "/workspace/wide-zone-help-read/out/wide-zone-flow/fresh-before.json.gz",
+        "sha256": "334e1327afdcf0fc47495999f0b7f5513a42de2653b519b92edf0f1d0638b1ee",
+        "revision": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+        "runtime": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96",
+        "protocol": "wide-zone-opening-capture-v1"
+      },
+      "retainedJsonSha256": "8b26d8030579ac02b4167ee0417b30aabdc49e3f9d044af4ea4b5eab011696f1",
+      "omittedFields": [
+        "panel[].writes",
+        "panel[].methods",
+        "panel[].phases",
+        "panel[].frames[].observerState",
+        "panel[].frames[].rngBefore"
+      ],
+      "encodeRoundTripExact": true,
+      "decodeDigestVerified": true,
+      "encodeSeconds": 3.0932861560013407,
+      "exactOriginalVsDecodedMeasurements": [
+        {
+          "case": "uc12-wz-s3-tite-fresh",
+          "physicalRows": 420,
+          "exactMetricsSha256": "398ebab69812ebca7891c46abccb64953222e42a1d9950d025d1fe7d6f82cc56",
+          "opponentLoadSha256": "4ebcb04c40f5d2a72d1490ee5a13368068eaf884fa519265bff193a7aa339ec2",
+          "consumedCueSha256": "c6ee3e63763eacc44495074ad89cfba432a852bbbeebc32a73c6bcd649643b77",
+          "stateHashCount": 60,
+          "informationHashCount": 60,
+          "initializedInformationSha256": "5989eff5b2f5beababc6c5c633d69f29bc4682cf3980221421f23cb1111390d0"
+        }
+      ]
+    },
+    {
+      "label": "fresh-final",
+      "path": "docs/reviews/wide-zone-flow/fresh-final.jsonrefs.gz",
+      "gzipBytes": 1022516,
+      "sha256": "220939d829383eab4ef10e85eb21787d6b5d16c4525fe481cc6c5956cef39094",
+      "encoding": "json-container-table-v1",
+      "mode": "core",
+      "rawSource": {
+        "path": "/workspace/wide-zone-flow/out/wide-zone-flow/fresh-circle.json.gz",
+        "sha256": "9368b03d758543f1440e60d56e22930c67e1a3ac04347b9d62e8107367f2f069",
+        "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+        "runtime": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+        "protocol": "wide-zone-opening-capture-v1"
+      },
+      "retainedJsonSha256": "d53b3a641d59d12d8543782ba0d8a58653ac05287f425e769a035a1696bfbecb",
+      "omittedFields": [
+        "panel[].writes",
+        "panel[].methods",
+        "panel[].phases",
+        "panel[].frames[].observerState",
+        "panel[].frames[].rngBefore"
+      ],
+      "encodeRoundTripExact": true,
+      "decodeDigestVerified": true,
+      "encodeSeconds": 3.3449281490011344,
+      "exactOriginalVsDecodedMeasurements": [
+        {
+          "case": "uc12-wz-s3-tite-fresh",
+          "physicalRows": 420,
+          "exactMetricsSha256": "59233994aaba73820157272efa5bacba3b544c918de76116fd6f7d7736e08783",
+          "opponentLoadSha256": "c34714d2617ecb69e0e2f346fde4d51bbc2c0411fa26e81fd5f8db4c6c01396e",
+          "consumedCueSha256": "2395ba1cb5d00cd28615beb527ccf0cae6ecd4687fe70fb77cabb362879b48b8",
+          "stateHashCount": 60,
+          "informationHashCount": 60,
+          "initializedInformationSha256": "5989eff5b2f5beababc6c5c633d69f29bc4682cf3980221421f23cb1111390d0"
+        }
+      ]
+    },
+    {
+      "label": "exploratory-witnesses",
+      "path": "docs/reviews/wide-zone-flow/exploratory-witnesses.jsonrefs.gz",
+      "gzipBytes": 1112289,
+      "sha256": "8d7ebf151bd6bf72cfa44155952569083bd465130aa243e7e231224c9ed2773a",
+      "encoding": "json-container-table-v1",
+      "mode": "full",
+      "rawSource": {
+        "path": "/workspace/wide-zone-flow/out/wide-zone-flow/packaging/exploratory-witnesses.json",
+        "sha256": "2b203b7ea847fb78898d1908bd173e176fcd4afbf3a551a01bb66bda94cbb3f7",
+        "revision": null,
+        "runtime": null,
+        "protocol": "wide-zone-selected-diagnostics-v1"
+      },
+      "retainedJsonSha256": "2b203b7ea847fb78898d1908bd173e176fcd4afbf3a551a01bb66bda94cbb3f7",
+      "omittedFields": [],
+      "encodeRoundTripExact": true,
+      "decodeDigestVerified": true,
+      "encodeSeconds": 5.622966355998869,
+      "originalCaptures": [
+        {
+          "label": "first-loaded-flow-42c7095",
+          "status": "Exploratory first loaded-footwork candidate; selected Y diagnostics only, not a final claim.",
+          "rawCapture": {
+            "path": "/workspace/wide-zone-flow/out/wide-zone-flow/first.json.gz",
+            "sha256": "c631e1e0d802854b44c687fe3b03d7d56f51491a534caca97520f83c3ee5fa3b",
+            "gzipBytes": 10487002
+          },
+          "revision": "42c7095c9519e89a23cc17861d85cec6e008c744",
+          "runtime": "42ce9955360fbda8a469615e9e3976d34ad5cfd504c74393c1bcf65f188e36d3",
+          "selectedCases": [
+            {
+              "input": {
+                "id": "uc12-wz-s3",
+                "concept": "wz_strong",
+                "kind": "run",
+                "seed": 3,
+                "flip": false,
+                "o": 31,
+                "d": 32,
+                "front": "over",
+                "formation": "ace_12"
+              },
+              "selection": {
+                "requestedEntryTimes": [
+                  1.15,
+                  1.4,
+                  1.65,
+                  1.9
+                ],
+                "originalFrameIndices": [
+                  23,
+                  28,
+                  33,
+                  38
+                ],
+                "originalFrameCount": 60,
+                "originalCueCount": 27292,
+                "cuePolicy": "Original contiguous cue prefix through final selected entry time; original method cueFrom/cueTo indices remain valid."
+              }
+            }
+          ]
+        },
+        {
+          "label": "rejected-route-f10eac9",
+          "status": "REJECTED: four weak RT\u2013Y impacts and fresh misses; route/departure experiment not retained.",
+          "rawCapture": {
+            "path": "/workspace/wide-zone-flow/out/wide-zone-flow/final.json.gz",
+            "sha256": "74a07cf1b300267b6ffa29f40b8fdfea652924ac52d0cca5dfd327982be268cb",
+            "gzipBytes": 10750676
+          },
+          "revision": "f10eac973094cc81dd10dfb98f78f8a9010fd22d",
+          "runtime": "094fd6d0e4436b010916579d17b5c705f057afd5911163cbf9122a79552749f4",
+          "selectedCases": [
+            {
+              "input": {
+                "id": "uc12-wz-weak-s3",
+                "concept": "wz_weak",
+                "kind": "run",
+                "seed": 3,
+                "flip": false,
+                "o": 31,
+                "d": 32,
+                "front": "over",
+                "formation": "ace_12"
+              },
+              "selection": {
+                "requestedEntryTimes": [
+                  0.85,
+                  0.9,
+                  1.1,
+                  2.25,
+                  2.3,
+                  2.35,
+                  2.4,
+                  2.45
+                ],
+                "originalFrameIndices": [
+                  17,
+                  18,
+                  22,
+                  45,
+                  46,
+                  47,
+                  48,
+                  49
+                ],
+                "originalFrameCount": 60,
+                "originalCueCount": 27082,
+                "cuePolicy": "Original contiguous cue prefix through final selected entry time; original method cueFrom/cueTo indices remain valid."
+              }
+            },
+            {
+              "input": {
+                "id": "uc12-wz-s3",
+                "concept": "wz_strong",
+                "kind": "run",
+                "seed": 3,
+                "flip": false,
+                "o": 31,
+                "d": 32,
+                "front": "over",
+                "formation": "ace_12"
+              },
+              "selection": {
+                "requestedEntryTimes": [
+                  1.15,
+                  1.4,
+                  1.65,
+                  1.9
+                ],
+                "originalFrameIndices": [
+                  23,
+                  28,
+                  33,
+                  38
+                ],
+                "originalFrameCount": 60,
+                "originalCueCount": 27283,
+                "cuePolicy": "Original contiguous cue prefix through final selected entry time; original method cueFrom/cueTo indices remain valid."
+              }
+            }
+          ]
+        },
+        {
+          "label": "withdrawn-depth-9518ce9",
+          "status": "Historical pre-contact-depth-correction fresh C.75/RT.80 exact witnesses; withdrawn full-normal-depth geometry, not final.",
+          "rawCapture": {
+            "path": "/workspace/wide-zone-flow/out/wide-zone-flow/fresh-retained.json.gz",
+            "sha256": "d96b0af64f67820f94e6ee7f1a86879ac77ae4d9217f8b822fcea449f5724827",
+            "gzipBytes": 3411414
+          },
+          "revision": "9518ce99a0936d0c71ce0b0ab5da394fdba786b2",
+          "runtime": "934a3637bf481fbcaea997de28339d81d0f6aa4a5be1bf9d4f553c614d82b443",
+          "selectedCases": [
+            {
+              "input": {
+                "id": "uc12-wz-s3-tite-fresh",
+                "concept": "wz_strong",
+                "kind": "run",
+                "seed": 3,
+                "flip": false,
+                "o": 31,
+                "d": 32,
+                "front": "tite",
+                "formation": "ace_12",
+                "purpose": "Frozen before any native candidate: same roster/seed, reduced interior challenge to covered/uncovered and DL keys. Run once only after mechanism and original controls support candidate; preserve adverse result."
+              },
+              "selection": {
+                "requestedEntryTimes": [
+                  0.75,
+                  0.8
+                ],
+                "originalFrameIndices": [
+                  15,
+                  16
+                ],
+                "originalFrameCount": 60,
+                "originalCueCount": 27503,
+                "cuePolicy": "Original contiguous cue prefix through final selected entry time; original method cueFrom/cueTo indices remain valid."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "artifactBytesTotal": 8658537,
+  "encodingSecondsTotal": 33.2583801760029,
+  "newWorldSteps": 0,
+  "newSimulationPlays": 0,
+  "newGames": 0
+}

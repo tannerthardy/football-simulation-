@@ -1,0 +1,98 @@
+{
+  "nativeCollectors": [
+    {
+      "file": "/workspace/wide-zone-help-read/out/wide-zone-flow/before.json.gz",
+      "revision": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "source": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96",
+      "elapsedSeconds": 16.573651172,
+      "steps": 180,
+      "plays": 3
+    },
+    {
+      "file": "out/wide-zone-flow/first.json.gz",
+      "revision": "42c7095c9519e89a23cc17861d85cec6e008c744",
+      "source": "42ce9955360fbda8a469615e9e3976d34ad5cfd504c74393c1bcf65f188e36d3",
+      "elapsedSeconds": 6.627864308,
+      "steps": 179,
+      "plays": 3
+    },
+    {
+      "file": "out/wide-zone-flow/departure.json.gz",
+      "revision": "e5fb914fd4f703e7b458296f691673f7878188e9",
+      "source": "e5c67fe772f805fa1d574e8ab197f194efba1f8720ac91e96372b6f1ab3e4110",
+      "elapsedSeconds": 5.484653976,
+      "steps": 60,
+      "plays": 1
+    },
+    {
+      "file": "out/wide-zone-flow/final-y.json.gz",
+      "revision": "f10eac973094cc81dd10dfb98f78f8a9010fd22d",
+      "source": "094fd6d0e4436b010916579d17b5c705f057afd5911163cbf9122a79552749f4",
+      "elapsedSeconds": 3.268661734,
+      "steps": 60,
+      "plays": 1
+    },
+    {
+      "file": "out/wide-zone-flow/final-controls.json.gz",
+      "revision": "f10eac973094cc81dd10dfb98f78f8a9010fd22d",
+      "source": "094fd6d0e4436b010916579d17b5c705f057afd5911163cbf9122a79552749f4",
+      "elapsedSeconds": 5.6975372559999995,
+      "steps": 119,
+      "plays": 2
+    },
+    {
+      "file": "/workspace/wide-zone-help-read/out/wide-zone-flow/fresh-before.json.gz",
+      "revision": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "source": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96",
+      "elapsedSeconds": 3.650029496,
+      "steps": 60,
+      "plays": 1
+    },
+    {
+      "file": "out/wide-zone-flow/fresh-final.json.gz",
+      "revision": "f10eac973094cc81dd10dfb98f78f8a9010fd22d",
+      "source": "094fd6d0e4436b010916579d17b5c705f057afd5911163cbf9122a79552749f4",
+      "elapsedSeconds": 2.430027328,
+      "steps": 60,
+      "plays": 1
+    },
+    {
+      "file": "out/wide-zone-flow/retained.json.gz",
+      "revision": "9518ce99a0936d0c71ce0b0ab5da394fdba786b2",
+      "source": "934a3637bf481fbcaea997de28339d81d0f6aa4a5be1bf9d4f553c614d82b443",
+      "elapsedSeconds": 11.101419903999998,
+      "steps": 179,
+      "plays": 3
+    },
+    {
+      "file": "out/wide-zone-flow/fresh-retained.json.gz",
+      "revision": "9518ce99a0936d0c71ce0b0ab5da394fdba786b2",
+      "source": "934a3637bf481fbcaea997de28339d81d0f6aa4a5be1bf9d4f553c614d82b443",
+      "elapsedSeconds": 4.776960669,
+      "steps": 60,
+      "plays": 1
+    },
+    {
+      "file": "out/wide-zone-flow/native-circle.json",
+      "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+      "source": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+      "elapsedSeconds": 6.927139435999999,
+      "steps": 177,
+      "plays": 3
+    },
+    {
+      "file": "out/wide-zone-flow/native-fresh-circle.json",
+      "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+      "source": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+      "elapsedSeconds": 2.480316675,
+      "steps": 60,
+      "plays": 1
+    }
+  ],
+  "elapsedSecondsSum": 69.018261954,
+  "worldSteps": 1194,
+  "shortPlayInstances": 20,
+  "fullGames": 0,
+  "finalFourOpeningsSeconds": 9.407456110999998,
+  "finalFourOpeningSteps": 237
+}

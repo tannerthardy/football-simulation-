@@ -1,0 +1,68 @@
+{
+  "protocol": "wz-flow-replay-v1",
+  "inputs": [
+    {
+      "label": "Before",
+      "path": "/workspace/wide-zone-help-read/out/wide-zone-flow/before.json.gz",
+      "sha256": "48af73e0e95817f48c566f2d7369ac7783c3b044047349012378aae96f95f670",
+      "revision": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "runtime": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96"
+    },
+    {
+      "label": "Candidate",
+      "path": "/workspace/wide-zone-flow/out/wide-zone-flow/circle.json.gz",
+      "sha256": "483a0ccb600b6d7038ba3672278b14be200f571fc1ac50d8c977f6fa7b2df87f",
+      "revision": "0336414fd8170610f17d7db4a8ccba94b8712b02",
+      "runtime": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2"
+    }
+  ],
+  "output": "/workspace/wide-zone-flow/out/wide-zone-flow/circle-visual/replay.gif",
+  "bytes": 2085819,
+  "sha256": "9a20b5e561132e508d84ab06dbf67663b42660741b5148ed68c114d65d8c735c",
+  "frames": 61,
+  "capturedSecondsShown": 3,
+  "frameDurationMs": 100,
+  "mainView": {
+    "fieldY": [
+      15,
+      35
+    ],
+    "fieldX": [
+      31,
+      46
+    ]
+  },
+  "all22Inset": true,
+  "whistledPoseHolds": [
+    {
+      "arm": "Candidate",
+      "case": "uc12-wz-s3-mirror",
+      "boundary": 2.9,
+      "end": 2.85
+    },
+    {
+      "arm": "Candidate",
+      "case": "uc12-wz-s3-mirror",
+      "boundary": 2.95,
+      "end": 2.85
+    },
+    {
+      "arm": "Candidate",
+      "case": "uc12-wz-s3-mirror",
+      "boundary": 3.0,
+      "end": 2.85
+    }
+  ],
+  "heldPoseHasLoadOverlay": false,
+  "snapshots": [
+    "out/wide-zone-flow/circle-visual/replay-0.50s.png",
+    "out/wide-zone-flow/circle-visual/replay-1.00s.png",
+    "out/wide-zone-flow/circle-visual/replay-2.00s.png",
+    "out/wide-zone-flow/circle-visual/replay-2.50s.png",
+    "out/wide-zone-flow/circle-visual/replay-2.95s.png",
+    "out/wide-zone-flow/circle-visual/replay-3.00s.png"
+  ],
+  "scriptSha256": "6b7d32e0ef7556cd62415baeb1666ce000ad7037e55754cd739d53b833cd6ca7",
+  "newWorldSteps": 0,
+  "seconds": 26.559443598000144
+}
