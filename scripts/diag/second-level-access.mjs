@@ -14,7 +14,7 @@ import {sourceVersion} from '../source-version.ts';
 
 const root='data/reviews/current/second-level-access',manifestPath=root+'/inputs.json';
 const hash=x=>createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)?x:JSON.stringify(x)).digest('hex');
-const [mode='plan',out='out/second-level-access/current']=process.argv.slice(2);
+const [mode='plan',out='out/second-level-access/current',idsText,untilText]=process.argv.slice(2);
 if(mode==='plan'){
  const config=JSON.parse(readFileSync(root+'/audit-config.json'));
  const fixture=JSON.parse(readFileSync('config/roster-screen.json'));
@@ -38,6 +38,8 @@ if(mode==='plan'){
 }
 assert.equal(mode,'run');
 const manifestBytes=readFileSync(manifestPath),manifest=JSON.parse(manifestBytes);
+const selected=idsText?manifest.rows.filter(r=>idsText.split(',').includes(r.id)):manifest.rows;
+assert(selected.length>0);const until=untilText?Number(untilText):5;assert(until>0&&until<=5);
 const nativeMethods=Object.fromEntries(['update','attack','leaveCombination','plannedClimb','startDeparture'].map(k=>[k,RunBlocker.prototype[k]]));
 const body=a=>structuredClone(a.body);
 const rep=e=>e?{b:e.blocker.idx,d:e.defender.idx,helpers:e.helpers.map(a=>a.idx),phi:e.phi,baseB:e.baseB,baseD:e.baseD,
@@ -51,7 +53,7 @@ const plan=c=>({kind:c.plan.kind,target:c.plan.target?.idx,drive:c.plan.drive,co
  departureRead:c.departureRead?structuredClone(c.departureRead):null,climbRead:c.climbRead?{nextRead:c.climbRead.nextRead,
  meet:c.climbRead.meet,through:c.climbRead.through,attainable:c.climbRead.attainable,seenVel:c.climbRead.seenVel}:null});
 let active=null;const all=[],started=performance.now();
-for(const input of manifest.rows){
+for(const input of selected){
  const sim=new PlaySim(structuredClone(input.setup)),frames=[],calls=[],reads=[],joined=[];
  const initial=sim.agents.map(a=>({idx:a.idx,slot:a.slot,id:a.player.id,body:body(a),profile:a.profile,
   plan:a.behavior instanceof RunBlocker?plan(a.behavior):null})),stack=[];
@@ -64,7 +66,9 @@ for(const input of manifest.rows){
  };
  const see=sim.see.bind(sim);let join=false,spacingBefore=null;
  sim.see=(a,b,...args)=>{const picture=see(a,b,...args);
-  if(stack.length||join)reads.push({t:sim.t,a:a.idx,b:b.idx,context:join?'joined-security':stack.join('/'),picture:structuredClone(picture)});
+  const spacing=!stack.length&&!join&&a.slot==='RT'&&new Error().stack.includes('spaceTeammates');
+  if(stack.length||join||spacing)reads.push({t:sim.t,a:a.idx,b:b.idx,context:spacing?'spacing':join?'joined-security':stack.join('/'),
+   picture:structuredClone(picture),...(spacing?{calledMotion:b.behavior.calledMotion?.()??null}:{})});
   return picture;};
  const prepare=sim.prepareJoinedRunBlocks.bind(sim);
  sim.prepareJoinedRunBlocks=()=>{
@@ -86,11 +90,11 @@ for(const input of manifest.rows){
     groundImpulse:report.groundImpulse,armImpulse:report.armImpulse,armImpulseLimit:report.armImpulseLimit}});
   spacingBefore=null;return report;
  };
- const start=performance.now();while(sim.phase==='live'&&sim.t<5){assert(performance.now()-start<10000,'Named short-case wall budget');sim.tick();}
+ const start=performance.now();while(sim.phase==='live'&&sim.t<until){assert(performance.now()-start<10000,'Named short-case wall budget');sim.tick();}
  for(const [name,native]of Object.entries(nativeMethods))RunBlocker.prototype[name]=native;
  const result=sim.buildResult();
  const summary={id:input.id,source:sourceVersion(),inputSha256:input.inputSha256,elapsedSeconds:(performance.now()-start)/1000,
-  phase:sim.phase,endTime:sim.t,censor:sim.phase==='live'?'live at5s':'native ending',outcome:result.outcome,
+  phase:sim.phase,endTime:sim.t,censor:sim.phase==='live'?`live at${sim.t}s`:'native ending',outcome:result.outcome,
   yards:result.offenseYards,events:sim.events};
  all.push({...summary,initial,frames,calls,reads,joined,result});console.log(JSON.stringify(summary));
 }
@@ -98,7 +102,7 @@ const profile=JSON.parse(readFileSync('config/baseline.json'));
 const receipt={schema:'second-level-access-native-v1',commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
  sourceSha256:sourceVersion(),node:process.version,flags:Object.fromEntries(Object.keys(profile.flags).map(k=>[k,process.env[k]??null])),
  worldDefaults:profile.worldDefaults,inputManifestSha256:hash(manifestBytes),collectorSha256:hash(readFileSync(import.meta.filename)),
- cases:manifest.rows.map(r=>({id:r.id,inputSha256:r.inputSha256})),elapsedSeconds:(performance.now()-started)/1000,
+ cases:selected.map(r=>({id:r.id,inputSha256:r.inputSha256})),until,elapsedSeconds:(performance.now()-started)/1000,
  qualification:'Read-only wrappers on original methods, no extra cue/RNG calls. preSpacing captured before first spacing assignment; final after spacing/snap gate. Native event times retained.',fullGames:0};
 mkdirSync(out,{recursive:true});writeFileSync(out+'/trace.json.gz',gzipSync(JSON.stringify({receipt,rows:all})));
 writeFileSync(out+'/receipt.json',JSON.stringify(receipt,null,2)+'\n');
