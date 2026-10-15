@@ -1,5 +1,23 @@
 # Current work ownership
 
+## Exchange integrity follow-up, 2026-10-15
+
+Run-game continues PR #57 on `codex/designed-run-game-diagnosis`. Recorded
+comparator: `f62511a5`, source `dd173a3e`; user-note evidence read-only at
+`4ae667e29b3ce085f43c5cb911b294349cda2b8f`. First question: coordinate the
+attainable shotgun exchange and recovery, using spread-air **P038 (index37)**
+and west-spread **P069 (index68)**. Claim only `QBHandoff.update` in
+`behaviors/qb.ts`, `RunnerToMesh.update` in `assign.ts`, and focused exchange
+fixtures/diagnostics. Physical transfer, information acquisition, spacing,
+capacities and all shared laws remain owned elsewhere. Genuine keepers and
+play action are opposing contracts. No new full-game campaign.
+
+Wide-edge protection is a separate read-only trace investigation. No claim to
+RunBlocker/puller/climber, carrier navigation or final spacing; the proposed
+Do-It-All! routing is not an acknowledgment. Agree on function boundaries
+before editing shared blocking code. Integration retains rush bookkeeping;
+defensive acquired-possession recovery is a separate handoff.
+
 ## Designed-run full-game diagnosis, 2026-10-14
 
 Run-game owns `codex/designed-run-game-diagnosis` from PR #54 publication

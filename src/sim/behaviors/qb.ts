@@ -715,7 +715,11 @@ export class QBHandoff implements Behavior {
     // and riding past, ride with him: put the ball where he is going.
     if (rb && sim.t >= this.meshTime - 0.3) {
       const picture = sim.teammateInformation(a, rb);
-      if (picture.source !== 'unavailable' && Math.hypot(picture.pos.x - this.mesh.x, picture.pos.y - this.mesh.y) < 1.2) {
+      // After a missed riding exchange, the acquired back is the recovery
+      // target. Proximity to the abandoned landmark cannot veto that cue.
+      // Before the installed cadence, retain the ordinary joining gate.
+      const recovering = this.ride && sim.t >= this.meshTime;
+      if (picture.source !== 'unavailable' && (recovering || Math.hypot(picture.pos.x - this.mesh.x, picture.pos.y - this.mesh.y) < 1.2)) {
         const dt = picture.source === 'called' ? Math.min(.2, Math.max(0, picture.forecast?.validFor ?? 0)) : .2;
         let lead = { x: picture.pos.x + picture.vel.x * dt, y: picture.pos.y + picture.vel.y * dt };
         const path = picture.source === 'called' ? picture.forecast?.samples : undefined;
