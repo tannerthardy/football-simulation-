@@ -33,11 +33,11 @@ function run(c:any,arm:Intervention,observe=true){
   // Instrument delivered carrier momentum/translation energy only in native
   // baselines. Source methods remain unchanged; the plain fingerprint checks
   // detect observation side effects. This is attribution, not a law oracle.
-  if(arm.id==='native')for(const method of ['feet','pairImpulse','solveContact']){
+  if(arm.id==='native')for(const method of ['feet','pairImpulse','supportImpulse','solveContact']){
    const original=world[method];world[method]=function(...args:any[]){
-    const involved=method==='feet'?args[0]===rb.idx:method==='solveContact'?[args[0].i,args[0].j].includes(rb.idx):[args[0],args[1]].includes(rb.idx);
+    const involved=method==='feet'?args[0]===rb.idx:method==='supportImpulse'?[args[0].a,args[0].b].includes(rb.body):method==='solveContact'?[args[0].i,args[0].j].includes(rb.idx):[args[0],args[1]].includes(rb.idx);
     if(!ledger||!involved)return original.apply(this,args);
-    const before={...rb.vel},kind=method==='feet'?'feet':method==='solveContact'?'body-contact':args[5]+(args[5]==='grasps'?(args[6]===false?'-passive':'-active'):''),
+    const before={...rb.vel},kind=method==='feet'?'feet':method==='supportImpulse'?'supported-grasp-'+(args[4]?'active':'passive'):method==='solveContact'?'body-contact':args[5]+(args[5]==='grasps'?(args[6]===false?'-passive':'-active'):''),
      value=original.apply(this,args),part=ledger.parts[kind]??={x:0,y:0,translationEnergy:0};
     part.x+=mass*(rb.vel.x-before.x);part.y+=mass*(rb.vel.y-before.y);
     part.translationEnergy+=.5*mass*(rb.vel.x**2+rb.vel.y**2-before.x**2-before.y**2);
@@ -64,7 +64,7 @@ function run(c:any,arm:Intervention,observe=true){
    if(ledger){ledger.after={...rb.vel};const sum=Object.values(ledger.parts) as any[];
     ledger.momentumResidual=Math.hypot(mass*(rb.vel.x-ledger.before.x)-sum.reduce((s,p)=>s+p.x,0),mass*(rb.vel.y-ledger.before.y)-sum.reduce((s,p)=>s+p.y,0));
     ledger.translationEnergyResidual=.5*mass*(rb.vel.x**2+rb.vel.y**2-ledger.before.x**2-ledger.before.y**2)-sum.reduce((s,p)=>s+p.translationEnergy,0);
-    assert(ledger.momentumResidual<1e-8&&Math.abs(ledger.translationEnergyResidual)<1e-8);
+    assert(ledger.momentumResidual<1e-8&&Math.abs(ledger.translationEnergyResidual)<1e-8,JSON.stringify({case:c.id,t:sim.t,ledger,groundImpulse:report.groundImpulse[rb.idx]}));
    }
    const elapsedMs=performance.now()-begin,engagement=defender.engagement;
    steps.push({t:sim.t,input,rngBefore,rngAfter:rng(),intentHash,afterHash:hash(this.bodies),reportHash:hash(report),substeps:report.substeps,elapsedMs,carrierLedger:ledger,
