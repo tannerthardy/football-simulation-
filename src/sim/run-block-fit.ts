@@ -10,10 +10,6 @@ import type { Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 
-/** Existing relative closing request for the run strike, yd/s. This is a
- * movement intention; the ordinary body/contact budget limits its execution. */
-export const RUN_BLOCK_DRIVE_SPEED=2.4;
-
 export function observedBlockLeverage(a: Agent, seen: Perceived, drive: Vec2): number {
   const x = a.pos.x - seen.pos.x, y = a.pos.y - seen.pos.y;
   return Math.atan2(x * -drive.y + y * drive.x, -x * drive.x - y * drive.y) / (Math.PI / 2);
@@ -70,7 +66,7 @@ export function secondLevelBlockApproach(a: Agent, seen: Perceived, drive: Vec2,
   // carries the existing run-contact 2.4 yd/s drive request into the approach;
   // it changes neither force capacity nor the actual contact/reach checks.
   const command = chooseRunBlockFit(a, seen, drive, nominalAim, placementError,
-    contact, bodyContact, original, now, true, RUN_BLOCK_DRIVE_SPEED);
+    contact, bodyContact, original, now, true, 2.4);
   const near = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= contact + bodyContact;
   return { ...command, posture: near ? .7 : original.posture };
 }
