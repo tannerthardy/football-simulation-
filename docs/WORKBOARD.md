@@ -1,5 +1,25 @@
 # Current work ownership
 
+## Duo surface/linebacker proposal admission — Run Game
+
+Recommend narrow correction for independent review. [Evidence](reviews/combo-football-surface.md).
+Accepted7eb2554 (#82) current baselines were necessary; old90 packets remain
+historical. Tested8d4b868, source dcebbee4; clean code/tests aebb0abb on
+codex/duo-surface-release. Only readJoinedCombination17lines + existing test
+fixture/seven controls. Use acquired backer half and original detour indication
+to keep a Duo member on near-level work while his backer remains across the
+surface. Existing security/cadence/interception/spacing/contact unchanged.
+A030 RT keeps DT and RG loads LB2.60 before RB LOS2.65 at6.33yd/s; no offensive
+impact. A018 improves first-level route but RG still misses LB and Mike finishes.
+A027 WZ and preselected fresh Under all22/requests/RNG/results exact, including
+useful blocks and defender wins. Gains are not expected values; both unit
+contacts/draw histories can change.66 focused/typecheck pass, old source3expected
+red/4pass. Eight native executions8.115282s, all launchers23.393741s; no games/
+rosters/suite. Evidence branch is not the runtime feature; separate minimal PR
+for Integration independent review/final combined verification. Do-It-All
+carrier/spacing and sole Physics owner unchanged; historical4ded6b6 preserved.
+
+
 ## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted

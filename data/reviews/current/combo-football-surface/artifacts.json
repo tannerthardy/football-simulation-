@@ -1,0 +1,90 @@
+{
+  "data/reviews/current/combo-football-surface/A030-protection-witness.json.gz": {
+    "sha256": "eae2e03805551b1ba29d1cf2c14f7cbc733c0b4db82c2806a79ed282b68f62d3",
+    "bytes": 104603
+  },
+  "data/reviews/current/combo-football-surface/candidate-a030.json.gz": {
+    "sha256": "57edb3f8a153091b94d3be368c401650c49ae54e1503d2fc35f225dd71ab384f",
+    "bytes": 1934377
+  },
+  "data/reviews/current/combo-football-surface/candidate-controls.json.gz": {
+    "sha256": "58c6d7efbc786a95ecb4941adfb4db59afb4f08bd3cabff361fd9017ec3a0680",
+    "bytes": 2605208
+  },
+  "data/reviews/current/combo-football-surface/current-a018.json.gz": {
+    "sha256": "44e2e2d80d77eba5584d563a81e0f4cd175a327827b734708cd21f92a4f72b0b",
+    "bytes": 1213618
+  },
+  "data/reviews/current/combo-football-surface/current.json.gz": {
+    "sha256": "effaa8b41901648685b4092df42848ca7f2caedf1a4182a5ecccae5da86de778",
+    "bytes": 2611194
+  },
+  "data/reviews/current/combo-football-surface/plan.json": {
+    "sha256": "23fc5ae90827d23a0563143e9aaef588f7cba0fbb1f89e34449728950939d9bb",
+    "bytes": 1580
+  },
+  "data/reviews/current/combo-football-surface/protection-paths.png": {
+    "sha256": "6c3fbb9152ab96d1e9c942933e62210f730d6a7ba5e1843ba06cc83297f7d54f",
+    "bytes": 169113
+  },
+  "data/reviews/current/combo-football-surface/receipts/candidate-a030.json": {
+    "sha256": "5b30cb33db588f94236f825e55c488a5482cacdd5c643fb76f4dfba755e064e5",
+    "bytes": 2298
+  },
+  "data/reviews/current/combo-football-surface/receipts/candidate-controls.json": {
+    "sha256": "fc6905eb1fcf54693e627765303c038a09b740460ca76340f86325445067545e",
+    "bytes": 2307
+  },
+  "data/reviews/current/combo-football-surface/receipts/current-a018.json": {
+    "sha256": "279af316c8b8a28397db27d695b19ae65b4110248a7abfd55e2e0f232bfba522",
+    "bytes": 2268
+  },
+  "data/reviews/current/combo-football-surface/receipts/current.json": {
+    "sha256": "528c9b3418b50a617541f9b5eecb0eba7ade708c36abe5fe4f8fee2325a969f8",
+    "bytes": 2296
+  },
+  "data/reviews/current/combo-football-surface/receipts/focused.json": {
+    "sha256": "b03838179c67cb2aa047a7384767072b03dd6bfbdaf2baf3e0362062a0b3b89a",
+    "bytes": 2347
+  },
+  "data/reviews/current/combo-football-surface/receipts/new-controls.json": {
+    "sha256": "57540911b2bb3f6b6b4f8b3ee8a82e8cce7aa41a6a24ce5fec3f528adc412528",
+    "bytes": 2299
+  },
+  "data/reviews/current/combo-football-surface/receipts/old-controls-red.json": {
+    "sha256": "52c8fcc50a6b20e3b0c0bef48c89ecb50dd42d20e935e804ee25a71d761853ac",
+    "bytes": 2308
+  },
+  "data/reviews/current/combo-football-surface/receipts/typecheck.json": {
+    "sha256": "3211023b4827039068c9a072634bcd46e115bfe3dfbf1415ccba770c991cebd6",
+    "bytes": 2166
+  },
+  "data/reviews/current/combo-football-surface/receipts/under-baseline.json": {
+    "sha256": "d1e8be3c8fa90c0df07c69623cf6880241b637853147d8e8bebeed42285b53db",
+    "bytes": 2443
+  },
+  "data/reviews/current/combo-football-surface/receipts/under-candidate.json": {
+    "sha256": "bf1de397acb1437552b2b611044fa84e90b262ae1bbc88d4564dbb9a339f432d",
+    "bytes": 2391
+  },
+  "data/reviews/current/combo-football-surface/runtime-and-tests.patch": {
+    "sha256": "9b34386d376ee3bcc3d4321d24598a8945cb146e71cbed3bb26afaba18634259",
+    "bytes": 6520
+  },
+  "data/reviews/current/combo-football-surface/summary.json": {
+    "sha256": "1c9dfbb23c6fcae351e6b33c3a2adccce68567cd14d401d622d41d890b9acd93",
+    "bytes": 37315
+  },
+  "data/reviews/current/combo-football-surface/transfer-input.json": {
+    "sha256": "9fb7874382df45b0845b068b40c36d543d4bf5d1fe717989aa6de0833692e6dc",
+    "bytes": 55585
+  },
+  "data/reviews/current/combo-football-surface/under-baseline.json.gz": {
+    "sha256": "091e2b8a725741bc92c1049a52f4dd6b3b465c428ee792f46a7f2434f802a205",
+    "bytes": 1446048
+  },
+  "data/reviews/current/combo-football-surface/under-candidate.json.gz": {
+    "sha256": "53a4a7ec9115ecc7113fedfdaeec1909d54729c86a84a7d5601751d7cae4e5c1",
+    "bytes": 1446050
+  }
+}

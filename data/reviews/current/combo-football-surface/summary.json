@@ -1,0 +1,1433 @@
+{
+  "schema": "duo-surface-release-v1",
+  "recommendation": "Recommend the narrow Duo-only correction for independent review/integration; no full run-game realism or league yardage claim.",
+  "accepted": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "codeAndTests": "aebb0abb3a9e96ec6561274b9fdd4e8e76ce7173",
+  "testedCodeAndTests": "8d4b868b6125270a407a2b9b1b6238508616c365",
+  "sourceSha256": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+  "reportSha256": "b71437e0533037f7e93e4797a56838f033118d42d968cdb28912b9898cc77dc4",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "rows": [
+    {
+      "id": "A030",
+      "inputSha256": "17e60c1492aee67a48c56ac5897a22c095d6c116f9439b751a29325054d73f62",
+      "exactAllFrames": false,
+      "exactResult": false,
+      "firstDifference": {
+        "t": 0.85,
+        "sameEntering22Bodies": true,
+        "changedRawActors": [
+          2,
+          3
+        ],
+        "postStepRngEqual": false
+      },
+      "accepted": {
+        "yards": 2.01,
+        "nativeEnd": 3.5,
+        "phase": "dead",
+        "losArrival": 2.7,
+        "losBody": {
+          "pos": {
+            "x": 35.06424468483419,
+            "y": 24.329260806615697
+          },
+          "vel": {
+            "x": 4.577292214076289,
+            "y": 1.2248885466367998
+          },
+          "facing": 0.5459587226606928,
+          "energy": 0.9772720226972129,
+          "profile": {
+            "vmax": 9.44467621902496,
+            "tau": 1.3158802021257818,
+            "brake": 6.727585034013605,
+            "lateral": 7.019309523809527,
+            "turnRate": 8.826666666666668,
+            "backpedal": 0.5448979591836736,
+            "shuffle": 0.5312000000000001,
+            "massKg": 101.60469088,
+            "heightYd": 1.9916666666666667,
+            "radius": 0.27999999999999997,
+            "reach": 0.9984722222222222,
+            "maxCatchHeight": 3.464472222222222,
+            "reactReach": 2.95475,
+            "reactionTime": 0.23248979591836735,
+            "power": 101.20034568160001,
+            "balance": 0.8877551020408163,
+            "bend": 0.7568843537414967,
+            "stepSpeed": 3.9606530612244892,
+            "getUp": 0.905
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19560572327996184,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 2.8347536473886357,
+              "y": 2.805146500626724
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 1.501432263518634,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.46511366208963506
+        },
+        "losSpeed": 4.738349497950255,
+        "climbs": [
+          {
+            "t": 0.85,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "pos": {
+              "x": 35.15,
+              "y": 24.24
+            },
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 0.85,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "pos": {
+              "x": 35.25,
+              "y": 26.96
+            },
+            "note": "secured DT_W; LG stays"
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.54,
+            "y": 24.47
+          },
+          "note": "grasp"
+        },
+        "firstWrap": {
+          "t": 2.75,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 36.36,
+            "y": 25.08
+          },
+          "note": "initial"
+        },
+        "RG_LB_BlockEvents": [],
+        "offensiveImpacts": []
+      },
+      "candidate": {
+        "yards": 12.66,
+        "nativeEnd": 4.65,
+        "phase": "dead",
+        "losArrival": 2.65,
+        "losBody": {
+          "pos": {
+            "x": 35.22885172905175,
+            "y": 23.284464543025738
+          },
+          "vel": {
+            "x": 5.756461633717559,
+            "y": -2.6377696610804526
+          },
+          "facing": -0.3618380647176198,
+          "energy": 0.9738165888652595,
+          "profile": {
+            "vmax": 9.44467621902496,
+            "tau": 1.3158802021257818,
+            "brake": 6.727585034013605,
+            "lateral": 7.019309523809527,
+            "turnRate": 8.826666666666668,
+            "backpedal": 0.5448979591836736,
+            "shuffle": 0.5312000000000001,
+            "massKg": 101.60469088,
+            "heightYd": 1.9916666666666667,
+            "radius": 0.27999999999999997,
+            "reach": 0.9984722222222222,
+            "maxCatchHeight": 3.464472222222222,
+            "reactReach": 2.95475,
+            "reactionTime": 0.23248979591836735,
+            "power": 101.20034568160001,
+            "balance": 0.8877551020408163,
+            "bend": 0.7568843537414967,
+            "stepSpeed": 3.9606530612244892,
+            "getUp": 0.905
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19493077836918746,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 2.4664435949459578,
+              "y": -0.5834043953396955
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 0.0045538237694220385,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": -0.3640822263678234
+        },
+        "losSpeed": 6.332035954207676,
+        "climbs": [
+          {
+            "t": 1.05,
+            "type": "block_climb",
+            "a": 5,
+            "b": 15,
+            "pos": {
+              "x": 35.15,
+              "y": 25.22
+            },
+            "note": "secured DT_S; RT stays"
+          },
+          {
+            "t": 1.05,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "pos": {
+              "x": 35.49,
+              "y": 27.11
+            },
+            "note": "secured DT_W; LG stays"
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 21,
+          "pos": {
+            "x": 39.66,
+            "y": 21.14
+          },
+          "note": "grasp"
+        },
+        "firstWrap": {
+          "t": 3.3,
+          "type": "tackle_wrap",
+          "a": 21,
+          "b": 6,
+          "pos": {
+            "x": 39.72,
+            "y": 22.91
+          },
+          "note": "initial"
+        },
+        "RG_LB_BlockEvents": [
+          {
+            "t": 2.6,
+            "type": "block_contact",
+            "a": 5,
+            "b": 15,
+            "pos": {
+              "x": 35.9255059556551,
+              "y": 26.457109054234834
+            },
+            "note": "run"
+          },
+          {
+            "t": 3.4,
+            "type": "block_contact",
+            "a": 5,
+            "b": 15,
+            "pos": {
+              "x": 36.61386390293553,
+              "y": 26.071140017130798
+            },
+            "note": "run"
+          },
+          {
+            "t": 4.65,
+            "type": "block_contact",
+            "a": 5,
+            "b": 15,
+            "pos": {
+              "x": 37.49533816930537,
+              "y": 23.265071717361515
+            },
+            "note": "run"
+          }
+        ],
+        "offensiveImpacts": []
+      }
+    },
+    {
+      "id": "A018",
+      "inputSha256": "2b3d2f1616c7af44728dcc4e8f15e2d761ee706ebea61e99b431b7e9f6231ed1",
+      "exactAllFrames": false,
+      "exactResult": false,
+      "firstDifference": {
+        "t": 0.8,
+        "sameEntering22Bodies": true,
+        "changedRawActors": [
+          2
+        ],
+        "postStepRngEqual": false
+      },
+      "accepted": {
+        "yards": 1.53,
+        "nativeEnd": 3.5,
+        "phase": "dead",
+        "losArrival": 2.65,
+        "losBody": {
+          "pos": {
+            "x": 35.09175698813884,
+            "y": 24.64509585572135
+          },
+          "vel": {
+            "x": 3.6237969636175755,
+            "y": 0.856963264232367
+          },
+          "facing": 1.9937225485438559,
+          "energy": 0.9780250125603046,
+          "profile": {
+            "vmax": 9.694946821001855,
+            "tau": 1.3403903135189912,
+            "brake": 6.7384353741496605,
+            "lateral": 6.852251700680274,
+            "turnRate": 8.793333333333333,
+            "backpedal": 0.5244897959183674,
+            "shuffle": 0.5292,
+            "massKg": 93.44002822,
+            "heightYd": 1.9388888888888889,
+            "radius": 0.2636363636363636,
+            "reach": 0.9843055555555555,
+            "maxCatchHeight": 3.407611111111111,
+            "reactReach": 2.8895555555555554,
+            "reactionTime": 0.25073469387755104,
+            "power": 84.48694796504286,
+            "balance": 0.7653061224489796,
+            "bend": 0.7637278911564627,
+            "stepSpeed": 3.9591836734693877,
+            "getUp": 0.878
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19566770566727662,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -5.035446321012472,
+              "y": 4.780991216996067
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 1.6053797763136104,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 1.2219307412290858
+        },
+        "losSpeed": 3.7237468321259106,
+        "climbs": [
+          {
+            "t": 0.8,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "pos": {
+              "x": 35.14,
+              "y": 24.24
+            },
+            "note": "secured DT_S; RG stays"
+          },
+          {
+            "t": 1.1,
+            "type": "block_climb",
+            "a": 4,
+            "b": 16,
+            "pos": {
+              "x": 35.14,
+              "y": 28.25
+            },
+            "note": "secured DT_W; C stays"
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 2.7,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.44,
+            "y": 24.76
+          },
+          "note": "grasp"
+        },
+        "firstWrap": {
+          "t": 2.7,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 36.46,
+            "y": 25.71
+          },
+          "note": "initial"
+        },
+        "RG_LB_BlockEvents": [],
+        "offensiveImpacts": []
+      },
+      "candidate": {
+        "yards": 6.59,
+        "nativeEnd": 3.9,
+        "phase": "dead",
+        "losArrival": 2.65,
+        "losBody": {
+          "pos": {
+            "x": 35.11878635000529,
+            "y": 23.228200630523936
+          },
+          "vel": {
+            "x": 5.137883533441187,
+            "y": -1.8785216252332886
+          },
+          "facing": 0.2554954841855917,
+          "energy": 0.9752936541572389,
+          "profile": {
+            "vmax": 9.694946821001855,
+            "tau": 1.3403903135189912,
+            "brake": 6.7384353741496605,
+            "lateral": 6.852251700680274,
+            "turnRate": 8.793333333333333,
+            "backpedal": 0.5244897959183674,
+            "shuffle": 0.5292,
+            "massKg": 93.44002822,
+            "heightYd": 1.9388888888888889,
+            "radius": 0.2636363636363636,
+            "reach": 0.9843055555555555,
+            "maxCatchHeight": 3.407611111111111,
+            "reactReach": 2.8895555555555554,
+            "reactionTime": 0.25073469387755104,
+            "power": 84.48694796504286,
+            "balance": 0.7653061224489796,
+            "bend": 0.7637278911564627,
+            "stepSpeed": 3.9591836734693877,
+            "getUp": 0.878
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19514193837164778,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -0.49183979584196236,
+              "y": 6.821742211026724
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": 8.793333333333333,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.8083693194467554
+        },
+        "losSpeed": 5.470529288805171,
+        "climbs": [
+          {
+            "t": 1.05,
+            "type": "block_climb",
+            "a": 5,
+            "b": 15,
+            "pos": {
+              "x": 35.13,
+              "y": 25.21
+            },
+            "note": "secured DT_S; RT stays"
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 3.3,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 39.03,
+            "y": 21.68
+          },
+          "note": "grasp"
+        },
+        "firstWrap": {
+          "t": 3.3,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 38.13,
+            "y": 23.21
+          },
+          "note": "initial"
+        },
+        "RG_LB_BlockEvents": [],
+        "offensiveImpacts": []
+      }
+    },
+    {
+      "id": "A027",
+      "inputSha256": "804bffd02cb7aa9b8978d45b4cce245b991fb8368594cb0262cb96651f9ce403",
+      "exactAllFrames": true,
+      "exactResult": true,
+      "firstDifference": null,
+      "accepted": {
+        "yards": 0.8,
+        "nativeEnd": 3.8,
+        "phase": "dead",
+        "losArrival": 2.95,
+        "losBody": {
+          "pos": {
+            "x": 35.04167754845273,
+            "y": 20.56007737561103
+          },
+          "vel": {
+            "x": 3.982774766350228,
+            "y": 0.21486251039229687
+          },
+          "facing": 0.46174942950699505,
+          "energy": 0.9742600493236103,
+          "profile": {
+            "vmax": 9.44467621902496,
+            "tau": 1.3158802021257818,
+            "brake": 6.727585034013605,
+            "lateral": 7.019309523809527,
+            "turnRate": 8.826666666666668,
+            "backpedal": 0.5448979591836736,
+            "shuffle": 0.5312000000000001,
+            "massKg": 101.60469088,
+            "heightYd": 1.9916666666666667,
+            "radius": 0.27999999999999997,
+            "reach": 0.9984722222222222,
+            "maxCatchHeight": 3.464472222222222,
+            "reactReach": 2.95475,
+            "reactionTime": 0.23248979591836735,
+            "power": 101.20034568160001,
+            "balance": 0.8877551020408163,
+            "bend": 0.7568843537414967,
+            "stepSpeed": 3.9606530612244892,
+            "getUp": 0.905
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19498220614651812,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 3.4710010571285785,
+              "y": 4.268708918021626
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": -1.8267986960813376,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.5724271551312018
+        },
+        "losSpeed": 3.988566250903725,
+        "climbs": [
+          {
+            "t": 2.15,
+            "type": "block_climb",
+            "a": 7,
+            "b": 15,
+            "pos": {
+              "x": 35.16,
+              "y": 21.05
+            },
+            "note": "secured DE_S; RT stays"
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 2.95,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.24,
+            "y": 20.58
+          },
+          "note": "body collision"
+        },
+        "firstWrap": {
+          "t": 2.95,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 35.75,
+            "y": 20.51
+          },
+          "note": "initial"
+        },
+        "RG_LB_BlockEvents": [],
+        "offensiveImpacts": []
+      },
+      "candidate": {
+        "yards": 0.8,
+        "nativeEnd": 3.8,
+        "phase": "dead",
+        "losArrival": 2.95,
+        "losBody": {
+          "pos": {
+            "x": 35.04167754845273,
+            "y": 20.56007737561103
+          },
+          "vel": {
+            "x": 3.982774766350228,
+            "y": 0.21486251039229687
+          },
+          "facing": 0.46174942950699505,
+          "energy": 0.9742600493236103,
+          "profile": {
+            "vmax": 9.44467621902496,
+            "tau": 1.3158802021257818,
+            "brake": 6.727585034013605,
+            "lateral": 7.019309523809527,
+            "turnRate": 8.826666666666668,
+            "backpedal": 0.5448979591836736,
+            "shuffle": 0.5312000000000001,
+            "massKg": 101.60469088,
+            "heightYd": 1.9916666666666667,
+            "radius": 0.27999999999999997,
+            "reach": 0.9984722222222222,
+            "maxCatchHeight": 3.464472222222222,
+            "reactReach": 2.95475,
+            "reactionTime": 0.23248979591836735,
+            "power": 101.20034568160001,
+            "balance": 0.8877551020408163,
+            "bend": 0.7568843537414967,
+            "stepSpeed": 3.9606530612244892,
+            "getUp": 0.905
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.19498220614651812,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 3.4710010571285785,
+              "y": 4.268708918021626
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": -1.8267986960813376,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.5724271551312018
+        },
+        "losSpeed": 3.988566250903725,
+        "climbs": [
+          {
+            "t": 2.15,
+            "type": "block_climb",
+            "a": 7,
+            "b": 15,
+            "pos": {
+              "x": 35.16,
+              "y": 21.05
+            },
+            "note": "secured DE_S; RT stays"
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 2.95,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.24,
+            "y": 20.58
+          },
+          "note": "body collision"
+        },
+        "firstWrap": {
+          "t": 2.95,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 35.75,
+            "y": 20.51
+          },
+          "note": "initial"
+        },
+        "RG_LB_BlockEvents": [],
+        "offensiveImpacts": []
+      }
+    },
+    {
+      "id": "DuoUnder",
+      "inputSha256": "8ee8f7d7179633eba26c5919a744026b5e5a6b887aa6d03d039d854057173596",
+      "exactAllFrames": true,
+      "exactResult": true,
+      "firstDifference": null,
+      "accepted": {
+        "yards": 4.7,
+        "nativeEnd": 3.7,
+        "phase": "dead",
+        "losArrival": 2.6,
+        "losBody": {
+          "pos": {
+            "x": 35.02096572960909,
+            "y": 23.812237938247918
+          },
+          "vel": {
+            "x": 5.798254508772335,
+            "y": -0.6836433987731863
+          },
+          "facing": 0.5915588165625885,
+          "energy": 0.9756650262160947,
+          "profile": {
+            "vmax": 9.44467621902496,
+            "tau": 1.3158802021257818,
+            "brake": 6.727585034013605,
+            "lateral": 7.019309523809527,
+            "turnRate": 8.826666666666668,
+            "backpedal": 0.5448979591836736,
+            "shuffle": 0.5312000000000001,
+            "massKg": 101.60469088,
+            "heightYd": 1.9916666666666667,
+            "radius": 0.27999999999999997,
+            "reach": 0.9984722222222222,
+            "maxCatchHeight": 3.464472222222222,
+            "reactReach": 2.95475,
+            "reactionTime": 0.23248979591836735,
+            "power": 101.20034568160001,
+            "balance": 0.8877551020408163,
+            "bend": 0.7568843537414967,
+            "stepSpeed": 3.9606530612244892,
+            "getUp": 0.905
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.1952635192868442,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 2.3144224697907534,
+              "y": 5.586908724640364
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": -1.961185060056545,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.5559394214699502
+        },
+        "losSpeed": 5.838417906007146,
+        "climbs": [
+          {
+            "t": 0.85,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "pos": {
+              "x": 35.24,
+              "y": 24.02
+            },
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 1,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "pos": {
+              "x": 35.14,
+              "y": 26.54
+            },
+            "note": "secured DT_S; RG stays"
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 36.22,
+            "y": 23.73
+          },
+          "note": "grasp"
+        },
+        "firstWrap": {
+          "t": 2.75,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 36.22,
+            "y": 24.66
+          },
+          "note": "initial"
+        },
+        "RG_LB_BlockEvents": [],
+        "offensiveImpacts": []
+      },
+      "candidate": {
+        "yards": 4.7,
+        "nativeEnd": 3.7,
+        "phase": "dead",
+        "losArrival": 2.6,
+        "losBody": {
+          "pos": {
+            "x": 35.02096572960909,
+            "y": 23.812237938247918
+          },
+          "vel": {
+            "x": 5.798254508772335,
+            "y": -0.6836433987731863
+          },
+          "facing": 0.5915588165625885,
+          "energy": 0.9756650262160947,
+          "profile": {
+            "vmax": 9.44467621902496,
+            "tau": 1.3158802021257818,
+            "brake": 6.727585034013605,
+            "lateral": 7.019309523809527,
+            "turnRate": 8.826666666666668,
+            "backpedal": 0.5448979591836736,
+            "shuffle": 0.5312000000000001,
+            "massKg": 101.60469088,
+            "heightYd": 1.9916666666666667,
+            "radius": 0.27999999999999997,
+            "reach": 0.9984722222222222,
+            "maxCatchHeight": 3.464472222222222,
+            "reactReach": 2.95475,
+            "reactionTime": 0.23248979591836735,
+            "power": 101.20034568160001,
+            "balance": 0.8877551020408163,
+            "bend": 0.7568843537414967,
+            "stepSpeed": 3.9606530612244892,
+            "getUp": 0.905
+          },
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": null,
+            "posture": 0.1952635192868442,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 2.3144224697907534,
+              "y": 5.586908724640364
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "spin": -1.961185060056545,
+          "squeeze": 0,
+          "sprintLoad": 0,
+          "squeezeHeading": 0.5559394214699502
+        },
+        "losSpeed": 5.838417906007146,
+        "climbs": [
+          {
+            "t": 0.85,
+            "type": "block_climb",
+            "a": 2,
+            "b": 15,
+            "pos": {
+              "x": 35.24,
+              "y": 24.02
+            },
+            "note": "secured DE_S; Y stays"
+          },
+          {
+            "t": 1,
+            "type": "block_climb",
+            "a": 3,
+            "b": 16,
+            "pos": {
+              "x": 35.14,
+              "y": 26.54
+            },
+            "note": "secured DT_S; RG stays"
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 36.22,
+            "y": 23.73
+          },
+          "note": "grasp"
+        },
+        "firstWrap": {
+          "t": 2.75,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 36.22,
+            "y": 24.66
+          },
+          "note": "initial"
+        },
+        "RG_LB_BlockEvents": [],
+        "offensiveImpacts": []
+      }
+    }
+  ],
+  "firstAdmissionCues": [
+    {
+      "t": 0.85,
+      "a": 2,
+      "b": 5,
+      "context": "joined-security",
+      "picture": {
+        "pos": {
+          "x": 34.97720674732457,
+          "y": 25.239205545059654
+        },
+        "vel": {
+          "x": 0.49578485439165276,
+          "y": 0.05662802525768666
+        },
+        "stance": "low",
+        "facing": -0.6502846908402152,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "t": 0.85,
+      "a": 2,
+      "b": 13,
+      "context": "joined-security",
+      "picture": {
+        "pos": {
+          "x": 35.25074944923399,
+          "y": 24.876678088009086
+        },
+        "vel": {
+          "x": -1.2474917381427792,
+          "y": -0.013808318128687944
+        },
+        "stance": null,
+        "facing": 2.9697346216130907,
+        "age": 0.30000000000000004,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "t": 0.85,
+      "a": 2,
+      "b": 15,
+      "context": "joined-security",
+      "picture": {
+        "pos": {
+          "x": 39.40525589852963,
+          "y": 25.3922828730762
+        },
+        "vel": {
+          "x": -1.182834445515196,
+          "y": 0.07826564551425036
+        },
+        "stance": null,
+        "facing": 3.180938321883258,
+        "age": 0.30000000000000004,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "t": 0.85,
+      "a": 2,
+      "b": 6,
+      "context": "joined-security",
+      "picture": {
+        "pos": {
+          "x": 29.212626896047283,
+          "y": 26.268848957493617
+        },
+        "vel": {
+          "x": 2.1242555288157443,
+          "y": -0.8345289579811203
+        },
+        "stance": null,
+        "facing": -0.3757013164611582,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "t": 0.85,
+      "a": 3,
+      "b": 4,
+      "context": "joined-security",
+      "picture": {
+        "pos": {
+          "x": 34.96679002907363,
+          "y": 27.931365782263587
+        },
+        "vel": {
+          "x": 0.2835531408251839,
+          "y": 0.5372391749986052
+        },
+        "stance": "low",
+        "facing": -0.1399081640907844,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "t": 0.85,
+      "a": 3,
+      "b": 14,
+      "context": "joined-security",
+      "picture": {
+        "pos": {
+          "x": 35.39352802887781,
+          "y": 27.72459641193002
+        },
+        "vel": {
+          "x": -1.0568129368491077,
+          "y": 0.3305189245618521
+        },
+        "stance": null,
+        "facing": 3.2491811849434935,
+        "age": 0.25,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "t": 0.85,
+      "a": 3,
+      "b": 16,
+      "context": "joined-security",
+      "picture": {
+        "pos": {
+          "x": 39.435071747803285,
+          "y": 27.880351138325093
+        },
+        "vel": {
+          "x": -0.6779906508572229,
+          "y": -0.138207673905217
+        },
+        "stance": null,
+        "facing": 3.152926009319698,
+        "age": 0.25,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    {
+      "t": 0.85,
+      "a": 3,
+      "b": 6,
+      "context": "joined-security",
+      "picture": {
+        "pos": {
+          "x": 29.212626896047283,
+          "y": 26.268848957493617
+        },
+        "vel": {
+          "x": 2.1242555288157443,
+          "y": -0.8345289579811203
+        },
+        "stance": null,
+        "facing": -0.3757013164611582,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    }
+  ],
+  "validation": {
+    "focusedTests": 66,
+    "newTests": 7,
+    "oldSourceExpectedRed": "3 failed,4 passed; mirrored other-half cases and hidden-state hold fail on old source. Near-half/crossing controls pass.",
+    "typecheck": "pass",
+    "codeExtraction": "Clean branch has blocking.ts + combo-transfer.test.ts only; byte-equal protected source/tests/settings to tested8d4b868."
+  },
+  "cost": {
+    "newNativeExecutions": 8,
+    "fullGames": 0,
+    "newRosters": 0,
+    "fullSuiteRuns": 0,
+    "nativeLauncherSeconds": 8.115281821,
+    "allLauncherSeconds": 23.393741055,
+    "qualification": "Includes expected old-source red and initial five focused checks. Offline analyses/plotting additional. New current baseline needed because accepted #82 changes saved sequences; original source90 evidence retained separately."
+  },
+  "limits": [
+    "Duo-only correction; no new wide-zone behavior claim. Two changed Wide9 Duo roster contrasts, one fresh Under opposing transfer and existing WZ control.",
+    "Same admission rule also delays A030 C departure; final result is a unit interaction, not isolated RT attribution.",
+    "Retaining contacts changes execution draws from the first changed World tick; exact gains are not isolated controller value or NFL estimates.",
+    "A018 RG never loads LB_M; legitimate downfield LB finish remains. Some combinations can stay longer; exhaustive front/fit transfer unproved.",
+    "Shared contact law unchanged; heavily rotated loaded A018 contacts remain a physics limitation/review dependency, not a grip/force adjustment."
+  ]
+}
