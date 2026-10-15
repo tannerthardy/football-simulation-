@@ -28,6 +28,7 @@ import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
+import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
 const PULL_STEP = process.env.PULL_STEP === '1';
@@ -731,6 +732,7 @@ export class RunBlocker implements Behavior {
   zoneRead: ZoneReachRead | null = null;
   /** Held climb plan from one acquired picture of the backer. */
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
+  private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
   constructor(public plan: RunBlockPlan) {}
@@ -1100,6 +1102,24 @@ export class RunBlocker implements Behavior {
         return stand();
       }
     }
+    // An unjoined helper collecting the original first-level responsibility
+    // may find its old half occupied by the former owner. Use acquired body
+    // pictures to choose a free strike surface; real hands still require reach.
+    const combo=plan.kind==='combo'&&plan.combination?.helpPolicy?.kind==='check'?plan.combination:null;
+    if(combo&&!combo.released&&combo.members[1]===a&&combo.defender===target&&!target.engagement
+      && !sim.world.joints.some(j=>j.a===a.body||j.b===a.body)){
+      const partner=combo.members[0],read=this.collectionRead;
+      if(!read||read.target!==target||read.partner!==partner||sim.t>=read.nextRead){
+        const covered={seen:sim.see(a,partner),radius:partner.profile.radius};
+        const others=sim.offense.filter(p=>p!==a&&p!==partner).map(p=>({seen:sim.see(a,p),radius:p.profile.radius}));
+        const choice=readCollectionApproach(a,seen,covered,others,contact,sim.attackDir(a.team),
+          a.mind.placementError*(1-.5*a.r('runBlock')),a.mind.decisionInterval);
+        this.collectionRead={target,partner,at:sim.t,nextRead:sim.t+a.mind.decisionInterval,
+          down:structuredClone(seen),choice};
+      }
+      const current=this.collectionRead!;
+      if(current.choice)return collectionCommand(a,current.choice,sim.t-current.at,current.down);
+    }else this.collectionRead=null;
     // Aiming point: reach blocks work to the playside shoulder.
     let aim = seen.pos;
     if (contactFit) {
