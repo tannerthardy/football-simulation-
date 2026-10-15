@@ -1,5 +1,18 @@
 # Current work ownership
 
+## Physical reachability from A030 release — Run Game
+
+User-directed diagnostic, separate from the parked exit tweaks. Pin accepted
+90edc525, A030 release.85, original all22 state/history/RNG. Two predeclared
+continuous routes: around DT_S's outboard/upfield shoulder, or behind RG and
+up his inside shoulder. Fixed winding, ordinary World/spacing/contact, oracle
+geometry explicitly diagnostic, original acquired release unchanged. Judge
+actual LB protection through naturally reacting RB arrival, traffic and keeper
+costs. Plan in data/reviews/current/second-level-reachability/search-plan.json.
+Budget two continuations; only a useful route can justify one information
+comparison. Otherwise stop route trials and inspect saved opening geometry/
+release opportunity. No production/shared movement edits or integration suite.
+
 ## Second-level departure follow-up — Run Game (2026-10-15)
 
 [Earlier-route report](reviews/second-level-departure-route.md): reject45bc8e6's

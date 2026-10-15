@@ -1,0 +1,20 @@
+{
+  "schema": "second-level-reachability-search-v1",
+  "question": "From A030's unchanged 0.85s RT release, can a continuous route achieve useful LB_M protection before ordinary runner arrival?",
+  "reference": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "runtimeSource": "7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b",
+  "input": "A030",
+  "inputSha256": "17e60c1492aee67a48c56ac5897a22c095d6c116f9439b751a29325054d73f62",
+  "release": 0.85,
+  "routes": [
+    {"id": "dl-upfield", "anchor": "DT_S", "winding": 1, "purpose": "Continue around the DL's outboard and upfield shoulder before intercepting LB_M."},
+    {"id": "keeper-backfield", "anchor": "RG", "winding": -1, "purpose": "Recover behind the keeper and climb his inside shoulder to LB_M."}
+  ],
+  "steering": "Continuous fixed-winding tangent plus radial correction around the selected moving body, until a direct first-strike corridor clears both RG and DT. Orbit speed uses sqrt(existing lateral acceleration * 0.8 * existing body-clearance radius); World executes every request. This is a physical diagnostic, not production navigation.",
+  "clearance": "Existing summed body radii plus0.15yd route radius. Actual initial overlap may open normally; no collision/body/spacing bypass. First-strike corridor checked at now and next native decision, with opening-overlap rule.",
+  "information": "Privileged instantaneous anchor/keeper/LB geometry sampled at native RT decision cadence and dead-reckoned between reads. Existing native LB approach receives that oracle picture. Explicit upper-bound information diagnostic: no evidence the production observer can select this route. No future RB path is read or frozen.",
+  "fixed": "All22 native reactions, native release/assignment/force/support/capacity/roster/settings/random initialization. Only RT post-release free movement and its diagnostic LB picture are overridden. Once RT earns contact, native controller/contact take over.",
+  "budget": "Two predeclared A030 continuations, each max5 native seconds/10wall seconds. No baseline rerun, new cases, rosters or games. Only if a route produces actual protection, one acquired-information comparison may isolate why production misses it. If neither works, stop route trials and inspect upstream saved opening/release evidence.",
+  "judgment": "Actual arrival shoulder, native LB block/contact load, defender route through actual runner arrival, first carrier contact, runner progress/speed and traffic/first-level costs. Nearest distance or final yardage alone cannot pass.",
+  "opposingEvidence": "Reuse unchanged accepted A027 useful collection/defensive recovery; no production candidate is proposed by a successful oracle action. All real obstructing bodies and native spacing stay active in the failure itself."
+}
