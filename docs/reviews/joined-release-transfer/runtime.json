@@ -1,0 +1,65 @@
+{
+  "successfulCaptures": [
+    {
+      "file": "/workspace/wide-zone-help-read/out/run-transfer/pr47.json.gz",
+      "revision": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "source": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96",
+      "collectorSeconds": 15.212332122,
+      "nativeOuterSteps": 420,
+      "shortPlayInstances": 7
+    },
+    {
+      "file": "out/run-transfer/pr50.json.gz",
+      "revision": "51cf2ce6ae75ad4ff0531480826d737ccaf92ce6",
+      "source": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+      "collectorSeconds": 13.730395716999999,
+      "nativeOuterSteps": 420,
+      "shortPlayInstances": 7
+    },
+    {
+      "file": "out/joined-release/staged.json.gz",
+      "revision": "121c0ece588ea2177c5dfe597f1c8e894dc801c4",
+      "source": "87ed69ec9e6ebcd27785f255e9eda7f695b29089e12143295d5fdf4c35fcfdc5",
+      "collectorSeconds": 11.047613754,
+      "nativeOuterSteps": 177,
+      "shortPlayInstances": 3
+    },
+    {
+      "file": "out/run-transfer/zone-base.json.gz",
+      "revision": "2bf7ed6b2bf23e2b11d82a5bc084f773451c1222",
+      "source": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "collectorSeconds": 8.057890155,
+      "nativeOuterSteps": 180,
+      "shortPlayInstances": 3
+    }
+  ],
+  "successfulCollectorSeconds": 48.048231748,
+  "successfulOuterSteps": 1197,
+  "successfulShortPlayInstances": 20,
+  "initialInvalidSplitInstallation": {
+    "retained": false,
+    "reason": "Ace12 has no off-ball core slicer; both throw at initialization after two completed IZ cases. Corrected to Gun Wing12 before any split-zone movement. Added all-input installation preflight.",
+    "completedPlaySecondsFromConsole": {
+      "pr47": [
+        2.396496251,
+        2.145443997
+      ],
+      "pr50": [
+        2.443204502,
+        2.212849218
+      ]
+    },
+    "outerSteps": 240,
+    "shortPlayInstances": 4,
+    "launcherReceipts": [
+      "receipts/pr47-launcher.json",
+      "receipts/pr50-launcher.json"
+    ]
+  },
+  "totalNewNativeOuterSteps": 1437,
+  "totalNewShortPlayInstances": 24,
+  "fullGames": 0,
+  "finalThreeZoneOpeningsSeconds": 8.057890155,
+  "finalThreeZoneOuterSteps": 180,
+  "unitPreviews": "Standalone diagnostic/decision previews are excluded from native outer counts; command wall times include their work."
+}

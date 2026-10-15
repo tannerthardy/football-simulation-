@@ -16,6 +16,16 @@ beat. Preserve honest held/contact outcomes and the known weak adverse control;
 no graph-route retry, hidden information, capacity/physics or perception change.
 Freeze source/tests/scripts/config and HEAD during every baseline receipt.
 
+Completed: PR47/PR50 transfer checked on seven frozen calls. Joined admission
+was rejected on supported controls; separating handoff and free departure passed54
+checks but introduced one86.08 RG/Y impulse in the weak coupled control despite
+unchanged releasing member. It is rejected and absent from runtime. Final engine
+changes only the physical base request for attached inside/split-zone first-level
+TEs; WZ and gap policy remain unchanged.111 focused checks/typecheck pass, three
+new inside/split native openings preserve0/1/0 teammate impacts (weak improves
+2→1). Exact code/capture `2bf7ed6`, runtime `66e59745…`. [Transfer evidence,
+replays, failed release controls, pins and costs](reviews/joined-release-transfer/README.md).
+
 ## Continuous wide-zone interaction, 2026-10-14
 
 The user explicitly authorizes continuing the entire wide-zone correction,

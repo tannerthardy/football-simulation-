@@ -1,0 +1,49 @@
+{
+  "protocol": "run-scheme-replay-v1",
+  "inputs": [
+    {
+      "label": "Before",
+      "path": "/workspace/wide-zone-help-read/out/run-transfer/pr47.json.gz",
+      "sha256": "9e1b3c91a7076900831f09773367fdb40d1eb3136306a5642c002bc6b4d23abe",
+      "revision": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "runtime": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96"
+    },
+    {
+      "label": "Candidate",
+      "path": "/workspace/joined-release-transfer/out/run-transfer/pr50.json.gz",
+      "sha256": "79df081487d4564c52a93333679fccd42e1f978abff77bae229e960f0af7e643",
+      "revision": "51cf2ce6ae75ad4ff0531480826d737ccaf92ce6",
+      "runtime": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2"
+    }
+  ],
+  "output": "/workspace/joined-release-transfer/out/run-transfer/gap-visual/replay.gif",
+  "bytes": 1608022,
+  "sha256": "88b264dc32967a294b62a69cbcf5e7abee09a12af766a74f59a346ba5b598a71",
+  "frames": 61,
+  "capturedSecondsShown": 3,
+  "frameDurationMs": 100,
+  "mainView": {
+    "fieldY": [
+      15,
+      35
+    ],
+    "fieldX": [
+      31,
+      46
+    ]
+  },
+  "all22Inset": true,
+  "whistledPoseHolds": [],
+  "heldPoseHasLoadOverlay": false,
+  "snapshots": [
+    "out/run-transfer/gap-visual/replay-0.50s.png",
+    "out/run-transfer/gap-visual/replay-1.00s.png",
+    "out/run-transfer/gap-visual/replay-2.00s.png",
+    "out/run-transfer/gap-visual/replay-2.50s.png",
+    "out/run-transfer/gap-visual/replay-2.95s.png",
+    "out/run-transfer/gap-visual/replay-3.00s.png"
+  ],
+  "scriptSha256": "f57ec09fdc3f9e19472b62a8db42e487ccb0436c3d181519d576f22818f6fe0a",
+  "newWorldSteps": 0,
+  "seconds": 28.562801000000036
+}

@@ -1,0 +1,256 @@
+{
+  "protocol": "run-transfer-bundle-manifest-v1",
+  "captures": [
+    {
+      "label": "pr47",
+      "path": "/workspace/wide-zone-help-read/out/run-transfer/pr47.json.gz",
+      "rawSha256": "9e1b3c91a7076900831f09773367fdb40d1eb3136306a5642c002bc6b4d23abe",
+      "revision": "8e68bf7ec1706a33305d02981889806f61ecabe9",
+      "runtime": "df7dae5752038a5b4b73651cf06eecee6fd1a02aa13d0e4f2fa9f12fe6d56e96",
+      "originalGzipBytes": 22317521,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-iz_weak-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-duo-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-counter-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-trap-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-oz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "pr50",
+      "path": "/workspace/joined-release-transfer/out/run-transfer/pr50.json.gz",
+      "rawSha256": "79df081487d4564c52a93333679fccd42e1f978abff77bae229e960f0af7e643",
+      "revision": "51cf2ce6ae75ad4ff0531480826d737ccaf92ce6",
+      "runtime": "afb8a307e7607c26d87e1d5f52b51a43deda2ea4712126ee3826077a994102d2",
+      "originalGzipBytes": 22585492,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-iz_weak-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-duo-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-counter-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-trap-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-oz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "zone-base",
+      "path": "/workspace/joined-release-transfer/out/run-transfer/zone-base.json.gz",
+      "rawSha256": "8eb242bdaadd8b48f4ea260843a3ee229abd2a0af240a25f6f440944655fc1d2",
+      "revision": "2bf7ed6b2bf23e2b11d82a5bc084f773451c1222",
+      "runtime": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "originalGzipBytes": 9883176,
+      "cases": [
+        {
+          "id": "ace12-iz_strong-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "ace12-iz_weak-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "wing12-split_zone-over-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    },
+    {
+      "label": "rejected-staged",
+      "path": "/workspace/joined-release-transfer/out/joined-release/staged.json.gz",
+      "rawSha256": "3c5cc915f243e8f32c49b8ee21a95722cf9309c70f0764de07b07cf5e394f814",
+      "revision": "121c0ece588ea2177c5dfe597f1c8e894dc801c4",
+      "runtime": "87ed69ec9e6ebcd27785f255e9eda7f695b29089e12143295d5fdf4c35fcfdc5",
+      "originalGzipBytes": 10469019,
+      "cases": [
+        {
+          "id": "uc12-wz-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        },
+        {
+          "id": "uc12-wz-s3-mirror",
+          "frames": 57,
+          "stateHashes": 57,
+          "informationHashes": 57
+        },
+        {
+          "id": "uc12-wz-weak-s3",
+          "frames": 60,
+          "stateHashes": 60,
+          "informationHashes": 60
+        }
+      ]
+    }
+  ],
+  "bundle": "docs/reviews/joined-release-transfer/evidence.jsonrefs.gz",
+  "bytes": 13870692,
+  "sha256": "371e27a0a1fca1fb73afcf4beca4951356654dee5a287c7abafed6c8a2b1edd4",
+  "retainedJsonSha256": "b2a898c706d44e8e276ef247c087c4cfdf9bb1083c18f76c12f4366be4066d37",
+  "roundTripExact": true,
+  "containersVisited": 4549047,
+  "uniqueContainers": 747848,
+  "omitted": [
+    "panel[].writes",
+    "panel[].methods",
+    "panel[].phases",
+    "panel[].frames[].observerState",
+    "panel[].frames[].rngBefore"
+  ],
+  "scriptSha256": "ffb6161fb7bb8ac5064577801e5c41b7173fdb75b3b1107ac3dcc2f1c784e63a",
+  "codecSha256": "837a6de1698a49bc93a3d29ab30edddc8a753f319dcc26e050ab53e8d2997708",
+  "newWorldSteps": 0,
+  "elapsedSeconds": 72.86203367800044,
+  "diskDecode": {
+    "digestVerified": true,
+    "retainedJsonSha256": "b2a898c706d44e8e276ef247c087c4cfdf9bb1083c18f76c12f4366be4066d37",
+    "elapsedSeconds": 12.982805053998163,
+    "newWorldSteps": 0
+  },
+  "reviewArtifacts": [
+    {
+      "file": "experiment-question.md",
+      "bytes": 2613,
+      "sha256": "5710f302874ba59bd068044faa5570a15c9ceab58541850216570f173f3a2fb2"
+    },
+    {
+      "file": "gap-replay-1.00s.png",
+      "bytes": 130180,
+      "sha256": "f91e96e9b63e01ffb75cd1f4689125bd3cae07cac747d43aee372df5835e1b17"
+    },
+    {
+      "file": "gap-replay-2.00s.png",
+      "bytes": 138755,
+      "sha256": "afdd57e33922e54bf99d73cce4e9c859a8739df97502d8788f649674506c5f08"
+    },
+    {
+      "file": "gap-replay-receipt.json",
+      "bytes": 1680,
+      "sha256": "e1851edcb62ac2495e3151f7d32d9cac6b6003cd3941dc383dbcaba33cd141df"
+    },
+    {
+      "file": "gap-replay.gif",
+      "bytes": 1608022,
+      "sha256": "88b264dc32967a294b62a69cbcf5e7abee09a12af766a74f59a346ba5b598a71"
+    },
+    {
+      "file": "rejected-staged-summary.json",
+      "bytes": 106453,
+      "sha256": "1a1699e758376f696ceae4b5204a8b0730901862dc86b2512e4ced18fa355284"
+    },
+    {
+      "file": "runtime.json",
+      "bytes": 2344,
+      "sha256": "cf77f517256d4a283e153a0b8f51643ebf2612191c581f3e6c877ab610b1f455"
+    },
+    {
+      "file": "summary.json",
+      "bytes": 738245,
+      "sha256": "715e3816f411fbbdaf53a6bcd1416d6d91883f56c3f6e854ee4954bc18423e08"
+    },
+    {
+      "file": "timeline.csv.gz",
+      "bytes": 1798955,
+      "sha256": "970a120eec661d7dd6b699423fd798afa97187b5a6b26c1e174611f48319e907"
+    },
+    {
+      "file": "zone-replay-1.00s.png",
+      "bytes": 162292,
+      "sha256": "1e1c3165de651ace2e9a5366f8bef1fbbf3171f3409ea37ed8a30700da957f8d"
+    },
+    {
+      "file": "zone-replay-2.00s.png",
+      "bytes": 172083,
+      "sha256": "e096c9fc845969f1197f19a79c9188871bfe7f38c5c3443d86e95abefa319281"
+    },
+    {
+      "file": "zone-replay-receipt.json",
+      "bytes": 1696,
+      "sha256": "3b2a58a4d02e58e5c4bc187de62fd88b0202500d9316cccf52cb74f2c7242ae3"
+    },
+    {
+      "file": "zone-replay.gif",
+      "bytes": 2210838,
+      "sha256": "f0f231a2fd580168398cbc82a66230a0315cd622ac95396066f43de1ec7b2436"
+    }
+  ]
+}
