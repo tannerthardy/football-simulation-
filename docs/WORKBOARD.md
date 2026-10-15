@@ -15,6 +15,19 @@ competing NFL query, full shared suite or feature integration. Exact manifest an
 review rubric are frozen before collection; results will rank panel symptoms,
 not claim league-wide prevalence. Other owners' near-complete work continues.
 
+Completed: 48/48 full native plays in 18.85 s; zero partial/skipped/timeouts and
+unchanged accepted source. Reviewed all sequences and reconciled raw hashes.
+Leading questions: nine unachieved planned second-level blocks (not nine proven
+defects), eight Quarters run-support request reversals through coverage
+reassignment (outcome cost unmeasured), and two mesh approach/coordination
+concerns. Useful offense and defense, the achieved A027 block and downstream
+A044 block are preserved. No repeated precontact runner freeze in this panel.
+[Diagnosis, limits and reproduction](reviews/accepted-broad-football-diagnosis-2026-10-15.md).
+Native evidence preserved in a 40.6-MB archive outside the repository; committed
+receipts and per-play ledgers identify every case. No additional simulations or
+engine changes during review; next work should discriminate the leading causes
+before another feature wave or broad batch.
+
 
 ## Approved risk-only final verification — 2026-10-15
 

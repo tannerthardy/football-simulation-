@@ -1,0 +1,472 @@
+{
+  "schema": "accepted-broad-audit-adjudication-v1",
+  "acceptedCommit": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "sourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "manifestSha256": "fbb8ee4147163842758ee308a2d8f4e836d70602358ed777b10a1531a8b4fa53",
+  "querySha256": "7074607f4024e159c7d982c93c2fc963955dd896a718063a504aa72e20b1a835",
+  "ledgers": {
+    "data/reviews/current/accepted-broad-audit-run-review.json": "fff320ce8e36cd7a12fbfbeaa52da40d789fa3028d1854c46a5bd078db0fb147",
+    "data/reviews/current/accepted-broad-audit-pass-review.json": "08a2dbc1052dfea3a515c300add627ff8a48392e0cd8e70edd86c35fb2f62241"
+  },
+  "verified": {
+    "cases": 48,
+    "uniqueAll22IDsPerCase": true,
+    "exactSetupsAndRawHashes": true,
+    "nativeEventsAndStats": true,
+    "uniformNativeFrameCadence": true,
+    "initialEnergyOne": true,
+    "partial": 0,
+    "skipped": 0,
+    "max25SecondCensoring": 0,
+    "newSimulations": 0
+  },
+  "categoryCaseIds": {
+    "blocking_access": [
+      "A001",
+      "A003",
+      "A013",
+      "A015",
+      "A018",
+      "A025",
+      "A030",
+      "A037",
+      "A039"
+    ],
+    "coverage_recognition": [
+      "A003",
+      "A006",
+      "A015",
+      "A018",
+      "A027",
+      "A030",
+      "A039",
+      "A042"
+    ],
+    "pursuit_arrival_and_gathering": [
+      "A020",
+      "A044"
+    ],
+    "runner_and_teammate_coordination": [
+      "A044"
+    ]
+  },
+  "categoryCounts": {
+    "blocking_access": 9,
+    "coverage_recognition": 8,
+    "pursuit_arrival_and_gathering": 2,
+    "runner_and_teammate_coordination": 1
+  },
+  "uniquePlaysWithReviewQuestion": [
+    "A001",
+    "A003",
+    "A006",
+    "A013",
+    "A015",
+    "A018",
+    "A020",
+    "A025",
+    "A027",
+    "A030",
+    "A037",
+    "A039",
+    "A042",
+    "A044"
+  ],
+  "interpretation": "Counts are reviewed concerns/assignment nonrealizations, not proven defects, unrealistic-play rates or causal yardage effects. Categories overlap. Balanced fixed-call panel is not game-caller prevalence.",
+  "outcomes": {
+    "run": {
+      "tackle": 24
+    },
+    "pass": {
+      "tackle": 20,
+      "incomplete": 3,
+      "touchdown": 1
+    }
+  },
+  "recordedContactDefinition": "First original carrier_contact/tackle_wrap/hit involving actual rusher or receiver after handoff/catch. Event tick bins, not exact physical first contact; no speed or force inference.",
+  "recordedContactSummary": {
+    "run": {
+      "actualPossessionPlays": 24,
+      "withRecordedContact": 24,
+      "withTerminalTackle": 24,
+      "medianRecordedContactToTackle": 0.675
+    },
+    "pass": {
+      "actualPossessionPlays": 17,
+      "withRecordedContact": 16,
+      "withTerminalTackle": 16,
+      "medianRecordedContactToTackle": 0.775
+    }
+  },
+  "recordedContactRows": [
+    {
+      "id": "A001",
+      "kind": "run",
+      "playerId": "S30O-RB1",
+      "start": 1.45,
+      "firstRecordedContact": 2.65,
+      "terminalTackle": 3.2,
+      "recordedContactToTackle": 0.55
+    },
+    {
+      "id": "A002",
+      "kind": "run",
+      "playerId": "S30O-RB1",
+      "start": 1.55,
+      "firstRecordedContact": 3.05,
+      "terminalTackle": 3.7,
+      "recordedContactToTackle": 0.65
+    },
+    {
+      "id": "A003",
+      "kind": "run",
+      "playerId": "S30O-RB1",
+      "start": 1.55,
+      "firstRecordedContact": 2.6,
+      "terminalTackle": 3.15,
+      "recordedContactToTackle": 0.55
+    },
+    {
+      "id": "A004",
+      "kind": "run",
+      "playerId": "S30O-RB1",
+      "start": 1.4,
+      "firstRecordedContact": 2.35,
+      "terminalTackle": 3.1,
+      "recordedContactToTackle": 0.75
+    },
+    {
+      "id": "A005",
+      "kind": "run",
+      "playerId": "S30O-RB1",
+      "start": 1.45,
+      "firstRecordedContact": 3.85,
+      "terminalTackle": 4.55,
+      "recordedContactToTackle": 0.7
+    },
+    {
+      "id": "A006",
+      "kind": "run",
+      "playerId": "S30O-RB1",
+      "start": 1.4,
+      "firstRecordedContact": 3.25,
+      "terminalTackle": 5.5,
+      "recordedContactToTackle": 2.25
+    },
+    {
+      "id": "A007",
+      "kind": "pass",
+      "playerId": "S30O-TE2",
+      "start": 2.7,
+      "firstRecordedContact": 5.65,
+      "terminalTackle": 6.4,
+      "recordedContactToTackle": 0.75
+    },
+    {
+      "id": "A008",
+      "kind": "pass",
+      "playerId": "S30O-TE2",
+      "start": 2.45,
+      "firstRecordedContact": 2.45,
+      "terminalTackle": 3.35,
+      "recordedContactToTackle": 0.9
+    },
+    {
+      "id": "A009",
+      "kind": "pass",
+      "playerId": "S30O-RB1",
+      "start": 4.65,
+      "firstRecordedContact": 7.7,
+      "terminalTackle": 8.5,
+      "recordedContactToTackle": 0.8
+    },
+    {
+      "id": "A010",
+      "kind": "pass",
+      "playerId": "S30O-TE2",
+      "start": 2.55,
+      "firstRecordedContact": 3.4,
+      "terminalTackle": 4.2,
+      "recordedContactToTackle": 0.8
+    },
+    {
+      "id": "A011",
+      "kind": "pass",
+      "playerId": "S30O-RB1",
+      "start": 5.65,
+      "firstRecordedContact": 6.25,
+      "terminalTackle": 8.95,
+      "recordedContactToTackle": 2.7
+    },
+    {
+      "id": "A013",
+      "kind": "run",
+      "playerId": "S74O-RB1",
+      "start": 1.5,
+      "firstRecordedContact": 2.4,
+      "terminalTackle": 3,
+      "recordedContactToTackle": 0.6
+    },
+    {
+      "id": "A014",
+      "kind": "run",
+      "playerId": "S74O-RB1",
+      "start": 1.55,
+      "firstRecordedContact": 2.7,
+      "terminalTackle": 3.3,
+      "recordedContactToTackle": 0.6
+    },
+    {
+      "id": "A015",
+      "kind": "run",
+      "playerId": "S74O-RB1",
+      "start": 1.55,
+      "firstRecordedContact": 2.85,
+      "terminalTackle": 3.5,
+      "recordedContactToTackle": 0.65
+    },
+    {
+      "id": "A016",
+      "kind": "run",
+      "playerId": "S74O-RB1",
+      "start": 1.45,
+      "firstRecordedContact": 2.65,
+      "terminalTackle": 3.5,
+      "recordedContactToTackle": 0.85
+    },
+    {
+      "id": "A017",
+      "kind": "run",
+      "playerId": "S74O-RB1",
+      "start": 1.5,
+      "firstRecordedContact": 4.1,
+      "terminalTackle": 4.8,
+      "recordedContactToTackle": 0.7
+    },
+    {
+      "id": "A018",
+      "kind": "run",
+      "playerId": "S74O-RB1",
+      "start": 1.45,
+      "firstRecordedContact": 2.75,
+      "terminalTackle": 3.45,
+      "recordedContactToTackle": 0.7
+    },
+    {
+      "id": "A019",
+      "kind": "pass",
+      "playerId": "S74O-FB1",
+      "start": 2.45,
+      "firstRecordedContact": 2.7,
+      "terminalTackle": 6.2,
+      "recordedContactToTackle": 3.5
+    },
+    {
+      "id": "A020",
+      "kind": "pass",
+      "playerId": "S74O-WR2",
+      "start": 3.35,
+      "firstRecordedContact": 4.6,
+      "terminalTackle": 5.35,
+      "recordedContactToTackle": 0.75
+    },
+    {
+      "id": "A021",
+      "kind": "pass",
+      "playerId": "S74O-WR2",
+      "start": 4.4,
+      "firstRecordedContact": 5.7,
+      "terminalTackle": 6.3,
+      "recordedContactToTackle": 0.6
+    },
+    {
+      "id": "A024",
+      "kind": "pass",
+      "playerId": "S74O-RB1",
+      "start": 4.35,
+      "firstRecordedContact": 5.1,
+      "terminalTackle": 5.7,
+      "recordedContactToTackle": 0.6
+    },
+    {
+      "id": "A025",
+      "kind": "run",
+      "playerId": "S88O-RB2",
+      "start": 1.5,
+      "firstRecordedContact": 3,
+      "terminalTackle": 3.65,
+      "recordedContactToTackle": 0.65
+    },
+    {
+      "id": "A026",
+      "kind": "run",
+      "playerId": "S88O-RB2",
+      "start": 1.6,
+      "firstRecordedContact": 2.05,
+      "terminalTackle": 2.7,
+      "recordedContactToTackle": 0.65
+    },
+    {
+      "id": "A027",
+      "kind": "run",
+      "playerId": "S88O-RB2",
+      "start": 1.6,
+      "firstRecordedContact": 3.2,
+      "terminalTackle": 4.3,
+      "recordedContactToTackle": 1.1
+    },
+    {
+      "id": "A028",
+      "kind": "run",
+      "playerId": "S88O-RB2",
+      "start": 1.45,
+      "firstRecordedContact": 3.2,
+      "terminalTackle": 3.95,
+      "recordedContactToTackle": 0.75
+    },
+    {
+      "id": "A029",
+      "kind": "run",
+      "playerId": "S88O-RB2",
+      "start": 1.5,
+      "firstRecordedContact": 2.65,
+      "terminalTackle": 3.65,
+      "recordedContactToTackle": 1.0
+    },
+    {
+      "id": "A030",
+      "kind": "run",
+      "playerId": "S88O-RB2",
+      "start": 1.45,
+      "firstRecordedContact": 2.75,
+      "terminalTackle": 3.45,
+      "recordedContactToTackle": 0.7
+    },
+    {
+      "id": "A031",
+      "kind": "pass",
+      "playerId": "S88O-TE1",
+      "start": 2.6,
+      "firstRecordedContact": 3.15,
+      "terminalTackle": 3.85,
+      "recordedContactToTackle": 0.7
+    },
+    {
+      "id": "A032",
+      "kind": "pass",
+      "playerId": "S88O-TE1",
+      "start": 2.8,
+      "firstRecordedContact": 2.8,
+      "terminalTackle": 4.3,
+      "recordedContactToTackle": 1.5
+    },
+    {
+      "id": "A034",
+      "kind": "pass",
+      "playerId": "S88O-TE1",
+      "start": 2.9,
+      "firstRecordedContact": 4.05,
+      "terminalTackle": 4.85,
+      "recordedContactToTackle": 0.8
+    },
+    {
+      "id": "A035",
+      "kind": "pass",
+      "playerId": "S88O-WR1",
+      "start": 3.45,
+      "firstRecordedContact": 3.9,
+      "terminalTackle": 4.9,
+      "recordedContactToTackle": 1.0
+    },
+    {
+      "id": "A036",
+      "kind": "pass",
+      "playerId": "S88O-RB2",
+      "start": 4.25,
+      "firstRecordedContact": 4.9,
+      "terminalTackle": 5.55,
+      "recordedContactToTackle": 0.65
+    },
+    {
+      "id": "A037",
+      "kind": "run",
+      "playerId": "S69O-RB1",
+      "start": 1.35,
+      "firstRecordedContact": 2.5,
+      "terminalTackle": 3.1,
+      "recordedContactToTackle": 0.6
+    },
+    {
+      "id": "A038",
+      "kind": "run",
+      "playerId": "S69O-RB1",
+      "start": 1.45,
+      "firstRecordedContact": 2.9,
+      "terminalTackle": 3.6,
+      "recordedContactToTackle": 0.7
+    },
+    {
+      "id": "A039",
+      "kind": "run",
+      "playerId": "S69O-RB1",
+      "start": 1.45,
+      "firstRecordedContact": 2.55,
+      "terminalTackle": 3.15,
+      "recordedContactToTackle": 0.6
+    },
+    {
+      "id": "A040",
+      "kind": "run",
+      "playerId": "S69O-RB1",
+      "start": 1.35,
+      "firstRecordedContact": 2.3,
+      "terminalTackle": 2.95,
+      "recordedContactToTackle": 0.65
+    },
+    {
+      "id": "A041",
+      "kind": "run",
+      "playerId": "S69O-RB1",
+      "start": 1.35,
+      "firstRecordedContact": 3.55,
+      "terminalTackle": 4.1,
+      "recordedContactToTackle": 0.55
+    },
+    {
+      "id": "A042",
+      "kind": "run",
+      "playerId": "S69O-RB1",
+      "start": 1.35,
+      "firstRecordedContact": 3.25,
+      "terminalTackle": 4.05,
+      "recordedContactToTackle": 0.8
+    },
+    {
+      "id": "A044",
+      "kind": "pass",
+      "playerId": "S69O-WR3",
+      "start": 2.9,
+      "firstRecordedContact": null,
+      "terminalTackle": null,
+      "recordedContactToTackle": null
+    },
+    {
+      "id": "A045",
+      "kind": "pass",
+      "playerId": "S69O-WR3",
+      "start": 4.65,
+      "firstRecordedContact": 5.5,
+      "terminalTackle": 6.2,
+      "recordedContactToTackle": 0.7
+    },
+    {
+      "id": "A046",
+      "kind": "pass",
+      "playerId": "S69O-TE2",
+      "start": 2.5,
+      "firstRecordedContact": 2.75,
+      "terminalTackle": 3.5,
+      "recordedContactToTackle": 0.75
+    }
+  ]
+}

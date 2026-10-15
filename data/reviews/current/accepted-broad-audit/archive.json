@@ -1,0 +1,7 @@
+{
+  "path": "/workspace/datasets/simulator-audits/accepted-8ca8dee-48snap-v1.tar.gz",
+  "bytes": 40559081,
+  "sha256": "72a62b95145cd64bb3bf06d60a62adbb7735cf872d777ff35faa5883e138e397",
+  "archiveWallSeconds": 5.00894935100041,
+  "source": "Native accepted simulator panel, no external football source data. No engine reruns or network acquisition."
+}
