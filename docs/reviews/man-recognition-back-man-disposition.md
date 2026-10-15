@@ -28,9 +28,11 @@ native alley, current-belief, mirror, achieved traction/work and recording
 checks remain in place. No production line changes in this reconciliation.
 
 Run/Flex consultation and edit boundaries were published in [#75](https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203247713).
-Catching owns this disposition under the user's explicit assignment. No Run
-approval is claimed before its response; a substantive owner counterexample
-must remain visible for Integration's review. Flex retains mesh attribution.
+Catching owns this disposition under the user's explicit assignment. [Run's
+independent disposition](https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6203244219)
+agrees with this exact ownership contract and identifies no observable global
+flight cancellation cue. It is a contract review, not a new combined passing
+receipt. Flex retains mesh attribution.
 
 Accepted base: `90edc52530caa71efdebf257f17d954a8a629ea0` (#78). The actual merge
 checkpoint is `3fb93bdc562b9fbc92e711db41b2c4c54d6ac022`, with source SHA256
@@ -47,6 +49,7 @@ it is not relabeled as passing. P006/Smash adverse geometry, P045 no contact and
 the source-specific passing/inconclusive transfer evidence remain unchanged.
 
 [Focused receipt](../../data/reviews/current/man-recognition-contract/focused.json)
-and [portable test-only reconciliation](../../data/reviews/current/man-recognition-contract/back-man.patch).
+and [portable test-only reconciliation](../../data/reviews/current/man-recognition-contract/back-man.patch)
+(apply with `git apply --unidiff-zero`).
 Integration owns independent review and the next exact combined verification.
 The separate run-support reassignment change is not bundled into #75.
