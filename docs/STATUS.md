@@ -4,7 +4,13 @@ Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Accepted develop: `7d1451b2c31786e075550183a6a93bbda23da29b`**, documentation-only #65 after #63 and prior #12. Historical `4ded6b6` stays separate.
+- **Operating policy:** contributors submit fetchable work through the single
+  `integration-ready` GitHub queue; readiness requests independent review.
+  Integration checks it on resume/working checkpoints, owns one exact combined
+  verification and may merge routine reviewed corrections under standing user
+  authority. Compatible work batches naturally; blocked work holds itself.
+  [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
+- **Accepted develop: `8ca8deebe4afa91c3021bdd119bed8976cf00e47`**, merged #74 with #72/#63/#65 and prior #12 retained. Historical `4ded6b6` stays separate.
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -19,13 +25,26 @@ Do not use the historical sections below as a current starting-reference pin.
   Neither is accepted runtime; the information-only correction stays separate.
 - Prior PR bookkeeping closed 43 finished/superseded PRs, leaving 23 open at
   that snapshot before #63 merged. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
-- #66 remains held independently. #67's isolated final candidate at
-  `64177487272b7e0b2d51460e23ccdb6447508e39` passes **1,724 TS/145 Python,
-  typecheck/build** with all44 flags/components=1, no skipped phases or drift.
-  User accepted Run's ordinary-fixture adjudication; native adverse outcomes
-  and forecast/contact limitations remain. [Final receipt](../data/reviews/current/pass-cutoff-integration/final-receipt.json).
-  Recommend bounded merge **after explicit authorization**; accepted develop
-  remains7d1451b. #69 remains a separate queued controller review.
+- #72's isolated #67 pass-cutoff correction is accepted and merged as
+  `4679a3c260188143bcc66f6f20534327c78d7eaa`. Its actual tree equals reviewed1675478;
+  reuse1,724 TS/145 Python/typecheck/build passing verification. No reruns.
+  Native adverse outcomes and forecast/contact limits remain; [merge receipt](../data/reviews/current/pr72-merge.json).
+- User authorized and merged risk-only #74 as8ca8dee. Its entire tree matches
+  reviewed publicationa8dabec; reuse1,726 TS/145 Python/typecheck/build passing
+  receipt without reruns. [Merge receipt](../data/reviews/current/pr74-merge.json).
+  Observation transport stays deferred until a reviewed consumer needs it.
+  [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
+  #69's corrected production hook now has Do-It-All's focused acceptance;
+  Its isolated four-file #78 candidate40be568 passes1,729 TS/145 Python,
+  typecheck/build in191.361s,44 flags/components1. Routine adoption follows
+  final ref/tree checks under standing authority, without an unchanged rerun.
+  Physics remains separate.
+- #75's isolated information correction is held at a neighboring run-fit contract.
+  The eight new recognition checks pass; one combined run has1,732 TS pass/two
+  existing back-man failures, with145 Python,typecheck/build passing (188.094s).
+  Catching + Run Game must resolve pre-recognition insertion/alley ownership;
+  assertions and adverse evidence are preserved. [Exact question, candidate and receipt](INTEGRATION.md#man-recognition-review).
+  No unchanged rerun, parked P045 variants or additional game campaign.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
@@ -35,6 +54,12 @@ and secondary support, and independent minimal ready controller reviews. Owners
 reconcile only affected accepted contracts at clean checkpoints; see the
 [specific investigation handoff](INTEGRATION.md#current-candidate-2026-10-15).
 No new games, roster screen or shared-suite rerun is requested by this update.
+The next [accepted-controller game checkpoint](INTEGRATION.md#accepted-controller-game-checkpoint)
+will be coordinated once with Measurement/CEO after disposition of #75 and the
+next ready batch; cap four games/240 launcher seconds,60s per game, no automatic rerun.
+Documentation-only policy edits use link/ref checks; the ready runtime candidate
+alone triggers its required verification. Believable football remains the goal;
+information correctness and overall football quality are separate claims.
 
 <details>
 <summary>Pre-merge #63 status, tracking priorities and earlier history — preserved</summary>

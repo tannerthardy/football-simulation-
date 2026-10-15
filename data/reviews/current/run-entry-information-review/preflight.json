@@ -1,0 +1,51 @@
+{
+  "schema": "run-entry-information-review-preflight-v1",
+  "candidate": "60223a863a8431e85d5027c879191f3527ed10b8",
+  "evidence": "80c9fa4db36ebcd4b81edda110e9a451882d8291",
+  "actualBase": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "currentAcceptedDevelop": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "originalSourceSha256": "650c03aa263ff7469b4f9ee015836ca735c21de82b8513d28d2710a8799cbb89",
+  "originalValidationSha256": "0109ce8282f51eb877dfa8608e968b1cf35d0bf706456ea5a868ca9b6ee46c5a",
+  "originalManifestArtifactsVerified": 4,
+  "authorFocusedAndTypecheckReceiptsCompatible": true,
+  "authorCommandSeconds": 15.085626648000002,
+  "ownerCoreIdentical": true,
+  "ownerCoreSha256": "dac6f5bcf21a14b6022c5a233e499057758fcc44f001511cfb74e941a204d367",
+  "teammateTransportReferences": [
+    {
+      "file": "src/sim/playsim.ts",
+      "line": 29,
+      "text": "import { TeammateInformation, type TeammatePicture } from './teammate-information.js';"
+    },
+    {
+      "file": "src/sim/playsim.ts",
+      "line": 117,
+      "text": "readonly teammateAwareness: TeammateInformation;"
+    },
+    {
+      "file": "src/sim/playsim.ts",
+      "line": 251,
+      "text": "this.teammateAwareness = new TeammateInformation(this.agents, new Map());"
+    },
+    {
+      "file": "src/sim/playsim.ts",
+      "line": 325,
+      "text": "teammateInformation(observer: Agent, target: Agent): TeammatePicture {"
+    },
+    {
+      "file": "src/sim/playsim.ts",
+      "line": 327,
+      "text": "return this.teammateAwareness.query(observer.idx, target.idx, this.t, this.dt);"
+    },
+    {
+      "file": "src/sim/playsim.ts",
+      "line": 562,
+      "text": "this.teammateAwareness.sense(this.agents, t, this.dt);"
+    }
+  ],
+  "existingProductionConsumersOfTeammateQuery": 0,
+  "dependencyFinding": "Opponent risk uses existing see/recovery/reach APIs only. New teammate query transport does not supply the corrected opponent-risk path. Changes are separable.",
+  "navigationExcluded": true,
+  "legacyCarrierCallersRemainOutOfScope": true,
+  "mergeAuthority": "Only PR72 was authorized/merged; no information candidate merge authorized."
+}

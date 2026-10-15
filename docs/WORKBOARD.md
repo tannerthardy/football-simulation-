@@ -4,9 +4,94 @@
 
 | Item | Owner | Branch / reference | Boundary | Status |
 | --- | --- | --- | --- | --- |
-| Broaden P045 findings into contrasting route/technique contracts; repair one repeated wrong coverage request if established | Codex Catching, assigned by user | `codex/coverage-leverage-continuity`, reconciled with accepted `4679a3c260188143bcc66f6f20534327c78d7eaa`; tested merge `d81cdba`; current candidate source `c237b8c9` | Only `ManCoverage` continuation and `playBall`'s optional unaware fallback; tests/diagnostics/evidence. Accepted PassProtector, physics, capacities, upstream judgment and helper policy unchanged. | Ready for isolated information-contract review. Hidden release no longer discards taught technique before recognition. Initial44 checks/typecheck; current8 direct contracts plus two current paired transfer cases pass. Current vertical/trail active, comeback unchanged sack (plant native transfer unmeasured). Task30 new native executions,47.065 launcher seconds. P006/Smash adverse acquisition changes and P045 no-contact TD remain source-specific. [Broad football review and handoff](reviews/coverage-technique-recognition.md). Integration retains exact combined verification. |
+| Broaden P045 findings into contrasting route/technique contracts; repair one repeated wrong coverage request if established | Codex Catching, assigned by user | `codex/coverage-leverage-continuity`, reconciled with accepted `4679a3c260188143bcc66f6f20534327c78d7eaa`; tested merge `d81cdba`; current candidate source `c237b8c9` | Only `ManCoverage` continuation and `playBall`'s optional unaware fallback; tests/diagnostics/evidence. Accepted PassProtector, physics, capacities, upstream judgment and helper policy unchanged. | Held for acquired back-man contract disposition; Catching owns the focused reconciliation, consulting Run. Hidden release no longer discards taught technique before recognition. Initial44 checks/typecheck; current8 direct contracts plus two current paired transfer cases pass. Current vertical/trail active, comeback unchanged sack (plant native transfer unmeasured). Task30 new native executions,47.065 launcher seconds. P006/Smash adverse acquisition changes and P045 no-contact TD remain source-specific. [Broad football review and handoff](reviews/coverage-technique-recognition.md). Integration retains exact combined verification. |
 
-## Independent #67 portability review — 2026-10-15
+
+## Standing queue and next controller checkpoint — 2026-10-15
+
+Integration owns the existing four shared records, the `integration-ready` GitHub
+queue at resumed/working checkpoints, minimal assembly on accepted develop,
+independent-review reconciliation, one exact combined verification and routine
+merges under the user's standing authority. Contributors own fetchable code,
+focused checks and known risks; readiness is not approval. No background monitor
+or user relay is required. [Policy and exclusions](INTEGRATION.md#standing-integration-workflow).
+
+Current boundary: `codex/controller-checkpoint-integration`, from accepted8ca8dee
+plus queue metadata67e9b9b. Extract #69's reviewed `blocking.ts` RunBlocker hunk,
+`collection-approach.ts` and two tests only. Preserve accepted PassProtector and
+carrier risk, no #75/runtime ancestry, transport/navigation or experimental physics.
+Do-It-All's exact cdd55b9 re-review is accepted; reuse focused receipts. Integration
+froze40be568 and completed all four phases once:1,729 TS/146 files,145 Python,
+typecheck/build pass,191.361s,44 flags/components1. [Receipt](../data/reviews/current/controller-checkpoint-integration/final-receipt.json).
+Final ref/tree checks and routine adoption through #78 follow; no unchanged rerun.
+#75's two back-man assertions stay held with Catching + Run; no assertion edit or
+unchanged rerun. A blocked patch holds itself; do not wait for all agents.
+
+Measurement owns one subsequent game collector/film/results packet; Integration
+freezes the accepted source/settings and coordinates the question/budget with CEO.
+Ceiling four full games/240 launcher seconds,60s per game, existing declared inputs,
+no duplicate collection. [Checkpoint conditions](INTEGRATION.md#accepted-controller-game-checkpoint).
+Physical laws/capabilities/defaults, experimental activation, unresolved material
+correctness risks, historical baselines/defaults and destructive cleanup escalate.
+Earlier per-merge authority paragraphs below describe their dated stages.
+
+## Independent #75 man-recognition integration — 2026-10-15
+
+**Held after one complete combined run.** Tested
+`0f349ef0735402a79d916cff7c9ad496f9424380`:1,732 TS pass/two preserved back-man
+assertions fail;145 Python,typecheck/build pass;188.094 command seconds. Eight
+new direct contracts pass. Catching + Run Game own the specific insertion/alley
+versus recognized-ball boundary; Integration retains verification ownership.
+[Question and receipt](INTEGRATION.md#man-recognition-review). Existing tests
+remain unchanged; no new panel, unchanged rerun or merge is requested.
+
+The original bounded assembly claim is preserved below:
+
+Integration owns this isolated assembly from accepted8ca8dee, preserving latest
+queue metadatafad1b94. Only ManCoverage continuation, playBall's optional unaware
+fallback and the eight authored direct contracts are extracted from1f2d949.
+Catching retains broader coverage diagnosis and owner questions; no new coverage
+fixes are started. P006/Smash costs and P045 no-contact TD stay preserved with
+original source pins; no overall coverage/YAC benefit is asserted. Upstream
+judgment, recognition timing, capacities, helpers and physics stay unchanged.
+Reuse compatible focused/adverse receipts; one exact all-phase verification
+under44 flags/components=1. No native panel, games or parked P045 variants.
+No merge/default/baseline or branch-deletion authorization.
+
+## Completed risk-only verification and adoption — 2026-10-15
+
+Integration owns this review branch from accepted4679a3c (#72 merged). Extract
+only Do-It-All's byte-identical carrier opponent-risk correction and its two
+existing scene controls/fixture from60223a8. Observation-only transport remains
+a separately preserved patch; no navigation, sampledVel, spacing, capacities,
+physics, #69 or new flag. Question: can the active information fix compose with
+accepted develop without unused teammate transport? Reuse the author packet;
+run the two extracted contracts, existing Duo declaration control and typecheck.
+User accepted risk-only scope. Three selected checks/typecheck at71d98fc are
+reused; Integration froze identical runtime/tests at86a8816 with current tracking.
+All four phases pass:1,726 TS/145 Python/typecheck/build,44 flags/components=1,
+no skipped phases/input drift,188.504s.
+[Final receipt](https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-receipt.json). The initial missing
+it import and both failed receipts are retained. No World steps, full suite
+or games for scope selection. No extra game campaign or repeated focused
+loop for the final run. Later explicit user merge approval adopted #74 as
+`8ca8deebe4afa91c3021bdd119bed8976cf00e47`; actual tree equals reviewed publicationa8dabec.
+No new tests, simulations or additional merge authority.
+
+## Earlier information-only dependency/scope review — completed stage
+
+Integration reviewed original60223a8/evidence80c9fa4 independently of #72/#69/Physics.
+Recommend risk-only71d98fc on accepted4679a3c; byte-identical carrier hunk, two
+original controls/fixture plus existing Duo control. Three selected checks and
+typecheck pass; retained initial missing-it-import failures;23.675s total,
+zero World steps/games/shared suite. [Published review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
+Observation-only transport is separately portable and already owner-approved;
+no production consumer yet. Navigation is parked. This earlier scope decision
+was accepted by user, all combined phases passed at86a8816, and later explicit
+merge approval adopted only the risk correction via #74. Do-It-All supplies independent #69 controller review;
+no additional candidate was appended to #67/#72 verification.
+
+## Completed #67 portability review — accepted via #72
 
 Integration owns `codex/pass-cutoff-integration-review` from accepted develop
 `7d1451b2c31786e075550183a6a93bbda23da29b` after the docs-only #65 merge. Boundary: the authored free-cutoff
@@ -16,22 +101,23 @@ User accepted Run's ordinary-fixture adjudication at `f430360d9e5a6a151a3851843d
 Completed: reviewed coverage-job assertion filter, frozen6417748, and all
 typecheck/build/TS/Python phases pass with components=1. Preserve the failed
 first receipt, native RT/RG/LT losses, traffic and forecast limits. #69 and
-experimental physics remain separate. Verification approval grants no merge,
-reference, default or historical-baseline authority.
+experimental physics remain separate. The later explicit user merge authorization was exercised for #72 only;
+no other merge, reference, default or historical-baseline authority follows.
 
 ## Current queue ownership — 2026-10-15
 
 The bounded PR bookkeeping pass closes 43 finished/superseded records while
 retaining every branch and source/evidence history. [Exact dispositions](INTEGRATION.md#pr-dispositions).
-#63 runtime is accepted; documentation-only #65 advances accepted develop to
-`7d1451b2c31786e075550183a6a93bbda23da29b`. #66/#67/#69 stay separately scoped.
+#63 runtime and #65 documentation remain included; user-authorized #72 advances
+accepted develop through #72 and now user-authorized #74 at
+`8ca8deebe4afa91c3021bdd119bed8976cf00e47`. #69 and physics remain separate.
 Unclear handover/attention/callback dispositions remain with their owners.
 No contributor must rerun a suite, rebase, stop work or move a branch for this.
 
 Integration in this chat owns [the shared queue](INTEGRATION.md), exact candidate
 verification and accepted-pin publication under existing authority. This
-queue branch `codex/integration-queue` includes accepted #65 through a normal
-fast-forward, preserving both documentation histories. Its follow-up diff against
+queue branch `codex/integration-queue` includes accepted #74 through a normal
+merge, preserving newer tracking and reviewed evidence histories. Its follow-up diff against
 accepted develop updates only queue/status/ownership and adds new review/merge
 receipts; it is not a further authorized merge. Source, tests, flags, dependencies and existing receipts
 are identical to accepted develop; no worker branch is moved.
@@ -49,15 +135,16 @@ use the current queue and affected owner for live branch/readiness information.
 
 ## Post-adoption queue ownership — 2026-10-15
 
-Integration records accepted develop7d1451b after documentation-only #65;
-source/tests/settings and prior receipts stay identical to accepted8c891f4.
+Integration records accepted develop8ca8dee after user-authorized #74;
+source/tests/settings and prior receipts match reviewed publicationa8dabec.
+Earlier #72 verification/adoption details below preserve their original stage.
 User accepted Run's #67 ordinary-fixture adjudication. Integration installed
 only the approved coverage-job test filter and froze `6417748` on accepted7d1451b.
 All phases passed:1,724 TS/145 Python/typecheck/build,44 flags/components=1,
-no skips/input drift,200.234s. [Final receipt](../data/reviews/current/pass-cutoff-integration/final-receipt.json).
+no skips/input drift,200.234s. [Final receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json).
 No runtime changed after that freeze. Preserve native losses, traffic,
-forecast/contact limitations and every failed receipt. Next: explicit merge
-decision for the isolated candidate; no further verification spend required.
+forecast/contact limitations and every failed receipt. User-authorized merge completed as4679a3c. No future merge authority or
+additional verification spend is implied.
 #69 is queued for an independent controller/Do-It-All! boundary review, with its
 exact pins and witnesses in [the shared queue](INTEGRATION.md#ready-blocked-experimental).
 Physics and entry/Awareness remain separate; no runtime merge authority.

@@ -1,0 +1,25 @@
+{
+  "schema": "opponent-risk-final-publication-checks-v1",
+  "checkedAt": "2026-10-15T21:12:59.458318+00:00",
+  "acceptedDevelop": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "testedCommit": "86a8816bb685a521f60400c6a3fe12e12d02e32f",
+  "trackingReconciled": "1ef22746de0874eb50b61e785377243a3a3aacad",
+  "sourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "validationSha256": "b8f620521c5bb9f58bd2b75e359bb2bbf8e9dcc635a9fea9ea2bf94ac383e622",
+  "publishedRuntimeTestsToolingSettingsMatchTestedCommit": true,
+  "changedProtectedPaths": [
+    "src/sim/behaviors/carrier.ts",
+    "test/fixtures/run-entry-information.json.gz",
+    "test/run-entry-opponent-information.test.ts"
+  ],
+  "existingCurrentReceiptsPreserved": {
+    "4679a3c260188143bcc66f6f20534327c78d7eaa": 129,
+    "cfcbf6b60325ff3fe4dd722f9310d135fae49576": 141,
+    "1ef22746de0874eb50b61e785377243a3a3aacad": 132
+  },
+  "checkedLocalDocumentationPaths": 79,
+  "brokenLinks": [],
+  "extraTestsOrSimulations": 0,
+  "mergeAuthorized": false,
+  "rawPatchContextWhitespace": "Generated .patch files retain required context-prefix spaces; source/document whitespace checks exclude patch artifacts."
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "man-recognition-integration-queue-review-v1",
+  "acceptedDevelop": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "authorPR": 75,
+  "authorHead": "1f2d949409aad9615da2b52df8fddd174e04b2aa",
+  "actualAuthorBase": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "testedCommit": "0f349ef0735402a79d916cff7c9ad496f9424380",
+  "publication": "149741c3b1a35f5ff966d5d453e45d3d3f36142f",
+  "branch": "codex/man-recognition-integration-review",
+  "sourceSha256": "c804b77057c4600cdf5b14b23f798715566c0e162d6e62bdf49764b93d61c742",
+  "validationSha256": "11a0065fa9e2294a93ede3817eb82e88044d08e840860f207772359a6e826b29",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "flagsCount": 44,
+  "RUN_CONTACT_COMPONENTS": "1",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1732,
+    "typescriptFailed": 2,
+    "typescriptTotal": 1734,
+    "typescriptFilesPassed": 145,
+    "typescriptFilesFailed": 1,
+    "typescriptFilesTotal": 146,
+    "directRecognitionContractsPassed": 8,
+    "pythonPassed": 145,
+    "skippedPhases": [],
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "exitCode": 1
+  },
+  "decision": "Hold adoption: narrow receiver-technique information correction is supported, but two preserved acquired back-man run-fit contracts conflict. Obtain affected-owner adjudication before modifying assertions or recommending merge.",
+  "nextDecision": {
+    "owners": [
+      "Catching And Defensive Pursuit",
+      "Run Game / acquired back-man run-fit owner"
+    ],
+    "question": "Does an unrecognized airborne throw preserve the same acquired keyed insertion/alley action as the held-ball arm, until existing sawThrow becomes true, where unchanged ball-contest priority then owns the action?",
+    "boundedProposal": "If owners confirm that boundary, reconcile the two tests into explicit unrecognized-versus-held invariance and recognized-ball ownership controls; retain positive acquired possession/run belief and mirrored/traction/PA controls. Do not simply remove or weaken the assertions.",
+    "alternative": "If a valid observable cue should cancel run-fit earlier, identify that cue and the smallest controller correction; do not restore omniscient global-air phase switching.",
+    "approval": "No merge authorization exists. No test-contract change is presumed approved by this packet."
+  },
+  "cost": {
+    "combinedCommandSeconds": 188.094098739,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.84831681
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.767161107
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 1,
+        "elapsedSeconds": 165.670600442
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.8080203800000018
+      }
+    ],
+    "newStandaloneNativeReplays": 0,
+    "newStandaloneGameCampaigns": 0,
+    "newRosterScreens": 0,
+    "suiteGameAssertions": "Existing full-suite game assertions ran once. No extra campaign.",
+    "nextSpend": "Owner contract adjudication first; no unchanged full-suite retry or new film panel. If an approved material correction is made, focused affected controls precede any new combined verification."
+  },
+  "adverseEvidenceAndLimits": {
+    "P006": "At1.75 identical incoming bodies/unrecognized throw: generic fallback vs retained press/history/0.65 delayScale. First contact3.35->3.55, tackle retained; old-source evidence.",
+    "Smash": "At1.85 identical incoming body/unrecognized throw: generic fallback vs retained off-man/history. SS misses after changed entry/runner motion, FS tackles;YAC4.406273->5.651768. No identical-entry grip-law inference; old-source evidence.",
+    "P045": "No-contact49.503836-YAC TD persists; does not veto information correction or diagnose grip law.",
+    "currentVertical": "Author base47 pair actively exercises continuity and preserves tackle7.154575->7.154956YAC.",
+    "currentComeback": "Both current47 arms are identical sacks; native plant transfer remains unmeasured, direct acquired-plant contract passes.",
+    "sourceScope": "P006/Smash/P045 outcomes retain their original pre-72 source; current author transfer packet is47 source. None are relabeled as newly executed8ca outcomes.",
+    "broaderCoverage": "No overall coverage/YAC improvement, recognition timing, gaze/occlusion, cushion/target quality, upstream judgment, help or contact-law repair is claimed."
+  },
+  "links": {
+    "receipt": "https://github.com/tannerthardy/football-simulation-/blob/149741c3b1a35f5ff966d5d453e45d3d3f36142f/data/reviews/current/man-recognition-integration/review-receipt.json",
+    "portablePatch": "https://github.com/tannerthardy/football-simulation-/blob/149741c3b1a35f5ff966d5d453e45d3d3f36142f/data/reviews/current/man-recognition-integration/portable-extraction.patch",
+    "originalEvidence": "https://github.com/tannerthardy/football-simulation-/blob/1f2d949409aad9615da2b52df8fddd174e04b2aa/docs/reviews/coverage-technique-recognition.md",
+    "ownerContractHandoff": "https://github.com/tannerthardy/football-simulation-/pull/75#issuecomment-6202849775"
+  },
+  "reviewReceiptSha256": "b5cd39cb4983843309b8972c43323cc45ae3a8873ec853a86c9775ba487bc8cb",
+  "queueUpdateScope": "Only existing navigation/status/issue/ownership records and this new receipt. No candidate source imported into the queue.",
+  "preservation": {
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "acceptedDevelopUnchanged": true,
+    "authorBranchAndBroaderFindingsPreserved": true,
+    "adverseAndFailedEvidenceKept": true,
+    "mergeAuthorized": false
+  }
+}

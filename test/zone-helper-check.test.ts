@@ -200,7 +200,19 @@ describe('a check does not bypass a physical or near-level responsibility', () =
     expect(collected?.blocker).toBe(f.helper); expect(collected?.defender).toBe(f.defender);
     for (let k = 0; k < 4; k++) step(f, true);
     expect(f.sim.world.joints).toContain(collected!.hands);
-    expect(collected!.hands!.normalForce).toBeGreaterThan(0);
+    // A real collected connection can carry lateral force without compression.
+    // Require current usable reach/torso and the installed first-level side,
+    // rather than treating either a joint label or a force alone as protection.
+    const handsNow = collected!.hands!;
+    expect(Math.hypot(handsNow.normalForce ?? 0, handsNow.tangentForce ?? 0)).toBeGreaterThan(0);
+    const distance = Math.hypot(f.helper.pos.x-f.defender.pos.x, f.helper.pos.y-f.defender.pos.y);
+    expect(distance).toBeLessThanOrEqual(f.helper.profile.radius+f.defender.profile.radius
+      + .3*f.helper.player.measurables.armIn/36);
+    const bearing = Math.atan2(f.defender.pos.y-f.helper.pos.y, f.defender.pos.x-f.helper.pos.x);
+    expect(Math.abs(Math.atan2(Math.sin(bearing-f.helper.facing),Math.cos(bearing-f.helper.facing)))/(Math.PI/2)).toBeLessThan(.65);
+    expect((f.defender.pos.x-f.helper.pos.x)*f.engagement.drive!.x
+      +(f.defender.pos.y-f.helper.pos.y)*f.engagement.drive!.y).toBeGreaterThan(0);
+    expect(f.helper.body.support!.state).toBe('up');
     expect(f.combination.released).toBe(false); expect(checked(f)).toBe(false);
     expect(f.sim.events.some(e => e.type === 'block_climb')).toBe(false);
   });
