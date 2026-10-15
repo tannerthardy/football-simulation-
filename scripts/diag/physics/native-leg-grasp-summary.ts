@@ -46,6 +46,14 @@ function summarize(r: any) {
     }
     const feet = r.placement.filter((q: any) => q.slot === slot && q.t < start + cfg.windowSeconds - 1e-8);
     const stance = r.ground.filter((q: any) => q.slot === slot && q.t < start + cfg.windowSeconds - 1e-8);
+    const combined = feet.map((q: any) => {
+      const samples = stance.filter((g: any) => g.t === q.t && Math.abs(g.time + g.h - q.time) < 1e-8);
+      assert.equal(samples.length, 1);
+      const g = samples[0], command = q.mobility > 0 ? speed(q.desired) / q.mobility : 0;
+      return { structuralFraction: Math.hypot(g.demand, command) / g.traction,
+        availabilityScaledFraction: g.availability > 0 ? Math.hypot(g.demand, command) / g.capacity : 0,
+        commandExcess: command - q.capacity };
+    });
     return {
       slot, massKg: profile.mass, before: bodySummary(before[k]), after: bodySummary(after[k]),
       initialSpeed: speed(before[k].vel), finalSpeed: speed(after[k].vel), parts,
@@ -56,6 +64,9 @@ function summarize(r: any) {
         minAvailability: minimum(stance.map((q: any) => q.availability)),
         maxTranslationForce: maximum(stance.map((q: any) => speed(q.force))),
         minCorrectiveCapacity: minimum(stance.map((q: any) => q.correctiveCapacity)),
+        maxStructuralGroundAndCorrectiveFraction: maximum(combined.map((q: any) => q.structuralFraction)),
+        maxAvailabilityScaledGroundAndCorrectiveFraction: maximum(combined.map((q: any) => q.availabilityScaledFraction)),
+        maxCorrectiveCommandExcess: maximum(combined.map((q: any) => q.commandExcess)),
       },
       correctiveSupport: {
         sampled: feet.length,
