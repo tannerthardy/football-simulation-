@@ -208,14 +208,26 @@ bundles; replay and measurement operators are pinned in the manifests.
 
 ## Runtime and validation
 
-Final source:12 openings /720 live outer50ms steps /26.361s collector wall time. Each opening stops at3s or the whistle.
+Final source:12 openings /720 live outer50ms steps /26.361s sum of collector wall times. Each opening stops at3s or the whistle.
 
-All work, including rejected arms and the one new Under reference:107 short
-openings /6420 live outer steps /239.433s collector wall time; zero full games.
+Captured live-play experiments, including rejected arms and the one new Under reference:107 short
+openings /6420 live outer steps /239.433s sum of collector wall times; zero full games.
 
 These counters exclude scratch controller previews and unit-test World steps;
 wall runtime includes preview work. Test/typecheck process time is separately
 recorded in the receipts. This is an instrumented all22 collector, not a bare
 engine throughput benchmark. Packaging and films execute zero new World steps.
 
-Final affected tests and typecheck receipts are added under `validation/`.
+Final validation at review pin `2e486ddb388f10a2d7306d69176e2678755a1d52`,
+with the same engine source above: **201 tests in16 affected files pass**;
+**typecheck passes**. Both receipts report frozen inputs unchanged.
+The test command took10.620s (9.67s framework duration); typecheck took14.781s.
+
+[Tests receipt](validation/final-affected-tests.json),
+[typecheck receipt](validation/final-typecheck.json),
+[complete frozen receipt ledger](validation/frozen-receipts.json).
+
+Counter/trap controls also assert exact equality of all22 before/after bodies,
+requested and final intents, and complete World reports. Physics and player
+capacity files have no diff from the parent. These evidence/receipt commits
+change no engine source.

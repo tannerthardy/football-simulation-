@@ -18724,6 +18724,60 @@
       ]
     },
     {
+      "path": "final-affected-tests.json",
+      "code": "2e486ddb388f10a2d7306d69176e2678755a1d52",
+      "source": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527",
+      "frozen": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/climb-clearance.test.ts",
+            "test/runner-clearance.test.ts",
+            "test/spacing-football-risk.test.ts",
+            "test/run-block-fit.test.ts",
+            "test/combo-attention.test.ts",
+            "test/combo-transfer.test.ts",
+            "test/spacing-yield.test.ts",
+            "test/zone-opening-spacing.test.ts",
+            "test/carrier-decision-cadence.test.ts",
+            "test/carrier-recovery-cue.test.ts",
+            "test/carrier-boundary.test.ts",
+            "test/wide-zone-mesh.test.ts",
+            "test/snap-mesh-and-pull.test.ts",
+            "test/run-system.test.ts",
+            "test/teammate-information.test.ts",
+            "test/teammate-information-loop.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.619501460000002
+        }
+      ]
+    },
+    {
+      "path": "final-typecheck.json",
+      "code": "2e486ddb388f10a2d7306d69176e2678755a1d52",
+      "source": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527",
+      "frozen": true,
+      "exitCode": 0,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 14.78124196
+        }
+      ]
+    },
+    {
       "path": "football-risk-controls.json",
       "code": "b20938402fdd45aa95047b16062ab07f550a4c1e",
       "source": "01578271c76c5e3371dc12f7170e15193a145f3bba1dee7bb7f3db6ff8156d02",
@@ -20309,11 +20363,21 @@
     "finalCandidateOpenings": 12,
     "finalCandidateOuterSteps": 720,
     "finalCandidateCollectorSeconds": 26.360566558,
-    "receiptCommandSeconds": 460.06220556
+    "receiptCommandSeconds": 485.46294898
   },
   "newWorldSteps": 0,
   "timingOperatorSha256": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0",
   "loadOperatorSha256": "58ad79a8e2b46bd4e2e5513503e0ea3d472de094f2eada81977339f7c4690ed1",
   "scriptSha256": "8739418fe56fcea92f5db5383000a2965c99ecd7cee6f22a7068150e9434a08a",
-  "elapsedSeconds": 69.34985818699715
+  "elapsedSeconds": 69.34985818699715,
+  "finalValidation": {
+    "affectedTests": 201,
+    "testFiles": 16,
+    "testReceipt": "validation/final-affected-tests.json",
+    "typecheckReceipt": "validation/final-typecheck.json",
+    "bothPassed": true,
+    "inputsUnchanged": true,
+    "code": "2e486ddb388f10a2d7306d69176e2678755a1d52",
+    "source": "1c4fe7fdef9377436543fd94571689279be84fa061b16e2b46c0602567565527"
+  }
 }
