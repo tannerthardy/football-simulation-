@@ -1,5 +1,17 @@
 # Current work ownership
 
+## Bounded NFL measurement, October 15, 2026 (America/Phoenix)
+
+Measurement owner: `codex/nfl-catch-approach`, from accepted `develop@a1b16e6`.
+Scope: one saved-only P045 catch-approach query/report, reusing the NFL2022
+adapter and common geometry. Coordinate raw-data access with Catching's existing
+restoration through [PR #58](https://github.com/tannerthardy/football-simulation-/pull/58#issuecomment-6199037427).
+No engine changes, new simulation, reference adoption or shared verifier run.
+Raw NFL access is pending; never represent aggregate context as selected NFL witnesses.
+Saved comparison/query and five focused checks are complete. Individual NFL
+witness selection remains blocked by absent restored CSVs/receipt; see the
+[measurements, controls and exact continuation](reviews/p045-nfl-catch-approach-2026-10-15.md).
+
 ## Current controller integration preparation
 
 This bounded ownership row records the current reviewed candidate. Original
