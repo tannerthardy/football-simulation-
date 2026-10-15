@@ -6,7 +6,8 @@ import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {RunBlocker} from '../../src/sim/behaviors/blocking.ts';
-const [routeId,out]=process.argv.slice(2);assert(routeId&&out);
+const [routeId,out,information='oracle']=process.argv.slice(2);assert(routeId&&out);
+assert(['oracle','acquired'].includes(information));
 const path='data/reviews/current/second-level-reachability/search-plan.json';
 const plan=JSON.parse(readFileSync(path)),route=plan.routes.find(r=>r.id===routeId);assert(route);
 const hash=b=>createHash('sha256').update(b).digest('hex');
@@ -43,7 +44,8 @@ RunBlocker.prototype.update=function(a,sim){
  let refresh=false;
  if(sim.t>=state.nextRead){
   refresh=true;state.at=sim.t;state.nextRead=sim.t+a.mind.decisionInterval;
-  state.down=copy(defender);state.keeper=copy(keeper);state.backer=copy(backer);
+  const picture=target=>information==='oracle'?copy(target):structuredClone(sim.see(a,target));
+  state.down=picture(defender);state.keeper=picture(keeper);state.backer=picture(backer);
   const obstacles=[{seen:state.down,radius:a.profile.radius+defender.profile.radius},
    {seen:state.keeper,radius:a.profile.radius+keeper.profile.radius}];
   const strike=a.profile.radius+backer.profile.radius+.1+a.player.measurables.armIn/36*.45;
@@ -84,21 +86,21 @@ RunBlocker.prototype.update=function(a,sim){
   steering={center,radius,speed,radial,distance};
  }
  steps.push({t:sim.t,phase:state.phase,refresh,at:state.at,nextRead:state.nextRead,
-  oracleGeometry:refresh?{down:state.down,keeper:state.keeper,backer:state.backer}:null,
+  sampledGeometry:refresh?{down:state.down,keeper:state.keeper,backer:state.backer}:null,
   corridor:refresh?state.corridor:null,steering,normalRequest:normal,command});
  return command;
 };
 process.argv=[process.argv[0],process.argv[1],'run',out,'A030'];
 await import('./second-level-access.mjs');
 assert(state);mkdirSync(out,{recursive:true});
-const receipt={schema:'second-level-reachability-intervention-v1',route,planSha256:hash(readFileSync(path)),
+const receipt={schema:'second-level-reachability-intervention-v1',route,information,planSha256:hash(readFileSync(path)),
  scriptSha256:hash(readFileSync(import.meta.filename)),phase:state.phase,approachAt:state.approachAt??null,
  joinedAt:state.joinedAt,releaseBodies:state.releaseBodies,releaseRng:state.releaseRng,
- qualification:'Privileged current geometry at native decision cadence, fixed winding chosen after seeing old failure; RT-only diagnostic. Native full22 initialization, all other reactions, spacing and contact. No frozen future or body mutation. No production selection claim.',steps};
+ qualification:`${information==='oracle'?'Privileged current geometry':'Legitimate sim.see pictures'} at native decision cadence, fixed winding chosen after seeing old failure; RT-only diagnostic. Native full22 initialization, all other reactions, spacing and contact. No frozen future or body mutation. No production selection claim.`,steps};
 writeFileSync(out+'/intervention.json.gz',gzipSync(JSON.stringify(receipt)));
 const packet=JSON.parse(gunzipSync(readFileSync(out+'/trace.json.gz')));
 packet.receipt.qualification=receipt.qualification;
-packet.receipt.intervention={route:route.id,planSha256:receipt.planSha256,scriptSha256:receipt.scriptSha256,diagnosticOnly:true};
+packet.receipt.intervention={route:route.id,information,planSha256:receipt.planSha256,scriptSha256:receipt.scriptSha256,diagnosticOnly:true};
 writeFileSync(out+'/trace.json.gz',gzipSync(JSON.stringify(packet)));
 writeFileSync(out+'/receipt.json',JSON.stringify(packet.receipt,null,2)+'\n');
 console.log(JSON.stringify({route:route.id,approachAt:receipt.approachAt,joinedAt:receipt.joinedAt,updates:steps.length}));
