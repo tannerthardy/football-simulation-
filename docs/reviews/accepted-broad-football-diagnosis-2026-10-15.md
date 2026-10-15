@@ -215,7 +215,8 @@ JSON-only index. The source/config can regenerate the panel if the archive is
 unavailable; do not rerun merely to read it. This local archive is not yet hosted
 on GitHub; moving environments needs only this 40.6-MB file, not recollection.
 Collection used **25.79 CPU-seconds**; archive creation took **5.01 wall-seconds**.
-The new collector's specific TypeScript check passed in **3.02 s**. The saved-data
+The final collector's [specific TypeScript check](../../data/reviews/current/accepted-broad-audit/collector-typecheck.json)
+passed with zero diagnostics in **2.66 s**, with no simulations. The saved-data
 validator verifies every raw hash, identity and exact setup, reconciles the
 ledgers and computes the reported counts. No full shared suite was rerun.
 

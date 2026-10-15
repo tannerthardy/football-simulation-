@@ -1,0 +1,14 @@
+{
+  "kind": "collector-specific TypeScript API noEmit check",
+  "target": "scripts/diag/accepted-broad-audit.ts",
+  "sha256": "affe03d1bcedaf6c6d859d1c696faba7721c4815813b7fddce794dc1c55529d4",
+  "node": "v22.23.3",
+  "typescript": "5.9.3",
+  "rootNames": [
+    "scripts/diag/accepted-broad-audit.ts"
+  ],
+  "options": "tsconfig.json parsed compilerOptions plus noEmit:true; all transitive diagnostics retained",
+  "diagnostics": [],
+  "elapsedSeconds": 2.6555230059999997,
+  "simulations": 0
+}
