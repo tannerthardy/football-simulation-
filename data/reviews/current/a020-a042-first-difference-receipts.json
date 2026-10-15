@@ -1,0 +1,276 @@
+{
+  "schema": "a020-a042-restoration-and-analysis-receipts-v1",
+  "acceptedPin": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "workCheckout": "2df6b4a9b55073073b24fe7be0ee3798c18715d0",
+  "acceptedSourceSha256": "78183dc79c6285939b80875b131584c18c4f0eda020c17bcfde6191823ace965",
+  "rawRestoration": {
+    "dataArtifact": "ebef199a3986b2749e5c8c86921cfd6c7e42b2b4",
+    "source": "published data-only Git artifact; no new raw collection",
+    "archiveChecks": "both full archive SHA256 match published receipt",
+    "files": [
+      {
+        "arm": "baseline",
+        "path": "out/a020-a042-review/baseline/A020.json",
+        "bytes": 16777002,
+        "sha256": "f504c46e2844555aa3621a1cca49618951afe7768b8060b2da7e526848613db8"
+      },
+      {
+        "arm": "baseline",
+        "path": "out/a020-a042-review/baseline/A042.json",
+        "bytes": 13379482,
+        "sha256": "fbee9a2d1b1dea734687aafa5bb1733c67c0782d0a5712d81b33997c184daa4b"
+      },
+      {
+        "arm": "baseline",
+        "path": "out/a020-a042-review/baseline/manifest.json",
+        "bytes": 2657415,
+        "sha256": "c4285b3bd9ab6834b3849fd76be0bc081629687048b6a751597d24007fb1b416"
+      },
+      {
+        "arm": "baseline",
+        "path": "out/a020-a042-review/baseline/summary.json",
+        "bytes": 367908,
+        "sha256": "161b9916080f4fe9a519d28fbbdc0acca61d3dc1d52d213ee0db7afa2f4b88cc"
+      },
+      {
+        "arm": "baseline",
+        "path": "out/a020-a042-review/baseline/run-receipt.json",
+        "bytes": 2400,
+        "sha256": "a623ce28b16985e9a3b4e63841b01e472fe2a903c807f265bedbf726d66b3f00"
+      },
+      {
+        "arm": "candidate",
+        "path": "out/a020-a042-review/candidate/A020.json",
+        "bytes": 37078025,
+        "sha256": "c2f617ee22ac9054690c13b71ef25f15b193be4127a1a287c4c90c920adc82e4"
+      },
+      {
+        "arm": "candidate",
+        "path": "out/a020-a042-review/candidate/A042.json",
+        "bytes": 15343494,
+        "sha256": "85027968a06e968647415c2dea6dcf721a9237f5052fe720915cf3579b7af1d0"
+      },
+      {
+        "arm": "candidate",
+        "path": "out/a020-a042-review/candidate/manifest.json",
+        "bytes": 2657415,
+        "sha256": "b44025fa767bcd8893693aa4f5ab52c02d1d16b01163649d5a0dfd80a0b9de5e"
+      },
+      {
+        "arm": "candidate",
+        "path": "out/a020-a042-review/candidate/summary.json",
+        "bytes": 369228,
+        "sha256": "1bbee593cc041e7475bd0bf24bd87de4de2e87659d5237d9ee172cdf85063dc9"
+      },
+      {
+        "arm": "candidate",
+        "path": "out/a020-a042-review/candidate/run-receipt.json",
+        "bytes": 2399,
+        "sha256": "071809964f49819a4b1664588a1f32509b6a439ae40d321bf6816c61c3ba01df"
+      }
+    ],
+    "nativeExecutions": 0,
+    "seconds": 3.140540816995781
+  },
+  "uncompressedLocal": {
+    "path": "out/a020-a042-review/analysis.json",
+    "sha256": "7b679e1d2bb415460c09e51df0246dc2c7645d48f20988d393eab37639771f2d",
+    "bytes": 274663,
+    "originalOutput": "data/reviews/current/a020-a042-first-difference.json"
+  },
+  "published": {
+    "path": "data/reviews/current/a020-a042-first-difference.json.gz",
+    "sha256": "448aa2647c23fee56f7c90b3051c6637ff886367d816bc7fe8dcf67f5ee1cc2e",
+    "bytes": 33964
+  },
+  "launcherReceipts": [
+    {
+      "original": "out/baseline/run-1792106183514-181864.json",
+      "sha256": "13ec78544bf048c0fa659edaf205271e501b42df2cbbd437f402818053d7504d",
+      "receipt": {
+        "baseline": "run-game-2026-10-13",
+        "branch": "codex/a020-a042-first-difference",
+        "commit": "2df6b4a9b55073073b24fe7be0ee3798c18715d0",
+        "mode": "candidate",
+        "node": "v22.23.3",
+        "failFast": false,
+        "platform": "linux",
+        "arch": "x64",
+        "sourceSha256": "78183dc79c6285939b80875b131584c18c4f0eda020c17bcfde6191823ace965",
+        "validationSha256": "3e9dd5d4fa4f2f59210fb269a51b960492bd21795a8c2e68824693233773f6f4",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "trackedChanges": [],
+        "startedAt": "2026-10-15T23:16:23.514Z",
+        "commands": [
+          {
+            "command": [
+              "python3",
+              "scripts/diag/a020-a042-first-difference.py",
+              "--saved",
+              "out/a020-a042-review",
+              "--out",
+              "data/reviews/current/a020-a042-first-difference.json"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 0.719846001
+          }
+        ],
+        "skippedCommands": [],
+        "finishedAt": "2026-10-15T23:16:24.237Z",
+        "inputsUnchanged": true,
+        "exitCode": 1
+      }
+    },
+    {
+      "original": "out/baseline/run-1792106213240-181907.json",
+      "sha256": "9b9b424c1005ef7809f56e5c50c319ef4b3598e1f56f3bbff92fda1e318063d5",
+      "receipt": {
+        "baseline": "run-game-2026-10-13",
+        "branch": "codex/a020-a042-first-difference",
+        "commit": "2df6b4a9b55073073b24fe7be0ee3798c18715d0",
+        "mode": "candidate",
+        "node": "v22.23.3",
+        "failFast": false,
+        "platform": "linux",
+        "arch": "x64",
+        "sourceSha256": "78183dc79c6285939b80875b131584c18c4f0eda020c17bcfde6191823ace965",
+        "validationSha256": "dafa55a4bcd5f3fa220dd776c1b58e5ae4ec209259686b576d08a54f42f6ec5b",
+        "flags": {
+          "ANCHOR_SPLIT": "1",
+          "CF_FLOW": null,
+          "CLIMB_INTERCEPT": "1",
+          "CLIMB_PLAN": "1",
+          "DL_FIGHT": "0",
+          "DL_FLOW": "1",
+          "DL_HANDS": "0",
+          "FLOW_READ": "1",
+          "FLOW_RELEASE": "1",
+          "GAIT_STEP": "0",
+          "HAND_FIGHT": "0",
+          "HAND_MOTOR": "0",
+          "HOLD_SUBSTEPS": "0",
+          "IN_STRIDE_CATCH": "0",
+          "KEEPER_TORSO": "1",
+          "LB_PLAN": "1",
+          "LEG_BRACE": "0",
+          "LEVER_FACING": "1",
+          "LIVE_AIM": "1",
+          "LIVE_GAPS": "1",
+          "PASS_SINK": "0",
+          "PULL_CUE": "0",
+          "PULL_PLAN": "0",
+          "PULL_READ": "1",
+          "PULL_STEP": "0",
+          "REACH_CONTACT": "0",
+          "READ_EYES": "1",
+          "READ_RISK_TRACE": "0",
+          "RUN_ANCHOR": "1",
+          "RUN_CONTACT_COMPONENTS": "1",
+          "RUN_CONTACT_TRACK": "0",
+          "RUN_HANDS": "0",
+          "RUN_READ": "0",
+          "RUN_READ_TURN": "0",
+          "SCRAPE": "1",
+          "SHED_PHYSICAL": "1",
+          "STALK_CLAIM": "1",
+          "STRETCH_MESH": "1",
+          "STRETCH_REACH": "1",
+          "TACKLE_ROLL": "0",
+          "TACKLE_TOUCH": "0",
+          "THREAT_READ": "1",
+          "WRAP_BIND": "0",
+          "ZONE_FLOW": "1"
+        },
+        "worldDefaults": {
+          "handContact": "center",
+          "handIntegration": "centered",
+          "supportModel": "legacy",
+          "constraintWork": "per-solve",
+          "impactTiming": "speculative",
+          "supportIntegration": "mean",
+          "boundedAttachment": true,
+          "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+        },
+        "trackedChanges": [],
+        "startedAt": "2026-10-15T23:16:53.240Z",
+        "commands": [
+          {
+            "command": [
+              "python3",
+              "scripts/diag/a020-a042-first-difference.py",
+              "--saved",
+              "out/a020-a042-review",
+              "--out",
+              "data/reviews/current/a020-a042-first-difference.json"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 0.915068378
+          }
+        ],
+        "skippedCommands": [],
+        "finishedAt": "2026-10-15T23:16:54.157Z",
+        "inputsUnchanged": true,
+        "exitCode": 0
+      }
+    }
+  ],
+  "newNativeExecutions": 0,
+  "productionChanges": false,
+  "initialSavedOperatorFailure": "Requested5.40s in baseline A020 whose last completed-play frame is5.35s. Corrected operator explicitly marks after-terminal absence rather than inventing a sample; failed receipt retained.",
+  "fetchNote": "Initial raw-artifact lookup preceded fetching its separate data-only ref. Named ref fetched; both archive hashes and four exact member hashes verified. No raw query or simulator collection."
+}
