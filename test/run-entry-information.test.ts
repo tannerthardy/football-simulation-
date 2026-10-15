@@ -65,7 +65,10 @@ describe('minimal run-entry information transport and consumer',()=>{
       teammateInformation:vi.fn(()=>({source:'unavailable'})),see(){throw Error('No live/perception fallback');}};
     const carrier=new BallCarrier() as unknown as {approach(a:unknown,sim:unknown,command:unknown):ReturnType<typeof chooseRunApproach>};
     const r=carrier.approach(rb,sim,s.command);
-    expect(sim.teammateInformation).toHaveBeenCalledExactlyOnceWith(rb,teammate);
+    // Identity assertions do not make the test matcher traverse private getters.
+    expect(sim.teammateInformation).toHaveBeenCalledTimes(1);
+    expect(sim.teammateInformation.mock.calls[0][0]).toBe(rb);
+    expect(sim.teammateInformation.mock.calls[0][1]).toBe(teammate);
     expect(r.status).toBe('unknown');expect(r.unknownPeers).toEqual([5]);expect(r.minimumGap).toBeNull();
   });
   it('hosts guarded pure queries and both once-per-tick sensing hooks on accepted PlaySim',()=>{

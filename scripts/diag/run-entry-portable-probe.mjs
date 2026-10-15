@@ -13,7 +13,8 @@ writeFileSync(out+'/legacy-run-approach.ts',bytes.toString().replaceAll("'../cor
   .replaceAll("'../physics/","'../../src/physics/").replace("'./teammate-information.js'","'../../src/sim/teammate-information.js'"));
 const {chooseRunApproach:before}=await import(pathToFileURL(resolve(out+'/legacy-run-approach.ts')).href);
 const fixture='test/fixtures/run-entry-approach.json',saved=JSON.parse(readFileSync(fixture,'utf8'));
-const compact=r=>({kind:r.kind,status:r.status??'implicit numeric clearance',minimumGap:r.minimumGap,
+const compact=r=>({kind:r.kind,status:r.status??'implicit numeric clearance',minimumGap:Number.isFinite(r.minimumGap)?r.minimumGap:null,
+  knownMinimumGap:r.knownMinimumGap??null,
   unknownPeers:r.unknownPeers??[],command:r.command,
   choices:r.choices.map(c=>({kind:c.kind,status:c.status??'implicit numeric clearance',minimumGap:c.minimumGap,
     finalPos:c.path.at(-1).pos,finalVel:c.path.at(-1).vel,gaps:c.gaps}))});
@@ -24,9 +25,11 @@ function compare(name,s){
   rows.push({name,before:compact(old),after:compact(next)});return{old,next};
 }
 const obstruction=compare('saved P032 obstruction',structuredClone(saved.failing));
-assert.equal(obstruction.next.kind,'gather');assert.equal(obstruction.next.status,'clear');
+assert.equal(obstruction.next.kind,'gather');assert.equal(obstruction.next.status,'unknown');
+assert.deepEqual(obstruction.next.unknownPeers,[0,8]);
 const clear=compare('saved P019 clear route',structuredClone(saved.clear));
 assert.equal(clear.next.kind,'fast');assert.deepEqual(clear.old.command,clear.next.command);
+assert.equal(clear.next.status,'unknown');assert.deepEqual(clear.next.unknownPeers,[0]);
 const s=structuredClone(saved.failing),rg=s.peers.find(p=>p.id===5);
 s.body.vel={x:0,y:0};s.body.facing=0;s.body.spin=0;s.command.vel={x:s.body.profile.vmax,y:0};
 rg.picture.vel={x:0,y:0};rg.picture.age=.30;rg.picture.predictedFor=.30;

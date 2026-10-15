@@ -24,13 +24,15 @@ function entryScene(id:string){
 describe('run-entry approach uncertainty',()=>{
  it('compares fast, slower and gather from one unchanged body and acquired picture',()=>{
   const s=structuredClone(cases.failing),before=structuredClone(s),r=chooseRunApproach(s.body,s.command,s.peers,s.t,'center');
-  expect(r.choices[0].minimumGap).toBeLessThan(0);expect(r.choices[1].minimumGap).toBeLessThan(0);
-  expect(r.kind).toBe('gather');expect(r.minimumGap).toBeGreaterThan(0);expect(r.up).toBe(true);
+  expect(r.choices[0].knownMinimumGap).toBeLessThan(0);expect(r.choices[1].knownMinimumGap).toBeLessThan(0);
+  expect(r.kind).toBe('gather');expect(r.knownMinimumGap).toBeGreaterThan(0);expect(r.up).toBe(true);
+  expect(r.status).toBe('unknown');expect(r.minimumGap).toBeNull();expect(r.unknownPeers).toEqual([0,8]);
   expect(s).toEqual(before);
  });
- it('retains the genuine clear-route fast request exactly, despite acquired-picture age',()=>{
+ it('retains P019 fast exactly but does not certify its stale QB memory',()=>{
   const s=structuredClone(cases.clear),r=chooseRunApproach(s.body,s.command,s.peers,s.t,'center');
-  expect(r.kind).toBe('fast');expect(r.status).toBe('clear');expect(r.minimumGap).toBeGreaterThan(0);expect(r.command).toBe(s.command);
+  expect(r.kind).toBe('fast');expect(r.status).toBe('unknown');expect(r.minimumGap).toBeNull();
+  expect(r.knownMinimumGap).toBeGreaterThan(0);expect(r.unknownPeers).toEqual([0]);expect(r.command).toBe(s.command);
  });
  it('does not inflate the radius of a stationary teammate beside a clear lane',()=>{
   const s=structuredClone(cases.failing),rg=s.peers.find((p:any)=>p.id===5);
@@ -64,14 +66,14 @@ describe('run-entry approach uncertainty',()=>{
   const r=chooseRunApproach(s.body,s.command,s.peers,s.t,'center');
   expect(r.choices[0].status).toBe('blocked');expect(r.choices[1].status).toBe('blocked');
   expect(r.kind).toBe('gather');expect(r.status).toBe('unknown');expect(r.minimumGap).toBeNull();
-  expect(r.knownMinimumGap).toBeGreaterThan(0);expect(r.unknownPeers).toEqual([99]);
+  expect(r.knownMinimumGap).toBeGreaterThan(0);expect(r.unknownPeers).toEqual([0,8,99]);
  });
- it('admits a moving approach before ranking its destination; preserves the clear entry',()=>{
+ it('does not re-rank either saved destination by pretending stale memories certify clearance',()=>{
   for(const id of ['failing','waiting-control']){
    const s=entryScene(id),old=s.read(),next=s.read((p:any)=>{const r=s.approach(p);return r.kind!=='gather'&&r.status==='clear';});
-   expect(next).not.toBeNull();expect(s.approach(next!).kind).not.toBe('gather');
-   if(id==='failing'){expect(s.approach(old!).kind).toBe('gather');expect(next).not.toEqual(old);}
-   else expect(next).toEqual(old);
+   expect(next).not.toBeNull();expect(next).toEqual(old);
+   expect(s.approach(next!).status).toBe('unknown');
+   expect(s.approach(next!).minimumGap).toBeNull();
   }
  });
  it('retains the original destination when no approach can be certified',()=>{
