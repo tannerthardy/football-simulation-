@@ -1,0 +1,879 @@
+{
+  "schema": "run-entry-admission-review-v1",
+  "recommendation": "Advance information correction and entry admission separately for Integration review; gap fix independent. No baseline promotion.",
+  "informationClassification": "Private engagement/fatigue/down shortcuts are independently defective. Impact plus fragile forecast held complete navigation improvement; collision alone was not proof of bad football.",
+  "sources": {
+    "informationOnly": "20252b053f7bcb530cfe2983ccf00983dae0776d991e8001498fa51bff943e91",
+    "pacingOnly": "ad6d7ad5747769c5e637a652dfebf3f3d634a78b9197385c10320ac7fcdd845d",
+    "entryAdmission": "ec8bdc6fda7c89b60f5e5efaa80c194a22bba9effa3c947800b9e7e5311db885",
+    "isolatedPacing": "c5124f1fef883b1568c7c21032c7a0bc3b218a259687d67b3623f169d9a99c8e",
+    "isolatedEntryAdmission": "120d2af56260a2fe03c26b0a6b199407bd2e72993cb421b8af3ebfd704f28ad0"
+  },
+  "inputs": {
+    "infoTraceSha256": "2590548f2abf35a49dad870f8d1edd87fe916bb1f08b8c58e64367593ba55fb4",
+    "pacingTraceSha256": "09b764b024d13d95013e59ceb2a398661b8243fdd6e805fe1ee1372eb6746afc",
+    "entryTraceSha256": "dff3696a32dfb00b5bddb0ec32af524ce6543b3b13d3805b423b079f5de2e545",
+    "manifestSha256": "c1c7cef835d143da40c62e6572e6e1d024dff281058a98215ecb78c93e6b5870",
+    "originalGameSha256": "9043fcb999ab144582292136ac7743f82cb5738a73c23879edfeb96f845bb039",
+    "witnessSha256": "4ac59043580ae6a63a4e4295e2f69d7601b377d2aeadbf3f6e919dc010a0bda2",
+    "node": "v22.23.3",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "method": "Same native Game prefix, exact original teams/RNG/calls/all22 initial bodies. Only selected P019/P032 use production changes through3s. Other plays original. Full opening policy starts before1.95; exact1.95 comparison is a separate saved-state probe, not the coupled intervention origin.",
+  "measurement": "Impacts are resolved World contacts >1e-8 kg*yd/s. Blocking loads integrate pre-step resolved hands normal and absolute tangent force at t0..2.95 by50ms. Carrier-contact events retain own timestamps. All target continuations censored at3s; no final yardage inferred.",
+  "stages": {
+    "informationOnly": [
+      {
+        "nativePlay": 19,
+        "role": "waiting-control",
+        "los": 25.5,
+        "capturedThrough": 3,
+        "censored": false,
+        "teammateImpacts": [],
+        "firstCarrierContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 26.51,
+            "y": 27.17
+          },
+          "note": "grasp"
+        },
+        "losCrossing": 2.6,
+        "rbAt3": {
+          "pos": {
+            "x": 26.985602462034073,
+            "y": 26.83431435163239
+          },
+          "vel": {
+            "x": 2.6407747647250783,
+            "y": -2.029842404766016
+          },
+          "speed": 3.3307584040568115
+        },
+        "approachSeconds": {
+          "fast": 0,
+          "slower": 0,
+          "gather": 0
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 13,
+            "normalImpulse": 512.4504865691459,
+            "absoluteTangentImpulse": 405.337247162303
+          },
+          {
+            "blocker": 1,
+            "defender": 13,
+            "normalImpulse": 707.6393257666389,
+            "absoluteTangentImpulse": 370.23383261391314
+          },
+          {
+            "blocker": 3,
+            "defender": 14,
+            "normalImpulse": 406.8644031509099,
+            "absoluteTangentImpulse": 276.54809072971375
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 438.8706289672384,
+            "absoluteTangentImpulse": 338.9025889010636
+          },
+          {
+            "blocker": 10,
+            "defender": 19,
+            "normalImpulse": 228.73354401113454,
+            "absoluteTangentImpulse": 220.49276166166274
+          },
+          {
+            "blocker": 8,
+            "defender": 18,
+            "normalImpulse": 133.82512733955292,
+            "absoluteTangentImpulse": 48.57429891959323
+          },
+          {
+            "blocker": 9,
+            "defender": 17,
+            "normalImpulse": 70.47250334795487,
+            "absoluteTangentImpulse": 40.840213100904194
+          }
+        ],
+        "events": [
+          {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 26.51,
+              "y": 27.17
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3,
+            "type": "block_climb",
+            "a": 4,
+            "b": 15,
+            "pos": {
+              "x": 24.72,
+              "y": 25.43
+            },
+            "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+          },
+          {
+            "t": 3.15,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 27.28,
+              "y": 26.45
+            },
+            "note": "legs"
+          },
+          {
+            "t": 3.4,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 26.64,
+              "y": 25.94
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.5,
+            "type": "tackle",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 26.63,
+              "y": 25.94
+            }
+          }
+        ]
+      },
+      {
+        "nativePlay": 32,
+        "role": "failing-entry",
+        "los": 74.3,
+        "capturedThrough": 3,
+        "censored": true,
+        "teammateImpacts": [
+          {
+            "step": 2.4,
+            "i": 5,
+            "j": 6,
+            "impulse": 69.8135995279234,
+            "closing": 1.1123875500799685
+          }
+        ],
+        "firstCarrierContact": {
+          "t": 2.9,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 75.01,
+            "y": 26.07
+          },
+          "note": "grasp"
+        },
+        "losCrossing": 2.75,
+        "rbAt3": {
+          "pos": {
+            "x": 75.14836362180178,
+            "y": 25.992359353767934
+          },
+          "vel": {
+            "x": 2.531398145017504,
+            "y": -1.6127729381851417
+          },
+          "speed": 3.0015018105509106
+        },
+        "approachSeconds": {
+          "fast": 0,
+          "slower": 0,
+          "gather": 0
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 14,
+            "normalImpulse": 1423.7972360960175,
+            "absoluteTangentImpulse": 816.7729724423731
+          },
+          {
+            "blocker": 5,
+            "defender": 13,
+            "normalImpulse": 1443.9640025201516,
+            "absoluteTangentImpulse": 776.4922551961396
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 1664.0204142510863,
+            "absoluteTangentImpulse": 309.9843798639077
+          },
+          {
+            "blocker": 1,
+            "defender": 11,
+            "normalImpulse": 178.43537068355872,
+            "absoluteTangentImpulse": 265.70516186431814
+          },
+          {
+            "blocker": 2,
+            "defender": 19,
+            "normalImpulse": 1900.9753199390443,
+            "absoluteTangentImpulse": 711.1502934328288
+          },
+          {
+            "blocker": 3,
+            "defender": 15,
+            "normalImpulse": 310.18256570375576,
+            "absoluteTangentImpulse": 68.52355788078219
+          },
+          {
+            "blocker": 10,
+            "defender": 21,
+            "normalImpulse": 116.98110956955651,
+            "absoluteTangentImpulse": 49.379172802578324
+          }
+        ],
+        "events": [
+          {
+            "t": 1.25,
+            "type": "block_climb",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 74.07,
+              "y": 28.36
+            },
+            "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+          },
+          {
+            "t": 2.55,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 76.84,
+              "y": 26.09
+            },
+            "note": "contact"
+          },
+          {
+            "t": 2.9,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 16,
+            "pos": {
+              "x": 75.01,
+              "y": 26.07
+            },
+            "note": "grasp"
+          }
+        ]
+      }
+    ],
+    "pacingOnly": [
+      {
+        "nativePlay": 19,
+        "role": "waiting-control",
+        "los": 25.5,
+        "capturedThrough": 3,
+        "censored": false,
+        "teammateImpacts": [],
+        "firstCarrierContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 26.51,
+            "y": 27.17
+          },
+          "note": "grasp"
+        },
+        "losCrossing": 2.6,
+        "rbAt3": {
+          "pos": {
+            "x": 26.985602462034073,
+            "y": 26.83431435163239
+          },
+          "vel": {
+            "x": 2.6407747647250783,
+            "y": -2.029842404766016
+          },
+          "speed": 3.3307584040568115
+        },
+        "approachSeconds": {
+          "fast": 0.9500000000000003,
+          "slower": 0,
+          "gather": 0
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 13,
+            "normalImpulse": 512.4504865691459,
+            "absoluteTangentImpulse": 405.337247162303
+          },
+          {
+            "blocker": 1,
+            "defender": 13,
+            "normalImpulse": 707.6393257666389,
+            "absoluteTangentImpulse": 370.23383261391314
+          },
+          {
+            "blocker": 3,
+            "defender": 14,
+            "normalImpulse": 406.8644031509099,
+            "absoluteTangentImpulse": 276.54809072971375
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 438.8706289672384,
+            "absoluteTangentImpulse": 338.9025889010636
+          },
+          {
+            "blocker": 10,
+            "defender": 19,
+            "normalImpulse": 228.73354401113454,
+            "absoluteTangentImpulse": 220.49276166166274
+          },
+          {
+            "blocker": 8,
+            "defender": 18,
+            "normalImpulse": 133.82512733955292,
+            "absoluteTangentImpulse": 48.57429891959323
+          },
+          {
+            "blocker": 9,
+            "defender": 17,
+            "normalImpulse": 70.47250334795487,
+            "absoluteTangentImpulse": 40.840213100904194
+          }
+        ],
+        "events": [
+          {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 26.51,
+              "y": 27.17
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3,
+            "type": "block_climb",
+            "a": 4,
+            "b": 15,
+            "pos": {
+              "x": 24.72,
+              "y": 25.43
+            },
+            "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+          },
+          {
+            "t": 3.15,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 27.28,
+              "y": 26.45
+            },
+            "note": "legs"
+          },
+          {
+            "t": 3.4,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 26.64,
+              "y": 25.94
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.5,
+            "type": "tackle",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 26.63,
+              "y": 25.94
+            }
+          }
+        ]
+      },
+      {
+        "nativePlay": 32,
+        "role": "failing-entry",
+        "los": 74.3,
+        "capturedThrough": 3,
+        "censored": true,
+        "teammateImpacts": [],
+        "firstCarrierContact": null,
+        "losCrossing": null,
+        "rbAt3": {
+          "pos": {
+            "x": 72.59069809838493,
+            "y": 26.285011452784886
+          },
+          "vel": {
+            "x": 2.407963388461047,
+            "y": 0.6910709222049566
+          },
+          "speed": 2.505167998295926
+        },
+        "approachSeconds": {
+          "fast": 0.3,
+          "slower": 0.35,
+          "gather": 0.65
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 14,
+            "normalImpulse": 1435.6081214592305,
+            "absoluteTangentImpulse": 811.1005312337894
+          },
+          {
+            "blocker": 5,
+            "defender": 13,
+            "normalImpulse": 1411.3599904584567,
+            "absoluteTangentImpulse": 784.0283501252695
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 1741.0818104862376,
+            "absoluteTangentImpulse": 318.2060982244659
+          },
+          {
+            "blocker": 1,
+            "defender": 11,
+            "normalImpulse": 178.43537068355872,
+            "absoluteTangentImpulse": 265.70516186431814
+          },
+          {
+            "blocker": 2,
+            "defender": 19,
+            "normalImpulse": 1901.2624351499392,
+            "absoluteTangentImpulse": 711.1487421331484
+          },
+          {
+            "blocker": 3,
+            "defender": 15,
+            "normalImpulse": 357.4778145140019,
+            "absoluteTangentImpulse": 71.63176675596986
+          },
+          {
+            "blocker": 10,
+            "defender": 21,
+            "normalImpulse": 113.9792815957706,
+            "absoluteTangentImpulse": 47.14076578881114
+          }
+        ],
+        "events": [
+          {
+            "t": 1.25,
+            "type": "block_climb",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 74.07,
+              "y": 28.36
+            },
+            "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+          },
+          {
+            "t": 2.6,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 76.98,
+              "y": 26.01
+            },
+            "note": "contact"
+          }
+        ]
+      }
+    ],
+    "entryAdmission": [
+      {
+        "nativePlay": 19,
+        "role": "waiting-control",
+        "los": 25.5,
+        "capturedThrough": 3,
+        "censored": false,
+        "teammateImpacts": [],
+        "firstCarrierContact": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 26.51,
+            "y": 27.17
+          },
+          "note": "grasp"
+        },
+        "losCrossing": 2.6,
+        "rbAt3": {
+          "pos": {
+            "x": 26.985602462034073,
+            "y": 26.83431435163239
+          },
+          "vel": {
+            "x": 2.6407747647250783,
+            "y": -2.029842404766016
+          },
+          "speed": 3.3307584040568115
+        },
+        "approachSeconds": {
+          "fast": 0.9500000000000003,
+          "slower": 0,
+          "gather": 0
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 13,
+            "normalImpulse": 512.4504865691459,
+            "absoluteTangentImpulse": 405.337247162303
+          },
+          {
+            "blocker": 1,
+            "defender": 13,
+            "normalImpulse": 707.6393257666389,
+            "absoluteTangentImpulse": 370.23383261391314
+          },
+          {
+            "blocker": 3,
+            "defender": 14,
+            "normalImpulse": 406.8644031509099,
+            "absoluteTangentImpulse": 276.54809072971375
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 438.8706289672384,
+            "absoluteTangentImpulse": 338.9025889010636
+          },
+          {
+            "blocker": 10,
+            "defender": 19,
+            "normalImpulse": 228.73354401113454,
+            "absoluteTangentImpulse": 220.49276166166274
+          },
+          {
+            "blocker": 8,
+            "defender": 18,
+            "normalImpulse": 133.82512733955292,
+            "absoluteTangentImpulse": 48.57429891959323
+          },
+          {
+            "blocker": 9,
+            "defender": 17,
+            "normalImpulse": 70.47250334795487,
+            "absoluteTangentImpulse": 40.840213100904194
+          }
+        ],
+        "events": [
+          {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 26.51,
+              "y": 27.17
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3,
+            "type": "block_climb",
+            "a": 4,
+            "b": 15,
+            "pos": {
+              "x": 24.72,
+              "y": 25.43
+            },
+            "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+          },
+          {
+            "t": 3.15,
+            "type": "fall",
+            "a": 6,
+            "pos": {
+              "x": 27.28,
+              "y": 26.45
+            },
+            "note": "legs"
+          },
+          {
+            "t": 3.4,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 26.64,
+              "y": 25.94
+            },
+            "note": "contact"
+          },
+          {
+            "t": 3.5,
+            "type": "tackle",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 26.63,
+              "y": 25.94
+            }
+          }
+        ]
+      },
+      {
+        "nativePlay": 32,
+        "role": "failing-entry",
+        "los": 74.3,
+        "capturedThrough": 3,
+        "censored": true,
+        "teammateImpacts": [],
+        "firstCarrierContact": null,
+        "losCrossing": 2.85,
+        "rbAt3": {
+          "pos": {
+            "x": 74.88571639992631,
+            "y": 23.094733358431515
+          },
+          "vel": {
+            "x": 2.5603279150921763,
+            "y": -3.8105379258514027
+          },
+          "speed": 4.590803667894344
+        },
+        "approachSeconds": {
+          "fast": 0.9500000000000003,
+          "slower": 0.15000000000000002,
+          "gather": 0.15000000000000002
+        },
+        "blockingLoad": [
+          {
+            "blocker": 4,
+            "defender": 14,
+            "normalImpulse": 1435.6081214592305,
+            "absoluteTangentImpulse": 811.1005312337894
+          },
+          {
+            "blocker": 5,
+            "defender": 13,
+            "normalImpulse": 1411.3599904584567,
+            "absoluteTangentImpulse": 784.0283501252695
+          },
+          {
+            "blocker": 7,
+            "defender": 12,
+            "normalImpulse": 1700.698209901248,
+            "absoluteTangentImpulse": 388.7828650040904
+          },
+          {
+            "blocker": 1,
+            "defender": 11,
+            "normalImpulse": 178.43537068355872,
+            "absoluteTangentImpulse": 265.70516186431814
+          },
+          {
+            "blocker": 2,
+            "defender": 19,
+            "normalImpulse": 1767.174326190766,
+            "absoluteTangentImpulse": 779.2420385583041
+          },
+          {
+            "blocker": 3,
+            "defender": 15,
+            "normalImpulse": 357.4778145140019,
+            "absoluteTangentImpulse": 71.63176675596986
+          },
+          {
+            "blocker": 10,
+            "defender": 21,
+            "normalImpulse": 113.9792815957706,
+            "absoluteTangentImpulse": 47.14076578881114
+          }
+        ],
+        "events": [
+          {
+            "t": 1.25,
+            "type": "block_climb",
+            "a": 3,
+            "b": 15,
+            "pos": {
+              "x": 74.07,
+              "y": 28.36
+            },
+            "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+          },
+          {
+            "t": 2.6,
+            "type": "fall",
+            "a": 15,
+            "pos": {
+              "x": 76.98,
+              "y": 26.01
+            },
+            "note": "contact"
+          }
+        ]
+      }
+    ]
+  },
+  "clearControl": {
+    "all60ReportsJointsFinalIntentsBodiesEqual": true,
+    "completedResultAndEventsEqual": true,
+    "legitimateCarrierContact": 2.8,
+    "legitimateTackle": 3.5
+  },
+  "firstDivergence": {
+    "raw": {
+      "t": 1.7,
+      "sameBodiesBefore": true,
+      "actors": [
+        6
+      ],
+      "originalRaw": {
+        "vel": {
+          "x": 9.588922873404007,
+          "y": -0.47412989725297083
+        },
+        "cutSkill": 1.1285714285714286,
+        "squeeze": 0
+      },
+      "candidateRaw": {
+        "vel": {
+          "x": 4.7944614367020035,
+          "y": -0.23706494862648542
+        },
+        "cutSkill": 1.1285714285714286,
+        "squeeze": 0
+      },
+      "originalFinal": {
+        "vel": {
+          "x": 4.7944614367020035,
+          "y": -0.23706494862648542
+        },
+        "cutSkill": 1.1285714285714286,
+        "squeeze": 0
+      },
+      "candidateFinal": {
+        "vel": {
+          "x": 4.7944614367020035,
+          "y": -0.23706494862648542
+        },
+        "cutSkill": 1.1285714285714286,
+        "squeeze": 0
+      }
+    },
+    "finalIntentAt": 1.8,
+    "body": {
+      "t": 1.85
+    }
+  },
+  "cost": {
+    "nativePhysicalScrimmages": 50,
+    "nativeCompletedGames": 0,
+    "nativeSeconds": 20.61931833,
+    "pacingSeconds": 9.794123711000001,
+    "entryAdmissionSeconds": 10.825194619,
+    "fullSuiteRuns": 0,
+    "newRosterCases": 0,
+    "finalFocusedTests": 40,
+    "finalTypecheckPassed": true
+  },
+  "limitations": [
+    "New approach prediction uses only observer-owned teammate pictures and public braking capability; it does not predict future contact or arbitrary teammate acceleration.",
+    "The directed braking envelope is a declared controller uncertainty model, not NFL calibration or guaranteed bounds on externally forced motion.",
+    "Only free entry approaches are covered. Own restraints/squeeze/lean/load bypass the unloaded forecast; installed-called/tactile pictures retain their existing handling.",
+    "Existing legacy destination/squeeze/evaluate information callers outside this bounded approach predictor were not migrated or certified. No new hidden state is supplied to the predictor.",
+    "Recorded engine includes Awareness interface absent from accepted develop and published bookkeeping review. Integration must combine that existing interface explicitly; do not import all recorded ancestry.",
+    "No coupled accepted-base+gap+all-experiments run or transfer/roster screen. P032 remains unfinished. Integration owns combined verification."
+  ],
+  "pins": {
+    "recorded": "f62511a513f2187884d74ae3b94435835e43309c",
+    "originalInformationCode": "cfc2fc9bdc1bc293d9686e85bf23631a581a5367",
+    "separateInformationExtraction": "f8ce858adf7a3859b10307520000f4eb3172d344",
+    "pacingTrial": "f5618ec2ce1c52ad7a99ab32686b30e01a1cda92",
+    "diagnosedFinalCode": "fd655f10ec67125e945aba473b952f08f67b71a9",
+    "testedFinalCollector": "25c349e08221c3b4a983a3934479e16a79ae0587",
+    "portableApproachCommit": "cfcb7db0ba17c978fd02fb179c61f4e8b1d66752",
+    "classificationClarification": "3246009b951b28912599bb6ef93b4141505c0fc8",
+    "gapCode": "d63bf4504e1a17e2f6a32738009a532838fc5e20",
+    "gapEvidence": "92566b3b650bb2e855487cbf1eae6a2dbf60918b"
+  }
+}

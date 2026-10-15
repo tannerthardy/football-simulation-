@@ -1,0 +1,22 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "README.md": "89f34c9ad49cff0f702e09a3f0fbd447a012a6b32f8985ba2f23f43ddb906c91",
+    "compatibility.json": "4010aa48d684f3c38e8fb3b9189273ab47bbeb533ba6cebdf3c1b63a04abf0e5",
+    "isolated-source.json": "1161800f7a25def6589b038cf757d98d4057f291aba056d8c2c59c77085c18d1",
+    "native.json.gz": "dff3696a32dfb00b5bddb0ec32af524ce6543b3b13d3805b423b079f5de2e545",
+    "pacing-isolated-source.json": "478d2b363a69f545e9667e8d782dd5b676d0466668e1c76c39b5962efd5ff151",
+    "pacing-only-native.json.gz": "09b764b024d13d95013e59ceb2a398661b8243fdd6e805fe1ee1372eb6746afc",
+    "portable-isolated-source.json": "849b55e693d1010f13d02f2449d0587637743681d8caec1435b9a6b8d832a114",
+    "route-diagnostic.json": "71f83c3e19bca888c8f762843a33b1fed27e71e4f38e5c8da7a10bcc85c58200",
+    "same-state.json": "0aa542d2a031eee92bce241385719aaa013b16541229e71ebdfd6dc68027ee87",
+    "summary.json": "2b1c3408b0903d65c946f839c420acbe88d4dda5dfe86d70f2ce363c041e6c8c",
+    "validation/focused.json": "54dce6142c721d02414a5f2cfac0a512639fbaf1562a005a5ae57456b88cfd21",
+    "validation/native-launcher.json": "cd786fa59ae8452be43fd14682358a4721bb5632f21b02cfdb4c91621ad2a8a1",
+    "validation/pacing-focused.json": "3bd9ef567ced76d2c797e2220ca8d60deaa8f0666fd440120877ea4505fecd4c",
+    "validation/pacing-native-launcher.json": "b5c439f1b7d9deee5062fbd09f724306cf41adb31026edbd94f22746735e27c0",
+    "validation/pacing-typecheck.json": "5233ab4e0f1c423d01c706de2ff7d51fe682158a68cf896ca351382d54ae45e4",
+    "validation/same-state-launcher.json": "da3249991f890fb986862178f81edddbee216fbeb4183a8a3ff41221bb610860",
+    "validation/typecheck.json": "2c92ea397827236e623c32c5e2f1488663a7e35d6d244c6e51dcb622627d7bab"
+  }
+}

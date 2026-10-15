@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-10-15T19:03:37.507630+00:00",
+  "portableCode": "cfcb7db0ba17c978fd02fb179c61f4e8b1d66752",
+  "testedCode": "fd655f10ec67125e945aba473b952f08f67b71a9",
+  "sourceSha256": "ec8bdc6fda7c89b60f5e5efaa80c194a22bba9effa3c947800b9e7e5311db885",
+  "allSrcTestDependencyConfigBytesIdentical": true,
+  "newExecutionRequired": false,
+  "pacingProbeCompatible": "Approach module and all physics bytes unchanged across f5618ec and fd655f1; the exact1.95 three-action probe is reused. Final four focused cases additionally exercise the entry-admission callback."
+}

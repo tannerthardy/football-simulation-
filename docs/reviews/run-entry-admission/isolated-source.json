@@ -1,0 +1,8 @@
+{
+  "original": "f62511a513f2187884d74ae3b94435835e43309c",
+  "candidate": "fd655f10ec67125e945aba473b952f08f67b71a9",
+  "sourceSha256": "120d2af56260a2fe03c26b0a6b199407bd2e72993cb421b8af3ebfd704f28ad0",
+  "productionRiskLoopSha256": "846fe941b31545710a5bfa91c239e0e3ce341660235b2a00056b578c1f9f303f",
+  "productionApproachModuleSha256": "65e463f5ee0cfa61f5ce9b31273415de0c1671fb5f0e7f6a57e11d787e83fe95",
+  "gate": "Exact production changes only on selected encounters through3s. Earlier plays unmodified; no fixture state supplied to a controller."
+}

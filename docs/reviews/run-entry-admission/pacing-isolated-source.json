@@ -1,0 +1,9 @@
+{
+  "original": "f62511a513f2187884d74ae3b94435835e43309c",
+  "candidate": "f5618ec2ce1c52ad7a99ab32686b30e01a1cda92",
+  "sourceSha256": "c5124f1fef883b1568c7c21032c7a0bc3b218a259687d67b3623f169d9a99c8e",
+  "productionRiskLoopSha256": "846fe941b31545710a5bfa91c239e0e3ce341660235b2a00056b578c1f9f303f",
+  "productionApproachModuleSha256": "65e463f5ee0cfa61f5ce9b31273415de0c1671fb5f0e7f6a57e11d787e83fe95",
+  "gate": "Exact production changes only on selected encounters through3s. Earlier plays unmodified; no fixture state supplied to a controller.",
+  "manifestRecovery": "Pacing candidate and isolated hash recovered from immutable native trace after the adjacent scratch manifest was overwritten by final preparation; loop/module/gate unchanged."
+}

@@ -3,7 +3,7 @@
 ## Runner entry approach uncertainty, 2026-10-15
 
 Do-It-All owns carrier run-entry approach selection and a new run-only helper
-`src/sim/run-approach.ts` on `codex/run-entry-approach`. Base is recorded
+`src/sim/run-approach.ts`; final portable patch on `codex/run-entry-admission`. Base is recorded
 `f62511a` so the existing owned teammate-information interface is available; no
 interface, spacing, blocking, pass cutoff or physics edit is claimed. Separate
 information-only risk extraction matches `cfc2fc9` runtime delta. Compare fast,
@@ -13,6 +13,17 @@ One naturally reacting native encounter and genuine clear-route control after
 mechanism checks; no full games/roster sweep. Gap code `d63bf45` and evidence
 `92566b3` remain independent for Integration. Integration owns combined checks.
 
+
+Completed: information-only `f8ce858`, approach-only `cfcb7db`, source `ec8bdc…`.
+Pacing-only f5618ec stopped too long. One saved-state diagnostic found that the
+entry selector omitted a clear moving approach. Final admission keeps football
+score order among traversable entries: gather0.65→0.15s, P032 LOS2.85s, zero
+teammate impacts through3s. P019 all60 opening reports/joints/bodies/requests and
+complete finish unchanged, including legitimate defensive tackle. Forty focused
+checks/typecheck pass; two bounded prefixes20.619s,50 physical scrimmages,
+zero completed games. [Exact evidence and limitations](reviews/run-entry-admission/README.md).
+Advance for Integration review with existing Awareness interface; no baseline
+promotion or claim of complete legacy carrier information migration.
 
 ## Experimental full-game checkpoint
 
