@@ -4,7 +4,7 @@ Updated **2026-10-15 (America/Phoenix)**. The canonical accepted commit and
 short ready/blocked/experimental record are in [the integration queue](INTEGRATION.md).
 Do not use the historical sections below as a current starting-reference pin.
 
-- **Accepted develop: `7d1451b2c31786e075550183a6a93bbda23da29b`**, documentation-only #65 after #63 and prior #12. Historical `4ded6b6` stays separate.
+- **Accepted develop: `4679a3c260188143bcc66f6f20534327c78d7eaa`**, merged #72 with #63/#65 and prior #12 retained. Historical `4ded6b6` stays separate.
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -19,13 +19,15 @@ Do not use the historical sections below as a current starting-reference pin.
   Neither is accepted runtime; the information-only correction stays separate.
 - Prior PR bookkeeping closed 43 finished/superseded PRs, leaving 23 open at
   that snapshot before #63 merged. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
-- #66 remains held independently. #67's isolated final candidate at
-  `64177487272b7e0b2d51460e23ccdb6447508e39` passes **1,724 TS/145 Python,
-  typecheck/build** with all44 flags/components=1, no skipped phases or drift.
-  User accepted Run's ordinary-fixture adjudication; native adverse outcomes
-  and forecast/contact limitations remain. [Final receipt](../data/reviews/current/pass-cutoff-integration/final-receipt.json).
-  Recommend bounded merge **after explicit authorization**; accepted develop
-  remains7d1451b. #69 remains a separate queued controller review.
+- #72's isolated #67 pass-cutoff correction is accepted and merged as
+  `4679a3c260188143bcc66f6f20534327c78d7eaa`. Its actual tree equals reviewed1675478;
+  reuse1,724 TS/145 Python/typecheck/build passing verification. No reruns.
+  Native adverse outcomes and forecast/contact limits remain; [merge receipt](../data/reviews/current/pr72-merge.json).
+- User accepted the risk-only information scope. Frozen86a8816 passes
+  1,726 TS/145 Python/typecheck/build; explicit merge authorization remains pending.
+  Observation transport stays deferred until a reviewed consumer needs it.
+  [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
+  #69 stays with Do-It-All's independent review and physics remains separate.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 

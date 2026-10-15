@@ -1,5 +1,14 @@
 # Independent #67 extraction on accepted develop
 
+**Accepted and merged:** explicit user authorization adopted publication1675478
+through [#72](https://github.com/tannerthardy/football-simulation-/pull/72) as
+`develop@4679a3c260188143bcc66f6f20534327c78d7eaa`. Actual merge tree equals the reviewed
+publication and preserves tested source/tests/settings and all adverse/failed
+evidence. [Merge receipt](../../data/reviews/current/pr72-merge.json).
+Zero additional tests/simulations. The earlier review/verification stages below
+retain their decisions at that time. #69, information/navigation and experimental
+physics remain separate; no new baseline/default action.
+
 **Final recommendation: approve the isolated candidate for merge. Nothing has
 been merged.** Tested commit `64177487272b7e0b2d51460e23ccdb6447508e39`
 contains accepted develop7d1451b, the original narrow PassProtector extraction,
