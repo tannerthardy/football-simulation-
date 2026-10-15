@@ -3,7 +3,7 @@
 [Draft PR #66](https://github.com/tannerthardy/football-simulation-/pull/66).
 
 **Ready for bounded review; hold default promotion for Run's helper-contract
-adjudication.** This is a minimal extraction on approved develop `a1b16e6`,
+adjudication and the [native yaw accuracy limit](current-contact-yaw.md).** This is a minimal extraction on approved develop `a1b16e6`,
 not a merge of the historical physics stack. PR62 is parked at `1f071b9` on
 its historical host; its native cost study is deferred because it cannot
 decide that host's adoption.
@@ -100,8 +100,10 @@ reproduction, not physical ground truth.
 
 **Primary prerequisite: Run adjudicates the four helper situations (five
 assertions) using current feasible requests and actual protected approach.**
-Physics supplies the packet/force ledger and retains the one bounded C/NT
-within-step yaw question alongside that integration target. A valid defender
+Physics supplies the packet/force ledger and the completed
+[bounded C/NT yaw verdict](current-contact-yaw.md): delivered impulse timing
+closes, but native ground/hand force selection remains numerically sensitive.
+Keep native accuracy as an additional production-promotion limit. A valid defender
 win may remain; an explained contact row is not sufficient to declare it valid.
 Integration owns compatibility expectations and one exact combined verification
 after that decision. No full suite, game campaign or second data pipeline here.

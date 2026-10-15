@@ -1,0 +1,756 @@
+{
+  "protocol": "current-contact-yaw-v1",
+  "source": "8e0226116bb611cb4ccaf446b6672caca208a34b441b7336b59c0c0ef6e755b3",
+  "input": {
+    "path": "config/current-contact-first-interval.json",
+    "sha256": "32e83a3d8f6bb6a5b65a8f4e44bd45995c9027e064fc9e518945b509eeb39edb",
+    "slots": [
+      "C",
+      "NT"
+    ],
+    "t": 0.35,
+    "dt": 0.05
+  },
+  "settings": {
+    "handContact": "patch",
+    "groundMovement": "legacy",
+    "components": "1"
+  },
+  "decisionRule": "Balanced delivered impulses must also reproduce translation and yaw through their temporal moments. A sign-changing native-vs-refined law effect cannot certify the native causal yaw explanation or justify default promotion. Refinement is self-consistency evidence, not an independent force-law oracle.",
+  "nativeVsRefined": {
+    "position": 0.0001696689281444201,
+    "velocity": 0.006509582070976738,
+    "spin": 0.12519757846400226,
+    "facing": 0.004423731644693785
+  },
+  "lastRefinement": {
+    "position": 4.2334701937227936e-08,
+    "velocity": 1.357857431457755e-06,
+    "spin": 0.0002909283576475463,
+    "facing": 8.080027790874356e-07
+  },
+  "lawEffect": {
+    "native": {
+      "position": 0.0034746362334490263,
+      "velocity": 0.1897814623869936,
+      "spin": 0.9418509009618115,
+      "facing": 0.004423731667252184
+    },
+    "refined": {
+      "position": 0.00363078258510419,
+      "velocity": 0.1952323961501531,
+      "spin": 1.0593182603936293,
+      "facing": 0.002557157170819793
+    },
+    "signedFacing": [
+      {
+        "slot": "C",
+        "native": 0.00041653675618473496,
+        "refined": -0.002557157170819793
+      },
+      {
+        "slot": "NT",
+        "native": -0.004423731667252184,
+        "refined": -2.2441604130563064e-11
+      }
+    ]
+  },
+  "forceHistoryDifference": [
+    {
+      "slot": "C",
+      "spinFromGround": 0.009644189785260276,
+      "spinFromHands": 0.11555338867880983,
+      "facingFromGround": 0.00021407924833794328,
+      "facingFromHands": 0.002958238689733426
+    },
+    {
+      "slot": "NT",
+      "spinFromGround": -0.24676134960940824,
+      "spinFromHands": 0.12236893715007459,
+      "facingFromGround": -0.007556452618401377,
+      "facingFromHands": 0.0031327209737231237
+    }
+  ],
+  "mirrors": [
+    {
+      "control": "loaded",
+      "n": 12,
+      "error": 0
+    },
+    {
+      "control": "loaded",
+      "n": 768,
+      "error": 0
+    },
+    {
+      "control": "no-hand",
+      "n": 12,
+      "error": 0
+    },
+    {
+      "control": "no-hand",
+      "n": 768,
+      "error": 0
+    },
+    {
+      "control": "free",
+      "n": 12,
+      "error": 0
+    },
+    {
+      "control": "free",
+      "n": 768,
+      "error": 0
+    }
+  ],
+  "verdict": "Opt-in extraction remains reviewable; HOLD production promotion and native C/NT yaw causation. No demonstrated impulse application/timing defect: the independent ledger closes. Ground/hand force selection is timestep sensitive, especially reaching/switching the tangential constraint while legacy yaw tracks a remaining-tick target. Do not change recovery or substitute a different ground law. A future numerical correction must resolve that coupled force selection with unchanged laws and control its cost; this pass does not install one.",
+  "testedRevision": "bd2db06d4f03da3ddc4e50d5271aebd805a2fe56",
+  "runtimeRevision": "1332ddb19468741bba70ed2b0354b7f2e0babff2",
+  "approvedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "tool": {
+    "path": "scripts/diag/physics/current-contact-yaw.ts",
+    "sha256": "a67fbadfdd7c616a01f534553242c5f884b43017e01500a0e42e6b22f1e71e01",
+    "helperSha256": "2fbaed97361a178bd50749b00d3e5a31400667032adf979118a053ee2423d747"
+  },
+  "refinement": [
+    {
+      "n": 12,
+      "refinement": null,
+      "facing": [
+        -0.07871261949102204,
+        3.103375321422916
+      ],
+      "spin": [
+        1.6068173044198293,
+        -0.5409296199274163
+      ],
+      "tangentForce": 156.24927164296994,
+      "groundYaw": [
+        16.04711988595483,
+        1.3105261885253627
+      ],
+      "workResidual": 8.215650382226158e-14
+    },
+    {
+      "n": 48,
+      "refinement": {
+        "position": 0.00011609480647108042,
+        "velocity": 0.004727355927754204,
+        "spin": 0.12669864695238026,
+        "facing": 0.0033716703618869026
+      },
+      "facing": [
+        -0.08086556147898251,
+        3.106746991784803
+      ],
+      "spin": [
+        1.5171845754552191,
+        -0.414230972975036
+      ],
+      "tangentForce": 169.42862023163036,
+      "groundYaw": [
+        16.01280353909419,
+        2.251869944142162
+      ],
+      "workResidual": 5.995204332975845e-14
+    },
+    {
+      "n": 192,
+      "refinement": {
+        "position": 3.941655069681097e-05,
+        "velocity": 0.0013236637832677067,
+        "spin": 0.03201103601408278,
+        "facing": 0.0010261954835253384
+      },
+      "facing": [
+        -0.08161497503137308,
+        3.1077731872683283
+      ],
+      "spin": [
+        1.4908329625221997,
+        -0.38221993696095324
+      ],
+      "tangentForce": 173.31328469659147,
+      "groundYaw": [
+        16.004007251299484,
+        2.506842221439973
+      ],
+      "workResidual": -4.3853809472693683e-13
+    },
+    {
+      "n": 768,
+      "refinement": {
+        "position": 1.0576534967678209e-05,
+        "velocity": 0.0003433635588066555,
+        "spin": 0.021775891230385203,
+        "facing": 0.00020164254023984085
+      },
+      "facing": [
+        -0.08181661757161292,
+        3.1077975510529328
+      ],
+      "spin": [
+        1.483937978305247,
+        -0.40399582819133845
+      ],
+      "tangentForce": 174.3308522509244,
+      "groundYaw": [
+        16.00178724385572,
+        2.4410115576298814
+      ],
+      "workResidual": 9.758860386455126e-13
+    },
+    {
+      "n": 3072,
+      "refinement": {
+        "position": 2.691408910702053e-06,
+        "velocity": 8.664485961941289e-05,
+        "spin": 0.008356268240942266,
+        "facing": 5.134323925770623e-05
+      },
+      "facing": [
+        -0.08186796081087062,
+        3.107798960689183
+      ],
+      "spin": [
+        1.4821947453538933,
+        -0.4123520964322807
+      ],
+      "tangentForce": 174.58818182777893,
+      "groundYaw": [
+        16.00123091848578,
+        2.4118334136283512
+      ],
+      "workResidual": -1.98507876802978e-12
+    },
+    {
+      "n": 12288,
+      "refinement": {
+        "position": 6.776193368388579e-07,
+        "velocity": 2.175219783418847e-05,
+        "spin": 0.0029450423662832903,
+        "facing": 1.2930286454784778e-05
+      },
+      "facing": [
+        -0.08188089109732541,
+        3.1077990473380703
+      ],
+      "spin": [
+        1.4817567250576886,
+        -0.415297138798564
+      ],
+      "tangentForce": 174.65285284527488,
+      "groundYaw": [
+        16.001091741355705,
+        2.400784014125191
+      ],
+      "workResidual": 1.305400232354259e-12
+    },
+    {
+      "n": 49152,
+      "refinement": {
+        "position": 1.6969455893622758e-07,
+        "velocity": 5.443974914117823e-06,
+        "spin": 0.0009491403118588315,
+        "facing": 3.2383289905180135e-06
+      },
+      "facing": [
+        -0.08188412942631593,
+        3.1077990527309134
+      ],
+      "spin": [
+        1.4816470799290595,
+        -0.41624627911042283
+      ],
+      "tangentForce": 174.6690406917772,
+      "groundYaw": [
+        16.00105689965599,
+        2.397085902397924
+      ],
+      "workResidual": 6.601696966868076e-11
+    },
+    {
+      "n": 196608,
+      "refinement": {
+        "position": 4.2334701937227936e-08,
+        "velocity": 1.357857431457755e-06,
+        "spin": 0.0002909283576475463,
+        "facing": 8.080027790874356e-07
+      },
+      "facing": [
+        -0.08188493742909501,
+        3.10779905306761
+      ],
+      "spin": [
+        1.481619725955827,
+        -0.4165372074680704
+      ],
+      "tangentForce": 174.67307881051997,
+      "groundYaw": [
+        16.00104819688805,
+        2.3959251608524013
+      ],
+      "workResidual": 5.46007683510652e-11
+    }
+  ],
+  "opposingControls": [
+    {
+      "control": "no-hand",
+      "nativeTo12288": {
+        "facing": 0.00019844706441077276,
+        "spin": 0.007723141368243702
+      }
+    },
+    {
+      "control": "free",
+      "nativeTo12288": {
+        "facing": 0.00018210239560811914,
+        "spin": 0.0017912617993534052
+      }
+    }
+  ],
+  "independentLedgers": [
+    {
+      "n": 12,
+      "ledger": [
+        {
+          "slot": "C",
+          "gx": 24.877210973273574,
+          "gy": 23.03366166006595,
+          "hx": -0.15479666956928828,
+          "hy": -7.8110764816679605,
+          "gmx": 0.6217346484308764,
+          "gmy": 0.567071406291369,
+          "hmx": 0.0010302906030846557,
+          "hmy": -0.003971264990696357,
+          "gYaw": 16.04711988595483,
+          "hYaw": -4.469059163179011,
+          "gMoment": 0.39808431939667865,
+          "hMoment": 0.0021735868715737567,
+          "residual": {
+            "spin": 4.440892098500626e-16,
+            "facing": 0,
+            "position": 3.552713678800501e-15,
+            "velocity": 4.577566798522237e-16
+          }
+        },
+        {
+          "slot": "NT",
+          "gx": 17.17761967733842,
+          "gy": 32.91270032887801,
+          "hx": 0.15479666956928828,
+          "hy": 7.8110764816679605,
+          "gmx": 0.42925975679980155,
+          "gmy": 0.8173638360475097,
+          "hmx": -0.0010302906030846557,
+          "hmy": 0.003971264990696357,
+          "gYaw": 1.3105261885253627,
+          "hYaw": -4.357611303748114,
+          "gMoment": -0.10900957478875903,
+          "hMoment": 0.002119382710187915,
+          "residual": {
+            "spin": -3.3306690738754696e-16,
+            "facing": -4.440892098500626e-16,
+            "position": 3.552713678800501e-15,
+            "velocity": 2.220446049250313e-16
+          }
+        }
+      ],
+      "phases": {
+        "firstUnsaturated": 0.008333333333333331,
+        "firstPositive": 0.012499999999999997,
+        "firstPositiveSaturated": 0.029166666666666667,
+        "groundTracking": [
+          {
+            "first": null,
+            "duration": 0
+          },
+          {
+            "first": 0.016666666666666663,
+            "duration": 0.0125
+          }
+        ],
+        "positiveForceTime": 0.0375
+      }
+    },
+    {
+      "n": 768,
+      "ledger": [
+        {
+          "slot": "C",
+          "gx": 24.880578070229806,
+          "gy": 23.168581356821125,
+          "hx": -0.17819822181950104,
+          "hy": -8.714844390283476,
+          "gmx": 0.6217617951547009,
+          "gmy": 0.5681941623353308,
+          "hmx": 0.00040741304651629236,
+          "hmy": -0.02704607280780285,
+          "gYaw": 16.00178724385572,
+          "hYaw": -5.0107388291681465,
+          "gMoment": 0.3970774796996784,
+          "hMoment": -0.01164782107244963,
+          "residual": {
+            "spin": 8.881784197001252e-16,
+            "facing": -1.3877787807814457e-17,
+            "position": 8.533911106286719e-14,
+            "velocity": 1.2585248453105971e-14
+          }
+        },
+        {
+          "slot": "NT",
+          "gx": 17.177249422389764,
+          "gy": 32.89907064998095,
+          "hx": 0.17819822181950104,
+          "hy": 8.714844390283476,
+          "gmx": 0.42926276327236745,
+          "gmy": 0.8174087688629861,
+          "hmx": -0.00040741304651629236,
+          "hmy": 0.02704607280780285,
+          "gYaw": 2.4410115576298814,
+          "hYaw": -4.8857827486402705,
+          "gMoment": -0.07608131967608522,
+          "hMoment": -0.011357351719022132,
+          "residual": {
+            "spin": 1.8318679906315083e-15,
+            "facing": 6.217248937900877e-15,
+            "position": 2.2469334198890888e-14,
+            "velocity": 2.5176617391872307e-15
+          }
+        }
+      ],
+      "phases": {
+        "firstUnsaturated": 0.009309895833333331,
+        "firstPositive": 0.009375000000000001,
+        "firstPositiveSaturated": 0.019986979166666665,
+        "groundTracking": [
+          {
+            "first": null,
+            "duration": 0
+          },
+          {
+            "first": 0.0197265625,
+            "duration": 0.016406249999999963
+          }
+        ],
+        "positiveForceTime": 0.040625000000000376
+      }
+    },
+    {
+      "n": 196608,
+      "ledger": [
+        {
+          "slot": "C",
+          "gx": 24.880643419417563,
+          "gy": 23.17104090894217,
+          "hx": -0.17865530832791743,
+          "hy": -8.731949396863762,
+          "gmx": 0.6217623851969988,
+          "gmy": 0.5682168846240565,
+          "hmx": 0.00039293852802414373,
+          "hmy": -0.027560005883049816,
+          "gYaw": 16.00104819688805,
+          "hYaw": -5.021074408872296,
+          "gMoment": 0.39706163187344573,
+          "hMoment": -0.011958347083834637,
+          "residual": {
+            "spin": 6.772360450213455e-14,
+            "facing": -1.609823385706477e-15,
+            "position": 2.536149892417647e-13,
+            "velocity": 6.04664451073308e-13
+          }
+        },
+        {
+          "slot": "NT",
+          "gx": 17.177217651888,
+          "gy": 32.89800177865139,
+          "hx": 0.17865530832791743,
+          "hy": 8.731949396863762,
+          "gmx": 0.4292623053793144,
+          "gmy": 0.8173933112817877,
+          "hmx": -0.00039293852802414373,
+          "hmy": 0.027560005883049816,
+          "gYaw": 2.3959251608524013,
+          "hYaw": -4.895860583214605,
+          "gMoment": -0.07577193072726737,
+          "hMoment": -0.011660133939597814,
+          "residual": {
+            "spin": 1.1934897514720433e-14,
+            "facing": 1.4654943925052066e-14,
+            "position": 2.1575241434403801e-13,
+            "velocity": 4.983160944324323e-14
+          }
+        }
+      ],
+      "phases": {
+        "firstUnsaturated": 0.00937169392903646,
+        "firstPositive": 0.009371948242187497,
+        "firstPositiveSaturated": 0.019760640462239583,
+        "groundTracking": [
+          {
+            "first": null,
+            "duration": 0
+          },
+          {
+            "first": 0.019759623209635417,
+            "duration": 0.018567148844389172
+          }
+        ],
+        "positiveForceTime": 0.040628051757908505
+      }
+    }
+  ],
+  "benchmark": {
+    "scope": "Uninstrumented same saved pair, including clone/World construction;10 warmups then31 samples per count per pass. Small-sample observed tails; no whole-game budget claim. Both passes retained.",
+    "passes": [
+      {
+        "revision": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+        "timing": [
+          {
+            "n": 12,
+            "samples": 31,
+            "medianMs": 0.13289999999960855,
+            "p95Ms": 0.17978000000039174,
+            "maxMs": 0.49201999999968393
+          },
+          {
+            "n": 48,
+            "samples": 31,
+            "medianMs": 0.5025759999998627,
+            "p95Ms": 0.7641880000001038,
+            "maxMs": 0.8022459999992861
+          },
+          {
+            "n": 192,
+            "samples": 31,
+            "medianMs": 2.185304999999971,
+            "p95Ms": 3.765860999999859,
+            "maxMs": 4.1341040000006615
+          },
+          {
+            "n": 768,
+            "samples": 31,
+            "medianMs": 7.6494790000006105,
+            "p95Ms": 11.88751499999944,
+            "maxMs": 12.3539609999998
+          }
+        ]
+      },
+      {
+        "revision": "bd2db06d4f03da3ddc4e50d5271aebd805a2fe56",
+        "timing": [
+          {
+            "n": 12,
+            "samples": 31,
+            "medianMs": 0.16223400000035326,
+            "p95Ms": 0.5071120000002338,
+            "maxMs": 0.7667029999993247
+          },
+          {
+            "n": 48,
+            "samples": 31,
+            "medianMs": 0.5094159999998737,
+            "p95Ms": 0.7737329999999929,
+            "maxMs": 1.366414999999506
+          },
+          {
+            "n": 192,
+            "samples": 31,
+            "medianMs": 1.984454999999798,
+            "p95Ms": 2.4080510000003414,
+            "maxMs": 2.515092999999979
+          },
+          {
+            "n": 768,
+            "samples": 31,
+            "medianMs": 7.2828139999992345,
+            "p95Ms": 8.304521000000022,
+            "maxMs": 8.668988999999783
+          }
+        ]
+      }
+    ]
+  },
+  "validation": [
+    {
+      "path": "out/contact-law-current/yaw-timing/probe.receipt.json",
+      "sha256": "db9cd57cc9ec0049037b80d60a8b3a9d52354e10a1d33e2126ece660a284ad4e",
+      "commit": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+      "validationSha256": "90fc75a8d0a59ca30fcc5ace3b585f9644d2af824a76e6558f00e4c9454ef933",
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/contact-law-current/yaw-timing/probe.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.0241093129999999
+        }
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-law-current/yaw-timing/refine.receipt.json",
+      "sha256": "50d60bb244eb637e4edacb87defed3c2598077d446c06a19a0dc6ac1a7a2e166",
+      "commit": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+      "validationSha256": "90fc75a8d0a59ca30fcc5ace3b585f9644d2af824a76e6558f00e4c9454ef933",
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "out/contact-law-current/yaw-timing/refine.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 5.273506146
+        }
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-law-current/yaw-timing/verdict.receipt.json",
+      "sha256": "6c1a6e70cd8ba3c9bda05bb6882f8af11284f5523542ad511253608ed4170c5f",
+      "commit": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+      "validationSha256": "d14ad2a78fe3b70cfabcc7d913bc87de105d1bf5129a1ba9dfb8550b67987d8f",
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/current-contact-yaw.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 7.35019487
+        }
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-law-current/yaw-timing/typecheck.receipt.json",
+      "sha256": "d0e3800f8530510f0423c1ad3b234cb3cd7a929326c3e74c0382b98159c1bcdd",
+      "commit": "2c2410b7d5b7b27e8c92acf79b1c68d1d3c4d98c",
+      "validationSha256": "9f0419953075e6ed4134d707c9546c56e67cbf12a48b824be45e081de7e94388",
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 13.039531943
+        }
+      ],
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-law-current/yaw-timing/final.receipt.json",
+      "sha256": "3d367772aef69f7cf26c68d45b8005df548b7aa51140792f0027826e6a77e61b",
+      "commit": "bd2db06d4f03da3ddc4e50d5271aebd805a2fe56",
+      "validationSha256": "9f0419953075e6ed4134d707c9546c56e67cbf12a48b824be45e081de7e94388",
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/current-contact-yaw.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 7.487273129999999
+        }
+      ],
+      "exitCode": 0
+    }
+  ],
+  "launcherSeconds": 34.174615402,
+  "finalCollectorSeconds": 7.210871794,
+  "reusedEvidence": {
+    "path": "data/reviews/current/current-contact-law.json",
+    "focusedMechanicalChecks": 182,
+    "centerContracts": [
+      52,
+      52
+    ],
+    "isolatedContracts": [
+      45,
+      52
+    ],
+    "reason": "Engine source, flags and existing assertions unchanged; no new suite/game campaign."
+  },
+  "remainingLimits": [
+    "Refinement is not an independent dynamics oracle. Last NT spin drift remains .000290928 rad/s.",
+    "No football outcome verdict from this frozen .05s interval. Four helper situations/five assertions remain Run-owned; two legacy hashes remain Integration compatibility questions.",
+    "No global substep change, new ground law, recovery/capacity retune or historical solver installed.",
+    "Default promotion requires numerical accuracy and football-contract review; opt-in preservation is a distinct decision."
+  ]
+}
