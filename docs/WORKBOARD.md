@@ -1,5 +1,21 @@
 # Current work ownership
 
+## Accepted-build broad football diagnosis — 2026-10-15
+
+Measurement owns a bounded symptom audit on accepted develop
+`8ca8deebe4afa91c3021bdd119bed8976cf00e47` in `codex/accepted-broad-audit`.
+Decision: which recurring football problems merit the next deep investigations,
+without treating proven local defects as a simulator-wide importance ranking.
+Preselect 48 complete native plays (four existing capability-selected actual
+lineups × six run/six pass concepts), no outcome selection, full 20-Hz replay,
+90-second collection budget and five seconds per case. Reuse existing fixture,
+PlaySim, telemetry and viewer; preserve successful plays, partial coverage and
+uncertain attribution. No engine/default/rating changes, bulk source acquisition,
+competing NFL query, full shared suite or feature integration. Exact manifest and
+review rubric are frozen before collection; results will rank panel symptoms,
+not claim league-wide prevalence. Other owners' near-complete work continues.
+
+
 ## Approved risk-only final verification — 2026-10-15
 
 Integration owns this review branch from accepted4679a3c (#72 merged). Extract

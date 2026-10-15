@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "accepted-broad-audit-2026-10-15-v1",
+  "acceptedCommit": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "decision": "Identify recurring visible football problems across a modest preselected panel before choosing another long wave of narrow fixes.",
+  "checkpoint": "Rank recurring visible football problems on one accepted build across preselected ordinary runs and passes before another feature wave",
+  "selection": "All four capability-selected, frozen 11/nickel lineups in config/roster-screen.json, crossed with all twelve declared calls. Calls, seeds, fronts and coverages are fixed before seeing outcomes. No outcome filters, substitutions, seed replacement or rerolls.",
+  "fixture": "config/roster-screen.json",
+  "los": 35,
+  "ballY": 26.666666666666668,
+  "firstDownX": 45,
+  "down": 1,
+  "energy": 1,
+  "audibles": false,
+  "recordEvery": 1,
+  "recordLevel": "full",
+  "budget": { "maxSnaps": 48, "batchMs": 90000, "caseMs": 5000 },
+  "calls": [
+    { "concept": "iz_strong", "formation": "ace_11", "front": "over", "coverage": "cover3", "pressure": null, "seed": 71001 },
+    { "concept": "oz_strong", "formation": "ace_11", "front": "under", "coverage": "cover1", "pressure": null, "seed": 71002 },
+    { "concept": "wz_strong", "formation": "ace_11", "front": "wide9", "coverage": "cover4", "pressure": null, "seed": 71001 },
+    { "concept": "power", "formation": "ace_11", "front": "under", "coverage": "cover3", "pressure": null, "seed": 71002 },
+    { "concept": "counter", "formation": "ace_11", "front": "over", "coverage": "cover2", "pressure": null, "seed": 71001 },
+    { "concept": "duo", "formation": "ace_11", "front": "wide9", "coverage": "cover4", "pressure": null, "seed": 71002 },
+    { "concept": "slant_flat", "formation": "gun_doubles_11", "front": "over", "coverage": "cover3", "pressure": "will_b", "seed": 71001 },
+    { "concept": "mesh", "formation": "gun_doubles_11", "front": "under", "coverage": "cover1", "pressure": null, "seed": 71002 },
+    { "concept": "smash", "formation": "gun_doubles_11", "front": "wide9", "coverage": "cover2", "pressure": null, "seed": 71001 },
+    { "concept": "four_verts", "formation": "gun_doubles_11", "front": "over", "coverage": "cover4", "pressure": null, "seed": 71002 },
+    { "concept": "pa_flood", "formation": "ace_11", "front": "under", "coverage": "cover3", "pressure": null, "seed": 71001 },
+    { "concept": "y_cross", "formation": "gun_doubles_11", "front": "wide9", "coverage": "cover4", "pressure": null, "seed": 71002 }
+  ],
+  "limitations": [
+    "A balanced diagnostic panel is not a random sample of simulator usage or NFL football; report frequencies within declared exposures only.",
+    "Four selected matchups, one seed per call, fresh energy, first-and-ten, midfield, 11 personnel and nickel defense; no game history, fatigue, heavy packages, short yardage, goal line or special teams.",
+    "Concept, front, coverage and seed vary together; this panel does not isolate causal effects of those inputs.",
+    "Full replay telemetry is sampled observer data, not a complete impulse history or proof of decision causes. Missing causes remain unknown."
+  ]
+}
