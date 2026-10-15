@@ -134,5 +134,56 @@
     "experimental Physics"
   ],
   "newTestsRun": 0,
-  "newNativeExecutions": 0
+  "newNativeExecutions": 0,
+  "reviewSupportDelta": [
+    {
+      "pr": 75,
+      "reviewedPriorHead": "ec4a3a18785513d8016047a9a416c42ca9b2faa4",
+      "updatedHead": "43ac5e1835467cbc0914df0df1c82ea74740d1b4",
+      "productionSettingsToolingUnchanged": true,
+      "test": "test/back-man-run-fit.test.ts",
+      "testSha256": "3f4b7a0b89710f74f8e3dd45238015dad3132cf658ca149c1492b7a4d2b07e77",
+      "focusedChecks": 38,
+      "focusedSeconds": 1.927897549,
+      "publishedReceiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/43ac5e1835467cbc0914df0df1c82ea74740d1b4/data/reviews/current/man-recognition-contract/review-support.json",
+      "testedDirtyFiles": [
+        "test/back-man-run-fit.test.ts"
+      ],
+      "limits": []
+    },
+    {
+      "pr": 80,
+      "reviewedPriorHead": "25a73a3fdf5046c8ed682001458d5fda46bb3c59",
+      "updatedHead": "0fce2a085ea9f28cbaac65a388b7d3220c36e6d8",
+      "productionSettingsToolingUnchanged": true,
+      "test": "test/coverage-run-support.test.ts",
+      "testSha256": "01c10434d17c51c78556d40f2a18848e9a4d42def024bc3137d4b868fc898769",
+      "focusedChecks": 11,
+      "focusedSeconds": 2.019055678,
+      "publishedReceiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/0fce2a085ea9f28cbaac65a388b7d3220c36e6d8/data/reviews/current/coverage-run-support-review-support.json",
+      "testedDirtyFiles": [
+        "test/coverage-run-support.test.ts"
+      ],
+      "limits": [
+        "Sampling expiry via advancing history, not gaze/occlusion confidence expiry.",
+        "No arbitrary TTL/new persistence policy introduced.",
+        "Original unfinished runs/adverse geometry unchanged.",
+        "No new behavior or mesh-spacing work.",
+        "Combined verification belongs to Integration."
+      ]
+    }
+  ],
+  "currentHeads": {
+    "75": "43ac5e1835467cbc0914df0df1c82ea74740d1b4",
+    "80": "0fce2a085ea9f28cbaac65a388b7d3220c36e6d8"
+  },
+  "integrationTestOrderingCorrection": {
+    "file": "test/coverage-run-support.test.ts",
+    "reason": "Independent delta review found expected playBall could set onBall before assertion. Store actual update command, assert tag first, then compare expected command.",
+    "productionChanged": false,
+    "newTestScenario": false,
+    "independentReview": "review-support-delta.json",
+    "newFocusedRerun": false,
+    "verification": "Included in the one exact combined verification."
+  }
 }

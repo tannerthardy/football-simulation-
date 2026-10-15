@@ -93,15 +93,53 @@ describe('installed support survives a coverage target replacement', () => {
     }
   });
 
+  it.each([false, true])('expires positive support through advancing sensing snapshots, alley=%s', alley => {
+    for (const replacement of [null, undefined]) {
+      const f = stage(alley); f.reassign();
+      // Use the production buffer/query, not the factory's supplied RB cue.
+      // Keep belief fixed so only the acquired possession can cancel support.
+      f.sim.see = PlaySim.prototype.see;
+      f.a.mind.observationDelay = () => .1;
+      f.a.eyes = { keys: [f.rb], peripheral: .15 };
+      for (let i = 0; i < 24; i++) f.sim.perception.record(f.sim.agents, f.rb.idx);
+      expect(f.sim.see(f.a, f.rb).carrying).toBe(true);
+      f.update();
+
+      for (let i = 0; i < 3; i++) {
+        f.sim.t += f.sim.dt;
+        f.sim.perception.record(f.sim.agents, replacement);
+        const cue = f.sim.see(f.a, f.rb);
+        const buffer = structuredClone(f.sim.perception), rng = structuredClone(f.sim.rng);
+        for (let j = 0; j < 4; j++) expect(f.sim.see(f.a, f.rb)).toEqual(cue);
+        expect(f.sim.perception).toEqual(buffer);
+        expect(f.sim.rng).toEqual(rng);
+        // The original image survives the sensing latency, not a new query.
+        expect(cue.carrying).toBe(i < 2 ? true : replacement === null ? false : null);
+        if (i < 2) f.update();
+      }
+      expect(f.a.recog!.read).toBe('run');
+      // Hidden possession cannot restore an expired/unknown acquired picture.
+      f.sim.ball = { kind: 'held', carrier: f.rb };
+      const man = new ManCoverage(f.a, f.sim, f.receiver, false, 'B', 1, { lev: 'inside' });
+      expect(f.update()).toEqual(man.update(f.a, f.sim));
+      expect(f.sim.see(f.a, f.rb).carrying).toBe(replacement === null ? false : null);
+    }
+  });
+
   it('retains acquired support through unrecognized flight, then recognized ball priority wins', () => {
     for (const alley of [false, true]) {
       const held = stage(alley), air = stage(alley), recognized = stage(alley);
       for (const f of [held, air, recognized]) f.reassign();
       flight(air); flight(recognized, true);
+      recognized.a.tags.add('looking');
+      recognized.sim.ballPath = [{ t: recognized.sim.t + .1,
+        x: recognized.a.pos.x - .2, y: recognized.a.pos.y, z: 1.2 }];
       expect(sawThrow(air.a, air.sim, air.receiver)).toBe(false);
       expect(air.update()).toEqual(held.update());
       expect(sawThrow(recognized.a, recognized.sim, recognized.receiver)).toBe(true);
-      expect(recognized.update()).toEqual(playBall(recognized.a, recognized.sim, recognized.receiver));
+      const actual = recognized.update();
+      expect(recognized.a.tags.has('onBall')).toBe(true);
+      expect(actual).toEqual(playBall(recognized.a, recognized.sim, recognized.receiver));
     }
   });
 

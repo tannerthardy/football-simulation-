@@ -258,8 +258,13 @@ describe('inside man players insert from their acquired back possession', () => 
     expect(f.update()).toEqual(held.update());
     expect(f.sim.rng).toEqual(held.sim.rng);
     f.sim.throwAt = expected.sim.throwAt = .1;
+    for (const item of [f, expected]) {
+      item.a.tags.add('looking');
+      item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
+    }
     expect(sawThrow(f.a, f.sim, f.r)).toBe(true);
     expect(f.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
+    expect(f.a.tags.has('onBall')).toBe(true);
     expect(f.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
   });
 
@@ -401,8 +406,13 @@ describe('back man markers preserve their installed alley support instead of rec
     expect(air.update()).toEqual(held.update());
     expect(air.sim.rng).toEqual(held.sim.rng);
     air.sim.throwAt = expected.sim.throwAt = .1;
+    for (const item of [air, expected]) {
+      item.a.tags.add('looking');
+      item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
+    }
     expect(sawThrow(air.a, air.sim, air.r)).toBe(true);
     expect(air.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
+    expect(air.a.tags.has('onBall')).toBe(true);
     expect(air.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
   });
 
@@ -422,6 +432,41 @@ describe('back man markers preserve their installed alley support instead of rec
       const unknown = alleyStage(null, 1, 'run', 'RB', 'gun_trey_11', level);
       unknown.update();
       expect(unknown.sim.trace.data!.decisions.filter(d => d.kind === 'coverage-run-fit')).toHaveLength(0);
+    }
+  });
+});
+
+describe('acquired back-man support has no private positive-picture latch', () => {
+  it.each(['insert', 'alley'] as const)('uses new sensing and contradictory belief after a positive %s choice', kind => {
+    for (const replacement of [null, undefined]) {
+      const f = kind === 'insert' ? stage() : alleyStage();
+      f.sim.see = PlaySim.prototype.see;
+      f.a.mind.observationDelay = () => .1;
+      f.a.eyes = { keys: [f.r], peripheral: .15 };
+      for (let i = 0; i < 24; i++) f.sim.perception.record(f.sim.agents, f.r.idx);
+      expect(f.sim.see(f.a, f.r).carrying).toBe(true);
+      const positive = f.update();
+      f.a.recog!.read = 'pass';
+      const pass = f.update();
+      expect(pass).not.toEqual(positive);
+      f.a.recog!.read = 'run';
+      expect(f.update()).toEqual(positive);
+
+      for (let i = 0; i < 3; i++) {
+        f.sim.t += f.sim.dt;
+        f.sim.perception.record(f.sim.agents, replacement);
+        const cue = f.sim.see(f.a, f.r);
+        const buffer = structuredClone(f.sim.perception), rng = structuredClone(f.sim.rng);
+        for (let j = 0; j < 4; j++) expect(f.sim.see(f.a, f.r)).toEqual(cue);
+        expect(f.sim.perception).toEqual(buffer);
+        expect(f.sim.rng).toEqual(rng);
+        expect(cue.carrying).toBe(i < 2 ? true : replacement === null ? false : null);
+        if (i < 2) f.update();
+      }
+      expect(f.a.recog!.read).toBe('run');
+      f.sim.ball = { kind: 'held', carrier: f.r };
+      expect(f.update()).toEqual(new ManCoverage(f.a, f.sim, f.r, false, 'B', 1).update(f.a, f.sim));
+      expect(f.sim.see(f.a, f.r).carrying).toBe(replacement === null ? false : null);
     }
   });
 });
