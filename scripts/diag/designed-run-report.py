@@ -71,8 +71,9 @@ def main():
     result = {'protocol': 'designed-run-game-report-v1', 'arms': {}, 'witnesses': [],
         'nflReference': {k: rb_reference[k] for k in ['context', 'counts', 'yards', 'rates', 'tailYardContribution']},
         'nflReferenceSha256': sha(nfl_path), 'sourceCommit': '404d3366d92449c30aedcba1957812fe5ea8b9aa',
-        'newGames': 2, 'independentCheckpointGamesPerArm': 4,
+        'newGames': 3, 'independentCheckpointGamesPerArm': 4,
         'mapping': 'PR54 native run logs, clean all-foul exclusion, exact rusher ID to frozen team roster. Log down/distance/yardline are snap context; previous recorded score supplies pre-snap score. Source/flag/team pins verified. Shared NFL gain/rate/context/backoff operators reused; not the older ordinary-eight-game native-index adapter.'}
+    matching_receipts = {}
     for arm in ['accepted', 'experimental']:
         plays, games, matched = [], [], defaultdict(list)
         for fixture in original['fixtures']:
@@ -111,13 +112,14 @@ def main():
         for p in plays:
             if p['down'] <= 2 and 8 <= p['distance'] <= 10 and p['yardline'] < 80:
                 ordinary.append(p)
-        standardized = {}
+        standardized = {}; matching_receipts[arm] = dict(matched)
         for metric, receipts in matched.items():
             supported = [r for r in receipts if r['status'] == 'supported']
             standardized[metric] = {'n': len(receipts), 'retained': len(supported),
                 'observed': statistics.mean(r['observed'] for r in supported) if supported else None,
                 'nflExpected': statistics.mean(r['referenceValue'] for r in supported) if supported else None,
-                'backoffCounts': dict(Counter('/'.join(r['discardedDimensions']) or 'none' for r in supported)), 'receipts': receipts}
+                'backoffCounts': dict(Counter('/'.join(r['discardedDimensions']) or 'none' for r in supported)),
+                'receiptsFile': 'nfl-matching-receipts.json.gz'}
         unresolved = [{'fixture':p['fixture'],'play':p['index'],'concept':p['plan']['concept'],
             'formation':p['plan']['formation'],'yards':p['yards'],'outcome':p['outcome'],
             'handoffRecorded':any(e['type']=='handoff' for e in p.get('events',[]))} for p in plays if p['verifiedCarrier'] == 'unknown']
@@ -161,12 +163,44 @@ def main():
                 'preContactSlowTicks': slow_ticks, 'actualHandLoadIntervals': {k: [min(v), max(v)] for k,v in loaded.items()},
                 'rbTeammateImpacts': [c for c in row['physicalContacts'] if 6 in [c['i'],c['j']] and c['i'] < 11 and c['j'] < 11],
                 'traceSha256': sha(trace_path), 'fullRecordedLogParity': True})
+    exchange = read(args.traces/'zone-exchange-followup.json.gz')
+    assert exchange['logSha256'] == exchange['referenceLogSha256'] and exchange['complete']
+    result['exchangeWitnesses'], exchange_rows = [], []
+    for row in exchange['rows']:
+        if not row['selected']: continue
+        qb, rb = [row['input']['agents'][i]['initialBehavior'] for i in [0,6]]
+        reach = row['input']['agents'][0]['profile']['reach']+row['input']['agents'][6]['profile']['radius']
+        gate = qb['meshTime']-.15
+        frames = row['frames']; first_passed = next(f for f in frames if f['behavior'][6].get('passed'))
+        early = [f for f in frames if f['t'] <= 1.5]
+        cues = [c for c in row['cues'] if c['observer'] == 0 and c['target'] == 6 and c['kind'] == 'owned-teammate' and c['t'] >= qb['meshTime']-.3-1e-9]
+        outcome = next(p for p in exchange['log'] if p['index'] == row['index'])
+        result['exchangeWitnesses'].append({'play':row['index'],'call':outcome['call'],'gain':outcome['yards'],
+            'outcome':outcome['outcome'],'duration':outcome['duration'],'qbMesh':qb['mesh'],'rbMesh':rb['mesh'],
+            'meshTime':qb['meshTime'],'physicalGateOpens':gate,'handoffReach':reach,
+            'firstPassed':first_passed['t'],
+            'minimumActualSeparationAfterGate':min(dist(f['before'][0]['pos'],f['before'][6]['pos']) for f in frames if f['t'] >= gate-1e-9),
+            'earlyQbRawRequestsAllZero':all(math.hypot(*f['raw'][0]['vel'].values()) == 0 for f in early),
+            'earlyQbFinalRequestsAllZero':all(math.hypot(*f['final'][0]['vel'].values()) == 0 for f in early),
+            'preWindowPhysicalContactsAtQBOrRB':[c for c in row['physicalContacts'] if c['t'] < gate and {c['i'],c['j']} & {0,6}],
+            'firstRecoveryCue':next((c for c in cues if c['t'] >= qb['meshTime']-.3-1e-9),None),
+            'fullRecordedLogParity':True,'traceSha256':sha(args.traces/'zone-exchange-followup.json.gz')})
+        for f in frames:
+            exchange_rows.append({'play':row['index'],'t':f['t'],'actualSeparation':dist(f['before'][0]['pos'],f['before'][6]['pos']),
+                'handoffReach':reach,'physicalGate':gate,'passed':f['behavior'][6].get('passed',False),
+                'qbRawSpeed':math.hypot(*f['raw'][0]['vel'].values()),'rbRawSpeed':math.hypot(*f['raw'][6]['vel'].values()),
+                'qb_x':f['before'][0]['pos']['x'],'qb_y':f['before'][0]['pos']['y'],
+                'rb_x':f['before'][6]['pos']['x'],'rb_y':f['before'][6]['pos']['y']})
+    result['nativeReplayCostSeconds'] = sum(read(args.traces/(n+'.json.gz'))['elapsedSeconds'] for n in ['zone-reference','power-zone','zone-exchange-followup'])
     args.out.mkdir(parents=True, exist_ok=True)
     result['measurementSeconds'] = time.perf_counter()-started; result['newSimulationSteps'] = 0
     result['scriptSha256'] = sha(Path(__file__))
     (args.out/'summary.json').write_text(json.dumps(result, indent=2)+'\n')
+    (args.out/'nfl-matching-receipts.json.gz').write_bytes(gzip.compress(json.dumps(matching_receipts,separators=(',',':')).encode(),mtime=0))
     with (args.out/'timeline.csv').open('w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=list(timeline[0]), lineterminator='\n'); writer.writeheader(); writer.writerows(timeline)
+    with (args.out/'exchange.csv').open('w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=list(exchange_rows[0]), lineterminator='\n'); writer.writeheader(); writer.writerows(exchange_rows)
     print(json.dumps({arm: {k: {'observed': v['observed'], 'nflExpected': v['nflExpected'], 'retained': v['retained'], 'backoffs': v['backoffCounts']} for k,v in result['arms'][arm]['standardized'].items()} for arm in result['arms']}))
 
 

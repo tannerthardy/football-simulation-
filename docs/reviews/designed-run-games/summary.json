@@ -1,0 +1,2920 @@
+{
+  "protocol": "designed-run-game-report-v1",
+  "arms": {
+    "accepted": {
+      "metrics": {
+        "n": 179,
+        "mean": 5.673296089385475,
+        "median": 1.89,
+        "cappedMean10": 2.5192737430167598,
+        "stuffCount": 49,
+        "successCount": 56,
+        "below4": 129,
+        "4toUnder10": 31,
+        "10plus": 19,
+        "20plus": 12,
+        "40plus": 9,
+        "10plusShareOfNetYards": 0.7430380494721915,
+        "firstCarrierContactIsQB": 4,
+        "recordedContactDepthKnown": 170,
+        "recordedContactDepthMedian": 0.42622750625217165,
+        "recordedContactDepthBelow1": 105
+      },
+      "rounded": {
+        "n": 179,
+        "mean": 5.659217877094972,
+        "median": 2,
+        "cappedMean10": 2.4916201117318435,
+        "stuffCount": 61,
+        "successCount": 60,
+        "below4": 121,
+        "4toUnder10": 38,
+        "10plus": 20,
+        "20plus": 12,
+        "40plus": 9,
+        "10plusShareOfNetYards": 0.7571569595261599,
+        "firstCarrierContactIsQB": 4,
+        "recordedContactDepthKnown": 170,
+        "recordedContactDepthMedian": 0.42622750625217165,
+        "recordedContactDepthBelow1": 105
+      },
+      "groups": {
+        "concept": {
+          "counter": {
+            "n": 23,
+            "mean": 11.874347826086957,
+            "median": 2.35,
+            "cappedMean10": 3.3308695652173914,
+            "stuffCount": 6,
+            "successCount": 8,
+            "below4": 15,
+            "4toUnder10": 3,
+            "10plus": 5,
+            "20plus": 4,
+            "40plus": 4,
+            "10plusShareOfNetYards": 0.9025667313536672,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 21,
+            "recordedContactDepthMedian": -0.15886366496150117,
+            "recordedContactDepthBelow1": 14
+          },
+          "draw": {
+            "n": 11,
+            "mean": 3.340909090909091,
+            "median": 4.11,
+            "cappedMean10": 3.004545454545455,
+            "stuffCount": 5,
+            "successCount": 6,
+            "below4": 5,
+            "4toUnder10": 5,
+            "10plus": 1,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.3727891156462585,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 11,
+            "recordedContactDepthMedian": 1.9485005544894634,
+            "recordedContactDepthBelow1": 5
+          },
+          "duo": {
+            "n": 20,
+            "mean": 4.9655000000000005,
+            "median": 3.635,
+            "cappedMean10": 4.392,
+            "stuffCount": 0,
+            "successCount": 9,
+            "below4": 11,
+            "4toUnder10": 7,
+            "10plus": 2,
+            "20plus": 1,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.31688651696707276,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 20,
+            "recordedContactDepthMedian": 1.7211250201727104,
+            "recordedContactDepthBelow1": 7
+          },
+          "insideZone": {
+            "n": 28,
+            "mean": 6.3875,
+            "median": 2.835,
+            "cappedMean10": 3.2303571428571427,
+            "stuffCount": 7,
+            "successCount": 8,
+            "below4": 20,
+            "4toUnder10": 4,
+            "10plus": 4,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.7179200447302209,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 28,
+            "recordedContactDepthMedian": 1.127066836718754,
+            "recordedContactDepthBelow1": 14
+          },
+          "outsideZone": {
+            "n": 22,
+            "mean": 3.0954545454545457,
+            "median": 0.35,
+            "cappedMean10": 0.8136363636363636,
+            "stuffCount": 8,
+            "successCount": 3,
+            "below4": 19,
+            "4toUnder10": 2,
+            "10plus": 1,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.8839941262848751,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 20,
+            "recordedContactDepthMedian": -0.0939127135997957,
+            "recordedContactDepthBelow1": 15
+          },
+          "power": {
+            "n": 22,
+            "mean": 7.292272727272727,
+            "median": 1.225,
+            "cappedMean10": 2.5904545454545453,
+            "stuffCount": 6,
+            "successCount": 8,
+            "below4": 17,
+            "4toUnder10": 2,
+            "10plus": 3,
+            "20plus": 3,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.8317646325500218,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 21,
+            "recordedContactDepthMedian": -0.3233553147384569,
+            "recordedContactDepthBelow1": 16
+          },
+          "splitZone": {
+            "n": 2,
+            "mean": 4.03,
+            "median": 4.03,
+            "cappedMean10": 4.03,
+            "stuffCount": 1,
+            "successCount": 1,
+            "below4": 1,
+            "4toUnder10": 1,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 2,
+            "recordedContactDepthMedian": 1.0205583920418846,
+            "recordedContactDepthBelow1": 1
+          },
+          "toss": {
+            "n": 4,
+            "mean": 1.835,
+            "median": 2.065,
+            "cappedMean10": 1.835,
+            "stuffCount": 0,
+            "successCount": 1,
+            "below4": 4,
+            "4toUnder10": 0,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 4,
+            "recordedContactDepthMedian": -1.0606452396721977,
+            "recordedContactDepthBelow1": 3
+          },
+          "trap": {
+            "n": 24,
+            "mean": 5.949583333333333,
+            "median": 3.43,
+            "cappedMean10": 3.57625,
+            "stuffCount": 3,
+            "successCount": 9,
+            "below4": 16,
+            "4toUnder10": 6,
+            "10plus": 2,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.538973317459206,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 24,
+            "recordedContactDepthMedian": 0.7194767635537183,
+            "recordedContactDepthBelow1": 13
+          },
+          "wideZone": {
+            "n": 23,
+            "mean": 1.7730434782608695,
+            "median": -0.47,
+            "cappedMean10": -0.5704347826086957,
+            "stuffCount": 13,
+            "successCount": 3,
+            "below4": 21,
+            "4toUnder10": 1,
+            "10plus": 1,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 1.5669445806768025,
+            "firstCarrierContactIsQB": 4,
+            "recordedContactDepthKnown": 19,
+            "recordedContactDepthMedian": -0.5354038444403244,
+            "recordedContactDepthBelow1": 17
+          }
+        },
+        "qb": {
+          "gun": {
+            "n": 76,
+            "mean": 6.761052631578948,
+            "median": 2.415,
+            "cappedMean10": 2.4301315789473685,
+            "stuffCount": 23,
+            "successCount": 24,
+            "below4": 53,
+            "4toUnder10": 13,
+            "10plus": 10,
+            "20plus": 6,
+            "40plus": 5,
+            "10plusShareOfNetYards": 0.835182157870154,
+            "firstCarrierContactIsQB": 4,
+            "recordedContactDepthKnown": 69,
+            "recordedContactDepthMedian": 0.9548339677089643,
+            "recordedContactDepthBelow1": 36
+          },
+          "pistol": {
+            "n": 21,
+            "mean": 7.668571428571428,
+            "median": 1.25,
+            "cappedMean10": 3.24,
+            "stuffCount": 4,
+            "successCount": 6,
+            "below4": 14,
+            "4toUnder10": 4,
+            "10plus": 3,
+            "20plus": 2,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.7637853949329358,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 20,
+            "recordedContactDepthMedian": 0.2169350907356815,
+            "recordedContactDepthBelow1": 14
+          },
+          "under": {
+            "n": 82,
+            "mean": 4.154146341463415,
+            "median": 1.705,
+            "cappedMean10": 2.417317073170732,
+            "stuffCount": 22,
+            "successCount": 26,
+            "below4": 62,
+            "4toUnder10": 14,
+            "10plus": 6,
+            "20plus": 4,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.5942343823391264,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 81,
+            "recordedContactDepthMedian": 0.1818629964242504,
+            "recordedContactDepthBelow1": 55
+          }
+        },
+        "formation": {
+          "ace_11": {
+            "n": 14,
+            "mean": 3.127857142857143,
+            "median": 1.67,
+            "cappedMean10": 2.7928571428571427,
+            "stuffCount": 3,
+            "successCount": 3,
+            "below4": 11,
+            "4toUnder10": 1,
+            "10plus": 2,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.5638273578442567,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 14,
+            "recordedContactDepthMedian": -0.3336208588945695,
+            "recordedContactDepthBelow1": 9
+          },
+          "ace_12": {
+            "n": 15,
+            "mean": 6.232666666666667,
+            "median": 2.53,
+            "cappedMean10": 3.3993333333333333,
+            "stuffCount": 3,
+            "successCount": 6,
+            "below4": 10,
+            "4toUnder10": 4,
+            "10plus": 1,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.5615573858166649,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 15,
+            "recordedContactDepthMedian": 0.7702956034798731,
+            "recordedContactDepthBelow1": 9
+          },
+          "ace_trips_11": {
+            "n": 15,
+            "mean": 8.228666666666667,
+            "median": 2.78,
+            "cappedMean10": 2.8033333333333332,
+            "stuffCount": 4,
+            "successCount": 4,
+            "below4": 11,
+            "4toUnder10": 2,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.8213562343028437,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 15,
+            "recordedContactDepthMedian": 0.4929696770782712,
+            "recordedContactDepthBelow1": 10
+          },
+          "gun_bunch_11": {
+            "n": 8,
+            "mean": 21.505,
+            "median": 2.69,
+            "cappedMean10": 4.3175,
+            "stuffCount": 1,
+            "successCount": 4,
+            "below4": 5,
+            "4toUnder10": 0,
+            "10plus": 3,
+            "20plus": 2,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.9736107881887933,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 8,
+            "recordedContactDepthMedian": 1.3925349783450596,
+            "recordedContactDepthBelow1": 3
+          },
+          "gun_doubles_11": {
+            "n": 10,
+            "mean": 0.534,
+            "median": -0.2,
+            "cappedMean10": 0.534,
+            "stuffCount": 5,
+            "successCount": 2,
+            "below4": 8,
+            "4toUnder10": 2,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 9,
+            "recordedContactDepthMedian": -1.0241383870287422,
+            "recordedContactDepthBelow1": 6
+          },
+          "gun_spread_10": {
+            "n": 7,
+            "mean": 2.15,
+            "median": -0.42,
+            "cappedMean10": 0.5785714285714285,
+            "stuffCount": 4,
+            "successCount": 2,
+            "below4": 6,
+            "4toUnder10": 0,
+            "10plus": 1,
+            "20plus": 1,
+            "40plus": 0,
+            "10plusShareOfNetYards": 1.3953488372093024,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 6,
+            "recordedContactDepthMedian": 0.16922140365278437,
+            "recordedContactDepthBelow1": 3
+          },
+          "gun_trey_11": {
+            "n": 11,
+            "mean": 8.601818181818182,
+            "median": 3.71,
+            "cappedMean10": 2.6672727272727275,
+            "stuffCount": 4,
+            "successCount": 3,
+            "below4": 7,
+            "4toUnder10": 2,
+            "10plus": 2,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.9012893679983092,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 8,
+            "recordedContactDepthMedian": 1.7600733088417364,
+            "recordedContactDepthBelow1": 3
+          },
+          "gun_trips_10": {
+            "n": 7,
+            "mean": 10.915714285714285,
+            "median": 3.37,
+            "cappedMean10": 3.744285714285714,
+            "stuffCount": 0,
+            "successCount": 2,
+            "below4": 4,
+            "4toUnder10": 2,
+            "10plus": 1,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.7878549928019893,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 7,
+            "recordedContactDepthMedian": 2.5233241985330324,
+            "recordedContactDepthBelow1": 3
+          },
+          "gun_trips_11": {
+            "n": 17,
+            "mean": 8.16,
+            "median": 2.97,
+            "cappedMean10": 4.326470588235294,
+            "stuffCount": 3,
+            "successCount": 6,
+            "below4": 10,
+            "4toUnder10": 4,
+            "10plus": 3,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.6860582468281431,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 16,
+            "recordedContactDepthMedian": 1.0947215232027183,
+            "recordedContactDepthBelow1": 8
+          },
+          "gun_wing_12": {
+            "n": 16,
+            "mean": 0.72875,
+            "median": 1.19,
+            "cappedMean10": 0.72875,
+            "stuffCount": 6,
+            "successCount": 5,
+            "below4": 13,
+            "4toUnder10": 3,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 15,
+            "recordedContactDepthMedian": 0.4327609499231784,
+            "recordedContactDepthBelow1": 10
+          },
+          "heavy_13": {
+            "n": 8,
+            "mean": 2.17,
+            "median": 1.125,
+            "cappedMean10": 2.17,
+            "stuffCount": 0,
+            "successCount": 4,
+            "below4": 7,
+            "4toUnder10": 1,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 8,
+            "recordedContactDepthMedian": 0.3194603683300059,
+            "recordedContactDepthBelow1": 6
+          },
+          "i_jumbo_22": {
+            "n": 4,
+            "mean": 1.1025,
+            "median": 1.375,
+            "cappedMean10": 1.1025,
+            "stuffCount": 1,
+            "successCount": 0,
+            "below4": 4,
+            "4toUnder10": 0,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 4,
+            "recordedContactDepthMedian": -0.9988078108121083,
+            "recordedContactDepthBelow1": 3
+          },
+          "i_pro_21": {
+            "n": 10,
+            "mean": 1.879,
+            "median": 1.1099999999999999,
+            "cappedMean10": 1.879,
+            "stuffCount": 3,
+            "successCount": 4,
+            "below4": 8,
+            "4toUnder10": 2,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 10,
+            "recordedContactDepthMedian": 0.22612254289627387,
+            "recordedContactDepthBelow1": 7
+          },
+          "i_twins_21": {
+            "n": 12,
+            "mean": 3.2600000000000002,
+            "median": 0.175,
+            "cappedMean10": 2.1058333333333334,
+            "stuffCount": 6,
+            "successCount": 4,
+            "below4": 8,
+            "4toUnder10": 3,
+            "10plus": 1,
+            "20plus": 1,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.6096625766871165,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 12,
+            "recordedContactDepthMedian": -0.3206209645939744,
+            "recordedContactDepthBelow1": 9
+          },
+          "offset_i_21": {
+            "n": 4,
+            "mean": 0.062499999999999944,
+            "median": 0.14,
+            "cappedMean10": 0.062499999999999944,
+            "stuffCount": 2,
+            "successCount": 1,
+            "below4": 3,
+            "4toUnder10": 1,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 3,
+            "recordedContactDepthMedian": 0.374574349113729,
+            "recordedContactDepthBelow1": 2
+          },
+          "pistol_11": {
+            "n": 11,
+            "mean": 12.588181818181818,
+            "median": 2.35,
+            "cappedMean10": 4.133636363636364,
+            "stuffCount": 2,
+            "successCount": 4,
+            "below4": 6,
+            "4toUnder10": 2,
+            "10plus": 3,
+            "20plus": 2,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.8882790496136347,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 10,
+            "recordedContactDepthMedian": 0.2169350907356815,
+            "recordedContactDepthBelow1": 7
+          },
+          "pistol_12": {
+            "n": 10,
+            "mean": 2.257,
+            "median": 0.7,
+            "cappedMean10": 2.257,
+            "stuffCount": 2,
+            "successCount": 2,
+            "below4": 8,
+            "4toUnder10": 2,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 10,
+            "recordedContactDepthMedian": 0.10873366838937315,
+            "recordedContactDepthBelow1": 7
+          }
+        }
+      },
+      "verifiedRB_FB": {
+        "n": 169,
+        "mean": 6.30112426035503,
+        "median": 2.35,
+        "cappedMean10": 2.960473372781065,
+        "stuffCount": 39,
+        "successCount": 56,
+        "below4": 119,
+        "4toUnder10": 31,
+        "10plus": 19,
+        "20plus": 12,
+        "40plus": 9,
+        "10plusShareOfNetYards": 0.7085896195851215,
+        "firstCarrierContactIsQB": 0,
+        "recordedContactDepthKnown": 166,
+        "recordedContactDepthMedian": 0.4748580454020903,
+        "recordedContactDepthBelow1": 101
+      },
+      "unverifiedCarrier": [
+        {
+          "fixture": "zone-reference",
+          "play": 49,
+          "concept": "wideZone",
+          "formation": "gun_trey_11",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "zone-reference",
+          "play": 72,
+          "concept": "wideZone",
+          "formation": "gun_spread_10",
+          "yards": -4.95,
+          "outcome": "tackle",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "zone-reference",
+          "play": 150,
+          "concept": "wideZone",
+          "formation": "gun_wing_12",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "zone-reference",
+          "play": 159,
+          "concept": "wideZone",
+          "formation": "gun_wing_12",
+          "yards": -4.95,
+          "outcome": "tackle",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "spread-air",
+          "play": 76,
+          "concept": "outsideZone",
+          "formation": "gun_spread_10",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "spread-air",
+          "play": 89,
+          "concept": "wideZone",
+          "formation": "offset_i_21",
+          "yards": -4.48,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "power-zone",
+          "play": 3,
+          "concept": "wideZone",
+          "formation": "gun_trey_11",
+          "yards": -5,
+          "outcome": "tackle",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "power-zone",
+          "play": 71,
+          "concept": "wideZone",
+          "formation": "gun_doubles_11",
+          "yards": -4.99,
+          "outcome": "tackle",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "power-zone",
+          "play": 114,
+          "concept": "wideZone",
+          "formation": "gun_trey_11",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "west-spread",
+          "play": 36,
+          "concept": "outsideZone",
+          "formation": "gun_doubles_11",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        }
+      ],
+      "earlyDown8to10OutsideRedZone": {
+        "n": 105,
+        "mean": 5.635714285714286,
+        "median": 1.92,
+        "cappedMean10": 2.434,
+        "stuffCount": 30,
+        "successCount": 29,
+        "below4": 76,
+        "4toUnder10": 20,
+        "10plus": 9,
+        "20plus": 7,
+        "40plus": 5,
+        "10plusShareOfNetYards": 0.7202027883396704,
+        "firstCarrierContactIsQB": 2,
+        "recordedContactDepthKnown": 99,
+        "recordedContactDepthMedian": 0.4929696770782712,
+        "recordedContactDepthBelow1": 62
+      },
+      "standardized": {
+        "meanYards": {
+          "n": 179,
+          "retained": 169,
+          "observed": 6.30112426035503,
+          "nflExpected": 4.4921328049232,
+          "backoffCounts": {
+            "none": 161,
+            "field": 8
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "cappedMean10": {
+          "n": 179,
+          "retained": 169,
+          "observed": 2.960473372781065,
+          "nflExpected": 3.7095504739182465,
+          "backoffCounts": {
+            "none": 161,
+            "field": 8
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "success4060100": {
+          "n": 179,
+          "retained": 169,
+          "observed": 33.13609467455621,
+          "nflExpected": 43.54640357150377,
+          "backoffCounts": {
+            "none": 161,
+            "field": 8
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "stuff": {
+          "n": 179,
+          "retained": 169,
+          "observed": 23.076923076923077,
+          "nflExpected": 16.99365277779731,
+          "backoffCounts": {
+            "none": 161,
+            "field": 8
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "explosive20plus": {
+          "n": 179,
+          "retained": 169,
+          "observed": 7.100591715976331,
+          "nflExpected": 2.3330913813785825,
+          "backoffCounts": {
+            "none": 161,
+            "field": 8
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "explosive40plus": {
+          "n": 179,
+          "retained": 169,
+          "observed": 5.325443786982248,
+          "nflExpected": 0.5662584023553823,
+          "backoffCounts": {
+            "none": 161,
+            "field": 8
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        }
+      },
+      "games": [
+        {
+          "id": "zone-reference",
+          "seed": 701,
+          "score": {
+            "home": 38,
+            "away": 33
+          },
+          "officialRushYards": [
+            150.39000000000001,
+            23.6
+          ],
+          "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+          "summarySha256": "96c69ffbdc5f36b4b0df65de17a09693c74e6525290d142831b86a8209251327"
+        },
+        {
+          "id": "spread-air",
+          "seed": 702,
+          "score": {
+            "home": 38,
+            "away": 21
+          },
+          "officialRushYards": [
+            92.09,
+            43.31999999999999
+          ],
+          "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+          "summarySha256": "645c58234487fa250aaf14d6766c797b0905eae347cf8aba19cca21fd60591a3"
+        },
+        {
+          "id": "power-zone",
+          "seed": 703,
+          "score": {
+            "home": 52,
+            "away": 42
+          },
+          "officialRushYards": [
+            201.78000000000003,
+            168.68999999999997
+          ],
+          "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+          "summarySha256": "baab7336cbc85113b540f68b05f5473dc0809d2bfa0ec5de55f3f1d28e9aaae1"
+        },
+        {
+          "id": "west-spread",
+          "seed": 704,
+          "score": {
+            "home": 77,
+            "away": 53
+          },
+          "officialRushYards": [
+            303.34,
+            78.32999999999998
+          ],
+          "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+          "summarySha256": "38f8aa07c6f149ff88c830f68981e03f668823d26b1fe9f9f68c8b5313dd7adf"
+        }
+      ],
+      "ordinaryContextLimit": "This subset omits score/clock filters and is not the NFL ordinaryRB_FB cohort. Primary expected means/rates use fixed kind/carrier/down/distance/field backoff; never average cell medians."
+    },
+    "experimental": {
+      "metrics": {
+        "n": 175,
+        "mean": 4.410285714285714,
+        "median": 1.69,
+        "cappedMean10": 2.0866285714285713,
+        "stuffCount": 54,
+        "successCount": 45,
+        "below4": 130,
+        "4toUnder10": 30,
+        "10plus": 15,
+        "20plus": 12,
+        "40plus": 6,
+        "10plusShareOfNetYards": 0.7212231147965794,
+        "firstCarrierContactIsQB": 5,
+        "recordedContactDepthKnown": 166,
+        "recordedContactDepthMedian": 0.28620726844334854,
+        "recordedContactDepthBelow1": 103
+      },
+      "rounded": {
+        "n": 175,
+        "mean": 4.405714285714286,
+        "median": 2,
+        "cappedMean10": 2.085714285714286,
+        "stuffCount": 64,
+        "successCount": 47,
+        "below4": 126,
+        "4toUnder10": 34,
+        "10plus": 15,
+        "20plus": 12,
+        "40plus": 6,
+        "10plusShareOfNetYards": 0.7211413748378729,
+        "firstCarrierContactIsQB": 5,
+        "recordedContactDepthKnown": 166,
+        "recordedContactDepthMedian": 0.28620726844334854,
+        "recordedContactDepthBelow1": 103
+      },
+      "groups": {
+        "concept": {
+          "counter": {
+            "n": 27,
+            "mean": 8.196296296296296,
+            "median": 2.21,
+            "cappedMean10": 3.588888888888889,
+            "stuffCount": 3,
+            "successCount": 12,
+            "below4": 16,
+            "4toUnder10": 7,
+            "10plus": 4,
+            "20plus": 3,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.7428829643018526,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 24,
+            "recordedContactDepthMedian": 0.6360515584763,
+            "recordedContactDepthBelow1": 13
+          },
+          "draw": {
+            "n": 12,
+            "mean": -1.47,
+            "median": -2.5549999999999997,
+            "cappedMean10": -1.47,
+            "stuffCount": 10,
+            "successCount": 1,
+            "below4": 11,
+            "4toUnder10": 1,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": -0.0,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 12,
+            "recordedContactDepthMedian": -3.30673874909683,
+            "recordedContactDepthBelow1": 11
+          },
+          "duo": {
+            "n": 19,
+            "mean": 4.503157894736842,
+            "median": 2.97,
+            "cappedMean10": 3.4121052631578945,
+            "stuffCount": 1,
+            "successCount": 6,
+            "below4": 14,
+            "4toUnder10": 4,
+            "10plus": 1,
+            "20plus": 1,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.3591631603553062,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 19,
+            "recordedContactDepthMedian": 1.6954648094700673,
+            "recordedContactDepthBelow1": 7
+          },
+          "insideZone": {
+            "n": 29,
+            "mean": 6.905172413793103,
+            "median": 2.58,
+            "cappedMean10": 3.5362068965517244,
+            "stuffCount": 6,
+            "successCount": 8,
+            "below4": 18,
+            "4toUnder10": 8,
+            "10plus": 3,
+            "20plus": 3,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.6377028714107366,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 29,
+            "recordedContactDepthMedian": 0.8691139574630853,
+            "recordedContactDepthBelow1": 17
+          },
+          "outsideZone": {
+            "n": 20,
+            "mean": 1.285,
+            "median": 0.8200000000000001,
+            "cappedMean10": 1.0145,
+            "stuffCount": 7,
+            "successCount": 5,
+            "below4": 16,
+            "4toUnder10": 2,
+            "10plus": 2,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.988715953307393,
+            "firstCarrierContactIsQB": 4,
+            "recordedContactDepthKnown": 19,
+            "recordedContactDepthMedian": -0.3412069960833435,
+            "recordedContactDepthBelow1": 13
+          },
+          "power": {
+            "n": 20,
+            "mean": 3.956,
+            "median": 1.855,
+            "cappedMean10": 2.1805,
+            "stuffCount": 7,
+            "successCount": 4,
+            "below4": 14,
+            "4toUnder10": 5,
+            "10plus": 1,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.5752022244691607,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 20,
+            "recordedContactDepthMedian": -0.1612053923105652,
+            "recordedContactDepthBelow1": 12
+          },
+          "splitZone": {
+            "n": 3,
+            "mean": 1.71,
+            "median": 2.6,
+            "cappedMean10": 1.71,
+            "stuffCount": 1,
+            "successCount": 2,
+            "below4": 3,
+            "4toUnder10": 0,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 3,
+            "recordedContactDepthMedian": 2.713545131473964,
+            "recordedContactDepthBelow1": 1
+          },
+          "toss": {
+            "n": 4,
+            "mean": 0.2425,
+            "median": -0.4600000000000001,
+            "cappedMean10": 0.2425,
+            "stuffCount": 2,
+            "successCount": 0,
+            "below4": 4,
+            "4toUnder10": 0,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 4,
+            "recordedContactDepthMedian": -0.6794800900900064,
+            "recordedContactDepthBelow1": 3
+          },
+          "trap": {
+            "n": 16,
+            "mean": 7.275625,
+            "median": 0.46499999999999997,
+            "cappedMean10": 1.8925,
+            "stuffCount": 7,
+            "successCount": 2,
+            "below4": 13,
+            "4toUnder10": 1,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.9116914354436904,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 16,
+            "recordedContactDepthMedian": -0.27053923386384326,
+            "recordedContactDepthBelow1": 11
+          },
+          "wideZone": {
+            "n": 25,
+            "mean": 2.1999999999999997,
+            "median": 0.65,
+            "cappedMean10": 0.7296,
+            "stuffCount": 10,
+            "successCount": 5,
+            "below4": 21,
+            "4toUnder10": 2,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 0,
+            "10plusShareOfNetYards": 1.032,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 20,
+            "recordedContactDepthMedian": -0.2883155871177685,
+            "recordedContactDepthBelow1": 15
+          }
+        },
+        "qb": {
+          "gun": {
+            "n": 77,
+            "mean": 3.6235064935064933,
+            "median": 0.92,
+            "cappedMean10": 1.195974025974026,
+            "stuffCount": 32,
+            "successCount": 17,
+            "below4": 61,
+            "4toUnder10": 9,
+            "10plus": 7,
+            "20plus": 5,
+            "40plus": 4,
+            "10plusShareOfNetYards": 0.9208272104942476,
+            "firstCarrierContactIsQB": 4,
+            "recordedContactDepthKnown": 71,
+            "recordedContactDepthMedian": 0.44799335950125396,
+            "recordedContactDepthBelow1": 44
+          },
+          "pistol": {
+            "n": 23,
+            "mean": 4.905652173913044,
+            "median": 2.26,
+            "cappedMean10": 2.956521739130435,
+            "stuffCount": 3,
+            "successCount": 7,
+            "below4": 17,
+            "4toUnder10": 4,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.574581228396703,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 21,
+            "recordedContactDepthMedian": 0.2799089674377484,
+            "recordedContactDepthBelow1": 15
+          },
+          "under": {
+            "n": 75,
+            "mean": 5.066133333333333,
+            "median": 2.25,
+            "cappedMean10": 2.7342666666666666,
+            "stuffCount": 19,
+            "successCount": 21,
+            "below4": 52,
+            "4toUnder10": 17,
+            "10plus": 6,
+            "20plus": 5,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.6181966522791874,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 74,
+            "recordedContactDepthMedian": 0.2619736172929663,
+            "recordedContactDepthBelow1": 44
+          }
+        },
+        "formation": {
+          "ace_11": {
+            "n": 20,
+            "mean": 5.1175,
+            "median": 3.59,
+            "cappedMean10": 3.5425,
+            "stuffCount": 3,
+            "successCount": 5,
+            "below4": 12,
+            "4toUnder10": 6,
+            "10plus": 2,
+            "20plus": 1,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.5031753786028335,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 19,
+            "recordedContactDepthMedian": 0.8139369946371104,
+            "recordedContactDepthBelow1": 10
+          },
+          "ace_12": {
+            "n": 15,
+            "mean": 9.041333333333334,
+            "median": -0.24,
+            "cappedMean10": 2.046,
+            "stuffCount": 8,
+            "successCount": 4,
+            "below4": 11,
+            "4toUnder10": 2,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.9211768175785282,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 15,
+            "recordedContactDepthMedian": -0.9949015876635414,
+            "recordedContactDepthBelow1": 11
+          },
+          "ace_trips_11": {
+            "n": 8,
+            "mean": 8.651250000000001,
+            "median": 2.545,
+            "cappedMean10": 3.84375,
+            "stuffCount": 2,
+            "successCount": 3,
+            "below4": 5,
+            "4toUnder10": 1,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.844675624909695,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 8,
+            "recordedContactDepthMedian": 0.46287495093088893,
+            "recordedContactDepthBelow1": 4
+          },
+          "gun_bunch_11": {
+            "n": 13,
+            "mean": 1.2076923076923076,
+            "median": 0.35,
+            "cappedMean10": 1.1153846153846154,
+            "stuffCount": 4,
+            "successCount": 3,
+            "below4": 11,
+            "4toUnder10": 1,
+            "10plus": 1,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.7133757961783439,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 12,
+            "recordedContactDepthMedian": 0.12256492492714877,
+            "recordedContactDepthBelow1": 8
+          },
+          "gun_doubles_11": {
+            "n": 10,
+            "mean": -0.22800000000000004,
+            "median": 0.53,
+            "cappedMean10": -0.22800000000000004,
+            "stuffCount": 5,
+            "successCount": 1,
+            "below4": 9,
+            "4toUnder10": 1,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": -0.0,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 10,
+            "recordedContactDepthMedian": -0.4959018502480408,
+            "recordedContactDepthBelow1": 8
+          },
+          "gun_spread_10": {
+            "n": 7,
+            "mean": 8.42,
+            "median": 3.36,
+            "cappedMean10": 3.847142857142857,
+            "stuffCount": 2,
+            "successCount": 2,
+            "below4": 4,
+            "4toUnder10": 1,
+            "10plus": 2,
+            "20plus": 1,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.8824228028503563,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 7,
+            "recordedContactDepthMedian": 2.559778118761667,
+            "recordedContactDepthBelow1": 2
+          },
+          "gun_trey_11": {
+            "n": 12,
+            "mean": 6.836666666666666,
+            "median": 1.775,
+            "cappedMean10": 2.0191666666666666,
+            "stuffCount": 5,
+            "successCount": 4,
+            "below4": 8,
+            "4toUnder10": 2,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 1,
+            "10plusShareOfNetYards": 0.9484397854705023,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 10,
+            "recordedContactDepthMedian": 1.6580566386208666,
+            "recordedContactDepthBelow1": 4
+          },
+          "gun_trips_10": {
+            "n": 13,
+            "mean": 9.412307692307692,
+            "median": 3.09,
+            "cappedMean10": 2.0353846153846153,
+            "stuffCount": 6,
+            "successCount": 5,
+            "below4": 8,
+            "4toUnder10": 3,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 2,
+            "10plusShareOfNetYards": 0.9472049689440994,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 11,
+            "recordedContactDepthMedian": 1.3880997583805552,
+            "recordedContactDepthBelow1": 5
+          },
+          "gun_trips_11": {
+            "n": 10,
+            "mean": 0.43300000000000005,
+            "median": 0.645,
+            "cappedMean10": 0.43300000000000005,
+            "stuffCount": 4,
+            "successCount": 1,
+            "below4": 9,
+            "4toUnder10": 1,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 10,
+            "recordedContactDepthMedian": -0.15696219025172198,
+            "recordedContactDepthBelow1": 7
+          },
+          "gun_wing_12": {
+            "n": 12,
+            "mean": -0.17333333333333337,
+            "median": -0.13,
+            "cappedMean10": -0.17333333333333337,
+            "stuffCount": 6,
+            "successCount": 1,
+            "below4": 12,
+            "4toUnder10": 0,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": -0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 11,
+            "recordedContactDepthMedian": -0.2096272801357415,
+            "recordedContactDepthBelow1": 10
+          },
+          "heavy_13": {
+            "n": 6,
+            "mean": 3.685,
+            "median": 2.85,
+            "cappedMean10": 3.685,
+            "stuffCount": 0,
+            "successCount": 3,
+            "below4": 4,
+            "4toUnder10": 2,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 6,
+            "recordedContactDepthMedian": 1.8367340836276185,
+            "recordedContactDepthBelow1": 3
+          },
+          "i_jumbo_22": {
+            "n": 6,
+            "mean": 2.165,
+            "median": 0.98,
+            "cappedMean10": 2.165,
+            "stuffCount": 2,
+            "successCount": 2,
+            "below4": 4,
+            "4toUnder10": 2,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 6,
+            "recordedContactDepthMedian": 1.547444862717409,
+            "recordedContactDepthBelow1": 3
+          },
+          "i_pro_21": {
+            "n": 9,
+            "mean": 3.7544444444444443,
+            "median": 2.92,
+            "cappedMean10": 3.7544444444444443,
+            "stuffCount": 1,
+            "successCount": 4,
+            "below4": 5,
+            "4toUnder10": 4,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 9,
+            "recordedContactDepthMedian": 0.13145778247011464,
+            "recordedContactDepthBelow1": 5
+          },
+          "i_twins_21": {
+            "n": 7,
+            "mean": 0.08285714285714287,
+            "median": 0.7,
+            "cappedMean10": 0.08285714285714287,
+            "stuffCount": 2,
+            "successCount": 0,
+            "below4": 7,
+            "4toUnder10": 0,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 1,
+            "recordedContactDepthKnown": 7,
+            "recordedContactDepthMedian": -1.3119865936204675,
+            "recordedContactDepthBelow1": 5
+          },
+          "offset_i_21": {
+            "n": 4,
+            "mean": 0.8275,
+            "median": 1.055,
+            "cappedMean10": 0.8275,
+            "stuffCount": 1,
+            "successCount": 0,
+            "below4": 4,
+            "4toUnder10": 0,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 4,
+            "recordedContactDepthMedian": 0.05777267651121676,
+            "recordedContactDepthBelow1": 3
+          },
+          "pistol_11": {
+            "n": 10,
+            "mean": 2.7640000000000002,
+            "median": 1.78,
+            "cappedMean10": 2.7640000000000002,
+            "stuffCount": 1,
+            "successCount": 3,
+            "below4": 8,
+            "4toUnder10": 2,
+            "10plus": 0,
+            "20plus": 0,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.0,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 9,
+            "recordedContactDepthMedian": 0.2799089674377484,
+            "recordedContactDepthBelow1": 7
+          },
+          "pistol_12": {
+            "n": 13,
+            "mean": 6.553076923076923,
+            "median": 2.51,
+            "cappedMean10": 3.1046153846153848,
+            "stuffCount": 2,
+            "successCount": 4,
+            "below4": 9,
+            "4toUnder10": 2,
+            "10plus": 2,
+            "20plus": 2,
+            "40plus": 0,
+            "10plusShareOfNetYards": 0.761004812771452,
+            "firstCarrierContactIsQB": 0,
+            "recordedContactDepthKnown": 12,
+            "recordedContactDepthMedian": 0.41568900070193493,
+            "recordedContactDepthBelow1": 8
+          }
+        }
+      },
+      "verifiedRB_FB": {
+        "n": 166,
+        "mean": 4.924879518072289,
+        "median": 1.8599999999999999,
+        "cappedMean10": 2.4752409638554216,
+        "stuffCount": 45,
+        "successCount": 45,
+        "below4": 121,
+        "4toUnder10": 30,
+        "10plus": 15,
+        "20plus": 12,
+        "40plus": 6,
+        "10plusShareOfNetYards": 0.6808802123469475,
+        "firstCarrierContactIsQB": 1,
+        "recordedContactDepthKnown": 162,
+        "recordedContactDepthMedian": 0.4530797409083718,
+        "recordedContactDepthBelow1": 99
+      },
+      "unverifiedCarrier": [
+        {
+          "fixture": "zone-reference",
+          "play": 44,
+          "concept": "wideZone",
+          "formation": "gun_trey_11",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "zone-reference",
+          "play": 54,
+          "concept": "outsideZone",
+          "formation": "gun_bunch_11",
+          "yards": -5,
+          "outcome": "tackle",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "spread-air",
+          "play": 37,
+          "concept": "wideZone",
+          "formation": "gun_wing_12",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "spread-air",
+          "play": 155,
+          "concept": "outsideZone",
+          "formation": "gun_trips_10",
+          "yards": -4.98,
+          "outcome": "tackle",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "power-zone",
+          "play": 9,
+          "concept": "wideZone",
+          "formation": "gun_trey_11",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "power-zone",
+          "play": 13,
+          "concept": "wideZone",
+          "formation": "gun_bunch_11",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "west-spread",
+          "play": 21,
+          "concept": "outsideZone",
+          "formation": "gun_doubles_11",
+          "yards": -5.79,
+          "outcome": "tackle",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "west-spread",
+          "play": 64,
+          "concept": "wideZone",
+          "formation": "gun_trips_10",
+          "yards": -5,
+          "outcome": "timeout",
+          "handoffRecorded": false
+        },
+        {
+          "fixture": "west-spread",
+          "play": 171,
+          "concept": "outsideZone",
+          "formation": "gun_trips_11",
+          "yards": -4.96,
+          "outcome": "tackle",
+          "handoffRecorded": false
+        }
+      ],
+      "earlyDown8to10OutsideRedZone": {
+        "n": 104,
+        "mean": 5.206057692307692,
+        "median": 1.68,
+        "cappedMean10": 1.9345192307692307,
+        "stuffCount": 32,
+        "successCount": 23,
+        "below4": 81,
+        "4toUnder10": 11,
+        "10plus": 12,
+        "20plus": 10,
+        "40plus": 5,
+        "10plusShareOfNetYards": 0.8500452505402362,
+        "firstCarrierContactIsQB": 3,
+        "recordedContactDepthKnown": 97,
+        "recordedContactDepthMedian": 0.23561488231607086,
+        "recordedContactDepthBelow1": 64
+      },
+      "standardized": {
+        "meanYards": {
+          "n": 175,
+          "retained": 166,
+          "observed": 4.924879518072289,
+          "nflExpected": 4.47869412158677,
+          "backoffCounts": {
+            "none": 159,
+            "field/distance": 1,
+            "field": 6
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "cappedMean10": {
+          "n": 175,
+          "retained": 166,
+          "observed": 2.4752409638554216,
+          "nflExpected": 3.6648409675820948,
+          "backoffCounts": {
+            "none": 159,
+            "field/distance": 1,
+            "field": 6
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "success4060100": {
+          "n": 175,
+          "retained": 166,
+          "observed": 27.10843373493976,
+          "nflExpected": 45.88317290770501,
+          "backoffCounts": {
+            "none": 159,
+            "field/distance": 1,
+            "field": 6
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "stuff": {
+          "n": 175,
+          "retained": 166,
+          "observed": 27.10843373493976,
+          "nflExpected": 17.4041864200705,
+          "backoffCounts": {
+            "none": 159,
+            "field/distance": 1,
+            "field": 6
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "explosive20plus": {
+          "n": 175,
+          "retained": 166,
+          "observed": 7.228915662650603,
+          "nflExpected": 2.4414542082928965,
+          "backoffCounts": {
+            "none": 159,
+            "field/distance": 1,
+            "field": 6
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        },
+        "explosive40plus": {
+          "n": 175,
+          "retained": 166,
+          "observed": 3.6144578313253013,
+          "nflExpected": 0.6198951375017625,
+          "backoffCounts": {
+            "none": 159,
+            "field/distance": 1,
+            "field": 6
+          },
+          "receiptsFile": "nfl-matching-receipts.json.gz"
+        }
+      },
+      "games": [
+        {
+          "id": "zone-reference",
+          "seed": 701,
+          "score": {
+            "home": 31,
+            "away": 30
+          },
+          "officialRushYards": [
+            59.33,
+            74.77
+          ],
+          "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+          "summarySha256": "4ca3136e3fd555d308bb90e33110e0bb1004d2899ace1a457024114ba8376cdf"
+        },
+        {
+          "id": "spread-air",
+          "seed": 702,
+          "score": {
+            "home": 26,
+            "away": 38
+          },
+          "officialRushYards": [
+            103.22,
+            88.17000000000002
+          ],
+          "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+          "summarySha256": "91975d6e20dde222aed20f6d0017a76767ad49bcff1b6c21b2c70ca69929d14d"
+        },
+        {
+          "id": "power-zone",
+          "seed": 703,
+          "score": {
+            "home": 51,
+            "away": 36
+          },
+          "officialRushYards": [
+            247.29999999999998,
+            53.56
+          ],
+          "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+          "summarySha256": "5f8c3a2a1e95e0b53d9a54a61e7e1b4fedae987b9da50f43d7a3475b4e441c62"
+        },
+        {
+          "id": "west-spread",
+          "seed": 704,
+          "score": {
+            "home": 47,
+            "away": 37
+          },
+          "officialRushYards": [
+            88.94,
+            139.27999999999997
+          ],
+          "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+          "summarySha256": "80b90a2e8c22913961eca3bea957e684f4ff3948bd98cb6a7ff151215d3861a7"
+        }
+      ],
+      "ordinaryContextLimit": "This subset omits score/clock filters and is not the NFL ordinaryRB_FB cohort. Primary expected means/rates use fixed kind/carrier/down/distance/field backoff; never average cell medians."
+    }
+  },
+  "witnesses": [
+    {
+      "fixture": "zone-reference",
+      "play": 14,
+      "call": "I-Form Twins \u2014 Draw",
+      "concept": "draw",
+      "formation": "i_twins_21",
+      "down": 3,
+      "distance": 3,
+      "gain": -4.58,
+      "handoff": {
+        "t": 2.5,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 59.56,
+          "y": 28.6
+        }
+      },
+      "firstCarrierContact": {
+        "t": 2.4,
+        "type": "carrier_contact",
+        "a": 0,
+        "b": 12,
+        "pos": {
+          "x": 59.66,
+          "y": 28.56
+        },
+        "note": "grasp"
+      },
+      "duration": 5.05,
+      "climbs": [
+        {
+          "t": 1.25,
+          "type": "block_climb",
+          "a": 5,
+          "b": 15,
+          "pos": {
+            "x": 62.32,
+            "y": 28.49
+          },
+          "note": "secured DT_S; C stays"
+        }
+      ],
+      "preContactSlowTicks": [],
+      "actualHandLoadIntervals": {
+        "3:13": [
+          1,
+          4.95
+        ],
+        "4:14": [
+          1,
+          3.65
+        ],
+        "5:13": [
+          1.1,
+          1.2
+        ],
+        "5:15": [
+          1.6,
+          1.8
+        ],
+        "1:19": [
+          1.7,
+          4.95
+        ],
+        "9:21": [
+          3.45,
+          4.95
+        ],
+        "7:14": [
+          4.45,
+          4.95
+        ]
+      },
+      "rbTeammateImpacts": [],
+      "traceSha256": "1b7e9a71f25ae3951b340ddd7db40940adc2c5fa977d7cb6f7f6426600ee4e27",
+      "fullRecordedLogParity": true
+    },
+    {
+      "fixture": "zone-reference",
+      "play": 18,
+      "call": "Singleback Ace \u2014 Outside Zone",
+      "concept": "outsideZone",
+      "formation": "ace_11",
+      "down": 3,
+      "distance": 5,
+      "gain": 1.98,
+      "handoff": {
+        "t": 1.4,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 21.57,
+          "y": 25.65
+        }
+      },
+      "firstCarrierContact": {
+        "t": 2.8,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 26.51,
+          "y": 27.17
+        },
+        "note": "grasp"
+      },
+      "duration": 3.55,
+      "climbs": [
+        {
+          "t": 3,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 24.72,
+            "y": 25.43
+          },
+          "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+        }
+      ],
+      "preContactSlowTicks": [
+        1.55,
+        1.65,
+        1.7,
+        1.75,
+        1.8,
+        2.05,
+        2.1,
+        2.15,
+        2.2
+      ],
+      "actualHandLoadIntervals": {
+        "4:13": [
+          0.5,
+          2.9
+        ],
+        "3:14": [
+          0.6,
+          1.85
+        ],
+        "1:13": [
+          0.65,
+          3.5
+        ],
+        "7:12": [
+          0.65,
+          2.65
+        ],
+        "10:19": [
+          1.95,
+          3.1
+        ],
+        "8:18": [
+          2.55,
+          3.5
+        ],
+        "9:17": [
+          2.65,
+          3.5
+        ]
+      },
+      "rbTeammateImpacts": [],
+      "traceSha256": "1b7e9a71f25ae3951b340ddd7db40940adc2c5fa977d7cb6f7f6426600ee4e27",
+      "fullRecordedLogParity": true
+    },
+    {
+      "fixture": "zone-reference",
+      "play": 31,
+      "call": "Pistol Doubles \u2014 Wide Zone",
+      "concept": "wideZone",
+      "formation": "pistol_11",
+      "down": 2,
+      "distance": 19,
+      "gain": 1.37,
+      "handoff": {
+        "t": 1.05,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 69.71,
+          "y": 29.28
+        }
+      },
+      "firstCarrierContact": {
+        "t": 2.55,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 13,
+        "pos": {
+          "x": 73.71,
+          "y": 24.66
+        },
+        "note": "body collision"
+      },
+      "duration": 4.1,
+      "climbs": [
+        {
+          "t": 1.25,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "pos": {
+            "x": 74.07,
+            "y": 28.36
+          },
+          "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+        }
+      ],
+      "preContactSlowTicks": [
+        1.7,
+        1.75,
+        1.8,
+        1.85,
+        1.9,
+        1.95,
+        2,
+        2.05,
+        2.1,
+        2.15
+      ],
+      "actualHandLoadIntervals": {
+        "4:14": [
+          0.5,
+          4.05
+        ],
+        "5:13": [
+          0.5,
+          4.05
+        ],
+        "7:12": [
+          0.6,
+          4.05
+        ],
+        "1:11": [
+          0.65,
+          1.85
+        ],
+        "2:19": [
+          0.9,
+          4.05
+        ],
+        "3:15": [
+          2.2,
+          2.55
+        ],
+        "10:21": [
+          2.4,
+          4.05
+        ]
+      },
+      "rbTeammateImpacts": [
+        {
+          "t": 3.55,
+          "i": 6,
+          "j": 9,
+          "impulse": 191.66576554625723,
+          "closing": 4.967834970590961
+        },
+        {
+          "t": 3.5999999999999996,
+          "i": 6,
+          "j": 9,
+          "impulse": 62.55597194946483,
+          "closing": 0.7283855382933371
+        },
+        {
+          "t": 3.65,
+          "i": 6,
+          "j": 9,
+          "impulse": 15.633089343813703,
+          "closing": 0.015557583181522061
+        },
+        {
+          "t": 3.6999999999999997,
+          "i": 6,
+          "j": 9,
+          "impulse": 2.7195001204999496,
+          "closing": 0.011851526906546702
+        },
+        {
+          "t": 3.75,
+          "i": 6,
+          "j": 9,
+          "impulse": 1.6024555100593219,
+          "closing": 0.011497253140410339
+        }
+      ],
+      "traceSha256": "1b7e9a71f25ae3951b340ddd7db40940adc2c5fa977d7cb6f7f6426600ee4e27",
+      "fullRecordedLogParity": true
+    },
+    {
+      "fixture": "zone-reference",
+      "play": 58,
+      "call": "Singleback Ace \u2014 Duo",
+      "concept": "duo",
+      "formation": "ace_11",
+      "down": 3,
+      "distance": 12,
+      "gain": 5.66,
+      "handoff": {
+        "t": 1.45,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 37.57,
+          "y": 26.57
+        }
+      },
+      "firstCarrierContact": {
+        "t": 3.05,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 16,
+        "pos": {
+          "x": 44.53,
+          "y": 25.48
+        },
+        "note": "grasp"
+      },
+      "duration": 3.65,
+      "climbs": [
+        {
+          "t": 0.75,
+          "type": "block_climb",
+          "a": 2,
+          "b": 15,
+          "pos": {
+            "x": 40.84,
+            "y": 24.65
+          },
+          "note": "secured DT_S; RG stays"
+        },
+        {
+          "t": 2.1,
+          "type": "block_climb",
+          "a": 3,
+          "b": 16,
+          "pos": {
+            "x": 42.35,
+            "y": 28.33
+          },
+          "note": "secured DT_W; LG stays"
+        }
+      ],
+      "preContactSlowTicks": [
+        1.45
+      ],
+      "actualHandLoadIntervals": {
+        "5:13": [
+          0.45,
+          3.15
+        ],
+        "4:14": [
+          0.5,
+          3.6
+        ],
+        "7:12": [
+          0.55,
+          1.9
+        ],
+        "2:13": [
+          0.6,
+          0.7
+        ],
+        "3:14": [
+          0.7,
+          2.05
+        ],
+        "2:15": [
+          2.1,
+          3.1
+        ]
+      },
+      "rbTeammateImpacts": [],
+      "traceSha256": "1b7e9a71f25ae3951b340ddd7db40940adc2c5fa977d7cb6f7f6426600ee4e27",
+      "fullRecordedLogParity": true
+    },
+    {
+      "fixture": "power-zone",
+      "play": 8,
+      "call": "I-Form Twins \u2014 Outside Zone",
+      "concept": "outsideZone",
+      "formation": "i_twins_21",
+      "down": 1,
+      "distance": 10,
+      "gain": 1.79,
+      "handoff": {
+        "t": 1.4,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 38.25,
+          "y": 28.88
+        }
+      },
+      "firstCarrierContact": {
+        "t": 3.3,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 16,
+        "pos": {
+          "x": 43.16,
+          "y": 33.57
+        },
+        "note": "grasp"
+      },
+      "duration": 4.05,
+      "climbs": [
+        {
+          "t": 1.05,
+          "type": "block_climb",
+          "a": 5,
+          "b": 16,
+          "pos": {
+            "x": 42.05,
+            "y": 26.72
+          },
+          "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+        }
+      ],
+      "preContactSlowTicks": [
+        2,
+        2.05,
+        2.1,
+        2.15,
+        2.2,
+        2.25,
+        2.3,
+        2.35,
+        2.4,
+        2.45,
+        2.5,
+        2.55,
+        2.6,
+        2.65,
+        2.7,
+        2.75,
+        2.85,
+        2.9,
+        2.95
+      ],
+      "actualHandLoadIntervals": {
+        "2:14": [
+          0.5,
+          4
+        ],
+        "3:13": [
+          0.55,
+          2.85
+        ],
+        "1:17": [
+          0.75,
+          3.75
+        ],
+        "7:11": [
+          0.85,
+          4
+        ],
+        "5:16": [
+          1.9,
+          2.6
+        ],
+        "4:12": [
+          2.1,
+          4
+        ],
+        "9:21": [
+          2.3,
+          2.6
+        ]
+      },
+      "rbTeammateImpacts": [],
+      "traceSha256": "7638bbfaaaf054e71bd6d85e9445db4826a75a25f0c3ce0d0637618f7086bb3f",
+      "fullRecordedLogParity": true
+    },
+    {
+      "fixture": "power-zone",
+      "play": 34,
+      "call": "Singleback Twin TE \u2014 Counter",
+      "concept": "counter",
+      "formation": "ace_12",
+      "down": 1,
+      "distance": 10,
+      "gain": 5.39,
+      "handoff": {
+        "t": 1.4,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 7.81,
+          "y": 23.12
+        }
+      },
+      "firstCarrierContact": {
+        "t": 3.95,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 17,
+        "pos": {
+          "x": 13.06,
+          "y": 21.89
+        },
+        "note": "body collision"
+      },
+      "duration": 4.9,
+      "climbs": [
+        {
+          "t": 1.2,
+          "type": "block_climb",
+          "a": 5,
+          "b": 17,
+          "pos": {
+            "x": 11.89,
+            "y": 23.31
+          },
+          "note": "secured NT; C stays"
+        }
+      ],
+      "preContactSlowTicks": [
+        1.85,
+        2.1,
+        2.25,
+        3.1,
+        3.15,
+        3.2,
+        3.25,
+        3.3,
+        3.35,
+        3.4,
+        3.45
+      ],
+      "actualHandLoadIntervals": {
+        "7:13": [
+          0.4,
+          4.85
+        ],
+        "10:15": [
+          0.4,
+          4.85
+        ],
+        "3:11": [
+          0.5,
+          4.85
+        ],
+        "5:11": [
+          0.95,
+          1.15
+        ],
+        "2:15": [
+          1.45,
+          3.85
+        ],
+        "5:17": [
+          1.85,
+          3.1
+        ],
+        "4:12": [
+          2.25,
+          3.35
+        ],
+        "9:18": [
+          3,
+          3.85
+        ],
+        "8:19": [
+          3.2,
+          4.85
+        ]
+      },
+      "rbTeammateImpacts": [],
+      "traceSha256": "7638bbfaaaf054e71bd6d85e9445db4826a75a25f0c3ce0d0637618f7086bb3f",
+      "fullRecordedLogParity": true
+    },
+    {
+      "fixture": "power-zone",
+      "play": 48,
+      "call": "Gun Doubles \u2014 Wide Zone",
+      "concept": "wideZone",
+      "formation": "gun_doubles_11",
+      "down": 3,
+      "distance": 18,
+      "gain": 1.28,
+      "handoff": {
+        "t": 1.05,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 10.47,
+          "y": 24.05
+        }
+      },
+      "firstCarrierContact": {
+        "t": 3.6,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 12,
+        "pos": {
+          "x": 16.18,
+          "y": 33.45
+        },
+        "note": "grasp"
+      },
+      "duration": 4.4,
+      "climbs": [
+        {
+          "t": 4.1,
+          "type": "block_climb",
+          "a": 5,
+          "b": 19,
+          "pos": {
+            "x": 14.56,
+            "y": 24.09
+          },
+          "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+        },
+        {
+          "t": 4.15,
+          "type": "block_climb",
+          "a": 4,
+          "b": 15,
+          "pos": {
+            "x": 13.83,
+            "y": 25.76
+          },
+          "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+        }
+      ],
+      "preContactSlowTicks": [
+        2.25,
+        2.3,
+        2.35,
+        2.4,
+        2.45,
+        2.5,
+        2.55,
+        2.6,
+        2.65,
+        2.7,
+        2.75,
+        2.8,
+        2.85,
+        2.9,
+        2.95,
+        3,
+        3.05,
+        3.15,
+        3.25,
+        3.35
+      ],
+      "actualHandLoadIntervals": {
+        "4:13": [
+          0.5,
+          3.65
+        ],
+        "7:12": [
+          0.5,
+          2.55
+        ],
+        "5:14": [
+          0.55,
+          4
+        ],
+        "1:13": [
+          0.65,
+          4.35
+        ],
+        "3:14": [
+          0.7,
+          4.35
+        ],
+        "10:18": [
+          1.45,
+          2.5
+        ],
+        "2:11": [
+          2.35,
+          4.05
+        ]
+      },
+      "rbTeammateImpacts": [],
+      "traceSha256": "7638bbfaaaf054e71bd6d85e9445db4826a75a25f0c3ce0d0637618f7086bb3f",
+      "fullRecordedLogParity": true
+    },
+    {
+      "fixture": "power-zone",
+      "play": 115,
+      "call": "Heavy Wing \u2014 Outside Zone Weak",
+      "concept": "outsideZone",
+      "formation": "heavy_13",
+      "down": 3,
+      "distance": 1,
+      "gain": 6.38,
+      "handoff": {
+        "t": 1.4,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 31.31,
+          "y": 29.42
+        }
+      },
+      "firstCarrierContact": {
+        "t": 3.85,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 17,
+        "pos": {
+          "x": 40.71,
+          "y": 34.72
+        },
+        "note": "grasp"
+      },
+      "duration": 4.45,
+      "climbs": [
+        {
+          "t": 0.85,
+          "type": "block_climb",
+          "a": 1,
+          "b": 16,
+          "pos": {
+            "x": 35.18,
+            "y": 30.66
+          },
+          "note": "unjoined stretch: acquired near hip flows away; clear achieved departure"
+        },
+        {
+          "t": 1,
+          "type": "block_climb",
+          "a": 3,
+          "b": 15,
+          "pos": {
+            "x": 35.02,
+            "y": 27.81
+          },
+          "note": "secured DT_W; LG stays"
+        }
+      ],
+      "preContactSlowTicks": [
+        2.75,
+        2.8,
+        2.85,
+        2.9,
+        2.95,
+        3,
+        3.05,
+        3.15,
+        3.2,
+        3.25,
+        3.3,
+        3.35,
+        3.4,
+        3.45,
+        3.5,
+        3.55
+      ],
+      "actualHandLoadIntervals": {
+        "4:14": [
+          0.45,
+          2.5
+        ],
+        "5:13": [
+          0.45,
+          4.4
+        ],
+        "9:11": [
+          0.6,
+          2.85
+        ],
+        "3:14": [
+          0.75,
+          0.95
+        ],
+        "2:12": [
+          1.6,
+          4.4
+        ],
+        "1:16": [
+          1.65,
+          4.4
+        ],
+        "10:18": [
+          1.9,
+          4.4
+        ],
+        "8:19": [
+          2.15,
+          4.4
+        ]
+      },
+      "rbTeammateImpacts": [
+        {
+          "t": 3.3,
+          "i": 6,
+          "j": 8,
+          "impulse": 232.2242156872225,
+          "closing": 4.308951228918529
+        },
+        {
+          "t": 3.3499999999999996,
+          "i": 6,
+          "j": 8,
+          "impulse": 11.21376924220807,
+          "closing": 0.01844247480034855
+        },
+        {
+          "t": 3.4,
+          "i": 6,
+          "j": 8,
+          "impulse": 7.341683069824228,
+          "closing": 0.018418423321102884
+        },
+        {
+          "t": 3.4499999999999997,
+          "i": 6,
+          "j": 8,
+          "impulse": 5.807268875386108,
+          "closing": 0.011722764807284458
+        },
+        {
+          "t": 3.5,
+          "i": 6,
+          "j": 8,
+          "impulse": 3.689426364472114,
+          "closing": 0.002216481791709274
+        },
+        {
+          "t": 3.55,
+          "i": 6,
+          "j": 8,
+          "impulse": 0.26216229038599786,
+          "closing": 0
+        },
+        {
+          "t": 4,
+          "i": 6,
+          "j": 8,
+          "impulse": 117.19565363983111,
+          "closing": 1.8131567775297635
+        },
+        {
+          "t": 4.05,
+          "i": 6,
+          "j": 8,
+          "impulse": 11.6325042742539,
+          "closing": 0.023445726785006345
+        },
+        {
+          "t": 4.1,
+          "i": 6,
+          "j": 8,
+          "impulse": 9.331874594465761,
+          "closing": 0.03438498712317879
+        },
+        {
+          "t": 4.1499999999999995,
+          "i": 6,
+          "j": 8,
+          "impulse": 11.282519158898454,
+          "closing": 0.03327667336619143
+        },
+        {
+          "t": 4.35,
+          "i": 6,
+          "j": 8,
+          "impulse": 29.294134339457766,
+          "closing": 0.14177287893245494
+        },
+        {
+          "t": 4.3999999999999995,
+          "i": 6,
+          "j": 8,
+          "impulse": 15.906645975177566,
+          "closing": 0.021840372770237038
+        },
+        {
+          "t": 4.45,
+          "i": 6,
+          "j": 8,
+          "impulse": 10.649078726633439,
+          "closing": 0.016221848967546637
+        }
+      ],
+      "traceSha256": "7638bbfaaaf054e71bd6d85e9445db4826a75a25f0c3ce0d0637618f7086bb3f",
+      "fullRecordedLogParity": true
+    }
+  ],
+  "nflReference": {
+    "context": {
+      "kind": "designedRun",
+      "carrier": "RB_FB"
+    },
+    "counts": {
+      "epaKnown": 46621,
+      "explosive10plus": 4725,
+      "explosive15plus": 2026,
+      "explosive20plus": 1047,
+      "explosive30plus": 434,
+      "explosive40plus": 238,
+      "fieldEligible10": 42844,
+      "fieldEligible15": 41011,
+      "fieldEligible20": 39167,
+      "fieldEligible30": 35008,
+      "fieldEligible40": 30168,
+      "fieldEligibleExplosive10": 4725,
+      "fieldEligibleExplosive15": 2026,
+      "fieldEligibleExplosive20": 1047,
+      "fieldEligibleExplosive30": 434,
+      "fieldEligibleExplosive40": 238,
+      "fieldIneligible10": 3777,
+      "fieldIneligible15": 5610,
+      "fieldIneligible20": 7454,
+      "fieldIneligible30": 11613,
+      "fieldIneligible40": 16453,
+      "fieldKnown": 46621,
+      "fumbleLost": 198,
+      "fumbleLostKnown": 46621,
+      "gainBin_10toUnder15": 2699,
+      "gainBin_15toUnder20": 979,
+      "gainBin_20toUnder30": 613,
+      "gainBin_30toUnder40": 196,
+      "gainBin_40plus": 238,
+      "gainBin_4toUnder7": 11552,
+      "gainBin_7toUnder10": 4847,
+      "gainBin_negative": 4369,
+      "gainBin_positiveUnder4": 17211,
+      "gainBin_zero": 3917,
+      "gainDistanceConversion": 10536,
+      "gainDistanceWithoutLostFumble": 10504,
+      "gainKnown": 46621,
+      "goalCensorKnown": 46621,
+      "goalCensoredTD": 1433,
+      "individualRushingYardsKnown": 46621,
+      "negative": 4369,
+      "observedRuns": 47280,
+      "penaltyFlagFalse": 46621,
+      "penaltyFlagTrue": 659,
+      "positiveEPA": 18336,
+      "recordedFirstOrTD": 10510,
+      "recordedFirstOrTDKnown": 46621,
+      "stuff": 8286,
+      "success4060100": 22730,
+      "success4560100": 19912,
+      "successKnown": 46621,
+      "successTurnoverKnown": 46621,
+      "successWithoutLostFumble": 22657,
+      "touchdown": 1433,
+      "touchdownKnown": 46621,
+      "wholeVsIndividualGainDifferent": 3,
+      "zero": 3917
+    },
+    "yards": {
+      "n": 46621,
+      "mean": 4.3056991484524145,
+      "max": 93.0,
+      "p10": 0.0,
+      "p25": 1.0,
+      "p50": 3.0,
+      "p75": 6.0,
+      "p90": 10.0,
+      "p95": 14.0,
+      "p99": 29.0,
+      "cappedMean10": 3.5708157268183864,
+      "cappedMean20": 4.030823019669247
+    },
+    "rates": {
+      "negative": {
+        "count": 4369,
+        "denominator": 46621,
+        "percent": 9.371313356641856
+      },
+      "zero": {
+        "count": 3917,
+        "denominator": 46621,
+        "percent": 8.401793183329401
+      },
+      "stuff": {
+        "count": 8286,
+        "denominator": 46621,
+        "percent": 17.77310653997126
+      },
+      "success4060100": {
+        "count": 22730,
+        "denominator": 46621,
+        "percent": 48.7548529632569
+      },
+      "success4560100": {
+        "count": 19912,
+        "denominator": 46621,
+        "percent": 42.71036657300358
+      },
+      "successWithoutLostFumble": {
+        "count": 22657,
+        "denominator": 46621,
+        "percent": 48.59827116535467
+      },
+      "gainDistanceConversion": {
+        "count": 10536,
+        "denominator": 46621,
+        "percent": 22.599257845177068
+      },
+      "gainDistanceWithoutLostFumble": {
+        "count": 10504,
+        "denominator": 46621,
+        "percent": 22.530619248836363
+      },
+      "recordedFirstOrTD": {
+        "count": 10510,
+        "denominator": 46621,
+        "percent": 22.543488985650242
+      },
+      "positiveEPA": {
+        "count": 18336,
+        "denominator": 46621,
+        "percent": 39.32991570322387
+      },
+      "fumbleLost": {
+        "count": 198,
+        "denominator": 46621,
+        "percent": 0.42470131485811113
+      },
+      "touchdown": {
+        "count": 1433,
+        "denominator": 46621,
+        "percent": 3.0737221423821883
+      },
+      "goalCensoredTD": {
+        "count": 1433,
+        "denominator": 46621,
+        "percent": 3.0737221423821883
+      },
+      "explosive10plus": {
+        "count": 4725,
+        "denominator": 46621,
+        "percent": 10.134917740932197
+      },
+      "explosive15plus": {
+        "count": 2026,
+        "denominator": 46621,
+        "percent": 4.345681130820875
+      },
+      "explosive20plus": {
+        "count": 1047,
+        "denominator": 46621,
+        "percent": 2.2457690740224363
+      },
+      "explosive30plus": {
+        "count": 434,
+        "denominator": 46621,
+        "percent": 0.9309109628708093
+      },
+      "explosive40plus": {
+        "count": 238,
+        "denominator": 46621,
+        "percent": 0.5104995602839922
+      },
+      "fieldEligibleExplosive10plus": {
+        "count": 4725,
+        "denominator": 42844,
+        "percent": 11.028382037158062
+      },
+      "fieldEligibleExplosive15plus": {
+        "count": 2026,
+        "denominator": 41011,
+        "percent": 4.9401380117529445
+      },
+      "fieldEligibleExplosive20plus": {
+        "count": 1047,
+        "denominator": 39167,
+        "percent": 2.6731687389894554
+      },
+      "fieldEligibleExplosive30plus": {
+        "count": 434,
+        "denominator": 35008,
+        "percent": 1.2397166361974405
+      },
+      "fieldEligibleExplosive40plus": {
+        "count": 238,
+        "denominator": 30168,
+        "percent": 0.7889154070538319
+      }
+    },
+    "tailYardContribution": {
+      "netGain": 200736.0,
+      "positiveGain": 210072.0,
+      "thresholds": {
+        "10plus": {
+          "count": 4725,
+          "yards": 81511.0,
+          "excessBeyondThreshold": 34261.0,
+          "percentOfNetGain": 40.60606966363781,
+          "percentOfPositiveGain": 38.8014585475456
+        },
+        "15plus": {
+          "count": 2026,
+          "yards": 50009.0,
+          "excessBeyondThreshold": 19619.0,
+          "percentOfNetGain": 24.912820819384663,
+          "percentOfPositiveGain": 23.805647587493812
+        },
+        "20plus": {
+          "count": 1047,
+          "yards": 33755.0,
+          "excessBeyondThreshold": 12815.0,
+          "percentOfNetGain": 16.815618523832295,
+          "percentOfPositiveGain": 16.068300392246467
+        },
+        "30plus": {
+          "count": 434,
+          "yards": 19403.0,
+          "excessBeyondThreshold": 6383.0,
+          "percentOfNetGain": 9.665929379882034,
+          "percentOfPositiveGain": 9.236357058532313
+        },
+        "40plus": {
+          "count": 238,
+          "yards": 12792.0,
+          "excessBeyondThreshold": 3272.0,
+          "percentOfNetGain": 6.372549019607843,
+          "percentOfPositiveGain": 6.089340797440878
+        }
+      }
+    }
+  },
+  "nflReferenceSha256": "4f624c55eee5495b15bc2d53ffade7f7b591b02c582bc9912a280d6a7e7745c3",
+  "sourceCommit": "404d3366d92449c30aedcba1957812fe5ea8b9aa",
+  "newGames": 3,
+  "independentCheckpointGamesPerArm": 4,
+  "mapping": "PR54 native run logs, clean all-foul exclusion, exact rusher ID to frozen team roster. Log down/distance/yardline are snap context; previous recorded score supplies pre-snap score. Source/flag/team pins verified. Shared NFL gain/rate/context/backoff operators reused; not the older ordinary-eight-game native-index adapter.",
+  "exchangeWitnesses": [
+    {
+      "play": 44,
+      "call": "Gun Trey (TE attached) \u2014 Wide Zone Weak",
+      "gain": -5,
+      "outcome": "timeout",
+      "duration": 25,
+      "qbMesh": {
+        "x": 77.7,
+        "y": 23.583333333333332
+      },
+      "rbMesh": {
+        "x": 78.3,
+        "y": 24.48333333333333
+      },
+      "meshTime": 1.2,
+      "physicalGateOpens": 1.05,
+      "handoffReach": 1.2277777777777779,
+      "firstPassed": 0.5,
+      "minimumActualSeparationAfterGate": 2.00207731364868,
+      "earlyQbRawRequestsAllZero": true,
+      "earlyQbFinalRequestsAllZero": true,
+      "preWindowPhysicalContactsAtQBOrRB": [],
+      "firstRecoveryCue": {
+        "t": 0.9,
+        "observer": 0,
+        "target": 6,
+        "kind": "owned-teammate",
+        "picture": {
+          "source": "observed",
+          "pos": {
+            "x": 78.48358439279343,
+            "y": 24.762045449517124
+          },
+          "vel": {
+            "x": 1.8626016109833667,
+            "y": -0.27828072625710987
+          },
+          "sampledAt": 0.65,
+          "availableAt": 0.9,
+          "age": 0.25,
+          "predictedFor": 0.25
+        }
+      },
+      "fullRecordedLogParity": true,
+      "traceSha256": "737cac627a77a372c9dc0410fb126e6d77e94dac4ad05af39d4ab2562203085d"
+    },
+    {
+      "play": 54,
+      "call": "Gun Bunch \u2014 Outside Zone Weak",
+      "gain": -5,
+      "outcome": "tackle",
+      "duration": 4.35,
+      "qbMesh": {
+        "x": 36.14475361656595,
+        "y": 24.006368666928857
+      },
+      "rbMesh": {
+        "x": 36.74475361656595,
+        "y": 24.906368666928856
+      },
+      "meshTime": 1.15,
+      "physicalGateOpens": 0.9999999999999999,
+      "handoffReach": 1.2733838383838383,
+      "firstPassed": 0.5,
+      "minimumActualSeparationAfterGate": 1.850661207739505,
+      "earlyQbRawRequestsAllZero": true,
+      "earlyQbFinalRequestsAllZero": true,
+      "preWindowPhysicalContactsAtQBOrRB": [],
+      "firstRecoveryCue": {
+        "t": 0.85,
+        "observer": 0,
+        "target": 6,
+        "kind": "owned-teammate",
+        "picture": {
+          "source": "observed",
+          "pos": {
+            "x": 36.85973751961816,
+            "y": 25.063442531058868
+          },
+          "vel": {
+            "x": 1.750003024000148,
+            "y": -0.6719870301478797
+          },
+          "sampledAt": 0.6,
+          "availableAt": 0.85,
+          "age": 0.25,
+          "predictedFor": 0.25
+        }
+      },
+      "fullRecordedLogParity": true,
+      "traceSha256": "737cac627a77a372c9dc0410fb126e6d77e94dac4ad05af39d4ab2562203085d"
+    }
+  ],
+  "nativeReplayCostSeconds": 67.284517689,
+  "measurementSeconds": 7.406674789002864,
+  "newSimulationSteps": 0,
+  "scriptSha256": "493e07ca2cf9187b94a37eaf1dee2b157118b19c0357dfc1e0bcb6cb3fe28b2e"
+}

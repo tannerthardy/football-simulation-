@@ -10,8 +10,18 @@ with passive diagnostics: eight selected poor/successful plays in the frozen
 manifest. Preserve full recorded log/film/telemetry, score and final-state parity;
 these are two diagnostic replays, not two new independent talent samples.
 Only new diagnostic scripts/config/report change. No controller, solver, ratings,
-information, calls, yielding or baseline promotion. Do not edit inputs/source/HEAD
-while the two declared collectors execute. Integration's full suite is reused.
+information, calls, yielding or baseline promotion. The two initial full-game
+replays and one declared exchange follow-up are complete: exact recorded logs,
+film/telemetry, scores, boxes and final states match; summed native cost67.28s.
+The latest combined175-call median1.69 includes9 failed exchanges; identified
+RB/FB median1.86 and context-matched success27.1% versus NFL45.9 still show a
+large ordinary-run deficit. In zone-reference P44/P54, RB passes the mesh0.50s,
+before handoff opens1.05/1.00; QB requests zero through1.5 and both miss real
+reach with no early contact. This is a specific exchange-coordination blocker,
+not a physics/strength proposal. [Ranked diagnosis and21KB reproduction](reviews/designed-run-games/README.md).
+Next repair: isolate exchange integrity with the successful Ace handoff as an
+opposing control; keep information/spacing compatibility and loaded collection
+as separate mechanisms. Integration's exact full suite is reused; no adoption.
 
 ## Experimental full-game checkpoint
 

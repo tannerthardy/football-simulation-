@@ -1,0 +1,58 @@
+{
+  "sourceCommit": "404d3366d92449c30aedcba1957812fe5ea8b9aa",
+  "runtime": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+  "sourceDiffIsEmpty": true,
+  "newNativeGames": 3,
+  "newIndependentGameInputs": 0,
+  "summedNativeReplaySeconds": 67.284517689,
+  "files": {
+    "README.md": {
+      "bytes": 18719,
+      "sha256": "95ac5efd02ad21af9977bb6fe26662b8c453f238d1dfe9761075a6cdb4b40917"
+    },
+    "exchange-mismatch.png": {
+      "bytes": 132914,
+      "sha256": "df5f5524c8b4004639e9cbcc4e4b43e9e0db15e6ea45472957bd840d48ee0245"
+    },
+    "exchange-witness.json.gz": {
+      "bytes": 21119,
+      "sha256": "09863a58ab3c71dc71047254670ef250c43c877cd1d137878fc20391d98cbdf1"
+    },
+    "exchange.csv": {
+      "bytes": 83356,
+      "sha256": "8b05ddadd3bbc2df6908b23e179fd75f7b421db4441d3a94614f7f0472e7f6a4"
+    },
+    "nfl-matching-receipts.json.gz": {
+      "bytes": 29370,
+      "sha256": "bf3301d6e5379d348eabfd12d3f495bc7281bf8f19815ce60c26810b8fc6c10c"
+    },
+    "ordinary-runs.png": {
+      "bytes": 106295,
+      "sha256": "cd23e44773917449956ac0439fcfce304e0f52c1fad3677392559657d5e4acb2"
+    },
+    "receipts/exchange-launcher.json": {
+      "bytes": 2370,
+      "sha256": "ed02ad8af9f2a304265b6151c6f30018e7d10a27c314bd6eeee681eb495ffe7a"
+    },
+    "receipts/power-launcher.json": {
+      "bytes": 2345,
+      "sha256": "03477ab49f7349f9b372b3a2160913243e747bd1f9dd952fd406a3088066aef3"
+    },
+    "receipts/zone-launcher.json": {
+      "bytes": 2353,
+      "sha256": "3d42d7605accc6ba5ed5535705a3fb60fe31a649d892187b6327b0d21f24e6cc"
+    },
+    "summary.json": {
+      "bytes": 81217,
+      "sha256": "cf846addc87065db3260f34283831f53fdf78cb4d3dfdf63019b0e16fb15ccdd"
+    },
+    "timeline.csv": {
+      "bytes": 226110,
+      "sha256": "b8337a9278ab907c82d55e53b4d006a8ad542bdc9471376c880a41f7fee366bc"
+    },
+    "witnesses.json.gz": {
+      "bytes": 9581894,
+      "sha256": "4ac59043580ae6a63a4e4295e2f69d7601b377d2aeadbf3f6e919dc010a0bda2"
+    }
+  }
+}
