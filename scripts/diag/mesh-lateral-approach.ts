@@ -44,7 +44,7 @@ function choose(body: Body, raw: Intent, chosen: Intent, peers: Peer[], now: num
   const residual=earlier?previewFreeMovement(body,{...raw,vel:{...body.vel}},now,steps):rawPath;
   const residualWorst=peers.map(p=>({p,...encounter(body,residual,p)})).sort((a,b)=>a.gap-b.gap)[0];
   if(passing){
-    const p=peers.find(p=>p.idx===passing.peer)!;
+    const previous=passing,p=peers.find(p=>p.idx===previous.peer)!;
     if(dot({x:p.seen.pos.x-body.pos.x,y:p.seen.pos.y-body.pos.y},passing.forward)<=0)passing=undefined;
   }
   if(!passing){
@@ -131,7 +131,7 @@ if(args.includes('--offline')){
           touch:.9*(a.profile.radius+sim.agents[e.peer as number].profile.radius)}));
         const result=choose(a.body,rawEvent.command as Intent,command,peers,sim.t,passing,earlier);passing=result.passing;
         if(result.detail)decisions.push({t:sim.t,reason:result.reason,passing:structuredClone(passing),detail:result.detail});
-        if(result.command){if(intents!==sim.intents)throw Error('Wrong command array');intents[a.idx]=result.command;}
+        if(result.command){if(intents!==sim.intents)throw Error('Wrong command array');sim.intents[a.idx]=result.command;}
       }
     }else passing=undefined;
     return step(intents,dt);
