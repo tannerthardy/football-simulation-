@@ -1,0 +1,9 @@
+# Frozen panel: accepted #82 comparison
+
+Precollection contract: baseline8ca8deebe4afa91c3021bdd119bed8976cf00e47; candidate7eb2554f5dbb497cff169f386704a5b0f4cf43fe, including #69 + #75/#80. Same48 setups, IDs, flags, Node, native telemetry operator and original frozen review rubric at4b159048aee2735d8dd56db029f66bbfe5cbf262:docs/reviews/accepted-broad-audit-protocol-2026-10-15.md. Candidate source78183dc79c6285939b80875b131584c18c4f0eda020c17bcfde6191823ace965. Integration's exact passing suite receipt is reused.
+
+One candidate batch only;90s batch/5s case caps; failures/partial/unrun retained without retries or baseline recollection. Baseline48 native hashes verified before execution. Original collector byte-identical; config acceptedCommit alone adapted explicitly. Plan must confirm all48 input hashes before running.
+
+Assess installed support, acquired runner cue and age, coverage-job changes, final requests and achieved stored velocity separately. Baseline eight Quarters run-support witnesses get paired FS trajectories/request/runner-gap checks at2.0s and through first contact, with installed duties and actual catch/contact timing retained. Review all24 called passes and24 runs, including A020/A044 concerns and A008/A032/A027/A006/A042/A043/A047/A048 controls. Report offensive and defensive wins independently of gain. Preserve new/adverse cases, overlaps and changed catch/contact exposure. No requirement to retain old concern counts. Source mechanism attribution beyond the combined checkpoint requires separate evidence.
+
+Distances use saved positions; speeds use stored velocity, never position differences. Final intents cannot identify discarded producer requests. Cue positions may be projected already; age is not added again. Event times are native .05s bins, sampled contacts are incomplete, and body facing is not gaze. This selected panel cannot establish simulator-wide defect rates.
