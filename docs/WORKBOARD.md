@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Run-entry portable consumer — 2026-10-15
+
+Do-It-All owns `carrier.ts`, new `run-approach.ts`, and focused known-stationary / stale-motion controls on `codex/run-entry-admission-portable`, directly from accepted `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`. Minimal unchanged Awareness core and five PlaySim transport seams only; preserve incidental catch readiness. No shared schema/policy, spacing, physics, pass, installed-call or old zone/Duo changes. [Scope coordination](https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6200885111); owner acknowledgment not yet observed. Integration retains combined verification. Question: can unknown motion remain explicit without rejecting a genuinely known stationary clear lane? Zero new full snaps/games planned; reuse prior native evidence only at its own pin.
+
 ## Departed-center gap integration — 2026-10-15
 
 | Item | Owner | Branch / reference | Boundary | Status |
