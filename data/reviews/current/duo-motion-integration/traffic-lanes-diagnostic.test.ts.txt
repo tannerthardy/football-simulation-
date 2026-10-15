@@ -1,0 +1,99 @@
+import { writeFileSync } from 'node:fs';
+import { describe, expect, it, vi } from 'vitest';
+import { CENTER_Y } from '../../src/core/field.js';
+import { Rng } from '../../src/core/rng.js';
+import { generateTeam, pickDefense, pickOffense } from '../../src/league/team.js';
+import * as MovementPreview from '../../src/physics/movement-preview.js';
+import { newSupport } from '../../src/physics/support.js';
+import { World, type Intent, type StepReport } from '../../src/physics/world.js';
+import { PASS_BY_ID } from '../../src/playbook/concepts.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
+import { PlaySim } from '../../src/sim/playsim.js';
+import { spaceTeammates } from '../../src/sim/spacing.js';
+
+function stage(side = 1) {
+  const sim = new PlaySim({
+    offense: pickOffense(generateTeam(new Rng(19), 'O', 'OFF'), '11'),
+    defense: pickDefense(generateTeam(new Rng(20), 'D', 'DEF'), 'nickel'),
+    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false,
+      kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'traffic' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over,
+      coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'traffic' },
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 83,
+  });
+  const a = sim.slot('FS')!, b = sim.slot('NB')!;
+  a.body.pos = { x: 50, y: CENTER_Y }; a.body.vel = { x: 9, y: 0 };
+  a.body.facing = 0; a.body.support = newSupport();
+  b.body.pos = { x: 54.3, y: CENTER_Y + side * 1.1 };
+  b.body.vel = { x: 0, y: 0 }; b.body.facing = 0; b.body.support = newSupport();
+  return { sim, a, b };
+}
+
+function bounded(report: StepReport) {
+  expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+  for (let i = 0; i < report.supportMotorWork.length; i++) {
+    expect(report.supportMotorWork[i]).toBeLessThanOrEqual(report.supportMotorWorkLimit[i] + 1e-8);
+    expect(report.armImpulse[i]).toBeLessThanOrEqual(report.armImpulseLimit[i] + 1e-8);
+    expect(report.armWork[i]).toBeLessThanOrEqual(report.armWorkLimit[i] + 1e-8);
+  }
+}
+
+function turning(side: number, explicitFacing: boolean, context: boolean) {
+  const { a, b } = stage(side), world = new World([a.body, b.body]);
+  world.time = 2;
+  const original: Intent = { vel: { x: 0, y: side * 9 }, cutSkill: 1,
+    ...(explicitFacing ? { facing: side * Math.PI / 2 } : {}) };
+  const commands: Intent[] = [], contacts: StepReport['contacts'] = [];
+  for (let k = 0; k < 16; k++) {
+    const intents: Intent[] = [structuredClone(original), { vel: { x: 0, y: 0 } }];
+    spaceTeammates([a, b], intents, (_a, other) => other,
+      context ? { now: world.time } : undefined);
+    commands.push(structuredClone(intents[0]));
+    const report = world.step(intents, .05); bounded(report);
+    contacts.push(...report.contacts);
+    expect(a.body.support!.state).toBe('up');
+    expect(b.body.support!.state).toBe('up');
+  }
+  return { commands, contacts, original, a, b };
+}
+
+
+it('diagnoses all three existing passable lanes without a forecast-count policy assertion', () => {
+  const rows = [];
+  for (const kind of ['original straight', 'parallel', 'close passable'] as const) {
+    const { a, b } = stage();
+    if (kind === 'parallel') b.body.vel = { x: 9, y: 0 };
+    if (kind === 'close passable') { a.body.vel = { x: 5, y: 0 }; b.body.pos = { x: 51, y: CENTER_Y + 1 }; }
+    const original: Intent = { vel: { ...a.vel } };
+    const world = new World([a.body, b.body]); world.time = 2;
+    const actualPreview = MovementPreview.previewFreeMovement;
+    let previewMs = 0, contacts = 0;
+    const started = performance.now();
+    const preview = vi.spyOn(MovementPreview, 'previewFreeMovement').mockImplementation((...args) => {
+      const before = performance.now(), result = actualPreview(...args);
+      previewMs += performance.now() - before;
+      return result;
+    });
+    try {
+      for (let k = 0; k < 16; k++) {
+        const intents: Intent[] = [structuredClone(original), { vel: { ...b.vel } }];
+        spaceTeammates([a, b], intents, (_a, other) => other, { now: world.time });
+        expect(intents[0]).toEqual(original);
+        const report = world.step(intents, .05); bounded(report);
+        expect(report.contacts).toHaveLength(0); contacts += report.contacts.length;
+      }
+      expect(a.pos.x).toBeGreaterThan(53);
+      rows.push({ kind, frames: 16, originalCommandPreservedEveryFrame: true,
+        actualContacts: contacts, existingPhysicalBudgetsPass: true,
+        attainedX: a.pos.x, previewCalls: preview.mock.calls.length,
+        previewMilliseconds: previewMs, totalMilliseconds: performance.now() - started });
+    } finally { preview.mockRestore(); }
+  }
+  writeFileSync('out/duo-motion-integration/traffic-lanes-diagnostic.json', JSON.stringify({
+    question: 'Does the failed zero-preview assertion conceal changed movement/contact in any of its three original lane scenarios?',
+    sourceTest: 'test/traffic-turning.test.ts', sourceLines: 'stage/bounded helpers and original three-lane loop, with no forecast-count policy assertion',
+    newNativeFootballContinuations: 0, mechanicalWorldSteps: 48, rows,
+    scope: 'Targeted diagnostic only; does not amend the supported no-preview contract or certify global forecast cost. Baseline prior passing receipt reused.'
+  }, null, 2)+'\n');
+});

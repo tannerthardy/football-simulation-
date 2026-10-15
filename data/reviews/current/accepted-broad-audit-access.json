@@ -1,7 +1,7 @@
 {
   "schema": "accepted-broad-audit-shared-access-v1",
-  "status": "Resolved for both immediate consumers: published Flex and Run subsets independently byte-verified against original saved case hashes. Full48 archive remains local to Measurement.",
-  "acceptedDevelop": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "status": "Resolved: both immediate subsets independently verified by Integration; Measurement also published both full48 arms and completed the #82 comparison. No recollection or duplicate full download.",
+  "acceptedDevelop": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
   "savedAuditCommit": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
   "savedAuditSourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
   "publishedInventoryCommit": "58303d6e22a42a5dce78b6ad0b967229140a59e1",
@@ -10,8 +10,10 @@
     "fileName": "accepted-8ca8dee-48snap-v1.tar.gz",
     "bytes": 40559081,
     "sha256": "72a62b95145cd64bb3bf06d60a62adbb7735cf872d777ff35faa5883e138e397",
-    "publishedUrl": null,
-    "sharedBytesIndependentlyVerified": false
+    "publishedUrl": "https://github.com/tannerthardy/football-simulation-/blob/ebef199a3986b2749e5c8c86921cfd6c7e42b2b4/accepted-8ca8dee-48snap-v1.tar.gz",
+    "sharedBytesIndependentlyVerified": false,
+    "measurementPublicationVerified": true,
+    "integrationFullObjectDownloadedThisPass": false
   },
   "manifestSha256": "fbb8ee4147163842758ee308a2d8f4e836d70602358ed777b10a1531a8b4fa53",
   "immediateConsumer": {
@@ -95,14 +97,15 @@
   "newSimulations": 0,
   "newSharedSuiteRuns": 0,
   "validation": {
-    "acceptedRefRechecked": "90edc52530caa71efdebf257f17d954a8a629ea0",
+    "acceptedRefRechecked": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
     "completed69ReviewRepeated": false,
     "sourceTestsSettingsFixturesChanged": false,
     "originalCommittedReceiptsChanged": false,
     "newSimulations": 0,
     "newCodeSuiteRuns": 0,
     "checks": "Fresh separate-repository Git fetches, archive hash/size, safe member paths, all eight original raw case hashes/sizes, manifest/run receipt/summary file hashes; zero simulations.",
-    "immediateConsumersResolved": true
+    "immediateConsumersResolved": true,
+    "byteValidationAcceptedSource": "90edc52530caa71efdebf257f17d954a8a629ea0"
   },
   "sharedSubsets": [
     {
@@ -240,5 +243,12 @@
     ],
     "status": "Published, delivered and independently byte-verified."
   },
-  "byteValidationReceipt": "coverage-contract-integration/witness-access-validation.json"
+  "byteValidationReceipt": "coverage-contract-integration/witness-access-validation.json",
+  "completedCheckpoint": {
+    "evidence": "40af332f3c988b5abe19d9236b49a43bde27200c",
+    "reportUrl": "https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/docs/reviews/panel-pr82-comparison.md",
+    "publicationUrl": "https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/data/reviews/current/panel-pr82/artifact-publication.json",
+    "measurementVerifiedNativeMembers": 96,
+    "state": "complete; no automatic repeat for new intake"
+  }
 }

@@ -1535,6 +1535,23 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   if (!filling && !arriving) return;
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
+  if (sim.offCall.run?.scheme === 'duo' && route.exit) {
+    // A vertical double's acquired backer can still belong to the other
+    // half of the surface. Permission for the keeper to stay does not give
+    // this member useful access across that surface. Retain the double;
+    // either member can still earn his own release from the next picture.
+    const own = observer.pos.y - surface.down.pos.y;
+    const partner = surface.covered.pos.y - surface.down.pos.y;
+    const key = backer.pos.y - surface.down.pos.y;
+    const dt = observer.mind.decisionInterval;
+    const nextKey = key + (backer.vel.y - surface.down.vel.y) * dt;
+    const nextPartner = partner + (surface.covered.vel.y - surface.down.vel.y) * dt;
+    if (own * partner < 0 && own * key < 0 && partner * key > 0
+      && own * nextKey < 0 && nextPartner * nextKey > 0) {
+      observer.tags.add('combo-held');
+      return;
+    }
+  }
   const cost = route.exit ? Math.hypot(route.exit.x-observer.pos.x,route.exit.y-observer.pos.y)
     + Math.hypot(backer.pos.x-route.exit.x,backer.pos.y-route.exit.y)
     : Math.hypot(backer.pos.x-observer.pos.x,backer.pos.y-observer.pos.y);

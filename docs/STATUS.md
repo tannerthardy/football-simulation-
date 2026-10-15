@@ -10,7 +10,7 @@ Do not use the historical sections below as a current starting-reference pin.
   verification and may merge routine reviewed corrections under standing user
   authority. Compatible work batches naturally; blocked work holds itself.
   [Authority, exclusions and costs](INTEGRATION.md#standing-integration-workflow).
-- **Accepted develop: `90edc52530caa71efdebf257f17d954a8a629ea0`**, merged #78 with reviewed #69 collection; #74/#72/#63/#65/#12 retained. Historical `4ded6b6` stays separate. [Actual merge](../data/reviews/current/pr78-merge.json).
+- **Accepted develop: `7eb2554f5dbb497cff169f386704a5b0f4cf43fe`**, merged #82 with independently reviewed #75/#80 continuity; prior #78/#74/#72/#63/#65/#12 retained. Historical `4ded6b6` stays separate. [Actual merge](../data/reviews/current/pr82-merge.json).
 - #63's five narrow corrections are accepted: stable gap identity, mesh cadence,
   blocking recognition, bookkeeping and incidental catch acquisition. The actual
   merge matches the verified publication exactly. Reuse its exact receipt;
@@ -40,14 +40,21 @@ Do not use the historical sections below as a current starting-reference pin.
   exact merge/passing-source checks needed no unchanged rerun.
   Physics remains separate.
 - #75's Catching/Run contract reconciliation and #80's acquired run-support
-  continuity have independent controller acceptance for the minimal five files.
+  continuity are adopted via #82 for the independently reviewed minimal five files.
   Exact freezee788ccc passes 1,753 TS/148 files, 145 Python, typecheck/build pass; 192.061s.
   Focused evidence reused; no unchanged rerun to publish/merge.
   P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
   and the original failed #75 receipt remain. No overall coverage-quality claim.
-- #76 stays parked/frozen per Flex; no independent current-tree adoption approval.
-  #81 supplies mesh stage diagnosis and a rejected bend trial, not a ready
-  behavioral fix. Neither is included; experimental Physics remains separate.
+- **#85 advances reviewed #84 Duo only; #81 is integration-held.** First combined
+  freezebbc4f82 completes all phases:1,761 TS pass/one existing zero-preview
+  assertion fails;145 Python/typecheck/build pass,202.275s, no drift/skips.
+  One targeted three-lane diagnostic preserves commands/contact/budgets but
+  adds15/0/14 forecasts. Run + Do-It-All must adjudicate that cost contract.
+  No assertion is edited. Exact reviewed #84-only freeze5727110/source dcebbee passes
+  1,760 TS/148 files, 145 Python, typecheck/build pass; 192.598s; final adoption/ref checks pending; original failed candidate remains preserved.
+- #76 stays parked/frozen pending Do-It-All's explicit live-objective/closure
+  disposition. It is no dependency and is not adopted/rejected. Lateral trial and
+  experimental Physics remain separate. [Exact pins/review owners](INTEGRATION.md#ready-blocked-experimental).
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
@@ -55,12 +62,16 @@ Do not use the historical sections below as a current starting-reference pin.
 Current investigations are [second-level blocking access (Run), run-support
 continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
 Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
-source remains8ca8dee; accepted develop remains90edc525. Measurement published/delivered the two data-only subsets; Integration verified
+source remains8ca8dee; accepted develop is7eb2554. Measurement published/delivered the two data-only subsets; Integration verified
 all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
-The access blocker is resolved. No panel recollection, #69 re-review or new games.
+The access blocker is resolved. No panel recollection, #69 re-review or new evaluation games.
+Measurement completed/published the one frozen48 comparison at40af332; no
+duplicate collector or automatic second panel. Eight selected FS support witnesses
+improved continuity/movement; A020 TD/A042 adverse finish/A044 drop remain.
+No general coverage/YAC realism established. Four games require CEO call.
 The exact #75/#80 candidate completed combined verification once.
 [Final receipt](../data/reviews/current/coverage-contract-integration/final-receipt.json);
-final adoption/ref checks pending, no extra game evaluation.
+actual #82 merge equals verified publication, no extra game evaluation.
 
 After a meaningful accepted controller batch, coordinate [one frozen-panel
 comparison](INTEGRATION.md#frozen-panel-comparison), reusing the saved baseline

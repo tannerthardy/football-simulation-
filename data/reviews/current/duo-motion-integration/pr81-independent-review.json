@@ -1,0 +1,302 @@
+{
+  "decision": "ACCEPT narrow admission extraction only",
+  "base": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "portableCode": "f27456b5f4cd7e5d628417662a77e4ede5b85bfc",
+  "reviewedHead": "6e19ad2d4aac73e71ae57c1893a9b389074eeaa5",
+  "referenceHost": "bfb0d5ec4ca090b1bb8e38ac01116eb29954a8ce",
+  "minimalExtractionTree": "d7aac67168dedf6376fa1b2b3464dba3d607889d",
+  "minimalExtractionSourceSha256": "d643cbefab7f00bdeaf8607b0710ec55b106668efd27f3bb55083b0fff6e384f",
+  "portableFiles": [
+    "src/sim/spacing.ts",
+    "test/fixtures/spacing-residual-motion.json.gz",
+    "test/spacing-residual-motion.test.ts"
+  ],
+  "portablePatchSha256": "929c3b1a424173de2989c2c63c11f7a910adbfefa8c78ea824ab1ca664ea4cc5",
+  "verifiedManifestEntries": 36,
+  "fileHashes": {
+    "current-focused.json": "e3d6cabc637d661a05a770206eecc6cf5a01848d529225120c80ac7e4e1c7c80",
+    "current-typecheck.json": "def6dcaa41b7d5dbd6351c4d078c6ffea59cb119756df691cba24ec7a4914718",
+    "narrow-native-receipt.json": "824ac06a49c80bc4171439405191911833e83b0318d6a08d6c5742eeb5fe4735",
+    "current-reference-receipt.json": "61e11a61708c494c65dc93e185e2ef315e57e89d224b5e82b89448988f7511f8",
+    "before-mechanism.json": "32e0450225a7891a54544a10a1228e44eea89b1087f631555ca78fdfa1aedef6",
+    "typecheck.json": "8d48f3177552af645249a6be40fbb26255fbe096a6d549aa2430b0b7d91b690e",
+    "current-native-receipt.json": "a6ebf4277e5916adf6c20cc163b40896e3c456e54cc6e0374705eafff71da4a1",
+    "mechanism-tests.json": "6aadea5da39f56d1111c5ea528b4b6e3945f1757290954998990b0114c2f3cdd",
+    "focused-pass.json": "e055027e7e4ec9e7e4412d70241066b61b16c1c953192c00d25921d641e9bdba",
+    "portable.patch": "929c3b1a424173de2989c2c63c11f7a910adbfefa8c78ea824ab1ca664ea4cc5",
+    "final-focused.json": "3f8fe5a07a213357701502ce8604ee2297d58b66e411a4297edece59b00326e9",
+    "rejected-low-speed.patch": "81152539787cd2059ab463f6d64fb28a05838cbc994fee330f2151b8c0cfa978",
+    "reference-opening-receipt.json": "de5c9d456c5596dda97c7f786b154da07c71b0082cbbe32a3fd6d96359aabb16",
+    "narrow-tests.json": "b8d2d2464541721c6d01b6223c3c3d2374dc010cf320fb7a7a2a17070494fbab",
+    "reference-mechanism.json": "156f08c9c542aeaa131b13c0a79466d19e1930a48a130f824a0b34f29d491322",
+    "native-receipt.json": "80cefd67c5b541a3878b5478efd3b826b3e54d2f39726acc6ef3dc32d0523d6a",
+    "review.json": "c1d78235ab4f292c65b6d2f3aca8b9ce2afd2fea644246aa13c316ced060dd75",
+    "native-v2/plan.json": "555e287aac214324af0f2f53d71459e6bbbb829062f8ed9f7427ffb21dbabc5f",
+    "native-v2/A008.json.gz": "3e8c62cc0b57ba69fd96d916b28c2d1ec3c7d25735b8d78e428041501ca89a7d",
+    "native-v2/summary.json": "880bd75d29f1d8f3f994decd5c1a5b86150fb79a6938dde339b722d32836376f",
+    "native-v2/A044.json.gz": "970fee2e4cc4bafbb86de90139e2715b90b8f0220dd1fcf712f866e894642910",
+    "current-candidate/plan.json": "a7ecb021c4a2af94cb96ddccf366adfed40da2e9e6d0f5081b891200bd6ed7d4",
+    "current-candidate/A008.json.gz": "9b9bf7657e9552520900b27b1577473bdb3a732569cf7421bee10960857c3dec",
+    "current-candidate/summary.json": "49340b498e1e2eb5f016790f70757aa0143b96f2c7b25c72b8097f0898fbfdb1",
+    "current-candidate/A044.json.gz": "c15d3aea9a799269c0301657e742313d0ab7fd1064cb4c8a82928dea616a81b8",
+    "native-v1/plan.json": "6e29d681f3e10b8fa5b4a8d8fabe114245cba8555def573abbbd30d6360fbfe2",
+    "native-v1/A008.json.gz": "b25f5c763723c299233a20bcf06dbc828dbd3e1a6736c1af0306df0611f4eebc",
+    "native-v1/summary.json": "4be0bd1681a7503262bd9af389ebb690260d580cb5c0d211492ac9cf8a8213e8",
+    "native-v1/A044.json.gz": "a5ab8ad832a5ec3a6bf98ae317fc26c45fa232a2580adf1dbf146ace61182352",
+    "current-reference/plan.json": "c91aea5e1584d0691e1947fcf5377717015904da076c71c73e308589320b80fd",
+    "current-reference/A008.json.gz": "77ff2b5793c2d32f661851aa4b19cd17dc022e4b5b34da9deb8c698380c539bf",
+    "current-reference/summary.json": "d4a739298eb621de6cd9fbacaec082b051365c4340a99cf68b6e37e6c16bddd7",
+    "current-reference/A044.json.gz": "f441203456eb0d17f53952d101c900d45b2c943b97314c05cb92a5e18444466b",
+    "reference-opening/plan.json": "29cf338cd9dbb73bd295d833356509c4115fff671db407345e0242db564cc636",
+    "reference-opening/summary.json": "07abc1ada3e3cba22e3ff8ff06cb56f10dc166366bc6a3aa78b3a94ad9992371",
+    "reference-opening/A044.json.gz": "40bdb18e5426691d4ed6658328be9238ed537d8506f459893b81094194ebbe24"
+  },
+  "referenceSourceSha256": "c0c660cbad2afb0180ad773cdef8f8ecb70b6c5083409cbbdcb03e446ba028e1",
+  "candidateSourceSha256": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "fixture": {
+    "source": "#81 corrected research bend A044; exact 2.35 state, not accepted live trajectory",
+    "t": 2.35,
+    "requestedTurn": 0.8749657976039807,
+    "peerCount": 10
+  },
+  "reusedReceipts": {
+    "current-focused.json": {
+      "source": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+      "seconds": 2.575153688,
+      "commands": [
+        [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/spacing-residual-motion.test.ts",
+          "test/spacing-yield.test.ts",
+          "test/command-observer.test.ts"
+        ]
+      ]
+    },
+    "current-typecheck.json": {
+      "source": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+      "seconds": 10.561714614,
+      "commands": [
+        [
+          "npm",
+          "run",
+          "typecheck"
+        ]
+      ]
+    },
+    "current-reference-receipt.json": {
+      "source": "c0c660cbad2afb0180ad773cdef8f8ecb70b6c5083409cbbdcb03e446ba028e1",
+      "seconds": 2.343781839,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/mesh-motion-admission.ts",
+          "--run",
+          "--out",
+          "/workspace/mesh-command-attribution/out/motion-admission/current-reference"
+        ]
+      ]
+    },
+    "current-native-receipt.json": {
+      "source": "f9573bc3ce911dfc75dee95d56b8df3b3e8937ed8db62a97659d15baf4c3e7e8",
+      "seconds": 1.799115511,
+      "commands": [
+        [
+          "node",
+          "--import",
+          "tsx",
+          "scripts/diag/mesh-motion-admission.ts",
+          "--run",
+          "--baseline-dir",
+          "out/motion-admission/current-reference",
+          "--baseline-pin",
+          "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+          "--out",
+          "out/motion-admission/current-candidate"
+        ]
+      ]
+    }
+  },
+  "currentCases": [
+    {
+      "case": "A044",
+      "setupSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+      "ticks": 71,
+      "firstTickDifference": {
+        "t": 3.25,
+        "fields": [
+          "agents",
+          "commands"
+        ]
+      },
+      "firstStageDifference": {
+        "t": 3.25,
+        "actor": 21,
+        "stage": "spacing",
+        "old": {
+          "vel": {
+            "x": -0.44841128434061445,
+            "y": -2.462474392303543
+          }
+        },
+        "new": {
+          "vel": {
+            "x": -0.22420564217030722,
+            "y": -1.2312371961517714
+          }
+        }
+      },
+      "eventsAndFinalMainRngExact": true,
+      "ssRobberImpactExact": [
+        {
+          "t": 2.75,
+          "i": 15,
+          "j": 21,
+          "impulse": 139.00326883260303,
+          "closing": 2.71611805936524
+        }
+      ],
+      "stoppedAt": 3.55
+    },
+    {
+      "case": "A008",
+      "setupSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+      "ticks": 68,
+      "firstTickDifference": null,
+      "firstStageDifference": null,
+      "eventsAndFinalMainRngExact": true,
+      "ssRobberImpactExact": [],
+      "stoppedAt": 3.4
+    }
+  ],
+  "historicalCases": [
+    {
+      "case": "A044",
+      "originalRawSha256": "c6a16b98d21bf1819b6ed03f1ffa5fc32edd47cd817ec4971cf23c4feff79d57",
+      "comparedFrames": 73,
+      "firstDifference": {
+        "t": 3.6,
+        "actors": [
+          0
+        ]
+      },
+      "exactZCornerLoads": [
+        {
+          "t": 5,
+          "normal": 0,
+          "lateral": 203.1547567370476
+        },
+        {
+          "t": 5.05,
+          "normal": 0,
+          "lateral": 202.06622708608415
+        },
+        {
+          "t": 5.1,
+          "normal": 0,
+          "lateral": 205.9726543895656
+        },
+        {
+          "t": 5.15,
+          "normal": 0,
+          "lateral": 206.1096135762267
+        },
+        {
+          "t": 5.2,
+          "normal": 0,
+          "lateral": 207.3997326721846
+        },
+        {
+          "t": 5.25,
+          "normal": 0,
+          "lateral": 206.83610933455728
+        },
+        {
+          "t": 5.3,
+          "normal": 0,
+          "lateral": 210.20982964427807
+        },
+        {
+          "t": 5.35,
+          "normal": 0,
+          "lateral": 208.58434890463835
+        }
+      ]
+    },
+    {
+      "case": "A008",
+      "originalRawSha256": "5d0637646c985b633e5b9b04a3e4d6a66d1871949a6d38c2762a5f80a230ffd0",
+      "comparedFrames": 32,
+      "firstDifference": null,
+      "exactZCornerLoads": []
+    }
+  ],
+  "historicalLoadMeasurementSha256": "11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191",
+  "auditConstructionNote": "Initial offline audit incorrectly looked for original hand loads in command-only ticks; corrected to the separately pinned Measurement rows. No simulation or product change.",
+  "newNativeExecutions": 0,
+  "newTestExecutions": 0,
+  "newGames": 0,
+  "offlineAuditSeconds": 0.7230351120233536
+}

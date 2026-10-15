@@ -1,0 +1,208 @@
+{
+  "schema": "pr82-adoption-v1",
+  "pr": 82,
+  "routineMergeAuthority": "Standing user authority: routine corrections after independent review and required verification.",
+  "previousAcceptedDevelop": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "acceptedDevelop": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "reviewedPublication": "a9e33f65248d77bbdd886505e6d94277791bf130",
+  "testedCommit": "e788ccc8a78e49281e4dd1a4256da2bc7ce9d143",
+  "entireMergedTreeEqualsPublication": true,
+  "mergedTree": "4cfd9d56b2d93595103b226f3c0c96952f38a2a6",
+  "protectedTreeMatchesPassingReceipt": true,
+  "sourceSha256": "78183dc79c6285939b80875b131584c18c4f0eda020c17bcfde6191823ace965",
+  "validationSha256": "819e6ab368739ce79a14e7cbe446d112d6c2831e632dc0f67a73d73f6b3343b0",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1753,
+    "typescriptFiles": 148,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "pr": 75,
+      "head": "43ac5e1835467cbc0914df0df1c82ea74740d1b4",
+      "files": [
+        "src/sim/behaviors/defense.ts",
+        "test/man-throw-recognition.test.ts",
+        "test/back-man-run-fit.test.ts"
+      ],
+      "contract": "Installed man technique and acquired keyed support continue until existing throw recognition; recognized ball priority retained."
+    },
+    {
+      "pr": 80,
+      "head": "0fce2a085ea9f28cbaac65a388b7d3220c36e6d8",
+      "files": [
+        "src/sim/coverage/defender.ts",
+        "test/coverage-run-support.test.ts"
+      ],
+      "contract": "Current run belief plus affirmative personally acquired backfield RB/FB carrying preserve insert/alley support across receiver reassignment. Reevaluate every decision; no latch; recognized flight wins.",
+      "testOnlyCorrection": "Assert actual onBall before expected playBall; independently reviewed, included in this exact verification."
+    }
+  ],
+  "held": [
+    {
+      "pr": 76,
+      "head": "4cf253efead2cac450abe0bc74aa5e0db0306126",
+      "state": "parked/frozen; not rejected/adopted",
+      "owner": "Flex/Do-It-All",
+      "next": "Named carrier-preview priority plus independent portable review on accepted develop."
+    },
+    {
+      "pr": 81,
+      "head": "cb3823ee749a50ab51e4024b3cdc0dd4ce45341c",
+      "state": "diagnosis; bend trial rejected; no ready behavior",
+      "owner": "Flex/Do-It-All",
+      "next": "Achievable mesh approach/continuation; no observer/tooling imported."
+    },
+    {
+      "item": "Unused transport/navigation/P045 variants/experimental Physics",
+      "state": "excluded; separate owners/gates"
+    }
+  ],
+  "cost": {
+    "combinedCommandSeconds": 192.06141316099996,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.641489244
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 10.906950356999998
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 170.66725770099998
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.845715858999989
+      }
+    ],
+    "newStandaloneNativeReplays": 0,
+    "newEvaluationGames": 0,
+    "newRosterScreens": 0,
+    "suiteGames": "Only existing preserved game/ensemble assertions ran once in full suite.",
+    "noRepeatToPublishOrMergeIdenticalTree": true
+  },
+  "archiveAccess": {
+    "status": "Resolved: both published subset checksums and8 original case hashes independently verified.",
+    "receipt": "witness-access-validation.json",
+    "savedSource": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+    "full48Shared": false,
+    "newSimulations": 0
+  },
+  "preservation": {
+    "protectedChanges": [
+      "src/sim/behaviors/defense.ts",
+      "src/sim/coverage/defender.ts",
+      "test/back-man-run-fit.test.ts",
+      "test/coverage-run-support.test.ts",
+      "test/man-throw-recognition.test.ts"
+    ],
+    "physicalLawsCapabilitiesDefaultsFlagsDependenciesToolingUnchanged": true,
+    "acceptedBlockingCollectionCarrierRiskPreserved": true,
+    "priorScientificReceiptsUnchanged": true,
+    "branchAndAdverseEvidenceHistoryPreserved": true,
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "githubDefaultUnchanged": true
+  },
+  "mergePreview": {
+    "publication": "a9e33f65248d77bbdd886505e6d94277791bf130",
+    "preview": "b655117125559cc69e6141882a0e7bf63836189f",
+    "base": "90edc52530caa71efdebf257f17d954a8a629ea0",
+    "parents": [
+      "90edc52530caa71efdebf257f17d954a8a629ea0",
+      "a9e33f65248d77bbdd886505e6d94277791bf130"
+    ],
+    "tree": "4cfd9d56b2d93595103b226f3c0c96952f38a2a6",
+    "entirePreviewTreeEqualsPublication": true,
+    "protectedTreeMatchesTestedFreeze": true
+  },
+  "receiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/a9e33f65248d77bbdd886505e6d94277791bf130/data/reviews/current/coverage-contract-integration/final-receipt.json",
+  "nextDecision": "After adoption, Measurement owns one48-case comparison against frozen saved8ca8dee;90s batch/5s case ceiling. No baseline recollection. Four-game packet requires CEO call."
+}
