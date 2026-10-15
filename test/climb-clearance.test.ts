@@ -60,6 +60,22 @@ describe('a free climb clears acquired first-level bodies',()=>{
   expect(next.minimumGap).toBeGreaterThanOrEqual(0);
   expect(clearance(path(f.body,next.command,f.horizon),neighbor)).toBeGreaterThanOrEqual(0);
  });
+ it('uses the smallest clear heading change and honors the football veto',()=>{
+  const f=saved();f.peers=f.peers.filter((p:any)=>p.slot==='DT_W');
+  f.goal={x:f.body.pos.x,y:f.body.pos.y+20};
+  const selected=choose(f),speed=Math.hypot(f.command.vel.x,f.command.vel.y);
+  let smallest=Infinity;
+  for(const angle of [Math.PI/8,Math.PI/4,3*Math.PI/8,Math.PI/2])for(const sign of [-1,1]){
+   const turn=angle*sign,v=f.command.vel;
+   const command={...f.command,vel:{x:v.x*Math.cos(turn)-v.y*Math.sin(turn),y:v.x*Math.sin(turn)+v.y*Math.cos(turn)}};
+   const states=path(f.body,command,f.horizon);
+   if(states.every(b=>b.support!.state==='up')&&clearance(states,f.peers[0])>=0)smallest=Math.min(smallest,angle);
+  }
+  const dot=(selected.command.vel.x*f.command.vel.x+selected.command.vel.y*f.command.vel.y)/(speed*speed);
+  expect(Math.acos(Math.max(-1,Math.min(1,dot)))).toBeCloseTo(smallest,10);
+  const vetoed=clearMovementStep(f.body,f.command,f.goal,f.peers,.45,f.horizon,1,'center',()=>false);
+  expect(vetoed.kind).not.toBe('around');
+ });
  it('reports a genuinely too-late obstruction instead of certifying a request',()=>{
   const f=saved();f.body.vel={x:6,y:0};f.command={vel:{x:7,y:0},facing:0};f.horizon=.6;
   f.peers=[-.7,0,.7].map((y,id)=>({id,pos:{x:f.body.pos.x+.8,y:f.body.pos.y+y},vel:{x:0,y:0},radius:.36}));

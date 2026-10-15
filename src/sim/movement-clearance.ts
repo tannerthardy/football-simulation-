@@ -64,7 +64,7 @@ function segmentGap(a:Vec2,b:Vec2,c:Vec2,d:Vec2):number {
 }
 
 /** Keep an ordinary clear request exact. A detour must clear every acquired
- * neighbor together and make the most progress toward the read meeting point.
+ * neighbor together with the least heading change; progress resolves the side.
  * Only the first held read-beat is certified, in empty space. */
 export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
   peers: readonly MovementObstacle[], now: number, horizon: number,
@@ -118,8 +118,12 @@ export function clearMovementStep(body: Body, original: Intent, goal: Vec2,
         &&(!allowDetour||allowDetour(candidate.path,baseline.path))
         && (!best || candidate.progress > best.progress + 1e-9)) best = candidate;
     }
+    // Preserve the football controller's direction as much as clearance
+    // allows. Comparing progress across every angle over this short horizon
+    // can favor a much sharper redirect, even a backwards speed request while
+    // forward momentum remains. Only compare the two sides of this angle.
+    if (best) return { kind: 'around', command: best.command, minimumGap: best.gap, blockedBy };
   }
-  if (best) return { kind: 'around', command: best.command, minimumGap: best.gap, blockedBy };
   const gather = evaluate({ ...original, vel: { x: 0, y: 0 } });
   const newConflict = gather.gaps.some((gap, i) => baseline.gaps[i] >= 0 && gap < 0);
   if (gather.up && !newConflict && gather.gap > baseline.gap + 1e-9)
