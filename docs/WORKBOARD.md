@@ -1,5 +1,9 @@
 # Current work ownership
 
+## Run: independent PR #81 review — 2026-10-15
+
+Integration assigned Run on [#81](https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204470898). Review-only host: `codex/mesh-admission-independent-review`, accepted develop `7eb2554f5dbb497cff169f386704a5b0f4cf43fe` (remote develop and published queue agree). Scope: exact three-file motion-admission patch `f27456b5f4cd7e5d628417662a77e4ede5b85bfc`, reconciled `edad30904780523896092f592f4c30f1686cc764`, evidence/head `6e19ad2d4aac73e71ae57c1893a9b389074eeaa5`; source/information/support contracts and saved opposing controls. This host changes only this ownership entry, `docs/reviews/pr81-run-independent-review.md`, `scripts/diag/review-mesh-admission.py` and its saved-data receipt; no production/test/settings changes, suite, game or new route trial. #84 stays frozen at `4af71ac8a8f320456e87a027579200469a0c1ee0` for Do-It-All's independent review. Independent review: **ACCEPT narrow three-file extraction only**, no new native/test execution; 36 published evidence hashes verify, current A008 exact, A044 original collision unchanged. [Report](reviews/pr81-run-independent-review.md). Next implementation after #84 disposition: A018's unfinished second Duo RG→LB_M collection, with near-level keeper protection preserved.
+
 ## Verified #75/#80 integration boundary — 2026-10-15
 
 Integration owns `codex/coverage-contract-integration`, starting at accepted
