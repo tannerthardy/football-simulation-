@@ -10,28 +10,23 @@ stages remain below.
 <a id="accepted-development"></a>
 ## Accepted development reference
 
-**`develop@7d1451b2c31786e075550183a6a93bbda23da29b`** is the accepted shared tree after
-user-authorized documentation-only [#65](https://github.com/tannerthardy/football-simulation-/pull/65).
-[Actual merge and acceptance](https://github.com/tannerthardy/football-simulation-/pull/65#issuecomment-6201484981)
-and [protection receipt](../data/reviews/current/pr65-adoption-merged.json)
-pin the actual publication. Its entire tree equals reviewed #65 head
-`679e96f73e4e13a87dd2355dabeed83ce9cdfef6`; protected runtime/tests/settings
-and prior receipts are byte-identical to accepted #63 merge `8c891f4cf887b54297efbbc4c7993ba5e2f318b5`.
-#65 imports no runtime candidate. #63's verified source remains implemented. The prior [#12](https://github.com/tannerthardy/football-simulation-/pull/12) run-contact components and moving-catch repair
-remain included. **Historical comparison remains
-`4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`.** GitHub's default branch is not a
-substitute for the accepted pin; no default or historical-profile change occurs.
+**`develop@4679a3c260188143bcc66f6f20534327c78d7eaa`** is the accepted shared tree after
+user-authorized [#72](https://github.com/tannerthardy/football-simulation-/pull/72),
+the isolated #67 pass-cutoff correction. The actual merged tree equals reviewed
+publication `167547807a23052e04af2199104fc16b9850a501` exactly.
+[Merge and preservation receipt](../data/reviews/current/pr72-merge.json).
+Accepted #63 fixes, #65 navigation and earlier #12 controllers remain included.
+Historical comparison stays `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1`;
+GitHub's default and experimental settings remain unchanged.
 
-The accepted source was tested at `a862a05713d0b8bbd22683ce8a70d5ac16eb18e2`:
-**1,720 TS / 145 Python checks, typecheck/build pass**.
-[Exact combined receipt](../data/reviews/current/departed-center-integration/receipt.json)
-and [merge compatibility receipt](../data/reviews/current/pr63-merge.json) are
-reused unchanged: source, tests/tooling/settings, 44 flags and artifact hashes
-match. Zero new runtime tests or simulations were needed for the merge.
-The [earlier #12 receipt](../data/reviews/current/controller-combined-verification.json)
-remains historical evidence.
-Use Node 22.23.3 and the accepted 44-flag profile/components=1, existing center /
-centered hands and legacy/mean support. No experimental default promotion.
+Reuse the exact `64177487272b7e0b2d51460e23ccdb6447508e39` verification:
+**1,724 TS/144 files,145 Python,typecheck/build pass**,44 flags/components=1,
+Node22.23.3 and unchanged center/centered hands,legacy/mean support defaults.
+[Final passing receipt](../data/reviews/current/pass-cutoff-integration/final-receipt.json)
+and all native adverse results, prior failed full receipts and scope limits are
+preserved. No additional tests or simulations ran to merge the unchanged tree.
+#72 changes only free edge-cutoff approach and its reviewed coverage-kind test
+contract; it does not validate cutoff forecasts or repair contact physics.
 
 The snapshot's [full pins and dependencies](../data/reviews/current/integration-queue.json)
 are an audit of this update, not another accepted reference. Recheck mutable
@@ -53,19 +48,30 @@ silently become approval; investigate a disagreement with this ledger.
 | **Separate navigation benefit unproved; owner seam approved** | `codex/run-entry-admission@75dbf46b12a4d186a7da6ebc463b9fba228f0b50`; information `f8ce858adf7a3859b10307520000f4eb3172d344`, approach `cfcb7db0ba17c978fd02fb179c61f4e8b1d66752`, tested `fd655f10ec67125e945aba473b952f08f67b71a9` | Do-It-All! supplies bounded approach evidence (40 checks/typecheck; P019 unchanged, P032 censored at3s). It directly calls/types `teammateInformation` / `TeammatePicture`, absent from accepted develop. [Proposed observation-only extraction](https://github.com/tannerthardy/football-simulation-/tree/94eb22aa396a8a0d5db7338add13437ce1007bf3/docs/reviews/run-entry-awareness-extraction) remains a separately reviewed proposal: after the .30s prediction cap, zero estimated velocity means unknown current motion, not stationary clearance. [Awareness approval](https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6201016808) clears the existing-schema unknown/unsupported contract and observation-only staging scope. Do-It-All! owns consumer adaptation and current football-benefit proof; Integration owns composition. The original75dbf46 picture does not certify clear admission under corrected unknown semantics. Do not merge recorded ancestry or add live-state fallback. |
 | **Active pass diagnosis / contract question** | [#64](https://github.com/tannerthardy/football-simulation-/pull/64) `db77674b0e2493017d8778c5cdc5dd1420e68002`, diagnostic `eba1b61756d7a85b3b8c39dc73196244e7eef719` | Run Game/pass-protection owner: P040 forecast improves in one trial but loses P019's useful edge control; both trials rejected. #67 is a separately reviewable free-approach candidate; the loaded foot-objective algebra remains an owner question, not a proven defect. Experimental #57/#54 host is explicit; do not import ancestry. |
 | **Current physics candidate held** | [#66](https://github.com/tannerthardy/football-simulation-/pull/66) `29b00905edee16f00651317364b729c1b377eb5b`; Run adjudication evidence `4f90b6428b98224774bbd63a4adad6bb3e354b53` | [Run-owner adjudication](https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200709352) identifies mirrored missed feasible collection and unsupported compulsory-climb expectations; no runtime/assertion was changed. Hold promotion for collection dependency. Integration still owns two center-history compatibility questions after reconciling accepted #63. Preserve seven original failures and yaw force-selection sensitivity/accuracy limits; no new suite/default promotion here. |
-| **Verified isolated candidate; merge approval pending** | [#72 isolated integration](https://github.com/tannerthardy/football-simulation-/pull/72) of [#67](https://github.com/tannerthardy/football-simulation-/pull/67), tested `64177487272b7e0b2d51460e23ccdb6447508e39` on accepted develop7d1451b; [final receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json), [scope and adverse evidence](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/docs/reviews/pass-cutoff-integration.md) | User accepted [Run adjudication](https://github.com/tannerthardy/football-simulation-/pull/67#issuecomment-6201827323); approved coverage-job filter applied. **1,724 TS/144 files,145 Python,typecheck/build pass**,44 flags/components=1,no skips/input drift;200.234s. Recommend only the isolated extraction, never original #64/#57/#54 ancestry. Native RT/RG/LT losses, C/LG traffic, forecast/contact limits and the earlier failed receipt remain. #69 and experimental physics excluded. Explicit merge authority remains required; no rerun for this unchanged candidate. |
+| **Accepted and merged #72 / isolated #67** | Develop `4679a3c260188143bcc66f6f20534327c78d7eaa`; reviewed publication `167547807a23052e04af2199104fc16b9850a501`, tested `64177487272b7e0b2d51460e23ccdb6447508e39`; [merge receipt](../data/reviews/current/pr72-merge.json) | Explicit user merge authority exercised after unchanged source/tests/settings, artifact and review checks. Entire merged tree equals reviewed publication. Existing full passing receipt reused; no reruns. Native RT/RG/LT losses, C/LG traffic, forecast/contact limits and prior failures remain. #69, information/navigation and experimental physics are excluded. |
 | **Queued independent controller review** | [#69](https://github.com/tannerthardy/football-simulation-/pull/69), head `a159f82d4821f03082e5a110c190a5ef1396df60`, runtime/test `3b4ea698819074640626a215bf2f06af2735f25a`, evidence `bb430b1b2a801b5221e622f7f950d59bc8d8084f`, source `f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67` | [Scoped review handoff](https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6201486238). Independent controller reviewer / Do-It-All! boundary owner: acquired lost-owner cue, first-strike surface, achievable approach/braking, mirrored and obstructed controls, explicit force/reach/support contract. Reported63 focused checks/typecheck are contributor evidence, not combined acceptance. Actual base8c891f4 is byte-compatible with docs-only accepted7d1451b. No #67, entry-admission or #66 physics dependency; no new suite merely to queue. |
 | **Owner disposition requested; remain open** | #4, #41, #51, #55, #56 | Handover owner, Awareness and Primary Physics must clarify live objective versus parked research. Requests are linked in the cleanup receipt. No need to finish experiments or run tests to answer. Legacy #1/#2 stay open for their separate owner/reference decisions. |
 | **Closed research / preserved experimental branches** | [#54](https://github.com/tannerthardy/football-simulation-/pull/54) `4ae667e29b3ce085f43c5cb911b294349cda2b8f`; earlier zone/Duo `6122fb03c7104c0f9d762591d737cf2cf6a49067`; [#62](https://github.com/tannerthardy/football-simulation-/pull/62) `1f071b9568f3fcc790aff71ddf5ea032cca5cf16` | PR #54/#62 are closed as completed/parked records; every branch/film/receipt remains. #62's historical patch host is parked; primary Physics owns any independently reviewable current-develop contact-law extraction. No hands/grip/helper/turn package or experimental setting is enabled by this queue. |
 
 
-Latest decisions: #65 is merged; accepted develop remains the full7d1451b pin
-above. User accepted Run's #67 adjudication and approved final verification.
-The isolated candidate now passes all four phases; the final receipt supports
-a bounded merge recommendation, **not merge authorization**. No additional
-simulation campaign or unchanged-suite rerun is justified. #69 remains queued
-independently. The [earlier two-gate HOLD review](../data/reviews/current/pass-cutoff-independent-review.json)
-and failed full receipt remain historical evidence, not the current decision.
+Latest decision: #72 is accepted and merged under explicit user authority;
+use the full4679a3c pin above. No future merge authority follows. The separate
+information-only candidate60223a8 is being reviewed for independent opponent-risk
+versus observation-transport scope, with navigation tuning parked. #69 remains
+with Do-It-All's independent controller review. Prior HOLD/failed verification
+records retain their historical meanings; they are not current blockers on #72.
+
+### Relevant owner updates after #72
+
+- Run Game: preserve the accepted free-cutoff action in forecast/loaded-policy
+  follow-up; native protection tradeoffs and original-source film remain valid.
+- Do-It-All / #69 reviewer: collection is separate, but its shared-file extraction
+  must retain the accepted PassProtector hunk. Reconcile at a clean checkpoint;
+  no forced rebase, branch move or unchanged-suite rerun.
+- Awareness / entry: check the minimal carrier/PlaySim extraction on4679a3c;
+  it does not depend on pass cutoff, and navigation remains parked.
+- Physics: retain the separate contact-law/dependency review and known center-hand
+  limitations. This controller acceptance does not clear #66 or other experiments.
 
 #63's [shared receipt](https://github.com/tannerthardy/football-simulation-/blob/0f70bb2a4205497d7df8ed1ed59391d87084c603/data/reviews/current/departed-center-integration/receipt.json)
 records **1,720 TS / 145 Python checks, typecheck/build pass**, source

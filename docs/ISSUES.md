@@ -3,7 +3,7 @@
 # Master issue register
 
 Updated **2026-10-15 (America/Phoenix)**. Accepted development reference:
-`develop` at `7d1451b2c31786e075550183a6a93bbda23da29b` (docs-only #65; #63 runtime unchanged).
+`develop` at `4679a3c260188143bcc66f6f20534327c78d7eaa` (merged isolated #72; #63/#65 retained).
 
 This is the canonical list of the consequential problems surfaced in current
 work, including their evidence and return conditions. It is not a new exhaustive
@@ -36,7 +36,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
-| [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Isolated #67 verified; explicit merge decision pending | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
+| [PASS-005](#PASS-005) | Edge-cutoff action station-keeps toward a future interception | Confirmed narrow controller mismatch; broader forecast/contact limitations | Bounded correction accepted via #72; forecast/contact limits open | Integration + Run Game; keep #69/physics separate and preserve defensive wins |
 | [GAME-001](#GAME-001) | Behind-line holding spot and accept/decline value | Confirmed enforcement defect; policy limitation | #60 spot fix accepted via #63; policy open | Integration; correct state is distinct from optimal choice |
 | [GAME-002](#GAME-002) | Retained-snap credit and intended/achieved air depth | Confirmed attribution/measurement defects | Resolved bounded scope in accepted #63 | Integration; actual possession segments, no historical rewrite |
 | [INFO-001](#INFO-001) | Teammates receive refreshed state without acquisition | Confirmed information defect; #36 correction prepared | Active review; promotion held | Awareness + Run Game; rear collision/post-mesh coordination review |
@@ -113,12 +113,12 @@ No new native replay or shared suite is justified while that contract is open.
 
 #67's isolated extraction changes only the free edge-cutoff approach, through
 the same predicted point at its existing .75*vmax budget. Candidate6417748 on
-accepted7d1451b passes all four verification phases; [receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json).
+accepted7d1451b passed all four verification phases; [receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json).
 User accepted [Run's ordinary-fixture adjudication](https://github.com/tannerthardy/football-simulation-/pull/67#issuecomment-6201827323):
 reciprocal response variates transfer the supported swim win to either approach;
 earlier contact moves the rep clock. Native P040 RT/P019 RG/ordinary LT losses,
-C/LG traffic and imperfect cutoff forecasts remain. This is a bounded merge
-recommendation, not adoption, a contact-law fix or general protection validation.
+C/LG traffic and imperfect cutoff forecasts remain. The bounded correction is now accepted via #72 at4679a3c. Forecast accuracy,
+contact law and general protection realism remain open.
 #69 remains independent; future shared-file extraction must preserve this
 PassProtector hunk if it is accepted. No additional game campaign is requested.
 

@@ -1,0 +1,11 @@
+{
+  "schema": "pr67-original-evidence-review-v1",
+  "reviewedHead": "01ed8d2e68e85e673e07ac0aa042cd851ac2fa92",
+  "testedCommit": "81b908586416070145b5b89ee9517380c4fe09fe",
+  "verifiedSourceSha256": "0eb4c7652f49c420c25535f4932bdc6abe24443ba05163f8ac2d999a7f6bee56",
+  "authorManifestArtifactsVerified": 47,
+  "mismatches": [],
+  "focusedReceiptReusedForOriginalSourceOnly": true,
+  "originalSourceUnchangedSinceTested": true,
+  "elapsedSeconds": 0.5031155410106294
+}

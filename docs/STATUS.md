@@ -19,13 +19,12 @@ Do not use the historical sections below as a current starting-reference pin.
   Neither is accepted runtime; the information-only correction stays separate.
 - Prior PR bookkeeping closed 43 finished/superseded PRs, leaving 23 open at
   that snapshot before #63 merged. All starting branches and evidence remain. [Disposition record](INTEGRATION.md#pr-dispositions).
-- #66 remains held independently. #67's isolated final candidate at
-  `64177487272b7e0b2d51460e23ccdb6447508e39` passes **1,724 TS/145 Python,
-  typecheck/build** with all44 flags/components=1, no skipped phases or drift.
-  User accepted Run's ordinary-fixture adjudication; native adverse outcomes
-  and forecast/contact limitations remain. [Final receipt](https://github.com/tannerthardy/football-simulation-/blob/167547807a23052e04af2199104fc16b9850a501/data/reviews/current/pass-cutoff-integration/final-receipt.json).
-  Recommend bounded merge **after explicit authorization**; accepted develop
-  remains7d1451b. #69 remains a separate queued controller review.
+- #72's isolated #67 pass-cutoff correction is accepted and merged as
+  `4679a3c260188143bcc66f6f20534327c78d7eaa`. Its actual tree equals reviewed1675478;
+  reuse1,724 TS/145 Python/typecheck/build passing verification. No reruns.
+  Native adverse outcomes and forecast/contact limits remain; [merge receipt](../data/reviews/current/pr72-merge.json).
+- Information-only60223a8 is independently under review; navigation remains parked.
+  #69 stays with Do-It-All's controller review and experimental physics stays separate.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
