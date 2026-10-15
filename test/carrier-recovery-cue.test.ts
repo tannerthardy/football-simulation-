@@ -22,7 +22,8 @@ function make(offFeetWitness = false) {
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed: offFeetWitness ? 11 : 3, record: false });
 }
 type Decision = { heading: number; score: number; blocked: boolean; exits: boolean };
-type InspectCarrier = { evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): Decision };
+type InspectCarrier = { evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean,
+  assessmentAim?: { x: number; y: number }): Decision };
 
 /** Staged controller slice, not prescribed native football or a tackle result.
  * Keep body kinematics/capabilities fixed and vary only the visible picture or
@@ -169,10 +170,10 @@ describe('carrier recovery is a bounded visible-pose estimate', () => {
         if (behavior instanceof BallCarrier && !inspected.has(behavior)) {
           inspected.add(behavior);
           const controller = behavior as unknown as InspectCarrier, evaluate = controller.evaluate;
-          controller.evaluate = function (a, s, dir, designed) {
+          controller.evaluate = function (...args: Parameters<InspectCarrier['evaluate']>) {
             evaluating = true;
             try {
-              const result = evaluate.call(this, a, s, dir, designed);
+              const result = evaluate.apply(this, args);
               decisions.push({ ...result });
               return result;
             } finally { evaluating = false; }
