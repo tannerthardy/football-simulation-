@@ -39,12 +39,14 @@ Do not use the historical sections below as a current starting-reference pin.
   typecheck/build in191.361s,44 flags/components1. It is now accepted via90edc525;
   exact merge/passing-source checks needed no unchanged rerun.
   Physics remains separate.
-- #75's isolated information correction is held at a neighboring run-fit contract.
-  The eight new recognition checks pass; one combined run has1,732 TS pass/two
-  existing back-man failures, with145 Python,typecheck/build passing (188.094s).
-  Catching owns the contract disposition, consulting Run on insertion/alley ownership;
-  assertions and adverse evidence are preserved. [Exact question, candidate and receipt](INTEGRATION.md#man-recognition-review).
-  No unchanged rerun, parked P045 variants or additional game campaign.
+- #75's Catching/Run contract reconciliation and #80's acquired run-support
+  continuity have independent controller acceptance for the minimal five files.
+  Integration owns one exact combined verification; reuse44/53 focused checks.
+  P006/Smash costs, historical P045 TD, unfinished #80 windows/adverse SS gap
+  and the original failed #75 receipt remain. No overall coverage-quality claim.
+- #76 stays parked/frozen per Flex; no independent current-tree adoption approval.
+  #81 supplies mesh stage diagnosis and a rejected bend trial, not a ready
+  behavioral fix. Neither is included; experimental Physics remains separate.
 - New work starts from accepted develop. Existing owners check relevant
   accepted changes at clean checkpoints; [workflow](INTEGRATION.md#agent-workflow).
 
@@ -52,9 +54,10 @@ Do not use the historical sections below as a current starting-reference pin.
 Current investigations are [second-level blocking access (Run), run-support
 continuity (Catching, consulting Run), and mesh approach attribution (Flex/Do-It-All)](INTEGRATION.md#audit-priorities-and-access).
 Immediate archive consumer: **A020/A044 with A008/A032 controls**. Saved audit
-source remains8ca8dee; accepted develop remains90edc525. Measurement distributes
-existing saved cases/archive with checksum; [access status](../data/reviews/current/accepted-broad-audit-access.json).
-No panel recollection to distribute it, #69 re-review, new suite or games here.
+source remains8ca8dee; accepted develop remains90edc525. Measurement published/delivered the two data-only subsets; Integration verified
+all eight original raw case hashes and both archive checksums; [access status](../data/reviews/current/accepted-broad-audit-access.json).
+The access blocker is resolved. No panel recollection, #69 re-review or new games.
+Only the exact #75/#80 candidate receives the required combined code verification.
 
 After a meaningful accepted controller batch, coordinate [one frozen-panel
 comparison](INTEGRATION.md#frozen-panel-comparison), reusing the saved baseline

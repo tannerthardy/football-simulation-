@@ -15,7 +15,7 @@ with its behavioral trial rejected; transport/navigation/P045 variants and
 experimental Physics remain separate. Update these four shared records and
 the existing archive-access record, preserving all earlier receipts and history.
 
-## Current audit-led investigations and evidence distribution — 2026-10-15
+## Audit-led investigations and evidence distribution — updated 2026-10-15
 
 Integration owns this docs/access-only update from accepted90edc525 plus published
 queue4bca231 in `codex/audit-access-integration`. Source, tests, fixtures, settings
@@ -26,7 +26,7 @@ and prior receipts stay unchanged. #69/#78 is completed, not another review task
 | Run Game | Second-level blocking access | A018/A030 plus useful successful contrast; installation/security/release/original intercept/modifiers/achieved protection. Reconcile accepted #69 effects first. No automatic earlier release or added force. |
 | Catching, consulting Run | Run-support continuity and #75 disposition | Coverage subtechnique replacement / existing man/zone run responsibility. Preserve acquired support, PA uncertainty, alley leverage and vertical duty. Catching owns the two #75 contracts; Run supplies installation context. |
 | Flex/Do-It-All | Mesh approach attribution | Saved A020/A044 versus A008/A032. Identify producing request stage before behavior edits; coordinate coverage functions with Catching and a minimal observation-only diagnostic with Run only if needed. Broad RB-jam work is deferred. |
-| Measurement | Shared saved archive/cases and checksum | Publish existing40.6MB archive or immediate four-case subset at a shared immutable URL; no recollection. Preserve source8ca8dee, raw case hashes and original archive hash. Integration validates access; local-only paths do not complete the handoff. |
+| Measurement | Saved subset distribution completed; checkpoint comparison owner | Both immutable Flex/Run subsets delivered; Integration independently verified archive hashes and all eight original raw case hashes. No recollection. Full48 archive remains local. After accepted #75/#80 batch, coordinate one frozen-panel comparison under existing budget; four games require a separate CEO call. |
 
 These are task/coordination boundaries, not a blanket claim over each source
 file; owners name their actual functions before edits and preserve active work.
@@ -58,8 +58,9 @@ froze40be568 and completed all four phases once:1,729 TS/146 files,145 Python,
 typecheck/build pass,191.361s,44 flags/components1. [Receipt](../data/reviews/current/controller-checkpoint-integration/final-receipt.json).
 Final ref/tree checks passed; #78 adopted as90edc525 under standing routine authority.
 Entire merged tree equals publicationfed46a1; no unchanged rerun. [Actual merge receipt](../data/reviews/current/pr78-merge.json).
-#75's two back-man assertions stay held with Catching + Run; no assertion edit or
-unchanged rerun. A blocked patch holds itself; do not wait for all agents.
+#75's earlier hold is reconciled by Catching + Run in ec4a3a1; current minimal
+#75/#80 composition is independently accepted, combined verification pending.
+The original failed receipt below remains historical evidence.
 
 Earlier four-game preparation is retained below; execution now requires a CEO
 call for game context, separately from the post-batch frozen-panel comparison.
@@ -74,9 +75,9 @@ Earlier per-merge authority paragraphs below describe their dated stages.
 [Consolidated accepted-pin and Measurement/CEO handoff](https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203105618)
 is posted; contributor #69 is closed as incorporated and its branch is preserved.
 
-## Independent #75 man-recognition integration — 2026-10-15
+## Historical first #75 man-recognition integration — 2026-10-15
 
-**Held after one complete combined run.** Tested
+**Historical hold, subsequently reconciled above.** Tested
 `0f349ef0735402a79d916cff7c9ad496f9424380`:1,732 TS pass/two preserved back-man
 assertions fail;145 Python,typecheck/build pass;188.094 command seconds. Eight
 new direct contracts pass. Catching owns, consulting Run, the specific insertion/alley
