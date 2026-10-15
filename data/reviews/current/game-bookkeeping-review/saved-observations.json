@@ -1,0 +1,329 @@
+{
+  "schema": "game-bookkeeping-saved-observations-v1",
+  "evidenceCommit": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+  "recordedRuntimeCommit": "f62511a513f2187884d74ae3b94435835e43309c",
+  "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+  "inputs": [
+    {
+      "path": "data/reviews/current/experimental-game-checkpoint/experimental/spread-air/game.json.gz",
+      "sha256": "15e553e26449ff44806293f1611bffd3362cbf2e4dd80d3f1447f0264681057f"
+    },
+    {
+      "path": "data/reviews/current/spread-air-film-notes/prefix-trace.json.gz",
+      "sha256": "ea08eb684c0408fff4a83acfef9e51ec3f9639aea7224b76ae1491a051efe4bb"
+    }
+  ],
+  "simulations": 0,
+  "elapsedSeconds": 1.4936727809836157,
+  "observations": [
+    {
+      "play": 4,
+      "recordedLog": {
+        "index": 3,
+        "quarter": 1,
+        "clock": 818,
+        "offense": "H2",
+        "down": 1,
+        "distance": 10,
+        "yardline": 88.2,
+        "call": "Gun Wing \u2014 PA Shot",
+        "defense": "4-3 Under Cover 1 (Man-Free)",
+        "text": "D.Lewis pass complete to C.Freeman for -6 yds (17 air, -1 YAC) (M.Wells)",
+        "yards": -6.24,
+        "score": {
+          "home": 0,
+          "away": 0
+        },
+        "kind": "pass",
+        "stats": {
+          "tacklers": [
+            "A2-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "H2-QB1",
+          "timeToThrow": 2.25,
+          "target": "H2-WR6",
+          "airYards": 16.512731902243814,
+          "receiver": "H2-TE1",
+          "yac": -0.5919175174382758
+        },
+        "outcome": "tackle",
+        "duration": 4.15,
+        "firstDown": false,
+        "plan": {
+          "personnel": "12",
+          "formation": "gun_wing_12",
+          "qb": "gun",
+          "concept": "pa_shot",
+          "playAction": true,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "under",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        }
+      },
+      "actualCatchEvidence": {
+        "time": 2.35,
+        "receiver": "H2-TE1",
+        "slot": "Y",
+        "candidateX": 92.5539282180355,
+        "los": 98.2,
+        "achievedCatchDepth": -5.646071781964508,
+        "intendedAirYards": 16.512731902243814,
+        "source": "passive pre-possess receiverContest snapshot from previously verified prefix, not a new simulation"
+      },
+      "roundedYardsResidual": -0.0020107005972160863
+    },
+    {
+      "play": 22,
+      "recordedLog": {
+        "index": 21,
+        "quarter": 1,
+        "clock": 495,
+        "offense": "A2",
+        "down": 1,
+        "distance": 10,
+        "yardline": 35,
+        "call": "Pistol Doubles \u2014 Curl-Flat",
+        "defense": "4-3 Under Cover 1 (Man-Free) + Mike A-Gap",
+        "text": "M.Hayes SACKED for 8 yds by V.Jones \u2014 PENALTY: holding on E.Sanders, 10 yards (accepted), play nullified",
+        "yards": -10,
+        "score": {
+          "home": 3,
+          "away": 0
+        },
+        "kind": "pass",
+        "stats": {
+          "tacklers": [
+            "H2-EDGE4"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": true,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "hurriedBy": "H2-EDGE4",
+          "sackedBy": [
+            "H2-EDGE4"
+          ]
+        },
+        "outcome": "tackle",
+        "duration": 2.95,
+        "firstDown": false,
+        "plan": {
+          "personnel": "11",
+          "formation": "pistol_11",
+          "qb": "pistol",
+          "concept": "curl_flat",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "under",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": true,
+          "rushers": 5
+        },
+        "foul": {
+          "kind": "holding",
+          "team": "A2",
+          "yards": 10,
+          "accepted": true
+        },
+        "nullified": true
+      },
+      "nextRecordedState": {
+        "down": 1,
+        "distance": 24,
+        "yardline": 20.95033053578952
+      },
+      "behindLineFoulXInferredFromOldEnforcement": 40.95033053578952,
+      "candidateAcceptedAlternative": {
+        "down": 1,
+        "distance": 20,
+        "yardline": 25
+      },
+      "scope": "Focused regression uses an eight-yard sack as described, not a claim to reproduce an unrecorded exact PlayResult; the old fractional foul spot is inferred from the recorded next state.",
+      "savedForwardProgress": {
+        "time": 2.9,
+        "progressX": 37.16,
+        "los": 45,
+        "quantizationYards": 0.01,
+        "limitation": "Rounded forward-progress telemetry, not an exact stored PlayResult. Boundary check includes adjacent rounded loss values."
+      }
+    },
+    {
+      "play": 24,
+      "recordedLog": {
+        "index": 23,
+        "quarter": 1,
+        "clock": 472,
+        "offense": "H2",
+        "down": 1,
+        "distance": 10,
+        "yardline": 84.13859459835601,
+        "call": "Gun Spread \u2014 Slant-Flat",
+        "defense": "4-3 Under Cover 3 (Sky) (spot)",
+        "text": "D.Lewis pass complete to T.Woods for 11 yds (7 air, 15 YAC) (J.Bailey, N.Lambert, C.Sanders)",
+        "yards": 10.74,
+        "score": {
+          "home": 3,
+          "away": 0
+        },
+        "kind": "pass",
+        "stats": {
+          "tacklers": [
+            "A2-S2",
+            "A2-LB3",
+            "A2-LB5"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "H2-QB1",
+          "timeToThrow": 1.55,
+          "target": "H2-WR3",
+          "airYards": 6.683227872883251,
+          "receiver": "H2-RB1",
+          "yac": 15.452928311828089
+        },
+        "outcome": "tackle",
+        "duration": 4.7,
+        "firstDown": true,
+        "plan": {
+          "personnel": "10",
+          "formation": "gun_spread_10",
+          "qb": "gun",
+          "concept": "slant_flat",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "under",
+          "coverage": "cover3",
+          "called": "cover3",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        }
+      },
+      "actualCatchEvidence": {
+        "time": 1.7,
+        "receiver": "H2-RB1",
+        "slot": "RB",
+        "candidateX": 89.42161387667663,
+        "los": 94.13859459835601,
+        "achievedCatchDepth": -4.716980721679377,
+        "intendedAirYards": 6.683227872883251,
+        "source": "passive pre-possess receiverContest snapshot from previously verified prefix, not a new simulation"
+      },
+      "roundedYardsResidual": 0.00405240985128863
+    },
+    {
+      "play": 38,
+      "recordedLog": {
+        "index": 37,
+        "quarter": 1,
+        "clock": 140,
+        "offense": "H2",
+        "down": 1,
+        "distance": 10,
+        "yardline": 77.9,
+        "call": "Gun Wing \u2014 Wide Zone Weak",
+        "defense": "Wide-9 Nickel Cover 1 (Man-Free)",
+        "text": "? runs for -5 yds",
+        "yards": -5,
+        "score": {
+          "home": 10,
+          "away": 0
+        },
+        "kind": "run",
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          }
+        },
+        "outcome": "timeout",
+        "duration": 25,
+        "firstDown": false,
+        "plan": {
+          "personnel": "12",
+          "formation": "gun_wing_12",
+          "qb": "gun",
+          "concept": "wideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        }
+      },
+      "lastRecordedFrame": {
+        "t": 24.9,
+        "carrier": 0,
+        "ball": [
+          82.9,
+          29.8,
+          1.1
+        ]
+      },
+      "observedEvents": []
+    }
+  ]
+}

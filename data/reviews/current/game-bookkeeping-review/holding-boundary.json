@@ -1,0 +1,53 @@
+{
+  "schema": "holding-boundary-v1",
+  "sourceSha256": "dbb35834d10c418059816f70efdc070edca08cb66eb23ffe6e39c675c300f0f2",
+  "simulations": 0,
+  "input": "saved-observations.json / P022 savedForwardProgress",
+  "rows": [
+    {
+      "modeledSackLoss": 7.85,
+      "decline": {
+        "down": 2,
+        "distance": 18,
+        "yardline": 27.2
+      },
+      "accept": {
+        "down": 1,
+        "distance": 20,
+        "yardline": 25
+      },
+      "acceptedByExistingHeuristic": true
+    },
+    {
+      "modeledSackLoss": 7.84,
+      "decline": {
+        "down": 2,
+        "distance": 18,
+        "yardline": 27.2
+      },
+      "accept": {
+        "down": 1,
+        "distance": 20,
+        "yardline": 25
+      },
+      "acceptedByExistingHeuristic": true
+    },
+    {
+      "modeledSackLoss": 7.83,
+      "decline": {
+        "down": 2,
+        "distance": 18,
+        "yardline": 27.2
+      },
+      "accept": {
+        "down": 1,
+        "distance": 20,
+        "yardline": 25
+      },
+      "acceptedByExistingHeuristic": true
+    }
+  ],
+  "maximumLossFromSavedProgress": 7.845000000000006,
+  "interpretation": "Correct enforcement, unchanged coarse acceptance policy. Saved progress bounds the native loss below eight yards; any improvement from the ball spot only strengthens acceptance. The rows are boundary evaluations, not an exact native replay or a football value model. An exact eight-yard scripted control declines.",
+  "elapsedSeconds": 0.0038782870000000002
+}

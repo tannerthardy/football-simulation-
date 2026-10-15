@@ -1,0 +1,16 @@
+Profile candidate: run-game-2026-10-13, commit d3ea55c88ef4ea9d84c994abf1677fe507fb6540, source dbb35834d10c418059816f70efdc070edca08cb66eb23ffe6e39c675c300f0f2
+Running node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/game-rules.test.ts test/qb-rusher-recording.test.ts test/replay-export.test.ts
+
+ RUN  v3.2.4 /workspace/football-game-bookkeeping
+
+ ✓ |core| test/qb-rusher-recording.test.ts (5 tests) 1216ms
+   ✓ recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness  782ms
+ ✓ |core| test/game-rules.test.ts (30 tests) 107ms
+ ✓ |core| test/replay-export.test.ts (21 tests) 9ms
+
+ Test Files  3 passed (3)
+      Tests  56 passed (56)
+   Start at  17:40:34
+   Duration  2.89s (transform 730ms, setup 0ms, collect 1.03s, tests 1.33s, environment 0ms, prepare 161ms)
+
+Validation receipt: out/game-bookkeeping/focused.json; exit 0

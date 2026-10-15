@@ -1,0 +1,7 @@
+Profile candidate: run-game-2026-10-13, commit d3ea55c88ef4ea9d84c994abf1677fe507fb6540, source dbb35834d10c418059816f70efdc070edca08cb66eb23ffe6e39c675c300f0f2
+Running npm run typecheck
+
+> gridiron-engine@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+Validation receipt: out/game-bookkeeping/typecheck.json; exit 0
