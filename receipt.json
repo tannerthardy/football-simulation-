@@ -1,0 +1,34 @@
+{
+  "kind": "named native evidence artifact, not a simulator source/candidate tree",
+  "sourceRuntime": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "sourceEvidenceCommit": "c98f10a898bece24ed8e5d67c98c5abdb09c5657",
+  "fullArchive": {
+    "path": "/workspace/datasets/simulator-audits/accepted-8ca8dee-48snap-v1.tar.gz",
+    "bytes": 40559081,
+    "sha256": "72a62b95145cd64bb3bf06d60a62adbb7735cf872d777ff35faa5883e138e397",
+    "nativeCasesRehashed": 48
+  },
+  "subset": {
+    "path": "/workspace/datasets/simulator-audits/accepted-8ca8dee-flex-A008-A020-A032-A044.tar.gz",
+    "bytes": 2543148,
+    "sha256": "6082578ebf476e4975f51585c958eea31894a0cfc2aa03fe1ac271e31804a5cc",
+    "caseIds": [
+      "A008",
+      "A020",
+      "A032",
+      "A044"
+    ],
+    "members": [
+      "accepted-broad-audit/cases/A008.json",
+      "accepted-broad-audit/cases/A020.json",
+      "accepted-broad-audit/cases/A032.json",
+      "accepted-broad-audit/cases/A044.json",
+      "accepted-broad-audit/manifest.json",
+      "accepted-broad-audit/plan-receipt.json",
+      "accepted-broad-audit/run-receipt.json",
+      "accepted-broad-audit/summary.json"
+    ]
+  },
+  "retention": "Preserve this immutable commit/ref with the audit evidence; no automatic deletion. Never merge this data-only tree into develop.",
+  "rawNFLOrAMFData": false
+}
