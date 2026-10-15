@@ -1,0 +1,463 @@
+{
+  "kind": "run tempo / climb investigation costs; actual gameplay seconds are separate",
+  "nativeCaptures": [
+    {
+      "label": "combined-wz",
+      "role": "trial",
+      "revision": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+      "runtime": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "rawSha256": "f92b25eb16d7b4d00b8a3aa62c2eb1b1fa62fd600eff6589516decce8ee22d0a",
+      "elapsedSeconds": 17.434627748000004,
+      "nativeSteps": 240,
+      "originalCapturePlays": 4
+    },
+    {
+      "label": "combined-zone",
+      "role": "trial",
+      "revision": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+      "runtime": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "rawSha256": "1c137383051bafdc0dd111c3ae18c5e026b74f1a8dda1d87f4b19421a8594bd2",
+      "elapsedSeconds": 7.695867218,
+      "nativeSteps": 239,
+      "originalCapturePlays": 4
+    },
+    {
+      "label": "mesh",
+      "role": "trial",
+      "revision": "e12e4e15748beb68c9568bc215ba9804a27898a5",
+      "runtime": "325a7156e55531c25e506ce1f8d6aaef634666b84e4d3306e924f9eb51a97a3f",
+      "rawSha256": "504db97bed09927ae1fd0058c2ce9d086e10441d1f0679cb121a3dfd503b9991",
+      "elapsedSeconds": 5.905372023,
+      "nativeSteps": 177,
+      "originalCapturePlays": 3
+    }
+  ],
+  "newCapturedNativeOpenings": 11,
+  "newCapturedOuterWorldSteps": 656,
+  "nativeCollectorSeconds": 31.035866989000006,
+  "fullGames": 0,
+  "reusedReferenceCases": 8,
+  "note": "Collectors instrument all22 bodies, commands, cues, physical reports and hashes. Their wall time includes diagnostic overhead and is not an engine-throughput benchmark. Launcher costs include import/serialization/gzip and are separate from collector elapsed time. Framework fixtures have their own recorded costs; native count describes the captured all22 continuation batches.",
+  "explicitStandaloneWorldSteps": {
+    "initialTwoBodyMeshProbe": 127,
+    "finalOwnBodyClearanceProbe": 72
+  },
+  "finalChecks": {
+    "focusedChecks": 21,
+    "receipt": "receipts/checks-final.json",
+    "typecheck": "receipts/typecheck-final.json",
+    "commit": "23ee531acecd86cf38cdd15d4fb5adfd7973d400",
+    "engineSource": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08"
+  },
+  "rejectedCombinedChecks": 111,
+  "receipts": [
+    {
+      "file": "receipts/checks-final.json",
+      "commit": "23ee531acecd86cf38cdd15d4fb5adfd7973d400",
+      "source": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/run-tempo-collection.test.ts",
+            "test/wide-zone-mesh.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 5.764524727
+        }
+      ]
+    },
+    {
+      "file": "receipts/clearance-invalid-import.json",
+      "commit": "3a73ccaf27c9153228b3f77f7041bc7b73104467",
+      "source": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/run-tempo-witness.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.178485675
+        }
+      ]
+    },
+    {
+      "file": "receipts/clearance.json",
+      "commit": "3a73ccaf27c9153228b3f77f7041bc7b73104467",
+      "source": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/run-tempo-witness.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.20044451200000002
+        }
+      ]
+    },
+    {
+      "file": "receipts/mechanism-first.json",
+      "commit": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "source": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/run-tempo-collection.test.ts",
+            "test/run-block-fit.test.ts",
+            "test/wide-zone-mesh.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 2.9216469120000004
+        }
+      ]
+    },
+    {
+      "file": "receipts/mechanism.json",
+      "commit": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "source": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "test/run-tempo-collection.test.ts",
+            "test/run-block-fit.test.ts",
+            "test/wide-zone-mesh.test.ts",
+            "test/run-base.test.ts",
+            "test/combo-attention.test.ts",
+            "test/combo-transfer.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 6.243855985
+        }
+      ]
+    },
+    {
+      "file": "receipts/mesh-experiment-receipt.json",
+      "commit": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "source": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/run-tempo-mesh.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.46405925499999995
+        }
+      ]
+    },
+    {
+      "file": "receipts/native-mesh-only.json",
+      "commit": "e12e4e15748beb68c9568bc215ba9804a27898a5",
+      "source": "325a7156e55531c25e506ce1f8d6aaef634666b84e4d3306e924f9eb51a97a3f",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/run-scheme-transfer.ts",
+            "--manifest",
+            "config/run-tempo-collection.json",
+            "--arm",
+            "mesh-only",
+            "--expected-source",
+            "325a7156e55531c25e506ce1f8d6aaef634666b84e4d3306e924f9eb51a97a3f",
+            "--cases",
+            "ace12-iz_strong-over-s3,ace12-iz_weak-over-s3,wing12-split_zone-over-s3",
+            "--out",
+            "out/tempo-climb/mesh-only.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 8.163319764
+        }
+      ]
+    },
+    {
+      "file": "receipts/native-wz.json",
+      "commit": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+      "source": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/run-scheme-transfer.ts",
+            "--manifest",
+            "config/run-tempo-collection.json",
+            "--arm",
+            "tempo-collection",
+            "--expected-source",
+            "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+            "--cases",
+            "uc12-wz-s3,uc12-wz-s3-mirror,uc12-wz-weak-s3,uc12-wz-s3-tite-fresh",
+            "--out",
+            "out/tempo-climb/candidate-wz.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 22.744082872000003
+        }
+      ]
+    },
+    {
+      "file": "receipts/native-zone-gap.json",
+      "commit": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+      "source": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/run-scheme-transfer.ts",
+            "--manifest",
+            "config/run-tempo-collection.json",
+            "--arm",
+            "tempo-collection",
+            "--expected-source",
+            "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+            "--cases",
+            "ace12-iz_strong-over-s3,ace12-iz_weak-over-s3,wing12-split_zone-over-s3,ace12-counter-over-s3",
+            "--out",
+            "out/tempo-climb/candidate-zone-gap.json.gz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.590257608
+        }
+      ]
+    },
+    {
+      "file": "receipts/typecheck-final.json",
+      "commit": "23ee531acecd86cf38cdd15d4fb5adfd7973d400",
+      "source": "66e59745bc3db3d20797951f1ee8bb4b75df4bb019eaef5a2eb24e32873e3c08",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 12.418403210000001
+        }
+      ]
+    },
+    {
+      "file": "receipts/typecheck-first.json",
+      "commit": "42edf82e38099a95768ad619cb4071a14ff0fd4c",
+      "source": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "exitCode": 1,
+      "inputsUnchanged": false,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 14.177780219
+        }
+      ]
+    },
+    {
+      "file": "receipts/typecheck.json",
+      "commit": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+      "source": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 14.694044249000001
+        }
+      ]
+    }
+  ],
+  "reportSeconds": 14.149212855998485,
+  "encoding": {
+    "protocol": "run-transfer-bundle-manifest-v1",
+    "captures": [
+      {
+        "label": "rejected-combined-wz",
+        "path": "/workspace/run-tempo-climb/out/tempo-climb/candidate-wz.json.gz",
+        "rawSha256": "f92b25eb16d7b4d00b8a3aa62c2eb1b1fa62fd600eff6589516decce8ee22d0a",
+        "revision": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+        "runtime": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+        "originalGzipBytes": 13951035,
+        "cases": [
+          {
+            "id": "uc12-wz-s3",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          },
+          {
+            "id": "uc12-wz-s3-mirror",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          },
+          {
+            "id": "uc12-wz-weak-s3",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          },
+          {
+            "id": "uc12-wz-s3-tite-fresh",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          }
+        ]
+      },
+      {
+        "label": "rejected-combined-zone",
+        "path": "/workspace/run-tempo-climb/out/tempo-climb/candidate-zone-gap.json.gz",
+        "rawSha256": "1c137383051bafdc0dd111c3ae18c5e026b74f1a8dda1d87f4b19421a8594bd2",
+        "revision": "d65ee5cde89ac3d690271610a0328a8be6dd7349",
+        "runtime": "67b64f2e0f15bed7816547345df952ef44231bff9cb06681c4260b9de32f5feb",
+        "originalGzipBytes": 12783991,
+        "cases": [
+          {
+            "id": "ace12-iz_strong-over-s3",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          },
+          {
+            "id": "ace12-iz_weak-over-s3",
+            "frames": 59,
+            "stateHashes": 59,
+            "informationHashes": 59
+          },
+          {
+            "id": "wing12-split_zone-over-s3",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          },
+          {
+            "id": "ace12-counter-over-s3",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          }
+        ]
+      },
+      {
+        "label": "rejected-mesh-only",
+        "path": "/workspace/run-tempo-climb/out/tempo-climb/mesh-only.json.gz",
+        "rawSha256": "504db97bed09927ae1fd0058c2ce9d086e10441d1f0679cb121a3dfd503b9991",
+        "revision": "e12e4e15748beb68c9568bc215ba9804a27898a5",
+        "runtime": "325a7156e55531c25e506ce1f8d6aaef634666b84e4d3306e924f9eb51a97a3f",
+        "originalGzipBytes": 9717894,
+        "cases": [
+          {
+            "id": "ace12-iz_strong-over-s3",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          },
+          {
+            "id": "ace12-iz_weak-over-s3",
+            "frames": 57,
+            "stateHashes": 57,
+            "informationHashes": 57
+          },
+          {
+            "id": "wing12-split_zone-over-s3",
+            "frames": 60,
+            "stateHashes": 60,
+            "informationHashes": 60
+          }
+        ]
+      }
+    ],
+    "bundle": "docs/reviews/run-tempo-climb/evidence.jsonrefs.gz",
+    "bytes": 9094443,
+    "sha256": "f9723d807a88c2fd9f9c286c6a5569dd01b8eece442e43c73f4899bdc1e5eadb",
+    "retainedJsonSha256": "26ad7e1a96c0b3567ccd895759707d6e8db973ca27fecb8a1f10d4c69d2f201a",
+    "roundTripExact": true,
+    "containersVisited": 2514920,
+    "uniqueContainers": 454201,
+    "omitted": [
+      "panel[].writes",
+      "panel[].methods",
+      "panel[].phases",
+      "panel[].frames[].observerState",
+      "panel[].frames[].rngBefore"
+    ],
+    "scriptSha256": "ffb6161fb7bb8ac5064577801e5c41b7173fdb75b3b1107ac3dcc2f1c784e63a",
+    "codecSha256": "837a6de1698a49bc93a3d29ab30edddc8a753f319dcc26e050ab53e8d2997708",
+    "newWorldSteps": 0,
+    "elapsedSeconds": 43.36102080800265
+  },
+  "diskDecodeVerification": {
+    "input": "/workspace/run-tempo-climb/docs/reviews/run-tempo-climb/evidence.jsonrefs.gz",
+    "output": "/workspace/run-tempo-climb/out/tempo-climb/decoded.json",
+    "retainedJsonSha256": "26ad7e1a96c0b3567ccd895759707d6e8db973ca27fecb8a1f10d4c69d2f201a",
+    "digestVerified": true,
+    "newWorldSteps": 0,
+    "elapsedSeconds": 11.870810782002081
+  },
+  "replayRenders": [
+    {
+      "seconds": 20.372639631998027,
+      "newWorldSteps": 0,
+      "frames": 61,
+      "frameDurationMs": 50
+    },
+    {
+      "seconds": 22.125283035002212,
+      "newWorldSteps": 0,
+      "frames": 61,
+      "frameDurationMs": 50
+    }
+  ]
+}

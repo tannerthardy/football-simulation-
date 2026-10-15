@@ -69,8 +69,8 @@ For example, strong inside crosses at2.80 on that grid; weak inside's crossing
 is not admitted before its contact cutoff. We do not compare the native table
 as if its50ms resolution and contact conditioning matched the NFL table.
 
-The useful distinction is within the sim: under-center inside zone spends
-.25–.30s longer reaching its mesh than typical handoffs in the reference, and
+The useful distinction is within the sim: under-center inside zone reaches
+its mesh.30s later than the reference median, and
 does so after braking the back down. Existing outside/wide-zone timings are
 closer to the reference; contact, traffic and individual misses explain much
 of their remaining delay. A global speed/acceleration boost is not supported.
@@ -205,7 +205,9 @@ Initial isolated mesh work adds127 two-body World steps; the final clearance
 probe adds72 own-body World steps. Framework fixtures have separate check cost.
 The rejected combined engine passes111 focused checks/typecheck; final restored
 runtime checks reuse PR52's compatible engine receipt and verify the retained
-diagnostic/mesh fixtures separately. Full code pins, flags and launcher times
+diagnostic/mesh fixtures separately: **21 focused checks and typecheck pass**
+at`23ee531acecd86cf38cdd15d4fb5adfd7973d400`, with unchanged inputs and engine66e59745.
+Full code pins, flags and launcher times
 are in [receipts](receipts/) and [runtime](runtime.json). One early typecheck
 process passed but its receipt was invalidated when HEAD changed during the
 check; the next frozen receipt passes. The initial near/far fixture was inside
