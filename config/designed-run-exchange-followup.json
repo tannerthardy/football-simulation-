@@ -1,0 +1,22 @@
+{
+  "protocol": "designed-run-exchange-followup-v1",
+  "sourceCommit": "404d3366d92449c30aedcba1957812fe5ea8b9aa",
+  "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+  "originalManifest": "data/reviews/current/experimental-game-inputs.json",
+  "originalManifestSha256": "c1c7cef835d143da40c62e6572e6e1d024dff281058a98215ecb78c93e6b5870",
+  "referenceRoot": "data/reviews/current/experimental-game-checkpoint",
+  "maxGameSeconds": 240,
+  "games": [
+    {
+      "id": "zone-reference",
+      "plays": [
+        44,
+        54
+      ]
+    }
+  ],
+  "selection": "Added after the original eight-witness audit found nine unverified-carrier runs. One exact zone-reference replay; observe first capped and first naturally tackled failed exchange. Establish first passed mesh landmark, opening physical reach, QB owned cue and executable request. Existing successful Ace18 and original raw game supply opposing controls; no policy/input/body edits.",
+  "newGames": 1,
+  "acceptedParentGamesReused": 4,
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1"
+}
