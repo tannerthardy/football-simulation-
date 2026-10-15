@@ -29,9 +29,9 @@ if(process.argv.includes('--native')){
   // Reuse one ordinary success, the retained adverse contact, and the saved
   // newer escape. No new cohort, game campaign or outcome target.
   const {rep}=await import('../tackle/panel.js'),{recoverySpanInterval}=await import('./grip-recovery-span.js'),
-    priorPath='out/momentum-turn-choice/football-final.json',prior=JSON.parse(readFileSync(priorPath,'utf8')),
-    ids=['patch-0-3-0-3001-1','patch-45-8-0-4001-1','patch-45-8-0-6001-1'],rows=[];
-  for(const row of prior.rows.filter((r:any)=>ids.includes(r.input.id))){
+    priorPath='data/reviews/current/turn-planner-cost.json',prior=JSON.parse(readFileSync(priorPath,'utf8')).nativeReference,
+    referenceHash=sha(JSON.stringify(prior)),rows=[];
+  for(const row of prior.rows){
     const {input,enabled}=row,result=rep(input.cell,input.side,input.seed,{handContact:'patch',substeps:96,configureWorld:world=>{
       const w:any=world;w.materialTransport='owned';w.correctiveGrip=recoverySpanInterval;if(enabled)w.turnChoice='arrival-time';
     }});
@@ -39,8 +39,9 @@ if(process.argv.includes('--native')){
   }
   assert.equal(rows.length,6);assert.equal(sourceVersion(),source);
   assert.equal(execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),commit);
+  assert.equal(sha(JSON.stringify(JSON.parse(readFileSync(priorPath,'utf8')).nativeReference)),referenceHash);
   const result={commit,source,pin,node:process.version,rows,elapsedSeconds:(performance.now()-started)/1000,
-    prior:{path:priorPath,sha256:sha(readFileSync(priorPath))},collectorSha256:sha(readFileSync('scripts/diag/physics/turn-planner-cost.ts')),
+    prior:{path:priorPath,subtree:'nativeReference',sha256:referenceHash},collectorSha256:sha(readFileSync('scripts/diag/physics/turn-planner-cost.ts')),
     settings:{handContact:'patch',substeps:96,materialTransport:'owned',correctiveGrip:'PR55 only; PR56 uncombined',turnChoice:'arrival-time only in enabled arms'}};
   writeFileSync(`${root}/native.json`,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({commit,rows:rows.length,exactMatches:true,elapsedSeconds:result.elapsedSeconds}));process.exit(0);
 }

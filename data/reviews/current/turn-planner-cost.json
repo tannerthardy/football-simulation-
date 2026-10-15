@@ -1,0 +1,324 @@
+{
+  "nativeReference": {
+    "revision": "b4bc3a1c3787d9c9d42a58ad4b29af662b9ae54a",
+    "source": "7101eecf0adf491a529f279560206111960fa409a90a81815ee87c3a2ad6b8a3",
+    "savedReceipt": {
+      "path": "out/momentum-turn-choice/football-final.json",
+      "sha256": "a3e2813e1186591927f46e11ed4f1ef89d5df20d0449c66f7588c75c423cf1c1"
+    },
+    "rows": [
+      {
+        "input": {
+          "name": "front patch",
+          "cell": {
+            "angle": 0,
+            "speed": 3,
+            "cut": false,
+            "difficulty": "ordinary"
+          },
+          "seed": 3001,
+          "mode": "patch",
+          "side": 1,
+          "id": "patch-0-3-0-3001-1"
+        },
+        "enabled": false,
+        "result": {
+          "angle": 0,
+          "speed": 3,
+          "cut": false,
+          "difficulty": "ordinary",
+          "side": 1,
+          "seed": 3001,
+          "ending": "tackled",
+          "endWhy": "down",
+          "attempts": [
+            {
+              "t": 2.7,
+              "kind": "grip",
+              "origin": "form",
+              "capacity": 2267.004730607681,
+              "legs": 0.2705178936866569,
+              "peakForce": 2179.395563679748,
+              "heldFor": 0.8500000000000002,
+              "broke": false,
+              "meanForce": 902.7040676742957
+            }
+          ],
+          "afterContact": 0.4490624833227841,
+          "contactToEnd": 0.8500000000000001,
+          "contactImpulse": 1277.0215484760395,
+          "peakClosing": 5.111145693739703,
+          "tacklerDown": false,
+          "firstGrip": {
+            "t": 2.7,
+            "x": 52.09999999999998
+          },
+          "advanceAfterGrip": 0.4490624833227841,
+          "finish": "physical fall",
+          "carrierState": "down"
+        }
+      },
+      {
+        "input": {
+          "name": "front patch",
+          "cell": {
+            "angle": 0,
+            "speed": 3,
+            "cut": false,
+            "difficulty": "ordinary"
+          },
+          "seed": 3001,
+          "mode": "patch",
+          "side": 1,
+          "id": "patch-0-3-0-3001-1"
+        },
+        "enabled": true,
+        "result": {
+          "angle": 0,
+          "speed": 3,
+          "cut": false,
+          "difficulty": "ordinary",
+          "side": 1,
+          "seed": 3001,
+          "ending": "tackled",
+          "endWhy": "down",
+          "attempts": [
+            {
+              "t": 2.7,
+              "kind": "grip",
+              "origin": "form",
+              "capacity": 2267.004730607681,
+              "legs": 0.2705178936866569,
+              "peakForce": 2179.395563679748,
+              "heldFor": 0.8500000000000002,
+              "broke": false,
+              "meanForce": 902.7040676742957
+            }
+          ],
+          "afterContact": 0.4490624833227841,
+          "contactToEnd": 0.8500000000000001,
+          "contactImpulse": 1277.0215484760395,
+          "peakClosing": 5.111145693739703,
+          "tacklerDown": false,
+          "firstGrip": {
+            "t": 2.7,
+            "x": 52.09999999999998
+          },
+          "advanceAfterGrip": 0.4490624833227841,
+          "finish": "physical fall",
+          "carrierState": "down"
+        }
+      },
+      {
+        "input": {
+          "name": "fresh angled",
+          "cell": {
+            "angle": 45,
+            "speed": 8,
+            "cut": false,
+            "difficulty": "difficult"
+          },
+          "seed": 4001,
+          "mode": "patch",
+          "side": 1,
+          "id": "patch-45-8-0-4001-1"
+        },
+        "enabled": false,
+        "result": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult",
+          "side": 1,
+          "seed": 4001,
+          "ending": "tackled",
+          "endWhy": "down",
+          "attempts": [
+            {
+              "t": 2.65,
+              "kind": "grip",
+              "origin": "reach",
+              "capacity": 1388.9671732395248,
+              "legs": 0.12882357439678976,
+              "peakForce": 1455.3171693676147,
+              "heldFor": 2.8999999999999977,
+              "broke": false,
+              "meanForce": 447.96081935547386
+            }
+          ],
+          "afterContact": 14.405070747703945,
+          "contactToEnd": 2.9,
+          "contactImpulse": 59.595704552338745,
+          "peakClosing": 1.069177994076341,
+          "tacklerDown": false,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "advanceAfterGrip": 14.405070747703945,
+          "finish": "physical fall",
+          "carrierState": "down"
+        }
+      },
+      {
+        "input": {
+          "name": "fresh angled",
+          "cell": {
+            "angle": 45,
+            "speed": 8,
+            "cut": false,
+            "difficulty": "difficult"
+          },
+          "seed": 4001,
+          "mode": "patch",
+          "side": 1,
+          "id": "patch-45-8-0-4001-1"
+        },
+        "enabled": true,
+        "result": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult",
+          "side": 1,
+          "seed": 4001,
+          "ending": "tackled",
+          "endWhy": "down",
+          "attempts": [
+            {
+              "t": 2.65,
+              "kind": "grip",
+              "origin": "reach",
+              "capacity": 1388.9671732395248,
+              "legs": 0.12882357439678976,
+              "peakForce": 1455.3171693676147,
+              "heldFor": 2.9999999999999973,
+              "broke": false,
+              "meanForce": 451.51673044618667
+            }
+          ],
+          "afterContact": 14.94880273021856,
+          "contactToEnd": 2.9999999999999996,
+          "contactImpulse": 60.259219452140705,
+          "peakClosing": 1.1150913642526077,
+          "tacklerDown": false,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "advanceAfterGrip": 14.94880273021856,
+          "finish": "physical fall",
+          "carrierState": "down"
+        }
+      },
+      {
+        "input": {
+          "id": "patch-45-8-0-6001-1",
+          "name": "declared fresh angle",
+          "cell": {
+            "angle": 45,
+            "speed": 8,
+            "cut": false,
+            "difficulty": "difficult"
+          },
+          "side": 1,
+          "seed": 6001
+        },
+        "enabled": false,
+        "result": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult",
+          "side": 1,
+          "seed": 6001,
+          "ending": "escaped",
+          "endWhy": "tackler on the ground",
+          "attempts": [
+            {
+              "t": 2.65,
+              "kind": "grip",
+              "origin": "reach",
+              "capacity": 938.2012834360396,
+              "legs": 0.2735491351014827,
+              "peakForce": 976.446329352798,
+              "heldFor": 0.35,
+              "broke": true,
+              "meanForce": 677.1549520600996
+            },
+            {
+              "t": 3.3,
+              "kind": "rolled dive miss"
+            }
+          ],
+          "afterContact": 10.278737531835247,
+          "contactToEnd": 1.4,
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "tacklerDown": true,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "advanceAfterGrip": 10.278737531835247,
+          "finish": "escaped",
+          "carrierState": "up"
+        }
+      },
+      {
+        "input": {
+          "id": "patch-45-8-0-6001-1",
+          "name": "declared fresh angle",
+          "cell": {
+            "angle": 45,
+            "speed": 8,
+            "cut": false,
+            "difficulty": "difficult"
+          },
+          "side": 1,
+          "seed": 6001
+        },
+        "enabled": true,
+        "result": {
+          "angle": 45,
+          "speed": 8,
+          "cut": false,
+          "difficulty": "difficult",
+          "side": 1,
+          "seed": 6001,
+          "ending": "escaped",
+          "endWhy": "tackler on the ground",
+          "attempts": [
+            {
+              "t": 2.65,
+              "kind": "grip",
+              "origin": "reach",
+              "capacity": 938.2012834360396,
+              "legs": 0.2735491351014827,
+              "peakForce": 976.446329352798,
+              "heldFor": 0.35,
+              "broke": true,
+              "meanForce": 677.1549520600996
+            },
+            {
+              "t": 3.3,
+              "kind": "rolled dive miss"
+            }
+          ],
+          "afterContact": 10.278737531835247,
+          "contactToEnd": 1.4,
+          "contactImpulse": 0,
+          "peakClosing": 0,
+          "tacklerDown": true,
+          "firstGrip": {
+            "t": 2.65,
+            "x": 55.2000000000003
+          },
+          "advanceAfterGrip": 10.278737531835247,
+          "finish": "escaped",
+          "carrierState": "up"
+        }
+      }
+    ]
+  }
+}
