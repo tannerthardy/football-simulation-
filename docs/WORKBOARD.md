@@ -14,13 +14,15 @@ plus queue metadata67e9b9b. Extract #69's reviewed `blocking.ts` RunBlocker hunk
 `collection-approach.ts` and two tests only. Preserve accepted PassProtector and
 carrier risk, no #75/runtime ancestry, transport/navigation or experimental physics.
 Do-It-All's exact cdd55b9 re-review is accepted; reuse focused receipts. Integration
-will verify this exact ready candidate once and publish its actual adopted pin.
+froze40be568 and completed all four phases once:1,729 TS/146 files,145 Python,
+typecheck/build pass,191.361s,44 flags/components1. [Receipt](../data/reviews/current/controller-checkpoint-integration/final-receipt.json).
+Final ref/tree checks and routine adoption through #78 follow; no unchanged rerun.
 #75's two back-man assertions stay held with Catching + Run; no assertion edit or
 unchanged rerun. A blocked patch holds itself; do not wait for all agents.
 
 Measurement owns one subsequent game collector/film/results packet; Integration
 freezes the accepted source/settings and coordinates the question/budget with CEO.
-Initial ceiling four full games/600 launcher seconds, existing declared inputs,
+Ceiling four full games/240 launcher seconds,60s per game, existing declared inputs,
 no duplicate collection. [Checkpoint conditions](INTEGRATION.md#accepted-controller-game-checkpoint).
 Physical laws/capabilities/defaults, experimental activation, unresolved material
 correctness risks, historical baselines/defaults and destructive cleanup escalate.

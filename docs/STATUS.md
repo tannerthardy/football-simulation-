@@ -35,7 +35,9 @@ Do not use the historical sections below as a current starting-reference pin.
   Observation transport stays deferred until a reviewed consumer needs it.
   [Exact scope/receipts](INTEGRATION.md#run-entry-information-review). Navigation stays parked;
   #69's corrected production hook now has Do-It-All's focused acceptance;
-  Integration is preparing its four-file extraction and one exact verification.
+  Its isolated four-file #78 candidate40be568 passes1,729 TS/145 Python,
+  typecheck/build in191.361s,44 flags/components1. Routine adoption follows
+  final ref/tree checks under standing authority, without an unchanged rerun.
   Physics remains separate.
 - #75's isolated information correction is held at a neighboring run-fit contract.
   The eight new recognition checks pass; one combined run has1,732 TS pass/two
@@ -54,7 +56,7 @@ reconcile only affected accepted contracts at clean checkpoints; see the
 No new games, roster screen or shared-suite rerun is requested by this update.
 The next [accepted-controller game checkpoint](INTEGRATION.md#accepted-controller-game-checkpoint)
 will be coordinated once with Measurement/CEO after disposition of #75 and the
-next ready batch; initial cap four games/600 launcher seconds, no automatic rerun.
+next ready batch; cap four games/240 launcher seconds,60s per game, no automatic rerun.
 Documentation-only policy edits use link/ref checks; the ready runtime candidate
 alone triggers its required verification. Believable football remains the goal;
 information correctness and overall football quality are separate claims.

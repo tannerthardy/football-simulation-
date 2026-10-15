@@ -6,6 +6,9 @@ accepted-reference and readiness record; [STATUS](STATUS.md) is a signpost and
 [WORKBOARD](WORKBOARD.md) records edit boundaries. The [detailed issue register](ISSUES.md)
 retains individual mechanisms, adverse evidence and return conditions. Earlier
 stages remain below.
+The [published queue branch](https://github.com/tannerthardy/football-simulation-/blob/codex/integration-queue/docs/INTEGRATION.md)
+receives the actual post-merge pin and owner handoff; an older checkout is a dated
+snapshot, not evidence that a later accepted merge should be ignored.
 
 <a id="standing-integration-workflow"></a>
 ## Standing integration workflow — adopted 2026-10-15
@@ -91,7 +94,7 @@ silently become approval; investigate a disagreement with this ledger.
 | **Accepted and merged #74** | Develop `8ca8deebe4afa91c3021bdd119bed8976cf00e47`; reviewed `a8dabeca3030a9760aafb21bd4a4af6e9af303e3`, tested `86a8816bb685a521f60400c6a3fe12e12d02e32f`; [merge receipt](../data/reviews/current/pr74-merge.json) | Explicit user authority exercised after source/tests/settings, artifact, review and conflict checks. Entire merged tree equals reviewed publication. Reused1,726 TS/145 Python/typecheck/build pass; no reruns. Only opponent-risk calculation changes; transport/navigation/#69/physics excluded. Preserve adverse collision and broader legacy carrier-information limits. No additional merge authority follows. |
 | **#75 held at a run-fit contract boundary** | Author `1f2d949409aad9615da2b52df8fddd174e04b2aa`; isolated tested `0f349ef0735402a79d916cff7c9ad496f9424380` on accepted8ca8dee; [review and failed combined receipt](https://github.com/tannerthardy/football-simulation-/blob/149741c3b1a35f5ff966d5d453e45d3d3f36142f/data/reviews/current/man-recognition-integration/review-receipt.json) | Integration supports technique continuity before throw recognition, separately from coverage quality. One combined run:1,732 TS pass/two existing back-man assertions fail;145 Python,typecheck/build pass. Catching + Run Game must adjudicate continued acquired insertion/alley support before recognition versus ball ownership after recognition. Existing assertions remain unchanged. No merge recommendation or unchanged rerun; parked P045 variants/#69/physics excluded. |
 | **Observation transport approved; integration deferred** | Original60223a8/80c9fa4; unchanged owner core6828467; [separate portable core/PlaySim/test patch](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/observation-transport-only.patch) | Independent of opponent risk. No production query consumer exists; avoid adding per-tick sensing solely for this fix. Original four focused/typecheck receipts and owner approval6201016808 reused. No correctness rejection or new approval wait. Integrate with a reviewed consumer when needed; clocks, stale unknown semantics, catch readiness and spacing contracts remain. |
-| **#69 independently accepted; isolated verification next** | Corrected controller/test `cdd55b955421744ae6ba688de5f73ab87d13b8ab`, evidence/head `084122c16264962801fab963bcc35023d3104a64`; original3b4ea69/bb430b1 retained | [Do-It-All's focused re-review](https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6202748101) explicitly clears the private-engagement blocker. Reuse64 focused passes/typecheck and exact saved controls. Integration extracts only the four-file controller/test patch onto accepted8ca8dee, preserving #72/#74. Runner-arrival benefit and complete motion guarantees remain unproved. No #75, #66, navigation or unused transport dependency. |
+| **#69 verified; routine adoption through #78** | Corrected controller/test `cdd55b955421744ae6ba688de5f73ab87d13b8ab`, evidence/head `084122c16264962801fab963bcc35023d3104a64`; tested extraction `40be568d9fa19c8361384c677e3ab87ba1321255`; [final receipt](../data/reviews/current/controller-checkpoint-integration/final-receipt.json) | [Do-It-All's focused re-review](https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6202748101) clears the private-engagement blocker. Exact four-file candidate on8ca8dee passes1,729 TS/146 files,145 Python,typecheck/build in191.361s,44 flags/components1. Standing authority permits routine adoption after final ref/tree checks; no new suite. Runner-arrival/complete motion guarantees remain unproved. #75, #66, navigation and unused transport excluded. |
 | **Owner disposition requested; remain open** | #4, #41, #51, #55, #56 | Handover owner, Awareness and Primary Physics must clarify live objective versus parked research. Requests are linked in the cleanup receipt. No need to finish experiments or run tests to answer. Legacy #1/#2 stay open for their separate owner/reference decisions. |
 | **Closed research / preserved experimental branches** | [#54](https://github.com/tannerthardy/football-simulation-/pull/54) `4ae667e29b3ce085f43c5cb911b294349cda2b8f`; earlier zone/Duo `6122fb03c7104c0f9d762591d737cf2cf6a49067`; [#62](https://github.com/tannerthardy/football-simulation-/pull/62) `1f071b9568f3fcc790aff71ddf5ea032cca5cf16` | PR #54/#62 are closed as completed/parked records; every branch/film/receipt remains. #62's historical patch host is parked; primary Physics owns any independently reviewable current-develop contact-law extraction. No hands/grip/helper/turn package or experimental setting is enabled by this queue. |
 
@@ -101,8 +104,10 @@ Latest decision: #74 is accepted and merged; use the full8ca8dee pin above.
 conflicts; Catching and Run Game own the narrow adjudication below. The
 information finding is supported, but adoption is held. Observation transport
 remains approved but deferred until a reviewed consumer needs it; navigation
-stays parked. Do-It-All has independently accepted corrected #69; Integration
-can verify and adopt that routine correction under the standing authority above.
+stays parked. Corrected #69 has independent acceptance and passing exact combined
+verification at40be568; #78 is ready for routine adoption after final ref/tree
+checks under the standing authority above. Publish the actual merged pin in the
+queue/handoff; do not infer it from the tested branch head.
 Experimental physics, baseline/default changes and destructive cleanup remain
 outside routine authority.
 
@@ -156,8 +161,8 @@ next ready controller batch without waiting for Physics or an unready contributo
 Then freeze the actual accepted source, tests, flags/World defaults and input
 manifest, and reuse that exact candidate's required combined verification.
 
-Integration coordinates one evaluation with Measurement and CEO: initially at
-most four full games and600 launcher seconds, using existing declared inputs,
+Integration coordinates one evaluation with Measurement and CEO: at most four
+full games and240 launcher seconds, with a60s per-game ceiling, using existing declared inputs,
 rosters, schemes and seeds where available. Measurement owns the single collector
 and film/statistics publication; CEO reviews the question and spend at the working
 checkpoint. Publish the accepted pin and complete settings/input/measurement

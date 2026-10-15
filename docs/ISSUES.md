@@ -43,7 +43,7 @@ a defect. Historical/experimental witnesses must retain their source and setting
 | [RUN-005](#RUN-005) | Departed C renames outward B as A | Confirmed gap-identity defect | Resolved in accepted #63 | Integration; three-line fix only, preserve DT tackle |
 | [RUN-006](#RUN-006) | Riding back leaves before the installed mesh window | Confirmed cadence defect | Resolved in accepted #63 | Integration + Run Game; real-reach transfer and same-source success control |
 | [RUN-007](#RUN-007) | Lane/spacing pictures, late Will protection and P037 collection | Observed failures / unresolved boundaries | Active bounded owner follow-up | Do-It-All! + Run Game; no earlier zone/Duo/detour ancestry imported |
-| [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 corrected scope independently accepted; exact verification next | Integration; preserve #72/#74 and stationary-runner/approximate-clearance limits; no Physics dependency |
+| [RUN-008](#RUN-008) | Lost-check helper misses an available first-strike surface; new gate read private contact state | Confirmed bounded controller/information defects | #69 scope independently accepted; #78 exact verification passes | Integration; final ref/tree check then routine adoption; retain stationary-runner/approximate-clearance limits; no Physics dependency |
 | [PASS-002](#PASS-002) | Slow upright receiver supplies false blocking cue | Confirmed recognition defect | Resolved bounded scope in accepted #63 | Integration; preserve real blocking and adverse run evidence |
 | [PASS-003](#PASS-003) | Incidental catch lacks acquired flight | Confirmed opportunity/readiness defect | Resolved bounded scope in accepted #63 | Integration; preserve targeted check-release and acquired emergency catch |
 | [PASS-004](#PASS-004) | P045 Quarters approach and secondary containment | Historical observed failure; cause not fully resolved | Active owner/measurement question | Catching And Defensive Pursuit; not solved by #58's different mechanism |
@@ -82,7 +82,9 @@ accepts controller/test `cdd55b955421744ae6ba688de5f73ab87d13b8ab`, evidence
 now covers the previously missed private `target.engagement` dependency. The
 complete four-file correction preserves installation, acquired torso-loss/clearance,
 cadence, own contact and physical hand eligibility. Integration owns extraction
-onto8ca8dee and one combined verification; reuse64 focused passes/typecheck.
+onto8ca8dee. Exact40be568 passes1,729 TS/146 files,145 Python,typecheck/build
+in191.361s under44 flags/components1;64 focused passes/typecheck reused.
+Routine adoption through #78 awaits only final ref/tree checks, not another suite.
 Controlled collection parks the runner: live arrival/yardage benefit, fast-motion
 clearance and broader RunBlocker information correctness remain unproved. Retain
 rejected variants, expected-red and the three adjudicated #66-host failures with
