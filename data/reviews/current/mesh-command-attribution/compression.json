@@ -1,0 +1,47 @@
+{
+  "purpose": "Lossless evidence storage; original bytes are recovered with gzip, no simulation or data reduction.",
+  "files": [
+    {
+      "path": "alternatives-v1.json.gz",
+      "bytes": 51337,
+      "sha256": "439f2564bdfab3b58ca62d92a503f18ab0d592ff11767e06f229527496ede752",
+      "originalBytes": 437145,
+      "originalSha256": "c9cbd854fbb8258712bb0933b797629fb682860bc76c559070f689f235893ca8"
+    },
+    {
+      "path": "failed-alternatives.json.gz",
+      "bytes": 23397,
+      "sha256": "f46d5a6ea0828ceae11f6db28d7e50acde6d93d48043e589b524c69a4d25d105",
+      "originalBytes": 194323,
+      "originalSha256": "e21c56f366def3999e72c1c1dfb014383cd82edb0e84fca78fb86c411e7a853b"
+    },
+    {
+      "path": "v2-release-alternatives.json.gz",
+      "bytes": 17864,
+      "sha256": "d5014c14944b42c47d15736f446949fce76227e258560af1681a46cb17c356b5",
+      "originalBytes": 145626,
+      "originalSha256": "6fae2616cb3f7cbe1981d2e1dccaa1ab57186c00d85d5def8947e803a217f53f"
+    },
+    {
+      "path": "same-state-alternatives.json.gz",
+      "bytes": 24934,
+      "sha256": "21a5be0076fe1b840e0f700e9637b71db5db147edd70da33b03f4fdd17e4447b",
+      "originalBytes": 257685,
+      "originalSha256": "93baf749ceb5ba7d17a520fab37d41ef1896691e0f6b79e62d46aa0ab79e48b2"
+    },
+    {
+      "path": "pass-review.json.gz",
+      "bytes": 25477,
+      "sha256": "afcb648d20cb79fffe7fa930029e70e335ef30cb012abd7d76d65d0d9ba8fbed",
+      "originalBytes": 231366,
+      "originalSha256": "08a2dbc1052dfea3a515c300add627ff8a48392e0cd8e70edd86c35fb2f62241"
+    },
+    {
+      "path": "collection.json.gz",
+      "bytes": 12320,
+      "sha256": "82c95b56c05a954b32f9a1c0c0351b1e76027d03172b6b0fddf6daac75d2cd9f",
+      "originalBytes": 73749,
+      "originalSha256": "b7634120c327843f93a3e2e3cb6ebc45297cdf2aa13d4fbbf4de9f0f653d35a6"
+    }
+  ]
+}

@@ -950,62 +950,62 @@
   "generatedRosters": 0,
   "costs": [
     {
-      "path": "out/mesh-attribution/failed-transition-receipt.json",
+      "path": "data/reviews/current/mesh-command-attribution/failed-transition-receipt.json",
       "exitCode": 0,
       "seconds": 0.893353836
     },
     {
-      "path": "out/mesh-attribution/probe-receipt.json",
+      "path": "data/reviews/current/mesh-command-attribution/probe-receipt.json",
       "exitCode": 0,
       "seconds": 2.697636848
     },
     {
-      "path": "out/mesh-attribution/failed-alternatives-receipt.json",
+      "path": "data/reviews/current/mesh-command-attribution/failed-alternatives-receipt.json",
       "exitCode": 0,
       "seconds": 0.538639607
     },
     {
-      "path": "out/mesh-attribution/portable-alternatives-receipt.json",
+      "path": "data/reviews/current/mesh-command-attribution/portable-alternatives-receipt.json",
       "exitCode": 0,
       "seconds": 0.999604334
     },
     {
-      "path": "out/mesh-attribution/capture-receipt.json",
+      "path": "data/reviews/current/mesh-command-attribution/capture-receipt.json",
       "exitCode": 0,
       "seconds": 2.083040755
     },
     {
-      "path": "out/mesh-attribution/alternatives-receipt.json",
+      "path": "data/reviews/current/mesh-command-attribution/alternatives-receipt.json",
       "exitCode": 0,
       "seconds": 0.646363645
     },
     {
-      "path": "out/mesh-attribution/safety-first-receipt.json",
+      "path": "data/reviews/current/mesh-command-attribution/safety-first-receipt.json",
       "exitCode": 0,
       "seconds": 1.9433963029999999
     },
     {
-      "path": "out/mesh-attribution/v2-release-receipt.json",
+      "path": "data/reviews/current/mesh-command-attribution/v2-release-receipt.json",
       "exitCode": 0,
       "seconds": 0.6306418119999999
     },
     {
-      "path": "out/mesh-attribution/typecheck.json",
+      "path": "data/reviews/current/mesh-command-attribution/typecheck.json",
       "exitCode": 0,
       "seconds": 11.407352647
     },
     {
-      "path": "out/mesh-attribution/observer-tests.json",
+      "path": "data/reviews/current/mesh-command-attribution/observer-tests.json",
       "exitCode": 0,
       "seconds": 1.0616010649999998
     },
     {
-      "path": "out/mesh-attribution/final-typecheck.json",
+      "path": "data/reviews/current/mesh-command-attribution/final-typecheck.json",
       "exitCode": 1,
       "seconds": 11.409234289
     },
     {
-      "path": "out/mesh-attribution/final-typecheck-pass.json",
+      "path": "data/reviews/current/mesh-command-attribution/final-typecheck-pass.json",
       "exitCode": 0,
       "seconds": 10.792568177
     }
@@ -1015,22 +1015,23 @@
     "failed-transition-receipt.json": "9efd2696672c980e609e07240aff4b165381f54ac6b572fb126b052a43b0e296",
     "panel-config.json": "75b53f8074b26e2d8d32ef15266dbb60a1bebef8dc874be7756ee3004790fe4d",
     "typecheck.json": "750166612ea98614d00613d12987f265c8327ec1280c80de17d044e61786c3aa",
+    "v2-release-alternatives.json.gz": "d5014c14944b42c47d15736f446949fce76227e258560af1681a46cb17c356b5",
     "probe-receipt.json": "f3ce663013ce424d425f7f7e56cb74304fc303cb06a88bd8618daf3a674d3657",
-    "failed-alternatives.json": "e21c56f366def3999e72c1c1dfb014383cd82edb0e84fca78fb86c411e7a853b",
     "failed-alternatives-receipt.json": "0ae4499af097956f4e877e0b6a5857da18fedbd1fa30c7d6ef9ca6ee014419c0",
-    "same-state-alternatives.json": "93baf749ceb5ba7d17a520fab37d41ef1896691e0f6b79e62d46aa0ab79e48b2",
     "portable-alternatives-receipt.json": "8ee01749011dbec79a560ea9f08161dbd1eee79055d7836f3c6df09f2936579c",
-    "v2-release-alternatives.json": "6fae2616cb3f7cbe1981d2e1dccaa1ab57186c00d85d5def8947e803a217f53f",
-    "alternatives-v1.json": "c9cbd854fbb8258712bb0933b797629fb682860bc76c559070f689f235893ca8",
+    "same-state-alternatives.json.gz": "21a5be0076fe1b840e0f700e9637b71db5db147edd70da33b03f4fdd17e4447b",
+    "failed-alternatives.json.gz": "f46d5a6ea0828ceae11f6db28d7e50acde6d93d48043e589b524c69a4d25d105",
     "capture-receipt.json": "88d9acc57a5557a4d5d3990198f01fd07ea0b99e4e060d3828601c63a46f20b3",
-    "pass-review.json": "08a2dbc1052dfea3a515c300add627ff8a48392e0cd8e70edd86c35fb2f62241",
     "flex-windows.json.gz": "11637c8ff81b32b06faa21f87995fc870e37ff089d4f03496717856b5eb05191",
     "alternatives-receipt.json": "1a1bfa957443031b8250a54e7a6af0e195b13d80624f1328c71b0818a19cb069",
-    "collection.json": "b7634120c327843f93a3e2e3cb6ebc45297cdf2aa13d4fbbf4de9f0f653d35a6",
+    "pass-review.json.gz": "afcb648d20cb79fffe7fa930029e70e335ef30cb012abd7d76d65d0d9ba8fbed",
     "safety-first-receipt.json": "3d0a8279acc6d757e270a768a4dc0c9705552c2ffc4279f6b62646c12bfee15b",
+    "collection.json.gz": "82c95b56c05a954b32f9a1c0c0351b1e76027d03172b6b0fddf6daac75d2cd9f",
     "final-typecheck-pass.json": "be8b442de52d341a611c4cc21ecd4cdc34a85d44f916b3ba5e389a8b7b560492",
+    "alternatives-v1.json.gz": "439f2564bdfab3b58ca62d92a503f18ab0d592ff11767e06f229527496ede752",
     "observer-tests.json": "9b18b8e185c41dad99b18213f70ac4028b4090a94c11aae497b260940512ea25",
     "v2-release-receipt.json": "c71a159ef2b2490fc1a6511ac0be1e4c8aab58d3f112a68d26c91dcf79e4e80a",
+    "compression.json": "4cf07b2c1b4b89e1b78d6f4516b059cf4509cdff7f7ba425c39f073e62cc9922",
     "transfer-receipt.json": "d4fe24abc84cda62ad9294b55e76b1faeb2d7fc03ec7ee608886854483add272",
     "final-typecheck.json": "03f011f8bcb9ae3fef75d8d824042337d5b354112fb0407a38be1ddf3de85322",
     "bend-v1/A020-accepted.json.gz": "c07ea39ba4a49ae29876f796b7a8307e7e4969b49d9779c657dc743acd0a20af",
