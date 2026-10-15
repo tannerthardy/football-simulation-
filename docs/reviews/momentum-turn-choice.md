@@ -1,5 +1,13 @@
 # Existing angular motion can improve a loaded half-turn choice
 
+**Disposition, 2026-10-15: parked on the historical experimental patch host.**
+Preserve draft PR #62 and its evidence; do not run the proposed native-loop cost
+check now. That check cannot resolve the host's adoption prerequisites, so it
+would not change this disposition. The primary assignment is a minimal coherent
+contact-law candidate on current approved develop. Revisit turn choice only with
+a specified reviewed host and a concrete integration decision. No baseline or
+production default changes.
+
 Cost follow-up: [the scalar planner](turn-planner-cost.md) preserves the choices
 and improves warmed planning cost, but the original tail screen remains open.
 The measurements below retain their original revision pins.

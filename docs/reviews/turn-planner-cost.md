@@ -1,5 +1,10 @@
 # Cheaper turn selection, with the original tail gate still open
 
+**Parked, 2026-10-15.** The native-loop cost measurement proposed below is
+deferred: it cannot decide adoption of this historical experimental host.
+Preserve both clocks and the adverse contact result. Current-development
+contact-law extraction is now the primary integration target.
+
 Preserve this cost-only correction in draft PR #62; keep `turnChoice` absent by
 default. The warmed paired planner is cheaper, with exactly matching choices.
 The original startup/fixture-heavy screen still fails its tail budget. This is
