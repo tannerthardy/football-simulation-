@@ -49,7 +49,7 @@ silently become approval; investigate a disagreement with this ledger.
 | **Active pass diagnosis / contract question** | [#64](https://github.com/tannerthardy/football-simulation-/pull/64) `db77674b0e2493017d8778c5cdc5dd1420e68002`, diagnostic `eba1b61756d7a85b3b8c39dc73196244e7eef719` | Run Game/pass-protection owner: P040 forecast improves in one trial but loses P019's useful edge control; both trials rejected. #67 is a separately reviewable free-approach candidate; the loaded foot-objective algebra remains an owner question, not a proven defect. Experimental #57/#54 host is explicit; do not import ancestry. |
 | **Current physics candidate held** | [#66](https://github.com/tannerthardy/football-simulation-/pull/66) `29b00905edee16f00651317364b729c1b377eb5b`; Run adjudication evidence `4f90b6428b98224774bbd63a4adad6bb3e354b53` | [Run-owner adjudication](https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200709352) identifies mirrored missed feasible collection and unsupported compulsory-climb expectations; no runtime/assertion was changed. Hold promotion for collection dependency. Integration still owns two center-history compatibility questions after reconciling accepted #63. Preserve seven original failures and yaw force-selection sensitivity/accuracy limits; no new suite/default promotion here. |
 | **Accepted and merged #72 / isolated #67** | Develop `4679a3c260188143bcc66f6f20534327c78d7eaa`; reviewed publication `167547807a23052e04af2199104fc16b9850a501`, tested `64177487272b7e0b2d51460e23ccdb6447508e39`; [merge receipt](../data/reviews/current/pr72-merge.json) | Explicit user merge authority exercised after unchanged source/tests/settings, artifact and review checks. Entire merged tree equals reviewed publication. Existing full passing receipt reused; no reruns. Native RT/RG/LT losses, C/LG traffic, forecast/contact limits and prior failures remain. #69, information/navigation and experimental physics are excluded. |
-| **Risk-only next scope recommended; combined verification pending** | Original60223a863a8431e85d5027c879191f3527ed10b8; isolated `71d98fcddc3c76764f36f438f9f4921d365c9ad4` on accepted4679a3c; publication `cfcbf6b60325ff3fe4dd722f9310d135fae49576`; [review/receipts](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json), [portable patch](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/opponent-risk-only.patch) | Integration: active runReadAim uses acquired opponent pose/motion and public profile, removing private down/fatigue/engagement shortcuts. Three selected checks/typecheck pass;25 unrelated cases deliberately filtered. Full combined verification has not run. Recommend accepting this risk-only integration scope first, then one exact full verification before separate merge authorization. Native gain/collision avoidance unproved; legacy carrier-information callers remain out of scope. |
+| **Risk-only verified; merge authorization pending** | [PR #74](https://github.com/tannerthardy/football-simulation-/pull/74), head `a8dabeca3030a9760aafb21bd4a4af6e9af303e3`; tested `86a8816bb685a521f60400c6a3fe12e12d02e32f` on accepted4679a3c; [final receipt](https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-receipt.json), [launcher](https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-combined.json), [portable patch](https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-candidate.patch) | User accepted risk-only scope. Only carrier.ts changes in production; no transport/navigation dependency. **1,726 TS/145 files,145 Python,typecheck/build pass**,44 flags/components=1,no skipped phases or input drift;188.504s. Recommend explicit merge authorization for this isolated candidate. No runtime merge or new baseline/default designation occurred. Original collision/uncertainty evidence and legacy carrier-information limitations remain. |
 | **Observation transport approved; integration deferred** | Original60223a8/80c9fa4; unchanged owner core6828467; [separate portable core/PlaySim/test patch](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/observation-transport-only.patch) | Independent of opponent risk. No production query consumer exists; avoid adding per-tick sensing solely for this fix. Original four focused/typecheck receipts and owner approval6201016808 reused. No correctness rejection or new approval wait. Integrate with a reviewed consumer when needed; clocks, stale unknown semantics, catch readiness and spacing contracts remain. |
 | **Queued independent controller review** | [#69](https://github.com/tannerthardy/football-simulation-/pull/69), head `a159f82d4821f03082e5a110c190a5ef1396df60`, runtime/test `3b4ea698819074640626a215bf2f06af2735f25a`, evidence `bb430b1b2a801b5221e622f7f950d59bc8d8084f`, source `f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67` | [Scoped review handoff](https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6201486238). Do-It-All, user-assigned independent controller reviewer: acquired lost-owner cue, first-strike surface, achievable approach/braking, mirrored and obstructed controls, explicit force/reach/support contract. Reported63 focused checks/typecheck are contributor evidence, not combined acceptance. Actual base8c891f4 is byte-compatible with docs-only accepted7d1451b. No #67, entry-admission or #66 physics dependency; no new suite merely to queue. |
 | **Owner disposition requested; remain open** | #4, #41, #51, #55, #56 | Handover owner, Awareness and Primary Physics must clarify live objective versus parked research. Requests are linked in the cleanup receipt. No need to finish experiments or run tests to answer. Legacy #1/#2 stay open for their separate owner/reference decisions. |
@@ -58,15 +58,17 @@ silently become approval; investigate a disagreement with this ledger.
 
 Latest decision: #72 is accepted and merged under explicit user authority;
 use the full4679a3c pin above. No future merge authority follows. The separate
-information-only candidate60223a8 is reviewed: recommend risk-only adoption as
-the next integration scope; defer unused observation transport. Navigation stays parked. #69 remains
+information-only candidate60223a8 is reviewed: user accepted risk-only scope,
+and exact combined86a8816 now passes all phases; its separate merge decision is pending.
+Defer unused observation transport. Navigation stays parked. #69 remains
 with Do-It-All's independent controller review. Prior HOLD/failed verification
 records retain their historical meanings; they are not current blockers on #72.
 
 <a id="run-entry-information-review"></a>
 ### Information-only acceptance decision
 
-Recommend **separate adoption**, advancing only the active opponent-risk fix.
+User accepted **separate adoption scope**, advancing only the active opponent-risk fix.
+Final candidate86a8816 now passes all verification phases; merge is not authorized.
 The risk path uses existing `see`, recovery and reach machinery; teammate transport
 neither supplies nor changes that path. Its core/PlaySim query is owner-approved,
 but no controller consumes it yet. Keep the transport patch fetchable for its first
@@ -83,10 +85,19 @@ or shared suite. Total new launcher23.675s includes the retained initial missing
 was made to fix that packaging error. Original adverse69.81kg·yd/s collision
 remains source-specific; this is no new football-gain or global-information claim.
 
-**Next acceptance:** choose the exact risk-only integration scope; its final
-combined verification remains due before any separately authorized merge. #72's
-completed/passing verification is immutable and was not expanded. #69 stays with
-Do-It-All's independent review; physics, navigation and historical metadata stay out.
+**Final verification:** `86a8816bb685a521f60400c6a3fe12e12d02e32f` passes
+1,726 TS/145 files,145 Python,typecheck/build in188.504s, with all44 accepted
+flags/components=1, unchanged World defaults and no skipped phases or input drift.
+[Final receipt](https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-receipt.json)
+and [complete log](https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-combined.log).
+The source/tests/settings are identical to the focused71d98fc pass; its two
+initial packaging failures and all prior evidence remain. No extra replays,
+game campaign or roster screen was added; existing suite game assertions ran.
+
+**Next decision:** explicitly authorize merging the exact isolated risk-only
+candidate after final source/settings/ref compatibility checks. No further
+suite or simulation campaign is justified for an unchanged candidate. Accepted
+develop remains4679a3c. Observation transport, navigation, #69 and physics stay out.
 
 ### Relevant owner updates after #72
 

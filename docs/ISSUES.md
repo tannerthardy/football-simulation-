@@ -236,9 +236,10 @@ installed call and acquired cues, without exposing live private branches.
 
 Current bounded correction: `runReadAim` opponent risk reads acquired pose/motion
 and public capability, removing private current-down/fatigue/engagement shortcuts.
-Recommend the risk-only71d98fc scope on accepted4679a3c; [review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
-Three selected checks/typecheck pass; full combined verification and separate
-merge authority remain outstanding. Teammate query transport is independently
+User accepted risk-only scope on accepted4679a3c; [review](https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json).
+Exact combined86a8816 passes1,726 TS/145 Python/typecheck/build;
+[final receipt](https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-receipt.json).
+Separate merge authorization remains outstanding. Teammate query transport is independently
 approved but has no current production consumer, so defer it until needed.
 No navigation tuning or claim that all legacy carrier callers are fixed.
 Original information-only collision and uncertainty evidence remain preserved.
