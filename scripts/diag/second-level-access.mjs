@@ -12,9 +12,10 @@ import {RUN_BY_ID} from '../../src/playbook/concepts.ts';
 import {FRONT_BY_ID,COVERAGE_BY_ID} from '../../src/playbook/defense.ts';
 import {sourceVersion} from '../source-version.ts';
 
-const root='data/reviews/current/second-level-access',manifestPath=root+'/inputs.json';
+const root='data/reviews/current/second-level-access';
 const hash=x=>createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)?x:JSON.stringify(x)).digest('hex');
-const [mode='plan',out='out/second-level-access/current',idsText,untilText]=process.argv.slice(2);
+const [mode='plan',out='out/second-level-access/current',idsText,untilText,manifestOverride]=process.argv.slice(2);
+const manifestPath=manifestOverride??root+'/inputs.json';
 if(mode==='plan'){
  const config=JSON.parse(readFileSync(root+'/audit-config.json'));
  const fixture=JSON.parse(readFileSync('config/roster-screen.json'));
