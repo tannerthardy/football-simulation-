@@ -921,9 +921,12 @@ export class RunBlocker implements Behavior {
       const capacity = a.body.support
         ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
       let best: { meet: Vec2; vel: Vec2; t: number; gap: number } | null = null;
+      // Arrival speed is relative to the moving landmark. Its world velocity
+      // is already added by movingArrivalVelocity; adding that speed again as
+      // through-speed sends a free climber through the moving fit.
       for (const lead of [.2, .4, .6, .8, 1.0, 1.3]) {
         const meet = { x: seen.pos.x + seen.vel.x * lead, y: clamp(seen.pos.y + seen.vel.y * lead + side, .5, FIELD_WIDTH - .5) };
-        const vel = movingArrivalVelocity(a.body, meet, seen.vel, a.profile.vmax, .1, Math.hypot(seen.vel.x, seen.vel.y), 1, capacity);
+        const vel = movingArrivalVelocity(a.body, meet, seen.vel, a.profile.vmax, .1, 0, 1, capacity);
         const facing = Math.atan2(meet.y - a.pos.y, meet.x - a.pos.x);
         const path = previewFreeMovement(a.body, { vel, facing }, sim.t, 26, sim.world.handContact);
         for (const s of path) {
@@ -935,7 +938,7 @@ export class RunBlocker implements Behavior {
         }
       }
       this.climbRead = { target, nextRead: sim.t + a.mind.decisionInterval, meet: best!.meet,
-        through: Math.hypot(seen.vel.x, seen.vel.y), attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
+        through: 0, attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
       // Look past the down surface before choosing the first step toward a
       // backer. Only this player's free body and acquired pictures enter the
       // preview; a loaded body cannot be certified by an empty-space solve.
