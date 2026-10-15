@@ -29,7 +29,7 @@ function run(v:any){
  const flat=()=>w.joints.map((j:any)=>{const {a,b,actor,holder,...rest}=j;return {...rest,a:w.indexOf(a),b:w.indexOf(b),...(actor?{actor:w.indexOf(actor)}:{}),...(holder?{holder:w.indexOf(holder)}:{})};}),
   fingerprint=()=>hash({bodies:w.bodies,cmds:Reflect.get(sim,'cmds'),intents:sim.intents,minds:sim.agents.map(a=>a.mind),rng:sim.rng,events:sim.events,phase:sim.phase,t:sim.t,joints:flat(),lastStep:sim.lastStep});
  let target:any=null,ids:number[]=[],audit:any=null,phase:any=null,row:any=null,prefix:string|null=null,first:any=null;
- const steps:any[]=[],placement:any[]=[],allRows:any[]=[];
+ const steps:any[]=[],placement:any[]=[],allRows:any[]=[],ground:any[]=[];
  const add=(i:number,kind:string,x:number,y:number,l:number,before:any)=>{
   if(!audit||!ids.includes(i))return;const body=w.bodies[i],m=body.profile.massKg,I=supportParams(body.profile).yawInertia,p=audit.parts[i][kind]??={x:0,y:0,l:0,work:0};
   p.x+=x;p.y+=y;p.l+=l;p.work+=before.vel.x*x+before.vel.y*y+(x*x+y*y)/(2*m)+before.spin*l+l*l/(2*I);
@@ -52,6 +52,22 @@ function run(v:any){
   const oldN=c.ln,oldT=c.lt,before=[c.i,c.j].map(i=>({vel:{...this.bodies[i].vel},spin:this.bodies[i].spin??0})),value=contact.call(this,c,...a),dn=c.ln-oldN,dt=c.lt-oldT,
    x=c.nx*dn-c.ny*dt,y=c.ny*dn+c.nx*dt;
   add(c.i,'body-contact',-x,-y,c.ni*dn-c.ri*dt,before[0]);add(c.j,'body-contact',x,y,c.nj*dn-c.rj*dt,before[1]);return value;
+ };
+ // Observe the actual stance motor, rather than treating a nonzero ground
+ // impulse as proof that this athlete could supply it. Off-feet drag and a
+ // finite dive launch have different laws, so retain their classifications.
+ const feet=w.feet;w.feet=function(i:number,intent:any,plan:any,h:number,remaining:number,report:any){
+  if(!audit||!ids.includes(i))return feet.call(this,i,intent,plan,h,remaining,report);
+  const body=this.bodies[i],sp=supportParams(body.profile),before={...report.groundImpulse[i]},yaw=report.groundYawImpulse[i],
+   state=body.support.state,mode=state!=='up'?'off-feet':plan.free?'free':plan.dive?'dive':'stance',
+   result=feet.call(this,i,intent,plan,h,remaining,report),force={x:(report.groundImpulse[i].x-before.x)/h,y:(report.groundImpulse[i].y-before.y)/h},
+   torque=(report.groundYawImpulse[i]-yaw)/h,radius=baseRadiusAt(sp,body.support.posture),
+   demand=Math.hypot(force.x,force.y,torque/radius),capacity=sp.traction*this.alpha[i];
+  ground.push({t:sim.t,time:phase.time,h,slot:sim.agents[i].slot,mode,stateBefore:state,stateAfter:body.support.state,
+   force,torque,radius,availability:this.alpha[i],traction:sp.traction,capacity,demand,
+   correctiveCapacity:body.support.foot?.capacity??0});
+  if(mode==='stance')assert(demand<=capacity+cfg.checks.capacity,JSON.stringify({t:sim.t,i,demand,capacity}));
+  return result;
  };
  for(const method of ['reelPatchGrasp','solveGrasp','solveHands']){const original=w[method];w[method]=function(r:any,...a:any[]){const previous=row;row=r;try{return original.call(this,r,...a);}finally{row=previous;}};}
  const rows=w.jointRows;w.jointRows=function(h:number){const result=rows.call(this,h);if(audit)phase.rows=result.filter((r:any)=>r.joint===target);return result;};
@@ -87,14 +103,20 @@ function run(v:any){
     kinetic=(q:any)=>.5*m*(q.vel.x**2+q.vel.y**2)+.5*I*q.spin**2,
     work=kinetic(after)-kinetic(before)-report.groundWork[i]-report.groundYawWork[i]-parts.reduce((s,p)=>s+p.work,0);
     assert(momentum<cfg.checks.momentum&&spin<cfg.checks.spinImpulse&&Math.abs(work)<cfg.checks.work,JSON.stringify({t:sim.t,i,momentum,spin,work}));
+    for(const [used,limit] of [['armImpulse','armImpulseLimit'],['armWork','armWorkLimit'],['supportMotorWork','supportMotorWorkLimit']])
+     assert(report[used][i]<=report[limit][i]+cfg.checks.work,JSON.stringify({t:sim.t,i,used:report[used][i],limit:report[limit][i]}));
+    const stance=ground.filter(q=>q.t===sim.t&&q.slot===sim.agents[i].slot),
+     groundResidual=Math.hypot(g.x-stance.reduce((sum,q)=>sum+q.force.x*q.h,0),g.y-stance.reduce((sum,q)=>sum+q.force.y*q.h,0),
+      report.groundYawImpulse[i]-stance.reduce((sum,q)=>sum+q.torque*q.h,0));
+    assert(groundResidual<cfg.checks.momentum);
     return {slot:sim.agents[i].slot,mass:m,ground:{...g},groundYaw:report.groundYawImpulse[i],groundWork:report.groundWork[i],groundYawWork:report.groundYawWork[i],momentumResidual:momentum,spinResidual:spin,workResidual:work,
-     armImpulse:report.armImpulse[i],armImpulseLimit:report.armImpulseLimit[i],armWork:report.armWork[i],armWorkLimit:report.armWorkLimit[i],supportWork:report.supportMotorWork[i],supportWorkLimit:report.supportMotorWorkLimit[i]};});
+     armImpulse:report.armImpulse[i],armImpulseLimit:report.armImpulseLimit[i],armWork:report.armWork[i],armWorkLimit:report.armWorkLimit[i],supportWork:report.supportMotorWork[i],supportWorkLimit:report.supportMotorWorkLimit[i],groundResidual};});
    audit.contactCount=report.contacts.filter((c:any)=>ids.includes(c.i)||ids.includes(c.j)).length;audit.grip={capacity:target.capacity,actualCapacity:this.gripCapacity(target),legs:target.legs,slipping:target.slipping,broken:!!target.broken,force:target.force};steps.push(audit);audit=null;
   }return report;
  };
  const stop=v.finish?8:start+cfg.weakContinuationSeconds;while(sim.phase!=='dead'&&sim.t<stop-1e-9)sim.tick();
  assert(prefix&&first);const fp=fingerprint(),expected=prior.cases.find((c:any)=>c.input.id===v.case).outcomes.find((x:any)=>x.arm.id==='native');if(v.finish)assert.equal(fp,expected.fingerprint,'Observer must preserve the saved native ending');
- return {variant:v,prefix,first,ids,steps,placement,rows:allRows,fingerprint:fp,observerExact:v.finish??false,phase:sim.phase,t:sim.t,censored:sim.phase!=='dead',outcome:sim.outcome,endSpot:sim.endSpot,creditedYards:sim.phase==='dead'?sim.buildResult().yards:null};
+ return {variant:v,prefix,first,ids,steps,placement,ground,rows:allRows,fingerprint:fp,observerExact:v.finish??false,phase:sim.phase,t:sim.t,censored:sim.phase!=='dead',outcome:sim.outcome,endSpot:sim.endSpot,creditedYards:sim.phase==='dead'?sim.buildResult().yards:null};
 }
 const runs=cfg.variants.map(run),tite=runs.find((r:any)=>r.variant.id==='native')!;
 for(const r of runs.filter((r:any)=>r.variant.case==='tite'))assert.equal(r.prefix,tite.prefix);
